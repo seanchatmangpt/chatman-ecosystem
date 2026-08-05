@@ -35,9 +35,6 @@ fn json_projection_is_machine_readable_in_shape_and_binds_the_crown() {
     let report = run_gall().expect("the complete Gall sequence must execute");
     let json = report.to_json();
     assert!(json.starts_with("{\"standing\":\"ALIVE\""));
-    assert!(json.contains(&format!(
-        "\"root_receipt\":\"{}\"",
-        report.root_receipt
-    )));
+    assert!(json.contains(&format!("\"root_receipt\":\"{}\"", report.root_receipt)));
     assert_eq!(json.matches("\"standing\":\"ALIVE\"").count(), 5);
 }

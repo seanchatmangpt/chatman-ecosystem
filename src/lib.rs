@@ -277,14 +277,7 @@ pub fn admit_source_graph(contents: &str) -> Result<SourceAdmission, Refusal> {
 
     let canonical = pins
         .iter()
-        .map(|pin| {
-            format!(
-                "{}|{}|{}",
-                pin.repository,
-                pin.commit,
-                pin.role.as_str()
-            )
-        })
+        .map(|pin| format!("{}|{}|{}", pin.repository, pin.commit, pin.role.as_str()))
         .collect::<Vec<_>>()
         .join("\n");
     Ok(SourceAdmission {
@@ -495,13 +488,9 @@ impl Broker {
             Ok(_) => {
                 let consequence = self.actuate(action);
                 match consequence {
-                    Ok(consequence) => self.finish(
-                        policy,
-                        action,
-                        Ok(consequence),
-                        Standing::Alive,
-                        "ACTUATED",
-                    ),
+                    Ok(consequence) => {
+                        self.finish(policy, action, Ok(consequence), Standing::Alive, "ACTUATED")
+                    }
                     Err(refusal) => {
                         let code = refusal.to_string();
                         self.finish(policy, action, Err(refusal), Standing::Refused, &code)
@@ -759,12 +748,7 @@ impl WasmRuntime {
         };
 
         if sha256_hex(module) != manifest.module_digest {
-            return skill_refusal(
-                broker,
-                policy,
-                load_action,
-                Refusal::ModuleDigestMismatch,
-            );
+            return skill_refusal(broker, policy, load_action, Refusal::ModuleDigestMismatch);
         }
 
         let parsed = match ParsedModule::parse(module) {
@@ -777,12 +761,7 @@ impl WasmRuntime {
                 .allowed_imports
                 .contains(&(import.module.clone(), import.name.clone()))
             {
-                return skill_refusal(
-                    broker,
-                    policy,
-                    load_action,
-                    Refusal::ImportNotDeclared,
-                );
+                return skill_refusal(broker, policy, load_action, Refusal::ImportNotDeclared);
             }
             if import.module != "fabric" || import.name != "actuate" {
                 return skill_refusal(broker, policy, load_action, Refusal::UnsupportedWasm);
@@ -957,9 +936,7 @@ impl ParsedModule {
     ) -> Result<(i32, BrokerOutcome), (Refusal, Option<BrokerOutcome>)> {
         let _run_index = self.run_function_index;
         let mut reader = Reader::new(&self.run_body);
-        let local_groups = reader
-            .read_leb_u32()
-            .map_err(|refusal| (refusal, None))?;
+        let local_groups = reader.read_leb_u32().map_err(|refusal| (refusal, None))?;
         if local_groups != 0 {
             return Err((Refusal::UnsupportedWasm, None));
         }
@@ -976,18 +953,15 @@ impl ParsedModule {
             let opcode = reader.read_u8().map_err(|refusal| (refusal, None))?;
             match opcode {
                 0x20 => {
-                    let local_index = reader
-                        .read_leb_u32()
-                        .map_err(|refusal| (refusal, None))?;
+                    let local_index = reader.read_leb_u32().map_err(|refusal| (refusal, None))?;
                     if local_index != 0 {
                         return Err((Refusal::UnsupportedWasm, broker_outcome));
                     }
                     stack.push(input);
                 }
                 0x10 => {
-                    let function_index = reader
-                        .read_leb_u32()
-                        .map_err(|refusal| (refusal, None))?;
+                    let function_index =
+                        reader.read_leb_u32().map_err(|refusal| (refusal, None))?;
                     if function_index != 0 || self.imports.len() != 1 {
                         return Err((Refusal::UnsupportedWasm, broker_outcome));
                     }
@@ -1015,8 +989,7 @@ impl ParsedModule {
                     let value = stack
                         .pop()
                         .ok_or((Refusal::MalformedWasm, broker_outcome.clone()))?;
-                    let outcome = broker_outcome
-                        .ok_or((Refusal::MalformedWasm, None))?;
+                    let outcome = broker_outcome.ok_or((Refusal::MalformedWasm, None))?;
                     return Ok((value, outcome));
                 }
                 _ => return Err((Refusal::UnsupportedWasm, broker_outcome)),
@@ -1088,8 +1061,8 @@ pub fn gall_skill_module() -> Vec<u8> {
     vec![
         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, // magic + version
         0x01, 0x06, 0x01, 0x60, 0x01, 0x7f, 0x01, 0x7f, // type
-        0x02, 0x12, 0x01, 0x06, b'f', b'a', b'b', b'r', b'i', b'c', 0x07, b'a',
-        b'c', b't', b'u', b'a', b't', b'e', 0x00, 0x00, // import
+        0x02, 0x12, 0x01, 0x06, b'f', b'a', b'b', b'r', b'i', b'c', 0x07, b'a', b'c', b't', b'u',
+        b'a', b't', b'e', 0x00, 0x00, // import
         0x03, 0x02, 0x01, 0x00, // function
         0x07, 0x07, 0x01, 0x03, b'r', b'u', b'n', 0x00, 0x01, // export
         0x0a, 0x08, 0x01, 0x06, 0x00, 0x20, 0x00, 0x10, 0x00, 0x0b, // code
@@ -1115,7 +1088,12 @@ fn phase_zero() -> Result<Checkpoint, String> {
     }
 
     let receipt_hash = sha256_hex(
-        format!("GALL-S0|{}|{}", admission.graph_digest, admission.pins.len()).as_bytes(),
+        format!(
+            "GALL-S0|{}|{}",
+            admission.graph_digest,
+            admission.pins.len()
+        )
+        .as_bytes(),
     );
     Ok(Checkpoint {
         id: "GALL-S0".to_owned(),
@@ -1168,9 +1146,7 @@ fn phase_one(parent: &Checkpoint) -> Result<Checkpoint, String> {
         ..action.clone()
     };
     let denial = broker.submit(&policy, &denied, None);
-    if denial.result != Err(Refusal::CapabilityDenied)
-        || !Broker::verify_receipt(&denial.receipt)
-    {
+    if denial.result != Err(Refusal::CapabilityDenied) || !Broker::verify_receipt(&denial.receipt) {
         return Err("phase 1 undeclared capability refusal failed".to_owned());
     }
 
@@ -1247,9 +1223,7 @@ fn phase_two(parent: &Checkpoint) -> Result<Checkpoint, String> {
         external_subject: "not-registered".to_owned(),
         body: "echo denied".to_owned(),
     });
-    if unknown.result != Err(Refusal::SubjectUnknown)
-        || !Broker::verify_receipt(&unknown.receipt)
-    {
+    if unknown.result != Err(Refusal::SubjectUnknown) || !Broker::verify_receipt(&unknown.receipt) {
         return Err("phase 2 unknown subject refusal failed".to_owned());
     }
     receipt_hashes.push(unknown.receipt.receipt_hash);
@@ -1260,16 +1234,13 @@ fn phase_two(parent: &Checkpoint) -> Result<Checkpoint, String> {
         external_subject: "dc-1".to_owned(),
         body: "echo denied".to_owned(),
     });
-    if revoked.result != Err(Refusal::SubjectRevoked)
-        || !Broker::verify_receipt(&revoked.receipt)
-    {
+    if revoked.result != Err(Refusal::SubjectRevoked) || !Broker::verify_receipt(&revoked.receipt) {
         return Err("phase 2 revoked subject refusal failed".to_owned());
     }
     receipt_hashes.push(revoked.receipt.receipt_hash);
 
-    let receipt_hash = sha256_hex(
-        format!("{}|{}", parent.receipt_hash, receipt_hashes.join("|")).as_bytes(),
-    );
+    let receipt_hash =
+        sha256_hex(format!("{}|{}", parent.receipt_hash, receipt_hashes.join("|")).as_bytes());
     Ok(Checkpoint {
         id: "GALL-S2".to_owned(),
         phase: 2,
@@ -1307,8 +1278,7 @@ fn phase_three(parent: &Checkpoint) -> Result<Checkpoint, String> {
         allowed_imports: BTreeSet::new(),
         ..manifest.clone()
     };
-    let import_refusal =
-        WasmRuntime::execute(&mut broker, &policy, &module, &undeclared, 41, 31);
+    let import_refusal = WasmRuntime::execute(&mut broker, &policy, &module, &undeclared, 41, 31);
     if import_refusal.result != Err(Refusal::ImportNotDeclared)
         || !Broker::verify_receipt(&import_refusal.receipt)
     {
@@ -1320,8 +1290,7 @@ fn phase_three(parent: &Checkpoint) -> Result<Checkpoint, String> {
         .last_mut()
         .ok_or_else(|| "phase 3 empty module".to_owned())?;
     *last ^= 1;
-    let digest_refusal =
-        WasmRuntime::execute(&mut broker, &policy, &tampered, &manifest, 41, 32);
+    let digest_refusal = WasmRuntime::execute(&mut broker, &policy, &tampered, &manifest, 41, 32);
     if digest_refusal.result != Err(Refusal::ModuleDigestMismatch)
         || !Broker::verify_receipt(&digest_refusal.receipt)
     {
@@ -1372,13 +1341,9 @@ pub fn run_gall() -> Result<GallReport, String> {
     let phase_three = phase_three(&phase_two)?;
     let checkpoints = vec![phase_zero, phase_one, phase_two, phase_three];
 
-    if checkpoints
-        .iter()
-        .enumerate()
-        .any(|(index, checkpoint)| {
-            checkpoint.phase as usize != index || checkpoint.standing != Standing::Alive
-        })
-    {
+    if checkpoints.iter().enumerate().any(|(index, checkpoint)| {
+        checkpoint.phase as usize != index || checkpoint.standing != Standing::Alive
+    }) {
         return Err("Gall checkpoint order or standing violation".to_owned());
     }
 
@@ -1419,17 +1384,70 @@ fn sha256(input: &[u8]) -> [u8; 32] {
         0x5be0_cd19,
     ];
     const ROUND: [u32; 64] = [
-        0x428a_2f98, 0x7137_4491, 0xb5c0_fbcf, 0xe9b5_dba5, 0x3956_c25b, 0x59f1_11f1,
-        0x923f_82a4, 0xab1c_5ed5, 0xd807_aa98, 0x1283_5b01, 0x2431_85be, 0x550c_7dc3,
-        0x72be_5d74, 0x80de_b1fe, 0x9bdc_06a7, 0xc19b_f174, 0xe49b_69c1, 0xefbe_4786,
-        0x0fc1_9dc6, 0x240c_a1cc, 0x2de9_2c6f, 0x4a74_84aa, 0x5cb0_a9dc, 0x76f9_88da,
-        0x983e_5152, 0xa831_c66d, 0xb003_27c8, 0xbf59_7fc7, 0xc6e0_0bf3, 0xd5a7_9147,
-        0x06ca_6351, 0x1429_2967, 0x27b7_0a85, 0x2e1b_2138, 0x4d2c_6dfc, 0x5338_0d13,
-        0x650a_7354, 0x766a_0abb, 0x81c2_c92e, 0x9272_2c85, 0xa2bf_e8a1, 0xa81a_664b,
-        0xc24b_8b70, 0xc76c_51a3, 0xd192_e819, 0xd699_0624, 0xf40e_3585, 0x106a_a070,
-        0x19a4_c116, 0x1e37_6c08, 0x2748_774c, 0x34b0_bcb5, 0x391c_0cb3, 0x4ed8_aa4a,
-        0x5b9c_ca4f, 0x682e_6ff3, 0x748f_82ee, 0x78a5_636f, 0x84c8_7814, 0x8cc7_0208,
-        0x90be_fffa, 0xa450_6ceb, 0xbef9_a3f7, 0xc671_78f2,
+        0x428a_2f98,
+        0x7137_4491,
+        0xb5c0_fbcf,
+        0xe9b5_dba5,
+        0x3956_c25b,
+        0x59f1_11f1,
+        0x923f_82a4,
+        0xab1c_5ed5,
+        0xd807_aa98,
+        0x1283_5b01,
+        0x2431_85be,
+        0x550c_7dc3,
+        0x72be_5d74,
+        0x80de_b1fe,
+        0x9bdc_06a7,
+        0xc19b_f174,
+        0xe49b_69c1,
+        0xefbe_4786,
+        0x0fc1_9dc6,
+        0x240c_a1cc,
+        0x2de9_2c6f,
+        0x4a74_84aa,
+        0x5cb0_a9dc,
+        0x76f9_88da,
+        0x983e_5152,
+        0xa831_c66d,
+        0xb003_27c8,
+        0xbf59_7fc7,
+        0xc6e0_0bf3,
+        0xd5a7_9147,
+        0x06ca_6351,
+        0x1429_2967,
+        0x27b7_0a85,
+        0x2e1b_2138,
+        0x4d2c_6dfc,
+        0x5338_0d13,
+        0x650a_7354,
+        0x766a_0abb,
+        0x81c2_c92e,
+        0x9272_2c85,
+        0xa2bf_e8a1,
+        0xa81a_664b,
+        0xc24b_8b70,
+        0xc76c_51a3,
+        0xd192_e819,
+        0xd699_0624,
+        0xf40e_3585,
+        0x106a_a070,
+        0x19a4_c116,
+        0x1e37_6c08,
+        0x2748_774c,
+        0x34b0_bcb5,
+        0x391c_0cb3,
+        0x4ed8_aa4a,
+        0x5b9c_ca4f,
+        0x682e_6ff3,
+        0x748f_82ee,
+        0x78a5_636f,
+        0x84c8_7814,
+        0x8cc7_0208,
+        0x90be_fffa,
+        0xa450_6ceb,
+        0xbef9_a3f7,
+        0xc671_78f2,
     ];
 
     let bit_length = (input.len() as u64).wrapping_mul(8);
