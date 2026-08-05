@@ -16,9 +16,11 @@ fn root() -> Result<PathBuf, String> {
 }
 
 fn subject(root: &PathBuf) -> String {
-    if let Ok(value) = env::var("GITHUB_SHA") {
-        if !value.trim().is_empty() {
-            return format!("git:{value}");
+    for variable in ["ECOSYSTEM_SUBJECT_SHA", "GITHUB_SHA"] {
+        if let Ok(value) = env::var(variable) {
+            if !value.trim().is_empty() {
+                return format!("git:{value}");
+            }
         }
     }
     match Command::new("git")
