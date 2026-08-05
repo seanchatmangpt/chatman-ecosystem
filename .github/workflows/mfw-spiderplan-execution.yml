@@ -1,0 +1,96 @@
+name: mfw-spiderplan-execution
+
+on:
+  push:
+    branches:
+      - validation/mfw-pypi-planning-5e9b3c41
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  MFW_HEAD_SHA: 5e9b3c41c1f4aa6de9522828716ffe41e70b760b
+  PYTHON_CAPSULE: validation/mfw-pypi-planning/mfw-pypi-planner.tar.gz
+  SPIDERPLAN_COMMIT: 9b79fb4de0a858afebdb11162956557a3ffaa5e4
+  SPIDERPLAN_TEST_BLOB: b5d0cd87fc8307b74e04f96912dc0b00b36991b5
+
+jobs:
+  spiderplan-docker-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Admit Docker execution substrate
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker version
+          docker compose version
+          docker info
+      - name: Install exact MFW Spiderplan dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/capsule"
+          tar -xzf "$PYTHON_CAPSULE" -C "$RUNNER_TEMP/capsule"
+          python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[tamp]"
+          mfw-pypi-planner catalog --load-module up_spiderplan > "$RUNNER_TEMP/catalog-spiderplan.json"
+      - name: Materialize pinned official Spiderplan fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --filter=blob:none https://github.com/aiplan4eu/up-spiderplan.git "$RUNNER_TEMP/up-spiderplan"
+          git -C "$RUNNER_TEMP/up-spiderplan" checkout "$SPIDERPLAN_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/up-spiderplan" rev-parse HEAD)" = "$SPIDERPLAN_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/up-spiderplan" hash-object tests/test_classical.py)" = "$SPIDERPLAN_TEST_BLOB"
+      - name: Execute official classical Spiderplan test through Docker
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/up-spiderplan"
+          python -m unittest tests.test_classical.TestClassical.test_basic -v 2>&1 \
+            | tee "$RUNNER_TEMP/spiderplan-execution.log"
+          grep -q "OK" "$RUNNER_TEMP/spiderplan-execution.log"
+      - name: Emit execution receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/receipt"
+          cp "$RUNNER_TEMP/catalog-spiderplan.json" "$RUNNER_TEMP/receipt/"
+          cp "$RUNNER_TEMP/spiderplan-execution.log" "$RUNNER_TEMP/receipt/"
+          docker image ls --digests --no-trunc > "$RUNNER_TEMP/receipt/docker-images.txt"
+          docker ps -a --no-trunc > "$RUNNER_TEMP/receipt/docker-containers.txt"
+          python - "$RUNNER_TEMP/receipt/receipt-spiderplan-execution.json" <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          import sys
+
+          log = Path("/tmp")
+          output = Path(sys.argv[1])
+          execution_log = output.parent / "spiderplan-execution.log"
+          receipt = {
+              "schema": "urn:chatman:mfw-spiderplan-docker-execution:v1",
+              "status": "ALIVE",
+              "mfw_head_sha": "5e9b3c41c1f4aa6de9522828716ffe41e70b760b",
+              "distribution": "up-spiderplan==0.6.4",
+              "fixture_repository": "aiplan4eu/up-spiderplan",
+              "fixture_commit": "9b79fb4de0a858afebdb11162956557a3ffaa5e4",
+              "fixture_blob": "b5d0cd87fc8307b74e04f96912dc0b00b36991b5",
+              "test": "TestClassical.test_basic",
+              "result": "OK",
+              "execution_log_sha256": hashlib.sha256(execution_log.read_bytes()).hexdigest(),
+          }
+          output.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+          print(json.dumps(receipt, sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mfw-spiderplan-docker-execution-${{ github.sha }}
+          path: ${{ runner.temp }}/receipt
+          if-no-files-found: error
+          retention-days: 14
