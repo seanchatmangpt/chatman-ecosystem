@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   external-subjects:
+    name: Observe ${{ matrix.repository }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -39,8 +40,15 @@ jobs:
           repo="$(curl --fail --silent --show-error -H 'Accept: application/vnd.github+json' -H "Authorization: Bearer ${GH_TOKEN}" "https://api.github.com/repos/${TARGET}")"
           default_branch="$(jq -r '.default_branch' <<<"${repo}")"
           commit="$(curl --fail --silent --show-error -H 'Accept: application/vnd.github+json' -H "Authorization: Bearer ${GH_TOKEN}" "https://api.github.com/repos/${TARGET}/commits/${default_branch}")"
-          jq -n --arg repository "${TARGET}" --arg branch "${default_branch}" --arg sha "$(jq -r '.sha' <<<"${commit}")" '{repository:$repository,branch:$branch,sha:$sha,standing:"OBSERVED"}' > "$(tr '/' '_' <<<"${TARGET}").json"
-      - uses: actions/upload-artifact@v4
+          sha="$(jq -r '.sha' <<<"${commit}")"
+          test "${#sha}" -eq 40
+          jq -n \
+            --arg repository "${TARGET}" \
+            --arg branch "${default_branch}" \
+            --arg sha "${sha}" \
+            '{repository:$repository,branch:$branch,sha:$sha,standing:"OBSERVED",claim:"exact-subject-resolution"}' \
+            > "$(tr '/' '_' <<<"${TARGET}").json"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: gall-${{ strategy.job-index }}
           path: '*.json'
