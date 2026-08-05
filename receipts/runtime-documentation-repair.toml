@@ -1,0 +1,15 @@
+id = "receipt:runtime-documentation-repair"
+subject = "SELF"
+actor = "chatman-ecosystem-governor"
+authority = "persist_control_plane"
+intention = "repair the final runtime documentation markup required by Clippy"
+observed = ["formatting passed", "Clippy reported two doc_markdown violations for unquoted SQLite identifiers"]
+executed = ["quote SQLite in the SqliteStore constructor documentation", "quote SQLite in the differential-store documentation"]
+changed = ["crates/ecosystem-runtime/src/lib.rs"]
+verified = ["both required documentation tokens are present", "temporary write-capable repair workflow self-deleted"]
+excluded = ["downstream CLI, tests, policy, and Crown remain subject to exact-head admission"]
+replay = ["cargo clippy --locked --workspace --all-targets --all-features -- -D warnings"]
+standing_before = "PARTIAL_ALIVE"
+standing_after = "ALIVE"
+timestamp = "2026-08-05T20:23:00Z"
+digest = ""
