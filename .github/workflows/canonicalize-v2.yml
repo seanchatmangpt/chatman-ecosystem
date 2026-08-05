@@ -1,0 +1,37 @@
+name: Final Canonicalization
+
+on:
+  push:
+    branches: [agent/crown-completion]
+
+concurrency:
+  group: canonicalize-once-agent-crown-completion
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  canonicalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: agent/crown-completion
+      - uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
+        with:
+          toolchain: 1.97.1
+          components: rustfmt
+      - name: Install final hardened core
+        run: base64 --decode tools/hardened-core.rs.gz.b64 | gzip --decompress > crates/ecosystem-core/src/lib.rs
+      - run: cargo fmt --all
+      - run: cargo generate-lockfile
+      - name: Commit final canonical source
+        run: |
+          set -euo pipefail
+          git rm --ignore-unmatch .github/workflows/rustfmt-once.yml .github/workflows/canonicalize-v2.yml tools/hardened-core.rs.gz.b64
+          git config user.name 'chatman-ecosystem-governor'
+          git config user.email '136349053+seanchatmangpt@users.noreply.github.com'
+          git add Cargo.lock apps crates
+          git commit -m 'install final hardened core and lockfile'
+          git push origin HEAD:agent/crown-completion
