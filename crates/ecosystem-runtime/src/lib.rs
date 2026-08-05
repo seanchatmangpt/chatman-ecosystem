@@ -51,11 +51,12 @@ impl StateStore for MemoryStore {
         let mut records = self.records.lock().await;
         match records.get(&record.key) {
             Some(current) if expected == Some(current.version) => {
-                record.version = current.version + 1
+                record.version = current.version + 1;
             }
-            Some(_) => return Err(Error::Conflict(record.key)),
-            None if expected.is_none() => record.version = 1,
-            None => return Err(Error::Conflict(record.key)),
+            None if expected.is_none() => {
+                record.version = 1;
+            }
+            Some(_) | None => return Err(Error::Conflict(record.key)),
         }
         records.insert(record.key.clone(), record.clone());
         Ok(record)
@@ -72,6 +73,10 @@ pub struct SqliteStore {
 }
 
 impl SqliteStore {
+    /// Creates an isolated in-memory SQLite adapter and applies its schema.
+    ///
+    /// # Errors
+    /// Returns [`Error::Storage`] when the database cannot be opened or initialized.
     pub async fn in_memory() -> Result<Self, Error> {
         let pool = SqlitePoolOptions::new()
             .max_connections(1)
@@ -156,6 +161,10 @@ impl StateStore for SqliteStore {
     }
 }
 
+/// Executes the same optimistic-concurrency fixture against memory and SQLite stores.
+///
+/// # Errors
+/// Returns [`Error::Storage`] when either adapter fails or their observable behavior diverges.
 pub async fn differential_store_check() -> Result<(), Error> {
     async fn exercise(store: &dyn StateStore) -> Result<Vec<StateRecord>, Error> {
         let first = store
@@ -246,6 +255,11 @@ pub struct GovernorRuntime {
 }
 
 impl GovernorRuntime {
+    /// Executes one authority-bounded, idempotent governor operation.
+    ///
+    /// # Errors
+    /// Returns [`Error::Refused`] for missing idempotency, denied authority, or ambiguous timeout,
+    /// and propagates the operation's typed failure.
     pub async fn execute<F, Fut>(
         &self,
         job: &mut GovernorJob,
@@ -301,14 +315,35 @@ impl GovernorRuntime {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ToolNature {
+    ReadOnly,
+    MutatingNonDestructive,
+    MutatingDestructive,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum IdempotencyPolicy {
+    Idempotent,
+    NonIdempotent,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ReceiptPolicy {
+    Optional,
+    Required,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ToolContract {
     pub name: String,
-    pub read_only: bool,
-    pub destructive: bool,
-    pub idempotent: bool,
+    pub nature: ToolNature,
+    pub idempotency: IdempotencyPolicy,
     pub required_authority: Authority,
-    pub receipt_required: bool,
+    pub receipt: ReceiptPolicy,
     pub timeout_ms: u64,
 }
 
@@ -316,29 +351,33 @@ pub struct ToolContract {
 pub struct McpBoundary;
 
 impl McpBoundary {
+    /// Returns the complete admitted MCP tool contract surface.
+    #[must_use]
     pub fn tools() -> Vec<ToolContract> {
         vec![
             ToolContract {
                 name: "ecosystem.crown".into(),
-                read_only: true,
-                destructive: false,
-                idempotent: true,
+                nature: ToolNature::ReadOnly,
+                idempotency: IdempotencyPolicy::Idempotent,
                 required_authority: Authority::Observe,
-                receipt_required: false,
+                receipt: ReceiptPolicy::Optional,
                 timeout_ms: 5_000,
             },
             ToolContract {
                 name: "ecosystem.mutate".into(),
-                read_only: false,
-                destructive: true,
-                idempotent: true,
+                nature: ToolNature::MutatingDestructive,
+                idempotency: IdempotencyPolicy::Idempotent,
                 required_authority: Authority::ModifyExternalObject,
-                receipt_required: true,
+                receipt: ReceiptPolicy::Required,
                 timeout_ms: 5_000,
             },
         ]
     }
 
+    /// Handles one bounded JSON-RPC request through the admitted MCP surface.
+    ///
+    /// # Errors
+    /// Returns [`Error::Mcp`] when the request is malformed or cannot be serialized.
     pub fn handle(request: &str, granted: Authority) -> Result<String, Error> {
         let message: Value =
             serde_json::from_str(request).map_err(|e| Error::Mcp(e.to_string()))?;
@@ -364,21 +403,21 @@ impl McpBoundary {
                     .find(|x| x.name == name)
                     .ok_or_else(|| Error::Mcp(format!("unknown tool `{name}`")))?;
                 if !granted.permits(tool.required_authority) {
-                    return Ok(rpc_error(id, -32001, "authority denied"));
+                    return Ok(rpc_error(&id, -32001, "authority denied"));
                 }
-                if tool.destructive {
-                    return Ok(rpc_error(id, -32002, "mutation must pass through broker"));
+                if matches!(tool.nature, ToolNature::MutatingDestructive) {
+                    return Ok(rpc_error(&id, -32002, "mutation must pass through broker"));
                 }
                 json!({"content":[{"type":"text","text":"CROWN_QUERY_ADMITTED"}]})
             }
-            _ => return Ok(rpc_error(id, -32601, "method not found")),
+            _ => return Ok(rpc_error(&id, -32601, "method not found")),
         };
         serde_json::to_string(&json!({"jsonrpc":"2.0","id":id,"result":result}))
             .map_err(|e| Error::Mcp(e.to_string()))
     }
 }
 
-fn rpc_error(id: Value, code: i64, message: &str) -> String {
+fn rpc_error(id: &Value, code: i64, message: &str) -> String {
     json!({"jsonrpc":"2.0","id":id,"error":{"code":code,"message":message}}).to_string()
 }
 
@@ -391,6 +430,10 @@ pub struct GitHubObservation {
 }
 
 impl GitHubObservation {
+    /// Normalizes a GitHub repository observation into a canonical exact-head record.
+    ///
+    /// # Errors
+    /// Returns [`Error::Connector`] when required fields or the 40-hex head SHA are invalid.
     pub fn normalize(input: &str) -> Result<Self, Error> {
         let value: Value =
             serde_json::from_str(input).map_err(|e| Error::Connector(e.to_string()))?;
@@ -426,6 +469,10 @@ pub struct DocumentObservation {
 }
 
 impl DocumentObservation {
+    /// Normalizes a document identity, revision, relative path, and BLAKE3 digest.
+    ///
+    /// # Errors
+    /// Returns [`Error::Connector`] when fields are missing or the path/digest is noncanonical.
     pub fn normalize(input: &str) -> Result<Self, Error> {
         let value: Value =
             serde_json::from_str(input).map_err(|e| Error::Connector(e.to_string()))?;
@@ -452,6 +499,8 @@ impl DocumentObservation {
     }
 }
 
+/// Maps an operational governor state to constitutional standing.
+#[must_use]
 pub fn standing_for_job(state: JobState) -> Standing {
     match state {
         JobState::Succeeded => Standing::Alive,
