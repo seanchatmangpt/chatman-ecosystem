@@ -1,0 +1,119 @@
+[[rail]]
+id = "constitutional_core"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["crates/ecosystem-core/src/lib.rs", "CONSTITUTION.md"]
+
+[[rail]]
+id = "catalog"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["catalog/ecosystem.toml", "catalog/repositories.toml"]
+
+[[rail]]
+id = "authority"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["crates/ecosystem-core/src/lib.rs", "docs/OPERATIONS.md"]
+
+[[rail]]
+id = "evidence"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["crates/ecosystem-core/src/lib.rs", "schemas/receipt.schema.json"]
+
+[[rail]]
+id = "receipts"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["receipts/bootstrap.toml", "schemas/receipt.schema.json"]
+
+[[rail]]
+id = "projection"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["views/generated/standing.md", "views/generated/portfolio.md"]
+
+[[rail]]
+id = "cli"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["apps/ecosystem-cli/src/main.rs", "apps/ecosystem-cli/tests/cli.rs"]
+
+[[rail]]
+id = "architecture_gates"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["docs/ARCHITECTURE.md", "crates/ecosystem-core/Cargo.toml"]
+
+[[rail]]
+id = "ci_admission"
+standing = "ALIVE"
+subject = "SELF"
+evidence = [".github/workflows/crown.yml", "scripts/crown.sh"]
+
+[[rail]]
+id = "cache_policy"
+standing = "ALIVE"
+subject = "SELF"
+evidence = [".github/workflows/crown.yml", "scripts/cold-cache.sh"]
+
+[[rail]]
+id = "artifact_transfer"
+standing = "ALIVE"
+subject = "SELF"
+evidence = [".github/workflows/crown.yml", "docs/OPERATIONS.md"]
+
+[[rail]]
+id = "storage_memory"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["crates/ecosystem-runtime/src/lib.rs"]
+
+[[rail]]
+id = "storage_sqlx"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["crates/ecosystem-runtime/src/lib.rs"]
+
+[[rail]]
+id = "governor_runtime"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["crates/ecosystem-runtime/src/lib.rs", "catalog/automations.toml"]
+
+[[rail]]
+id = "mcp_boundary"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["crates/ecosystem-runtime/src/lib.rs", "docs/ARCHITECTURE.md"]
+
+[[rail]]
+id = "connector_boundary"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["crates/ecosystem-runtime/src/lib.rs", "docs/OPERATIONS.md"]
+
+[[rail]]
+id = "github_connector"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["crates/ecosystem-runtime/src/lib.rs", ".github/workflows/github-smoke.yml"]
+
+[[rail]]
+id = "document_connector"
+standing = "ALIVE"
+subject = "SELF"
+evidence = ["crates/ecosystem-runtime/src/lib.rs", "catalog/documents.toml"]
+
+[[rail]]
+id = "gall_checkpoints"
+standing = "ALIVE"
+subject = "SELF"
+evidence = [".github/workflows/gall.yml", "catalog/repositories.toml"]
+
+[[rail]]
+id = "release_admission"
+standing = "ALIVE"
+subject = "SELF"
+evidence = [".github/workflows/crown.yml", "docs/OPERATIONS.md"]
