@@ -8,8 +8,8 @@ resolver = "2"
 
 [workspace.package]
 version = "0.1.0"
-edition = "2021"
-rust-version = "1.80"
+edition = "2024"
+rust-version = "1.97"
 license = "MIT"
 authors = ["Sean Chatman"]
 repository = "https://github.com/seanchatmangpt/chatman-ecosystem"
