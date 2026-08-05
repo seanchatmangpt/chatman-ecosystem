@@ -1,0 +1,137 @@
+name: mfw-rust-python-val-integration
+
+on:
+  push:
+    branches:
+      - validation/mfw-pypi-planning-5e9b3c41
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  VALIDATION_CRATE: validation/mfw-runner-integration
+  PYTHON_CAPSULE: validation/mfw-pypi-planning/mfw-pypi-planner.tar.gz
+  VAL_COMMIT: 3c7a1f330bdab0ba28a4762bb45c3f06c27fb6d4
+  MFW_HEAD_SHA: 5e9b3c41c1f4aa6de9522828716ffe41e70b760b
+
+jobs:
+  rust-python-val:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Admit exact MFW runner source blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$VALIDATION_CRATE/src"
+          test "$(git hash-object config.rs)" = 480f36f7a3b5a836cc95dc652a053eb6c5b9ccc1
+          test "$(git hash-object digest.rs)" = 0a62f4bdd90832a5de43ea5c4dc9605d788458d0
+          test "$(git hash-object error.rs)" = 0a6a244add4cdf20e5d4fd3745faea00bd1bf9b2
+          test "$(git hash-object model.rs)" = b1c83c72d14eddb50c91444539b3e03096cafe07
+          test "$(git hash-object runner.rs)" = 92be66ad878a96859fa2523dc27b5f5fb71675a0
+          test "$(git hash-object template.rs)" = d3179fbc2af462ac4fa237e6193a872c657356a0
+      - name: Record Rust toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/receipt"
+          rustc -Vv | tee "$RUNNER_TEMP/receipt/rustc-version.txt"
+          cargo -V | tee "$RUNNER_TEMP/receipt/cargo-version.txt"
+      - name: Install exact Python planning capsule
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/python-capsule"
+          tar -xzf "$PYTHON_CAPSULE" -C "$RUNNER_TEMP/python-capsule"
+          python -m pip install --disable-pip-version-check "$RUNNER_TEMP/python-capsule[pyperplan]"
+      - name: Build independent VAL validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends flex bison
+          git clone --filter=blob:none https://github.com/KCL-Planning/VAL.git "$RUNNER_TEMP/VAL"
+          git -C "$RUNNER_TEMP/VAL" checkout "$VAL_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/VAL" rev-parse HEAD)" = "$VAL_COMMIT"
+          cmake -S "$RUNNER_TEMP/VAL" -B "$RUNNER_TEMP/VAL/build" -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/VAL/build" --target Validate --parallel 2
+          test -x "$RUNNER_TEMP/VAL/build/bin/Validate"
+          sha256sum "$RUNNER_TEMP/VAL/build/bin/Validate" | tee "$RUNNER_TEMP/receipt/val-sha256.txt"
+      - name: Format exact runner projection
+        working-directory: ${{ github.workspace }}/validation/mfw-runner-integration
+        run: cargo fmt --check
+      - name: Compile and lint exact runner projection
+        working-directory: ${{ github.workspace }}/validation/mfw-runner-integration
+        run: |
+          cargo check --all-targets
+          cargo clippy --all-targets -- -D warnings
+      - name: Execute runner unit tests
+        working-directory: ${{ github.workspace }}/validation/mfw-runner-integration
+        run: cargo test --all-targets
+      - name: Execute Rust runner to Python planner to VAL
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo run --release --manifest-path "$VALIDATION_CRATE/Cargo.toml" -- \
+            "$RUNNER_TEMP/python-capsule/tests/fixtures/domain.pddl" \
+            "$RUNNER_TEMP/python-capsule/tests/fixtures/problem.pddl" \
+            "$RUNNER_TEMP/integration" \
+            "$RUNNER_TEMP/VAL/build/bin/Validate" \
+            | tee "$RUNNER_TEMP/receipt/integration-stdout.jsonl"
+          cp "$RUNNER_TEMP/integration/receipt-rust-python-val.json" "$RUNNER_TEMP/receipt/"
+          test -s "$RUNNER_TEMP/integration/candidate/candidate.plan"
+          grep -qi "plan valid" "$RUNNER_TEMP/integration/validator/stdout.log"
+      - name: Benchmark replay boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - "$VALIDATION_CRATE/target/release/mfw-runner-validation" \
+            "$RUNNER_TEMP/python-capsule/tests/fixtures/domain.pddl" \
+            "$RUNNER_TEMP/python-capsule/tests/fixtures/problem.pddl" \
+            "$RUNNER_TEMP/VAL/build/bin/Validate" \
+            "$RUNNER_TEMP/receipt/benchmark.json" <<'PY'
+          import json
+          from pathlib import Path
+          import statistics
+          import subprocess
+          import sys
+          import tempfile
+          import time
+
+          binary, domain, problem, validator, receipt = sys.argv[1:]
+          samples = []
+          for _ in range(10):
+              with tempfile.TemporaryDirectory() as directory:
+                  started = time.perf_counter_ns()
+                  subprocess.run(
+                      [binary, domain, problem, directory, validator],
+                      check=True,
+                      stdout=subprocess.DEVNULL,
+                  )
+                  samples.append((time.perf_counter_ns() - started) / 1_000_000)
+          value = {
+              "schema": "urn:chatman:mfw-rust-python-val-benchmark:v1",
+              "status": "ALIVE",
+              "samples": 10,
+              "min_ms": min(samples),
+              "median_ms": statistics.median(samples),
+              "max_ms": max(samples),
+              "samples_ms": samples,
+          }
+          Path(receipt).write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+          print(json.dumps(value, sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mfw-rust-python-val-receipt-${{ github.sha }}
+          path: ${{ runner.temp }}/receipt
+          if-no-files-found: error
+          retention-days: 14
