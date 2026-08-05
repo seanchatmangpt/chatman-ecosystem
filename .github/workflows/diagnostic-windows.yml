@@ -1,4 +1,4 @@
-name: Crown Diagnostic Windows
+name: Crown Diagnostic Matrix
 
 on:
   push:
@@ -8,12 +8,19 @@ permissions:
   contents: read
 
 concurrency:
-  group: crown-diagnostic-windows-${{ github.ref }}
+  group: crown-diagnostic-matrix-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   admission:
-    runs-on: windows-2025
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04-arm, macos-14, windows-2025]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -25,9 +32,7 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
       - run: cargo test --locked --workspace --all-features
-      - run: cargo doc --locked --workspace --all-features --no-deps
-        env:
-          RUSTDOCFLAGS: -D warnings
+      - run: RUSTDOCFLAGS='-D warnings' cargo doc --locked --workspace --all-features --no-deps
       - run: cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- catalog validate
       - run: cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- receipt verify-all
       - run: cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- projection check
