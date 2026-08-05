@@ -1,0 +1,28 @@
+name: Test Isolation
+
+on:
+  push:
+    branches: [agent/crown-completion]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-isolation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [ecosystem-core, ecosystem-runtime, ecosystem-cli]
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
+        with:
+          components: rustfmt,clippy
+      - run: cargo test --locked -p ${{ matrix.package }} --all-features -- --nocapture --test-threads=1
