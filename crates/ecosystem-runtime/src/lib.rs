@@ -73,7 +73,7 @@ pub struct SqliteStore {
 }
 
 impl SqliteStore {
-    /// Creates an isolated in-memory SQLite adapter and applies its schema.
+    /// Creates an isolated in-memory `SQLite` adapter and applies its schema.
     ///
     /// # Errors
     /// Returns [`Error::Storage`] when the database cannot be opened or initialized.
@@ -161,7 +161,7 @@ impl StateStore for SqliteStore {
     }
 }
 
-/// Executes the same optimistic-concurrency fixture against memory and SQLite stores.
+/// Executes the same optimistic-concurrency fixture against memory and `SQLite` stores.
 ///
 /// # Errors
 /// Returns [`Error::Storage`] when either adapter fails or their observable behavior diverges.
