@@ -1,0 +1,51 @@
+name: Runtime Documentation Repair
+
+on:
+  push:
+    branches: [agent/crown-completion]
+
+concurrency:
+  group: runtime-documentation-repair
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: windows-2025
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: agent/crown-completion
+          fetch-depth: 0
+      - name: Apply exact documentation fixes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('crates/ecosystem-runtime/src/lib.rs')
+          text = path.read_text()
+          replacements = {
+              'Creates an isolated in-memory SQLite adapter': 'Creates an isolated in-memory `SQLite` adapter',
+              'fixture against memory and SQLite stores': 'fixture against memory and `SQLite` stores',
+          }
+          for old, new in replacements.items():
+              if text.count(old) != 1:
+                  raise SystemExit(f'expected exactly one occurrence: {old}')
+              text = text.replace(old, new)
+          path.write_text(text)
+          PY
+      - name: Commit repair and remove actuator
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/runtime-doc-fix.yml
+          git config user.name 'chatman-ecosystem-governor'
+          git config user.email '136349053+seanchatmangpt@users.noreply.github.com'
+          git add crates/ecosystem-runtime/src/lib.rs
+          git commit -m 'repair runtime documentation markup'
+          git fetch origin agent/crown-completion
+          git rebase origin/agent/crown-completion
+          git push origin HEAD:agent/crown-completion
