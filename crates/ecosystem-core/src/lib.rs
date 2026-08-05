@@ -97,6 +97,10 @@ macro_rules! id_type {
         #[serde(transparent)]
         pub struct $name(pub String);
         impl $name {
+            /// Parses and validates a stable identifier.
+            ///
+            /// # Errors
+            /// Returns [`Error::InvalidId`] when the value is noncanonical or uses the wrong prefix.
             pub fn parse(value: impl Into<String>) -> Result<Self, Error> {
                 let value = value.into();
                 if valid_id(&value, $prefix) {
@@ -151,6 +155,10 @@ fn valid_digest(value: &str) -> bool {
 }
 
 impl ExactSubject {
+    /// Validates the exact-subject shape and digest syntax.
+    ///
+    /// # Errors
+    /// Returns [`Error::InvalidSubject`] when the subject is not canonical.
     pub fn validate(&self) -> Result<(), Error> {
         match self {
             Self::SelfHead => Ok(()),
@@ -196,6 +204,8 @@ pub enum Standing {
 }
 
 impl Standing {
+    /// Reports whether this standing may lawfully transition to `next`.
+    #[must_use]
     pub fn permits(self, next: Self) -> bool {
         self == next
             || matches!(
@@ -241,6 +251,8 @@ pub enum Authority {
 }
 
 impl Authority {
+    /// Reports whether this exact authority matches the required authority.
+    #[must_use]
     pub fn permits(self, required: Self) -> bool {
         self == required
     }
@@ -260,6 +272,10 @@ pub struct Transition {
 }
 
 impl Transition {
+    /// Validates the subject, standing transition, authority, and evidence.
+    ///
+    /// # Errors
+    /// Returns an error when any constitutional precondition is unsatisfied.
     pub fn validate(&self, required: Authority) -> Result<(), Error> {
         self.subject.validate()?;
         if !self.from.permits(self.to) {
@@ -361,6 +377,10 @@ fn unique<'a>(values: impl Iterator<Item = &'a str>, kind: &str) -> Result<(), E
 }
 
 impl Catalog {
+    /// Loads all canonical catalog manifests below `root`.
+    ///
+    /// # Errors
+    /// Returns an I/O or TOML error when a manifest cannot be read or parsed.
     pub fn load(root: &Path) -> Result<Self, Error> {
         let dir = root.join("catalog");
         Ok(Self {
@@ -372,6 +392,10 @@ impl Catalog {
         })
     }
 
+    /// Validates stable identities, references, evidence paths, and shared subjects.
+    ///
+    /// # Errors
+    /// Returns [`Error::Catalog`] when any catalog law is violated.
     pub fn validate(&self, root: &Path) -> Result<(), Error> {
         if self.ecosystem.ecosystem.id != "ecosystem:chatman" {
             return Err(Error::Catalog("wrong ecosystem id".into()));
@@ -469,16 +493,28 @@ impl Receipt {
         copy.digest.clear();
         toml::to_string(&copy).map_err(|e| Error::Receipt(e.to_string()))
     }
+    /// Calculates the canonical BLAKE3 digest of the unsigned receipt.
+    ///
+    /// # Errors
+    /// Returns [`Error::Receipt`] when canonical serialization fails.
     pub fn calculate_digest(&self) -> Result<String, Error> {
         Ok(format!(
             "blake3:{}",
             blake3::hash(self.unsigned()?.as_bytes()).to_hex()
         ))
     }
+    /// Seals this receipt with its canonical BLAKE3 digest.
+    ///
+    /// # Errors
+    /// Returns [`Error::Receipt`] when canonical serialization fails.
     pub fn sign(&mut self) -> Result<(), Error> {
         self.digest = self.calculate_digest()?;
         Ok(())
     }
+    /// Verifies receipt completeness, transition legality, and digest integrity.
+    ///
+    /// # Errors
+    /// Returns [`Error::Receipt`] when the receipt is incomplete, unlawful, or tampered.
     pub fn verify(&self) -> Result<(), Error> {
         if !valid_id(&self.id.0, "receipt") {
             return Err(Error::Receipt(format!(
@@ -508,6 +544,10 @@ impl Receipt {
     }
 }
 
+/// Seals source receipts when needed and verifies every canonical receipt.
+///
+/// # Errors
+/// Returns an I/O, TOML, or receipt-integrity error when admission fails.
 pub fn verify_all_receipts(root: &Path) -> Result<usize, Error> {
     let dir = root.join("receipts");
     let entries =
@@ -539,6 +579,8 @@ pub fn verify_all_receipts(root: &Path) -> Result<usize, Error> {
     Ok(paths.len())
 }
 
+/// Renders the deterministic standing projection.
+#[must_use]
 pub fn render_standing(catalog: &Catalog) -> String {
     let mut rails = catalog.rails.rail.clone();
     rails.sort_by(|a, b| a.id.cmp(&b.id));
@@ -546,42 +588,58 @@ pub fn render_standing(catalog: &Catalog) -> String {
         "# Chatman Ecosystem Standing\n\n> Generated from `catalog/rails.toml`. Do not edit manually.\n\n| Rail | Standing | Subject | Evidence |\n|---|---|---|---|\n",
     );
     for rail in rails {
-        out.push_str(&format!(
-            "| `{}` | `{:?}` | `{}` | {} |\n",
-            rail.id,
-            rail.standing,
-            rail.subject,
-            rail.evidence.join("<br>")
-        ));
+        let _write_result = std::fmt::Write::write_fmt(
+            &mut out,
+            format_args!(
+                "| `{}` | `{:?}` | `{}` | {} |\n",
+                rail.id,
+                rail.standing,
+                rail.subject,
+                rail.evidence.join("<br>")
+            ),
+        );
     }
     out
 }
 
+/// Renders the deterministic repository and document portfolio.
+#[must_use]
 pub fn render_portfolio(catalog: &Catalog) -> String {
     let mut repositories = catalog.repositories.repository.clone();
     repositories.sort_by(|a, b| a.id.cmp(&b.id));
     let mut documents = catalog.documents.document.clone();
     documents.sort_by(|a, b| a.id.cmp(&b.id));
-    let mut out = format!(
-        "# {} Portfolio\n\nVersion: `{}`\n\n## Repositories\n\n| Repository | Role | Standing |\n|---|---|---|\n",
-        catalog.ecosystem.ecosystem.name, catalog.ecosystem.ecosystem.version
+    let mut out = String::new();
+    let _write_result = std::fmt::Write::write_fmt(
+        &mut out,
+        format_args!(
+            "# {} Portfolio\n\nVersion: `{}`\n\n## Repositories\n\n| Repository | Role | Standing |\n|---|---|---|\n",
+            catalog.ecosystem.ecosystem.name, catalog.ecosystem.ecosystem.version
+        ),
     );
     for item in repositories {
-        out.push_str(&format!(
-            "| `{}` | {} | `{:?}` |\n",
-            item.id, item.role, item.standing
-        ));
+        let _write_result = std::fmt::Write::write_fmt(
+            &mut out,
+            format_args!(
+                "| `{}` | {} | `{:?}` |\n",
+                item.id, item.role, item.standing
+            ),
+        );
     }
     out.push_str("\n## Documents\n\n| Document | Path | Canonical |\n|---|---|---|\n");
     for item in documents {
-        out.push_str(&format!(
-            "| `{}` | `{}` | {} |\n",
-            item.id, item.path, item.canonical
-        ));
+        let _write_result = std::fmt::Write::write_fmt(
+            &mut out,
+            format_args!("| `{}` | `{}` | {} |\n", item.id, item.path, item.canonical),
+        );
     }
     out
 }
 
+/// Renders every generated projection without writing files.
+///
+/// # Errors
+/// Returns a catalog or I/O error when canonical inputs are invalid.
 pub fn render_all(root: &Path) -> Result<BTreeMap<PathBuf, String>, Error> {
     let catalog = Catalog::load(root)?;
     catalog.validate(root)?;
@@ -597,6 +655,10 @@ pub fn render_all(root: &Path) -> Result<BTreeMap<PathBuf, String>, Error> {
     ]))
 }
 
+/// Atomically writes every generated projection.
+///
+/// # Errors
+/// Returns a rendering or I/O error when projection cannot complete atomically.
 pub fn write_projections(root: &Path) -> Result<usize, Error> {
     let rendered = render_all(root)?;
     for (path, text) in &rendered {
@@ -605,6 +667,10 @@ pub fn write_projections(root: &Path) -> Result<usize, Error> {
     Ok(rendered.len())
 }
 
+/// Verifies that committed projections equal deterministic rendering.
+///
+/// # Errors
+/// Returns [`Error::Projection`] when generated files have drifted.
 pub fn check_projections(root: &Path) -> Result<usize, Error> {
     let rendered = render_all(root)?;
     for (path, expected) in &rendered {
@@ -631,6 +697,10 @@ fn check_core_manifest(core: &str) -> Result<(), Error> {
     Ok(())
 }
 
+/// Enforces framework-free core dependencies and required workspace members.
+///
+/// # Errors
+/// Returns [`Error::Architecture`] when a dependency boundary is violated.
 pub fn check_architecture(root: &Path) -> Result<(), Error> {
     let core = read(&root.join("crates/ecosystem-core/Cargo.toml"))?;
     check_core_manifest(&core)?;
@@ -682,6 +752,10 @@ pub struct CrownReport {
 }
 
 impl CrownReport {
+    /// Evaluates every required rail against exact-subject admission evidence.
+    ///
+    /// # Errors
+    /// Returns an error when the subject, catalog, receipts, projections, architecture, or admission evidence fails.
     pub fn evaluate(root: &Path, subject: impl Into<String>) -> Result<Self, Error> {
         let subject = subject.into();
         let sha = subject
@@ -709,7 +783,7 @@ impl CrownReport {
             .rail
             .into_iter()
             .map(|mut rail| {
-                rail.subject = subject.clone();
+                rail.subject.clone_from(&subject);
                 rail
             })
             .collect();
