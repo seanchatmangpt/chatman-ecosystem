@@ -115,7 +115,10 @@ fn main() -> Result<()> {
         },
     )?;
     assert_eq!(validator_receipt.status, RunStatus::Completed);
-    assert_eq!(validator_receipt.validation_status, Some(ValidationStatus::Valid));
+    assert_eq!(
+        validator_receipt.validation_status,
+        Some(ValidationStatus::Valid)
+    );
 
     let receipt = json!({
         "schema": "urn:chatman:mfw-rust-python-val-integration:v1",
