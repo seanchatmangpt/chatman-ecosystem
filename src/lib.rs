@@ -972,14 +972,19 @@ impl ParsedModule {
                 return Err(InterpretFailure::new(Refusal::FuelExceeded, broker_outcome));
             }
             remaining_fuel -= 1;
-            let opcode = reader.read_u8().map_err(|refusal| InterpretFailure::new(refusal, None))?;
+            let opcode = reader
+                .read_u8()
+                .map_err(|refusal| InterpretFailure::new(refusal, None))?;
             match opcode {
                 0x20 => {
                     let local_index = reader
                         .read_leb_u32()
                         .map_err(|refusal| InterpretFailure::new(refusal, None))?;
                     if local_index != 0 {
-                        return Err(InterpretFailure::new(Refusal::UnsupportedWasm, broker_outcome));
+                        return Err(InterpretFailure::new(
+                            Refusal::UnsupportedWasm,
+                            broker_outcome,
+                        ));
                     }
                     stack.push(input);
                 }
@@ -988,13 +993,14 @@ impl ParsedModule {
                         .read_leb_u32()
                         .map_err(|refusal| InterpretFailure::new(refusal, None))?;
                     if function_index != 0 || self.imports.len() != 1 {
-                        return Err(InterpretFailure::new(Refusal::UnsupportedWasm, broker_outcome));
+                        return Err(InterpretFailure::new(
+                            Refusal::UnsupportedWasm,
+                            broker_outcome,
+                        ));
                     }
-                    let argument = stack
-                        .pop()
-                        .ok_or_else(|| {
-                            InterpretFailure::new(Refusal::MalformedWasm, broker_outcome.clone())
-                        })?;
+                    let argument = stack.pop().ok_or_else(|| {
+                        InterpretFailure::new(Refusal::MalformedWasm, broker_outcome.clone())
+                    })?;
                     let mut call_action = action.clone();
                     call_action.arguments = vec![argument.to_string()];
                     let outcome = broker.submit(policy, &call_action, None);
@@ -1014,18 +1020,24 @@ impl ParsedModule {
                 }
                 0x0b => {
                     if !reader.is_empty() {
-                        return Err(InterpretFailure::new(Refusal::MalformedWasm, broker_outcome));
+                        return Err(InterpretFailure::new(
+                            Refusal::MalformedWasm,
+                            broker_outcome,
+                        ));
                     }
-                    let value = stack
-                        .pop()
-                        .ok_or_else(|| {
-                            InterpretFailure::new(Refusal::MalformedWasm, broker_outcome.clone())
-                        })?;
+                    let value = stack.pop().ok_or_else(|| {
+                        InterpretFailure::new(Refusal::MalformedWasm, broker_outcome.clone())
+                    })?;
                     let outcome = broker_outcome
                         .ok_or_else(|| InterpretFailure::new(Refusal::MalformedWasm, None))?;
                     return Ok((value, outcome));
                 }
-                _ => return Err(InterpretFailure::new(Refusal::UnsupportedWasm, broker_outcome)),
+                _ => {
+                    return Err(InterpretFailure::new(
+                        Refusal::UnsupportedWasm,
+                        broker_outcome,
+                    ))
+                }
             }
         }
     }
