@@ -5,7 +5,7 @@ use ecosystem_core::{
 use ecosystem_runtime::{McpBoundary, differential_store_check};
 use std::env;
 use std::io::{self, Read};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode};
 
 fn root() -> Result<PathBuf, String> {
@@ -15,12 +15,12 @@ fn root() -> Result<PathBuf, String> {
     env::current_dir().map_err(|error| error.to_string())
 }
 
-fn subject(root: &PathBuf) -> String {
+fn subject(root: &Path) -> String {
     for variable in ["ECOSYSTEM_SUBJECT_SHA", "GITHUB_SHA"] {
-        if let Ok(value) = env::var(variable) {
-            if !value.trim().is_empty() {
-                return format!("git:{value}");
-            }
+        if let Ok(value) = env::var(variable)
+            && !value.trim().is_empty()
+        {
+            return format!("git:{value}");
         }
     }
     match Command::new("git")
@@ -94,7 +94,7 @@ async fn execute(arguments: &[String]) -> Result<String, String> {
     }
 }
 
-fn crown(root: &PathBuf, json: bool, verify: bool) -> Result<String, String> {
+fn crown(root: &Path, json: bool, verify: bool) -> Result<String, String> {
     let report = CrownReport::evaluate(root, subject(root)).map_err(|error| error.to_string())?;
     if verify && report.standing != Standing::Alive {
         return Err("CROWN_NOT_ALIVE".to_owned());
