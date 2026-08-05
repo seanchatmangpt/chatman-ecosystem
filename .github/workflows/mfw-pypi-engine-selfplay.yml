@@ -17,7 +17,7 @@ env:
   FMAP_TEST_BLOB: 8b0cfd1ae3d8f8697e0726fd89ca651ab7de4e1d
 
 jobs:
-  real-engine-selfplay:
+  real-pddl-engine-selfplay:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
@@ -72,80 +72,133 @@ jobs:
               "aries",
           ]
           receipts = []
+          failures = []
           for engine in engines:
               run = root / engine
               run.mkdir(parents=True)
               candidate = run / "candidate.plan"
+              sidecar = Path(str(candidate) + ".json")
               started = time.perf_counter_ns()
-              solve = subprocess.run(
-                  [
-                      "mfw-pypi-planner", "solve",
-                      "--domain", str(domain),
-                      "--problem", str(problem),
-                      "--plan", str(candidate),
-                      "--engine", engine,
-                      "--mode", "classical",
-                      "--timeout", "60",
-                  ],
-                  text=True,
-                  capture_output=True,
-                  timeout=120,
-              )
-              solve_ms = (time.perf_counter_ns() - started) / 1_000_000
-              (run / "solve.stdout.json").write_text(solve.stdout)
-              (run / "solve.stderr.log").write_text(solve.stderr)
-              assert solve.returncode == 0, {
-                  "engine": engine,
-                  "returncode": solve.returncode,
-                  "stdout": solve.stdout,
-                  "stderr": solve.stderr,
-              }
-              result = json.loads(solve.stdout)
-              assert result["status"] == "found", result
-              assert candidate.is_file() and candidate.stat().st_size > 0, result
-              validation = subprocess.run(
-                  [str(validator), "-v", "-t", "0.001", str(domain), str(problem), str(candidate)],
-                  text=True,
-                  capture_output=True,
-                  timeout=60,
-              )
-              (run / "validator.stdout.log").write_text(validation.stdout)
-              (run / "validator.stderr.log").write_text(validation.stderr)
-              validation_text = (validation.stdout + "\n" + validation.stderr).lower()
-              assert validation.returncode == 0, {
-                  "engine": engine,
-                  "returncode": validation.returncode,
-                  "stdout": validation.stdout,
-                  "stderr": validation.stderr,
-              }
-              assert "plan valid" in validation_text, {
-                  "engine": engine,
-                  "validator_output": validation_text,
-              }
-              receipt = {
-                  "schema": "urn:chatman:mfw-real-engine-selfplay:v1",
-                  "status": "ALIVE",
-                  "mfw_head_sha": "5e9b3c41c1f4aa6de9522828716ffe41e70b760b",
-                  "engine": engine,
-                  "planner_status": result["planner_status"],
-                  "solve_ms": solve_ms,
-                  "step_count": result["step_count"],
-                  "candidate_sha256": hashlib.sha256(candidate.read_bytes()).hexdigest(),
-                  "validator": "KCL-Planning/VAL@3c7a1f330bdab0ba28a4762bb45c3f06c27fb6d4",
-                  "validation_status": "valid",
-              }
-              (run / "receipt.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
-              receipts.append(receipt)
+              try:
+                  solve = subprocess.run(
+                      [
+                          "mfw-pypi-planner", "solve",
+                          "--domain", str(domain),
+                          "--problem", str(problem),
+                          "--plan", str(candidate),
+                          "--engine", engine,
+                          "--mode", "classical",
+                          "--timeout", "60",
+                      ],
+                      text=True,
+                      capture_output=True,
+                      timeout=120,
+                  )
+                  solve_ms = (time.perf_counter_ns() - started) / 1_000_000
+                  (run / "solve.stdout.log").write_text(solve.stdout)
+                  (run / "solve.stderr.log").write_text(solve.stderr)
+                  assert solve.returncode == 0, {
+                      "engine": engine,
+                      "returncode": solve.returncode,
+                      "stdout": solve.stdout,
+                      "stderr": solve.stderr,
+                  }
+                  assert sidecar.is_file(), {
+                      "engine": engine,
+                      "missing_sidecar": str(sidecar),
+                      "stdout": solve.stdout,
+                      "stderr": solve.stderr,
+                  }
+                  result = json.loads(sidecar.read_text())
+                  assert result["status"] == "found", result
+                  assert candidate.is_file() and candidate.stat().st_size > 0, result
+                  validation = subprocess.run(
+                      [str(validator), "-v", "-t", "0.001", str(domain), str(problem), str(candidate)],
+                      text=True,
+                      capture_output=True,
+                      timeout=60,
+                  )
+                  (run / "validator.stdout.log").write_text(validation.stdout)
+                  (run / "validator.stderr.log").write_text(validation.stderr)
+                  validation_text = (validation.stdout + "\n" + validation.stderr).lower()
+                  assert validation.returncode == 0, {
+                      "engine": engine,
+                      "returncode": validation.returncode,
+                      "stdout": validation.stdout,
+                      "stderr": validation.stderr,
+                  }
+                  assert "plan valid" in validation_text, {
+                      "engine": engine,
+                      "validator_output": validation_text,
+                  }
+                  receipt = {
+                      "schema": "urn:chatman:mfw-real-engine-selfplay:v1",
+                      "status": "ALIVE",
+                      "mfw_head_sha": "5e9b3c41c1f4aa6de9522828716ffe41e70b760b",
+                      "engine": engine,
+                      "planner_status": result["planner_status"],
+                      "solve_ms": solve_ms,
+                      "step_count": result["step_count"],
+                      "candidate_sha256": hashlib.sha256(candidate.read_bytes()).hexdigest(),
+                      "evidence_sidecar_sha256": hashlib.sha256(sidecar.read_bytes()).hexdigest(),
+                      "validator": "KCL-Planning/VAL@3c7a1f330bdab0ba28a4762bb45c3f06c27fb6d4",
+                      "validation_status": "valid",
+                  }
+                  (run / "receipt.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+                  receipts.append(receipt)
+              except Exception as exc:
+                  failure = {
+                      "engine": engine,
+                      "error_type": type(exc).__name__,
+                      "detail": str(exc),
+                  }
+                  failures.append(failure)
+                  (run / "failure.json").write_text(json.dumps(failure, indent=2, sort_keys=True) + "\n")
           aggregate = {
               "schema": "urn:chatman:mfw-real-engine-selfplay-aggregate:v1",
-              "status": "ALIVE",
+              "status": "ALIVE" if not failures else "PARTIAL_ALIVE",
               "mfw_head_sha": "5e9b3c41c1f4aa6de9522828716ffe41e70b760b",
-              "executed_engines": engines,
+              "requested_engines": engines,
+              "executed_engines": [receipt["engine"] for receipt in receipts],
               "receipts": receipts,
+              "failures": failures,
           }
           (root / "receipt-aggregate.json").write_text(json.dumps(aggregate, indent=2, sort_keys=True) + "\n")
           print(json.dumps(aggregate, sort_keys=True))
+          assert not failures, aggregate
+          assert len(receipts) == len(engines), aggregate
           PY
+      - name: Record installed graph and hashes
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mfw-pypi-planner catalog > "$RUNNER_TEMP/selfplay/catalog.json"
+          python -m pip freeze > "$RUNNER_TEMP/selfplay/pip-freeze.txt"
+          sha256sum "$RUNNER_TEMP/VAL/build/bin/Validate" > "$RUNNER_TEMP/selfplay/val-sha256.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mfw-real-pddl-engine-selfplay-${{ github.sha }}
+          path: ${{ runner.temp }}/selfplay
+          if-no-files-found: error
+          retention-days: 14
+
+  fmap-multi-agent-selfplay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install complete official PyPI federation
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/capsule"
+          tar -xzf "$PYTHON_CAPSULE" -C "$RUNNER_TEMP/capsule"
+          python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[engines]"
       - name: Execute official FMAP multi-agent solver fixture
         shell: bash
         run: |
@@ -175,18 +228,10 @@ jobs:
           Path(sys.argv[1]).write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
           print(json.dumps(receipt, sort_keys=True))
           PY
-      - name: Record installed graph and hashes
-        shell: bash
-        run: |
-          set -euo pipefail
-          mfw-pypi-planner catalog > "$RUNNER_TEMP/selfplay/catalog.json"
-          python -m pip freeze > "$RUNNER_TEMP/selfplay/pip-freeze.txt"
-          sha256sum "$RUNNER_TEMP/VAL/build/bin/Validate" > "$RUNNER_TEMP/selfplay/val-sha256.txt"
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: mfw-real-engine-selfplay-${{ github.sha }}
-          path: |
-            ${{ runner.temp }}/selfplay
-            ${{ runner.temp }}/fmap
+          name: mfw-fmap-multi-agent-selfplay-${{ github.sha }}
+          path: ${{ runner.temp }}/fmap
           if-no-files-found: error
           retention-days: 14
