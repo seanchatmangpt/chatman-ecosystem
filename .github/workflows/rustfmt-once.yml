@@ -4,12 +4,16 @@ on:
   push:
     branches: [agent/crown-completion]
 
+concurrency:
+  group: rustfmt-once-agent-crown-completion
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
 jobs:
   format:
-    if: ${{ !contains(github.event.head_commit.message, 'apply rustfmt 1.97.1') }}
+    if: ${{ !contains(github.event.head_commit.message, 'apply canonical Rust formatting and lockfile') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -20,15 +24,16 @@ jobs:
           toolchain: 1.97.1
           components: rustfmt
       - run: cargo fmt --all
-      - name: Commit mechanical formatting
+      - run: cargo generate-lockfile
+      - name: Commit canonical formatting and lockfile
         run: |
           set -euo pipefail
-          if git diff --quiet -- apps crates; then
-            echo 'No formatting changes required.'
+          if git diff --quiet -- apps crates Cargo.lock; then
+            echo 'No canonicalization changes required.'
             exit 0
           fi
           git config user.name 'chatman-ecosystem-governor'
           git config user.email '136349053+seanchatmangpt@users.noreply.github.com'
-          git add apps crates
-          git commit -m 'apply rustfmt 1.97.1'
+          git add apps crates Cargo.lock
+          git commit -m 'apply canonical Rust formatting and lockfile'
           git push origin HEAD:agent/crown-completion
