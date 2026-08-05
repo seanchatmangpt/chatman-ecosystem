@@ -162,6 +162,30 @@ jobs:
           test "$(jq -r '.cargo_lock_sha256' "${manifest}")" = "$(sha256sum Cargo.lock | awk '{print $1}')"
           test "$(jq -r '.binary_sha256' "${manifest}")" = "$(sha256sum admitted-artifact/ecosystem | awk '{print $1}')"
           test -s admitted-artifact/receipts/bootstrap.toml
+      - name: Record exact admission evidence
+        run: |
+          set -euo pipefail
+          mkdir -p target/crown
+          cat > target/crown/admission.json <<JSON
+          {
+            "subject": "git:${CANDIDATE_SHA}",
+            "gates": [
+              "format",
+              "clippy",
+              "tests",
+              "rustdoc",
+              "dependency_policy",
+              "catalog",
+              "receipts",
+              "projection",
+              "architecture",
+              "storage_differential",
+              "cold_cache",
+              "github_read",
+              "artifact_transfer"
+            ]
+          }
+          JSON
       - uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
         with:
           toolchain: 1.97.1
