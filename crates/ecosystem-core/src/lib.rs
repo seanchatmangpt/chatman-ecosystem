@@ -27,6 +27,21 @@ pub const REQUIRED_RAILS: &[&str] = &[
     "gall_checkpoints",
     "release_admission",
 ];
+pub const REQUIRED_ADMISSION_GATES: &[&str] = &[
+    "format",
+    "clippy",
+    "tests",
+    "rustdoc",
+    "dependency_policy",
+    "catalog",
+    "receipts",
+    "projection",
+    "architecture",
+    "storage_differential",
+    "cold_cache",
+    "github_read",
+    "artifact_transfer",
+];
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -632,6 +647,33 @@ pub fn check_architecture(root: &Path) -> Result<(), Error> {
     Ok(())
 }
 
+#[derive(Debug, Clone, Deserialize)]
+struct AdmissionEvidence {
+    subject: String,
+    gates: Vec<String>,
+}
+
+fn verify_admission(root: &Path, subject: &str) -> Result<(), Error> {
+    let path = root.join("target/crown/admission.json");
+    let evidence: AdmissionEvidence = serde_json::from_str(&read(&path)?)
+        .map_err(|error| Error::Catalog(format!("invalid admission evidence: {error}")))?;
+    if evidence.subject != subject {
+        return Err(Error::Catalog(format!(
+            "admission subject `{}` does not match Crown subject `{subject}`",
+            evidence.subject
+        )));
+    }
+    unique(evidence.gates.iter().map(String::as_str), "admission gate")?;
+    for required in REQUIRED_ADMISSION_GATES {
+        if !evidence.gates.iter().any(|gate| gate == required) {
+            return Err(Error::Catalog(format!(
+                "missing admission gate `{required}`"
+            )));
+        }
+    }
+    Ok(())
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct CrownReport {
     pub subject: String,
@@ -653,6 +695,7 @@ impl CrownReport {
         verify_all_receipts(root)?;
         check_projections(root)?;
         check_architecture(root)?;
+        verify_admission(root, &subject)?;
         let all_alive = catalog
             .rails
             .rail
