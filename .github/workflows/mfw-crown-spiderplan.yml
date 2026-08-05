@@ -1,0 +1,107 @@
+name: mfw-crown-spiderplan
+
+on:
+  push:
+    branches: [validation/mfw-pypi-crown-18294174]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CAPSULE: validation/mfw-pypi-crown/mfw-pypi-planner.tar.gz
+  CAPSULE_SHA256: 9d5b8d59de97115f0396c3b9f096c524b8d91725934abb3132560bdbed37c0bb
+  CAPSULE_GIT_BLOB_SHA1: 6eb75ab771ea18b64b44fbaf72c4cde8b3040b11
+  SPIDERPLAN_COMMIT: 9b79fb4de0a858afebdb11162956557a3ffaa5e4
+  SPIDERPLAN_TEST_BLOB: b5d0cd87fc8307b74e04f96912dc0b00b36991b5
+
+jobs:
+  spiderplan-docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Admit Docker and docker-compose compatibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker version
+          docker compose version
+          if ! command -v docker-compose >/dev/null 2>&1; then
+            sudo tee /usr/local/bin/docker-compose >/dev/null <<'SH'
+          #!/usr/bin/env bash
+          exec docker compose "$@"
+          SH
+            sudo chmod +x /usr/local/bin/docker-compose
+          fi
+          docker-compose version
+      - name: Admit capsule, install, and register Spiderplan
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(sha256sum "$CAPSULE" | awk '{print $1}')" = "$CAPSULE_SHA256"
+          test "$(git hash-object "$CAPSULE")" = "$CAPSULE_GIT_BLOB_SHA1"
+          mkdir -p "$RUNNER_TEMP/capsule" "$RUNNER_TEMP/receipt"
+          tar -xzf "$CAPSULE" -C "$RUNNER_TEMP/capsule"
+          python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[tamp]"
+          mfw-pypi-planner catalog \
+            --register spiderplan=up_spiderplan.solver:EngineImpl \
+            > "$RUNNER_TEMP/receipt/catalog-spiderplan.json"
+          python - "$RUNNER_TEMP/receipt/catalog-spiderplan.json" <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+          value = json.loads(Path(sys.argv[1]).read_text())
+          assert value["distributions"]["up-spiderplan"] == "0.6.4", value
+          assert any(engine["name"] == "spiderplan" for engine in value["engines"]), value
+          PY
+      - name: Execute pinned official Docker-backed fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --filter=blob:none https://github.com/aiplan4eu/up-spiderplan.git "$RUNNER_TEMP/up-spiderplan"
+          git -C "$RUNNER_TEMP/up-spiderplan" checkout "$SPIDERPLAN_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/up-spiderplan" rev-parse HEAD)" = "$SPIDERPLAN_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/up-spiderplan" hash-object tests/test_classical.py)" = "$SPIDERPLAN_TEST_BLOB"
+          (
+            cd "$RUNNER_TEMP/up-spiderplan/tests"
+            timeout 900 python -m unittest test_classical.TestClassical.test_basic -v
+          ) 2>&1 | tee "$RUNNER_TEMP/receipt/spiderplan-execution.log"
+          grep -q "OK" "$RUNNER_TEMP/receipt/spiderplan-execution.log"
+          docker image ls --digests --no-trunc > "$RUNNER_TEMP/receipt/docker-images.txt"
+          docker ps -a --no-trunc > "$RUNNER_TEMP/receipt/docker-containers.txt"
+          python - "$RUNNER_TEMP/receipt/receipt-spiderplan.json" <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          import sys
+          output = Path(sys.argv[1])
+          log = output.with_name("spiderplan-execution.log")
+          catalog = json.loads(output.with_name("catalog-spiderplan.json").read_text())
+          receipt = {
+              "schema": "urn:chatman:mfw-spiderplan-docker:v2",
+              "status": "ALIVE",
+              "mfw_head_sha": "18294174c2d1262821975c08f2843f4a6c29a80c",
+              "mfw_tree_sha": "e31e5d50028b0e2a26ac6a6b4dd466319315e22a",
+              "distribution": "up-spiderplan==0.6.4",
+              "registered_engine": "spiderplan=up_spiderplan.solver:EngineImpl",
+              "fixture_repository": "aiplan4eu/up-spiderplan",
+              "fixture_commit": "9b79fb4de0a858afebdb11162956557a3ffaa5e4",
+              "fixture_blob": "b5d0cd87fc8307b74e04f96912dc0b00b36991b5",
+              "test": "TestClassical.test_basic",
+              "result": "OK",
+              "execution_log_sha256": hashlib.sha256(log.read_bytes()).hexdigest(),
+              "catalog": catalog,
+          }
+          output.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+          print(json.dumps(receipt, sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crown-spiderplan-${{ github.sha }}
+          path: ${{ runner.temp }}/receipt
+          if-no-files-found: error
+          retention-days: 14

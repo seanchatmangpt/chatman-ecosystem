@@ -1,0 +1,129 @@
+name: mfw-crown-rust-python-val
+
+on:
+  push:
+    branches: [validation/mfw-pypi-crown-18294174]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CAPSULE: validation/mfw-pypi-crown/mfw-pypi-planner.tar.gz
+  CAPSULE_SHA256: 9d5b8d59de97115f0396c3b9f096c524b8d91725934abb3132560bdbed37c0bb
+  CAPSULE_GIT_BLOB_SHA1: 6eb75ab771ea18b64b44fbaf72c4cde8b3040b11
+  VAL_COMMIT: 3c7a1f330bdab0ba28a4762bb45c3f06c27fb6d4
+  RUNNER_CRATE: validation/mfw-pypi-crown/mfw-runner-integration
+
+jobs:
+  rust-python-val:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Admit capsule and exact MFW runner source blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(sha256sum "$CAPSULE" | awk '{print $1}')" = "$CAPSULE_SHA256"
+          test "$(git hash-object "$CAPSULE")" = "$CAPSULE_GIT_BLOB_SHA1"
+          cd "$RUNNER_CRATE/src"
+          test "$(git hash-object config.rs)" = 480f36f7a3b5a836cc95dc652a053eb6c5b9ccc1
+          test "$(git hash-object digest.rs)" = 0a62f4bdd90832a5de43ea5c4dc9605d788458d0
+          test "$(git hash-object error.rs)" = 0a6a244add4cdf20e5d4fd3745faea00bd1bf9b2
+          test "$(git hash-object model.rs)" = b1c83c72d14eddb50c91444539b3e03096cafe07
+          test "$(git hash-object runner.rs)" = 92be66ad878a96859fa2523dc27b5f5fb71675a0
+          test "$(git hash-object template.rs)" = d3179fbc2af462ac4fa237e6193a872c657356a0
+      - name: Install current Python candidate engine
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/capsule" "$RUNNER_TEMP/receipt"
+          tar -xzf "$CAPSULE" -C "$RUNNER_TEMP/capsule"
+          python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[pyperplan]"
+          rustc -Vv > "$RUNNER_TEMP/receipt/rustc-version.txt"
+          cargo -V > "$RUNNER_TEMP/receipt/cargo-version.txt"
+      - name: Build pinned independent VAL validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends flex bison
+          git clone --filter=blob:none https://github.com/KCL-Planning/VAL.git "$RUNNER_TEMP/VAL"
+          git -C "$RUNNER_TEMP/VAL" checkout "$VAL_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/VAL" rev-parse HEAD)" = "$VAL_COMMIT"
+          cmake -S "$RUNNER_TEMP/VAL" -B "$RUNNER_TEMP/VAL/build" -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/VAL/build" --target Validate --parallel 2
+          test -x "$RUNNER_TEMP/VAL/build/bin/Validate"
+          sha256sum "$RUNNER_TEMP/VAL/build/bin/Validate" > "$RUNNER_TEMP/receipt/val-sha256.txt"
+      - name: Format, compile, lint, and test exact runner projection
+        working-directory: ${{ github.workspace }}/validation/mfw-pypi-crown/mfw-runner-integration
+        run: |
+          cargo fmt --check
+          cargo check --all-targets
+          cargo clippy --all-targets -- -D warnings
+          cargo test --all-targets
+      - name: Execute exact Rust runner through Python and VAL
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo run --release --manifest-path "$RUNNER_CRATE/Cargo.toml" -- \
+            "$RUNNER_TEMP/capsule/tests/fixtures/domain.pddl" \
+            "$RUNNER_TEMP/capsule/tests/fixtures/problem.pddl" \
+            "$RUNNER_TEMP/integration" \
+            "$RUNNER_TEMP/VAL/build/bin/Validate" \
+            | tee "$RUNNER_TEMP/receipt/integration-stdout.jsonl"
+          cp "$RUNNER_TEMP/integration/receipt-rust-python-val.json" "$RUNNER_TEMP/receipt/"
+          test -s "$RUNNER_TEMP/integration/candidate/candidate.plan"
+          grep -qi "plan valid" "$RUNNER_TEMP/integration/validator/stdout.log"
+      - name: Execute ten clean replays and benchmark
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - \
+            "$RUNNER_CRATE/target/release/mfw-runner-validation" \
+            "$RUNNER_TEMP/capsule/tests/fixtures/domain.pddl" \
+            "$RUNNER_TEMP/capsule/tests/fixtures/problem.pddl" \
+            "$RUNNER_TEMP/VAL/build/bin/Validate" \
+            "$RUNNER_TEMP/receipt/receipt-benchmark.json" <<'PY'
+          import json
+          from pathlib import Path
+          import statistics
+          import subprocess
+          import sys
+          import tempfile
+          import time
+          binary, domain, problem, validator, receipt_path = sys.argv[1:]
+          samples = []
+          for _ in range(10):
+              with tempfile.TemporaryDirectory() as directory:
+                  started = time.perf_counter_ns()
+                  subprocess.run(
+                      [binary, domain, problem, directory, validator],
+                      check=True,
+                      stdout=subprocess.DEVNULL,
+                  )
+                  samples.append((time.perf_counter_ns() - started) / 1_000_000)
+          receipt = {
+              "schema": "urn:chatman:mfw-rust-python-val-benchmark:v2",
+              "status": "ALIVE",
+              "mfw_head_sha": "18294174c2d1262821975c08f2843f4a6c29a80c",
+              "mfw_tree_sha": "e31e5d50028b0e2a26ac6a6b4dd466319315e22a",
+              "samples": 10,
+              "min_ms": min(samples),
+              "median_ms": statistics.median(samples),
+              "max_ms": max(samples),
+              "samples_ms": samples,
+          }
+          Path(receipt_path).write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+          print(json.dumps(receipt, sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crown-rust-python-val-${{ github.sha }}
+          path: ${{ runner.temp }}/receipt
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,77 @@
+name: mfw-crown-python-federation
+
+on:
+  push:
+    branches: [validation/mfw-pypi-crown-18294174]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CAPSULE: validation/mfw-pypi-crown/mfw-pypi-planner.tar.gz
+  MANIFEST: validation/mfw-pypi-crown/manifest.json
+  CAPSULE_SHA256: 9d5b8d59de97115f0396c3b9f096c524b8d91725934abb3132560bdbed37c0bb
+  CAPSULE_GIT_BLOB_SHA1: 6eb75ab771ea18b64b44fbaf72c4cde8b3040b11
+  MFW_HEAD_SHA: 18294174c2d1262821975c08f2843f4a6c29a80c
+  MFW_TREE_SHA: e31e5d50028b0e2a26ac6a6b4dd466319315e22a
+
+jobs:
+  python-federation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Admit exact current MFW capsule
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(sha256sum "$CAPSULE" | awk '{print $1}')" = "$CAPSULE_SHA256"
+          test "$(git hash-object "$CAPSULE")" = "$CAPSULE_GIT_BLOB_SHA1"
+          mkdir -p "$RUNNER_TEMP/capsule" "$RUNNER_TEMP/receipt"
+          tar -xzf "$CAPSULE" -C "$RUNNER_TEMP/capsule"
+          python - "$MANIFEST" "$RUNNER_TEMP/receipt/receipt-capsule.json" <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import sys
+          manifest = json.loads(Path(sys.argv[1]).read_text())
+          assert manifest["canonical_head_sha"] == os.environ["MFW_HEAD_SHA"]
+          assert manifest["canonical_tree_sha"] == os.environ["MFW_TREE_SHA"]
+          assert manifest["capsule_sha256"] == os.environ["CAPSULE_SHA256"]
+          assert manifest["capsule_git_blob_sha1"] == os.environ["CAPSULE_GIT_BLOB_SHA1"]
+          receipt = {
+              "schema": "urn:chatman:mfw-capsule-integrity:v2",
+              "status": "ALIVE",
+              "mfw_head_sha": manifest["canonical_head_sha"],
+              "mfw_tree_sha": manifest["canonical_tree_sha"],
+              "capsule_sha256": manifest["capsule_sha256"],
+              "capsule_git_blob_sha1": manifest["capsule_git_blob_sha1"],
+              "capsule_size": manifest["capsule_size"],
+              "canonical_path": manifest["canonical_path"],
+          }
+          Path(sys.argv[2]).write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+          print(json.dumps(receipt, sort_keys=True))
+          PY
+      - name: Install all admitted PyPI planning families
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[engines]"
+          python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[community]"
+          python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[tamp]"
+      - name: Execute compile, nine tests, clean CLI receipt, catalog, and wheel
+        run: |
+          python validation/mfw-pypi-crown/python_crown.py \
+            "$RUNNER_TEMP/capsule" \
+            "$RUNNER_TEMP/receipt"
+          python -m pip freeze > "$RUNNER_TEMP/receipt/pip-freeze.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crown-python-federation-${{ github.sha }}
+          path: ${{ runner.temp }}/receipt
+          if-no-files-found: error
+          retention-days: 14
