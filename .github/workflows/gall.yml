@@ -1,0 +1,47 @@
+name: Gall Checkpoints
+
+on:
+  schedule:
+    - cron: '41 14 * * 5'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  external-subjects:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        repository:
+          - Marve10s/Better-Fullstack
+          - christopheduc-me/ai-agent-boilerplate
+          - systempromptio/systemprompt-template
+          - RAprogramm/entity-derive
+          - nothingnesses/agent-scaffold
+          - mathewaloisio97/rust-react-microservices-boilerplate
+          - praxiomlabs/mcpkit
+          - tamaro-skaljic/SpacetimeDSL
+          - hyperlane-dev/hyperlane-broadcast
+          - conjure-cp/uniplate
+          - JerryIdoko/GOAT-Network-Micro-Billing-Proxy
+          - IltonSeixas/rust-enterprise-boilerplate
+          - bitv1be/vk-bot-api
+          - loft-games/service-daemon-rs
+    steps:
+      - name: Resolve current exact subject
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ matrix.repository }}
+        run: |
+          set -euo pipefail
+          repo="$(curl --fail --silent --show-error -H 'Accept: application/vnd.github+json' -H "Authorization: Bearer ${GH_TOKEN}" "https://api.github.com/repos/${TARGET}")"
+          default_branch="$(jq -r '.default_branch' <<<"${repo}")"
+          commit="$(curl --fail --silent --show-error -H 'Accept: application/vnd.github+json' -H "Authorization: Bearer ${GH_TOKEN}" "https://api.github.com/repos/${TARGET}/commits/${default_branch}")"
+          jq -n --arg repository "${TARGET}" --arg branch "${default_branch}" --arg sha "$(jq -r '.sha' <<<"${commit}")" '{repository:$repository,branch:$branch,sha:$sha,standing:"OBSERVED"}' > "$(tr '/' '_' <<<"${TARGET}").json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gall-${{ strategy.job-index }}
+          path: '*.json'
+          if-no-files-found: error
