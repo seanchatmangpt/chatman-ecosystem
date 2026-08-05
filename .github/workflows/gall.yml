@@ -1,0 +1,61 @@
+name: GALL Checkpoints
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "agent/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gall-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gall:
+    name: S0-S3 exact-head crown
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+
+      - name: Install pinned Rust
+        uses: dtolnay/rust-toolchain@1.97.1
+        with:
+          components: rustfmt, clippy
+
+      - name: Verify format
+        run: cargo fmt --check
+
+      - name: Verify static boundaries
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Execute unit and integration fixtures
+        run: cargo test --all-targets
+
+      - name: Execute GALL crown
+        run: |
+          cargo run --quiet --bin gall -- --json | tee gall-receipt.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path("gall-receipt.json").read_text())
+          assert report["standing"] == "ALIVE"
+          assert [item["phase"] for item in report["checkpoints"]] == [0, 1, 2, 3]
+          assert all(item["standing"] == "ALIVE" for item in report["checkpoints"])
+          assert len(report["root_receipt"]) == 64
+          PY
+
+      - name: Upload replay receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: gall-receipt
+          path: gall-receipt.json
+          if-no-files-found: error
+          retention-days: 30
