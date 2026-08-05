@@ -1,8 +1,8 @@
 use ecosystem_core::{
-    check_architecture, check_projections, verify_all_receipts, write_projections, Catalog,
-    CrownReport, Standing,
+    Catalog, CrownReport, Standing, check_architecture, check_projections, verify_all_receipts,
+    write_projections,
 };
-use ecosystem_runtime::{differential_store_check, McpBoundary};
+use ecosystem_runtime::{McpBoundary, differential_store_check};
 use std::env;
 use std::io::{self, Read};
 use std::path::PathBuf;

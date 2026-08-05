@@ -509,7 +509,9 @@ pub fn verify_all_receipts(root: &Path) -> Result<usize, Error> {
 pub fn render_standing(catalog: &Catalog) -> String {
     let mut rails = catalog.rails.rail.clone();
     rails.sort_by(|a, b| a.id.cmp(&b.id));
-    let mut out = String::from("# Chatman Ecosystem Standing\n\n> Generated from `catalog/rails.toml`. Do not edit manually.\n\n| Rail | Standing | Subject | Evidence |\n|---|---|---|---|\n");
+    let mut out = String::from(
+        "# Chatman Ecosystem Standing\n\n> Generated from `catalog/rails.toml`. Do not edit manually.\n\n| Rail | Standing | Subject | Evidence |\n|---|---|---|---|\n",
+    );
     for rail in rails {
         out.push_str(&format!(
             "| `{}` | `{:?}` | `{}` | {} |\n",
@@ -527,7 +529,10 @@ pub fn render_portfolio(catalog: &Catalog) -> String {
     repositories.sort_by(|a, b| a.id.cmp(&b.id));
     let mut documents = catalog.documents.document.clone();
     documents.sort_by(|a, b| a.id.cmp(&b.id));
-    let mut out = format!("# {} Portfolio\n\nVersion: `{}`\n\n## Repositories\n\n| Repository | Role | Standing |\n|---|---|---|\n", catalog.ecosystem.ecosystem.name, catalog.ecosystem.ecosystem.version);
+    let mut out = format!(
+        "# {} Portfolio\n\nVersion: `{}`\n\n## Repositories\n\n| Repository | Role | Standing |\n|---|---|---|\n",
+        catalog.ecosystem.ecosystem.name, catalog.ecosystem.ecosystem.version
+    );
     for item in repositories {
         out.push_str(&format!(
             "| `{}` | {} | `{:?}` |\n",
@@ -645,18 +650,22 @@ mod tests {
         assert!(ProjectId::parse("project:lsp-max").is_ok());
         assert!(ProjectId::parse("project:LSP Max").is_err());
         let repository = RepositoryId::parse("repository:chatman-ecosystem")?;
-        assert!(ExactSubject::GitCommit {
-            repository,
-            sha: "bad".into()
-        }
-        .validate()
-        .is_err());
-        assert!(ExactSubject::File {
-            path: "../secret".into(),
-            blake3: format!("blake3:{}", "0".repeat(64))
-        }
-        .validate()
-        .is_err());
+        assert!(
+            ExactSubject::GitCommit {
+                repository,
+                sha: "bad".into()
+            }
+            .validate()
+            .is_err()
+        );
+        assert!(
+            ExactSubject::File {
+                path: "../secret".into(),
+                blake3: format!("blake3:{}", "0".repeat(64))
+            }
+            .validate()
+            .is_err()
+        );
         Ok(())
     }
 

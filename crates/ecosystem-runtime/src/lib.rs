@@ -3,8 +3,8 @@
 use async_trait::async_trait;
 use ecosystem_core::{Authority, Standing};
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use sqlx::{sqlite::SqlitePoolOptions, Row, SqlitePool};
+use serde_json::{Value, json};
+use sqlx::{Row, SqlitePool, sqlite::SqlitePoolOptions};
 use std::collections::BTreeMap;
 use std::time::Duration;
 use tokio::sync::Mutex;
@@ -477,12 +477,14 @@ mod tests {
     async fn governor_is_authority_bounded_and_idempotent() -> Result<(), Error> {
         let runtime = GovernorRuntime::default();
         let mut denied = GovernorJob::new("denied", "denied-key", Authority::Draft);
-        assert!(runtime
-            .execute(&mut denied, Authority::Observe, || async {
-                Ok("no".into())
-            })
-            .await
-            .is_err());
+        assert!(
+            runtime
+                .execute(&mut denied, Authority::Observe, || async {
+                    Ok("no".into())
+                })
+                .await
+                .is_err()
+        );
         assert_eq!(denied.state, JobState::AwaitingAuthority);
         let mut first = GovernorJob::new("first", "same-key", Authority::Observe);
         let one = runtime
@@ -505,19 +507,23 @@ mod tests {
     fn mcp_and_connectors_fail_closed() -> Result<(), Error> {
         let mutation = r#"{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"ecosystem.mutate"}}"#;
         assert!(McpBoundary::handle(mutation, Authority::ModifyExternalObject)?.contains("broker"));
-        assert!(McpBoundary::handle(
-            r#"{"jsonrpc":"2.0","id":2,"method":"missing"}"#,
-            Authority::Observe
-        )?
-        .contains("-32601"));
+        assert!(
+            McpBoundary::handle(
+                r#"{"jsonrpc":"2.0","id":2,"method":"missing"}"#,
+                Authority::Observe
+            )?
+            .contains("-32601")
+        );
         let github = GitHubObservation::normalize(
             r#"{"full_name":"seanchatmangpt/chatman-ecosystem","default_branch":"main","head_sha":"0123456789abcdef0123456789abcdef01234567","private":false}"#,
         )?;
         assert_eq!(github.default_branch, "main");
-        assert!(GitHubObservation::normalize(
-            r#"{"full_name":"x/y","default_branch":"main","head_sha":"bad"}"#
-        )
-        .is_err());
+        assert!(
+            GitHubObservation::normalize(
+                r#"{"full_name":"x/y","default_branch":"main","head_sha":"bad"}"#
+            )
+            .is_err()
+        );
         let document = DocumentObservation::normalize(&format!(
             r#"{{"id":"doc","revision":"1","path":"docs/README.md","digest":"blake3:{}"}}"#,
             "0".repeat(64)
