@@ -13,15 +13,32 @@ permissions:
 
 jobs:
   repair:
-    runs-on: macos-14
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04-arm
+            python: python3
+          - os: macos-14
+            python: python3
+          - os: windows-2025
+            python: python
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: agent/crown-completion
           fetch-depth: 0
+      - name: Synchronize exact branch head
+        run: |
+          git fetch origin agent/crown-completion
+          git reset --hard origin/agent/crown-completion
       - name: Apply exact documentation fixes
         run: |
-          python3 - <<'PY'
+          ${{ matrix.python }} - <<'PY'
           from pathlib import Path
           path = Path('crates/ecosystem-runtime/src/lib.rs')
           text = path.read_text()
@@ -30,18 +47,25 @@ jobs:
               'fixture against memory and SQLite stores': 'fixture against memory and `SQLite` stores',
           }
           for old, new in replacements.items():
-              if text.count(old) != 1:
-                  raise SystemExit(f'expected exactly one occurrence: {old}')
-              text = text.replace(old, new)
+              if old in text:
+                  if text.count(old) != 1:
+                      raise SystemExit(f'expected at most one occurrence: {old}')
+                  text = text.replace(old, new)
+              elif new not in text:
+                  raise SystemExit(f'neither source nor repaired text exists: {old}')
           path.write_text(text)
           PY
       - name: Commit repair and remove actuator
         run: |
           set -euo pipefail
-          git rm .github/workflows/runtime-doc-fix.yml
+          git rm --ignore-unmatch .github/workflows/runtime-doc-fix.yml
           git config user.name 'chatman-ecosystem-governor'
           git config user.email '136349053+seanchatmangpt@users.noreply.github.com'
           git add crates/ecosystem-runtime/src/lib.rs
+          if git diff --cached --quiet; then
+            echo 'Repair already applied.'
+            exit 0
+          fi
           git commit -m 'repair runtime documentation markup'
           git fetch origin agent/crown-completion
           git rebase origin/agent/crown-completion
