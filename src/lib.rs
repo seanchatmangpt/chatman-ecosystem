@@ -782,12 +782,17 @@ impl WasmRuntime {
                 receipt: outcome.receipt,
                 action,
             },
-            Err((refusal, Some(outcome))) => SkillOutcome {
-                result: Err(refusal),
-                receipt: outcome.receipt,
-                action,
-            },
-            Err((refusal, None)) => skill_refusal(broker, policy, action, refusal),
+            Err(error) => {
+                let InterpretFailure { refusal, outcome } = error;
+                match outcome {
+                    Some(outcome) => SkillOutcome {
+                        result: Err(refusal),
+                        receipt: outcome.receipt,
+                        action,
+                    },
+                    None => skill_refusal(broker, policy, action, refusal),
+                }
+            }
         }
     }
 }
@@ -810,6 +815,21 @@ fn skill_refusal(
 struct WasmImport {
     module: String,
     name: String,
+}
+
+#[derive(Debug)]
+struct InterpretFailure {
+    refusal: Refusal,
+    outcome: Option<Box<BrokerOutcome>>,
+}
+
+impl InterpretFailure {
+    fn new(refusal: Refusal, outcome: Option<BrokerOutcome>) -> Self {
+        Self {
+            refusal,
+            outcome: outcome.map(Box::new),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -933,12 +953,14 @@ impl ParsedModule {
         broker: &mut Broker,
         policy: &Policy,
         action: &Action,
-    ) -> Result<(i32, BrokerOutcome), (Refusal, Option<BrokerOutcome>)> {
+    ) -> Result<(i32, BrokerOutcome), InterpretFailure> {
         let _run_index = self.run_function_index;
         let mut reader = Reader::new(&self.run_body);
-        let local_groups = reader.read_leb_u32().map_err(|refusal| (refusal, None))?;
+        let local_groups = reader
+            .read_leb_u32()
+            .map_err(|refusal| InterpretFailure::new(refusal, None))?;
         if local_groups != 0 {
-            return Err((Refusal::UnsupportedWasm, None));
+            return Err(InterpretFailure::new(Refusal::UnsupportedWasm, None));
         }
 
         let mut remaining_fuel = fuel;
@@ -947,27 +969,32 @@ impl ParsedModule {
 
         loop {
             if remaining_fuel == 0 {
-                return Err((Refusal::FuelExceeded, broker_outcome));
+                return Err(InterpretFailure::new(Refusal::FuelExceeded, broker_outcome));
             }
             remaining_fuel -= 1;
-            let opcode = reader.read_u8().map_err(|refusal| (refusal, None))?;
+            let opcode = reader.read_u8().map_err(|refusal| InterpretFailure::new(refusal, None))?;
             match opcode {
                 0x20 => {
-                    let local_index = reader.read_leb_u32().map_err(|refusal| (refusal, None))?;
+                    let local_index = reader
+                        .read_leb_u32()
+                        .map_err(|refusal| InterpretFailure::new(refusal, None))?;
                     if local_index != 0 {
-                        return Err((Refusal::UnsupportedWasm, broker_outcome));
+                        return Err(InterpretFailure::new(Refusal::UnsupportedWasm, broker_outcome));
                     }
                     stack.push(input);
                 }
                 0x10 => {
-                    let function_index =
-                        reader.read_leb_u32().map_err(|refusal| (refusal, None))?;
+                    let function_index = reader
+                        .read_leb_u32()
+                        .map_err(|refusal| InterpretFailure::new(refusal, None))?;
                     if function_index != 0 || self.imports.len() != 1 {
-                        return Err((Refusal::UnsupportedWasm, broker_outcome));
+                        return Err(InterpretFailure::new(Refusal::UnsupportedWasm, broker_outcome));
                     }
                     let argument = stack
                         .pop()
-                        .ok_or((Refusal::MalformedWasm, broker_outcome.clone()))?;
+                        .ok_or_else(|| {
+                            InterpretFailure::new(Refusal::MalformedWasm, broker_outcome.clone())
+                        })?;
                     let mut call_action = action.clone();
                     call_action.arguments = vec![argument.to_string()];
                     let outcome = broker.submit(policy, &call_action, None);
@@ -975,24 +1002,30 @@ impl ParsedModule {
                     let value = match result {
                         Ok(Consequence::Number(value)) => value,
                         Ok(Consequence::Text(_)) => {
-                            return Err((Refusal::UnsupportedWasm, Some(outcome)));
+                            return Err(InterpretFailure::new(
+                                Refusal::UnsupportedWasm,
+                                Some(outcome),
+                            ));
                         }
-                        Err(refusal) => return Err((refusal, Some(outcome))),
+                        Err(refusal) => return Err(InterpretFailure::new(refusal, Some(outcome))),
                     };
                     stack.push(value);
                     broker_outcome = Some(outcome);
                 }
                 0x0b => {
                     if !reader.is_empty() {
-                        return Err((Refusal::MalformedWasm, broker_outcome));
+                        return Err(InterpretFailure::new(Refusal::MalformedWasm, broker_outcome));
                     }
                     let value = stack
                         .pop()
-                        .ok_or((Refusal::MalformedWasm, broker_outcome.clone()))?;
-                    let outcome = broker_outcome.ok_or((Refusal::MalformedWasm, None))?;
+                        .ok_or_else(|| {
+                            InterpretFailure::new(Refusal::MalformedWasm, broker_outcome.clone())
+                        })?;
+                    let outcome = broker_outcome
+                        .ok_or_else(|| InterpretFailure::new(Refusal::MalformedWasm, None))?;
                     return Ok((value, outcome));
                 }
-                _ => return Err((Refusal::UnsupportedWasm, broker_outcome)),
+                _ => return Err(InterpretFailure::new(Refusal::UnsupportedWasm, broker_outcome)),
             }
         }
     }
