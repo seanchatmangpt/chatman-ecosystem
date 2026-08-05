@@ -465,10 +465,28 @@ impl Receipt {
         Ok(())
     }
     pub fn verify(&self) -> Result<(), Error> {
-        if self.subject.is_empty() || self.verified.is_empty() || self.replay.is_empty() {
+        if !valid_id(&self.id.0, "receipt") {
+            return Err(Error::Receipt(format!(
+                "invalid receipt id `{}`",
+                self.id.0
+            )));
+        }
+        if self.subject.trim().is_empty()
+            || self.actor.trim().is_empty()
+            || self.intention.trim().is_empty()
+            || self.verified.is_empty()
+            || self.replay.is_empty()
+            || self.timestamp.trim().is_empty()
+        {
             return Err(Error::Receipt("incomplete receipt".into()));
         }
-        if self.digest != self.calculate_digest()? {
+        if !self.standing_before.permits(self.standing_after) {
+            return Err(Error::Receipt(format!(
+                "illegal receipt transition {:?} -> {:?}",
+                self.standing_before, self.standing_after
+            )));
+        }
+        if !valid_digest(&self.digest) || self.digest != self.calculate_digest()? {
             return Err(Error::Receipt(format!("digest mismatch for {:?}", self.id)));
         }
         Ok(())
@@ -582,18 +600,25 @@ pub fn check_projections(root: &Path) -> Result<usize, Error> {
     Ok(rendered.len())
 }
 
-pub fn check_architecture(root: &Path) -> Result<(), Error> {
-    let core = read(&root.join("crates/ecosystem-core/Cargo.toml"))?;
+fn check_core_manifest(core: &str) -> Result<(), Error> {
     for forbidden in ["tokio", "sqlx", "axum", "tower", "reqwest", "rmcp"] {
         if core.lines().any(|line| {
-            line.trim_start().starts_with(&format!("{forbidden} "))
-                || line.trim_start().starts_with(&format!("{forbidden}="))
+            let line = line.trim_start();
+            line.starts_with(&format!("{forbidden} "))
+                || line.starts_with(&format!("{forbidden}="))
+                || line.starts_with(&format!("{forbidden}."))
         }) {
             return Err(Error::Architecture(format!(
                 "core depends on `{forbidden}`"
             )));
         }
     }
+    Ok(())
+}
+
+pub fn check_architecture(root: &Path) -> Result<(), Error> {
+    let core = read(&root.join("crates/ecosystem-core/Cargo.toml"))?;
+    check_core_manifest(&core)?;
     let workspace = read(&root.join("Cargo.toml"))?;
     for member in [
         "crates/ecosystem-core",
@@ -616,6 +641,13 @@ pub struct CrownReport {
 
 impl CrownReport {
     pub fn evaluate(root: &Path, subject: impl Into<String>) -> Result<Self, Error> {
+        let subject = subject.into();
+        let sha = subject
+            .strip_prefix("git:")
+            .ok_or_else(|| Error::Catalog("Crown subject must be a git SHA".into()))?;
+        if sha.len() != 40 || !sha.chars().all(|c| c.is_ascii_hexdigit()) {
+            return Err(Error::Catalog(format!("invalid Crown subject `{subject}`")));
+        }
         let catalog = Catalog::load(root)?;
         catalog.validate(root)?;
         verify_all_receipts(root)?;
@@ -629,9 +661,18 @@ impl CrownReport {
             && REQUIRED_RAILS
                 .iter()
                 .all(|required| catalog.rails.rail.iter().any(|x| x.id == *required));
+        let rails = catalog
+            .rails
+            .rail
+            .into_iter()
+            .map(|mut rail| {
+                rail.subject = subject.clone();
+                rail
+            })
+            .collect();
         Ok(Self {
-            subject: subject.into(),
-            rails: catalog.rails.rail,
+            subject,
+            rails,
             standing: if all_alive {
                 Standing::Alive
             } else {
@@ -677,6 +718,16 @@ mod tests {
         assert!(!Authority::Release.permits(Authority::Merge));
     }
 
+    #[test]
+    fn architecture_gate_proves_it_can_fail() {
+        assert!(check_core_manifest("[dependencies]\ntokio = \"1\"\n").is_err());
+        assert!(check_core_manifest("[dependencies]\nserde = \"1\"\n").is_ok());
+    }
+
+    #[test]
+    fn crown_rejects_non_exact_subjects() {
+        assert!(CrownReport::evaluate(Path::new("."), "git:UNKNOWN").is_err());
+    }
     #[test]
     fn receipt_tampering_is_detected() -> Result<(), Error> {
         let mut receipt = Receipt {

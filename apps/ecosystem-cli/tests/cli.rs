@@ -24,10 +24,7 @@ fn git_subject() -> Result<String, Box<dyn std::error::Error>> {
     if !output.status.success() {
         return Err("git rev-parse failed".into());
     }
-    Ok(format!(
-        "git:{}",
-        String::from_utf8(output.stdout)?.trim()
-    ))
+    Ok(format!("git:{}", String::from_utf8(output.stdout)?.trim()))
 }
 
 #[test]
