@@ -32,7 +32,9 @@ fn git_subject() -> Result<String, Box<dyn std::error::Error>> {
 
 #[test]
 fn help_and_version_are_process_contracts() -> Result<(), Box<dyn std::error::Error>> {
-    let _guard = PROCESS_TEST_LOCK.lock().map_err(|error| error.to_string())?;
+    let _guard = PROCESS_TEST_LOCK
+        .lock()
+        .map_err(|error| error.to_string())?;
     let help = run(&["--help"])?;
     assert!(help.status.success());
     assert!(String::from_utf8(help.stdout)?.contains("USAGE"));
@@ -47,7 +49,9 @@ fn help_and_version_are_process_contracts() -> Result<(), Box<dyn std::error::Er
 
 #[test]
 fn component_admission_commands_are_black_box_verified() -> Result<(), Box<dyn std::error::Error>> {
-    let _guard = PROCESS_TEST_LOCK.lock().map_err(|error| error.to_string())?;
+    let _guard = PROCESS_TEST_LOCK
+        .lock()
+        .map_err(|error| error.to_string())?;
     for arguments in [
         ["catalog", "validate"],
         ["receipt", "verify-all"],
@@ -66,7 +70,9 @@ fn component_admission_commands_are_black_box_verified() -> Result<(), Box<dyn s
 
 #[test]
 fn crown_requires_exact_admission_evidence() -> Result<(), Box<dyn std::error::Error>> {
-    let _guard = PROCESS_TEST_LOCK.lock().map_err(|error| error.to_string())?;
+    let _guard = PROCESS_TEST_LOCK
+        .lock()
+        .map_err(|error| error.to_string())?;
     let path = root().join("target/crown/admission.json");
     if path.exists() {
         fs::remove_file(&path)?;
@@ -96,7 +102,9 @@ fn crown_requires_exact_admission_evidence() -> Result<(), Box<dyn std::error::E
 
 #[test]
 fn malformed_command_fails_closed() -> Result<(), Box<dyn std::error::Error>> {
-    let _guard = PROCESS_TEST_LOCK.lock().map_err(|error| error.to_string())?;
+    let _guard = PROCESS_TEST_LOCK
+        .lock()
+        .map_err(|error| error.to_string())?;
     let output = run(&["unknown"])?;
     assert!(!output.status.success());
     Ok(())
