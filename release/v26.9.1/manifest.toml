@@ -2,7 +2,7 @@
 name = "Chatman Ecosystem"
 version = "26.9.1"
 target_date = "2026-09-01"
-observed_at = "2026-08-14T14:24:00-07:00"
+observed_at = "2026-08-14T14:29:00-07:00"
 root_repository = "seanchatmangpt/chatman-ecosystem"
 standing = "UNKNOWN"
 
@@ -93,12 +93,10 @@ id = "ggen-marketplace"
 repository = "seanchatmangpt/ggen-marketplace"
 ref = "main"
 ref_check = "github"
-sha = "370ef5a1bc395611a8e2b3a92147678525c63c72"
+sha = "17b716d133cf67a45d62e514cc38939283337222"
 role = "pack-marketplace"
 disposition = "REQUIRED"
-standing = "ALIVE"
-execution_receipt = "github-actions:31841025839"
-executed_sha = "370ef5a1bc395611a8e2b3a92147678525c63c72"
+standing = "UNKNOWN"
 required = true
 depends_on = ["ggen"]
 
