@@ -22,8 +22,8 @@ class ReleaseControlTests(unittest.TestCase):
     def test_manifest_is_structurally_admitted(self) -> None:
         self.assertEqual([], verify_release.validate_manifest(self.data))
 
-    def test_crown_is_blocked_by_admitted_runtime_seams(self) -> None:
-        self.assertEqual("BLOCKED", verify_release.crown_standing(self.data, []))
+    def test_crown_escalates_exact_build_breaks_over_runtime_blocks(self) -> None:
+        self.assertEqual("BUILD_BROKEN", verify_release.crown_standing(self.data, []))
 
     def test_runtime_frontier_is_required_and_fail_closed(self) -> None:
         by_id = {component["id"]: component for component in self.data["components"]}
