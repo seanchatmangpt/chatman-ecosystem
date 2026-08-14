@@ -31,14 +31,20 @@ class CompletionFanoutTests(unittest.TestCase):
         self.assertEqual(16, len(planned))
         self.assertEqual(admitted, set(planned))
 
-    def test_exact_failures_become_repair_work_without_losing_receipts(self) -> None:
-        for repository in ("seanchatmangpt/star-toml", "seanchatmangpt/ggen-marketplace"):
-            packet = self.by_repo[repository]
-            self.assertEqual("REPAIR_EXACT_FAILURE", packet["action"])
-            self.assertEqual("BUILD_BROKEN", packet["standing"])
-            self.assertEqual(packet["sha"], packet["executed_sha"])
-            self.assertTrue(packet["blocker"])
-            self.assertTrue(packet["execution_receipt"])
+    def test_exact_failure_becomes_repair_work_without_losing_receipt(self) -> None:
+        packet = self.by_repo["seanchatmangpt/star-toml"]
+        self.assertEqual("REPAIR_EXACT_FAILURE", packet["action"])
+        self.assertEqual("BUILD_BROKEN", packet["standing"])
+        self.assertEqual(packet["sha"], packet["executed_sha"])
+        self.assertTrue(packet["blocker"])
+        self.assertTrue(packet["execution_receipt"])
+
+    def test_repaired_marketplace_exact_subject_is_held(self) -> None:
+        packet = self.by_repo["seanchatmangpt/ggen-marketplace"]
+        self.assertEqual("ALIVE", packet["standing"])
+        self.assertEqual("370ef5a1bc395611a8e2b3a92147678525c63c72", packet["sha"])
+        self.assertEqual("github-actions:31841025839", packet["execution_receipt"])
+        self.assertEqual("HOLD_EXACT_IDENTITY", packet["action"])
 
     def test_runtime_blockers_are_not_promoted(self) -> None:
         for repository in ("seanchatmangpt/mfw", "seanchatmangpt/gymact"):

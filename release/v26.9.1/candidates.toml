@@ -1,19 +1,7 @@
 [candidate_ledger]
 release = "26.9.1"
-observed_at = "2026-08-14T13:12:00-07:00"
+observed_at = "2026-08-14T14:24:00-07:00"
 authority = "authenticated-github-connector"
-
-[[candidates]]
-component = "ggen-marketplace"
-repository = "seanchatmangpt/ggen-marketplace"
-pr = 28
-branch = "agent/chatman-ecosystem-release-pack-v1"
-admitted_sha = "e7b70e9528a28be73b23c91fcefe0e2f7fa001d4"
-candidate_sha = "0cb7a5cc97ef345fca04e821a7b9f96dfded97a1"
-scope = "chatman-ecosystem-release-pack marketplace admission and qualification"
-scope_standing = "ALIVE"
-release_standing = "UNKNOWN"
-exact_head_ci = "SUCCESS"
 
 [[candidates]]
 component = "fdegym"

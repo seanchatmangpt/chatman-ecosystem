@@ -36,14 +36,14 @@ class ReleaseControlTests(unittest.TestCase):
         self.assertEqual("GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT", by_id["gymact"]["blocker"])
         self.assertIn("mfw", by_id["fdegym"]["depends_on"])
 
-    def test_marketplace_exact_failure_receipt_is_preserved(self) -> None:
+    def test_marketplace_exact_success_receipt_is_preserved(self) -> None:
         by_id = {component["id"]: component for component in self.data["components"]}
         marketplace = by_id["ggen-marketplace"]
-        self.assertEqual("BUILD_BROKEN", marketplace["standing"])
-        self.assertEqual("e7b70e9528a28be73b23c91fcefe0e2f7fa001d4", marketplace["sha"])
+        self.assertEqual("ALIVE", marketplace["standing"])
+        self.assertEqual("370ef5a1bc395611a8e2b3a92147678525c63c72", marketplace["sha"])
         self.assertEqual(marketplace["sha"], marketplace["executed_sha"])
-        self.assertEqual("github-actions:31832837687", marketplace["execution_receipt"])
-        self.assertEqual("PUBLISH_WORKFLOW_FAILED", marketplace["blocker"])
+        self.assertEqual("github-actions:31841025839", marketplace["execution_receipt"])
+        self.assertNotIn("blocker", marketplace)
 
     def test_star_toml_exact_failure_receipt_is_preserved(self) -> None:
         by_id = {component["id"]: component for component in self.data["components"]}
