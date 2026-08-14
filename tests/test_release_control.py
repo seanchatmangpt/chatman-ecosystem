@@ -22,8 +22,30 @@ class ReleaseControlTests(unittest.TestCase):
     def test_manifest_is_structurally_admitted(self) -> None:
         self.assertEqual([], verify_release.validate_manifest(self.data))
 
-    def test_crown_stays_unknown_without_execution_evidence(self) -> None:
-        self.assertEqual("UNKNOWN", verify_release.crown_standing(self.data, []))
+    def test_crown_is_blocked_by_admitted_runtime_seams(self) -> None:
+        self.assertEqual("BLOCKED", verify_release.crown_standing(self.data, []))
+
+    def test_runtime_frontier_is_required_and_fail_closed(self) -> None:
+        by_id = {component["id"]: component for component in self.data["components"]}
+        self.assertIn("orchestration", self.data["release"]["required_roles"])
+        self.assertEqual("orchestration", by_id["mfw"]["role"])
+        self.assertTrue(by_id["mfw"]["required"])
+        self.assertEqual("BLOCKED", by_id["mfw"]["standing"])
+        self.assertEqual("GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT", by_id["mfw"]["blocker"])
+        self.assertEqual("BLOCKED", by_id["gymact"]["standing"])
+        self.assertEqual("GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT", by_id["gymact"]["blocker"])
+        self.assertIn("mfw", by_id["fdegym"]["depends_on"])
+
+    def test_removing_mfw_from_components_refuses_required_role(self) -> None:
+        candidate = copy.deepcopy(self.data)
+        candidate["components"] = [component for component in candidate["components"] if component["id"] != "mfw"]
+        candidate["external_ref_observations"] = [
+            observation
+            for observation in candidate["external_ref_observations"]
+            if observation["component"] != "mfw"
+        ]
+        codes = {finding.code for finding in verify_release.validate_manifest(candidate)}
+        self.assertIn("ECOSYSTEM_REQUIRED_ROLE_MISSING", codes)
 
     def test_duplicate_repository_is_refused(self) -> None:
         candidate = copy.deepcopy(self.data)
