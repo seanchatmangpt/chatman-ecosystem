@@ -36,14 +36,23 @@ class ReleaseControlTests(unittest.TestCase):
         self.assertEqual("GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT", by_id["gymact"]["blocker"])
         self.assertIn("mfw", by_id["fdegym"]["depends_on"])
 
-    def test_marketplace_exact_execution_receipt_is_preserved(self) -> None:
+    def test_marketplace_exact_failure_receipt_is_preserved(self) -> None:
         by_id = {component["id"]: component for component in self.data["components"]}
         marketplace = by_id["ggen-marketplace"]
-        self.assertEqual("ALIVE", marketplace["standing"])
-        self.assertEqual("b6b75a59a3f33f1ef0585c12b8a92c5972b7f826", marketplace["sha"])
+        self.assertEqual("BUILD_BROKEN", marketplace["standing"])
+        self.assertEqual("e7b70e9528a28be73b23c91fcefe0e2f7fa001d4", marketplace["sha"])
         self.assertEqual(marketplace["sha"], marketplace["executed_sha"])
-        self.assertEqual("github-actions:31829051969", marketplace["execution_receipt"])
-        self.assertNotIn("blocker", marketplace)
+        self.assertEqual("github-actions:31832837687", marketplace["execution_receipt"])
+        self.assertEqual("PUBLISH_WORKFLOW_FAILED", marketplace["blocker"])
+
+    def test_star_toml_exact_failure_receipt_is_preserved(self) -> None:
+        by_id = {component["id"]: component for component in self.data["components"]}
+        star_toml = by_id["star-toml"]
+        self.assertEqual("BUILD_BROKEN", star_toml["standing"])
+        self.assertEqual("8395515cf8e68bfdc9edff49fb358c4f1da7c795", star_toml["sha"])
+        self.assertEqual(star_toml["sha"], star_toml["executed_sha"])
+        self.assertEqual("github-actions:30680591983", star_toml["execution_receipt"])
+        self.assertEqual("REQUIRED_CI_GATES_FAILED", star_toml["blocker"])
 
     def test_autofde_exact_main_execution_receipt_is_preserved(self) -> None:
         by_id = {component["id"]: component for component in self.data["components"]}
