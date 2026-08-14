@@ -1,6 +1,6 @@
 [fleet]
 owner = "seanchatmangpt"
-observed_at = "2026-08-13T22:52:00-07:00"
+observed_at = "2026-08-14T09:04:01-07:00"
 observation_authority = "authenticated-github-connector"
 observed_owned_repository_count = 353
 nonempty_pages = 4
@@ -32,6 +32,7 @@ required = [
   "seanchatmangpt/ggen-marketplace",
   "seanchatmangpt/gymact",
   "seanchatmangpt/mfact",
+  "seanchatmangpt/mfw",
   "seanchatmangpt/open-ontologies",
   "seanchatmangpt/praxis",
   "seanchatmangpt/process-intelligence",
@@ -63,7 +64,6 @@ adapter = [
   "seanchatmangpt/kgcl",
   "seanchatmangpt/lsp-max",
   "seanchatmangpt/lsp-types-max",
-  "seanchatmangpt/mfw",
   "seanchatmangpt/oxigraph",
   "seanchatmangpt/pm4py",
   "seanchatmangpt/pm4py-mcp",
