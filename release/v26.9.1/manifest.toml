@@ -2,7 +2,7 @@
 name = "Chatman Ecosystem"
 version = "26.9.1"
 target_date = "2026-09-01"
-observed_at = "2026-08-14T12:00:21-07:00"
+observed_at = "2026-08-14T13:04:41-07:00"
 root_repository = "seanchatmangpt/chatman-ecosystem"
 standing = "UNKNOWN"
 
@@ -69,7 +69,10 @@ ref_check = "github"
 sha = "8395515cf8e68bfdc9edff49fb358c4f1da7c795"
 role = "config-admission"
 disposition = "REQUIRED"
-standing = "UNKNOWN"
+standing = "BUILD_BROKEN"
+blocker = "REQUIRED_CI_GATES_FAILED"
+execution_receipt = "github-actions:30680591983"
+executed_sha = "8395515cf8e68bfdc9edff49fb358c4f1da7c795"
 required = true
 depends_on = ["wasm4pm-compat"]
 
