@@ -35,13 +35,13 @@ python3 scripts/verify_release.py
 python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-Check that every admitted branch still points to the admitted SHA:
+Check public refs live and validate exact externally observed evidence for private release components:
 
 ```bash
 python3 scripts/verify_release.py --check-refs
 ```
 
-The strict crown command fails until the release is actually ALIVE:
+Private sibling repositories are never silently skipped: they must carry an authority-named exact observation in the release manifest because a repository-scoped GitHub Actions token cannot see them. The strict crown command still fails until the release is actually ALIVE:
 
 ```bash
 python3 scripts/verify_release.py --check-refs --require-alive

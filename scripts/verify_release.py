@@ -26,6 +26,7 @@ ALLOWED_STANDINGS = {
     "BUILD_BROKEN",
     "UNSUPPORTED",
 }
+ALLOWED_REF_CHECKS = {"github", "external"}
 ALLOWED_DISPOSITIONS = {
     "CROWN",
     "REQUIRED",
@@ -79,6 +80,7 @@ def validate_manifest(data: dict[str, Any]) -> list[Finding]:
         "id",
         "repository",
         "ref",
+        "ref_check",
         "sha",
         "role",
         "disposition",
@@ -116,6 +118,8 @@ def validate_manifest(data: dict[str, Any]) -> list[Finding]:
             findings.append(Finding("ECOSYSTEM_REPOSITORY_INVALID", component_id, repository))
         if not isinstance(component["ref"], str) or not component["ref"].strip():
             findings.append(Finding("ECOSYSTEM_REF_INVALID", component_id, str(component["ref"])))
+        if component["ref_check"] not in ALLOWED_REF_CHECKS:
+            findings.append(Finding("ECOSYSTEM_REF_CHECK_MODE_INVALID", component_id, str(component["ref_check"])))
         if not SHA_RE.fullmatch(component["sha"]):
             findings.append(Finding("ECOSYSTEM_SHA_INVALID", component_id, str(component["sha"])))
         if component["disposition"] not in ALLOWED_DISPOSITIONS:
@@ -145,6 +149,39 @@ def validate_manifest(data: dict[str, Any]) -> list[Finding]:
         for role in expected_roles:
             if role not in roles:
                 findings.append(Finding("ECOSYSTEM_REQUIRED_ROLE_MISSING", role, "no component provides required role"))
+
+    observations = data.get("external_ref_observations", [])
+    if not isinstance(observations, list):
+        findings.append(Finding("ECOSYSTEM_EXTERNAL_REF_OBSERVATIONS_INVALID", "external_ref_observations", "must be an array of tables"))
+        observations = []
+    observation_by_component: dict[str, dict[str, Any]] = {}
+    for observation in observations:
+        if not isinstance(observation, dict):
+            findings.append(Finding("ECOSYSTEM_EXTERNAL_REF_OBSERVATION_INVALID", "external_ref_observations", "observation must be a table"))
+            continue
+        component_id = observation.get("component")
+        if not isinstance(component_id, str) or component_id not in by_id:
+            findings.append(Finding("ECOSYSTEM_EXTERNAL_REF_COMPONENT_INVALID", str(component_id), "observation must name an admitted component"))
+            continue
+        if component_id in observation_by_component:
+            findings.append(Finding("ECOSYSTEM_EXTERNAL_REF_DUPLICATE", component_id, "only one external observation is admitted per component"))
+            continue
+        observation_by_component[component_id] = observation
+
+    for component_id, component in by_id.items():
+        if component.get("ref_check") != "external":
+            continue
+        observation = observation_by_component.get(component_id)
+        if observation is None:
+            findings.append(Finding("ECOSYSTEM_EXTERNAL_REF_EVIDENCE_MISSING", component_id, "external ref check requires an exact observation"))
+            continue
+        for field in ("repository", "ref", "sha"):
+            if observation.get(field) != component.get(field):
+                findings.append(Finding("ECOSYSTEM_EXTERNAL_REF_EVIDENCE_MISMATCH", component_id, f"{field}: admitted={component.get(field)} observed={observation.get(field)}"))
+        if not isinstance(observation.get("authority"), str) or not observation.get("authority", "").strip():
+            findings.append(Finding("ECOSYSTEM_EXTERNAL_REF_AUTHORITY_MISSING", component_id, "external observation requires authority"))
+        if not isinstance(observation.get("observed_at"), str) or not observation.get("observed_at", "").strip():
+            findings.append(Finding("ECOSYSTEM_EXTERNAL_REF_TIME_MISSING", component_id, "external observation requires observed_at"))
 
     findings.extend(_detect_cycles(by_id))
     return findings
@@ -198,17 +235,25 @@ def resolve_ref(repository: str, ref: str, timeout: float = 10.0) -> str:
     return sha
 
 
-def check_ref_drift(data: dict[str, Any]) -> list[Finding]:
+def check_ref_drift(data: dict[str, Any]) -> tuple[list[Finding], dict[str, int]]:
     findings: list[Finding] = []
+    coverage = {"github_live": 0, "external_exact": 0}
     for component in data.get("components", []):
         if not component.get("required", False):
             continue
         component_id = component["id"]
+        if component.get("ref_check") == "external":
+            # validate_manifest already requires an exact, authority-named observation
+            # matching repository/ref/SHA. CI admits that bounded observation rather
+            # than pretending its repository-scoped token can see a private sibling.
+            coverage["external_exact"] += 1
+            continue
         try:
             observed = resolve_ref(component["repository"], component["ref"])
         except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, ValueError) as exc:
             findings.append(Finding("ECOSYSTEM_REF_CHECK_BLOCKED", component_id, str(exc)))
             continue
+        coverage["github_live"] += 1
         if observed != component["sha"]:
             findings.append(
                 Finding(
@@ -217,7 +262,7 @@ def check_ref_drift(data: dict[str, Any]) -> list[Finding]:
                     f"admitted={component['sha']} observed={observed} ref={component['ref']}",
                 )
             )
-    return findings
+    return findings, coverage
 
 
 def crown_standing(data: dict[str, Any], findings: list[Finding]) -> str:
@@ -241,7 +286,7 @@ def crown_standing(data: dict[str, Any], findings: list[Finding]) -> str:
     return "UNKNOWN"
 
 
-def build_report(path: Path, data: dict[str, Any], findings: list[Finding], checked_refs: bool) -> dict[str, Any]:
+def build_report(path: Path, data: dict[str, Any], findings: list[Finding], checked_refs: bool, ref_coverage: dict[str, int] | None = None) -> dict[str, Any]:
     standing = crown_standing(data, findings)
     return {
         "release": data.get("release", {}).get("version"),
@@ -249,6 +294,7 @@ def build_report(path: Path, data: dict[str, Any], findings: list[Finding], chec
         "component_count": len(data.get("components", [])),
         "required_component_count": sum(1 for c in data.get("components", []) if c.get("required", False)),
         "refs_checked": checked_refs,
+        "ref_coverage": ref_coverage or {"github_live": 0, "external_exact": 0},
         "standing": standing,
         "findings": [finding.as_dict() for finding in findings],
     }
@@ -264,10 +310,12 @@ def main(argv: list[str] | None = None) -> int:
 
     data = load_manifest(args.manifest)
     findings = validate_manifest(data)
+    ref_coverage = {"github_live": 0, "external_exact": 0}
     if args.check_refs and not findings:
-        findings.extend(check_ref_drift(data))
+        ref_findings, ref_coverage = check_ref_drift(data)
+        findings.extend(ref_findings)
 
-    report = build_report(args.manifest, data, findings, args.check_refs)
+    report = build_report(args.manifest, data, findings, args.check_refs, ref_coverage)
     rendered = json.dumps(report, indent=2, sort_keys=True)
     print(rendered)
     if args.report:

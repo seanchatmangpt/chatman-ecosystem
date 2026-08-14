@@ -44,6 +44,12 @@ class ReleaseControlTests(unittest.TestCase):
         codes = {finding.code for finding in verify_release.validate_manifest(candidate)}
         self.assertIn("ECOSYSTEM_DEPENDENCY_CYCLE", codes)
 
+    def test_external_ref_observation_is_required_and_exact(self) -> None:
+        candidate = copy.deepcopy(self.data)
+        candidate["external_ref_observations"][0]["sha"] = "0" * 40
+        codes = {finding.code for finding in verify_release.validate_manifest(candidate)}
+        self.assertIn("ECOSYSTEM_EXTERNAL_REF_EVIDENCE_MISMATCH", codes)
+
     def test_unadmitted_dependency_is_refused(self) -> None:
         candidate = copy.deepcopy(self.data)
         candidate["components"][0]["depends_on"] = ["nonexistent"]
