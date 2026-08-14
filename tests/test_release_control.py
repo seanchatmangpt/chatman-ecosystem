@@ -40,9 +40,9 @@ class ReleaseControlTests(unittest.TestCase):
         by_id = {component["id"]: component for component in self.data["components"]}
         marketplace = by_id["ggen-marketplace"]
         self.assertEqual("ALIVE", marketplace["standing"])
-        self.assertEqual("7463c89abec028ed2ae49b6c1abe6332ef1ec95e", marketplace["sha"])
+        self.assertEqual("b6b75a59a3f33f1ef0585c12b8a92c5972b7f826", marketplace["sha"])
         self.assertEqual(marketplace["sha"], marketplace["executed_sha"])
-        self.assertEqual("github-actions:31765173075", marketplace["execution_receipt"])
+        self.assertEqual("github-actions:31829051969", marketplace["execution_receipt"])
         self.assertNotIn("blocker", marketplace)
 
     def test_autofde_exact_main_execution_receipt_is_preserved(self) -> None:
