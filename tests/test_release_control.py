@@ -1,0 +1,55 @@
+from __future__ import annotations
+
+import copy
+import importlib.util
+import sys
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+SPEC = importlib.util.spec_from_file_location("verify_release", ROOT / "scripts" / "verify_release.py")
+verify_release = importlib.util.module_from_spec(SPEC)
+assert SPEC.loader is not None
+sys.modules[SPEC.name] = verify_release
+SPEC.loader.exec_module(verify_release)
+
+
+class ReleaseControlTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.manifest_path = ROOT / "release" / "v26.9.1" / "manifest.toml"
+        self.data = verify_release.load_manifest(self.manifest_path)
+
+    def test_manifest_is_structurally_admitted(self) -> None:
+        self.assertEqual([], verify_release.validate_manifest(self.data))
+
+    def test_crown_stays_unknown_without_execution_evidence(self) -> None:
+        self.assertEqual("UNKNOWN", verify_release.crown_standing(self.data, []))
+
+    def test_duplicate_repository_is_refused(self) -> None:
+        candidate = copy.deepcopy(self.data)
+        candidate["components"][1]["repository"] = candidate["components"][0]["repository"]
+        codes = {finding.code for finding in verify_release.validate_manifest(candidate)}
+        self.assertIn("ECOSYSTEM_DUPLICATE_REPOSITORY", codes)
+
+    def test_invalid_sha_is_refused(self) -> None:
+        candidate = copy.deepcopy(self.data)
+        candidate["components"][0]["sha"] = "main"
+        codes = {finding.code for finding in verify_release.validate_manifest(candidate)}
+        self.assertIn("ECOSYSTEM_SHA_INVALID", codes)
+
+    def test_dependency_cycle_is_refused(self) -> None:
+        candidate = copy.deepcopy(self.data)
+        by_id = {component["id"]: component for component in candidate["components"]}
+        by_id["ggen"]["depends_on"] = ["ggen-marketplace"]
+        codes = {finding.code for finding in verify_release.validate_manifest(candidate)}
+        self.assertIn("ECOSYSTEM_DEPENDENCY_CYCLE", codes)
+
+    def test_unadmitted_dependency_is_refused(self) -> None:
+        candidate = copy.deepcopy(self.data)
+        candidate["components"][0]["depends_on"] = ["nonexistent"]
+        codes = {finding.code for finding in verify_release.validate_manifest(candidate)}
+        self.assertIn("ECOSYSTEM_DEPENDENCY_NOT_ADMITTED", codes)
+
+
+if __name__ == "__main__":
+    unittest.main()

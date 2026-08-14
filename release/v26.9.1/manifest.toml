@@ -1,0 +1,190 @@
+[release]
+name = "Chatman Ecosystem"
+version = "26.9.1"
+target_date = "2026-09-01"
+observed_at = "2026-08-13T22:31:00-07:00"
+root_repository = "seanchatmangpt/chatman-ecosystem"
+standing = "UNKNOWN"
+
+required_roles = [
+  "public-ontology",
+  "research",
+  "process-type-law",
+  "config-admission",
+  "manufacture",
+  "pack-marketplace",
+  "formal-proof",
+  "cmca-kernel",
+  "actuation",
+  "explore",
+  "process-execution",
+  "provenance",
+  "fleet-conformance",
+  "product",
+  "capstone",
+]
+
+[[components]]
+id = "open-ontologies"
+repository = "seanchatmangpt/open-ontologies"
+ref = "main"
+sha = "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99"
+role = "public-ontology"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = []
+
+[[components]]
+id = "process-intelligence"
+repository = "seanchatmangpt/process-intelligence"
+ref = "main"
+sha = "c78e709a8b106086dcde459ed994ab5439f909ce"
+role = "research"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = []
+
+[[components]]
+id = "wasm4pm-compat"
+repository = "seanchatmangpt/wasm4pm-compat"
+ref = "main"
+sha = "4dab8a4d267dfb1ee0c547a8f62e9a087a60b4ef"
+role = "process-type-law"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = []
+
+[[components]]
+id = "star-toml"
+repository = "seanchatmangpt/star-toml"
+ref = "main"
+sha = "8395515cf8e68bfdc9edff49fb358c4f1da7c795"
+role = "config-admission"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = ["wasm4pm-compat"]
+
+[[components]]
+id = "ggen"
+repository = "seanchatmangpt/ggen"
+ref = "main"
+sha = "162e466d8f07d0a75a468b4441b4bc8b1aad369b"
+role = "manufacture"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = []
+
+[[components]]
+id = "ggen-marketplace"
+repository = "seanchatmangpt/ggen-marketplace"
+ref = "main"
+sha = "7463c89abec028ed2ae49b6c1abe6332ef1ec95e"
+role = "pack-marketplace"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = ["ggen"]
+
+[[components]]
+id = "mfact"
+repository = "seanchatmangpt/mfact"
+ref = "main"
+sha = "308384002a15b9946acbcd6f560c5819723d79dc"
+role = "formal-proof"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = ["ggen"]
+
+[[components]]
+id = "bcinr"
+repository = "seanchatmangpt/bcinr"
+ref = "main"
+sha = "d6fefefdb95df5dbbb520afe7b5a4df53aa6e27f"
+role = "cmca-kernel"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = []
+
+[[components]]
+id = "gymact"
+repository = "seanchatmangpt/gymact"
+ref = "main"
+sha = "efc34c52a96ef1382b8264de148be63625e15598"
+role = "actuation"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = ["ggen", "open-ontologies"]
+
+[[components]]
+id = "autofde-lab"
+repository = "seanchatmangpt/autofde-lab"
+ref = "master"
+sha = "16e1662719174c0b6b6297eae0a8ec69a6436292"
+role = "explore"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = ["bcinr", "gymact"]
+
+[[components]]
+id = "wasm4pm"
+repository = "seanchatmangpt/wasm4pm"
+ref = "main"
+sha = "b7ebccb53b1249d45d2472f7754c997982b2f1b7"
+role = "process-execution"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = ["wasm4pm-compat"]
+
+[[components]]
+id = "affidavit"
+repository = "seanchatmangpt/affidavit"
+ref = "main"
+sha = "383b41dc9c587f8a8a90fe280b9621ec55701a2c"
+role = "provenance"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = []
+
+[[components]]
+id = "praxis"
+repository = "seanchatmangpt/praxis"
+ref = "main"
+sha = "bc6b842e0b86e718b098ff3abdc47ef2ad83ee4b"
+role = "fleet-conformance"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = ["ggen"]
+
+[[components]]
+id = "autofde"
+repository = "seanchatmangpt/autofde"
+ref = "main"
+sha = "46bb02618c7ee7e642cc7e997f78a2f385c812d8"
+role = "product"
+disposition = "CROWN"
+standing = "UNKNOWN"
+required = true
+depends_on = ["ggen", "gymact", "mfact", "open-ontologies", "star-toml"]
+
+[[components]]
+id = "fdegym"
+repository = "seanchatmangpt/fdegym"
+ref = "main"
+sha = "c0c4f8f2d2f2b8703452341e9135c3382be7123d"
+role = "capstone"
+disposition = "CROWN"
+standing = "UNKNOWN"
+required = true
+depends_on = ["affidavit", "autofde", "autofde-lab", "gymact", "mfact", "wasm4pm"]
