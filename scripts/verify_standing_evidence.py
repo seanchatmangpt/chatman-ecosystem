@@ -18,6 +18,25 @@ class EvidenceRefusal(ValueError):
     pass
 
 
+def _require_exact_execution(
+    component_id: str,
+    admitted_sha: object,
+    receipt: object,
+    executed_sha: object,
+    *,
+    prefix: str,
+) -> None:
+    if not isinstance(receipt, str) or not RECEIPT_RE.fullmatch(receipt):
+        raise EvidenceRefusal(f"REFUSED:{prefix}_WITHOUT_EXECUTION_RECEIPT:{component_id}")
+    if not isinstance(executed_sha, str) or not SHA_RE.fullmatch(executed_sha):
+        raise EvidenceRefusal(f"REFUSED:{prefix}_WITHOUT_EXECUTED_SHA:{component_id}")
+    if executed_sha != admitted_sha:
+        raise EvidenceRefusal(
+            f"REFUSED:{prefix}_SUBJECT_IDENTITY_MISMATCH:{component_id}:"
+            f"admitted={admitted_sha}:executed={executed_sha}"
+        )
+
+
 def verify(path: Path) -> dict[str, Any]:
     with path.open("rb") as handle:
         data = tomllib.load(handle)
@@ -25,6 +44,7 @@ def verify(path: Path) -> dict[str, Any]:
     checked = 0
     alive = 0
     blocked = 0
+    build_broken = 0
     for component in data.get("components", []):
         component_id = component.get("id", "<unknown>")
         standing = component.get("standing")
@@ -36,14 +56,9 @@ def verify(path: Path) -> dict[str, Any]:
         checked += 1
         if standing == "ALIVE":
             alive += 1
-            if not isinstance(receipt, str) or not RECEIPT_RE.fullmatch(receipt):
-                raise EvidenceRefusal(f"REFUSED:ALIVE_WITHOUT_EXECUTION_RECEIPT:{component_id}")
-            if not isinstance(executed_sha, str) or not SHA_RE.fullmatch(executed_sha):
-                raise EvidenceRefusal(f"REFUSED:ALIVE_WITHOUT_EXECUTED_SHA:{component_id}")
-            if executed_sha != sha:
-                raise EvidenceRefusal(
-                    f"REFUSED:ALIVE_SUBJECT_IDENTITY_MISMATCH:{component_id}:admitted={sha}:executed={executed_sha}"
-                )
+            _require_exact_execution(
+                component_id, sha, receipt, executed_sha, prefix="ALIVE"
+            )
             if blocker:
                 raise EvidenceRefusal(f"REFUSED:ALIVE_WITH_BLOCKER:{component_id}")
         elif standing == "BLOCKED":
@@ -52,6 +67,13 @@ def verify(path: Path) -> dict[str, Any]:
                 raise EvidenceRefusal(f"REFUSED:BLOCKED_WITHOUT_REASON:{component_id}")
             if receipt or executed_sha:
                 raise EvidenceRefusal(f"REFUSED:BLOCKED_WITH_EXECUTION_STANDING:{component_id}")
+        elif standing == "BUILD_BROKEN":
+            build_broken += 1
+            _require_exact_execution(
+                component_id, sha, receipt, executed_sha, prefix="BUILD_BROKEN"
+            )
+            if not isinstance(blocker, str) or not blocker.strip():
+                raise EvidenceRefusal(f"REFUSED:BUILD_BROKEN_WITHOUT_REASON:{component_id}")
         elif receipt or executed_sha:
             if not (isinstance(receipt, str) and RECEIPT_RE.fullmatch(receipt)):
                 raise EvidenceRefusal(f"REFUSED:MALFORMED_EXECUTION_RECEIPT:{component_id}")
@@ -63,6 +85,7 @@ def verify(path: Path) -> dict[str, Any]:
         "components_checked": checked,
         "alive_components": alive,
         "blocked_components": blocked,
+        "build_broken_components": build_broken,
         "claim_ceiling": "EXACT_SUBJECT_STANDING_EVIDENCE_ONLY_NO_TRANSITIVE_AUTHORITY",
         "do_authority": False,
     }
