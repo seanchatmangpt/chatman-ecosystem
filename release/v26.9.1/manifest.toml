@@ -2,7 +2,7 @@
 name = "Chatman Ecosystem"
 version = "26.9.1"
 target_date = "2026-09-01"
-observed_at = "2026-08-14T08:06:52-07:00"
+observed_at = "2026-08-14T09:04:01-07:00"
 root_repository = "seanchatmangpt/chatman-ecosystem"
 standing = "UNKNOWN"
 
@@ -15,6 +15,7 @@ required_roles = [
   "pack-marketplace",
   "formal-proof",
   "cmca-kernel",
+  "orchestration",
   "actuation",
   "explore",
   "process-execution",
@@ -121,14 +122,28 @@ required = true
 depends_on = []
 
 [[components]]
+id = "mfw"
+repository = "seanchatmangpt/mfw"
+ref = "agent/finish-cmca-mfw"
+ref_check = "external"
+sha = "2ecde02f9d7eaea50cfb4ea7876340c6463ac3a1"
+role = "orchestration"
+disposition = "REQUIRED"
+standing = "BLOCKED"
+blocker = "GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT"
+required = true
+depends_on = ["bcinr"]
+
+[[components]]
 id = "gymact"
 repository = "seanchatmangpt/gymact"
-ref = "main"
+ref = "feat/llmless-ggen-agents-fortune5-mna"
 ref_check = "external"
-sha = "efc34c52a96ef1382b8264de148be63625e15598"
+sha = "cf9a36fcc5b0738269809b83e3ffcad7dae0a5c4"
 role = "actuation"
 disposition = "REQUIRED"
-standing = "UNKNOWN"
+standing = "BLOCKED"
+blocker = "GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT"
 required = true
 depends_on = ["ggen", "open-ontologies"]
 
@@ -202,12 +217,20 @@ role = "capstone"
 disposition = "CROWN"
 standing = "UNKNOWN"
 required = true
-depends_on = ["affidavit", "autofde", "autofde-lab", "gymact", "mfact", "wasm4pm"]
+depends_on = ["affidavit", "autofde", "autofde-lab", "gymact", "mfact", "mfw", "wasm4pm"]
+
+[[external_ref_observations]]
+component = "mfw"
+authority = "authenticated-github-connector"
+repository = "seanchatmangpt/mfw"
+ref = "agent/finish-cmca-mfw"
+sha = "2ecde02f9d7eaea50cfb4ea7876340c6463ac3a1"
+observed_at = "2026-08-14T09:04:01-07:00"
 
 [[external_ref_observations]]
 component = "gymact"
 authority = "authenticated-github-connector"
 repository = "seanchatmangpt/gymact"
-ref = "main"
-sha = "efc34c52a96ef1382b8264de148be63625e15598"
-observed_at = "2026-08-13T22:31:00-07:00"
+ref = "feat/llmless-ggen-agents-fortune5-mna"
+sha = "cf9a36fcc5b0738269809b83e3ffcad7dae0a5c4"
+observed_at = "2026-08-14T09:04:01-07:00"
