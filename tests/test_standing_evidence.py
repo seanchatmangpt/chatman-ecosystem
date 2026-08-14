@@ -40,6 +40,7 @@ class StandingEvidenceTests(unittest.TestCase):
         receipt = verify(self.source)
         self.assertEqual(receipt["alive_components"], 2)
         self.assertEqual(receipt["blocked_components"], 2)
+        self.assertEqual(receipt["build_broken_components"], 1)
         self.assertFalse(receipt["do_authority"])
 
     def test_alive_without_execution_receipt_is_refused(self) -> None:
@@ -61,6 +62,30 @@ class StandingEvidenceTests(unittest.TestCase):
             'executed_sha = "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99"\nrequired = true'
         )
         with self.assertRaisesRegex(EvidenceRefusal, "BLOCKED_WITH_EXECUTION_STANDING"):
+            verify(self._write(text))
+
+    def test_build_broken_requires_execution_receipt(self) -> None:
+        text = self._mutate_first_component(
+            'standing = "BUILD_BROKEN"\nblocker = "TEST_FAILURE"\nrequired = true'
+        )
+        with self.assertRaisesRegex(EvidenceRefusal, "BUILD_BROKEN_WITHOUT_EXECUTION_RECEIPT"):
+            verify(self._write(text))
+
+    def test_build_broken_must_bind_exact_admitted_sha(self) -> None:
+        text = self._mutate_first_component(
+            'standing = "BUILD_BROKEN"\nblocker = "TEST_FAILURE"\n'
+            'execution_receipt = "github-actions:123"\n'
+            'executed_sha = "0000000000000000000000000000000000000000"\nrequired = true'
+        )
+        with self.assertRaisesRegex(EvidenceRefusal, "BUILD_BROKEN_SUBJECT_IDENTITY_MISMATCH"):
+            verify(self._write(text))
+
+    def test_build_broken_requires_typed_reason(self) -> None:
+        text = self._mutate_first_component(
+            'standing = "BUILD_BROKEN"\nexecution_receipt = "github-actions:123"\n'
+            'executed_sha = "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99"\nrequired = true'
+        )
+        with self.assertRaisesRegex(EvidenceRefusal, "BUILD_BROKEN_WITHOUT_REASON"):
             verify(self._write(text))
 
 
