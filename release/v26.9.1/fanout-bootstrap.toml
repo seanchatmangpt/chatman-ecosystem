@@ -1,0 +1,16 @@
+[bootstrap]
+release = "26.9.1"
+observed_at = "2026-08-14T14:16:00-07:00"
+observation_authority = "authenticated-github-connector"
+do_authority = false
+
+[[requirements]]
+id = "gdmcp"
+repository = "seanchatmangpt/gdmcp"
+role = "generated-deterministic-mcp"
+disposition = "REQUIRED_CANDIDATE"
+standing = "BLOCKED"
+blocker = "REPOSITORY_NOT_PRESENT"
+required = true
+depends_on = ["ggen", "open-ontologies"]
+substitute = ""
