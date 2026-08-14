@@ -45,6 +45,15 @@ class ReleaseControlTests(unittest.TestCase):
         self.assertEqual("github-actions:31765173075", marketplace["execution_receipt"])
         self.assertNotIn("blocker", marketplace)
 
+    def test_autofde_exact_main_execution_receipt_is_preserved(self) -> None:
+        by_id = {component["id"]: component for component in self.data["components"]}
+        autofde = by_id["autofde"]
+        self.assertEqual("ALIVE", autofde["standing"])
+        self.assertEqual("c3f8abc2e83388b5bdb6cc1bbb8cd19a987c19c7", autofde["sha"])
+        self.assertEqual(autofde["sha"], autofde["executed_sha"])
+        self.assertEqual("github-actions:31775830421", autofde["execution_receipt"])
+        self.assertNotIn("blocker", autofde)
+
     def test_removing_mfw_from_components_refuses_required_role(self) -> None:
         candidate = copy.deepcopy(self.data)
         candidate["components"] = [component for component in candidate["components"] if component["id"] != "mfw"]
