@@ -18,6 +18,8 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
       - name: Verify manifest and admitted ref evidence
         run: python3 scripts/verify_release.py --check-refs
+      - name: Verify fleet scope and candidate separation
+        run: python3 scripts/verify_portfolio.py
       - name: Mutation and invariant tests
         run: python3 -m unittest discover -s tests -p 'test_*.py' -v
       - name: Report crown standing without overclaiming

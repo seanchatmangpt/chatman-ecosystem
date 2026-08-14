@@ -1,0 +1,29 @@
+[candidate_ledger]
+release = "26.9.1"
+observed_at = "2026-08-13T22:52:00-07:00"
+authority = "authenticated-github-connector"
+
+[[candidates]]
+component = "ggen-marketplace"
+repository = "seanchatmangpt/ggen-marketplace"
+pr = 28
+branch = "agent/chatman-ecosystem-release-pack-v1"
+admitted_sha = "7463c89abec028ed2ae49b6c1abe6332ef1ec95e"
+candidate_sha = "0cb7a5cc97ef345fca04e821a7b9f96dfded97a1"
+scope = "chatman-ecosystem-release-pack marketplace admission and qualification"
+scope_standing = "ALIVE"
+release_standing = "UNKNOWN"
+exact_head_ci = "SUCCESS"
+
+[[candidates]]
+component = "fdegym"
+repository = "seanchatmangpt/fdegym"
+pr = 3
+branch = "agent/v26.9.1-capstone-maturity"
+admitted_sha = "c0c4f8f2d2f2b8703452341e9135c3382be7123d"
+integration_base_sha = "398e42c55dd7e6471aa3488b194fc0662a74f30c"
+candidate_sha = "646d718882c4f66470f0de801db84f43f3e8c996"
+scope = "Fortune-5 capstone plus 5x7 maturity evidence and pinned CI supply chain"
+scope_standing = "PARTIAL_ALIVE"
+release_standing = "UNKNOWN"
+exact_head_ci = "SUCCESS"

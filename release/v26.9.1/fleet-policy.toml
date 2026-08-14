@@ -1,0 +1,111 @@
+[fleet]
+owner = "seanchatmangpt"
+observed_at = "2026-08-13T22:52:00-07:00"
+observation_authority = "authenticated-github-connector"
+observed_owned_repository_count = 353
+nonempty_pages = 4
+page_size = 100
+next_page_empty = true
+default_disposition = "OUT_OF_RELEASE"
+default_release_blocking = false
+composition_root = "seanchatmangpt/chatman-ecosystem"
+
+[roadmap]
+CROWN = "Close exact release dependency graph, execute owning verifier, bind receipt/replay, and block crown on any unresolved falsifier."
+REQUIRED = "Execute the exact admitted subject with its canonical verifier; repair only release-relevant gaps and return scoped standing evidence."
+ADAPTER = "Pin, adapt, and test the capability behind the canonical owning interface; do not fork or duplicate its semantics."
+BENCH_GYM = "Prove composability with bounded real episodes and receipts; remain non-blocking unless dependency closure explicitly promotes the gym."
+SOURCE_ARCHAEOLOGY = "Harvest reusable facts, fixtures, provenance, or compatibility behavior into canonical systems, then freeze as lineage."
+OUT_OF_RELEASE = "Freeze for v26.9.1. Re-admit only when explicit dependency closure proves the release requires this repository."
+
+[dispositions]
+crown = [
+  "seanchatmangpt/autofde",
+  "seanchatmangpt/fdegym",
+]
+
+required = [
+  "seanchatmangpt/affidavit",
+  "seanchatmangpt/autofde-lab",
+  "seanchatmangpt/bcinr",
+  "seanchatmangpt/ggen",
+  "seanchatmangpt/ggen-marketplace",
+  "seanchatmangpt/gymact",
+  "seanchatmangpt/mfact",
+  "seanchatmangpt/open-ontologies",
+  "seanchatmangpt/praxis",
+  "seanchatmangpt/process-intelligence",
+  "seanchatmangpt/star-toml",
+  "seanchatmangpt/wasm4pm",
+  "seanchatmangpt/wasm4pm-compat",
+]
+
+adapter = [
+  "seanchatmangpt/A2A",
+  "seanchatmangpt/Arazzo-Specification",
+  "seanchatmangpt/AgileGen",
+  "seanchatmangpt/POWL",
+  "seanchatmangpt/SpiffWorkflow",
+  "seanchatmangpt/VAL",
+  "seanchatmangpt/a2a-rs",
+  "seanchatmangpt/anti-llm-cheat-lsp",
+  "seanchatmangpt/arazzo-ai",
+  "seanchatmangpt/awesome-ai-gyms",
+  "seanchatmangpt/dapr-python-sdk",
+  "seanchatmangpt/dslmodel",
+  "seanchatmangpt/fastmcp",
+  "seanchatmangpt/ggen-create",
+  "seanchatmangpt/ggen-mcp",
+  "seanchatmangpt/ggen-spec-kit",
+  "seanchatmangpt/gvisor",
+  "seanchatmangpt/hygen",
+  "seanchatmangpt/kgc-sidecar",
+  "seanchatmangpt/kgcl",
+  "seanchatmangpt/lsp-max",
+  "seanchatmangpt/lsp-types-max",
+  "seanchatmangpt/mfw",
+  "seanchatmangpt/oxigraph",
+  "seanchatmangpt/pm4py",
+  "seanchatmangpt/pm4py-mcp",
+  "seanchatmangpt/pm4py-rs",
+  "seanchatmangpt/pm4wasm",
+  "seanchatmangpt/pydantic-ai",
+  "seanchatmangpt/qlever",
+  "seanchatmangpt/qlever_poc",
+  "seanchatmangpt/release-demos",
+  "seanchatmangpt/semantic_bit",
+  "seanchatmangpt/supabase",
+  "seanchatmangpt/terragoat",
+  "seanchatmangpt/tower-lsp-composition",
+  "seanchatmangpt/unlsp",
+  "seanchatmangpt/unrdf",
+  "seanchatmangpt/unrdf-kgc",
+  "seanchatmangpt/unrdf-yawl",
+  "seanchatmangpt/weavergen",
+  "seanchatmangpt/yawl",
+  "seanchatmangpt/yawlv6",
+]
+
+bench_gym = [
+  "seanchatmangpt/SREGym",
+  "seanchatmangpt/biblegym",
+  "seanchatmangpt/chatgptgym",
+  "seanchatmangpt/claudecodegym",
+  "seanchatmangpt/gitgym",
+  "seanchatmangpt/lifegym",
+  "seanchatmangpt/rrgym",
+  "seanchatmangpt/wasm4games",
+  "seanchatmangpt/ww3gym",
+]
+
+source_archaeology = [
+  "seanchatmangpt/ggen-legacy",
+  "seanchatmangpt/mcpp",
+  "seanchatmangpt/omni_repo",
+  "seanchatmangpt/slss",
+  "seanchatmangpt/truex",
+]
+
+explicit_out_of_release = [
+  "seanchatmangpt/mfact-command-center",
+]
