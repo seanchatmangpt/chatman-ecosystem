@@ -36,6 +36,15 @@ class ReleaseControlTests(unittest.TestCase):
         self.assertEqual("GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT", by_id["gymact"]["blocker"])
         self.assertIn("mfw", by_id["fdegym"]["depends_on"])
 
+    def test_marketplace_exact_execution_receipt_is_preserved(self) -> None:
+        by_id = {component["id"]: component for component in self.data["components"]}
+        marketplace = by_id["ggen-marketplace"]
+        self.assertEqual("ALIVE", marketplace["standing"])
+        self.assertEqual("7463c89abec028ed2ae49b6c1abe6332ef1ec95e", marketplace["sha"])
+        self.assertEqual(marketplace["sha"], marketplace["executed_sha"])
+        self.assertEqual("github-actions:31765173075", marketplace["execution_receipt"])
+        self.assertNotIn("blocker", marketplace)
+
     def test_removing_mfw_from_components_refuses_required_role(self) -> None:
         candidate = copy.deepcopy(self.data)
         candidate["components"] = [component for component in candidate["components"] if component["id"] != "mfw"]
