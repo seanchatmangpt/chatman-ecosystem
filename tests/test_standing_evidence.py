@@ -20,34 +20,44 @@ class StandingEvidenceTests(unittest.TestCase):
         handle.close()
         return Path(handle.name)
 
+    def _mutate_first_component(self, replacement: str) -> str:
+        text = self.source.read_text()
+        marker = (
+            'id = "open-ontologies"\n'
+            'repository = "seanchatmangpt/open-ontologies"\n'
+            'ref = "main"\n'
+            'ref_check = "github"\n'
+            'sha = "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99"\n'
+            'role = "public-ontology"\n'
+            'disposition = "REQUIRED"\n'
+            'standing = "UNKNOWN"\n'
+            'required = true'
+        )
+        self.assertIn(marker, text)
+        return text.replace(marker, marker.replace('standing = "UNKNOWN"\nrequired = true', replacement), 1)
+
     def test_current_unknown_manifest_is_admitted_without_execution_claim(self) -> None:
         receipt = verify(self.source)
         self.assertEqual(receipt["alive_components"], 0)
         self.assertFalse(receipt["do_authority"])
 
     def test_alive_without_execution_receipt_is_refused(self) -> None:
-        text = self.source.read_text().replace('standing = "UNKNOWN"', 'standing = "ALIVE"', 1)
+        text = self._mutate_first_component('standing = "ALIVE"\nrequired = true')
         with self.assertRaisesRegex(EvidenceRefusal, "ALIVE_WITHOUT_EXECUTION_RECEIPT"):
             verify(self._write(text))
 
     def test_alive_must_bind_exact_admitted_sha(self) -> None:
-        source_sha = "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99"
-        text = self.source.read_text().replace(
-            'standing = "UNKNOWN"\nrequired = true',
+        text = self._mutate_first_component(
             'standing = "ALIVE"\nexecution_receipt = "github-actions:123"\n'
-            'executed_sha = "0000000000000000000000000000000000000000"\nrequired = true',
-            1,
+            'executed_sha = "0000000000000000000000000000000000000000"\nrequired = true'
         )
-        self.assertIn(source_sha, text)
         with self.assertRaisesRegex(EvidenceRefusal, "ALIVE_SUBJECT_IDENTITY_MISMATCH"):
             verify(self._write(text))
 
     def test_blocked_component_cannot_carry_execution_standing(self) -> None:
-        text = self.source.read_text().replace(
-            'standing = "UNKNOWN"\nrequired = true',
+        text = self._mutate_first_component(
             'standing = "BLOCKED"\nblocker = "TEST_GATE"\nexecution_receipt = "github-actions:123"\n'
-            'executed_sha = "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99"\nrequired = true',
-            1,
+            'executed_sha = "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99"\nrequired = true'
         )
         with self.assertRaisesRegex(EvidenceRefusal, "BLOCKED_WITH_EXECUTION_STANDING"):
             verify(self._write(text))
