@@ -2,7 +2,7 @@
 name = "Chatman Ecosystem"
 version = "26.9.1"
 target_date = "2026-09-01"
-observed_at = "2026-08-14T10:58:42-07:00"
+observed_at = "2026-08-14T12:00:21-07:00"
 root_repository = "seanchatmangpt/chatman-ecosystem"
 standing = "UNKNOWN"
 
@@ -205,7 +205,9 @@ ref_check = "github"
 sha = "c3f8abc2e83388b5bdb6cc1bbb8cd19a987c19c7"
 role = "product"
 disposition = "CROWN"
-standing = "UNKNOWN"
+standing = "ALIVE"
+execution_receipt = "github-actions:31775830421"
+executed_sha = "c3f8abc2e83388b5bdb6cc1bbb8cd19a987c19c7"
 required = true
 depends_on = ["ggen", "gymact", "mfact", "open-ontologies", "star-toml"]
 
