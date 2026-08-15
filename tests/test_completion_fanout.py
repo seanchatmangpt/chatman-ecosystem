@@ -39,12 +39,14 @@ class CompletionFanoutTests(unittest.TestCase):
         self.assertTrue(packet["blocker"])
         self.assertTrue(packet["execution_receipt"])
 
-    def test_new_marketplace_subject_requires_its_own_receipt(self) -> None:
+    def test_marketplace_exact_subject_with_owning_receipt_is_held(self) -> None:
         packet = self.by_repo["seanchatmangpt/ggen-marketplace"]
-        self.assertEqual("UNKNOWN", packet["standing"])
+        self.assertEqual("ALIVE", packet["standing"])
         self.assertEqual("17b716d133cf67a45d62e514cc38939283337222", packet["sha"])
-        self.assertNotIn("execution_receipt", packet)
-        self.assertEqual("EXECUTE_CANONICAL_VERIFIER_OR_REPAIR", packet["action"])
+        self.assertEqual(packet["sha"], packet["executed_sha"])
+        self.assertEqual("github-actions:31842339853", packet["execution_receipt"])
+        self.assertEqual("HOLD_EXACT_IDENTITY", packet["action"])
+        self.assertIsNone(packet["branch"])
 
     def test_runtime_blockers_are_not_promoted(self) -> None:
         for repository in ("seanchatmangpt/mfw", "seanchatmangpt/gymact"):
