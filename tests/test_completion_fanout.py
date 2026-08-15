@@ -48,6 +48,15 @@ class CompletionFanoutTests(unittest.TestCase):
         self.assertEqual("HOLD_EXACT_IDENTITY", packet["action"])
         self.assertIsNone(packet["branch"])
 
+    def test_affidavit_exact_subject_with_owning_receipt_is_held(self) -> None:
+        packet = self.by_repo["seanchatmangpt/affidavit"]
+        self.assertEqual("ALIVE", packet["standing"])
+        self.assertEqual("5dc78f113e60ba95a4b4594a6da3511334e86024", packet["sha"])
+        self.assertEqual(packet["sha"], packet["executed_sha"])
+        self.assertEqual("github-actions:31674647112", packet["execution_receipt"])
+        self.assertEqual("HOLD_EXACT_IDENTITY", packet["action"])
+        self.assertIsNone(packet["branch"])
+
     def test_runtime_blockers_are_not_promoted(self) -> None:
         for repository in ("seanchatmangpt/mfw", "seanchatmangpt/gymact"):
             packet = self.by_repo[repository]
@@ -66,6 +75,7 @@ class CompletionFanoutTests(unittest.TestCase):
         self.assertIn("gymact", packet["blocked_by"])
         self.assertIn("mfw", packet["blocked_by"])
         self.assertIn("autofde-lab", packet["blocked_by"])
+        self.assertNotIn("affidavit", packet["blocked_by"])
         self.assertNotIn("autofde", packet["blocked_by"])
 
     def test_gdmcp_is_a_typed_bootstrap_gap_not_a_substitute(self) -> None:
