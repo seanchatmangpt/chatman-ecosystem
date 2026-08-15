@@ -2,7 +2,7 @@
 name = "Chatman Ecosystem"
 version = "26.9.1"
 target_date = "2026-09-01"
-observed_at = "2026-08-14T19:57:22-07:00"
+observed_at = "2026-08-15T13:12:59-07:00"
 root_repository = "seanchatmangpt/chatman-ecosystem"
 standing = "UNKNOWN"
 
@@ -179,12 +179,14 @@ depends_on = ["wasm4pm-compat"]
 [[components]]
 id = "affidavit"
 repository = "seanchatmangpt/affidavit"
-ref = "main"
-ref_check = "github"
-sha = "383b41dc9c587f8a8a90fe280b9621ec55701a2c"
+ref = "feat/ecosystem-standing-receipts-20260812"
+ref_check = "external"
+sha = "5dc78f113e60ba95a4b4594a6da3511334e86024"
 role = "provenance"
 disposition = "REQUIRED"
-standing = "UNKNOWN"
+standing = "ALIVE"
+execution_receipt = "github-actions:31674647112"
+executed_sha = "5dc78f113e60ba95a4b4594a6da3511334e86024"
 required = true
 depends_on = []
 
@@ -241,3 +243,11 @@ repository = "seanchatmangpt/gymact"
 ref = "feat/llmless-ggen-agents-fortune5-mna"
 sha = "cf9a36fcc5b0738269809b83e3ffcad7dae0a5c4"
 observed_at = "2026-08-14T09:04:01-07:00"
+
+[[external_ref_observations]]
+component = "affidavit"
+authority = "authenticated-github-connector"
+repository = "seanchatmangpt/affidavit"
+ref = "feat/ecosystem-standing-receipts-20260812"
+sha = "5dc78f113e60ba95a4b4594a6da3511334e86024"
+observed_at = "2026-08-15T13:12:59-07:00"
