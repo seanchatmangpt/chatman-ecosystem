@@ -13,9 +13,11 @@ class QLeverCrownTests(unittest.TestCase):
             a,b=Path(td)/"a.nt",Path(td)/"b.nt"
             ma=g.generate(a,64,10,32); mb=g.generate(b,64,10,32)
             self.assertEqual(a.read_bytes(),b.read_bytes()); self.assertEqual(ma,mb); self.assertEqual(ma["triples"],640)
-    def test_expected_structural_ties_are_deterministic(self):
+    def test_expected_structural_ties_follow_sparql_str_order(self):
         v=load("verify_qlever_crown")
-        self.assertEqual(v.expected_candidates(200_000,32,3),["<urn:chatman:subject:100000>","<urn:chatman:subject:100032>","<urn:chatman:subject:100064>"])
+        self.assertEqual(v.expected_candidates(200_000,32,8),[
+            "<urn:chatman:subject:100000>","<urn:chatman:subject:100032>","<urn:chatman:subject:100064>","<urn:chatman:subject:100096>",
+            "<urn:chatman:subject:100128>","<urn:chatman:subject:10016>","<urn:chatman:subject:100160>","<urn:chatman:subject:100192>"])
     def test_scale_floor_refuses_small_fixture(self):
         v=load("verify_qlever_crown")
         with tempfile.TemporaryDirectory() as td:

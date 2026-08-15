@@ -22,7 +22,9 @@ def iri_id(value:str)->int:
 
 def expected_candidates(subjects:int, predicates:int, limit:int=25):
     vals=[f"<urn:chatman:subject:{i}>" for i in range(1,subjects) if i % predicates == 0]
-    return sorted(vals)[:limit]
+    # SPARQL ORDER BY STR(?candidate) sorts the lexical IRI, not its TSV
+    # serialization.  Strip the RDF-term angle brackets before comparison.
+    return sorted(vals,key=lambda value:value[1:-1])[:limit]
 
 def verify(fixture_path:Path, ranking_path:Path, replay_path:Path, count_path:Path, subject_sha:str):
     fixture=json.loads(fixture_path.read_text())
