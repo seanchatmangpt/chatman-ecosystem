@@ -55,6 +55,10 @@ jobs:
         env:
           SUBJECT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
+          echo '--- observed ranking.tsv ---'
+          sed -n '1,30p' ranking.tsv
+          echo '--- observed count.tsv ---'
+          cat count.tsv
           python3 verify_qlever_crown.py \
             --fixture fixture.json --ranking ranking.tsv --replay replay.tsv --count count.tsv \
             --subject-sha "$SUBJECT_SHA" --receipt qlever-crown.receipt.json
