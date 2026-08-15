@@ -1,0 +1,9 @@
+SELECT ?candidate (COUNT(DISTINCT ?p) AS ?overlap)
+WHERE {
+  <urn:chatman:subject:0> ?p ?target_value .
+  ?candidate ?p ?candidate_value .
+  FILTER(?candidate != <urn:chatman:subject:0>)
+}
+GROUP BY ?candidate
+ORDER BY DESC(?overlap) ASC(STR(?candidate))
+LIMIT 25

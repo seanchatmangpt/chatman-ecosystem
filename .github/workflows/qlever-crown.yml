@@ -1,0 +1,67 @@
+name: v26.9.1 QLever structural-similarity crown
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'agent/**'
+
+permissions:
+  contents: read
+
+jobs:
+  qlever-crown:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Assert exact subject identity
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+      - name: Run source falsifiers
+        run: python3 -m unittest -v tests/test_qlever_crown.py
+      - name: Install exact QLever control plane
+        run: |
+          python3 -m pip install --disable-pip-version-check \
+            'git+https://github.com/qlever-dev/qlever-control.git@72226eb91dd4e0ca5af30e4b8786a788a374d6fe'
+          test "$(qlever --version | grep -o '0\.5\.47' | head -1)" = "0.5.47"
+      - name: Manufacture deterministic two-million-triple fixture
+        working-directory: release/v26.9.1/qlever
+        run: python3 generate_fixture.py --output structural.nt --manifest fixture.json --subjects 200000 --width 10 --predicates 32
+      - name: Index and execute structural-similarity query
+        working-directory: release/v26.9.1/qlever
+        run: |
+          set -euo pipefail
+          qlever index
+          qlever start
+          trap 'qlever stop || true' EXIT
+          for _ in $(seq 1 30); do
+            if curl -fsS http://localhost:7019 --data-urlencode 'query=ASK { ?s ?p ?o }' >/dev/null; then break; fi
+            sleep 1
+          done
+          curl -fsS http://localhost:7019 -H 'Accept: text/tab-separated-values' \
+            --data-urlencode query@structural_similarity.rq > ranking.tsv
+          curl -fsS http://localhost:7019 -H 'Accept: text/tab-separated-values' \
+            --data-urlencode query@structural_similarity.rq > replay.tsv
+          curl -fsS http://localhost:7019 -H 'Accept: text/tab-separated-values' \
+            --data-urlencode 'query=SELECT (COUNT(*) AS ?triples) WHERE { ?s ?p ?o }' > count.tsv
+      - name: Independently verify, replay, and seal receipt
+        working-directory: release/v26.9.1/qlever
+        env:
+          SUBJECT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python3 verify_qlever_crown.py \
+            --fixture fixture.json --ranking ranking.tsv --replay replay.tsv --count count.tsv \
+            --subject-sha "$SUBJECT_SHA" --receipt qlever-crown.receipt.json
+          python3 - <<'PY'
+          import json
+          r=json.load(open('qlever-crown.receipt.json'))
+          assert r['standing']=='ALIVE' and r['execution_observed'] and r['independent_verification'] and r['replay_verified']
+          assert r['do_authority'] is False and r['fixture']['triples']==2_000_000
+          print('QLEVER_STRUCTURAL_SIMILARITY_CROWN=ALIVE')
+          PY
