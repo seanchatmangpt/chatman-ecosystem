@@ -45,6 +45,17 @@ class ReleaseControlTests(unittest.TestCase):
         self.assertEqual("github-actions:31842339853", marketplace["execution_receipt"])
         self.assertNotIn("blocker", marketplace)
 
+    def test_affidavit_exact_subject_is_alive_only_with_owning_receipt(self) -> None:
+        by_id = {component["id"]: component for component in self.data["components"]}
+        affidavit = by_id["affidavit"]
+        self.assertEqual("ALIVE", affidavit["standing"])
+        self.assertEqual("feat/ecosystem-standing-receipts-20260812", affidavit["ref"])
+        self.assertEqual("external", affidavit["ref_check"])
+        self.assertEqual("5dc78f113e60ba95a4b4594a6da3511334e86024", affidavit["sha"])
+        self.assertEqual(affidavit["sha"], affidavit["executed_sha"])
+        self.assertEqual("github-actions:31674647112", affidavit["execution_receipt"])
+        self.assertNotIn("blocker", affidavit)
+
     def test_star_toml_exact_failure_receipt_is_preserved(self) -> None:
         by_id = {component["id"]: component for component in self.data["components"]}
         star_toml = by_id["star-toml"]
