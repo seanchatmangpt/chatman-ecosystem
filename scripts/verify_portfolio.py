@@ -39,6 +39,44 @@ def classify(policy: dict[str, Any], repository: str) -> str:
     return fleet["default_disposition"]
 
 
+def validate_pagination_evidence(fleet: dict[str, Any]) -> list[dict[str, str]]:
+    """Validate an observed count against its pagination receipt without freezing a historical count."""
+    findings: list[dict[str, str]] = []
+
+    def add(code: str, subject: str, detail: str) -> None:
+        findings.append({"code": code, "subject": subject, "detail": detail})
+
+    count = fleet.get("observed_owned_repository_count")
+    pages = fleet.get("nonempty_pages")
+    page_size = fleet.get("page_size")
+    next_page_empty = fleet.get("next_page_empty")
+
+    if not isinstance(count, int) or isinstance(count, bool) or count < 1:
+        add("FLEET_OBSERVED_COUNT_INVALID", "fleet.observed_owned_repository_count", str(count))
+    if not isinstance(pages, int) or isinstance(pages, bool) or pages < 1:
+        add("FLEET_NONEMPTY_PAGES_INVALID", "fleet.nonempty_pages", str(pages))
+    if not isinstance(page_size, int) or isinstance(page_size, bool) or page_size < 1:
+        add("FLEET_PAGE_SIZE_INVALID", "fleet.page_size", str(page_size))
+    if next_page_empty is not True:
+        add("FLEET_PAGINATION_TERMINATOR_INVALID", "fleet.next_page_empty", str(next_page_empty))
+
+    if findings:
+        return findings
+
+    assert isinstance(count, int)
+    assert isinstance(pages, int)
+    assert isinstance(page_size, int)
+    minimum = (pages - 1) * page_size + 1
+    maximum = pages * page_size
+    if not minimum <= count <= maximum:
+        add(
+            "FLEET_OBSERVED_COUNT_PAGINATION_MISMATCH",
+            "fleet",
+            f"count={count} requires {minimum}..{maximum} for pages={pages} page_size={page_size}",
+        )
+    return findings
+
+
 def validate(policy: dict[str, Any], manifest: dict[str, Any], candidates: dict[str, Any]) -> list[dict[str, str]]:
     findings: list[dict[str, str]] = []
     fleet = policy.get("fleet", {})
@@ -50,10 +88,7 @@ def validate(policy: dict[str, Any], manifest: dict[str, Any], candidates: dict[
 
     if fleet.get("owner") != "seanchatmangpt":
         add("FLEET_OWNER_INVALID", "fleet.owner", str(fleet.get("owner")))
-    if fleet.get("observed_owned_repository_count") != 353:
-        add("FLEET_OBSERVED_COUNT_INVALID", "fleet.observed_owned_repository_count", str(fleet.get("observed_owned_repository_count")))
-    if fleet.get("nonempty_pages") != 4 or fleet.get("page_size") != 100 or fleet.get("next_page_empty") is not True:
-        add("FLEET_PAGINATION_EVIDENCE_INVALID", "fleet", "expected four non-empty 100-size pages followed by an empty page")
+    findings.extend(validate_pagination_evidence(fleet))
     if fleet.get("default_disposition") != "OUT_OF_RELEASE" or fleet.get("default_release_blocking") is not False:
         add("FLEET_DEFAULT_NOT_FAIL_SAFE", "fleet", "unclassified repositories must be non-blocking OUT_OF_RELEASE")
 
