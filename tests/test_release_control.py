@@ -5,6 +5,7 @@ import importlib.util
 import sys
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("verify_release", ROOT / "scripts" / "verify_release.py")
@@ -40,10 +41,19 @@ class ReleaseControlTests(unittest.TestCase):
         by_id = {component["id"]: component for component in self.data["components"]}
         marketplace = by_id["ggen-marketplace"]
         self.assertEqual("ALIVE", marketplace["standing"])
-        self.assertEqual("17b716d133cf67a45d62e514cc38939283337222", marketplace["sha"])
+        self.assertEqual("ceb2b69ad1dc1bf0906a1979a9e18c53245181f3", marketplace["sha"])
         self.assertEqual(marketplace["sha"], marketplace["executed_sha"])
-        self.assertEqual("github-actions:31842339853", marketplace["execution_receipt"])
+        self.assertEqual("github-actions:31923773826", marketplace["execution_receipt"])
         self.assertNotIn("blocker", marketplace)
+
+    def test_autofde_lab_exact_failure_receipt_is_preserved(self) -> None:
+        by_id = {component["id"]: component for component in self.data["components"]}
+        lab = by_id["autofde-lab"]
+        self.assertEqual("BUILD_BROKEN", lab["standing"])
+        self.assertEqual("87d719f441ded3af123a73b95825d5f2847f9c66", lab["sha"])
+        self.assertEqual(lab["sha"], lab["executed_sha"])
+        self.assertEqual("github-actions:31909415315", lab["execution_receipt"])
+        self.assertEqual("REQUIRED_CI_GATES_FAILED", lab["blocker"])
 
     def test_affidavit_exact_subject_is_alive_only_with_owning_receipt(self) -> None:
         by_id = {component["id"]: component for component in self.data["components"]}
@@ -73,6 +83,71 @@ class ReleaseControlTests(unittest.TestCase):
         self.assertEqual(autofde["sha"], autofde["executed_sha"])
         self.assertEqual("github-actions:31775830421", autofde["execution_receipt"])
         self.assertNotIn("blocker", autofde)
+
+    def test_branch_advancement_does_not_invalidate_admitted_sha(self) -> None:
+        candidate = {
+            "components": [
+                {
+                    "id": "x",
+                    "repository": "seanchatmangpt/x",
+                    "ref": "main",
+                    "ref_check": "github",
+                    "sha": "a" * 40,
+                    "required": True,
+                }
+            ]
+        }
+        with (
+            mock.patch.object(verify_release, "resolve_ref", return_value="b" * 40),
+            mock.patch.object(verify_release, "compare_ref_lineage", return_value="ahead"),
+        ):
+            findings, coverage = verify_release.check_ref_drift(candidate)
+        self.assertEqual([], findings)
+        self.assertEqual(1, coverage["github_live"])
+        self.assertEqual(0, coverage["github_exact"])
+        self.assertEqual(1, coverage["github_advanced"])
+
+    def test_branch_divergence_refuses_admitted_lineage(self) -> None:
+        candidate = {
+            "components": [
+                {
+                    "id": "x",
+                    "repository": "seanchatmangpt/x",
+                    "ref": "main",
+                    "ref_check": "github",
+                    "sha": "a" * 40,
+                    "required": True,
+                }
+            ]
+        }
+        with (
+            mock.patch.object(verify_release, "resolve_ref", return_value="b" * 40),
+            mock.patch.object(verify_release, "compare_ref_lineage", return_value="diverged"),
+        ):
+            findings, coverage = verify_release.check_ref_drift(candidate)
+        self.assertEqual(1, coverage["github_live"])
+        self.assertEqual(0, coverage["github_advanced"])
+        self.assertEqual(1, len(findings))
+        self.assertEqual("ECOSYSTEM_REF_LINEAGE_VIOLATION", findings[0].code)
+
+    def test_exact_ref_head_counts_as_exact_lineage(self) -> None:
+        candidate = {
+            "components": [
+                {
+                    "id": "x",
+                    "repository": "seanchatmangpt/x",
+                    "ref": "main",
+                    "ref_check": "github",
+                    "sha": "a" * 40,
+                    "required": True,
+                }
+            ]
+        }
+        with mock.patch.object(verify_release, "resolve_ref", return_value="a" * 40):
+            findings, coverage = verify_release.check_ref_drift(candidate)
+        self.assertEqual([], findings)
+        self.assertEqual(1, coverage["github_exact"])
+        self.assertEqual(0, coverage["github_advanced"])
 
     def test_removing_mfw_from_components_refuses_required_role(self) -> None:
         candidate = copy.deepcopy(self.data)
