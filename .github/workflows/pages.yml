@@ -86,7 +86,7 @@ jobs:
           test -s book/00-reading-map.html
           test -s book/01-constitutional-thesis.html
           test -s book/50-civilization-scale-synthesis.html
-          test -s book/searchindex.json
+          find book -maxdepth 1 -type f -name 'searchindex*.js' -size +0c -print -quit | grep -q .
           grep -q "The Chatman Ecosystem" book/index.html
           grep -q "Where is the receipt" book/index.html
 
