@@ -43,6 +43,16 @@ class PortfolioControlTests(unittest.TestCase):
         codes = {finding["code"] for finding in verify_portfolio.validate(policy, self.manifest, self.candidates)}
         self.assertIn("FLEET_RELEASE_CLOSURE_MISMATCH", codes)
 
+    def test_repository_count_is_constrained_by_pagination_not_a_historical_literal(self) -> None:
+        policy = copy.deepcopy(self.policy)
+        policy["fleet"]["observed_owned_repository_count"] = 401
+        codes = {finding["code"] for finding in verify_portfolio.validate(policy, self.manifest, self.candidates)}
+        self.assertIn("FLEET_OBSERVED_COUNT_PAGINATION_MISMATCH", codes)
+
+    def test_current_355_repository_observation_is_pagination_consistent(self) -> None:
+        self.assertEqual(355, self.policy["fleet"]["observed_owned_repository_count"])
+        self.assertEqual([], verify_portfolio.validate_pagination_evidence(self.policy["fleet"]))
+
 
 if __name__ == "__main__":
     unittest.main()
