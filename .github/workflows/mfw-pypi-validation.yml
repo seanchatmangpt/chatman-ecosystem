@@ -13,6 +13,7 @@ permissions:
   contents: read
 
 env:
+  CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
   CAPSULE: validation/mfw-pypi-planning/mfw-pypi-planner.tar.gz
   MANIFEST: validation/mfw-pypi-planning/manifest.json
   CAPSULE_SHA256: 0b809d52aa61bb6b5cfb7bb6440d805e3b6d95b53aa9b7991e52070c765bab92
@@ -26,10 +27,14 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          persist-credentials: false
       - name: Admit exact MFW source capsule
         shell: bash
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
           test "$(sha256sum "$CAPSULE" | awk '{print $1}')" = "$CAPSULE_SHA256"
           test "$(git hash-object "$CAPSULE")" = "$CAPSULE_GIT_BLOB_SHA1"
           python - "$MANIFEST" <<'PY'
@@ -62,6 +67,9 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -79,6 +87,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
           mkdir -p "$RUNNER_TEMP/run"
           mfw-pypi-planner catalog > "$RUNNER_TEMP/run/catalog.json"
           mfw-pypi-planner solve \
@@ -88,15 +97,18 @@ jobs:
             --engine pyperplan \
             --mode classical \
             --timeout 30 \
-            > "$RUNNER_TEMP/run/result.json"
-          python - "$RUNNER_TEMP/run/catalog.json" "$RUNNER_TEMP/run/result.json" "$RUNNER_TEMP/run/candidate.plan" <<'PY'
+            > "$RUNNER_TEMP/run/solve-stdout.json"
+          test -s "$RUNNER_TEMP/run/candidate.plan"
+          test -s "$RUNNER_TEMP/run/candidate.plan.json"
+          python - "$RUNNER_TEMP/run/catalog.json" "$RUNNER_TEMP/run/candidate.plan.json" "$RUNNER_TEMP/run/candidate.plan" <<'PY'
           import hashlib
           import json
           from pathlib import Path
           import sys
 
           catalog = json.loads(Path(sys.argv[1]).read_text())
-          result = json.loads(Path(sys.argv[2]).read_text())
+          result_path = Path(sys.argv[2])
+          result = json.loads(result_path.read_text())
           candidate_path = Path(sys.argv[3])
           candidate = candidate_path.read_text().strip()
           assert catalog["distributions"]["unified-planning"] == "1.3.0", catalog
@@ -116,6 +128,7 @@ jobs:
               "planner_status": result["planner_status"],
               "candidate": candidate,
               "candidate_sha256": hashlib.sha256(candidate_path.read_bytes()).hexdigest(),
+              "run_evidence_sha256": hashlib.sha256(result_path.read_bytes()).hexdigest(),
               "catalog": catalog,
           }
           Path("receipt-pyperplan.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
@@ -134,7 +147,7 @@ jobs:
           cp receipt-pyperplan.json "$RUNNER_TEMP/run/receipt-pyperplan.json"
       - uses: actions/upload-artifact@v4
         with:
-          name: mfw-pypi-pyperplan-replay-${{ github.sha }}
+          name: mfw-pypi-pyperplan-replay-${{ env.CANDIDATE_SHA }}
           path: |
             ${{ runner.temp }}/wheelhouse
             ${{ runner.temp }}/run
@@ -147,6 +160,9 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -160,6 +176,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
           mkdir -p "$RUNNER_TEMP/receipt"
           mfw-pypi-planner catalog > "$RUNNER_TEMP/receipt/catalog-official.json"
           python - "$RUNNER_TEMP/receipt/catalog-official.json" <<'PY'
@@ -191,7 +208,7 @@ jobs:
           python -m pip freeze > "$RUNNER_TEMP/receipt/pip-freeze.txt"
       - uses: actions/upload-artifact@v4
         with:
-          name: mfw-pypi-official-engine-receipt-${{ github.sha }}
+          name: mfw-pypi-official-engine-receipt-${{ env.CANDIDATE_SHA }}
           path: ${{ runner.temp }}/receipt
           if-no-files-found: error
           retention-days: 14
@@ -212,6 +229,9 @@ jobs:
             distribution: up-paraspace
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -225,6 +245,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
           mkdir -p "$RUNNER_TEMP/receipt"
           mfw-pypi-planner catalog ${{ matrix.args }} > "$RUNNER_TEMP/receipt/catalog-${{ matrix.extra }}.json"
           python - "$RUNNER_TEMP/receipt/catalog-${{ matrix.extra }}.json" "${{ matrix.distribution }}" "${{ matrix.extra }}" <<'PY'
@@ -250,7 +271,7 @@ jobs:
           mv "receipt-${{ matrix.extra }}.json" "$RUNNER_TEMP/receipt/"
       - uses: actions/upload-artifact@v4
         with:
-          name: mfw-pypi-community-${{ matrix.extra }}-${{ github.sha }}
+          name: mfw-pypi-community-${{ matrix.extra }}-${{ env.CANDIDATE_SHA }}
           path: ${{ runner.temp }}/receipt
           if-no-files-found: error
           retention-days: 14
@@ -261,6 +282,9 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -274,6 +298,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
           mkdir -p "$RUNNER_TEMP/receipt"
           mfw-pypi-planner catalog --load-module up_spiderplan > "$RUNNER_TEMP/receipt/catalog-spiderplan.json"
           python - "$RUNNER_TEMP/receipt/catalog-spiderplan.json" <<'PY'
@@ -297,7 +322,7 @@ jobs:
           mv receipt-spiderplan.json "$RUNNER_TEMP/receipt/"
       - uses: actions/upload-artifact@v4
         with:
-          name: mfw-pypi-spiderplan-registration-${{ github.sha }}
+          name: mfw-pypi-spiderplan-registration-${{ env.CANDIDATE_SHA }}
           path: ${{ runner.temp }}/receipt
           if-no-files-found: error
           retention-days: 14
