@@ -14,6 +14,11 @@ fn root() -> PathBuf {
 fn run(arguments: &[&str]) -> Result<std::process::Output, std::io::Error> {
     Command::new(env!("CARGO_BIN_EXE_ecosystem"))
         .env("ECOSYSTEM_ROOT", root())
+        // GitHub pull_request jobs expose GITHUB_SHA as a synthetic merge ref even
+        // when the repository is deliberately checked out at the exact candidate
+        // head. Black-box process tests must exercise the admitted checkout, not
+        // inherit an unrelated ambient subject identity.
+        .env_remove("GITHUB_SHA")
         .args(arguments)
         .output()
 }
