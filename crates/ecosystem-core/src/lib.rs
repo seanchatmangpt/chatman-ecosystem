@@ -859,7 +859,7 @@ mod tests {
             verified: vec!["result".into()],
             excluded: vec![],
             replay: vec!["cargo test".into()],
-            standing_before: Standing::Candidate,
+            standing_before: Standing::PartialAlive,
             standing_after: Standing::Alive,
             timestamp: "2026-08-05T00:00:00Z".into(),
             digest: String::new(),
