@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-for tool in cargo-deny cargo-machete curl jq sha256sum; do
+for tool in cargo-deny cargo-machete curl jq python3 sha256sum; do
   if ! command -v "${tool}" >/dev/null 2>&1; then
     echo "required admission tool not found: ${tool}" >&2
     exit 2
@@ -10,6 +10,9 @@ done
 
 candidate_sha="$(git rev-parse HEAD)"
 test "${#candidate_sha}" -eq 40
+
+python3 scripts/verify_release.py --check-refs
+python3 scripts/verify_standing_evidence.py
 
 cargo fmt --all -- --check
 cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
@@ -59,6 +62,8 @@ cat > target/crown/admission.json <<JSON
 {
   "subject": "git:${candidate_sha}",
   "gates": [
+    "release_graph",
+    "standing_evidence",
     "format",
     "clippy",
     "tests",
