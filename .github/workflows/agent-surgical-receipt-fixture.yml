@@ -1,0 +1,45 @@
+name: Agent surgical receipt fixture repair
+
+on:
+  push:
+    branches:
+      - agent/finish-all-wip-20260815
+    paths:
+      - .github/workflows/agent-surgical-receipt-fixture.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch head
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: agent/finish-all-wip-20260815
+      - name: Patch only the unlawful tamper fixture transition
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('crates/ecosystem-core/src/lib.rs')
+          text = path.read_text()
+          old = '''            standing_before: Standing::Candidate,
+            standing_after: Standing::Alive,
+            timestamp: "2026-08-05T00:00:00Z".into(),'''
+          new = '''            standing_before: Standing::PartialAlive,
+            standing_after: Standing::Alive,
+            timestamp: "2026-08-05T00:00:00Z".into(),'''
+          if text.count(old) != 1:
+              raise SystemExit(f'exact fixture match count was {text.count(old)}, expected 1')
+          path.write_text(text.replace(old, new, 1))
+          PY
+          git diff --check
+          test "$(git diff --numstat -- crates/ecosystem-core/src/lib.rs | awk '{print $1+$2}')" = "2"
+      - name: Commit exact fixture repair
+        run: |
+          git config user.name 'chatman-ecosystem-bot'
+          git config user.email '136349053+seanchatmangpt@users.noreply.github.com'
+          git add crates/ecosystem-core/src/lib.rs
+          git commit -m 'test(core): construct lawful receipt before tamper'
+          git push origin HEAD:agent/finish-all-wip-20260815
