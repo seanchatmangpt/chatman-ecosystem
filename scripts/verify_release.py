@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-"""Verify an exact Chatman Ecosystem release composition manifest."""
+"""Verify an exact Chatman Ecosystem release composition manifest.
+
+The exact admitted release subject is the component SHA. A declared branch ref
+identifies its lineage, not a mutable alias that must remain equal to the SHA
+forever. Normal branch advancement is therefore observed but does not
+invalidate an already-admitted immutable subject. A required GitHub-backed
+component is valid when its admitted SHA is identical to, or an ancestor of,
+the declared ref head. Rewinds/divergence, missing refs/commits, and inaccessible
+lineage remain fail-closed.
+"""
 
 from __future__ import annotations
 
@@ -215,10 +224,7 @@ def _detect_cycles(by_id: dict[str, dict[str, Any]]) -> list[Finding]:
     return findings
 
 
-def resolve_ref(repository: str, ref: str, timeout: float = 10.0) -> str:
-    owner, name = repository.split("/", 1)
-    encoded_ref = urllib.parse.quote(ref, safe="")
-    url = f"https://api.github.com/repos/{owner}/{name}/git/ref/heads/{encoded_ref}"
+def _github_json(url: str, timeout: float) -> dict[str, Any]:
     request = urllib.request.Request(
         url,
         headers={
@@ -229,15 +235,67 @@ def resolve_ref(repository: str, ref: str, timeout: float = 10.0) -> str:
     )
     with urllib.request.urlopen(request, timeout=timeout) as response:
         payload = json.load(response)
+    if not isinstance(payload, dict):
+        raise ValueError(f"GitHub returned a non-object payload for {url}")
+    return payload
+
+
+def resolve_ref(repository: str, ref: str, timeout: float = 10.0) -> str:
+    owner, name = repository.split("/", 1)
+    encoded_ref = urllib.parse.quote(ref, safe="")
+    url = f"https://api.github.com/repos/{owner}/{name}/git/ref/heads/{encoded_ref}"
+    payload = _github_json(url, timeout)
     sha = payload.get("object", {}).get("sha")
     if not isinstance(sha, str) or not SHA_RE.fullmatch(sha):
         raise ValueError(f"GitHub returned no commit SHA for {repository}@{ref}")
     return sha
 
 
+def compare_ref_lineage(
+    repository: str,
+    ref: str,
+    admitted_sha: str,
+    timeout: float = 10.0,
+) -> str:
+    """Return GitHub compare status for admitted_sha...ref.
+
+    With the admitted SHA as the compare base and the branch ref as the compare
+    head, only ``identical`` and ``ahead`` establish that the admitted immutable
+    subject remains on the declared branch lineage.
+    """
+
+    owner, name = repository.split("/", 1)
+    encoded_ref = urllib.parse.quote(ref, safe="")
+    url = f"https://api.github.com/repos/{owner}/{name}/compare/{admitted_sha}...{encoded_ref}"
+    payload = _github_json(url, timeout)
+    base_sha = payload.get("base_commit", {}).get("sha")
+    status = payload.get("status")
+    if base_sha != admitted_sha:
+        raise ValueError(
+            f"GitHub compare base mismatch for {repository}@{ref}: "
+            f"admitted={admitted_sha} compare_base={base_sha}"
+        )
+    if status not in {"identical", "ahead", "behind", "diverged"}:
+        raise ValueError(f"GitHub returned invalid compare status for {repository}@{ref}: {status}")
+    return status
+
+
 def check_ref_drift(data: dict[str, Any]) -> tuple[list[Finding], dict[str, int]]:
+    """Verify admitted SHA lineage without conflating it with the current head.
+
+    A branch advancing beyond an admitted SHA is normal candidate-state motion.
+    It is counted as ``github_advanced`` but is not a release finding. A rewind
+    or divergence means the admitted SHA is no longer on the declared lineage
+    and remains fail-closed.
+    """
+
     findings: list[Finding] = []
-    coverage = {"github_live": 0, "external_exact": 0}
+    coverage = {
+        "github_live": 0,
+        "github_exact": 0,
+        "github_advanced": 0,
+        "external_exact": 0,
+    }
     for component in data.get("components", []):
         if not component.get("required", False):
             continue
@@ -248,20 +306,35 @@ def check_ref_drift(data: dict[str, Any]) -> tuple[list[Finding], dict[str, int]
             # than pretending its repository-scoped token can see a private sibling.
             coverage["external_exact"] += 1
             continue
+
+        repository = component["repository"]
+        ref = component["ref"]
+        admitted_sha = component["sha"]
         try:
-            observed = resolve_ref(component["repository"], component["ref"])
+            observed_head = resolve_ref(repository, ref)
+            coverage["github_live"] += 1
+            if observed_head == admitted_sha:
+                coverage["github_exact"] += 1
+                continue
+            lineage_status = compare_ref_lineage(repository, ref, admitted_sha)
         except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, ValueError) as exc:
             findings.append(Finding("ECOSYSTEM_REF_CHECK_BLOCKED", component_id, str(exc)))
             continue
-        coverage["github_live"] += 1
-        if observed != component["sha"]:
-            findings.append(
-                Finding(
-                    "ECOSYSTEM_HEAD_DRIFT",
-                    component_id,
-                    f"admitted={component['sha']} observed={observed} ref={component['ref']}",
-                )
+
+        if lineage_status == "ahead":
+            coverage["github_advanced"] += 1
+            continue
+
+        findings.append(
+            Finding(
+                "ECOSYSTEM_REF_LINEAGE_VIOLATION",
+                component_id,
+                (
+                    f"admitted={admitted_sha} observed_head={observed_head} "
+                    f"ref={ref} compare_status={lineage_status}"
+                ),
             )
+        )
     return findings, coverage
 
 
@@ -294,7 +367,13 @@ def build_report(path: Path, data: dict[str, Any], findings: list[Finding], chec
         "component_count": len(data.get("components", [])),
         "required_component_count": sum(1 for c in data.get("components", []) if c.get("required", False)),
         "refs_checked": checked_refs,
-        "ref_coverage": ref_coverage or {"github_live": 0, "external_exact": 0},
+        "ref_coverage": ref_coverage
+        or {
+            "github_live": 0,
+            "github_exact": 0,
+            "github_advanced": 0,
+            "external_exact": 0,
+        },
         "standing": standing,
         "findings": [finding.as_dict() for finding in findings],
     }
@@ -310,7 +389,12 @@ def main(argv: list[str] | None = None) -> int:
 
     data = load_manifest(args.manifest)
     findings = validate_manifest(data)
-    ref_coverage = {"github_live": 0, "external_exact": 0}
+    ref_coverage = {
+        "github_live": 0,
+        "github_exact": 0,
+        "github_advanced": 0,
+        "external_exact": 0,
+    }
     if args.check_refs and not findings:
         ref_findings, ref_coverage = check_ref_drift(data)
         findings.extend(ref_findings)
