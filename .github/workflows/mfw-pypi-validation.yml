@@ -1,0 +1,303 @@
+name: mfw-pypi-validation-capsule
+
+on:
+  push:
+    branches:
+      - validation/mfw-pypi-planning-5e9b3c41
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CAPSULE: validation/mfw-pypi-planning/mfw-pypi-planner.tar.gz
+  MANIFEST: validation/mfw-pypi-planning/manifest.json
+  CAPSULE_SHA256: 0b809d52aa61bb6b5cfb7bb6440d805e3b6d95b53aa9b7991e52070c765bab92
+  CAPSULE_GIT_BLOB_SHA1: d6a60668ac5e30ac504aded0b49a59b0c82fac69
+  MFW_HEAD_SHA: 5e9b3c41c1f4aa6de9522828716ffe41e70b760b
+  MFW_TREE_SHA: 6adb0f95b867d50fa6199e5516f06dfbb677cefc
+
+jobs:
+  capsule-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Admit exact MFW source capsule
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(sha256sum "$CAPSULE" | awk '{print $1}')" = "$CAPSULE_SHA256"
+          test "$(git hash-object "$CAPSULE")" = "$CAPSULE_GIT_BLOB_SHA1"
+          python - "$MANIFEST" <<'PY'
+          import json
+          from pathlib import Path
+          import os
+          import sys
+
+          value = json.loads(Path(sys.argv[1]).read_text())
+          assert value["canonical_head_sha"] == os.environ["MFW_HEAD_SHA"]
+          assert value["canonical_tree_sha"] == os.environ["MFW_TREE_SHA"]
+          assert value["capsule_sha256"] == os.environ["CAPSULE_SHA256"]
+          assert value["capsule_git_blob_sha1"] == os.environ["CAPSULE_GIT_BLOB_SHA1"]
+          print(json.dumps({
+              "schema": "urn:chatman:mfw-capsule-integrity:v1",
+              "status": "ALIVE",
+              "head_sha": value["canonical_head_sha"],
+              "tree_sha": value["canonical_tree_sha"],
+              "capsule_sha256": value["capsule_sha256"],
+          }, sort_keys=True))
+          PY
+          mkdir -p "$RUNNER_TEMP/capsule"
+          tar -xzf "$CAPSULE" -C "$RUNNER_TEMP/capsule"
+          test -f "$RUNNER_TEMP/capsule/pyproject.toml"
+          test -f "$RUNNER_TEMP/capsule/src/mfw_pypi_planner/bridge.py"
+
+  pyperplan-e2e:
+    needs: capsule-integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Extract exact capsule
+        run: |
+          mkdir -p "$RUNNER_TEMP/capsule"
+          tar -xzf "$CAPSULE" -C "$RUNNER_TEMP/capsule"
+      - name: Resolve real PyPI planner dependencies
+        run: |
+          python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[pyperplan]"
+      - name: Execute source tests
+        working-directory: ${{ runner.temp }}/capsule
+        run: python -m unittest discover -s tests -v
+      - name: Execute exact PDDL candidate boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/run"
+          mfw-pypi-planner catalog > "$RUNNER_TEMP/run/catalog.json"
+          mfw-pypi-planner solve \
+            --domain "$RUNNER_TEMP/capsule/tests/fixtures/domain.pddl" \
+            --problem "$RUNNER_TEMP/capsule/tests/fixtures/problem.pddl" \
+            --plan "$RUNNER_TEMP/run/candidate.plan" \
+            --engine pyperplan \
+            --mode classical \
+            --timeout 30 \
+            > "$RUNNER_TEMP/run/result.json"
+          python - "$RUNNER_TEMP/run/catalog.json" "$RUNNER_TEMP/run/result.json" "$RUNNER_TEMP/run/candidate.plan" <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          import sys
+
+          catalog = json.loads(Path(sys.argv[1]).read_text())
+          result = json.loads(Path(sys.argv[2]).read_text())
+          candidate_path = Path(sys.argv[3])
+          candidate = candidate_path.read_text().strip()
+          assert catalog["distributions"]["unified-planning"] == "1.3.0", catalog
+          assert catalog["distributions"]["up-pyperplan"] is not None, catalog
+          assert any(
+              e["name"] == "pyperplan" and "oneshot_planner" in e["operations"]
+              for e in catalog["engines"]
+          ), catalog
+          assert result["status"] == "found", result
+          assert result["step_count"] == 1, result
+          assert candidate == "(finish)", candidate
+          receipt = {
+              "schema": "urn:chatman:mfw-pyperplan-e2e:v1",
+              "status": "ALIVE",
+              "mfw_head_sha": "5e9b3c41c1f4aa6de9522828716ffe41e70b760b",
+              "engine": result["engine"],
+              "planner_status": result["planner_status"],
+              "candidate": candidate,
+              "candidate_sha256": hashlib.sha256(candidate_path.read_bytes()).hexdigest(),
+              "catalog": catalog,
+          }
+          Path("receipt-pyperplan.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+          print(json.dumps(receipt, sort_keys=True))
+          PY
+      - name: Manufacture replayable wheelhouse
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/wheelhouse"
+          python -m pip download --disable-pip-version-check \
+            --dest "$RUNNER_TEMP/wheelhouse" \
+            "$RUNNER_TEMP/capsule[pyperplan]"
+          python -m pip freeze > "$RUNNER_TEMP/run/pip-freeze.txt"
+          (cd "$RUNNER_TEMP/wheelhouse" && sha256sum * | sort > SHA256SUMS)
+          cp receipt-pyperplan.json "$RUNNER_TEMP/run/receipt-pyperplan.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mfw-pypi-pyperplan-replay-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/wheelhouse
+            ${{ runner.temp }}/run
+          if-no-files-found: error
+          retention-days: 14
+
+  official-engine-closure:
+    needs: capsule-integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Extract exact capsule
+        run: |
+          mkdir -p "$RUNNER_TEMP/capsule"
+          tar -xzf "$CAPSULE" -C "$RUNNER_TEMP/capsule"
+      - name: Install official Unified Planning PyPI federation
+        run: python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[engines]"
+      - name: Verify installed operation closure
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/receipt"
+          mfw-pypi-planner catalog > "$RUNNER_TEMP/receipt/catalog-official.json"
+          python - "$RUNNER_TEMP/receipt/catalog-official.json" <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+
+          value = json.loads(Path(sys.argv[1]).read_text())
+          expected = {
+              "up-pyperplan", "up-tamer", "up-enhsp", "up-fast-downward",
+              "up-lpg", "up-fmap", "up-aries", "up-symk",
+          }
+          missing = sorted(name for name in expected if value["distributions"].get(name) is None)
+          assert not missing, {"missing_distributions": missing, "catalog": value}
+          planners = [e for e in value["engines"] if "oneshot_planner" in e["operations"]]
+          assert len(planners) >= 6, planners
+          receipt = {
+              "schema": "urn:chatman:mfw-official-engine-closure:v1",
+              "status": "ALIVE",
+              "mfw_head_sha": "5e9b3c41c1f4aa6de9522828716ffe41e70b760b",
+              "expected_distributions": sorted(expected),
+              "oneshot_planners": planners,
+              "catalog": value,
+          }
+          Path("receipt-official-engines.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+          print(json.dumps(receipt, sort_keys=True))
+          PY
+          mv receipt-official-engines.json "$RUNNER_TEMP/receipt/"
+          python -m pip freeze > "$RUNNER_TEMP/receipt/pip-freeze.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mfw-pypi-official-engine-receipt-${{ github.sha }}
+          path: ${{ runner.temp }}/receipt
+          if-no-files-found: error
+          retention-days: 14
+
+  explicit-community-admission:
+    needs: capsule-integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - extra: tamerlite
+            args: --register tamerlite=tamerlite.engine:TamerLite
+            distribution: tamerlite
+          - extra: paraspace
+            args: --load-module up_paraspace
+            distribution: up-paraspace
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Extract exact capsule
+        run: |
+          mkdir -p "$RUNNER_TEMP/capsule"
+          tar -xzf "$CAPSULE" -C "$RUNNER_TEMP/capsule"
+      - name: Install explicitly admitted community engine
+        run: python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[${{ matrix.extra }}]"
+      - name: Verify explicit Factory admission
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/receipt"
+          mfw-pypi-planner catalog ${{ matrix.args }} > "$RUNNER_TEMP/receipt/catalog-${{ matrix.extra }}.json"
+          python - "$RUNNER_TEMP/receipt/catalog-${{ matrix.extra }}.json" "${{ matrix.distribution }}" "${{ matrix.extra }}" <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+
+          value = json.loads(Path(sys.argv[1]).read_text())
+          distribution, extra = sys.argv[2:]
+          assert value["distributions"][distribution] is not None, value
+          assert value["plugin_admission"]["loaded_modules"] or value["plugin_admission"]["registered_engines"], value
+          receipt = {
+              "schema": "urn:chatman:mfw-community-engine-admission:v1",
+              "status": "ALIVE",
+              "mfw_head_sha": "5e9b3c41c1f4aa6de9522828716ffe41e70b760b",
+              "extra": extra,
+              "distribution": distribution,
+              "catalog": value,
+          }
+          Path(f"receipt-{extra}.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+          print(json.dumps(receipt, sort_keys=True))
+          PY
+          mv "receipt-${{ matrix.extra }}.json" "$RUNNER_TEMP/receipt/"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mfw-pypi-community-${{ matrix.extra }}-${{ github.sha }}
+          path: ${{ runner.temp }}/receipt
+          if-no-files-found: error
+          retention-days: 14
+
+  spiderplan-registration:
+    needs: capsule-integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Extract exact capsule
+        run: |
+          mkdir -p "$RUNNER_TEMP/capsule"
+          tar -xzf "$CAPSULE" -C "$RUNNER_TEMP/capsule"
+      - name: Install Spiderplan distribution
+        run: python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[tamp]"
+      - name: Verify Spiderplan registration
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/receipt"
+          mfw-pypi-planner catalog --load-module up_spiderplan > "$RUNNER_TEMP/receipt/catalog-spiderplan.json"
+          python - "$RUNNER_TEMP/receipt/catalog-spiderplan.json" <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+
+          value = json.loads(Path(sys.argv[1]).read_text())
+          assert value["distributions"]["up-spiderplan"] is not None, value
+          assert any("spider" in engine["name"].lower() for engine in value["engines"]), value
+          receipt = {
+              "schema": "urn:chatman:mfw-spiderplan-registration:v1",
+              "status": "ALIVE",
+              "mfw_head_sha": "5e9b3c41c1f4aa6de9522828716ffe41e70b760b",
+              "scope": "PyPI installation and Unified Planning registration; solver actuation is Docker-bound",
+              "catalog": value,
+          }
+          Path("receipt-spiderplan.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+          print(json.dumps(receipt, sort_keys=True))
+          PY
+          mv receipt-spiderplan.json "$RUNNER_TEMP/receipt/"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mfw-pypi-spiderplan-registration-${{ github.sha }}
+          path: ${{ runner.temp }}/receipt
+          if-no-files-found: error
+          retention-days: 14

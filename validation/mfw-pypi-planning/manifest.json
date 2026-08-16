@@ -1,0 +1,22 @@
+{
+  "schema": "urn:chatman:mfw-pypi-validation-capsule:v1",
+  "canonical_repository": "seanchatmangpt/mfw",
+  "canonical_base_sha": "e4fbda46f13d8213b86aa4f981d2387638983066",
+  "canonical_head_sha": "5e9b3c41c1f4aa6de9522828716ffe41e70b760b",
+  "canonical_tree_sha": "6adb0f95b867d50fa6199e5516f06dfbb677cefc",
+  "canonical_path": "tools/mfw-pypi-planner",
+  "capsule_git_blob_sha1": "d6a60668ac5e30ac504aded0b49a59b0c82fac69",
+  "capsule_sha256": "0b809d52aa61bb6b5cfb7bb6440d805e3b6d95b53aa9b7991e52070c765bab92",
+  "capsule_size": 7835,
+  "authority": "validation projection only; chatman-ecosystem is not the canonical editing surface",
+  "acceptance": [
+    "capsule identity",
+    "unit and typed-refusal tests",
+    "real PyPI Unified Planning plus Pyperplan installation",
+    "real PDDL solve and candidate observation",
+    "Unified Planning official engine federation registration",
+    "explicit community plugin registration",
+    "Spiderplan package and engine registration",
+    "replayable wheelhouse and machine-readable receipts"
+  ]
+}
