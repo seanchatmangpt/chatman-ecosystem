@@ -59,7 +59,7 @@ jobs:
           test "$failures" -eq 0
           grep -q 'Architecture.*FROZEN' README.md
           grep -q 'Mathematics.*FROZEN' README.md
-          grep -q 'PARTIAL_ALIVE' README.md
+          grep -Fq 'Release_{26.9.1}=PARTIAL\_ALIVE' README.md
           grep -R -q 'Candidate.*Admitted' docs
           grep -R -q 'Where is the receipt' docs
           grep -R -q 'Mandatory Factorization' docs
