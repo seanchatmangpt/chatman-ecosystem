@@ -1,0 +1,19 @@
+[data]
+NAME = chatman-v26-9-1-qlever-crown
+DESCRIPTION = Deterministic 2M-triple structural-similarity crown fixture
+
+[index]
+INPUT_FILES = structural.nt
+CAT_INPUT_FILES = cat ${INPUT_FILES}
+SETTINGS_JSON = { "ascii-prefixes-only": true, "num-triples-per-batch": 100000 }
+
+[server]
+PORT = 7019
+ACCESS_TOKEN = chatman_v26_9_1_qlever_crown_no_do
+MEMORY_FOR_QUERIES = 4G
+CACHE_MAX_SIZE = 1G
+TIMEOUT = 60s
+
+[runtime]
+SYSTEM = docker
+IMAGE = docker.io/adfreiburg/qlever:commit-bd25c13adb
