@@ -214,17 +214,27 @@
       "repository": "seanchatmangpt/mfw",
       "role": "orchestration",
       "ref": "agent/finish-cmca-mfw",
-      "current_sha": null,
+      "current_sha": "a808821c6636535bc80f59f660b5b35906948c8e",
       "prior_sha": "2ecde02f9d7eaea50cfb4ea7876340c6463ac3a1",
       "prior_standing": "BLOCKED",
       "standing": "BLOCKED",
       "prior_receipt": null,
       "blocker": "GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT",
-      "latest_exact_run": null,
-      "open_pr_count": 0,
-      "pushed_at": null,
+      "latest_exact_run": {
+        "id": 31891716973,
+        "name": "MFW CMCA bridge exact-head court",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_sha": "a808821c6636535bc80f59f660b5b35906948c8e",
+        "event": "pull_request",
+        "updated_at": "2026-08-15T15:05:11Z"
+      },
+      "open_pr_count": 1,
+      "pushed_at": "2026-08-15T15:05:03Z",
       "observed_at": "2026-08-16T02:32:03.164547+00:00",
-      "next_receipt": "Remove or receipt the external prerequisite, then rerun the exact subject."
+      "next_receipt": "Clear or receipt the GitHub Actions billing/spending-limit block, then rerun the exact head and preserve the source/runtime receipt.",
+      "observation_authority": "authenticated-github-connector",
+      "connector_correction_observed_at": "2026-08-16T02:35:21.811125+00:00"
     },
     {
       "id": "gymact",

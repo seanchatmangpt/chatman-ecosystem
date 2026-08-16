@@ -26,7 +26,7 @@
 | [ggen-marketplace](repos/ggen-marketplace.md) | `pack-marketplace` | `main` | `05294230a90f` | **PARTIAL_ALIVE** |
 | [mfact](repos/mfact.md) | `formal-proof` | `main` | `308384002a15` | **PARTIAL_ALIVE** |
 | [bcinr](repos/bcinr.md) | `cmca-kernel` | `main` | `d6fefefdb95d` | **BUILD_BROKEN** |
-| [mfw](repos/mfw.md) | `orchestration` | `agent/finish-cmca-mfw` | `UNRESOLVED` | **BLOCKED** |
+| [mfw](repos/mfw.md) | `orchestration` | `agent/finish-cmca-mfw` | `a808821c6636` | **BLOCKED** |
 | [gymact](repos/gymact.md) | `actuation` | `feat/llmless-ggen-agents-fortune5-mna` | `cf9a36fcc5b0` | **BUILD_BROKEN** |
 | [autofde-lab](repos/autofde-lab.md) | `explore` | `master` | `87d719f441de` | **BUILD_BROKEN** |
 | [wasm4pm](repos/wasm4pm.md) | `process-execution` | `main` | `b7ebccb53b12` | **UNKNOWN** |
