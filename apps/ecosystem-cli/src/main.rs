@@ -16,24 +16,33 @@ fn root() -> Result<PathBuf, String> {
 }
 
 fn subject(root: &Path) -> String {
-    for variable in ["ECOSYSTEM_SUBJECT_SHA", "GITHUB_SHA"] {
-        if let Ok(value) = env::var(variable)
-            && !value.trim().is_empty()
-        {
-            return format!("git:{value}");
-        }
+    if let Ok(value) = env::var("ECOSYSTEM_SUBJECT_SHA")
+        && !value.trim().is_empty()
+    {
+        return format!("git:{value}");
     }
-    match Command::new("git")
+
+    if let Ok(output) = Command::new("git")
         .arg("-C")
         .arg(root)
         .args(["rev-parse", "HEAD"])
         .output()
+        && output.status.success()
     {
-        Ok(output) if output.status.success() => {
-            format!("git:{}", String::from_utf8_lossy(&output.stdout).trim())
+        let value = String::from_utf8_lossy(&output.stdout);
+        let value = value.trim();
+        if !value.is_empty() {
+            return format!("git:{value}");
         }
-        _ => "git:UNKNOWN".to_owned(),
     }
+
+    if let Ok(value) = env::var("GITHUB_SHA")
+        && !value.trim().is_empty()
+    {
+        return format!("git:{value}");
+    }
+
+    "git:UNKNOWN".to_owned()
 }
 
 fn usage() -> &'static str {
