@@ -48,7 +48,7 @@ jobs:
 
       - name: Seal generated survey bundle
         run: |
-          sha256sum --check .artifacts/portfolio-survey/SHA256SUMS
+          (cd .artifacts/portfolio-survey && sha256sum --check SHA256SUMS)
           tar -C .artifacts -czf portfolio-survey.tgz portfolio-survey
           sha256sum portfolio-survey.tgz | tee portfolio-survey.tgz.sha256
 
