@@ -1,0 +1,346 @@
+{
+  "campaign_branch": "brand/forward-deployment-os-2026-08",
+  "canonical_pr": "https://github.com/seanchatmangpt/chatman-ecosystem/pull/5",
+  "claim_ceiling": "Canonical narrative, first-wave draft PRs, typed no-base exclusions, and an idempotent rollout mechanism are observed. Full portfolio propagation has not been executed.",
+  "draft_pr_count": 28,
+  "draft_prs": [
+    {
+      "base": "main",
+      "base_sha": "14cfd7b01aac25b3271963378d07357eb0c55af6",
+      "draft": true,
+      "head_sha": "68fe9ec497614fd5386db9cb4137d5023d3e70c9",
+      "pull_request": "https://github.com/seanchatmangpt/chatman-ecosystem/pull/5",
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "state": "ALIVE"
+    },
+    {
+      "base": "master",
+      "base_sha": "92dbe907a850e9dbb3542abc51fa6e7d6c52667b",
+      "draft": true,
+      "head_sha": "4fe4af9e25e4fdf314a671afeb94bcb6ef061c74",
+      "pull_request": "https://github.com/seanchatmangpt/scikit-decide/pull/4",
+      "repository": "seanchatmangpt/scikit-decide",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "c36d72161b847b13555c24132819281f17e40e40",
+      "draft": true,
+      "head_sha": "c8c243bf19fcee09b7cc51856641c3d561e00c04",
+      "pull_request": "https://github.com/seanchatmangpt/ggen/pull/583",
+      "repository": "seanchatmangpt/ggen",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "308384002a15b9946acbcd6f560c5819723d79dc",
+      "draft": true,
+      "head_sha": "711e03f98a490b479195ac564ee475e535400e6c",
+      "pull_request": "https://github.com/seanchatmangpt/mfact/pull/4",
+      "repository": "seanchatmangpt/mfact",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "e4fbda46f13d8213b86aa4f981d2387638983066",
+      "draft": true,
+      "head_sha": "b8587de3d94d7c6a585698d39a53e95b710252bb",
+      "pull_request": "https://github.com/seanchatmangpt/mfw/pull/61",
+      "repository": "seanchatmangpt/mfw",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "8395515cf8e68bfdc9edff49fb358c4f1da7c795",
+      "draft": true,
+      "head_sha": "d5d17c2fdb3d08cf6c37aca72887808293e1f808",
+      "pull_request": "https://github.com/seanchatmangpt/star-toml/pull/11",
+      "repository": "seanchatmangpt/star-toml",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "7da0500926ddd0374e91f6ab8d58244f6611fe4a",
+      "draft": true,
+      "head_sha": "24ab2bdb6d2ef027da6bbb93fb618e6600b2f27f",
+      "pull_request": "https://github.com/seanchatmangpt/truex/pull/3",
+      "repository": "seanchatmangpt/truex",
+      "state": "ALIVE"
+    },
+    {
+      "base": "master",
+      "base_sha": "9995559a9042806ba18cd8177b1f5dd4c064008b",
+      "draft": true,
+      "head_sha": "5505438e5a6fae332a54ec0469fc9880e87f876d",
+      "pull_request": "https://github.com/seanchatmangpt/mcpp/pull/3",
+      "repository": "seanchatmangpt/mcpp",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "44f1bca8ff8cb05b1d8f5561c20c827e33d2b5fd",
+      "draft": true,
+      "head_sha": "91ee44d06c98759e5439ffefe17e31de711e2fab",
+      "pull_request": "https://github.com/seanchatmangpt/wasm4pm/pull/547",
+      "repository": "seanchatmangpt/wasm4pm",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "c78e709a8b106086dcde459ed994ab5439f909ce",
+      "draft": true,
+      "head_sha": "3a1cdcae0635cf811d60150c7666d249b72b866d",
+      "pull_request": "https://github.com/seanchatmangpt/process-intelligence/pull/2",
+      "repository": "seanchatmangpt/process-intelligence",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99",
+      "draft": true,
+      "head_sha": "b7cf3d488eb8981e6418b98eb92866787e78e9a6",
+      "pull_request": "https://github.com/seanchatmangpt/open-ontologies/pull/36",
+      "repository": "seanchatmangpt/open-ontologies",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "d2bae89b4f3a6375b56225ecfaf5eac3797900dc",
+      "draft": true,
+      "head_sha": "2c1c800625da6f446d45993a2ed0838812e9b67c",
+      "pull_request": "https://github.com/seanchatmangpt/POWL/pull/3",
+      "repository": "seanchatmangpt/POWL",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "e64f8224c23771e8c4e5d1d22fb939f812b04e1b",
+      "draft": true,
+      "head_sha": "61ffabd5033454883b200691c3d1041daf52a695",
+      "pull_request": "https://github.com/seanchatmangpt/cargo-cicd/pull/11",
+      "repository": "seanchatmangpt/cargo-cicd",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "649cf2384b00bde1b49b332a03f699a9e2956df6",
+      "draft": true,
+      "head_sha": "34029508432ee1e75ec0bb84bc263017055cc0d9",
+      "pull_request": "https://github.com/seanchatmangpt/dspygen/pull/32",
+      "repository": "seanchatmangpt/dspygen",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "1356e12d778f4f4908360bdb3af445db8caff50d",
+      "draft": true,
+      "head_sha": "b5042a0a4621b25c3e8f624edf2a25f7685144bf",
+      "pull_request": "https://github.com/seanchatmangpt/erlmcp/pull/24",
+      "repository": "seanchatmangpt/erlmcp",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "8515fc89215fcca5d2dfee0704962fb80ff1a158",
+      "draft": true,
+      "head_sha": "31d1bc36598f39887702d238f5516b5232c8440b",
+      "pull_request": "https://github.com/seanchatmangpt/A2A/pull/2",
+      "repository": "seanchatmangpt/A2A",
+      "state": "ALIVE"
+    },
+    {
+      "base": "master",
+      "base_sha": "1bbba9f46fc0a1f1a39fd879fe3939c0ea5567c1",
+      "draft": true,
+      "head_sha": "b9a704d81b0e6ed823465bd247334ba37255b040",
+      "pull_request": "https://github.com/seanchatmangpt/a2a-rs/pull/7",
+      "repository": "seanchatmangpt/a2a-rs",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "16737c4de1c64103f7acb851fe0ad3346a5a85d6",
+      "draft": true,
+      "head_sha": "52d24a1390f1781ec49b860cc540aadc856bcc6a",
+      "pull_request": "https://github.com/seanchatmangpt/ggen-mcp/pull/12",
+      "repository": "seanchatmangpt/ggen-mcp",
+      "state": "ALIVE"
+    },
+    {
+      "base": "master",
+      "base_sha": "2bc341561312b81c3b6d1b4585e82e0cd524b839",
+      "draft": true,
+      "head_sha": "798501257782159596c272caee23ee956e5782b8",
+      "pull_request": "https://github.com/seanchatmangpt/lsp-max/pull/28",
+      "repository": "seanchatmangpt/lsp-max",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "d24f680e903e515603118de68014f4bd52ca5877",
+      "draft": true,
+      "head_sha": "bd2b5fb6b9b2532a7e16c87dcd75588d027ef71e",
+      "pull_request": "https://github.com/seanchatmangpt/chatmangpt/pull/53",
+      "repository": "seanchatmangpt/chatmangpt",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "8eb88c241ec7770e2d0d8caf0413f4e338f6f39e",
+      "draft": true,
+      "head_sha": "8d618e0ad3e4f405d1a113c061d95dcf641412b0",
+      "pull_request": "https://github.com/seanchatmangpt/linkedin-public-canon/pull/2",
+      "repository": "seanchatmangpt/linkedin-public-canon",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "15fbe351373ec706e046861a3604de2f5b3b8db9",
+      "draft": true,
+      "head_sha": "a2fdbae10ae665f213b0c7fab4534238d720db71",
+      "pull_request": "https://github.com/seanchatmangpt/BusinessOS/pull/5",
+      "repository": "seanchatmangpt/BusinessOS",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "69584b906ff2b18b416d5c5bb3972d4cc1330a32",
+      "draft": true,
+      "head_sha": "17cc61e13640f93d3a3e23b0cef8593bbc9cb034",
+      "pull_request": "https://github.com/seanchatmangpt/capability-map/pull/2",
+      "repository": "seanchatmangpt/capability-map",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "8252cde1b108a54b4c7b4600bf22deb26f4363a0",
+      "draft": true,
+      "head_sha": "1e82841a4d5108d02ec025b03c647867e49acf7d",
+      "pull_request": "https://github.com/seanchatmangpt/arazzo-ai/pull/1",
+      "repository": "seanchatmangpt/arazzo-ai",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "43dc23a7df64067677cf8e0825c41fb77fcbfd5a",
+      "draft": true,
+      "head_sha": "6850ef2332c7b3598ee859649eb2299d03bb6525",
+      "pull_request": "https://github.com/seanchatmangpt/mfact-command-center/pull/2",
+      "repository": "seanchatmangpt/mfact-command-center",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "77c80ca2b1a944ecec8e28faa8c1762278f91e2b",
+      "draft": true,
+      "head_sha": "f6956407843c87eb39b2b705c85d0e02d6488d75",
+      "pull_request": "https://github.com/seanchatmangpt/mmdio/pull/11",
+      "repository": "seanchatmangpt/mmdio",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "fbc080dc39300dac9dbd1d46edf47caa9916c610",
+      "draft": true,
+      "head_sha": "ccb840dff3d21f177e8e78f0ff3f097d97b1716c",
+      "pull_request": "https://github.com/seanchatmangpt/wasm4pm-compat/pull/14",
+      "repository": "seanchatmangpt/wasm4pm-compat",
+      "state": "ALIVE"
+    },
+    {
+      "base": "main",
+      "base_sha": "77c9be621139973805637cc0f0994ee35582361d",
+      "draft": true,
+      "head_sha": "154defdd1f9e7b168714ac89b7607d3be722adb6",
+      "pull_request": "https://github.com/seanchatmangpt/pm4wasm/pull/1",
+      "repository": "seanchatmangpt/pm4wasm",
+      "state": "ALIVE"
+    }
+  ],
+  "generated_at": "2026-08-06T05:25:19.667812+00:00",
+  "observed_repository_count": 339,
+  "owner": "seanchatmangpt",
+  "remaining_without_terminal_campaign_result": 299,
+  "schema": "chatman.forward-deployment.rebrand-receipt.v1",
+  "standing": "PARTIAL_ALIVE",
+  "tracker_issue": "https://github.com/seanchatmangpt/chatman-ecosystem/issues/6",
+  "typed_exclusions": [
+    {
+      "reason": "NO_BASE_COMMIT",
+      "repository": "seanchatmangpt/become-ai-first",
+      "state": "UNSUPPORTED"
+    },
+    {
+      "reason": "NO_BASE_COMMIT",
+      "repository": "seanchatmangpt/hello",
+      "state": "UNSUPPORTED"
+    },
+    {
+      "reason": "NO_BASE_COMMIT",
+      "repository": "seanchatmangpt/hello_youtube_chat",
+      "state": "UNSUPPORTED"
+    },
+    {
+      "reason": "NO_BASE_COMMIT",
+      "repository": "seanchatmangpt/infinite-agentic-cli",
+      "state": "UNSUPPORTED"
+    },
+    {
+      "reason": "NO_BASE_COMMIT",
+      "repository": "seanchatmangpt/my-new-repo",
+      "state": "UNSUPPORTED"
+    },
+    {
+      "reason": "NO_BASE_COMMIT",
+      "repository": "seanchatmangpt/tcps-accept-test-2-sandbox",
+      "state": "UNSUPPORTED"
+    },
+    {
+      "reason": "NO_BASE_COMMIT",
+      "repository": "seanchatmangpt/tcps-accept-test-28378",
+      "state": "UNSUPPORTED"
+    },
+    {
+      "reason": "NO_BASE_COMMIT",
+      "repository": "seanchatmangpt/tcps-accept-test-sandbox",
+      "state": "UNSUPPORTED"
+    },
+    {
+      "reason": "NO_BASE_COMMIT",
+      "repository": "seanchatmangpt/tokenforge",
+      "state": "UNSUPPORTED"
+    },
+    {
+      "reason": "NO_BASE_COMMIT",
+      "repository": "seanchatmangpt/unrdf-experiments",
+      "state": "UNSUPPORTED"
+    },
+    {
+      "reason": "NO_BASE_COMMIT",
+      "repository": "seanchatmangpt/unrdf-kgc",
+      "state": "UNSUPPORTED"
+    },
+    {
+      "reason": "NO_BASE_COMMIT",
+      "repository": "seanchatmangpt/unrdf-yawl",
+      "state": "UNSUPPORTED"
+    }
+  ],
+  "unsupported_no_base_commit_count": 12,
+  "verification": [
+    {
+      "command": "python -m py_compile /tmp/rebrand_portfolio.py",
+      "exit_code": 0,
+      "scope": "local exact script before publication"
+    },
+    {
+      "command": "python /tmp/rebrand_portfolio.py --help",
+      "exit_code": 0,
+      "scope": "local exact script before publication"
+    },
+    {
+      "command": "GitHub combined status @ 68fe9ec497614fd5386db9cb4137d5023d3e70c9",
+      "result": "NO_STATUSES_REPORTED"
+    }
+  ]
+}
