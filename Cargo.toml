@@ -2,6 +2,7 @@
 members = [
   "crates/ecosystem-core",
   "crates/ecosystem-runtime",
+  "crates/gall",
   "apps/ecosystem-cli",
 ]
 resolver = "2"

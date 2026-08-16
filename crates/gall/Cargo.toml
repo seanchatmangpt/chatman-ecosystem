@@ -1,0 +1,20 @@
+[package]
+name = "chatman-ecosystem-gall"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.74"
+license = "MIT"
+description = "Gall-sequenced, receipt-bearing agent execution capsule"
+
+[lib]
+name = "chatman_ecosystem"
+path = "src/lib.rs"
+
+[[bin]]
+name = "gall"
+path = "src/bin/gall.rs"
+
+[dependencies]
+
+[lints.rust]
+unsafe_code = "forbid"
