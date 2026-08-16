@@ -374,6 +374,16 @@ impl McpBoundary {
         ]
     }
 
+    /// Decides whether a tool nature may be admitted directly at the MCP surface.
+    ///
+    /// Fail-closed: only [`ToolNature::ReadOnly`] is admitted here. Every other
+    /// nature — present or future — must be submitted through the authority
+    /// broker, which is the only lawful DO path.
+    #[must_use]
+    pub const fn requires_broker(nature: ToolNature) -> bool {
+        !matches!(nature, ToolNature::ReadOnly)
+    }
+
     /// Handles one bounded JSON-RPC request through the admitted MCP surface.
     ///
     /// # Errors
@@ -405,7 +415,7 @@ impl McpBoundary {
                 if !granted.permits(tool.required_authority) {
                     return Ok(rpc_error(&id, -32001, "authority denied"));
                 }
-                if matches!(tool.nature, ToolNature::MutatingDestructive) {
+                if Self::requires_broker(tool.nature) {
                     return Ok(rpc_error(&id, -32002, "mutation must pass through broker"));
                 }
                 json!({"content":[{"type":"text","text":"CROWN_QUERY_ADMITTED"}]})
@@ -615,6 +625,37 @@ mod tests {
             "0".repeat(64)
         ))?;
         assert_eq!(document.path, "docs/README.md");
+        Ok(())
+    }
+
+    /// Every non-read-only nature must be routed through the broker.
+    ///
+    /// The broker is the only lawful DO path (README.md:9); ARCHITECTURE.md:56
+    /// says "Mutations are refused at the MCP handler" without qualifying them
+    /// as destructive. A gate that enumerates mutating variants reopens this
+    /// hole every time a variant is added, so the gate is fail-closed on
+    /// anything that is not [`ToolNature::ReadOnly`].
+    #[test]
+    fn non_destructive_mutation_still_requires_broker() {
+        assert!(!McpBoundary::requires_broker(ToolNature::ReadOnly));
+        assert!(McpBoundary::requires_broker(
+            ToolNature::MutatingNonDestructive
+        ));
+        assert!(McpBoundary::requires_broker(
+            ToolNature::MutatingDestructive
+        ));
+    }
+
+    /// End-to-end proof that the wired handler refuses a mutating tool call
+    /// with the broker error code rather than admitting it.
+    #[test]
+    fn handle_refuses_mutating_tool_with_broker_error() -> Result<(), Error> {
+        let response = McpBoundary::handle(
+            r#"{"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"ecosystem.mutate"}}"#,
+            Authority::ModifyExternalObject,
+        )?;
+        assert!(response.contains("-32002"), "{response}");
+        assert!(!response.contains("CROWN_QUERY_ADMITTED"), "{response}");
         Ok(())
     }
 }
