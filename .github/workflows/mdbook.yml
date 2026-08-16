@@ -1,60 +1,174 @@
-# Sample workflow for building and deploying a mdBook site to GitHub Pages
-#
-# To get started with mdBook see: https://rust-lang.github.io/mdBook/index.html
-#
-name: Deploy mdBook site to Pages
+name: mdBook Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  pull_request:
+    paths:
+      - book.toml
+      - docs/**
+      - .github/workflows/mdbook.yml
   push:
-    branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [main]
+    paths:
+      - book.toml
+      - docs/**
+      - .github/workflows/mdbook.yml
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  # Build job
   build:
+    name: Build canonical mdBook
     runs-on: ubuntu-latest
     env:
-      MDBOOK_VERSION: 0.4.36
+      EXACT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Install mdBook
-        run: |
-          curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf -y | sh
-          rustup update
-          cargo install --version ${MDBOOK_VERSION} mdbook
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v5
-      - name: Build with mdBook
-        run: mdbook build
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Checkout exact subject
+        uses: actions/checkout@v7
         with:
-          path: ./book
+          ref: ${{ env.EXACT_SHA }}
 
-  # Deployment job
+      - name: Verify exact checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$EXACT_SHA"
+          printf 'exact_subject=%s\n' "$actual"
+
+      - name: Install verified mdBook 0.5.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="0.5.4"
+          archive="mdbook-v${version}-x86_64-unknown-linux-gnu.tar.gz"
+          curl --fail --location --silent --show-error \
+            "https://github.com/rust-lang/mdBook/releases/download/v${version}/${archive}" \
+            --output "${archive}"
+          echo "3f28de05dafca9d0f2eab99c662116b0e37b89b1d96a08f8f430b9eeae958cd7  ${archive}" | sha256sum --check -
+          tar -xzf "${archive}"
+          install -d "$HOME/.local/bin"
+          install -m 0755 mdbook "$HOME/.local/bin/mdbook"
+          "$HOME/.local/bin/mdbook" --version
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Verify book graph
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          docs = Path("docs")
+          summary = (docs / "SUMMARY.md").read_text(encoding="utf-8")
+          targets = re.findall(r"\[[^\]]+\]\(([^)]+\.md)\)", summary)
+          local_targets = [
+              target
+              for target in targets
+              if not target.startswith(("http://", "https://"))
+          ]
+
+          dead_appendix = [
+              target for target in local_targets if target.startswith("v26.9.1/")
+          ]
+          if dead_appendix:
+              raise SystemExit(
+                  f"SUMMARY still references eliminated v26.9.1 corpus: {dead_appendix}"
+              )
+
+          missing = [target for target in local_targets if not (docs / target).exists()]
+          if missing:
+              raise SystemExit(f"SUMMARY contains missing targets: {missing}")
+
+          numbered = []
+          for path in docs.glob("[0-9][0-9]-*.md"):
+              prefix = path.name[:2]
+              if prefix == "00":
+                  continue
+              numbered.append((int(prefix), path.name))
+
+          numbers = sorted(number for number, _ in numbered)
+          if numbers != list(range(1, 71)):
+              raise SystemExit(
+                  "numbered corpus is not exactly 01..70: "
+                  + ", ".join(f"{number:02d}" for number in numbers)
+              )
+
+          summary_numbered = sorted(
+              int(target[:2])
+              for target in local_targets
+              if re.match(r"^\d{2}-.*\.md$", target) and target[:2] != "00"
+          )
+          if summary_numbered != list(range(1, 71)):
+              raise SystemExit(
+                  "SUMMARY does not include exactly chapters 01..70: "
+                  + ", ".join(f"{number:02d}" for number in summary_numbered)
+              )
+
+          print(
+              f"validated {len(local_targets)} local SUMMARY targets "
+              "and exactly 70 numbered chapters"
+          )
+          PY
+
+      - name: Build book
+        run: mdbook build
+
+      - name: Verify rendered crown
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s book/index.html
+          test -s book/00-reading-map.html
+          test -s book/01-constitutional-thesis.html
+          test -s book/50-civilization-scale-synthesis.html
+          test -s book/60-ecosystem-synthesis.html
+          test -s book/70-dissertation-synthesis.html
+          find book -maxdepth 1 -type f -name 'searchindex*.js' -size +0c -print -quit | grep -q .
+          grep -q "The Chatman Ecosystem" book/index.html
+          grep -q "Where is the receipt" book/index.html
+
+      - name: Preserve rendered book
+        uses: actions/upload-artifact@v7
+        with:
+          name: chatman-ecosystem-mdbook
+          path: book
+          if-no-files-found: error
+          retention-days: 7
+
   deploy:
+    name: Deploy GitHub Pages
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Download exact rendered subject
+        uses: actions/download-artifact@v8
+        with:
+          name: chatman-ecosystem-mdbook
+          path: book
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: book
+
+      - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@v5
