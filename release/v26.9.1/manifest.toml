@@ -2,7 +2,7 @@
 name = "Chatman Ecosystem"
 version = "26.9.1"
 target_date = "2026-09-01"
-observed_at = "2026-08-15T13:12:59-07:00"
+observed_at = "2026-08-15T22:26:00-07:00"
 root_repository = "seanchatmangpt/chatman-ecosystem"
 standing = "UNKNOWN"
 
@@ -93,12 +93,12 @@ id = "ggen-marketplace"
 repository = "seanchatmangpt/ggen-marketplace"
 ref = "main"
 ref_check = "github"
-sha = "17b716d133cf67a45d62e514cc38939283337222"
+sha = "ceb2b69ad1dc1bf0906a1979a9e18c53245181f3"
 role = "pack-marketplace"
 disposition = "REQUIRED"
 standing = "ALIVE"
-execution_receipt = "github-actions:31842339853"
-executed_sha = "17b716d133cf67a45d62e514cc38939283337222"
+execution_receipt = "github-actions:31923773826"
+executed_sha = "ceb2b69ad1dc1bf0906a1979a9e18c53245181f3"
 required = true
 depends_on = ["ggen"]
 
@@ -157,10 +157,13 @@ id = "autofde-lab"
 repository = "seanchatmangpt/autofde-lab"
 ref = "master"
 ref_check = "github"
-sha = "16e1662719174c0b6b6297eae0a8ec69a6436292"
+sha = "87d719f441ded3af123a73b95825d5f2847f9c66"
 role = "explore"
 disposition = "REQUIRED"
-standing = "UNKNOWN"
+standing = "BUILD_BROKEN"
+blocker = "REQUIRED_CI_GATES_FAILED"
+execution_receipt = "github-actions:31909415315"
+executed_sha = "87d719f441ded3af123a73b95825d5f2847f9c66"
 required = true
 depends_on = ["bcinr", "gymact"]
 
