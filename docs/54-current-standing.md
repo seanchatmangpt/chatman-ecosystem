@@ -1,12 +1,12 @@
-# Current Standing and Release Frontier
+# 54. Current Standing and Release Frontier
 
-This chapter is intentionally **time-bounded**. It does not attempt to freeze a fast-moving ecosystem into prose. Instead, it explains how to read the current evidence surfaces at the exact book base.
+This chapter is intentionally **time-bounded**. It explains how to read the evidence surfaces carried by this source tree; it does not turn a fast-moving fleet into timeless prose.
 
-At book base `chatman-ecosystem@e1f5c8f116a6866f06e0cee7dce19539330c80db`, the admitted v26.9.1 manifest records release standing as `UNKNOWN`. Its release instance contains sixteen required component roles and exact repository/ref/SHA identities. Separately, the fleet status snapshot observed the composition root plus those component subjects and reported seventeen tracked repositories.
+The admitted v26.9.1 manifest in `release/v26.9.1/manifest.toml` records release standing as `UNKNOWN` and binds sixteen required component roles to exact repository/ref/SHA identities. Separately, the fleet status projection includes the composition root itself, producing seventeen tracked repository subjects.
 
-## Fleet snapshot at the book base
+## Fleet snapshot carried by this tree
 
-The repository status projection observed at `2026-08-16T02:32:03.164547+00:00` reports:
+The status projection observed at `2026-08-16T02:32:03.164547+00:00` reports:
 
 | Standing | Repositories |
 |---|---:|
@@ -18,7 +18,7 @@ The repository status projection observed at `2026-08-16T02:32:03.164547+00:00` 
 
 These numbers are **evidence states, not health percentages**. A `PARTIAL_ALIVE` repository can contain substantial proven capability while lacking the exact role-specific crown required by the release. A `BUILD_BROKEN` repository can have many independently ALIVE sub-capabilities while a mandatory broad rail remains red. A `BLOCKED` repository can have no source defect at all if execution is prevented before the owning verifier can run.
 
-## Current role frontier at the book base
+## Current role frontier in the projection
 
 | Repository | Release role | Snapshot standing |
 |---|---|---|
@@ -40,11 +40,11 @@ These numbers are **evidence states, not health percentages**. A `PARTIAL_ALIVE`
 | `fdegym` | capstone | `PARTIAL_ALIVE` |
 | `chatman-ecosystem` | constitutional root | `PARTIAL_ALIVE` in the status projection |
 
-The authoritative current files are `release/v26.9.1/manifest.toml`, `status/snapshot.json`, and the per-repository reports under `status/repos/`. The book does not replace them.
+The authoritative live-in-repository files are `release/v26.9.1/manifest.toml`, `status/snapshot.json`, and the per-repository reports under `status/repos/`. This book does not replace them.
 
-## Why the manifest and the live snapshot can differ
+## Why the manifest and fleet observation can differ
 
-The release manifest is an **admitted release instance**. A fleet survey is an **observation of current repository state**. Head drift, newly observed workflow failures, new successful runs, or external branch movement can make the observation newer than the release manifest without automatically mutating release identity.
+The release manifest is an **admitted release instance**. A fleet survey is an **observation of repository state**. Head drift, newly observed workflow failures, new successful runs, or external branch movement can make the observation newer than the release manifest without automatically mutating release identity.
 
 That distinction prevents an especially dangerous shortcut:
 
@@ -53,6 +53,19 @@ That distinction prevents an especially dangerous shortcut:
 \]
 
 A candidate head can be newer and better while still lacking admission into the release. Conversely, a release SHA can remain the correct identity even if a repository has moved beyond it.
+
+## Book publication standing is independent
+
+The first merged mdBook publication subject, `chatman-ecosystem@c5a9ef1e64fe24d1f332f838205931a69dc518d8`, executed the full book build court successfully: exact checkout, verified mdBook installation, graph validation, render, rendered-crown checks, and artifact preservation all passed. The production deployment then failed specifically at `Configure Pages` because the repository did not yet have GitHub Pages enabled for GitHub Actions.
+
+That yields two independent propositions:
+
+```text
+BOOK_BUILD(c5a9ef1e...) = ALIVE
+PAGES_PUBLICATION(c5a9ef1e...) = BLOCKED:PAGES_NOT_ENABLED
+```
+
+Neither proposition changes v26.9.1 release standing.
 
 ## The release crown is conjunctive
 
@@ -82,14 +95,14 @@ not as a permanent adjective attached to a repository name. If the exact subject
 
 ## Release closure versus capability closure
 
-The ecosystem now distinguishes at least four closure layers:
+The ecosystem distinguishes at least four closure layers:
 
-1. **epistemic closure** — the observation is sufficiently admitted to support the claim;
-2. **representational closure** — projections preserve the intended semantics and are current;
-3. **operational closure** — the exact behavior executed, produced the required consequence, and was independently verified;
-4. **class closure** — the solved class can be transferred/reproduced without rediscovering the same reasoning.
+1. **epistemic closure** — observation is sufficiently admitted to support the claim;
+2. **representational closure** — projections preserve intended semantics and are current;
+3. **operational closure** — exact behavior executed, produced the required consequence, and was independently verified;
+4. **class closure** — the solved class can transfer/reproduce without rediscovering the same reasoning.
 
-Release closure composes those obligations across the required component graph. A green local test is therefore necessary only for the boundary it actually tests.
+Release closure composes those obligations across the required component graph. A green local test is therefore evidence only for the boundary it actually tests.
 
 ## The next release frontier
 

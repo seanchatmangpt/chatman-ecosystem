@@ -1,4 +1,4 @@
-# The Month the Factory Became a Control System
+# 53. The Month the Factory Became a Control System
 
 The most important development of the July 15–August 15 period was not any single feature. It was the repeated conversion of **local engineering pain into reusable production law**.
 

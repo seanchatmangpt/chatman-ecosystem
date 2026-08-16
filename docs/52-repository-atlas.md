@@ -1,4 +1,4 @@
-# Repository Atlas
+# 52. Repository Atlas
 
 This atlas describes the **major constitutional and release roles** of the Chatman Ecosystem. It is not a claim that these are the only repositories in the wider portfolio. The composition root intentionally distinguishes the release graph from the larger discovery universe.
 

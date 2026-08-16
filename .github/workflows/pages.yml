@@ -1,21 +1,17 @@
-name: Chatman Ecosystem Book
+name: mdBook Pages
 
 on:
   pull_request:
     paths:
-      - "book.toml"
-      - "docs/**"
-      - "theme/**"
-      - "scripts/verify_book.py"
-      - ".github/workflows/pages.yml"
+      - book.toml
+      - docs/**
+      - .github/workflows/pages.yml
   push:
     branches: [main]
     paths:
-      - "book.toml"
-      - "docs/**"
-      - "theme/**"
-      - "scripts/verify_book.py"
-      - ".github/workflows/pages.yml"
+      - book.toml
+      - docs/**
+      - .github/workflows/pages.yml
   workflow_dispatch:
 
 permissions:
@@ -23,60 +19,101 @@ permissions:
 
 concurrency:
   group: pages-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
-  book:
-    name: Validate and build mdBook
+  build:
+    name: Build canonical mdBook
     runs-on: ubuntu-latest
+    env:
+      EXACT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Checkout exact subject
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        uses: actions/checkout@v6
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 0
+          ref: ${{ env.EXACT_SHA }}
 
-      - name: Assert exact subject identity
+      - name: Verify exact checkout
         shell: bash
-        env:
-          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$EXACT_SHA"
+          printf 'exact_subject=%s\n' "$actual"
 
-      - name: Verify book structure and authority fence
-        run: python3 scripts/verify_book.py
+      - name: Install verified mdBook 0.5.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="0.5.4"
+          archive="mdbook-v${version}-x86_64-unknown-linux-gnu.tar.gz"
+          curl --fail --location --silent --show-error \
+            "https://github.com/rust-lang/mdBook/releases/download/v${version}/${archive}" \
+            --output "${archive}"
+          echo "3f28de05dafca9d0f2eab99c662116b0e37b89b1d96a08f8f430b9eeae958cd7  ${archive}" | sha256sum --check -
+          tar -xzf "${archive}"
+          install -d "$HOME/.local/bin"
+          install -m 0755 mdbook "$HOME/.local/bin/mdbook"
+          "$HOME/.local/bin/mdbook" --version
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-      - name: Install pinned mdBook
-        run: cargo install mdbook --locked --version 0.5.3
+      - name: Verify book graph
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          docs = Path("docs")
+          summary = (docs / "SUMMARY.md").read_text(encoding="utf-8")
+          targets = re.findall(r"\[[^\]]+\]\(([^)]+\.md)\)", summary)
+          local_targets = [target for target in targets if not target.startswith(("http://", "https://"))]
+          missing = [target for target in local_targets if not (docs / target).exists()]
+          if missing:
+              raise SystemExit(f"SUMMARY contains missing targets: {missing}")
+
+          core = [
+              path for path in docs.iterdir()
+              if path.is_file() and re.match(r"^(0[1-9]|[1-4][0-9]|50)-.*\.md$", path.name)
+          ]
+          if len(core) != 50:
+              raise SystemExit(f"expected 50 core chapters, found {len(core)}")
+
+          numbered = sorted(int(path.name[:2]) for path in core)
+          if numbered != list(range(1, 51)):
+              raise SystemExit(f"chapter sequence is not exactly 01..50: {numbered}")
+
+          print(f"validated {len(local_targets)} local SUMMARY targets and exactly 50 core chapters")
+          PY
 
       - name: Build book
         run: mdbook build
 
-      - name: Verify rendered consequence
+      - name: Verify rendered crown
         shell: bash
         run: |
           set -euo pipefail
-          test -f book/index.html
-          test -f book/51-ecosystem-map.html
-          test -f book/60-ecosystem-synthesis.html
+          test -s book/index.html
+          test -s book/00-reading-map.html
+          test -s book/01-constitutional-thesis.html
+          test -s book/50-civilization-scale-synthesis.html
+          find book -maxdepth 1 -type f -name 'searchindex*.js' -size +0c -print -quit | grep -q .
           grep -q "The Chatman Ecosystem" book/index.html
-          find book -type f -print0 | sort -z | xargs -0 sha256sum > book.sha256
+          grep -q "Where is the receipt" book/index.html
 
-      - name: Preserve exact-head book artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - name: Preserve rendered book
+        uses: actions/upload-artifact@v4
         with:
-          name: chatman-ecosystem-book-${{ github.event.pull_request.head.sha || github.sha }}
-          path: |
-            book/
-            book.sha256
+          name: chatman-ecosystem-mdbook
+          path: book
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 7
 
   deploy:
     name: Deploy GitHub Pages
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: book
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -86,31 +123,20 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout exact main subject
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Download exact rendered subject
+        uses: actions/download-artifact@v4
         with:
-          ref: ${{ github.sha }}
-
-      - name: Assert exact main subject identity
-        run: test "$(git rev-parse HEAD)" = "${{ github.sha }}"
-
-      - name: Verify book structure
-        run: python3 scripts/verify_book.py
-
-      - name: Install pinned mdBook
-        run: cargo install mdbook --locked --version 0.5.3
-
-      - name: Build book for Pages
-        run: mdbook build
+          name: chatman-ecosystem-mdbook
+          path: book
 
       - name: Configure Pages
-        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+        uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        uses: actions/upload-pages-artifact@v4
         with:
           path: book
 
       - name: Deploy Pages
         id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+        uses: actions/deploy-pages@v4

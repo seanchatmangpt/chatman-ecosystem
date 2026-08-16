@@ -1,4 +1,4 @@
-# From Operator Push to Pull System
+# 55. From Operator Push to Pull System
 
 The software factory is not complete while a human must remember which repository to inspect next, infer which branch contains the useful work, decide which failure matters most, and manually push the next task into the system.
 

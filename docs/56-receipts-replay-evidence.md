@@ -1,4 +1,4 @@
-# Receipts, Replay, and Evidence
+# 56. Receipts, Replay, and Evidence
 
 The Chatman Ecosystem uses receipts because **successful execution is not self-proving**. A process can return exit code zero against the wrong subject, use the wrong authority, mutate a different object, produce the wrong postcondition, or become unreplayable after the fact.
 

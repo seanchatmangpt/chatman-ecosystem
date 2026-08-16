@@ -1,4 +1,4 @@
-# Falsifiers and Open Work
+# 58. Falsifiers and Open Work
 
 A system this broad is only useful if it states what would prove its claims wrong. The Chatman Ecosystem therefore treats falsifiers as design artifacts, not as adversarial commentary added after implementation.
 
@@ -72,7 +72,7 @@ Evidence standing must be revoked when:
 
 ## Current open classes of work
 
-At the book base, the status graph still contains `BUILD_BROKEN`, `BLOCKED`, `UNKNOWN`, and `PARTIAL_ALIVE` required roles. This means the release is correctly non-crowned. The practical open work is not “make all repositories busy.” It is to close the minimum dependency frontier that blocks the required release graph.
+The status graph still contains `BUILD_BROKEN`, `BLOCKED`, `UNKNOWN`, and `PARTIAL_ALIVE` required roles. The practical open work is not “make all repositories busy.” It is to close the minimum dependency frontier that blocks the required release graph.
 
 Important classes include:
 
@@ -83,7 +83,7 @@ Important classes include:
 - convergence of generated evidence projections with their lawful manufacturers;
 - replacement of recurring manual consumer setup with packs and admission gates;
 - conversion of repo-by-repo scheduling into logical WIP pull;
-- Pages enablement/publication for this book, independently of release standing.
+- GitHub Pages administrative enablement followed by an exact-main deployment receipt for this book.
 
 ## The extension rule
 

@@ -1,0 +1,59 @@
+:root {
+  --content-max-width: 980px;
+}
+
+.content main {
+  line-height: 1.72;
+}
+
+.content main h1,
+.content main h2,
+.content main h3 {
+  letter-spacing: -0.012em;
+}
+
+.content main blockquote {
+  border-left-width: 4px;
+  font-weight: 500;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.content main table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.content main mjx-container {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.35rem 0;
+}
+
+.content main .mermaid {
+  max-width: 100%;
+  overflow-x: auto;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.content main pre code.language-mermaid {
+  white-space: pre-wrap;
+}
+
+.content main code {
+  overflow-wrap: anywhere;
+}
+
+.nav-chapters {
+  max-width: var(--content-max-width);
+}
+
+@media (min-width: 1100px) {
+  .content main {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}

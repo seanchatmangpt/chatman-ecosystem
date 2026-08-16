@@ -1,4 +1,4 @@
-# System Map
+# 51. System Map
 
 The Chatman Ecosystem is easiest to understand as a **typed graph of responsibilities**. The repositories matter, but the constitutional roles matter more. A component can be replaced if the replacement preserves the same admitted role, boundaries, falsifiers, and receipt contract.
 

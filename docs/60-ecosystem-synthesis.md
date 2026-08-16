@@ -1,4 +1,4 @@
-# Synthesis: The Ecosystem as a Manufacturing Constitution
+# 60. The Ecosystem as a Manufacturing Constitution
 
 The Chatman Ecosystem can be described in one sentence:
 

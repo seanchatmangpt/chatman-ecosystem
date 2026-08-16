@@ -1,4 +1,4 @@
-# Operating the Composition Root
+# 57. Operating the Composition Root
 
 `chatman-ecosystem` is a **composition root**. It governs identities, dependencies, standing, portfolio observations, and release closure. It must resist the temptation to become the place where implementation code from every component is copied for convenience.
 
@@ -84,14 +84,18 @@ Rerunning an unchanged failure with no new hypothesis is noise.
 
 ## Pages and this book
 
-The mdBook publication path is intentionally independent from release standing. A successful book build proves that the documentation projection is structurally renderable. A successful Pages deployment proves that the exact built projection was published. Neither promotes v26.9.1 components or the aggregate ecosystem release to ALIVE.
+The existing Pages workflow already has a proven build half. On exact merged subject `c5a9ef1e64fe24d1f332f838205931a69dc518d8`, its build job successfully performed exact checkout, installed the verified mdBook 0.5.4 binary, validated the book graph, rendered the book, verified the rendered crown, and preserved the artifact.
 
-The book workflow therefore has two stages:
+The deploy job then failed at `Configure Pages` because the repository Pages site was not enabled/configured for GitHub Actions. This is a repository administration boundary, not a book build defect.
 
-1. **build/validate** on pull requests and branch subjects;
-2. **deploy** only from the admitted publication path on `main` (or an explicitly authorized manual dispatch), using GitHub Pages permissions scoped to the deployment job.
+Therefore:
 
-This preserves `documentation publication != product release`.
+```text
+book manufacture = ALIVE at the executed exact subject
+public Pages consequence = BLOCKED:PAGES_NOT_ENABLED
+```
+
+This book extension intentionally preserves that workflow rather than replacing a proven manufacturer while the unresolved blocker is outside the source tree.
 
 ## Operational daily loop
 

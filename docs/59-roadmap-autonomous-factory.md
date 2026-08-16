@@ -1,16 +1,16 @@
-# Roadmap to an Autonomous Software Factory
+# 59. Roadmap to an Autonomous Software Factory
 
 The next phase of the Chatman Ecosystem is not “more agents.” The target is a production system in which routine work is **selected by admitted graph state**, manufactured deterministically wherever possible, actuated through narrow authority, and closed by receipts.
 
-## Phase 1 — Make the book a projection of the real system
+## Phase 1 — Publish the complete reader-facing corpus
 
-This mdBook is the first reader-facing composition of the existing constitutional corpus. The immediate closure criteria are mechanical:
+The mdBook composes the existing constitutional corpus, full v26.9.1 formal appendix, and operational chapters into one navigation surface. The immediate closure criteria are mechanical:
 
-- every canonical chapter appears exactly once in the navigation;
-- every formal v26.9.1 chapter remains reachable;
+- all 50 canonical chapters remain reachable;
+- the complete 00–49 formal corpus remains reachable;
 - local Markdown targets resolve;
-- the book builds with a pinned mdBook version;
-- Pages deployment is isolated from release standing;
+- the book builds through the already-proven mdBook manufacturer;
+- Pages publication remains independent from release standing;
 - publication does not mutate canonical release facts.
 
 Documentation becomes useful when the same source that governs the system can continuously manufacture a comprehensible public view.
