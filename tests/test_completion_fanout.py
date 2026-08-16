@@ -42,9 +42,9 @@ class CompletionFanoutTests(unittest.TestCase):
     def test_marketplace_exact_subject_with_owning_receipt_is_held(self) -> None:
         packet = self.by_repo["seanchatmangpt/ggen-marketplace"]
         self.assertEqual("ALIVE", packet["standing"])
-        self.assertEqual("17b716d133cf67a45d62e514cc38939283337222", packet["sha"])
+        self.assertEqual("ceb2b69ad1dc1bf0906a1979a9e18c53245181f3", packet["sha"])
         self.assertEqual(packet["sha"], packet["executed_sha"])
-        self.assertEqual("github-actions:31842339853", packet["execution_receipt"])
+        self.assertEqual("github-actions:31923773826", packet["execution_receipt"])
         self.assertEqual("HOLD_EXACT_IDENTITY", packet["action"])
         self.assertIsNone(packet["branch"])
 
