@@ -79,7 +79,3 @@
 - [48. Crown Experiment Protocol](48-crown-experiment-protocol.md)
 - [49. Working Backwards Release](49-working-backwards-release.md)
 - [50. Civilization-Scale Synthesis](50-civilization-scale-synthesis.md)
-
----
-
-[Repository](https://github.com/seanchatmangpt/chatman-ecosystem)
