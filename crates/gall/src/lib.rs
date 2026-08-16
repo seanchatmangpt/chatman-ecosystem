@@ -217,7 +217,10 @@ impl SubjectRegistry {
     }
 
     pub fn revoke(&mut self, subject: &str) -> Result<(), Refusal> {
-        let record = self.subjects.get_mut(subject).ok_or(Refusal::SubjectUnknown)?;
+        let record = self
+            .subjects
+            .get_mut(subject)
+            .ok_or(Refusal::SubjectUnknown)?;
         record.revoked = true;
         Ok(())
     }
@@ -337,7 +340,10 @@ impl GallExecutor {
         fuel_limit: u64,
     ) -> Result<Vec<Checkpoint>, Refusal> {
         let mut checkpoints = Vec::with_capacity(4);
-        let source = self.registry.get("chatman-ecosystem").ok_or(Refusal::InvalidSourcePin)?;
+        let source = self
+            .registry
+            .get("chatman-ecosystem")
+            .ok_or(Refusal::InvalidSourcePin)?;
         checkpoints.push(Checkpoint {
             sequence: 0,
             subject: source.repository.clone(),
@@ -346,7 +352,8 @@ impl GallExecutor {
         });
 
         self.broker.authorize(subject, &self.subjects)?;
-        self.subjects.require_capability(subject, required_capability)?;
+        self.subjects
+            .require_capability(subject, required_capability)?;
         checkpoints.push(Checkpoint {
             sequence: 1,
             subject: subject.to_owned(),
@@ -415,7 +422,15 @@ mod tests {
             fuel: 100,
         };
         let checkpoints = executor
-            .execute_s0_s3("job-1", "cli", "filesystem.write", &wasm, &sha('b'), &allowed, 100)
+            .execute_s0_s3(
+                "job-1",
+                "cli",
+                "filesystem.write",
+                &wasm,
+                &sha('b'),
+                &allowed,
+                100,
+            )
             .unwrap();
         assert_eq!(checkpoints.len(), 4);
         assert_eq!(checkpoints[0].sequence, 0);
