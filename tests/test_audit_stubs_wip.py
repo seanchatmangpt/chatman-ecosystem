@@ -11,8 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location(
     "audit_stubs_wip", ROOT / "scripts" / "audit_stubs_wip.py"
 )
+assert SPEC is not None and SPEC.loader is not None
 audit_stubs_wip = importlib.util.module_from_spec(SPEC)
-assert SPEC.loader is not None
 sys.modules[SPEC.name] = audit_stubs_wip
 SPEC.loader.exec_module(audit_stubs_wip)
 
@@ -40,12 +40,12 @@ def make_git_repo(files: dict[str, str]) -> Path:
 class AuditStubsWipTests(unittest.TestCase):
     def scan_repo(self, files: dict[str, str]):
         repo = make_git_repo(files)
-        original_root = audit_stubs_wip.ROOT
-        audit_stubs_wip.ROOT = repo
+        original_root = getattr(audit_stubs_wip, "ROOT")
+        setattr(audit_stubs_wip, "ROOT", repo)
         try:
             return audit_stubs_wip.scan()
         finally:
-            audit_stubs_wip.ROOT = original_root
+            setattr(audit_stubs_wip, "ROOT", original_root)
 
     def test_finds_todo_marker_in_source_file(self) -> None:
         markers, mock_hits = self.scan_repo({"src/lib.rs": "fn f() {\n    // TODO: fix this\n}\n"})
