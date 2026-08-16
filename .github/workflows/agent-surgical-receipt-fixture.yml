@@ -22,17 +22,16 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import re
           path = Path('crates/ecosystem-core/src/lib.rs')
           text = path.read_text()
-          old = '''            standing_before: Standing::Candidate,
-            standing_after: Standing::Alive,
-            timestamp: "2026-08-05T00:00:00Z".into(),'''
-          new = '''            standing_before: Standing::PartialAlive,
-            standing_after: Standing::Alive,
-            timestamp: "2026-08-05T00:00:00Z".into(),'''
-          if text.count(old) != 1:
-              raise SystemExit(f'exact fixture match count was {text.count(old)}, expected 1')
-          path.write_text(text.replace(old, new, 1))
+          pattern = re.compile(
+              r'(standing_before:\s*Standing::)Candidate(,\s*\n\s*standing_after:\s*Standing::Alive,\s*\n\s*timestamp:\s*"2026-08-05T00:00:00Z"\.into\(\),)'
+          )
+          updated, count = pattern.subn(r'\1PartialAlive\2', text)
+          if count != 1:
+              raise SystemExit(f'exact fixture match count was {count}, expected 1')
+          path.write_text(updated)
           PY
           git diff --check
           test "$(git diff --numstat -- crates/ecosystem-core/src/lib.rs | awk '{print $1+$2}')" = "2"
