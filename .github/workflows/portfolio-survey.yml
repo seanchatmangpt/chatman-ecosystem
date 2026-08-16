@@ -1,0 +1,64 @@
+name: v26.9.1 portfolio survey
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/portfolio-survey.yml'
+      - 'scripts/survey_portfolio.py'
+      - 'scripts/verify_portfolio.py'
+      - 'tests/test_survey_portfolio.py'
+      - 'tests/test_portfolio_control.py'
+      - 'release/v26.9.1/manifest.toml'
+      - 'release/v26.9.1/fleet-policy.toml'
+      - 'release/v26.9.1/constitutional-role-crosswalk.toml'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 12 * * *'
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  survey:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+
+      - name: Verify local portfolio law
+        run: |
+          python3 scripts/verify_portfolio.py
+          python3 -m unittest -v tests.test_portfolio_control tests.test_survey_portfolio
+
+      - name: Observe owner portfolio and exact required refs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/survey_portfolio.py \
+            --inventory-mode public-owner \
+            --token-env GITHUB_TOKEN \
+            --output-dir .artifacts/portfolio-survey \
+            --fail-on-blocking
+          cat .artifacts/portfolio-survey/REPORT.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Seal generated survey bundle
+        run: |
+          (cd .artifacts/portfolio-survey && sha256sum --check SHA256SUMS)
+          tar -C .artifacts -czf portfolio-survey.tgz portfolio-survey
+          sha256sum portfolio-survey.tgz | tee portfolio-survey.tgz.sha256
+
+      - name: Upload survey evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: portfolio-survey-${{ github.run_id }}
+          path: |
+            .artifacts/portfolio-survey/
+            portfolio-survey.tgz
+            portfolio-survey.tgz.sha256
+          if-no-files-found: error
+          retention-days: 30

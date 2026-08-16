@@ -1,0 +1,113 @@
+[constitutional]
+version = "26.9.1"
+source = "frozen-constitutional-calculus"
+allowed_roles = [
+  "Observe",
+  "CandidateState",
+  "SemanticState",
+  "Construct",
+  "Project",
+  "ProduceEvidence",
+  "Admit",
+  "Actuate",
+  "Receipt",
+  "Replay",
+  "ClassClose",
+]
+
+[[crosswalk]]
+release_role = "public-ontology"
+primary = "SemanticState"
+capabilities = ["Project"]
+authority_ceiling = "NO_INSTANCE_ADMISSION_BY_VOCABULARY_EXISTENCE"
+
+[[crosswalk]]
+release_role = "research"
+primary = "Observe"
+capabilities = ["ProduceEvidence"]
+authority_ceiling = "NO_AMBIENT_DO"
+
+[[crosswalk]]
+release_role = "process-type-law"
+primary = "ProduceEvidence"
+capabilities = ["Project"]
+authority_ceiling = "NO_AMBIENT_DO"
+
+[[crosswalk]]
+release_role = "config-admission"
+primary = "Admit"
+capabilities = ["ProduceEvidence"]
+authority_ceiling = "ADMISSION_ONLY_NO_DO"
+
+[[crosswalk]]
+release_role = "manufacture"
+primary = "Construct"
+capabilities = ["Project"]
+authority_ceiling = "CANDIDATE_MANUFACTURE_ONLY"
+
+[[crosswalk]]
+release_role = "pack-marketplace"
+primary = "Project"
+capabilities = ["ClassClose"]
+authority_ceiling = "DISTRIBUTION_DOES_NOT_IMPLY_CLASS_CLOSED"
+
+[[crosswalk]]
+release_role = "formal-proof"
+primary = "ProduceEvidence"
+capabilities = []
+authority_ceiling = "PROOF_NE_AUTHORITY"
+
+[[crosswalk]]
+release_role = "cmca-kernel"
+primary = "Construct"
+capabilities = ["ProduceEvidence"]
+authority_ceiling = "NO_AMBIENT_DO"
+
+[[crosswalk]]
+release_role = "orchestration"
+primary = "Construct"
+capabilities = ["Project"]
+authority_ceiling = "ORCHESTRATION_NE_ACTUATION"
+
+[[crosswalk]]
+release_role = "actuation"
+primary = "Construct"
+capabilities = ["ProduceEvidence"]
+authority_ceiling = "GYMACT_SEARCH_EVALUATION_NO_AMBIENT_DO"
+note = "Legacy release-role name. Frozen constitution maps GymAct to reversible construction/evaluation; consequential DO remains BRCE-exclusive."
+
+[[crosswalk]]
+release_role = "explore"
+primary = "Construct"
+capabilities = ["ProduceEvidence"]
+authority_ceiling = "REVERSIBLE_EXPLORATION_ONLY"
+
+[[crosswalk]]
+release_role = "process-execution"
+primary = "Construct"
+capabilities = ["Project", "ProduceEvidence"]
+authority_ceiling = "PROCESS_RUNTIME_MUST_CROSS_BRCE_FOR_CONSEQUENCE"
+
+[[crosswalk]]
+release_role = "provenance"
+primary = "Receipt"
+capabilities = ["ProduceEvidence", "Replay"]
+authority_ceiling = "RECEIPT_STANDING_ONLY"
+
+[[crosswalk]]
+release_role = "fleet-conformance"
+primary = "ProduceEvidence"
+capabilities = ["Admit"]
+authority_ceiling = "CONFORMANCE_NE_DO"
+
+[[crosswalk]]
+release_role = "product"
+primary = "Construct"
+capabilities = ["Project"]
+authority_ceiling = "PRODUCT_ROLE_NE_CONSTITUTIONAL_AUTHORITY"
+
+[[crosswalk]]
+release_role = "capstone"
+primary = "ProduceEvidence"
+capabilities = ["ClassClose", "Replay"]
+authority_ceiling = "CAPSTONE_CANNOT_SELF_PROMOTE_RELEASE"
