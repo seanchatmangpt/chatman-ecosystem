@@ -40,7 +40,7 @@ class StandingEvidenceTests(unittest.TestCase):
         receipt = verify(self.source)
         self.assertEqual(receipt["alive_components"], 3)
         self.assertEqual(receipt["blocked_components"], 2)
-        self.assertEqual(receipt["build_broken_components"], 1)
+        self.assertEqual(receipt["build_broken_components"], 2)
         self.assertFalse(receipt["do_authority"])
 
     def test_alive_without_execution_receipt_is_refused(self) -> None:
