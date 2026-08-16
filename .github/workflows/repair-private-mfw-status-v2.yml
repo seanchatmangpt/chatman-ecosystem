@@ -1,0 +1,82 @@
+name: Repair private mfw status patch
+
+on:
+  push:
+    branches:
+      - agent/v26.9.1-constitutional-thesis
+    paths:
+      - '.github/workflows/repair-private-mfw-status-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Patch mfw evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import datetime,json,pathlib,re
+          sha='a808821c6636535bc80f59f660b5b35906948c8e'
+          obs=datetime.datetime.now(datetime.timezone.utc).isoformat()
+          sp=pathlib.Path('status/snapshot.json')
+          d=json.loads(sp.read_text())
+          m=next(x for x in d['repositories'] if x['id']=='mfw')
+          m.update({'current_sha':sha,'standing':'BLOCKED','blocker':'GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT','open_pr_count':1,'pushed_at':'2026-08-15T15:05:03Z','observation_authority':'authenticated-github-connector','connector_correction_observed_at':obs,'next_receipt':'Clear or receipt the GitHub Actions billing/spending-limit block, then rerun the exact head and preserve the source/runtime receipt.','latest_exact_run':{'id':31891716973,'name':'MFW CMCA bridge exact-head court','status':'completed','conclusion':'failure','head_sha':sha,'event':'pull_request','updated_at':'2026-08-15T15:05:11Z'}})
+          sp.write_text(json.dumps(d,indent=2)+'\n')
+          ip=pathlib.Path('status/README.md')
+          t=ip.read_text()
+          t=re.sub(r'\| \[mfw\]\(repos/mfw\.md\) \| `orchestration` \| `agent/finish-cmca-mfw` \| `[^`]+` \| \*\*BLOCKED\*\* \|','| [mfw](repos/mfw.md) | `orchestration` | `agent/finish-cmca-mfw` | `a808821c6636` | **BLOCKED** |',t)
+          ip.write_text(t)
+          lines=[]
+          lines += ['# mfw — Ecosystem Status Report','',f'> **Observed:** `{obs}`  ','> **Repository:** `seanchatmangpt/mfw`  ','> **Visibility:** `private`  ','> **Constitutional role:** `orchestration`  ','> **Current evidence standing:** `BLOCKED`','']
+          lines += ['## Executive status','','| Field | Observation |','|---|---|','| Required | `true` |','| Disposition | `REQUIRED` |','| Configured ref | `agent/finish-cmca-mfw` |',f'| Current SHA | `{sha}` |','| Prior manifest SHA | `2ecde02f9d7eaea50cfb4ea7876340c6463ac3a1` |','| Prior manifest standing | `BLOCKED` |','| Current blocker | `GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT` |','| Default branch | `main` |','| Latest branch commit | `ci(cmca): execute source court before Cargo gate` |','| Latest branch commit date | `2026-08-15T15:05:03Z` |','| Repository pushed_at | `2026-08-15T15:05:03Z` |','| Open PRs observed | `1` |','| GitHub open issues+PRs counter | `11` |','| Dependencies | `bcinr` |','| Observation authority | `authenticated-github-connector` |','']
+          lines += ['## Standing derivation','','- The configured private ref resolves through the connected GitHub app at exact head `'+sha+'`.','- The prior manifest subject has advanced, so its older SHA cannot be inherited as current execution standing.','- Exact-head workflow run `31891716973` completed with GitHub conclusion `failure`, but PR #66 records zero runner steps and the platform refusal that recent account payments failed or the spending limit must be increased.','- This is therefore `BLOCKED:GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT`, not a source/build falsifier.','- PR #66 reports local verifier-capsule mechanics and replay as `ALIVE`, exact remote source/runtime execution as `BLOCKED`, and the orchestration edge overall as `PARTIAL_ALIVE`; fleet consequential standing remains `BLOCKED` until the remote court executes.','- The branch Actions token could not observe this private sibling repository. The authenticated GitHub connector supplied the current private-subject observation; lack of observation authority must not be mistaken for ref nonexistence.','']
+          lines += ['The report applies `Architecture != Execution`: local source verification cannot substitute for the exact remote Cargo/runtime court, and a GitHub failure label caused before runner allocation cannot be retyped as `BUILD_BROKEN`.','']
+          lines += ['## Current execution evidence','','- Workflow: **MFW CMCA bridge exact-head court**','- Run ID: `31891716973`','- Status: `completed`','- GitHub conclusion: `failure`','- Constitutional interpretation: `BLOCKED` because the required runner never started',f'- Head SHA: `{sha}`','- Event: `pull_request`','- Updated: `2026-08-15T15:05:11Z`','- Platform refusal: `The job was not started because recent account payments have failed or your spending limit needs to be increased.`','']
+          lines += ['## Open pull requests','','- #66 **feat(cmca): add bounded BCINR allocation bridge** — `agent/finish-cmca-mfw` → `main`; draft=`true`; exact head `'+sha+'`.','']
+          lines += ['## Next standing-changing receipt','','Clear or receipt the GitHub Actions billing/spending-limit block, then rerun the exact head. Required evidence is execution of the source court followed by the unchanged Cargo/runtime gates and a replayable exact-head receipt.','']
+          lines += ['## Constitutional path','','```mermaid','flowchart LR','    M["mfw<br/>orchestration"] --> O["Connector observes private exact head"]','    O --> C["Exact-head court requested"]','    C --> B["Platform refuses runner allocation"]','    B --> S["BLOCKED"]','    S --> U["Clear external prerequisite"]','    U --> R["Replay source + Cargo/runtime court"]','    R -->|PASS + receipt| A["ALIVE candidate"]','```','']
+          lines += ['## Evidence boundary','','This is an observation report, not an actuation receipt. The private subject is observable through the authenticated GitHub connector; promotion requires the blocked exact-head court to execute and receipt its consequence.','']
+          pathlib.Path('status/repos/mfw.md').write_text('\n'.join(lines))
+          PY
+
+      - name: Validate patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'a808821c6636' status/README.md
+          grep -q 'authenticated-github-connector' status/repos/mfw.md
+          python - <<'PY'
+          import json
+          d=json.load(open('status/snapshot.json'))
+          m=next(x for x in d['repositories'] if x['id']=='mfw')
+          assert m['current_sha']=='a808821c6636535bc80f59f660b5b35906948c8e'
+          assert m['standing']=='BLOCKED'
+          assert m['latest_exact_run']['id']==31891716973
+          assert d['counts']['BLOCKED']==1
+          PY
+
+      - name: Remove temporary workflows
+        run: |
+          rm -f .github/workflows/repair-private-mfw-status.yml
+          rm -f .github/workflows/repair-private-mfw-status-v2.yml
+          rmdir .github/workflows 2>/dev/null || true
+          rmdir .github 2>/dev/null || true
+
+      - name: Commit corrected status
+        run: |
+          set -euo pipefail
+          git config user.name 'chatman-ecosystem-bot'
+          git config user.email '136349053+seanchatmangpt@users.noreply.github.com'
+          git add -A status .github
+          git commit -m 'correct private mfw status evidence [skip ci]'
+          git push origin HEAD:${{ github.ref_name }}
