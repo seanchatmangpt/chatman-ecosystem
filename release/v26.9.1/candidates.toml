@@ -1,0 +1,17 @@
+[candidate_ledger]
+release = "26.9.1"
+observed_at = "2026-08-14T14:24:00-07:00"
+authority = "authenticated-github-connector"
+
+[[candidates]]
+component = "fdegym"
+repository = "seanchatmangpt/fdegym"
+pr = 3
+branch = "agent/v26.9.1-capstone-maturity"
+admitted_sha = "2d7c5acb3cbb8df1608cf9b81be53a74e39a1946"
+integration_base_sha = "398e42c55dd7e6471aa3488b194fc0662a74f30c"
+candidate_sha = "646d718882c4f66470f0de801db84f43f3e8c996"
+scope = "Fortune-5 capstone plus 5x7 maturity evidence and pinned CI supply chain"
+scope_standing = "PARTIAL_ALIVE"
+release_standing = "UNKNOWN"
+exact_head_ci = "SUCCESS"

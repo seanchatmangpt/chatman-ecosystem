@@ -1,0 +1,28 @@
+name: v26.9.1 release control plane
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'agent/**'
+
+permissions:
+  contents: read
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - name: Verify manifest and admitted ref evidence
+        run: python3 scripts/verify_release.py --check-refs
+      - name: Refuse unearned standing promotion
+        run: python3 scripts/verify_standing_evidence.py --manifest release/v26.9.1/manifest.toml
+      - name: Verify fleet scope and candidate separation
+        run: python3 scripts/verify_portfolio.py
+      - name: Mutation and invariant tests
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Report crown standing without overclaiming
+        run: python3 scripts/verify_release.py

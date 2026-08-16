@@ -1,0 +1,253 @@
+[release]
+name = "Chatman Ecosystem"
+version = "26.9.1"
+target_date = "2026-09-01"
+observed_at = "2026-08-15T13:12:59-07:00"
+root_repository = "seanchatmangpt/chatman-ecosystem"
+standing = "UNKNOWN"
+
+required_roles = [
+  "public-ontology",
+  "research",
+  "process-type-law",
+  "config-admission",
+  "manufacture",
+  "pack-marketplace",
+  "formal-proof",
+  "cmca-kernel",
+  "orchestration",
+  "actuation",
+  "explore",
+  "process-execution",
+  "provenance",
+  "fleet-conformance",
+  "product",
+  "capstone",
+]
+
+[[components]]
+id = "open-ontologies"
+repository = "seanchatmangpt/open-ontologies"
+ref = "main"
+ref_check = "github"
+sha = "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99"
+role = "public-ontology"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = []
+
+[[components]]
+id = "process-intelligence"
+repository = "seanchatmangpt/process-intelligence"
+ref = "main"
+ref_check = "github"
+sha = "4492a9f92cd85d518b76a9cbd9c74418cf3ad44a"
+role = "research"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = []
+
+[[components]]
+id = "wasm4pm-compat"
+repository = "seanchatmangpt/wasm4pm-compat"
+ref = "main"
+ref_check = "github"
+sha = "577e2d1d8bdfe27d96f61c63f3ea120994e8bfda"
+role = "process-type-law"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = []
+
+[[components]]
+id = "star-toml"
+repository = "seanchatmangpt/star-toml"
+ref = "main"
+ref_check = "github"
+sha = "8395515cf8e68bfdc9edff49fb358c4f1da7c795"
+role = "config-admission"
+disposition = "REQUIRED"
+standing = "BUILD_BROKEN"
+blocker = "REQUIRED_CI_GATES_FAILED"
+execution_receipt = "github-actions:30680591983"
+executed_sha = "8395515cf8e68bfdc9edff49fb358c4f1da7c795"
+required = true
+depends_on = ["wasm4pm-compat"]
+
+[[components]]
+id = "ggen"
+repository = "seanchatmangpt/ggen"
+ref = "main"
+ref_check = "github"
+sha = "162e466d8f07d0a75a468b4441b4bc8b1aad369b"
+role = "manufacture"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = []
+
+[[components]]
+id = "ggen-marketplace"
+repository = "seanchatmangpt/ggen-marketplace"
+ref = "main"
+ref_check = "github"
+sha = "17b716d133cf67a45d62e514cc38939283337222"
+role = "pack-marketplace"
+disposition = "REQUIRED"
+standing = "ALIVE"
+execution_receipt = "github-actions:31842339853"
+executed_sha = "17b716d133cf67a45d62e514cc38939283337222"
+required = true
+depends_on = ["ggen"]
+
+[[components]]
+id = "mfact"
+repository = "seanchatmangpt/mfact"
+ref = "main"
+ref_check = "github"
+sha = "308384002a15b9946acbcd6f560c5819723d79dc"
+role = "formal-proof"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = ["ggen"]
+
+[[components]]
+id = "bcinr"
+repository = "seanchatmangpt/bcinr"
+ref = "main"
+ref_check = "github"
+sha = "d6fefefdb95df5dbbb520afe7b5a4df53aa6e27f"
+role = "cmca-kernel"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = []
+
+[[components]]
+id = "mfw"
+repository = "seanchatmangpt/mfw"
+ref = "agent/finish-cmca-mfw"
+ref_check = "external"
+sha = "2ecde02f9d7eaea50cfb4ea7876340c6463ac3a1"
+role = "orchestration"
+disposition = "REQUIRED"
+standing = "BLOCKED"
+blocker = "GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT"
+required = true
+depends_on = ["bcinr"]
+
+[[components]]
+id = "gymact"
+repository = "seanchatmangpt/gymact"
+ref = "feat/llmless-ggen-agents-fortune5-mna"
+ref_check = "external"
+sha = "cf9a36fcc5b0738269809b83e3ffcad7dae0a5c4"
+role = "actuation"
+disposition = "REQUIRED"
+standing = "BLOCKED"
+blocker = "GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT"
+required = true
+depends_on = ["ggen", "open-ontologies"]
+
+[[components]]
+id = "autofde-lab"
+repository = "seanchatmangpt/autofde-lab"
+ref = "master"
+ref_check = "github"
+sha = "16e1662719174c0b6b6297eae0a8ec69a6436292"
+role = "explore"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = ["bcinr", "gymact"]
+
+[[components]]
+id = "wasm4pm"
+repository = "seanchatmangpt/wasm4pm"
+ref = "main"
+ref_check = "github"
+sha = "b7ebccb53b1249d45d2472f7754c997982b2f1b7"
+role = "process-execution"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = ["wasm4pm-compat"]
+
+[[components]]
+id = "affidavit"
+repository = "seanchatmangpt/affidavit"
+ref = "feat/ecosystem-standing-receipts-20260812"
+ref_check = "external"
+sha = "5dc78f113e60ba95a4b4594a6da3511334e86024"
+role = "provenance"
+disposition = "REQUIRED"
+standing = "ALIVE"
+execution_receipt = "github-actions:31674647112"
+executed_sha = "5dc78f113e60ba95a4b4594a6da3511334e86024"
+required = true
+depends_on = []
+
+[[components]]
+id = "praxis"
+repository = "seanchatmangpt/praxis"
+ref = "main"
+ref_check = "github"
+sha = "bc6b842e0b86e718b098ff3abdc47ef2ad83ee4b"
+role = "fleet-conformance"
+disposition = "REQUIRED"
+standing = "UNKNOWN"
+required = true
+depends_on = ["ggen"]
+
+[[components]]
+id = "autofde"
+repository = "seanchatmangpt/autofde"
+ref = "main"
+ref_check = "github"
+sha = "c3f8abc2e83388b5bdb6cc1bbb8cd19a987c19c7"
+role = "product"
+disposition = "CROWN"
+standing = "ALIVE"
+execution_receipt = "github-actions:31775830421"
+executed_sha = "c3f8abc2e83388b5bdb6cc1bbb8cd19a987c19c7"
+required = true
+depends_on = ["ggen", "gymact", "mfact", "open-ontologies", "star-toml"]
+
+[[components]]
+id = "fdegym"
+repository = "seanchatmangpt/fdegym"
+ref = "main"
+ref_check = "github"
+sha = "2d7c5acb3cbb8df1608cf9b81be53a74e39a1946"
+role = "capstone"
+disposition = "CROWN"
+standing = "UNKNOWN"
+required = true
+depends_on = ["affidavit", "autofde", "autofde-lab", "gymact", "mfact", "mfw", "wasm4pm"]
+
+[[external_ref_observations]]
+component = "mfw"
+authority = "authenticated-github-connector"
+repository = "seanchatmangpt/mfw"
+ref = "agent/finish-cmca-mfw"
+sha = "2ecde02f9d7eaea50cfb4ea7876340c6463ac3a1"
+observed_at = "2026-08-14T09:04:01-07:00"
+
+[[external_ref_observations]]
+component = "gymact"
+authority = "authenticated-github-connector"
+repository = "seanchatmangpt/gymact"
+ref = "feat/llmless-ggen-agents-fortune5-mna"
+sha = "cf9a36fcc5b0738269809b83e3ffcad7dae0a5c4"
+observed_at = "2026-08-14T09:04:01-07:00"
+
+[[external_ref_observations]]
+component = "affidavit"
+authority = "authenticated-github-connector"
+repository = "seanchatmangpt/affidavit"
+ref = "feat/ecosystem-standing-receipts-20260812"
+sha = "5dc78f113e60ba95a4b4594a6da3511334e86024"
+observed_at = "2026-08-15T13:12:59-07:00"
