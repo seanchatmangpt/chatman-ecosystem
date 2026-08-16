@@ -1,0 +1,130 @@
+name: mdBook Pages
+
+on:
+  pull_request:
+    paths:
+      - book.toml
+      - docs/**
+      - .github/workflows/pages.yml
+  push:
+    branches: [main]
+    paths:
+      - book.toml
+      - docs/**
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build canonical mdBook
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@v6
+
+      - name: Install verified mdBook 0.5.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="0.5.4"
+          archive="mdbook-v${version}-x86_64-unknown-linux-gnu.tar.gz"
+          curl --fail --location --silent --show-error \
+            "https://github.com/rust-lang/mdBook/releases/download/v${version}/${archive}" \
+            --output "${archive}"
+          echo "3f28de05dafca9d0f2eab99c662116b0e37b89b1d96a08f8f430b9eeae958cd7  ${archive}" | sha256sum --check -
+          tar -xzf "${archive}"
+          install -d "$HOME/.local/bin"
+          install -m 0755 mdbook "$HOME/.local/bin/mdbook"
+          "$HOME/.local/bin/mdbook" --version
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Verify book graph
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          docs = Path("docs")
+          summary = (docs / "SUMMARY.md").read_text(encoding="utf-8")
+          targets = re.findall(r"\[[^\]]+\]\(([^)]+\.md)\)", summary)
+          local_targets = [target for target in targets if not target.startswith(("http://", "https://"))]
+          missing = [target for target in local_targets if not (docs / target).exists()]
+          if missing:
+              raise SystemExit(f"SUMMARY contains missing targets: {missing}")
+
+          core = [
+              path for path in docs.iterdir()
+              if path.is_file() and re.match(r"^(0[1-9]|[1-4][0-9]|50)-.*\.md$", path.name)
+          ]
+          if len(core) != 50:
+              raise SystemExit(f"expected 50 core chapters, found {len(core)}")
+
+          numbered = sorted(int(path.name[:2]) for path in core)
+          if numbered != list(range(1, 51)):
+              raise SystemExit(f"chapter sequence is not exactly 01..50: {numbered}")
+
+          print(f"validated {len(local_targets)} local SUMMARY targets and exactly 50 core chapters")
+          PY
+
+      - name: Build book
+        run: mdbook build
+
+      - name: Verify rendered crown
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s book/index.html
+          test -s book/00-reading-map.html
+          test -s book/01-constitutional-thesis.html
+          test -s book/50-civilization-scale-synthesis.html
+          test -s book/searchindex.json
+          grep -q "The Chatman Ecosystem" book/index.html
+          grep -q "Where is the receipt" book/index.html
+
+      - name: Preserve rendered book
+        uses: actions/upload-artifact@v4
+        with:
+          name: chatman-ecosystem-mdbook
+          path: book
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy:
+    name: Deploy GitHub Pages
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download exact rendered subject
+        uses: actions/download-artifact@v4
+        with:
+          name: chatman-ecosystem-mdbook
+          path: book
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: book
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
