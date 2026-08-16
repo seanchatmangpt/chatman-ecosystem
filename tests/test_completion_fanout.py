@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import copy
 import importlib.util
+import json
+import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -108,6 +111,94 @@ class CompletionFanoutTests(unittest.TestCase):
 
     def test_plan_validates(self) -> None:
         self.assertEqual([], plan_completion.validate_plan(self.plan))
+
+
+class ValidatePlanFindingTests(unittest.TestCase):
+    """The real plan validates clean; these prove validate_plan actually detects
+    each violation type instead of always returning an empty list."""
+
+    def setUp(self) -> None:
+        manifest = plan_completion.load(ROOT / "release" / "v26.9.1" / "manifest.toml")
+        policy = plan_completion.load(ROOT / "release" / "v26.9.1" / "fleet-policy.toml")
+        bootstrap = plan_completion.load(ROOT / "release" / "v26.9.1" / "fanout-bootstrap.toml")
+        self.plan = plan_completion.construct_plan(manifest, policy, bootstrap)
+
+    def _packet(self, repository: str) -> dict:
+        for packet in self.plan["packets"]:
+            if packet["repository"] == repository:
+                return packet
+        raise KeyError(repository)
+
+    def test_detects_ambient_do_authority(self) -> None:
+        plan = copy.deepcopy(self.plan)
+        plan["packets"][0]["do_authority"] = True
+        findings = plan_completion.validate_plan(plan)
+        self.assertIn(f"AMBIENT_DO_AUTHORITY:{plan['packets'][0]['repository']}", findings)
+
+    def test_detects_invalid_sha(self) -> None:
+        plan = copy.deepcopy(self.plan)
+        target = next(p for p in plan["packets"] if p.get("sha"))
+        target["sha"] = "not-a-real-sha"
+        findings = plan_completion.validate_plan(plan)
+        self.assertIn(f"INVALID_SHA:{target['repository']}:not-a-real-sha", findings)
+
+    def test_detects_alive_without_receipt(self) -> None:
+        plan = copy.deepcopy(self.plan)
+        target = next(p for p in plan["packets"] if p["standing"] == "ALIVE")
+        target["execution_receipt"] = ""
+        findings = plan_completion.validate_plan(plan)
+        self.assertIn(f"ALIVE_WITHOUT_RECEIPT:{target['repository']}", findings)
+
+    def test_detects_build_broken_without_evidence(self) -> None:
+        plan = copy.deepcopy(self.plan)
+        target = next(p for p in plan["packets"] if p["standing"] == "BUILD_BROKEN")
+        target["blocker"] = ""
+        findings = plan_completion.validate_plan(plan)
+        self.assertIn(f"BUILD_BROKEN_WITHOUT_EVIDENCE:{target['repository']}", findings)
+
+    def test_detects_build_broken_subject_drift(self) -> None:
+        plan = copy.deepcopy(self.plan)
+        target = next(p for p in plan["packets"] if p["standing"] == "BUILD_BROKEN")
+        target["executed_sha"] = "f" * 40
+        findings = plan_completion.validate_plan(plan)
+        self.assertIn(f"BUILD_BROKEN_SUBJECT_DRIFT:{target['repository']}", findings)
+
+    def test_detects_duplicate_packet(self) -> None:
+        plan = copy.deepcopy(self.plan)
+        plan["packets"].append(copy.deepcopy(plan["packets"][0]))
+        findings = plan_completion.validate_plan(plan)
+        dupe = plan["packets"][0]
+        self.assertIn(f"DUPLICATE_PACKET:{dupe['repository']}:{dupe['id']}", findings)
+
+
+class MainCliTests(unittest.TestCase):
+    """Exercises the argparse/main() entrypoint, which construct_plan-level unit
+    tests never invoke."""
+
+    def test_main_prints_valid_plan_json_and_exits_zero(self) -> None:
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "plan_completion.py")],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(0, result.returncode, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual("ALIVE", payload["standing"])
+        self.assertEqual([], payload["findings"])
+
+    def test_main_release_only_excludes_portfolio_packets(self) -> None:
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "plan_completion.py"), "--release-only"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(0, result.returncode, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(0, payload["counts"]["portfolio_active"])
 
 
 if __name__ == "__main__":
