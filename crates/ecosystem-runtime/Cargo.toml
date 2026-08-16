@@ -7,7 +7,7 @@ license.workspace = true
 
 [dependencies]
 async-trait.workspace = true
-ecosystem-core = { path = "../ecosystem-core" }
+ecosystem-core = { version = "0.1.0", path = "../ecosystem-core" }
 serde.workspace = true
 serde_json.workspace = true
 sqlx.workspace = true

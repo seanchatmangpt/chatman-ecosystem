@@ -10,8 +10,8 @@ name = "ecosystem"
 path = "src/main.rs"
 
 [dependencies]
-ecosystem-core = { path = "../../crates/ecosystem-core" }
-ecosystem-runtime = { path = "../../crates/ecosystem-runtime" }
+ecosystem-core = { version = "0.1.0", path = "../../crates/ecosystem-core" }
+ecosystem-runtime = { version = "0.1.0", path = "../../crates/ecosystem-runtime" }
 serde_json.workspace = true
 tokio.workspace = true
 

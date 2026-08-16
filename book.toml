@@ -1,0 +1,38 @@
+[book]
+title = "The Chatman Ecosystem"
+authors = ["Sean Chatman"]
+description = "A constitutional calculus for admitted observation, semantic manufacture, bounded actuation, receipts, replay, class closure, and the elimination of manufactured complexity."
+language = "en"
+src = "docs"
+
+[build]
+build-dir = "book"
+create-missing = false
+
+[output.html]
+default-theme = "navy"
+preferred-dark-theme = "navy"
+smart-punctuation = true
+definition-lists = true
+admonitions = true
+mathjax-support = true
+no-section-label = true
+sidebar-header-nav = true
+hash-files = true
+git-repository-url = "https://github.com/seanchatmangpt/chatman-ecosystem"
+git-repository-icon = "fab-github"
+edit-url-template = "https://github.com/seanchatmangpt/chatman-ecosystem/edit/main/docs/{path}"
+site-url = "/chatman-ecosystem/"
+additional-css = ["docs/theme/chatman.css"]
+additional-js = ["docs/theme/chatman.js"]
+input-404 = "404.md"
+
+[output.html.search]
+enable = true
+limit-results = 30
+use-boolean-and = true
+boost-title = 3
+boost-hierarchy = 2
+boost-paragraph = 1
+expand = true
+heading-split-level = 3
