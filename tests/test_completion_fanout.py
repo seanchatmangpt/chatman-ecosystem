@@ -10,8 +10,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("plan_completion", ROOT / "scripts" / "plan_completion.py")
+assert SPEC is not None and SPEC.loader is not None
 plan_completion = importlib.util.module_from_spec(SPEC)
-assert SPEC.loader is not None
 sys.modules[SPEC.name] = plan_completion
 SPEC.loader.exec_module(plan_completion)
 
