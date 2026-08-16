@@ -93,6 +93,19 @@
 - [59. Roadmap to an Autonomous Software Factory](59-roadmap-autonomous-factory.md)
 - [60. The Ecosystem as a Manufacturing Constitution](60-ecosystem-synthesis.md)
 
+# Part IX — Doctoral Crown: Formal Research Program
+
+- [61. The Chatman Ecosystem as a Research Program](61-research-program.md)
+- [62. Axiomatic Kernel and Type Discipline](62-axiomatic-kernel.md)
+- [63. Categorical Semantics and Commuting Manufacture](63-categorical-semantics.md)
+- [64. Epistemic Standing, Evidence, and Non-Self-Certification](64-epistemic-standing.md)
+- [65. Process Calculus: When the Process Is Its State](65-process-calculus.md)
+- [66. DfCM Search Geometry and Reversible Intelligence](66-dfcm-search-geometry.md)
+- [67. Authority, Reachability, and Security Theorem Schemas](67-authority-security-theorems.md)
+- [68. Flow Economics, Little's Law, and the Phase Transition from Coding to Manufacture](68-flow-economics.md)
+- [69. Experimental Method, Falsification, and Benchmark Design](69-experimental-method.md)
+- [70. Dissertation Synthesis: Toward Constitutional Autonomous Manufacture](70-dissertation-synthesis.md)
+
 # Appendix — v26.9.1 Formal Corpus
 
 - [01. Constitutional Thesis](v26.9.1/01_CONSTITUTIONAL_THESIS.md)
