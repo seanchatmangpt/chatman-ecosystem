@@ -1,0 +1,26 @@
+/* Chatman Ecosystem mdBook projection. Keep styling secondary to semantic source. */
+:root {
+  --content-max-width: 920px;
+}
+.content main {
+  max-width: var(--content-max-width);
+}
+.content main p,
+.content main li {
+  line-height: 1.68;
+}
+.content main table {
+  width: 100%;
+  font-size: 0.94em;
+}
+.content main blockquote {
+  border-inline-start-width: 4px;
+}
+.content main code {
+  font-variant-ligatures: none;
+}
+.mermaid {
+  overflow-x: auto;
+  text-align: center;
+  margin: 1.5rem 0;
+}

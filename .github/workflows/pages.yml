@@ -1,0 +1,116 @@
+name: Chatman Ecosystem Book
+
+on:
+  pull_request:
+    paths:
+      - "book.toml"
+      - "docs/**"
+      - "theme/**"
+      - "scripts/verify_book.py"
+      - ".github/workflows/pages.yml"
+  push:
+    branches: [main]
+    paths:
+      - "book.toml"
+      - "docs/**"
+      - "theme/**"
+      - "scripts/verify_book.py"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  book:
+    name: Validate and build mdBook
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Assert exact subject identity
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+
+      - name: Verify book structure and authority fence
+        run: python3 scripts/verify_book.py
+
+      - name: Install pinned mdBook
+        run: cargo install mdbook --locked --version 0.5.3
+
+      - name: Build book
+        run: mdbook build
+
+      - name: Verify rendered consequence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f book/index.html
+          test -f book/51-ecosystem-map.html
+          test -f book/60-ecosystem-synthesis.html
+          grep -q "The Chatman Ecosystem" book/index.html
+          find book -type f -print0 | sort -z | xargs -0 sha256sum > book.sha256
+
+      - name: Preserve exact-head book artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: chatman-ecosystem-book-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            book/
+            book.sha256
+          if-no-files-found: error
+          retention-days: 14
+
+  deploy:
+    name: Deploy GitHub Pages
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: book
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout exact main subject
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Assert exact main subject identity
+        run: test "$(git rev-parse HEAD)" = "${{ github.sha }}"
+
+      - name: Verify book structure
+        run: python3 scripts/verify_book.py
+
+      - name: Install pinned mdBook
+        run: cargo install mdbook --locked --version 0.5.3
+
+      - name: Build book for Pages
+        run: mdbook build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: book
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
