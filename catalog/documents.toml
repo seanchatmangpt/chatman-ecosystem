@@ -1,0 +1,23 @@
+[[document]]
+id = "document:constitution"
+title = "Chatman Ecosystem Constitution"
+path = "CONSTITUTION.md"
+canonical = true
+
+[[document]]
+id = "document:architecture"
+title = "Architecture"
+path = "docs/ARCHITECTURE.md"
+canonical = true
+
+[[document]]
+id = "document:operations"
+title = "Operations and Admission"
+path = "docs/OPERATIONS.md"
+canonical = true
+
+[[document]]
+id = "document:readme"
+title = "Repository Guide"
+path = "README.md"
+canonical = false

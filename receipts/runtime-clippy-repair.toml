@@ -1,0 +1,15 @@
+id = "receipt:runtime-clippy-repair"
+subject = "SELF"
+actor = "chatman-ecosystem-governor"
+authority = "persist_control_plane"
+intention = "repair runtime public contracts and replace boolean capability bundles without weakening Clippy admission"
+observed = ["constitutional core passed Clippy", "runtime Clippy reported conflict-arm duplication, missing public error contracts, excessive boolean state, by-value JSON identity, and missing must-use annotations"]
+executed = ["collapse conflicting state-store refusal arms", "document every public fallible runtime boundary", "replace tool capability booleans with typed policy enums", "borrow JSON-RPC request identity", "mark query functions must-use", "cargo fmt --all"]
+changed = ["crates/ecosystem-runtime/src/lib.rs"]
+verified = ["deterministic repair script completed successfully", "cargo fmt completed successfully", "repair workflow and script self-deleted", "repair commit pushed to agent/crown-completion"]
+excluded = ["CLI and downstream behavior remain subject to the next exact-head diagnostic"]
+replay = ["cargo clippy --locked --workspace --all-targets --all-features -- -D warnings"]
+standing_before = "PARTIAL_ALIVE"
+standing_after = "ALIVE"
+timestamp = "2026-08-05T20:12:00Z"
+digest = ""

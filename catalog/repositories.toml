@@ -1,0 +1,104 @@
+[[repository]]
+id = "repository:chatman-ecosystem"
+name = "chatman-ecosystem"
+url = "https://github.com/seanchatmangpt/chatman-ecosystem"
+role = "constitutional-control-plane"
+standing = "ALIVE"
+
+[[repository]]
+id = "repository:better-fullstack"
+name = "Better-Fullstack"
+url = "https://github.com/Marve10s/Better-Fullstack"
+role = "gall-checkpoint"
+standing = "CANDIDATE"
+
+[[repository]]
+id = "repository:ai-agent-boilerplate"
+name = "ai-agent-boilerplate"
+url = "https://github.com/christopheduc-me/ai-agent-boilerplate"
+role = "behavioral-fixture"
+standing = "CANDIDATE"
+
+[[repository]]
+id = "repository:systemprompt-template"
+name = "systemprompt-template"
+url = "https://github.com/systempromptio/systemprompt-template"
+role = "governance-benchmark"
+standing = "CANDIDATE"
+
+[[repository]]
+id = "repository:entity-derive"
+name = "entity-derive"
+url = "https://github.com/RAprogramm/entity-derive"
+role = "generated-adapter-experiment"
+standing = "CANDIDATE"
+
+[[repository]]
+id = "repository:agent-scaffold"
+name = "agent-scaffold"
+url = "https://github.com/nothingnesses/agent-scaffold"
+role = "doctrine-projection-tool"
+standing = "CANDIDATE"
+
+[[repository]]
+id = "repository:rust-react-microservices"
+name = "rust-react-microservices-boilerplate"
+url = "https://github.com/mathewaloisio97/rust-react-microservices-boilerplate"
+role = "pattern-donor"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:mcpkit"
+name = "mcpkit"
+url = "https://github.com/praxiomlabs/mcpkit"
+role = "mcp-conformance-checkpoint"
+standing = "CANDIDATE"
+
+[[repository]]
+id = "repository:spacetimedsl"
+name = "SpacetimeDSL"
+url = "https://github.com/tamaro-skaljic/SpacetimeDSL"
+role = "generated-law-pattern-corpus"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:hyperlane-broadcast"
+name = "hyperlane-broadcast"
+url = "https://github.com/hyperlane-dev/hyperlane-broadcast"
+role = "rejected-ephemeral-broadcast-wrapper"
+standing = "REJECTED"
+
+[[repository]]
+id = "repository:uniplate"
+name = "uniplate"
+url = "https://github.com/conjure-cp/uniplate"
+role = "bounded-tree-rewrite-experiment"
+standing = "CANDIDATE"
+
+[[repository]]
+id = "repository:goat-billing-proxy"
+name = "GOAT-Network-Micro-Billing-Proxy"
+url = "https://github.com/JerryIdoko/GOAT-Network-Micro-Billing-Proxy"
+role = "rejected-code-fixture-only"
+standing = "REJECTED"
+
+[[repository]]
+id = "repository:rust-enterprise-boilerplate"
+name = "rust-enterprise-boilerplate"
+url = "https://github.com/IltonSeixas/rust-enterprise-boilerplate"
+role = "architecture-pattern"
+standing = "CANDIDATE"
+
+[[repository]]
+id = "repository:vk-bot-api"
+name = "vk-bot-api"
+url = "https://github.com/bitv1be/vk-bot-api"
+role = "deferred-connector"
+standing = "UNSUPPORTED"
+
+[[repository]]
+id = "repository:service-daemon-rs"
+name = "service-daemon-rs"
+url = "https://github.com/loft-games/service-daemon-rs"
+role = "experimental-runtime"
+standing = "CANDIDATE"

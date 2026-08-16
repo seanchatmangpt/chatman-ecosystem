@@ -1,0 +1,5 @@
+[ecosystem]
+id = "ecosystem:chatman"
+name = "Chatman Ecosystem"
+version = "0.1.0"
+subject = "SELF"

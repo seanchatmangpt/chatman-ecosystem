@@ -1,0 +1,17 @@
+[[automation]]
+id = "automation:chatman-flow-control"
+title = "Chatman Flow Control"
+mode = "condition_watch"
+authority = ["observe", "classify", "draft", "persist_control_plane"]
+
+[[automation]]
+id = "automation:engineering-evidence-governor"
+title = "Engineering Evidence Governor"
+mode = "exact_schedule"
+authority = ["observe", "classify", "draft", "open_draft_pull_request"]
+
+[[automation]]
+id = "automation:crown-recalculator"
+title = "Crown Recalculator"
+mode = "post_transition"
+authority = ["observe", "classify", "persist_control_plane"]
