@@ -128,3 +128,8 @@ Canonical execution loop:
 Inspect\rightarrow LocateReceipt\rightarrow ExecuteMissingBoundary
 \rightarrow Repair\rightarrow Replay\rightarrow ClassClose
 \]
+
+## Repository status
+
+Current evidence-bounded per-repository standing is maintained in [`status/README.md`](status/README.md). The status corpus records exact refs/SHAs, prior admitted receipts, current workflow evidence, open PRs, subject drift, blockers, and the next standing-changing receipt for every v26.9.1 ecosystem repository.
+
