@@ -1,0 +1,77 @@
+name: mfw-crown-fmap
+
+on:
+  push:
+    branches: [validation/mfw-pypi-crown-18294174]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CAPSULE: validation/mfw-pypi-crown/mfw-pypi-planner.tar.gz
+  CAPSULE_SHA256: 9d5b8d59de97115f0396c3b9f096c524b8d91725934abb3132560bdbed37c0bb
+  CAPSULE_GIT_BLOB_SHA1: 6eb75ab771ea18b64b44fbaf72c4cde8b3040b11
+  FMAP_COMMIT: 89016e0debf808d30bd339e2a37db4deb2053c8d
+  FMAP_TEST_BLOB: 8b0cfd1ae3d8f8697e0726fd89ca651ab7de4e1d
+
+jobs:
+  fmap-multi-agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Admit capsule and install federation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(sha256sum "$CAPSULE" | awk '{print $1}')" = "$CAPSULE_SHA256"
+          test "$(git hash-object "$CAPSULE")" = "$CAPSULE_GIT_BLOB_SHA1"
+          mkdir -p "$RUNNER_TEMP/capsule" "$RUNNER_TEMP/receipt"
+          tar -xzf "$CAPSULE" -C "$RUNNER_TEMP/capsule"
+          python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[engines]"
+      - name: Execute pinned official FMAP multi-agent fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --filter=blob:none https://github.com/aiplan4eu/up-fmap.git "$RUNNER_TEMP/up-fmap"
+          git -C "$RUNNER_TEMP/up-fmap" checkout "$FMAP_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/up-fmap" rev-parse HEAD)" = "$FMAP_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/up-fmap" hash-object test/test_up_fmap.py)" = "$FMAP_TEST_BLOB"
+          (
+            cd "$RUNNER_TEMP/up-fmap/test"
+            python -m unittest test_up_fmap.FMAPtest.test_fmap -v
+          ) 2>&1 | tee "$RUNNER_TEMP/receipt/fmap-execution.log"
+          grep -q "OK" "$RUNNER_TEMP/receipt/fmap-execution.log"
+          python - "$RUNNER_TEMP/receipt/receipt-fmap.json" <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          import sys
+          log = Path(sys.argv[1]).with_name("fmap-execution.log")
+          receipt = {
+              "schema": "urn:chatman:mfw-fmap-multi-agent:v2",
+              "status": "ALIVE",
+              "mfw_head_sha": "18294174c2d1262821975c08f2843f4a6c29a80c",
+              "mfw_tree_sha": "e31e5d50028b0e2a26ac6a6b4dd466319315e22a",
+              "engine": "fmap",
+              "distribution": "up-fmap",
+              "fixture_repository": "aiplan4eu/up-fmap",
+              "fixture_commit": "89016e0debf808d30bd339e2a37db4deb2053c8d",
+              "fixture_blob": "8b0cfd1ae3d8f8697e0726fd89ca651ab7de4e1d",
+              "test": "FMAPtest.test_fmap",
+              "result": "OK",
+              "execution_log_sha256": hashlib.sha256(log.read_bytes()).hexdigest(),
+          }
+          Path(sys.argv[1]).write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+          print(json.dumps(receipt, sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crown-fmap-${{ github.sha }}
+          path: ${{ runner.temp }}/receipt
+          if-no-files-found: error
+          retention-days: 14

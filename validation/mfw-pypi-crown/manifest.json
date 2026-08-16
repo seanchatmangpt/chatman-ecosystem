@@ -1,0 +1,13 @@
+{
+  "schema": "urn:chatman:mfw-pypi-crown-capsule:v2",
+  "canonical_repository": "seanchatmangpt/mfw",
+  "canonical_base_sha": "e4fbda46f13d8213b86aa4f981d2387638983066",
+  "canonical_head_sha": "18294174c2d1262821975c08f2843f4a6c29a80c",
+  "canonical_tree_sha": "e31e5d50028b0e2a26ac6a6b4dd466319315e22a",
+  "canonical_path": "tools/mfw-pypi-planner",
+  "capsule_git_blob_sha1": "6eb75ab771ea18b64b44fbaf72c4cde8b3040b11",
+  "capsule_sha256": "9d5b8d59de97115f0396c3b9f096c524b8d91725934abb3132560bdbed37c0bb",
+  "capsule_size": 8080,
+  "local_unit_tests": 9,
+  "authority": "validation projection only; chatman-ecosystem is not the canonical editing surface"
+}

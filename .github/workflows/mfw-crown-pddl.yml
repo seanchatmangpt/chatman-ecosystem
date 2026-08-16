@@ -1,0 +1,60 @@
+name: mfw-crown-pddl-selfplay
+
+on:
+  push:
+    branches: [validation/mfw-pypi-crown-18294174]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CAPSULE: validation/mfw-pypi-crown/mfw-pypi-planner.tar.gz
+  CAPSULE_SHA256: 9d5b8d59de97115f0396c3b9f096c524b8d91725934abb3132560bdbed37c0bb
+  CAPSULE_GIT_BLOB_SHA1: 6eb75ab771ea18b64b44fbaf72c4cde8b3040b11
+  VAL_COMMIT: 3c7a1f330bdab0ba28a4762bb45c3f06c27fb6d4
+
+jobs:
+  pddl-selfplay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Admit capsule and install official federation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(sha256sum "$CAPSULE" | awk '{print $1}')" = "$CAPSULE_SHA256"
+          test "$(git hash-object "$CAPSULE")" = "$CAPSULE_GIT_BLOB_SHA1"
+          mkdir -p "$RUNNER_TEMP/capsule" "$RUNNER_TEMP/receipt"
+          tar -xzf "$CAPSULE" -C "$RUNNER_TEMP/capsule"
+          python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[engines]"
+      - name: Build pinned independent VAL validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends flex bison
+          git clone --filter=blob:none https://github.com/KCL-Planning/VAL.git "$RUNNER_TEMP/VAL"
+          git -C "$RUNNER_TEMP/VAL" checkout "$VAL_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/VAL" rev-parse HEAD)" = "$VAL_COMMIT"
+          cmake -S "$RUNNER_TEMP/VAL" -B "$RUNNER_TEMP/VAL/build" -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/VAL/build" --target Validate --parallel 2
+          test -x "$RUNNER_TEMP/VAL/build/bin/Validate"
+          sha256sum "$RUNNER_TEMP/VAL/build/bin/Validate" > "$RUNNER_TEMP/receipt/val-sha256.txt"
+      - name: Execute seven real planners and independent validation
+        run: |
+          python validation/mfw-pypi-crown/pddl_selfplay.py \
+            "$RUNNER_TEMP/capsule" \
+            "$RUNNER_TEMP/VAL/build/bin/Validate" \
+            "$RUNNER_TEMP/receipt"
+          python -m pip freeze > "$RUNNER_TEMP/receipt/pip-freeze.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crown-pddl-selfplay-${{ github.sha }}
+          path: ${{ runner.temp }}/receipt
+          if-no-files-found: error
+          retention-days: 14
