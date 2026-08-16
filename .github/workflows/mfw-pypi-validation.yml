@@ -294,26 +294,33 @@ jobs:
           tar -xzf "$CAPSULE" -C "$RUNNER_TEMP/capsule"
       - name: Install Spiderplan distribution
         run: python -m pip install --disable-pip-version-check "$RUNNER_TEMP/capsule[tamp]"
-      - name: Verify Spiderplan registration
+      - name: Verify explicit Spiderplan Factory admission
         shell: bash
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
           mkdir -p "$RUNNER_TEMP/receipt"
-          mfw-pypi-planner catalog --load-module up_spiderplan > "$RUNNER_TEMP/receipt/catalog-spiderplan.json"
-          python - "$RUNNER_TEMP/receipt/catalog-spiderplan.json" <<'PY'
+          registration='spiderplan=up_spiderplan.solver:EngineImpl'
+          mfw-pypi-planner catalog --register "$registration" > "$RUNNER_TEMP/receipt/catalog-spiderplan.json"
+          python - "$RUNNER_TEMP/receipt/catalog-spiderplan.json" "$registration" <<'PY'
           import json
           from pathlib import Path
           import sys
 
           value = json.loads(Path(sys.argv[1]).read_text())
-          assert value["distributions"]["up-spiderplan"] is not None, value
-          assert any("spider" in engine["name"].lower() for engine in value["engines"]), value
+          registration = sys.argv[2]
+          assert value["distributions"]["up-spiderplan"] == "0.6.4", value
+          assert registration in value["plugin_admission"]["registered_engines"], value
+          assert any(
+              engine["name"] == "spiderplan" and "oneshot_planner" in engine["operations"]
+              for engine in value["engines"]
+          ), value
           receipt = {
               "schema": "urn:chatman:mfw-spiderplan-registration:v1",
               "status": "ALIVE",
               "mfw_head_sha": "5e9b3c41c1f4aa6de9522828716ffe41e70b760b",
-              "scope": "PyPI installation and Unified Planning registration; solver actuation is Docker-bound",
+              "scope": "PyPI installation and explicit Unified Planning Factory registration; solver actuation is Docker-bound",
+              "registration": registration,
               "catalog": value,
           }
           Path("receipt-spiderplan.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
