@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Generate a receipt-oriented Chatman Ecosystem portfolio survey.
 
-This script observes GitHub and projects that observation against the admitted
-v26.9.1 release manifest plus an explicit release-role -> constitutional-role
-crosswalk. Observation never changes release standing and never actuates on
-GitHub. Generated reports are projections only.
+Observation is bounded by its GitHub inventory authority. Public-owner inventory
+is intentionally partial; authenticated-owner inventory may claim completeness.
+Generated outputs are projections only and never promote release standing.
 """
 
 from __future__ import annotations
@@ -52,11 +51,8 @@ class SurveyError(RuntimeError):
 
 class GitHubTransport(Protocol):
     def list_owned_repositories(self, owner: str) -> tuple[list[dict[str, Any]], dict[str, Any]]: ...
-
     def list_open_pull_requests(self, owner: str) -> list[dict[str, Any]]: ...
-
     def list_open_issues(self, owner: str) -> list[dict[str, Any]]: ...
-
     def resolve_ref(self, repository: str, ref: str) -> dict[str, Any]: ...
 
 
@@ -99,7 +95,7 @@ class GitHubClient:
         url = path_or_url if path_or_url.startswith("http") else f"{self.api_url}{path_or_url}"
         headers = {
             "Accept": "application/vnd.github+json",
-            "User-Agent": "chatman-ecosystem-portfolio-survey/1",
+            "User-Agent": "chatman-ecosystem-portfolio-survey/2",
             "X-GitHub-Api-Version": "2022-11-28",
         }
         if self.token:
@@ -126,9 +122,7 @@ class GitHubClient:
                 next_page_empty = True
                 break
             nonempty_pages += 1
-            for item in payload:
-                if isinstance(item, dict):
-                    items.append(item)
+            items.extend(item for item in payload if isinstance(item, dict))
         else:
             raise SurveyError(f"pagination exceeded {max_pages} pages without an empty terminator")
         return items, nonempty_pages, next_page_empty
@@ -148,8 +142,11 @@ class GitHubClient:
             if isinstance(repo.get("owner"), dict) and repo["owner"].get("login") == owner
         ]
         owned.sort(key=lambda repo: str(repo.get("full_name", "")).lower())
+        inventory_complete = self.inventory_mode == "authenticated-owner"
         return owned, {
             "inventory_mode": self.inventory_mode,
+            "inventory_complete": inventory_complete,
+            "inventory_standing": "ALIVE" if inventory_complete else "PARTIAL_ALIVE",
             "page_size": 100,
             "nonempty_pages": nonempty_pages,
             "next_page_empty": next_page_empty,
@@ -274,12 +271,9 @@ def validate_crosswalk(manifest: Mapping[str, Any], crosswalk: Mapping[str, Mapp
 
 def _repository_from_search_item(item: Mapping[str, Any]) -> str | None:
     repository_url = item.get("repository_url")
-    if not isinstance(repository_url, str):
+    if not isinstance(repository_url, str) or "/repos/" not in repository_url:
         return None
-    marker = "/repos/"
-    if marker not in repository_url:
-        return None
-    return repository_url.split(marker, 1)[1]
+    return repository_url.split("/repos/", 1)[1]
 
 
 def _csv_write(path: Path, rows: Sequence[Mapping[str, Any]], fields: Sequence[str]) -> None:
@@ -293,6 +287,10 @@ def _csv_write(path: Path, rows: Sequence[Mapping[str, Any]], fields: Sequence[s
 
 def _iso_now() -> str:
     return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+
+def _inventory_complete(evidence: Mapping[str, Any]) -> bool:
+    return evidence.get("inventory_complete") is True
 
 
 def build_survey(
@@ -313,6 +311,19 @@ def build_survey(
     findings: list[Finding] = list(crosswalk_findings)
     findings.extend(validate_crosswalk(manifest, crosswalk))
 
+    complete_inventory = _inventory_complete(pagination)
+    inventory_mode = str(pagination.get("inventory_mode", "unknown"))
+    inventory_standing = str(
+        pagination.get("inventory_standing", "ALIVE" if complete_inventory else "PARTIAL_ALIVE")
+    )
+    if not complete_inventory:
+        findings.append(Finding(
+            "INVENTORY_AUTHORITY_PARTIAL",
+            "WARN",
+            owner,
+            f"mode={inventory_mode}; absence from this inventory is not proof of repository absence",
+        ))
+
     fleet_table = fleet.get("fleet", {})
     policy_count = fleet_table.get("observed_owned_repository_count")
     if isinstance(policy_count, int) and policy_count != len(repos):
@@ -320,7 +331,7 @@ def build_survey(
             "PORTFOLIO_COUNT_DRIFT",
             "WARN",
             owner,
-            f"fleet-policy={policy_count} observed={len(repos)}",
+            f"fleet-policy={policy_count} observed={len(repos)} mode={inventory_mode}",
         ))
     policy_pages = fleet_table.get("nonempty_pages")
     if isinstance(policy_pages, int) and policy_pages != pagination.get("nonempty_pages"):
@@ -328,24 +339,20 @@ def build_survey(
             "PORTFOLIO_PAGINATION_DRIFT",
             "WARN",
             owner,
-            f"fleet-policy pages={policy_pages} observed pages={pagination.get('nonempty_pages')}",
+            f"fleet-policy pages={policy_pages} observed pages={pagination.get('nonempty_pages')} mode={inventory_mode}",
         ))
 
-    required = required_components(manifest)
     required_rows: list[dict[str, Any]] = []
-    ref_observations: dict[str, dict[str, Any]] = {}
-    for component in required:
+    for component in required_components(manifest):
         repo = str(component["repository"])
         ref = str(component["ref"])
         role = str(component["role"])
         mapping = crosswalk.get(role, {})
-        observed_ref: dict[str, Any]
         try:
             observed_ref = client.resolve_ref(repo, ref)
         except SurveyError as exc:
             observed_ref = {"sha": "", "error": str(exc)}
             findings.append(Finding("REQUIRED_REF_UNOBSERVED", "WARN", f"{repo}@{ref}", str(exc)))
-        ref_observations[repo] = observed_ref
         observed_sha = str(observed_ref.get("sha", ""))
         admitted_sha = str(component.get("sha", ""))
         drift = bool(observed_sha and observed_sha != admitted_sha)
@@ -357,7 +364,20 @@ def build_survey(
                 f"{ref}: admitted={admitted_sha} observed={observed_sha}",
             ))
         if repo not in repo_names:
-            findings.append(Finding("REQUIRED_REPOSITORY_UNOBSERVED", "BLOCKING", repo, "required repository absent from owned inventory"))
+            if complete_inventory:
+                findings.append(Finding(
+                    "REQUIRED_REPOSITORY_UNOBSERVED",
+                    "BLOCKING",
+                    repo,
+                    f"required repository absent from complete {inventory_mode} inventory",
+                ))
+            else:
+                findings.append(Finding(
+                    "REQUIRED_REPOSITORY_UNOBSERVED_PARTIAL_INVENTORY",
+                    "WARN",
+                    repo,
+                    f"required repository absent from partial {inventory_mode} inventory; exact ref observation remains independent",
+                ))
         required_rows.append({
             "id": component.get("id"),
             "repository": repo,
@@ -376,10 +396,9 @@ def build_survey(
             "depends_on": ";".join(component.get("depends_on", [])),
         })
 
-    open_pr_items = client.list_open_pull_requests(owner)
-    core_repos = set(dispositions)
     open_pr_rows: list[dict[str, Any]] = []
-    for item in open_pr_items:
+    core_repos = set(dispositions)
+    for item in client.list_open_pull_requests(owner):
         repo = _repository_from_search_item(item)
         if repo not in core_repos:
             continue
@@ -395,9 +414,8 @@ def build_survey(
     open_pr_rows.sort(key=lambda row: (str(row["repository"]), int(row["number"]) if str(row["number"]).isdigit() else 0))
 
     required_repo_set = set(manifest_repos)
-    open_issue_items = client.list_open_issues(owner)
-    required_issue_rows = []
-    for item in open_issue_items:
+    required_issue_rows: list[dict[str, Any]] = []
+    for item in client.list_open_issues(owner):
         repo = _repository_from_search_item(item)
         if repo in required_repo_set:
             required_issue_rows.append({
@@ -410,17 +428,18 @@ def build_survey(
     repo_rows: list[dict[str, Any]] = []
     for repo in repos:
         full_name = str(repo.get("full_name", ""))
-        manifest_component = manifest_repos.get(full_name)
-        release_role = str(manifest_component.get("role", "")) if manifest_component else ""
+        component = manifest_repos.get(full_name)
+        release_role = str(component.get("role", "")) if component else ""
         mapping = crosswalk.get(release_role, {}) if release_role else {}
         disposition = dispositions.get(full_name, fleet_table.get("default_disposition", "OUT_OF_RELEASE"))
-        scope = "UNMAPPED"
         if full_name == fleet_table.get("composition_root"):
             scope = "ROOT"
-        elif manifest_component:
+        elif component:
             scope = "REQUIRED_V26_9_1"
         elif disposition not in {"OUT_OF_RELEASE", ""}:
             scope = "CONSTITUTIONAL_SUPPORT"
+        else:
+            scope = "UNMAPPED"
         repo_rows.append({
             "repository": full_name,
             "visibility": repo.get("visibility", "public" if repo.get("private") is False else "private" if repo.get("private") is True else ""),
@@ -430,10 +449,10 @@ def build_survey(
             "updated_at": repo.get("updated_at", ""),
             "fleet_disposition": disposition,
             "constitutional_scope": scope,
-            "release_component": manifest_component.get("id", "") if manifest_component else "",
+            "release_component": component.get("id", "") if component else "",
             "release_role": release_role,
             "constitutional_primary": mapping.get("primary", ""),
-            "standing": manifest_component.get("standing", "") if manifest_component else "",
+            "standing": component.get("standing", "") if component else "",
         })
 
     standing_counts = Counter(row["standing"] for row in required_rows)
@@ -444,13 +463,16 @@ def build_survey(
     return {
         "observed_at": observed_at,
         "owner": owner,
-        "pagination": pagination,
+        "inventory": dict(pagination),
         "repositories": repo_rows,
         "required_components": required_rows,
         "open_core_prs": open_pr_rows,
         "open_required_issues": required_issue_rows,
         "findings": [finding.to_dict() for finding in findings],
         "summary": {
+            "inventory_mode": inventory_mode,
+            "inventory_complete": complete_inventory,
+            "inventory_standing": inventory_standing,
             "owned_repository_count": len(repo_rows),
             "required_component_count": len(required_rows),
             "open_core_pr_count": len(open_pr_rows),
@@ -465,9 +487,6 @@ def build_survey(
 
 def render_report(survey: Mapping[str, Any]) -> str:
     summary = survey["summary"]
-    standings = summary.get("required_standing_counts", {})
-    pr_counts = summary.get("open_pr_counts", {})
-    scopes = summary.get("scope_counts", {})
     findings = survey.get("findings", [])
     drift = [finding for finding in findings if finding.get("code") == "REQUIRED_REF_DRIFT"]
     blocking = [finding for finding in findings if finding.get("severity") == "BLOCKING"]
@@ -477,9 +496,16 @@ def render_report(survey: Mapping[str, Any]) -> str:
         f"Observed: `{survey['observed_at']}`",
         f"Owner: `{survey['owner']}`",
         "",
+        "## Observation authority",
+        "",
+        f"- inventory mode: `{summary['inventory_mode']}`",
+        f"- inventory complete: **{str(summary['inventory_complete']).lower()}**",
+        f"- inventory standing: **{summary['inventory_standing']}**",
+        "- absence is blocking only when inventory completeness is admitted.",
+        "",
         "## Boundary",
         "",
-        f"- owned repositories observed: **{summary['owned_repository_count']}**",
+        f"- repositories observed in this inventory: **{summary['owned_repository_count']}**",
         f"- v26.9.1 required components: **{summary['required_component_count']}**",
         f"- open core PRs: **{summary['open_core_pr_count']}**",
         f"- open issues in required repositories: **{summary['open_required_issue_count']}**",
@@ -493,13 +519,13 @@ def render_report(survey: Mapping[str, Any]) -> str:
         "| Standing | Count |",
         "|---|---:|",
     ]
-    for standing, count in sorted(standings.items()):
+    for standing, count in sorted(summary.get("required_standing_counts", {}).items()):
         lines.append(f"| {standing} | {count} |")
     lines.extend(["", "## Portfolio scope", "", "| Scope | Count |", "|---|---:|"])
-    for scope, count in sorted(scopes.items()):
+    for scope, count in sorted(summary.get("scope_counts", {}).items()):
         lines.append(f"| {scope} | {count} |")
     lines.extend(["", "## Open PR concentration", "", "| Repository | Open PRs |", "|---|---:|"])
-    for repo, count in sorted(pr_counts.items(), key=lambda item: (-item[1], item[0])):
+    for repo, count in sorted(summary.get("open_pr_counts", {}).items(), key=lambda item: (-item[1], item[0])):
         lines.append(f"| `{repo}` | {count} |")
     lines.extend(["", "## Findings", ""])
     if findings:
@@ -513,6 +539,7 @@ def render_report(survey: Mapping[str, Any]) -> str:
         "",
         "- `Inspection != Execution`.",
         "- `Proof != Authority`.",
+        "- `PartialInventory != CompleteInventory`.",
         "- release role and constitutional role are separate typed fields.",
         "- successful consequential DO remains BRCE-exclusive and receipt-bound.",
         "- a newer SHA never inherits standing from an older exact subject.",
@@ -541,7 +568,6 @@ def write_outputs(survey: Mapping[str, Any], output_dir: Path) -> None:
     _csv_write(output_dir / "OPEN_REQUIRED_ISSUES.csv", survey["open_required_issues"], issue_fields)
     (output_dir / "FINDINGS.json").write_text(json.dumps(survey, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (output_dir / "REPORT.md").write_text(render_report(survey), encoding="utf-8")
-
     checksum_rows = []
     for path in sorted(output_dir.iterdir()):
         if path.is_file() and path.name != "SHA256SUMS":
@@ -561,7 +587,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--inventory-mode", choices=["public-owner", "authenticated-owner"], default="public-owner")
     parser.add_argument("--observed-at", default=None, help="Override timestamp for deterministic fixture/replay")
     parser.add_argument("--fail-on-blocking", action="store_true", help="Exit 2 when survey-contract BLOCKING findings exist")
-    parser.add_argument("--require-policy-current", action="store_true", help="Exit 2 when observed portfolio count/pagination drifts from fleet-policy")
+    parser.add_argument("--require-policy-current", action="store_true", help="Exit 2 when complete inventory drifts from fleet-policy")
     return parser.parse_args(argv)
 
 
@@ -597,7 +623,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(json.dumps(result, indent=2, sort_keys=True))
     if args.fail_on_blocking and severities.get("BLOCKING", 0):
         return 2
-    if args.require_policy_current and ({"PORTFOLIO_COUNT_DRIFT", "PORTFOLIO_PAGINATION_DRIFT"} & codes):
+    policy_drift = {"PORTFOLIO_COUNT_DRIFT", "PORTFOLIO_PAGINATION_DRIFT"} & codes
+    if args.require_policy_current and survey["summary"]["inventory_complete"] and policy_drift:
         return 2
     return 0
 
