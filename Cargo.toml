@@ -5,6 +5,10 @@ members = [
   "crates/gall",
   "apps/ecosystem-cli",
 ]
+exclude = [
+  "validation/mfw-runner-integration",
+  "validation/mfw-pypi-crown/mfw-runner-integration",
+]
 resolver = "2"
 
 [workspace.package]
