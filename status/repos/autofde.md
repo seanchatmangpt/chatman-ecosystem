@@ -1,5 +1,8 @@
 # autofde — Ecosystem Status Report
 
+> **Generated projection.** This file's facts (ref, SHA, standing, receipts) are rendered from `status/snapshot.json`, the single machine-generated source of truth. Do not hand-edit facts here; regenerate from `status/snapshot.json` instead (AGENTS.md rule 6: generated files are projections, not canonical sources).
+
+
 > **Observed:** `2026-08-16T02:32:03.164547+00:00`  
 > **Repository:** `seanchatmangpt/autofde`  
 > **Constitutional role:** `product`  

@@ -1,4 +1,4 @@
-.PHONY: verify test survey survey-check crown
+.PHONY: verify test survey survey-check crown audit-stubs
 
 verify:
 	python3 scripts/verify_release.py --check-refs
@@ -15,3 +15,6 @@ survey-check:
 
 crown:
 	python3 scripts/verify_release.py --check-refs --require-alive
+
+audit-stubs:
+	python3 scripts/audit_stubs_wip.py --write

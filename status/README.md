@@ -2,6 +2,8 @@
 
 > Fleet observed at `2026-08-16T02:32:03.164547+00:00` from the v26.9.1 admitted component manifest plus live GitHub state.
 
+> **Generated projection.** The table below and each `repos/*.md` file are rendered from `status/snapshot.json`, the single machine-generated source of truth for per-repository ref/SHA/standing facts. Do not hand-edit facts in this table or in `repos/*.md`; regenerate from `status/snapshot.json` instead (AGENTS.md rule 6: generated files are projections, not canonical sources).
+
 ## Fleet standing
 
 | Standing | Repositories |
