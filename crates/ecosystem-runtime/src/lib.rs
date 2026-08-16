@@ -270,6 +270,14 @@ impl GovernorRuntime {
         F: FnOnce() -> Fut,
         Fut: std::future::Future<Output = Result<String, Error>>,
     {
+        if job.idempotency_key.is_empty() {
+            job.state = JobState::Refused;
+            return Err(Error::Refused("idempotency key required".into()));
+        }
+        if !granted.permits(job.required_authority) {
+            job.state = JobState::AwaitingAuthority;
+            return Err(Error::Refused("authority denied".into()));
+        }
         if let Some(result) = self
             .completed
             .lock()
@@ -280,14 +288,6 @@ impl GovernorRuntime {
             job.state = JobState::Succeeded;
             job.result = Some(result.clone());
             return Ok(result);
-        }
-        if job.idempotency_key.is_empty() {
-            job.state = JobState::Refused;
-            return Err(Error::Refused("idempotency key required".into()));
-        }
-        if !granted.permits(job.required_authority) {
-            job.state = JobState::AwaitingAuthority;
-            return Err(Error::Refused("authority denied".into()));
         }
         job.state = JobState::Running;
         job.attempts = job.attempts.saturating_add(1);
@@ -549,6 +549,43 @@ mod tests {
             .await?;
         assert_eq!(one, two);
         assert_eq!(duplicate.attempts, 0);
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn replay_does_not_bypass_authority() -> Result<(), Error> {
+        let runtime = GovernorRuntime::default();
+        let mut seed = GovernorJob::new("seed", "shared-key", Authority::Observe);
+        let seeded = runtime
+            .execute(&mut seed, Authority::Observe, || async { Ok("r:1".into()) })
+            .await?;
+        assert_eq!(seeded, "r:1");
+
+        // Same idempotency key, but escalated required authority the caller does not hold.
+        let mut escalated =
+            GovernorJob::new("escalated", "shared-key", Authority::ModifyExternalObject);
+        let outcome = runtime
+            .execute(&mut escalated, Authority::Observe, || async {
+                Ok("r:2".into())
+            })
+            .await;
+        assert!(matches!(outcome, Err(Error::Refused(_))));
+        assert_eq!(escalated.state, JobState::AwaitingAuthority);
+        assert_eq!(escalated.result, None);
+        assert_eq!(escalated.attempts, 0);
+
+        // An empty key is refused even when the cache holds an entry under the empty key.
+        let mut empty = GovernorJob::new("empty", "", Authority::Observe);
+        assert!(matches!(
+            runtime
+                .execute(&mut empty, Authority::Observe, || async {
+                    Ok("r:3".into())
+                })
+                .await,
+            Err(Error::Refused(_))
+        ));
+        assert_eq!(empty.state, JobState::Refused);
+        assert_eq!(empty.result, None);
         Ok(())
     }
 
