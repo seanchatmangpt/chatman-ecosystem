@@ -28,8 +28,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location(
     "rebrand_portfolio", ROOT / "scripts" / "rebrand_portfolio.py"
 )
+assert SPEC is not None and SPEC.loader is not None
 rebrand_portfolio = importlib.util.module_from_spec(SPEC)
-assert SPEC.loader is not None
 sys.modules[SPEC.name] = rebrand_portfolio
 SPEC.loader.exec_module(rebrand_portfolio)
 
