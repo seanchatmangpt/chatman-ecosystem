@@ -1,4 +1,4 @@
-.PHONY: verify test crown
+.PHONY: verify test survey survey-check crown
 
 verify:
 	python3 scripts/verify_release.py --check-refs
@@ -6,6 +6,12 @@ verify:
 
 test:
 	python3 -m unittest discover -s tests -p 'test_*.py' -v
+
+survey:
+	python3 scripts/survey_portfolio.py --output-dir .artifacts/portfolio-survey --fail-on-blocking
+
+survey-check:
+	python3 scripts/survey_portfolio.py --output-dir .artifacts/portfolio-survey --fail-on-blocking --require-policy-current
 
 crown:
 	python3 scripts/verify_release.py --check-refs --require-alive
