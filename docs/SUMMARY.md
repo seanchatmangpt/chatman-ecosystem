@@ -106,6 +106,19 @@
 - [69. Experimental Method, Falsification, and Benchmark Design](69-experimental-method.md)
 - [70. Dissertation Synthesis: Toward Constitutional Autonomous Manufacture](70-dissertation-synthesis.md)
 
+# Part X — TPS and the Post-Operator Software Factory
+
+- [71. Toyota Production System as a Software-Factory Constitution](71-tps-production-constitution.md)
+- [72. Machine-Scale Throughput and the Non-Throttling Law](72-machine-scale-throughput.md)
+- [73. The Latent POC Reservoir and the Moving Capability Frontier](73-latent-poc-reservoir.md)
+- [74. Portfolio Pull Control Across Hundreds of Repositories](74-portfolio-pull-control.md)
+- [75. Jidoka, Andon, and Poka-Yoke for Autonomous Software Manufacture](75-jidoka-andon-pokayoke.md)
+- [76. Heijunka, Capacity, and Graph-Level Load Distribution](76-heijunka-capacity.md)
+- [77. Standard Work Extraction: From Repeated Human Fix to ggen Pack](77-standard-work-ggen.md)
+- [78. Kaizen and the Self-Improving Factory](78-kaizen-self-improving-factory.md)
+- [79. Measurement System for the Autonomous Software Factory](79-factory-metrics.md)
+- [80. The Post-Operator Factory](80-post-operator-factory.md)
+
 # Appendix — v26.9.1 Formal Corpus
 
 - [01. Constitutional Thesis](v26.9.1/01_CONSTITUTIONAL_THESIS.md)
