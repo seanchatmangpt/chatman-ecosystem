@@ -218,8 +218,18 @@ no secret ever appears under any name/namespace. `crossplane-providers.yaml` ins
 publishing `connectionDetails` from composed resources onto the composite/claim requires a
 dedicated function (e.g. `function-extract-connection-details`), which is never installed.
 `publishConnectionDetailsTo` therefore has nothing to publish, no matter how long you wait.
-This was not fixed — it would mean adding an undocumented function dependency the chapter
-never mentions, past the scope of "reverify what's there."
+One attempted fix for bug 4 was tried and empirically falsified rather than left as
+speculation: current upstream Crossplane docs describe a sibling `writeConnectionSecretToRef`
+field (with `patches`) at the same pipeline-step `input` level as `resources:`, for
+`function-patch-and-transform` to aggregate `connectionDetails` into a secret. Adding
+exactly that field to `composition-postgresql.yaml` and reapplying on a fifth fresh cluster
+failed immediately and unambiguously: `cannot get Function input ...: unknown name
+"writeConnectionSecretToRef"`. The `function-patch-and-transform:v0.7.0` pinned in
+`crossplane-providers.yaml` does not recognize that field in its `Resources` input schema at
+all — current docs' guidance doesn't apply to this exact pinned version. The speculative
+patch was reverted (not left half-applied); bug 4 remains open, now with a sharper root
+cause: not just "no extraction function installed," but "the documented mechanism for the
+installed function's own pinned version doesn't support this at all."
 
 Thirteen of 14 chapters have at least one real, independently-executed script or test
 suite run against real tooling, not just imported. Ch09 received the deepest treatment:
