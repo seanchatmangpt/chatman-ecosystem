@@ -96,6 +96,24 @@ pub struct GallReport {
 }
 
 impl GallReport {
+    /// Aggregate standing derived from the checkpoints actually carried.
+    ///
+    /// `Alive` only when at least one checkpoint exists and every checkpoint is
+    /// `Alive`; an empty report is `Unknown`; otherwise the first non-`Alive`
+    /// checkpoint standing is reported.
+    #[must_use]
+    pub fn standing(&self) -> Standing {
+        match self
+            .checkpoints
+            .iter()
+            .find(|checkpoint| checkpoint.standing != Standing::Alive)
+        {
+            Some(checkpoint) => checkpoint.standing,
+            None if self.checkpoints.is_empty() => Standing::Unknown,
+            None => Standing::Alive,
+        }
+    }
+
     /// Deterministic, dependency-free JSON projection.
     #[must_use]
     pub fn to_json(&self) -> String {
@@ -120,7 +138,8 @@ impl GallReport {
             .collect::<Vec<_>>()
             .join(",");
         format!(
-            "{{\"standing\":\"ALIVE\",\"root_receipt\":\"{}\",\"checkpoints\":[{}]}}",
+            "{{\"standing\":\"{}\",\"root_receipt\":\"{}\",\"checkpoints\":[{}]}}",
+            self.standing(),
             json_escape(&self.root_receipt),
             checkpoints
         )
