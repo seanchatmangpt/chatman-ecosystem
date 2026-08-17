@@ -156,12 +156,31 @@ Ch02's `test-cluster-health.py` was then run for real: stood up a genuine local 
 check; no Flux/app-of-apps deployed on this bare cluster, correctly skipped, not faked). The
 cluster was torn down afterward (`kind delete cluster`) rather than left running.
 
-Thirteen of 14 chapters now have at least one real, independently-executed script or test
-suite run against real tooling, not just imported. Only `test-infrastructure.py` (Ch09)
-remains unrun: it provisions a real `PostgreSQLClaim` through Crossplane and a configured
-cloud/local database provider — meaningfully more setup (Crossplane install + provider
-config) than a bare Kind cluster, and was not attempted rather than faked or partially
-stubbed.
+Ch09 was then attempted for real too: fresh Kind cluster, real Crossplane 2.3.4 via Helm,
+`provider-kubernetes` + `provider-helm` installed and waited to `Healthy`, XRD +
+Composition applied. Two real, out-of-the-box bugs surfaced along the way (both in the
+book's own Ch09 manifests, no modification needed to trigger them):
+
+1. `crossplane-providers.yaml` bundles `Provider` and `ProviderConfig` in one file and
+   applies both in one `kubectl apply`. `ProviderConfig`'s CRD doesn't exist until its
+   `Provider` package finishes installing, so the `ProviderConfig` half fails on first
+   apply (`no matches for kind "ProviderConfig"`) and only succeeds on a second apply after
+   waiting for `provider.pkg.crossplane.io/provider-kubernetes` to reach `Healthy`. The
+   manifest doesn't document this two-step sequencing.
+2. `demo-app-database.yaml`'s `PostgreSQLClaim` sets `spec.publishConnectionDetailsTo`
+   (with a comment explicitly citing "Crossplane v2: writeConnectionSecretToRef was
+   removed from Claims. Use publishConnectionDetailsTo..."), but `xrd-postgresql.yaml`'s
+   claim schema never declares that field — `kubectl apply` rejects it outright: `strict
+   decoding error: unknown field "spec.publishConnectionDetailsTo"`. The XRD schema and
+   the sample claim that's supposed to use it are out of sync.
+
+Ch09's actual `PostgreSQLClaim` was not successfully created because of finding 2 above;
+`test-infrastructure.py` was not run to completion as a result — the blocker is in the
+book's own manifests, not a gap in this verification pass. Cluster torn down afterward.
+
+Thirteen of 14 chapters have at least one real, independently-executed script or test
+suite run against real tooling, not just imported; Ch09 was attempted with real
+infrastructure and hit two real upstream bugs rather than being skipped outright.
 
 ## Not yet done
 
