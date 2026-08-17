@@ -14,7 +14,7 @@ The broker is the only lawful `DO` path. Frameworks, connectors, MCP handlers, s
 - `ecosystem-runtime`: memory and SQLx/SQLite adapters, governor execution, bounded MCP handling, and GitHub/document normalization.
 - `ecosystem-cli`: fail-closed process interface used by operators and CI.
 - `catalog/`: canonical TOML source.
-- `receipts/`: source receipts; blank digests are sealed into `target/crown/receipts` during verification.
+- `receipts/`: sealed source receipts; verification refuses a blank digest and republishes each verified receipt into `target/crown/receipts`.
 - `views/generated/`: deterministic projections. Do not edit manually.
 
 ## Admission

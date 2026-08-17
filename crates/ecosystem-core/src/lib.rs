@@ -544,11 +544,7 @@ impl Receipt {
     }
 }
 
-/// Seals source receipts when needed and verifies every canonical receipt.
-///
-/// # Errors
-/// Returns an I/O, TOML, or receipt-integrity error when admission fails.
-pub fn verify_all_receipts(root: &Path) -> Result<usize, Error> {
+fn receipt_paths(root: &Path) -> Result<Vec<PathBuf>, Error> {
     let dir = root.join("receipts");
     let entries =
         fs::read_dir(&dir).map_err(|e| Error::Io(dir.display().to_string(), e.to_string()))?;
@@ -561,22 +557,69 @@ pub fn verify_all_receipts(root: &Path) -> Result<usize, Error> {
     if paths.is_empty() {
         return Err(Error::Receipt("no receipts".into()));
     }
+    Ok(paths)
+}
+
+fn publish_receipt(root: &Path, path: &Path, receipt: &Receipt) -> Result<(), Error> {
+    let name = path
+        .file_name()
+        .ok_or_else(|| Error::Receipt("missing receipt filename".into()))?;
+    let target = root.join("target/crown/receipts").join(name);
+    atomic_write(
+        &target,
+        &toml::to_string_pretty(receipt).map_err(|e| Error::Receipt(e.to_string()))?,
+    )
+}
+
+/// Verifies every canonical receipt and republishes the verified copies.
+///
+/// An empty digest is a refusal, never an invitation to seal: a receipt that is
+/// authenticated by a signature computed over the body presented at verification
+/// time authenticates nothing, so tampering that also blanks the digest would be
+/// admitted. Sealing is an explicit authoring step ([`seal_all_receipts`]), not a
+/// side effect of the admission gate.
+///
+/// # Errors
+/// Returns an I/O, TOML, or receipt-integrity error when admission fails.
+pub fn verify_all_receipts(root: &Path) -> Result<usize, Error> {
+    let paths = receipt_paths(root)?;
     for path in &paths {
-        let mut receipt: Receipt = load_toml(path)?;
+        let receipt: Receipt = load_toml(path)?;
         if receipt.digest.is_empty() {
-            receipt.sign()?;
-            let name = path
-                .file_name()
-                .ok_or_else(|| Error::Receipt("missing receipt filename".into()))?;
-            let target = root.join("target/crown/receipts").join(name);
-            atomic_write(
-                &target,
-                &toml::to_string_pretty(&receipt).map_err(|e| Error::Receipt(e.to_string()))?,
-            )?;
+            return Err(Error::Receipt(format!(
+                "unsealed receipt {:?}; run `ecosystem receipt seal`",
+                receipt.id
+            )));
         }
         receipt.verify()?;
+        publish_receipt(root, path, &receipt)?;
     }
     Ok(paths.len())
+}
+
+/// Seals every unsealed source receipt in place with its canonical digest.
+///
+/// Returns the number of receipts that were newly sealed.
+///
+/// # Errors
+/// Returns an I/O, TOML, or receipt-integrity error when a receipt cannot be sealed.
+pub fn seal_all_receipts(root: &Path) -> Result<usize, Error> {
+    let paths = receipt_paths(root)?;
+    let mut sealed = 0;
+    for path in &paths {
+        let mut receipt: Receipt = load_toml(path)?;
+        if !receipt.digest.is_empty() {
+            continue;
+        }
+        receipt.sign()?;
+        receipt.verify()?;
+        atomic_write(
+            path,
+            &toml::to_string_pretty(&receipt).map_err(|e| Error::Receipt(e.to_string()))?,
+        )?;
+        sealed += 1;
+    }
+    Ok(sealed)
 }
 
 /// Renders the deterministic standing projection.

@@ -43,7 +43,7 @@ Authority is exact, not ordinal. `Release` does not imply `Merge`; `Merge` does 
 
 ## Receipt boundary
 
-A receipt distinguishes observations, commands executed, artifacts changed, verifications performed, and exclusions. Blank source receipt digests are deterministically sealed into `target/crown/receipts`; the sealed copy is verified before Crown calculation.
+A receipt distinguishes observations, commands executed, artifacts changed, verifications performed, and exclusions. Source receipts are sealed once by `ecosystem receipt seal`; verification refuses a blank digest, because a signature recomputed at verification time authenticates nothing. Each verified receipt is republished to `target/crown/receipts` before Crown calculation.
 
 ## MCP boundary
 

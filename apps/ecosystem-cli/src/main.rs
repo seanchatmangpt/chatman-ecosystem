@@ -1,6 +1,6 @@
 use ecosystem_core::{
-    Catalog, CrownReport, Standing, check_architecture, check_projections, verify_all_receipts,
-    write_projections,
+    Catalog, CrownReport, Standing, check_architecture, check_projections, seal_all_receipts,
+    verify_all_receipts, write_projections,
 };
 use ecosystem_runtime::{McpBoundary, differential_store_check};
 use std::env;
@@ -46,7 +46,7 @@ fn subject(root: &Path) -> String {
 }
 
 fn usage() -> &'static str {
-    "Chatman Ecosystem control plane\n\nUSAGE:\n  ecosystem catalog validate\n  ecosystem standing calculate\n  ecosystem receipt verify-all\n  ecosystem projection render\n  ecosystem projection check\n  ecosystem architecture check\n  ecosystem storage verify\n  ecosystem mcp handle\n  ecosystem crown [--json|--verify]\n"
+    "Chatman Ecosystem control plane\n\nUSAGE:\n  ecosystem catalog validate\n  ecosystem standing calculate\n  ecosystem receipt seal\n  ecosystem receipt verify-all\n  ecosystem projection render\n  ecosystem projection check\n  ecosystem architecture check\n  ecosystem storage verify\n  ecosystem mcp handle\n  ecosystem crown [--json|--verify]\n"
 }
 
 async fn execute(arguments: &[String]) -> Result<String, String> {
@@ -65,6 +65,10 @@ async fn execute(arguments: &[String]) -> Result<String, String> {
             let report =
                 CrownReport::evaluate(&root, subject(&root)).map_err(|error| error.to_string())?;
             Ok(format!("{:?}", report.standing))
+        }
+        [area, action] if area == "receipt" && action == "seal" => {
+            let count = seal_all_receipts(&root).map_err(|error| error.to_string())?;
+            Ok(format!("RECEIPTS_SEALED count={count}"))
         }
         [area, action] if area == "receipt" && action == "verify-all" => {
             let count = verify_all_receipts(&root).map_err(|error| error.to_string())?;

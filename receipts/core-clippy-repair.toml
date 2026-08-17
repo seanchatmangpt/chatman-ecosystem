@@ -3,13 +3,25 @@ subject = "SELF"
 actor = "chatman-ecosystem-governor"
 authority = "persist_control_plane"
 intention = "repair constitutional core documentation and Clippy contracts without weakening admission policy"
-observed = ["rustfmt passed", "Clippy reported missing error documentation, must-use candidates, format-push allocations, and clone assignment"]
-executed = ["document every public fallible constitutional API", "mark query results must-use", "replace format-push allocations with direct formatting", "replace clone assignment with clone_from", "cargo fmt --all"]
+observed = [
+    "rustfmt passed",
+    "Clippy reported missing error documentation, must-use candidates, format-push allocations, and clone assignment",
+]
+executed = [
+    "document every public fallible constitutional API",
+    "mark query results must-use",
+    "replace format-push allocations with direct formatting",
+    "replace clone assignment with clone_from",
+    "cargo fmt --all",
+]
 changed = ["crates/ecosystem-core/src/lib.rs"]
-verified = ["self-deleting repair workflow completed successfully", "temporary actuator and script were removed in the same commit"]
+verified = [
+    "self-deleting repair workflow completed successfully",
+    "temporary actuator and script were removed in the same commit",
+]
 excluded = ["runtime and CLI Clippy standing remains subject to the next exact-head diagnostic"]
 replay = ["cargo clippy --locked --workspace --all-targets --all-features -- -D warnings"]
 standing_before = "PARTIAL_ALIVE"
 standing_after = "ALIVE"
 timestamp = "2026-08-05T20:01:00Z"
-digest = ""
+digest = "blake3:2acd14fb2ca7213499a811c6f168502766a3189342fa3caa87941b33918bb544"

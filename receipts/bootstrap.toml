@@ -3,13 +3,36 @@ subject = "SELF"
 actor = "chatman-ecosystem"
 authority = "persist_control_plane"
 intention = "admit the initial constitutional control-plane implementation"
-observed = ["canonical manifests", "constitutional source", "runtime adapters", "CI admission workflows"]
-executed = ["cargo fmt --all -- --check", "cargo clippy --locked --workspace --all-targets --all-features -- -D warnings", "cargo test --locked --workspace --all-features", "ecosystem crown --verify"]
-changed = ["workspace", "catalog", "receipts", "generated views", "documentation", "workflows"]
-verified = ["catalog resolves", "receipt seals and verifies", "projections are deterministic", "memory and SQLite stores are equivalent", "MCP mutations are broker-refused"]
+observed = [
+    "canonical manifests",
+    "constitutional source",
+    "runtime adapters",
+    "CI admission workflows",
+]
+executed = [
+    "cargo fmt --all -- --check",
+    "cargo clippy --locked --workspace --all-targets --all-features -- -D warnings",
+    "cargo test --locked --workspace --all-features",
+    "ecosystem crown --verify",
+]
+changed = [
+    "workspace",
+    "catalog",
+    "receipts",
+    "generated views",
+    "documentation",
+    "workflows",
+]
+verified = [
+    "catalog resolves",
+    "receipt seals and verifies",
+    "projections are deterministic",
+    "memory and SQLite stores are equivalent",
+    "MCP mutations are broker-refused",
+]
 excluded = ["publication and merge require explicit authority"]
 replay = ["./scripts/crown.sh"]
 standing_before = "PARTIAL_ALIVE"
 standing_after = "ALIVE"
 timestamp = "2026-08-05T19:00:00Z"
-digest = ""
+digest = "blake3:53f339c20a4a5ebe754b1cf300a65f8a0c3a01ed7993f69d091391866edf1b8f"
