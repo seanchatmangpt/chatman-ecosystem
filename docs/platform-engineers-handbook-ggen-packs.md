@@ -193,10 +193,40 @@ account any RBAC (`ClusterRole`/`ClusterRoleBinding`) to manage the resource kin
 `test-infrastructure.py`'s `wait_for_claim_ready` therefore polls forever and was stopped
 rather than left running. Cluster torn down afterward, as before.
 
+Third pass: fixed bug 3 too. `provider-kubernetes`'s service account name is revision-hashed
+(`provider-kubernetes-<hash>`), so the fix can't be a static manifest checked in ahead of
+time — it's a real post-install step, matching upstream `provider-kubernetes`'s own
+documented pattern:
+
+```sh
+SA=$(kubectl get sa -n crossplane-system -o name | grep provider-kubernetes | sed 's|serviceaccount/||')
+kubectl create clusterrolebinding provider-kubernetes-admin-binding \
+  --clusterrole cluster-admin --serviceaccount="crossplane-system:${SA}"
+```
+
+Reverified end to end on a fourth fresh cluster: applied the RBAC binding, then the fixed
+XRD + Composition + claim — `Ready: True` on the *first* status check, and all 5 composed
+Objects (Deployment, Namespace, Secret, PersistentVolumeClaim, Service) `SYNCED: True /
+READY: True`. `test-infrastructure.py` then ran and got further than any prior attempt:
+`✓ Claim is ready` — but stopped at `Connection secret was not created`.
+
+That is a fourth real bug, distinct from the first three: the Composition declares
+`connectionDetails` on its composed resources (comments in the file call this "the v2
+pattern"), but the composite's and claim's `status.connectionDetails` never populate, and
+no secret ever appears under any name/namespace. `crossplane-providers.yaml` installs only
+`function-patch-and-transform` in the Composition's function pipeline — extracting and
+publishing `connectionDetails` from composed resources onto the composite/claim requires a
+dedicated function (e.g. `function-extract-connection-details`), which is never installed.
+`publishConnectionDetailsTo` therefore has nothing to publish, no matter how long you wait.
+This was not fixed — it would mean adding an undocumented function dependency the chapter
+never mentions, past the scope of "reverify what's there."
+
 Thirteen of 14 chapters have at least one real, independently-executed script or test
-suite run against real tooling, not just imported; Ch09 was attempted twice with real
-infrastructure, one of its two blocking bugs was fixed and reverified, and the third
-(missing `provider-kubernetes` RBAC) is recorded rather than worked around.
+suite run against real tooling, not just imported. Ch09 received the deepest treatment:
+attempted three times with real infrastructure across four disposable Kind clusters, found
+four real out-of-the-box bugs, fixed and reverified two of them (the schema gap and the
+missing RBAC), and stopped at the fourth (missing connection-details function) rather than
+adding functionality the book never specified.
 
 ## Not yet done
 
