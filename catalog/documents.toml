@@ -27,3 +27,9 @@ id = "document:post-agi-platform-handbook"
 title = "The Post-AGI Platform Engineer's Handbook"
 path = "docs/post-agi-platform-handbook/README.md"
 canonical = false
+
+[[document]]
+id = "document:platform-engineers-handbook-ggen-packs"
+title = "The Platform Engineer's Handbook — ggen Packs"
+path = "docs/platform-engineers-handbook-ggen-packs.md"
+canonical = false
