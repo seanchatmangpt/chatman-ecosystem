@@ -174,13 +174,29 @@ book's own Ch09 manifests, no modification needed to trigger them):
    decoding error: unknown field "spec.publishConnectionDetailsTo"`. The XRD schema and
    the sample claim that's supposed to use it are out of sync.
 
-Ch09's actual `PostgreSQLClaim` was not successfully created because of finding 2 above;
-`test-infrastructure.py` was not run to completion as a result — the blocker is in the
-book's own manifests, not a gap in this verification pass. Cluster torn down afterward.
+Follow-up pass: patched `xrd-postgresql.yaml` locally (in the working tree only, not
+upstream) to declare `spec.publishConnectionDetailsTo` in the claim's OpenAPI schema
+(standard Crossplane shape: `name`, `configRef.name`, `metadata.{labels,annotations,type}`),
+matching the field `demo-app-database.yaml` already tried to set. On a fresh cluster with
+that one field added, `kubectl apply -f demo-app-database.yaml` now succeeds (bug 2 fixed).
+
+That surfaced a third real, out-of-the-box bug: the composite reaches `Synced: True` /
+`Ready: False` indefinitely. The underlying `provider-kubernetes` `Object` resources
+(PersistentVolumeClaim, Namespace, Deployment, Service — everything except Secret) all fail
+with `cannot get object: ... is forbidden: User
+"system:serviceaccount:crossplane-system:provider-kubernetes-*" cannot get resource
+"persistentvolumeclaims" in API group "" in the namespace "databases"`.
+`crossplane-providers.yaml` installs `provider-kubernetes` but never grants its service
+account any RBAC (`ClusterRole`/`ClusterRoleBinding`) to manage the resource kinds its own
+`composition-postgresql.yaml` composes — confirmed by grepping all of Ch09's YAML files for
+`ClusterRole`/`ClusterRoleBinding` naming `provider-kubernetes`: zero matches.
+`test-infrastructure.py`'s `wait_for_claim_ready` therefore polls forever and was stopped
+rather than left running. Cluster torn down afterward, as before.
 
 Thirteen of 14 chapters have at least one real, independently-executed script or test
-suite run against real tooling, not just imported; Ch09 was attempted with real
-infrastructure and hit two real upstream bugs rather than being skipped outright.
+suite run against real tooling, not just imported; Ch09 was attempted twice with real
+infrastructure, one of its two blocking bugs was fixed and reverified, and the third
+(missing `provider-kubernetes` RBAC) is recorded rather than worked around.
 
 ## Not yet done
 
