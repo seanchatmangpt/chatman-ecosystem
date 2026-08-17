@@ -55,13 +55,29 @@ corrupting the nested template syntax. That one file was excluded from the pack'
 file set (`ggen-create remove <path>`) before `usename`/`generate`; the rest of Ch10's 36
 templates captured normally.
 
+## Verification
+
+All 14 packs were run through `ggen-create verify` against the real `ggen 26.8.8` binary
+(`ggen sync run`, not a mock actuator):
+
+```sh
+ggen-create verify --output <dir> --ggen-bin "$(which ggen)" --set PlatformEngHandbook
+```
+
+For every pack: reconstruction and variation runs both exit `0` and write every captured
+file; checkpoints `P1_CAPTURE_PARITY` through `P6_REVISION_PARITY` are `ALIVE`; overall
+`state: PARTIAL_ALIVE`. `P0_REFERENCE_IDENTITY` and `P7_PARITY_CROWN` sit at `UNEXECUTED`/
+`PARTIAL_ALIVE` because no `--reference-dir` was supplied — there is no separate
+upstream-generated "known good" render to diff against for these packs (unlike the
+hygen-create greeter fixture, which has one). This is expected, not a failure.
+
 ## Not yet done
 
 - No `Appendix A` directory exists in the source repository at the cloned ref — only
   `Ch01`–`Ch14` — so no corresponding pack was created for it.
-- Packs have not yet been run through `ggen-create verify` / `ggen-create package verify`
-  against a real `ggen` render, nor added to `ggen-marketplace/marketplace.toml`'s catalog
-  entries or qualification gates. Structural capture only; not yet qualified.
+- Packs are not yet added to `ggen-marketplace/marketplace.toml`'s catalog entries or
+  qualification gates. Capture and single-binary verify only; not yet published/qualified
+  by the marketplace's own qualifier.
 
 ## See also
 
