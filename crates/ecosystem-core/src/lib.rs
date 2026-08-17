@@ -681,14 +681,36 @@ pub fn check_projections(root: &Path) -> Result<usize, Error> {
     Ok(rendered.len())
 }
 
+const FORBIDDEN_CORE_DEPENDENCIES: [&str; 6] =
+    ["tokio", "sqlx", "axum", "tower", "reqwest", "rmcp"];
+
+/// Collects declared crate names from any `*dependencies` table reachable in the
+/// manifest, including `target.*` tables, honouring `package = ` renames.
+fn collect_dependency_names(value: &toml::Value, inside_table: bool, names: &mut Vec<String>) {
+    let Some(table) = value.as_table() else {
+        return;
+    };
+    for (key, child) in table {
+        if inside_table {
+            names.push(key.clone());
+            if let Some(renamed) = child.get("package").and_then(toml::Value::as_str) {
+                names.push(renamed.to_string());
+            }
+        } else {
+            let dependency_table =
+                key == "dependencies" || key == "dev-dependencies" || key == "build-dependencies";
+            collect_dependency_names(child, dependency_table, names);
+        }
+    }
+}
+
 fn check_core_manifest(core: &str) -> Result<(), Error> {
-    for forbidden in ["tokio", "sqlx", "axum", "tower", "reqwest", "rmcp"] {
-        if core.lines().any(|line| {
-            let line = line.trim_start();
-            line.starts_with(&format!("{forbidden} "))
-                || line.starts_with(&format!("{forbidden}="))
-                || line.starts_with(&format!("{forbidden}."))
-        }) {
+    let manifest: toml::Value = toml::from_str(core)
+        .map_err(|error| Error::Architecture(format!("core manifest is unreadable: {error}")))?;
+    let mut names = Vec::new();
+    collect_dependency_names(&manifest, false, &mut names);
+    for forbidden in FORBIDDEN_CORE_DEPENDENCIES {
+        if names.iter().any(|name| name == forbidden) {
             return Err(Error::Architecture(format!(
                 "core depends on `{forbidden}`"
             )));
@@ -839,6 +861,27 @@ mod tests {
     fn architecture_gate_proves_it_can_fail() {
         assert!(check_core_manifest("[dependencies]\ntokio = \"1\"\n").is_err());
         assert!(check_core_manifest("[dependencies]\nserde = \"1\"\n").is_ok());
+    }
+
+    #[test]
+    fn architecture_gate_rejects_every_manifest_spelling() {
+        for manifest in [
+            "[dependencies.tokio]\nversion = \"1\"\n",
+            "[dependencies]\ntokio\t= \"1\"\n",
+            "[dependencies]\ntokio  = \"1\"\n",
+            "[target.'cfg(unix)'.dependencies]\ntokio = \"1\"\n",
+            "[dependencies]\nrt = { package = \"tokio\", version = \"1\" }\n",
+            "[dev-dependencies]\nsqlx = \"0.7\"\n",
+            "[build-dependencies]\nreqwest = \"0.12\"\n",
+            "[target.'cfg(unix)'.dev-dependencies.axum]\nversion = \"0.7\"\n",
+        ] {
+            assert!(
+                check_core_manifest(manifest).is_err(),
+                "gate admitted forbidden dependency: {manifest}"
+            );
+        }
+        assert!(check_core_manifest("[dependencies]\nblake3 = \"1\"\ntoml = \"0.8\"\n").is_ok());
+        assert!(check_core_manifest("not = valid = toml").is_err());
     }
 
     #[test]
