@@ -51,3 +51,9 @@ id = "document:platform-engineers-handbook-backport"
 title = "The Platform Engineer's Handbook — Ch09 Backport"
 path = "docs/platform-engineers-handbook-backport.md"
 canonical = false
+
+[[document]]
+id = "document:platform-engineers-handbook-capability-roadmap"
+title = "The Platform Engineer's Handbook — Capability Roadmap"
+path = "docs/platform-engineers-handbook-capability-roadmap.md"
+canonical = false

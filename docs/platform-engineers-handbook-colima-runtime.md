@@ -176,6 +176,37 @@ detail already present for Ch05/07/11.
 - Ch10 (Backstage scaffold template) — not instantiated against a real Backstage instance.
 - Ch12 — not exercised in this pass.
 
+## Update: Real Playwright E2E tests
+
+A real Playwright test project (`tests/e2e/platform-engineers-handbook/`) was set up and run
+against the four live monitoring/demo services on this same `kind-platform-eng-colima`
+cluster, port-forwarded to `localhost:18300`–`18303`. No mocked HTTP — every test drives a
+real Chromium browser against a real service.
+
+Real run from the project's own location:
+
+```
+Running 5 tests using 5 workers
+
+  ✓  2 tests/alertmanager-demoapp.spec.ts:21:1 › JTBD: demo app responds to a real browser request at /health (368ms)
+  ✓  3 tests/alertmanager-demoapp.spec.ts:29:1 › JTBD: demo app /items endpoint renders real JSON in a browser (370ms)
+  ✓  4 tests/alertmanager-demoapp.spec.ts:6:1 › JTBD: view active alerts in the Alertmanager web UI (912ms)
+  ✓  5 tests/grafana.spec.ts:7:1 › JTBD: log into Grafana and view a live dashboard with real data (3.4s)
+  ✓  1 tests/prometheus.spec.ts:5:1 › JTBD: run a PromQL query in the Prometheus web UI and see real results (4.8s)
+
+  5 passed (5.5s)
+```
+
+All 5 JTBDs covered: Grafana login + live dashboard, a real PromQL query against Prometheus,
+Alertmanager's active-alerts view, and the demo app's `/health` and `/items` endpoints.
+
+One real UI-implementation detail surfaced while writing the Prometheus test, not a platform
+defect: the first attempt navigated to Prometheus's root path (`/`) and targeted a plain
+`<textarea>`/`<input>` for the query box, and failed — the current Prometheus web UI serves
+its query page at `/query`, and the query input is an ARIA `role="textbox"`
+CodeMirror-based editor, not a plain form control. Corrected by navigating to `/query` and
+selecting the input via `page.getByRole('textbox')`.
+
 ## See also
 
 - [The Platform Engineer's Handbook — ggen Pack](platform-engineers-handbook-ggen-packs.md)

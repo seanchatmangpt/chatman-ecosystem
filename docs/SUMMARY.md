@@ -72,6 +72,7 @@
 - [The Platform Engineer's Handbook — Running on Colima](platform-engineers-handbook-colima-runtime.md)
 - [The Platform Engineer's Handbook — Backward-Chain Composition Plan](platform-engineers-handbook-backward-chain.md)
 - [The Platform Engineer's Handbook — Ch09 Backport](platform-engineers-handbook-backport.md)
+- [The Platform Engineer's Handbook — Capability Roadmap](platform-engineers-handbook-capability-roadmap.md)
 
 # Part VII — Substrate Independence and the Post-AGI Limit
 
