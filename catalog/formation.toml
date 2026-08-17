@@ -1,0 +1,58 @@
+[formation]
+id = "formation:knowing-christ-v1"
+goal = "know_christ"
+mode = "daily_process_not_project"
+standing = "CANDIDATE"
+authority = "SELECT_CONSTRUCT_ONLY"
+recognition_is_goal = false
+results_are_spiritual_score = false
+conversion_is_machine_scored = false
+pastoral_authority_is_delegated_to_ai = false
+
+fences = [
+  "NO_CONVERSION_SCORE",
+  "NO_SPIRITUAL_LEADERBOARD",
+  "NO_RECOGNITION_AS_GOAL",
+  "NO_PROSPERITY_FORMULA",
+  "NO_AI_REVELATION_CLAIMS",
+  "NO_PASTORAL_AUTHORITY",
+  "NO_PRIVATE_CONFESSION_STORAGE",
+]
+
+[[component]]
+id = "component:biblegym-knowing-christ"
+repository = "seanchatmangpt/biblegym"
+ref = "feat/knowing-christ-formation-v1"
+sha = "df0c3221fcd5a96c6a1374900dc2bd2421e6448d"
+role = "formation-runtime-and-receipts"
+standing = "CANDIDATE"
+
+[[component]]
+id = "component:knowing-christ-formation-pack"
+repository = "seanchatmangpt/ggen-marketplace"
+ref = "feat/knowing-christ-formation-pack"
+sha = "0a40ee030f2850e8cb02aca53fdddccb7211bab4"
+role = "canonical-formation-ontology-and-deterministic-projection"
+standing = "CANDIDATE"
+
+[process]
+sequence = [
+  "hear",
+  "understand",
+  "believe",
+  "practice",
+  "reflect",
+  "teach",
+]
+objective = "truthful_voluntary_encounter_with_christ"
+
+[interpretation]
+scripture_is_source = true
+llm_output_is_candidate = true
+llm_output_has_revelation_authority = false
+competing_interpretations_may_remain_distinct = true
+
+[privacy]
+raw_confession_storage = false
+conversion_targeting = false
+psychological_manipulation = false
