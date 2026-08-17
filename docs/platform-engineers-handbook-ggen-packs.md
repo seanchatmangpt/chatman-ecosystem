@@ -144,8 +144,17 @@ Four more offline-runnable chapter test suites, all pure `unittest` (no infra):
 - `test-platform-config.py` (Ch01) — 9/10 pass; the one failure is the real
   `primary-cloud`/`primary-runtime` key mismatch recorded below, not a false negative.
 
-Nine chapters (01, 03, 05, 06, 07, 10, 11, 14, plus Ch05's friction-analyzer) now have at
-least one real, independently-executed script or test suite run, not just imported.
+Three more, all pure `unittest`, no infra required:
+
+- `test-observability.py` (Ch04) — 8/8 pass.
+- `test-pipelines.py` (Ch08) — 9/9 pass.
+- `test-resilience.py` (Ch13) — 11/11 pass.
+
+Twelve of 14 chapters (all but Ch02, Ch09) now have at least one real,
+independently-executed script or test suite run, not just imported. The two remaining
+(`test-cluster-health.py` Ch02, `test-infrastructure.py` Ch09) require a live `kubectl`
+context against a real cluster and were deliberately not run — no cluster was stood up to
+force a pass.
 
 ## Not yet done
 
