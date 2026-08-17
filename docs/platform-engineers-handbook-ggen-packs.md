@@ -90,6 +90,16 @@ python3 scripts/qualify_packs.py --ggen "$(which ggen)" --report qualify-report.
 `consequence_sha256` across both passes. (The one failure in the full 121-pack corpus run,
 `clap-noun-verb-pack`, is a pre-existing `pack.toml` schema issue unrelated to this pack.)
 
+## Known review finding (code vs. its own tests)
+
+`test-platform-config.py` (Ch01) fails out of the box against the chapter's own shipped
+`platform-config.yaml`, no modification needed: `test-platform-config.py:239` asserts
+`"primary-cloud" in infra`, but `platform-config.yaml`'s `infrastructure:` section defines
+`primary-runtime: "Kind"` — there is no `primary-cloud` key anywhere in the file. Real run:
+`python3 test-platform-config.py` → `1 test(s) failed: Infrastructure: Missing
+'primary-cloud'` (all other 9 checks pass). Either the test's key name or the config's key
+name is wrong; they were never reconciled.
+
 ## Known review finding (book vs. code)
 
 Spot-verification against the published PDF (*The Platform Engineer's Handbook*, Ajay
@@ -125,8 +135,17 @@ Two more, using already-installed real tooling rather than mocks:
   `alert-correlator.py`, `incident-agent.py`, `rag-platform-docs.py`, and
   `runbook-automator.py` (role separation, safety-check presence, valid Python).
 
-Five chapters (01, 05, 10, 11, 14) now have at least one real, independently-executed
-script or test suite confirmed passing.
+Four more offline-runnable chapter test suites, all pure `unittest` (no infra):
+
+- `test-demo-app.py` (Ch05) — 7/7 pass.
+- `test-onboarding.py` (Ch07) — 8/8 pass.
+- `test-portal-health.py` (Ch06) — 7/7 pass.
+- `test-rbac-permissions.py` (Ch03) — 9/9 pass.
+- `test-platform-config.py` (Ch01) — 9/10 pass; the one failure is the real
+  `primary-cloud`/`primary-runtime` key mismatch recorded below, not a false negative.
+
+Nine chapters (01, 03, 05, 06, 07, 10, 11, 14, plus Ch05's friction-analyzer) now have at
+least one real, independently-executed script or test suite run, not just imported.
 
 ## Not yet done
 
