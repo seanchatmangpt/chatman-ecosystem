@@ -23,7 +23,7 @@ fences = [
 id = "component:biblegym-knowing-christ"
 repository = "seanchatmangpt/biblegym"
 ref = "feat/knowing-christ-formation-v1"
-sha = "df0c3221fcd5a96c6a1374900dc2bd2421e6448d"
+sha = "a3b7d29e28b9ff5e23370c69a6f3e67f8a9ddb37"
 role = "formation-runtime-and-receipts"
 standing = "CANDIDATE"
 
