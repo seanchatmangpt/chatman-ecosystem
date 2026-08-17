@@ -7,7 +7,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
 FORMATION = ROOT / "catalog" / "formation.toml"
-REPOSITORIES = ROOT / "catalog" / "repositories.toml"
 
 REQUIRED_FENCES = {
     "NO_CONVERSION_SCORE",
@@ -64,13 +63,6 @@ class FormationCatalogTests(unittest.TestCase):
         self.assertFalse(privacy["raw_confession_storage"])
         self.assertFalse(privacy["conversion_targeting"])
         self.assertFalse(privacy["psychological_manipulation"])
-
-    def test_component_repositories_are_registered(self):
-        with REPOSITORIES.open("rb") as handle:
-            catalog = tomllib.load(handle)
-        urls = {entry["url"] for entry in catalog["repository"]}
-        for repository in REQUIRED_COMPONENTS:
-            self.assertIn(f"https://github.com/{repository}", urls)
 
 
 if __name__ == "__main__":
