@@ -116,6 +116,18 @@ Scripts requiring a live cluster or cloud credentials (`cost-analyzer.py`,
 `platform-maturity-assessment.py`'s interactive mode, etc.) were not run — no infra was
 faked or stubbed to force a pass.
 
+Two more, using already-installed real tooling rather than mocks:
+
+- `test-policies.py` (Ch11, offline default mode) — real `conftest` CLI (already installed
+  at `/opt/homebrew/bin/conftest`) validates compliant/non-compliant Kubernetes manifests
+  against the chapter's Rego policies: 6/6 tests pass.
+- `test-ai-agents.py` (Ch14) — 15/15 tests pass: structural checks against the real
+  `alert-correlator.py`, `incident-agent.py`, `rag-platform-docs.py`, and
+  `runbook-automator.py` (role separation, safety-check presence, valid Python).
+
+Five chapters (01, 05, 10, 11, 14) now have at least one real, independently-executed
+script or test suite confirmed passing.
+
 ## Not yet done
 
 - Pack is not yet added to `ggen-marketplace/marketplace.toml`'s explicit catalog listing
