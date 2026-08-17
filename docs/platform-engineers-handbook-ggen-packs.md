@@ -76,11 +76,35 @@ checkpoints `P1_CAPTURE_PARITY` through `P6_REVISION_PARITY` are `ALIVE`; overal
 upstream-generated "known good" render to diff against for this pack (unlike the
 hygen-create greeter fixture, which has one). This is expected, not a failure.
 
+## Marketplace qualification
+
+Run through the real marketplace qualifier (`scripts/qualify_packs.py`), which loads every
+admitted pack through `ggen` twice in an isolated filesystem-only capsule and requires
+convergence to the same non-runtime consequence within a 5-second per-pass bound:
+
+```sh
+python3 scripts/qualify_packs.py --ggen "$(which ggen)" --report qualify-report.json
+```
+
+`platform-engineers-handbook` qualifies `ALIVE`: 563 consequence files, identical
+`consequence_sha256` across both passes. (The one failure in the full 121-pack corpus run,
+`clap-noun-verb-pack`, is a pre-existing `pack.toml` schema issue unrelated to this pack.)
+
+## Known review finding (book vs. code)
+
+Spot-verification against the published PDF (*The Platform Engineer's Handbook*, Ajay
+Chankramath, Packt, May 2026) surfaced one factual mismatch: the Preface and Chapter 3 TOC
+state identity/access management uses OAuth via **Auth0**. The companion code implements
+**Keycloak** throughout (`keycloak-realm-config.py`, `keycloak-oidc-module.ts`,
+`keycloak-groups.py`; Ch03's own README says Keycloak explicitly). Zero references to Auth0
+anywhere in the 300-file source repository.
+
 ## Not yet done
 
-- Pack is not yet added to `ggen-marketplace/marketplace.toml`'s catalog entries or
-  qualification gates. Capture and single-binary verify only; not yet published/qualified
-  by the marketplace's own qualifier.
+- Pack is not yet added to `ggen-marketplace/marketplace.toml`'s explicit catalog listing
+  (packs are discovered by directory scan, so this doesn't block qualification, only
+  catalog-page discoverability).
+- No further chapter-by-chapter exercise verification beyond the spot checks above.
 
 ## See also
 
