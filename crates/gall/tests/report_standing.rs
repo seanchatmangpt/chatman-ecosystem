@@ -56,3 +56,52 @@ fn run_gall_report_is_alive_and_well_formed() {
     assert_eq!(report.standing(), Standing::Alive);
     assert_eq!(report.root_receipt.len(), 64);
 }
+
+#[test]
+fn crown_line_reports_derived_standing() {
+    let report = GallReport {
+        checkpoints: vec![
+            checkpoint(0, Standing::Alive),
+            checkpoint(1, Standing::Blocked),
+        ],
+        root_receipt: "abcd".to_owned(),
+    };
+    assert_eq!(report.crown_line(), "GALL_CROWN BLOCKED abcd");
+}
+
+#[test]
+fn crown_line_for_alive_report_keeps_shape() {
+    let report = GallReport {
+        checkpoints: vec![checkpoint(0, Standing::Alive)],
+        root_receipt: "abcd".to_owned(),
+    };
+    assert_eq!(report.crown_line(), "GALL_CROWN ALIVE abcd");
+}
+
+#[test]
+fn empty_report_crown_line_is_unknown() {
+    let report = GallReport {
+        checkpoints: Vec::new(),
+        root_receipt: "abcd".to_owned(),
+    };
+    assert_eq!(report.crown_line(), "GALL_CROWN UNKNOWN abcd");
+}
+
+#[test]
+fn exit_code_fails_closed_for_non_alive_standing() {
+    let blocked = GallReport {
+        checkpoints: vec![checkpoint(0, Standing::Blocked)],
+        root_receipt: "abcd".to_owned(),
+    };
+    let empty = GallReport {
+        checkpoints: Vec::new(),
+        root_receipt: "abcd".to_owned(),
+    };
+    let alive = GallReport {
+        checkpoints: vec![checkpoint(0, Standing::Alive)],
+        root_receipt: "abcd".to_owned(),
+    };
+    assert_eq!(blocked.exit_code(), 1);
+    assert_eq!(empty.exit_code(), 1);
+    assert_eq!(alive.exit_code(), 0);
+}

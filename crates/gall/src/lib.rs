@@ -114,6 +114,22 @@ impl GallReport {
         }
     }
 
+    /// Human-readable crown line: `GALL_CROWN <STANDING> <root_receipt>`.
+    ///
+    /// The standing token is derived via [`GallReport::standing`]; the token
+    /// positions are stable for consumers that parse this line.
+    #[must_use]
+    pub fn crown_line(&self) -> String {
+        format!("GALL_CROWN {} {}", self.standing(), self.root_receipt)
+    }
+
+    /// Process exit code for this report: `0` only when the derived standing is
+    /// `Alive`, so exit-code-gated callers fail closed.
+    #[must_use]
+    pub fn exit_code(&self) -> i32 {
+        i32::from(self.standing() != Standing::Alive)
+    }
+
     /// Deterministic, dependency-free JSON projection.
     #[must_use]
     pub fn to_json(&self) -> String {

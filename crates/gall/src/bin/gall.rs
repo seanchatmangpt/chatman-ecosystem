@@ -15,8 +15,9 @@ fn main() {
                         checkpoint.receipt_hash
                     );
                 }
-                println!("GALL_CROWN ALIVE {}", report.root_receipt);
+                println!("{}", report.crown_line());
             }
+            std::process::exit(report.exit_code());
         }
         Err(error) => {
             eprintln!("GALL_CROWN BUILD_BROKEN {error}");
