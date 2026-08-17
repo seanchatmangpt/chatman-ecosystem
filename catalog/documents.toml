@@ -30,6 +30,6 @@ canonical = false
 
 [[document]]
 id = "document:platform-engineers-handbook-ggen-packs"
-title = "The Platform Engineer's Handbook — ggen Packs"
+title = "The Platform Engineer's Handbook — ggen Pack"
 path = "docs/platform-engineers-handbook-ggen-packs.md"
 canonical = false
