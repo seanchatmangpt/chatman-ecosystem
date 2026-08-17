@@ -99,12 +99,30 @@ state identity/access management uses OAuth via **Auth0**. The companion code im
 `keycloak-groups.py`; Ch03's own README says Keycloak explicitly). Zero references to Auth0
 anywhere in the 300-file source repository.
 
+## Scripts run for real
+
+Beyond structural capture and `ggen sync run` fidelity, three independent, self-contained
+scripts from three different chapters were actually executed against the merged project
+(not just imported/linted):
+
+- `design-principles-checklist.py platform-config.yaml` (Ch01) — real validation, all six
+  design principles reported PASS.
+- `test_templates.py::TestTemplateStructure` (Ch10, pytest) — 2/2 structural tests pass
+  against the real `templates/backend-service/v1` Backstage scaffold.
+- `friction-analyzer.py --workflow workflow.yaml` (Ch05) — real friction-score report:
+  15 steps, 218 min serial / 150 min critical path, 31.2% parallelization potential.
+
+Scripts requiring a live cluster or cloud credentials (`cost-analyzer.py`,
+`platform-maturity-assessment.py`'s interactive mode, etc.) were not run — no infra was
+faked or stubbed to force a pass.
+
 ## Not yet done
 
 - Pack is not yet added to `ggen-marketplace/marketplace.toml`'s explicit catalog listing
   (packs are discovered by directory scan, so this doesn't block qualification, only
   catalog-page discoverability).
-- No further chapter-by-chapter exercise verification beyond the spot checks above.
+- No cluster-dependent chapter exercise has been run (would require a real Kind cluster,
+  which this pass didn't stand up).
 
 ## See also
 
