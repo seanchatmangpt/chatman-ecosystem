@@ -29,4 +29,5 @@ Version: `0.1.0`
 | `document:architecture` | `docs/ARCHITECTURE.md` | true |
 | `document:constitution` | `CONSTITUTION.md` | true |
 | `document:operations` | `docs/OPERATIONS.md` | true |
+| `document:post-agi-platform-handbook` | `docs/post-agi-platform-handbook/README.md` | false |
 | `document:readme` | `README.md` | false |

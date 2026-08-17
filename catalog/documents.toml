@@ -21,3 +21,9 @@ id = "document:readme"
 title = "Repository Guide"
 path = "README.md"
 canonical = false
+
+[[document]]
+id = "document:post-agi-platform-handbook"
+title = "The Post-AGI Platform Engineer's Handbook"
+path = "docs/post-agi-platform-handbook/README.md"
+canonical = false
