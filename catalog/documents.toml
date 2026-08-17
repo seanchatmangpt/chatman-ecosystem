@@ -39,3 +39,9 @@ id = "document:platform-engineers-handbook-colima-runtime"
 title = "The Platform Engineer's Handbook — Running on Colima"
 path = "docs/platform-engineers-handbook-colima-runtime.md"
 canonical = false
+
+[[document]]
+id = "document:platform-engineers-handbook-backport"
+title = "The Platform Engineer's Handbook — Ch09 Backport"
+path = "docs/platform-engineers-handbook-backport.md"
+canonical = false

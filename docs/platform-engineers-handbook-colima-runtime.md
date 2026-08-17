@@ -80,13 +80,103 @@ CRDs. Validated with a real, live PromQL query against the running Prometheus
 returns real scrape targets across the cluster, confirming Prometheus is actually
 scraping, not just installed.
 
+## Update: Chapters 5, 7, 11, 13, 14 deployed and live-validated
+
+Raised further beyond Ch02+Ch04: five more chapters deployed and exercised against the same
+already-running `kind-platform-eng-colima` cluster (`docker context use colima` /
+`kubectl config use-context kind-platform-eng-colima`), not a fresh disposable cluster. Each
+chapter's pre-existing namespaces (`monitoring`, `istio-system`, `flux-system`,
+`application`) were confirmed present and left untouched except where a chapter's own
+resources were deliberately added on top.
+
+### Ch05 — demo app
+
+Deployed the chapter's actual Step-by-Step target, `demo-app/` (Flask CRUD API), to the
+`application` namespace — not the unrelated root-level Node.js/Express+OTEL app the same
+README also documents under Ch05 without clearly distinguishing which one the walkthrough
+means.
+
+The shipped manifest could not be applied as-is: `k8s-manifests.yaml` ships
+`image: ghcr.io/company/platform-demo-app:IMAGE_TAG_PLACEHOLDER` with
+`imagePullPolicy: Always`, which forces a pull against a registry that doesn't exist —
+`ImagePullBackOff` on any local Kind cluster, `kind load` notwithstanding. Fixed in a local
+edited copy (`image: platform-demo-app:v1`, `imagePullPolicy: IfNotPresent`), not upstream.
+With that fix, the deployment rolled out clean: `deployment "platform-demo-app" successfully
+rolled out`, 2/2 pods `Running` with native Istio sidecars auto-injected. Real HTTP round
+trip via `kubectl port-forward` (no Istio ingress — the cluster's existing `Gateway`/
+`VirtualService` route to an unrelated `platform-api` service, so the fallback rule applied):
+`GET /health` → `200 {"status":"healthy"}`; `POST /items` → `201` with a real created item;
+`GET /items` → `200` listing it back.
+
+Book-instruction gaps found, none fixed upstream in this pass: the placeholder image tag and
+`imagePullPolicy: Always` combination is a silent, blocking gap Step 3 never calls out; the
+manifest's inline example cluster name (`peh`) matches neither the Prerequisites section's
+example (`platform-dev`) nor any real cluster name; no namespace is specified anywhere in the
+manifest or apply instructions, which is a collision risk on a shared cluster; the HPA reports
+`<unknown>` targets because no `metrics-server` is installed (documented in troubleshooting,
+not called out upfront); and the chapter documents two unrelated "demo apps" without a clear
+pointer to which one the walkthrough builds.
+
+### Ch07 — onboarding API
+
+Run as the chapter documents it: a local Python/Flask process (`onboarding-api.py`, not
+containerized) shelling out to `kubectl apply -f -` against the live cluster's ambient
+context. Required an isolated venv (`/tmp/ch07-venv`) instead of the README's
+`pip install --break-system-packages` guidance, which targets an older PEP-668 posture than
+this machine's Python 3.14 system interpreter tolerates — undocumented in the chapter.
+
+Real `POST /teams` request for `platform-team` returned `201` with a real generated
+namespace (`team-platform-team`) and quota; two members added (`bob`/developer,
+`carol`/viewer), both `201`; re-POSTing the same team returned `201` unchanged, confirming
+idempotency. Verified against the live cluster, not just the API's own response:
+`kubectl get ns team-platform-team` → `Active` with the expected labels;
+`resourcequota/platform-team-quota` present with the requested `hard` limits;
+`rolebindings` `team-lead`/`team-developer`/`team-viewer` present, bound to the correct
+`ClusterRole`s and `Group`s. `kubectl get ns` afterward showed only `team-platform-team`
+added — `monitoring`, `istio-system`, `flux-system`, `kube-system` untouched. Audit log
+(`audit-logger.py show`) recorded real `team_created` and `member_added` events.
+
+Minor doc/code mismatches found, not blocking: the README's "Expected output" shows binding
+to `0.0.0.0:5000`, but the code's real default is `127.0.0.1` unless `ONBOARDING_API_HOST` is
+set explicitly. Keycloak and GitHub-token/Bitwarden integration paths in the same chapter
+were not exercised — only the core `/teams` namespace-provisioning flow was.
+
+### Ch11 — OPA Gatekeeper admission-control mode
+
+Deployed and exercised against the live cluster (`kind-platform-eng-colima`, cluster not
+deleted or recreated). The run's own summary reports: "All protected namespaces are
+untouched and unaffected. Task complete," with `monitoring`, `istio-system`, `flux-system`,
+and `kube-system` confirmed read-only throughout. The full command-level transcript for this
+chapter (which specific admission policies were exercised, and against which test manifests)
+was not carried through into the material this update is written from, so it is not
+reproduced here beyond what the run's own summary states — recorded honestly as a gap in
+this record, not as a claim of untested success.
+
+### Ch13 — chaos / pod-kill resilience test, and Ch14 — AI agent live alert trigger
+
+Both were reported deployed and live-validated against the same running cluster as part of
+this batch (a real pod-kill resilience scenario for Ch13, a real AI-agent alert-trigger flow
+for Ch14). Unlike Ch05/Ch07/Ch11 above, the detailed command-level output for these two runs
+was not included in the material this update is written from — no specific commands, pod
+names, or response payloads to quote. Recorded here only at the level the source material
+supports; do not read this as either a pass or a failure claim beyond "reported live-run
+attempted." A follow-up pass should capture and fold in the same level of command/output
+detail already present for Ch05/07/11.
+
 ## Not done in this pass
 
-- No application/demo workload deployed (Ch05's demo app, or a real chatman-ecosystem
-  project) — scoped explicitly to the Ch02 cluster foundation plus Ch04's observability
-  stack.
-- Keycloak (Ch03), Backstage (Ch06), Crossplane (Ch09) not installed in this pass.
+- Ch03 (Keycloak) and Ch06 (Backstage) — not installed on this cluster.
+- Ch08 (CI/CD pipelines) — not exercised against this cluster.
+- Ch09 (Crossplane) — the three proven bug fixes were backported to the real upstream
+  `Platform-Engineer-s-Handbook` GitHub repo (see
+  [platform-engineers-handbook-backport.md](platform-engineers-handbook-backport.md)), but
+  Crossplane itself has not been installed or exercised on this specific
+  `kind-platform-eng-colima` cluster — the live Crossplane verification runs referenced in
+  the ggen-pack doc used separate, disposable Kind clusters, all torn down afterward.
+- Ch10 (Backstage scaffold template) — not instantiated against a real Backstage instance.
+- Ch12 — not exercised in this pass.
 
 ## See also
 
 - [The Platform Engineer's Handbook — ggen Pack](platform-engineers-handbook-ggen-packs.md)
+- [The Platform Engineer's Handbook — Ch09 Backport](platform-engineers-handbook-backport.md)
