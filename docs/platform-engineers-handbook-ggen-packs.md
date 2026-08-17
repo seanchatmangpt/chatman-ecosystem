@@ -150,11 +150,18 @@ Three more, all pure `unittest`, no infra required:
 - `test-pipelines.py` (Ch08) — 9/9 pass.
 - `test-resilience.py` (Ch13) — 11/11 pass.
 
-Twelve of 14 chapters (all but Ch02, Ch09) now have at least one real,
-independently-executed script or test suite run, not just imported. The two remaining
-(`test-cluster-health.py` Ch02, `test-infrastructure.py` Ch09) require a live `kubectl`
-context against a real cluster and were deliberately not run — no cluster was stood up to
-force a pass.
+Ch02's `test-cluster-health.py` was then run for real: stood up a genuine local Kind cluster
+(`kind create cluster --config kind-config.yaml`), waited for real node/pod readiness
+(`kubectl wait --for=condition=Ready`), and reran — 7 pass, 1 skipped (GitOps deployment
+check; no Flux/app-of-apps deployed on this bare cluster, correctly skipped, not faked). The
+cluster was torn down afterward (`kind delete cluster`) rather than left running.
+
+Thirteen of 14 chapters now have at least one real, independently-executed script or test
+suite run against real tooling, not just imported. Only `test-infrastructure.py` (Ch09)
+remains unrun: it provisions a real `PostgreSQLClaim` through Crossplane and a configured
+cloud/local database provider — meaningfully more setup (Crossplane install + provider
+config) than a bare Kind cluster, and was not attempted rather than faked or partially
+stubbed.
 
 ## Not yet done
 
