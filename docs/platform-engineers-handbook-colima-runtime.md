@@ -61,12 +61,31 @@ docker context use colima
 kubectl config use-context kind-platform-eng-colima
 ```
 
+## Update: Ch04 observability stack added
+
+Raised beyond the initial Ch02-only scope: real `kube-prometheus-stack` (Prometheus,
+Alertmanager, Grafana, kube-state-metrics, node-exporter, operator) installed via Helm
+using the book's own documented command (`chapter-readmes/Ch04-README.md`):
+
+```sh
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install monitoring prometheus-community/kube-prometheus-stack \
+  --namespace monitoring --create-namespace --wait --timeout 300s
+```
+
+All 6 pods reach `Running`/fully `Ready`. The pack's own `prometheus-slo-rules.yaml`
+(Sloth-generated `PrometheusRule`) applies cleanly against the real PrometheusOperator
+CRDs. Validated with a real, live PromQL query against the running Prometheus
+(`curl http://localhost:9090/api/v1/query?query=up` via `kubectl port-forward`) —
+returns real scrape targets across the cluster, confirming Prometheus is actually
+scraping, not just installed.
+
 ## Not done in this pass
 
 - No application/demo workload deployed (Ch05's demo app, or a real chatman-ecosystem
-  project) — scoped explicitly to the Ch02 cluster foundation only.
-- Keycloak (Ch03), observability stack (Ch04), Backstage (Ch06), Crossplane (Ch09) not
-  installed in this pass.
+  project) — scoped explicitly to the Ch02 cluster foundation plus Ch04's observability
+  stack.
+- Keycloak (Ch03), Backstage (Ch06), Crossplane (Ch09) not installed in this pass.
 
 ## See also
 
