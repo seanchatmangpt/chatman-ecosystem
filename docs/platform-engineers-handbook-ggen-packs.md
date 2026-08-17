@@ -312,14 +312,26 @@ to disambiguate more strongly from the naming-collision risk (both reviews rated
 minor, and PACK.md's explicit disambiguation section already mitigates the actual
 confusion risk without the churn of a rename).
 
+## Pack update (v0.3.0) — bug 1 fixed and shipped
+
+Ch09 bug 1 (`crossplane-providers.yaml` applying `Provider` and `ProviderConfig` together,
+failing the `ProviderConfig` half on a fresh cluster) is now fixed and shipped too: split
+into `crossplane-providers.yaml` (safe to apply immediately) and
+`crossplane-provider-configs.yaml` (apply only after both providers reach `Healthy`), both
+files' header comments documenting the required order and exact `kubectl wait` commands.
+Verified on a sixth disposable Kind cluster: all three shipped Ch09 fixes together, zero
+errors on either apply, claim reaches `Ready: True` on the first status check.
+`pack.toml` version `0.2.0` → `0.3.0`; re-verified (`ggen-create verify` P1–P6 `ALIVE`,
+`qualify_packs.py` `ALIVE`, 597 consequence files) against the exact shipped state.
+
 ## Not yet done
 
 - No cluster-dependent chapter exercise beyond Ch02 and Ch09 has been run (Ch02's
   `test-cluster-health.py` and Ch09's Crossplane flow were both run against real Kind
   clusters; the remaining chapters' cluster-dependent paths, where any exist, were not).
-- Ch09 bug 1 (Provider/ProviderConfig apply-ordering) and bug 4 (missing
-  connectionDetails-aggregation mechanism for the pinned `function-patch-and-transform`
-  version) remain open — see "Fixes applied" in `PACK.md` for why.
+- Ch09 bug 4 (missing connectionDetails-aggregation mechanism for the pinned
+  `function-patch-and-transform` version) remains open — see "Fixes applied" in `PACK.md`
+  for why: fixing it would mean adding a function dependency the book never specifies.
 
 ## See also
 
