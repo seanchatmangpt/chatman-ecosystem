@@ -33,3 +33,9 @@ id = "document:platform-engineers-handbook-ggen-packs"
 title = "The Platform Engineer's Handbook — ggen Pack"
 path = "docs/platform-engineers-handbook-ggen-packs.md"
 canonical = false
+
+[[document]]
+id = "document:platform-engineers-handbook-colima-runtime"
+title = "The Platform Engineer's Handbook — Running on Colima"
+path = "docs/platform-engineers-handbook-colima-runtime.md"
+canonical = false

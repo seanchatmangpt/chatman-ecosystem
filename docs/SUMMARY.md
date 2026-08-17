@@ -69,6 +69,7 @@
 - [42. ggen-legacy: The Epistemic Fence](42-ggen-legacy-epistemic-fence.md)
 - [43. Repository Ontology: Implementation Is Not Architecture](43-repository-ontology.md)
 - [The Platform Engineer's Handbook — ggen Pack](platform-engineers-handbook-ggen-packs.md)
+- [The Platform Engineer's Handbook — Running on Colima](platform-engineers-handbook-colima-runtime.md)
 
 # Part VII — Substrate Independence and the Post-AGI Limit
 
