@@ -41,6 +41,12 @@ path = "docs/platform-engineers-handbook-colima-runtime.md"
 canonical = false
 
 [[document]]
+id = "document:platform-engineers-handbook-backward-chain"
+title = "The Platform Engineer's Handbook — Backward-Chain Composition Plan"
+path = "docs/platform-engineers-handbook-backward-chain.md"
+canonical = false
+
+[[document]]
 id = "document:platform-engineers-handbook-backport"
 title = "The Platform Engineer's Handbook — Ch09 Backport"
 path = "docs/platform-engineers-handbook-backport.md"
