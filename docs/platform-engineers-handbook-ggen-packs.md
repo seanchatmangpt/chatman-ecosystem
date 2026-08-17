@@ -4,6 +4,16 @@
 > pack-conversion pass; the pack itself is canonical in `ggen-marketplace`, not here
 > (`packs/` is authoritative source after admission per `ggen-marketplace/marketplace.toml`'s
 > `[source_authority]`).
+>
+> **Adversarial review pass (v0.2.0).** A simulated author review and a simulated ggen-core-team
+> review (two parallel agents, both instructed to be genuinely adversarial) were run against
+> this work. Both independently found the same critical gap: the two Ch09 fixes narrated below
+> as "fixed and reverified" were **not actually present in the shipped `ggen-marketplace` pack**
+> — they existed only in a scratch working directory. That gap is now closed: both fixes ship in
+> the pack's `templates/` as of `pack.toml` version `0.2.0`, re-verified against that exact
+> committed state (not the prior one). See `packs/platform-engineers-handbook/PACK.md` and
+> `QUALIFICATION.md` in the pack itself for the consumer-facing version of this record. Other
+> review findings and their resolutions are noted inline below where relevant.
 
 ## What this is
 
@@ -24,11 +34,17 @@ This pack instead reconstructs the cumulative final-state project: chapters are 
 book order (Ch01 → Ch14), each chapter's files copied over the accumulating tree at their
 real project-relative path (the `ChNN/` prefix is stripped), so a same-path file from a
 later chapter overwrites the earlier chapter's version — the way a real repo actually
-evolves as it's built out. Three files collide across chapters this way and take their
-final (Ch14 or latest-chapter) form: `README.md`, `load-secrets.sh`, `.circleci/config.yml`.
+evolves as it's built out. Three files collide across chapters this way. `README.md` and
+`load-secrets.sh` take **Ch14's** version. `.circleci/config.yml` takes **Ch02's** — it only
+exists in Ch01 and Ch02 (confirmed by direct byte-diff), so Ch02, not Ch14, is the chapter
+whose version survives. (An earlier draft of this doc said "Ch14 or latest-chapter" here,
+which was technically correct but easy to misread as "Ch14" across the board — an
+adversarial author-perspective review caught the imprecision.)
 
-Result: 279 templated files (300 source files, minus 21 lost to those same-path chapter
-overwrites, minus 1 excluded — see below).
+Result at the time of the initial capture: 279 templated files (300 source files, minus 21
+lost to those same-path chapter overwrites, minus 1 excluded — see below). That count later
+grew to 294, then 595-consequence-file-qualified, after restoring per-chapter READMEs and
+shipping real fixes — see "Pack update (v0.2.0)" below.
 
 ## Pack
 
@@ -238,13 +254,72 @@ four real out-of-the-box bugs, fixed and reverified two of them (the schema gap 
 missing RBAC), and stopped at the fourth (missing connection-details function) rather than
 adding functionality the book never specified.
 
+## Pack update (v0.2.0) — adversarial review response
+
+A simulated author review and a simulated ggen-core-team review (two independent parallel
+agents, both explicitly instructed to be adversarial rather than agreeable) were run
+against everything above. Both converged on the same central problem, plus several smaller
+ones. Every actionable finding was addressed, verified, and shipped in the pack itself
+(`pack.toml` version bumped `0.1.0` → `0.2.0`):
+
+- **Bugs 2 and 3 (XRD schema, RBAC) now actually ship in the pack.** Previously they only
+  existed as edits in a scratch `/tmp` directory that no marketplace consumer would ever
+  see — both reviews caught this independently by grepping the pack's actual `templates/`.
+  The RBAC fix was also redone: the original imperative `kubectl create clusterrolebinding`
+  (targeting a revision-hashed service-account name) can't be a static file at all; it's
+  replaced with a declarative `Group: system:serviceaccounts:crossplane-system`
+  `ClusterRoleBinding` that ships as `provider-kubernetes-rbac.yaml` and needs no runtime
+  name lookup. Reverified end to end on a fifth disposable Kind cluster against the exact
+  committed pack content: `Ready: True` on the first status check, all 5 composed objects
+  `Synced: True / Ready: True`.
+- **13 discarded per-chapter READMEs restored** under `chapter-readmes/ChNN-README.md` +
+  `INDEX.md` (author-review finding: collapsing 14 chapter READMEs to Ch14's alone threw
+  away real, non-recoverable pedagogical scaffolding — each chapter's own
+  "Code-to-Chapter Mapping" table — with no compensating index).
+- **`ontology.ttl` replaced**: the 11-triple ggen-create auto-scaffold (case-variant
+  strings for the templatization word, carrying zero information about platform
+  engineering) is now 148 triples of real domain modeling — chapters, the tools each one
+  introduces, and the defects found/fixed with `peh:fixedIn` paths into `templates/`
+  (ggen-core-team finding).
+- **Pack-level `PACK.md` + `QUALIFICATION.md` added**, disclosing: the merge/overwrite
+  methodology and exact collision winners (including the Ch02 correction above); that
+  near-zero content is actually templatized (verify: almost every entry in
+  `ggen-create-package.json` has `content_replacements: 0`) — this is a qualified,
+  verified reference snapshot, not a parameterized generator, and the pack says so
+  explicitly rather than presenting itself as more than it is; that no `LICENSE` file
+  exists anywhere upstream, so this pack doesn't claim a license on anyone's behalf;
+  explicit disambiguation from chatman-ecosystem's unrelated fictional
+  "Post-AGI Platform Engineer's Handbook" mdbook content.
+- **A real bug this update pass itself introduced was caught and fixed before shipping**:
+  the first draft of the pack-level doc was named `README.md`, which collided with the
+  captured project's own `README.md` (Ch14's) at render time — `ggen sync run` correctly
+  refused with `FM-WRITE-005: exists with differing content; refusing silent clobber`
+  rather than silently overwriting one with the other. Renamed to `PACK.md`.
+- **Investigated and found to be a non-issue**: the ggen-core-team review flagged
+  "pack not registered in marketplace.toml" as blocking. Direct empirical check
+  (`python3 scripts/marketplace.py catalog`) shows the marketplace catalog is built by
+  live directory scan, not a static list — `platform-engineers-handbook` already appears
+  among all 121 packs with zero registration needed. The review's finding was based on
+  grepping a config file rather than running the actual catalog command.
+- **Re-verified against the final committed state**, not a prior one: `ggen-create verify`
+  (real `ggen 26.8.8`, P1–P6 `ALIVE`) and `scripts/qualify_packs.py` (`ALIVE`, 595
+  consequence files, stable hash across 2 passes) both pass.
+
+Deliberately not addressed: full re-templatization of the pack's 278 static files into
+real parameterized generators (would change what this pack fundamentally is — a captured
+snapshot, not a scaffold generator — and PACK.md says so honestly instead); a pack rename
+to disambiguate more strongly from the naming-collision risk (both reviews rated this
+minor, and PACK.md's explicit disambiguation section already mitigates the actual
+confusion risk without the churn of a rename).
+
 ## Not yet done
 
-- Pack is not yet added to `ggen-marketplace/marketplace.toml`'s explicit catalog listing
-  (packs are discovered by directory scan, so this doesn't block qualification, only
-  catalog-page discoverability).
-- No cluster-dependent chapter exercise has been run (would require a real Kind cluster,
-  which this pass didn't stand up).
+- No cluster-dependent chapter exercise beyond Ch02 and Ch09 has been run (Ch02's
+  `test-cluster-health.py` and Ch09's Crossplane flow were both run against real Kind
+  clusters; the remaining chapters' cluster-dependent paths, where any exist, were not).
+- Ch09 bug 1 (Provider/ProviderConfig apply-ordering) and bug 4 (missing
+  connectionDetails-aggregation mechanism for the pinned `function-patch-and-transform`
+  version) remain open — see "Fixes applied" in `PACK.md` for why.
 
 ## See also
 
