@@ -102,17 +102,3 @@ name = "service-daemon-rs"
 url = "https://github.com/loft-games/service-daemon-rs"
 role = "experimental-runtime"
 standing = "CANDIDATE"
-
-[[repository]]
-id = "repository:biblegym"
-name = "biblegym"
-url = "https://github.com/seanchatmangpt/biblegym"
-role = "christ-centered-formation-runtime"
-standing = "CANDIDATE"
-
-[[repository]]
-id = "repository:ggen-marketplace"
-name = "ggen-marketplace"
-url = "https://github.com/seanchatmangpt/ggen-marketplace"
-role = "formation-ontology-and-pack-source"
-standing = "CANDIDATE"
