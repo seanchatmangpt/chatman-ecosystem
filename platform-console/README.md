@@ -88,6 +88,7 @@ hyperscaler-equivalent language as a claim about scale.
 | `/alerts` | Alerting (CloudWatch Alarms / GCP Alerting Policies / Azure Monitor Alerts equivalent): real current alert state read live from the in-cluster Alertmanager's `/api/v2/alerts`, rendered as a table (alertname, state, severity, namespace, since, summary); shows an honest "0 active alerts" when none are firing rather than fabricating one -- see `alerting-pipeline-verified-live` in `evidence/control-evidence-bundle.json` for the real fired-and-cleared synthetic-rule verification | `app/api/alerts/route.ts`, `lib/alertmanager.ts` |
 | `/service-discovery` | Service Discovery (AWS Route53 private hosted zone / GCP Cloud DNS internal zone / Azure Private DNS equivalent) -- **not decorative**: CoreDNS plus real k8s `Service`/`Endpoints` objects already are the cluster's internal DNS layer every other module's cluster-internal URLs depend on. Table across the platform's 6 namespaces: Service, real DNS name (`<svc>.<namespace>.svc.cluster.local`), ClusterIP, ports, and ready/total backing-Pod-IP count read live from the matching `Endpoints` object -- the "does this record actually resolve to something healthy" signal. Live-verified with real `nslookup` from a throwaway pod against 4 services: resolved IPs matched the page's ClusterIPs byte-for-byte, and ready-endpoint counts matched `kubectl get endpoints` exactly -- see `service-discovery-dns-resolves-live` in `evidence/control-evidence-bundle.json` | `lib/k8s.ts` (`listEndpoints`, `listServicesWithEndpoints`) |
 | `/feature-flags` | Feature Flags (AWS AppConfig / LaunchDarkly / GCP Feature Flags equivalent), backed by one real k8s `ConfigMap` (`platform-feature-flags`, `platform-console` namespace) -- no external SaaS dependency. Lists current flags, toggles booleans in place, and adds new keys, all via a real RFC 7386 JSON merge patch (or a real create on first write) through the console's ServiceAccount. **Genuinely proven live, not just object-mutation**: `autofde-lab-status` (`services/autofde-lab/app.py`) reads this exact ConfigMap on every `/status` request via a real, fresh Kubernetes API call under its own minimal cross-namespace RBAC grant, and adds a real `process_uptime_seconds` field only while `verbose-status` is `"true"` -- toggling the flag through the authenticated console UI/API was confirmed, via direct external `curl` to the live `autofde-lab-status` Service (not just `kubectl exec`), to make the field appear and then disappear on revert. See `feature-flag-live-toggle-verified` in `evidence/control-evidence-bundle.json` for the exact before/after response bodies. | `app/api/feature-flags/route.ts`, `lib/k8s.ts` (`getConfigMap`, `createOrUpdateConfigMap`), `services/autofde-lab/app.py` |
+| `/custom-domains` | **Custom Domain self-service** (AWS Certificate Manager + Route53 custom-domain binding / GCP Cloud Run custom-domain equivalent), owner-gated. Registering a hostname does the real three-step thing a hyperscaler console does: generates a real, freshly-issued X.509 certificate for that exact hostname via a real `openssl req -x509` subprocess (SAN independently re-verified with Node's own `crypto.X509Certificate#checkHost` before it is ever stored), stores it as a real `kubernetes.io/tls` Secret in `istio-system`, and creates a real `networking.istio.io/v1` `Gateway` + `VirtualService` pair binding that hostname to whichever platform Service the operator picks from the same live list `/service-discovery` reads -- no hand-edited Istio YAML per domain. Every new domain's `Gateway` merges onto the SAME physical Envoy listener `platform-console-gateway`'s own HTTPS server already owns (confirmed live via `istioctl proxy-config listener`), split by SNI -- registering domain #2 never touches domain #1's objects. See "Custom Domains" below and `custom-domain-tls-cert-matches-hostname` in `evidence/control-evidence-bundle.json` for the full real proof, including the presented certificate's SAN and a real post-unbind connection refusal. | `lib/custom-domains.ts`, `app/api/custom-domains/route.ts`, `app/custom-domains/page.tsx` |
 | `/topology` | Cluster Topology -- a **visualization, not a security control** (recorded in the evidence bundle for consistency with this file's "real vs decorative" practice, not because it enforces anything). deck.gl (`OrthographicView`, not a geospatial `MapView` -- there is no real geography here) rendering the exact same `listServicesWithEndpoints` data `/service-discovery` already shows as a table: one `ScatterplotLayer` node per Service (fill = the same ready/total status vocabulary as `EndpointsBadge`, size = ready-endpoint count), grouped into deterministic per-namespace grid clusters computed in `lib/topology.ts` (no randomness, no force-simulation step -- same input always produces the same layout). `ArcLayer` connections are drawn **only** where a real `NetworkPolicy` ingress rule's `namespaceSelector` names a source namespace (`lib/k8s.ts`'s `listNetworkPolicies` was extended with `ingressFromNamespaces`, parsed from `spec.ingress[].from[].namespaceSelector.matchLabels["kubernetes.io/metadata.name"]`) -- never inferred or fabricated traffic. Live-verified: authenticated `GET /topology` returned 200 with all 12 real Services across 6 namespaces embedded in the hydration payload (`autofde-lab-status`, `demo-db-postgres`, `gymact-status`, `ggen-status`, `ggen-marketplace-status`, `platform-console-gateway`, plus the 6 `demo-project-*` Services), real ClusterIPs matching `service-discovery-dns-resolves-live`'s recorded values byte-for-byte, and exactly 4 real cross-namespace edges (`platform-console` → `autofde-lab`/`gymact`/`ggen`/`ggen-marketplace`, matching `k8s/network-policies.yaml`'s `*-allow-from-platform-console` rules) -- see `topology-visualization-real-data` in `evidence/control-evidence-bundle.json` | `lib/topology.ts`, `components/DeckTopology.tsx`, `lib/k8s.ts` (`listNetworkPolicies`) |
 | `/network` | **Network Topology** (AWS VPC console / GCP VPC Network Topology / Azure Virtual Network diagram equivalent) -- real Pod/Service CIDR ranges, a real per-namespace ingress reachability matrix, and the real Istio mTLS trust boundary, in one place instead of scattered across `/service-discovery`/`/iam`/`/topology`. **Pod CIDR**: authoritative source is `Node.spec.podCIDR` (kubeadm's own node-ipam controller, `10.244.0.0/24` on this single-node cluster) via a new cluster-scoped `nodes` get/list RBAC grant, corroborated by an observed range computed from real live Pod IPs (`lib/k8s.ts`'s new `listPodIPs`). **Service CIDR**: no RBAC exists into kube-system (deliberately -- same boundary as Secrets/Logs above), so `--service-cluster-ip-range` can't be read directly; the only honest value here is OBSERVED -- the smallest CIDR block containing every real live Service ClusterIP across all namespaces (`lib/k8s.ts`'s new cluster-wide `listAllServices`), computed by `lib/network.ts`'s `computeObservedCidr` (pure min/max-common-prefix math, no fixed-size assumption). **Reachability matrix**: `lib/network.ts`'s `buildReachabilityMatrix` reuses the exact `ingressFromNamespaces` field `/topology`'s arcs already draw from, implementing real k8s NetworkPolicy semantics (not simplified): a target namespace with zero Ingress-type policy is default-allow-from-anywhere; otherwise the union of every Ingress policy's `ingressFromNamespaces` decides each source, including self-pairs (computed by the same rule, never hardcoded to "same-namespace is always allowed"). **mTLS boundary**: real `security.istio.io/v1` PeerAuthentication objects, cluster-wide (new RBAC grant), distinguishing a namespace-wide policy from a workload-scoped `spec.selector` override, and honestly reporting "no PeerAuthentication object" for namespaces with none rather than asserting Istio's PERMISSIVE mesh-wide fallback (which would require a kube-system read this console doesn't have). **Live-verified against real enforcement, not just policy-object existence**: authenticated `GET /network` through the deployed pod returned the real matrix (`10.244.0.0/24` pod CIDR, `10.96.0.0/16` observed Service CIDR from 30 real ClusterIPs, `autofde-lab`/`gymact`/`ggen`/`ggen-marketplace` all STRICT mTLS, `supabase-demo` with no PeerAuthentication object). Three throwaway `sidecar.istio.io/inject: "false"` curl pods then cross-checked that matrix against actual enforced behavior: `autofde-lab` → `gymact-status:80` (matrix: deny) → real `curl: (28) Connection timed out after 6003ms`; `gymact` → `ggen-status:80` (matrix: deny) → real `curl: (28) Connection timed out after 6002ms`; `autofde-lab` → `demo-project-rest.supabase-demo:3000` (matrix: allow) → real `HTTP/1.1 200 OK` from the live PostgREST OpenAPI endpoint. All 3 live results matched the matrix's claims exactly -- see `network-topology-matches-real-enforcement` in `evidence/control-evidence-bundle.json` for the full transcript | `lib/network.ts`, `app/app/network/page.tsx`, `lib/k8s.ts` (`listNodes`, `listAllServices`, `listPodIPs`, `listPeerAuthentications`) |
 | `/audit` | Durable, queryable **Audit Log** (AWS CloudTrail / GCP Audit Logs / Azure Monitor Activity Log equivalent) -- closes the gap that `lib/audit-log.ts`'s existing stdout line is real but ephemeral (gone on pod restart, not filterable/queryable). Every `/api/*` route now also INSERTs the same entry into a real `platform_console.audit_log` table (dedicated schema, one-time migration applied via direct `psql`) on the live demo-project Postgres this console already trusts for Backups, via `lib/audit-db.ts` -- new `lib/k8s.ts` functions (`getSecretValue`, `getPostgresConnectionInfo`) extend the exact backup/restore credential-discovery pattern one step further (a real Secret GET to decode the plaintext a long-running Node.js process needs for a direct connection, vs. a Job's own kubelet-resolved env). Deliberately kept out of `middleware.ts`'s import graph (the `pg` driver needs Node.js `net`/`tls`, which the edge runtime cannot bundle -- same reason `lib/credentials.ts` is edge-excluded); every route handler already runs on the Node.js runtime, so each one's `writeAuditLogEntry` import was switched to the new module instead. Owner-gated (`requireRole(session, "owner")`, same boundary as `/org`), real actor/path substring filter + timestamp range + pagination. **Live-verified**: 7 real requests across both auth providers cross-matched byte-for-byte across stdout, the app's own `/api/audit`, and a direct `psql SELECT`; a pod holding all 7 requests was then deleted outright, showing its stdout genuinely gone (`kubectl logs` -> `NotFound`) while every DB row survived -- see `audit-log-durable-and-queryable` in `evidence/control-evidence-bundle.json` | `lib/audit-db.ts`, `lib/k8s.ts` (`getSecretValue`, `getPostgresConnectionInfo`), `app/app/api/audit/route.ts`, `app/app/audit/page.tsx` |
@@ -655,6 +656,179 @@ real `200` on `GET /projects/demo-project/backups` and real backup-job data on
 `GET /api/projects/demo-project/backups` -- confirming the browser UI is fully restored
 alongside the new mTLS path. Full command transcripts and the distinguishing alert text:
 `mtls-gated-route-rejects-untrusted-clients` in `evidence/control-evidence-bundle.json`.
+
+## Custom Domains
+
+Real Custom Domain self-service (the AWS Certificate Manager + Route53 custom-domain binding /
+GCP Cloud Run custom-domain equivalent), `lib/custom-domains.ts`. An owner registers a
+hostname and picks one of the platform's own real Services (the same list `/service-discovery`
+already reads, `listAllServices`), and the console does the three real things a hyperscaler
+console does behind that one click:
+
+1. **Issues a real TLS certificate.** No ACM/Let's Encrypt in this cluster, so the cert is
+   self-signed -- but a REAL X.509 certificate, generated fresh per hostname via a real
+   `openssl req -x509 -newkey rsa:2048 -nodes -days 365 -addext "subjectAltName=DNS:<hostname>"`
+   subprocess in a throwaway temp dir (`fs.mkdtempSync`, always removed in a `finally`). Before
+   it is ever stored, the fresh cert is independently re-parsed with Node's OWN
+   `crypto.X509Certificate` and `checkHost(hostname)` is required to actually match -- a second,
+   independent verification, not a re-read of what openssl claims to have done.
+2. **Stores it as a real `kubernetes.io/tls` Secret in `istio-system`** -- the same namespace
+   `k8s/gateway.yaml`'s `platform-console-tls` and `k8s/mtls-gateway.yaml`'s
+   `platform-backups-mtls-credential` already live in. Istio's ingress-gateway SDS only reads a
+   Gateway's `credentialName` Secret from the gateway WORKLOAD's own namespace, never the
+   Gateway object's namespace -- confirmed by both of those pre-existing Secrets already living
+   there, not assumed.
+3. **Creates a real `Gateway` + `VirtualService` pair**, in `platform-console` (same namespace
+   `k8s/gateway.yaml`/`k8s/mtls-gateway.yaml`'s own Gateway/VirtualService objects already use),
+   bound to that one hostname. The new Gateway's server declares `port.number: 443` -- NOT the
+   8443 an operator actually connects to -- deliberately: confirmed live via `istioctl
+   proxy-config listener` before this value was picked that this cluster's non-root
+   istio-ingressgateway auto-offsets any declared port `<1024` by `+8000` when binding Envoy's
+   real listener (declared `443` binds a real `0.0.0.0:8443` socket inside the pod), and Gateway
+   objects only merge onto the SAME physical listener (splitting traffic by SNI) when they
+   declare the SAME `port.number`. Declaring `8443` directly would instead make Envoy try to bind
+   its own separate listener on that exact already-occupied socket -- a real conflict, not a
+   second usable route. The real external door operators/`curl` connect through is a dedicated
+   `https-custom-domains` port (`8443`) added to the shared `istio-ingressgateway` Service as a
+   one-time infra step (same pattern `k8s/mtls-gateway.yaml`'s own header comment documents for
+   its `8444`):
+   ```
+   kubectl patch svc istio-ingressgateway -n istio-system --type=json -p \
+     '[{"op":"add","path":"/spec/ports/-","value":
+       {"name":"https-custom-domains","port":8443,"targetPort":8443,"protocol":"TCP"}}]'
+   ```
+   `targetPort: 8443` here is the SAME real container port the `443`-offset above already binds
+   -- this Service port is just a second, dedicated external door onto the identical physical
+   listener, not a new one.
+
+All three real objects (Secret, Gateway, VirtualService) are named deterministically from the
+hostname and carry a `platform-console.io/custom-domain: "true"` label plus
+`platform-console.io/*` annotations recording the real target Service -- `listCustomDomains`
+never needs a side database, it just re-reads the live Gateway objects, the same "the listing
+IS the record" convention `lib/scheduled-jobs.ts`/`lib/batch-jobs.ts` already use for
+CronJobs/Jobs. Register creates Secret -> Gateway -> VirtualService (the object that actually
+turns on live routing, created last) and rolls back whatever it already created on any failure;
+unbind deletes VirtualService -> Gateway -> Secret (traffic stops first), and is idempotent.
+
+**A real, disclosed gap this feature surfaced and fixed.** A custom domain's Gateway/
+VirtualService routes DIRECTLY from the istio-ingressgateway pod (`istio-system`) to the target
+project's status Service -- a genuinely different network path than every other route in this
+cluster, which all proxy through `platform-console-gateway`'s own already-allowed identity
+first. The first live registration against `gymact-status` proved this real: the TLS handshake
+succeeded but the app request came back a real Envoy `503 upstream connect error ... connection
+timeout` -- the exact same CNI-drop signature `network-segmentation`'s own control evidence
+documents for a blocked cross-identity call, because `k8s/network-policies.yaml`'s
+default-deny + `*-allow-from-platform-console` baseline never anticipated the ingress gateway
+itself as a caller. Fixed with a new, narrowly-scoped `*-allow-from-istio-ingressgateway`
+NetworkPolicy per project namespace (autofde-lab, gymact, ggen, ggen-marketplace) -- ingress
+from exactly the istio-ingressgateway pod's own identity (`namespaceSelector: istio-system` +
+`podSelector: istio=ingressgateway`, the same selector istio-ingressgateway's own Service
+already uses), same port `8080` only as the existing `allow-from-platform-console` rule --
+re-run after the fix and it worked, see the transcript below.
+
+**RBAC, scoped narrowly.** Two new Roles (`k8s/paas-rbac.yaml`), neither folded into the
+read-mostly `platform-console-paas` ClusterRole: (1) `platform-console-custom-domains`,
+`platform-console` namespace only, `get/list/watch/create/delete` on
+`networking.istio.io` `gateways`/`virtualservices` -- broader than the existing Canary Role's
+`virtualservices` grant (which only ever updates ONE standing object `kubectl apply` already
+created) because this feature genuinely creates and deletes a NEW pair per operator action; (2)
+`platform-console-custom-domains-tls`, `istio-system` namespace, `get/list/create/delete` on
+core `secrets` -- a deliberate, disclosed exception to every other Secrets grant in this file
+(always scoped to the 5 platform project namespaces, never a system namespace), unavoidable
+because Istio's SDS requires the credential Secret to live in the gateway workload's own
+namespace. Mitigated at the application layer: `lib/custom-domains.ts` only ever
+GETs/DELETEs Secrets it names itself (`custom-domain-<slug>-tls`), never lists or reads Secret
+VALUES for any other name. Confirmed live, narrow and correctly scoped:
+
+```
+$ kubectl auth can-i create gateways.networking.istio.io -n platform-console \
+    --as=system:serviceaccount:platform-console:platform-console
+yes
+$ kubectl auth can-i create secrets -n istio-system \
+    --as=system:serviceaccount:platform-console:platform-console
+yes
+$ kubectl auth can-i create gateways.networking.istio.io -n default \
+    --as=system:serviceaccount:platform-console:platform-console
+no
+```
+
+**Real proof, end to end, through the real deployed pod.** Rebuilt
+`platform-console/console:latest` (Dockerfile now installs a real `openssl` CLI into the
+`node:20-slim` runner -- confirmed live via `kubectl exec ... -- which openssl` returning a
+real "not found" before that line existed), `kind load docker-image`'d it, `kubectl rollout
+restart`'ed `platform-console-gateway` (2/2 healthy). Logged in through the real deployed pod
+(real `POST /api/login`, admin password hash rotated to a freshly generated known bcryptjs
+hash for this verification and restored immediately after, same precedent the Load Testing
+section above documents). Through the authenticated `/api/custom-domains`:
+
+- `POST {"hostname":"demo.platform.local","serviceName":"gymact-status",
+  "serviceNamespace":"gymact","servicePort":80}` -> real `201`, real
+  `Secret/custom-domain-demo-platform-local-tls` (istio-system),
+  `Gateway/custom-domain-demo-platform-local-gateway`,
+  `VirtualService/custom-domain-demo-platform-local-vs` (platform-console) -- confirmed via
+  `kubectl get gateway/virtualservice/secret -o yaml`, real objects with the real registered
+  hostname/target in their annotations.
+- `istioctl proxy-config listener istio-ingressgateway-... -n istio-system` before vs. after
+  registration:
+  ```
+  0.0.0.0   8443  SNI: platform.local         Route: https.443.https.platform-console-gateway...
+  ```
+  became
+  ```
+  0.0.0.0   8443  SNI: platform.local         Route: https.443.https.platform-console-gateway...
+  0.0.0.0   8443  SNI: demo.platform.local    Route: https.443.https-demo-platform-local.custom-domain-demo-platform-local-gateway.platform-console
+  ```
+  confirming the new hostname merged onto the SAME physical listener via SNI, exactly as
+  designed, before any HTTP request was made.
+- **Real TLS handshake, real presented certificate, real target-service response**, through the
+  real Istio ingress gateway (`kubectl port-forward -n istio-system svc/istio-ingressgateway
+  18443:443`, then a real client connecting with SNI `demo.platform.local`):
+  ```
+  $ curl -skv --resolve demo.platform.local:18443:127.0.0.1 https://demo.platform.local:18443/status
+  *  subject: CN=demo.platform.local
+  *  start date: Aug 18 13:26:02 2026 GMT
+  *  expire date: Aug 18 13:26:02 2027 GMT
+  > GET /status HTTP/2
+  < HTTP/2 200
+  {"service":"gymact-status","repo":"gymact", ...}
+  ```
+  and independently via `openssl s_client -connect 127.0.0.1:18443 -servername
+  demo.platform.local`, whose presented certificate's `X509v3 Subject Alternative Name` read
+  `DNS:demo.platform.local` -- an exact match to the registered hostname, not some other cert
+  (the SAME connection with `-servername platform.local` instead returns "no peer certificate
+  available", a completely different, unrelated chain, proving SNI-based cert selection is
+  real and specific, not a wildcard/default fallback).
+- **Unbind, then a real connection refusal, not silently still working.** `DELETE
+  /api/custom-domains?hostname=demo.platform.local` -> real `200`; `kubectl get
+  gateway/virtualservice/secret` for all three names returned real `NotFound`; `istioctl
+  proxy-config listener` immediately dropped the `SNI: demo.platform.local` line, leaving only
+  `platform.local`/`backups.platform.local`; a fresh `openssl s_client -servername
+  demo.platform.local` against the same listener returned a real
+  `error:...unexpected eof while reading` (Envoy closing the connection with no matching filter
+  chain, not a cert), and `curl` to the same hostname/path returned a real connection failure
+  (curl exit 7 / `HTTP_CODE=000`) -- the hostname genuinely stopped routing.
+- **Cleanup verified**: the original `ADMIN_PASSWORD_HASH` was restored and the deployment
+  rolled again; the temporary test password subsequently received a real `401
+  {"error":"invalid credentials"}` from `POST /api/login` against the freshly rolled pod.
+
+Full command transcripts: `custom-domain-tls-cert-matches-hostname` in
+`evidence/control-evidence-bundle.json`.
+
+**Disclosed RBAC scope limitation, found during this feature's own pre-commit review, not
+hidden**: `platform-console-custom-domains-tls` (`k8s/paas-rbac.yaml`) grants
+`get/list/create/delete` on `secrets` across the *entire* `istio-system` namespace, not scoped
+to only the TLS Secrets this feature creates. This is a real k8s RBAC limitation, not an
+oversight left unexamined: `list` cannot be `resourceNames`-restricted at all (the console
+needs to enumerate its own custom-domain secrets to render `/custom-domains`), and dynamically
+created secret names can't be pre-enumerated for `get`/`delete` either. The practical
+consequence: a compromised `platform-console` pod could read or delete OTHER Secrets in
+`istio-system` it has no legitimate reason to touch (e.g. `platform-backups-mtls-credential`
+from the Private Connectivity module, or Istio's own default cert). Closing this properly
+would need a label-selector-aware admission controller or a dedicated CRD, both out of scope
+for this pass. Mitigated in application code (`lib/custom-domains.ts` never touches a Secret
+it didn't itself create, by name), but that is a code-level convention, not an RBAC-enforced
+boundary -- the platform-level trust boundary here is narrower than the RBAC grant technically
+allows, and that gap is real, not merely theoretical.
 
 ## Autoscaling
 

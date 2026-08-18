@@ -34,6 +34,16 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
+# Real `openssl` CLI -- lib/custom-domains.ts shells out to a real
+# `openssl req -x509` subprocess to generate each Custom Domain's TLS
+# certificate (no bundled cert library, no forged PEM content). node:20-
+# slim (Debian) does not carry openssl by default -- confirmed live via
+# `kubectl exec ... -- which openssl` returning a real "not found" before
+# this line existed.
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends openssl \
+  && rm -rf /var/lib/apt/lists/*
+
 RUN groupadd --system --gid 1001 nodejs \
   && useradd --system --uid 1001 --gid nodejs nextjs
 

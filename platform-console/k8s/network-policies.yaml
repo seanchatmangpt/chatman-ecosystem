@@ -58,6 +58,43 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
+  # Custom Domains (lib/custom-domains.ts): a real Istio Gateway/
+  # VirtualService bound to a custom hostname routes DIRECTLY from the
+  # istio-ingressgateway pod (istio-system) to this namespace's status
+  # Service -- a real, different network path than every other route in
+  # this cluster, which all proxy through platform-console-gateway's own
+  # already-allowed identity first. Without this rule, that direct path
+  # is silently dropped by the default-deny baseline above (confirmed
+  # live: a real custom-domain HTTPS request returned Envoy's own real
+  # "upstream connect error ... connection timeout" -- the exact same CNI
+  # drop signature network-segmentation's own control evidence documents
+  # for a blocked cross-identity call, not a bug in the Gateway/
+  # VirtualService wiring). Scoped as narrowly as the existing
+  # allow-from-platform-console rule above: exactly the istio-ingress-
+  # gateway pod's own identity (namespaceSelector istio-system +
+  # podSelector istio=ingressgateway, the same selector istio-
+  # ingressgateway's own Service already uses), same port 8080 only.
+  name: autofde-lab-allow-from-istio-ingressgateway
+  namespace: autofde-lab
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: istio-system
+          podSelector:
+            matchLabels:
+              istio: ingressgateway
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
   name: autofde-lab-allow-egress-dns-istiod
   namespace: autofde-lab
 spec:
@@ -117,6 +154,43 @@ spec:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: platform-console
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  # Custom Domains (lib/custom-domains.ts): a real Istio Gateway/
+  # VirtualService bound to a custom hostname routes DIRECTLY from the
+  # istio-ingressgateway pod (istio-system) to this namespace's status
+  # Service -- a real, different network path than every other route in
+  # this cluster, which all proxy through platform-console-gateway's own
+  # already-allowed identity first. Without this rule, that direct path
+  # is silently dropped by the default-deny baseline above (confirmed
+  # live: a real custom-domain HTTPS request returned Envoy's own real
+  # "upstream connect error ... connection timeout" -- the exact same CNI
+  # drop signature network-segmentation's own control evidence documents
+  # for a blocked cross-identity call, not a bug in the Gateway/
+  # VirtualService wiring). Scoped as narrowly as the existing
+  # allow-from-platform-console rule above: exactly the istio-ingress-
+  # gateway pod's own identity (namespaceSelector istio-system +
+  # podSelector istio=ingressgateway, the same selector istio-
+  # ingressgateway's own Service already uses), same port 8080 only.
+  name: gymact-allow-from-istio-ingressgateway
+  namespace: gymact
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: istio-system
+          podSelector:
+            matchLabels:
+              istio: ingressgateway
       ports:
         - protocol: TCP
           port: 8080
@@ -190,6 +264,43 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
+  # Custom Domains (lib/custom-domains.ts): a real Istio Gateway/
+  # VirtualService bound to a custom hostname routes DIRECTLY from the
+  # istio-ingressgateway pod (istio-system) to this namespace's status
+  # Service -- a real, different network path than every other route in
+  # this cluster, which all proxy through platform-console-gateway's own
+  # already-allowed identity first. Without this rule, that direct path
+  # is silently dropped by the default-deny baseline above (confirmed
+  # live: a real custom-domain HTTPS request returned Envoy's own real
+  # "upstream connect error ... connection timeout" -- the exact same CNI
+  # drop signature network-segmentation's own control evidence documents
+  # for a blocked cross-identity call, not a bug in the Gateway/
+  # VirtualService wiring). Scoped as narrowly as the existing
+  # allow-from-platform-console rule above: exactly the istio-ingress-
+  # gateway pod's own identity (namespaceSelector istio-system +
+  # podSelector istio=ingressgateway, the same selector istio-
+  # ingressgateway's own Service already uses), same port 8080 only.
+  name: ggen-allow-from-istio-ingressgateway
+  namespace: ggen
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: istio-system
+          podSelector:
+            matchLabels:
+              istio: ingressgateway
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
   name: ggen-allow-egress-dns-istiod
   namespace: ggen
 spec:
@@ -249,6 +360,43 @@ spec:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: platform-console
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  # Custom Domains (lib/custom-domains.ts): a real Istio Gateway/
+  # VirtualService bound to a custom hostname routes DIRECTLY from the
+  # istio-ingressgateway pod (istio-system) to this namespace's status
+  # Service -- a real, different network path than every other route in
+  # this cluster, which all proxy through platform-console-gateway's own
+  # already-allowed identity first. Without this rule, that direct path
+  # is silently dropped by the default-deny baseline above (confirmed
+  # live: a real custom-domain HTTPS request returned Envoy's own real
+  # "upstream connect error ... connection timeout" -- the exact same CNI
+  # drop signature network-segmentation's own control evidence documents
+  # for a blocked cross-identity call, not a bug in the Gateway/
+  # VirtualService wiring). Scoped as narrowly as the existing
+  # allow-from-platform-console rule above: exactly the istio-ingress-
+  # gateway pod's own identity (namespaceSelector istio-system +
+  # podSelector istio=ingressgateway, the same selector istio-
+  # ingressgateway's own Service already uses), same port 8080 only.
+  name: ggen-marketplace-allow-from-istio-ingressgateway
+  namespace: ggen-marketplace
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: istio-system
+          podSelector:
+            matchLabels:
+              istio: ingressgateway
       ports:
         - protocol: TCP
           port: 8080

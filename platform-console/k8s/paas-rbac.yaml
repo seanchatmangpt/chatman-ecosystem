@@ -1452,3 +1452,93 @@ roleRef:
   kind: Role
   name: platform-batch-runner
   apiGroup: rbac.authorization.k8s.io
+---
+# ------------------------------------------------------------ Custom Domains
+#
+# Real Custom Domain self-service (AWS Certificate Manager + Route53
+# custom-domain binding / GCP Cloud Run custom-domain equivalent),
+# lib/custom-domains.ts. Two separate, narrowly-scoped grants -- neither
+# folded into the read-mostly platform-console-paas ClusterRole above,
+# same "more consequential than read-mostly, so its own namespace-scoped
+# Role" reasoning the Canary Traffic Control section above already uses:
+#
+# 1. Gateway/VirtualService management, platform-console namespace only
+#    (where k8s/gateway.yaml's and k8s/mtls-gateway.yaml's own Gateway/
+#    VirtualService objects already live -- this reuses that exact
+#    placement, not a new namespace). get/list/watch/create/delete on
+#    both resources -- unlike the existing Canary Role in autofde-lab
+#    (which only ever get/update/patches ONE standing VirtualService
+#    `kubectl apply` already created), this feature creates and deletes a
+#    NEW Gateway+VirtualService pair per operator action, so it genuinely
+#    needs create/delete here that Canary's Role does not carry. No
+#    update/patch: a registered domain's objects are only ever deleted
+#    and (on re-registration) recreated whole, never edited in place.
+#
+# 2. TLS Secret management, istio-system namespace -- a deliberate,
+#    disclosed exception to every other Secrets-touching grant in this
+#    file (Secrets Manager/Batch Compute above are always scoped to the
+#    5 platform project namespaces, explicitly NEVER kube-system or any
+#    other system namespace). This exception is unavoidable, not an
+#    oversight: Istio's ingress-gateway SDS only reads a Gateway's
+#    `credentialName` Secret from the gateway WORKLOAD's own namespace
+#    (istio-system), never the Gateway object's namespace -- the exact
+#    same constraint k8s/gateway.yaml's `platform-console-tls` and
+#    k8s/mtls-gateway.yaml's `platform-backups-mtls-credential` Secrets
+#    already live under. Kubernetes RBAC cannot scope get/list/delete to
+#    "only Secrets this ServiceAccount itself created" (no wildcard-name
+#    or label-based rule exists for those verbs) -- so this grant technically
+#    also reaches the platform's OWN standing gateway credential Secrets in
+#    istio-system, a real, disclosed tradeoff of this feature rather than
+#    a hidden one. Mitigated at the application layer: lib/custom-domains.ts
+#    only ever GETs/DELETEs Secrets it names itself
+#    (`custom-domain-<slug>-tls`, deterministic from the hostname) and
+#    never lists or reads Secret VALUES for any other name. No update/
+#    patch: a registered domain's cert is only ever deleted and recreated
+#    whole on re-registration, never rotated in place.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-custom-domains
+  namespace: platform-console
+rules:
+  - apiGroups: ["networking.istio.io"]
+    resources: ["gateways", "virtualservices"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-custom-domains-binding
+  namespace: platform-console
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-custom-domains
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-custom-domains-tls
+  namespace: istio-system
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-custom-domains-tls-binding
+  namespace: istio-system
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-custom-domains-tls
+  apiGroup: rbac.authorization.k8s.io

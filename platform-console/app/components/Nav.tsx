@@ -34,6 +34,7 @@ const links = [
   { href: "/audit", label: "Audit Log" },
   { href: "/registry", label: "Registry" },
   { href: "/service-discovery", label: "Service Discovery" },
+  { href: "/custom-domains", label: "Custom Domains" },
   { href: "/topology", label: "Topology" },
   { href: "/network", label: "Network" },
   { href: "/api-gateway", label: "API Gateway" },
