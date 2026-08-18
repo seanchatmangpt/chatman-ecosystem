@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Fail-closed DfCM admission and evidence law for the v26.9.1 release crown."""
+"""Fail-closed DfCM admission and evidence law for the v26.9.1 crown-edge set.
+
+This verifier owns mandatory-edge topology only. Broader release-candidate
+readiness remains outside its claim ceiling and must be established by the
+independent release graph, standing, runtime, receipt, replay, and exact-head
+gates.
+"""
 from __future__ import annotations
 
 import argparse
@@ -307,7 +313,9 @@ def verify(data: dict[str, Any]) -> dict[str, Any]:
         "version": VERSION,
         "mandatory_edge_count": len(MANDATORY_EDGES),
         "unresolved_edges": unresolved,
-        "release_candidate_ready": all_alive,
+        "mandatory_edges_ready": all_alive,
+        "release_candidate_ready": False,
+        "release_candidate_ready_reason": "OUTSIDE_EDGE_VERIFIER_CLAIM_CEILING",
         "topology_sha256": _topology_digest(policy),
         "claim_ceiling": CLAIM_CEILING,
         "do_authority": False,
