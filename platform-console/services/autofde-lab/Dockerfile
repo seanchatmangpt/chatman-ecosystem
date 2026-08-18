@@ -16,6 +16,11 @@ ENV PORT=8080
 # by design, same convention as FACTS_PATH/PORT above.
 ENV FEATURE_FLAGS_NAMESPACE=platform-console
 ENV FEATURE_FLAGS_CONFIGMAP=platform-feature-flags
+# Real runtime canary marker default -- see app.py's "Canary marker" doc
+# section. The stable Deployment leaves this at the default; the canary
+# Deployment (k8s/canary.yaml) overrides it to "canary" via its pod spec.
+# Same image both ways -- only this env var differs.
+ENV CANARY_VERSION=stable
 EXPOSE 8080
 
 USER nobody

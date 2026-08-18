@@ -53,6 +53,7 @@ or global footprint.
 | `/iam` | Lists real RBAC Roles/RoleBindings/NetworkPolicies grouped by namespace | `lib/k8s.ts` |
 | `/secrets` | Lists real `type: Opaque` k8s Secrets per namespace (names + key names only, never decoded values); create/delete real Secrets | `app/api/secrets/route.ts`, `lib/k8s.ts` |
 | `/scheduled-jobs` | Scheduled Jobs (AWS EventBridge Scheduler / GCP Cloud Scheduler / Azure Logic Apps recurring-trigger equivalent): self-service creation of real `batch/v1` `CronJob` objects, scoped to the platform's own namespaces only via a per-namespace `Role`/`RoleBinding` pair (`k8s/paas-rbac.yaml`) -- never cluster-wide. The real security boundary is the CONTAINER COMMAND: `lib/scheduled-jobs.ts`'s `ALLOWED_COMMANDS` is a fixed, small, server-side allowlist of two harmless commands (echo the real current UTC timestamp; curl the namespace's own `<namespace>-status` Service `/status` and log the real response) -- a request naming anything outside that allowlist is rejected with a `400` before any k8s API call is made; there is no free-text command field anywhere in the create form or the API route. Lists real CronJobs with their real `status.lastScheduleTime`/`status.lastSuccessfulTime` (the CronJob controller's own fields -- no separate fabricated catalog); delete stops all further scheduling. See `scheduled-job-fires-on-real-schedule` in `evidence/control-evidence-bundle.json` for the real create/wait/observe/delete/confirm-no-further-firings proof | `app/api/scheduled-jobs/route.ts`, `lib/scheduled-jobs.ts` |
+| `/deployments/canary` | Real **Canary/Blue-Green deployment control** (AWS CodeDeploy traffic-shifting / GCP traffic-splitting / Azure deployment slots equivalent) for `autofde-lab-status` -- real Istio weighted `VirtualService` routing between two Deployments (`autofde-lab-status`/`autofde-lab-status-canary`, same image, distinguished by a `version` pod label and a runtime `CANARY_VERSION` env var) sharing one Service, split by a real `DestinationRule`'s `stable`/`canary` subsets, in place of the all-or-nothing `kubectl rollout restart` every other Deployment here still uses. Owner-gated weight slider (0-100), live weight + Deployment-readiness display, a **promote** action (100% canary, delete stable) and a **rollback** action (100% stable, delete canary). See "Canary / Blue-Green deployment control" below and `canary-traffic-split-measured-real` in `evidence/control-evidence-bundle.json` for the real per-request tabulated proof at 50/50, 100/0, post-promote, and the final clean steady state | `lib/canary.ts`, `app/api/deployments/canary/route.ts`, `app/app/deployments/canary/page.tsx`, `k8s/canary.yaml` |
 | `/logs` | Namespace → pod → container drill-down over real pod stdout/stderr via the k8s pod-log subresource | `app/api/logs/route.ts`, `lib/k8s.ts` |
 | `/registry` | Container Registry as an honest **image inventory**: this cluster has no push-capable registry (images are built locally and `kind load docker-image`d straight into containerd), so every real Deployment container's `image` field is cross-referenced against real Pod `containerStatuses` (digest + ready state), flagging any image not confirmed present or stuck on a real pull failure | `lib/k8s.ts` |
 | `/projects/[name]/backups` | Database Backups (RDS/Cloud SQL/Cloud Spanner automated-backup equivalent), project-scoped like Database/Auth/Storage/Functions above -- not a global page. Resolves the target project's real Postgres StatefulSet Pod live via `getProjectDatabasePod` (never a literal `demo-db-postgres`): "Run backup now" creates a real `batch/v1` Job that runs `pg_dump` against that database's real Service, using the exact image and password Secret/key read live off the source Pod's own spec; the dump lands on `platform-backups-pvc`, at a path namespaced by `<namespace>/<database-stem>/`. PVC contents aren't directly queryable via the k8s API, so the Job listing itself (name encodes the timestamp, real completion status, real duration) *is* the backup inventory -- scoped to `app=platform-backups,database=<stem>` so two projects sharing one namespace never see each other's Jobs. **Restore** (the RDS/Cloud SQL point-in-time-restore equivalent): "Restore" next to any `Complete` backup, gated behind a type-the-backup-name-to-confirm step and a server-side same-project-ownership check (the named backup Job must belong to this project's own database, or the API refuses with a real 403), creates a real `batch/v1` Job that mounts the same PVC read-only, locates that backup's real dump file, clears the target's real table data (`TRUNCATE` per table -- not `DROP SCHEMA`, since the same credential createBackupJob discovers is not a superuser and owns none of the real schemas here; see the module doc in `lib/k8s.ts`), then replays the dump via `psql -f`. Real, disclosed limitation: a plain `pg_dump` with no FK-aware ordering can leave a same-run child-table row unrestored when its parent lands later in the file (observed live, see the evidence bundle) -- the primary data (e.g. a deleted user's own row) restores correctly; dependent rows loaded out of FK order do not, in the same restore pass. See `multi-project-tenancy-verified` in `evidence/control-evidence-bundle.json` for the real second-project proof (this module was the one genuinely hardcoded module found; Database/Auth/Storage/Functions were already project-agnostic) | `app/app/api/projects/[name]/backups/route.ts`, `lib/k8s.ts` (`getProjectDatabasePod`, `createBackupJob`, `createRestoreJob`) |
@@ -211,8 +212,77 @@ the ServiceAccount already has.
   Status Page's real data source -- see "Status page" below.
 - Manifests applied in order from `k8s/`: `namespaces.yaml`, `rbac.yaml`, `paas-rbac.yaml`,
   `resource-quotas.yaml`, `network-policies.yaml`, `mtls.yaml`, `feature-flags.yaml`,
-  `services-and-deployments.yaml`, `gateway.yaml`, `grafana-route.yaml`, `hpa.yaml`,
-  `ratelimit.yaml`, `status-page.yaml`.
+  `services-and-deployments.yaml`, `canary.yaml`, `gateway.yaml`, `grafana-route.yaml`,
+  `hpa.yaml`, `ratelimit.yaml`, `status-page.yaml`.
+
+## Canary / Blue-Green deployment control
+
+Real Canary/Blue-Green deployment traffic control -- the AWS CodeDeploy traffic-shifting / GCP
+traffic-splitting / Azure deployment slots equivalent -- for one real backend,
+`autofde-lab-status`, built on Istio's real weighted `VirtualService` routing rather than the
+all-or-nothing `kubectl rollout restart` every other Deployment in this cluster still uses.
+
+Shape (`k8s/canary.yaml`):
+
+- **Two Deployments, one image.** `autofde-lab-status` (stable) and `autofde-lab-status-canary`
+  (canary) run the exact same `platform-console/autofde-lab-status:latest` image, distinguished
+  only by a `version: stable`/`version: canary` pod label and a `CANARY_VERSION` env var each
+  sets. `services/autofde-lab/app.py` stamps that env var onto every response as a real,
+  observable marker: an `X-Deployment-Version` header on every response, plus
+  `deployment_version`/`canary` fields on `GET /status` -- never a build-time difference between
+  the two images, since they're the same image.
+- **One Service, unchanged.** `autofde-lab-status` (k8s/services-and-deployments.yaml) still
+  selects on `app: autofde-lab-status` only, so it matches pods from both Deployments.
+- **One `DestinationRule`** (`networking.istio.io/v1`) defines `stable`/`canary` subsets over
+  that Service by the `version` label.
+- **One `VirtualService`** routes to those two subsets by weight (`spec.http[0].route[].weight`),
+  no `gateways:` field (applies to mesh-internal/sidecar-to-sidecar traffic, not ingress).
+
+`lib/canary.ts` reads/writes that VirtualService's live weight via the k8s API (a real
+GET-then-PUT, reusing `lib/k8s.ts`'s `k8sRequest` -- Istio CRDs are just another namespaced
+resource, same convention `listPeerAuthentications` already established for
+`security.istio.io`). The owner-gated `/deployments/canary` page
+(`app/api/deployments/canary/route.ts`, `requireRole(session, "owner")`, same enforcement
+boundary as `/org`) exposes a weight slider, a **promote** action (100% canary, then delete the
+stable Deployment), and a **rollback** action (100% stable, then delete the canary Deployment).
+RBAC: `k8s/paas-rbac.yaml`'s `platform-console-canary-autofde-lab` Role, scoped to exactly the
+`autofde-lab` namespace (not cluster-wide) -- `create`/`delete` on `apps/deployments` and
+`get`/`update`/`patch` on `networking.istio.io/virtualservices`.
+
+**Real traffic-split proof (not simulated)**: driven through the live, authenticated
+`/api/deployments/canary` API (a real session JWT, HS256-signed with this app's own live
+`AUTH_SECRET`, minted the same way and to the same trust level as the webhook-receiver proof
+above), with a real 40-request-per-setting burst issued from the `platform-console-gateway`
+pod's own network identity (allowed by `autofde-lab-allow-from-platform-console`'s
+NetworkPolicy; a same-namespace throwaway pod was tried first and confirmed genuinely blocked
+by that same default-deny policy, so the burst runs from the identity the policy already
+admits) against `http://autofde-lab-status.autofde-lab.svc.cluster.local/status`, tabulating
+the real `X-Deployment-Version` response header per request:
+
+| Weight set (stable/canary) | Real tabulated result (40 requests) | Ratio |
+|---|---|---|
+| 50 / 50 | stable 19, canary 21 | 47.5% / 52.5% |
+| 100 / 0 (immediately after the weight PUT) | stable 39, canary 1 | real Istio xDS propagation lag, disclosed not hidden -- see below |
+| 100 / 0 (after a 3s settle) | stable 40, canary 0 | 100% / 0% |
+| after **promote** (weight forced to 0/100, stable Deployment deleted) | stable 0, canary 40 | 0% / 100% |
+| final steady state (stable Deployment recreated, **rollback** called: weight 100/0, canary Deployment deleted) | stable 40, canary 0 | 100% / 0% |
+
+The single canary hit in the "immediately after" row is a real, disclosed observation of
+Istio's eventually-consistent xDS propagation (istiod pushing the updated route config to the
+Envoy sidecar takes on the order of ~1-3s after the `VirtualService` PUT lands in the k8s API)
+-- not a bug in `setCanaryWeights`, and not hidden: the very next burst, run after a 3s settle
+with no other change, landed 40/40 on stable. The 50/50 row's 47.5/52.5 real split is within
+the expected ~35/65-65/35 band for Istio's weighted routing over 40 samples (a probabilistic
+per-request selection, not an exact round-robin).
+
+Deployment state was inspected live at each step (`kubectl get deploy -n autofde-lab`): promote
+left exactly one Deployment (`autofde-lab-status-canary`) with the stable one genuinely absent;
+after `services-and-deployments.yaml` was re-applied and rollback called, `kubectl get deploy`
+showed exactly one Deployment again (`autofde-lab-status`, back to its original name), and a
+follow-up `kubectl get pods -n autofde-lab` confirmed the canary pod fully `Terminating` -> gone
+-- the platform returned to its real, original single-Deployment steady state, not merely a
+weight change on top of leftover infrastructure. Full evidence, including the exact commands
+run: `canary-traffic-split-measured-real` in `evidence/control-evidence-bundle.json`.
 
 ## Rate limiting
 

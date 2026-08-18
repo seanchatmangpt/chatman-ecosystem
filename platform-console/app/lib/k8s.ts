@@ -69,7 +69,7 @@ export function hasClusterCredentials(): boolean {
  */
 export async function k8sRequest<T>(
   path: string,
-  method: "GET" | "POST" | "DELETE" | "PATCH" = "GET",
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" = "GET",
   body?: unknown,
   contentType = "application/json",
 ): Promise<K8sResult<T>> {

@@ -836,3 +836,62 @@ roleRef:
   kind: Role
   name: platform-console-api-keys
   apiGroup: rbac.authorization.k8s.io
+---
+# ------------------------------------------------------ Canary Traffic Control
+#
+# Real Canary/Blue-Green traffic-shifting control (k8s/canary.yaml,
+# lib/canary.ts, app/deployments/canary). Deliberately its OWN
+# namespace-scoped Role -- never folded into the cluster-wide
+# platform-console-paas ClusterRole above -- for two reasons, same
+# reasoning already used for Secrets/Logs below: (1) this grants
+# `update`/`patch` on a live-traffic-routing object plus `create`/`delete`
+# on Deployments, a materially more consequential capability than the
+# read-mostly resources platform-console-paas grants cluster-wide, so it
+# is scoped to exactly the one namespace this demo actually uses
+# (autofde-lab), not every platform namespace; (2) the app-level
+# `requireRole(session, "owner")` gate in app/api/deployments/canary/
+# route.ts is the real per-request authorization boundary -- this RBAC
+# grant only bounds what the pod's OWN ServiceAccount identity could ever
+# do, the same defense-in-depth split every other mutating module in this
+# file already follows.
+#
+# `deployments` get/list/watch is already granted cluster-wide by
+# platform-console-paas above -- not repeated here, RBAC grants are
+# additive. This Role adds only the verbs that ClusterRole doesn't carry:
+# `create`/`delete` on Deployments (to stand up/tear down the canary
+# Deployment and to delete the losing side on promote/rollback), and
+# `get`/`update`/`patch` on the one `networking.istio.io` VirtualService
+# object this demo reads/writes live (`autofde-lab-status`,
+# k8s/canary.yaml) -- no `create`/`delete` on the VirtualService or
+# DestinationRule themselves, since both are standing objects managed by
+# `kubectl apply` of k8s/canary.yaml, never created/destroyed by the
+# console at runtime.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-canary-autofde-lab
+  namespace: autofde-lab
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["create", "delete"]
+  - apiGroups: ["networking.istio.io"]
+    resources: ["virtualservices"]
+    verbs: ["get", "list", "watch", "update", "patch"]
+  - apiGroups: ["networking.istio.io"]
+    resources: ["destinationrules"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-canary-autofde-lab-binding
+  namespace: autofde-lab
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-canary-autofde-lab
+  apiGroup: rbac.authorization.k8s.io

@@ -83,6 +83,14 @@ spec:
     metadata:
       labels:
         app: autofde-lab-status
+        # Canary/stable subset label -- see k8s/canary.yaml's
+        # DestinationRule, which defines the `stable` subset as exactly
+        # this label. The Service selector below stays scoped to `app`
+        # only (unchanged), so it keeps matching both this Deployment's
+        # pods AND autofde-lab-status-canary's pods; Istio's
+        # DestinationRule/VirtualService pair is what actually splits
+        # traffic between the two `version` values, not the Service.
+        version: stable
     spec:
       serviceAccountName: autofde-lab-status-reader
       containers:
@@ -101,6 +109,12 @@ spec:
               value: "platform-console"
             - name: FEATURE_FLAGS_CONFIGMAP
               value: "platform-feature-flags"
+            # Real runtime canary marker (app.py's "Canary marker" doc
+            # section) -- explicit here, redundant with the image's own
+            # ENV CANARY_VERSION=stable default, same "explicit per the
+            # task's ask" convention as the two vars above.
+            - name: CANARY_VERSION
+              value: "stable"
           resources:
             requests:
               cpu: "50m"

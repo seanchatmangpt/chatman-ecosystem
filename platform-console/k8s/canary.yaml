@@ -1,0 +1,139 @@
+# Real Canary/Blue-Green deployment control for autofde-lab-status -- the
+# AWS CodeDeploy traffic-shifting / GCP traffic-splitting / Azure deployment
+# slots equivalent, implemented with Istio's real weighted VirtualService
+# routing (this cluster's mesh is already STRICT mTLS everywhere --
+# k8s/mtls.yaml -- and already fronts platform-console-gateway via
+# k8s/gateway.yaml; this file adds the same primitive one level deeper, for
+# service-to-service mesh-internal traffic rather than ingress traffic).
+#
+# Shape, standard Istio canary pattern:
+#   - ONE k8s Service (autofde-lab-status, unchanged, k8s/services-and-
+#     deployments.yaml) selects on `app: autofde-lab-status` only, so it
+#     keeps matching pods from BOTH Deployments below.
+#   - TWO Deployments, same container image (platform-console/autofde-lab-
+#     status:latest -- see services/autofde-lab/Dockerfile), distinguished
+#     only by a `version` pod label (`stable` / `canary`) and the
+#     CANARY_VERSION env var each sets (app.py's "Canary marker" doc
+#     section) -- the real, observed, runtime marker
+#     (X-Deployment-Version response header + deployment_version/canary
+#     fields on GET /status), never a build-time difference between images.
+#   - ONE DestinationRule defines two subsets over that shared Service,
+#     matching each Deployment's `version` label.
+#   - ONE VirtualService routes to those two subsets by weight. No
+#     `gateways:` field, so it applies to mesh-internal (sidecar-to-
+#     sidecar) traffic -- i.e. real service-to-service calls through the
+#     Service's ClusterIP -- not ingress-gateway traffic (that's
+#     k8s/gateway.yaml's job for a different host).
+#
+# Weight is read/set live by platform-console/lib/canary.ts via the k8s
+# API (a real GET + PUT against this VirtualService object), driven by the
+# owner-gated /deployments/canary console page. Starts at the steady-state
+# split below (100% stable, 0% canary) -- matches the pre-canary state
+# where only the stable Deployment existed.
+#
+# No explicit `trafficPolicy.tls` block below: this mesh's STRICT mTLS is
+# already enforced automatically for every sidecar-to-sidecar call in this
+# namespace (k8s/mtls.yaml's autofde-lab-mtls PeerAuthentication, already
+# live and already proven working for platform-console's existing /status
+# reads) via Istio's automatic mutual TLS -- no DestinationRule-level TLS
+# override is needed or added.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autofde-lab-status-canary
+  namespace: autofde-lab
+  labels:
+    app: autofde-lab-status
+    version: canary
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autofde-lab-status
+      version: canary
+  template:
+    metadata:
+      labels:
+        app: autofde-lab-status
+        version: canary
+    spec:
+      serviceAccountName: autofde-lab-status-reader
+      containers:
+        - name: autofde-lab-status
+          # Identical image reference to the stable Deployment -- same
+          # tag, same digest once kind-loaded. Only CANARY_VERSION differs.
+          image: platform-console/autofde-lab-status:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: FEATURE_FLAGS_NAMESPACE
+              value: "platform-console"
+            - name: FEATURE_FLAGS_CONFIGMAP
+              value: "platform-feature-flags"
+            - name: CANARY_VERSION
+              value: "canary"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 20
+---
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: autofde-lab-status
+  namespace: autofde-lab
+spec:
+  host: autofde-lab-status.autofde-lab.svc.cluster.local
+  subsets:
+    - name: stable
+      labels:
+        version: stable
+    - name: canary
+      labels:
+        version: canary
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: autofde-lab-status
+  namespace: autofde-lab
+spec:
+  hosts:
+    - autofde-lab-status.autofde-lab.svc.cluster.local
+  # No `gateways:` -- defaults to ["mesh"], applying to sidecar-intercepted
+  # traffic from any in-mesh client (platform-console-gateway's own
+  # /status proxy, or an in-cluster curl pod), not ingress-gateway traffic.
+  http:
+    - name: autofde-lab-status-canary-split
+      route:
+        - destination:
+            host: autofde-lab-status.autofde-lab.svc.cluster.local
+            subset: stable
+          weight: 100
+        - destination:
+            host: autofde-lab-status.autofde-lab.svc.cluster.local
+            subset: canary
+          weight: 0

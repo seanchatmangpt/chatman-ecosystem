@@ -11,6 +11,21 @@ the real project directory on disk (COPYed into the image, not read at runtime -
 the running container has no access to the host repos). No field in facts.json is
 computed or guessed by this app; it only reads and re-serves what prep.sh captured.
 
+Canary marker
+-------------
+Every response (both `/healthz` and `/status`) carries a real, runtime,
+env-driven canary marker -- NOT a build-time facts.json field, deliberately:
+the canary Deployment (`autofde-lab-status-canary`, k8s/canary.yaml) runs
+the exact same image as the stable Deployment (per the task's own "same
+image" requirement), so a build-time-baked marker could never differ
+between the two. Instead, `CANARY_VERSION` (env var, default `"stable"`,
+set to `"canary"` only in the canary Deployment's pod spec) is read once at
+process start and stamped onto every response as:
+  - response header `X-Deployment-Version: stable|canary`
+  - JSON fields `"deployment_version"` and `"canary"` (boolean) on `/status`
+This is the real, observable distinguishing marker
+platform-console/lib/canary.ts's traffic-split proof tabulates against.
+
 Feature-flag-gated field
 -------------------------
 Every GET /status also does a fresh, real, live read of the platform's Feature
@@ -57,6 +72,14 @@ FLAGS_CONFIGMAP = os.environ.get("FEATURE_FLAGS_CONFIGMAP", "platform-feature-fl
 FLAG_KEY = "verbose-status"
 FLAG_REQUEST_TIMEOUT_S = 3
 
+# Real runtime canary marker -- see module docstring's "Canary marker"
+# section. Read once at process start (env vars are fixed for a container's
+# whole lifetime), never re-read per-request -- there is no live-toggle
+# requirement here, unlike the feature-flag read below which is
+# deliberately live on every request.
+DEPLOYMENT_VERSION = os.environ.get("CANARY_VERSION", "stable")
+IS_CANARY = DEPLOYMENT_VERSION == "canary"
+
 START_TIME = time.monotonic()
 
 with open(FACTS_PATH, "r", encoding="utf-8") as f:
@@ -101,6 +124,11 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(code)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
+        # Real distinguishing marker for the canary/stable traffic split --
+        # see module docstring's "Canary marker" section. Set on every
+        # response, not just /status, so even a plain HEAD/GET against
+        # /healthz through the mesh can be tabulated by version.
+        self.send_header("X-Deployment-Version", DEPLOYMENT_VERSION)
         self.end_headers()
         self.wfile.write(body)
 
@@ -109,6 +137,8 @@ class Handler(BaseHTTPRequestHandler):
             self._json(200, {"status": "ok"})
         elif self.path == "/status":
             payload = dict(FACTS)
+            payload["deployment_version"] = DEPLOYMENT_VERSION
+            payload["canary"] = IS_CANARY
             if _read_verbose_status_flag():
                 payload["process_uptime_seconds"] = round(time.monotonic() - START_TIME, 3)
             self._json(200, payload)
