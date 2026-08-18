@@ -60,7 +60,7 @@
 import type { Pool } from "pg";
 import { getAuditDbPool } from "@/lib/audit-db";
 
-export type AuthProviderKind = "local-admin" | "gotrue" | "api-key";
+export type AuthProviderKind = "local-admin" | "gotrue" | "oidc-external" | "api-key";
 
 export interface ActiveSessionRecord {
   sessionId: string;

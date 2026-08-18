@@ -1,0 +1,16 @@
+{
+  "name": "platform-console-oidc-idp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Real, minimal, spec-compliant OIDC provider -- this org's own internal IdP (the Okta/Auth0/Keycloak-tenant shape), standing in for a public Google/GitHub/Microsoft OIDC provider this sandbox cannot register a real OAuth client against. See server.js's module doc.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@koa/router": "15.7.0",
+    "bcryptjs": "2.4.3",
+    "jose": "5.9.6",
+    "oidc-provider": "9.11.3"
+  }
+}

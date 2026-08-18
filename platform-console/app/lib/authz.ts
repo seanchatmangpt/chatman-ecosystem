@@ -57,9 +57,15 @@ function decodeIdentifierKey(key: string): string {
   );
 }
 
-/** The ConfigMap key for a given session: session.email for gotrue, session.sub ("admin") for local-admin. */
+/**
+ * The ConfigMap key for a given session: session.email for gotrue AND
+ * oidc-external (both are real external identities keyed by email),
+ * session.sub ("admin") for local-admin.
+ */
 export function roleIdentifierFor(session: SessionPayload): string {
-  return session.authProvider === "gotrue" ? session.email : session.sub;
+  return session.authProvider === "gotrue" || session.authProvider === "oidc-external"
+    ? session.email
+    : session.sub;
 }
 
 export interface OrgRoleAssignment {

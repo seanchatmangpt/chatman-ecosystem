@@ -21,7 +21,16 @@
 #     --from-literal=AUTH_SECRET="$(openssl rand -base64 48)" \
 #     --from-literal=ADMIN_USERNAME=admin \
 #     --from-literal=ADMIN_PASSWORD_HASH='<bcrypt hash from data/plans.ts prep>' \
-#     --from-literal=SUPABASE_SERVICE_ROLE_KEY='<demo-project-jwt Secret's service-key, supabase-demo namespace>'
+#     --from-literal=SUPABASE_SERVICE_ROLE_KEY='<demo-project-jwt Secret's service-key, supabase-demo namespace>' \
+#     --from-literal=OIDC_CLIENT_SECRET="$(openssl rand -base64 32)" \
+#     --from-literal=IDP_DEMO_PASSWORD_HASH='<bcrypt hash of the oidc-idp demo account's password>'
+# OIDC_CLIENT_SECRET is shared, byte-for-byte, between the console
+# Deployment below (the RP, lib/oidc-federation.ts) and the
+# platform-console-oidc-idp Deployment (the real, separate OIDC provider,
+# services/oidc-idp) -- the same client_secret_basic credential both sides
+# of a real OAuth2 client registration always share. IDP_DEMO_PASSWORD_HASH
+# is consumed only by platform-console-oidc-idp itself (the third auth
+# path's one seeded demo end user -- see services/oidc-idp/server.js).
 # SUPABASE_SERVICE_ROLE_KEY is the real GoTrue service-role JWT for
 # demo-project-auth (already exists in this cluster as the `service-key`
 # key of Secret demo-project-jwt in namespace supabase-demo -- this command
@@ -403,6 +412,23 @@ spec:
             # *_STATUS_URL vars above. See lib/gotrue-auth.ts.
             - name: GOTRUE_AUTH_URL
               value: "http://demo-project-auth.supabase-demo.svc.cluster.local:9999"
+            # Third, distinct real auth path -- external OIDC federation
+            # (lib/oidc-federation.ts) against the real, genuinely separate
+            # platform-console-oidc-idp service defined below in this same
+            # file. Plain internal Service DNS + a fixed, disclosed
+            # redirect_uri -- same sensitivity class as GOTRUE_AUTH_URL
+            # above, not a secret.
+            - name: OIDC_ISSUER_URL
+              value: "http://platform-console-oidc-idp.platform-console.svc.cluster.local:8081"
+            - name: OIDC_CLIENT_ID
+              value: "platform-console"
+            - name: OIDC_REDIRECT_URI
+              value: "http://platform.local/api/auth/oidc-callback"
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: OIDC_CLIENT_SECRET
             - name: AUTH_SECRET
               valueFrom:
                 secretKeyRef:
@@ -464,3 +490,100 @@ spec:
     - name: http
       port: 8080
       targetPort: 3000
+
+# ------------------------------------------------------- oidc-idp (third auth path)
+# Real, minimal, spec-compliant OIDC provider -- a genuinely separate
+# service/process/image from platform-console itself, standing in for a
+# real public Google/GitHub/Microsoft OIDC provider (see
+# services/oidc-idp/server.js and lib/oidc-federation.ts's module docs for
+# the full "which real path, and why" reasoning). No ServiceAccount/RBAC
+# needed -- this service never talks to the k8s API, only real OIDC HTTP
+# endpoints of its own.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platform-console-oidc-idp
+  namespace: platform-console
+  labels:
+    app: platform-console-oidc-idp
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: platform-console-oidc-idp
+  template:
+    metadata:
+      labels:
+        app: platform-console-oidc-idp
+    spec:
+      containers:
+        - name: oidc-idp
+          image: platform-console/oidc-idp:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081
+          env:
+            - name: PORT
+              value: "8081"
+            - name: OIDC_IDP_ISSUER
+              value: "http://platform-console-oidc-idp.platform-console.svc.cluster.local:8081"
+            - name: OIDC_CLIENT_ID
+              value: "platform-console"
+            # Must be the exact same real redirect_uri the console's own
+            # OIDC_REDIRECT_URI (this file's platform-console-gateway
+            # Deployment, above) sends at /authorize and /token time -- a
+            # real OIDC provider rejects any mismatch (RFC 6749 3.1.2).
+            - name: OIDC_CLIENT_REDIRECT_URIS
+              value: "http://platform.local/api/auth/oidc-callback"
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: OIDC_CLIENT_SECRET
+            - name: IDP_DEMO_EMAIL
+              value: "demo.user@platform-eng-colima.local"
+            - name: IDP_DEMO_NAME
+              value: "Demo Federated User"
+            - name: IDP_DEMO_PASSWORD_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: IDP_DEMO_PASSWORD_HASH
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "96Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          readinessProbe:
+            httpGet:
+              path: /.well-known/openid-configuration
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /.well-known/openid-configuration
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platform-console-oidc-idp
+  namespace: platform-console
+  labels:
+    app: platform-console-oidc-idp
+spec:
+  selector:
+    app: platform-console-oidc-idp
+  ports:
+    - name: http
+      port: 8081
+      targetPort: 8081

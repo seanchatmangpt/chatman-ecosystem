@@ -62,7 +62,7 @@ hyperscaler-equivalent language as a claim about scale.
 
 | Route | What it does | Backing evidence |
 |---|---|---|
-| `/login` | Two independent, additive login paths: the original seeded local-admin form, and a second real **identity federation** form (email/password signup/login against the live GoTrue instance's own user-facing REST API) -- see "Identity federation" below | `app/app/api/auth/gotrue-login/route.ts`, `app/app/api/auth/gotrue-signup/route.ts`, `lib/gotrue-auth.ts`, `lib/session.ts` |
+| `/login` | Three independent, additive login paths: the original seeded local-admin form, a second real **identity federation** form (email/password signup/login against the live GoTrue instance's own user-facing REST API) -- see "Identity federation" below, and a third real **external OIDC federation** path ("Sign in with our IdP") against a real, genuinely separate, standards-compliant OIDC provider -- see "External OIDC federation" below | `app/app/api/auth/gotrue-login/route.ts`, `app/app/api/auth/gotrue-signup/route.ts`, `app/app/api/auth/oidc-login/route.ts`, `app/app/api/auth/oidc-callback/route.ts`, `lib/gotrue-auth.ts`, `lib/oidc-federation.ts`, `lib/session.ts` |
 | `/quickstart` | **Getting-started quickstart** (AWS CLI getting-started / `gcloud init` / Vercel CLI equivalent): session-gated, any role. Generates a real, personalized `quickstart.sh` -- this deployment's real base URL (resolved from the request's own `Host` header) plus the viewer's own live session cookie, embedded so the script's first call can bootstrap without a browser -- demonstrating five real curl calls against this console's own API: create an API key (`/api/api-keys`), create a project (`/api/projects`), poll it to real `Ready` (`/api/projects`), run a real backup (`/api/projects/[name]/backups`), then delete the project (`/api/projects/[name]` DELETE, added alongside this page -- the console previously had no self-service project-deletion capability at all). No new backend capability beyond that one DELETE route; every other step reuses an API route that already existed. Download reuses `ManifestActions.tsx`'s `data:`-URL copy/download pattern from the IaC export page. See `quickstart-script-runs-clean-end-to-end` in `evidence/control-evidence-bundle.json` for the real, unedited transcript of this exact script run against this live cluster | `lib/quickstart.ts`, `app/app/quickstart/page.tsx`, `app/app/api/projects/[name]/route.ts`, `components/ManifestActions.tsx` |
 | `/projects` | Lists real `Project` CRs cluster-wide; form POSTs a paired `SingleDatabase` + `Project` manifest, reaching `Ready` end to end. `createProject`'s manifest sets `spec.auth`/`rest`/`realtime`/`functions`/`storage`/`studio` (not just `databaseRef`/`http`) so the operator actually stands up all 6 component Deployments+Services, not just the database -- a real defect (Ready=True with zero component Services created) was caught live and fixed during the `multi-project-tenancy-verified` pass, see `evidence/control-evidence-bundle.json` | `app/api/projects/route.ts`, `lib/k8s.ts` (`createProject`) |
 | `/projects/[name]/database` | Reads real Postgres/PostgREST `Service` objects (ClusterIP, ports, DNS names) | `lib/k8s.ts` |
@@ -299,6 +299,131 @@ and still works exactly as before; see `identity-federation-live-verified` in
   reported "not configured" in every prior pass. It's real: copied from the real
   `demo-project-jwt` Secret's `service-key` in `supabase-demo`, the same JWT this cluster's
   own Supabase operator already issues and uses for admin access to `demo-project-auth`.
+
+## External OIDC federation
+
+A third, distinct login path — the "Sign in with Google/GitHub/Microsoft" pattern every
+enterprise console offers — layered alongside the local-admin path and the internal GoTrue
+identity-federation path above. All three mint the exact same kind of app-local session JWT
+(`lib/session.ts`), discriminated by `authProvider`, and flow into the same
+`getRoleFor`/`requireRole` RBAC gate (`lib/authz.ts`) and the same `platform_console.active_sessions`
+registry (`lib/active-sessions.ts`) every other path already uses.
+
+**Which real provider, and why** (the task's own decision point, and the honest answer): this
+sandbox has real network egress but no real registered OAuth client credentials for Google,
+GitHub, or Microsoft — creating one requires a human with a real account clicking through an
+external console's own "register an app" flow, out of reach in an automated session. Two real
+options exist instead of fabricating that:
+
+1. A real, publicly reachable OIDC provider with a well-known demo client —
+   `https://demo.duendesoftware.com` (Duende Software's own public IdentityServer demo) is
+   confirmed live-reachable from this sandbox (`curl` its real
+   `.well-known/openid-configuration`, real JWKS). **Rejected for the actual proof**: its
+   pre-registered demo clients are locked to Duende's own fixed `redirect_uri`s, which this
+   app's real `/api/auth/oidc-callback` can never match — a genuine authorization_code round
+   trip terminating at our own callback is not actually completable against it.
+2. **Taken**: stand up a real, minimal, spec-compliant OIDC provider as a genuinely separate
+   service — exactly the shape a company's own internal Okta/Auth0/Keycloak tenant has (this
+   org's own IdP, not a simulation of Google). `services/oidc-idp` runs the real,
+   widely-used [`oidc-provider`](https://github.com/panva/node-oidc-provider) library as
+   `platform-console-oidc-idp`, a standalone Deployment+Service in the `platform-console`
+   namespace with its own container image, its own process, its own real RSA keypair
+   (generated fresh at boot via `jose.generateKeyPair`, never the library's bundled
+   dev-keystore whose private half ships in its own npm source) — completely independent of
+   both the console's own process and the GoTrue instance the second auth path uses.
+
+- `lib/oidc-federation.ts` — the RP (Relying Party) half. Real `/authorize` redirect
+  construction (RFC 7636 PKCE S256 + `state` + `nonce`, all real random values), a real
+  `POST /token` authorization_code exchange (a genuine server-to-server call to the real
+  provider, `client_secret_basic`-authenticated per RFC 6749 §2.3.1 — including the
+  form-urlencoded percent-encoding of each credential half the spec requires, found and fixed
+  live: our real generated secret's literal `+` was being corrupted by a naive
+  `Buffer.from(id:secret)` join, causing a real `401 invalid_client` until the encoding was
+  fixed), and real ID-token signature verification against the real provider's real JWKS —
+  `jose.createRemoteJWKSet` fetches `/jwks` live, `jose.jwtVerify` checks the real RS256
+  signature, `iss`, `aud`, and expiry. **Never skipped**: every caller lets a verification
+  failure throw as a hard 401, there is no bypass path.
+- `app/api/auth/oidc-login/route.ts` (public, plain GET — a real full-page `<a href>`
+  navigation, not `fetch()`, since its job is a real 302 to a real external `/authorize`
+  endpoint) mints a short-lived, signed transaction cookie (`state`/`nonce`/PKCE
+  `code_verifier`/`next`, `lib/session.ts`'s `createOidcTransactionToken`) to carry those
+  values across the redirect round trip a stateless route handler has no other way to hold.
+  `app/api/auth/oidc-callback/route.ts` (also public — this is where a session doesn't exist
+  yet) verifies `state` against that cookie (CSRF defense), exchanges the code, verifies the
+  ID token's real signature, checks the ID token's `nonce` claim against the same cookie
+  (replay defense), then mints this app's own session with `authProvider: "oidc-external"`
+  and records the same real `active_sessions` registry row every other login path does.
+- `lib/session.ts`'s `SessionPayload` union gains a fourth (third real end-user path, fourth
+  counting the API-key path) `OidcSessionPayload` variant — `sub`/`email` come straight from
+  the verified ID token's own claims, `idpIssuer` records which real provider vouched for it.
+  `lib/authz.ts`'s `roleIdentifierFor` treats it exactly like `gotrue` (keyed by email); a
+  brand-new OIDC identity defaults to `viewer`, same fail-closed default every other identity
+  gets — confirmed live below.
+- `app/app/login/page.tsx` renders a third card, "Sign in with Platform IdP (OIDC)".
+- `services/oidc-idp/server.js` — the real provider's own configuration. One real,
+  statically registered client (`client_secret_basic`, PKCE **required** on every request,
+  not just for public clients). One real seeded demo account, authenticated with a **real
+  bcrypt password check** — `devInteractions` (the library's own bundled quick-start login
+  screen) is deliberately disabled: reading its source confirmed it accepts *any* typed
+  accountId with **no credential check at all** (it says so itself: "a quick start
+  development-only feature... you are expected to... provide your own"). This file provides
+  its own real `/interaction/:uid` login+consent instead, with the same rigor the local-admin
+  and GoTrue paths already use.
+
+**Real, live, end-to-end proof** (no human to click through interactively, so scripted — a
+real HTTP client issuing the exact same real requests a browser would, against the real
+deployed pods, `kubectl exec`'d directly into the running `platform-console-gateway` pod so
+every hop is a real network call, never an in-process shortcut):
+
+1. Real `GET /api/auth/oidc-login` on the real deployed console → real `302` to the real,
+   separate `platform-console-oidc-idp` Service's real `/auth` endpoint, real PKCE challenge
+   and `state`/`nonce` in the query string.
+2. Real `303` from the real IdP to its own real `/interaction/:uid` login form.
+3. Real credentials POSTed to that real form — the real bcrypt check runs server-side. On
+   success: real `Grant` saved, real redirect chain back to our real, configured
+   `redirect_uri` (`http://platform.local/api/auth/oidc-callback`) carrying a real
+   authorization `code` and the same real `state` this app generated in step 1.
+4. That real code+state replayed against our own deployed pod's real
+   `/api/auth/oidc-callback` (same real transaction cookie from step 1) → real token
+   exchange, real ID-token signature verification, real session minted. Real decoded ID
+   token, captured from the live pod's own stdout (`kubectl logs`):
+   ```json
+   {"oidcFederationVerified":true,
+    "issuer":"http://platform-console-oidc-idp.platform-console.svc.cluster.local:8081",
+    "sub":"3f9b6b7e-6e1a-4b3a-9c2e-3a2f9e7d5c11",
+    "email":"demo.user@platform-eng-colima.local",
+    "emailVerified":true,"alg":"RS256",
+    "kid":"Yz9Kfg_Wo4ro4m81hFjBhvIjgxmrno1xeQC_sSzGFQI",
+    "idTokenClaims":{"sub":"3f9b6b7e-6e1a-4b3a-9c2e-3a2f9e7d5c11",
+     "email":"demo.user@platform-eng-colima.local","email_verified":true,
+     "name":"Demo Federated User","nonce":"N38s8Ck34sKceCDuHCGGxw",
+     "aud":"platform-console","exp":1787071166,"iat":1787067566,
+     "iss":"http://platform-console-oidc-idp.platform-console.svc.cluster.local:8081"}}
+   ```
+   `alg: RS256` — real asymmetric signature verification (not the local-admin/GoTrue paths'
+   HS256 app-session JWTs), checked against the real provider's real JWKS, never skipped.
+5. Real `GET /projects` with the newly minted session cookie → real `200` (not the `307` to
+   `/login` an unauthenticated request gets) — the new identity genuinely has access to a
+   protected page.
+6. Real `psql SELECT` against the live `platform_console.active_sessions` table confirmed the
+   real registry row: `identifier=demo.user@platform-eng-colima.local`,
+   `auth_provider=oidc-external`, `revoked=f` — the exact row `recordSessionLogin` wrote,
+   independently readable outside the app.
+7. Real negative controls, same live pods: wrong password at the real IdP → real `401`
+   (`"Invalid email or password"`, real bcrypt compare failed); a tampered/mismatched `state`
+   at our own callback → real `400 {"error":"state mismatch -- possible CSRF or replayed
+   callback"}`; no transaction cookie at all → real `400 {"error":"missing OIDC transaction
+   cookie..."}`; a genuinely tampered ID-token signature (local pre-deploy check, same
+   provider config) → `jose.jwtVerify` throws `"signature verification failed"`, never
+   silently accepted.
+8. RBAC integration, live: the fresh OIDC identity's `GET /api/sessions` (owner-only) returned
+   a real `403 {"error":"forbidden","reason":"role 'viewer' does not meet the required
+   minimum role 'owner'..."}` — the new auth path defaults to the exact same `viewer` role
+   every other brand-new identity gets, enforced by the exact same `requireRole` gate, not a
+   parallel authorization system.
+
+See `external-oidc-federation-verified-real-signature` in
+`evidence/control-evidence-bundle.json` for the full transcript this section summarizes.
 
 ## RBAC for the PaaS surface
 

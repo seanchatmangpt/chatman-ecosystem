@@ -16,8 +16,18 @@
  *    the session additionally carries the real GoTrue account's email. See
  *    lib/gotrue-auth.ts for the real signup/login calls against the live
  *    GoTrue REST API that produce the identity this session wraps.
+ *  - "oidc-external": third, distinct real auth path -- external OIDC
+ *    federation against a real, separate, standards-compliant OIDC
+ *    provider (services/oidc-idp; see lib/oidc-federation.ts's module doc
+ *    for the full "why this provider" reasoning). `sub` is the real `sub`
+ *    claim from that provider's real, signature-verified ID token; `email`
+ *    likewise. Structurally identical to the "gotrue" variant (both are
+ *    "a real external identity, not this app's own admin account"), kept
+ *    as a distinct `authProvider` literal so a session's JWT shape always
+ *    discloses which of the three real login paths minted it, same
+ *    convention as the "api-key" variant below.
  *
- * Both paths mint the exact same kind of app-local HS256 JWT, signed with
+ * All three (four, counting api-key) paths mint the exact same kind of app-local HS256 JWT, signed with
  * this app's own AUTH_SECRET -- this app's session cookie is never a GoTrue
  * access token passed through, so every existing session consumer
  * (middleware.ts, the various /api/* route handlers' requireActor helpers)
@@ -59,6 +69,23 @@ export interface GoTrueSessionPayload extends JWTPayload {
 }
 
 /**
+ * Third session-issuing path: external OIDC federation (lib/oidc-federation.ts,
+ * app/api/auth/oidc-callback/route.ts). `sub` is the real `sub` claim from
+ * the external provider's real, signature-verified ID token; `email`
+ * likewise. `idpIssuer` records which real provider vouched for this
+ * identity (useful once more than one external OIDC provider is ever
+ * wired up) -- purely informational, never itself an authorization input.
+ */
+export interface OidcSessionPayload extends JWTPayload {
+  sub: string; // real 'sub' claim from the external provider's verified ID token
+  role: "authenticated";
+  authProvider: "oidc-external";
+  email: string;
+  idpIssuer: string;
+  sessionId?: string;
+}
+
+/**
  * Third session-issuing path: a real API key (lib/api-keys.ts), presented
  * as `Authorization: Bearer pk_live_...` and resolved by middleware.ts
  * against the live `platform-console-api-keys` Secret. `sub` is the API
@@ -84,6 +111,7 @@ export interface ApiKeySessionPayload extends JWTPayload {
 export type SessionPayload =
   | LocalAdminSessionPayload
   | GoTrueSessionPayload
+  | OidcSessionPayload
   | ApiKeySessionPayload;
 
 /**
@@ -161,6 +189,91 @@ export async function createGoTrueSessionToken(
 }
 
 /**
+ * Third session-issuing path: mints this app's own session for a real,
+ * already-authenticated external-OIDC identity (called only after
+ * lib/oidc-federation.ts's `verifyIdToken` has real-verified the external
+ * provider's real ID-token signature -- see
+ * app/api/auth/oidc-callback/route.ts). `userId`/`email`/`idpIssuer` come
+ * straight from that verified token's own claims, never fabricated.
+ */
+export async function createOidcSessionToken(
+  userId: string,
+  email: string,
+  idpIssuer: string,
+  sessionId: string,
+): Promise<string> {
+  const key = getSecretKey();
+  return await new SignJWT({
+    sub: userId,
+    role: "authenticated",
+    authProvider: "oidc-external",
+    email,
+    idpIssuer,
+    sessionId,
+  })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(`${SESSION_TTL_SECONDS}s`)
+    .sign(key);
+}
+
+const OIDC_TXN_TTL_SECONDS = 60 * 10; // 10 minutes -- a login round trip through a real external IdP should never take longer
+
+export interface OidcTransactionPayload extends JWTPayload {
+  state: string;
+  nonce: string;
+  codeVerifier: string;
+  next: string;
+}
+
+/**
+ * Short-lived, httpOnly, signed transaction cookie carrying the real PKCE
+ * `code_verifier`, `state`, and `nonce` minted at `/api/auth/oidc-login`
+ * time across the redirect to the external provider and back -- a Next.js
+ * route handler has no server-side request-scoped memory to hold these in
+ * between the two separate requests, so they travel in this signed cookie
+ * instead (never trusted client input: the whole point of `state` is a
+ * value the callback re-derives from what it itself set, not something an
+ * attacker-controlled callback URL could forge, since this JWT is signed
+ * with the same AUTH_SECRET every other session token is).
+ */
+export async function createOidcTransactionToken(payload: {
+  state: string;
+  nonce: string;
+  codeVerifier: string;
+  next: string;
+}): Promise<string> {
+  const key = getSecretKey();
+  return await new SignJWT({ ...payload })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(`${OIDC_TXN_TTL_SECONDS}s`)
+    .sign(key);
+}
+
+export async function verifyOidcTransactionToken(
+  token: string,
+): Promise<OidcTransactionPayload | null> {
+  try {
+    const key = getSecretKey();
+    const { payload } = await jwtVerify(token, key, { algorithms: ["HS256"] });
+    if (
+      typeof payload.state !== "string" ||
+      typeof payload.nonce !== "string" ||
+      typeof payload.codeVerifier !== "string" ||
+      typeof payload.next !== "string"
+    ) {
+      return null;
+    }
+    return payload as OidcTransactionPayload;
+  } catch {
+    return null;
+  }
+}
+
+export const OIDC_TXN_COOKIE_NAME = "platform_console_oidc_txn";
+
+/**
  * New: mints this app's own session for a real, already-resolved API key
  * (lib/api-keys.ts's resolveApiKeyAuth -- called only after a real
  * SHA-256 hash match against the live platform-console-api-keys Secret
@@ -211,6 +324,16 @@ export async function verifySessionToken(
         return null;
       }
       return payload as GoTrueSessionPayload;
+    }
+    if (payload.authProvider === "oidc-external") {
+      if (
+        payload.role !== "authenticated" ||
+        typeof payload.email !== "string" ||
+        typeof payload.idpIssuer !== "string"
+      ) {
+        return null;
+      }
+      return payload as OidcSessionPayload;
     }
     if (payload.authProvider === "api-key") {
       if (

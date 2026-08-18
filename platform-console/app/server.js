@@ -250,7 +250,9 @@ function encodeIdentifierKey(identifier) {
 }
 
 function roleIdentifierFor(session) {
-  return session.authProvider === "gotrue" ? session.email : session.sub;
+  return session.authProvider === "gotrue" || session.authProvider === "oidc-external"
+    ? session.email
+    : session.sub;
 }
 
 async function resolveRoleFor(session) {

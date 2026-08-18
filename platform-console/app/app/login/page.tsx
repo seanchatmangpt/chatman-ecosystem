@@ -198,11 +198,44 @@ function GoTrueLoginForm() {
   );
 }
 
+function OidcLoginCard() {
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") ?? "/";
+  const oidcError = searchParams.get("oidc_error");
+
+  return (
+    <div className="card w-full max-w-sm p-8">
+      <h1 className="mb-1 text-lg font-semibold text-white">Sign in with your organization</h1>
+      <p className="mb-6 text-sm text-gray-400">
+        Real external OIDC federation -- redirects to a real, separate,
+        standards-compliant OIDC provider (this org&apos;s own IdP, the
+        &quot;Sign in with Google/GitHub/Microsoft&quot; pattern), independent of
+        both the admin account and the internal identity-federation login
+        above.
+      </p>
+      {oidcError && (
+        <p className="mb-4 text-sm text-red-400">
+          {decodeURIComponent(oidcError)}
+        </p>
+      )}
+      {/* A real full-page navigation (not fetch()) -- this route issues a
+          real 302 to the external provider's real /authorize endpoint. */}
+      <a
+        href={`/api/auth/oidc-login?next=${encodeURIComponent(next)}`}
+        className="flex w-full items-center justify-center rounded-md border border-border bg-bg px-3 py-2 text-sm font-medium text-white hover:border-accent hover:text-accent"
+      >
+        Sign in with Platform IdP (OIDC)
+      </a>
+    </div>
+  );
+}
+
 function LoginPageBody() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-4 py-12 lg:flex-row lg:items-start lg:gap-8">
       <AdminLoginForm />
       <GoTrueLoginForm />
+      <OidcLoginCard />
     </div>
   );
 }

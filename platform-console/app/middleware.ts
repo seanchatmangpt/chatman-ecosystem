@@ -25,6 +25,12 @@ const PUBLIC_PATHS = [
   "/api/login",
   "/api/auth/gotrue-login",
   "/api/auth/gotrue-signup",
+  // Third, distinct real auth path -- external OIDC federation. Both legs
+  // must stay reachable without an existing session: /oidc-login issues
+  // the redirect to the real external provider, /oidc-callback is where
+  // that provider redirects back to before this app has minted anything.
+  "/api/auth/oidc-login",
+  "/api/auth/oidc-callback",
   // Public status page -- matches AWS Service Health Dashboard /
   // statuspage.io convention (no login to view real-time platform status).
   "/status",
