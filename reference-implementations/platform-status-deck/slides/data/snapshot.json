@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T22:08:38.544Z",
+  "generated_at": "2026-08-18T22:36:12.116Z",
   "source": "scripts/snapshot-data.mjs (real kubectl + real evidence bundle read at build time)",
   "kube_context": "kind-platform-eng-colima",
   "cluster": {
