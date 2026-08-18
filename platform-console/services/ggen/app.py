@@ -110,6 +110,7 @@ import shutil
 import ssl
 import subprocess
 import urllib.error
+import urllib.parse
 import urllib.request
 import uuid
 from datetime import datetime, timezone
@@ -220,7 +221,7 @@ def resolve_tenant_namespace(project: str) -> tuple[bool, str, str | None]:
     outside a real pod, e.g. local dev/CI) and a real k8s API failure -- both are honest
     refusals, never silently downgraded to the old ephemeral-workspace behavior, so a
     caller can never mistake a degraded local run for a real tenant-scoped one."""
-    ok, data = k8s_request(f"/api/v1/namespaces/{urllib.request.quote(project, safe='')}")
+    ok, data = k8s_request(f"/api/v1/namespaces/{urllib.parse.quote(project, safe='')}")
     if ok:
         return True, project, None
     if isinstance(data, str) and "not configured" in data:
@@ -544,8 +545,8 @@ class Handler(BaseHTTPRequestHandler):
             payload["tenant_id"] = tenant_id
         self._json(code, payload)
 
-    def log_message(self, fmt: str, *args) -> None:  # quieter, structured-ish stdout
-        print(f"{self.address_string()} - {fmt % args}")
+    def log_message(self, format: str, *args) -> None:  # quieter, structured-ish stdout
+        print(f"{self.address_string()} - {format % args}")
 
 
 def main() -> None:

@@ -211,8 +211,8 @@ class Handler(BaseHTTPRequestHandler):
         code, payload = run_pack_query(sparql, pack_id)
         self._json(code, payload)
 
-    def log_message(self, fmt: str, *args) -> None:  # quieter, structured-ish stdout
-        print(f"{self.address_string()} - {fmt % args}")
+    def log_message(self, format: str, *args) -> None:  # quieter, structured-ish stdout
+        print(f"{self.address_string()} - {format % args}")
 
 
 def main() -> None:
