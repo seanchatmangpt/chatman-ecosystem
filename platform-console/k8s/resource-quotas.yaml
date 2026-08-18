@@ -19,9 +19,18 @@
 #   console pod: limits  500m+2000m=2500m cpu, 512Mi+1024Mi=1536Mi mem
 #                requests 100m+10m=110m cpu,   128Mi+40Mi=168Mi mem
 #
-# Quotas below are sized for 2x a single replica's totals (headroom for
-# a RollingUpdate surge pod existing briefly alongside the old one, plus
-# a throwaway debug/curl pod during verification), not the bare minimum.
+# Re-sized a second time for HorizontalPodAutoscaler headroom (k8s/hpa.yaml):
+# each status-service Deployment now runs min=1/max=3 replicas (target 70%
+# CPU), platform-console-gateway runs min=2/max=5. Quotas below cover the
+# HPA's max replica count PLUS one RollingUpdate surge pod above that (so a
+# deploy landing while already scaled to max doesn't get wedged on quota):
+#   status ns   (3 max + 1 surge = 4 pods): requests.cpu 4*60m=240m,
+#     requests.memory 4*104Mi=416Mi, limits.cpu 4*2200m=8800m,
+#     limits.memory 4*1152Mi=4608Mi -> quota rounded up to 500Mi / 9 / 5Gi.
+#   platform-console ns (5 max + 1 surge = 6 pods): requests.cpu
+#     6*110m=660m, requests.memory 6*168Mi=1008Mi, limits.cpu
+#     6*2500m=15000m, limits.memory 6*1536Mi=9216Mi -> quota rounded up to
+#     700m / 1200Mi / 16 / 10Gi.
 # Field names (limits.cpu, limits.memory, pods, requests.cpu,
 # requests.memory) match the existing team-platform-team/platform-team-quota
 # object already live on this cluster -- same shape, numbers now sized to
@@ -35,9 +44,9 @@ spec:
   hard:
     pods: "5"
     requests.cpu: "500m"
-    requests.memory: "256Mi"
-    limits.cpu: "5"
-    limits.memory: "2560Mi"
+    requests.memory: "500Mi"
+    limits.cpu: "9"
+    limits.memory: "5Gi"
 ---
 apiVersion: v1
 kind: ResourceQuota
@@ -48,9 +57,9 @@ spec:
   hard:
     pods: "5"
     requests.cpu: "500m"
-    requests.memory: "256Mi"
-    limits.cpu: "5"
-    limits.memory: "2560Mi"
+    requests.memory: "500Mi"
+    limits.cpu: "9"
+    limits.memory: "5Gi"
 ---
 apiVersion: v1
 kind: ResourceQuota
@@ -61,9 +70,9 @@ spec:
   hard:
     pods: "5"
     requests.cpu: "500m"
-    requests.memory: "256Mi"
-    limits.cpu: "5"
-    limits.memory: "2560Mi"
+    requests.memory: "500Mi"
+    limits.cpu: "9"
+    limits.memory: "5Gi"
 ---
 apiVersion: v1
 kind: ResourceQuota
@@ -74,9 +83,9 @@ spec:
   hard:
     pods: "5"
     requests.cpu: "500m"
-    requests.memory: "256Mi"
-    limits.cpu: "5"
-    limits.memory: "2560Mi"
+    requests.memory: "500Mi"
+    limits.cpu: "9"
+    limits.memory: "5Gi"
 ---
 apiVersion: v1
 kind: ResourceQuota
@@ -86,7 +95,7 @@ metadata:
 spec:
   hard:
     pods: "10"
-    requests.cpu: "1"
-    requests.memory: "1Gi"
-    limits.cpu: "6"
-    limits.memory: "4Gi"
+    requests.cpu: "700m"
+    requests.memory: "1200Mi"
+    limits.cpu: "16"
+    limits.memory: "10Gi"

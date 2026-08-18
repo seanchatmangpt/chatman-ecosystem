@@ -1,12 +1,12 @@
 # Additional least-privilege RBAC for platform-console's self-service PaaS
 # control-plane surface (Projects / Database / GitOps / IAM modules --
 # app/lib/k8s.ts). Grants only the verbs/resources actually called from
-# that file -- no wildcard verbs, no wildcard resources, no Secrets, no
-# pod exec/log/portforward. Cluster-scoped (ClusterRole +
-# ClusterRoleBinding, not a per-namespace Role) because the resources
-# these modules read/create -- Supabase Projects, Services, Namespaces,
-# Flux objects, RBAC/NetworkPolicy objects -- can live in any namespace,
-# not just platform-console's own.
+# that file -- no wildcard verbs, no wildcard resources, no pod
+# exec/log/portforward. Cluster-scoped (ClusterRole + ClusterRoleBinding,
+# not a per-namespace Role) because the resources these modules read/
+# create -- Supabase Projects, Services, Namespaces, Flux objects,
+# RBAC/NetworkPolicy objects -- can live in any namespace, not just
+# platform-console's own.
 #
 # Bound to the existing platform-console ServiceAccount, already created
 # by k8s/rbac.yaml in the platform-console namespace -- this file adds a
@@ -18,6 +18,24 @@
 # Kubernetes API -- so they need no additional RBAC here, same reasoning
 # k8s/rbac.yaml's own platform-console ServiceAccount comment already
 # uses for the existing /status proxying.
+#
+# Secrets are handled separately, below the ClusterRoleBinding: Secrets
+# are more sensitive than every resource this ClusterRole grants (a
+# cluster-wide "list secrets" verb would let this console read every
+# other workload's credentials on the cluster), so the Secrets Manager
+# module (lib/k8s.ts's listSecrets/createSecret/deleteSecret,
+# app/secrets) gets its own least-privilege Role + RoleBinding PER
+# platform namespace instead -- never a ClusterRole, never kube-system or
+# any namespace outside the platform's own.
+#
+# Pod logs are handled the same way, same reasoning: pod logs can contain
+# real application output, more sensitive than the read-mostly resources
+# this ClusterRole grants, so the Logs module (lib/k8s.ts's
+# listPods/getPodLogs, app/app/logs) also gets its own least-privilege
+# Role + RoleBinding PER platform namespace instead of a ClusterRole grant
+# -- see the pods/pods-log Role+RoleBinding blocks at the bottom of this
+# file. Any namespace outside that list gets a real 403 from the API
+# server; the Logs module has no fallback and no synthetic log data.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -70,4 +88,335 @@ subjects:
 roleRef:
   kind: ClusterRole
   name: platform-console-paas
+  apiGroup: rbac.authorization.k8s.io
+
+# ------------------------------------------------------------- Secrets Manager
+#
+# One Role + RoleBinding per platform namespace -- the 4 project
+# namespaces (autofde-lab, gymact, ggen, ggen-marketplace) plus
+# supabase-demo. Each Role grants only get/list/create/delete on
+# `secrets` in its own namespace -- no update/patch (this console only
+# ever creates a Secret fresh or deletes it whole, never edits one in
+# place), no watch (the /secrets page reads on demand, it does not
+# stream). Never a ClusterRole: unlike the read-mostly resources in
+# platform-console-paas above, Secrets can hold real credentials for
+# workloads this console has nothing to do with, so scope is deliberately
+# narrowed to a per-namespace allowlist instead of "any namespace".
+# kube-system and every other cluster-system namespace are intentionally
+# absent from this list.
+
+# --------------------------------------------------------- autofde-lab
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-secrets
+  namespace: autofde-lab
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-secrets-binding
+  namespace: autofde-lab
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-secrets
+  apiGroup: rbac.authorization.k8s.io
+
+# -------------------------------------------------------------- gymact
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-secrets
+  namespace: gymact
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-secrets-binding
+  namespace: gymact
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-secrets
+  apiGroup: rbac.authorization.k8s.io
+
+# ---------------------------------------------------------------- ggen
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-secrets
+  namespace: ggen
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-secrets-binding
+  namespace: ggen
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-secrets
+  apiGroup: rbac.authorization.k8s.io
+
+# ----------------------------------------------------- ggen-marketplace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-secrets
+  namespace: ggen-marketplace
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-secrets-binding
+  namespace: ggen-marketplace
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-secrets
+  apiGroup: rbac.authorization.k8s.io
+
+# --------------------------------------------------------- supabase-demo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-secrets
+  namespace: supabase-demo
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-secrets-binding
+  namespace: supabase-demo
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-secrets
+  apiGroup: rbac.authorization.k8s.io
+
+# ------------------------------------------------------------------ Logs
+#
+# One Role + RoleBinding per platform namespace -- the 4 project
+# namespaces plus supabase-demo, same as Secrets Manager above, plus
+# platform-console's own namespace (so the console can show its own
+# gateway pod's logs). Each Role grants only get/list on `pods` (to
+# populate the pod picker) and get on `pods/log` (the log subresource
+# itself) -- no exec, no portforward, no watch. Never a ClusterRole:
+# pod logs can contain real application output, so scope is deliberately
+# narrowed to this allowlist instead of "any namespace". kube-system and
+# every other cluster-system namespace are intentionally absent.
+
+# --------------------------------------------------------- autofde-lab
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-logs-reader
+  namespace: autofde-lab
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-logs-reader-binding
+  namespace: autofde-lab
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-logs-reader
+  apiGroup: rbac.authorization.k8s.io
+
+# -------------------------------------------------------------- gymact
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-logs-reader
+  namespace: gymact
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-logs-reader-binding
+  namespace: gymact
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-logs-reader
+  apiGroup: rbac.authorization.k8s.io
+
+# ---------------------------------------------------------------- ggen
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-logs-reader
+  namespace: ggen
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-logs-reader-binding
+  namespace: ggen
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-logs-reader
+  apiGroup: rbac.authorization.k8s.io
+
+# ----------------------------------------------------- ggen-marketplace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-logs-reader
+  namespace: ggen-marketplace
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-logs-reader-binding
+  namespace: ggen-marketplace
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-logs-reader
+  apiGroup: rbac.authorization.k8s.io
+
+# --------------------------------------------------------- supabase-demo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-logs-reader
+  namespace: supabase-demo
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-logs-reader-binding
+  namespace: supabase-demo
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-logs-reader
+  apiGroup: rbac.authorization.k8s.io
+
+# ----------------------------------------------------- platform-console
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-logs-reader
+  namespace: platform-console
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-logs-reader-binding
+  namespace: platform-console
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-logs-reader
   apiGroup: rbac.authorization.k8s.io

@@ -7,6 +7,8 @@ const links = [
   { href: "/ggen", label: "ggen" },
   { href: "/ggen-marketplace", label: "ggen-marketplace" },
   { href: "/projects", label: "Projects" },
+  { href: "/secrets", label: "Secrets" },
+  { href: "/logs", label: "Logs" },
   { href: "/observability", label: "Observability" },
   { href: "/gitops", label: "GitOps" },
   { href: "/iam", label: "IAM" },

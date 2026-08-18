@@ -62,7 +62,7 @@ export function hasClusterCredentials(): boolean {
 
 async function k8sRequest<T>(
   path: string,
-  method: "GET" | "POST" = "GET",
+  method: "GET" | "POST" | "DELETE" = "GET",
   body?: unknown,
 ): Promise<K8sResult<T>> {
   const cfg = readInClusterConfig();
@@ -487,4 +487,238 @@ export async function listNetworkPolicies(): Promise<K8sResult<IamNetworkPolicy[
       policyTypes: item.spec?.policyTypes ?? [],
     })),
   };
+}
+
+// ------------------------------------------------------------------- Secrets
+//
+// Real hyperscaler-PaaS-style Secrets Manager primitive (AWS Secrets
+// Manager / GCP Secret Manager / Azure Key Vault equivalent), scoped by
+// k8s/paas-rbac.yaml to a Role+RoleBinding per platform namespace (never
+// cluster-wide) since Secrets are more sensitive than the read-mostly
+// resources above. Secret *values* are never logged, never returned in a
+// list response, and never included in any function's return type here --
+// only key NAMES are ever surfaced past this file. createSecret is the
+// only function that ever sees plaintext values, and it only forwards them
+// (base64-encoded, as the k8s Secret API requires) to the API server over
+// the same authenticated HTTPS connection every other call in this file
+// uses -- nothing is written to a log, a file, or any other sink.
+
+export interface SecretSummary {
+  name: string;
+  namespace: string;
+  createdAt: string;
+  keys: string[]; // key NAMES only -- values are never read back out of the cluster
+}
+
+interface SecretListResponse {
+  items?: Array<{
+    metadata: { name: string; namespace: string; creationTimestamp: string };
+    type?: string;
+    data?: Record<string, string>; // base64 values -- deliberately never read past Object.keys()
+  }>;
+}
+
+interface SecretItem {
+  metadata: { name: string; namespace: string; creationTimestamp: string };
+  data?: Record<string, string>;
+}
+
+function toSecretSummary(item: NonNullable<SecretListResponse["items"]>[number]): SecretSummary {
+  return {
+    name: item.metadata.name,
+    namespace: item.metadata.namespace,
+    createdAt: item.metadata.creationTimestamp,
+    keys: Object.keys(item.data ?? {}),
+  };
+}
+
+export async function listSecrets(namespace: string): Promise<K8sResult<SecretSummary[]>> {
+  const result = await k8sRequest<SecretListResponse>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/secrets`,
+  );
+  if (!result.ok) return result;
+  // type=Opaque only -- exclude kubernetes.io/service-account-token and
+  // other system-managed secret types the operator/platform itself owns,
+  // so this module only ever shows/manages secrets this PaaS surface
+  // itself created.
+  return {
+    ok: true,
+    data: (result.data.items ?? [])
+      .filter((item) => item.type === undefined || item.type === "Opaque")
+      .map(toSecretSummary),
+  };
+}
+
+/**
+ * Creates a real k8s Secret (type: Opaque), base64-encoding each plaintext
+ * value as the k8s Secret API requires. `data` is the only place in this
+ * module plaintext values are ever held in memory -- the return value is a
+ * SecretSummary (key names only), never the values themselves.
+ */
+export async function createSecret(
+  namespace: string,
+  name: string,
+  data: Record<string, string>,
+): Promise<K8sResult<SecretSummary>> {
+  const encoded: Record<string, string> = {};
+  for (const [key, value] of Object.entries(data)) {
+    encoded[key] = Buffer.from(value, "utf8").toString("base64");
+  }
+  const manifest = {
+    apiVersion: "v1",
+    kind: "Secret",
+    type: "Opaque",
+    metadata: { name, namespace },
+    data: encoded,
+  };
+  const result = await k8sRequest<SecretItem>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/secrets`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toSecretSummary(result.data) };
+}
+
+export async function deleteSecret(
+  namespace: string,
+  name: string,
+): Promise<K8sResult<null>> {
+  const result = await k8sRequest<unknown>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/secrets/${encodeURIComponent(name)}`,
+    "DELETE",
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: null };
+}
+
+// ---------------------------------------------------------------------- Logs
+//
+// Real hyperscaler-PaaS-style Logs primitive (CloudWatch Logs / GCP Cloud
+// Logging / Azure Monitor Logs equivalent) -- reads real pod stdout/stderr
+// via the pod log subresource (GET .../pods/{pod}/log). Scoped by
+// k8s/paas-rbac.yaml to a Role+RoleBinding per platform namespace, the
+// same pattern the Secrets Manager module above uses and for the same
+// reason: pod logs can contain application output more sensitive than the
+// read-mostly resources in the ClusterRole, so this is never granted
+// cluster-wide.
+
+export interface K8sPod {
+  name: string;
+  namespace: string;
+  phase: string;
+  containers: string[];
+  ready: boolean;
+}
+
+interface PodListResponse {
+  items?: Array<{
+    metadata: { name: string; namespace: string };
+    spec?: { containers?: Array<{ name: string }> };
+    status?: {
+      phase?: string;
+      containerStatuses?: Array<{ ready: boolean }>;
+    };
+  }>;
+}
+
+export async function listPods(namespace: string): Promise<K8sResult<K8sPod[]>> {
+  const result = await k8sRequest<PodListResponse>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/pods`,
+  );
+  if (!result.ok) return result;
+  return {
+    ok: true,
+    data: (result.data.items ?? []).map((item) => {
+      const statuses = item.status?.containerStatuses ?? [];
+      return {
+        name: item.metadata.name,
+        namespace: item.metadata.namespace,
+        phase: item.status?.phase ?? "Unknown",
+        containers: (item.spec?.containers ?? []).map((c) => c.name),
+        ready: statuses.length > 0 && statuses.every((cs) => cs.ready),
+      };
+    }),
+  };
+}
+
+export interface PodLogOptions {
+  /** Defaults to 200, matching the Logs page default. */
+  tailLines?: number;
+  /** Required when the pod has more than one container. */
+  container?: string;
+}
+
+/**
+ * Fetches real pod logs via the pods/log subresource. Unlike every other
+ * function in this file, the API server's response body here is raw text
+ * (real container stdout/stderr), never JSON -- so this cannot reuse
+ * k8sRequest's JSON.parse and instead makes its own request with the same
+ * fail-closed/timeout/error conventions. Error responses (403, 404, ...)
+ * from this subresource ARE a JSON Status object, so those are parsed for
+ * a real message when possible; a non-JSON error body is surfaced as-is.
+ */
+export async function getPodLogs(
+  namespace: string,
+  pod: string,
+  options: PodLogOptions = {},
+): Promise<K8sResult<string>> {
+  const cfg = readInClusterConfig();
+  if (!cfg) {
+    return {
+      ok: false,
+      error:
+        "not configured: no in-cluster ServiceAccount credentials found " +
+        `(${SA_DIR}) -- this only works when running as the platform-console pod`,
+    };
+  }
+
+  const params = new URLSearchParams({
+    tailLines: String(options.tailLines ?? 200),
+    timestamps: "true",
+  });
+  if (options.container) params.set("container", options.container);
+  const path = `/api/v1/namespaces/${encodeURIComponent(namespace)}/pods/${encodeURIComponent(pod)}/log?${params.toString()}`;
+
+  return new Promise((resolve) => {
+    const req = https.request(
+      {
+        host: cfg.host,
+        port: cfg.port,
+        path,
+        method: "GET",
+        ca: cfg.ca,
+        timeout: REQUEST_TIMEOUT_MS,
+        headers: {
+          Authorization: `Bearer ${cfg.token}`,
+          Accept: "text/plain, application/json",
+        },
+      },
+      (res) => {
+        const chunks: Buffer[] = [];
+        res.on("data", (chunk) => chunks.push(chunk));
+        res.on("end", () => {
+          const status = res.statusCode ?? 0;
+          const raw = Buffer.concat(chunks).toString("utf8");
+          if (status < 200 || status >= 300) {
+            let message = raw || `HTTP ${status}`;
+            try {
+              const parsed = JSON.parse(raw) as { message?: string };
+              if (parsed.message) message = parsed.message;
+            } catch {
+              // Not JSON -- use the raw body (or the HTTP status) as-is.
+            }
+            resolve({ ok: false, error: `GET ${path} failed: ${message}` });
+            return;
+          }
+          resolve({ ok: true, data: raw });
+        });
+      },
+    );
+    req.on("timeout", () => req.destroy(new Error(`timeout after ${REQUEST_TIMEOUT_MS}ms`)));
+    req.on("error", (err) =>
+      resolve({ ok: false, error: `unreachable: ${err.message}` }),
+    );
+    req.end();
+  });
 }
