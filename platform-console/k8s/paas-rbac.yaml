@@ -432,3 +432,50 @@ roleRef:
   kind: Role
   name: platform-console-logs-reader
   apiGroup: rbac.authorization.k8s.io
+
+# ------------------------------------------------------- Database Backups
+#
+# One Role + RoleBinding, supabase-demo only -- the Backups module
+# (lib/k8s.ts's listJobs/ensureBackupsPvc/createBackupJob, app/backups)
+# only ever targets the real demo-db-postgres StatefulSet in
+# supabase-demo, so unlike Secrets/Logs above this is not replicated
+# across all platform namespaces. Grants only get/list/create on
+# batch/jobs (the on-demand pg_dump Job) and persistentvolumeclaims (the
+# platform-backups-pvc the Job writes its dump into) -- no update/patch/
+# delete on either: a Job or PVC created wrong is left for a human with
+# real kubectl access to clean up, never silently patched by this
+# console. No pods verb is granted here -- creating a Job does not require
+# it (the Job controller, running as kube-controller-manager's own
+# identity, creates the backing Pod, not this ServiceAccount); the one
+# `pods` read this module does perform (reading the source Postgres Pod's
+# own spec/env to avoid re-typing its image/credential) reuses the
+# already-granted per-namespace `platform-console-logs-reader` Role's
+# `pods` get/list verb in supabase-demo, so no additional pods grant was
+# added here either.
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-backups
+  namespace: supabase-demo
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "create"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-backups-binding
+  namespace: supabase-demo
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-backups
+  apiGroup: rbac.authorization.k8s.io

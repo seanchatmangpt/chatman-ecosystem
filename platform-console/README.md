@@ -53,6 +53,7 @@ or global footprint.
 | `/secrets` | Lists real `type: Opaque` k8s Secrets per namespace (names + key names only, never decoded values); create/delete real Secrets | `app/api/secrets/route.ts`, `lib/k8s.ts` |
 | `/logs` | Namespace → pod → container drill-down over real pod stdout/stderr via the k8s pod-log subresource | `app/api/logs/route.ts`, `lib/k8s.ts` |
 | `/registry` | Container Registry as an honest **image inventory**: this cluster has no push-capable registry (images are built locally and `kind load docker-image`d straight into containerd), so every real Deployment container's `image` field is cross-referenced against real Pod `containerStatuses` (digest + ready state), flagging any image not confirmed present or stuck on a real pull failure | `lib/k8s.ts` |
+| `/backups` | Database Backups (RDS/Cloud SQL/Cloud Spanner automated-backup equivalent) for the real `demo-db-postgres` StatefulSet: "Run backup now" creates a real `batch/v1` Job that runs `pg_dump` against the database's real Service, using the exact image and password Secret/key read live off the source Pod's own spec; the dump lands on `platform-backups-pvc`. PVC contents aren't directly queryable via the k8s API, so the Job listing itself (name encodes the timestamp, real completion status, real duration) *is* the backup inventory | `app/api/backups/route.ts`, `lib/k8s.ts` |
 
 `lib/k8s.ts` is a hand-rolled Kubernetes API client using the pod's own in-cluster
 ServiceAccount token/CA (`/var/run/secrets/kubernetes.io/serviceaccount`) — no external k8s

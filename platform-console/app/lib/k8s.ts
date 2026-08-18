@@ -853,3 +853,319 @@ export async function getPodLogs(
     req.end();
   });
 }
+
+// ---------------------------------------------------------- Database Backups
+//
+// Real hyperscaler-PaaS-style Database Backups primitive (RDS / Cloud SQL /
+// Cloud Spanner automated-backup equivalent). On-demand backup is a real
+// `batch/v1` Job that runs `pg_dump` inside its own Pod against the target
+// Postgres's real Service (`<name>.<namespace>.svc.cluster.local:5432`),
+// using the exact same container image and the exact same password
+// Secret/key the source Postgres Pod's own spec already references --
+// read live off that Pod (createBackupJob's first step) rather than
+// re-typed or guessed, so a backup can never silently drift to the wrong
+// Postgres version or a stale/second credential. The dump is written to a
+// PersistentVolumeClaim (platform-backups-pvc, created on first use if
+// missing -- see ensureBackupsPvc). PVC contents are not directly
+// queryable via the k8s API, so the honest backup inventory this module
+// exposes is the Jobs themselves: name (encodes the timestamp), creation
+// time, real completion status, real duration -- never a fabricated
+// separate catalog. Scoped by k8s/paas-rbac.yaml to a single
+// Role+RoleBinding in supabase-demo (get/list/create on batch/jobs and
+// persistentvolumeclaims) -- never cluster-wide, and no update/patch/
+// delete on either resource: a Job or PVC created wrong is left for a
+// human with real kubectl access to clean up, not silently patched here.
+
+export interface BackupJob {
+  name: string;
+  namespace: string;
+  createdAt: string;
+  startTime: string | null;
+  completionTime: string | null;
+  succeeded: number;
+  failed: number;
+  active: number;
+  status: "Pending" | "Running" | "Complete" | "Failed";
+  durationSeconds: number | null;
+}
+
+interface JobListResponse {
+  items?: Array<{
+    metadata: { name: string; namespace: string; creationTimestamp: string };
+    status?: {
+      active?: number;
+      succeeded?: number;
+      failed?: number;
+      startTime?: string;
+      completionTime?: string;
+    };
+  }>;
+}
+
+function toBackupJob(item: NonNullable<JobListResponse["items"]>[number]): BackupJob {
+  const succeeded = item.status?.succeeded ?? 0;
+  const failed = item.status?.failed ?? 0;
+  const active = item.status?.active ?? 0;
+  const startTime = item.status?.startTime ?? null;
+  const completionTime = item.status?.completionTime ?? null;
+  let status: BackupJob["status"] = "Pending";
+  if (succeeded > 0) status = "Complete";
+  else if (failed > 0) status = "Failed";
+  else if (active > 0) status = "Running";
+  const durationSeconds =
+    startTime && completionTime
+      ? (new Date(completionTime).getTime() - new Date(startTime).getTime()) / 1000
+      : null;
+  return {
+    name: item.metadata.name,
+    namespace: item.metadata.namespace,
+    createdAt: item.metadata.creationTimestamp,
+    startTime,
+    completionTime,
+    succeeded,
+    failed,
+    active,
+    status,
+    durationSeconds,
+  };
+}
+
+/**
+ * Lists real `batch/v1` Jobs -- optionally filtered by label selector (the
+ * Backups module passes `app=platform-backups` so operator-internal Jobs
+ * already running in the same namespace, e.g. the supabase-operator's own
+ * migration/sync Jobs, never appear in the backup inventory). This listing
+ * IS the backup record: a completed Job whose own name encodes its
+ * creation timestamp, never a separate fabricated catalog.
+ */
+export async function listJobs(
+  namespace: string,
+  labelSelector?: string,
+): Promise<K8sResult<BackupJob[]>> {
+  const qs = labelSelector ? `?labelSelector=${encodeURIComponent(labelSelector)}` : "";
+  const result = await k8sRequest<JobListResponse>(
+    `/apis/batch/v1/namespaces/${encodeURIComponent(namespace)}/jobs${qs}`,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: (result.data.items ?? []).map(toBackupJob) };
+}
+
+export interface BackupPvcStatus {
+  name: string;
+  namespace: string;
+  phase: string | null;
+  capacity: string | null;
+  storageClassName: string | null;
+}
+
+interface PvcItem {
+  metadata: { name: string; namespace: string };
+  spec?: { storageClassName?: string; resources?: { requests?: { storage?: string } } };
+  status?: { phase?: string; capacity?: { storage?: string } };
+}
+
+function toPvcStatus(item: PvcItem): BackupPvcStatus {
+  return {
+    name: item.metadata.name,
+    namespace: item.metadata.namespace,
+    phase: item.status?.phase ?? null,
+    capacity: item.status?.capacity?.storage ?? item.spec?.resources?.requests?.storage ?? null,
+    storageClassName: item.spec?.storageClassName ?? null,
+  };
+}
+
+/**
+ * Reads the real PVC's status (phase/capacity/storage class). Returns
+ * `{ ok: true, data: null }` -- not an error -- when the PVC hasn't been
+ * provisioned yet, since that is itself honest, actionable state for the
+ * Backups page to render ("not yet provisioned" rather than a fabricated
+ * placeholder).
+ */
+export async function getBackupsPvc(
+  namespace: string,
+  name: string,
+): Promise<K8sResult<BackupPvcStatus | null>> {
+  const result = await k8sRequest<PvcItem>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/persistentvolumeclaims/${encodeURIComponent(name)}`,
+  );
+  if (!result.ok) {
+    if (/not found/i.test(result.error)) return { ok: true, data: null };
+    return result;
+  }
+  return { ok: true, data: toPvcStatus(result.data) };
+}
+
+/**
+ * Creates the PVC the backup Jobs below write into, if it doesn't already
+ * exist -- a real get-then-create, so calling this on every backup run is
+ * a no-op after the first (never a spurious "already exists" error).
+ * `storageClassName` is deliberately omitted from the manifest so the
+ * cluster's own default StorageClass (the `(default)`-annotated one --
+ * `standard`, backed by `rancher.io/local-path`, on this cluster) fills it
+ * in via the API server's DefaultStorageClass admission plugin; it is
+ * never hardcoded here.
+ */
+export async function ensureBackupsPvc(
+  namespace: string,
+  name: string,
+  size: string,
+): Promise<K8sResult<BackupPvcStatus>> {
+  const existing = await getBackupsPvc(namespace, name);
+  if (!existing.ok) return existing;
+  if (existing.data) return { ok: true, data: existing.data };
+
+  const manifest = {
+    apiVersion: "v1",
+    kind: "PersistentVolumeClaim",
+    metadata: { name, namespace, labels: { app: "platform-backups" } },
+    spec: {
+      accessModes: ["ReadWriteOnce"],
+      resources: { requests: { storage: size } },
+    },
+  };
+  const result = await k8sRequest<PvcItem>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/persistentvolumeclaims`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toPvcStatus(result.data) };
+}
+
+interface PodSpecEnvVar {
+  name: string;
+  value?: string;
+  valueFrom?: { secretKeyRef?: { name: string; key: string } };
+}
+
+interface PodSpecResponse {
+  metadata: { name: string; namespace: string };
+  spec?: {
+    containers?: Array<{ name: string; image: string; env?: PodSpecEnvVar[] }>;
+  };
+}
+
+async function getPodSpec(namespace: string, name: string): Promise<K8sResult<PodSpecResponse>> {
+  return k8sRequest<PodSpecResponse>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/pods/${encodeURIComponent(name)}`,
+  );
+}
+
+const BACKUPS_PVC_NAME = "platform-backups-pvc";
+const BACKUPS_PVC_SIZE = "1Gi";
+
+/**
+ * Creates a real k8s Job that runs `pg_dump` against the target Postgres
+ * Pod's own Service, using the exact same container image and the exact
+ * same password Secret/key that source Pod's own spec already uses (read
+ * live off `getPodSpec` -- never re-typed, never a second credential this
+ * module invents; if the Pod has no PGPASSWORD/POSTGRES_PASSWORD sourced
+ * from a real Secret, this refuses rather than inventing one). The Job
+ * writes its dump straight to `platform-backups-pvc` (provisioned on first
+ * call via `ensureBackupsPvc` if missing) at a path that encodes the Job's
+ * own name, which itself encodes the creation timestamp -- so `listJobs`
+ * above is a complete, honest inventory with no separate catalog to fall
+ * out of sync.
+ */
+export async function createBackupJob(
+  namespace: string,
+  dbPodName: string,
+): Promise<K8sResult<BackupJob>> {
+  const podResult = await getPodSpec(namespace, dbPodName);
+  if (!podResult.ok) return podResult;
+
+  const container = podResult.data.spec?.containers?.[0];
+  if (!container) {
+    return { ok: false, error: `pod ${namespace}/${dbPodName} has no containers in its spec` };
+  }
+
+  const passwordEnv = container.env?.find(
+    (e) =>
+      (e.name === "PGPASSWORD" || e.name === "POSTGRES_PASSWORD") && e.valueFrom?.secretKeyRef,
+  );
+  if (!passwordEnv?.valueFrom?.secretKeyRef) {
+    return {
+      ok: false,
+      error: `pod ${namespace}/${dbPodName} has no PGPASSWORD/POSTGRES_PASSWORD env sourced from a Secret -- refusing to invent a credential`,
+    };
+  }
+  const pgUser = container.env?.find((e) => e.name === "POSTGRES_USER")?.value ?? "postgres";
+  const pgDatabase =
+    container.env?.find((e) => e.name === "PGDATABASE" || e.name === "POSTGRES_DB")?.value ??
+    "postgres";
+
+  // The Service backing a StatefulSet Pod shares the StatefulSet's name,
+  // which is the Pod name minus its ordinal suffix (demo-db-postgres-0 ->
+  // demo-db-postgres) -- true for every StatefulSet-backed database this
+  // console creates (see createSingleDatabase above) or that the
+  // supabase-operator itself creates, so this is a real structural
+  // convention, not a guess specific to demo-db.
+  const stem = dbPodName.replace(/-\d+$/, "");
+  const host = `${stem}.${namespace}.svc.cluster.local`;
+
+  const pvcResult = await ensureBackupsPvc(namespace, BACKUPS_PVC_NAME, BACKUPS_PVC_SIZE);
+  if (!pvcResult.ok) return pvcResult;
+
+  const timestamp = new Date()
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d+Z$/, "z")
+    .toLowerCase();
+  const jobName = `pg-backup-${stem}-${timestamp}`.slice(0, 63).replace(/-+$/, "");
+  const dumpPath = `/backups/${namespace}/${stem}/${jobName}.sql`;
+
+  const dumpScript = [
+    "set -e",
+    `mkdir -p "$(dirname "${dumpPath}")"`,
+    `pg_dump -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -f "${dumpPath}"`,
+    `ls -la "${dumpPath}"`,
+  ].join("\n");
+
+  const manifest = {
+    apiVersion: "batch/v1",
+    kind: "Job",
+    metadata: {
+      name: jobName,
+      namespace,
+      labels: { app: "platform-backups", "backup-source-pod": dbPodName, database: stem },
+    },
+    spec: {
+      backoffLimit: 0,
+      template: {
+        metadata: { labels: { app: "platform-backups", job: jobName } },
+        spec: {
+          restartPolicy: "Never",
+          containers: [
+            {
+              name: "pg-dump",
+              image: container.image,
+              command: ["sh", "-c", dumpScript],
+              env: [
+                { name: "PGHOST", value: host },
+                { name: "PGPORT", value: "5432" },
+                { name: "PGUSER", value: pgUser },
+                { name: "PGDATABASE", value: pgDatabase },
+                {
+                  name: "PGPASSWORD",
+                  valueFrom: { secretKeyRef: passwordEnv.valueFrom.secretKeyRef },
+                },
+              ],
+              volumeMounts: [{ name: "backups", mountPath: "/backups" }],
+            },
+          ],
+          volumes: [
+            { name: "backups", persistentVolumeClaim: { claimName: BACKUPS_PVC_NAME } },
+          ],
+        },
+      },
+    },
+  };
+
+  const result = await k8sRequest<NonNullable<JobListResponse["items"]>[number]>(
+    `/apis/batch/v1/namespaces/${encodeURIComponent(namespace)}/jobs`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toBackupJob(result.data) };
+}
