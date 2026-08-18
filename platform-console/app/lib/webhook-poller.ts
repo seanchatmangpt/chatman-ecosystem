@@ -15,8 +15,18 @@
  *    `lib/alertmanager.ts`'s `queryAlerts` already reads for the
  *    `/alerts` page, and fires once per alert fingerprint the moment it
  *    FIRST transitions into `alertState(...) === "firing"`.
+ *  - "budget.threshold_crossed": calls `lib/budget-alerts.ts`'s
+ *    `checkBudgets()`, which itself re-runs the exact same
+ *    `lib/invoice-preview.ts` Prometheus queries `/billing` and `/usage`
+ *    already use, compares against each namespace's operator-configured
+ *    threshold, and fires once per namespace+metric the moment usage
+ *    FIRST crosses it -- deduped by a real "already alerted" marker
+ *    persisted in `budget-alerts.ts`'s own ConfigMap (durable across
+ *    restarts, unlike the two in-memory Sets below), and un-marked again
+ *    the moment usage drops back under threshold so a later re-crossing
+ *    fires again.
  *
- * Both are tracked by an in-memory `Set` of already-notified
+ * The first two are tracked by an in-memory `Set` of already-notified
  * job-names/fingerprints so anything already Complete/firing before this
  * poller's first tick is a baseline, never replayed as a false "new"
  * delivery on process start.
@@ -33,6 +43,7 @@
  */
 import { hasClusterCredentials, listJobs } from "@/lib/k8s";
 import { alertState, queryAlerts } from "@/lib/alertmanager";
+import { checkBudgets } from "@/lib/budget-alerts";
 import { deliverWebhookEvent } from "@/lib/webhooks";
 
 const POLL_INTERVAL_MS = 10_000;
@@ -111,9 +122,34 @@ async function pollAlertFirings(): Promise<void> {
   firstAlertsTick = false;
 }
 
+/**
+ * checkBudgets() is the only writer of budget-alerts.ts's `alerted.*`
+ * dedup markers -- calling it here, once per real 10s tick, is what makes
+ * "fire once per crossing, not once per tick" real rather than aspirational.
+ * A namespace with no threshold configured costs nothing (checkBudgets
+ * short-circuits to an empty crossings list); a namespace whose real
+ * Prometheus query fails this tick is skipped, never fired on stale data.
+ */
+async function pollBudgetThresholds(): Promise<void> {
+  const result = await checkBudgets();
+  if (!result.ok) {
+    console.error(`[webhook-poller] checkBudgets failed: ${result.error}`);
+    return;
+  }
+  for (const crossing of result.data) {
+    await deliverWebhookEvent("budget.threshold_crossed", {
+      namespace: crossing.namespace,
+      metric: crossing.metric,
+      threshold: crossing.threshold,
+      currentValue: crossing.currentValue,
+      crossedAt: crossing.crossedAt,
+    });
+  }
+}
+
 async function tick(): Promise<void> {
   if (!hasClusterCredentials()) return; // local dev / build -- nothing to poll
-  await Promise.all([pollBackupCompletions(), pollAlertFirings()]);
+  await Promise.all([pollBackupCompletions(), pollAlertFirings(), pollBudgetThresholds()]);
 }
 
 /**

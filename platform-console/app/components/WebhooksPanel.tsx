@@ -10,7 +10,12 @@ import type { WebhookEventType, WebhookSubscription } from "@/lib/webhooks";
 // client bundle. Only `import type` (erased at compile time, same
 // pattern components/OrgRolesPanel.tsx already uses for @/lib/authz) is
 // safe to pull from that module here.
-const EVENT_TYPES: WebhookEventType[] = ["project.created", "backup.completed", "alert.firing"];
+const EVENT_TYPES: WebhookEventType[] = [
+  "project.created",
+  "backup.completed",
+  "alert.firing",
+  "budget.threshold_crossed",
+];
 
 /**
  * Reads/writes the real platform-console-webhooks ConfigMap via

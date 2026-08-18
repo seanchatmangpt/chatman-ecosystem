@@ -45,16 +45,27 @@ export const WEBHOOKS_CONFIGMAP = "platform-console-webhooks";
  *    (`lib/k8s.ts`'s `createBackupJob`) reaches `status.succeeded >= 1`
  *    -- detected by `lib/webhook-poller.ts` polling the exact same
  *    `listJobs` call the Backups module itself uses.
- *  - "alert.firing": reserved for the same real Alertmanager-backed
- *    trigger `lib/webhook-poller.ts` implements (a NEW alert fingerprint
- *    not present on the previous poll), listed here so the UI/API
- *    surface is honest about every event type this console can emit.
+ *  - "alert.firing": the same real Alertmanager-backed trigger
+ *    `lib/webhook-poller.ts` implements (a NEW alert fingerprint not
+ *    present on the previous poll).
+ *  - "budget.threshold_crossed": fires when a real per-namespace usage
+ *    figure (lib/invoice-preview.ts's same Prometheus-derived
+ *    cpu-core-hours/cost-usd /billing and /usage already compute) FIRST
+ *    crosses an operator-configured threshold (lib/budget-alerts.ts) --
+ *    detected by the same `lib/webhook-poller.ts` 10s tick, deduped by a
+ *    real ConfigMap-persisted "already alerted" marker per
+ *    namespace+metric so it fires once per crossing, not once per tick.
  */
-export type WebhookEventType = "project.created" | "backup.completed" | "alert.firing";
+export type WebhookEventType =
+  | "project.created"
+  | "backup.completed"
+  | "alert.firing"
+  | "budget.threshold_crossed";
 export const WEBHOOK_EVENT_TYPES: WebhookEventType[] = [
   "project.created",
   "backup.completed",
   "alert.firing",
+  "budget.threshold_crossed",
 ];
 
 export interface WebhookSubscription {
