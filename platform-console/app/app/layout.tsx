@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import CommandPalette from "@/components/CommandPalette";
 
 export const metadata: Metadata = {
   title: "Platform Console",
@@ -19,6 +20,12 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         {children}
+        {/* Global Search / Command Palette (Cmd+K / Ctrl+K) -- mounted once
+            here, not per-page, so it is available from every route. Renders
+            unauthenticated too (e.g. on /login) but stays inert there since
+            GET /api/search 401s without a session; no page currently needs
+            to suppress it. */}
+        <CommandPalette />
       </body>
     </html>
   );
