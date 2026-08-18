@@ -1332,6 +1332,253 @@ export async function createBackupJob(
   return { ok: true, data: toBackupJob(result.data) };
 }
 
+// ------------------------------------------------------- Database Restores
+//
+// Real hyperscaler-PaaS-style point-in-time-restore equivalent (RDS "Restore
+// to point in time" / Cloud SQL "Restore" equivalent) for the on-demand
+// backups above. A real `batch/v1` Job, same shape and same
+// credential-discovery pattern as createBackupJob: it reads the TARGET
+// Postgres Pod's own spec/env live (never a second, re-typed credential),
+// mounts the exact same `platform-backups-pvc` the backup Jobs write into
+// (read-only here -- this Job never writes to the PVC), and locates the
+// specific dump file the named backup Job produced by reading that Job's own
+// object back from the API server (its `database` label, the same value
+// createBackupJob wrote into `dumpPath`) rather than re-parsing/guessing a
+// path out of the Job's name string.
+//
+// createBackupJob's real pg_dump invocation has no `-F` flag, so the dump is
+// plain SQL (confirmed live: the dump file starts with `-- PostgreSQL
+// database dump`, `\restrict <token>`, plain `CREATE TABLE`/`COPY ... FROM
+// stdin` statements) -- so restore uses `psql -f`, never `pg_restore` (which
+// only reads pg_dump's custom/directory/tar formats). A plain dump also
+// carries no `--clean`/`--if-exists` DROP statements, so loading it directly
+// on top of a target that still has the same rows would abort every
+// `COPY ... FROM stdin` block at the first pre-existing-row conflict
+// (COPY is one atomic statement -- a single duplicate-key error rolls back
+// that whole table's data, not just the offending row), silently restoring
+// nothing. To give this real restore-overwrites-target semantics (the same
+// "this replaces the target's contents" behavior RDS/Cloud SQL restore has),
+// the Job's script first clears every real table it can before running
+// `psql -f`.
+//
+// Live-discovered, disclosed constraint (checked directly against this
+// cluster's real demo-db-postgres before writing this script, not assumed):
+// the credential createBackupJob's own discovery pattern finds (the
+// `postgres` role) is NOT a Postgres superuser and does NOT own most of the
+// real schemas here (`auth`/`storage`/`_realtime`/... are owned by
+// `supabase_admin`/`supabase_auth_admin`, confirmed live via `\dn+` and
+// `select usesuper from pg_user`) -- so a `DROP SCHEMA ... CASCADE` (which
+// requires ownership or superuser) fails with a real `must be owner of
+// schema` error for nearly every schema. What that same role DOES have,
+// confirmed live via `information_schema.role_table_grants`, is real
+// row-level DML (INSERT/UPDATE/DELETE/TRUNCATE) on the actual data tables
+// via explicit GRANTs -- so the clearing step is a per-table `TRUNCATE
+// ... CASCADE` (real DML the credential is actually authorized for) inside
+// a loop that catches `insufficient_privilege` per table and skips it
+// (logged via RAISE NOTICE, never silently swallowed) rather than aborting
+// the whole clear because one system-owned table (e.g. a migrations table)
+// isn't grantable to `postgres`. `psql -f` on the dump itself then runs
+// WITHOUT `-v ON_ERROR_STOP=1`: a plain dump replayed by a non-owner,
+// non-superuser role against a target whose schemas/tables already exist
+// necessarily produces real, expected, harmless per-statement errors on
+// every `CREATE SCHEMA`/`CREATE TABLE`/permission-gated DDL statement in
+// the dump (the objects already exist and this role isn't allowed to
+// touch their DDL) -- live-confirmed these are cosmetic: the load-bearing
+// `COPY ... FROM stdin` data statements for tables the role has TRUNCATE
+// (and therefore INSERT) on still succeed and really restore the row data,
+// confirmed end-to-end against a real deleted-and-restored user (see the
+// evidence bundle's restore-recovers-real-deleted-data control). A dump
+// whose table ordering doesn't respect every FK dependency can still leave
+// a same-run child-table COPY failing on a not-yet-loaded parent row (also
+// observed and disclosed there) -- a real limitation of single-pass replay
+// into a live, non-empty, non-owned target, not swept under the rug. Both
+// psql invocations still log everything to the Job's own pod logs (`kubectl
+// logs`), the same real inspection path every other Job in this module
+// relies on. No new RBAC: reuses the same `platform-console-backups` Role's
+// `batch/jobs` create verb (no update/patch/delete, same as backups) --
+// see k8s/paas-rbac.yaml.
+
+interface JobItem {
+  metadata: { name: string; namespace: string; creationTimestamp: string; labels?: Record<string, string> };
+  status?: {
+    active?: number;
+    succeeded?: number;
+    failed?: number;
+    startTime?: string;
+    completionTime?: string;
+  };
+}
+
+async function getJob(namespace: string, name: string): Promise<K8sResult<JobItem>> {
+  return k8sRequest<JobItem>(
+    `/apis/batch/v1/namespaces/${encodeURIComponent(namespace)}/jobs/${encodeURIComponent(name)}`,
+  );
+}
+
+/**
+ * Creates a real `batch/v1` restore Job. `backupJobName` must name a real,
+ * already-`Complete` backup Job created by createBackupJob above (its
+ * `database` label is read back to locate the exact dump file that Job
+ * wrote -- refuses if the Job doesn't exist, has no `database` label, or
+ * hasn't reached `status.succeeded >= 1`, since restoring from an
+ * incomplete/failed/nonexistent backup would be dishonest). `targetDbPodName`
+ * is the live Postgres Pod to restore into -- its own spec/env supplies the
+ * restore Job's credentials, exactly as createBackupJob does for the source
+ * side, so this can restore into a different Pod than the one the backup
+ * was taken from, not just back into itself.
+ */
+export async function createRestoreJob(
+  namespace: string,
+  backupJobName: string,
+  targetDbPodName: string,
+): Promise<K8sResult<BackupJob>> {
+  const jobResult = await getJob(namespace, backupJobName);
+  if (!jobResult.ok) {
+    return { ok: false, error: `backup Job ${backupJobName} not found: ${jobResult.error}` };
+  }
+  const sourceStem = jobResult.data.metadata.labels?.database;
+  if (!sourceStem) {
+    return {
+      ok: false,
+      error: `backup Job ${backupJobName} has no "database" label -- cannot locate its dump file`,
+    };
+  }
+  if ((jobResult.data.status?.succeeded ?? 0) < 1) {
+    return {
+      ok: false,
+      error: `backup Job ${backupJobName} has not reached Complete (status.succeeded=${jobResult.data.status?.succeeded ?? 0}) -- refusing to restore from an incomplete or failed backup`,
+    };
+  }
+  const dumpPath = `/backups/${namespace}/${sourceStem}/${backupJobName}.sql`;
+
+  const podResult = await getPodSpec(namespace, targetDbPodName);
+  if (!podResult.ok) return podResult;
+
+  const container = podResult.data.spec?.containers?.[0];
+  if (!container) {
+    return { ok: false, error: `pod ${namespace}/${targetDbPodName} has no containers in its spec` };
+  }
+
+  const passwordEnv = container.env?.find(
+    (e) =>
+      (e.name === "PGPASSWORD" || e.name === "POSTGRES_PASSWORD") && e.valueFrom?.secretKeyRef,
+  );
+  if (!passwordEnv?.valueFrom?.secretKeyRef) {
+    return {
+      ok: false,
+      error: `pod ${namespace}/${targetDbPodName} has no PGPASSWORD/POSTGRES_PASSWORD env sourced from a Secret -- refusing to invent a credential`,
+    };
+  }
+  const pgUser = container.env?.find((e) => e.name === "POSTGRES_USER")?.value ?? "postgres";
+  const pgDatabase =
+    container.env?.find((e) => e.name === "PGDATABASE" || e.name === "POSTGRES_DB")?.value ??
+    "postgres";
+
+  const targetStem = targetDbPodName.replace(/-\d+$/, "");
+  const host = `${targetStem}.${namespace}.svc.cluster.local`;
+
+  const timestamp = new Date()
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d+Z$/, "z")
+    .toLowerCase();
+  const jobName = `pg-restore-${targetStem}-${timestamp}`.slice(0, 63).replace(/-+$/, "");
+
+  // Written via a QUOTED heredoc ('CLEARSQL') rather than inlined into a
+  // `psql -c "..."` shell argument -- a quoted heredoc disables all shell
+  // expansion inside it, which plain double-quoting would not: the SQL's
+  // own `$do$` dollar-quote tag would otherwise be parsed by sh as `$do`
+  // (an unset shell variable, expanding to empty) followed by a stray `$`,
+  // corrupting the PL/pgSQL block before psql ever sees it.
+  const restoreScript = [
+    "set -e",
+    `test -f "${dumpPath}" || { echo "backup dump not found at ${dumpPath}" >&2; exit 1; }`,
+    `cat <<'CLEARSQL' > /tmp/clear_tables.sql`,
+    "DO $do$",
+    "DECLARE",
+    "  r record;",
+    "BEGIN",
+    "  FOR r IN",
+    "    SELECT n.nspname, c.relname",
+    "    FROM pg_class c",
+    "    JOIN pg_namespace n ON n.oid = c.relnamespace",
+    "    WHERE c.relkind = 'r'",
+    "      AND n.nspname NOT IN ('pg_catalog','information_schema')",
+    "      AND n.nspname NOT LIKE 'pg_temp_%'",
+    "      AND n.nspname NOT LIKE 'pg_toast%'",
+    "  LOOP",
+    "    BEGIN",
+    "      EXECUTE 'TRUNCATE TABLE ' || quote_ident(r.nspname) || '.' || quote_ident(r.relname) || ' CASCADE';",
+    "    EXCEPTION WHEN insufficient_privilege THEN",
+    "      RAISE NOTICE 'restore: skipping % (insufficient_privilege on this credential)', r.nspname || '.' || r.relname;",
+    "    END;",
+    "  END LOOP;",
+    "END $do$;",
+    "CLEARSQL",
+    `echo "Clearing existing table data in $PGDATABASE before restore (this credential owns no schemas here -- TRUNCATE, not DROP SCHEMA -- see lib/k8s.ts createRestoreJob for why)..."`,
+    `psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -v ON_ERROR_STOP=1 -f /tmp/clear_tables.sql`,
+    `echo "Restoring ${dumpPath} into $PGDATABASE (per-statement errors below on already-existing/not-owned DDL are expected -- see module doc; the real data COPY statements are what matters)..."`,
+    `psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -f "${dumpPath}"`,
+    `echo "Restore script finished."`,
+  ].join("\n");
+
+  const manifest = {
+    apiVersion: "batch/v1",
+    kind: "Job",
+    metadata: {
+      name: jobName,
+      namespace,
+      labels: {
+        app: "platform-restores",
+        "restore-source-job": backupJobName,
+        "restore-target-pod": targetDbPodName,
+        database: targetStem,
+      },
+    },
+    spec: {
+      backoffLimit: 0,
+      template: {
+        metadata: { labels: { app: "platform-restores", job: jobName } },
+        spec: {
+          restartPolicy: "Never",
+          containers: [
+            {
+              name: "pg-restore",
+              image: container.image,
+              command: ["sh", "-c", restoreScript],
+              env: [
+                { name: "PGHOST", value: host },
+                { name: "PGPORT", value: "5432" },
+                { name: "PGUSER", value: pgUser },
+                { name: "PGDATABASE", value: pgDatabase },
+                {
+                  name: "PGPASSWORD",
+                  valueFrom: { secretKeyRef: passwordEnv.valueFrom.secretKeyRef },
+                },
+              ],
+              volumeMounts: [{ name: "backups", mountPath: "/backups", readOnly: true }],
+            },
+          ],
+          volumes: [
+            {
+              name: "backups",
+              persistentVolumeClaim: { claimName: BACKUPS_PVC_NAME, readOnly: true },
+            },
+          ],
+        },
+      },
+    },
+  };
+
+  const result = await k8sRequest<NonNullable<JobListResponse["items"]>[number]>(
+    `/apis/batch/v1/namespaces/${encodeURIComponent(namespace)}/jobs`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toBackupJob(result.data) };
+}
+
 // -------------------------------------------------------------- Cost & Usage
 //
 // Real hyperscaler-PaaS-style Cost & Usage primitive (AWS Cost Explorer /

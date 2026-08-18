@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
+import { SESSION_COOKIE_NAME, verifySessionToken, type SessionPayload } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
 import { createSecret, deleteSecret, listSecrets } from "@/lib/k8s";
+import { requireRole } from "@/lib/authz";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -12,18 +13,18 @@ import { createSecret, deleteSecret, listSecrets } from "@/lib/k8s";
 // The audit-log entries below record method/path/status only, same as
 // every other route in this file tree; no request body is ever logged.
 
-async function requireActor(request: NextRequest): Promise<string | null> {
+async function requireSession(request: NextRequest): Promise<SessionPayload | null> {
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
-  const session = token ? await verifySessionToken(token) : null;
-  return session?.sub ?? null;
+  return token ? await verifySessionToken(token) : null;
 }
 
 export async function GET(request: NextRequest) {
   const requestId = newRequestId();
-  const actor = await requireActor(request);
-  if (!actor) {
+  const session = await requireSession(request);
+  if (!session) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   }
+  const actor = session.sub;
 
   const namespace = request.nextUrl.searchParams.get("namespace") ?? "";
   if (!namespace) {
@@ -49,9 +50,26 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const requestId = newRequestId();
-  const actor = await requireActor(request);
-  if (!actor) {
+  const session = await requireSession(request);
+  if (!session) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
+  }
+  const actor = session.sub;
+
+  // Real app-level RBAC boundary: managing app config (creating a
+  // Secret) needs at least "member" -- a viewer may read but not write.
+  // See lib/authz.ts.
+  const access = await requireRole(session, "member");
+  if (!access.ok) {
+    writeAuditLogEntry({
+      timestamp: new Date().toISOString(),
+      actor,
+      method: "POST",
+      path: "/api/secrets",
+      status: 403,
+      requestId,
+    });
+    return access.response!;
   }
 
   const body = await request.json().catch(() => null);
@@ -92,9 +110,26 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   const requestId = newRequestId();
-  const actor = await requireActor(request);
-  if (!actor) {
+  const session = await requireSession(request);
+  if (!session) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
+  }
+  const actor = session.sub;
+
+  // Same member+ boundary as POST above -- deleting a Secret is app
+  // config management, not infrastructure creation, so it is not
+  // owner-gated.
+  const access = await requireRole(session, "member");
+  if (!access.ok) {
+    writeAuditLogEntry({
+      timestamp: new Date().toISOString(),
+      actor,
+      method: "DELETE",
+      path: "/api/secrets",
+      status: 403,
+      requestId,
+    });
+    return access.response!;
   }
 
   const namespace = request.nextUrl.searchParams.get("namespace") ?? "";

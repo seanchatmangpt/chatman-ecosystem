@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
+import { SESSION_COOKIE_NAME, verifySessionToken, type SessionPayload } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
 import { createOrUpdateConfigMap, getConfigMap } from "@/lib/k8s";
+import { requireRole } from "@/lib/authz";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -10,18 +11,18 @@ import { createOrUpdateConfigMap, getConfigMap } from "@/lib/k8s";
 const FLAGS_NAMESPACE = "platform-console";
 const FLAGS_CONFIGMAP = "platform-feature-flags";
 
-async function requireActor(request: NextRequest): Promise<string | null> {
+async function requireSession(request: NextRequest): Promise<SessionPayload | null> {
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
-  const session = token ? await verifySessionToken(token) : null;
-  return session?.sub ?? null;
+  return token ? await verifySessionToken(token) : null;
 }
 
 export async function GET(request: NextRequest) {
   const requestId = newRequestId();
-  const actor = await requireActor(request);
-  if (!actor) {
+  const session = await requireSession(request);
+  if (!session) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   }
+  const actor = session.sub;
 
   const result = await getConfigMap(FLAGS_NAMESPACE, FLAGS_CONFIGMAP);
 
@@ -42,9 +43,25 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const requestId = newRequestId();
-  const actor = await requireActor(request);
-  if (!actor) {
+  const session = await requireSession(request);
+  if (!session) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
+  }
+  const actor = session.sub;
+
+  // Real app-level RBAC boundary: toggling a feature flag needs at least
+  // "member". See lib/authz.ts.
+  const access = await requireRole(session, "member");
+  if (!access.ok) {
+    writeAuditLogEntry({
+      timestamp: new Date().toISOString(),
+      actor,
+      method: "POST",
+      path: "/api/feature-flags",
+      status: 403,
+      requestId,
+    });
+    return access.response!;
   }
 
   const body = await request.json().catch(() => null);

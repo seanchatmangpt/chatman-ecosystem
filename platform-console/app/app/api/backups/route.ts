@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
-import { createBackupJob, listJobs } from "@/lib/k8s";
+import { createBackupJob, createRestoreJob, listJobs } from "@/lib/k8s";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -31,24 +31,36 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   }
 
-  const result = await listJobs(BACKUP_NAMESPACE, "app=platform-backups");
+  const [backupsResult, restoresResult] = await Promise.all([
+    listJobs(BACKUP_NAMESPACE, "app=platform-backups"),
+    listJobs(BACKUP_NAMESPACE, "app=platform-restores"),
+  ]);
 
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
     path: "/api/backups",
-    status: result.ok ? 200 : 502,
+    status: backupsResult.ok && restoresResult.ok ? 200 : 502,
     requestId,
   });
 
-  if (!result.ok) {
-    return NextResponse.json({ error: result.error }, { status: 502 });
+  if (!backupsResult.ok) {
+    return NextResponse.json({ error: backupsResult.error }, { status: 502 });
+  }
+  if (!restoresResult.ok) {
+    return NextResponse.json({ error: restoresResult.error }, { status: 502 });
   }
   // Newest first -- the list a human wants when checking "did the last
-  // backup succeed" is the one at the top.
-  const jobs = [...result.data].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  return NextResponse.json({ jobs, namespace: BACKUP_NAMESPACE, dbPodName: BACKUP_DB_POD });
+  // backup/restore succeed" is the one at the top.
+  const jobs = [...backupsResult.data].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const restoreJobs = [...restoresResult.data].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  return NextResponse.json({
+    jobs,
+    restoreJobs,
+    namespace: BACKUP_NAMESPACE,
+    dbPodName: BACKUP_DB_POD,
+  });
 }
 
 export async function POST(request: NextRequest) {
@@ -56,6 +68,45 @@ export async function POST(request: NextRequest) {
   const actor = await requireActor(request);
   if (!actor) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
+  }
+
+  const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+  const action = typeof body?.action === "string" ? body.action : "backup";
+
+  if (action === "restore") {
+    const backupJobName = typeof body?.backupJobName === "string" ? body.backupJobName : "";
+    const confirm = typeof body?.confirm === "string" ? body.confirm : "";
+    // "Type the backup name to confirm" -- the confirm string must
+    // byte-for-byte match the backup Job name being restored from, the
+    // same pattern GitHub/AWS use for destructive-ish operations. Enforced
+    // server-side (never trusted from a client-side disabled button alone)
+    // since this restore can overwrite the target database's current
+    // contents.
+    if (!backupJobName) {
+      return NextResponse.json({ error: "backupJobName is required" }, { status: 400 });
+    }
+    if (confirm !== backupJobName) {
+      return NextResponse.json(
+        { error: "confirmation text does not match the backup job name -- restore refused" },
+        { status: 400 },
+      );
+    }
+
+    const result = await createRestoreJob(BACKUP_NAMESPACE, backupJobName, BACKUP_DB_POD);
+
+    writeAuditLogEntry({
+      timestamp: new Date().toISOString(),
+      actor,
+      method: "POST",
+      path: "/api/backups (restore)",
+      status: result.ok ? 201 : 502,
+      requestId,
+    });
+
+    if (!result.ok) {
+      return NextResponse.json({ error: result.error }, { status: 502 });
+    }
+    return NextResponse.json({ job: result.data }, { status: 201 });
   }
 
   const result = await createBackupJob(BACKUP_NAMESPACE, BACKUP_DB_POD);

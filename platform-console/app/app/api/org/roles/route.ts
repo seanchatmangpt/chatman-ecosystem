@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken, type SessionPayload } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
-import { createProjectWithDatabase, listProjects } from "@/lib/k8s";
-import { requireRole } from "@/lib/authz";
+import { getOrgRoleAssignments, requireRole, ROLES, setOrgRole, type Role } from "@/lib/authz";
 
-// Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
-// reads the ServiceAccount token/CA from disk, which the edge runtime
-// cannot do.
+// Backs the owner-only /org page (app/org/page.tsx). Both GET and POST
+// here are owner-gated -- not just the page's own UI check -- so the real
+// enforcement boundary is this route, regardless of what the page's nav
+// or client rendering happens to show. Runs on the Node.js runtime
+// (default for route handlers), same as every other /api/* route in this
+// tree that calls into lib/k8s.ts.
 
 async function requireSession(request: NextRequest): Promise<SessionPayload | null> {
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
@@ -21,13 +23,26 @@ export async function GET(request: NextRequest) {
   }
   const actor = session.sub;
 
-  const result = await listProjects();
+  const access = await requireRole(session, "owner");
+  if (!access.ok) {
+    writeAuditLogEntry({
+      timestamp: new Date().toISOString(),
+      actor,
+      method: "GET",
+      path: "/api/org/roles",
+      status: 403,
+      requestId,
+    });
+    return access.response!;
+  }
+
+  const result = await getOrgRoleAssignments();
 
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
-    path: "/api/projects",
+    path: "/api/org/roles",
     status: result.ok ? 200 : 502,
     requestId,
   });
@@ -35,7 +50,7 @@ export async function GET(request: NextRequest) {
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 502 });
   }
-  return NextResponse.json({ projects: result.data });
+  return NextResponse.json({ assignments: result.data });
 }
 
 export async function POST(request: NextRequest) {
@@ -46,17 +61,15 @@ export async function POST(request: NextRequest) {
   }
   const actor = session.sub;
 
-  // Real app-level RBAC boundary: creating infrastructure (a Supabase
-  // Project + its backing database) is owner-only, layered on top of --
-  // not replacing -- the console ServiceAccount's own k8s RBAC. See
-  // lib/authz.ts.
+  // Changing another user's role is itself owner-gated -- same
+  // requireRole boundary as the routes this page manages access to.
   const access = await requireRole(session, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
-      path: "/api/projects",
+      path: "/api/org/roles",
       status: 403,
       requestId,
     });
@@ -64,49 +77,29 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json().catch(() => null);
-  const name = typeof body?.name === "string" ? body.name.trim() : "";
-  const namespace = typeof body?.namespace === "string" ? body.namespace.trim() : "";
-  const databaseRefName =
-    typeof body?.databaseRefName === "string" && body.databaseRefName.trim()
-      ? body.databaseRefName.trim()
-      : `${name}-db`;
-  const hostname =
-    typeof body?.hostname === "string" && body.hostname.trim()
-      ? body.hostname.trim()
-      : `${name}.supabase.local`;
-  const protocol = body?.protocol === "https" ? "https" : "http";
-  const dbStorageSize =
-    typeof body?.dbStorageSize === "string" && body.dbStorageSize.trim()
-      ? body.dbStorageSize.trim()
-      : "1Gi";
+  const identifier = typeof body?.identifier === "string" ? body.identifier.trim() : "";
+  const role = typeof body?.role === "string" ? (body.role as Role) : ("" as Role);
 
-  if (!name || !namespace) {
+  if (!identifier || !ROLES.includes(role)) {
     return NextResponse.json(
-      { error: "name and namespace are required" },
+      { error: `identifier is required and role must be one of: ${ROLES.join(", ")}` },
       { status: 400 },
     );
   }
 
-  const result = await createProjectWithDatabase({
-    name,
-    namespace,
-    databaseRefName,
-    hostname,
-    protocol,
-    dbStorageSize,
-  });
+  const result = await setOrgRole(identifier, role);
 
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",
-    path: "/api/projects",
-    status: result.ok ? 201 : 502,
+    path: "/api/org/roles",
+    status: result.ok ? 200 : 502,
     requestId,
   });
 
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 502 });
   }
-  return NextResponse.json({ project: result.data }, { status: 201 });
+  return NextResponse.json({ assignments: result.data });
 }

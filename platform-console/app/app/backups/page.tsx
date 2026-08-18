@@ -1,5 +1,6 @@
 import Nav from "@/components/Nav";
 import RunBackupButton from "@/components/RunBackupButton";
+import RestoreBackupButton from "@/components/RestoreBackupButton";
 import { getBackupsPvc, hasClusterCredentials, listJobs, type BackupJob } from "@/lib/k8s";
 
 export const dynamic = "force-dynamic";
@@ -56,15 +57,19 @@ function formatDuration(seconds: number | null): string {
 export default async function BackupsPage() {
   const clusterConfigured = hasClusterCredentials();
 
-  const [jobsResult, pvcResult] = clusterConfigured
+  const [jobsResult, restoreJobsResult, pvcResult] = clusterConfigured
     ? await Promise.all([
         listJobs(BACKUP_NAMESPACE, "app=platform-backups"),
+        listJobs(BACKUP_NAMESPACE, "app=platform-restores"),
         getBackupsPvc(BACKUP_NAMESPACE, BACKUPS_PVC_NAME),
       ])
-    : [null, null];
+    : [null, null, null];
 
   const jobs = jobsResult?.ok
     ? [...jobsResult.data].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    : [];
+  const restoreJobs = restoreJobsResult?.ok
+    ? [...restoreJobsResult.data].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     : [];
 
   return (
@@ -158,10 +163,77 @@ export default async function BackupsPage() {
                         <th className="py-2 pr-4 font-medium">Created</th>
                         <th className="py-2 pr-4 font-medium">Status</th>
                         <th className="py-2 pr-4 font-medium">Duration</th>
+                        <th className="py-2 pr-4 font-medium">Restore</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
                       {jobs.map((job) => (
+                        <tr key={job.name}>
+                          <td className="py-2 pr-4">
+                            <code className="text-white">{job.name}</code>
+                          </td>
+                          <td className="py-2 pr-4 text-gray-400">
+                            {new Date(job.createdAt).toLocaleString()}
+                          </td>
+                          <td className="py-2 pr-4">
+                            <StatusBadge status={job.status} />
+                          </td>
+                          <td className="py-2 pr-4 text-gray-400">
+                            {formatDuration(job.durationSeconds)}
+                          </td>
+                          <td className="py-2 pr-4">
+                            {job.status === "Complete" ? (
+                              <RestoreBackupButton backupJobName={job.name} />
+                            ) : (
+                              <span className="text-xs text-gray-600">
+                                only Complete backups can be restored
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            <div className="mb-6 card p-6">
+              <h2 className="mb-4 text-base font-medium text-white">Restore jobs</h2>
+              <p className="mb-4 text-xs text-gray-500">
+                The RDS/Cloud SQL point-in-time-restore equivalent: each row is a
+                real <code>batch/v1</code> Job that dropped{" "}
+                <code>{BACKUP_DB_POD}</code>&apos;s schemas and replayed a backup&apos;s
+                real <code>pg_dump</code> SQL back into it via <code>psql</code>, reading
+                the same <code>{BACKUPS_PVC_NAME}</code> (mounted read-only) that the
+                backup Jobs above wrote into.
+              </p>
+
+              {restoreJobsResult && !restoreJobsResult.ok && (
+                <p className="rounded-md border border-red-900 bg-red-950/40 px-4 py-2 text-sm text-red-300">
+                  {restoreJobsResult.error}
+                </p>
+              )}
+
+              {restoreJobsResult && restoreJobsResult.ok && restoreJobs.length === 0 && (
+                <p className="text-sm text-gray-500">
+                  No restores yet. Use &quot;Restore&quot; next to a Complete backup above.
+                </p>
+              )}
+
+              {restoreJobsResult && restoreJobsResult.ok && restoreJobs.length > 0 && (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-border text-gray-500">
+                        <th className="py-2 pr-4 font-medium">Job</th>
+                        <th className="py-2 pr-4 font-medium">Created</th>
+                        <th className="py-2 pr-4 font-medium">Status</th>
+                        <th className="py-2 pr-4 font-medium">Duration</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {restoreJobs.map((job) => (
                         <tr key={job.name}>
                           <td className="py-2 pr-4">
                             <code className="text-white">{job.name}</code>

@@ -54,13 +54,14 @@ or global footprint.
 | `/secrets` | Lists real `type: Opaque` k8s Secrets per namespace (names + key names only, never decoded values); create/delete real Secrets | `app/api/secrets/route.ts`, `lib/k8s.ts` |
 | `/logs` | Namespace → pod → container drill-down over real pod stdout/stderr via the k8s pod-log subresource | `app/api/logs/route.ts`, `lib/k8s.ts` |
 | `/registry` | Container Registry as an honest **image inventory**: this cluster has no push-capable registry (images are built locally and `kind load docker-image`d straight into containerd), so every real Deployment container's `image` field is cross-referenced against real Pod `containerStatuses` (digest + ready state), flagging any image not confirmed present or stuck on a real pull failure | `lib/k8s.ts` |
-| `/backups` | Database Backups (RDS/Cloud SQL/Cloud Spanner automated-backup equivalent) for the real `demo-db-postgres` StatefulSet: "Run backup now" creates a real `batch/v1` Job that runs `pg_dump` against the database's real Service, using the exact image and password Secret/key read live off the source Pod's own spec; the dump lands on `platform-backups-pvc`. PVC contents aren't directly queryable via the k8s API, so the Job listing itself (name encodes the timestamp, real completion status, real duration) *is* the backup inventory | `app/api/backups/route.ts`, `lib/k8s.ts` |
+| `/backups` | Database Backups (RDS/Cloud SQL/Cloud Spanner automated-backup equivalent) for the real `demo-db-postgres` StatefulSet: "Run backup now" creates a real `batch/v1` Job that runs `pg_dump` against the database's real Service, using the exact image and password Secret/key read live off the source Pod's own spec; the dump lands on `platform-backups-pvc`. PVC contents aren't directly queryable via the k8s API, so the Job listing itself (name encodes the timestamp, real completion status, real duration) *is* the backup inventory. **Restore** (the RDS/Cloud SQL point-in-time-restore equivalent): "Restore" next to any `Complete` backup, gated behind a type-the-backup-name-to-confirm step (enforced server-side, not just a disabled button), creates a real `batch/v1` Job that mounts the same PVC read-only, locates that backup's real dump file, clears the target's real table data (`TRUNCATE` per table -- not `DROP SCHEMA`, since the same credential createBackupJob discovers is not a superuser and owns none of the real schemas here; see the module doc in `lib/k8s.ts`), then replays the dump via `psql -f`. Real, disclosed limitation: a plain `pg_dump` with no FK-aware ordering can leave a same-run child-table row unrestored when its parent lands later in the file (observed live, see the evidence bundle) -- the primary data (e.g. a deleted user's own row) restores correctly; dependent rows loaded out of FK order do not, in the same restore pass | `app/api/backups/route.ts`, `lib/k8s.ts` (`createBackupJob`, `createRestoreJob`) |
 | `/api-gateway` | Documentation/visibility only -- the real control is enforced entirely by Istio (see "Rate limiting" below); this page just states the configured limit and points to `k8s/ratelimit.yaml` | (static; enforcement in `k8s/ratelimit.yaml`) |
 | `/usage` | Cost & Usage (AWS Cost Explorer / GCP Billing Reports / Azure Cost Management equivalent, deliberately **without** any payment processor or currency): real live per-namespace CPU/memory usage from `metrics.k8s.io` (the same source `kubectl top pods` reads) against the real `ResourceQuota` hard `limits.cpu`/`limits.memory` ceiling, with a plain percentage-of-quota figure -- never a dollar amount | `lib/k8s.ts` (`getResourceUsage`, `getResourceQuota`) |
 | `/alerts` | Alerting (CloudWatch Alarms / GCP Alerting Policies / Azure Monitor Alerts equivalent): real current alert state read live from the in-cluster Alertmanager's `/api/v2/alerts`, rendered as a table (alertname, state, severity, namespace, since, summary); shows an honest "0 active alerts" when none are firing rather than fabricating one -- see `alerting-pipeline-verified-live` in `evidence/control-evidence-bundle.json` for the real fired-and-cleared synthetic-rule verification | `app/api/alerts/route.ts`, `lib/alertmanager.ts` |
 | `/service-discovery` | Service Discovery (AWS Route53 private hosted zone / GCP Cloud DNS internal zone / Azure Private DNS equivalent) -- **not decorative**: CoreDNS plus real k8s `Service`/`Endpoints` objects already are the cluster's internal DNS layer every other module's cluster-internal URLs depend on. Table across the platform's 6 namespaces: Service, real DNS name (`<svc>.<namespace>.svc.cluster.local`), ClusterIP, ports, and ready/total backing-Pod-IP count read live from the matching `Endpoints` object -- the "does this record actually resolve to something healthy" signal. Live-verified with real `nslookup` from a throwaway pod against 4 services: resolved IPs matched the page's ClusterIPs byte-for-byte, and ready-endpoint counts matched `kubectl get endpoints` exactly -- see `service-discovery-dns-resolves-live` in `evidence/control-evidence-bundle.json` | `lib/k8s.ts` (`listEndpoints`, `listServicesWithEndpoints`) |
 | `/feature-flags` | Feature Flags (AWS AppConfig / LaunchDarkly / GCP Feature Flags equivalent), backed by one real k8s `ConfigMap` (`platform-feature-flags`, `platform-console` namespace) -- no external SaaS dependency. Lists current flags, toggles booleans in place, and adds new keys, all via a real RFC 7386 JSON merge patch (or a real create on first write) through the console's ServiceAccount. **Genuinely proven live, not just object-mutation**: `autofde-lab-status` (`services/autofde-lab/app.py`) reads this exact ConfigMap on every `/status` request via a real, fresh Kubernetes API call under its own minimal cross-namespace RBAC grant, and adds a real `process_uptime_seconds` field only while `verbose-status` is `"true"` -- toggling the flag through the authenticated console UI/API was confirmed, via direct external `curl` to the live `autofde-lab-status` Service (not just `kubectl exec`), to make the field appear and then disappear on revert. See `feature-flag-live-toggle-verified` in `evidence/control-evidence-bundle.json` for the exact before/after response bodies. | `app/api/feature-flags/route.ts`, `lib/k8s.ts` (`getConfigMap`, `createOrUpdateConfigMap`), `services/autofde-lab/app.py` |
 | `/topology` | Cluster Topology -- a **visualization, not a security control** (recorded in the evidence bundle for consistency with this file's "real vs decorative" practice, not because it enforces anything). deck.gl (`OrthographicView`, not a geospatial `MapView` -- there is no real geography here) rendering the exact same `listServicesWithEndpoints` data `/service-discovery` already shows as a table: one `ScatterplotLayer` node per Service (fill = the same ready/total status vocabulary as `EndpointsBadge`, size = ready-endpoint count), grouped into deterministic per-namespace grid clusters computed in `lib/topology.ts` (no randomness, no force-simulation step -- same input always produces the same layout). `ArcLayer` connections are drawn **only** where a real `NetworkPolicy` ingress rule's `namespaceSelector` names a source namespace (`lib/k8s.ts`'s `listNetworkPolicies` was extended with `ingressFromNamespaces`, parsed from `spec.ingress[].from[].namespaceSelector.matchLabels["kubernetes.io/metadata.name"]`) -- never inferred or fabricated traffic. Live-verified: authenticated `GET /topology` returned 200 with all 12 real Services across 6 namespaces embedded in the hydration payload (`autofde-lab-status`, `demo-db-postgres`, `gymact-status`, `ggen-status`, `ggen-marketplace-status`, `platform-console-gateway`, plus the 6 `demo-project-*` Services), real ClusterIPs matching `service-discovery-dns-resolves-live`'s recorded values byte-for-byte, and exactly 4 real cross-namespace edges (`platform-console` → `autofde-lab`/`gymact`/`ggen`/`ggen-marketplace`, matching `k8s/network-policies.yaml`'s `*-allow-from-platform-console` rules) -- see `topology-visualization-real-data` in `evidence/control-evidence-bundle.json` | `lib/topology.ts`, `components/DeckTopology.tsx`, `lib/k8s.ts` (`listNetworkPolicies`) |
+| `/org` | **Application-level RBAC** (AWS IAM Identity Center permission sets / GCP Org Policy / Azure AD role assignments equivalent), layered on top of -- never replacing -- the console's own k8s ServiceAccount RBAC. Owner-only page listing real role assignments (`viewer` < `member` < `owner`) from one real k8s `ConfigMap` (`platform-console-org-roles`, `platform-console` namespace, identifier → role), with a form to change a user's role, itself owner-gated. Before this module every authenticated session got identical full access regardless of provider; `POST /api/projects` is now owner-only, `POST`/`DELETE /api/secrets` and `POST /api/feature-flags` are member+ -- every GET stays open to any authenticated user. See "Application-level RBAC" below and `application-rbac-role-enforced` in `evidence/control-evidence-bundle.json` for the real 403-then-403-then-201 promotion sequence | `lib/authz.ts`, `app/api/org/roles/route.ts`, `app/app/org/page.tsx` |
 
 `lib/k8s.ts` is a hand-rolled Kubernetes API client using the pod's own in-cluster
 ServiceAccount token/CA (`/var/run/secrets/kubernetes.io/serviceaccount`) — no external k8s
@@ -137,6 +138,53 @@ delete` on `secrets`) and `platform-console-logs-reader` (`get/list` on `pods`, 
 above, since both resource types are more sensitive than the read-mostly resources that
 ClusterRole grants. Scoped to the platform's own namespaces only, never cluster-wide, never
 `kube-system`.
+
+## Application-level RBAC
+
+Everything above this point is **k8s-level** RBAC: what the console's own `ServiceAccount`
+identity may do against the Kubernetes API. Before this module, every authenticated *human*
+session -- local-admin or gotrue -- got the exact same full access to every mutating route,
+because the app had no authorization model of its own beyond "is logged in". `lib/authz.ts`
+adds a real, simple **application-level** RBAC layer (the AWS IAM Identity Center permission
+sets / GCP Org Policy / Azure AD role assignments equivalent) on top of -- never replacing --
+that k8s-level RBAC: it never grants the ServiceAccount any new Kubernetes permission, it
+only gates which authenticated app user may trigger the console into exercising a permission
+the ServiceAccount already has.
+
+- **Role model**: `viewer` < `member` < `owner`, stored in one real k8s `ConfigMap`
+  (`platform-console-org-roles`, `platform-console` namespace), identifier (email for gotrue
+  users, `admin` for the local-admin account) → role. Reuses the exact
+  get-then-create-or-patch primitive the Feature Flags module already established
+  (`getConfigMap` / `createOrUpdateConfigMap`, a real RFC 7386 JSON merge patch) -- no new
+  k8s resource kind, and zero RBAC YAML changes were needed: the existing
+  `platform-console-feature-flags` `Role` already grants `get/list/create/update/patch` on
+  *all* `configmaps` in the `platform-console` namespace with no `resourceNames`
+  restriction, so it already covered this second ConfigMap. `admin` is seeded as `owner` the
+  first time the ConfigMap is read if it doesn't exist yet; any identifier with no explicit
+  entry defaults to `viewer` (fail-closed -- a brand-new gotrue signup starts at the lowest
+  privilege until an owner promotes them).
+- A ConfigMap `data` key must match `[-._a-zA-Z0-9]+` -- an email's `@` isn't legal in a key,
+  so `lib/authz.ts` escapes any disallowed character as `-xHH-` (its hex code point) and
+  reverses it on read; `admin` and plain identifiers round-trip unchanged.
+- **`requireRole(session, minimumRole)`** (`lib/authz.ts`): the real server-side gate every
+  role-bound route calls after its existing `requireActor`/401 check. A session whose role
+  doesn't meet `minimumRole` gets a real `403` with a clear `reason` string naming both the
+  actual and required role -- same fail-closed convention as this app's existing `401`s.
+- **Wired into 3 real mutating routes, chosen for real consequence**: `POST /api/projects`
+  (owner-only -- creating infrastructure), `POST`/`DELETE /api/secrets` (member+ -- managing
+  app config, not infrastructure), `POST /api/feature-flags` (member+). Every `GET` stays
+  open to any authenticated user regardless of role, per the design.
+- **`/org`** (`app/app/org/page.tsx`): an owner-only page listing the real role assignments
+  with a form to change one, itself gated by the same `requireRole(session, "owner")` inside
+  its backing route (`app/app/api/org/roles/route.ts`) -- the route-level `403` is the real
+  enforcement boundary regardless of what the page renders or what the nav shows.
+- See `application-rbac-role-enforced` in `evidence/control-evidence-bundle.json` for the
+  real, live proof: a fresh GoTrue signup defaulted to `viewer` with no ConfigMap entry
+  needed, a real `POST /api/projects` as that session returned a real `403`, the user was
+  then explicitly set to `viewer` and re-tested (`403` again), promoted to `owner` via the
+  real `/org`-backing route, and the *same* session cookie's next `POST /api/projects`
+  returned a real `201` -- RBAC is resolved per-request from the live ConfigMap, not baked
+  into the session JWT, so no re-login was needed after promotion.
 
 ## What's deployed
 
@@ -341,7 +389,7 @@ currently take payment.
 a compliance determination — those can only come from a licensed CPA firm after an
 independent audit. It records exactly which technical controls were actually observed
 enforced (with real command output as evidence, re-run fresh against the current cluster)
-versus which are configured but not currently enacted. As of this run: **20 controls verified
+versus which are configured but not currently enacted. As of this run: **22 controls verified
 with fresh live evidence** (resource-quotas-enforced, network-segmentation,
 least-privilege-rbac, audit-logging, self-service-project-provisioning,
 observability-proxy-least-privilege, gitops-read-only-visibility, mtls-enforced,
@@ -350,12 +398,16 @@ least-privilege-per-namespace-secrets-rbac, registry-visibility-least-privilege,
 backup-job-verified-nonempty, rate-limiting-enforced, usage-metrics-real-not-fabricated,
 alerting-pipeline-verified-live, service-discovery-dns-resolves-live,
 feature-flag-live-toggle-verified, topology-visualization-real-data,
-identity-federation-live-verified) and **1 disclosed gap**
+identity-federation-live-verified, application-rbac-role-enforced,
+restore-recovers-real-deleted-data) and **1 disclosed gap**
 (registry-visibility-least-privilege's image-pull-failure path is real code, untriggered on
 this cluster today -- see the bundle). mtls-enforced's prior gap (PeerAuthentication
 STRICT configured but not enacted by any sidecar) was closed in an earlier pass; see the
-bundle for the fix and live proof. This doctrine follows
-`ggen-marketplace/packs/soc2-audit-pack`: evidence-bundle-complete, never "compliant".
+bundle for the fix and live proof. restore-recovers-real-deleted-data also discloses a real,
+non-hiding limitation of the restore path itself (a dependent-table row loaded out of FK
+order in a single restore pass) rather than only claiming what worked -- see the bundle. This
+doctrine follows `ggen-marketplace/packs/soc2-audit-pack`: evidence-bundle-complete, never
+"compliant".
 
 `digest` at the bottom of the bundle is a BLAKE3 hash over the bundle's own content, so any
 edit to a control's evidence text is detectable. Method, confirmed by reproducing the prior

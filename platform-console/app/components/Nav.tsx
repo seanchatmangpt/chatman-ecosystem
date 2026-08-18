@@ -21,6 +21,7 @@ const links = [
   { href: "/alerts", label: "Alerting" },
   { href: "/gitops", label: "GitOps" },
   { href: "/iam", label: "IAM" },
+  { href: "/org", label: "Org Roles" },
   { href: "/registry", label: "Registry" },
   { href: "/service-discovery", label: "Service Discovery" },
   { href: "/topology", label: "Topology" },
