@@ -1,0 +1,14 @@
+{
+  "service": "autofde-lab-status",
+  "repo": "autofde-lab",
+  "git_head": "1ffdd26d0da16af9984f813479e29a2853960979",
+  "git_head_short": "1ffdd26d",
+  "git_head_subject": "docs: add KNOWN_FACTS.md standing-facts file, pointer in CLAUDE.md",
+  "justfile_targets_present": [
+    "test",
+    "test-full",
+    "test-level4",
+    "test-level4-full"
+  ],
+  "checked_at": "2026-08-18T00:31:26Z"
+}

@@ -1,0 +1,9 @@
+{
+  "service": "ggen-marketplace-status",
+  "repo": "ggen-marketplace",
+  "git_head": "0b35775bf555c75b237cb8a0e4f9fbc53e160b3d",
+  "git_head_short": "0b35775",
+  "git_head_subject": "ontologies: host curated public ontology library, wired into ggen",
+  "pack_count": 122,
+  "checked_at": "2026-08-18T00:31:34Z"
+}

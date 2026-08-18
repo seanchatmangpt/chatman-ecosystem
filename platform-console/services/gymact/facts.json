@@ -1,0 +1,41 @@
+{
+  "service": "gymact-status",
+  "repo": "gymact",
+  "git_head": "c8f8370c30a61b3ccaa199472d0681cbd6e61915",
+  "git_head_short": "c8f8370",
+  "git_head_subject": "feat(powl): add powl_bridge -- real POWL2 Turtle -> kernel.act() replay",
+  "pyproject_version": "26.8.8",
+  "checked_at": "2026-08-18T00:31:29Z",
+  "installed_cli_version": "26.8.7",
+  "providers": {
+    "builtins": [
+      "chatman-state",
+      "cloud-topology",
+      "cloudsim",
+      "codebase",
+      "dev-portfolio",
+      "discovered",
+      "filesystem",
+      "ggen",
+      "ggen-legacy",
+      "git",
+      "http-json",
+      "k8s-resource",
+      "kubernetes-reconciliation",
+      "lock-and-key",
+      "mcp-client-session",
+      "memory",
+      "multicloud",
+      "resource-flow",
+      "sqlite",
+      "sregym",
+      "swegym",
+      "switchboard",
+      "terraform-docker-apply",
+      "terraform-plan"
+    ]
+  },
+  "notes": [
+    "discrepancy: pyproject.toml declares version 26.8.8 but the installed CLI reports 26.8.7; both reported as separate real facts"
+  ]
+}

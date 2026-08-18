@@ -1,0 +1,67 @@
+# Additional least-privilege RBAC for platform-console's self-service PaaS
+# control-plane surface (Projects / Database / GitOps / IAM modules --
+# app/lib/k8s.ts). Grants only the verbs/resources actually called from
+# that file -- no wildcard verbs, no wildcard resources, no Secrets, no
+# pod exec/log/portforward. Cluster-scoped (ClusterRole +
+# ClusterRoleBinding, not a per-namespace Role) because the resources
+# these modules read/create -- Supabase Projects, Services, Namespaces,
+# Flux objects, RBAC/NetworkPolicy objects -- can live in any namespace,
+# not just platform-console's own.
+#
+# Bound to the existing platform-console ServiceAccount, already created
+# by k8s/rbac.yaml in the platform-console namespace -- this file adds a
+# grant to that identity, it does not create a new one.
+#
+# Auth/Storage modules (lib/gotrue.ts, lib/storage-api.ts) and the
+# Observability module (lib/prometheus.ts) talk to project Services and
+# the Prometheus Service directly over HTTP -- never through the
+# Kubernetes API -- so they need no additional RBAC here, same reasoning
+# k8s/rbac.yaml's own platform-console ServiceAccount comment already
+# uses for the existing /status proxying.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: platform-console-paas
+rules:
+  # Projects module: list/watch Supabase Project CRs cluster-wide for the
+  # /projects list page, create for the "Create project" form. No
+  # update/patch/delete -- this console only ever creates or reads.
+  - apiGroups: ["core.supabase.io"]
+    resources: ["projects"]
+    verbs: ["get", "list", "watch", "create"]
+  # Database module: read Service objects (DNS name + port only, never
+  # Secrets) in a project's namespace to show real connection info.
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "watch"]
+  # "Create project" form's target-namespace picker.
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list"]
+  # GitOps module: read-only Flux Kustomization/HelmRelease status.
+  - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+    resources: ["kustomizations"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["helm.toolkit.fluxcd.io"]
+    resources: ["helmreleases"]
+    verbs: ["get", "list", "watch"]
+  # IAM module: read-only RBAC + NetworkPolicy inventory per namespace.
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["networkpolicies"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: platform-console-paas-binding
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: ClusterRole
+  name: platform-console-paas
+  apiGroup: rbac.authorization.k8s.io

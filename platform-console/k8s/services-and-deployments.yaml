@@ -1,0 +1,419 @@
+# Deployment + Service for each of the 4 status services (1 replica each)
+# and the Next.js console (2 replicas). Images are locally built and
+# kind-loaded (`kind load docker-image ... --name platform-eng-colima`),
+# not pulled from a registry -- imagePullPolicy: IfNotPresent throughout.
+# Status container port is 8080 everywhere (app.py: PORT env, default
+# 8080 -- see services/<project>/app.py and Dockerfile). Console container
+# port is 3000 (Next.js standalone server -- see app/Dockerfile).
+#
+# platform-console's env vars for the 4 backend URLs use the same
+# <project>-status.<project>.svc.cluster.local convention that
+# lib/status.ts already defaults to, so setting them here is redundant
+# with the code's own defaults but explicit per the task's ask.
+#
+# AUTH_SECRET / ADMIN_USERNAME / ADMIN_PASSWORD_HASH are sourced from a
+# Secret named platform-console-secrets that is NOT created by any file
+# in this k8s/ directory (no plaintext secret belongs in checked-in YAML).
+# Before applying this Deployment, create it once, e.g.:
+#   kubectl create secret generic platform-console-secrets \
+#     -n platform-console \
+#     --from-literal=AUTH_SECRET="$(openssl rand -base64 48)" \
+#     --from-literal=ADMIN_USERNAME=admin \
+#     --from-literal=ADMIN_PASSWORD_HASH='<bcrypt hash from data/plans.ts prep>'
+#
+# Deployment-level labels (team/owner/cost-center/compliance-level) satisfy
+# the cluster's existing Gatekeeper constraints (k8srequirelabels
+# require-labels and require-compliance-labels -- both currently
+# enforcementAction: dryrun, confirmed via `kubectl get constrainttemplates`
+# / `kubectl get k8srequirelabels -o yaml`), so these manifests pass real
+# cluster policy rather than merely being unblocked by dry-run mode.
+# Known, disclosed exception: `k8srestrictimageregistries` only allows
+# gcr.io/, registry.example.com/, quay.io/my-org/ -- these images
+# (platform-console/*, kind-loaded, no registry) do not match any of
+# those prefixes and will show as a dryrun violation. That policy is also
+# dryrun-only (non-blocking) and the task explicitly specified
+# kind-loaded local images over a registry, so this is named here rather
+# than silently worked around.
+#
+# Pod-level `sidecar.istio.io/inject: "false"` annotation -- REMOVED.
+# History: these 5 namespaces carry `istio-injection: enabled`
+# (namespaces.yaml), but network-policies.yaml's default-deny Egress
+# (deliberately, per its own header comment, including DNS/istiod) meant
+# an injected istio-proxy could never resolve or reach istiod -- the
+# sidecar's startup probe on :15021/healthz/ready failed forever and the
+# pod never left Init:1/2 (confirmed live). Injection was disabled at the
+# pod template level as a stopgap so the plain containers could start.
+#
+# Fix: network-policies.yaml now carries a narrow, additional
+# `*-allow-egress-dns-istiod` Egress policy per project namespace
+# (kube-dns UDP/TCP 53, istiod TCP 15012/15017 -- nothing else), applied
+# alongside the unchanged default-deny + allow-from-platform-console
+# policies. With that egress path open, injection is re-enabled here by
+# removing the annotation -- `istio-injection: enabled` at the namespace
+# level is no longer overridden per-pod, so the mutating webhook injects
+# istio-proxy normally on the next pod recreation (`kubectl rollout
+# restart`).
+
+# ---------------------------------------------------------------- autofde-lab
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autofde-lab-status
+  namespace: autofde-lab
+  labels:
+    app: autofde-lab-status
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autofde-lab-status
+  template:
+    metadata:
+      labels:
+        app: autofde-lab-status
+    spec:
+      serviceAccountName: autofde-lab-status-reader
+      containers:
+        - name: autofde-lab-status
+          image: platform-console/autofde-lab-status:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: autofde-lab-status
+  namespace: autofde-lab
+  labels:
+    app: autofde-lab-status
+spec:
+  selector:
+    app: autofde-lab-status
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+
+# -------------------------------------------------------------------- gymact
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gymact-status
+  namespace: gymact
+  labels:
+    app: gymact-status
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gymact-status
+  template:
+    metadata:
+      labels:
+        app: gymact-status
+    spec:
+      serviceAccountName: gymact-status-reader
+      containers:
+        - name: gymact-status
+          image: platform-console/gymact-status:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gymact-status
+  namespace: gymact
+  labels:
+    app: gymact-status
+spec:
+  selector:
+    app: gymact-status
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+
+# ---------------------------------------------------------------------- ggen
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ggen-status
+  namespace: ggen
+  labels:
+    app: ggen-status
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ggen-status
+  template:
+    metadata:
+      labels:
+        app: ggen-status
+    spec:
+      serviceAccountName: ggen-status-reader
+      containers:
+        - name: ggen-status
+          image: platform-console/ggen-status:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ggen-status
+  namespace: ggen
+  labels:
+    app: ggen-status
+spec:
+  selector:
+    app: ggen-status
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+
+# ----------------------------------------------------------- ggen-marketplace
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ggen-marketplace-status
+  namespace: ggen-marketplace
+  labels:
+    app: ggen-marketplace-status
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ggen-marketplace-status
+  template:
+    metadata:
+      labels:
+        app: ggen-marketplace-status
+    spec:
+      serviceAccountName: ggen-marketplace-status-reader
+      containers:
+        - name: ggen-marketplace-status
+          image: platform-console/ggen-marketplace-status:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ggen-marketplace-status
+  namespace: ggen-marketplace
+  labels:
+    app: ggen-marketplace-status
+spec:
+  selector:
+    app: ggen-marketplace-status
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+
+# ------------------------------------------------------------ platform-console
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platform-console-gateway
+  namespace: platform-console
+  labels:
+    app: platform-console-gateway
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: platform-console-gateway
+  template:
+    metadata:
+      labels:
+        app: platform-console-gateway
+    spec:
+      serviceAccountName: platform-console
+      containers:
+        - name: console
+          image: platform-console/console:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: HOSTNAME
+              value: "0.0.0.0"
+            - name: AUTOFDE_LAB_STATUS_URL
+              value: "http://autofde-lab-status.autofde-lab.svc.cluster.local/status"
+            - name: GYMACT_STATUS_URL
+              value: "http://gymact-status.gymact.svc.cluster.local/status"
+            - name: GGEN_STATUS_URL
+              value: "http://ggen-status.ggen.svc.cluster.local/status"
+            - name: GGEN_MARKETPLACE_STATUS_URL
+              value: "http://ggen-marketplace-status.ggen-marketplace.svc.cluster.local/status"
+            - name: AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: AUTH_SECRET
+            - name: ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: ADMIN_USERNAME
+            - name: ADMIN_PASSWORD_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: ADMIN_PASSWORD_HASH
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platform-console-gateway
+  namespace: platform-console
+  labels:
+    app: platform-console-gateway
+spec:
+  selector:
+    app: platform-console-gateway
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 3000

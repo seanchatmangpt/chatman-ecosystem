@@ -1,0 +1,144 @@
+# One ServiceAccount + least-privilege Role + RoleBinding per project
+# namespace. Each role grants get/list/watch on pods and services, scoped
+# to its own namespace only -- no cluster-scoped verbs, no access to any
+# other namespace. These identities are what each <project>-status
+# Deployment runs as (see services-and-deployments.yaml).
+
+# ---------------------------------------------------------------- autofde-lab
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: autofde-lab-status-reader
+  namespace: autofde-lab
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: autofde-lab-status-reader-role
+  namespace: autofde-lab
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: autofde-lab-status-reader-binding
+  namespace: autofde-lab
+subjects:
+  - kind: ServiceAccount
+    name: autofde-lab-status-reader
+    namespace: autofde-lab
+roleRef:
+  kind: Role
+  name: autofde-lab-status-reader-role
+  apiGroup: rbac.authorization.k8s.io
+
+# -------------------------------------------------------------------- gymact
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gymact-status-reader
+  namespace: gymact
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: gymact-status-reader-role
+  namespace: gymact
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gymact-status-reader-binding
+  namespace: gymact
+subjects:
+  - kind: ServiceAccount
+    name: gymact-status-reader
+    namespace: gymact
+roleRef:
+  kind: Role
+  name: gymact-status-reader-role
+  apiGroup: rbac.authorization.k8s.io
+
+# ---------------------------------------------------------------------- ggen
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ggen-status-reader
+  namespace: ggen
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: ggen-status-reader-role
+  namespace: ggen
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ggen-status-reader-binding
+  namespace: ggen
+subjects:
+  - kind: ServiceAccount
+    name: ggen-status-reader
+    namespace: ggen
+roleRef:
+  kind: Role
+  name: ggen-status-reader-role
+  apiGroup: rbac.authorization.k8s.io
+
+# ----------------------------------------------------------- ggen-marketplace
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ggen-marketplace-status-reader
+  namespace: ggen-marketplace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: ggen-marketplace-status-reader-role
+  namespace: ggen-marketplace
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ggen-marketplace-status-reader-binding
+  namespace: ggen-marketplace
+subjects:
+  - kind: ServiceAccount
+    name: ggen-marketplace-status-reader
+    namespace: ggen-marketplace
+roleRef:
+  kind: Role
+  name: ggen-marketplace-status-reader-role
+  apiGroup: rbac.authorization.k8s.io
+
+# ------------------------------------------------------------ platform-console
+# Identity for the console Deployment's pods (mTLS/pod identity only --
+# the console talks to the four /status endpoints over plain HTTP inside
+# the mesh, never through the Kubernetes API, so no Role/RoleBinding is
+# granted here on purpose).
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: platform-console
+  namespace: platform-console

@@ -1,0 +1,72 @@
+# Istio Gateway + VirtualService in platform-console, routing platform.local
+# through the existing istio-ingressgateway (already installed and Ready --
+# kubectl get svc -n istio-system istio-ingressgateway confirmed ports
+# 80:31553/TCP and 443:31443/TCP as NodePorts, since kind/colima has no
+# cloud LoadBalancer).
+#
+# Local access: add an /etc/hosts entry pointing platform.local at the
+# ingress gateway's reachable address, then browse http://platform.local/
+# (or https://platform.local/ once the TLS secret below exists). For a
+# `kind` cluster on colima the gateway is reached through the docker/colima
+# VM's forwarded port, e.g.:
+#   echo "127.0.0.1 platform.local" | sudo tee -a /etc/hosts
+#   curl http://platform.local:31553/          # HTTP server on the NodePort
+# (or via `kubectl port-forward -n istio-system svc/istio-ingressgateway
+# 8080:80` and hitting http://platform.local:8080/ if the NodePort isn't
+# directly reachable from this host -- confirm which applies once deployed).
+#
+# HTTPS is defined for parity with the existing platform-gateway object in
+# the "application" namespace (kubectl get gateway -n application
+# platform-gateway -o yaml) but is NOT yet functional out of the box: it
+# references a TLS secret, platform-console-tls, that this file does not
+# create (no cert material belongs in checked-in YAML). Before HTTPS will
+# work, create it once, e.g. with a self-signed cert for local dev:
+#   openssl req -x509 -newkey rsa:2048 -nodes -days 365 \
+#     -keyout /tmp/platform-console.key -out /tmp/platform-console.crt \
+#     -subj "/CN=platform.local"
+#   kubectl create secret tls platform-console-tls \
+#     -n istio-system \
+#     --cert=/tmp/platform-console.crt --key=/tmp/platform-console.key
+# Until that secret exists, the HTTPS:443 server below will not admit
+# traffic -- HTTP:80 is what actually works immediately after deploy.
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: platform-console-gateway
+  namespace: platform-console
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        name: http
+        number: 80
+        protocol: HTTP
+      hosts:
+        - platform.local
+    - port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      hosts:
+        - platform.local
+      tls:
+        mode: SIMPLE
+        credentialName: platform-console-tls
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: platform-console-ingress
+  namespace: platform-console
+spec:
+  hosts:
+    - platform.local
+  gateways:
+    - platform-console-gateway
+  http:
+    - route:
+        - destination:
+            host: platform-console-gateway.platform-console.svc.cluster.local
+            port:
+              number: 8080

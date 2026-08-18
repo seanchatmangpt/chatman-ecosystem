@@ -1,0 +1,14 @@
+{
+  "service": "ggen-status",
+  "repo": "ggen",
+  "git_head": "8ce7bf93c01ce747f68cfb4c9218f1e1ff30c0e2",
+  "git_head_short": "8ce7bf93c",
+  "git_head_subject": "fix(gitignore): remove bare `lib/` at its root; recover swallowed TDD test",
+  "workspace_cargo_version": "26.8.12",
+  "installed_binary_version": "26.8.8",
+  "sync_run_subcommand_present": true,
+  "checked_at": "2026-08-18T00:31:33Z",
+  "notes": [
+    "discrepancy: repo Cargo.toml workspace version is 26.8.12 but the installed binary reports 26.8.8; both reported as separate real facts"
+  ]
+}

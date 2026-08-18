@@ -1,0 +1,49 @@
+# Five namespaces for the platform-console topology: one per project status
+# service, plus the console itself. Label shape (istio-injection: enabled)
+# matches the existing "application" namespace already live on this cluster
+# (kubectl get ns application -o yaml), so sidecar injection behaves
+# identically to established precedent.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: autofde-lab
+  labels:
+    istio-injection: enabled
+    app.kubernetes.io/part-of: platform-console
+    app.kubernetes.io/component: project-status
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gymact
+  labels:
+    istio-injection: enabled
+    app.kubernetes.io/part-of: platform-console
+    app.kubernetes.io/component: project-status
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ggen
+  labels:
+    istio-injection: enabled
+    app.kubernetes.io/part-of: platform-console
+    app.kubernetes.io/component: project-status
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ggen-marketplace
+  labels:
+    istio-injection: enabled
+    app.kubernetes.io/part-of: platform-console
+    app.kubernetes.io/component: project-status
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: platform-console
+  labels:
+    istio-injection: enabled
+    app.kubernetes.io/part-of: platform-console
+    app.kubernetes.io/component: console

@@ -1,0 +1,53 @@
+{
+  "schema": "platform-console.control-evidence.v1",
+  "generated_at": "2026-08-18T01:47:00Z",
+  "disclaimer": "This bundle records evidence that specific technical controls were observed enforced at generation time. It is NOT a SOC 2 report, NOT a compliance determination, and NOT an auditor's opinion -- those can only be issued by a licensed CPA firm after an independent audit. Modeled after ggen-marketplace/packs/soc2-audit-pack's engagement-process doctrine: evidence-bundle-complete, never 'compliant'.",
+  "controls": [
+    {
+      "control": "resource-quotas-enforced",
+      "evidence": "Fresh live negative test on the recreated cluster: applied a Pod (`overquota-test`, autofde-lab namespace) requesting `limits.cpu=20,limits.memory=20Gi,requests.cpu=10,requests.memory=10Gi`. `kubectl apply` was rejected in real time by the admission controller: `Error from server (Forbidden): pods \"overquota-test\" is forbidden: exceeded quota: autofde-lab-quota, requested: limits.cpu=20,limits.memory=20Gi,requests.cpu=10,requests.memory=10Gi, used: limits.cpu=250m,limits.memory=160Mi,requests.cpu=60m,requests.memory=80Mi, limited: limits.cpu=5,limits.memory=2560Mi,requests.cpu=500m,requests.memory=256Mi`. Confirmed live via `kubectl get resourcequota -A`: all 5 project namespaces plus platform-console carry an active ResourceQuota with real usage counters (e.g. `autofde-lab-quota pods: 1/5, requests.cpu: 50m/500m ... limits.cpu: 200m/5`).",
+      "observed_at": "2026-08-18T01:46:15Z"
+    },
+    {
+      "control": "network-segmentation",
+      "evidence": "Fresh live cross-namespace enforcement test on the recreated cluster, run from real (non-mocked) pods, not simulated with `kubectl auth can-i`. Negative case: a plain curl pod (`nettest`, no Istio sidecar) in `autofde-lab` -- a namespace whose only NetworkPolicy allows ingress from `platform-console` and denies all else (Ingress+Egress, empty podSelector, no egress rule) -- attempted `curl` to `ggen-status.ggen.svc.cluster.local` and to a same-namespace peer; both timed out with curl exit code 28 (connection timeout), confirming the CNI is actively dropping the traffic, not merely that a policy object exists. Positive case: an equivalent curl pod (`nettest-pc`) placed in `platform-console` (the namespace explicitly allow-listed in every project namespace's ingress rule) reached `autofde-lab-status.autofde-lab.svc.cluster.local:80` and received a real HTTP 404 response (TCP connection succeeded; 404 is the app's own routing, not a network block) -- confirming the allow-list is honored, not just the deny-all. `kubectl get networkpolicy -A` shows 8 NetworkPolicy objects live across autofde-lab, flux-system, ggen-marketplace, ggen, and gymact (each project namespace pairs a `*-default-deny` with a `*-allow-from-platform-console`).",
+      "observed_at": "2026-08-18T01:43:00-07:00"
+    },
+    {
+      "control": "least-privilege-rbac",
+      "evidence": "Fresh live negative and positive tests using the real bearer tokens of two in-cluster ServiceAccounts, issued via `kubectl create token` (real TokenRequest API, not simulated) and sent as real `Authorization: Bearer` headers directly to the API server over HTTPS (not `kubectl auth can-i`, which only evaluates policy without exercising the wire path). `autofde-lab-status-reader` SA: GET `/api/v1/namespaces/autofde-lab/secrets` -> real `403 Forbidden` (`\"secrets is forbidden: User \\\"system:serviceaccount:autofde-lab:autofde-lab-status-reader\\\" cannot list resource \\\"secrets\\\"...\"`); GET `/api/v1/namespaces/ggen/pods` (cross-namespace) -> real `403 Forbidden`; GET `/api/v1/namespaces/autofde-lab/pods` (in-scope) -> real `200 OK` with 2 real pod items. `kubectl auth can-i` cross-checks against the same SA independently agreed (get pods: yes; get secrets: no; cross-namespace list: no; delete pods: no). Separately, the new `platform-console` SA (bound to `ClusterRole/platform-console-paas`) was confirmed via `kubectl auth can-i --as=system:serviceaccount:platform-console:platform-console` to have no create/update/delete on Flux Kustomizations/HelmReleases, no get on Secrets cluster-wide, and no create on Pods anywhere -- its only write verb anywhere in the cluster is `create` on `core.supabase.io/projects`.",
+      "observed_at": "2026-08-18T01:45:00-07:00"
+    },
+    {
+      "control": "audit-logging",
+      "evidence": "Fresh live end-to-end test through the actual deployed pod (not a standalone `node` invocation of the module, which was the prior bundle's evidence gap). `kubectl port-forward svc/platform-console-gateway 18080:8080`, then a real `POST /api/login` with valid seeded credentials returned `200 {\"ok\":true}` and set a real session cookie; a subsequent authenticated `GET /api/projects` using that cookie returned `200` with real live cluster data (`demo-project`, namespace `supabase-demo`, `ready:true`). `kubectl logs -n platform-console -l app=platform-console-gateway` then shows the real structured JSON lines the running pod itself wrote for these exact requests: `{\"timestamp\":\"2026-08-18T01:45:33.769Z\",\"actor\":\"admin\",\"method\":\"POST\",\"path\":\"/api/login\",\"status\":200,...}` and `{\"timestamp\":\"2026-08-18T01:45:33.821Z\",\"actor\":\"admin\",\"method\":\"GET\",\"path\":\"/api/projects\",\"status\":200,...}` -- produced by middleware.ts/api routes executing inside the live pod, not by direct module invocation.",
+      "observed_at": "2026-08-18T01:45:33.821Z"
+    },
+    {
+      "control": "self-service-project-provisioning",
+      "evidence": "Real end-to-end test through the live console: authenticated `POST /api/projects` with `{\"name\":\"evidence-verify\",\"namespace\":\"paas-verify-ns\"}` against the actual deployed pod returned `201 Created` with the real project object echoed back. Confirmed independently via `kubectl get project evidence-verify -n paas-verify-ns -o yaml`: the real `core.supabase.io/v1alpha1` Project CR exists, with a real controller-written `status.conditions` block (`reason: DatabaseNotReady`, `message: \"Referenced database is not ready\"`) -- proof the Supabase operator's real reconciliation loop picked up the CR the console created, not a stub. Honest gap: this verification pass did not also create the paired `SingleDatabase` CR the Project references, so `evidence-verify` was observed in `DatabaseNotReady`, not `Ready`; the pre-existing `demo-project` (created in an earlier session, fully paired) is the cluster's example of a Project that reached `Ready:true`. Test namespace and CR deleted after observation (`kubectl delete namespace paas-verify-ns`).",
+      "observed_at": "2026-08-18T01:46:00-07:00"
+    },
+    {
+      "control": "observability-proxy-least-privilege",
+      "evidence": "Two real constraints, both live-tested. (1) Application-layer: `app/api/prometheus/route.ts` enforces a fixed PromQL allowlist (`up`, `kube_pod_status_ready`, `container_memory_working_set_bytes`). Live test through the deployed pod: `GET /api/prometheus?query=node_filesystem_free_bytes` (not on the allowlist) -> real `400 {\"error\":\"query not in allowlist: ...\"}`; `GET /api/prometheus?query=up` -> real `200` with 18 live result series from the real Prometheus. (2) Kubernetes-RBAC-layer: Prometheus is a plain Service, not a k8s API resource the console's ClusterRole references at all -- `platform-console-paas` grants no verbs on anything in the `monitoring` namespace; access is a network call, gated only by the query allowlist above, not by RBAC. Honest gap: `kubectl get networkpolicy -n monitoring` returns no objects -- there is no NetworkPolicy restricting which pods may reach Prometheus at L3/L4, so the allowlisted-query check in the route handler is the only enforcement point for this control today, not defense-in-depth.",
+      "observed_at": "2026-08-18T01:46:30-07:00"
+    },
+    {
+      "control": "gitops-read-only-visibility",
+      "evidence": "`ClusterRole/platform-console-paas` (`kubectl get clusterrole platform-console-paas -o yaml`, applied live) grants only `get,list,watch` on `kustomizations.kustomize.toolkit.fluxcd.io` and `helmreleases.helm.toolkit.fluxcd.io` -- no `create`, `update`, `patch`, or `delete`. Live-verified with real `kubectl auth can-i --as=system:serviceaccount:platform-console:platform-console`: `create kustomizations.kustomize.toolkit.fluxcd.io -n flux-system` -> no; `update` -> no; `delete` -> no; `create helmreleases.helm.toolkit.fluxcd.io -n flux-system` -> no. `app/app/gitops/page.tsx` and `lib/k8s.ts` contain no write path to these resource types (grep-confirmed: only `listKustomizations`/`listHelmReleases`-style GET calls). Cluster currently has 0 Kustomization/HelmRelease objects (Flux CRDs installed, none created) -- an honest empty state, not a fabricated listing.",
+      "observed_at": "2026-08-18T01:47:00-07:00"
+    }
+  ],
+  "gaps": [
+    {
+      "control": "mtls-enforced",
+      "reason": "PeerAuthentication STRICT objects are live for 5 namespaces (`kubectl get peerauthentication -A` confirms `autofde-lab-mtls`, `ggen-mtls`, `ggen-marketplace-mtls`, `gymact-mtls`, `platform-console-mtls`, all mode STRICT). However, fresh live inspection this pass found that NO workload pod in the cluster actually carries an `istio-proxy` sidecar container (`kubectl get pods -A -o jsonpath='{...containers[*].name}'` across all 8 non-system namespaces shows only the application container in every pod). Root cause, confirmed by reading k8s/services-and-deployments.yaml's own header comment (a pre-existing, disclosed design decision, not newly discovered): each project Deployment sets `sidecar.istio.io/inject: \"false\"` at the pod template, because the namespace's own default-deny NetworkPolicy blocks egress to istiod, which would otherwise leave an injected sidecar stuck forever at `Init:1/2` (verified live in this pass: a test pod with sidecar injection left enabled sat in `Init:1/2` with `istio-proxy` logs reading `dial tcp: lookup istiod.istio-system.svc: i/o timeout` before being replaced with an uninjected version for the network-segmentation test above). Consequence, also live-confirmed: the network-segmentation test's positive case reached `autofde-lab-status` over plain HTTP (a real 404 app response, no TLS) -- if STRICT mTLS were actually enforced by a data-plane proxy on that pod, a plaintext client would have been rejected. STRICT mode is configured cluster-wide; it is not enacted on any current workload because no sidecar is present to enforce it.",
+      "reason_category": "configured-not-enforced"
+    }
+  ],
+  "digest": {
+    "algorithm": "blake3",
+    "value": "670ef0f3f978dd521331dfa591ef6ad6bb09bb8b3ee16e7033904df9b2e53f27"
+  }
+}

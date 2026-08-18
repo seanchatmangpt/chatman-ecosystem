@@ -1,0 +1,39 @@
+# kind-config.yaml — platform-eng-colima
+#
+# Recreated after unrecoverable etcd storage corruption on the prior
+# platform-eng-colima cluster (bbolt page checksum panic in the etcd
+# container, no snapshot backup existed). See
+# docs/platform-engineers-handbook-colima-runtime.md for the runtime
+# convention this reproduces.
+#
+# Single control-plane node, no workers. This is a dev/staging cluster,
+# not an HA control plane -- do not treat it as highly available.
+#
+# Port mappings match the prior, now-deleted platform-eng-colima cluster's
+# real container config (confirmed via `docker inspect
+# platform-eng-colima-control-plane` before deletion: 0.0.0.0:8080->80/tcp,
+# 0.0.0.0:8443->443/tcp) and the pack template's Istio-ingress convention
+# in ggen-marketplace/packs/platform-engineers-handbook-ch02-cluster-pack.
+#
+# Node image pinned to kindest/node:v1.34.0 to match the prior cluster
+# (confirmed via `docker inspect ... --format '{{.Config.Image}}'` before
+# deletion).
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: platform-eng-colima
+nodes:
+- role: control-plane
+  image: kindest/node:v1.34.0
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 8080
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 8443
+    protocol: TCP

@@ -1,0 +1,312 @@
+# Default-deny baseline per project namespace, plus one explicit allow rule
+# permitting ingress only from platform-console (by namespaceSelector) on
+# the status service's port (8080 -- see services-and-deployments.yaml).
+#
+# No NetworkPolicy exists anywhere on this cluster before this file
+# (kubectl get networkpolicy -A confirmed only flux-system's own policies)
+# -- this default-deny pattern is new, not a copy of an existing object.
+#
+# Known, disclosed operational caveat: policyTypes [Ingress, Egress] with
+# an empty egress rule list blocks ALL egress from these namespaces,
+# including DNS (kube-dns) and the Istio sidecar's control-plane traffic
+# to istiod. That is exactly what was specified for this phase (a
+# deny-all baseline); loosening it for DNS/istiod is deliberately left
+# for a later, explicitly-scoped policy rather than added here silently.
+#
+# That later policy is this one: a narrow additional `*-allow-egress-dns-istiod`
+# NetworkPolicy per namespace (podSelector: {}, so it applies to every pod,
+# istio-proxy included), egress-only, allowing exactly:
+#   - kube-dns (kube-system, podSelector k8s-app=kube-dns) on UDP/TCP 53
+#   - istiod (istio-system, podSelector app=istiod) on TCP 15012 (xDS/CA) and
+#     TCP 15017 (webhook)
+# Nothing else is opened. The `*-default-deny` and `*-allow-from-platform-console`
+# policies above are unchanged; this is additive (NetworkPolicy objects are
+# ANDed within a policyType only in the sense that any one matching egress
+# rule across all applicable policies allows the connection -- multiple
+# Egress policies on the same pods are additive/OR'd, not replacing).
+
+# ---------------------------------------------------------------- autofde-lab
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: autofde-lab-default-deny
+  namespace: autofde-lab
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: autofde-lab-allow-from-platform-console
+  namespace: autofde-lab
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: platform-console
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: autofde-lab-allow-egress-dns-istiod
+  namespace: autofde-lab
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: istio-system
+          podSelector:
+            matchLabels:
+              app: istiod
+      ports:
+        - protocol: TCP
+          port: 15012
+        - protocol: TCP
+          port: 15017
+
+# -------------------------------------------------------------------- gymact
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gymact-default-deny
+  namespace: gymact
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gymact-allow-from-platform-console
+  namespace: gymact
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: platform-console
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gymact-allow-egress-dns-istiod
+  namespace: gymact
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: istio-system
+          podSelector:
+            matchLabels:
+              app: istiod
+      ports:
+        - protocol: TCP
+          port: 15012
+        - protocol: TCP
+          port: 15017
+
+# ---------------------------------------------------------------------- ggen
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ggen-default-deny
+  namespace: ggen
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ggen-allow-from-platform-console
+  namespace: ggen
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: platform-console
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ggen-allow-egress-dns-istiod
+  namespace: ggen
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: istio-system
+          podSelector:
+            matchLabels:
+              app: istiod
+      ports:
+        - protocol: TCP
+          port: 15012
+        - protocol: TCP
+          port: 15017
+
+# ----------------------------------------------------------- ggen-marketplace
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ggen-marketplace-default-deny
+  namespace: ggen-marketplace
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ggen-marketplace-allow-from-platform-console
+  namespace: ggen-marketplace
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: platform-console
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ggen-marketplace-allow-egress-dns-istiod
+  namespace: ggen-marketplace
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: istio-system
+          podSelector:
+            matchLabels:
+              app: istiod
+      ports:
+        - protocol: TCP
+          port: 15012
+        - protocol: TCP
+          port: 15017
+
+# ------------------------------------------------------------ platform-console
+#
+# Deliberate deviation from the literal "apply to all 5 namespaces" ask,
+# disclosed here rather than silently followed or silently skipped:
+# platform-console carries NO NetworkPolicy at all (confirmed live --
+# `kubectl get networkpolicy -n platform-console` returns empty, and no
+# `platform-console-default-deny` object exists anywhere in this repo).
+# Its egress is therefore unrestricted by NetworkPolicy today, which means
+# the sidecar's DNS/istiod reachability problem this file exists to fix
+# does not occur here in the first place -- there is no deny to work
+# around. Adding an Egress-scoped NetworkPolicy selecting these pods would
+# not be "narrow": Kubernetes makes any policy of a given policyType
+# default-deny that type for the pods it selects, so an Egress-only
+# DNS+istiod policy here would newly block platform-console-gateway's
+# actual required egress (kube-apiserver for its RBAC/Flux/Supabase-CR
+# calls, the four project *-status Services on 8080, Prometheus in
+# monitoring) -- a real functional regression the task's own "not by
+# weakening the security posture wholesale" instruction argues against
+# introducing in the opposite direction (accidentally breaking working
+# traffic). No NetworkPolicy object is added for platform-console; its
+# istio-proxy sidecar (enabled below) is expected to reach DNS/istiod
+# exactly as freely as the rest of its already-unrestricted egress.

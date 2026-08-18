@@ -1,0 +1,51 @@
+# Istio PeerAuthentication, mode STRICT, per project namespace plus
+# platform-console. Same shape as the existing application-mtls object
+# already live on this cluster (kubectl get peerauthentication -n
+# application application-mtls -o yaml), just scoped per-namespace instead
+# of to "application". The mesh-wide istio-system/default PeerAuthentication
+# is also already STRICT, so these are namespace-level reinforcements, not
+# a change in effective policy.
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: autofde-lab-mtls
+  namespace: autofde-lab
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: gymact-mtls
+  namespace: gymact
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: ggen-mtls
+  namespace: ggen
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: ggen-marketplace-mtls
+  namespace: ggen-marketplace
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: platform-console-mtls
+  namespace: platform-console
+spec:
+  mtls:
+    mode: STRICT
