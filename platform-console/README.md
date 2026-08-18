@@ -42,6 +42,7 @@ or global footprint.
 
 | Route | What it does | Backing evidence |
 |---|---|---|
+| `/login` | Two independent, additive login paths: the original seeded local-admin form, and a second real **identity federation** form (email/password signup/login against the live GoTrue instance's own user-facing REST API) -- see "Identity federation" below | `app/app/api/auth/gotrue-login/route.ts`, `app/app/api/auth/gotrue-signup/route.ts`, `lib/gotrue-auth.ts`, `lib/session.ts` |
 | `/projects` | Lists real `Project` CRs cluster-wide; form POSTs a paired `SingleDatabase` + `Project` manifest, reaching `Ready` end to end | `app/api/projects/route.ts`, `lib/k8s.ts` |
 | `/projects/[name]/database` | Reads real Postgres/PostgREST `Service` objects (ClusterIP, ports, DNS names) | `lib/k8s.ts` |
 | `/projects/[name]/auth` | Proxies real GoTrue `/admin/users`, gated on `SUPABASE_SERVICE_ROLE_KEY` | `lib/gotrue.ts` |
@@ -65,6 +66,50 @@ or global footprint.
 ServiceAccount token/CA (`/var/run/secrets/kubernetes.io/serviceaccount`) — no external k8s
 client dependency. Off-cluster (local `next build`/dev), it fails closed with
 `"not configured"`, the same convention `lib/status.ts` already used.
+
+## Identity federation
+
+A second, additive login path (the AWS IAM Identity Center / Azure AD / GCP Identity
+Platform equivalent): a real end user authenticates against the live GoTrue (Supabase Auth)
+instance already running in this cluster (`demo-project-auth.supabase-demo.svc.cluster.local:9999`),
+independent of the single seeded admin account. **Additive, not a replacement** — the
+original local-admin path (`app/lib/credentials.ts`, `app/api/login/route.ts`) is unchanged
+and still works exactly as before; see `identity-federation-live-verified` in
+`evidence/control-evidence-bundle.json` for the real regression check.
+
+- `lib/gotrue-auth.ts` — real server-side calls to GoTrue's real **user-facing** auth REST
+  endpoints: `POST /signup` and `POST /token?grant_type=password`, parsing GoTrue's real JWT
+  `access_token` response. Deliberately distinct from the pre-existing `lib/gotrue.ts`, which
+  is a read-only proxy to GoTrue's *admin* API (`/admin/users`, user counts) gated on
+  `SUPABASE_SERVICE_ROLE_KEY`.
+- `lib/session.ts`'s session shape now carries an `authProvider: "local-admin" | "gotrue"`
+  discriminator. A `"gotrue"` session's `sub` is the real GoTrue user id (a UUID, not a local
+  username) and additionally carries the real account's `email`. Both providers mint the same
+  kind of app-local HS256 JWT cookie, signed with this app's own `AUTH_SECRET` — a GoTrue
+  access token is never passed straight through as this app's session, so every existing
+  session consumer (`middleware.ts`, every route handler's `requireActor` helper) keeps
+  working unchanged, since they only ever read `session.sub`.
+- `app/api/auth/gotrue-login/route.ts` and `app/api/auth/gotrue-signup/route.ts` — call
+  GoTrue for real; on success mint this app's own session cookie carrying the
+  `authProvider:"gotrue"` marker, same cookie name/flags/TTL as the local-admin path.
+  `app/app/login/page.tsx` renders both forms side by side, clearly labeled.
+- **One disclosed, real adaptation to this specific cluster**: GoTrue here runs with
+  `GOTRUE_MAILER_AUTOCONFIRM=false` and no SMTP server configured at all (confirmed live via
+  `GET /settings` → `"mailer_autoconfirm":false`, and the Deployment defines no
+  `GOTRUE_SMTP_*` vars), so a real `/signup` genuinely leaves the account unconfirmed and a
+  real `/token?grant_type=password` genuinely rejects it with GoTrue's own real
+  `{"error_code":"email_not_confirmed"}` — reproduced live before any fix, see the evidence
+  bundle. Since no mail transport exists on this cluster to deliver a real confirmation link,
+  `signUpWithPassword` completes the confirmation the way an operator would for a mailer-less
+  deployment: one real `PUT /admin/users/{id}` call (`{"email_confirm":true}`,
+  bearer-authenticated with `SUPABASE_SERVICE_ROLE_KEY`) immediately after a real signup
+  succeeds — a real GoTrue admin API call, not a fabricated confirmation.
+- `SUPABASE_SERVICE_ROLE_KEY` is now wired into the live Deployment (`k8s/services-and-deployments.yaml`,
+  sourced from the `platform-console-secrets` Secret) — previously present in code
+  (`lib/gotrue.ts`) but never actually set on the deployed pod, so `/projects/[name]/auth`
+  reported "not configured" in every prior pass. It's real: copied from the real
+  `demo-project-jwt` Secret's `service-key` in `supabase-demo`, the same JWT this cluster's
+  own Supabase operator already issues and uses for admin access to `demo-project-auth`.
 
 ## RBAC for the PaaS surface
 
@@ -264,8 +309,10 @@ echo "127.0.0.1 platform.local" | sudo tee -a /etc/hosts
 
 Then browse to `http://platform.local` (routed through the Istio Gateway/VirtualService in
 `k8s/gateway.yaml`), or `kubectl port-forward -n platform-console svc/platform-console-gateway
-18080:8080` for a direct path. Log in with the seeded admin account (`ADMIN_USERNAME`,
-password matching the bcrypt hash in the `platform-console-secrets` Secret).
+18080:8080` for a direct path. `/login` now shows two independent forms side by side: log in
+with the seeded admin account (`ADMIN_USERNAME`, password matching the bcrypt hash in the
+`platform-console-secrets` Secret), or sign in / create a real account through the second,
+additive **identity federation** form -- see "Identity federation" below.
 
 Grafana is reached through the same Gateway, no port-forward needed: browse to
 `http://platform.local/grafana/` (`k8s/grafana-route.yaml` -- a VirtualService on the
@@ -294,7 +341,7 @@ currently take payment.
 a compliance determination — those can only come from a licensed CPA firm after an
 independent audit. It records exactly which technical controls were actually observed
 enforced (with real command output as evidence, re-run fresh against the current cluster)
-versus which are configured but not currently enacted. As of this run: **19 controls verified
+versus which are configured but not currently enacted. As of this run: **20 controls verified
 with fresh live evidence** (resource-quotas-enforced, network-segmentation,
 least-privilege-rbac, audit-logging, self-service-project-provisioning,
 observability-proxy-least-privilege, gitops-read-only-visibility, mtls-enforced,
@@ -302,7 +349,8 @@ autoscaling-enforced, secrets-never-logged-or-rendered,
 least-privilege-per-namespace-secrets-rbac, registry-visibility-least-privilege,
 backup-job-verified-nonempty, rate-limiting-enforced, usage-metrics-real-not-fabricated,
 alerting-pipeline-verified-live, service-discovery-dns-resolves-live,
-feature-flag-live-toggle-verified, topology-visualization-real-data) and **1 disclosed gap**
+feature-flag-live-toggle-verified, topology-visualization-real-data,
+identity-federation-live-verified) and **1 disclosed gap**
 (registry-visibility-least-privilege's image-pull-failure path is real code, untriggered on
 this cluster today -- see the bundle). mtls-enforced's prior gap (PeerAuthentication
 STRICT configured but not enacted by any sidecar) was closed in an earlier pass; see the

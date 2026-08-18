@@ -11,15 +11,23 @@
 # lib/status.ts already defaults to, so setting them here is redundant
 # with the code's own defaults but explicit per the task's ask.
 #
-# AUTH_SECRET / ADMIN_USERNAME / ADMIN_PASSWORD_HASH are sourced from a
-# Secret named platform-console-secrets that is NOT created by any file
-# in this k8s/ directory (no plaintext secret belongs in checked-in YAML).
-# Before applying this Deployment, create it once, e.g.:
+# AUTH_SECRET / ADMIN_USERNAME / ADMIN_PASSWORD_HASH / SUPABASE_SERVICE_ROLE_KEY
+# are sourced from a Secret named platform-console-secrets that is NOT
+# created by any file in this k8s/ directory (no plaintext secret belongs
+# in checked-in YAML). Before applying this Deployment, create it once,
+# e.g.:
 #   kubectl create secret generic platform-console-secrets \
 #     -n platform-console \
 #     --from-literal=AUTH_SECRET="$(openssl rand -base64 48)" \
 #     --from-literal=ADMIN_USERNAME=admin \
-#     --from-literal=ADMIN_PASSWORD_HASH='<bcrypt hash from data/plans.ts prep>'
+#     --from-literal=ADMIN_PASSWORD_HASH='<bcrypt hash from data/plans.ts prep>' \
+#     --from-literal=SUPABASE_SERVICE_ROLE_KEY='<demo-project-jwt Secret's service-key, supabase-demo namespace>'
+# SUPABASE_SERVICE_ROLE_KEY is the real GoTrue service-role JWT for
+# demo-project-auth (already exists in this cluster as the `service-key`
+# key of Secret demo-project-jwt in namespace supabase-demo -- this command
+# copies it into platform-console's own Secret rather than referencing
+# another namespace's Secret directly, since a Pod's env can only pull
+# secretKeyRef from a Secret in its own namespace).
 #
 # Deployment-level labels (team/owner/cost-center/compliance-level) satisfy
 # the cluster's existing Gatekeeper constraints (k8srequirelabels
@@ -375,6 +383,12 @@ spec:
               value: "http://ggen-status.ggen.svc.cluster.local/status"
             - name: GGEN_MARKETPLACE_STATUS_URL
               value: "http://ggen-marketplace-status.ggen-marketplace.svc.cluster.local/status"
+            # Identity federation (additive login path): the real GoTrue
+            # (Supabase Auth) instance's user-facing REST API -- plain
+            # internal Service DNS, not sensitive, same pattern as the
+            # *_STATUS_URL vars above. See lib/gotrue-auth.ts.
+            - name: GOTRUE_AUTH_URL
+              value: "http://demo-project-auth.supabase-demo.svc.cluster.local:9999"
             - name: AUTH_SECRET
               valueFrom:
                 secretKeyRef:
@@ -390,6 +404,18 @@ spec:
                 secretKeyRef:
                   name: platform-console-secrets
                   key: ADMIN_PASSWORD_HASH
+            # Real GoTrue service-role JWT for demo-project-auth. Used both
+            # by the pre-existing lib/gotrue.ts read-only admin-API proxy
+            # and, new this pass, by lib/gotrue-auth.ts to auto-confirm a
+            # freshly signed-up user on this specific mailer-less cluster
+            # (see that file's doc comment for why). A real secret --
+            # sourced from the platform-console-secrets Secret, never
+            # committed to this repo in plaintext.
+            - name: SUPABASE_SERVICE_ROLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: SUPABASE_SERVICE_ROLE_KEY
           resources:
             requests:
               cpu: "100m"

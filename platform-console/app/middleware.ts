@@ -5,7 +5,12 @@ import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
 // Paths that must stay reachable without a session: the login page itself,
 // the login API route (issues the session), static assets, and Next.js
 // internals. Everything else is a gated dashboard route.
-const PUBLIC_PATHS = ["/login", "/api/login"];
+const PUBLIC_PATHS = [
+  "/login",
+  "/api/login",
+  "/api/auth/gotrue-login",
+  "/api/auth/gotrue-signup",
+];
 
 function isPublicPath(pathname: string): boolean {
   if (PUBLIC_PATHS.includes(pathname)) return true;
