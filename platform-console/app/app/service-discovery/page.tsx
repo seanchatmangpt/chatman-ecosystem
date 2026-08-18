@@ -1,4 +1,5 @@
 import Nav from "@/components/Nav";
+import TagEditor from "@/components/TagEditor";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -15,6 +16,7 @@ import {
   listServicesWithEndpoints,
   type ServiceDiscoveryRecord,
 } from "@/lib/k8s";
+import { extractTags } from "@/lib/tags";
 
 export const dynamic = "force-dynamic";
 
@@ -179,12 +181,13 @@ export default async function ServiceDiscoveryPage() {
                 <TableHead>ClusterIP</TableHead>
                 <TableHead>Ports</TableHead>
                 <TableHead>Ready endpoints</TableHead>
+                <TableHead>Tags</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {allRecords.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="py-6 text-sm text-muted-foreground">
+                  <TableCell colSpan={7} className="py-6 text-sm text-muted-foreground">
                     {clusterConfigured ? "No Services found." : "—"}
                   </TableCell>
                 </TableRow>
@@ -207,6 +210,14 @@ export default async function ServiceDiscoveryPage() {
                     </TableCell>
                     <TableCell>
                       <EndpointsBadge ready={r.readyEndpoints} total={r.totalEndpoints} />
+                    </TableCell>
+                    <TableCell className="min-w-[200px]">
+                      <TagEditor
+                        resourceType="service"
+                        namespace={namespace}
+                        name={r.name}
+                        initialTags={extractTags(r.labels)}
+                      />
                     </TableCell>
                   </TableRow>
                 )),

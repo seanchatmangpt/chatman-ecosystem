@@ -45,11 +45,14 @@ rules:
   # /projects list page, create for the "Create project" form. delete was
   # added for the /quickstart flow's real cleanup step
   # (deleteProject/deleteProjectWithDatabase, lib/k8s.ts) -- self-service
-  # lifecycle completion (create -> read -> delete), still no update/patch
-  # (this console never mutates a Project's spec in place).
+  # lifecycle completion (create -> read -> delete). `patch` was added for
+  # the Resource Tagging module (lib/tags.ts's applyTag/removeTag): a real
+  # RFC 7386 merge patch touching ONLY `metadata.labels.platform-
+  # console.io/tag-<key>`, never spec -- this console still never mutates a
+  # Project's spec in place.
   - apiGroups: ["core.supabase.io"]
     resources: ["projects"]
-    verbs: ["get", "list", "watch", "create", "delete"]
+    verbs: ["get", "list", "watch", "create", "delete", "patch"]
   # Projects module (createProjectWithDatabase/deleteProjectWithDatabase):
   # create + delete the SingleDatabase CR paired with each Project via
   # spec.databaseRef -- same verbs, same reasoning as the projects rule
@@ -58,10 +61,13 @@ rules:
     resources: ["singledatabases"]
     verbs: ["get", "list", "watch", "create", "delete"]
   # Database module: read Service objects (DNS name + port only, never
-  # Secrets) in a project's namespace to show real connection info.
+  # Secrets) in a project's namespace to show real connection info. `patch`
+  # was added for the Resource Tagging module (lib/tags.ts's
+  # applyTag/removeTag): a real RFC 7386 merge patch touching ONLY
+  # `metadata.labels.platform-console.io/tag-<key>`, never spec.
   - apiGroups: [""]
     resources: ["services"]
-    verbs: ["get", "list", "watch"]
+    verbs: ["get", "list", "watch", "patch"]
   # "Create project" form's target-namespace picker.
   - apiGroups: [""]
     resources: ["namespaces"]
@@ -312,11 +318,14 @@ roleRef:
 # above already documents: a CronJob's Pod runs a real container on a
 # real, unattended, recurring schedule, so its blast radius is the same
 # sensitivity class as a Secret, never a read-mostly resource fit for
-# platform-console-paas's cluster-wide ClusterRole. Each Role grants only
-# get/list/create/delete on `cronjobs` -- no update/patch (this module
-# only ever creates a CronJob fresh or deletes it whole, matching the
-# Secrets Manager Role's own no-update/patch stance), no watch (the
-# /scheduled-jobs page reads on demand). No verbs on plain `jobs` or
+# platform-console-paas's cluster-wide ClusterRole. Each Role grants
+# get/list/create/delete on `cronjobs` -- this module still only ever
+# creates a CronJob fresh or deletes it whole, matching the Secrets
+# Manager Role's own no-update stance -- plus `patch`, added for the
+# Resource Tagging module (lib/tags.ts's applyTag/removeTag): a real RFC
+# 7386 merge patch touching ONLY `metadata.labels.platform-
+# console.io/tag-<key>`, never spec. No watch (the /scheduled-jobs page
+# reads on demand). No verbs on plain `jobs` or
 # `pods` here: this module's own inventory is the CronJob objects'
 # `status.lastScheduleTime`/`status.lastSuccessfulTime` fields the
 # CronJob controller itself already maintains, the same "the listing IS
@@ -338,7 +347,7 @@ metadata:
 rules:
   - apiGroups: ["batch"]
     resources: ["cronjobs"]
-    verbs: ["get", "list", "create", "delete"]
+    verbs: ["get", "list", "create", "delete", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -364,7 +373,7 @@ metadata:
 rules:
   - apiGroups: ["batch"]
     resources: ["cronjobs"]
-    verbs: ["get", "list", "create", "delete"]
+    verbs: ["get", "list", "create", "delete", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -390,7 +399,7 @@ metadata:
 rules:
   - apiGroups: ["batch"]
     resources: ["cronjobs"]
-    verbs: ["get", "list", "create", "delete"]
+    verbs: ["get", "list", "create", "delete", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -416,7 +425,7 @@ metadata:
 rules:
   - apiGroups: ["batch"]
     resources: ["cronjobs"]
-    verbs: ["get", "list", "create", "delete"]
+    verbs: ["get", "list", "create", "delete", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -442,7 +451,7 @@ metadata:
 rules:
   - apiGroups: ["batch"]
     resources: ["cronjobs"]
-    verbs: ["get", "list", "create", "delete"]
+    verbs: ["get", "list", "create", "delete", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

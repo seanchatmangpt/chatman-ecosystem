@@ -1,10 +1,12 @@
 import Link from "next/link";
 import Nav from "@/components/Nav";
 import CreateProjectForm from "@/components/CreateProjectForm";
+import TagEditor from "@/components/TagEditor";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { hasClusterCredentials, listNamespaces, listProjects } from "@/lib/k8s";
+import { extractTags } from "@/lib/tags";
 
 export const dynamic = "force-dynamic";
 
@@ -92,6 +94,12 @@ export default async function ProjectsPage() {
                   {p.message && (
                     <p className="mt-1 max-w-xl break-all text-xs text-muted-foreground">{p.message}</p>
                   )}
+                  <TagEditor
+                    resourceType="project"
+                    namespace={p.namespace}
+                    name={p.name}
+                    initialTags={extractTags(p.labels)}
+                  />
                 </div>
                 <ReadyBadge ready={p.ready} />
               </div>

@@ -167,11 +167,21 @@ export interface SupabaseProject {
   ready: boolean | null; // null when no Ready condition has been reported yet
   reason: string | null;
   message: string | null;
+  /** Real `metadata.labels` on this Project CR -- populated for
+   * lib/tags.ts's Resource Tagging module (a Project's real tags are a
+   * subset of this map, see extractTags), empty object when the object
+   * carries no labels at all. */
+  labels: Record<string, string>;
 }
 
 interface K8sListMeta {
   items?: Array<{
-    metadata: { name: string; namespace: string; creationTimestamp: string };
+    metadata: {
+      name: string;
+      namespace: string;
+      creationTimestamp: string;
+      labels?: Record<string, string>;
+    };
     spec?: {
       databaseRef?: { name?: string };
       http?: { hostname?: string };
@@ -198,12 +208,23 @@ function toSupabaseProject(item: NonNullable<K8sListMeta["items"]>[number]): Sup
     ready: readyCondition ? readyCondition.status === "True" : null,
     reason: readyCondition?.reason ?? null,
     message: readyCondition?.message ?? null,
+    labels: item.metadata.labels ?? {},
   };
 }
 
-export async function listProjects(): Promise<K8sResult<SupabaseProject[]>> {
+/**
+ * Lists real Project CRs cluster-wide, optionally filtered by a real
+ * server-side `?labelSelector=` query parameter -- the same convention
+ * `listJobs`/`listCronJobs` already use. Used unfiltered by every existing
+ * caller (the /projects page, Global Search); lib/tags.ts's
+ * listResourcesByTag passes a real `platform-console.io/tag-<key>=<value>`
+ * selector for a genuine server-side "browse by tag" filter, never a
+ * client-side `.filter()` over every Project on the cluster.
+ */
+export async function listProjects(labelSelector?: string): Promise<K8sResult<SupabaseProject[]>> {
+  const qs = labelSelector ? `?labelSelector=${encodeURIComponent(labelSelector)}` : "";
   const result = await k8sRequest<K8sListMeta>(
-    "/apis/core.supabase.io/v1alpha1/projects",
+    `/apis/core.supabase.io/v1alpha1/projects${qs}`,
   );
   if (!result.ok) return result;
   return { ok: true, data: (result.data.items ?? []).map(toSupabaseProject) };
@@ -654,6 +675,10 @@ export interface ServiceDiscoveryRecord {
    * distinct from 0/0). */
   readyEndpoints: number | null;
   totalEndpoints: number | null;
+  /** Real `metadata.labels` on this Service -- populated for
+   * lib/tags.ts's Resource Tagging module (see extractTags), empty object
+   * when the Service carries no labels at all. */
+  labels: Record<string, string>;
 }
 
 /**
@@ -686,6 +711,7 @@ export async function listServicesWithEndpoints(
         ports: svc.ports,
         readyEndpoints: eps ? eps.readyAddresses.length : null,
         totalEndpoints: eps ? eps.readyAddresses.length + eps.notReadyAddresses.length : null,
+        labels: svc.labels,
       };
     }),
   };
@@ -2310,6 +2336,46 @@ export async function createOrUpdateConfigMap(
   return { ok: true, data: toFeatureFlagsConfigMap(result.data) };
 }
 
+export interface ConfigMapSummary {
+  name: string;
+  namespace: string;
+  labels: Record<string, string>;
+}
+
+interface ConfigMapListResponse {
+  items?: Array<{
+    metadata: { name: string; namespace: string; labels?: Record<string, string> };
+  }>;
+}
+
+/**
+ * Lists real ConfigMaps in one namespace, optionally filtered by a real
+ * server-side `?labelSelector=` query parameter -- the same convention
+ * `listJobs`/`listCronJobs` already use. Used by lib/tags.ts's Resource
+ * Tagging module to find which of platform-console's own singleton
+ * ConfigMaps (Feature Flags, Webhooks) carry a given
+ * `platform-console.io/tag-<key>` label -- a genuine server-side filter,
+ * never a client-side scan of every ConfigMap in the namespace.
+ */
+export async function listConfigMaps(
+  namespace: string,
+  labelSelector?: string,
+): Promise<K8sResult<ConfigMapSummary[]>> {
+  const qs = labelSelector ? `?labelSelector=${encodeURIComponent(labelSelector)}` : "";
+  const result = await k8sRequest<ConfigMapListResponse>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/configmaps${qs}`,
+  );
+  if (!result.ok) return result;
+  return {
+    ok: true,
+    data: (result.data.items ?? []).map((item) => ({
+      name: item.metadata.name,
+      namespace: item.metadata.namespace,
+      labels: item.metadata.labels ?? {},
+    })),
+  };
+}
+
 // ---------------------------------------------------------- Network Topology
 //
 // Real hyperscaler-VPC-console-style Network Topology primitive (AWS VPC
@@ -2397,10 +2463,15 @@ export async function listNodes(): Promise<K8sResult<K8sNodePodCidr[]>> {
  * namespace. Uses the exact same cluster-wide `services` get/list/watch
  * grant `listTopology`'s per-namespace calls already rely on (confirmed
  * live: `kubectl auth can-i list services --all-namespaces` -> `yes`, no
- * new RBAC needed). Used only to derive the OBSERVED Service CIDR below
- * -- never to read a Secret or any other sensitive field. */
-export async function listAllServices(): Promise<K8sResult<K8sService[]>> {
-  const result = await k8sRequest<ServiceListResponse>("/api/v1/services");
+ * new RBAC needed). Used to derive the OBSERVED Service CIDR below -- never
+ * to read a Secret or any other sensitive field -- and, with an explicit
+ * `labelSelector`, by lib/tags.ts's listResourcesByTag for a real
+ * server-side "browse by tag" filter (a genuine `?labelSelector=` query
+ * parameter, never a client-side `.filter()` over every Service on the
+ * cluster). */
+export async function listAllServices(labelSelector?: string): Promise<K8sResult<K8sService[]>> {
+  const qs = labelSelector ? `?labelSelector=${encodeURIComponent(labelSelector)}` : "";
+  const result = await k8sRequest<ServiceListResponse>(`/api/v1/services${qs}`);
   if (!result.ok) return result;
   return {
     ok: true,

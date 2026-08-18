@@ -205,13 +205,22 @@ function toScheduledJob(item: CronJobItem): ScheduledJob {
  * (there are none today, but the filter costs nothing and matches the
  * same "never show objects this module didn't create" convention the
  * Backups module's `listJobs(namespace, "app=platform-backups")` already
- * uses).
+ * uses). `extraLabelSelector`, when given, is AND-ed onto the same real
+ * `?labelSelector=` query parameter (comma-separated selectors are a real
+ * k8s API AND, not a client-side second pass) -- used by lib/tags.ts's
+ * listResourcesByTag to add a real
+ * `platform-console.io/tag-<key>=<value>` clause for a genuine
+ * server-side "browse by tag" filter.
  */
-export async function listCronJobs(namespace: string): Promise<K8sResult<ScheduledJob[]>> {
+export async function listCronJobs(
+  namespace: string,
+  extraLabelSelector?: string,
+): Promise<K8sResult<ScheduledJob[]>> {
+  const selector = extraLabelSelector
+    ? `${MANAGED_BY_LABEL}=${MANAGED_BY_VALUE},${extraLabelSelector}`
+    : `${MANAGED_BY_LABEL}=${MANAGED_BY_VALUE}`;
   const result = await k8sRequest<CronJobListResponse>(
-    `/apis/batch/v1/namespaces/${encodeURIComponent(namespace)}/cronjobs?labelSelector=${encodeURIComponent(
-      `${MANAGED_BY_LABEL}=${MANAGED_BY_VALUE}`,
-    )}`,
+    `/apis/batch/v1/namespaces/${encodeURIComponent(namespace)}/cronjobs?labelSelector=${encodeURIComponent(selector)}`,
   );
   if (!result.ok) return result;
   return { ok: true, data: (result.data.items ?? []).map(toScheduledJob) };
