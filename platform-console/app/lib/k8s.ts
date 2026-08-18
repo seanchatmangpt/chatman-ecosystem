@@ -202,10 +202,49 @@ export interface CreateProjectInput {
   databaseRefName: string;
   hostname: string;
   protocol: "http" | "https";
+  /** PVC size for the paired SingleDatabase, e.g. "1Gi". Defaults to "1Gi". */
+  dbStorageSize: string;
 }
 
+interface SingleDatabaseItem {
+  metadata: { name: string; namespace: string };
+}
+
+/**
+ * Creates the SingleDatabase CR a Project's spec.databaseRef points at.
+ * Mirrors the real, working demo-db manifest in supabase-demo (verified via
+ * `kubectl get singledatabase demo-db -n supabase-demo -o yaml`): only
+ * spec.storage is required, the operator fills in the rest (resolvedDatabase
+ * host/port/user/passwordRef) once it reconciles.
+ */
+export async function createSingleDatabase(input: {
+  name: string;
+  namespace: string;
+  storageSize: string;
+}): Promise<K8sResult<SingleDatabaseItem>> {
+  const manifest = {
+    apiVersion: "core.supabase.io/v1alpha1",
+    kind: "SingleDatabase",
+    metadata: { name: input.name, namespace: input.namespace },
+    spec: {
+      storage: { accessModes: ["ReadWriteOnce"], size: input.storageSize },
+    },
+  };
+  return k8sRequest<SingleDatabaseItem>(
+    `/apis/core.supabase.io/v1alpha1/namespaces/${encodeURIComponent(input.namespace)}/singledatabases`,
+    "POST",
+    manifest,
+  );
+}
+
+/**
+ * Creates a Project CR only (no paired database). Kept for callers that
+ * already have a SingleDatabase they want to reference (e.g. multiple
+ * Projects sharing one database). Most callers want createProjectWithDatabase
+ * below, which is what the Create Project form/API route uses.
+ */
 export async function createProject(
-  input: CreateProjectInput,
+  input: Omit<CreateProjectInput, "dbStorageSize">,
 ): Promise<K8sResult<SupabaseProject>> {
   const manifest = {
     apiVersion: "core.supabase.io/v1alpha1",
@@ -223,6 +262,29 @@ export async function createProject(
   );
   if (!result.ok) return result;
   return { ok: true, data: toSupabaseProject(result.data) };
+}
+
+/**
+ * Creates a Project CR paired with its own SingleDatabase CR, matching the
+ * real shape the supabase-operator expects (verified live against the
+ * demo-project/demo-db pair in supabase-demo: Project.spec.databaseRef ->
+ * {kind: SingleDatabase, name}). The SingleDatabase is created first so it
+ * is referenceable as soon as the operator reconciles the Project -- if that
+ * first call fails (e.g. it already exists), the Project is never created,
+ * so a Project is never left pointing at a database that doesn't exist.
+ */
+export async function createProjectWithDatabase(
+  input: CreateProjectInput,
+): Promise<K8sResult<SupabaseProject>> {
+  const dbResult = await createSingleDatabase({
+    name: input.databaseRefName,
+    namespace: input.namespace,
+    storageSize: input.dbStorageSize,
+  });
+  if (!dbResult.ok) return dbResult;
+
+  const projectResult = await createProject(input);
+  return projectResult;
 }
 
 // ---------------------------------------------------------------- Services

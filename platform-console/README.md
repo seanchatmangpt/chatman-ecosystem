@@ -15,11 +15,16 @@ This is **not** a claim of hyperscaler-grade infrastructure. It genuinely does n
 global regions, an SLA, or managed high availability across failure domains — it is a
 single-node local `kind` cluster. What it does provide, for real, on that cluster:
 
-- **Real self-service provisioning**: an authenticated user submits a name/namespace through
-  `/projects`, the console POSTs a real `Project` custom resource
-  (`core.supabase.io/v1alpha1`) to the Kubernetes API, and the real Supabase operator
-  reconciles it — standing up Postgres, GoTrue (Auth), PostgREST, Realtime, Storage, and an
-  edge-functions runtime for that project, each as real Deployments/StatefulSets/Services.
+- **Real self-service provisioning, end to end**: an authenticated user submits a
+  name/namespace (optionally a DB storage size, default `1Gi`) through `/projects`, and the
+  console POSTs both a real `SingleDatabase` and a paired `Project` custom resource
+  (`core.supabase.io/v1alpha1`, wired via `spec.databaseRef`) to the Kubernetes API. The real
+  Supabase operator reconciles both — standing up Postgres, GoTrue (Auth), PostgREST,
+  Realtime, Storage, and an edge-functions runtime for that project, each as real
+  Deployments/StatefulSets/Services — and the Project itself reaches
+  `status.conditions[Ready] = True` within ~30 seconds of submission, live-verified end to
+  end (see `self-service-project-provisioning` in `evidence/control-evidence-bundle.json`),
+  not left stuck at `DatabaseNotReady`.
 - **Real multi-tenant isolation**: every project namespace carries a default-deny
   NetworkPolicy plus an explicit allow-rule from `platform-console` only, a STRICT
   PeerAuthentication object (see the mTLS caveat in the evidence bundle — configured, not
@@ -37,7 +42,7 @@ or global footprint.
 
 | Route | What it does | Backing evidence |
 |---|---|---|
-| `/projects` | Lists real `Project` CRs cluster-wide; form POSTs a real Project manifest | `app/api/projects/route.ts`, `lib/k8s.ts` |
+| `/projects` | Lists real `Project` CRs cluster-wide; form POSTs a paired `SingleDatabase` + `Project` manifest, reaching `Ready` end to end | `app/api/projects/route.ts`, `lib/k8s.ts` |
 | `/projects/[name]/database` | Reads real Postgres/PostgREST `Service` objects (ClusterIP, ports, DNS names) | `lib/k8s.ts` |
 | `/projects/[name]/auth` | Proxies real GoTrue `/admin/users`, gated on `SUPABASE_SERVICE_ROLE_KEY` | `lib/gotrue.ts` |
 | `/projects/[name]/storage` | Proxies real Storage-API `/bucket`, same gate | `lib/storage-api.ts` |
@@ -54,11 +59,13 @@ client dependency. Off-cluster (local `next build`/dev), it fails closed with
 ## RBAC for the PaaS surface
 
 `k8s/paas-rbac.yaml` grants the existing `platform-console` ServiceAccount a new
-`ClusterRole/platform-console-paas`: `get/list/watch` (plus `create`, for the Projects module
-only) on exactly the resources `lib/k8s.ts` calls — `core.supabase.io/projects`, `services`,
-`namespaces`, Flux `kustomizations`/`helmreleases`, `rbac.authorization.k8s.io/roles`,
-`rolebindings`, `networking.k8s.io/networkpolicies`. No Secrets, no exec/log, no wildcards,
-no write verb anywhere outside `projects:create`. Verified live with real
+`ClusterRole/platform-console-paas`: `get/list/watch` (plus `create`, for the Projects
+module's `Project` and paired `SingleDatabase` CRs only) on exactly the resources
+`lib/k8s.ts` calls — `core.supabase.io/projects`, `core.supabase.io/singledatabases`,
+`services`, `namespaces`, Flux `kustomizations`/`helmreleases`,
+`rbac.authorization.k8s.io/roles`, `rolebindings`, `networking.k8s.io/networkpolicies`. No
+Secrets, no exec/log, no wildcards, no write verb anywhere outside
+`projects:create`/`singledatabases:create`. Verified live with real
 `kubectl auth can-i --as=system:serviceaccount:platform-console:platform-console` calls — see
 `evidence/control-evidence-bundle.json` for the exact denials and allows observed.
 

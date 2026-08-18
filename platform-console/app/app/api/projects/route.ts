@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
-import { createProject, listProjects } from "@/lib/k8s";
+import { createProjectWithDatabase, listProjects } from "@/lib/k8s";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -56,6 +56,10 @@ export async function POST(request: NextRequest) {
       ? body.hostname.trim()
       : `${name}.supabase.local`;
   const protocol = body?.protocol === "https" ? "https" : "http";
+  const dbStorageSize =
+    typeof body?.dbStorageSize === "string" && body.dbStorageSize.trim()
+      ? body.dbStorageSize.trim()
+      : "1Gi";
 
   if (!name || !namespace) {
     return NextResponse.json(
@@ -64,12 +68,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const result = await createProject({
+  const result = await createProjectWithDatabase({
     name,
     namespace,
     databaseRefName,
     hostname,
     protocol,
+    dbStorageSize,
   });
 
   writeAuditLogEntry({

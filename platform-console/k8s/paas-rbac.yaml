@@ -29,6 +29,12 @@ rules:
   - apiGroups: ["core.supabase.io"]
     resources: ["projects"]
     verbs: ["get", "list", "watch", "create"]
+  # Projects module (createProjectWithDatabase): create the SingleDatabase
+  # CR paired with each new Project via spec.databaseRef -- same verbs, same
+  # no-update/patch/delete reasoning as the projects rule above.
+  - apiGroups: ["core.supabase.io"]
+    resources: ["singledatabases"]
+    verbs: ["get", "list", "watch", "create"]
   # Database module: read Service objects (DNS name + port only, never
   # Secrets) in a project's namespace to show real connection info.
   - apiGroups: [""]
