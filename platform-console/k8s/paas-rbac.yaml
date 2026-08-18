@@ -300,6 +300,160 @@ roleRef:
   name: platform-console-secrets
   apiGroup: rbac.authorization.k8s.io
 
+# -------------------------------------------------------- Scheduled Jobs
+#
+# One Role + RoleBinding per platform namespace -- the exact same 5
+# namespaces (4 project namespaces plus supabase-demo) and the exact same
+# per-namespace-Role-not-ClusterRole reasoning the Secrets Manager section
+# above already documents: a CronJob's Pod runs a real container on a
+# real, unattended, recurring schedule, so its blast radius is the same
+# sensitivity class as a Secret, never a read-mostly resource fit for
+# platform-console-paas's cluster-wide ClusterRole. Each Role grants only
+# get/list/create/delete on `cronjobs` -- no update/patch (this module
+# only ever creates a CronJob fresh or deletes it whole, matching the
+# Secrets Manager Role's own no-update/patch stance), no watch (the
+# /scheduled-jobs page reads on demand). No verbs on plain `jobs` or
+# `pods` here: this module's own inventory is the CronJob objects'
+# `status.lastScheduleTime`/`status.lastSuccessfulTime` fields the
+# CronJob controller itself already maintains, the same "the listing IS
+# the record" convention `listJobs`/`toBackupJob` use for the Backups
+# module -- so no additional RBAC surface is opened onto the child Jobs
+# or Pods a firing CronJob creates. The one real code-level security
+# boundary this Role does NOT provide -- and does not need to, since it
+# is enforced entirely server-side in application code before any of
+# these verbs are ever exercised -- is which CONTAINER COMMAND a CronJob
+# runs: see lib/scheduled-jobs.ts's `ALLOWED_COMMANDS` allowlist.
+
+# --------------------------------------------------------- autofde-lab
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-scheduled-jobs
+  namespace: autofde-lab
+rules:
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-scheduled-jobs-binding
+  namespace: autofde-lab
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-scheduled-jobs
+  apiGroup: rbac.authorization.k8s.io
+
+# -------------------------------------------------------------- gymact
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-scheduled-jobs
+  namespace: gymact
+rules:
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-scheduled-jobs-binding
+  namespace: gymact
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-scheduled-jobs
+  apiGroup: rbac.authorization.k8s.io
+
+# ---------------------------------------------------------------- ggen
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-scheduled-jobs
+  namespace: ggen
+rules:
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-scheduled-jobs-binding
+  namespace: ggen
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-scheduled-jobs
+  apiGroup: rbac.authorization.k8s.io
+
+# ----------------------------------------------------- ggen-marketplace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-scheduled-jobs
+  namespace: ggen-marketplace
+rules:
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-scheduled-jobs-binding
+  namespace: ggen-marketplace
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-scheduled-jobs
+  apiGroup: rbac.authorization.k8s.io
+
+# --------------------------------------------------------- supabase-demo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-scheduled-jobs
+  namespace: supabase-demo
+rules:
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-scheduled-jobs-binding
+  namespace: supabase-demo
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-scheduled-jobs
+  apiGroup: rbac.authorization.k8s.io
+
 # ------------------------------------------------------------------ Logs
 #
 # One Role + RoleBinding per platform namespace -- the 4 project

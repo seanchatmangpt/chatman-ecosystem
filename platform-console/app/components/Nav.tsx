@@ -13,6 +13,7 @@ const links = [
   { href: "/ggen-marketplace", label: "ggen-marketplace" },
   { href: "/projects", label: "Projects" },
   { href: "/secrets", label: "Secrets" },
+  { href: "/scheduled-jobs", label: "Scheduled Jobs" },
   { href: "/feature-flags", label: "Feature Flags" },
   { href: "/usage", label: "Usage" },
   { href: "/billing", label: "Billing" },

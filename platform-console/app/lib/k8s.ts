@@ -60,7 +60,14 @@ export function hasClusterCredentials(): boolean {
   return readInClusterConfig() !== null;
 }
 
-async function k8sRequest<T>(
+/**
+ * Exported so lib/scheduled-jobs.ts can reuse the exact same in-cluster
+ * ServiceAccount HTTPS client (token/CA, fail-closed "not configured",
+ * timeout/error handling) instead of a second, driftable copy -- the same
+ * "reuse lib/k8s.ts conventions" every other module in this file already
+ * follows internally, made available across the module boundary.
+ */
+export async function k8sRequest<T>(
   path: string,
   method: "GET" | "POST" | "DELETE" | "PATCH" = "GET",
   body?: unknown,
