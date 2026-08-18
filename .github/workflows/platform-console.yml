@@ -35,7 +35,7 @@ jobs:
         with:
           persist-credentials: false
           ref: ${{ env.CANDIDATE_SHA }}
-      - uses: actions/setup-node@1e60f620b9541d7c243d9a61d31e6a365e8c07c5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "22"
           cache: npm
