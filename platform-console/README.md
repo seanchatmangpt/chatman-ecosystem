@@ -55,6 +55,8 @@ or global footprint.
 | `/registry` | Container Registry as an honest **image inventory**: this cluster has no push-capable registry (images are built locally and `kind load docker-image`d straight into containerd), so every real Deployment container's `image` field is cross-referenced against real Pod `containerStatuses` (digest + ready state), flagging any image not confirmed present or stuck on a real pull failure | `lib/k8s.ts` |
 | `/backups` | Database Backups (RDS/Cloud SQL/Cloud Spanner automated-backup equivalent) for the real `demo-db-postgres` StatefulSet: "Run backup now" creates a real `batch/v1` Job that runs `pg_dump` against the database's real Service, using the exact image and password Secret/key read live off the source Pod's own spec; the dump lands on `platform-backups-pvc`. PVC contents aren't directly queryable via the k8s API, so the Job listing itself (name encodes the timestamp, real completion status, real duration) *is* the backup inventory | `app/api/backups/route.ts`, `lib/k8s.ts` |
 | `/api-gateway` | Documentation/visibility only -- the real control is enforced entirely by Istio (see "Rate limiting" below); this page just states the configured limit and points to `k8s/ratelimit.yaml` | (static; enforcement in `k8s/ratelimit.yaml`) |
+| `/usage` | Cost & Usage (AWS Cost Explorer / GCP Billing Reports / Azure Cost Management equivalent, deliberately **without** any payment processor or currency): real live per-namespace CPU/memory usage from `metrics.k8s.io` (the same source `kubectl top pods` reads) against the real `ResourceQuota` hard `limits.cpu`/`limits.memory` ceiling, with a plain percentage-of-quota figure -- never a dollar amount | `lib/k8s.ts` (`getResourceUsage`, `getResourceQuota`) |
+| `/alerts` | Alerting (CloudWatch Alarms / GCP Alerting Policies / Azure Monitor Alerts equivalent): real current alert state read live from the in-cluster Alertmanager's `/api/v2/alerts`, rendered as a table (alertname, state, severity, namespace, since, summary); shows an honest "0 active alerts" when none are firing rather than fabricating one -- see `alerting-pipeline-verified-live` in `evidence/control-evidence-bundle.json` for the real fired-and-cleared synthetic-rule verification | `app/api/alerts/route.ts`, `lib/alertmanager.ts` |
 
 `lib/k8s.ts` is a hand-rolled Kubernetes API client using the pod's own in-cluster
 ServiceAccount token/CA (`/var/run/secrets/kubernetes.io/serviceaccount`) — no external k8s
@@ -68,7 +70,9 @@ client dependency. Off-cluster (local `next build`/dev), it fails closed with
 module's `Project` and paired `SingleDatabase` CRs only) on exactly the resources
 `lib/k8s.ts` calls — `core.supabase.io/projects`, `core.supabase.io/singledatabases`,
 `services`, `namespaces`, Flux `kustomizations`/`helmreleases`,
-`rbac.authorization.k8s.io/roles`, `rolebindings`, `networking.k8s.io/networkpolicies`. No
+`rbac.authorization.k8s.io/roles`, `rolebindings`, `networking.k8s.io/networkpolicies`,
+`apps/deployments`, `metrics.k8s.io/pods` (real live per-pod CPU/memory usage, the Cost &
+Usage module), and `resourcequotas` (the same Cost & Usage module's quota ceiling). No
 Secrets, no exec/log, no wildcards, no write verb anywhere outside
 `projects:create`/`singledatabases:create`. Verified live with real
 `kubectl auth can-i --as=system:serviceaccount:platform-console:platform-console` calls — see

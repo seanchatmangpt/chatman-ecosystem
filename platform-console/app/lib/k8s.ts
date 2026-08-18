@@ -1169,3 +1169,237 @@ export async function createBackupJob(
   if (!result.ok) return result;
   return { ok: true, data: toBackupJob(result.data) };
 }
+
+// -------------------------------------------------------------- Cost & Usage
+//
+// Real hyperscaler-PaaS-style Cost & Usage primitive (AWS Cost Explorer /
+// GCP Billing Reports / Azure Cost Management equivalent) -- deliberately
+// WITHOUT any payment processor or fabricated currency. This cluster has no
+// billing system, so the only honest substitute is what is actually true
+// and measurable: real live per-pod CPU/memory usage from the metrics
+// pipeline already installed and verified on this cluster
+// (metrics-server, confirmed working by the autoscaling-enforced control --
+// `kubectl top` returns real numbers, not `error: Metrics API not
+// available`), combined with the real per-namespace ResourceQuota object
+// (the actual ceiling each namespace's workloads are bound by). This
+// module reports real, currently-measured infrastructure consumption --
+// millicores, MiB, and a plain percentage-of-quota figure -- never a
+// dollar amount tied to any real biller.
+//
+// Uses the exact same in-cluster API pattern as every other function in
+// this file (k8sRequest against the pod's own ServiceAccount token/CA),
+// reading two additional resource types: `metrics.k8s.io/v1beta1` PodMetrics
+// (real-time, reported by the kubelet's cAdvisor, scraped by metrics-server
+// on its own interval -- typically ~15-60s stale, never fabricated) and the
+// core `resourcequotas` object already used to gate real Pod admission
+// (confirmed live via the resource-quotas-enforced control's negative
+// test). Both verbs (`get`/`list` on `pods.metrics.k8s.io` and
+// `resourcequotas`) were added to the existing cluster-wide
+// `ClusterRole/platform-console-paas` in k8s/paas-rbac.yaml -- same
+// sensitivity class as the Services/Deployments/Roles already granted
+// cluster-wide there (workload metadata and resource ceilings, not
+// secrets), confirmed via `kubectl auth can-i` returning real `no` for both
+// verbs before the RBAC change and real `yes` after.
+
+/**
+ * Parses a Kubernetes `resource.Quantity` string (used for both CPU and
+ * memory fields across PodMetrics and ResourceQuota) into a plain number in
+ * its base unit (cores for CPU, bytes for memory) -- the caller converts to
+ * millicores/MiB. Handles every suffix actually observed live on this
+ * cluster (`n` nanocores on PodMetrics CPU, `Ki` on PodMetrics/Quota
+ * memory, `m` and bare-integer cores on Quota CPU, `Gi`/`Mi` on Quota
+ * memory) plus the rest of the documented Kubernetes quantity suffix set
+ * (`u`, decimal `k`/`M`/`G`/`T`/`P`/`E`, binary `Ti`/`Pi`/`Ei`) for
+ * robustness against values this cluster doesn't currently happen to emit.
+ * Returns `null` on anything that doesn't parse -- never a fabricated 0.
+ */
+const QUANTITY_SUFFIX_MULTIPLIERS: Record<string, number> = {
+  n: 1e-9,
+  u: 1e-6,
+  m: 1e-3,
+  "": 1,
+  k: 1e3,
+  M: 1e6,
+  G: 1e9,
+  T: 1e12,
+  P: 1e15,
+  E: 1e18,
+  Ki: 2 ** 10,
+  Mi: 2 ** 20,
+  Gi: 2 ** 30,
+  Ti: 2 ** 40,
+  Pi: 2 ** 50,
+  Ei: 2 ** 60,
+};
+
+function parseK8sQuantity(raw: string | undefined): number | null {
+  if (!raw) return null;
+  const match = /^([0-9.eE+-]+)(Ki|Mi|Gi|Ti|Pi|Ei|[numkMGTPE]?)$/.exec(raw.trim());
+  if (!match) return null;
+  const [, numStr, suffix] = match;
+  const num = Number(numStr);
+  if (!Number.isFinite(num)) return null;
+  const multiplier = QUANTITY_SUFFIX_MULTIPLIERS[suffix];
+  if (multiplier === undefined) return null;
+  return num * multiplier;
+}
+
+function quantityToMillicores(raw: string | undefined): number | null {
+  const cores = parseK8sQuantity(raw);
+  return cores === null ? null : cores * 1000;
+}
+
+function quantityToMiB(raw: string | undefined): number | null {
+  const bytes = parseK8sQuantity(raw);
+  return bytes === null ? null : bytes / (1024 * 1024);
+}
+
+export interface ResourceQuotaSnapshot {
+  name: string;
+  namespace: string;
+  /** Hard ceiling on the sum of every container's resource *limit* in the
+   * namespace -- the real bound live usage cannot exceed without being
+   * throttled (CPU) or OOM-killed (memory). `null` when the ResourceQuota
+   * object doesn't set that particular field. */
+  hardCpuMillicores: number | null;
+  hardMemoryMiB: number | null;
+  /** Hard ceiling on the sum of every container's resource *request*
+   * (reservation) in the namespace -- shown for context; usage is compared
+   * against the limits fields above, since that is the ceiling usage is
+   * actually bound by. */
+  hardRequestsCpuMillicores: number | null;
+  hardRequestsMemoryMiB: number | null;
+  hardPods: number | null;
+  usedPods: number | null;
+}
+
+interface ResourceQuotaListResponse {
+  items?: Array<{
+    metadata: { name: string; namespace: string };
+    status?: {
+      hard?: Record<string, string>;
+      used?: Record<string, string>;
+    };
+  }>;
+}
+
+/**
+ * Reads the real ResourceQuota object for one namespace. Returns
+ * `{ ok: true, data: null }` -- not an error -- when the namespace has no
+ * ResourceQuota at all (true today for `supabase-demo`, confirmed live via
+ * `kubectl get resourcequota -n supabase-demo` returning no resources),
+ * since that is itself honest state: this module has no quota to compare
+ * usage against for that namespace, and says so rather than fabricating
+ * one. If a namespace ever carries more than one ResourceQuota object
+ * (none do today), the first one returned by the API is used and the rest
+ * are ignored -- disclosed here rather than silently summed.
+ */
+export async function getResourceQuota(
+  namespace: string,
+): Promise<K8sResult<ResourceQuotaSnapshot | null>> {
+  const result = await k8sRequest<ResourceQuotaListResponse>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/resourcequotas`,
+  );
+  if (!result.ok) return result;
+  const item = (result.data.items ?? [])[0];
+  if (!item) return { ok: true, data: null };
+  const hard = item.status?.hard ?? {};
+  const used = item.status?.used ?? {};
+  return {
+    ok: true,
+    data: {
+      name: item.metadata.name,
+      namespace: item.metadata.namespace,
+      hardCpuMillicores: quantityToMillicores(hard["limits.cpu"]),
+      hardMemoryMiB: quantityToMiB(hard["limits.memory"]),
+      hardRequestsCpuMillicores: quantityToMillicores(hard["requests.cpu"]),
+      hardRequestsMemoryMiB: quantityToMiB(hard["requests.memory"]),
+      hardPods: hard["pods"] !== undefined ? Number(hard["pods"]) : null,
+      usedPods: used["pods"] !== undefined ? Number(used["pods"]) : null,
+    },
+  };
+}
+
+interface PodMetricsListResponse {
+  items?: Array<{
+    metadata: { name: string; namespace: string };
+    containers?: Array<{ name: string; usage?: { cpu?: string; memory?: string } }>;
+  }>;
+}
+
+export interface NamespaceResourceUsage {
+  namespace: string;
+  /** Real, current, live sum of every container's `usage.cpu` across every
+   * Pod metrics-server has a fresh reading for in this namespace (the exact
+   * same source `kubectl top pods -n <namespace>` reads). */
+  cpuUsageMillicores: number;
+  memoryUsageMiB: number;
+  /** Number of Pods metrics-server actually returned a reading for --
+   * usually equals the live Pod count, but can be lower for a few seconds
+   * right after a Pod starts, before the first kubelet scrape lands. */
+  podsMeasured: number;
+  /** `null` when the namespace has no ResourceQuota object at all. */
+  quota: ResourceQuotaSnapshot | null;
+  /** `cpuUsageMillicores` / `quota.hardCpuMillicores` * 100 -- `null` when
+   * there is no quota, or the quota sets no `limits.cpu`. Not clamped to
+   * 100: a namespace can (briefly) show live usage above its limits
+   * ceiling, since metrics-server's reading and the scheduler's admission
+   * check are not perfectly synchronous -- shown as-is rather than
+   * silently capped. */
+  cpuPercentOfQuota: number | null;
+  memoryPercentOfQuota: number | null;
+}
+
+/**
+ * Combines real live metrics (`metrics.k8s.io/v1beta1` PodMetrics -- the
+ * same source `kubectl top pods` reads) with the real ResourceQuota object
+ * for one namespace, returning current CPU/memory usage, the quota's hard
+ * ceiling, and a plain percentage-of-quota figure. This is real, measured
+ * infrastructure consumption -- not billing, not currency; no dollar
+ * amount is computed or returned anywhere in this function.
+ */
+export async function getResourceUsage(
+  namespace: string,
+): Promise<K8sResult<NamespaceResourceUsage>> {
+  const [metricsResult, quotaResult] = await Promise.all([
+    k8sRequest<PodMetricsListResponse>(
+      `/apis/metrics.k8s.io/v1beta1/namespaces/${encodeURIComponent(namespace)}/pods`,
+    ),
+    getResourceQuota(namespace),
+  ]);
+  if (!metricsResult.ok) return metricsResult;
+  if (!quotaResult.ok) return quotaResult;
+
+  let cpuUsageMillicores = 0;
+  let memoryUsageMiB = 0;
+  const pods = metricsResult.data.items ?? [];
+  for (const pod of pods) {
+    for (const container of pod.containers ?? []) {
+      cpuUsageMillicores += quantityToMillicores(container.usage?.cpu) ?? 0;
+      memoryUsageMiB += quantityToMiB(container.usage?.memory) ?? 0;
+    }
+  }
+
+  const quota = quotaResult.data;
+  const cpuPercentOfQuota =
+    quota?.hardCpuMillicores && quota.hardCpuMillicores > 0
+      ? (cpuUsageMillicores / quota.hardCpuMillicores) * 100
+      : null;
+  const memoryPercentOfQuota =
+    quota?.hardMemoryMiB && quota.hardMemoryMiB > 0
+      ? (memoryUsageMiB / quota.hardMemoryMiB) * 100
+      : null;
+
+  return {
+    ok: true,
+    data: {
+      namespace,
+      cpuUsageMillicores,
+      memoryUsageMiB,
+      podsMeasured: pods.length,
+      quota,
+      cpuPercentOfQuota,
+      memoryPercentOfQuota,
+    },
+  };
+}
