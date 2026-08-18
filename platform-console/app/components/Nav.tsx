@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import NotificationBell from "@/components/NotificationBell";
 
 const links = [
   { href: "/", label: "Overview" },
@@ -46,14 +47,17 @@ export default function Nav() {
           <Link href="/" className="text-sm font-semibold tracking-wide text-foreground">
             platform console
           </Link>
-          <form action="/api/logout" method="post">
-            <button
-              type="submit"
-              className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-            >
-              Sign out
-            </button>
-          </form>
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+            <form action="/api/logout" method="post">
+              <button
+                type="submit"
+                className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+              >
+                Sign out
+              </button>
+            </form>
+          </div>
         </div>
         <ul className="flex flex-wrap gap-1 text-sm">
           {links.map((l) => {

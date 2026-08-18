@@ -72,11 +72,85 @@ or global footprint.
 | `/api-keys` | **API Keys** (AWS IAM access keys / GCP service account keys / Stripe API keys equivalent) -- the piece that makes this console genuinely programmatically drivable, not just browser-session-drivable. Owner-gated creation/listing/revocation. `lib/api-keys.ts`: real cryptographically random keys (`crypto.randomBytes(32)`, base64url, prefixed `pk_live_` the same way Stripe prefixes its own live keys), stored ONLY as a SHA-256 hash in a real k8s `Secret` (`platform-console-api-keys`, `platform-console` namespace -- a Secret, not a ConfigMap, since these are key hashes) -- the plaintext is shown exactly once, in the create response, and is never recoverable after that. A key is always bound to its creator's own identity, with a role that can only be <= the creator's own current role (`clampRoleToCreator`), never escalated. `middleware.ts` now runs on the Node.js middleware runtime (`export const runtime = "nodejs"`, Next.js 15's node-middleware support) so it can resolve a real `Authorization: Bearer pk_live_...` header against the live Secret; a match mints a real session JWT of the exact same shape every other session already is (`lib/session.ts`'s new `authProvider: "api-key"` variant) and forwards it as the request's own `Cookie` header -- every existing route's `requireSession()`/`requireRole()` call authenticates it completely unchanged, zero route files edited. A revoked or invalid key gets a real JSON `401` on any `/api/*` route (never a redirect); a page route ignores a Bearer header entirely and still redirects to `/login`. See `api-key-auth-enforces-bound-role` in `evidence/control-evidence-bundle.json` for the real curl-only proof sequence (list via a viewer key, a real 403 from a viewer key against a member-gated route, a real 200 from a member key against the same route, then a real, immediate 401 on the same key immediately after revocation) | `lib/api-keys.ts`, `lib/k8s.ts` (`getSecretData`, `createOrUpdateSecret`), `lib/session.ts` (`ApiKeySessionPayload`, `createApiKeySessionToken`), `middleware.ts`, `app/app/api/api-keys/route.ts`, `app/app/api-keys/page.tsx` |
 | `/webhooks` | **Outbound Webhooks / Event Notifications** (AWS EventBridge / GCP Eventarc / Azure Event Grid equivalent), owner-gated the same way `/org` is (a subscriber URL is a real exfiltration vector for every payload delivered). Subscriptions are one real k8s `ConfigMap` (`platform-console-webhooks`, `platform-console` namespace, id → JSON record), reusing the exact `getConfigMap`/`createOrUpdateConfigMap` primitive Feature Flags/Org Roles already established -- zero new RBAC, the existing `platform-console-feature-flags` Role already covers it. Three real, already-detectable trigger points are wired, not fabricated: `project.created` fires synchronously off the real `createProjectWithDatabase` success path; `backup.completed` and `alert.firing` are detected by a real 10s in-process poller (`lib/webhook-poller.ts`, started once per server process from `instrumentation.ts`) diffing against the exact same `listJobs`/`queryAlerts` calls the Backups/Alerting modules already use, baselined on its first tick so pre-existing state is never replayed as "new". Delivery (`lib/webhooks.ts`'s `deliverWebhookEvent`) POSTs a real JSON payload to every matching subscriber URL with a real HMAC-SHA256 signature (`x-platform-webhook-signature-256: sha256=<hex>`, the GitHub/Stripe convention) computed over the exact body bytes, isolated per-subscriber with a 5s timeout so one dead receiver can never block another delivery or the triggering request. **Live-verified end to end**: a real throwaway receiver Pod+Service, subscribed via the authenticated API to both `project.created` and `backup.completed`, actually received real HTTP POSTs (through the live Istio mesh, `x-forwarded-client-cert` visible on the request) for a real test Project creation and a real completed `pg_dump` backup Job; both signatures were independently recomputed via `openssl dgst -sha256 -hmac <secret>` over the exact received body bytes and matched the received header byte-for-byte. The 2-replica rollout's real, disclosed consequence -- one duplicate `backup.completed` delivery, one per replica's independent poller -- was observed live too, not just documented as a hypothetical. See `webhook-delivery-verified-with-valid-signature` in `evidence/control-evidence-bundle.json` for the full transcript (both real payloads, both real signatures, both independent verifications) | `lib/webhooks.ts`, `lib/webhook-poller.ts`, `instrumentation.ts`, `app/api/webhooks/route.ts`, `app/app/webhooks/page.tsx` |
 | Global Search (`Cmd+K`/`Ctrl+K`, every page) | **Global Search / Command Palette** (AWS resource search / GCP Cloud Console search bar equivalent) -- find a real resource across every module by name, from one place, instead of navigating module by module. `lib/global-search.ts`'s `searchPlatform(query, role)` queries, in parallel, the exact same live lib functions each module's own page already calls: `listAllServices`, `listProjects`, `listSecrets` (per platform namespace), `listCronJobs` (per schedulable namespace), `listJobs` scoped per-project via the same `getProjectDatabasePod` + `app=platform-backups,database=<stem>` cross-tenant guard the Backups module's own route relies on, and `listWebhookSubscriptions` -- never a client-side static index or a separate search service, so results can never drift from the live cluster. Secrets follow the exact never-render-values discipline `/secrets` documents: only Secret NAMES and KEY NAMES are ever matched or returned, decoded values are never read. `app/api/search/route.ts` is session-gated for any authenticated role; per-category RBAC is real -- each category's minimum role matches exactly what its own existing page/route already enforces (viewer for service/project/secret/cronjob/backup, owner for webhook, matching `GET /api/webhooks`'s existing boundary), resolved once via `lib/authz.ts`'s `getRoleFor` and enforced inside `searchPlatform` itself, never bypassing a category's real RBAC. `components/CommandPalette.tsx` (a shadcn `Dialog`, `components/ui/dialog.tsx` wrapping `@radix-ui/react-dialog`) is mounted once in `app/layout.tsx`, not per-page, opens on a real `Cmd+K`/`Ctrl+K` keydown listener, debounces keystrokes 200ms into a real fetch against `/api/search`, and navigates via `next/navigation`'s `router.push` on click or Enter. **Live-verified**: three real throwaway resources sharing one distinctive fragment (a Secret, a CronJob, and a webhook subscription) were created via the console's own real write APIs; a real `GET /api/search` returned all 3 real matches with correct type/path in one response, a second search run under a real viewer-role API key correctly omitted the owner-only webhook match (2 results, not 3), each result's real `path` was confirmed to render the matching resource on the real deployed pod, and after deleting all 3 test resources the identical search returned `{"results":[]}` -- see `global-search-finds-real-cross-resource-matches` in `evidence/control-evidence-bundle.json` for the full transcript | `lib/global-search.ts`, `app/app/api/search/route.ts`, `components/CommandPalette.tsx`, `components/ui/dialog.tsx` |
+| Notification Bell (`components/Nav.tsx`, every authenticated page) | **In-app real-time notifications** (AWS Console / GCP Console / Azure Portal top-bar bell equivalent), closing the last major unused piece of the Supabase stack: `demo-project-realtime` had been running the whole session with nothing connected to it. A real browser `WebSocket` to this same origin's `/ws/notifications` is relayed by `server.js` to the real, already-running Supabase Realtime server, subscribed on real Postgres logical-replication `postgres_changes` for `platform_console.audit_log` INSERT (added to the `supabase_realtime` publication with a real `ALTER PUBLICATION ... ADD TABLE`) -- a genuine server-initiated push per new audit row, not a poll loop on either leg. See "Real-time notifications" below and `realtime-notification-pushed-not-polled` in `evidence/control-evidence-bundle.json` for the real WebSocket frame a headless client received | `server.js`, `components/NotificationBell.tsx`, `components/Nav.tsx` |
 
 `lib/k8s.ts` is a hand-rolled Kubernetes API client using the pod's own in-cluster
 ServiceAccount token/CA (`/var/run/secrets/kubernetes.io/serviceaccount`) — no external k8s
 client dependency. Off-cluster (local `next build`/dev), it fails closed with
 `"not configured"`, the same convention `lib/status.ts` already used.
+
+## Real-time notifications
+
+`demo-project-realtime` (image `supabase/realtime:v2.102.3`, a Phoenix/Cowboy WebSocket
+server broadcasting real Postgres logical-replication changes) had been running for this
+entire session with nothing connected to it — confirmed live via `kubectl logs`/`kubectl exec`
+before any client code was written: `DB_HOST=demo-db-postgres...`, tenant `realtime-dev`
+(`SELECT external_id FROM _realtime.tenants` -> `realtime-dev`, the image's own fixed
+self-host demo tenant, not derived from the k8s `Project` name), `wal_level = logical`, and a
+health check answering `200` on `/api/tenants/realtime-dev/health`.
+
+**Wiring it up, in order:**
+
+1. `ALTER PUBLICATION supabase_realtime ADD TABLE platform_console.audit_log;` — verified
+   live via `pg_publication_tables` both before (0 rows) and after (the real 8-column
+   `attnames` list). `platform_console.audit_log` already gets a real `INSERT` on every
+   authenticated action (`lib/audit-db.ts`, from the durable Audit Log pass), so this alone
+   makes every one of those inserts a real logical-replication event.
+2. `GRANT SELECT ON platform_console.audit_log TO service_role;` — Realtime's own
+   authorization check (independent of Postgres RLS, which stays disabled on this table)
+   rejects a `postgres_changes` subscription for any role without a real table-level grant;
+   the very first live probe against this channel (as `anon`) came back with the row
+   redacted (`"record":{},"errors":["Error 401: Unauthorized"]`) until this grant existed —
+   a real, disclosed blocker found and fixed live, not assumed away.
+3. `server.js` — a new custom Next.js server entrypoint (replacing the auto-generated
+   `.next/standalone/server.js`; see its own header comment) that adds one real hook
+   standalone's generated server has none of: `server.on("upgrade", ...)`. It holds ONE
+   shared upstream Phoenix-channel WebSocket to `demo-project-realtime` (service DNS
+   resolved live via the k8s API, `app.kubernetes.io/component=realtime`, never hardcoded;
+   auth via the already-deployed `SUPABASE_SERVICE_ROLE_KEY`), joined on `postgres_changes`
+   for `platform_console.audit_log` INSERT, and fans every real push out to every browser
+   connected to `/ws/notifications` — each one authenticated by the same real,
+   correctly-signed `platform_console_session` cookie every other route already trusts
+   (`jose`/`AUTH_SECRET`, reimplemented at the small scale actually needed since this file
+   sits outside Next's own TS module graph — see the file's header comment for why). A
+   connection presenting no valid session gets a real `401` on the upgrade, not a silent
+   downgrade. Because the Dockerfile's runner stage now needs the full `node_modules` (`ws`,
+   `next`, `jose`, `pg`) instead of `output: "standalone"`'s traced subset, `next.config.js`
+   no longer sets `output: "standalone"` and the Dockerfile copies `deps`'s complete
+   `node_modules` into the runner image — a larger image for a real capability standalone's
+   generated server has no hook for.
+4. `components/NotificationBell.tsx` — mounted once in `components/Nav.tsx` (every
+   authenticated page), opens a real browser `WebSocket` to `/ws/notifications`, shows a live
+   unread badge plus a dropdown of the last 20 real events (actor/method/path/status/time),
+   and a small status dot reflecting the relay's real upstream state
+   (connecting/subscribed/reconnecting/error) rather than assuming success silently.
+
+**Real proof, not "trust the UI":** with the real deployed pod reached through the real Istio
+ingress gateway (`kubectl port-forward svc/istio-ingressgateway`, `Host: platform.local` —
+the same routing path a browser uses) and authenticated with a real, correctly-signed session
+cookie, a headless Node `ws` client opened `/ws/notifications` and received a real
+`{"type":"connection.status","status":"subscribed"}` frame confirming the relay's own upstream
+subscription was live. A real authenticated `GET /api/feature-flags` (`200`, through the same
+gateway) was then issued — a real action, not a synthetic DB write — producing DB row `id=81`
+(`platform_console.audit_log`, `commit_timestamp` `2026-08-18T11:08:11.758Z`). The headless
+client received the real pushed frame at `2026-08-18T11:08:12.019Z` (client wall clock) —
+**~261ms** after the real Postgres commit, end to end through logical-replication decode,
+Realtime, the relay, and the Istio mesh — containing the exact real row:
+
+```json
+{"type":"audit_log.insert","record":{"id":81,"ts":"2026-08-18T11:08:11.736+00:00","path":"/api/feature-flags","actor":"verification-script","method":"GET","status":200,"request_id":"39b00aa0-82a1-45d1-b258-efe757a54f9e","inserted_at":"2026-08-18T11:08:11.757665+00:00"},"errors":null,"commitTimestamp":"2026-08-18T11:08:11.758Z"}
+```
+
+A genuine server-initiated push (Realtime decoded the WAL record and forwarded it the moment
+it committed — the client never asked, it was told), not a poll loop dressed up as one on
+either the Realtime<->relay or the relay<->browser leg. See
+`realtime-notification-pushed-not-polled` in `evidence/control-evidence-bundle.json`.
+
+`NotificationBell` itself only requires a *valid* session (any role) — a live count/list of
+"an authenticated action just happened, by whom, what path, what status" is the same class of
+low-sensitivity signal every hyperscaler console's own bell shows to any signed-in operator.
+The full audit *log* page (`/audit`, actor/path substring search, pagination, raw rows) stays
+owner-gated exactly as before this pass — the bell is a notice, not that report.
 
 ## Identity federation
 
