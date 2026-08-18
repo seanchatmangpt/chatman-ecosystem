@@ -36,11 +36,33 @@ spec:
     metadata:
       labels:
         app: platform-prober
+      annotations:
+        # Same real istio-init/restricted PodSecurity incompatibility as
+        # platform-console-gateway (k8s/services-and-deployments.yaml) --
+        # see that Deployment's annotation comment for the full reasoning.
+        sidecar.istio.io/inject: "false"
     spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: platform-prober
           image: platform-console/platform-prober:latest
           imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            # Same non-numeric-USER gotcha as the gateway/oidc-idp
+            # Deployments above: image's `USER nobody` resolves to the
+            # standard Debian nobody UID (65534), but the kubelet's
+            # runAsNonRoot check needs it spelled out numerically here.
+            runAsUser: 65534
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
           ports:
             - name: http
               containerPort: 8080

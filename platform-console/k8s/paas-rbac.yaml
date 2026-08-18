@@ -1602,6 +1602,21 @@ roleRef:
 # PodSecurity-admission concern, not an RBAC one (confirmed live before
 # this Role existed: a bare test Pod with this exact hostPath volume ran
 # 2/2 Ready in this namespace with no PSA rejection).
+#
+# Also grants write access to the admission-gate ConfigMap
+# (`platform-console-vuln-denylist`, lib/vuln-scan.ts's
+# syncVulnDenylist) that k8s/admission-policy.yaml's
+# `platform-deployments-block-critical-cves` policy binding reads via
+# `paramRef` -- this is what turns a completed scan into a live,
+# continuously-enforced admission input, not just a report. Same
+# create-rule-plus-resourceName-scoped-verbs split
+# platform-batch-runner's ConfigMap grant above already establishes
+# (RBAC cannot scope `create` by resourceName, since the object doesn't
+# exist yet at that point): a separate unrestricted `create` rule, then
+# `get`/`patch` narrowed to exactly this one object. No `delete`: the
+# gate ConfigMap is never removed, only ever repatched to a fresh
+# pattern (including the explicit "nothing blocked" sentinel) by every
+# completed scan.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -1611,6 +1626,13 @@ rules:
   - apiGroups: ["batch"]
     resources: ["jobs"]
     verbs: ["get", "list", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-console-vuln-denylist"]
+    verbs: ["get", "patch"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -1624,4 +1646,66 @@ subjects:
 roleRef:
   kind: Role
   name: platform-console-vuln-scan
+  apiGroup: rbac.authorization.k8s.io
+---
+# ---------------------------------------------------------------- Castle
+#
+# One Role + RoleBinding scoped to the dedicated `castle` namespace
+# (k8s/namespaces.yaml) for the Castle security-testing module
+# (lib/castle.ts, app/app/castle) -- DEPLOY / RUN / SUNSET lifecycle over
+# the real ~/castle CLI crate. get/list/create/delete on `batch/jobs`
+# (RUN triggers one real Job per invocation, SUNSET deletes them all --
+# same verb set as platform-console-vuln-scan above, one level down: a
+# dedicated namespace rather than sharing platform-console's own). get/
+# list on `pods` and get on `pods/log` to read a Run's own captured
+# output, same shape as platform-console-logs-reader. get/list/create/
+# update/patch/delete on `configmaps`, restricted to the module's own
+# fixed ConfigMap name via `resourceNames` (least-privilege, same pattern
+# platform-console-feature-flags-reader already established) -- this is
+# where DEPLOY records what image is installed and SUNSET clears it; it
+# is never used to fake or grant CASTLE "DO" authority, only to record
+# this module's own deploy/sunset bookkeeping.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-castle
+  namespace: castle
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-castle-deployment"]
+    verbs: ["get", "update", "patch", "delete"]
+  # `create` cannot be restricted by `resourceNames` -- the object doesn't
+  # exist yet at authorization time, so k8s RBAC docs explicitly call this
+  # combination a no-op (confirmed live: the resourceNames-scoped rule
+  # above alone produced a real 403 forbidden on the very first DEPLOY
+  # call). A second, separate rule grants bare `create` on `configmaps`,
+  # scoped only by this already-dedicated namespace -- the same
+  # `create`-is-separate pattern lib/k8s.ts's Feature Flags Role and
+  # platform-console-vuln-scan's own ConfigMap rule above already use.
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-castle-binding
+  namespace: castle
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-castle
   apiGroup: rbac.authorization.k8s.io

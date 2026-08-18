@@ -1,0 +1,101 @@
+[
+  {
+    "id": "svc-gateway",
+    "label": "api-gateway",
+    "status": "healthy",
+    "metric": 88,
+    "edges": [
+      { "targetId": "svc-auth", "weight": 0.28 },
+      { "targetId": "svc-storefront", "weight": 0.72 }
+    ]
+  },
+  {
+    "id": "svc-auth",
+    "label": "auth-service",
+    "status": "healthy",
+    "metric": 45,
+    "edges": []
+  },
+  {
+    "id": "svc-storefront",
+    "label": "storefront-api",
+    "status": "healthy",
+    "metric": 67,
+    "edges": [
+      { "targetId": "svc-inventory", "weight": 0.4 },
+      { "targetId": "svc-pricing", "weight": 0.35 },
+      { "targetId": "svc-search", "weight": 0.25 }
+    ]
+  },
+  {
+    "id": "svc-inventory",
+    "label": "inventory-service",
+    "status": "degraded",
+    "metric": 31,
+    "edges": []
+  },
+  {
+    "id": "svc-pricing",
+    "label": "pricing-service",
+    "status": "healthy",
+    "metric": 36,
+    "edges": []
+  },
+  {
+    "id": "svc-search",
+    "label": "search-service",
+    "status": "healthy",
+    "metric": 24,
+    "edges": []
+  },
+  {
+    "id": "svc-checkout",
+    "label": "checkout-service",
+    "status": "degraded",
+    "metric": 52,
+    "edges": [
+      { "targetId": "svc-payments", "weight": 0.65 },
+      { "targetId": "svc-orders", "weight": 0.35 }
+    ]
+  },
+  {
+    "id": "svc-payments",
+    "label": "payments-service",
+    "status": "down",
+    "metric": 19,
+    "edges": []
+  },
+  {
+    "id": "svc-orders",
+    "label": "orders-service",
+    "status": "healthy",
+    "metric": 57,
+    "edges": [
+      { "targetId": "svc-ledger", "weight": 0.6 },
+      { "targetId": "svc-notifications", "weight": 0.4 }
+    ]
+  },
+  {
+    "id": "svc-ledger",
+    "label": "ledger-service",
+    "status": "healthy",
+    "metric": 26,
+    "edges": []
+  },
+  {
+    "id": "svc-notifications",
+    "label": "notification-worker",
+    "status": "healthy",
+    "metric": 14,
+    "edges": []
+  },
+  {
+    "id": "svc-billing",
+    "label": "billing-worker",
+    "status": "degraded",
+    "metric": 22,
+    "edges": [
+      { "targetId": "svc-ledger", "weight": 0.5 }
+    ]
+  }
+]

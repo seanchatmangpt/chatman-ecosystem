@@ -52,7 +52,8 @@
 # kind-loaded local images over a registry, so this is named here rather
 # than silently worked around.
 #
-# Pod-level `sidecar.istio.io/inject: "false"` annotation -- REMOVED.
+# Pod-level `sidecar.istio.io/inject: "false"` annotation -- REMOVED, then
+# RESTORED for autofde-lab-status specifically.
 # History: these 5 namespaces carry `istio-injection: enabled`
 # (namespaces.yaml), but network-policies.yaml's default-deny Egress
 # (deliberately, per its own header comment, including DNS/istiod) meant
@@ -70,6 +71,24 @@
 # level is no longer overridden per-pod, so the mutating webhook injects
 # istio-proxy normally on the next pod recreation (`kubectl rollout
 # restart`).
+#
+# Second incident (autofde-lab namespace only, after
+# `pod-security.kubernetes.io/enforce: restricted` was applied to it --
+# see namespaces.yaml): this cluster's Istio install has no istio-cni
+# DaemonSet, so injection falls back to the legacy `istio-init` init
+# container (a privileged NET_ADMIN/NET_RAW iptables container), which
+# PodSecurity `restricted` rejects outright -- the pod's init container
+# never got past admission, blocking the whole Deployment. Fixed live via
+# `kubectl patch`: re-added `sidecar.istio.io/inject: "false"` to this
+# Deployment's pod template only (the other 3 project-status Deployments
+# above/below are unaffected -- their namespaces are not `restricted`),
+# plus an explicit PodSecurity-`restricted`-compatible container
+# `securityContext` (runAsNonRoot, numeric runAsUser, seccompProfile
+# RuntimeDefault, allowPrivilegeEscalation: false, capabilities: drop
+# [ALL]) so the plain container itself also satisfies `restricted`
+# without relying on any cluster/namespace-level default. Backported here
+# from the live object (`kubectl get deployment autofde-lab-status -n
+# autofde-lab -o yaml`) so `kubectl apply` doesn't regress the namespace.
 
 # ---------------------------------------------------------------- autofde-lab
 apiVersion: apps/v1
@@ -90,6 +109,12 @@ spec:
       app: autofde-lab-status
   template:
     metadata:
+      annotations:
+        # See the "Second incident" comment above the Deployment header --
+        # PodSecurity `restricted` (namespaces.yaml) rejects this cluster's
+        # legacy istio-init sidecar (no istio-cni DaemonSet installed), so
+        # injection is disabled for this Deployment specifically.
+        sidecar.istio.io/inject: "false"
       labels:
         app: autofde-lab-status
         # Canary/stable subset label -- see k8s/canary.yaml's
@@ -143,6 +168,19 @@ spec:
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 20
+          securityContext:
+            # PodSecurity `restricted` (namespaces.yaml: autofde-lab
+            # carries pod-security.kubernetes.io/enforce: restricted) --
+            # backported from the live `kubectl patch` fix. See "Second
+            # incident" comment above.
+            runAsNonRoot: true
+            runAsUser: 65534
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
 ---
 apiVersion: v1
 kind: Service
@@ -385,12 +423,50 @@ spec:
     metadata:
       labels:
         app: platform-console-gateway
+      annotations:
+        # Confirmed live (this pass): with `pod-security.kubernetes.io/
+        # enforce: restricted` added to platform-console (namespaces.yaml),
+        # istio-injection's istio-init container (this cluster has no
+        # istio-cni DaemonSet, so injection always uses the legacy
+        # NET_ADMIN/NET_RAW/root init-container iptables method, never the
+        # CNI plugin) is rejected outright by PodSecurity admission:
+        # `container "istio-init" must not include "NET_ADMIN", "NET_RAW"`.
+        # Real, reproduced-live incompatibility between this cluster's
+        # Istio install and restricted, not a hypothetical -- same
+        # conflict independently confirmed against autofde-lab (which
+        # already carried both settings) during this pass's live
+        # verification. Disabling injection per-pod here is the same
+        # documented stopgap this file already used once before (see this
+        # file's header comment on the network-policies.yaml DNS/istiod
+        # egress fix) -- the real fix (installing istio-cni so the
+        # init-container step moves out of the pod) is out of scope for a
+        # namespace-label change and is disclosed here rather than
+        # silently reverting the restricted enforcement.
+        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: platform-console
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: console
           image: platform-console/console:latest
           imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            # Explicit numeric UID: the image's `USER nextjs` (Dockerfile
+            # `useradd --uid 1001`) is a non-numeric name, and the kubelet's
+            # runAsNonRoot check cannot resolve /etc/passwd inside the image
+            # to verify it -- it rejects with "container has runAsNonRoot
+            # and image has non-numeric user" unless runAsUser is numeric.
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
           ports:
             - containerPort: 3000
           env:
@@ -519,11 +595,32 @@ spec:
     metadata:
       labels:
         app: platform-console-oidc-idp
+      annotations:
+        # Same real istio-init/restricted PodSecurity incompatibility as
+        # platform-console-gateway above -- see that Deployment's
+        # annotation comment for the full reasoning.
+        sidecar.istio.io/inject: "false"
     spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: oidc-idp
           image: platform-console/oidc-idp:latest
           imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            # Same non-numeric-USER gotcha as platform-console-gateway
+            # above: image's `USER oidcidp` (Dockerfile `useradd --uid
+            # 1001`) needs an explicit numeric runAsUser here.
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
           ports:
             - containerPort: 8081
           env:

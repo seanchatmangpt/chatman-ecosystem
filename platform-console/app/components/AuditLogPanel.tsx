@@ -37,6 +37,14 @@ export default function AuditLogPanel({
   const [to, setTo] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [verifying, setVerifying] = useState(false);
+  const [verifyResult, setVerifyResult] = useState<{
+    valid: boolean;
+    rowsChecked: number;
+    brokenAtId?: number;
+    reason?: string;
+  } | null>(null);
+  const [verifyError, setVerifyError] = useState<string | null>(null);
 
   async function runQuery(nextPage: number) {
     setLoading(true);
@@ -85,6 +93,29 @@ export default function AuditLogPanel({
     if (from) params.set("from", new Date(from).toISOString());
     if (to) params.set("to", new Date(to).toISOString());
     window.location.href = `/api/audit/export?${params.toString()}`;
+  }
+
+  async function onVerifyChain() {
+    // Real live re-derivation of the hash chain (GET /api/audit/verify ->
+    // lib/audit-db.ts's verifyAuditChain) -- reads every row fresh on every
+    // click, never a cached/summarized verdict. See lib/audit-db.ts's
+    // "Tamper-evident chain" section for what row_hash/prev_hash commit to.
+    setVerifying(true);
+    setVerifyError(null);
+    setVerifyResult(null);
+    try {
+      const res = await fetch("/api/audit/verify");
+      const body = await res.json();
+      if (!res.ok) {
+        setVerifyError(body.error ?? `HTTP ${res.status}`);
+        return;
+      }
+      setVerifyResult(body);
+    } catch (err) {
+      setVerifyError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setVerifying(false);
+    }
   }
 
   function onReset() {
@@ -164,12 +195,41 @@ export default function AuditLogPanel({
           >
             Export (NDJSON)
           </button>
+          <button
+            type="button"
+            onClick={onVerifyChain}
+            disabled={verifying}
+            title="GET /api/audit/verify -- live re-derives the hash chain (lib/audit-db.ts's row_hash/prev_hash) over every row in the table right now, and reports the first row (if any) whose stored digest no longer matches"
+            className="rounded-md border border-border px-4 py-2 text-sm text-gray-300 disabled:opacity-50"
+          >
+            {verifying ? "Verifying..." : "Verify chain integrity"}
+          </button>
         </div>
       </form>
 
       {error && (
         <p className="break-all rounded-md border border-red-900 bg-red-950/40 px-3 py-2 text-xs text-red-300">
           {error}
+        </p>
+      )}
+
+      {verifyError && (
+        <p className="break-all rounded-md border border-red-900 bg-red-950/40 px-3 py-2 text-xs text-red-300">
+          {verifyError}
+        </p>
+      )}
+
+      {verifyResult && (
+        <p
+          className={
+            verifyResult.valid
+              ? "break-all rounded-md border border-emerald-900 bg-emerald-950/40 px-3 py-2 text-xs text-emerald-300"
+              : "break-all rounded-md border border-red-900 bg-red-950/40 px-3 py-2 text-xs text-red-300"
+          }
+        >
+          {verifyResult.valid
+            ? `Chain intact -- ${verifyResult.rowsChecked} row(s) re-verified, every row_hash matches its recomputed digest.`
+            : `TAMPER DETECTED at row ${verifyResult.brokenAtId} (${verifyResult.rowsChecked} row(s) checked): ${verifyResult.reason}`}
         </p>
       )}
 

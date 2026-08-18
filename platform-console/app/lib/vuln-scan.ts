@@ -55,7 +55,7 @@
 // `batch.kubernetes.io/job-completion-index` label back to
 // `IMAGES_TO_SCAN[index]` -- the same index-to-workload convention
 // lib/batch-jobs.ts's `listBatchJobPods` already uses.
-import { k8sRequest, getPodLogs, type K8sResult } from "@/lib/k8s";
+import { k8sRequest, getPodLogs, createOrUpdateConfigMap, type K8sResult } from "@/lib/k8s";
 
 export const VULN_SCAN_NAMESPACE = "platform-console";
 const TRIVY_IMAGE = "aquasec/trivy:0.67.2";
@@ -537,4 +537,95 @@ export async function deleteVulnScanJob(jobName: string): Promise<K8sResult<null
   );
   if (!result.ok) return result;
   return { ok: true, data: null };
+}
+
+// --------------------------------------- Admission gate (denylist sync)
+//
+// Closes the actual gap: a one-off trivy run in a panel proves a scan
+// CAN be done, not that a CRITICAL-CVE image is actually kept OUT of a
+// running namespace. This section makes the real scan result above the
+// live input to a real, continuously-enforced k8s
+// ValidatingAdmissionPolicy (k8s/admission-policy.yaml's
+// `platform-deployments-block-critical-cves`), the same native
+// CEL-based primitive `platform-deployments-require-resources` already
+// uses -- zero extra infrastructure, evaluated by kube-apiserver itself
+// on every matching Deployment CREATE/UPDATE, not just at scan time.
+//
+// MECHANISM: a ConfigMap key cannot legally contain the `/` or `:`
+// bytes every real image ref does (k8s ConfigMap `data` keys must match
+// `[-._a-zA-Z0-9]+`), so the blocked-image set can't be stored one ref
+// per key the way lib/authz.ts's org-roles ConfigMap stores identities.
+// Instead this writes a single derived RE2 alternation pattern (a
+// ConfigMap *value*, which has no such character restriction) that the
+// policy's CEL expression matches each container's raw `c.image`
+// against via the CEL-native `.matches()` string function -- no split/
+// JSON-decode CEL extension required, so this works against the
+// standard CEL environment kube-apiserver already ships. The pattern is
+// fully rebuilt (never merged) on every synced run, so an image that
+// picks up a fix and re-scans clean is automatically removed from the
+// gate on the very next scan -- continuous, not a one-way ratchet.
+export const VULN_DENYLIST_CONFIGMAP = "platform-console-vuln-denylist";
+const VULN_DENYLIST_KEY = "denylist_pattern";
+// A pattern that cannot match any real image ref (image refs never
+// contain a NUL byte) -- the explicit "nothing is currently blocked"
+// value, real RE2 syntax, never an empty string (an empty regex matches
+// everything, which would invert the gate).
+export const VULN_DENYLIST_NOMATCH_PATTERN = "^\\x00$";
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Derives the RE2 alternation pattern from one finished scan run: every
+ * distinct image ref with at least one real CRITICAL finding still
+ * unresolved (i.e. present in this run's own results -- there is no
+ * separate "acknowledged"/"waived" state in this module, matching the
+ * task's own "unresolved CRITICAL findings" wording literally: present
+ * means unresolved). Images still Pending/Running are deliberately
+ * excluded from both the block and the clear -- an in-progress scan
+ * makes no claim about an image either way, so it must not silently
+ * clear a real prior CRITICAL block.
+ */
+export function buildDenylistPattern(run: VulnScanRun): string {
+  const blocked = new Set<string>();
+  for (const img of run.images) {
+    const finished = img.phase === "Succeeded" || img.phase === "Failed";
+    if (!finished) continue;
+    if (img.severityCounts.CRITICAL > 0) blocked.add(img.target.ref);
+  }
+  if (blocked.size === 0) return VULN_DENYLIST_NOMATCH_PATTERN;
+  return `^(${[...blocked].map(escapeRegex).join("|")})$`;
+}
+
+export interface VulnDenylistSync {
+  pattern: string;
+  blockedRefs: string[];
+}
+
+/**
+ * Writes the real gate ConfigMap the ValidatingAdmissionPolicy binding
+ * reads via `paramRef` -- same get-then-create-or-patch primitive
+ * (`createOrUpdateConfigMap`) the Feature Flags/Org Roles/Budget Alerts
+ * modules already use, so this is a real RFC 7386 merge patch (or a real
+ * create on first sync) against one Namespace-scoped object, never a
+ * fabricated in-memory list the policy can't actually see. Only called
+ * once a run is `complete` (route.ts's GET handler) -- syncing a
+ * still-running run's partial results would let a real Pending image
+ * scan-block nothing yet, which is honest, but also risks clearing a
+ * real prior CRITICAL block for an image this run hasn't reached.
+ */
+export async function syncVulnDenylist(run: VulnScanRun): Promise<K8sResult<VulnDenylistSync>> {
+  const pattern = buildDenylistPattern(run);
+  const blockedRefs = run.images
+    .filter((img) => img.severityCounts.CRITICAL > 0)
+    .map((img) => img.target.ref);
+
+  const result = await createOrUpdateConfigMap(VULN_SCAN_NAMESPACE, VULN_DENYLIST_CONFIGMAP, {
+    [VULN_DENYLIST_KEY]: pattern,
+    source_job: run.jobName,
+    synced_at: new Date().toISOString(),
+  });
+  if (!result.ok) return result;
+  return { ok: true, data: { pattern, blockedRefs } };
 }

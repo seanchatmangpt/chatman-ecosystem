@@ -89,3 +89,121 @@ spec:
             - ggen
             - ggen-marketplace
             - platform-console
+---
+# ------------------------------------------ Vulnerability admission gate
+#
+# The real, continuous gap this closes: services/vuln-scanner (lib/vuln-
+# scan.ts) could already produce a real trivy CRITICAL-CVE finding, but
+# nothing stopped that same image from being deployed anyway -- a scan
+# was evidence a human could read, not an enforced gate a bad Deployment
+# could actually be rejected by. This policy is that gate, built on the
+# exact same native ValidatingAdmissionPolicy primitive as
+# `platform-deployments-require-resources` above (zero extra
+# infrastructure, evaluated by kube-apiserver itself, in-process, on
+# every matching Deployment CREATE/UPDATE -- not a one-off manual `trivy`
+# invocation captured as evidence once).
+#
+# WHY paramKind/paramRef (unlike the policy above, which needed no
+# params): CEL has no built-in way to shell out to trivy or call the
+# vuln-scanner's own live findings at admission time, so the real,
+# already-computed scan result has to be published somewhere the
+# apiserver's own admission chain can read it directly and synchronously.
+# A ConfigMap is that publish point -- lib/vuln-scan.ts's
+# syncVulnDenylist writes it after every completed scan (real RFC 7386
+# merge patch, same primitive Feature Flags/Org Roles already use), and
+# this binding's `paramRef` makes kube-apiserver fetch that exact object
+# fresh on every admission request it evaluates -- there is no polling
+# delay or cache to go stale, since the ConfigMap read is the admission
+# request itself.
+#
+# WHY A REGEX PATTERN, NOT ONE KEY PER IMAGE: a k8s ConfigMap `data` key
+# must match `[-._a-zA-Z0-9]+` -- a real image ref's `/` and `:` bytes
+# are not legal key characters, so the blocked-image set can't be stored
+# "one ref per key" the way e.g. lib/authz.ts's org-roles ConfigMap
+# stores identities (which escapes disallowed bytes for that exact
+# reason). ConfigMap *values* have no such restriction, so
+# syncVulnDenylist instead writes a single derived RE2 alternation
+# pattern as one value, and the expression below matches each
+# container's raw, unescaped `c.image` against it with CEL's own native
+# `.matches()` string function -- standard CEL, no JSON-decode/split
+# extension library required.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: platform-deployments-block-critical-cves
+spec:
+  # Fail (not Ignore): if CEL evaluation itself errors (e.g. the
+  # denylist ConfigMap's `denylist_pattern` key is somehow missing after
+  # being resolved), fail CLOSED -- same discipline as the resources
+  # policy above.
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: v1
+    kind: ConfigMap
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments"]
+  validations:
+    - expression: >-
+        !object.spec.template.spec.containers.exists(c,
+          c.image.matches(params.data['denylist_pattern']))
+      messageExpression: >-
+        "this Deployment references a container image trivy has found " +
+        "unresolved CRITICAL vulnerabilities in, per the platform's " +
+        "own live vulnerability-scan admission gate (Policy-as-Code " +
+        "control: platform-deployments-block-critical-cves) -- re-scan " +
+        "after the image is rebuilt with a fix (services/vuln-scanner, " +
+        "/security page) to clear this Deployment for admission"
+      reason: Invalid
+  auditAnnotations:
+    - key: enforced-by
+      valueExpression: "'platform-deployments-block-critical-cves'"
+---
+# Binding: same 5 platform namespaces as the resources policy above (not
+# a copy-paste coincidence -- these are the platform's own project
+# namespaces, the only ones this console ever deploys real Deployments
+# into). `paramRef` points at the real, single, namespace-scoped
+# ConfigMap syncVulnDenylist writes to
+# (`platform-console-vuln-denylist`, `platform-console` namespace --
+# never a selector-based paramRef, since there is exactly one gate
+# object, not a family of them per-team).
+#
+# `parameterNotFoundAction: Allow` is a deliberate, disclosed trade-off,
+# not an oversight: the gate ConfigMap does not exist until the very
+# first scan run ever completes (a fresh cluster, or this policy applied
+# before any scan has run) -- `Deny` in that bootstrap window would
+# reject every real Deployment across all 5 namespaces platform-wide,
+# including the console's own, for a reason with no actionable fix
+# (there is no denylist entry to clear; a human would have to delete
+# this binding to unblock the whole platform). `Allow` here matches this
+# gap's actual literal scope ("reject Deployments referencing images
+# with unresolved trivy CRITICAL findings") -- it does not claim to
+# reject deployments of images that have simply never been scanned,
+# which is a real, larger, disclosed gap left for a future "block
+# anything not on a fresh allow-list" policy, not silently implied to
+# already be covered here.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: platform-deployments-block-critical-cves-binding
+spec:
+  policyName: platform-deployments-block-critical-cves
+  validationActions: ["Deny"]
+  paramRef:
+    name: platform-console-vuln-denylist
+    namespace: platform-console
+    parameterNotFoundAction: Allow
+  matchResources:
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: In
+          values:
+            - autofde-lab
+            - gymact
+            - ggen
+            - ggen-marketplace
+            - platform-console

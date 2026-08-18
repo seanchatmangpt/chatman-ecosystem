@@ -580,6 +580,33 @@ export async function getProjectDatabasePod(
   };
 }
 
+/**
+ * Resolves a Project's real Storage API Service (dns + port) live from its
+ * own Services -- the exact same `component=storage`/`instance=<project.name>`
+ * label match app/projects/[name]/storage/page.tsx already renders inline,
+ * factored out here so lib/storage-signed-url.ts's signing/verification
+ * path and app/api/projects/[name]/storage/*'s routes share one real
+ * lookup instead of three copies of the same filter. Returns
+ * `{ ok: true, data: null }` -- not an error -- when no matching Service
+ * exists yet, same honest-absence convention getProjectDatabasePod uses.
+ */
+export async function getProjectStorageService(
+  project: SupabaseProject,
+): Promise<K8sResult<{ dns: string; port: number } | null>> {
+  const servicesResult = await listNamespaceServices(project.namespace);
+  if (!servicesResult.ok) return servicesResult;
+  const storageService = servicesResult.data.find(
+    (s) =>
+      s.labels["app.kubernetes.io/component"] === "storage" &&
+      s.labels["app.kubernetes.io/instance"] === project.name,
+  );
+  if (!storageService) return { ok: true, data: null };
+  return {
+    ok: true,
+    data: { dns: storageService.dns, port: storageService.ports[0]?.port ?? 5000 },
+  };
+}
+
 // ------------------------------------------------------- Service Discovery
 //
 // Real hyperscaler-PaaS-style Service Discovery primitive (AWS Route53

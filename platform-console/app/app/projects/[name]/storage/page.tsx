@@ -1,5 +1,9 @@
+import { cookies } from "next/headers";
 import Nav from "@/components/Nav";
 import ProjectSubNav from "@/components/ProjectSubNav";
+import StorageSignedUrlPanel from "@/components/StorageSignedUrlPanel";
+import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
+import { requireRole } from "@/lib/authz";
 import { getProject, listNamespaceServices } from "@/lib/k8s";
 import { fetchStorageBuckets } from "@/lib/storage-api";
 
@@ -91,7 +95,27 @@ export default async function ProjectStoragePage({
             </div>
           )}
         </div>
+
+        <StorageSignedUrlPanelServerBoundary projectName={project.name} />
       </main>
     </>
   );
+}
+
+// Member+ gated, same convention every mutating panel in this console
+// follows (e.g. app/api-keys/page.tsx's ApiKeysPanelServerBoundary): the
+// real enforcement boundary is POST /api/projects/[name]/storage's own
+// requireRole(session, "member") check, but this page hides the form
+// entirely for a viewer-only session rather than showing controls that
+// would just 403.
+async function StorageSignedUrlPanelServerBoundary({ projectName }: { projectName: string }) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  const session = token ? await verifySessionToken(token) : null;
+  if (!session) return null;
+
+  const access = await requireRole(session, "member");
+  if (!access.ok) return null;
+
+  return <StorageSignedUrlPanel projectName={projectName} />;
 }

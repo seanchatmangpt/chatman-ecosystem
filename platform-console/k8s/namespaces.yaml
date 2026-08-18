@@ -3,6 +3,30 @@
 # matches the existing "application" namespace already live on this cluster
 # (kubectl get ns application -o yaml), so sidecar injection behaves
 # identically to established precedent.
+#
+# pod-security.kubernetes.io/enforce: restricted (built-in Kubernetes
+# PodSecurity admission, GA since 1.25 -- this cluster runs v1.34.0, no
+# third-party webhook required) is applied to the tenant project namespaces
+# (autofde-lab, gymact, ggen, ggen-marketplace) plus supabase-demo, the
+# external-content-owner-facing project namespace, AND to platform-console
+# itself. Restricted's Pod-spec checks (non-root, no privilege escalation,
+# seccompProfile RuntimeDefault, drop ALL capabilities, no hostPath/
+# hostNetwork/hostPID) constrain the *Pod* spec only -- they do not touch
+# the ServiceAccount's RBAC grants, so the gateway's cluster-scoped RBAC
+# (needed to read/manage other namespaces' resources for the console UI)
+# is untouched by this label; the namespace being the console's control
+# plane was never a reason its own Pods needed root/privileged capability,
+# and the platform-console-gateway/-oidc-idp/platform-prober Deployments
+# below already run their real images as non-root (Dockerfile `USER
+# nextjs`/`USER oidcidp`/`USER nobody`), so restricted was fixed forward
+# onto them rather than left as a gap in the platform's own
+# operator-facing surface -- see PodSecurity admission docs:
+# https://kubernetes.io/docs/concepts/security/pod-security-admission/).
+# restricted blocks privileged containers, hostPath/hostNetwork/hostPID/
+# hostIPC, and non-root-declared execution by *policy* (the real API
+# server's built-in admission plugin), closing the gap the "policy not
+# convention" code comment in app/lib/k8s.ts's PodSecurityContext types
+# only ever documented, never enforced.
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -11,6 +35,7 @@ metadata:
     istio-injection: enabled
     app.kubernetes.io/part-of: platform-console
     app.kubernetes.io/component: project-status
+    pod-security.kubernetes.io/enforce: restricted
 ---
 apiVersion: v1
 kind: Namespace
@@ -20,6 +45,7 @@ metadata:
     istio-injection: enabled
     app.kubernetes.io/part-of: platform-console
     app.kubernetes.io/component: project-status
+    pod-security.kubernetes.io/enforce: restricted
 ---
 apiVersion: v1
 kind: Namespace
@@ -29,6 +55,7 @@ metadata:
     istio-injection: enabled
     app.kubernetes.io/part-of: platform-console
     app.kubernetes.io/component: project-status
+    pod-security.kubernetes.io/enforce: restricted
 ---
 apiVersion: v1
 kind: Namespace
@@ -38,6 +65,7 @@ metadata:
     istio-injection: enabled
     app.kubernetes.io/part-of: platform-console
     app.kubernetes.io/component: project-status
+    pod-security.kubernetes.io/enforce: restricted
 ---
 apiVersion: v1
 kind: Namespace
@@ -47,3 +75,39 @@ metadata:
     istio-injection: enabled
     app.kubernetes.io/part-of: platform-console
     app.kubernetes.io/component: console
+    pod-security.kubernetes.io/enforce: restricted
+---
+# supabase-demo is the pre-existing, already-live external project namespace
+# (see app/lib/quickstart.ts's comment: "the real, already-provisioned
+# project namespace this cluster ships with") -- not created by this file
+# originally (kubectl get ns supabase-demo predates this manifest), but
+# brought under it here so the restricted PodSecurity label is
+# declaratively managed like every other tenant namespace rather than
+# hand-applied out of band. `kubectl apply` on an already-live namespace
+# only patches labels/metadata; it does not recreate the namespace or
+# evict any running pod.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: supabase-demo
+  labels:
+    app.kubernetes.io/part-of: platform-console
+    app.kubernetes.io/component: project-status
+    pod-security.kubernetes.io/enforce: restricted
+---
+# castle: dedicated namespace for the Castle security-testing module
+# (lib/castle.ts, app/app/castle) -- a real workload's own blast-radius
+# boundary, same reasoning as every other tenant namespace above, kept
+# separate from the 4 pre-existing project namespaces since Castle is a
+# platform-console module target, not a Supabase project. restricted
+# PodSecurity: the castle image runs as a real non-root UID (see
+# /Users/sac/castle/Dockerfile's `USER castle:castle`) with no privileged
+# capabilities, so it qualifies cleanly.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: castle
+  labels:
+    app.kubernetes.io/part-of: platform-console
+    app.kubernetes.io/component: castle
+    pod-security.kubernetes.io/enforce: restricted

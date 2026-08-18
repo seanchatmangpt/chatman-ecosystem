@@ -37,10 +37,26 @@ const PUBLIC_PATHS = [
   "/api/status",
 ];
 
+// Real bearer-style signed-URL download route (control:
+// storage-signed-url-expiry-enforced): matches
+// /api/projects/<any-name>/storage/download exactly (never a subpath) --
+// this is the one deliberately public API route whose own authorization
+// is NOT the session cookie but a per-request HMAC-signed, time-boxed
+// token verified inside the route handler itself
+// (lib/storage-signed-url.ts). A real presigned URL (AWS S3 / GCS
+// convention) must be usable by a caller with no platform-console session
+// at all -- gating it behind this same session check middleware applies
+// to every other /api/* route would defeat the entire point of a
+// shareable, expiring link. The route handler enforces its own real
+// 403-on-invalid-or-expired-token check; this exemption only lets the
+// request reach that handler instead of dying here on a missing cookie.
+const STORAGE_SIGNED_DOWNLOAD_PATTERN = /^\/api\/projects\/[^/]+\/storage\/download$/;
+
 function isPublicPath(pathname: string): boolean {
   if (PUBLIC_PATHS.includes(pathname)) return true;
   if (pathname.startsWith("/_next/")) return true;
   if (pathname === "/favicon.ico") return true;
+  if (STORAGE_SIGNED_DOWNLOAD_PATTERN.test(pathname)) return true;
   return false;
 }
 
