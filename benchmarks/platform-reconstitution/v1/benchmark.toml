@@ -1,0 +1,69 @@
+[benchmark]
+id = "platform-reconstitution-v1"
+version = "1.0.0"
+claim = "A single admitted semantic subject can manufacture, actuate through BRCE, receipt, delete, reconstitute, and replay an enterprise capability across heterogeneous deployment substrates without projection-owned business meaning."
+scenario = "benchmarks/platform-reconstitution/v1/scenarios/regulated-claims.toml"
+standing = "UNKNOWN"
+
+[marketplace]
+repository = "seanchatmangpt/ggen-marketplace"
+ref = "main"
+sha = "14f122414e72291a69975523601305fc346b118d"
+required_packs = [
+  "dfcm-full-deployment-pack",
+  "domain-capability-pack",
+  "fortune5-deployment-blocks-pack",
+  "ggen-combinatorial-maximalism-pack",
+  "mfact-pack",
+  "mfw-pack",
+  "praxis-core-pack",
+  "shacl-projection-pack",
+  "standing-ladder-pack",
+]
+
+[calculus]
+canonical_semantics = "admitted_graph"
+select_path = "candidate_graph"
+construct_path = "ggen"
+do_path = "BRCE"
+ambient_do = false
+hooks_actuate = false
+planner_actuate = false
+receipt_required = true
+replay_required = true
+exact_subject_required = true
+
+[coverage]
+projection_classes = [
+  "application-source",
+  "api",
+  "cli",
+  "mcp",
+  "a2a",
+  "ui",
+  "data-schema",
+  "database",
+  "infrastructure",
+  "policy",
+  "tests",
+  "documentation",
+  "sbom",
+  "receipt",
+  "replay",
+]
+substrates = [
+  "local",
+  "kubernetes",
+  "aws",
+  "azure",
+  "gcp",
+  "wasm-edge",
+  "airgap",
+]
+negative_controls = [
+  "ambient-do-refused",
+  "direct-mcp-mutation-refused",
+  "unauthorized-actuation-refused",
+  "projection-loss-recoverable",
+  "stale-subject-refused",
+]
