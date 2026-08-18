@@ -1,0 +1,56 @@
+[release_crown]
+schema = "chatman-ecosystem.release-crown-edges/1"
+version = "26.9.1"
+observed_at = "2026-08-18T06:04:40-07:00"
+standing = "UNKNOWN"
+
+[policy]
+live_azure_mandatory = false
+live_azure_standing = "BLOCKED:LIVE_AZURE_AUTHORITY"
+ww3gym_scope = "SIMULATION_EVALUATION_ONLY"
+planner_policy_role_agent_authority_equivalent = false
+bcre_brce_equivalent = false
+
+[[edges]]
+id = "semantic_o_star"
+standing = "UNKNOWN"
+
+[[edges]]
+id = "qlever_query_similarity"
+standing = "UNKNOWN"
+
+[[edges]]
+id = "planner_league_meta_selection_falsification"
+standing = "UNKNOWN"
+
+[[edges]]
+id = "bcinr_cmca_mfw_consumption"
+standing = "UNKNOWN"
+
+[[edges]]
+id = "gymact_domain_world_court"
+standing = "UNKNOWN"
+
+[[edges]]
+id = "brce_consequential_boundary"
+standing = "UNKNOWN"
+
+[[edges]]
+id = "independent_observation_verification"
+standing = "UNKNOWN"
+
+[[edges]]
+id = "canonical_receipt_ocel_replay"
+standing = "UNKNOWN"
+
+[[edges]]
+id = "affidavit_bcre_composition"
+standing = "UNKNOWN"
+
+[[edges]]
+id = "ggen_marketplace_deterministic_manufacture"
+standing = "UNKNOWN"
+
+[[edges]]
+id = "autofde_runtime_pinning"
+standing = "UNKNOWN"
