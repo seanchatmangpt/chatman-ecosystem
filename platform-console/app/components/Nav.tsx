@@ -33,6 +33,7 @@ const links = [
   { href: "/topology", label: "Topology" },
   { href: "/network", label: "Network" },
   { href: "/api-gateway", label: "API Gateway" },
+  { href: "/disaster-recovery", label: "Disaster Recovery" },
   { href: "/compliance", label: "Compliance" },
   { href: "/pricing", label: "Pricing" },
 ];

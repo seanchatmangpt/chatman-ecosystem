@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: platform-feature-flags
+  namespace: platform-console
+  labels:
+    app.kubernetes.io/component: feature-flags
+    app.kubernetes.io/part-of: platform-console
+data:
+  verbose-status: "false"
