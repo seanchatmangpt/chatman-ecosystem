@@ -3,6 +3,7 @@ import { SESSION_COOKIE_NAME, verifySessionToken, type SessionPayload } from "@/
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { createProjectWithDatabase, listProjects } from "@/lib/k8s";
 import { requireRole } from "@/lib/authz";
+import { deliverWebhookEvent } from "@/lib/webhooks";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -108,5 +109,21 @@ export async function POST(request: NextRequest) {
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 502 });
   }
+
+  // Real "project.created" Outbound Webhook trigger (lib/webhooks.ts):
+  // fires straight off this real createProjectWithDatabase success --
+  // never a separate/simulated event. Deliberately not awaited into the
+  // response path (delivery has its own 5s-per-subscriber timeout and
+  // never throws past deliverWebhookEvent) so a slow or dead subscriber
+  // can never delay or fail the actual project-creation response; any
+  // delivery outcome is logged by deliverWebhookEvent itself.
+  void deliverWebhookEvent("project.created", {
+    name: result.data.name,
+    namespace: result.data.namespace,
+    databaseRefName: result.data.databaseRefName,
+    hostname: result.data.hostname,
+    createdAt: result.data.createdAt,
+  });
+
   return NextResponse.json({ project: result.data }, { status: 201 });
 }
