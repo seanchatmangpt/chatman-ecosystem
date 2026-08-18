@@ -151,6 +151,22 @@ rules:
   - apiGroups: ["security.istio.io"]
     resources: ["peerauthentications"]
     verbs: ["get", "list", "watch"]
+  # Policy-as-Code module (lib/policy.ts, app/policy): read-only
+  # ValidatingAdmissionPolicy/ValidatingAdmissionPolicyBinding inventory --
+  # both are cluster-scoped resources (like Nodes/PeerAuthentications
+  # above), so this cannot be namespace-narrowed. This grant is
+  # deliberately get/list/watch ONLY: the app never creates, updates, or
+  # deletes a ValidatingAdmissionPolicy -- that object is applied directly
+  # via `kubectl apply -f k8s/admission-policy.yaml` by a cluster operator,
+  # exactly the same "the app surfaces what's enforced, it doesn't
+  # implement the enforcement" boundary this module's own doc comment
+  # states. Confirmed not already covered before adding (`kubectl auth
+  # can-i list validatingadmissionpolicies.admissionregistration.k8s.io
+  # --as=system:serviceaccount:platform-console:platform-console`
+  # returned a real `no` prior to this rule).
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources: ["validatingadmissionpolicies", "validatingadmissionpolicybindings"]
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

@@ -29,6 +29,7 @@ const links = [
   { href: "/alerts", label: "Alerting" },
   { href: "/gitops", label: "GitOps" },
   { href: "/iam", label: "IAM" },
+  { href: "/policy", label: "Policy" },
   { href: "/org", label: "Org Roles" },
   { href: "/api-keys", label: "API Keys" },
   { href: "/webhooks", label: "Webhooks" },

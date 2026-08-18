@@ -72,6 +72,7 @@ hyperscaler-equivalent language as a claim about scale.
 | `/observability` | Live allowlisted PromQL against the real in-cluster Prometheus | `app/api/prometheus/route.ts`, `lib/prometheus.ts` |
 | `/gitops` | Lists real Flux `Kustomization`/`HelmRelease` objects, read-only | `lib/k8s.ts` |
 | `/iam` | Lists real RBAC Roles/RoleBindings/NetworkPolicies grouped by namespace | `lib/k8s.ts` |
+| `/policy` | Real **Policy as Code / Organization Policy enforcement** (AWS Config Rules / GCP Org Policy equivalent) using Kubernetes' own native `admissionregistration.k8s.io/v1` `ValidatingAdmissionPolicy` (CEL-based, GA since 1.30) -- not a third-party admission webhook framework, none of which is installed on this cluster. Owner-gated, read-only: lists the real, live policy + binding objects and their real CEL rule text verbatim. See "Policy as Code" below and `admission-policy-rejects-noncompliant-deployment` in `evidence/control-evidence-bundle.json` for the real k8s API server rejection transcript | `lib/policy.ts`, `app/app/policy/page.tsx`, `k8s/admission-policy.yaml` |
 | `/secrets` | Lists real `type: Opaque` k8s Secrets per namespace (names + key names only, never decoded values); create/delete real Secrets | `app/api/secrets/route.ts`, `lib/k8s.ts` |
 | `/scheduled-jobs` | Scheduled Jobs (AWS EventBridge Scheduler / GCP Cloud Scheduler / Azure Logic Apps recurring-trigger equivalent): self-service creation of real `batch/v1` `CronJob` objects, scoped to the platform's own namespaces only via a per-namespace `Role`/`RoleBinding` pair (`k8s/paas-rbac.yaml`) -- never cluster-wide. The real security boundary is the CONTAINER COMMAND: `lib/scheduled-jobs.ts`'s `ALLOWED_COMMANDS` is a fixed, small, server-side allowlist of two harmless commands (echo the real current UTC timestamp; curl the namespace's own `<namespace>-status` Service `/status` and log the real response) -- a request naming anything outside that allowlist is rejected with a `400` before any k8s API call is made; there is no free-text command field anywhere in the create form or the API route. Lists real CronJobs with their real `status.lastScheduleTime`/`status.lastSuccessfulTime` (the CronJob controller's own fields -- no separate fabricated catalog); delete stops all further scheduling. See `scheduled-job-fires-on-real-schedule` in `evidence/control-evidence-bundle.json` for the real create/wait/observe/delete/confirm-no-further-firings proof | `app/api/scheduled-jobs/route.ts`, `lib/scheduled-jobs.ts` |
 | `/batch-jobs` | **Batch Compute** (AWS Batch / GCP Batch / Azure Batch equivalent): self-service PARALLEL job fan-out using k8s's own real Indexed `batch/v1` `Job` feature (`completionMode: Indexed`, `parallelism == completions`), distinct from `/scheduled-jobs`'s single-shot, time-triggered `CronJob`s. Reuses Scheduled Jobs' exact allowlist discipline: the same 5 platform namespaces (`BATCHABLE_NAMESPACES` re-exports `SCHEDULABLE_NAMESPACES` unchanged), and a fixed, small, server-side command allowlist (`lib/batch-jobs.ts`'s `ALLOWED_BATCH_COMMANDS`: compute index² or index³ with plain POSIX shell arithmetic) -- no free-text command field anywhere. Each of up to 10 concurrent pods gets a real, kubelet-injected `JOB_COMPLETION_INDEX` env var (confirmed live before any application code was written: a 2-pod probe Job's own logs showed `JOB_COMPLETION_INDEX=0`/`=1` with zero downward-API wiring) and PATCHes its own real, deterministic result into one shared, well-known `platform-batch-results` ConfigMap (never a hostPath, never the PVC-backed pattern Backups uses -- PVC contents aren't queryable via the k8s API, a ConfigMap key is), authenticating as its own narrowly-scoped `platform-batch-runner` ServiceAccount (`patch`, `resourceNames: ["platform-batch-results"]` -- the same `resourceNames`-restricted least-privilege pattern `platform-console-feature-flags-reader` already established, now applied to a workload identity). `collectBatchResults` gathers every completed index's real output back into one aggregated set, cross-checked for missing/duplicate indices against the Job's own real `status.completedIndexes`. See `batch-job-parallel-fanout-verified` in `evidence/control-evidence-bundle.json` for the real overlapping-pod-timestamp proof and the real collected 5/5 result set | `lib/batch-jobs.ts`, `app/api/batch-jobs/route.ts`, `app/app/batch-jobs/page.tsx`, `components/CreateBatchJobForm.tsx`, `components/BatchJobMonitor.tsx` |
@@ -339,6 +340,87 @@ upgraded to a WebSocket (see "Container Exec" below), which the API server's aut
 evaluates as the `get` verb, confirmed live by a real `403` ("cannot get resource
 \"pods/exec\"") with only `create` granted, fixed by adding `get`. Scoped to the platform's
 own namespaces only, never cluster-wide, never `kube-system`.
+
+## Policy as Code
+
+Real **Organization Policy enforcement** (AWS Config Rules / GCP Org Policy equivalent),
+distinct from every RBAC grant above: RBAC controls *who* may act; this controls *what shape*
+an object is allowed to take, enforced regardless of who submits it -- even a request made
+directly with `kubectl`, never routed through this console at all. Built entirely on
+Kubernetes' own native `admissionregistration.k8s.io/v1` `ValidatingAdmissionPolicy` (CEL-based,
+GA since Kubernetes 1.30 -- this cluster runs v1.34.0) -- deliberately **not** a third-party
+admission webhook framework (Kyverno, OPA Gatekeeper, etc.); none is installed on this cluster,
+and `ValidatingAdmissionPolicy` needs zero extra infrastructure: kube-apiserver evaluates the
+CEL expression in-process, natively, on every matching request.
+
+One real, meaningful policy is enforced: `k8s/admission-policy.yaml` defines
+`platform-deployments-require-resources`, a `ValidatingAdmissionPolicy` whose CEL validation is
+
+```cel
+object.spec.template.spec.containers.all(c,
+  has(c.resources.requests) && has(c.resources.limits))
+```
+
+rejecting any `apps/v1` `Deployment` `CREATE`/`UPDATE` where any container omits
+`resources.requests` or `resources.limits`. This is the exact real gap
+`k8s/resource-quotas.yaml`'s own comment already documents: once a namespace carries a
+compute `ResourceQuota` (true for all 5 platform namespaces here), a Deployment with no
+`resources` block fails ResourceQuota admission anyway, but with a generic quota-shaped error
+that doesn't name the real rule. This policy makes that rule explicit, and rejects it with a
+message that says exactly what's missing -- before ResourceQuota admission even runs.
+
+Its `ValidatingAdmissionPolicyBinding` (`platform-deployments-require-resources-binding`) scopes
+enforcement to *only* the platform's 5 project namespaces (`autofde-lab`, `gymact`, `ggen`,
+`ggen-marketplace`, `platform-console` -- the same 5 namespaces `k8s/namespaces.yaml` creates
+and `k8s/resource-quotas.yaml` already puts a `ResourceQuota` in), matched by the well-known,
+immutable `kubernetes.io/metadata.name` namespace label. `kube-system`, `istio-system`,
+`flux-system`, `default`, and every other namespace outside that list are deliberately excluded
+-- proven live below, not just asserted.
+
+**Real proof, applied and exercised against the live cluster** (`kubectl apply -f
+k8s/admission-policy.yaml`, then three real `kubectl apply` attempts, no app code in the
+loop at all):
+
+1. A Deployment with **no `resources` block**, submitted to `autofde-lab` (in scope), was
+   rejected by the real API server before any pod was ever scheduled:
+
+   ```
+   The deployments "policy-test-noncompliant" is invalid: : ValidatingAdmissionPolicy
+   'platform-deployments-require-resources' with binding
+   'platform-deployments-require-resources-binding' denied request: every container in
+   this Deployment's pod template must declare both spec.resources.requests and
+   spec.resources.limits (Policy-as-Code control:
+   platform-deployments-require-resources) -- a Deployment with no resources block
+   breaks ResourceQuota-enforced namespaces and is rejected here before that happens
+   ```
+
+   `kubectl get deploy policy-test-noncompliant -n autofde-lab` confirmed a real `NotFound` --
+   nothing was created.
+2. The same Deployment, corrected with a real `resources.requests`/`resources.limits` block,
+   submitted to the same `autofde-lab` namespace: `deployment.apps/policy-test-compliant
+   created` -- accepted normally.
+3. The identical **no-`resources`** Deployment shape, submitted to `default` (deliberately
+   **out of scope**): `deployment.apps/policy-test-noncompliant-default created` -- admitted
+   with no rejection at all, proving the binding's namespace scoping is real and narrow, not
+   accidentally cluster-wide.
+
+Both real test Deployments (`policy-test-compliant` in `autofde-lab`,
+`policy-test-noncompliant-default` in `default`) were deleted immediately after, confirmed via a
+real `kubectl get deploy` in each namespace showing zero leftover objects.
+
+The console's own read-only surface for this control is `/policy` (owner-gated):
+`lib/policy.ts` lists the real, live `ValidatingAdmissionPolicy`/`ValidatingAdmissionPolicyBinding`
+objects and renders their real CEL expression text verbatim -- the enforcement itself never
+lives in this app, only at kube-apiserver; this module surfaces what's enforced, it does not
+implement it. **"Recent denials" is honestly documentation-only, not live-queryable**: Kubernetes
+has no built-in "denial log" API. A `ValidatingAdmissionPolicy`'s `auditAnnotations` are written
+into kube-apiserver's own audit log stream (when audit logging is enabled and configured to
+capture them) -- not into any object this app, or any Kubernetes API, can `GET`. This cluster
+does not currently ingest kube-apiserver's audit log anywhere queryable from this console, so a
+real "recent denials" list cannot honestly be built here today; `/policy` discloses this gap
+directly rather than fabricating a denial history. The real rejection transcript above is
+captured, instead, as this section's own live evidence and in
+`admission-policy-rejects-noncompliant-deployment` (`evidence/control-evidence-bundle.json`).
 
 ## Application-level RBAC
 

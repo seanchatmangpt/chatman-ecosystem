@@ -1,0 +1,91 @@
+# Real Policy-as-Code / Organization Policy enforcement (AWS Config Rules /
+# GCP Org Policy equivalent), using Kubernetes' own native, built-in
+# ValidatingAdmissionPolicy (CEL-based, admissionregistration.k8s.io/v1,
+# GA since 1.30 -- this cluster runs v1.34.0) -- NOT a third-party
+# admission webhook framework (Kyverno/OPA Gatekeeper/etc.), none of which
+# is installed on this cluster. Zero extra infrastructure: the policy is
+# evaluated by kube-apiserver itself, in-process, on every matching
+# request.
+#
+# The ONE real, meaningful policy enforced here: every Deployment created
+# in the platform's own project namespaces must declare real resource
+# requests/limits on every container. This is the exact same rule
+# k8s/resource-quotas.yaml's own comment already documents as a real,
+# live-confirmed gap (a Deployment with no `resources` block -- or with
+# `limits` but no `requests`, or vice versa -- breaks ResourceQuota
+# admission with a real `exceeded quota: must specify limits.cpu for: ...`
+# once ANY compute ResourceQuota exists in that namespace, which is true
+# for all 5 platform namespaces below, per k8s/resource-quotas.yaml).
+# Before this policy, that gap was only caught by ResourceQuota admission
+# incidentally, AFTER the fact, with a quota-shaped error message that
+# doesn't explain the real rule; this policy is the platform's own,
+# explicit, purpose-written rule for it -- rejected with a message that
+# says exactly what's missing and why, evaluated before ResourceQuota
+# admission even runs.
+#
+# app-level RBAC (lib/authz.ts, k8s/rbac.yaml/paas-rbac.yaml) already
+# controls WHO can ask the console to create a Deployment; this is a
+# second, independent, cluster-side enforcement layer that holds even
+# against `kubectl apply` run directly against the API server by anyone
+# with namespace write access -- the same defense-in-depth relationship
+# AWS Config Rules/GCP Org Policy have to IAM.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: platform-deployments-require-resources
+spec:
+  # Fail (not Ignore): if CEL evaluation itself errors for some reason,
+  # fail CLOSED (reject), never silently let a non-compliant Deployment
+  # through.
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments"]
+  validations:
+    - expression: >-
+        object.spec.template.spec.containers.all(c,
+          has(c.resources.requests) && has(c.resources.limits))
+      message: >-
+        every container in this Deployment's pod template must declare both
+        spec.resources.requests and spec.resources.limits (Policy-as-Code
+        control: platform-deployments-require-resources) -- a Deployment
+        with no resources block breaks ResourceQuota-enforced namespaces
+        and is rejected here before that happens
+      reason: Invalid
+  auditAnnotations:
+    - key: enforced-by
+      valueExpression: "'platform-deployments-require-resources'"
+---
+# Binding: scopes the policy above to ONLY the platform's 5 project
+# namespaces (autofde-lab, gymact, ggen, ggen-marketplace,
+# platform-console -- the exact same 5 namespaces k8s/namespaces.yaml
+# creates and k8s/resource-quotas.yaml already puts a ResourceQuota in,
+# confirmed live via `kubectl get resourcequota -A`). Matched by the
+# well-known, immutable, auto-applied `kubernetes.io/metadata.name` label
+# every namespace carries (the same selector shape
+# k8s/network-policies.yaml's own `*-allow-from-platform-console` rules
+# already use) -- never a wildcard, never kube-system/istio-system/
+# flux-system/kube-public/kube-node-lease/local-path-storage/monitoring/
+# supabase-system/supabase-demo/default, all of which are deliberately
+# left OUT of this list.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: platform-deployments-require-resources-binding
+spec:
+  policyName: platform-deployments-require-resources
+  validationActions: ["Deny"]
+  matchResources:
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: In
+          values:
+            - autofde-lab
+            - gymact
+            - ggen
+            - ggen-marketplace
+            - platform-console
