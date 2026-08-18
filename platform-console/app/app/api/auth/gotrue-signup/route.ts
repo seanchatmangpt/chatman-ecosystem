@@ -5,7 +5,7 @@ import {
   SESSION_COOKIE_NAME,
   SESSION_MAX_AGE,
 } from "@/lib/session";
-import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
+import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 
 // Additive signup path: real account creation against the live GoTrue
 // instance's /signup endpoint (see lib/gotrue-auth.ts). On success mints

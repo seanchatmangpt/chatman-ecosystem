@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken, type SessionPayload } from "@/lib/session";
-import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
+import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { createSecret, deleteSecret, listSecrets } from "@/lib/k8s";
 import { requireRole } from "@/lib/authz";
 

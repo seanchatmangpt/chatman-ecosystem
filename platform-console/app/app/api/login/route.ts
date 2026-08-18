@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminCredentials } from "@/lib/credentials";
 import { createSessionToken, SESSION_COOKIE_NAME, SESSION_MAX_AGE } from "@/lib/session";
-import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
+import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 
 // Runs on the Node.js runtime (the default for route handlers) because
 // bcryptjs (via verifyAdminCredentials) needs Node crypto APIs that the

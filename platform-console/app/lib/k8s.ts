@@ -824,6 +824,34 @@ export async function deleteSecret(
   return { ok: true, data: null };
 }
 
+/**
+ * Reads and base64-decodes exactly one key of one real Secret. Every other
+ * reader in this module (listSecrets/toSecretSummary above) deliberately
+ * never looks past `Object.keys(item.data)` because the Secrets Manager UI
+ * has no legitimate reason to hold a plaintext value in memory. This
+ * function is the one, disclosed exception: the Audit Log module (below,
+ * getPostgresConnectionInfo) needs a real plaintext Postgres password to
+ * open a direct TCP connection from the console's own Node.js process, the
+ * same way createBackupJob/createRestoreJob's Jobs get it via
+ * `valueFrom.secretKeyRef` -- this is that same secretKeyRef resolved
+ * server-side instead of by a Pod's own env. Never exposed to the client:
+ * only ever called from lib/k8s.ts/lib/audit-log.ts, never returned from an
+ * API route.
+ */
+export async function getSecretValue(
+  namespace: string,
+  name: string,
+  key: string,
+): Promise<K8sResult<string | null>> {
+  const result = await k8sRequest<SecretItem>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/secrets/${encodeURIComponent(name)}`,
+  );
+  if (!result.ok) return result;
+  const encoded = result.data.data?.[key];
+  if (encoded === undefined) return { ok: true, data: null };
+  return { ok: true, data: Buffer.from(encoded, "base64").toString("utf8") };
+}
+
 // ---------------------------------------------------------- Container Registry
 //
 // Real hyperscaler-PaaS-style Container Registry primitive (ECR / GCR / ACR
@@ -1647,6 +1675,89 @@ export async function createRestoreJob(
   );
   if (!result.ok) return result;
   return { ok: true, data: toBackupJob(result.data) };
+}
+
+// ------------------------------------------------------------ Audit Log DB
+//
+// Real hyperscaler-CloudTrail/GCP-Audit-Logs/Azure-Activity-Log equivalent:
+// a durable, queryable "who did what" history, as opposed to
+// lib/audit-log.ts's existing stdout line (real, but ephemeral -- gone the
+// moment a pod restarts). Rather than inventing a second credential or a
+// second database, this reuses the exact same live Postgres this cluster
+// already runs for demo-project (lib/k8s.ts's own createBackupJob/
+// createRestoreJob functions above already trust it enough to dump/restore
+// real tenant data), in its own `platform_console` schema so it's
+// unambiguous this table belongs to the console app, not to any
+// Supabase-owned schema (public/auth/storage/_realtime/...) in that same
+// database.
+
+export interface PostgresConnectionInfo {
+  host: string;
+  port: number;
+  user: string;
+  database: string;
+  password: string;
+}
+
+/**
+ * Resolves real, live connection info for a StatefulSet-backed Postgres
+ * Pod -- the exact same credential-discovery convention as
+ * createBackupJob/createRestoreJob above (reads the Pod's own live
+ * PGPASSWORD/POSTGRES_PASSWORD env, sourced from a real Secret; refuses
+ * rather than inventing a credential if it isn't). The one difference:
+ * those Jobs hand the Secret reference to a Pod spec and let THAT Pod's
+ * own kubelet resolve the plaintext; this caller (the console's own
+ * long-running Node.js process, not a one-shot Job) needs the plaintext
+ * itself to open a direct TCP connection, so it performs one additional
+ * real GET on that Secret via getSecretValue above.
+ */
+export async function getPostgresConnectionInfo(
+  namespace: string,
+  dbPodName: string,
+): Promise<K8sResult<PostgresConnectionInfo>> {
+  const podResult = await getPodSpec(namespace, dbPodName);
+  if (!podResult.ok) return podResult;
+
+  const container = podResult.data.spec?.containers?.[0];
+  if (!container) {
+    return { ok: false, error: `pod ${namespace}/${dbPodName} has no containers in its spec` };
+  }
+
+  const passwordEnv = container.env?.find(
+    (e) =>
+      (e.name === "PGPASSWORD" || e.name === "POSTGRES_PASSWORD") && e.valueFrom?.secretKeyRef,
+  );
+  if (!passwordEnv?.valueFrom?.secretKeyRef) {
+    return {
+      ok: false,
+      error: `pod ${namespace}/${dbPodName} has no PGPASSWORD/POSTGRES_PASSWORD env sourced from a Secret -- refusing to invent a credential`,
+    };
+  }
+  const { name: secretName, key: secretKey } = passwordEnv.valueFrom.secretKeyRef;
+  const secretResult = await getSecretValue(namespace, secretName, secretKey);
+  if (!secretResult.ok) return secretResult;
+  if (secretResult.data === null) {
+    return {
+      ok: false,
+      error: `secret ${namespace}/${secretName} has no key '${secretKey}' -- refusing to invent a credential`,
+    };
+  }
+
+  const pgUser = container.env?.find((e) => e.name === "POSTGRES_USER")?.value ?? "postgres";
+  const pgDatabase =
+    container.env?.find((e) => e.name === "PGDATABASE" || e.name === "POSTGRES_DB")?.value ??
+    "postgres";
+
+  // Same StatefulSet-Service-name convention createBackupJob/
+  // createRestoreJob already rely on (demo-db-postgres-0 -> Service
+  // demo-db-postgres).
+  const stem = dbPodName.replace(/-\d+$/, "");
+  const host = `${stem}.${namespace}.svc.cluster.local`;
+
+  return {
+    ok: true,
+    data: { host, port: 5432, user: pgUser, database: pgDatabase, password: secretResult.data },
+  };
 }
 
 // -------------------------------------------------------------- Cost & Usage

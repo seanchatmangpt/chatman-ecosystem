@@ -47,6 +47,24 @@ export const evidenceBundle: EvidenceEntry[] = [
     last_verified_at: "2026-08-17T00:00:00Z",
   },
   {
+    id: "audit-log-durable-and-queryable",
+    control: "Durable, queryable audit trail",
+    description:
+      "Every /api/* route additionally INSERTs the same audit entry into " +
+      "a real platform_console.audit_log table on the live demo-project " +
+      "Postgres (lib/audit-db.ts), and /audit (owner-gated) provides a " +
+      "real filter/pagination query UI over it -- closing the prior gap " +
+      "that the stdout line above does not survive a pod restart. Live-" +
+      "verified: 7 real requests cross-matched byte-for-byte across " +
+      "stdout, the app's own API, and a direct psql SELECT, then a pod " +
+      "deletion showed the stdout record gone while the DB row survived.",
+    evidence_type: "runtime_observation",
+    source_reference: "platform-console/app/lib/audit-db.ts",
+    last_verified_at: "2026-08-18T08:15:00Z",
+    notes:
+      "See audit-log-durable-and-queryable in evidence/control-evidence-bundle.json for the full requestId cross-match and the pod-deletion durability proof.",
+  },
+  {
     id: "password-hash-only",
     control: "No plaintext credentials in source",
     description:

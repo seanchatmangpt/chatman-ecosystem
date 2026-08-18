@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
-import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
+import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { queryAlerts } from "@/lib/alertmanager";
 
 // Real current alert list from the in-cluster Alertmanager -- no allowlist

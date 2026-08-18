@@ -5,7 +5,7 @@ import {
   SESSION_COOKIE_NAME,
   SESSION_MAX_AGE,
 } from "@/lib/session";
-import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
+import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 
 // Additive login path: real email/password login against the live GoTrue
 // instance (see lib/gotrue-auth.ts). Runs on the Node.js runtime (the

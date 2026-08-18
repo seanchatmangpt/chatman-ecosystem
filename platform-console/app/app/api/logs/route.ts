@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
-import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
+import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { getPodLogs, listPods } from "@/lib/k8s";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts

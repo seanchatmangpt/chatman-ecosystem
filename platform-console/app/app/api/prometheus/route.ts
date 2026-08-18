@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
-import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
+import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { queryPrometheus } from "@/lib/prometheus";
 
 const ALLOWED_QUERIES = new Set(["up", "kube_pod_status_ready", "container_memory_working_set_bytes"]);

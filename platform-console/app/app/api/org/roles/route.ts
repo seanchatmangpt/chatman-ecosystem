@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken, type SessionPayload } from "@/lib/session";
-import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
+import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { getOrgRoleAssignments, requireRole, ROLES, setOrgRole, type Role } from "@/lib/authz";
 
 // Backs the owner-only /org page (app/org/page.tsx). Both GET and POST
