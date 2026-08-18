@@ -212,6 +212,28 @@ interface SingleDatabaseItem {
 }
 
 /**
+ * Builds the exact SingleDatabase manifest createSingleDatabase submits --
+ * pulled out as its own pure function (no network call) so lib/iac.ts's
+ * detectDrift can compute "what a fresh createSingleDatabase call would
+ * submit for this name" from the SAME code path that a real create uses,
+ * rather than a second, driftable copy of this shape.
+ */
+export function buildSingleDatabaseManifest(input: {
+  name: string;
+  namespace: string;
+  storageSize: string;
+}) {
+  return {
+    apiVersion: "core.supabase.io/v1alpha1",
+    kind: "SingleDatabase",
+    metadata: { name: input.name, namespace: input.namespace },
+    spec: {
+      storage: { accessModes: ["ReadWriteOnce"], size: input.storageSize },
+    },
+  };
+}
+
+/**
  * Creates the SingleDatabase CR a Project's spec.databaseRef points at.
  * Mirrors the real, working demo-db manifest in supabase-demo (verified via
  * `kubectl get singledatabase demo-db -n supabase-demo -o yaml`): only
@@ -223,14 +245,7 @@ export async function createSingleDatabase(input: {
   namespace: string;
   storageSize: string;
 }): Promise<K8sResult<SingleDatabaseItem>> {
-  const manifest = {
-    apiVersion: "core.supabase.io/v1alpha1",
-    kind: "SingleDatabase",
-    metadata: { name: input.name, namespace: input.namespace },
-    spec: {
-      storage: { accessModes: ["ReadWriteOnce"], size: input.storageSize },
-    },
-  };
+  const manifest = buildSingleDatabaseManifest(input);
   return k8sRequest<SingleDatabaseItem>(
     `/apis/core.supabase.io/v1alpha1/namespaces/${encodeURIComponent(input.namespace)}/singledatabases`,
     "POST",
@@ -264,10 +279,8 @@ export async function createSingleDatabase(input: {
  * storage/studio's PVC sizing) rather than repeating the schema's own
  * defaults here.
  */
-export async function createProject(
-  input: CreateProjectInput,
-): Promise<K8sResult<SupabaseProject>> {
-  const manifest = {
+export function buildProjectManifest(input: CreateProjectInput) {
+  return {
     apiVersion: "core.supabase.io/v1alpha1",
     kind: "Project",
     metadata: { name: input.name, namespace: input.namespace },
@@ -288,6 +301,12 @@ export async function createProject(
       },
     },
   };
+}
+
+export async function createProject(
+  input: CreateProjectInput,
+): Promise<K8sResult<SupabaseProject>> {
+  const manifest = buildProjectManifest(input);
   const result = await k8sRequest<NonNullable<K8sListMeta["items"]>[number]>(
     `/apis/core.supabase.io/v1alpha1/namespaces/${encodeURIComponent(input.namespace)}/projects`,
     "POST",
@@ -318,6 +337,62 @@ export async function createProjectWithDatabase(
 
   const projectResult = await createProject(input);
   return projectResult;
+}
+
+// -------------------------------------------------------- Raw CR (IaC/drift)
+//
+// Real, full-fidelity single-object GETs for the Infrastructure-as-Code
+// export/drift-detection module (lib/iac.ts) -- distinct from
+// listProjects/getProject above, which return a distilled SupabaseProject
+// view built for the rest of this console's UI. exportProjectManifest needs
+// the ACTUAL raw spec (every field, including the ones the operator itself
+// defaults in -- auth.replicas, rest.dbMaxRows, etc.) so the exported YAML
+// is a genuine "what's really running" snapshot, not a re-derived guess.
+
+export interface RawCustomResource {
+  apiVersion: string;
+  kind: string;
+  metadata: {
+    name: string;
+    namespace: string;
+    labels?: Record<string, string>;
+    annotations?: Record<string, string>;
+  };
+  spec: Record<string, unknown>;
+}
+
+/** Real single-object GET of one namespaced Project CR, full spec as the
+ * API server actually stores it. `{ ok: true, data: null }` -- not an
+ * error -- when it doesn't exist, the same honest-absence convention used
+ * throughout this file. */
+export async function getRawProject(
+  namespace: string,
+  name: string,
+): Promise<K8sResult<RawCustomResource | null>> {
+  const result = await k8sRequest<RawCustomResource>(
+    `/apis/core.supabase.io/v1alpha1/namespaces/${encodeURIComponent(namespace)}/projects/${encodeURIComponent(name)}`,
+  );
+  if (!result.ok) {
+    if (/not found/i.test(result.error)) return { ok: true, data: null };
+    return result;
+  }
+  return { ok: true, data: result.data };
+}
+
+/** Real single-object GET of one namespaced SingleDatabase CR, full spec.
+ * Same honest-absence convention as getRawProject above. */
+export async function getRawSingleDatabase(
+  namespace: string,
+  name: string,
+): Promise<K8sResult<RawCustomResource | null>> {
+  const result = await k8sRequest<RawCustomResource>(
+    `/apis/core.supabase.io/v1alpha1/namespaces/${encodeURIComponent(namespace)}/singledatabases/${encodeURIComponent(name)}`,
+  );
+  if (!result.ok) {
+    if (/not found/i.test(result.error)) return { ok: true, data: null };
+    return result;
+  }
+  return { ok: true, data: result.data };
 }
 
 // ---------------------------------------------------------------- Services
