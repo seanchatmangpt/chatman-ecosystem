@@ -7,7 +7,21 @@ export const dynamic = "force-dynamic";
 
 export default async function IaasPage() {
   const observed = await getIaasDashboard();
-  const model = enforceDashboardPostconditions(observed, [
+  const withGateway = {
+    ...observed,
+    capabilities: [
+      ...observed.capabilities,
+      {
+        name: "API Gateway",
+        href: "/api-gateway",
+        state: "AVAILABLE",
+        description:
+          "Ingress throttling and route isolation enforced by the Istio data plane, surfaced here without duplicating the gateway policy.",
+        evidence: "platform-console/k8s/ratelimit.yaml + platform-console/k8s/gateway.yaml",
+      },
+    ],
+  };
+  const model = enforceDashboardPostconditions(withGateway, [
     { kind: "Deployment", minimum: 1 },
     { kind: "Pod", minimum: 1 },
   ]);
