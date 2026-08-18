@@ -49,6 +49,7 @@ class CrownEdgeTests(unittest.TestCase):
         report = mod.verify(self.data)
         self.assertEqual(11, report["mandatory_edge_count"])
         self.assertEqual(11, len(report["unresolved_edges"]))
+        self.assertFalse(report["mandatory_edges_ready"])
         self.assertFalse(report["release_candidate_ready"])
         self.assertFalse(report["do_authority"])
         self.assertEqual(mod.CLAIM_CEILING, report["claim_ceiling"])
@@ -329,11 +330,16 @@ class CrownEdgeTests(unittest.TestCase):
         with self.assertRaisesRegex(mod.CrownEdgeRefusal, "CROWN_STANDING_STALE"):
             mod.verify(candidate)
 
-    def test_synthetic_full_closure_derives_ready_without_conferring_real_standing(self):
+    def test_synthetic_full_edge_closure_stays_below_release_readiness_claim_ceiling(self):
         candidate = self.make_all_alive()
         report = mod.verify(candidate)
         self.assertEqual([], report["unresolved_edges"])
-        self.assertTrue(report["release_candidate_ready"])
+        self.assertTrue(report["mandatory_edges_ready"])
+        self.assertFalse(report["release_candidate_ready"])
+        self.assertEqual(
+            "OUTSIDE_EDGE_VERIFIER_CLAIM_CEILING",
+            report["release_candidate_ready_reason"],
+        )
         self.assertFalse(report["do_authority"])
 
 
