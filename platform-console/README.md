@@ -54,6 +54,7 @@ or global footprint.
 | `/logs` | Namespace → pod → container drill-down over real pod stdout/stderr via the k8s pod-log subresource | `app/api/logs/route.ts`, `lib/k8s.ts` |
 | `/registry` | Container Registry as an honest **image inventory**: this cluster has no push-capable registry (images are built locally and `kind load docker-image`d straight into containerd), so every real Deployment container's `image` field is cross-referenced against real Pod `containerStatuses` (digest + ready state), flagging any image not confirmed present or stuck on a real pull failure | `lib/k8s.ts` |
 | `/backups` | Database Backups (RDS/Cloud SQL/Cloud Spanner automated-backup equivalent) for the real `demo-db-postgres` StatefulSet: "Run backup now" creates a real `batch/v1` Job that runs `pg_dump` against the database's real Service, using the exact image and password Secret/key read live off the source Pod's own spec; the dump lands on `platform-backups-pvc`. PVC contents aren't directly queryable via the k8s API, so the Job listing itself (name encodes the timestamp, real completion status, real duration) *is* the backup inventory | `app/api/backups/route.ts`, `lib/k8s.ts` |
+| `/api-gateway` | Documentation/visibility only -- the real control is enforced entirely by Istio (see "Rate limiting" below); this page just states the configured limit and points to `k8s/ratelimit.yaml` | (static; enforcement in `k8s/ratelimit.yaml`) |
 
 `lib/k8s.ts` is a hand-rolled Kubernetes API client using the pod's own in-cluster
 ServiceAccount token/CA (`/var/run/secrets/kubernetes.io/serviceaccount`) — no external k8s
@@ -94,7 +95,57 @@ ClusterRole grants. Scoped to the platform's own namespaces only, never cluster-
   created yet on this cluster — an honest empty GitOps state, not a fabricated one).
 - Manifests applied in order from `k8s/`: `namespaces.yaml`, `rbac.yaml`, `paas-rbac.yaml`,
   `resource-quotas.yaml`, `network-policies.yaml`, `mtls.yaml`,
-  `services-and-deployments.yaml`, `gateway.yaml`, `grafana-route.yaml`, `hpa.yaml`.
+  `services-and-deployments.yaml`, `gateway.yaml`, `grafana-route.yaml`, `hpa.yaml`,
+  `ratelimit.yaml`.
+
+## Rate limiting
+
+Real API Gateway throttling -- the AWS API Gateway / GCP Cloud Endpoints / Azure API
+Management rate-limit primitive -- implemented via Istio's local rate limit filter
+(`envoy.filters.http.local_ratelimit`, token bucket), enforced in-process at the real
+`istio-ingressgateway` data plane. No external dependency (no Redis, no global-ratelimit
+service): the bucket lives in the gateway's own Envoy worker.
+
+`k8s/ratelimit.yaml` defines two `EnvoyFilter` objects (namespace `istio-system`,
+`workloadSelector: {istio: ingressgateway}`):
+
+- `filter-local-ratelimit-svc` installs the `local_ratelimit` HTTP filter into the ingress
+  gateway's filter chain with no `token_bucket` configured -- a no-op everywhere by default.
+- `filter-local-ratelimit-platform-console-route` merges a `typed_per_filter_config`
+  override (`max_tokens: 20, tokens_per_fill: 20, fill_interval: 60s` -- 20 requests/minute)
+  onto exactly one Envoy route, matched by `routeConfiguration.vhost.route.name`.
+
+Scoping was deliberate, not blanket: `kubectl get virtualservice -A` showed the shared
+`platform-console-gateway` (host `platform.local`) also carries `grafana-route`
+(`/grafana/*`). The `platform-console-ingress` VirtualService's catch-all `/` route was given
+an explicit name, `platform-console-root` (`k8s/gateway.yaml`), confirmed live via
+`istioctl proxy-config routes deploy/istio-ingressgateway -n istio-system` before the
+EnvoyFilter was written, so only that one route carries the rate limit -- Grafana traffic on
+the identical gateway/vhost is untouched.
+
+**Load-test verification (real, not simulated)**: through
+`kubectl port-forward -n istio-system svc/istio-ingressgateway 18080:80` with a
+`Host: platform.local` header (same access path as the Grafana-route verification), a tight
+loop of 35 sequential `curl` requests against `/` returned `307` (unauthenticated redirect,
+the real response) for the first 20 requests, then real `429 Too Many Requests` for all 15
+remaining -- the exact `max_tokens: 20` boundary. A follow-up 25-request burst captured the
+25th response in full:
+
+```
+HTTP/1.1 429 Too Many Requests
+x-local-rate-limit: true
+content-length: 18
+content-type: text/plain
+
+local_rate_limited
+```
+
+During that same burst, `/grafana/` on the identical gateway/vhost returned `302` on every
+one of 8 requests -- proving the limit is scoped to `platform-console-root` only. After
+waiting 65s (past the 60s `fill_interval`), a follow-up request to `/` returned `307` again --
+real token-bucket refill. Full evidence: `rate-limiting-enforced` in
+`evidence/control-evidence-bundle.json`. Live documentation: `/api-gateway` on the console
+itself.
 
 ## Autoscaling
 
@@ -181,12 +232,15 @@ currently take payment.
 a compliance determination — those can only come from a licensed CPA firm after an
 independent audit. It records exactly which technical controls were actually observed
 enforced (with real command output as evidence, re-run fresh against the current cluster)
-versus which are configured but not currently enacted. As of this run: **11 controls verified
+versus which are configured but not currently enacted. As of this run: **14 controls verified
 with fresh live evidence** (resource-quotas-enforced, network-segmentation,
 least-privilege-rbac, audit-logging, self-service-project-provisioning,
 observability-proxy-least-privilege, gitops-read-only-visibility, mtls-enforced,
 autoscaling-enforced, secrets-never-logged-or-rendered,
-least-privilege-per-namespace-secrets-rbac) and **0 open gaps**. mtls-enforced's prior gap (PeerAuthentication
+least-privilege-per-namespace-secrets-rbac, registry-visibility-least-privilege,
+backup-job-verified-nonempty, rate-limiting-enforced) and **1 disclosed gap**
+(registry-visibility-least-privilege's image-pull-failure path is real code, untriggered on
+this cluster today -- see the bundle). mtls-enforced's prior gap (PeerAuthentication
 STRICT configured but not enacted by any sidecar) was closed in an earlier pass; see the
 bundle for the fix and live proof. This doctrine follows
 `ggen-marketplace/packs/soc2-audit-pack`: evidence-bundle-complete, never "compliant".
