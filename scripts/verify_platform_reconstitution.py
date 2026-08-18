@@ -75,6 +75,17 @@ REQUIRED_NEGATIVE_CONTROLS = {
     "stale-subject-refused",
 }
 REQUIRED_INTERFACES = {"cli", "api", "mcp", "a2a"}
+REQUIRED_ONTOLOGY_SOURCES = {"public", "custom"}
+REQUIRED_TOOLCHAIN_ROLES = {
+    "public-ontology",
+    "config-admission",
+    "manufacture",
+    "formal-proof",
+    "orchestration",
+    "actuation",
+    "process-execution",
+    "provenance",
+}
 REQUIRED_RECONSTITUTION_PRESERVE = {
     "admitted-graph",
     "manufacturing-rules",
@@ -134,6 +145,7 @@ def validate_benchmark(data: dict[str, Any], scenario: dict[str, Any]) -> list[F
     findings: list[Finding] = []
     benchmark = _table(data, "benchmark", findings)
     marketplace = _table(data, "marketplace", findings)
+    toolchain = _table(data, "toolchain", findings)
     calculus = _table(data, "calculus", findings)
     coverage = _table(data, "coverage", findings)
     scenario_table = _table(scenario, "scenario", findings)
@@ -161,6 +173,45 @@ def validate_benchmark(data: dict[str, Any], scenario: dict[str, Any]) -> list[F
     packs = _string_set(marketplace, "required_packs", findings)
     _require_superset(packs, REQUIRED_PACKS, "BENCHMARK_PACK_CLOSURE_MISSING", "packs", findings)
 
+    if toolchain.get("release_manifest") != "release/v26.9.1/manifest.toml":
+        findings.append(Finding("BENCHMARK_TOOLCHAIN_MANIFEST_INVALID", str(toolchain.get("release_manifest"))))
+    components = toolchain.get("components")
+    toolchain_by_role: dict[str, dict[str, Any]] = {}
+    if not isinstance(components, list):
+        findings.append(Finding("BENCHMARK_TOOLCHAIN_COMPONENTS_INVALID", "toolchain.components"))
+        components = []
+    seen_ids: set[str] = set()
+    for component in components:
+        if not isinstance(component, dict):
+            findings.append(Finding("BENCHMARK_TOOLCHAIN_COMPONENT_INVALID", str(component)))
+            continue
+        component_id = component.get("id")
+        role = component.get("role")
+        repository = component.get("repository")
+        component_sha = component.get("sha")
+        ref = component.get("ref")
+        if not isinstance(component_id, str) or not component_id:
+            findings.append(Finding("BENCHMARK_TOOLCHAIN_ID_INVALID", str(component_id)))
+        elif component_id in seen_ids:
+            findings.append(Finding("BENCHMARK_TOOLCHAIN_DUPLICATE_ID", component_id))
+        else:
+            seen_ids.add(component_id)
+        if not isinstance(role, str) or not role:
+            findings.append(Finding("BENCHMARK_TOOLCHAIN_ROLE_INVALID", str(role)))
+        elif role in toolchain_by_role:
+            findings.append(Finding("BENCHMARK_TOOLCHAIN_DUPLICATE_ROLE", role))
+        else:
+            toolchain_by_role[role] = component
+        if not isinstance(repository, str) or not REPOSITORY.fullmatch(repository):
+            findings.append(Finding("BENCHMARK_TOOLCHAIN_REPOSITORY_INVALID", f"{component_id}:{repository}"))
+        if not isinstance(component_sha, str) or not SHA40.fullmatch(component_sha):
+            findings.append(Finding("BENCHMARK_TOOLCHAIN_SHA_INVALID", f"{component_id}:{component_sha}"))
+        if not isinstance(ref, str) or not ref:
+            findings.append(Finding("BENCHMARK_TOOLCHAIN_REF_INVALID", f"{component_id}:{ref}"))
+    missing_roles = sorted(REQUIRED_TOOLCHAIN_ROLES - set(toolchain_by_role))
+    if missing_roles:
+        findings.append(Finding("BENCHMARK_TOOLCHAIN_ROLE_MISSING", ",".join(missing_roles)))
+
     required_calculus = {
         "canonical_semantics": "admitted_graph",
         "select_path": "candidate_graph",
@@ -177,9 +228,11 @@ def validate_benchmark(data: dict[str, Any], scenario: dict[str, Any]) -> list[F
         if calculus.get(key) != expected:
             findings.append(Finding("BENCHMARK_CALCULUS_VIOLATION", f"{key}={calculus.get(key)!r},expected={expected!r}"))
 
+    ontology_sources = _string_set(coverage, "ontology_sources", findings)
     projections = _string_set(coverage, "projection_classes", findings)
     substrates = _string_set(coverage, "substrates", findings)
     negative_controls = _string_set(coverage, "negative_controls", findings)
+    _require_superset(ontology_sources, REQUIRED_ONTOLOGY_SOURCES, "BENCHMARK_ONTOLOGY_SOURCE_MISSING", "ontology_sources", findings)
     _require_superset(projections, REQUIRED_PROJECTIONS, "BENCHMARK_PROJECTION_CLOSURE_MISSING", "projections", findings)
     _require_superset(substrates, REQUIRED_SUBSTRATES, "BENCHMARK_SUBSTRATE_CLOSURE_MISSING", "substrates", findings)
     _require_superset(
@@ -238,20 +291,56 @@ def validate_benchmark(data: dict[str, Any], scenario: dict[str, Any]) -> list[F
                         f"executed={evidence.get('executed_marketplace_sha')},admitted={sha}",
                     )
                 )
+            executed_toolchain = evidence.get("executed_toolchain")
+            if not isinstance(executed_toolchain, dict):
+                findings.append(Finding("BENCHMARK_EXECUTED_TOOLCHAIN_MISSING", "evidence.executed_toolchain"))
+            else:
+                for role in sorted(REQUIRED_TOOLCHAIN_ROLES):
+                    component = toolchain_by_role.get(role)
+                    admitted_sha = component.get("sha") if isinstance(component, dict) else None
+                    executed_sha = executed_toolchain.get(role)
+                    if executed_sha != admitted_sha:
+                        findings.append(
+                            Finding(
+                                "BENCHMARK_TOOLCHAIN_SUBJECT_MISMATCH",
+                                f"role={role},executed={executed_sha},admitted={admitted_sha}",
+                            )
+                        )
+            original_subject = evidence.get("original_subject_id")
+            reconstituted_subject = evidence.get("reconstituted_subject_id")
+            if not isinstance(original_subject, str) or not original_subject.strip():
+                findings.append(Finding("BENCHMARK_ORIGINAL_SUBJECT_MISSING", "original_subject_id"))
+            if not isinstance(reconstituted_subject, str) or not reconstituted_subject.strip():
+                findings.append(Finding("BENCHMARK_RECONSTITUTED_SUBJECT_MISSING", "reconstituted_subject_id"))
+            if isinstance(original_subject, str) and isinstance(reconstituted_subject, str) and original_subject == reconstituted_subject:
+                findings.append(Finding("BENCHMARK_RECONSTITUTED_SUBJECT_NOT_NEW", original_subject))
             for key in ("execution_receipt", "reconstitution_receipt", "replay_receipt"):
                 value = evidence.get(key)
                 if not isinstance(value, str) or not value.strip():
                     findings.append(Finding("BENCHMARK_ALIVE_RECEIPT_MISSING", key))
-            for key in ("pre_delete_digest", "post_reconstitution_digest"):
+            for key in ("projection_set_digest_before", "projection_set_digest_after", "semantic_digest_before", "semantic_digest_after"):
                 value = evidence.get(key)
                 if not isinstance(value, str) or not DIGEST.fullmatch(value):
                     findings.append(Finding("BENCHMARK_ALIVE_DIGEST_INVALID", f"{key}={value}"))
-            before = evidence.get("pre_delete_digest")
-            after = evidence.get("post_reconstitution_digest")
-            if isinstance(before, str) and isinstance(after, str) and DIGEST.fullmatch(before) and DIGEST.fullmatch(after) and before != after:
-                findings.append(Finding("BENCHMARK_RECONSTITUTION_DIGEST_MISMATCH", f"before={before},after={after}"))
+            projection_before = evidence.get("projection_set_digest_before")
+            projection_after = evidence.get("projection_set_digest_after")
+            if isinstance(projection_before, str) and isinstance(projection_after, str) and DIGEST.fullmatch(projection_before) and DIGEST.fullmatch(projection_after) and projection_before != projection_after:
+                findings.append(Finding("BENCHMARK_RECONSTITUTION_DIGEST_MISMATCH", f"before={projection_before},after={projection_after}"))
+            semantic_before = evidence.get("semantic_digest_before")
+            semantic_after = evidence.get("semantic_digest_after")
+            if isinstance(semantic_before, str) and isinstance(semantic_after, str) and DIGEST.fullmatch(semantic_before) and DIGEST.fullmatch(semantic_after) and semantic_before != semantic_after:
+                findings.append(Finding("BENCHMARK_SEMANTIC_DIGEST_MISMATCH", f"before={semantic_before},after={semantic_after}"))
+            verified_ontology_sources = _string_set(evidence, "verified_ontology_sources", findings)
             verified_projections = _string_set(evidence, "verified_projections", findings)
             verified_substrates = _string_set(evidence, "verified_substrates", findings)
+            verified_negative_controls = _string_set(evidence, "verified_negative_controls", findings)
+            _require_superset(
+                verified_ontology_sources,
+                REQUIRED_ONTOLOGY_SOURCES,
+                "BENCHMARK_ALIVE_ONTOLOGY_EVIDENCE_INCOMPLETE",
+                "verified_ontology_sources",
+                findings,
+            )
             _require_superset(
                 verified_projections,
                 REQUIRED_PROJECTIONS,
@@ -264,6 +353,13 @@ def validate_benchmark(data: dict[str, Any], scenario: dict[str, Any]) -> list[F
                 REQUIRED_SUBSTRATES,
                 "BENCHMARK_ALIVE_SUBSTRATE_EVIDENCE_INCOMPLETE",
                 "verified_substrates",
+                findings,
+            )
+            _require_superset(
+                verified_negative_controls,
+                REQUIRED_NEGATIVE_CONTROLS,
+                "BENCHMARK_ALIVE_NEGATIVE_CONTROL_EVIDENCE_INCOMPLETE",
+                "verified_negative_controls",
                 findings,
             )
     elif isinstance(evidence, dict) and evidence.get("executed_marketplace_sha") not in (None, "", sha):
@@ -318,6 +414,8 @@ def main(argv: list[str] | None = None) -> int:
     print(f"PLATFORM_RECONSTITUTION={standing}")
     print(f"BENCHMARK={data['benchmark']['id']}@{data['benchmark']['version']}")
     print(f"MARKETPLACE_SUBJECT={marketplace['repository']}@{marketplace['sha']}")
+    print(f"ONTOLOGY_SOURCES={len(set(data['coverage']['ontology_sources']))}/{len(REQUIRED_ONTOLOGY_SOURCES)}")
+    print(f"TOOLCHAIN_ROLES={len(set(component['role'] for component in data['toolchain']['components']))}/{len(REQUIRED_TOOLCHAIN_ROLES)}")
     print(f"PROJECTIONS={len(set(data['coverage']['projection_classes']))}/{len(REQUIRED_PROJECTIONS)}")
     print(f"SUBSTRATES={len(set(data['coverage']['substrates']))}/{len(REQUIRED_SUBSTRATES)}")
     return 0
