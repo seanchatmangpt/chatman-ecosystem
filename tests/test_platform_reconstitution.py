@@ -42,6 +42,18 @@ class PlatformReconstitutionTests(unittest.TestCase):
         candidate["calculus"]["do_path"] = "agent"
         self.assertIn("BENCHMARK_CALCULUS_VIOLATION", self.codes(candidate))
 
+    def test_missing_public_ontology_source_is_refused(self) -> None:
+        candidate = copy.deepcopy(self.data)
+        candidate["coverage"]["ontology_sources"].remove("public")
+        self.assertIn("BENCHMARK_ONTOLOGY_SOURCE_MISSING", self.codes(candidate))
+
+    def test_missing_toolchain_role_is_refused(self) -> None:
+        candidate = copy.deepcopy(self.data)
+        candidate["toolchain"]["components"] = [
+            component for component in candidate["toolchain"]["components"] if component["role"] != "actuation"
+        ]
+        self.assertIn("BENCHMARK_TOOLCHAIN_ROLE_MISSING", self.codes(candidate))
+
     def test_missing_projection_class_is_refused(self) -> None:
         candidate = copy.deepcopy(self.data)
         candidate["coverage"]["projection_classes"].remove("infrastructure")
@@ -79,6 +91,20 @@ class PlatformReconstitutionTests(unittest.TestCase):
         candidate["evidence"]["executed_marketplace_sha"] = "0" * 40
         self.assertIn("BENCHMARK_EXACT_SUBJECT_MISMATCH", self.codes(candidate))
 
+    def test_alive_stale_toolchain_subject_is_refused(self) -> None:
+        candidate = copy.deepcopy(self.data)
+        candidate["benchmark"]["standing"] = "ALIVE"
+        candidate["evidence"] = self.alive_evidence()
+        candidate["evidence"]["executed_toolchain"]["manufacture"] = "0" * 40
+        self.assertIn("BENCHMARK_TOOLCHAIN_SUBJECT_MISMATCH", self.codes(candidate))
+
+    def test_alive_reconstituted_subject_must_be_new(self) -> None:
+        candidate = copy.deepcopy(self.data)
+        candidate["benchmark"]["standing"] = "ALIVE"
+        candidate["evidence"] = self.alive_evidence()
+        candidate["evidence"]["reconstituted_subject_id"] = candidate["evidence"]["original_subject_id"]
+        self.assertIn("BENCHMARK_RECONSTITUTED_SUBJECT_NOT_NEW", self.codes(candidate))
+
     def test_alive_requires_all_substrate_execution_evidence(self) -> None:
         candidate = copy.deepcopy(self.data)
         candidate["benchmark"]["standing"] = "ALIVE"
@@ -90,19 +116,28 @@ class PlatformReconstitutionTests(unittest.TestCase):
         candidate = copy.deepcopy(self.data)
         candidate["benchmark"]["standing"] = "ALIVE"
         candidate["evidence"] = self.alive_evidence()
-        candidate["evidence"]["post_reconstitution_digest"] = "sha256:" + "b" * 64
+        candidate["evidence"]["projection_set_digest_after"] = "sha256:" + "b" * 64
         self.assertIn("BENCHMARK_RECONSTITUTION_DIGEST_MISMATCH", self.codes(candidate))
 
     def alive_evidence(self) -> dict[str, object]:
         return {
             "executed_marketplace_sha": self.data["marketplace"]["sha"],
+            "executed_toolchain": {
+                component["role"]: component["sha"] for component in self.data["toolchain"]["components"]
+            },
+            "original_subject_id": "subject:regulated-claims:run-1",
+            "reconstituted_subject_id": "subject:regulated-claims:run-2",
             "execution_receipt": "receipt:execution",
             "reconstitution_receipt": "receipt:reconstitution",
             "replay_receipt": "receipt:replay",
-            "pre_delete_digest": "sha256:" + "a" * 64,
-            "post_reconstitution_digest": "sha256:" + "a" * 64,
+            "projection_set_digest_before": "sha256:" + "a" * 64,
+            "projection_set_digest_after": "sha256:" + "a" * 64,
+            "semantic_digest_before": "sha256:" + "c" * 64,
+            "semantic_digest_after": "sha256:" + "c" * 64,
+            "verified_ontology_sources": list(verify.REQUIRED_ONTOLOGY_SOURCES),
             "verified_projections": list(verify.REQUIRED_PROJECTIONS),
             "verified_substrates": list(verify.REQUIRED_SUBSTRATES),
+            "verified_negative_controls": list(verify.REQUIRED_NEGATIVE_CONTROLS),
         }
 
 
