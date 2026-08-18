@@ -1577,3 +1577,51 @@ roleRef:
   kind: Role
   name: platform-console-custom-domains-tls
   apiGroup: rbac.authorization.k8s.io
+---
+# ------------------------------------------------- Vulnerability Scanning
+#
+# Real Container Vulnerability Scanning (AWS ECR image scanning / GCP
+# Artifact Registry vulnerability scanning / Azure Defender for Containers
+# equivalent), lib/vuln-scan.ts. Namespace-scoped to platform-console
+# only -- this module only ever creates its scan Job in the console's own
+# namespace, never any project namespace. Grants get/list/create/delete on
+# batch/jobs (create + delete a real Indexed Job per scan run, list/get to
+# poll status) -- delete is granted here (unlike Scheduled Jobs' CronJob
+# Role above, which never deletes) because each scan run's Job is
+# ephemeral and torn down once its results are collected, so
+# platform-console does not accumulate one completed Job per scan forever.
+# No update/patch: a scan Job's spec is never edited in place, only
+# created fresh and later deleted. No new `pods`/`pods/log` grant needed
+# here -- the existing platform-console-logs-reader Role above (same
+# namespace) already grants get/list on pods and get on pods/log, and this
+# module reuses that identical read path to find the scan Job's own real
+# Pods and read their real trivy output. No RBAC is needed for the scan
+# pods' own hostPath mount onto the node's containerd socket either --
+# that Pod is created by the Job controller's own identity
+# (kube-controller-manager), not this ServiceAccount, and hostPath is a
+# PodSecurity-admission concern, not an RBAC one (confirmed live before
+# this Role existed: a bare test Pod with this exact hostPath volume ran
+# 2/2 Ready in this namespace with no PSA rejection).
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-vuln-scan
+  namespace: platform-console
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-vuln-scan-binding
+  namespace: platform-console
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-vuln-scan
+  apiGroup: rbac.authorization.k8s.io

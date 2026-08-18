@@ -25,6 +25,7 @@ const links = [
   { href: "/budget-alerts", label: "Budget Alerts" },
   { href: "/logs", label: "Logs" },
   { href: "/exec", label: "Container Exec" },
+  { href: "/security-scan", label: "Vulnerability Scanning" },
   { href: "/observability", label: "Observability" },
   { href: "/alerts", label: "Alerting" },
   { href: "/gitops", label: "GitOps" },
