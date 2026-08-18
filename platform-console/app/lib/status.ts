@@ -69,6 +69,8 @@ export interface GgenMarketplaceStatus {
   checked_at: string;
 }
 
+export { fetchOpenclawDomainSolverCatalog, fetchOpenclawToolCatalog } from "@/lib/openclaw";
+
 export function fetchAutofdeLabStatus() {
   const url =
     process.env.AUTOFDE_LAB_STATUS_URL ??

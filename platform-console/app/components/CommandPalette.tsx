@@ -26,6 +26,7 @@ const TYPE_LABEL: Record<SearchResultType, string> = {
   cronjob: "Scheduled Job",
   backup: "Backup",
   webhook: "Webhook",
+  "openclaw-tool": "OpenClaw Domain/Solver",
 };
 
 const DEBOUNCE_MS = 200;

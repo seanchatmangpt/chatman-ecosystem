@@ -10,7 +10,7 @@ import {
 } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { recordSessionLogin } from "@/lib/active-sessions";
-import { clientIpFrom } from "@/lib/request-meta";
+import { clientIpFrom, isSecureRequest } from "@/lib/request-meta";
 
 // Third, distinct real auth path's callback -- the real external OIDC
 // provider redirects the browser back here with `?code=...&state=...`
@@ -139,7 +139,7 @@ export async function GET(request: NextRequest) {
   const response = clearTxnCookie(NextResponse.redirect(new URL(next, request.nextUrl.origin), { status: 302 }));
   response.cookies.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isSecureRequest(request),
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_MAX_AGE,

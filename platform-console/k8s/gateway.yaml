@@ -80,12 +80,36 @@ spec:
     # PrivateLink/GCP Private Service Connect actually work in practice
     # (an additional private path alongside the public one, not an
     # exclusive replacement for it).
-    # Named explicitly so k8s/ratelimit.yaml's EnvoyFilter can target this
-    # exact Envoy route (routeConfiguration.vhost.route.name) without
-    # touching the sibling grafana-route rules on the same platform.local
-    # vhost -- confirmed via `istioctl proxy-config routes` that unnamed
-    # routes get no Envoy route.name at all, so the name below is required
-    # for a route-scoped (not gateway-wide) local rate limit.
+    # Split out so k8s/ratelimit.yaml's EnvoyFilter can target ONLY the
+    # login endpoint by Envoy route name, not the whole console. An
+    # earlier version of this file named the single catch-all "/" rule
+    # below "platform-console-root" and pointed the rate limit at that --
+    # live E2E verification (Playwright suite against this same cluster)
+    # showed that a single normal authenticated session (one dashboard
+    # load's JS chunks + data-fetch API calls, then a couple of page
+    # navigations) burns through the 20-requests/minute bucket almost
+    # immediately, since the bucket was shared across EVERY request to
+    # the entire app (all static assets, all pages, all authenticated
+    # API calls) rather than just the thing worth throttling
+    # (credential-stuffing against /api/login). That is a real denial of
+    # service to legitimate logged-in users, not a security control --
+    # reverted to this narrower shape instead. /api/login gets its own
+    # named prefix route, matched BEFORE the catch-all (Istio evaluates
+    # `http` rules in order; a later broader match would never be
+    # reached), and only THAT route carries the rate-limit override in
+    # k8s/ratelimit.yaml. Every other path (pages, static assets, every
+    # other API route) is unaffected -- exactly the failed-login-flood
+    # protection the token bucket was meant to provide, without limiting
+    # normal browsing.
+    - name: platform-console-login
+      match:
+        - uri:
+            prefix: /api/login
+      route:
+        - destination:
+            host: platform-console-gateway.platform-console.svc.cluster.local
+            port:
+              number: 8080
     - name: platform-console-root
       route:
         - destination:

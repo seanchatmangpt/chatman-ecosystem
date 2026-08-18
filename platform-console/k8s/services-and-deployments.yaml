@@ -197,6 +197,99 @@ spec:
       port: 80
       targetPort: 8080
 
+# ------------------------------------------------------------ autofde-lab-mcp
+# Real second Deployment in the autofde-lab namespace, alongside (not
+# replacing) autofde-lab-status above. That Deployment serves the
+# build-time-baked facts.json stub; this one runs the actual autofde_lab
+# package's OpenClaw MCP bridge (services/autofde-lab-mcp -- real
+# catalog()/execute() dispatch over HTTP, see that directory's
+# Dockerfile/openclaw_http.py for how the image is built and verified
+# live: healthz + tools/list + a real 31-domain/57-solver
+# tools/call(autofde_lab_catalog) response). lib/openclaw.ts is the
+# first platform-console caller reaching this real surface.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autofde-lab-mcp
+  namespace: autofde-lab
+  labels:
+    app: autofde-lab-mcp
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autofde-lab-mcp
+  template:
+    metadata:
+      annotations:
+        # Same "Second incident" rationale as autofde-lab-status above --
+        # autofde-lab carries PodSecurity `restricted` (namespaces.yaml)
+        # and this cluster's Istio install has no istio-cni DaemonSet, so
+        # the legacy istio-init sidecar (privileged NET_ADMIN/NET_RAW)
+        # would be rejected by admission. Disabled here up front rather
+        # than discovered live a second time.
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: autofde-lab-mcp
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: autofde-lab-mcp
+          image: platform-console/autofde-lab-mcp:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8090
+          env:
+            - name: PORT
+              value: "8090"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8090
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8090
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: autofde-lab-mcp
+  namespace: autofde-lab
+  labels:
+    app: autofde-lab-mcp
+spec:
+  selector:
+    app: autofde-lab-mcp
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8090
+
 # -------------------------------------------------------------------- gymact
 ---
 apiVersion: apps/v1
@@ -265,6 +358,95 @@ spec:
       port: 80
       targetPort: 8080
 
+# ------------------------------------------------------------- gymact-kernel
+#
+# The real gymact FastAPI kernel (src/gymact/surfaces/fastapi.py's
+# create_app() -- the actual materialize/act/verify/checkpoint DCM
+# production surface), distinct from gymact-status above, which only
+# re-serves a build-time facts.json snapshot and exposes no /episodes
+# surface at all. platform-console's lib/gymact-kernel.ts and
+# /api/gymact-kernel proxy to this Service.
+#
+# NOT YET APPLIED to the live cluster as of this pass: image build is
+# blocked. `gymact`'s pyproject.toml depends (via `powl`) on the Rust
+# crate `rustxes` (a maturin/pyo3 native extension in turn pulling in
+# polars), and polars' own transitive dependency `ethnum 1.4.0` fails to
+# compile against current stable rustc on linux/arm64 with a hard
+# `error[E0512]: cannot transmute between types of different sizes` in
+# ethnum's error.rs -- a real upstream bug in that pinned crate version,
+# unrelated to any gymact/platform-console code. Confirmed real and
+# working OUTSIDE a container: the identical `gymact serve` kernel runs
+# correctly against the host's already-resolved `.venv` (real `/health`,
+# `/providers`, `/episodes` POST -> materialize, `/episodes/{id}/verify`
+# POST -> verify, `/evidence` all exercised live, real receipts/digests
+# returned). Applying this Deployment as-is today would only produce a
+# real, but uninformative, ImagePullBackOff (no image exists to load into
+# the kind node) -- left staged, not applied, rather than deployed in a
+# broken state. See services/gymact-kernel/ (if present) or the session
+# notes for the exact uv.sources build-context workaround and the
+# remaining rustc/ethnum blocker.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gymact-kernel
+  namespace: gymact
+  labels:
+    app: gymact-kernel
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gymact-kernel
+  template:
+    metadata:
+      labels:
+        app: gymact-kernel
+    spec:
+      containers:
+        - name: gymact-kernel
+          image: gymact-kernel:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gymact-kernel
+  namespace: gymact
+  labels:
+    app: gymact-kernel
+spec:
+  selector:
+    app: gymact-kernel
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+
 # ---------------------------------------------------------------------- ggen
 ---
 apiVersion: apps/v1
@@ -303,8 +485,8 @@ spec:
               cpu: "50m"
               memory: "64Mi"
             limits:
-              cpu: "200m"
-              memory: "128Mi"
+              cpu: "500m"
+              memory: "512Mi"
           readinessProbe:
             httpGet:
               path: /healthz
@@ -317,6 +499,19 @@ spec:
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 20
+          volumeMounts:
+            - name: state
+              mountPath: /app/state
+      volumes:
+        # emptyDir, not a PVC: the /provision endpoint's platform-managed signing key
+        # and per-run workspaces live here (see app.py's resolve_signing_key
+        # docstring). Ephemeral by design for this pass -- a pod restart mints a
+        # fresh signing key, so receipts signed before a restart can no longer be
+        # verified against the new key. Backing this with a real PVC (or sourcing
+        # GGEN_SIGNING_KEY from a k8s Secret instead) is the production fix and is
+        # out of scope for this pass.
+        - name: state
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service

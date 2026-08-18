@@ -8,7 +8,7 @@ import {
 } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { recordSessionLogin } from "@/lib/active-sessions";
-import { clientIpFrom } from "@/lib/request-meta";
+import { clientIpFrom, isSecureRequest } from "@/lib/request-meta";
 
 // Additive login path: real email/password login against the live GoTrue
 // instance (see lib/gotrue-auth.ts). Runs on the Node.js runtime (the
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
   });
   response.cookies.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isSecureRequest(request),
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_MAX_AGE,

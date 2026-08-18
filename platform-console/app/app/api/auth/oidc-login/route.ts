@@ -7,6 +7,7 @@ import {
 } from "@/lib/oidc-federation";
 import { createOidcTransactionToken, OIDC_TXN_COOKIE_NAME } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
+import { isSecureRequest } from "@/lib/request-meta";
 
 // Third, distinct real auth path -- external OIDC federation. This is a
 // plain GET (a real full-page browser navigation the "Sign in with our IdP"
@@ -56,7 +57,7 @@ export async function GET(request: NextRequest) {
   const response = NextResponse.redirect(authorizeUrl, { status: 302 });
   response.cookies.set(OIDC_TXN_COOKIE_NAME, txnToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isSecureRequest(request),
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 10,

@@ -23,6 +23,7 @@ import {
 } from "@/lib/k8s";
 import { listCronJobs, SCHEDULABLE_NAMESPACES } from "@/lib/scheduled-jobs";
 import { listWebhookSubscriptions } from "@/lib/webhooks";
+import { fetchOpenclawDomainSolverCatalog } from "@/lib/openclaw";
 import { ROLES, type Role } from "@/lib/authz";
 
 // The platform's own namespaces only -- identical list to
@@ -34,7 +35,14 @@ import { ROLES, type Role } from "@/lib/authz";
 // SCHEDULABLE_NAMESPACES.
 const SECRET_NAMESPACES = ["autofde-lab", "gymact", "ggen", "ggen-marketplace", "supabase-demo"];
 
-export type SearchResultType = "service" | "project" | "secret" | "cronjob" | "backup" | "webhook";
+export type SearchResultType =
+  | "service"
+  | "project"
+  | "secret"
+  | "cronjob"
+  | "backup"
+  | "webhook"
+  | "openclaw-tool";
 
 export interface SearchResult {
   type: SearchResultType;
@@ -67,6 +75,11 @@ const CATEGORY_MIN_ROLE: Record<SearchResultType, Role> = {
   cronjob: "viewer",
   backup: "viewer",
   webhook: "owner",
+  // Real read-only discovery against autofde-lab-mcp's live registered
+  // domain/solver catalog (lib/openclaw.ts) -- no code path here ever
+  // calls the `run` tool, so "viewer" matches the service/project
+  // categories' own minimum exactly.
+  "openclaw-tool": "viewer",
 };
 
 function roleMeets(role: Role, minimum: Role): boolean {
@@ -191,6 +204,32 @@ async function searchWebhooks(q: string): Promise<SearchResult[]> {
 }
 
 /**
+ * Real registered-domain/solver catalog from the live autofde-lab-mcp
+ * sidecar (services/autofde-lab-mcp -- the real autofde_lab package's
+ * OpenClaw MCP bridge), NOT the static facts.json snapshot
+ * fetchAutofdeLabStatus() serves. Matches against each entry's own name
+ * -- the real entry_points registration `autofde_lab.utils.
+ * get_registered_domains()`/`get_registered_solvers()` reads.
+ */
+async function searchOpenclawCatalog(q: string): Promise<SearchResult[]> {
+  const result = await fetchOpenclawDomainSolverCatalog("all");
+  if (!result.ok) return [];
+  const domains = (result.data.domains ?? []).map((entry) => ({
+    type: "openclaw-tool" as const,
+    name: entry.name,
+    detail: `domain · autofde-lab · OpenClaw MCP`,
+    path: "/autofde-lab",
+  }));
+  const solvers = (result.data.solvers ?? []).map((entry) => ({
+    type: "openclaw-tool" as const,
+    name: entry.name,
+    detail: `solver · autofde-lab · OpenClaw MCP`,
+    path: "/autofde-lab",
+  }));
+  return [...domains, ...solvers].filter((r) => includesQuery(r.name, q));
+}
+
+/**
  * Real cross-resource lookup, run live in parallel against every
  * category the caller's role may read. Case-insensitive substring match
  * against each resource's own name/identifier (and, for Secrets, its key
@@ -208,6 +247,7 @@ export async function searchPlatform(query: string, role: Role): Promise<SearchR
   if (roleMeets(role, CATEGORY_MIN_ROLE.cronjob)) tasks.push(searchCronJobs(q));
   if (roleMeets(role, CATEGORY_MIN_ROLE.backup)) tasks.push(searchBackups(q));
   if (roleMeets(role, CATEGORY_MIN_ROLE.webhook)) tasks.push(searchWebhooks(q));
+  if (roleMeets(role, CATEGORY_MIN_ROLE["openclaw-tool"])) tasks.push(searchOpenclawCatalog(q));
 
   const results = await Promise.all(tasks);
   return results.flat();

@@ -58,6 +58,30 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
+  # autofde-lab-mcp (services-and-deployments.yaml) is a second real
+  # Deployment in this namespace on its own port (8090); the rule above
+  # only opens 8080 (autofde-lab-status). Additive rule, same scope
+  # (platform-console namespace only), narrowly for this one additional
+  # port -- see the rule above for why NetworkPolicy objects on the same
+  # pods are additive/OR'd, not replacing.
+  name: autofde-lab-allow-from-platform-console-mcp
+  namespace: autofde-lab
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: platform-console
+      ports:
+        - protocol: TCP
+          port: 8090
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
   # Custom Domains (lib/custom-domains.ts): a real Istio Gateway/
   # VirtualService bound to a custom hostname routes DIRECTLY from the
   # istio-ingressgateway pod (istio-system) to this namespace's status
@@ -143,6 +167,12 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
+  # Covers both gymact-status (port 8080) and gymact-kernel (port 8000,
+  # see k8s/services-and-deployments.yaml's gymact-kernel block) -- one
+  # rule against podSelector: {} (every pod in the namespace) rather than
+  # a second near-duplicate NetworkPolicy per port, matching this file's
+  # own existing convention of namespace-wide rules keyed by source
+  # identity, not by destination pod.
   name: gymact-allow-from-platform-console
   namespace: gymact
 spec:
@@ -157,6 +187,8 @@ spec:
       ports:
         - protocol: TCP
           port: 8080
+        - protocol: TCP
+          port: 8000
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

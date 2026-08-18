@@ -1,5 +1,6 @@
 import Nav from "@/components/Nav";
 import StatusPanel from "@/components/StatusPanel";
+import KernelPanel from "@/components/KernelPanel";
 import { fetchGymactStatus } from "@/lib/status";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +17,10 @@ export default async function GymactPage() {
           Live fields fetched server-side from{" "}
           <code>gymact-status.gymact.svc.cluster.local/status</code>.
         </p>
-        <StatusPanel title="Status" result={result} />
+        <div className="space-y-6">
+          <StatusPanel title="Status" result={result} />
+          <KernelPanel />
+        </div>
       </main>
     </>
   );

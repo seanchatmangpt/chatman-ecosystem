@@ -7,8 +7,21 @@
 set -euo pipefail
 
 REPO="/Users/sac/ggen"
-OUT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/facts.json"
+SELF_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OUT="$SELF_DIR/facts.json"
 BIN="$(command -v ggen || true)"
+
+# Also snapshot the real, already-compiled ggen binary into the build context so the
+# Dockerfile can bake it into the image (same "COPY a build-time snapshot of the host,
+# the running container never touches the host repo" convention as facts.json below).
+# This is the real binary this host uses -- not rebuilt/recompiled by this script.
+if [ -n "$BIN" ]; then
+  cp "$BIN" "$SELF_DIR/ggen-bin"
+  chmod +x "$SELF_DIR/ggen-bin"
+  echo "snapshotted ggen binary from $BIN -> $SELF_DIR/ggen-bin"
+else
+  echo "WARNING: no ggen binary on PATH; services/ggen/ggen-bin will not be updated." >&2
+fi
 
 if [ ! -d "$REPO/.git" ]; then
   echo "ERROR: $REPO is not a git checkout on this host" >&2

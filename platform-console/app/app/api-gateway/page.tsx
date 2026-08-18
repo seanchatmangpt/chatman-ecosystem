@@ -25,7 +25,15 @@ export default function ApiGatewayPage() {
             <div>
               <dt className="text-gray-500">Scope</dt>
               <dd className="text-gray-200">
-                platform-console route only (<code>platform-console-root</code>)
+                <code>POST /api/login</code> only (
+                <code>platform-console-login</code>) -- not the rest of the
+                console. An earlier version of this control keyed the same
+                bucket to the whole-app catch-all route (
+                <code>platform-console-root</code>), which meant one normal
+                authenticated session&apos;s page loads and API calls could
+                exhaust it and get real users 429&apos;d; re-scoped to just
+                the login endpoint so it throttles credential-stuffing
+                attempts without limiting normal browsing.
               </dd>
             </div>
             <div>
@@ -40,7 +48,7 @@ export default function ApiGatewayPage() {
             </div>
             <div>
               <dt className="text-gray-500">Rate</dt>
-              <dd className="text-gray-200">20 requests / 60s per gateway worker</dd>
+              <dd className="text-gray-200">20 login attempts / 60s per gateway worker</dd>
             </div>
             <div>
               <dt className="text-gray-500">Bucket</dt>
@@ -65,15 +73,18 @@ export default function ApiGatewayPage() {
             <code>platform.local</code> is served by two VirtualServices on
             the same shared <code>platform-console-gateway</code>:{" "}
             <code>grafana-route</code> (<code>/grafana/*</code>) and{" "}
-            <code>platform-console-ingress</code> (catch-all{" "}
-            <code>/</code>, named route <code>platform-console-root</code>).
-            The rate limit is installed as two EnvoyFilters: one inserts the
-            local_ratelimit HTTP filter into the gateway&apos;s filter chain
-            with no bucket configured (a no-op everywhere by default); the
-            second merges a <code>typed_per_filter_config</code> override
-            onto exactly the <code>platform-console-root</code> route by
-            name. No other route on the shared gateway carries that
-            override, so Grafana traffic is untouched.
+            <code>platform-console-ingress</code>, which itself carries two
+            rules -- a <code>/api/login</code> prefix rule, named{" "}
+            <code>platform-console-login</code>, matched before the
+            catch-all <code>/</code> rule (named{" "}
+            <code>platform-console-root</code>). The rate limit is
+            installed as two EnvoyFilters: one inserts the local_ratelimit
+            HTTP filter into the gateway&apos;s filter chain with no bucket
+            configured (a no-op everywhere by default); the second merges a{" "}
+            <code>typed_per_filter_config</code> override onto exactly the{" "}
+            <code>platform-console-login</code> route by name. No other
+            route on the shared gateway -- not Grafana, not the rest of the
+            console&apos;s pages/assets/APIs -- carries that override.
           </p>
         </div>
 

@@ -12,8 +12,9 @@ import {
   type IamNetworkPolicy,
   type ServiceDiscoveryRecord,
 } from "@/lib/k8s";
-import { buildTopologySnapshot } from "@/lib/topology";
+import { buildFlowchartInput, buildTopologySnapshot } from "@/lib/topology";
 import { buildIsoflowModel } from "@/lib/isoflow-model";
+import { renderFlowchart } from "@/lib/mermaid";
 
 export const dynamic = "force-dynamic";
 
@@ -69,6 +70,14 @@ export default async function TopologyPage() {
   // isoflow model is a re-projection of the exact same snapshot data, so
   // its node/namespace/edge counts match the deck.gl view by construction.
   const { model: isoflowModel, serviceIconId, serviceIconFallback } = buildIsoflowModel(rows, policies);
+
+  // Same `snapshot` the deck.gl/isoflow tabs above render, re-projected to
+  // one namespace-level flowchart and rendered to real Mermaid text via
+  // mmdio's typed FlowchartDiagram model (lib/mermaid.ts) -- not a
+  // hand-built diagram string.
+  const flowchartInput = buildFlowchartInput(snapshot);
+  const mermaidResult =
+    flowchartInput.nodes.length > 0 ? renderFlowchart(flowchartInput) : null;
 
   return (
     <>
@@ -149,6 +158,7 @@ export default async function TopologyPage() {
               <TabsList>
                 <TabsTrigger value="spatial">Spatial (deck.gl)</TabsTrigger>
                 <TabsTrigger value="isometric">Isometric (isoflow)</TabsTrigger>
+                <TabsTrigger value="mermaid">Mermaid (mmdio)</TabsTrigger>
               </TabsList>
               <TabsContent value="spatial">
                 <DeckTopology
@@ -165,6 +175,28 @@ export default async function TopologyPage() {
                   {isoflowModel.views[0]?.connectors?.length ?? 0} real NetworkPolicy
                   connector(s) -- icon: <code>{serviceIconId}</code>
                   {serviceIconFallback ? " (generic fallback, k8s-svc unavailable)" : " (Kubernetes isopack)"}.
+                </p>
+              </TabsContent>
+              <TabsContent value="mermaid">
+                {mermaidResult === null ? (
+                  <p className="p-6 text-sm text-muted-foreground">No namespace clusters to render.</p>
+                ) : mermaidResult.ok ? (
+                  <pre className="overflow-x-auto rounded-md bg-black/30 p-4 text-xs text-foreground">
+                    <code>{mermaidResult.data}</code>
+                  </pre>
+                ) : (
+                  <Alert variant="destructive" className="m-3">
+                    <AlertDescription>mmdio render-flowchart: {mermaidResult.error}</AlertDescription>
+                  </Alert>
+                )}
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Real Mermaid flowchart text, rendered by mmdio&apos;s typed{" "}
+                  <code>FlowchartDiagram</code> Pydantic model (
+                  <code>render_diagram()</code>) via a subprocess call to{" "}
+                  <code>mmdio render-flowchart</code> (<code>lib/mermaid.ts</code>) -- one
+                  node per namespace cluster, one edge per distinct cross-namespace
+                  NetworkPolicy ingress-allow pair, same {snapshot.clusters.length}{" "}
+                  cluster(s) / {snapshot.edges.length} edge(s) the summary line above counts.
                 </p>
               </TabsContent>
             </Tabs>

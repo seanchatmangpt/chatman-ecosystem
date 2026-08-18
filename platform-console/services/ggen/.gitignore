@@ -1,0 +1,3 @@
+# Real binary snapshot produced by ./prep.sh at build time (25MB+, host-specific).
+# Not committed -- regenerate locally with ./prep.sh before `docker build`.
+ggen-bin
