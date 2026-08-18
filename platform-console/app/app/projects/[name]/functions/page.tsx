@@ -1,5 +1,6 @@
 import Nav from "@/components/Nav";
 import ProjectSubNav from "@/components/ProjectSubNav";
+import InvokeFunctionButton from "@/components/InvokeFunctionButton";
 import { getProject, listNamespaceServices } from "@/lib/k8s";
 
 export const dynamic = "force-dynamic";
@@ -65,12 +66,16 @@ export default async function ProjectFunctionsPage({
                   <dd className="col-span-2 text-gray-100">{functionsService.ports[0]?.port ?? "-"}</dd>
                 </div>
               </dl>
-              <p className="text-xs text-gray-500">
+              <p className="mb-4 text-xs text-gray-500">
                 not configured: the Supabase edge-functions runtime exposes
                 no admin introspection API (no endpoint lists deployed
-                function slugs), so this module shows real connection info
-                only -- no deployed-function count is fabricated.
+                function slugs), so this module never fabricates a
+                deployed-function count. What it does do for real: POST a
+                function slug straight to this Service&apos;s real port and show
+                the real HTTP response that comes back -- the round-trip
+                itself is the proof a slug is (or isn&apos;t) actually deployed.
               </p>
+              <InvokeFunctionButton projectName={project.name} />
             </>
           )}
         </div>

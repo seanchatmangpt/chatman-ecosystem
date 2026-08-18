@@ -47,7 +47,7 @@ or global footprint.
 | `/projects/[name]/database` | Reads real Postgres/PostgREST `Service` objects (ClusterIP, ports, DNS names) | `lib/k8s.ts` |
 | `/projects/[name]/auth` | Proxies real GoTrue `/admin/users`, gated on `SUPABASE_SERVICE_ROLE_KEY` | `lib/gotrue.ts` |
 | `/projects/[name]/storage` | Proxies real Storage-API `/bucket`, same gate | `lib/storage-api.ts` |
-| `/projects/[name]/functions` | Shows real connection info; honestly notes the edge-functions runtime exposes no admin introspection endpoint | — |
+| `/projects/[name]/functions` | Shows real connection info (still no admin introspection endpoint exists to list deployed slugs); real **Invoke a function** action POSTs a chosen slug straight to the project's real edge-functions Service and renders the real HTTP status/body/duration that comes back, gated `requireRole(session, "member")` | `lib/functions-api.ts`, `app/api/projects/[name]/functions/invoke/route.ts` |
 | `/observability` | Live allowlisted PromQL against the real in-cluster Prometheus | `app/api/prometheus/route.ts`, `lib/prometheus.ts` |
 | `/gitops` | Lists real Flux `Kustomization`/`HelmRelease` objects, read-only | `lib/k8s.ts` |
 | `/iam` | Lists real RBAC Roles/RoleBindings/NetworkPolicies grouped by namespace | `lib/k8s.ts` |
@@ -389,7 +389,7 @@ currently take payment.
 a compliance determination — those can only come from a licensed CPA firm after an
 independent audit. It records exactly which technical controls were actually observed
 enforced (with real command output as evidence, re-run fresh against the current cluster)
-versus which are configured but not currently enacted. As of this run: **22 controls verified
+versus which are configured but not currently enacted. As of this run: **23 controls verified
 with fresh live evidence** (resource-quotas-enforced, network-segmentation,
 least-privilege-rbac, audit-logging, self-service-project-provisioning,
 observability-proxy-least-privilege, gitops-read-only-visibility, mtls-enforced,
@@ -399,15 +399,20 @@ backup-job-verified-nonempty, rate-limiting-enforced, usage-metrics-real-not-fab
 alerting-pipeline-verified-live, service-discovery-dns-resolves-live,
 feature-flag-live-toggle-verified, topology-visualization-real-data,
 identity-federation-live-verified, application-rbac-role-enforced,
-restore-recovers-real-deleted-data) and **1 disclosed gap**
-(registry-visibility-least-privilege's image-pull-failure path is real code, untriggered on
-this cluster today -- see the bundle). mtls-enforced's prior gap (PeerAuthentication
-STRICT configured but not enacted by any sidecar) was closed in an earlier pass; see the
-bundle for the fix and live proof. restore-recovers-real-deleted-data also discloses a real,
-non-hiding limitation of the restore path itself (a dependent-table row loaded out of FK
-order in a single restore pass) rather than only claiming what worked -- see the bundle. This
-doctrine follows `ggen-marketplace/packs/soc2-audit-pack`: evidence-bundle-complete, never
-"compliant".
+restore-recovers-real-deleted-data, edge-function-invocation-verified) and **1 disclosed
+gap** (registry-visibility-least-privilege's image-pull-failure path is real code,
+untriggered on this cluster today -- see the bundle). mtls-enforced's prior gap
+(PeerAuthentication STRICT configured but not enacted by any sidecar) was closed in an
+earlier pass; see the bundle for the fix and live proof. restore-recovers-real-deleted-data
+also discloses a real, non-hiding limitation of the restore path itself (a dependent-table
+row loaded out of FK order in a single restore pass) rather than only claiming what worked
+-- see the bundle. edge-function-invocation-verified closed the /projects/[name]/functions
+module's prior disclosed gap (no invocation, connection info only) by deploying one real,
+minimal Edge Function through the supabase-operator's own `Function` CRD -- investigated
+live rather than guessed, confirmed the operator auto-mounts and rolls the functions
+Deployment on a new Function CR with zero manual YAML edits -- and wiring a real,
+RBAC-gated invoke path through the console into it. This doctrine follows
+`ggen-marketplace/packs/soc2-audit-pack`: evidence-bundle-complete, never "compliant".
 
 `digest` at the bottom of the bundle is a BLAKE3 hash over the bundle's own content, so any
 edit to a control's evidence text is detectable. Method, confirmed by reproducing the prior
