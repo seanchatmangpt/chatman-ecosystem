@@ -29,5 +29,10 @@ Version: `0.1.0`
 | `document:architecture` | `docs/ARCHITECTURE.md` | true |
 | `document:constitution` | `CONSTITUTION.md` | true |
 | `document:operations` | `docs/OPERATIONS.md` | true |
+| `document:platform-engineers-handbook-backport` | `docs/platform-engineers-handbook-backport.md` | false |
+| `document:platform-engineers-handbook-backward-chain` | `docs/platform-engineers-handbook-backward-chain.md` | false |
+| `document:platform-engineers-handbook-capability-roadmap` | `docs/platform-engineers-handbook-capability-roadmap.md` | false |
+| `document:platform-engineers-handbook-colima-runtime` | `docs/platform-engineers-handbook-colima-runtime.md` | false |
+| `document:platform-engineers-handbook-ggen-packs` | `docs/platform-engineers-handbook-ggen-packs.md` | false |
 | `document:post-agi-platform-handbook` | `docs/post-agi-platform-handbook/README.md` | false |
 | `document:readme` | `README.md` | false |

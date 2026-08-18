@@ -1,0 +1,82 @@
+[release_crown]
+schema = "chatman-ecosystem.release-crown-edges/1"
+version = "26.9.1"
+observed_at = "2026-08-18T06:04:40-07:00"
+standing = "UNKNOWN"
+claim_ceiling = "MANDATORY_EDGE_ADMISSION_AND_EVIDENCE_TOPOLOGY_ONLY"
+do_authority = false
+
+[policy]
+live_azure_mandatory = false
+live_azure_standing = "BLOCKED:LIVE_AZURE_AUTHORITY"
+ww3gym_scope = "SIMULATION_EVALUATION_ONLY"
+planner_policy_role_agent_authority_equivalent = false
+bcre_brce_equivalent = false
+zero_unreceipted_actuation = true
+brce_exclusive_do_path = true
+
+[[edges]]
+id = "semantic_o_star"
+standing = "UNKNOWN"
+allowed_authority_classes = ["SELECT"]
+do_authority = false
+
+[[edges]]
+id = "qlever_query_similarity"
+standing = "UNKNOWN"
+allowed_authority_classes = ["SELECT"]
+do_authority = false
+
+[[edges]]
+id = "planner_league_meta_selection_falsification"
+standing = "UNKNOWN"
+allowed_authority_classes = ["SELECT"]
+do_authority = false
+
+[[edges]]
+id = "bcinr_cmca_mfw_consumption"
+standing = "UNKNOWN"
+allowed_authority_classes = ["SELECT"]
+do_authority = false
+
+[[edges]]
+id = "gymact_domain_world_court"
+standing = "UNKNOWN"
+allowed_authority_classes = ["SELECT"]
+do_authority = false
+
+[[edges]]
+id = "brce_consequential_boundary"
+standing = "UNKNOWN"
+allowed_authority_classes = ["DO"]
+do_authority = false
+
+[[edges]]
+id = "independent_observation_verification"
+standing = "UNKNOWN"
+allowed_authority_classes = ["OBSERVE"]
+do_authority = false
+
+[[edges]]
+id = "canonical_receipt_ocel_replay"
+standing = "UNKNOWN"
+allowed_authority_classes = ["OBSERVE", "CONSTRUCT"]
+do_authority = false
+
+[[edges]]
+id = "affidavit_bcre_composition"
+standing = "UNKNOWN"
+allowed_authority_classes = ["SELECT"]
+do_authority = false
+
+[[edges]]
+id = "ggen_marketplace_deterministic_manufacture"
+standing = "UNKNOWN"
+allowed_authority_classes = ["CONSTRUCT"]
+do_authority = false
+
+[[edges]]
+id = "autofde_runtime_pinning"
+standing = "UNKNOWN"
+allowed_authority_classes = ["SELECT", "CONSTRUCT"]
+do_authority = false

@@ -13,6 +13,7 @@ test "${#candidate_sha}" -eq 40
 
 python3 scripts/verify_release.py --check-refs
 python3 scripts/verify_standing_evidence.py
+python3 scripts/verify_crown_edges.py
 
 cargo fmt --all -- --check
 cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
@@ -64,6 +65,7 @@ cat > target/crown/admission.json <<JSON
   "gates": [
     "release_graph",
     "standing_evidence",
+    "mandatory_crown_edges",
     "format",
     "clippy",
     "tests",
