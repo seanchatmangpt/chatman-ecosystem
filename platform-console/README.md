@@ -50,6 +50,14 @@ single-node local `kind` cluster. What it does provide, for real, on that cluste
 services and shows you their state), not a claim of matching their scale, uptime guarantees,
 or global footprint.
 
+**See [`docs/SCOPE-AND-LIMITATIONS.md`](docs/SCOPE-AND-LIMITATIONS.md) for the honest,
+module-by-module counterpart to this claim**: single control-plane node (no real HA/failover),
+single physical machine (no real multi-region or network-partition tolerance), one Postgres
+instance per project (no read replicas, no continuous point-in-time recovery beyond on-demand
+snapshots), no real customer-facing SLA, and a single-node service mesh (real mTLS/
+NetworkPolicy enforcement, but not a multi-region mesh). Read it before treating any module's
+hyperscaler-equivalent language as a claim about scale.
+
 ## Modules
 
 | Route | What it does | Backing evidence |

@@ -2,6 +2,10 @@
   "schema": "platform-console.control-evidence.v1",
   "generated_at": "2026-08-18T12:21:39Z",
   "disclaimer": "This bundle records evidence that specific technical controls were observed enforced at generation time. It is NOT a SOC 2 report, NOT a compliance determination, and NOT an auditor's opinion -- those can only be issued by a licensed CPA firm after an independent audit. Modeled after ggen-marketplace/packs/soc2-audit-pack's engagement-process doctrine: evidence-bundle-complete, never 'compliant'.",
+  "platform_scope_and_limitations": {
+    "note": "This bundle records per-control evidence only. It does not, by itself, disclose platform-wide limitations that apply across many controls at once (single control-plane node, single physical machine, single Postgres instance per project, no customer SLA, single-node service mesh). See docs/SCOPE-AND-LIMITATIONS.md for the honest, module-by-module counterpart to those platform-wide claims. No existing field in this schema (control/evidence/observed_at, all per-control) had a natural home for platform-level narrative, so this top-level field was added rather than overloading a per-control field or a gaps[] entry (gaps[] records missing/broken controls, not disclosed-and-intentional scope boundaries).",
+    "document": "docs/SCOPE-AND-LIMITATIONS.md"
+  },
   "controls": [
     {
       "control": "resource-quotas-enforced",
@@ -204,6 +208,6 @@
   "gaps": [],
   "digest": {
     "algorithm": "blake3",
-    "value": "8529bd54be6c2ba7fd6624c07f4b677057ec225eeabc3d84c55582caeb4ac544"
+    "value": "7a1f288ce16668a74f03d2cc8e9b1172c1fde1cfca400c027c5b3647f74a4041"
   }
 }
