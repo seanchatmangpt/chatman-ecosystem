@@ -14,6 +14,7 @@ const links = [
   { href: "/gitops", label: "GitOps" },
   { href: "/iam", label: "IAM" },
   { href: "/registry", label: "Registry" },
+  { href: "/api-gateway", label: "API Gateway" },
   { href: "/compliance", label: "Compliance" },
   { href: "/pricing", label: "Pricing" },
 ];

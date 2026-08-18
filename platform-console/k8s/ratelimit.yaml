@@ -1,0 +1,108 @@
+# Local rate limiting for the platform-console route, enforced at the
+# istio-ingressgateway data plane via Envoy's envoy.filters.http.local_ratelimit
+# HTTP filter (token-bucket, in-process -- no external Redis/global-ratelimit
+# service required). This is the Istio-native equivalent of AWS API Gateway
+# throttling / GCP Cloud Endpoints quotas / Azure APIM rate-limit policies.
+#
+# Scope, deliberately surgical (checked live via `kubectl get virtualservice -A`
+# and `istioctl proxy-config routes deploy/istio-ingressgateway -n istio-system`
+# before writing this file): the shared platform.local vhost on the ingress
+# gateway (route config "http.8080") carries TWO route rules --
+#   - grafana-route's /grafana and /grafana/* rules (VirtualService
+#     grafana-route), routing to monitoring-grafana
+#   - platform-console-ingress's catch-all "/" rule (VirtualService
+#     platform-console-ingress), now named "platform-console-root"
+#     (see k8s/gateway.yaml) specifically so it can be targeted here.
+# The rate limit below is applied ONLY to the platform-console-root route via
+# an HTTP_ROUTE EnvoyFilter patch keyed on that route name -- Grafana traffic
+# on the same gateway/vhost is untouched.
+#
+# Two EnvoyFilters, the standard Istio local-rate-limit pattern:
+#   1. filter-local-ratelimit-svc (HTTP_FILTER): inserts the
+#      envoy.filters.http.local_ratelimit filter into the ingress gateway's
+#      HTTP filter chain, before the router filter. Installed with NO
+#      token_bucket at the filter level, which makes it a no-op everywhere
+#      by default -- routes that don't carry a typed_per_filter_config
+#      override (i.e. everything except platform-console-root) pass through
+#      unaffected.
+#   2. filter-local-ratelimit-platform-console-route (HTTP_ROUTE): merges a
+#      typed_per_filter_config override onto exactly the
+#      platform-console-root route, supplying the real token bucket:
+#      20 requests/minute (max_tokens 20, tokens_per_fill 20, fill_interval
+#      60s -- one full refill per minute, matching AWS APIGW's steady-state
+#      throttle-rate model). Requests beyond the bucket get Envoy's default
+#      429 Too Many Requests, with a response header (x-local-rate-limit)
+#      added so it's visible in curl -i output during verification.
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: filter-local-ratelimit-svc
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: "envoy.filters.network.http_connection_manager"
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.local_ratelimit
+          typed_config:
+            "@type": type.googleapis.com/udpa.type.v1.TypedStruct
+            type_url: type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
+            value:
+              stat_prefix: http_local_rate_limiter
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: filter-local-ratelimit-platform-console-route
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    - applyTo: HTTP_ROUTE
+      match:
+        context: GATEWAY
+        routeConfiguration:
+          vhost:
+            name: "platform.local:80"
+            route:
+              name: "platform-console-root"
+      patch:
+        operation: MERGE
+        value:
+          typed_per_filter_config:
+            envoy.filters.http.local_ratelimit:
+              "@type": type.googleapis.com/udpa.type.v1.TypedStruct
+              type_url: type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
+              value:
+                stat_prefix: http_local_rate_limiter
+                token_bucket:
+                  max_tokens: 20
+                  tokens_per_fill: 20
+                  fill_interval: 60s
+                filter_enabled:
+                  runtime_key: local_rate_limit_enabled
+                  default_value:
+                    numerator: 100
+                    denominator: HUNDRED
+                filter_enforced:
+                  runtime_key: local_rate_limit_enforced
+                  default_value:
+                    numerator: 100
+                    denominator: HUNDRED
+                response_headers_to_add:
+                  - append: false
+                    header:
+                      key: x-local-rate-limit
+                      value: "true"
