@@ -1094,3 +1094,361 @@ roleRef:
   kind: Role
   name: platform-console-exec
   apiGroup: rbac.authorization.k8s.io
+
+# --------------------------------------------------------- Batch Compute
+#
+# Real hyperscaler-PaaS-style Batch Compute primitive (AWS Batch / GCP
+# Batch / Azure Batch equivalent) -- lib/batch-jobs.ts. Distinct from the
+# Scheduled Jobs section above: this launches real Indexed `batch/v1`
+# `Job`s (parallel fan-out, N Pods concurrently) rather than time-triggered
+# `CronJob`s. Two separate identities are granted here, same
+# least-privilege split the Feature Flags section's
+# reader-vs-writer Roles already establish:
+#
+# 1. The console's own ServiceAccount, per platform namespace (same 5
+#    namespaces as Scheduled Jobs/Secrets above -- never cluster-wide):
+#    get/list/create/delete on `batch/jobs` (launch + inventory + cleanup,
+#    same verb set as Scheduled Jobs' own cronjobs Role), plus a narrow
+#    `configmaps` grant scoped to exactly one named object
+#    (`resourceNames: ["platform-batch-results"]`, the shared results
+#    ConfigMap `ensureBatchResultsConfigMap`/`collectBatchResults`/
+#    `deleteBatchJob` read/patch) so this console can never touch any
+#    OTHER ConfigMap in these namespaces through this grant -- plus a
+#    separate, unavoidable `create` rule (RBAC cannot restrict `create` by
+#    resource name, since the object doesn't exist yet at request time;
+#    application code is the only real boundary there, same as the
+#    Scheduled Jobs section's own disclosed command-allowlist boundary).
+#    No new grant was needed to read this Job's own Pods (real per-index
+#    status/startTime, the live concurrency proof) -- the existing
+#    per-namespace `platform-console-logs-reader` Role above already
+#    grants `pods` get/list in exactly these same namespaces.
+#
+# 2. A NEW, separate ServiceAccount per namespace (`platform-batch-runner`)
+#    -- bound to the Job's own Pods, never the console -- granted exactly
+#    one verb (`patch`) on exactly that one named ConfigMap. This is the
+#    identity a batch worker Pod's own allowlisted command (see
+#    lib/batch-jobs.ts's `ALLOWED_BATCH_COMMANDS`) authenticates as when it
+#    PATCHes its own real result in -- confirmed live before this file
+#    existed that Indexed Jobs' Pods get a real, kubelet-injected
+#    `JOB_COMPLETION_INDEX` env var with zero extra downward-API wiring
+#    (a 2-pod probe Job's own logs showed `JOB_COMPLETION_INDEX=0`/`=1`).
+
+# --------------------------------------------------------- autofde-lab
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-batch-jobs
+  namespace: autofde-lab
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-batch-results"]
+    verbs: ["get", "patch"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-batch-jobs-binding
+  namespace: autofde-lab
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-batch-jobs
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: platform-batch-runner
+  namespace: autofde-lab
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-batch-runner
+  namespace: autofde-lab
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-batch-results"]
+    verbs: ["patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-batch-runner-binding
+  namespace: autofde-lab
+subjects:
+  - kind: ServiceAccount
+    name: platform-batch-runner
+    namespace: autofde-lab
+roleRef:
+  kind: Role
+  name: platform-batch-runner
+  apiGroup: rbac.authorization.k8s.io
+
+# -------------------------------------------------------------- gymact
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-batch-jobs
+  namespace: gymact
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-batch-results"]
+    verbs: ["get", "patch"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-batch-jobs-binding
+  namespace: gymact
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-batch-jobs
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: platform-batch-runner
+  namespace: gymact
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-batch-runner
+  namespace: gymact
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-batch-results"]
+    verbs: ["patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-batch-runner-binding
+  namespace: gymact
+subjects:
+  - kind: ServiceAccount
+    name: platform-batch-runner
+    namespace: gymact
+roleRef:
+  kind: Role
+  name: platform-batch-runner
+  apiGroup: rbac.authorization.k8s.io
+
+# ---------------------------------------------------------------- ggen
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-batch-jobs
+  namespace: ggen
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-batch-results"]
+    verbs: ["get", "patch"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-batch-jobs-binding
+  namespace: ggen
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-batch-jobs
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: platform-batch-runner
+  namespace: ggen
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-batch-runner
+  namespace: ggen
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-batch-results"]
+    verbs: ["patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-batch-runner-binding
+  namespace: ggen
+subjects:
+  - kind: ServiceAccount
+    name: platform-batch-runner
+    namespace: ggen
+roleRef:
+  kind: Role
+  name: platform-batch-runner
+  apiGroup: rbac.authorization.k8s.io
+
+# ----------------------------------------------------- ggen-marketplace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-batch-jobs
+  namespace: ggen-marketplace
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-batch-results"]
+    verbs: ["get", "patch"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-batch-jobs-binding
+  namespace: ggen-marketplace
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-batch-jobs
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: platform-batch-runner
+  namespace: ggen-marketplace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-batch-runner
+  namespace: ggen-marketplace
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-batch-results"]
+    verbs: ["patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-batch-runner-binding
+  namespace: ggen-marketplace
+subjects:
+  - kind: ServiceAccount
+    name: platform-batch-runner
+    namespace: ggen-marketplace
+roleRef:
+  kind: Role
+  name: platform-batch-runner
+  apiGroup: rbac.authorization.k8s.io
+
+# --------------------------------------------------------- supabase-demo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-batch-jobs
+  namespace: supabase-demo
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-batch-results"]
+    verbs: ["get", "patch"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-batch-jobs-binding
+  namespace: supabase-demo
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-batch-jobs
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: platform-batch-runner
+  namespace: supabase-demo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-batch-runner
+  namespace: supabase-demo
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-batch-results"]
+    verbs: ["patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-batch-runner-binding
+  namespace: supabase-demo
+subjects:
+  - kind: ServiceAccount
+    name: platform-batch-runner
+    namespace: supabase-demo
+roleRef:
+  kind: Role
+  name: platform-batch-runner
+  apiGroup: rbac.authorization.k8s.io
