@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { signUpWithPassword } from "@/lib/gotrue-auth";
 import {
   createGoTrueSessionToken,
+  generateSessionId,
   SESSION_COOKIE_NAME,
   SESSION_MAX_AGE,
 } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
+import { recordSessionLogin } from "@/lib/active-sessions";
+import { clientIpFrom } from "@/lib/request-meta";
 
 // Additive signup path: real account creation against the live GoTrue
 // instance's /signup endpoint (see lib/gotrue-auth.ts). On success mints
@@ -58,7 +61,21 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const token = await createGoTrueSessionToken(result.user.id, result.user.email);
+  const sessionId = generateSessionId();
+  const token = await createGoTrueSessionToken(result.user.id, result.user.email, sessionId);
+
+  // Real Active Session Management registry entry -- see /api/login's own
+  // identical comment for why this is awaited and never fails the signup.
+  const registryResult = await recordSessionLogin({
+    sessionId,
+    identifier: result.user.email,
+    authProvider: "gotrue",
+    ip: clientIpFrom(request),
+    userAgent: request.headers.get("user-agent"),
+  });
+  if (!registryResult.ok) {
+    console.error(JSON.stringify({ activeSessionRecordError: registryResult.error }));
+  }
 
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),

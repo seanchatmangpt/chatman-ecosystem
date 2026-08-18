@@ -33,6 +33,7 @@ const links = [
   { href: "/api-keys", label: "API Keys" },
   { href: "/webhooks", label: "Webhooks" },
   { href: "/audit", label: "Audit Log" },
+  { href: "/sessions", label: "Sessions" },
   { href: "/registry", label: "Registry" },
   { href: "/service-discovery", label: "Service Discovery" },
   { href: "/tags", label: "Tags" },

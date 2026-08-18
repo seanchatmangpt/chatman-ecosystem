@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminCredentials } from "@/lib/credentials";
-import { createSessionToken, SESSION_COOKIE_NAME, SESSION_MAX_AGE } from "@/lib/session";
+import {
+  createSessionToken,
+  generateSessionId,
+  SESSION_COOKIE_NAME,
+  SESSION_MAX_AGE,
+} from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
+import { recordSessionLogin } from "@/lib/active-sessions";
+import { clientIpFrom } from "@/lib/request-meta";
 
 // Runs on the Node.js runtime (the default for route handlers) because
 // bcryptjs (via verifyAdminCredentials) needs Node crypto APIs that the
@@ -51,7 +58,26 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "invalid credentials" }, { status: 401 });
   }
 
-  const token = await createSessionToken(username);
+  const sessionId = generateSessionId();
+  const token = await createSessionToken(username, sessionId);
+
+  // Real Active Session Management registry entry (lib/active-sessions.ts).
+  // Awaited (unlike the audit-db stdout+DB dual write) so the row is
+  // guaranteed to already exist for a client that immediately follows this
+  // 200 with a GET /api/sessions -- recordSessionLogin itself never
+  // throws (every failure comes back as `{ok:false}`), and a registry
+  // failure here is logged but never turned into a failed login: the
+  // session cookie below is still issued either way.
+  const registryResult = await recordSessionLogin({
+    sessionId,
+    identifier: username,
+    authProvider: "local-admin",
+    ip: clientIpFrom(request),
+    userAgent: request.headers.get("user-agent"),
+  });
+  if (!registryResult.ok) {
+    console.error(JSON.stringify({ activeSessionRecordError: registryResult.error }));
+  }
 
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),

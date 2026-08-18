@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, createApiKeySessionToken, verifySessionToken } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
 import { resolveApiKeyAuth } from "@/lib/api-keys";
+import { checkAndTouchSession } from "@/lib/active-sessions";
+import { clientIpFrom } from "@/lib/request-meta";
 
 // Runs on the Node.js middleware runtime (`export const runtime = "nodejs"`
 // below -- Next.js 15's node-middleware support, not the edge runtime this
@@ -54,6 +56,7 @@ export async function middleware(request: NextRequest) {
   const cookieToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   let session = cookieToken ? await verifySessionToken(cookieToken) : null;
   let forwardHeaders: Headers | null = null;
+  let revokedBySessionRegistry = false;
 
   // Real, second authentication method (alongside the browser session
   // cookie above): a bound API key, presented as a standard
@@ -79,15 +82,51 @@ export async function middleware(request: NextRequest) {
         // This IS the entire mechanism: an alternate authentication
         // method feeding the exact same authorization layer, never a
         // parallel one -- zero route files were edited to support this.
+        // Deliberately deterministic, not a fresh crypto.randomUUID() --
+        // this path mints a brand-new app-local JWT on literally every
+        // request (there is no persistent cookie for a Bearer-token
+        // caller), so a random sessionId here would register a brand-new
+        // registry row on every single request instead of one row per key
+        // that heartbeats over time. See lib/active-sessions.ts's module
+        // doc for the full reasoning and how checkAndTouchSession's
+        // self-heal-create branch below stands in for this path's missing
+        // separate login step.
+        const apiKeySessionId = `apikey-${resolved.keyId}`;
         const apiKeyToken = await createApiKeySessionToken(
           resolved.identifier,
           resolved.role,
           resolved.keyId,
+          apiKeySessionId,
         );
         forwardHeaders = new Headers(request.headers);
         forwardHeaders.set("cookie", `${SESSION_COOKIE_NAME}=${apiKeyToken}`);
         session = await verifySessionToken(apiKeyToken);
       }
+    }
+  }
+
+  // Real Active Session Management enforcement (lib/active-sessions.ts):
+  // an otherwise-valid, unexpired JWT is rejected here if its own
+  // `sessionId` claim resolves to a registry row marked revoked -- the one
+  // check that makes revocation genuinely real rather than merely hiding a
+  // session from the /sessions list. `session.sessionId` is absent only
+  // for a cookie minted before this claim existed (see lib/session.ts's
+  // own doc comment) -- that legacy case is intentionally left unchecked,
+  // riding out its own unchanged expiry, exactly as it would have before
+  // this pass. A registry lookup failure (Postgres genuinely unreachable)
+  // fails OPEN, disclosed in lib/active-sessions.ts's own module doc --
+  // this is the one and only place that trade-off is made; a row that
+  // WAS successfully read back as `revoked: true` is never let through.
+  if (session?.sessionId) {
+    const check = await checkAndTouchSession(session.sessionId, {
+      identifier: session.sub,
+      authProvider: session.authProvider,
+      ip: clientIpFrom(request),
+      userAgent: request.headers.get("user-agent"),
+    });
+    if (check.ok && check.data.revoked) {
+      session = null;
+      revokedBySessionRegistry = true;
     }
   }
 
@@ -97,8 +136,19 @@ export async function middleware(request: NextRequest) {
       // a 307 redirect to an HTML login page -- the correct hyperscaler-
       // API convention, and what makes a missing/invalid/revoked key's
       // rejection actually machine-checkable by a script rather than
-      // requiring HTML-scraping a redirect target.
-      return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
+      // requiring HTML-scraping a redirect target. `reason` is only ever
+      // set on the real, specific "this exact session was revoked via
+      // /sessions" path (never on a plain missing/malformed/expired
+      // token), so a caller -- or this control's own live verification --
+      // can tell the two 401s apart without guessing from status code
+      // alone.
+      return NextResponse.json(
+        {
+          error: "unauthenticated",
+          ...(revokedBySessionRegistry ? { reason: "session revoked" } : {}),
+        },
+        { status: 401 },
+      );
     }
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", pathname);

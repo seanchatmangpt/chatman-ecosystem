@@ -22,6 +22,21 @@
  * access token passed through, so every existing session consumer
  * (middleware.ts, the various /api/* route handlers' requireActor helpers)
  * keeps working unchanged: they all only ever read `session.sub`.
+ *
+ * Every variant below additionally carries a `sessionId` claim (Active
+ * Session Management -- see lib/active-sessions.ts) -- a fresh
+ * `crypto.randomUUID()` minted once per real login, distinct from every
+ * other claim on the token (never derived from `sub`, which for the
+ * API-key path is shared across every key belonging to the same identity
+ * and would be useless as a per-session revocation handle). Optional on
+ * the type (`sessionId?: string`) purely for backward compatibility: a
+ * session cookie already issued before this claim existed still verifies
+ * successfully (no forced logout on deploy), it just carries no
+ * `sessionId` -- middleware.ts's registry check is a no-op for such a
+ * token (nothing to look up), which is the correct, disclosed behavior for
+ * a session minted under the old contract: it simply rides out its own
+ * unchanged 8h expiry with no way to be force-revoked, exactly like every
+ * session did before this pass.
  */
 import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 
@@ -32,6 +47,7 @@ export interface LocalAdminSessionPayload extends JWTPayload {
   sub: string; // username
   role: "admin";
   authProvider: "local-admin";
+  sessionId?: string;
 }
 
 export interface GoTrueSessionPayload extends JWTPayload {
@@ -39,6 +55,7 @@ export interface GoTrueSessionPayload extends JWTPayload {
   role: "authenticated";
   authProvider: "gotrue";
   email: string;
+  sessionId?: string;
 }
 
 /**
@@ -61,12 +78,30 @@ export interface ApiKeySessionPayload extends JWTPayload {
   authProvider: "api-key";
   boundRole: "viewer" | "member" | "owner";
   keyId: string;
+  sessionId?: string;
 }
 
 export type SessionPayload =
   | LocalAdminSessionPayload
   | GoTrueSessionPayload
   | ApiKeySessionPayload;
+
+/**
+ * A fresh, real random session identifier -- Web Crypto's own
+ * `randomUUID()` (a real RFC 4122 v4 UUID, 122 real random bits), available
+ * as a global in both the Node.js runtime and the edge runtime this module
+ * is written to stay compatible with, so this file still needs no
+ * Node-only `node:crypto` import. Callers (the login/signup routes, and
+ * middleware.ts's deterministic `apikey-<keyId>` construction for the
+ * Bearer-token path) mint the id themselves and pass it in here, rather
+ * than this module generating one internally and handing it back -- so the
+ * exact same id is usable both as this JWT's `sessionId` claim and as the
+ * lib/active-sessions.ts registry row's primary key, minted once, in one
+ * place, by the caller that owns both writes.
+ */
+export function generateSessionId(): string {
+  return globalThis.crypto.randomUUID();
+}
 
 function getSecretKey(): Uint8Array {
   const secret = process.env.AUTH_SECRET;
@@ -85,12 +120,13 @@ function getSecretKey(): Uint8Array {
  * `authProvider: "local-admin"` claim added alongside the existing
  * `role: "admin"` claim, so old and new sessions are both self-describing.
  */
-export async function createSessionToken(username: string): Promise<string> {
+export async function createSessionToken(username: string, sessionId: string): Promise<string> {
   const key = getSecretKey();
   return await new SignJWT({
     sub: username,
     role: "admin",
     authProvider: "local-admin",
+    sessionId,
   })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -108,6 +144,7 @@ export async function createSessionToken(username: string): Promise<string> {
 export async function createGoTrueSessionToken(
   userId: string,
   email: string,
+  sessionId: string,
 ): Promise<string> {
   const key = getSecretKey();
   return await new SignJWT({
@@ -115,6 +152,7 @@ export async function createGoTrueSessionToken(
     role: "authenticated",
     authProvider: "gotrue",
     email,
+    sessionId,
   })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -134,6 +172,7 @@ export async function createApiKeySessionToken(
   identifier: string,
   boundRole: "viewer" | "member" | "owner",
   keyId: string,
+  sessionId: string,
 ): Promise<string> {
   const key = getSecretKey();
   return await new SignJWT({
@@ -142,6 +181,7 @@ export async function createApiKeySessionToken(
     authProvider: "api-key",
     boundRole,
     keyId,
+    sessionId,
   })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -158,6 +198,12 @@ export async function verifySessionToken(
       algorithms: ["HS256"],
     });
     if (typeof payload.sub !== "string") {
+      return null;
+    }
+    // sessionId is optional on the wire (see the type's own doc comment --
+    // backward compatibility with pre-existing cookies), but if present it
+    // must be a real string, never some other JSON type smuggled in.
+    if (payload.sessionId !== undefined && typeof payload.sessionId !== "string") {
       return null;
     }
     if (payload.authProvider === "gotrue") {
