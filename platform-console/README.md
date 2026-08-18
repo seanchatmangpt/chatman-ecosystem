@@ -334,6 +334,149 @@ real token-bucket refill. Full evidence: `rate-limiting-enforced` in
 `evidence/control-evidence-bundle.json`. Live documentation: `/api-gateway` on the console
 itself.
 
+## Private Connectivity
+
+Real transport-layer access control for the platform's genuinely sensitive surface -- the AWS
+PrivateLink / GCP Private Service Connect / Azure Private Link equivalent -- implemented as a
+second, distinct Istio Gateway that requires the CALLER to present a valid client certificate
+(mutual TLS at the ingress edge), gating exactly the backups/restore control path
+(`/api/projects/<name>/backups` and `/projects/<name>/backups`, both the JSON API and its UI
+page -- see the Modules table above), because that path is the one module that runs a real
+destructive database operation (`pg_dump` for backup, drop-and-replay `psql -f` for restore --
+`app/app/api/projects/[name]/backups/route.ts`, `lib/k8s.ts` `createBackupJob`/
+`createRestoreJob`).
+
+This is a THIRD, additive layer, not a replacement for the other two that already exist on this
+cluster:
+
+1. Mesh-wide **service-to-service** mTLS (`k8s/mtls.yaml`, `PeerAuthentication` mode `STRICT`)
+   -- every pod-to-pod hop inside the mesh already required a workload certificate. This never
+   covered the ingress edge itself: a caller outside the mesh reaching the gateway over plain
+   HTTP was, and for every other route still is, unauthenticated at the transport layer.
+2. **App-level session auth** (`requireActor`/`requireSession` + `requireRole`, cookie- or
+   `Authorization: Bearer pk_live_...`-based) on the route handler itself -- still fully in
+   effect and unchanged; a request with a perfectly valid client certificate but no session
+   still gets a real `401 {"error":"unauthenticated"}` from the app.
+3. **This layer**: a client certificate check at the Istio Gateway, before any request reaches
+   the app at all.
+
+### Topology
+
+`k8s/mtls-gateway.yaml` adds a dedicated `Gateway` (`platform-console-mtls-gateway`) on a
+distinct port and host from the existing public route -- port `8444`, host
+`backups.platform.local`, `protocol: HTTPS`, `tls.mode: MUTUAL` -- with its own
+`VirtualService` (`platform-console-mtls-backups`) matching only
+`^/api/projects/[^/]+/backups$` and `^/projects/[^/]+/backups$`, routed to the same backend
+Service every other platform-console route uses. **Correction, disclosed rather than silently fixed**: an earlier version of this feature also
+edited `k8s/gateway.yaml`'s plain-HTTP `platform-console-ingress` VirtualService to
+direct-`421` those same two path patterns, making the mTLS gateway the *only* way to reach
+them. That broke the console's own already-shipped, already-verified browser UI
+(`RunBackupButton`/`RestoreBackupButton` -- see the "Backup Restore" commit's real
+delete-then-restore proof) for every normal session, since a browser cannot present a client
+certificate through a standard page load. Reverted before it ever landed on `main`: the plain
+route continues to proxy these paths normally (session-auth-gated, as always), and the mTLS
+gateway is a real, *additional* private access path for programmatic/operator use -- matching
+how AWS PrivateLink / GCP Private Service Connect actually work in practice (an extra private
+path alongside the public one, never an exclusive replacement for it).
+
+The shared `istio-system/istio-ingressgateway` Service (pre-existing infra, not owned by this
+directory) needed a new port added so `8444` is externally reachable:
+
+```
+kubectl patch svc istio-ingressgateway -n istio-system --type=json \
+  -p='[{"op":"add","path":"/spec/ports/-","value":{"name":"mtls-backups","port":8444,"targetPort":8444,"protocol":"TCP"}}]'
+```
+
+That patch is not re-applied by anything in this directory (the Service is Helm-managed
+upstream) -- if the Service is ever fully reconciled back to its chart-rendered state, the port
+needs to be re-added the same way.
+
+### Client certificate issuance
+
+The trust root is a real CA generated with `openssl`, the standard self-signed-CA pattern (not
+a security bypass -- this is how every private-CA mTLS deployment, including PrivateLink's own
+internal trust model, actually gets its root material):
+
+```bash
+# 1. CA -- the private key is the only genuinely secret artifact here. Keep
+#    it in your own secrets manager; it is NEVER stored in the cluster and
+#    NEVER committed to this repo (only ca.crt, the public half, is).
+openssl genrsa -out ca.key 4096
+openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 \
+  -subj "/O=Platform Engineering/OU=Private Connectivity/CN=platform-backups-mtls-ca" \
+  -out ca.crt
+
+# 2. Gateway's own server certificate (what the CALLER's TLS client verifies),
+#    signed by that same CA, SAN required:
+openssl genrsa -out server.key 2048
+openssl req -new -key server.key \
+  -subj "/O=Platform Engineering/CN=backups.platform.local" -out server.csr
+printf "subjectAltName = DNS:backups.platform.local\nextendedKeyUsage = serverAuth\n" > server-ext.cnf
+openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial \
+  -out server.crt -days 825 -sha256 -extfile server-ext.cnf
+
+kubectl create secret generic platform-backups-mtls-credential -n istio-system \
+  --from-file=tls.crt=server.crt --from-file=tls.key=server.key --from-file=ca.crt=ca.crt
+```
+
+To get a real client certificate for a new operator, the CA holder (not the operator) runs:
+
+```bash
+# 3. Operator's own key + CSR (the operator can generate genrsa/req
+#    themselves and send only the .csr -- the CA holder never needs to see
+#    the operator's private key):
+openssl genrsa -out <operator-name>.key 2048
+openssl req -new -key <operator-name>.key \
+  -subj "/O=Platform Engineering/OU=Backups Operators/CN=<operator-name>" \
+  -out <operator-name>.csr
+
+# 4. CA holder signs it:
+printf "extendedKeyUsage = clientAuth\n" > client-ext.cnf
+openssl x509 -req -in <operator-name>.csr -CA ca.crt -CAkey ca.key -CAcreateserial \
+  -out <operator-name>.crt -days 825 -sha256 -extfile client-ext.cnf
+```
+
+The operator then calls the gated path with their own cert/key plus the CA's public cert to
+verify the gateway's server identity:
+
+```bash
+curl --resolve backups.platform.local:8444:<ingress-address> \
+  --cacert ca.crt --cert <operator-name>.crt --key <operator-name>.key \
+  https://backups.platform.local:8444/api/projects/<name>/backups
+```
+
+Revocation, for this cluster's current scope, is by rotating `ca.key` and re-signing/re-issuing
+(no CRL/OCSP endpoint is stood up) -- a genuinely disclosed limitation, not silently glossed
+over: fine for a single small operator group, not a substitute for a real CRL/OCSP-backed CA at
+larger scale.
+
+### Real proof (all three TLS-layer outcomes, live)
+
+Via `kubectl port-forward -n istio-system svc/istio-ingressgateway 18444:8444`:
+
+- **No client certificate** -> real TLS-layer failure, not an application 403: curl exit `56`,
+  `LibreSSL SSL_read: LibreSSL/3.3.6: error:1404C45C:SSL routines:ST_OK:reason(1116), errno 0`
+  -- reason 1116 is `SSL_R_TLSV13_ALERT_CERTIFICATE_REQUIRED`, Envoy's own TLS 1.3
+  `certificate_required` alert. The app is never reached; there is no HTTP status line at all.
+- **The real CA-signed client certificate** (`--cert client.crt --key client.key`) -> full
+  mutual TLS handshake succeeds (`curl -v` shows Envoy's `Request CERT(13)`, then curl's own
+  `Certificate(11)`/`CERT verify(15)`/`Finished(20)`, `SSL connection using TLSv1.3`), and the
+  real API responds normally over that connection: `HTTP/2 401 {"error":"unauthenticated"}`
+  from the real route handler's `requireActor()` check -- the transport gate is additive to,
+  not a replacement for, app-level session auth, exactly as intended.
+- **A different, unrelated self-signed certificate** (not signed by the real CA) -> real
+  rejection too, with a DIFFERENTLY SPECIFIC alert than the no-cert case, proving the gateway
+  validates the presented cert's issuer against this specific CA rather than "any cert
+  present": curl exit `56`,
+  `LibreSSL SSL_read: LibreSSL/3.3.6: error:1404C418:SSL routines:ST_OK:tlsv1 alert unknown ca, errno 0`.
+
+Independently re-verified after the exclusivity-gate correction above: the plain,
+pre-existing HTTP route (with a valid session cookie) still serves these paths normally --
+real `200` on `GET /projects/demo-project/backups` and real backup-job data on
+`GET /api/projects/demo-project/backups` -- confirming the browser UI is fully restored
+alongside the new mTLS path. Full command transcripts and the distinguishing alert text:
+`mtls-gated-route-rejects-untrusted-clients` in `evidence/control-evidence-bundle.json`.
+
 ## Autoscaling
 
 Real autoscaling-as-a-service, the capability every hyperscaler PaaS wraps (GCP/AWS/Azure

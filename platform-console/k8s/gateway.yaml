@@ -65,6 +65,21 @@ spec:
   gateways:
     - platform-console-gateway
   http:
+    # NOTE on Private Connectivity (k8s/mtls-gateway.yaml): an EARLIER
+    # version of this file made the mutual-TLS gateway on
+    # https://backups.platform.local:8444 the ONLY way to reach
+    # /api/projects/*/backups, via a direct-421 rule here. That broke the
+    # console's own already-shipped, already-verified browser UI
+    # (RunBackupButton/RestoreBackupButton -- see the "Backup Restore"
+    # commit's real delete-then-restore proof) for every normal
+    # session, since a browser cannot present a client certificate through
+    # the standard page flow. Reverted before that ever shipped: the plain
+    # route below still proxies these paths normally (session-auth-gated,
+    # as before), and the mTLS gateway remains a real, additional private
+    # access path for programmatic/operator use -- matching how AWS
+    # PrivateLink/GCP Private Service Connect actually work in practice
+    # (an additional private path alongside the public one, not an
+    # exclusive replacement for it).
     # Named explicitly so k8s/ratelimit.yaml's EnvoyFilter can target this
     # exact Envoy route (routeConfiguration.vhost.route.name) without
     # touching the sibling grafana-route rules on the same platform.local
