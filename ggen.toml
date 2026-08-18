@@ -1,0 +1,11 @@
+[project]
+name = "chatman-ecosystem-compliance"
+
+[ontology]
+source = "ontology.ttl"
+
+[packs]
+soc2-readiness-pack = { path = "/Users/sac/ggen-marketplace/packs/soc2-readiness-pack" }
+
+[templates]
+dir = "templates"
