@@ -62,58 +62,81 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
+          from collections import Counter
           from pathlib import Path
           import re
 
+          LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+\.md)\)")
+
+          def local_targets(summary_path: Path):
+              summary = summary_path.read_text(encoding="utf-8")
+              return [
+                  target
+                  for target in LINK_RE.findall(summary)
+                  if not target.startswith(("http://", "https://"))
+              ]
+
+          def verify_targets(base_dir: Path, summary_path: Path):
+              targets = local_targets(summary_path)
+              missing = [target for target in targets if not (base_dir / target).exists()]
+              if missing:
+                  raise SystemExit(
+                      f"{summary_path} contains missing targets: {missing}"
+                  )
+              return targets
+
           docs = Path("docs")
-          summary = (docs / "SUMMARY.md").read_text(encoding="utf-8")
-          targets = re.findall(r"\[[^\]]+\]\(([^)]+\.md)\)", summary)
-          local_targets = [
-              target
-              for target in targets
-              if not target.startswith(("http://", "https://"))
-          ]
+          root_summary = docs / "SUMMARY.md"
+          root_targets = verify_targets(docs, root_summary)
 
-          dead_appendix = [
-              target for target in local_targets if target.startswith("v26.9.1/")
-          ]
-          if dead_appendix:
-              raise SystemExit(
-                  f"SUMMARY still references eliminated v26.9.1 corpus: {dead_appendix}"
-              )
-
-          missing = [target for target in local_targets if not (docs / target).exists()]
-          if missing:
-              raise SystemExit(f"SUMMARY contains missing targets: {missing}")
-
-          numbered = []
-          for path in docs.glob("[0-9][0-9]-*.md"):
-              prefix = path.name[:2]
-              if prefix == "00":
-                  continue
-              numbered.append((int(prefix), path.name))
-
-          numbers = sorted(number for number, _ in numbered)
-          if numbers != list(range(1, 71)):
-              raise SystemExit(
-                  "numbered corpus is not exactly 01..70: "
-                  + ", ".join(f"{number:02d}" for number in numbers)
-              )
-
-          summary_numbered = sorted(
-              int(target[:2])
-              for target in local_targets
-              if re.match(r"^\d{2}-.*\.md$", target) and target[:2] != "00"
+          numbered_paths = sorted(
+              path.name
+              for path in docs.glob("[0-9][0-9]-*.md")
+              if path.name[:2] != "00"
           )
-          if summary_numbered != list(range(1, 71)):
+          summary_numbered = [
+              target
+              for target in root_targets
+              if "/" not in target
+              and re.match(r"^\d{2}-.*\.md$", target)
+              and target[:2] != "00"
+          ]
+          counts = Counter(summary_numbered)
+          duplicates = sorted(name for name, count in counts.items() if count != 1)
+          if duplicates:
               raise SystemExit(
-                  "SUMMARY does not include exactly chapters 01..70: "
-                  + ", ".join(f"{number:02d}" for number in summary_numbered)
+                  f"root SUMMARY contains duplicate numbered chapters: {duplicates}"
+              )
+          if sorted(summary_numbered) != numbered_paths:
+              missing_from_summary = sorted(set(numbered_paths) - set(summary_numbered))
+              extra_in_summary = sorted(set(summary_numbered) - set(numbered_paths))
+              raise SystemExit(
+                  "root numbered corpus and SUMMARY diverge: "
+                  f"missing={missing_from_summary}, extra={extra_in_summary}"
+              )
+
+          handbook = docs / "post-agi-platform-handbook"
+          handbook_summary = handbook / "SUMMARY.md"
+          handbook_targets = verify_targets(handbook, handbook_summary)
+
+          # The root mdBook is the publication surface. Every handbook chapter and
+          # appendix linked from the handbook's local SUMMARY must also be reachable
+          # from the root SUMMARY so publication cannot silently omit book content.
+          root_handbook_targets = {
+              target.removeprefix("post-agi-platform-handbook/")
+              for target in root_targets
+              if target.startswith("post-agi-platform-handbook/")
+          }
+          omitted = sorted(set(handbook_targets) - root_handbook_targets)
+          if omitted:
+              raise SystemExit(
+                  f"root SUMMARY omits handbook targets: {omitted}"
               )
 
           print(
-              f"validated {len(local_targets)} local SUMMARY targets "
-              "and exactly 70 numbered chapters"
+              f"validated {len(root_targets)} root SUMMARY targets, "
+              f"{len(numbered_paths)} numbered root chapters, and "
+              f"{len(handbook_targets)} handbook targets"
           )
           PY
 
@@ -130,9 +153,14 @@ jobs:
           test -s book/50-civilization-scale-synthesis.html
           test -s book/60-ecosystem-synthesis.html
           test -s book/70-dissertation-synthesis.html
-          find book -maxdepth 1 -type f -name 'searchindex*.js' -size +0c -print -quit | grep -q .
+          test -s book/80-post-operator-factory.html
+          test -s book/post-agi-platform-handbook/working-backwards.html
+          test -s book/post-agi-platform-handbook/part-16-complete-calculus/65-reality-runtime.html
+          test -s book/post-agi-platform-handbook/appendices/p-civilization-memory-algebra.html
+          find book -type f -name 'searchindex*.js' -size +0c -print -quit | grep -q .
           grep -q "The Chatman Ecosystem" book/index.html
           grep -q "Where is the receipt" book/index.html
+          grep -q "Reality as the Runtime" book/post-agi-platform-handbook/part-16-complete-calculus/65-reality-runtime.html
 
       - name: Preserve rendered book
         uses: actions/upload-artifact@v7
