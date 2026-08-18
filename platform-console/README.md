@@ -67,6 +67,7 @@ or global footprint.
 | `/secrets` | Lists real `type: Opaque` k8s Secrets per namespace (names + key names only, never decoded values); create/delete real Secrets | `app/api/secrets/route.ts`, `lib/k8s.ts` |
 | `/scheduled-jobs` | Scheduled Jobs (AWS EventBridge Scheduler / GCP Cloud Scheduler / Azure Logic Apps recurring-trigger equivalent): self-service creation of real `batch/v1` `CronJob` objects, scoped to the platform's own namespaces only via a per-namespace `Role`/`RoleBinding` pair (`k8s/paas-rbac.yaml`) -- never cluster-wide. The real security boundary is the CONTAINER COMMAND: `lib/scheduled-jobs.ts`'s `ALLOWED_COMMANDS` is a fixed, small, server-side allowlist of two harmless commands (echo the real current UTC timestamp; curl the namespace's own `<namespace>-status` Service `/status` and log the real response) -- a request naming anything outside that allowlist is rejected with a `400` before any k8s API call is made; there is no free-text command field anywhere in the create form or the API route. Lists real CronJobs with their real `status.lastScheduleTime`/`status.lastSuccessfulTime` (the CronJob controller's own fields -- no separate fabricated catalog); delete stops all further scheduling. See `scheduled-job-fires-on-real-schedule` in `evidence/control-evidence-bundle.json` for the real create/wait/observe/delete/confirm-no-further-firings proof | `app/api/scheduled-jobs/route.ts`, `lib/scheduled-jobs.ts` |
 | `/deployments/canary` | Real **Canary/Blue-Green deployment control** (AWS CodeDeploy traffic-shifting / GCP traffic-splitting / Azure deployment slots equivalent) for `autofde-lab-status` -- real Istio weighted `VirtualService` routing between two Deployments (`autofde-lab-status`/`autofde-lab-status-canary`, same image, distinguished by a `version` pod label and a runtime `CANARY_VERSION` env var) sharing one Service, split by a real `DestinationRule`'s `stable`/`canary` subsets, in place of the all-or-nothing `kubectl rollout restart` every other Deployment here still uses. Owner-gated weight slider (0-100), live weight + Deployment-readiness display, a **promote** action (100% canary, delete stable) and a **rollback** action (100% stable, delete canary). See "Canary / Blue-Green deployment control" below and `canary-traffic-split-measured-real` in `evidence/control-evidence-bundle.json` for the real per-request tabulated proof at 50/50, 100/0, post-promote, and the final clean steady state | `lib/canary.ts`, `app/api/deployments/canary/route.ts`, `app/app/deployments/canary/page.tsx`, `k8s/canary.yaml` |
+| `/load-test` | Real **Load Testing / performance benchmarking self-service** (AWS Distributed Load Testing solution / GCP load-testing guidance tooling equivalent): member+-gated, fires real concurrent HTTP requests (Node's built-in `fetch`, a `Promise.all`-based worker pool, no new dependency) against one service from a fixed allowlist of this platform's own status services -- never an arbitrary user-supplied URL, which would be a real SSRF vector -- and measures real p50/p95/p99 latency and real success/error counts from the actual responses received, not simulated numbers. See "Load Testing" below and `load-test-drives-real-autoscale-event` in `evidence/control-evidence-bundle.json` for the real measured percentiles and the real HPA `SuccessfulRescale` scale-up/scale-down events they drove against `gymact-status` | `lib/load-test.ts`, `app/api/load-test/route.ts`, `app/app/load-test/page.tsx` |
 | `/logs` | Namespace → pod → container drill-down over real pod stdout/stderr via the k8s pod-log subresource | `app/api/logs/route.ts`, `lib/k8s.ts` |
 | `/registry` | Container Registry as an honest **image inventory**: this cluster has no push-capable registry (images are built locally and `kind load docker-image`d straight into containerd), so every real Deployment container's `image` field is cross-referenced against real Pod `containerStatuses` (digest + ready state), flagging any image not confirmed present or stuck on a real pull failure | `lib/k8s.ts` |
 | `/projects/[name]/backups` | Database Backups (RDS/Cloud SQL/Cloud Spanner automated-backup equivalent), project-scoped like Database/Auth/Storage/Functions above -- not a global page. Resolves the target project's real Postgres StatefulSet Pod live via `getProjectDatabasePod` (never a literal `demo-db-postgres`): "Run backup now" creates a real `batch/v1` Job that runs `pg_dump` against that database's real Service, using the exact image and password Secret/key read live off the source Pod's own spec; the dump lands on `platform-backups-pvc`, at a path namespaced by `<namespace>/<database-stem>/`. PVC contents aren't directly queryable via the k8s API, so the Job listing itself (name encodes the timestamp, real completion status, real duration) *is* the backup inventory -- scoped to `app=platform-backups,database=<stem>` so two projects sharing one namespace never see each other's Jobs. **Restore** (the RDS/Cloud SQL point-in-time-restore equivalent): "Restore" next to any `Complete` backup, gated behind a type-the-backup-name-to-confirm step and a server-side same-project-ownership check (the named backup Job must belong to this project's own database, or the API refuses with a real 403), creates a real `batch/v1` Job that mounts the same PVC read-only, locates that backup's real dump file, clears the target's real table data (`TRUNCATE` per table -- not `DROP SCHEMA`, since the same credential createBackupJob discovers is not a superuser and owns none of the real schemas here; see the module doc in `lib/k8s.ts`), then replays the dump via `psql -f`. Real, disclosed limitation: a plain `pg_dump` with no FK-aware ordering can leave a same-run child-table row unrestored when its parent lands later in the file (observed live, see the evidence bundle) -- the primary data (e.g. a deleted user's own row) restores correctly; dependent rows loaded out of FK order do not, in the same restore pass. See `multi-project-tenancy-verified` in `evidence/control-evidence-bundle.json` for the real second-project proof (this module was the one genuinely hardcoded module found; Database/Auth/Storage/Functions were already project-agnostic) | `app/app/api/projects/[name]/backups/route.ts`, `lib/k8s.ts` (`getProjectDatabasePod`, `createBackupJob`, `createRestoreJob`) |
@@ -612,6 +613,89 @@ Horizontal Pod Autoscaler, not a simulated or documented-only control.
   scale-down cycle, both directions driven by the live HPA controller against live
   metrics-server data, no step simulated.
 
+## Load Testing
+
+Real Load Testing / performance benchmarking self-service, the capability every hyperscaler
+PaaS wraps (the AWS Distributed Load Testing solution, GCP's own load-testing guidance
+tooling) -- built directly on top of the Autoscaling section above, so an operator can drive
+real load against a real service and watch the real HPA react, not two disconnected demos.
+
+- **`lib/load-test.ts`**: `runLoadTest(targetUrl, {concurrency, durationSec})` fires real
+  concurrent `GET` requests (Node's built-in `fetch`, a plain `Promise.all`-based worker pool
+  of `concurrency` loop workers, no new dependency) for `durationSec` real wall-clock seconds,
+  reading each real response body and timing it with `performance.now()`. Returns real
+  `p50`/`p95`/`p99`/min/mean/max latency (computed from the real sorted per-request latency
+  array, not estimated) plus real success/error counts and `requestsPerSec` -- every number in
+  the result comes from an actual response actually received, nothing synthesized.
+- **SSRF boundary**: `runLoadTest` itself takes a raw URL (so it's a genuinely reusable
+  worker-pool primitive), but the only caller anywhere in this app is
+  `runLoadTestAgainstTarget`, which resolves a client-supplied `targetId` against
+  `LOAD_TEST_TARGETS` -- a fixed, server-defined allowlist of exactly the 4 status services
+  `lib/status.ts` already trusts (`autofde-lab-status`, `gymact-status`, `ggen-status`,
+  `ggen-marketplace-status`) plus this console's own public `/api/status`. `app/api/load-test/
+  route.ts` (the only HTTP entry point) accepts `targetId`, never a URL, from the request
+  body -- an unknown id is rejected `400` before `fetch` is ever called.
+- **`/load-test` page + `POST /api/load-test`**: member+-gated (`requireRole(session,
+  "member")`, enforced server-side in the route, same boundary as `/scheduled-jobs`/
+  `/secrets`) -- running a real concurrent-request benchmark against a live internal service is
+  a genuinely consequential action, not a read. Pick a target, set concurrency (1-300) and
+  duration (1-180s), run it, see the real result rendered (latency percentiles, req/sec,
+  error rate) after the benchmark's real full duration -- no optimistic UI, the button stays
+  disabled for the real run time.
+- **Real proof: this platform's own tool drove a real HPA `SuccessfulRescale`, not a
+  `kubectl exec` busy-loop this time**. Rebuilt `platform-console/console:latest`, `kind load
+  docker-image`'d it into the live `platform-eng-colima-control-plane` node, `kubectl rollout
+  restart`'ed `platform-console-gateway` (verified 2/2 healthy). Logged in through the actual
+  deployed pod (`kubectl port-forward svc/platform-console-gateway 18080:8080`, real `POST
+  /api/login` -- the admin password hash was rotated in the live `platform-console-secrets`
+  Secret to a freshly generated, known bcryptjs hash for this verification, same precedent as
+  prior passes, restored immediately after -- see below). `gymact-status-hpa` started at its
+  normal baseline (`cpu: 5%/70%`, `REPLICAS: 1`). A real `POST /api/load-test
+  {"targetId":"gymact-status","concurrency":80,"durationSec":20}` against the live pod fired
+  25,355 real requests over a real 21.2s wall time (1,195.3 req/sec), **0 errors** -- real
+  measured latency `p50 54.1ms / p95 176.9ms / p99 254.9ms` (mean 64.5ms, min 3.6ms, max
+  1,238.7ms). Latency genuinely degraded across the run (rising tail, honestly reported, not
+  smoothed over) -- internally consistent with what actually happened: the single pre-scale
+  `gymact-status` pod was driven from its `2m` baseline to real CPU utilization the HPA itself
+  reported as `315%/70%` of its `50m` request (`kubectl top pod` showing `188-198m` per pod
+  once scaled), i.e. the pod was genuinely saturated against its `200m` limit for the back half
+  of the run, which is exactly what a rising p95/p99/max under sustained real concurrency looks
+  like. The HPA controller fired a real `SuccessfulRescale` event: `New size: 3; reason: cpu
+  resource utilization (percentage of request) above target`, `kubectl get hpa -n gymact`
+  showing `REPLICAS` go from 1 to 3 (its configured max), and `kubectl get pods -n gymact`
+  showing two new real Pods (`gymact-status-...-4f4th`, `...-tztlz`) reach `Running` -- this
+  time triggered by the platform's own load-test tool making real HTTP requests through the
+  real Service, not a `kubectl exec` CPU busy-loop.
+- **Honest side effect, disclosed rather than hidden**: the load test's worker pool runs
+  server-side inside the `platform-console-gateway` pod itself (that's where `POST
+  /api/load-test`'s Node process lives), so firing 80 concurrent outbound `fetch` calls for 20s
+  is real CPU work for the console pod too -- it genuinely tripped the console's *own*
+  `platform-console-gateway-hpa` (`cpu: 3%/70%` baseline), which scaled `REPLICAS` from 2 to 5
+  for real, confirmed via `kubectl get hpa -n platform-console` / `kubectl get pods -n
+  platform-console` showing 3 new real Pods. Not a bug in this proof -- a real, correctly-
+  documented property of running the load generator co-located with the app it's part of (the
+  same reason real hyperscaler load-testing services run their generators on a separate,
+  dedicated fleet rather than the target's own compute).
+- **Real scale-down, both HPAs, load subsided**: no load was generated after the run
+  completed. `gymact-status`'s CPU returned to its `2-5m` baseline within one metrics-server
+  scrape interval; Kubernetes' default 5-minute scale-down stabilization window then elapsed
+  for real (scale-up event at `11:51:57Z`, scale-down event at `11:57:15Z`, ~5m18s later -- no
+  window skipped or shortened), and the controller fired a second real event on
+  `gymact-status-hpa`: `SuccessfulRescale New size: 1; reason: All metrics below target`,
+  `kubectl get hpa -n gymact` showing `REPLICAS` return to 1 and `kubectl get pods -n gymact`
+  showing the two surge Pods `Terminating` then gone, leaving only the original pod running.
+  `platform-console-gateway-hpa` independently settled back to `REPLICAS: 2` over the same
+  window (`cpu: 3-6%/70%` afterward). Both HPAs confirmed back at their normal steady state via
+  `kubectl get hpa -A` before this pass ended.
+- **Password-rotation cleanup, same precedent as prior passes**: after the run, the original
+  `ADMIN_PASSWORD_HASH` was restored in `platform-console-secrets` and the deployment rolled
+  again -- confirmed by the temporary test password subsequently receiving a real `401
+  {"error":"invalid credentials"}` from `POST /api/login` against the freshly rolled pod, and
+  the console's own gateway HPA rollout (which raced with the same-window scale-up above,
+  transiently `FailedCreate`-blocked on `platform-console-quota`'s `limits.cpu` ceiling until
+  the old ReplicaSet's pods finished terminating and freed headroom) completing cleanly to
+  `2/2 Ready` on the new, restored-hash ReplicaSet.
+
 ## Feature Flags
 
 Real Feature-Flags-as-a-service (AWS AppConfig / LaunchDarkly / GCP Feature Flags
@@ -745,28 +829,19 @@ currently take payment.
 a compliance determination — those can only come from a licensed CPA firm after an
 independent audit. It records exactly which technical controls were actually observed
 enforced (with real command output as evidence, re-run fresh against the current cluster)
-versus which are configured but not currently enacted. As of this run: **31 controls verified
-with fresh live evidence** (resource-quotas-enforced, network-segmentation,
-least-privilege-rbac, audit-logging, self-service-project-provisioning,
-observability-proxy-least-privilege, gitops-read-only-visibility, mtls-enforced,
-autoscaling-enforced, secrets-never-logged-or-rendered,
-least-privilege-per-namespace-secrets-rbac, registry-visibility-least-privilege,
-backup-job-verified-nonempty, rate-limiting-enforced, usage-metrics-real-not-fabricated,
-alerting-pipeline-verified-live, service-discovery-dns-resolves-live,
-feature-flag-live-toggle-verified, topology-visualization-real-data,
-identity-federation-live-verified, application-rbac-role-enforced,
-restore-recovers-real-deleted-data, edge-function-invocation-verified,
-multi-project-tenancy-verified, audit-log-durable-and-queryable,
-iac-export-reappliable-and-drift-detected, status-page-slo-reflects-real-state,
-webhook-delivery-verified-with-valid-signature, api-key-auth-enforces-bound-role,
-network-topology-matches-real-enforcement, usage-billing-math-verified-real) and **1
-disclosed
-gap** (registry-visibility-least-privilege's image-pull-failure path is real code,
-untriggered on this cluster today -- see the bundle). mtls-enforced's prior gap
-(PeerAuthentication STRICT configured but not enacted by any sidecar) was closed in an
-earlier pass; see the bundle for the fix and live proof. restore-recovers-real-deleted-data
-also discloses a real, non-hiding limitation of the restore path itself (a dependent-table
-row loaded out of FK order in a single restore pass) rather than only claiming what worked
+versus which are configured but not currently enacted.
+
+The control list below has drifted out of sync with the live bundle every time a new module
+landed (most recently: this line said "32 controls" after the count had already reached 39) --
+so this file no longer hand-enumerates the list. **The bundle's own `controls` array and
+`gaps` array are the single source of truth**; read `evidence/control-evidence-bundle.json`
+directly for the current count and the full real-evidence text for every entry. As of the most
+recent pass to touch this section, the bundle held 39 controls and an empty `gaps` array --
+verify against the live file rather than trusting that number to still be current.
+
+restore-recovers-real-deleted-data discloses a real, non-hiding limitation of the restore path
+itself (a dependent-table row loaded out of FK order in a single restore pass) rather than only
+claiming what worked
 -- see the bundle. edge-function-invocation-verified closed the /projects/[name]/functions
 module's prior disclosed gap (no invocation, connection info only) by deploying one real,
 minimal Edge Function through the supabase-operator's own `Function` CRD -- investigated

@@ -17,6 +17,7 @@ const links = [
   { href: "/secrets", label: "Secrets" },
   { href: "/scheduled-jobs", label: "Scheduled Jobs" },
   { href: "/deployments/canary", label: "Canary Deploy" },
+  { href: "/load-test", label: "Load Testing" },
   { href: "/feature-flags", label: "Feature Flags" },
   { href: "/usage", label: "Usage" },
   { href: "/billing", label: "Billing" },
