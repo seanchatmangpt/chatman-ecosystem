@@ -1,5 +1,5 @@
 import Nav from "@/components/Nav";
-import { queryPrometheus, grafanaPortForwardCommand } from "@/lib/prometheus";
+import { queryPrometheus } from "@/lib/prometheus";
 
 export const dynamic = "force-dynamic";
 
@@ -20,16 +20,20 @@ export default async function ObservabilityPage() {
         <div className="card mb-6 p-6">
           <h2 className="mb-2 text-base font-medium text-white">Grafana</h2>
           <p className="mb-3 text-sm text-gray-400">
-            No public ingress exists for Grafana yet, so it&apos;s reached
-            via a real port-forward to the live Service (
-            <code>monitoring-grafana.monitoring.svc.cluster.local:80</code>):
+            Routed through the same Istio Gateway as this console (
+            <code>k8s/grafana-route.yaml</code>) -- no port-forward
+            needed:
           </p>
-          <pre className="overflow-x-auto rounded-md border border-border bg-bg p-3 text-xs text-gray-200">
-            {grafanaPortForwardCommand()}
-          </pre>
+          <a
+            href="/grafana/"
+            className="inline-block rounded-md border border-border bg-bg px-3 py-2 text-xs text-gray-200 hover:border-gray-500"
+          >
+            /grafana/
+          </a>
           <p className="mt-2 text-xs text-gray-500">
-            Then open http://localhost:3001 (default kube-prometheus-stack
-            Grafana credentials, or those configured for this cluster).
+            Backed by the live Service (
+            <code>monitoring-grafana.monitoring.svc.cluster.local:80</code>
+            ) via a VirtualService on the <code>platform-console-gateway</code>.
           </p>
         </div>
 

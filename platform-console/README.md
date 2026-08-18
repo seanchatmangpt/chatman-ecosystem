@@ -75,7 +75,7 @@ no write verb anywhere outside `projects:create`. Verified live with real
   created yet on this cluster — an honest empty GitOps state, not a fabricated one).
 - Manifests applied in order from `k8s/`: `namespaces.yaml`, `rbac.yaml`, `paas-rbac.yaml`,
   `resource-quotas.yaml`, `network-policies.yaml`, `mtls.yaml`,
-  `services-and-deployments.yaml`, `gateway.yaml`.
+  `services-and-deployments.yaml`, `gateway.yaml`, `grafana-route.yaml`.
 
 ## How to reach it
 
@@ -88,8 +88,15 @@ Then browse to `http://platform.local` (routed through the Istio Gateway/Virtual
 18080:8080` for a direct path. Log in with the seeded admin account (`ADMIN_USERNAME`,
 password matching the bcrypt hash in the `platform-console-secrets` Secret).
 
-For live Grafana access (no ingress exists for it yet):
-`kubectl port-forward -n monitoring svc/monitoring-grafana 3001:80`.
+Grafana is reached through the same Gateway, no port-forward needed: browse to
+`http://platform.local/grafana/` (`k8s/grafana-route.yaml` -- a VirtualService on the
+existing `platform-console-gateway` routing to `monitoring-grafana.monitoring.svc.cluster.local:80`,
+plus a `DestinationRule` disabling mTLS origination to that host, since the `monitoring`
+namespace has no Istio sidecar injection). Log in with the `monitoring-grafana` Secret's
+`admin-user`/`admin-password` keys. If `platform.local` isn't reachable directly on this
+host, `kubectl port-forward -n istio-system svc/istio-ingressgateway 18080:80` and use
+`http://platform.local:18080/grafana/` with a `Host: platform.local` header (or the
+`/etc/hosts` entry above) instead.
 
 ## What "revenue-ready" concretely means here
 

@@ -1,0 +1,82 @@
+# Self-service route to Grafana (kube-prometheus-stack, monitoring
+# namespace) through the SAME existing Gateway platform-console already
+# uses (k8s/gateway.yaml: platform-console-gateway, namespace
+# platform-console, host platform.local). This closes the gap documented
+# in platform-console/README.md where Grafana required a manual
+# `kubectl port-forward` -- browsing http://platform.local:8080/grafana/
+# (or https://platform.local:8443/grafana/ once the gateway's TLS secret
+# exists) now reaches Grafana directly through the ingress gateway.
+#
+# Rewrite note (verified live, not assumed -- the task's initial ask was a
+# URLRewrite stripping the /grafana prefix, and that was tried first, but
+# it produces a real infinite-redirect loop): with
+# GF_SERVER_SERVE_FROM_SUB_PATH=true, Grafana expects the FULL "/grafana/"
+# prefix preserved on every request it receives -- it does its OWN
+# internal routing off that prefix rather than expecting the proxy to
+# strip it. Proven by isolating the pod behind a raw `kubectl
+# port-forward` and curling both ways: GET / (the stripped form) returns
+# "301 Moved Permanently -> http://platform.local/grafana/", which through
+# the gateway becomes a genuine infinite loop (gateway strips it right
+# back to / again); GET /grafana/ (unstripped) returns a correct
+# "302 Found -> /grafana/login". So the VirtualService below does NOT
+# strip the prefix -- no `rewrite:` stanza on the route. GF_SERVER_ROOT_URL
+# still needs the /grafana/ suffix so Grafana's own generated links and
+# asset paths resolve under the sub-path.
+#
+# Cross-namespace routing note (verified live, not assumed): the
+# `monitoring` namespace has zero NetworkPolicy objects (`kubectl get
+# networkpolicy -n monitoring` returns "No resources found"), unlike every
+# project namespace in k8s/network-policies.yaml which carries an explicit
+# default-deny. So no NetworkPolicy allow-rule is needed for the
+# istio-ingressgateway pod (istio-system) to reach monitoring-grafana. The
+# `monitoring` namespace also carries no `istio-injection: enabled` label
+# and its Grafana pod (`kubectl get pod -n monitoring -l
+# app.kubernetes.io/name=grafana`) has no istio-proxy sidecar container --
+# it is a plain, non-mesh workload. No ServiceEntry is needed (ServiceEntry
+# is for registering hosts OUTSIDE the mesh's service registry entirely;
+# monitoring-grafana is a normal in-cluster Service, already resolvable).
+# A DestinationRule IS needed, though: mesh-wide + per-namespace
+# PeerAuthentication is STRICT (k8s/mtls.yaml, istio-system/default), and
+# Istio's default global mTLS DestinationRule behavior (auto mTLS) will
+# try to originate mTLS from istio-ingressgateway to monitoring-grafana --
+# which has no sidecar to terminate it, so the handshake fails closed
+# without an explicit override. The DestinationRule below sets ISTIO_MUTUAL
+# off for exactly this one host.
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: monitoring-grafana-mtls-disable
+  namespace: platform-console
+spec:
+  host: monitoring-grafana.monitoring.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: grafana-route
+  namespace: platform-console
+spec:
+  hosts:
+    - platform.local
+  gateways:
+    - platform-console-gateway
+  http:
+    # Bare "/grafana" (no trailing slash) redirects to "/grafana/" first,
+    # matching Grafana's own behavior when it receives its sub-path root
+    # without a trailing slash.
+    - match:
+        - uri:
+            exact: /grafana
+      redirect:
+        uri: /grafana/
+    - match:
+        - uri:
+            prefix: /grafana/
+      route:
+        - destination:
+            host: monitoring-grafana.monitoring.svc.cluster.local
+            port:
+              number: 80

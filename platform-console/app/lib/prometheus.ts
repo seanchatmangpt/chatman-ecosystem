@@ -52,7 +52,3 @@ export async function queryPrometheus(query: string): Promise<PrometheusResult> 
     clearTimeout(timeout);
   }
 }
-
-export function grafanaPortForwardCommand(): string {
-  return "kubectl port-forward -n monitoring svc/monitoring-grafana 3001:80";
-}
