@@ -1,8 +1,15 @@
+import { cookies } from "next/headers";
 import Nav from "@/components/Nav";
 import ProjectSubNav from "@/components/ProjectSubNav";
+import RedisCachePanel from "@/components/RedisCachePanel";
 import { getProject, listNamespaceServices, type K8sService } from "@/lib/k8s";
+import { getRedisStatus } from "@/lib/redis";
+import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
+import { getRoleFor, type Role } from "@/lib/authz";
 
 export const dynamic = "force-dynamic";
+
+const ROLE_RANK: Record<Role, number> = { viewer: 0, member: 1, owner: 2 };
 
 function ServiceCard({ title, service }: { title: string; service: K8sService | undefined }) {
   if (!service) {
@@ -92,6 +99,18 @@ export default async function ProjectDatabasePage({
       s.labels["app.kubernetes.io/instance"] === project.name,
   );
 
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  const session = token ? await verifySessionToken(token) : null;
+  const role: Role = session ? await getRoleFor(session) : "viewer";
+  const canProvisionCache = ROLE_RANK[role] >= ROLE_RANK.owner;
+  const canRevealCache = ROLE_RANK[role] >= ROLE_RANK.member;
+
+  const redisStatusResult = await getRedisStatus(project);
+  const redisStatus = redisStatusResult.ok
+    ? redisStatusResult.data
+    : { name: `${project.name}-redis`, namespace: project.namespace, provisioned: false, ready: false, host: "", port: 6379 };
+
   return (
     <>
       <Nav />
@@ -109,6 +128,12 @@ export default async function ProjectDatabasePage({
         <div className="space-y-4">
           <ServiceCard title="Postgres" service={dbService} />
           <ServiceCard title="PostgREST" service={restService} />
+          <RedisCachePanel
+            projectName={project.name}
+            canProvision={canProvisionCache}
+            canReveal={canRevealCache}
+            initialStatus={redisStatus}
+          />
         </div>
       </main>
     </>

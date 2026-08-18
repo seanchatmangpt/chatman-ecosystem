@@ -65,9 +65,15 @@ rules:
   # was added for the Resource Tagging module (lib/tags.ts's
   # applyTag/removeTag): a real RFC 7386 merge patch touching ONLY
   # `metadata.labels.platform-console.io/tag-<key>`, never spec.
+  # Managed Cache (Redis) addon (lib/redis.ts): `create`/`delete` added
+  # for the per-project Redis Service this module provisions/tears down,
+  # mirroring the Deployment/NetworkPolicy `create`/`delete` grants added
+  # in the same change below -- same sensitivity class as the existing
+  # get/list/watch/patch grant on this same resource (workload metadata,
+  # never Secret data).
   - apiGroups: [""]
     resources: ["services"]
-    verbs: ["get", "list", "watch", "patch"]
+    verbs: ["get", "list", "watch", "patch", "create", "delete"]
   # "Create project" form's target-namespace picker.
   - apiGroups: [""]
     resources: ["namespaces"]
@@ -83,9 +89,16 @@ rules:
   - apiGroups: ["rbac.authorization.k8s.io"]
     resources: ["roles", "rolebindings"]
     verbs: ["get", "list", "watch"]
+  # Managed Cache (Redis) addon: `create`/`delete` added for the
+  # per-project Redis NetworkPolicy this module provisions/tears down
+  # (scopes ingress to only the project's own app pods, mirroring the
+  # existing per-namespace network-segmentation policies in
+  # k8s/network-policies.yaml) -- same resource, same sensitivity class
+  # (network policy objects, not Secret data) as the existing
+  # get/list/watch grant.
   - apiGroups: ["networking.k8s.io"]
     resources: ["networkpolicies"]
-    verbs: ["get", "list", "watch"]
+    verbs: ["get", "list", "watch", "create", "delete"]
   # Registry (image inventory) module: read-only Deployment inventory, to
   # read each container's real spec.template.spec.containers[].image field.
   # Deployment specs are workload metadata, not secrets -- same
@@ -95,9 +108,14 @@ rules:
   # per-namespace `platform-console-logs-reader` Role's `pods` get/list
   # grant below -- already covers exactly the same 6 platform namespaces
   # this module reads, so no additional pods grant was added either.
+  # Managed Cache (Redis) addon: `create`/`delete` added for the
+  # per-project Redis Deployment this module provisions/tears down --
+  # same resource, same sensitivity class (workload spec, not Secret
+  # data) as the existing get/list/watch grant used by the Registry
+  # (image inventory) module above.
   - apiGroups: ["apps"]
     resources: ["deployments"]
-    verbs: ["get", "list", "watch"]
+    verbs: ["get", "list", "watch", "create", "delete"]
   # Cost & Usage module: real live per-pod CPU/memory usage
   # (metrics.k8s.io -- the same source `kubectl top pods` reads) and the
   # real per-namespace ResourceQuota object, to compute a plain
