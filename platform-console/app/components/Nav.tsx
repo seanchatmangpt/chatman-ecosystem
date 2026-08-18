@@ -38,6 +38,7 @@ const links = [
   { href: "/service-discovery", label: "Service Discovery" },
   { href: "/tags", label: "Tags" },
   { href: "/custom-domains", label: "Custom Domains" },
+  { href: "/certificates", label: "Certificates" },
   { href: "/topology", label: "Topology" },
   { href: "/network", label: "Network" },
   { href: "/api-gateway", label: "API Gateway" },

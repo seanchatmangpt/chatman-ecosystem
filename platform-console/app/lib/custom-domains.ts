@@ -169,8 +169,15 @@ export interface CustomDomainBinding {
  * match -- a real, second, independent verification that the certificate
  * this function is about to hand to the caller genuinely covers the
  * requested hostname, before it is ever stored as a cluster Secret.
+ *
+ * Exported (not module-private) so lib/cert-lifecycle.ts's
+ * `rotateCertificate` can reuse this EXACT same generation +
+ * independent-re-verification path for a custom domain's renewed cert --
+ * the same "one real code path, never a second driftable copy" discipline
+ * lib/k8s.ts's `buildSingleDatabaseManifest` doc comment already documents
+ * for `detectDrift`.
  */
-function generateSelfSignedCertificate(hostname: string): {
+export function generateSelfSignedCertificate(hostname: string): {
   certPem: string;
   keyPem: string;
   notAfter: string;

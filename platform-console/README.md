@@ -90,6 +90,7 @@ hyperscaler-equivalent language as a claim about scale.
 | `/service-discovery` | Service Discovery (AWS Route53 private hosted zone / GCP Cloud DNS internal zone / Azure Private DNS equivalent) -- **not decorative**: CoreDNS plus real k8s `Service`/`Endpoints` objects already are the cluster's internal DNS layer every other module's cluster-internal URLs depend on. Table across the platform's 6 namespaces: Service, real DNS name (`<svc>.<namespace>.svc.cluster.local`), ClusterIP, ports, and ready/total backing-Pod-IP count read live from the matching `Endpoints` object -- the "does this record actually resolve to something healthy" signal. Live-verified with real `nslookup` from a throwaway pod against 4 services: resolved IPs matched the page's ClusterIPs byte-for-byte, and ready-endpoint counts matched `kubectl get endpoints` exactly -- see `service-discovery-dns-resolves-live` in `evidence/control-evidence-bundle.json` | `lib/k8s.ts` (`listEndpoints`, `listServicesWithEndpoints`) |
 | `/feature-flags` | Feature Flags (AWS AppConfig / LaunchDarkly / GCP Feature Flags equivalent), backed by one real k8s `ConfigMap` (`platform-feature-flags`, `platform-console` namespace) -- no external SaaS dependency. Lists current flags, toggles booleans in place, and adds new keys, all via a real RFC 7386 JSON merge patch (or a real create on first write) through the console's ServiceAccount. **Genuinely proven live, not just object-mutation**: `autofde-lab-status` (`services/autofde-lab/app.py`) reads this exact ConfigMap on every `/status` request via a real, fresh Kubernetes API call under its own minimal cross-namespace RBAC grant, and adds a real `process_uptime_seconds` field only while `verbose-status` is `"true"` -- toggling the flag through the authenticated console UI/API was confirmed, via direct external `curl` to the live `autofde-lab-status` Service (not just `kubectl exec`), to make the field appear and then disappear on revert. See `feature-flag-live-toggle-verified` in `evidence/control-evidence-bundle.json` for the exact before/after response bodies. | `app/api/feature-flags/route.ts`, `lib/k8s.ts` (`getConfigMap`, `createOrUpdateConfigMap`), `services/autofde-lab/app.py` |
 | `/custom-domains` | **Custom Domain self-service** (AWS Certificate Manager + Route53 custom-domain binding / GCP Cloud Run custom-domain equivalent), owner-gated. Registering a hostname does the real three-step thing a hyperscaler console does: generates a real, freshly-issued X.509 certificate for that exact hostname via a real `openssl req -x509` subprocess (SAN independently re-verified with Node's own `crypto.X509Certificate#checkHost` before it is ever stored), stores it as a real `kubernetes.io/tls` Secret in `istio-system`, and creates a real `networking.istio.io/v1` `Gateway` + `VirtualService` pair binding that hostname to whichever platform Service the operator picks from the same live list `/service-discovery` reads -- no hand-edited Istio YAML per domain. Every new domain's `Gateway` merges onto the SAME physical Envoy listener `platform-console-gateway`'s own HTTPS server already owns (confirmed live via `istioctl proxy-config listener`), split by SNI -- registering domain #2 never touches domain #1's objects. See "Custom Domains" below and `custom-domain-tls-cert-matches-hostname` in `evidence/control-evidence-bundle.json` for the full real proof, including the presented certificate's SAN and a real post-unbind connection refusal. | `lib/custom-domains.ts`, `app/api/custom-domains/route.ts`, `app/custom-domains/page.tsx` |
+| `/certificates` | **Certificate Lifecycle tracking** (AWS Certificate Manager auto-renewal / GCP-managed-certificate rotation equivalent), owner-gated. `lib/cert-lifecycle.ts` scans every TLS-bearing Secret in `istio-system` in one live GET (filtered on the real presence of a `tls.crt` key, never on `type`, since `platform-backups-mtls-credential` is `Opaque` but still carries one), parses each real cert's real `notAfter` with Node's own `crypto.X509Certificate`, and computes real days-until-expiry (warns under 30 days). Custom-domain certificates can be rotated **in place** -- same Secret name, fresh `tls.crt`/`tls.key` via an RFC 7386 merge-patch (reusing `lib/custom-domains.ts`'s own `generateSelfSignedCertificate` and `lib/k8s.ts`'s own `createOrUpdateSecret`), never delete+recreate, so Istio SDS hot-reloads the new cert with zero Gateway/VirtualService churn. **Live-verified zero-downtime rotation**: a real custom domain was registered, a real 1-req/sec HTTPS request loop was run against it through the actual deployed ingress gateway, and a real rotation was triggered mid-loop through the authenticated console -- all 90/90 requests across the rotation returned `200`, and a fresh `openssl s_client` connection immediately after presented a genuinely different certificate (different real serial number, different real `notAfter`) than one made before rotation. See "Certificate Lifecycle" below and `certificate-rotation-zero-downtime-verified` in `evidence/control-evidence-bundle.json` for the full transcript, including the real RBAC gap this proof surfaced and fixed (`patch` was missing from `platform-console-custom-domains-tls`, k8s/paas-rbac.yaml). | `lib/cert-lifecycle.ts`, `app/api/certificates/route.ts`, `app/certificates/page.tsx` |
 | `/topology` | Cluster Topology -- a **visualization, not a security control** (recorded in the evidence bundle for consistency with this file's "real vs decorative" practice, not because it enforces anything). deck.gl (`OrthographicView`, not a geospatial `MapView` -- there is no real geography here) rendering the exact same `listServicesWithEndpoints` data `/service-discovery` already shows as a table: one `ScatterplotLayer` node per Service (fill = the same ready/total status vocabulary as `EndpointsBadge`, size = ready-endpoint count), grouped into deterministic per-namespace grid clusters computed in `lib/topology.ts` (no randomness, no force-simulation step -- same input always produces the same layout). `ArcLayer` connections are drawn **only** where a real `NetworkPolicy` ingress rule's `namespaceSelector` names a source namespace (`lib/k8s.ts`'s `listNetworkPolicies` was extended with `ingressFromNamespaces`, parsed from `spec.ingress[].from[].namespaceSelector.matchLabels["kubernetes.io/metadata.name"]`) -- never inferred or fabricated traffic. Live-verified: authenticated `GET /topology` returned 200 with all 12 real Services across 6 namespaces embedded in the hydration payload (`autofde-lab-status`, `demo-db-postgres`, `gymact-status`, `ggen-status`, `ggen-marketplace-status`, `platform-console-gateway`, plus the 6 `demo-project-*` Services), real ClusterIPs matching `service-discovery-dns-resolves-live`'s recorded values byte-for-byte, and exactly 4 real cross-namespace edges (`platform-console` → `autofde-lab`/`gymact`/`ggen`/`ggen-marketplace`, matching `k8s/network-policies.yaml`'s `*-allow-from-platform-console` rules) -- see `topology-visualization-real-data` in `evidence/control-evidence-bundle.json` | `lib/topology.ts`, `components/DeckTopology.tsx`, `lib/k8s.ts` (`listNetworkPolicies`) |
 | `/network` | **Network Topology** (AWS VPC console / GCP VPC Network Topology / Azure Virtual Network diagram equivalent) -- real Pod/Service CIDR ranges, a real per-namespace ingress reachability matrix, and the real Istio mTLS trust boundary, in one place instead of scattered across `/service-discovery`/`/iam`/`/topology`. **Pod CIDR**: authoritative source is `Node.spec.podCIDR` (kubeadm's own node-ipam controller, `10.244.0.0/24` on this single-node cluster) via a new cluster-scoped `nodes` get/list RBAC grant, corroborated by an observed range computed from real live Pod IPs (`lib/k8s.ts`'s new `listPodIPs`). **Service CIDR**: no RBAC exists into kube-system (deliberately -- same boundary as Secrets/Logs above), so `--service-cluster-ip-range` can't be read directly; the only honest value here is OBSERVED -- the smallest CIDR block containing every real live Service ClusterIP across all namespaces (`lib/k8s.ts`'s new cluster-wide `listAllServices`), computed by `lib/network.ts`'s `computeObservedCidr` (pure min/max-common-prefix math, no fixed-size assumption). **Reachability matrix**: `lib/network.ts`'s `buildReachabilityMatrix` reuses the exact `ingressFromNamespaces` field `/topology`'s arcs already draw from, implementing real k8s NetworkPolicy semantics (not simplified): a target namespace with zero Ingress-type policy is default-allow-from-anywhere; otherwise the union of every Ingress policy's `ingressFromNamespaces` decides each source, including self-pairs (computed by the same rule, never hardcoded to "same-namespace is always allowed"). **mTLS boundary**: real `security.istio.io/v1` PeerAuthentication objects, cluster-wide (new RBAC grant), distinguishing a namespace-wide policy from a workload-scoped `spec.selector` override, and honestly reporting "no PeerAuthentication object" for namespaces with none rather than asserting Istio's PERMISSIVE mesh-wide fallback (which would require a kube-system read this console doesn't have). **Live-verified against real enforcement, not just policy-object existence**: authenticated `GET /network` through the deployed pod returned the real matrix (`10.244.0.0/24` pod CIDR, `10.96.0.0/16` observed Service CIDR from 30 real ClusterIPs, `autofde-lab`/`gymact`/`ggen`/`ggen-marketplace` all STRICT mTLS, `supabase-demo` with no PeerAuthentication object). Three throwaway `sidecar.istio.io/inject: "false"` curl pods then cross-checked that matrix against actual enforced behavior: `autofde-lab` → `gymact-status:80` (matrix: deny) → real `curl: (28) Connection timed out after 6003ms`; `gymact` → `ggen-status:80` (matrix: deny) → real `curl: (28) Connection timed out after 6002ms`; `autofde-lab` → `demo-project-rest.supabase-demo:3000` (matrix: allow) → real `HTTP/1.1 200 OK` from the live PostgREST OpenAPI endpoint. All 3 live results matched the matrix's claims exactly -- see `network-topology-matches-real-enforcement` in `evidence/control-evidence-bundle.json` for the full transcript | `lib/network.ts`, `app/app/network/page.tsx`, `lib/k8s.ts` (`listNodes`, `listAllServices`, `listPodIPs`, `listPeerAuthentications`) |
 | `/sessions` | Real **Active Session Management** (AWS IAM Identity Center active-session view / GCP Console "manage devices & activity" equivalent) -- the piece this app's stateless HS256 session JWTs (`lib/session.ts`) structurally could not provide on their own: before this pass, once a session was issued there was no way to see who was logged in or force a specific session to stop working before its own unexpired 8h `exp`. Every session-minting path (`/api/login`, `/api/auth/gotrue-login`, `/api/auth/gotrue-signup`, and the API-key Bearer path in `middleware.ts`) now also carries a fresh `sessionId` claim and records a real row in a new `platform_console.active_sessions` table (dedicated schema, self-bootstrapped `CREATE TABLE IF NOT EXISTS`, same live demo-project Postgres and pool `lib/audit-db.ts` already uses) via `lib/active-sessions.ts`. `middleware.ts` looks that row up on **every** authenticated request (`checkAndTouchSession`) and rejects an otherwise-valid, unexpired JWT with a real `401 {"error":"unauthenticated","reason":"session revoked"}` the instant its row is marked revoked -- this registry check, not the JWT's own signature/exp, is what makes revocation real instead of merely hiding a row from a list. A throttled (>=1/min per session) `last_seen_at` heartbeat avoids a write on every single request; a genuinely unreachable registry fails OPEN (disclosed in the module's own header) rather than blocking every authenticated request platform-wide on a transient DB hiccup, but a row successfully read back as `revoked: true` is never let through. The API-key auth path (no persistent cookie -- a fresh JWT is minted on literally every Bearer-authenticated request) gets a deterministic `apikey-<keyId>` session id instead of a random one, so every request against the same key resolves to the same registry row -- real defense-in-depth alongside `lib/api-keys.ts`'s own independent `revoked` flag, either one blocks the key. Owner-gated (`requireRole(session, "owner")`, same boundary as `/audit`/`/api-keys`), a real per-session Revoke action, self-revoke included (with an extra confirm warning). **Live-verified through the deployed pod**: logged in twice for real -- local-admin (`POST /api/login`, temp-rotated password, same restore-after precedent as prior passes) and a real throwaway GoTrue signup (`POST /api/auth/gotrue-signup`) -- producing two real, distinct session cookies (`sessionId` `3f5d055b-...` and `1aed64e0-...`). `GET /api/sessions` (session A) showed both real rows. `DELETE /api/sessions?sessionId=1aed64e0-...` (session A, as owner) revoked session B's row (`200`, `revoked:true`). Session B's still-unexpired original cookie was immediately retried against `GET /api/sessions`: real `401 {"error":"unauthenticated","reason":"session revoked"}` -- while session A, unrevoked, still returned a real `200` with both rows in the same response. A direct `psql SELECT` against the live `platform_console.active_sessions` table independently confirmed both rows' `revoked`/`revoked_at`/`revoked_by` state matched the API responses exactly. Cleanup: the throwaway GoTrue user was deleted for real via GoTrue's own `/admin/users/{id}` DELETE (confirmed `200`), both proof sessions were self-revoked as a final tidy step, and the temporarily-rotated `ADMIN_PASSWORD_HASH` was restored and the deployment rolled again -- confirmed by the exact same temp password that worked moments earlier immediately returning a real `401 {"error":"invalid credentials"}`. See `session-revocation-enforced-before-jwt-expiry` in `evidence/control-evidence-bundle.json` | `lib/active-sessions.ts`, `lib/session.ts`, `middleware.ts`, `app/app/api/sessions/route.ts`, `app/app/sessions/page.tsx`, `components/SessionsPanel.tsx` |
@@ -837,6 +838,124 @@ for this pass. Mitigated in application code (`lib/custom-domains.ts` never touc
 it didn't itself create, by name), but that is a code-level convention, not an RBAC-enforced
 boundary -- the platform-level trust boundary here is narrower than the RBAC grant technically
 allows, and that gap is real, not merely theoretical.
+
+## Certificate Lifecycle
+
+Real Certificate Lifecycle tracking (the AWS Certificate Manager auto-renewal / GCP-managed
+-certificate rotation equivalent), `lib/cert-lifecycle.ts` -- the capability the Custom Domains
+feature above deliberately left out: once a certificate exists, a hyperscaler console also
+tracks its expiry and rotates it before it lapses, without breaking live traffic.
+
+**Scan (`listManagedCertificates`).** One live, namespace-wide GET of every Secret in
+`istio-system`, filtered to whichever ones actually carry a `tls.crt` key -- deliberately never
+filtered on `type`, because `platform-backups-mtls-credential` (the Private Connectivity
+module's mTLS credential) is `type: Opaque`, not `kubernetes.io/tls`, confirmed live via
+`kubectl get secret -n istio-system platform-backups-mtls-credential -o jsonpath='{.type}'`
+returning `Opaque`; filtering on `type` would silently skip it. Each real cert is independently
+parsed with Node's own `crypto.X509Certificate` (subject, issuer, serial number, `notBefore`,
+`notAfter`) -- no side database, the Secrets themselves are the record, same "the listing IS
+the record" convention `lib/custom-domains.ts`'s own `listCustomDomains` already uses. Real
+days-until-expiry is `floor((notAfter - now) / 86400s)`; a cert under 30 days out is flagged
+`expiringSoon`, one already past `notAfter` is flagged `expired`. Only certificates carrying the
+`platform-console.io/custom-domain: "true"` label are `rotatable` -- rotating
+`platform-console-tls` or the mTLS credential would need a real client-trust-chain story this
+pass deliberately does not build, a disclosed gap, not a silent omission.
+
+**Rotate in place (`rotateCertificate`).** For a custom-domain cert only: reuses
+`lib/custom-domains.ts`'s own `generateSelfSignedCertificate` (the exact same
+`openssl req -x509 ... -addext "subjectAltName=DNS:<hostname>"` subprocess plus independent
+`checkHost` re-verification every fresh registration already goes through -- never a second,
+driftable copy) to mint a fresh cert for the Secret's own `platform-console.io/hostname`
+annotation, then writes it back via `lib/k8s.ts`'s own `createOrUpdateSecret` -- a real RFC 7386
+merge-patch of `data` only, same Secret name, `metadata.labels`/`annotations` completely
+untouched. This is the entire reason rotation is a PATCH and not a delete+recreate: Istio's SDS
+layer holds a live watch on each `credentialName` Secret it already resolved, and pushes new
+key/cert material to Envoy the moment that Secret's `data` changes -- no Gateway/VirtualService
+object is ever touched, so there is no window where the hostname has a route but no cert (or no
+route at all), the same failure mode a delete+recreate would risk.
+
+**A real, disclosed RBAC gap this feature surfaced and fixed, the same way the Custom Domains
+feature's own cross-identity NetworkPolicy gap was surfaced above.** The first live rotation
+attempt (below) failed with a real
+`secrets "custom-domain-...-tls" is forbidden: ... cannot patch resource "secrets"` --
+`platform-console-custom-domains-tls` (`k8s/paas-rbac.yaml`) granted
+`get/list/create/delete` on `istio-system` Secrets but never `patch`, because nothing before
+this feature ever needed to update a Secret's `data` in place. Fixed by adding exactly `patch`
+to that Role's existing verb list (still scoped to the same single Role, still the same
+"application code only ever touches Secrets it named itself" mitigation `README.md`'s Custom
+Domains section already documents for this Role's broader-than-ideal `list`/`get`/`delete`
+scope) -- re-applied live and confirmed via
+`kubectl auth can-i patch secrets -n istio-system --as=system:serviceaccount:platform-console:platform-console`
+returning `yes`, then the same rotation call re-run successfully.
+
+**Real proof, end to end, through the real deployed pod -- the part that matters.** Rebuilt
+`platform-console/console:latest`, `kind load docker-image`'d it, `kubectl rollout restart`'ed
+`platform-console-gateway` (2/2 healthy). Logged in through the real deployed pod (admin
+password temporarily rotated to a freshly generated known bcryptjs hash, same restore-after
+precedent every prior live-proof section in this file documents).
+
+1. Registered a real throwaway custom domain through the authenticated
+   `POST /api/custom-domains`: `cert-rotate-demo.platform.local` -> `gymact-status.gymact:80`,
+   real `201`, `Secret/custom-domain-cert-rotate-demo-platform-local-tls` created in
+   `istio-system` with real initial serial `0DE084F4769545E01802907D31A4918F2EF0FECC`
+   (`notAfter` `2027-08-18T14:36:31.000Z`).
+2. `GET /api/certificates` (the new dashboard's own API) correctly listed it as
+   `kind: "custom-domain"`, `rotatable: true`, alongside the pre-existing
+   `platform-backups-mtls-credential` (`kind: "mtls-backups"`, `rotatable: false`, real 824-day
+   runway) -- confirming the scan reads both Secret shapes correctly.
+3. Started a real background loop making one real HTTPS request per second against the live
+   domain through the actual deployed `istio-ingressgateway`
+   (`kubectl port-forward -n istio-system svc/istio-ingressgateway 18443:443`, then
+   `curl -sk --resolve cert-rotate-demo.platform.local:18443:127.0.0.1
+   https://cert-rotate-demo.platform.local:18443/status`, real `gymact-status` JSON body each
+   time), logging every real response code with a real UTC timestamp.
+4. **While that loop was running**, triggered a real rotation through the authenticated console:
+   `POST /api/certificates {"secretName":"custom-domain-cert-rotate-demo-platform-local-tls"}` ->
+   real `200`:
+   ```json
+   {"rotation":{"secretName":"custom-domain-cert-rotate-demo-platform-local-tls",
+     "hostname":"cert-rotate-demo.platform.local",
+     "oldSerialNumber":"0DE084F4769545E01802907D31A4918F2EF0FECC",
+     "newSerialNumber":"20A6E04D0B8D815F33FB97E7F2AEF028240B1D64",
+     "oldNotAfter":"2027-08-18T14:36:31.000Z","newNotAfter":"2027-08-18T14:37:24.000Z",
+     "rotatedAt":"2026-08-18T14:37:24.709Z"}}
+   ```
+5. **(a) Zero downtime, confirmed by the real request-loop log, not assumed.** All 90/90 real
+   requests across the full loop -- spanning well before, exactly at, and well after the
+   `14:37:24.709Z` rotation timestamp above -- returned real `200`. No transient hiccup was
+   observed; that is reported honestly here because it was checked, not because a clean result
+   was expected going in (Envoy/SDS's own watch-based reload is asynchronous with the PATCH
+   call, so a request landing in the handful of milliseconds of actual swap was a real
+   possibility this run simply didn't hit).
+6. **(b) A genuinely different presented certificate, confirmed independently of the API's own
+   claim.** A fresh `openssl s_client -connect 127.0.0.1:18443 -servername
+   cert-rotate-demo.platform.local` immediately after the rotation call (8s later) returned:
+   ```
+   serial=20A6E04D0B8D815F33FB97E7F2AEF028240B1D64
+   subject=CN=cert-rotate-demo.platform.local
+   notBefore=Aug 18 14:37:24 2026 GMT
+   notAfter=Aug 18 14:37:24 2027 GMT
+   ```
+   -- the exact `newSerialNumber`/`newNotAfter` the rotation API reported, genuinely different
+   from the pre-rotation serial `0DE084F4769545E01802907D31A4918F2EF0FECC`
+   (`notAfter` `2027-08-18T14:36:31.000Z`) an `openssl s_client` connection made before step 4
+   returned. A second, later `openssl s_client` connection (well after the loop finished)
+   returned the same new serial, confirming this was a real, durable swap at the TLS layer, not
+   a one-request fluke. `GET /api/certificates` after rotation also reflected the new serial in
+   the dashboard's own listing.
+7. **Cleanup verified.** `DELETE /api/custom-domains?hostname=cert-rotate-demo.platform.local`
+   -> real `200`; `kubectl get gateway/virtualservice/secret` for all three
+   `cert-rotate-demo-platform-local` names returned real `NotFound`. The original
+   `ADMIN_PASSWORD_HASH` was restored and the deployment rolled again; the temporary test
+   password immediately returned a real `401 {"error":"invalid credentials"}` from
+   `POST /api/login` against the freshly rolled pod (confirmed against a fresh port-forward
+   connection, after an initial false-negative caused by `kubectl port-forward`'s tunnel still
+   pinned to the just-terminated old pod during rollout -- disclosed here rather than silently
+   dropped, since it is a real artifact of how `kubectl port-forward` pins to one pod, not of
+   the restore itself).
+
+Full command transcripts: `certificate-rotation-zero-downtime-verified` in
+`evidence/control-evidence-bundle.json`.
 
 ## Autoscaling
 

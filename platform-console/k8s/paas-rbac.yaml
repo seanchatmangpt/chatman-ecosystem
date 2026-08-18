@@ -1536,7 +1536,17 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
-    verbs: ["get", "list", "create", "delete"]
+    # "patch" added for lib/cert-lifecycle.ts's rotateCertificate -- an
+    # in-place RFC 7386 merge-patch of an existing custom-domain TLS
+    # Secret's tls.crt/tls.key (via lib/k8s.ts's createOrUpdateSecret),
+    # deliberately never delete+recreate, so Istio SDS hot-reloads the new
+    # cert with no Gateway/VirtualService object touched and no gap in
+    # what credentialName resolves to. Same narrow "only Secrets this
+    # feature itself created, by name" application-layer discipline
+    # lib/custom-domains.ts's own get/delete calls already follow (see
+    # README.md's Custom Domains section, "Disclosed RBAC scope
+    # limitation").
+    verbs: ["get", "list", "create", "delete", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
