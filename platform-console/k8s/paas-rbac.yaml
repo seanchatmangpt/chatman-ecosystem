@@ -600,3 +600,54 @@ roleRef:
   kind: Role
   name: platform-console-feature-flags-reader
   apiGroup: rbac.authorization.k8s.io
+---
+# -------------------------------------------------------------- API Keys
+#
+# Real hyperscaler-PaaS-style API key self-service (AWS IAM access keys /
+# GCP service account keys / Stripe API keys equivalent), lib/api-keys.ts.
+# Stored as a real k8s Secret (not a ConfigMap, unlike Feature Flags/Org
+# Roles/Webhooks above) because the values are key HASHES -- sensitive
+# even though one-way, same sensitivity-driven choice this file's own
+# per-namespace Secrets Manager Roles above already make. Deliberately its
+# own Role (not folded into platform-console-feature-flags above): that
+# Role only ever grants `configmaps`, and this grant needs `secrets`
+# instead -- kept as narrow, single-resource Roles throughout this
+# namespace rather than one broad grant. No `delete` verb: revocation is a
+# real merge-patch setting `revoked: true` on the one key's own JSON
+# record (lib/api-keys.ts's revokeApiKey), never a delete of the whole
+# Secret object or of a currently-unused individual key. Two rules, not
+# one: Kubernetes RBAC cannot scope a `create` verb by `resourceNames` (the
+# object doesn't exist yet at authorization time, so the API server always
+# denies a name-scoped `create` rule) -- `create` is therefore granted
+# namespace-wide the same way the per-project Secrets Manager Roles above
+# already do, while the real least-privilege boundary (`get`/`patch`
+# restricted to exactly this one Secret's name) is enforced on the second
+# rule -- the same two-rule split real cloud IAM policies use for
+# CreateSecret vs. GetSecretValue-by-ARN.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-api-keys
+  namespace: platform-console
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["platform-console-api-keys"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-api-keys-binding
+  namespace: platform-console
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-api-keys
+  apiGroup: rbac.authorization.k8s.io

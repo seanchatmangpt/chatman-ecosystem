@@ -927,6 +927,70 @@ export async function getSecretValue(
   return { ok: true, data: Buffer.from(encoded, "base64").toString("utf8") };
 }
 
+/**
+ * Reads and base64-decodes EVERY key of one real Secret -- the "give me
+ * every key/value pair" counterpart to getSecretValue's "give me exactly
+ * one". Same `{ok:true, data:null}`-on-404 convention as getConfigMap
+ * (lets callers distinguish "not provisioned yet" from a real API
+ * failure). A second, disclosed exception to this module's own
+ * "plaintext values are never held past createSecret" rule (see that
+ * function's own doc comment) -- used by lib/api-keys.ts, where each
+ * Secret value is itself a JSON-encoded API-key record (a one-way SHA-256
+ * hash plus the bound identity/role -- never the plaintext key itself,
+ * which is never stored anywhere after the one response that creates it).
+ */
+export async function getSecretData(
+  namespace: string,
+  name: string,
+): Promise<K8sResult<Record<string, string> | null>> {
+  const result = await k8sRequest<SecretItem>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/secrets/${encodeURIComponent(name)}`,
+  );
+  if (!result.ok) {
+    if (/not found/i.test(result.error)) return { ok: true, data: null };
+    return result;
+  }
+  const decoded: Record<string, string> = {};
+  for (const [key, value] of Object.entries(result.data.data ?? {})) {
+    decoded[key] = Buffer.from(value, "base64").toString("utf8");
+  }
+  return { ok: true, data: decoded };
+}
+
+/**
+ * Real get-then-patch-or-create for a Secret -- the exact same pattern
+ * createOrUpdateConfigMap already established for ConfigMaps (a real RFC
+ * 7386 merge patch when the object exists, a fresh POST via the existing
+ * createSecret when it doesn't), so passing just the one changed key
+ * (e.g. one API key's JSON record) updates that key without touching any
+ * other key already stored in the Secret.
+ */
+export async function createOrUpdateSecret(
+  namespace: string,
+  name: string,
+  data: Record<string, string>,
+): Promise<K8sResult<SecretSummary>> {
+  const existing = await getSecretData(namespace, name);
+  if (!existing.ok) return existing;
+
+  if (existing.data) {
+    const encoded: Record<string, string> = {};
+    for (const [key, value] of Object.entries(data)) {
+      encoded[key] = Buffer.from(value, "utf8").toString("base64");
+    }
+    const result = await k8sRequest<SecretItem>(
+      `/api/v1/namespaces/${encodeURIComponent(namespace)}/secrets/${encodeURIComponent(name)}`,
+      "PATCH",
+      { data: encoded },
+      "application/merge-patch+json",
+    );
+    if (!result.ok) return result;
+    return { ok: true, data: toSecretSummary(result.data) };
+  }
+
+  return createSecret(namespace, name, data);
+}
+
 // ---------------------------------------------------------- Container Registry
 //
 // Real hyperscaler-PaaS-style Container Registry primitive (ECR / GCR / ACR

@@ -41,7 +41,32 @@ export interface GoTrueSessionPayload extends JWTPayload {
   email: string;
 }
 
-export type SessionPayload = LocalAdminSessionPayload | GoTrueSessionPayload;
+/**
+ * Third session-issuing path: a real API key (lib/api-keys.ts), presented
+ * as `Authorization: Bearer pk_live_...` and resolved by middleware.ts
+ * against the live `platform-console-api-keys` Secret. `sub` is the API
+ * key's bound identifier (an org-roles identifier -- an email, or
+ * "admin"), and `boundRole` is the app-level role (viewer/member/owner)
+ * fixed at key creation time -- never re-derived from the ConfigMap
+ * lib/authz.ts's getRoleFor otherwise reads, since an API key's role
+ * cannot change after issuance (only revocation changes anything about an
+ * existing key). Deliberately kept structurally separate from `role`
+ * (this claim is always the literal "api-key", matching the other two
+ * variants' own fixed-per-provider `role` claim) so a JWT's shape alone
+ * discloses which of the three authentication paths minted it.
+ */
+export interface ApiKeySessionPayload extends JWTPayload {
+  sub: string; // the API key's bound identifier
+  role: "api-key";
+  authProvider: "api-key";
+  boundRole: "viewer" | "member" | "owner";
+  keyId: string;
+}
+
+export type SessionPayload =
+  | LocalAdminSessionPayload
+  | GoTrueSessionPayload
+  | ApiKeySessionPayload;
 
 function getSecretKey(): Uint8Array {
   const secret = process.env.AUTH_SECRET;
@@ -97,6 +122,33 @@ export async function createGoTrueSessionToken(
     .sign(key);
 }
 
+/**
+ * New: mints this app's own session for a real, already-resolved API key
+ * (lib/api-keys.ts's resolveApiKeyAuth -- called only after a real
+ * SHA-256 hash match against the live platform-console-api-keys Secret
+ * already succeeded, and the matched record was confirmed not revoked).
+ * `boundRole` and `keyId` come straight from that real record, never
+ * fabricated.
+ */
+export async function createApiKeySessionToken(
+  identifier: string,
+  boundRole: "viewer" | "member" | "owner",
+  keyId: string,
+): Promise<string> {
+  const key = getSecretKey();
+  return await new SignJWT({
+    sub: identifier,
+    role: "api-key",
+    authProvider: "api-key",
+    boundRole,
+    keyId,
+  })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(`${SESSION_TTL_SECONDS}s`)
+    .sign(key);
+}
+
 export async function verifySessionToken(
   token: string,
 ): Promise<SessionPayload | null> {
@@ -113,6 +165,18 @@ export async function verifySessionToken(
         return null;
       }
       return payload as GoTrueSessionPayload;
+    }
+    if (payload.authProvider === "api-key") {
+      if (
+        payload.role !== "api-key" ||
+        typeof payload.keyId !== "string" ||
+        (payload.boundRole !== "viewer" &&
+          payload.boundRole !== "member" &&
+          payload.boundRole !== "owner")
+      ) {
+        return null;
+      }
+      return payload as ApiKeySessionPayload;
     }
     // Default/legacy branch: the original local-admin shape. Also accepts a
     // session minted before this pass (no authProvider claim yet) so

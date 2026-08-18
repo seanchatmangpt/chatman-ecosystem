@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
+import { SESSION_COOKIE_NAME, createApiKeySessionToken, verifySessionToken } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
+import { resolveApiKeyAuth } from "@/lib/api-keys";
+
+// Runs on the Node.js middleware runtime (`export const runtime = "nodejs"`
+// below -- Next.js 15's node-middleware support, not the edge runtime this
+// file used before this pass), specifically so it can resolve a real
+// `Authorization: Bearer pk_live_...` API key against the live
+// `platform-console-api-keys` k8s Secret via lib/api-keys.ts -> lib/k8s.ts,
+// which needs Node's fs/https to read the pod's own ServiceAccount token
+// (lib/k8s.ts's own header comment: "never import this from middleware" --
+// true under the edge runtime, no longer true once this file opts into the
+// Node.js runtime). `jose` (session JWT sign/verify) is edge-safe and
+// unaffected by this move; every session-cookie code path below is
+// unchanged from before.
 
 // Paths that must stay reachable without a session: the login page itself,
 // the login API route (issues the session), static assets, and Next.js
@@ -23,6 +36,12 @@ function isPublicPath(pathname: string): boolean {
   return false;
 }
 
+function isApiPath(pathname: string): boolean {
+  return pathname.startsWith("/api/");
+}
+
+export const runtime = "nodejs";
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const requestId = newRequestId();
@@ -31,23 +50,73 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
-  const session = token ? await verifySessionToken(token) : null;
+  const apiRoute = isApiPath(pathname);
+  const cookieToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+  let session = cookieToken ? await verifySessionToken(cookieToken) : null;
+  let forwardHeaders: Headers | null = null;
+
+  // Real, second authentication method (alongside the browser session
+  // cookie above): a bound API key, presented as a standard
+  // `Authorization: Bearer pk_live_...` header -- exactly how a real
+  // hyperscaler PaaS's own CLI/SDK authenticates, and the reason this
+  // console is genuinely programmatically drivable, not only
+  // browser-session-drivable. Deliberately scoped to API routes only
+  // (never page routes -- a Bearer header has no business driving
+  // server-rendered page navigation) and only attempted when no session
+  // cookie already resolved one (a real browser session always wins).
+  if (!session && apiRoute) {
+    const authHeader = request.headers.get("authorization");
+    if (authHeader?.startsWith("Bearer ")) {
+      const presentedKey = authHeader.slice("Bearer ".length).trim();
+      const resolved = await resolveApiKeyAuth(presentedKey);
+      if (resolved) {
+        // Mints a REAL session token of the exact same JWT shape every
+        // other session already is (lib/session.ts's
+        // createApiKeySessionToken), then forwards it as this request's
+        // own Cookie header -- so every downstream route handler's
+        // existing requireSession()/requireRole() call (unchanged, reads
+        // only the cookie) transparently authenticates this request too.
+        // This IS the entire mechanism: an alternate authentication
+        // method feeding the exact same authorization layer, never a
+        // parallel one -- zero route files were edited to support this.
+        const apiKeyToken = await createApiKeySessionToken(
+          resolved.identifier,
+          resolved.role,
+          resolved.keyId,
+        );
+        forwardHeaders = new Headers(request.headers);
+        forwardHeaders.set("cookie", `${SESSION_COOKIE_NAME}=${apiKeyToken}`);
+        session = await verifySessionToken(apiKeyToken);
+      }
+    }
+  }
 
   if (!session) {
+    if (apiRoute) {
+      // A real API client (curl, a CLI, an SDK) gets a real JSON 401, not
+      // a 307 redirect to an HTML login page -- the correct hyperscaler-
+      // API convention, and what makes a missing/invalid/revoked key's
+      // rejection actually machine-checkable by a script rather than
+      // requiring HTML-scraping a redirect target.
+      return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
+    }
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  const response = NextResponse.next();
+  const response = forwardHeaders
+    ? NextResponse.next({ request: { headers: forwardHeaders } })
+    : NextResponse.next();
   response.headers.set("x-request-id", requestId);
 
   // Structured audit-log line for this authenticated request. Status is
   // recorded as 200 at the point middleware allows the request through --
   // middleware runs before the route handler produces its own status, so
   // this records "request was authenticated and forwarded", not the
-  // downstream handler's final status code.
+  // downstream handler's final status code. `actor` is the API key's
+  // bound identifier when this request authenticated via Bearer token,
+  // same field, same shape as a cookie-authenticated request's actor.
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),
     actor: session.sub,

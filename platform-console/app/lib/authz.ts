@@ -125,6 +125,17 @@ export async function setOrgRole(
  * owner explicitly promotes them via the real /org page.
  */
 export async function getRoleFor(session: SessionPayload): Promise<Role> {
+  // API-key sessions (lib/api-keys.ts) carry their role as a fixed claim
+  // set at key-creation time, minted by lib/session.ts's
+  // createApiKeySessionToken only after a real hash match against the
+  // live platform-console-api-keys Secret -- no ConfigMap round trip
+  // needed or wanted here, since an API key's role cannot change after
+  // issuance (only revocation, which is enforced upstream in
+  // lib/api-keys.ts's resolveApiKeyAuth, before this session ever exists).
+  if (session.authProvider === "api-key") {
+    return session.boundRole;
+  }
+
   const identifier = roleIdentifierFor(session);
   const result = await getOrgRoleAssignments();
   if (result.ok) {
