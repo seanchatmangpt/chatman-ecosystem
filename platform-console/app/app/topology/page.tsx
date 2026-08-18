@@ -1,8 +1,10 @@
 import Link from "next/link";
 import Nav from "@/components/Nav";
 import DeckTopology from "@/components/DeckTopology";
+import IsoflowTopology from "@/components/IsoflowTopology";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   hasClusterCredentials,
   listNetworkPolicies,
@@ -11,6 +13,7 @@ import {
   type ServiceDiscoveryRecord,
 } from "@/lib/k8s";
 import { buildTopologySnapshot } from "@/lib/topology";
+import { buildIsoflowModel } from "@/lib/isoflow-model";
 
 export const dynamic = "force-dynamic";
 
@@ -62,6 +65,10 @@ export default async function TopologyPage() {
   const zeroReadyCount = snapshot.nodes.filter(
     (n) => n.totalEndpoints !== null && n.totalEndpoints > 0 && n.readyEndpoints === 0,
   ).length;
+  // Same `rows`/`policies` inputs as `buildTopologySnapshot` above -- the
+  // isoflow model is a re-projection of the exact same snapshot data, so
+  // its node/namespace/edge counts match the deck.gl view by construction.
+  const { model: isoflowModel, serviceIconId, serviceIconFallback } = buildIsoflowModel(rows, policies);
 
   return (
     <>
@@ -138,11 +145,29 @@ export default async function TopologyPage() {
               {clusterConfigured ? "No Services found." : "—"}
             </p>
           ) : (
-            <DeckTopology
-              nodes={snapshot.nodes}
-              clusters={snapshot.clusters}
-              edges={snapshot.edges}
-            />
+            <Tabs defaultValue="spatial">
+              <TabsList>
+                <TabsTrigger value="spatial">Spatial (deck.gl)</TabsTrigger>
+                <TabsTrigger value="isometric">Isometric (isoflow)</TabsTrigger>
+              </TabsList>
+              <TabsContent value="spatial">
+                <DeckTopology
+                  nodes={snapshot.nodes}
+                  clusters={snapshot.clusters}
+                  edges={snapshot.edges}
+                />
+              </TabsContent>
+              <TabsContent value="isometric">
+                <IsoflowTopology model={isoflowModel} />
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Same {isoflowModel.items.length} Service node(s) across{" "}
+                  {isoflowModel.views[0]?.rectangles?.length ?? 0} namespace region(s),{" "}
+                  {isoflowModel.views[0]?.connectors?.length ?? 0} real NetworkPolicy
+                  connector(s) -- icon: <code>{serviceIconId}</code>
+                  {serviceIconFallback ? " (generic fallback, k8s-svc unavailable)" : " (Kubernetes isopack)"}.
+                </p>
+              </TabsContent>
+            </Tabs>
           )}
         </Card>
 
