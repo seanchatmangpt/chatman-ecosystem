@@ -15,6 +15,7 @@ const links = [
   { href: "/secrets", label: "Secrets" },
   { href: "/feature-flags", label: "Feature Flags" },
   { href: "/usage", label: "Usage" },
+  { href: "/billing", label: "Billing" },
   { href: "/logs", label: "Logs" },
   { href: "/observability", label: "Observability" },
   { href: "/alerts", label: "Alerting" },
