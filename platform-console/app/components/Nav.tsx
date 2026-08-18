@@ -12,6 +12,7 @@ const links = [
   { href: "/observability", label: "Observability" },
   { href: "/gitops", label: "GitOps" },
   { href: "/iam", label: "IAM" },
+  { href: "/registry", label: "Registry" },
   { href: "/compliance", label: "Compliance" },
   { href: "/pricing", label: "Pricing" },
 ];

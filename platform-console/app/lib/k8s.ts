@@ -592,6 +592,137 @@ export async function deleteSecret(
   return { ok: true, data: null };
 }
 
+// ---------------------------------------------------------- Container Registry
+//
+// Real hyperscaler-PaaS-style Container Registry primitive (ECR / GCR / ACR
+// equivalent) -- honestly adapted to what is actually true on this
+// cluster: there is no push-capable registry here. Images are built
+// locally and `kind load docker-image`d straight into the kind node's
+// containerd, so the only registry-shaped truth this console can show is
+// an IMAGE INVENTORY: which images each real Deployment's containers
+// reference, and whether a real Pod proves that exact image is actually
+// present. The console pod has no docker/containerd socket (on purpose --
+// see k8s/paas-rbac.yaml), so it cannot run `crictl images` itself; the
+// only honest substitute reachable from the k8s API is a real Pod's
+// containerStatuses: a Ready container using that image string, with a
+// real imageID digest reported, is proof containerd already pulled it. A
+// container stuck Waiting with an image-pull reason (ImagePullBackOff /
+// ErrImagePull / InvalidImageName) is proof it did not -- a real
+// Kubernetes-reported condition, never fabricated.
+
+export interface DeploymentContainerSpec {
+  name: string;
+  image: string;
+}
+
+export interface K8sDeployment {
+  name: string;
+  namespace: string;
+  containers: DeploymentContainerSpec[];
+  replicasDesired: number;
+  replicasReady: number;
+  replicasAvailable: number;
+}
+
+interface DeploymentListResponse {
+  items?: Array<{
+    metadata: { name: string; namespace: string };
+    spec?: {
+      replicas?: number;
+      template?: { spec?: { containers?: Array<{ name: string; image: string }> } };
+    };
+    status?: { readyReplicas?: number; availableReplicas?: number };
+  }>;
+}
+
+/** Lists real `apps/v1` Deployments in one namespace -- name, namespace,
+ * per-container `image` exactly as `spec.template.spec.containers[].image`
+ * reports it, and desired/ready/available replica counts from `status`. */
+export async function listDeployments(namespace: string): Promise<K8sResult<K8sDeployment[]>> {
+  const result = await k8sRequest<DeploymentListResponse>(
+    `/apis/apps/v1/namespaces/${encodeURIComponent(namespace)}/deployments`,
+  );
+  if (!result.ok) return result;
+  return {
+    ok: true,
+    data: (result.data.items ?? []).map((item) => ({
+      name: item.metadata.name,
+      namespace: item.metadata.namespace,
+      containers: (item.spec?.template?.spec?.containers ?? []).map((c) => ({
+        name: c.name,
+        image: c.image,
+      })),
+      replicasDesired: item.spec?.replicas ?? 0,
+      replicasReady: item.status?.readyReplicas ?? 0,
+      replicasAvailable: item.status?.availableReplicas ?? 0,
+    })),
+  };
+}
+
+export interface ContainerImageStatus {
+  pod: string;
+  namespace: string;
+  container: string;
+  /** Image string as reported on the running container (matches the
+   * Deployment's container.image when the Pod is running that spec). */
+  image: string;
+  /** Real resolved digest reference (`status.containerStatuses[].imageID`),
+   * e.g. `sha256:...` -- only populated once the runtime has actually
+   * pulled/resolved the image, so its presence alone is evidence the image
+   * is really present in containerd. */
+  imageID: string | null;
+  ready: boolean;
+  waitingReason: string | null;
+  waitingMessage: string | null;
+}
+
+interface PodImageStatusListResponse {
+  items?: Array<{
+    metadata: { name: string; namespace: string };
+    status?: {
+      containerStatuses?: Array<{
+        name: string;
+        image?: string;
+        imageID?: string;
+        ready?: boolean;
+        state?: { waiting?: { reason?: string; message?: string } };
+      }>;
+    };
+  }>;
+}
+
+/** Real per-container image status for every Pod in one namespace, read
+ * from `status.containerStatuses` -- the k8s-API-only substitute for
+ * shelling out to `crictl images` from inside the console pod (which has
+ * no containerd socket). Used by the Registry module to decide whether a
+ * Deployment's referenced image is actually present (a Ready container
+ * reporting that image + a real `imageID` digest) or missing (a container
+ * Waiting with an image-pull reason). */
+export async function listContainerImageStatuses(
+  namespace: string,
+): Promise<K8sResult<ContainerImageStatus[]>> {
+  const result = await k8sRequest<PodImageStatusListResponse>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/pods`,
+  );
+  if (!result.ok) return result;
+  const out: ContainerImageStatus[] = [];
+  for (const pod of result.data.items ?? []) {
+    for (const cs of pod.status?.containerStatuses ?? []) {
+      out.push({
+        pod: pod.metadata.name,
+        namespace: pod.metadata.namespace,
+        container: cs.name,
+        image: cs.image ?? "",
+        imageID: cs.imageID ?? null,
+        ready: cs.ready ?? false,
+        waitingReason: cs.state?.waiting?.reason ?? null,
+        waitingMessage: cs.state?.waiting?.message ?? null,
+      });
+    }
+  }
+  return { ok: true, data: out };
+}
+
 // ---------------------------------------------------------------------- Logs
 //
 // Real hyperscaler-PaaS-style Logs primitive (CloudWatch Logs / GCP Cloud

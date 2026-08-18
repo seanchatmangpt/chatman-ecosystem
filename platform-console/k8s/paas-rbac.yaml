@@ -76,6 +76,18 @@ rules:
   - apiGroups: ["networking.k8s.io"]
     resources: ["networkpolicies"]
     verbs: ["get", "list", "watch"]
+  # Registry (image inventory) module: read-only Deployment inventory, to
+  # read each container's real spec.template.spec.containers[].image field.
+  # Deployment specs are workload metadata, not secrets -- same
+  # sensitivity class as the Services/Roles/NetworkPolicies already granted
+  # cluster-wide above, so no new per-namespace Role was needed. Pod
+  # containerStatuses (the image-presence cross-check) reuse the existing
+  # per-namespace `platform-console-logs-reader` Role's `pods` get/list
+  # grant below -- already covers exactly the same 6 platform namespaces
+  # this module reads, so no additional pods grant was added either.
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
