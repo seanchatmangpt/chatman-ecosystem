@@ -62,8 +62,9 @@ export function hasClusterCredentials(): boolean {
 
 async function k8sRequest<T>(
   path: string,
-  method: "GET" | "POST" | "DELETE" = "GET",
+  method: "GET" | "POST" | "DELETE" | "PATCH" = "GET",
   body?: unknown,
+  contentType = "application/json",
 ): Promise<K8sResult<T>> {
   const cfg = readInClusterConfig();
   if (!cfg) {
@@ -91,7 +92,7 @@ async function k8sRequest<T>(
           Accept: "application/json",
           ...(payload
             ? {
-                "Content-Type": "application/json",
+                "Content-Type": contentType,
                 "Content-Length": String(payload.length),
               }
             : {}),
@@ -597,12 +598,31 @@ export interface IamNetworkPolicy {
   name: string;
   namespace: string;
   policyTypes: string[];
+  /**
+   * Real cross-namespace ingress sources for this policy -- the
+   * `kubernetes.io/metadata.name` value of every `namespaceSelector` under
+   * `spec.ingress[].from[]`. This is the exact selector shape
+   * `k8s/network-policies.yaml`'s `*-allow-from-platform-console` rules use
+   * (Kubernetes auto-labels every namespace with this well-known label, so
+   * matching on it names the source namespace by its real, immutable
+   * identity). Empty when the policy has no `ingress` rules at all (e.g. a
+   * `*-default-deny`) or none of its rules use a namespaceSelector -- never
+   * inferred or fabricated from anything but this exact field.
+   */
+  ingressFromNamespaces: string[];
 }
 
 interface NetworkPolicyListResponse {
   items?: Array<{
     metadata: { name: string; namespace: string };
-    spec?: { policyTypes?: string[] };
+    spec?: {
+      policyTypes?: string[];
+      ingress?: Array<{
+        from?: Array<{
+          namespaceSelector?: { matchLabels?: Record<string, string> };
+        }>;
+      }>;
+    };
   }>;
 }
 
@@ -613,11 +633,21 @@ export async function listNetworkPolicies(): Promise<K8sResult<IamNetworkPolicy[
   if (!result.ok) return result;
   return {
     ok: true,
-    data: (result.data.items ?? []).map((item) => ({
-      name: item.metadata.name,
-      namespace: item.metadata.namespace,
-      policyTypes: item.spec?.policyTypes ?? [],
-    })),
+    data: (result.data.items ?? []).map((item) => {
+      const fromNamespaces = new Set<string>();
+      for (const rule of item.spec?.ingress ?? []) {
+        for (const peer of rule.from ?? []) {
+          const ns = peer.namespaceSelector?.matchLabels?.["kubernetes.io/metadata.name"];
+          if (ns) fromNamespaces.add(ns);
+        }
+      }
+      return {
+        name: item.metadata.name,
+        namespace: item.metadata.namespace,
+        policyTypes: item.spec?.policyTypes ?? [],
+        ingressFromNamespaces: Array.from(fromNamespaces).sort(),
+      };
+    }),
   };
 }
 
@@ -1534,4 +1564,99 @@ export async function getResourceUsage(
       memoryPercentOfQuota,
     },
   };
+}
+
+// -------------------------------------------------------------- Feature Flags
+//
+// Real hyperscaler-PaaS-style Feature Flags primitive (AWS AppConfig /
+// LaunchDarkly / GCP Feature Flags equivalent) -- backed by a single real
+// k8s ConfigMap (`platform-feature-flags`, `platform-console` namespace),
+// no external SaaS dependency, no separate flag-evaluation service. Flag
+// values are plain strings in the ConfigMap's `data` map (`"true"`/
+// `"false"` for boolean flags, though nothing here enforces that shape --
+// arbitrary string flags are equally real). Scoped by k8s/paas-rbac.yaml
+// to a single least-privilege Role+RoleBinding in platform-console's own
+// namespace only (get/list/create/update on configmaps) -- never
+// cluster-wide, no delete verb: this console only ever creates the flags
+// ConfigMap once or edits its `data` map in place.
+
+export interface FeatureFlagsConfigMap {
+  name: string;
+  namespace: string;
+  data: Record<string, string>;
+}
+
+interface ConfigMapItem {
+  metadata: { name: string; namespace: string };
+  data?: Record<string, string>;
+}
+
+function toFeatureFlagsConfigMap(item: ConfigMapItem): FeatureFlagsConfigMap {
+  return { name: item.metadata.name, namespace: item.metadata.namespace, data: item.data ?? {} };
+}
+
+/**
+ * Reads one real ConfigMap. Returns `{ ok: true, data: null }` -- not an
+ * error -- when it doesn't exist yet, so callers can distinguish "not
+ * provisioned" from a real API failure, same convention as
+ * getBackupsPvc above.
+ */
+export async function getConfigMap(
+  namespace: string,
+  name: string,
+): Promise<K8sResult<FeatureFlagsConfigMap | null>> {
+  const result = await k8sRequest<ConfigMapItem>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/configmaps/${encodeURIComponent(name)}`,
+  );
+  if (!result.ok) {
+    if (/not found/i.test(result.error)) return { ok: true, data: null };
+    return result;
+  }
+  return { ok: true, data: toFeatureFlagsConfigMap(result.data) };
+}
+
+/**
+ * Real get-then-update-or-create, same pattern ensureBackupsPvc above
+ * already uses for a different resource type: reads the ConfigMap first
+ * (`getConfigMap`); if it already exists, applies `data` as a real RFC
+ * 7386 JSON merge patch (`Content-Type: application/merge-patch+json`) --
+ * merge-patch on a nested object field is recursive, so passing just the
+ * one changed key (e.g. `{ "verbose-status": "true" }`) updates that key
+ * without touching any other flag already in the map; never a blind
+ * full-object PUT that would require re-sending every existing flag or
+ * risk clobbering one this call didn't read. If it doesn't exist yet,
+ * POSTs a fresh ConfigMap manifest instead.
+ */
+export async function createOrUpdateConfigMap(
+  namespace: string,
+  name: string,
+  data: Record<string, string>,
+): Promise<K8sResult<FeatureFlagsConfigMap>> {
+  const existing = await getConfigMap(namespace, name);
+  if (!existing.ok) return existing;
+
+  if (existing.data) {
+    const result = await k8sRequest<ConfigMapItem>(
+      `/api/v1/namespaces/${encodeURIComponent(namespace)}/configmaps/${encodeURIComponent(name)}`,
+      "PATCH",
+      { data },
+      "application/merge-patch+json",
+    );
+    if (!result.ok) return result;
+    return { ok: true, data: toFeatureFlagsConfigMap(result.data) };
+  }
+
+  const manifest = {
+    apiVersion: "v1",
+    kind: "ConfigMap",
+    metadata: { name, namespace },
+    data,
+  };
+  const result = await k8sRequest<ConfigMapItem>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/configmaps`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toFeatureFlagsConfigMap(result.data) };
 }

@@ -1,4 +1,15 @@
 import Nav from "@/components/Nav";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { queryAlerts, alertState, type AlertmanagerAlert } from "@/lib/alertmanager";
 
 export const dynamic = "force-dynamic";
@@ -6,7 +17,7 @@ export const dynamic = "force-dynamic";
 const STATE_STYLES: Record<string, string> = {
   firing: "border-red-900 bg-red-950/40 text-red-300",
   suppressed: "border-yellow-900 bg-yellow-950/40 text-yellow-300",
-  resolved: "border-gray-700 bg-gray-900/40 text-gray-400",
+  resolved: "border-border bg-muted/40 text-muted-foreground",
 };
 
 function since(alert: AlertmanagerAlert): string {
@@ -28,8 +39,8 @@ export default async function AlertsPage() {
     <>
       <Nav />
       <main className="mx-auto max-w-5xl px-6 py-10">
-        <h1 className="mb-2 text-2xl font-semibold text-white">Alerting</h1>
-        <p className="mb-8 max-w-2xl text-sm text-gray-400">
+        <h1 className="mb-2 text-2xl font-semibold text-foreground">Alerting</h1>
+        <p className="mb-8 max-w-2xl text-sm text-muted-foreground">
           The CloudWatch Alarms / GCP Alerting Policies / Azure Monitor Alerts
           equivalent here: real current alert state read live from the
           in-cluster Alertmanager (
@@ -38,77 +49,74 @@ export default async function AlertsPage() {
         </p>
 
         {!result.ok && (
-          <div className="card mb-6 border-red-900 bg-red-950/40 p-6 text-sm text-red-300">
-            {result.error}
-          </div>
+          <Alert variant="destructive" className="mb-6">
+            <AlertDescription>{result.error}</AlertDescription>
+          </Alert>
         )}
 
         {result.ok && (
-          <div className="card p-6">
-            <div className="mb-4 flex items-baseline justify-between">
-              <h2 className="text-base font-medium text-white">
+          <Card>
+            <CardHeader className="flex-row items-baseline justify-between space-y-0">
+              <h2 className="text-base font-medium text-foreground">
                 {firing.length === 0
                   ? "0 active alerts"
                   : `${firing.length} active alert${firing.length === 1 ? "" : "s"}`}
               </h2>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-muted-foreground">
                 {alerts.length} total in Alertmanager (including resolved/suppressed)
               </span>
-            </div>
+            </CardHeader>
+            <CardContent>
+              {alerts.length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  Alertmanager returned an empty alert list -- this is reported
+                  honestly as zero active alerts, not fabricated.
+                </p>
+              )}
 
-            {alerts.length === 0 && (
-              <p className="text-sm text-gray-500">
-                Alertmanager returned an empty alert list -- this is reported
-                honestly as zero active alerts, not fabricated.
-              </p>
-            )}
-
-            {alerts.length > 0 && (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-border text-gray-400">
-                      <th className="py-2 pr-4 font-normal">alertname</th>
-                      <th className="py-2 pr-4 font-normal">state</th>
-                      <th className="py-2 pr-4 font-normal">severity</th>
-                      <th className="py-2 pr-4 font-normal">namespace</th>
-                      <th className="py-2 pr-4 font-normal">since</th>
-                      <th className="py-2 font-normal">summary</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+              {alerts.length > 0 && (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>alertname</TableHead>
+                      <TableHead>state</TableHead>
+                      <TableHead>severity</TableHead>
+                      <TableHead>namespace</TableHead>
+                      <TableHead>since</TableHead>
+                      <TableHead>summary</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {alerts.map((alert) => {
                       const state = alertState(alert);
                       return (
-                        <tr key={alert.fingerprint} className="border-b border-border/50">
-                          <td className="py-2 pr-4 text-gray-100">
+                        <TableRow key={alert.fingerprint}>
+                          <TableCell className="text-foreground">
                             {alert.labels.alertname ?? "-"}
-                          </td>
-                          <td className="py-2 pr-4">
-                            <span
-                              className={`inline-block rounded border px-2 py-0.5 text-xs ${STATE_STYLES[state]}`}
-                            >
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className={STATE_STYLES[state]}>
                               {state}
-                            </span>
-                          </td>
-                          <td className="py-2 pr-4 text-gray-100">
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-foreground">
                             {alert.labels.severity ?? "-"}
-                          </td>
-                          <td className="py-2 pr-4 text-gray-100">
+                          </TableCell>
+                          <TableCell className="text-foreground">
                             {alert.labels.namespace ?? "-"}
-                          </td>
-                          <td className="py-2 pr-4 text-gray-400">{since(alert)}</td>
-                          <td className="py-2 text-gray-400">
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">{since(alert)}</TableCell>
+                          <TableCell className="text-muted-foreground">
                             {alert.annotations.summary ?? alert.annotations.description ?? "-"}
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       );
                     })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
         )}
       </main>
     </>

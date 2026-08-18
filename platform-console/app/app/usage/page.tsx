@@ -1,4 +1,14 @@
 import Nav from "@/components/Nav";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { getResourceUsage, hasClusterCredentials, type NamespaceResourceUsage } from "@/lib/k8s";
 
 export const dynamic = "force-dynamic";
@@ -25,7 +35,7 @@ function formatMemory(mib: number): string {
 }
 
 function barColor(percent: number | null): string {
-  if (percent === null) return "bg-gray-700";
+  if (percent === null) return "bg-muted-foreground/40";
   if (percent >= 90) return "bg-red-500";
   if (percent >= 70) return "bg-amber-500";
   return "bg-emerald-500";
@@ -33,18 +43,18 @@ function barColor(percent: number | null): string {
 
 function UsageBar({ percent }: { percent: number | null }) {
   if (percent === null) {
-    return <span className="text-xs text-gray-500">no quota set</span>;
+    return <span className="text-xs text-muted-foreground">no quota set</span>;
   }
   const clampedWidth = Math.min(100, Math.max(0, percent));
   return (
     <div className="flex items-center gap-2">
-      <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-800">
+      <div className="h-2 w-32 overflow-hidden rounded-full bg-muted">
         <div
           className={`h-full ${barColor(percent)}`}
           style={{ width: `${clampedWidth}%` }}
         />
       </div>
-      <span className="w-14 text-right text-xs text-gray-400">
+      <span className="w-14 text-right text-xs text-muted-foreground">
         {percent.toFixed(1)}%
       </span>
     </div>
@@ -80,116 +90,119 @@ export default async function UsagePage() {
     <>
       <Nav />
       <main className="mx-auto max-w-6xl px-6 py-10">
-        <h1 className="mb-2 text-2xl font-semibold text-white">Cost &amp; Usage</h1>
+        <h1 className="mb-2 text-2xl font-semibold text-foreground">Cost &amp; Usage</h1>
 
-        <div className="mb-6 rounded-md border border-blue-900 bg-blue-950/30 px-4 py-3 text-sm text-blue-200">
-          <strong>Real-time resource consumption metrics.</strong> This is not
-          a billing statement -- no payment processor is connected, and no
-          dollar amount is computed or shown anywhere on this page. Every
-          number below is read live from this cluster&apos;s own
-          metrics-server (<code>metrics.k8s.io</code>, the same source{" "}
-          <code>kubectl top pods</code> reads) and the real{" "}
-          <code>ResourceQuota</code> object for each namespace -- the AWS
-          Cost Explorer / GCP Billing Reports / Azure Cost Management
-          equivalent, grounded in measured infrastructure consumption
-          instead of currency.
-        </div>
+        <Alert className="mb-6 border-blue-900 bg-blue-950/30 text-blue-200">
+          <AlertDescription className="text-blue-200">
+            <strong>Real-time resource consumption metrics.</strong> This is not
+            a billing statement -- no payment processor is connected, and no
+            dollar amount is computed or shown anywhere on this page. Every
+            number below is read live from this cluster&apos;s own
+            metrics-server (<code>metrics.k8s.io</code>, the same source{" "}
+            <code>kubectl top pods</code> reads) and the real{" "}
+            <code>ResourceQuota</code> object for each namespace -- the AWS
+            Cost Explorer / GCP Billing Reports / Azure Cost Management
+            equivalent, grounded in measured infrastructure consumption
+            instead of currency.
+          </AlertDescription>
+        </Alert>
 
         {!clusterConfigured && (
-          <div className="mb-6 rounded-md border border-amber-900 bg-amber-950/40 px-4 py-3 text-sm text-amber-300">
-            not configured: no in-cluster ServiceAccount credentials found.
-            This page only returns real data when running as the
-            platform-console pod.
-          </div>
+          <Alert className="mb-6 border-amber-900 bg-amber-950/40 text-amber-300">
+            <AlertDescription className="text-amber-300">
+              not configured: no in-cluster ServiceAccount credentials found.
+              This page only returns real data when running as the
+              platform-console pod.
+            </AlertDescription>
+          </Alert>
         )}
 
         {errors.length > 0 && (
           <div className="mb-6 space-y-2">
             {errors.map((e) => (
-              <p
-                key={e.namespace}
-                className="rounded-md border border-red-900 bg-red-950/40 px-4 py-2 text-sm text-red-300"
-              >
-                {e.namespace}: {e.error}
-              </p>
+              <Alert key={e.namespace} variant="destructive">
+                <AlertDescription>
+                  {e.namespace}: {e.error}
+                </AlertDescription>
+              </Alert>
             ))}
           </div>
         )}
 
         {clusterConfigured && rows.length > 0 && (
-          <p className="mb-4 text-xs text-gray-500">
+          <p className="mb-4 text-xs text-muted-foreground">
             Cluster-wide across these {rows.length} namespaces: real live
             total {formatCpu(totalCpu)} CPU / {formatMemory(totalMemory)}{" "}
             memory in use right now.
           </p>
         )}
 
-        <div className="card overflow-x-auto">
-          <table className="w-full min-w-[900px] text-left text-sm">
-            <thead>
-              <tr className="border-b border-border text-xs uppercase tracking-wide text-gray-500">
-                <th className="px-4 py-3 font-medium">Namespace</th>
-                <th className="px-4 py-3 font-medium">CPU usage</th>
-                <th className="px-4 py-3 font-medium">CPU quota (limits.cpu)</th>
-                <th className="px-4 py-3 font-medium">CPU % of quota</th>
-                <th className="px-4 py-3 font-medium">Memory usage</th>
-                <th className="px-4 py-3 font-medium">Memory quota (limits.memory)</th>
-                <th className="px-4 py-3 font-medium">Memory % of quota</th>
-              </tr>
-            </thead>
-            <tbody>
+        <Card className="overflow-x-auto">
+          <Table className="min-w-[900px]">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Namespace</TableHead>
+                <TableHead>CPU usage</TableHead>
+                <TableHead>CPU quota (limits.cpu)</TableHead>
+                <TableHead>CPU % of quota</TableHead>
+                <TableHead>Memory usage</TableHead>
+                <TableHead>Memory quota (limits.memory)</TableHead>
+                <TableHead>Memory % of quota</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {rows.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-4 py-6 text-sm text-gray-400">
+                <TableRow>
+                  <TableCell colSpan={7} className="py-6 text-sm text-muted-foreground">
                     {clusterConfigured ? "No namespaces measured." : "—"}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
               {rows.map(({ namespace, usage }) => (
-                <tr key={namespace} className="border-b border-border/50 last:border-b-0">
-                  <td className="px-4 py-3 text-gray-100">
+                <TableRow key={namespace}>
+                  <TableCell className="text-foreground">
                     <code>{namespace}</code>
                     {usage.podsMeasured === 0 && (
-                      <p className="mt-1 text-[11px] text-gray-500">
+                      <p className="mt-1 text-[11px] text-muted-foreground">
                         no pods with a fresh metrics-server reading
                       </p>
                     )}
-                  </td>
-                  <td className="px-4 py-3 text-gray-300">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {formatCpu(usage.cpuUsageMillicores)}
-                  </td>
-                  <td className="px-4 py-3 text-gray-300">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {usage.quota?.hardCpuMillicores !== null &&
                     usage.quota?.hardCpuMillicores !== undefined
                       ? formatCpu(usage.quota.hardCpuMillicores)
                       : usage.quota
                         ? "—"
                         : "no quota"}
-                  </td>
-                  <td className="px-4 py-3">
+                  </TableCell>
+                  <TableCell>
                     <UsageBar percent={usage.cpuPercentOfQuota} />
-                  </td>
-                  <td className="px-4 py-3 text-gray-300">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {formatMemory(usage.memoryUsageMiB)}
-                  </td>
-                  <td className="px-4 py-3 text-gray-300">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {usage.quota?.hardMemoryMiB !== null &&
                     usage.quota?.hardMemoryMiB !== undefined
                       ? formatMemory(usage.quota.hardMemoryMiB)
                       : usage.quota
                         ? "—"
                         : "no quota"}
-                  </td>
-                  <td className="px-4 py-3">
+                  </TableCell>
+                  <TableCell>
                     <UsageBar percent={usage.memoryPercentOfQuota} />
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TableBody>
+          </Table>
+        </Card>
 
-        <p className="mt-4 text-xs text-gray-500">
+        <p className="mt-4 text-xs text-muted-foreground">
           &quot;% of quota&quot; compares live usage against each
           namespace&apos;s <code>ResourceQuota.status.hard[&quot;limits.cpu&quot;
           / &quot;limits.memory&quot;]</code> -- the real ceiling live usage

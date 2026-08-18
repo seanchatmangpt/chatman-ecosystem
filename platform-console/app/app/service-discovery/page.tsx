@@ -1,4 +1,15 @@
 import Nav from "@/components/Nav";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   hasClusterCredentials,
   listServicesWithEndpoints,
@@ -33,41 +44,41 @@ function formatPorts(ports: ServiceDiscoveryRecord["ports"]): string {
 function EndpointsBadge({ ready, total }: { ready: number | null; total: number | null }) {
   if (ready === null || total === null) {
     return (
-      <span className="flex items-center gap-1 rounded-full border border-gray-700 bg-gray-900/40 px-2 py-0.5 text-xs text-gray-400">
-        <span className="h-1.5 w-1.5 rounded-full bg-gray-500" />
+      <Badge variant="outline" className="gap-1.5 text-muted-foreground">
+        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground" />
         no Endpoints object
-      </span>
+      </Badge>
     );
   }
   if (total === 0) {
     return (
-      <span className="flex items-center gap-1 rounded-full border border-red-900 bg-red-950/40 px-2 py-0.5 text-xs text-red-300">
+      <Badge variant="outline" className="gap-1.5 border-red-900 bg-red-950/40 text-red-300">
         <span className="h-1.5 w-1.5 rounded-full bg-red-400" />
         0/0
-      </span>
+      </Badge>
     );
   }
   if (ready === 0) {
     return (
-      <span className="flex items-center gap-1 rounded-full border border-red-900 bg-red-950/40 px-2 py-0.5 text-xs text-red-300">
+      <Badge variant="outline" className="gap-1.5 border-red-900 bg-red-950/40 text-red-300">
         <span className="h-1.5 w-1.5 rounded-full bg-red-400" />
         0/{total} ready
-      </span>
+      </Badge>
     );
   }
   if (ready < total) {
     return (
-      <span className="flex items-center gap-1 rounded-full border border-amber-900 bg-amber-950/40 px-2 py-0.5 text-xs text-amber-300">
+      <Badge variant="outline" className="gap-1.5 border-amber-900 bg-amber-950/40 text-amber-300">
         <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
         {ready}/{total} ready
-      </span>
+      </Badge>
     );
   }
   return (
-    <span className="flex items-center gap-1 rounded-full border border-emerald-900 bg-emerald-950/40 px-2 py-0.5 text-xs text-emerald-300">
+    <Badge variant="outline" className="gap-1.5 border-emerald-900 bg-emerald-950/40 text-emerald-300">
       <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
       {ready}/{total} ready
-    </span>
+    </Badge>
   );
 }
 
@@ -102,47 +113,50 @@ export default async function ServiceDiscoveryPage() {
     <>
       <Nav />
       <main className="mx-auto max-w-6xl px-6 py-10">
-        <h1 className="mb-2 text-2xl font-semibold text-white">Service Discovery</h1>
+        <h1 className="mb-2 text-2xl font-semibold text-foreground">Service Discovery</h1>
 
-        <div className="mb-6 rounded-md border border-blue-900 bg-blue-950/30 px-4 py-3 text-sm text-blue-200">
-          <strong>Real cluster-internal DNS, not a decorative view.</strong>{" "}
-          The AWS Route53 private hosted zone / GCP Cloud DNS internal zone /
-          Azure Private DNS equivalent here is CoreDNS plus every real k8s{" "}
-          <code>Service</code>/<code>Endpoints</code> object -- the exact
-          mechanism every other module&apos;s cluster-internal URLs already
-          depend on (the Database module&apos;s Postgres/PostgREST hosts, the
-          Backups module&apos;s <code>pg_dump</code> target). CoreDNS answers{" "}
-          <code>&lt;svc&gt;.&lt;namespace&gt;.svc.cluster.local</code> from
-          these same two objects, read live below via the k8s API -- never a
-          separate DNS-specific API or a fabricated record.{" "}
-          <strong>Ready endpoints</strong> is the load-bearing signal: how
-          many backing Pod IPs are actually passing readiness right now, i.e.
-          whether that DNS name currently resolves to something healthy.
-        </div>
+        <Alert className="mb-6 border-blue-900 bg-blue-950/30 text-blue-200">
+          <AlertDescription className="text-blue-200">
+            <strong>Real cluster-internal DNS, not a decorative view.</strong>{" "}
+            The AWS Route53 private hosted zone / GCP Cloud DNS internal zone /
+            Azure Private DNS equivalent here is CoreDNS plus every real k8s{" "}
+            <code>Service</code>/<code>Endpoints</code> object -- the exact
+            mechanism every other module&apos;s cluster-internal URLs already
+            depend on (the Database module&apos;s Postgres/PostgREST hosts, the
+            Backups module&apos;s <code>pg_dump</code> target). CoreDNS answers{" "}
+            <code>&lt;svc&gt;.&lt;namespace&gt;.svc.cluster.local</code> from
+            these same two objects, read live below via the k8s API -- never a
+            separate DNS-specific API or a fabricated record.{" "}
+            <strong>Ready endpoints</strong> is the load-bearing signal: how
+            many backing Pod IPs are actually passing readiness right now, i.e.
+            whether that DNS name currently resolves to something healthy.
+          </AlertDescription>
+        </Alert>
 
         {!clusterConfigured && (
-          <div className="mb-6 rounded-md border border-amber-900 bg-amber-950/40 px-4 py-3 text-sm text-amber-300">
-            not configured: no in-cluster ServiceAccount credentials found.
-            This page only returns real data when running as the
-            platform-console pod.
-          </div>
+          <Alert className="mb-6 border-amber-900 bg-amber-950/40 text-amber-300">
+            <AlertDescription className="text-amber-300">
+              not configured: no in-cluster ServiceAccount credentials found.
+              This page only returns real data when running as the
+              platform-console pod.
+            </AlertDescription>
+          </Alert>
         )}
 
         {errors.length > 0 && (
           <div className="mb-6 space-y-2">
             {errors.map((e) => (
-              <p
-                key={e.namespace}
-                className="rounded-md border border-red-900 bg-red-950/40 px-4 py-2 text-sm text-red-300"
-              >
-                {e.namespace}: {e.error}
-              </p>
+              <Alert key={e.namespace} variant="destructive">
+                <AlertDescription>
+                  {e.namespace}: {e.error}
+                </AlertDescription>
+              </Alert>
             ))}
           </div>
         )}
 
         {clusterConfigured && allRecords.length > 0 && (
-          <p className="mb-4 text-xs text-gray-500">
+          <p className="mb-4 text-xs text-muted-foreground">
             {allRecords.length} Service(s) across {rows.length} namespaces --{" "}
             {zeroReadyCount === 0 ? (
               <span className="text-emerald-400">0 with zero ready endpoints</span>
@@ -155,56 +169,53 @@ export default async function ServiceDiscoveryPage() {
           </p>
         )}
 
-        <div className="card overflow-x-auto">
-          <table className="w-full min-w-[900px] text-left text-sm">
-            <thead>
-              <tr className="border-b border-border text-xs uppercase tracking-wide text-gray-500">
-                <th className="px-4 py-3 font-medium">Namespace</th>
-                <th className="px-4 py-3 font-medium">Service</th>
-                <th className="px-4 py-3 font-medium">DNS name</th>
-                <th className="px-4 py-3 font-medium">ClusterIP</th>
-                <th className="px-4 py-3 font-medium">Ports</th>
-                <th className="px-4 py-3 font-medium">Ready endpoints</th>
-              </tr>
-            </thead>
-            <tbody>
+        <Card className="overflow-x-auto">
+          <Table className="min-w-[900px]">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Namespace</TableHead>
+                <TableHead>Service</TableHead>
+                <TableHead>DNS name</TableHead>
+                <TableHead>ClusterIP</TableHead>
+                <TableHead>Ports</TableHead>
+                <TableHead>Ready endpoints</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {allRecords.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-4 py-6 text-sm text-gray-400">
+                <TableRow>
+                  <TableCell colSpan={6} className="py-6 text-sm text-muted-foreground">
                     {clusterConfigured ? "No Services found." : "—"}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
               {rows.map(({ namespace, records }) =>
                 records.map((r) => (
-                  <tr
-                    key={`${namespace}/${r.name}`}
-                    className="border-b border-border/50 last:border-b-0"
-                  >
-                    <td className="px-4 py-3 text-gray-300">
+                  <TableRow key={`${namespace}/${r.name}`}>
+                    <TableCell className="text-muted-foreground">
                       <code>{namespace}</code>
-                    </td>
-                    <td className="px-4 py-3 text-gray-100">{r.name}</td>
-                    <td className="px-4 py-3">
-                      <code className="text-xs text-gray-100">{r.dns}</code>
-                    </td>
-                    <td className="px-4 py-3 text-gray-300">
+                    </TableCell>
+                    <TableCell className="text-foreground">{r.name}</TableCell>
+                    <TableCell>
+                      <code className="text-xs text-foreground">{r.dns}</code>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
                       <code className="text-xs">{r.clusterIP ?? "—"}</code>
-                    </td>
-                    <td className="px-4 py-3 text-gray-300">
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
                       <code className="text-xs">{formatPorts(r.ports)}</code>
-                    </td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell>
                       <EndpointsBadge ready={r.readyEndpoints} total={r.totalEndpoints} />
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )),
               )}
-            </tbody>
-          </table>
-        </div>
+            </TableBody>
+          </Table>
+        </Card>
 
-        <p className="mt-4 text-xs text-gray-500">
+        <p className="mt-4 text-xs text-muted-foreground">
           &quot;Ready endpoints&quot; is <code>subsets[].addresses.length</code>{" "}
           on the real <code>core/v1 Endpoints</code> object matching each
           Service&apos;s name (the endpoint-controller&apos;s own naming

@@ -501,3 +501,102 @@ roleRef:
   kind: Role
   name: platform-console-backups
   apiGroup: rbac.authorization.k8s.io
+
+# ------------------------------------------------------------ Feature Flags
+#
+# Real hyperscaler-PaaS-style Feature Flags primitive (AWS AppConfig /
+# LaunchDarkly / GCP Feature Flags equivalent), backed by a single real
+# k8s ConfigMap (`platform-feature-flags`) in platform-console's own
+# namespace -- no external SaaS dependency. Two separate least-privilege
+# grants, same "narrower than the read-mostly ClusterRole above" reasoning
+# already used for Secrets/Logs/Backups above:
+#
+# 1. The console's own ServiceAccount gets get/list/create/update on
+#    `configmaps`, scoped to ONLY the platform-console namespace -- never
+#    cluster-wide (a cluster-wide configmaps grant would let this console
+#    read every other workload's ConfigMaps across every namespace, many
+#    of which hold non-secret-but-still-sensitive app config this console
+#    has no business touching). No delete verb: this console only ever
+#    creates platform-feature-flags once or edits its `data` map in place
+#    via a real RFC 7386 JSON merge patch (lib/k8s.ts's
+#    createOrUpdateConfigMap).
+#
+# 2. The live-toggle proof (services/autofde-lab/app.py) needs
+#    autofde-lab-status's own ServiceAccount (autofde-lab-status-reader,
+#    defined in autofde-lab's own namespace by k8s/rbac.yaml) to read that
+#    SAME ConfigMap object living in platform-console's namespace -- a
+#    ConfigMap volume mount cannot cross namespaces (a hard Kubernetes
+#    constraint), so this is necessarily a real k8s API read, not a
+#    mount. The Role granting this must itself live in platform-console's
+#    namespace (an RBAC Role only ever authorizes access to objects in
+#    its own namespace), bound via a RoleBinding also in
+#    platform-console's namespace whose subject is a ServiceAccount from
+#    a DIFFERENT namespace (autofde-lab) -- a normal, fully-supported RBAC
+#    pattern (a RoleBinding's subjects may reference a ServiceAccount in
+#    any namespace; only the Role/roleRef itself is namespace-bound).
+#    Scoped to exactly one verb (`get`) and one named object
+#    (`resourceNames: ["platform-feature-flags"]`) -- narrower than grant
+#    1 above, since this identity has no legitimate reason to read or
+#    list any other ConfigMap in platform-console's namespace. Verified
+#    live before this grant existed: `kubectl exec` into the running
+#    autofde-lab-status pod making a real HTTPS call to the k8s API for
+#    this exact object returned a real `403 Forbidden` ("configmaps
+#    \"platform-feature-flags\" is forbidden: User
+#    \"system:serviceaccount:autofde-lab:autofde-lab-status-reader\"
+#    cannot get resource \"configmaps\" ... in the namespace
+#    \"platform-console\""), confirming both that the network path to the
+#    API server was already open (no NetworkPolicy/CNI change was needed
+#    -- this cluster's kindnet CNI does not enforce NetworkPolicy objects,
+#    confirmed by this exact real request reaching the API server and
+#    getting a real RBAC-layer 403, not a network-layer timeout) and that
+#    only RBAC stood in the way -- exactly the gap this Role+RoleBinding
+#    closes.
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-feature-flags
+  namespace: platform-console
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "create", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-feature-flags-binding
+  namespace: platform-console
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-feature-flags
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-feature-flags-reader
+  namespace: platform-console
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["platform-feature-flags"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: autofde-lab-status-feature-flags-binding
+  namespace: platform-console
+subjects:
+  - kind: ServiceAccount
+    name: autofde-lab-status-reader
+    namespace: autofde-lab
+roleRef:
+  kind: Role
+  name: platform-console-feature-flags-reader
+  apiGroup: rbac.authorization.k8s.io

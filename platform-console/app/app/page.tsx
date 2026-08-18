@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Nav from "@/components/Nav";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const projects = [
   {
@@ -29,8 +30,8 @@ export default function OverviewPage() {
     <>
       <Nav />
       <main className="mx-auto max-w-6xl px-6 py-10">
-        <h1 className="mb-2 text-2xl font-semibold text-white">Platform Overview</h1>
-        <p className="mb-8 max-w-2xl text-sm text-gray-400">
+        <h1 className="mb-2 text-2xl font-semibold text-foreground">Platform Overview</h1>
+        <p className="mb-8 max-w-2xl text-sm text-muted-foreground">
           Each card below links to a project&apos;s live status page, which
           fetches its cluster-internal <code>/status</code> endpoint at
           request time. This page makes no claims about project state
@@ -39,13 +40,13 @@ export default function OverviewPage() {
         </p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {projects.map((p) => (
-            <Link
-              key={p.slug}
-              href={`/${p.slug}`}
-              className="card block p-5 transition hover:border-accent"
-            >
-              <h2 className="mb-1 text-base font-medium text-white">{p.name}</h2>
-              <p className="text-sm text-gray-400">{p.description}</p>
+            <Link key={p.slug} href={`/${p.slug}`} className="block">
+              <Card className="h-full transition hover:border-accent">
+                <CardHeader>
+                  <CardTitle className="text-base font-medium">{p.name}</CardTitle>
+                  <CardDescription>{p.description}</CardDescription>
+                </CardHeader>
+              </Card>
             </Link>
           ))}
         </div>

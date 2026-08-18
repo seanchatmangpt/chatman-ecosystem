@@ -58,6 +58,8 @@ or global footprint.
 | `/usage` | Cost & Usage (AWS Cost Explorer / GCP Billing Reports / Azure Cost Management equivalent, deliberately **without** any payment processor or currency): real live per-namespace CPU/memory usage from `metrics.k8s.io` (the same source `kubectl top pods` reads) against the real `ResourceQuota` hard `limits.cpu`/`limits.memory` ceiling, with a plain percentage-of-quota figure -- never a dollar amount | `lib/k8s.ts` (`getResourceUsage`, `getResourceQuota`) |
 | `/alerts` | Alerting (CloudWatch Alarms / GCP Alerting Policies / Azure Monitor Alerts equivalent): real current alert state read live from the in-cluster Alertmanager's `/api/v2/alerts`, rendered as a table (alertname, state, severity, namespace, since, summary); shows an honest "0 active alerts" when none are firing rather than fabricating one -- see `alerting-pipeline-verified-live` in `evidence/control-evidence-bundle.json` for the real fired-and-cleared synthetic-rule verification | `app/api/alerts/route.ts`, `lib/alertmanager.ts` |
 | `/service-discovery` | Service Discovery (AWS Route53 private hosted zone / GCP Cloud DNS internal zone / Azure Private DNS equivalent) -- **not decorative**: CoreDNS plus real k8s `Service`/`Endpoints` objects already are the cluster's internal DNS layer every other module's cluster-internal URLs depend on. Table across the platform's 6 namespaces: Service, real DNS name (`<svc>.<namespace>.svc.cluster.local`), ClusterIP, ports, and ready/total backing-Pod-IP count read live from the matching `Endpoints` object -- the "does this record actually resolve to something healthy" signal. Live-verified with real `nslookup` from a throwaway pod against 4 services: resolved IPs matched the page's ClusterIPs byte-for-byte, and ready-endpoint counts matched `kubectl get endpoints` exactly -- see `service-discovery-dns-resolves-live` in `evidence/control-evidence-bundle.json` | `lib/k8s.ts` (`listEndpoints`, `listServicesWithEndpoints`) |
+| `/feature-flags` | Feature Flags (AWS AppConfig / LaunchDarkly / GCP Feature Flags equivalent), backed by one real k8s `ConfigMap` (`platform-feature-flags`, `platform-console` namespace) -- no external SaaS dependency. Lists current flags, toggles booleans in place, and adds new keys, all via a real RFC 7386 JSON merge patch (or a real create on first write) through the console's ServiceAccount. **Genuinely proven live, not just object-mutation**: `autofde-lab-status` (`services/autofde-lab/app.py`) reads this exact ConfigMap on every `/status` request via a real, fresh Kubernetes API call under its own minimal cross-namespace RBAC grant, and adds a real `process_uptime_seconds` field only while `verbose-status` is `"true"` -- toggling the flag through the authenticated console UI/API was confirmed, via direct external `curl` to the live `autofde-lab-status` Service (not just `kubectl exec`), to make the field appear and then disappear on revert. See `feature-flag-live-toggle-verified` in `evidence/control-evidence-bundle.json` for the exact before/after response bodies. | `app/api/feature-flags/route.ts`, `lib/k8s.ts` (`getConfigMap`, `createOrUpdateConfigMap`), `services/autofde-lab/app.py` |
+| `/topology` | Cluster Topology -- a **visualization, not a security control** (recorded in the evidence bundle for consistency with this file's "real vs decorative" practice, not because it enforces anything). deck.gl (`OrthographicView`, not a geospatial `MapView` -- there is no real geography here) rendering the exact same `listServicesWithEndpoints` data `/service-discovery` already shows as a table: one `ScatterplotLayer` node per Service (fill = the same ready/total status vocabulary as `EndpointsBadge`, size = ready-endpoint count), grouped into deterministic per-namespace grid clusters computed in `lib/topology.ts` (no randomness, no force-simulation step -- same input always produces the same layout). `ArcLayer` connections are drawn **only** where a real `NetworkPolicy` ingress rule's `namespaceSelector` names a source namespace (`lib/k8s.ts`'s `listNetworkPolicies` was extended with `ingressFromNamespaces`, parsed from `spec.ingress[].from[].namespaceSelector.matchLabels["kubernetes.io/metadata.name"]`) -- never inferred or fabricated traffic. Live-verified: authenticated `GET /topology` returned 200 with all 12 real Services across 6 namespaces embedded in the hydration payload (`autofde-lab-status`, `demo-db-postgres`, `gymact-status`, `ggen-status`, `ggen-marketplace-status`, `platform-console-gateway`, plus the 6 `demo-project-*` Services), real ClusterIPs matching `service-discovery-dns-resolves-live`'s recorded values byte-for-byte, and exactly 4 real cross-namespace edges (`platform-console` → `autofde-lab`/`gymact`/`ggen`/`ggen-marketplace`, matching `k8s/network-policies.yaml`'s `*-allow-from-platform-console` rules) -- see `topology-visualization-real-data` in `evidence/control-evidence-bundle.json` | `lib/topology.ts`, `components/DeckTopology.tsx`, `lib/k8s.ts` (`listNetworkPolicies`) |
 
 `lib/k8s.ts` is a hand-rolled Kubernetes API client using the pod's own in-cluster
 ServiceAccount token/CA (`/var/run/secrets/kubernetes.io/serviceaccount`) — no external k8s
@@ -103,7 +105,7 @@ ClusterRole grants. Scoped to the platform's own namespaces only, never cluster-
   and `flux-system` (Flux controllers; CRDs installed, no Kustomization/HelmRelease objects
   created yet on this cluster — an honest empty GitOps state, not a fabricated one).
 - Manifests applied in order from `k8s/`: `namespaces.yaml`, `rbac.yaml`, `paas-rbac.yaml`,
-  `resource-quotas.yaml`, `network-policies.yaml`, `mtls.yaml`,
+  `resource-quotas.yaml`, `network-policies.yaml`, `mtls.yaml`, `feature-flags.yaml`,
   `services-and-deployments.yaml`, `gateway.yaml`, `grafana-route.yaml`, `hpa.yaml`,
   `ratelimit.yaml`.
 
@@ -203,6 +205,57 @@ Horizontal Pod Autoscaler, not a simulated or documented-only control.
   scale-down cycle, both directions driven by the live HPA controller against live
   metrics-server data, no step simulated.
 
+## Feature Flags
+
+Real Feature-Flags-as-a-service (AWS AppConfig / LaunchDarkly / GCP Feature Flags
+equivalent), backed entirely by one real Kubernetes `ConfigMap`
+(`platform-feature-flags`, `platform-console` namespace) -- no external SaaS
+dependency, no separate flag-evaluation service.
+
+- **`lib/k8s.ts`**: `getConfigMap(namespace, name)` (returns `{ ok: true, data: null }`
+  when not yet provisioned, same convention as `getBackupsPvc`); `createOrUpdateConfigMap`
+  does a real get-then-update-or-create -- an existing ConfigMap is updated with a real
+  RFC 7386 JSON merge patch (`Content-Type: application/merge-patch+json`), which merges
+  recursively into the `data` map, so writing one flag never touches any other flag
+  already present; a missing ConfigMap is created fresh instead.
+- **`/feature-flags` + `/api/feature-flags`**: lists current flags (name, value), toggles
+  a `"true"`/`"false"` flag with one click, and supports adding/editing arbitrary string
+  flags -- all through the authenticated console session, same auth/audit-log pattern as
+  every other mutating route in this app.
+- **RBAC** (`k8s/paas-rbac.yaml`, "Feature Flags" section): two separate least-privilege
+  grants, deliberately kept out of the cluster-wide `ClusterRole/platform-console-paas`.
+  (1) The console's own ServiceAccount gets `get/list/create/update/patch` on `configmaps`,
+  scoped to the `platform-console` namespace only -- never cluster-wide, no `delete`. A
+  real bug was caught live during verification: the RBAC `update` verb does **not** cover
+  the Kubernetes API's `PATCH` HTTP method (that needs the separate `patch` verb) -- the
+  first toggle attempt through the real API returned a real `403`
+  (`cannot patch resource "configmaps"`), confirmed via the exact error body, then fixed by
+  adding `patch` to the Role and re-verified. (2) `autofde-lab-status`'s own ServiceAccount
+  (`autofde-lab-status-reader`, `autofde-lab` namespace) is granted `get` on exactly the
+  single named object `platform-feature-flags` (`resourceNames: ["platform-feature-flags"]`)
+  via a Role that lives in `platform-console`'s namespace (RBAC Roles only ever authorize
+  objects in their own namespace) bound to a cross-namespace subject -- a normal, supported
+  RBAC pattern.
+- **Why a live k8s-API read, not a ConfigMap-volume mount, for the live-toggle proof**:
+  `platform-feature-flags` lives in `platform-console`'s namespace while `autofde-lab-status`'s
+  Pods run in `autofde-lab` -- a ConfigMap volume can only ever mount an object from the
+  Pod's OWN namespace (a hard Kubernetes constraint), so a genuinely live cross-namespace
+  toggle is only reachable via the Kubernetes API. `services/autofde-lab/app.py` makes a
+  fresh, uncached HTTPS call to the real API server (using its own in-cluster
+  ServiceAccount token/CA, the exact same pattern `lib/k8s.ts` uses) on every single
+  `/status` request, and adds one additional real field, `process_uptime_seconds`
+  (`time.monotonic()`-derived, never fabricated), only when `verbose-status` reads
+  `"true"`. Any read failure fails closed to the baseline response with no extra field.
+  One disclosed consequence: propagation is effectively instantaneous (a live read on every
+  request), not governed by kubelet's ~60s ConfigMap-volume sync/cache window a mount would
+  have had -- a stronger real-time guarantee than the mount approach, not the same as it.
+- **Live-verified end to end, real bug included**: see `feature-flag-live-toggle-verified`
+  in `evidence/control-evidence-bundle.json` for the full transcript -- baseline `/status`
+  (no extra field) -> toggle to `"true"` through the real authenticated console API ->
+  `/status` gains a real, live `process_uptime_seconds` (confirmed via both `kubectl exec`
+  and a direct external `curl` through `kubectl port-forward` to the real `Service`) ->
+  toggle back to `"false"` -> field disappears, confirmed the same two ways.
+
 ## How to reach it
 
 ```
@@ -241,16 +294,24 @@ currently take payment.
 a compliance determination — those can only come from a licensed CPA firm after an
 independent audit. It records exactly which technical controls were actually observed
 enforced (with real command output as evidence, re-run fresh against the current cluster)
-versus which are configured but not currently enacted. As of this run: **17 controls verified
+versus which are configured but not currently enacted. As of this run: **19 controls verified
 with fresh live evidence** (resource-quotas-enforced, network-segmentation,
 least-privilege-rbac, audit-logging, self-service-project-provisioning,
 observability-proxy-least-privilege, gitops-read-only-visibility, mtls-enforced,
 autoscaling-enforced, secrets-never-logged-or-rendered,
 least-privilege-per-namespace-secrets-rbac, registry-visibility-least-privilege,
 backup-job-verified-nonempty, rate-limiting-enforced, usage-metrics-real-not-fabricated,
-alerting-pipeline-verified-live, service-discovery-dns-resolves-live) and **1 disclosed gap**
+alerting-pipeline-verified-live, service-discovery-dns-resolves-live,
+feature-flag-live-toggle-verified, topology-visualization-real-data) and **1 disclosed gap**
 (registry-visibility-least-privilege's image-pull-failure path is real code, untriggered on
 this cluster today -- see the bundle). mtls-enforced's prior gap (PeerAuthentication
 STRICT configured but not enacted by any sidecar) was closed in an earlier pass; see the
 bundle for the fix and live proof. This doctrine follows
 `ggen-marketplace/packs/soc2-audit-pack`: evidence-bundle-complete, never "compliant".
+
+`digest` at the bottom of the bundle is a BLAKE3 hash over the bundle's own content, so any
+edit to a control's evidence text is detectable. Method, confirmed by reproducing the prior
+digest byte-for-byte before this pass changed anything: with `digest.value` set to the empty
+string, serialize the whole document with `json.dumps(doc, indent=2, ensure_ascii=False)` plus
+one trailing newline, BLAKE3-hash the resulting UTF-8 bytes, then write that hex digest back
+into `digest.value`.

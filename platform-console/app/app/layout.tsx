@@ -11,9 +11,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // This console has one visual theme (dark) -- `dark` is applied directly
+  // rather than left to prefers-color-scheme, since shadcn/ui's CSS
+  // variables (app/globals.css) are only meant to be read through the
+  // `.dark` scope here.
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-bg text-gray-100 antialiased">
+    <html lang="en" className="dark">
+      <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         {children}
       </body>
     </html>

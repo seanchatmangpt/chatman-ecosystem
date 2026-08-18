@@ -1,0 +1,24 @@
+# The real ConfigMap backing the Feature Flags module (AWS AppConfig /
+# LaunchDarkly / GCP Feature Flags equivalent -- app/app/feature-flags,
+# app/lib/k8s.ts's getConfigMap/createOrUpdateConfigMap). Declared here for
+# a reproducible initial state (one seed flag, `verbose-status: "false"`);
+# the console UI edits `data` in place afterward via a real JSON merge
+# patch, so re-applying this file is idempotent (`kubectl apply` reports
+# `configured`/`unchanged`, never clobbers a flag the UI has since added --
+# a merge patch never removes keys re-applying a full manifest's `data`
+# block doesn't mention... except this IS a full-object apply via
+# server-side apply/kubectl apply, which DOES replace `data` wholesale on
+# re-apply. Documented here rather than silently true: do not `kubectl
+# apply -f k8s/feature-flags.yaml` after the UI has added flags beyond
+# `verbose-status`, or those additions will be reverted to this file's
+# seed state. Intended for first-time bootstrap only.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: platform-feature-flags
+  namespace: platform-console
+  labels:
+    app.kubernetes.io/part-of: platform-console
+    app.kubernetes.io/component: feature-flags
+data:
+  verbose-status: "false"

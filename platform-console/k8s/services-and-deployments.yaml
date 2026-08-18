@@ -86,6 +86,13 @@ spec:
           env:
             - name: PORT
               value: "8080"
+            # Feature Flags live-toggle proof (app.py's module docstring):
+            # explicit here per the task's ask, redundant with app.py's
+            # own defaults (see services/autofde-lab/Dockerfile).
+            - name: FEATURE_FLAGS_NAMESPACE
+              value: "platform-console"
+            - name: FEATURE_FLAGS_CONFIGMAP
+              value: "platform-feature-flags"
           resources:
             requests:
               cpu: "50m"
