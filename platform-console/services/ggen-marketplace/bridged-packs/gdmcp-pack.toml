@@ -1,0 +1,11 @@
+[pack]
+id = "gdmcp-pack"
+name = "gdmcp-pack"
+version = "0.2.0"
+description = """Generated Deterministic MCP protocol + Fortune-5 readiness pack for MCP 2026-07-28: one canonical RDF protocol graph projected into deterministic registries for all ten official MCP SDK languages, plus a repository-grounded Fortune-5 profile covering the 19-capability/57-obligation contract, identity, KMS, observability, resilience, supply chain, governance, evidence/replay, qualification, SLO/error-budget promotion gates, and zero ambient execution authority."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/gdmcp-pack"
+has_ontology_ttl = true

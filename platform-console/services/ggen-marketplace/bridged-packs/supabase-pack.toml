@@ -1,0 +1,42 @@
+[pack]
+id = "supabase-pack"
+name = "supabase-pack"
+version = "0.1.0"
+description = """Projects the standard Supabase client/config wiring for any Node.js project
+(Next.js, Nuxt, Expo, plain Node backend) from admitted RDF facts about a Supabase project,
+its client runtimes, its tables, and its auth providers.
+
+Grounded in real usage patterns mined from ~14 real local projects on this machine using
+@supabase/supabase-js 2.38-2.108 (Next.js apps, Nuxt apps, Expo/React Native apps, and plain
+Node backends). Two findings from that mining shaped the pack's default:
+
+1. The dominant real client pattern is a single-instance `createClient()` call in a small
+   singleton module (`lib/supabase.ts` or a dedicated `packages/supabase` module), NOT the
+   `@supabase/ssr` cookie-based dual client/server pattern -- `@supabase/ssr` showed up only
+   as a transitive lockfile entry in a few projects, never as real imported source, and
+   `@supabase/auth-helpers-nextjs` had zero real usage anywhere scanned. This pack therefore
+   defaults `sb:Client.package` to "@supabase/supabase-js" and generates a plain singleton
+   client; `@supabase/ssr` dual client/server generation is available opt-in per `sb:Client`
+   when `runtime` is set to "server" or "edge" alongside `package = "@supabase/ssr"`, for
+   projects that do want Next.js App Router SSR auth.
+
+2. Real environment variable names split by target: Node/backend projects overwhelmingly use
+   bare `SUPABASE_URL` / `SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY`; Expo/React Native
+   projects use the `EXPO_PUBLIC_` prefix required for Expo's public env var convention; a
+   smaller minority of Next.js projects use `NEXT_PUBLIC_`. This pack projects the env var
+   prefix from `sb:Client.runtime` and an explicit `sb:Project.envPrefix` fact rather than
+   assuming one framework's convention project-wide.
+
+Every real migration file sampled enables RLS with `ALTER TABLE ... ENABLE ROW LEVEL SECURITY`
+and defines policies keyed on `auth.uid()` or `auth.role() = 'service_role'` -- this pack's
+gate `030_rls_requires_policy.rq` mirrors that discipline: any `sb:Table` with `hasRLS = true`
+and zero declared `sb:Policy` is refused.
+
+Verification practice: run `ggen sync run --dry-run` twice; the second run must report zero
+pending writes."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/supabase-pack"
+has_ontology_ttl = true

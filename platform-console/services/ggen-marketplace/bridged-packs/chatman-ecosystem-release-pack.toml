@@ -1,0 +1,11 @@
+[pack]
+id = "chatman-ecosystem-release-pack"
+name = "chatman-ecosystem-release-pack"
+version = "0.1.0"
+description = """Reusable semantic law for dependency-closed, exact-SHA ecosystem releases: component identity, dependency closure, required-role coverage, standing bounds, zero ambient DO authority, and explicit external ref-observation evidence. Defines release composition law only; exact release-instance facts remain consumer-owned."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/chatman-ecosystem-release-pack"
+has_ontology_ttl = true

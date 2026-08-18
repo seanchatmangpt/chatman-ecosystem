@@ -1,0 +1,11 @@
+[pack]
+id = "fortune5-enterprise-architecture-pack"
+name = "fortune5-enterprise-architecture-pack"
+version = "0.1.0"
+description = """Semantic supply pack for role-conditioned planner leagues and Fortune-5 enterprise architecture planning. It defines architecture principles, viewpoints, governance gates, planner roles, decision rights, evidence/receipt concepts, and an enterprise crown without granting runtime authority. Admission is explicitly profile/namespace scoped so composition with foreign SKOS/PROV/ODRL/DQV subjects remains lawful. AutoFDE consumes the semantics as planning constraints; ggen projects admitted graph state; GymAct/BRCE remain the bounded consequence boundary."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/fortune5-enterprise-architecture-pack"
+has_ontology_ttl = true

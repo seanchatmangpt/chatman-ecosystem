@@ -1,0 +1,11 @@
+[pack]
+id = "knowing-christ-formation-pack"
+name = "knowing-christ-formation-pack"
+version = "0.1.0"
+description = """Deterministic Scripture-reference formation pack for a daily 12-step Knowing Christ process spanning sowing, wheat/tares, thorns/pruning, daily dying and the crown of thorns, prayer, providence, practice, and relationship over recognition. Cross-cutting principles distinguish solitude from isolation and observed results from spiritual standing or inferred belief/unbelief. The pack makes know_christ the explicit goal while refusing conversion scoring, spiritual leaderboards, recognition-as-goal, prosperity formulas, AI revelation claims, pastoral authority, and raw private confession storage. It carries references and bounded practices rather than licensed Bible translation text; consumers resolve text under their own translation policy. SELECT/CONSTRUCT only; no ambient DO authority."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/knowing-christ-formation-pack"
+has_ontology_ttl = true

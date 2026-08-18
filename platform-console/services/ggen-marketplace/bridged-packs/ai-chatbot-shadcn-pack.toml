@@ -1,0 +1,11 @@
+[pack]
+id = "ai-chatbot-shadcn-pack"
+name = "ai-chatbot-shadcn-pack"
+version = "0.1.0"
+description = """Semantic-profile pack (no templates) admitting real evidence scanned from the local Next.js project /Users/sac/ai-chatbot. Framework: Next.js 16 / React 19, TypeScript, Tailwind CSS 4. shadcn/ui usage confirmed real, not merely a listed dependency: components.json is present (style=new-york, baseColor=neutral, cssVariables=true), 18 shadcn/ui primitive files exist on disk under components/ui/ (alert.tsx, avatar.tsx, badge.tsx, button.tsx, card.tsx, carousel.tsx, collapsible.tsx, command.tsx, dialog.tsx, dropdown-menu.tsx, hover-card.tsx, input-group.tsx, input.tsx, progress.tsx, scroll-area.tsx, select.tsx, textarea.tsx, tooltip.tsx), the cn() utility is called in 46 source files, class-variance-authority (cva) is used in 5 files (input-group.tsx, alert.tsx, badge.tsx, button.tsx, message.tsx), and @radix-ui/* primitives are imported in 13 files. deck.gl is absent: no deck.gl/@deck.gl packages in package.json and no DeckGL/ScatterplotLayer/layer-class references found anywhere in source."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/ai-chatbot-shadcn-pack"
+has_ontology_ttl = true

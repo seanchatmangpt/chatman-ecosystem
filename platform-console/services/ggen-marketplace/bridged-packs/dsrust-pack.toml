@@ -1,0 +1,38 @@
+[pack]
+id = "dsrust-pack"
+name = "dsrust-pack"
+version = "0.2.0"
+description = """Universal DsRust generation vocabulary grounded in seanchatmangpt/dsrust at exact source commit
+f24adde08c1d8850e4d7079d019643bb40f905cb (crate 0.1.0-alpha.2). This is the Rust-native
+counterpart to dspy-pack: consumers declare signatures, modules, agent tools, execution policies,
+and optimizers as RDF; ggen projects them into Rust construction code without granting generated
+code ambient execution authority.
+
+Admitted Module implementors at that commit are Predict, ChainOfThought, ReAct, ReActV2,
+MultiChainComparison, BestOfN, and Refine. Parallel is also fully supported, but source-grounded as
+an ExecutionPolicy because dsrust::Parallel does not implement dsrust::Module; it constructs a
+bounded helper whose run() consumes consumer-supplied (&dyn Module, Example) work. Admitted
+optimizer kinds are exactly LabeledFewShot, BootstrapFewShot, COPRO, MIPROv2, and GEPA. The gates
+fail closed for DSPy constructs not exported by DsRust at the admitted source identity (including
+ProgramOfThought, CodeAct, RLM, retrieval/KNN, Ensemble, and KNNFewShot) rather than manufacturing
+fictional Rust APIs.
+
+Arbitrary tool bodies, reward bodies, metric bodies, trainset contents, Parallel work items, and
+provider credentials are consumer-owned authority. ggen therefore emits explicit panic/error seams
+for executable consumer bodies and construction-only helpers for execution policies. Generated
+construction can be compiled by a consumer, but marketplace qualification does not actuate a model,
+tool, optimizer, or Parallel workload.
+
+Version 0.2 adds an optional Fortune-5 enterprise binding plane. It reuses the marketplace's existing
+fortune5-architecture vocabulary by reference, keeps enterprise governance separate from portable
+DSPy semantics, validates source/authority/promotion/rollback/receipt boundaries when a binding is
+declared, and generates an architecture control matrix for review boards and production onboarding.
+Runtime identity, secrets, network, observability, SLO/DR, model data residency, and deployment
+controls remain owned by the consuming application and its enterprise architecture program.
+"""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/dsrust-pack"
+has_ontology_ttl = true

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T22:36:12.116Z",
+  "generated_at": "2026-08-18T22:53:52.445Z",
   "source": "scripts/snapshot-data.mjs (real kubectl + real evidence bundle read at build time)",
   "kube_context": "kind-platform-eng-colima",
   "cluster": {
@@ -38,7 +38,7 @@
   },
   "pods": {
     "status": "live",
-    "total": 42,
+    "total": 45,
     "by_namespace": {
       "autofde-lab": {
         "total": 2,
@@ -46,6 +46,14 @@
         "pending": 0,
         "failed": 0,
         "succeeded": 0,
+        "other": 0
+      },
+      "castle": {
+        "total": 2,
+        "running": 0,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 2,
         "other": 0
       },
       "flux-system": {
@@ -81,8 +89,8 @@
         "other": 0
       },
       "istio-system": {
-        "total": 3,
-        "running": 3,
+        "total": 4,
+        "running": 4,
         "pending": 0,
         "failed": 0,
         "succeeded": 0,
@@ -146,7 +154,7 @@
     "gap_count": 0,
     "digest": {
       "algorithm": "blake3",
-      "value": "89c94ada0ea6673c1feeead97eacf4d30a4b9ea9355d52c0bebb7bc1d7e17857"
+      "value": "70cf17970ced9a470e7bbea26f1581075313042c2f8f66cadcfec34e0cc840ce"
     },
     "bundle_generated_at": "2026-08-18T21:45:00Z"
   }

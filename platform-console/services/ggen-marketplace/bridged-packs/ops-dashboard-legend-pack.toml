@@ -1,0 +1,11 @@
+[pack]
+id = "ops-dashboard-legend-pack"
+name = "ops-dashboard-legend-pack"
+version = "0.1.0"
+description = """Persistent Card-based legend mapping every color/size encoding to its real meaning (with actual numeric min-max for size), plus a shadcn Tabs toggle between the deck.gl spatial view and a shadcn Table fallback view of the same entity data. Also ships the top-level page.tsx composing every ops-dashboard pack (layout, canvas, panel, palette, states, theme, live data) with zero hand edits required."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/ops-dashboard-legend-pack"
+has_ontology_ttl = true

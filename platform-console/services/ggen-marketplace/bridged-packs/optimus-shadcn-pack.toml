@@ -1,0 +1,11 @@
+[pack]
+id = "optimus-shadcn-pack"
+name = "optimus-shadcn-pack"
+version = "0.1.0"
+description = """Semantic-profile pack admitting scanned facts about the local Next.js project at /Users/sac/optimus (package name optimus-prime-platform, pnpm-managed, components.json style=new-york). shadcn/ui usage is real and confirmed by file-content evidence, not just a listed dependency: 19 primitive files present under src/components/ui/ (button.tsx, card.tsx, dialog.tsx, dropdown-menu.tsx, avatar.tsx, badge.tsx, carousel.tsx, chart.tsx, collapsible.tsx, command.tsx, hover-card.tsx, input.tsx, input-group.tsx, progress.tsx, scroll-area.tsx, select.tsx, status-badge.tsx, optimus-button.tsx, tabs.tsx, textarea.tsx, tooltip.tsx), the cn() utility imported from @/lib/utils in 58 source files, class-variance-authority (cva) used in 6 files, and @radix-ui/* primitives imported in 16 files. No deck.gl usage was found anywhere in package.json or in src (no deck.gl/@deck.gl/* dependency, no DeckGL/ScatterplotLayer/GeoJsonLayer/HexagonLayer/ArcLayer references), so this pack records shadcn evidence only and states plainly that deck.gl is absent from this project."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/optimus-shadcn-pack"
+has_ontology_ttl = true

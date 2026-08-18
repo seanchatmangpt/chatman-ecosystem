@@ -1,0 +1,33 @@
+[pack]
+id = "clap-noun-verb-zeroconfig-pack"
+name = "clap-noun-verb-zeroconfig-pack"
+version = "0.1.0"
+description = """Zero-config starter for the clap-noun-verb zero-code CLI compiler. Composes
+the six real compiler packs (clap-noun-verb-schema-pack, -crate-pack,
+-routing-pack, -behavior-pack, -boundary-pack, -verification-pack) plus a
+small, complete, working ontology.ttl (two nouns, four commands, four
+distinct behavior kinds: static JSON, echo, expression, explicit refusal)
+behind its own project-profile ggen.toml, so `ggen sync run` inside this
+directory produces a compiling, passing CLI crate immediately -- no
+`[packs]` wiring and no ontology authored by hand to get started.
+
+This is a standalone starter template, not a composable ingredient: like
+clap-noun-verb-specimen-pack, its ontology.ttl declares a concrete
+cnv:Cli individual, so composing it into another project's [packs] would
+violate clap-noun-verb-schema-pack's exactly-one-CLI gate (060). To build
+your own CLI, copy this directory (or its ontology.ttl as a starting
+point) into a new project rather than referencing this pack as a
+dependency.
+
+Verified 2026-08-10 with the real ggen 26.8.6 binary: `ggen sync run`
+inside this directory writes a complete Cargo.toml/src/*.rs/tests crate,
+`cargo build` succeeds, `cargo test` passes every generated route,
+argument-validation, refusal, and receipt test with zero mocks (real
+compiled binary, real filesystem boundary).
+"""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/clap-noun-verb-zeroconfig-pack"
+has_ontology_ttl = true

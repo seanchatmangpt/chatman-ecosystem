@@ -1,0 +1,11 @@
+[pack]
+id = "enterprise-architecture-connection-pack"
+name = "enterprise-architecture-connection-pack"
+version = "0.1.0"
+description = """Public-semantic, fail-closed transport contract connecting ggen-legacy reconstitution, ggen-create generalization, marketplace catalog admission, ggen manufacture, and GymAct bounded exercise without source-tree coupling or ambient DO authority."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/enterprise-architecture-connection-pack"
+has_ontology_ttl = true

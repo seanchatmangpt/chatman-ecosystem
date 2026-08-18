@@ -1,0 +1,11 @@
+[pack]
+id = "neako-web-deckgl-pack"
+name = "neako-web-deckgl-pack"
+version = "0.1.0"
+description = """Semantic profile of the local project at /Users/sac/seth/neako-web (package name "nuxt-ui-template-dashboard"), a Nuxt 3 / Vue application managed with pnpm. deck.gl usage is real, not merely a listed dependency: app/components/verse/views/GlobeView.vue imports Deck from @deck.gl/core and ScatterplotLayer, TextLayer, GeoJsonLayer from @deck.gl/layers, and instantiates a Deck instance alongside GeoJsonLayer and ScatterplotLayer objects for a globe visualization. The project does not use shadcn/ui or React (no components.json, no radix-ui/class-variance-authority deps, no components/ui shadcn primitives); its UI kit is @nuxt/ui instead."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/neako-web-deckgl-pack"
+has_ontology_ttl = true

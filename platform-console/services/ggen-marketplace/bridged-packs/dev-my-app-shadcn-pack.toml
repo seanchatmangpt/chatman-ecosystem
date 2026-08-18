@@ -1,0 +1,11 @@
+[pack]
+id = "dev-my-app-shadcn-pack"
+name = "dev-my-app-shadcn-pack"
+version = "0.1.0"
+description = """Semantic profile of the local React project at /Users/sac/dev/my-app, a Vite + TypeScript + React 18 app with a shadcn-ui component library configured via components.json (style: new-york, baseColor: zinc, cssVariables: true). 45 shadcn primitive files are present on disk under src/components/ui/ (e.g. button.tsx, card.tsx, dialog.tsx, dropdown-menu.tsx, form.tsx, select.tsx, sheet.tsx, table.tsx, tabs.tsx, toast.tsx), the cn() class-merge helper is defined in src/lib/utils.ts using clsx and tailwind-merge, and class-variance-authority plus numerous @radix-ui/react-* packages are declared dependencies backing those primitives. Real (not merely declared) usage was confirmed: src/App.tsx imports and renders the shadcn Button component from @/components/ui/button, and src/hooks/use-toast.ts consumes @/components/ui/toast. No deck.gl or @deck.gl/* packages are present in package.json, and no deck.gl-related identifiers (DeckGL, ScatterplotLayer, GeoJsonLayer, HexagonLayer, ArcLayer, or generic Layer/viewport code) were found anywhere in src/, so deck.gl usage is absent, not merely undetected."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/dev-my-app-shadcn-pack"
+has_ontology_ttl = true

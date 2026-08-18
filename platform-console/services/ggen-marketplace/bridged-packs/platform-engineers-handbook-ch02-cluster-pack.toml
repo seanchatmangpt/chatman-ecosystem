@@ -1,0 +1,16 @@
+[pack]
+id = "platform-engineers-handbook-ch02-cluster-pack"
+name = "platform-engineers-handbook-ch02-cluster-pack"
+version = "0.1.0"
+description = """Real, parameterized generator for "The Platform Engineer's Handbook" Chapter 2's cluster-foundation piece (Kind cluster + Istio mesh security profile + optional Flux bootstrap), generated from packs/platform-engineers-handbook-ch02-cluster-pack/ontology.ttl -- NOT a ggen-create capture. Distinct from and does not modify packs/platform-engineers-handbook (verified this session: that pack's ontology.ttl is the generic ggen-create case-variant scaffold plus a few hand-added domain triples, and its ggen-create-package.json has almost no templates with real content_replacements -- i.e. it captures the book's existing static files rather than composing them from parameterized facts).
+
+Scope: kind-config.yaml (cluster name, node image, ingress port mappings), an Istio install script (profile + mTLS PeerAuthentication), and a Flux bootstrap script/config (conditionally rendered on pech2:fluxBootstrapped) -- the three parameterized facts named in the task. Full Ch02 (Pulumi network/namespace provisioning, OPA/Gatekeeper, the full Istio traffic-management resource set) is out of scope for this pass; see ontology.ttl's SCOPE FENCE comment for the itemized list and why.
+
+Templates render once per pech2:PlatformCluster individual (Tera per-row rendering keyed on pech2:clusterName), proven this session with two individuals in the graph (pech2:platformDevCluster, pech2:platformEngColimaCluster) rendering to their own output/<cluster-name>/ directories from the same template set with no naming collision -- the concrete mechanism this task asks the pack to demonstrate against the Ch05-class naming-drift bug.
+"""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/platform-engineers-handbook-ch02-cluster-pack"
+has_ontology_ttl = true

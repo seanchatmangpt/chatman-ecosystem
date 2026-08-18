@@ -1,0 +1,38 @@
+[pack]
+id = "framework-lsp"
+name = "Framework LSP Generator"
+version = "26.6.8"
+description = "Generates a fully-featured, auto-lsp powered Language Server Protocol implementation for specific Rust or TypeScript frameworks."
+category = "infrastructure"
+author = "ggen"
+repository = "https://github.com/seanchatmangpt/tower-lsp-max"
+license = "MIT"
+production_ready = true
+
+packages = [
+    "tower-lsp-max",
+    "wasm4pm-compat",
+    "clap-noun-verb",
+]
+
+[[pack.templates]]
+name = "lsp-server-scaffold"
+path = "templates/framework-lsp/scaffold.rs.tera"
+description = "Generates the main entry point and clap-noun-verb CLI for the Language Server"
+variables = ["framework_name", "language_grammar", "file_extensions"]
+
+[[pack.templates]]
+name = "lsp-semantics"
+path = "templates/framework-lsp/semantics.rs.tera"
+description = "Generates the semantic dispatch rules for framework-specific hallucination detection and diagnostics"
+variables = ["framework_name", "semantic_rules", "forbidden_imports"]
+
+[[pack.templates]]
+name = "lsp-ast-codegen"
+path = "templates/framework-lsp/build.rs.tera"
+description = "Generates the build script to run auto-lsp-codegen on the target tree-sitter grammar"
+variables = ["language_grammar"]
+
+[pack.metadata]
+tags = ["lsp", "language-server", "compiler", "auto-lsp", "tower-lsp", "rust", "typescript"]
+keywords = ["lsp", "tower", "auto-lsp", "tree-sitter", "clap-noun-verb"]

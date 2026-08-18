@@ -1,0 +1,11 @@
+[pack]
+id = "observatory-ui-deckgl-pack"
+name = "observatory-ui-deckgl-pack"
+version = "0.1.0"
+description = """Semantic profile of the local React project at /Users/sac/bcinr/observatory-ui, a Vite + React 19 + TypeScript scaffold (npm/yarn-style package.json, no components.json). The project's package.json lists deck.gl ^9.3.7, @deck.gl/react, @deck.gl/layers, mapbox-gl, and react-map-gl as dependencies, but a source-content scan of src/ (App.tsx, App.css, data.ts, main.tsx, index.css) found zero deck.gl usage: no DeckGL component, no Layer subclass instantiation (ScatterplotLayer, GeoJsonLayer, HexagonLayer, ArcLayer, etc.), and no viewport/view-state code anywhere in .tsx/.ts files. src/App.tsx is the unmodified default Vite+React starter page (counter button, Vite/React links). src/data.ts defines a CMCAObject mock-data generator with 3D `position` fields, which is consistent with data intended for a future deck.gl visualization but is not itself deck.gl usage. No shadcn/ui indicators were found either: no components.json, no components/ui directory, no class-variance-authority or radix-ui imports, and no cn() helper in source. This pack records deck.gl and shadcn/ui as listed-but-unused dependencies, not confirmed usage."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/observatory-ui-deckgl-pack"
+has_ontology_ttl = true

@@ -1,0 +1,11 @@
+[pack]
+id = "phage-wars-3-react-pack"
+name = "phage-wars-3-react-pack"
+version = "0.1.0"
+description = """Semantic + template pack admitting real evidence extracted from ~/Downloads/phage wars 3-handoff.zip (extracted to /tmp/dl-extract/phage-wars-3/phage-wars-3/project). Framework: standalone/global-script React (React global + UMD-style IIFE modules, no npm package.json or build tooling present in the drop) rendering a three.js + deck.gl game canvas, paired with a mock Supabase real-time hooks layer. Concrete evidence found: PhageWars.jsx (1081 lines) is a self-contained UMD module exporting PhageEngine/PhageProvider/usePhage/Stage/TitleScreen/ChampionSelect/Hud/GameOver and documents its own requirements as window.THREE and window.deck (deck.gl 8.x UMD) with the literal string "deck.gl" appearing 5 times; PhageOnlineBundle.jsx (2531 lines) also references deck.gl 5 times and pulls in supabase; supabase-react.jsx (177 lines) is a React hooks abstraction (useAuth, useProfile, useQuery, useRealtimeQuery, useRpc, useEdgeFunction, usePresence, useBroadcast, useStorage) built over window.SupabaseMock's createClient, explicitly documented as "Drop-in shaped like community supabase-react helpers — swap the underlying createClient import for the real SDK"; supabase-mock.js (357 lines) and supabase-config.js (169 lines) supply the mock client and seed/RPC/function config it depends on; phage-backend.js (725 lines) and phage-ladder-screen.js (214 lines) are additional React-using modules. No package.json, shadcn/ui, radix-ui, or class-variance-authority (cva) usage was found anywhere in the source drop."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/phage-wars-3-react-pack"
+has_ontology_ttl = true

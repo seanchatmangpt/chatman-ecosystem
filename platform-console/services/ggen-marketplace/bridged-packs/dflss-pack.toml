@@ -1,0 +1,11 @@
+[pack]
+id = "dflss-pack"
+name = "dflss-pack"
+version = "0.2.0"
+description = """Design for Lean Six Sigma (DMADV) domain ontology: project, closed DMADV phase scheme, design concept, DFMEA risk, DOE factor/response, and control plan. Composes CTQ admission from the requirements-andon pack (req:CandidateCtq/AdmittedCtq) and provenance from PROV-O rather than redefining either. Consumer graphs supply project facts; templates render a project charter, a DFMEA worksheet, and a control plan document set, plus a Python CTQ tracker module and a Rust DOE factor/response module generated from the same graph."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/dflss-pack"
+has_ontology_ttl = true

@@ -1,0 +1,11 @@
+[pack]
+id = "github-cloud-operating-doctrine-pack"
+name = "github-cloud-operating-doctrine-pack"
+version = "1.0.0"
+description = """Ontology-first GitHub cloud operating doctrine for ChatGPT cloud sessions. Manufactures connector-first transport precedence, exact-head CI law, semantic skill routing, authority separation, cross-private dependency escalation, mutation receipts, and a BLOCKED iff no lawful authorized route remains decision rule. Local git/gh/network failures are modeled as failed routes rather than crown blockers."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/github-cloud-operating-doctrine-pack"
+has_ontology_ttl = true

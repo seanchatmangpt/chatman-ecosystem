@@ -1,0 +1,11 @@
+[pack]
+id = "trialbase-dashboard-shadcn-pack"
+name = "trialbase-dashboard-shadcn-pack"
+version = "0.1.0"
+description = """Semantic profile and working template pack admitting real evidence extracted from ~/Downloads/trialbase-dashboard (1).zip (extracted to /tmp/dl-extract/trialbase-dashboard). Framework: Next.js 15.2.4 / React 19, TypeScript, Tailwind CSS. This is a legal-case-management dashboard branded "TrialBase" (title in app/layout.tsx, header text in components/header.tsx, mock user emails at trialbase.com in lib/mock-users.ts). shadcn/ui usage confirmed real: components.json is present (style=default, baseColor=neutral, cssVariables=true), 49 shadcn/ui primitive files exist on disk under components/ui/, the cn() class-merge helper (lib/utils.ts) is called in 46 source files, class-variance-authority (cva) is used in 9 files, and @radix-ui/* primitives are imported in 32 files. deck.gl is absent: no deck.gl/@deck.gl packages in package.json and no DeckGL/layer-class references found in source."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/trialbase-dashboard-shadcn-pack"
+has_ontology_ttl = true

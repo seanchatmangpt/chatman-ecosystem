@@ -1,0 +1,11 @@
+[pack]
+id = "mmdio-pack"
+name = "mmdio-pack"
+version = "0.0.4"
+description = """v0.0.4: reverted v0.0.3's [semantic_crown] TOML table -- ggen's pack.toml loader deny_unknown_fields-rejects any table beyond [pack] (confirmed empirically: `ggen sync run` refuses with [FM-PACK-003] 'unknown field `semantic_crown`, expected `pack`'; no marketplace pack ships a real second table -- mermaid-pack/cyberpunk-tv-platform/chatman-ecosystem-v26-9-1-release-gate's `authority`/`profile` mentions are prose inside `description`, not a table). v0.0.3 had copied that table verbatim from ~/ggen's monorepo copy of this pack without qualifying it first; the source's own pack.toml is not validated against this marketplace's strict schema, so the table's presence there does not mean it is schema-valid here. Folding the same provenance facts into this description instead, since dropping them silently would re-open the exact gap v0.0.3 tried to close: this pack's crowned profile mmdio.flowchart.rectangle-solid/1 (BOUNDED_FLOWCHART_SEMANTIC_ROUNDTRIP_AND_MERMAID_RENDER_ONLY claim ceiling) is exact-source-verified against seanchatmangpt/mmdio@360c575becf941743131e51e8cb06e8b6f0eeef9, src/mmdio/flowchart_crown.py, git_blob d114944c95392adf14a22fb2bdfcd26651dc39a0 -- the same commit/blob/profile identifiers semantic-crown.ttl already carries as RDF (mer:profileIdentity et al.), which remains the authoritative, schema-valid home for this provenance; this description entry is a citable index into it, not a second source of truth. v0.0.2: Mermaid Python support inventory plus exact-source semantic-crown provenance. Grammar presence and pythonSupport do not imply semantic equivalence; only explicitly crowned profiles carry executable roundtrip standing."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/mmdio-pack"
+has_ontology_ttl = true

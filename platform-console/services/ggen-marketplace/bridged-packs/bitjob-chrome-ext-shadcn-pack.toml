@@ -1,0 +1,11 @@
+[pack]
+id = "bitjob-chrome-ext-shadcn-pack"
+name = "bitjob-chrome-ext-shadcn-pack"
+version = "0.1.0"
+description = """Semantic-profile pack (manifest + RDF, no templates) admitting scanned facts about the Vue 3 Chrome-extension project at /Users/sac/cns/integrations/bitjob-chrome-ext (package.json name 'bitjob-chrome-ext', framework vue@^3.5.18 + vite@^7.0.6, built with @crxjs/vite-plugin). The project is configured for shadcn-vue (components.json present: style 'new-york', baseColor 'stone', ui alias '@/components/ui') and lists shadcn-adjacent dependencies class-variance-authority@^0.7.1, clsx@^2.1.1, and tailwind-merge@^3.3.1, plus lucide-vue-next@^0.527.0 for icons. However, real usage in src is thin to absent: there is no components/ui directory anywhere in the repo, no radix-vue or reka-ui imports, and no class-variance-authority/cva() calls in any source file. The only shadcn-style artifact actually present on disk is src/lib/utils.ts, which defines a cn() helper (clsx + twMerge) per the shadcn convention, but that cn() is not imported or called from any .vue component in src -- it is unused dead scaffolding. deck.gl was also checked (grep across the full repo excluding node_modules) and is entirely absent: no dependency, no DeckGL/*Layer usage, no viewport/view-state code. This pack records shadcn as configured-but-not-adopted and deck.gl as fully absent, per real grep evidence, not inferred from package listings alone."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/bitjob-chrome-ext-shadcn-pack"
+has_ontology_ttl = true

@@ -1,0 +1,11 @@
+[pack]
+id = "tcps-wasm-pack"
+name = "tcps-wasm-pack"
+version = "0.1.0"
+description = """tcps-wasm: WebAssembly capability boundary (版番号/正準選択 extern "C" exports) for 豊田コード生産方式, depends on tcps-core."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/tcps-wasm-pack"
+has_ontology_ttl = true

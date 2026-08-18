@@ -1,0 +1,11 @@
+[pack]
+id = "consequence-ir-pack"
+name = "consequence-ir-pack"
+version = "0.2.0"
+description = """Canonical semantic consequence IR and fail-closed admission laws for observation, manufacture, Knowledge Hooks, bounded authority, BRCE-only DO, independent verification, receipt algebra, replay, reversibility, standing, and cognition-to-determinism promotion. Grounded in PROV-O, SOSA, ODRL, DCTERMS, SKOS, and QUDT rather than protocol-specific schemas."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/consequence-ir-pack"
+has_ontology_ttl = true

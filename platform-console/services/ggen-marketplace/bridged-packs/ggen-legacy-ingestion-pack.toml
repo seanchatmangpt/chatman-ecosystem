@@ -1,0 +1,15 @@
+[pack]
+id = "ggen-legacy-ingestion-pack"
+name = "ggen-legacy-ingestion-pack"
+version = "26.8.14"
+description = """Fortune 5 ingestion compiler contract for ggen-legacy. A public-vocabulary profile
+binds a deterministic 690-obligation registry covering 511 formats, 62 live
+surfaces, 83 controls, 24 families, and 10 independently observable stages.
+Registry presence never implies decoder execution standing.
+"""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/ggen-legacy-ingestion-pack"
+has_ontology_ttl = true

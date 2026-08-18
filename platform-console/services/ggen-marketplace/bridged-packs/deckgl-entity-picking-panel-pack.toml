@@ -1,0 +1,11 @@
+[pack]
+id = "deckgl-entity-picking-panel-pack"
+name = "deckgl-entity-picking-panel-pack"
+version = "0.1.0"
+description = """Wires OpsDeckCanvas onHover/onClick picking (deck.gl info.object, no hand-maintained hit-test) to a shadcn Card-based side panel showing real entity detail fields. The missing canvas<->shell link between deckgl-orthographic-layers-pack and the dashboard shadcn shell."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/deckgl-entity-picking-panel-pack"
+has_ontology_ttl = true

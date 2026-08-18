@@ -1,0 +1,11 @@
+[pack]
+id = "wasm4pm-operator-applicability-pack"
+name = "wasm4pm-operator-applicability-pack"
+version = "0.1.0"
+description = """Canonical machine-readable applicability contracts for wasm4pm computational operators. Eligibility is derived from admitted problem-shape features; LMs may rank eligible operators but cannot manufacture eligibility."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/wasm4pm-operator-applicability-pack"
+has_ontology_ttl = true

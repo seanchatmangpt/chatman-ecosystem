@@ -1,0 +1,11 @@
+[pack]
+id = "speedrun-talent-network-pack"
+name = "speedrun-talent-network-pack"
+version = "26.7.30"
+description = """Ontology-first pack for the public Speedrun Talent Network REST API and remote MCP server, manufacturing typed BRCE transport intents with explicit consent-gated candidate actions."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/speedrun-talent-network-pack"
+has_ontology_ttl = true

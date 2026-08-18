@@ -1,0 +1,11 @@
+[pack]
+id = "jotp-benchmark-site-shadcn-pack"
+name = "jotp-benchmark-site-shadcn-pack"
+version = "0.1.0"
+description = """Semantic-profile pack admitting /Users/sac/jotp/benchmark-site, a Next.js 16 / React 19 app (package name jotp-benchmark-monitor), into the marketplace. shadcn/ui usage is real and confirmed on disk: a components.json (style base-nova, baseColor neutral, ui alias @/components/ui) configures the shadcn registry, lib/utils.ts defines the canonical cn() helper via clsx + tailwind-merge, class-variance-authority (cva) is used in components/ui/button.tsx and components/ui/badge.tsx, and 19 shadcn primitive files exist under components/ui/ (accordion, badge, benchmark-card, button, card, chart, dialog, dropdown-menu, input, link, metric-display, popover, scroll-area, select, separator, status-badge, switch, tabs, textarea, tooltip), consumed via @radix-ui imports across 18+ app/ pages and components/ files. deck.gl was checked for and is absent: no deck.gl or @deck.gl/* dependency in package.json and no DeckGL/Layer/ScatterplotLayer/GeoJsonLayer/HexagonLayer/ArcLayer references anywhere in source."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/jotp-benchmark-site-shadcn-pack"
+has_ontology_ttl = true

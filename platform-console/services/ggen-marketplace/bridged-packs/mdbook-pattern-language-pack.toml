@@ -1,0 +1,11 @@
+[pack]
+id = "mdbook-pattern-language-pack"
+name = "mdbook-pattern-language-pack"
+version = "0.1.0"
+description = """Ontology-first mdBook pattern language: models book identity and ordered navigation as RDF, then deterministically projects book.toml and SUMMARY.md with ggen. Ships a deterministic qualification fixture; ggen-marketplace is the reference self-hosting consumer."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/mdbook-pattern-language-pack"
+has_ontology_ttl = true

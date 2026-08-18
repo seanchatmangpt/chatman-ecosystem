@@ -1,0 +1,12 @@
+[pack]
+id = "ggen-self-pack"
+name = "ggen-self-pack"
+version = "0.1.0"
+description = """The canonical constructor for ggen packs. Its ontology describes pack structure itself (sp:Pack — name, description, template roles, required gate); `ggen pack new <name>` binds one sp:Pack individual from CLI args into input.ttl and runs this pack's own ggen.toml through the ordinary ggen-engine sync pipeline. Every future structural requirement on packs (e.g. "packs must declare ownership") is an edit to this pack's ontology.ttl/templates, not new Rust — and is inherited by every pack created afterward, never rediscovered by scanning existing packs. `ggen init self` materializes this pack into a project-local, hand-editable copy; that copy — not the one embedded in the ggen binary — is what `pack new` actually reads."""
+category = "infrastructure"
+license = "MIT OR Apache-2.0"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/ggen-self-pack"
+has_ontology_ttl = true

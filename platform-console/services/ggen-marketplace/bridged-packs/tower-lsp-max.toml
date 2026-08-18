@@ -1,0 +1,78 @@
+[pack]
+id = "tower-lsp-max"
+name = "Tower LSP Max"
+version = "26.6.8"
+description = "A maximal capability Language Server Protocol (LSP) framework built on Tower. Generates fully-featured semantic LSPs with incremental AST generation, auto-lsp-core bindings, and strict wasm4pm-compat validation."
+category = "infrastructure"
+author = "ggen"
+repository = "https://github.com/seanchatmangpt/tower-lsp-max"
+license = "MIT OR Apache-2.0"
+production_ready = true
+
+packages = [
+    "tower-lsp-max",
+    "wasm4pm-compat",
+    "clap-noun-verb",
+    "tokio",
+    "tree-sitter",
+    "dashmap",
+    "parking_lot"
+]
+
+[[pack.templates]]
+name = "lsp-backend"
+path = "templates/tower-lsp-max/backend.rs.tera"
+description = "The main Backend struct implementing tower_lsp_max::LanguageServer with an AutoLspAdapter bridge"
+variables = ["server_name", "language_id"]
+
+[[pack.templates]]
+name = "lsp-cli"
+path = "templates/tower-lsp-max/cli.rs.tera"
+description = "The clap-noun-verb entry point containing the start_server #[verb] macro"
+variables = ["server_name"]
+
+[[pack.templates]]
+name = "lsp-semantics"
+path = "templates/tower-lsp-max/semantics.rs.tera"
+description = "Semantic rule dispatch engine for AST querying and real-time diagnostics"
+variables = ["server_name", "rules"]
+
+[[pack.templates]]
+name = "lsp-build"
+path = "templates/tower-lsp-max/build.rs.tera"
+description = "Build script orchestrating auto-lsp-codegen for the target tree-sitter grammar"
+variables = ["tree_sitter_crate"]
+
+[pack.metadata]
+test_coverage = "100%"
+code_examples = 5
+documentation_files = 4
+rdf_ontology_size = "150+ lines"
+sparql_templates = 4
+strict_baseline_adherence = true
+
+tags = ["lsp", "language-server", "compiler", "auto-lsp", "tower-lsp", "ast", "tree-sitter"]
+keywords = ["lsp", "tower", "auto-lsp", "tree-sitter", "clap-noun-verb", "semantic", "incremental"]
+
+[pack.sparql_queries]
+list_semantics = """
+PREFIX ggen: <http://ggen.io/ontology#>
+PREFIX lsp: <http://ggen.io/ontology/lsp#>
+SELECT ?rule ?description ?severity
+WHERE {
+    ?rule a lsp:SemanticRule ;
+          lsp:ruleDescription ?description ;
+          lsp:ruleSeverity ?severity .
+}
+"""
+
+extract_capabilities = """
+PREFIX lsp: <http://ggen.io/ontology/lsp#>
+SELECT ?cap ?enabled
+WHERE {
+    ?server a lsp:Server ;
+            lsp:hasCapability ?capNode .
+    ?capNode lsp:capabilityName ?cap ;
+             lsp:isEnabled ?enabled .
+}
+"""

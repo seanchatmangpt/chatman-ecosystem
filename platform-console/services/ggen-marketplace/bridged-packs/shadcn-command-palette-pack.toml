@@ -1,0 +1,11 @@
+[pack]
+id = "shadcn-command-palette-pack"
+name = "shadcn-command-palette-pack"
+version = "0.1.0"
+description = """Cmd+K / Ctrl+K global command palette using shadcn Dialog + Input/Label, filtering an entity list by name/ID as-you-type with Enter to jump/select. Fills the confirmed-absent command-palette gap in the marketplace (no cmdk/kbar/Cmd+K pack existed prior to this)."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/shadcn-command-palette-pack"
+has_ontology_ttl = true

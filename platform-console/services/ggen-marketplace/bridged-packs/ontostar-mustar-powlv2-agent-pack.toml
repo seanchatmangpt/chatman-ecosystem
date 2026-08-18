@@ -1,0 +1,11 @@
+[pack]
+id = "ontostar-mustar-powlv2-agent-pack"
+name = "ontostar-mustar-powlv2-agent-pack"
+version = "26.7.30"
+description = """Ontology-first three-layer agent framework combining OntoStar observation admission, POWL v2 workflow planning, and MuStar motion-packet compilation over the Speedrun building block."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/ontostar-mustar-powlv2-agent-pack"
+has_ontology_ttl = true

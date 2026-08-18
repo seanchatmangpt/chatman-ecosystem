@@ -1,0 +1,11 @@
+[pack]
+id = "fortune5-testing-bblock-pack"
+name = "fortune5-testing-bblock-pack"
+version = "26.7.31"
+description = """Ontology-authoritative executable testing bblock with nine boundary-crossing suites, BLAKE3 evidence receipts, replay, and a machine-readable verifier report."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/fortune5-testing-bblock-pack"
+has_ontology_ttl = true

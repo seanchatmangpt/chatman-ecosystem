@@ -1,0 +1,11 @@
+[pack]
+id = "kgc-sidecar-dashboard-shadcn-pack"
+name = "kgc-sidecar-dashboard-shadcn-pack"
+version = "0.1.0"
+description = """Semantic profile of the local Next.js/React project at /Users/sac/kgc-sidecar/apps/dashboard (next ~15.2.4, react 19.0.0, npm/pnpm-style package.json, no lockfile scanned). shadcn/ui usage is real, not merely declared: components.json is present (style "new-york", baseColor "neutral", cssVariables true, aliases pointing components/ui/lib/hooks under @/), src/lib/utils.ts defines the canonical shadcn cn() helper via clsx + tailwind-merge, and four shadcn primitive files exist on disk under src/components/ui/ (button.tsx, card.tsx, input.tsx, scroll-area.tsx) built on class-variance-authority and @radix-ui/react-slot and @radix-ui/react-scroll-area. All four are actually imported and rendered in src/app/chat/page.tsx (Card, Input, ScrollArea, Button), confirming live usage rather than an unused dependency. deck.gl was checked and is absent: no deck.gl/@deck.gl/* dependency in package.json, and no DeckGL/layer-class (ScatterplotLayer, GeoJsonLayer, HexagonLayer, ArcLayer) or viewport/view-state references anywhere in src/ or specs/."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/kgc-sidecar-dashboard-shadcn-pack"
+has_ontology_ttl = true

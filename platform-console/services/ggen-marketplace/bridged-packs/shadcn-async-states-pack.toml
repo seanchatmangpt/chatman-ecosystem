@@ -1,0 +1,11 @@
+[pack]
+id = "shadcn-async-states-pack"
+name = "shadcn-async-states-pack"
+version = "0.1.0"
+description = """Content-shaped shadcn Skeleton placeholders (canvas/legend/panel/table-row shapes, never a bare spinner) plus Alert-based empty state (default variant) and error state (destructive variant with the real error message and a retry Button). Fills the confirmed-absent loading/empty/error-state gap in the marketplace."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/shadcn-async-states-pack"
+has_ontology_ttl = true

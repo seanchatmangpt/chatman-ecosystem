@@ -1,0 +1,11 @@
+[pack]
+id = "gh-enterprise-architecture-pack"
+name = "gh-enterprise-architecture-pack"
+version = "0.1.0"
+description = """Admitted GitHub Terraform corpus, reusable enterprise repository factory, read-only account census, authority-boundary gates, and replayable receipts. Composes above gh-terraform-pack without changing its institutional desired-state authority."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/gh-enterprise-architecture-pack"
+has_ontology_ttl = true

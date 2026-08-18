@@ -1,0 +1,11 @@
+[pack]
+id = "pcq-marketplace-pack"
+name = "pcq-marketplace-pack"
+version = "26.8.2"
+description = """Manufactures a real-time Next.js 16 + deck.gl capability marketplace with fixed-supply PCQ settlement, SSE streams, receipts, Chicago tests, and browser verification."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/pcq-marketplace-pack"
+has_ontology_ttl = true

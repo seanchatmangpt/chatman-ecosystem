@@ -1,0 +1,11 @@
+[pack]
+id = "remotion-y6f9kf-react-pack"
+name = "remotion-y6f9kf-react-pack"
+version = "0.1.0"
+description = """Pack admitting real evidence extracted from ~/Downloads/project-bolt-bolt-remotion-y6f9kf (2).zip (a bolt.new export), scanned at /tmp/dl-extract/remotion-y6f9kf/project. Framework: Remotion 4.0.79 programmatic-video project (package.json name "nitro-tutorials") built on React 18.2.0 and TypeScript, using @remotion/zod-types + zod for typed composition props, react-query for data fetching in a separate App.tsx demo shell, and @giphy/js-fetch-api + @giphy/react-components for GIF embeds. No shadcn/ui, radix-ui, class-variance-authority, or deck.gl usage was found anywhere in source. Concrete Remotion compositions registered in src/Root.tsx: NitroTasks, NitroJobs, AgentSwarm, AgentEcosystem (each with its own index.tsx/TitleScreen.tsx/CodeSection.tsx/GifSection.tsx/Subtitle.tsx/GitHubLink.tsx), plus the stock HelloWorld starter composition and a separate non-Remotion App.tsx (MarketplaceUI/SubscriptionUI/ComputeMarketUI/IntegrationsUI) demo shell."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/remotion-y6f9kf-react-pack"
+has_ontology_ttl = true

@@ -1,0 +1,13 @@
+[pack]
+id = "dry-run-publish-pack"
+name = "dry-run-publish-pack"
+version = "26.7.13"
+description = """v26.7.13 Dry-Run Publish Definition of Done, modeled as a 6-phase PDDL8 STRIPS domain (PUBLIC ontologies only: skos, prov, dcterms; blank nodes + skos:notation handles, no private namespace minted) and the Kestrel Toolkit release-candidate case-study fixtures (6 chained gate-phase PDDL Turtle fragments, cycle problem, case-study instance data, SHACL shapes) for the cng PDDL->POWL pipeline. Same pattern as packs/soc2-audit-pack (10 phases) and packs/togaf-adm-pack (10 phases), scaled to this release process's 6 blocking-gate categories: scope, generate, verify, manufacture, cleanroom, receipt. DRY-RUN-OVERCLAIM FENCE: this pack models the DoD's local verification and dry-run steps only — it never asserts, computes, or implies that a crate was actually uploaded to crates.io or that a release went live. No action anywhere in the domain has an effect atom named 'published', 'crates-io-uploaded', or 'release-complete'; the only terminal goal atom is 'dry-run-verified'. No external ontology is unioned — this pack's vocabulary is self-contained SKOS/PROV/DCMI, so no ggen.toml extra_ontologies entry is required.
+
+MARKETPLACE MATURITY NOTE (2026-08-10): imported into ggen-marketplace and composed with pack-maturity-pack in a real scratch consumer (real ggen 26.8.6, no mocks) -- l5p:cap03 (Deterministic regeneration) and l5p:cap04 (Fixed-point convergence) verified via a real two-pass `ggen sync run` byte comparison, and l5p:cap09 (Generated receipts) verified via a real `ggen receipt verify` (valid, signed, signature_valid). The other 9 L5-promotion capabilities (http://ggen.org/l5-promotion#) were not evaluated in this pass -- see pack-maturity-pack's own README for exactly what composing it does and does not close."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/dry-run-publish-pack"
+has_ontology_ttl = true

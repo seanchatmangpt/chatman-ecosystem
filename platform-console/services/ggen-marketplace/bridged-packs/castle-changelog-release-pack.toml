@@ -1,0 +1,11 @@
+[pack]
+id = "castle-changelog-release-pack"
+name = "castle-changelog-release-pack"
+version = "0.1.0"
+description = """Keep-a-Changelog CHANGELOG.md rendered by SPARQL over a closed rel:Release/rel:ChangeEntry vocabulary (public-ontology-first: dcterms for dates/descriptions, skos:Concept for the closed added/changed/fixed/security category set, reusing this marketplace's dry-run-publish-pack/dogfood-lifecycle-pack convention rather than minting a bespoke category enum), plus a minimal release.yml GitHub Actions job that tags a release when Cargo.toml's [package].version changes -- written to compose with github-actions-pack's gha: vocabulary in a consumer's own ggen.toml rather than re-minting workflow/job/step facts here. Ships zero rel:Release/rel:ChangeEntry individuals; the consumer (castle) authors its own per-release facts in its own repo. Closes castle's missing[4] gap: no CHANGELOG.md despite Cargo.toml at v26.8.16, an AGPL-3.0 crate with no visible release process."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/castle-changelog-release-pack"
+has_ontology_ttl = true

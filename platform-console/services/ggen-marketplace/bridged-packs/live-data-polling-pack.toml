@@ -1,0 +1,11 @@
+[pack]
+id = "live-data-polling-pack"
+name = "live-data-polling-pack"
+version = "0.1.0"
+description = """useLiveData hook: SWR-based polling (upgradeable to WebSocket) that updates entity/edge state only. Never re-invokes layout for unchanged entities so deterministic-layout-pack positions stay stable across live updates -- only size/color/arcs should change between polls."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/live-data-polling-pack"
+has_ontology_ttl = true

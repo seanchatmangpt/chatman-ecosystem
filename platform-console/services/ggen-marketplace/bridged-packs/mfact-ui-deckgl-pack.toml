@@ -1,0 +1,11 @@
+[pack]
+id = "mfact-ui-deckgl-pack"
+name = "mfact-ui-deckgl-pack"
+version = "0.1.0"
+description = """Semantic profile of the local React project at /Users/sac/mfact/web/mfact-ui, a Vite + React 19 (TypeScript/JSX) application. deck.gl usage is real, not merely a listed dependency: src/SemanticGraph.tsx imports DeckGL from '@deck.gl/react', OrthographicView from '@deck.gl/core', and four concrete layer classes from '@deck.gl/layers' -- PolygonLayer, PathLayer, PointCloudLayer, and ScatterplotLayer -- each instantiated and composed into a layers array driving a <DeckGL> component with an explicit viewState/initialViewState. A second file, src/wargames/AutonomicPlatform.jsx, only references deck.gl in comments describing a not-yet-ported globe renderer and contains no actual deck.gl import or layer instantiation, so it is recorded as a stubbed/absent-usage site, not real usage. No shadcn/ui evidence was found anywhere in the project: package.json has no radix-ui, class-variance-authority, or tailwind-merge dependencies, there is no components.json, and no components/ui directory or cn()/cva usage appears anywhere under src/."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/mfact-ui-deckgl-pack"
+has_ontology_ttl = true

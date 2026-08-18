@@ -1,0 +1,54 @@
+[pack]
+id = "pack-maturity-pack"
+name = "pack-maturity-pack"
+version = "0.1.0"
+description = """Generates the cross-cutting proof artifacts that any ggen pack's own
+consumer project can compose in to help close three of the twelve L5
+promotion capabilities (l5p:cap03..l5p:cap12, http://ggen.org/l5-promotion#,
+as defined in the ggen repository's own .specify/pack-l5-promotion.ttl):
+
+- l5p:cap03 (Deterministic regeneration) and l5p:cap04 (Fixed-point
+  convergence): a generated test that runs `ggen sync run` twice against
+  the real consumer, snapshots every output file's SHA-256 before and
+  after the second run, and asserts they are byte-identical -- a real
+  filesystem observation, not trusting ggen's own "written"/"skipped"
+  self-report (which is not itself a reliable idempotency signal: some
+  frontmatter modes report "written" on every run even when content is
+  unchanged, confirmed empirically against clap-noun-verb-zeroconfig-pack
+  before this pack was built).
+- l5p:cap09 (Generated receipts): a generated test that runs a real sync,
+  then `ggen receipt verify`, and asserts the chain is valid, signed, and
+  signature_valid.
+
+Deliberately scoped to exactly these three -- no per-pack domain ontology
+is required to compose this pack's tests (no `sparql:` extraction, plain
+static-content templates), which is what makes them generic across ANY
+consumer. This does NOT close l5p:cap01/02/05/06/07/08/10/11/12: those
+require domain-specific ontology facts (what the subsystem actually does,
+what a negative-witness mutation should look like, what provenance/release
+surface the target needs) that only the consuming pack's own author can
+supply -- a generic pack cannot manufacture domain semantics it doesn't
+have. Composing this pack is a floor, not a ceiling: it gets a consumer
+partway toward L4 on the maturity spine's "Regeneration lifecycle"
+dimension (docs/packs/PACK_MATURITY_MODEL.md in the ggen repository),
+never the whole bar by itself.
+
+Verified 2026-08-10 against a real composed consumer (real ggen 26.8.6
+binary, no mocks): both generated tests pass. A real negative-control
+experiment was also run -- hand-editing a generated `force: true` file
+between two real syncs -- and the mutation was silently overwritten by
+the second sync (self-healing regeneration, the correct/intended
+behavior for `force: true` templates), NOT flagged as a fixed-point
+violation. This is disclosed precisely rather than rounded up to "catches
+tampering": the regeneration test's real, verified purpose is catching
+genuine non-determinism in the generation pipeline itself (a stray
+timestamp, random ID, or unstable iteration order leaking into rendered
+output), not external hand-edits to `force: true` output -- those are
+expected to heal, by design, and this test correctly does not flag them.
+"""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/pack-maturity-pack"
+has_ontology_ttl = true

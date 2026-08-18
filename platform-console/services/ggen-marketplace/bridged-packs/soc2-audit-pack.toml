@@ -1,0 +1,13 @@
+[pack]
+id = "soc2-audit-pack"
+name = "soc2-audit-pack"
+version = "26.7.13"
+description = """SOC2 Type II audit ENGAGEMENT PROCESS case study (PUBLIC ontologies only: skos, prov, dcterms, org; blank nodes + skos:notation handles, no private namespace minted for AICPA TSC vocabulary since none exists publicly) and the Arclight Cloud Platform case-study fixtures (10 chained audit-phase PDDL Turtle fragments, cycle problem, case-study instance data, SHACL shapes) for the cng PDDL->POWL pipeline. Stage 2 (v26.7.13) rescaled the case study from the original Solace Cloud small-SaaS entity (3 TSC categories, 3 controls) to Arclight Cloud Platform, a fictional Fortune-5-scale shared-platform subsidiary (5 TSC categories, 16 controls, one sub-service-organization carve-out) per an explicit product directive that the testbed demonstrate knowledge-hook-driven actuation at Fortune-5 scale. COMPLIANCE-OVERCLAIM FENCE: this pack models the audit ENGAGEMENT PROCESS (evidence gathering, control design/operating-effectiveness evaluation, exception handling) — it never asserts, computes, or implies a compliance verdict or auditor opinion. No action anywhere in the domain has an effect atom named 'compliant' or 'opinion'; the only terminal goal atom is 'evidence-bundle-complete'. No external ontology is unioned — this pack's vocabulary is self-contained SKOS/PROV/DCMI, so no ggen.toml extra_ontologies entry is required.
+
+MARKETPLACE MATURITY NOTE (2026-08-10): imported into ggen-marketplace and composed with pack-maturity-pack in a real scratch consumer (real ggen 26.8.6, no mocks) -- l5p:cap03 (Deterministic regeneration) and l5p:cap04 (Fixed-point convergence) verified via a real two-pass `ggen sync run` byte comparison, and l5p:cap09 (Generated receipts) verified via a real `ggen receipt verify` (valid, signed, signature_valid). The other 9 L5-promotion capabilities (http://ggen.org/l5-promotion#) were not evaluated in this pass -- see pack-maturity-pack's own README for exactly what composing it does and does not close."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/soc2-audit-pack"
+has_ontology_ttl = true

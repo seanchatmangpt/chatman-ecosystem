@@ -1,0 +1,11 @@
+[pack]
+id = "dfcm-full-deployment-pack"
+name = "dfcm-full-deployment-pack"
+version = "26.8.14"
+description = """Deploys the complete Design for Combinatorial Maximalism control plane plus a 50-control Fortune 5 readiness closure: reversible option preservation, SELECT/CONSTRUCT/DO separation, BRCE-only actuation, typed refusal, receipt/replay, exact-subject standing, enterprise evidence freshness, Lean admission, and mfact certificate boundaries."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/dfcm-full-deployment-pack"
+has_ontology_ttl = false

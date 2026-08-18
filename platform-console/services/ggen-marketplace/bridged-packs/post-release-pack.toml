@@ -1,0 +1,13 @@
+[pack]
+id = "post-release-pack"
+name = "post-release-pack"
+version = "26.7.7"
+description = """Renders the release publication packet: FINAL_STATUS, publication/replay plans, GitHub-release and arXiv dist surfaces, crown research lane, and the kernel-admitted PostRelease witness. Post-release artifacts never mutate the core certified release they report (RECEIPT_RECURSION_REFUSED). ggen renders; Lean admits; mfact certifies.
+
+MARKETPLACE MATURITY NOTE (2026-08-10): imported into ggen-marketplace and composed with pack-maturity-pack in a real scratch consumer (real ggen 26.8.6, no mocks) -- l5p:cap03 (Deterministic regeneration) and l5p:cap04 (Fixed-point convergence) verified via a real two-pass `ggen sync run` byte comparison, and l5p:cap09 (Generated receipts) verified via a real `ggen receipt verify` (valid, signed, signature_valid). The other 9 L5-promotion capabilities (http://ggen.org/l5-promotion#) were not evaluated in this pass -- see pack-maturity-pack's own README for exactly what composing it does and does not close."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/post-release-pack"
+has_ontology_ttl = true

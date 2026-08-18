@@ -1,0 +1,11 @@
+[pack]
+id = "gh-actions-errc-pack"
+name = "gh-actions-errc-pack"
+version = "0.2.0"
+description = """Evidence-bounded Eliminate-Reduce-Raise-Create calculus for ggen GitHub Actions. Models ERRC as a typed RDF product partial order with explicit subject identity, evidence standing, Pareto deltas, protected invariants, operator-specific witnesses, falsifiers, authority/reversibility boundaries, proposal-only Create semantics, and a SHA-256 replay receipt. Native SPARQL gates fail closed on missing or contradictory proof obligations. The historical 2026-08-05 CI observations are preserved but formally bounded to PARTIAL_ALIVE because the original evidence did not capture an immutable ggen commit SHA."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/gh-actions-errc-pack"
+has_ontology_ttl = true

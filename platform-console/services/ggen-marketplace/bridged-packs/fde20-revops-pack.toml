@@ -1,0 +1,11 @@
+[pack]
+id = "fde20-revops-pack"
+name = "fde20-revops-pack"
+version = "0.2.0"
+description = """Manufactures the Fortune 5-ready deterministic $20/hr Forward Deployed Engineer RevOps operating system from RDF: enterprise authority, Challenger motion, readiness controls, service levels, deployment envelope, SELECT/CONSTRUCT/DO pipeline, and BRCE receipts. The offer is admitted only at USD 20/hour."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/fde20-revops-pack"
+has_ontology_ttl = true

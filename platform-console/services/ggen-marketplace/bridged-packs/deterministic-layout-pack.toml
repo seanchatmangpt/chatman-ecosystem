@@ -1,0 +1,11 @@
+[pack]
+id = "deterministic-layout-pack"
+name = "deterministic-layout-pack"
+version = "0.1.0"
+description = """Pure, deterministic entity-layout function for spatial dashboards: computeLayout(entities) -> Record<id, [x, y]>, sorted-grid placement with a stable FNV-1a hash fallback for non-grid seeding, zero Math.random()/Date.now(), memoized on the entity-ID list only. Ships with a Chicago-style unit test asserting pixel-identical repeat output."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/deterministic-layout-pack"
+has_ontology_ttl = true

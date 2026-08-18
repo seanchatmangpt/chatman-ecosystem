@@ -1,0 +1,12 @@
+[pack]
+id = "chatman-ecosystem-v26-9-1-release-gate"
+name = "chatman-ecosystem-v26-9-1-release-gate"
+version = "26.9.2"
+description = """Manufactures the bounded Chatman Ecosystem v26.9.1 release gate: exact-subject admission, SELECT/CONSTRUCT/DO separation, BRCE consequence receipts, OCEL correspondence, deterministic replay, and cross-repository release standing. v26.9.2 aligns this pack to chatman-ecosystem-release-pack's canonical er: standing/authority vocabulary and the real 9-role ecosystem.lock vocabulary: receipt-reference, capability-reference, process-evidence, planner, oracle, manufacturer, certifier, semantic-admission, and actuation-authority. release-manifest.example.toml names the corresponding repositories but deliberately carries REQUIRED_EXACT_SHA sentinels: exact release-instance identity remains consumer-owned and must be resolved from the authoritative hub at admission time. The separate 16-component release/v26.9.1/manifest.toml dependency-closure vocabulary is related but is not mirrored by this gate pack."""
+category = "marketplace"
+license = "MIT OR Apache-2.0"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/chatman-ecosystem-v26-9-1-release-gate"
+has_ontology_ttl = true

@@ -1,0 +1,11 @@
+[pack]
+id = "certification-assist-pack"
+name = "certification-assist-pack"
+version = "26.7.30"
+description = """Manufactures the bounded capability-acquisition cell shared by CertificationAssist and InterviewAssist: Systems while separating internal capability standing from external credential standing."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/certification-assist-pack"
+has_ontology_ttl = true

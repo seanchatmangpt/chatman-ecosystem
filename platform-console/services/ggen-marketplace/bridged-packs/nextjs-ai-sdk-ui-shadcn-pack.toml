@@ -1,0 +1,11 @@
+[pack]
+id = "nextjs-ai-sdk-ui-shadcn-pack"
+name = "nextjs-ai-sdk-ui-shadcn-pack"
+version = "0.1.0"
+description = """Semantic profile of the local Next.js 16 / React 19 project at /Users/sac/ggen/examples/nextjs-ai-sdk (pnpm-managed, AI SDK v7 chat app with Neon/Drizzle and better-auth). The project is shadcn-configured (components.json present, style=new-york, ui alias @/components/ui) but shadcn usage on disk is minimal and partial: exactly one shadcn-style primitive exists, components/ui/button.tsx, built with class-variance-authority (cva) and a cn() helper (lib/utils.ts, clsx + tailwind-merge) — the canonical shadcn composition pattern. However no radix-ui packages appear anywhere in package.json dependencies or devDependencies, so Button is a hand-rolled shadcn-shaped component rather than a Radix-backed shadcn primitive; no other components/ui/*.tsx files (no card.tsx, dialog.tsx, input.tsx, etc.) exist. cn()/cva usage is real and confirmed at five additional call sites under components/ai-elements/ (tool.tsx, confirmation.tsx, prompt-input.tsx, message.tsx, conversation.tsx), which consume Button/the cn() helper but are themselves bespoke, not shadcn-generated files. deck.gl was scanned for (deck.gl, DeckGL, ScatterplotLayer, GeoJsonLayer, HexagonLayer, ArcLayer, viewport/view-state) and found nowhere in package.json or any .tsx/.ts source file; deck.gl is entirely absent from this project, not merely unused."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/nextjs-ai-sdk-ui-shadcn-pack"
+has_ontology_ttl = true

@@ -1,0 +1,11 @@
+[pack]
+id = "kgc-4d-playground-shadcn-pack"
+name = "kgc-4d-playground-shadcn-pack"
+version = "0.1.0"
+description = """Semantic profile of /Users/sac/unrdf/packages/kgc-4d-playground, a Next.js 16 (React 19) playground app. shadcn/ui usage is real and confirmed on disk: a components.json (style "new-york", baseColor "slate", cssVariables true) configures the aliases @/components and @/lib/utils, and components/ui/ contains eight shadcn primitive files (alert.jsx, badge.jsx, button.jsx, card.jsx, input.jsx, select.jsx, separator.jsx, tabs.jsx) each importing the cn() helper from @/lib/utils; these primitives are consumed across 13 real call sites (app/page.jsx, app/use-cases/page.jsx, app/hooks/*/page.jsx, and components/use-cases/{FinancialDemo,ECommerceDemo,HealthcareDemo}.jsx). No class-variance-authority or @radix-ui packages are present in package.json or imported anywhere, so this is a hand-rolled shadcn-style variant rather than the canonical CVA/Radix stack. deck.gl is NOT used in this project: no deck.gl/@deck.gl packages appear in dependencies and no source file references DeckGL, ScatterplotLayer, GeoJsonLayer, HexagonLayer, ArcLayer, or any deck.gl viewport/view-state API; 3D/graph visualization is instead handled by react-force-graph-3d and node-graph layout via @xyflow/react."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/kgc-4d-playground-shadcn-pack"
+has_ontology_ttl = true

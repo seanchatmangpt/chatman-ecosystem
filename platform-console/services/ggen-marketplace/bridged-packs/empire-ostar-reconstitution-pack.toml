@@ -1,0 +1,11 @@
+[pack]
+id = "empire-ostar-reconstitution-pack"
+name = "empire-ostar-reconstitution-pack"
+version = "0.1.0"
+description = """Clean-room EMPIRE case-study pack that manufactures an authority-vacuum OSTAR observation study without selecting a canonical implementation or granting actuation authority."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/empire-ostar-reconstitution-pack"
+has_ontology_ttl = true

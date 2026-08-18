@@ -1,0 +1,11 @@
+[pack]
+id = "tcps-core-pack"
+name = "tcps-core-pack"
+version = "0.1.0"
+description = """Toyota Production System (TCPS) core ontology: 24-module RDF spec + SHACL shapes + Rust lib.rs template for the 豊田コード生産方式 no_std module set."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/tcps-core-pack"
+has_ontology_ttl = true

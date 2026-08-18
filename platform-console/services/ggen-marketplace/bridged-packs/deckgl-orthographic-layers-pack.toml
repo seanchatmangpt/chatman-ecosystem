@@ -1,0 +1,11 @@
+[pack]
+id = "deckgl-orthographic-layers-pack"
+name = "deckgl-orthographic-layers-pack"
+version = "0.1.0"
+description = """Reusable <OpsDeckCanvas> deck.gl component: OrthographicView with target/zoom computed from the real data bounding box, ScatterplotLayer (radius from a real metric, fillColor via a fixed documented status->RGBA lookup, pickable), ArcLayer (only real asserted edges), and TextLayer (offset labels, theme-driven color). Consumes computeLayout from deterministic-layout-pack rather than duplicating layout logic."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/deckgl-orthographic-layers-pack"
+has_ontology_ttl = true

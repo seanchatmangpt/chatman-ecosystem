@@ -1,0 +1,15 @@
+[pack]
+id = "chatman-engine-pack"
+name = "chatman-engine-pack"
+version = "26.7.10"
+description = """Chatman Engine acceptance surface: ontology-driven test harnesses, fixtures, and GWT docs with paired acceptance/falsification cases per typed Refusal
+
+MARKETPLACE MATURITY NOTE (2026-08-10): imported into ggen-marketplace and composed with pack-maturity-pack in a real scratch consumer (real ggen 26.8.6, no mocks) -- l5p:cap03 (Deterministic regeneration) and l5p:cap04 (Fixed-point convergence) verified via a real two-pass `ggen sync run` byte comparison, and l5p:cap09 (Generated receipts) verified via a real `ggen receipt verify` (valid, signed, signature_valid). The other 9 L5-promotion capabilities (http://ggen.org/l5-promotion#) were not evaluated in this pass -- see pack-maturity-pack's own README for exactly what composing it does and does not close.
+
+SCHEMA PATH FIX (2026-08-16): all 8 ceng:schemaPath values wired to a harness (Receipts/Routing/Triple8/Admission/Hooks/Agents/Replay/Static) pointed at crates/praxis-graphlaw/tests/chatman_engine_acceptance/schemas/*_fixture.schema.json in the real praxis repo, which no longer exists there -- the target repo renamed every file under that directory to *_scenario.schema.json (e.g. receipts_fixture.schema.json -> receipt_scenario.schema.json, admission_fixture.schema.json -> admission_table_scenario.schema.json). Confirmed each of the 8 renamed targets exists on disk in ~/praxis before committing. ceng:CommonEnvelopeSchema and ceng:SeedManifestSchema were left unchanged: neither common_envelope.schema.json nor seed_manifest.schema.json (nor any *_scenario.schema.json equivalent) exists anywhere in the praxis repo, and neither individual is referenced by ceng:usesFixtureSchema from any TestHarness or case -- they are orphaned vocabulary, not part of this rename, so no real replacement path could be verified."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/chatman-engine-pack"
+has_ontology_ttl = true

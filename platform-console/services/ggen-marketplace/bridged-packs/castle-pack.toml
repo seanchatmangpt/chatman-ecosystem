@@ -1,0 +1,11 @@
+[pack]
+id = "castle-pack"
+name = "castle-pack"
+version = "26.8.15"
+description = """Ontology-first source for CASTLE with exact-revision ggen RDF semantics, goal-derived vulnerability construction, planner-ensemble compilation, POWL v2 workflows, bounded GymAct testing, OCEL v2 evidence, BLAKE3 receipt contracts, and zero-day dependency graph mutation."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/castle-pack"
+has_ontology_ttl = true

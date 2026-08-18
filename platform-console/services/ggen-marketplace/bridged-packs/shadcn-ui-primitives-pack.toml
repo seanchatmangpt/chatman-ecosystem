@@ -1,0 +1,11 @@
+[pack]
+id = "shadcn-ui-primitives-pack"
+name = "shadcn-ui-primitives-pack"
+version = "0.1.0"
+description = """Real shadcn/ui primitive components confirmed absent from every other pack in this marketplace (verified by grepping every *-shadcn-pack's templates/ for `to: components/ui/*.tsx`): Card family, Badge, Label, Skeleton, Separator, Tabs, Table family. Matches the cva/cn conventions used by the existing button.tsx primitive (nextjs-ai-sdk-pack) so consumers can mix primitives from both packs without style drift."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/shadcn-ui-primitives-pack"
+has_ontology_ttl = true

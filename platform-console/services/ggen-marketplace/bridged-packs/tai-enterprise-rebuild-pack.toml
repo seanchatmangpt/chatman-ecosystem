@@ -1,0 +1,11 @@
+[pack]
+id = "tai-enterprise-rebuild-pack"
+name = "tai-enterprise-rebuild-pack"
+version = "26.7.31"
+description = """Ontology-authored ggen Building Block that generates and simulates the evidence-gated roadmap for rebuilding Technology Applications, Inc."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/tai-enterprise-rebuild-pack"
+has_ontology_ttl = true

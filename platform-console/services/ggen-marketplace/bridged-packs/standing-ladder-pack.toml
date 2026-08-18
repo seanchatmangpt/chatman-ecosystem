@@ -1,0 +1,40 @@
+[pack]
+id = "standing-ladder-pack"
+name = "standing-ladder-pack"
+version = "0.1.1"
+description = """Generalizes the two-tier admission pattern already proven by
+packs/process-intelligence-rag-pack (an ordinary "grounded or refused" gate,
+gates/010_grounded_or_refused.rq, plus a STRICTER tier for a stronger purpose,
+gates/020_strategic_grounding_required.rq) into an explicit, ordered 10-state
+evidentiary promotion ladder any fact in an admitted consumer graph can be pinned against:
+
+  UNKNOWN -> OBSERVED -> VALIDATED -> DERIVED -> CANDIDATE ->
+  EXPERIMENTALLY_SUPPORTED -> ADMITTED -> MANUFACTURED -> ACTUATED -> VERIFIED
+
+A stl:StandingClaim's current stl:hasStanding is not self-certifying: it is
+admissible only if a real, evidenced stl:StandingTransition exists for every
+single step from UNKNOWN up to the claimed state, in order, with no state
+skipped and no empty stl:evidenceRef -- enforced by
+gates/010_no_skipped_states.rq, not merely documented. The same gate also
+requires stl:aboutFact to resolve to a real typed subject in the admitted union
+graph, so a renamed/removed/fabricated fact cannot retain standing by dangling IRI.
+
+The canonical pack is now dependency-free schema/law: it does not bake a claim
+about another pack's fact into its own ontology. The marketplace qualification
+fixture under qualification/consumer.ttl supplies the real SREGym
+`dcp:sregym-run-kubectl` worked example together with its externally-owned fact
+identity and six evidenced transitions through ADMITTED. This preserves the
+worked court without forcing every standing-ladder consumer to compose
+`domain-capability-pack` merely to make the pack's own ontology valid.
+
+Named out of scope: this pack does not implement automatic standing promotion
+(no code advances a claim's stl:hasStanding for you); it only admits or refuses
+a claim's CURRENT declared standing against the evidence chain a human or agent
+supplies. Promotion tooling is a separate authority-bearing concern.
+"""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/standing-ladder-pack"
+has_ontology_ttl = true

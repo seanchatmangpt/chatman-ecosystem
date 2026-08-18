@@ -1,0 +1,11 @@
+[pack]
+id = "slidev-iaas-paas-saas-pack"
+name = "slidev-iaas-paas-saas-pack"
+version = "0.1.0"
+description = """Slidev (sli.dev) presentation deck scaffold for an IaaS/PaaS/SaaS layered-architecture story, mirroring chatman-ecosystem's real docs/jira/v26.8.18 ggen-as-IaaS/PaaS/SaaS/BRCE ticket structure and terminology (zero unreceipted actuation, BRCE, rail maturity CANDIDATE->ALIVE, derivation vs actuation receipts). Ships a LiveMetrics.vue slide component wired to a useLiveData Vue composable mirroring this marketplace's existing live-data-polling-pack contract (entities/edges/isLoading/error/refresh, data-only updates), so a slide can poll a real endpoint live during a presentation instead of showing static numbers."""
+category = "marketplace"
+packages = []
+
+[pack.metadata]
+bridged_from = "~/ggen-marketplace/packs/slidev-iaas-paas-saas-pack"
+has_ontology_ttl = true
