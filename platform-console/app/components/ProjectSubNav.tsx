@@ -5,6 +5,7 @@ const tabs = [
   { segment: "auth", label: "Auth" },
   { segment: "storage", label: "Storage" },
   { segment: "functions", label: "Functions" },
+  { segment: "backups", label: "Backups" },
 ];
 
 export default function ProjectSubNav({

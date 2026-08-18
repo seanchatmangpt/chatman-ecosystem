@@ -4,14 +4,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 /**
- * POSTs to /api/backups -> lib/k8s.ts's createBackupJob, which creates a
- * real batch/v1 Job that runs pg_dump against the real demo-db-postgres.
- * No client-side simulation of "backed up" -- the new row only appears
- * (via router.refresh()) after a real 201 with the real Job the API
- * server accepted; the Job's own status (Pending/Running/Complete/Failed)
- * is whatever listJobs next observes from the cluster, not set here.
+ * POSTs to /api/projects/[name]/backups -> lib/k8s.ts's createBackupJob,
+ * which creates a real batch/v1 Job that runs pg_dump against this
+ * project's real Postgres Pod (resolved live server-side via
+ * getProjectDatabasePod -- never a literal `demo-db-postgres`). No
+ * client-side simulation of "backed up" -- the new row only appears (via
+ * router.refresh()) after a real 201 with the real Job the API server
+ * accepted; the Job's own status (Pending/Running/Complete/Failed) is
+ * whatever listJobs next observes from the cluster, not set here.
  */
-export default function RunBackupButton() {
+export default function RunBackupButton({ projectName }: { projectName: string }) {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +24,9 @@ export default function RunBackupButton() {
     setError(null);
     setSuccess(null);
     try {
-      const res = await fetch("/api/backups", { method: "POST" });
+      const res = await fetch(`/api/projects/${encodeURIComponent(projectName)}/backups`, {
+        method: "POST",
+      });
       const body = await res.json();
       if (!res.ok) {
         setError(body.error ?? `HTTP ${res.status}`);

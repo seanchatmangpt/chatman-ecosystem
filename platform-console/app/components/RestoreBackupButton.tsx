@@ -4,18 +4,28 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 /**
- * POSTs { action: "restore", backupJobName, confirm } to /api/backups ->
- * lib/k8s.ts's createRestoreJob, which creates a real batch/v1 Job that
- * drops the target database's schemas and replays this backup's real
- * pg_dump SQL into it. This is destructive-ish (it overwrites the target
- * database's current contents with whatever this backup captured), so the
- * confirmation step requires typing the exact backup Job name -- checked
- * again server-side in the route handler, never trusted from a disabled
- * button alone. No client-side simulation of "restored" -- the new row in
- * the restore table only appears (via router.refresh()) after a real 201
- * with the real Job the API server accepted.
+ * POSTs { action: "restore", backupJobName, confirm } to
+ * /api/projects/[name]/backups -> lib/k8s.ts's createRestoreJob, which
+ * creates a real batch/v1 Job that drops the target database's schemas
+ * and replays this backup's real pg_dump SQL into it. This is
+ * destructive-ish (it overwrites the target database's current contents
+ * with whatever this backup captured), so the confirmation step requires
+ * typing the exact backup Job name -- checked again server-side in the
+ * route handler (which also verifies the Job actually belongs to this
+ * project's own database before running it), never trusted from a
+ * disabled button alone. No client-side simulation of "restored" -- the
+ * new row in the restore table only appears (via router.refresh()) after
+ * a real 201 with the real Job the API server accepted.
  */
-export default function RestoreBackupButton({ backupJobName }: { backupJobName: string }) {
+export default function RestoreBackupButton({
+  projectName,
+  backupJobName,
+  dbPodName,
+}: {
+  projectName: string;
+  backupJobName: string;
+  dbPodName: string;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [confirmText, setConfirmText] = useState("");
@@ -28,7 +38,7 @@ export default function RestoreBackupButton({ backupJobName }: { backupJobName: 
     setError(null);
     setSuccess(null);
     try {
-      const res = await fetch("/api/backups", {
+      const res = await fetch(`/api/projects/${encodeURIComponent(projectName)}/backups`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ action: "restore", backupJobName, confirm: confirmText }),
@@ -68,7 +78,7 @@ export default function RestoreBackupButton({ backupJobName }: { backupJobName: 
   return (
     <div className="mt-2 max-w-md space-y-2 rounded-md border border-amber-900 bg-amber-950/20 p-3">
       <p className="text-xs text-amber-200">
-        This overwrites the current contents of <code>demo-db-postgres-0</code> with
+        This overwrites the current contents of <code>{dbPodName}</code> with
         this backup&apos;s data. Type the backup name to confirm:{" "}
         <code className="break-all text-white">{backupJobName}</code>
       </p>

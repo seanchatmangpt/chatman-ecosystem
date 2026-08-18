@@ -458,7 +458,7 @@ roleRef:
 # ------------------------------------------------------- Database Backups
 #
 # One Role + RoleBinding, supabase-demo only -- the Backups module
-# (lib/k8s.ts's listJobs/ensureBackupsPvc/createBackupJob, app/backups)
+# (lib/k8s.ts's listJobs/ensureBackupsPvc/createBackupJob, app/projects/[name]/backups)
 # only ever targets the real demo-db-postgres StatefulSet in
 # supabase-demo, so unlike Secrets/Logs above this is not replicated
 # across all platform namespaces. Grants only get/list/create on

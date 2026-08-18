@@ -243,9 +243,29 @@ export async function createSingleDatabase(input: {
  * already have a SingleDatabase they want to reference (e.g. multiple
  * Projects sharing one database). Most callers want createProjectWithDatabase
  * below, which is what the Create Project form/API route uses.
+ *
+ * Sets spec.auth/rest/realtime/functions/storage/studio -- not just
+ * databaseRef/http -- because leaving them absent is a real, live-confirmed
+ * defect, not a harmless omission: a Project created with only
+ * databaseRef+http reaches a real Ready=True (the operator's Ready
+ * condition only covers the database/JWT/envoy layer), but the operator
+ * never creates the auth/rest/realtime/functions/storage/studio
+ * Deployments+Services at all, so every project-scoped module past
+ * Database (Auth, Storage, Functions) has nothing to find. Confirmed live
+ * against a real second Project on this cluster: `kubectl get svc`
+ * showed zero component Services after Ready=True with the old
+ * databaseRef/http-only spec, and the missing Services (auth/rest/
+ * realtime/functions/storage/studio) appeared within seconds of a
+ * `kubectl patch` adding exactly the blocks below. Shape mirrors the
+ * real, working demo-project spec (`kubectl get project demo-project -o
+ * yaml`) -- each block's `enable` field defaults to `true` in the CRD
+ * schema once the block itself is present, so these are deliberately
+ * near-empty (only the sub-fields the schema actually requires, e.g.
+ * storage/studio's PVC sizing) rather than repeating the schema's own
+ * defaults here.
  */
 export async function createProject(
-  input: Omit<CreateProjectInput, "dbStorageSize">,
+  input: CreateProjectInput,
 ): Promise<K8sResult<SupabaseProject>> {
   const manifest = {
     apiVersion: "core.supabase.io/v1alpha1",
@@ -254,6 +274,18 @@ export async function createProject(
     spec: {
       databaseRef: { kind: "SingleDatabase", name: input.databaseRefName },
       http: { hostname: input.hostname, protocol: input.protocol },
+      auth: { siteUrl: `${input.protocol}://${input.hostname}` },
+      rest: {},
+      realtime: {},
+      functions: { verifyJwt: true },
+      storage: {
+        storage: { accessModes: ["ReadWriteOnce"], size: input.dbStorageSize },
+      },
+      studio: {
+        orgName: `${input.name}-org`,
+        projName: input.name,
+        storage: { accessModes: ["ReadWriteOnce"], size: input.dbStorageSize },
+      },
     },
   };
   const result = await k8sRequest<NonNullable<K8sListMeta["items"]>[number]>(
@@ -330,6 +362,44 @@ export async function listNamespaceServices(
     dns: `${svc.metadata.name}.${svc.metadata.namespace}.svc.cluster.local`,
   }));
   return { ok: true, data: items };
+}
+
+/**
+ * Resolves a Project's real Postgres StatefulSet Pod (namespace + pod
+ * name) live from its own Services -- the same
+ * `component=database`/`instance=<databaseRefName>` label match
+ * app/projects/[name]/database/page.tsx already renders, reused here so
+ * the Backups module (createBackupJob/createRestoreJob callers) targets
+ * whichever project's real database this is, never a literal
+ * `demo-db-postgres-0`. The StatefulSet's Service shares the
+ * StatefulSet's name (createBackupJob's own `stem` comment documents this
+ * as a real structural convention, not a guess), and pod ordinal `-0` is
+ * the first/only replica every SingleDatabase this console creates
+ * provisions (`storage.accessModes: [ReadWriteOnce]`, replicas: 1 --
+ * confirmed live via `kubectl get statefulset -n supabase-demo demo-db-postgres`
+ * returning `1/1` replicas). Returns `{ ok: true, data: null }` -- not an
+ * error -- when no matching Service exists yet, the same honest-absence
+ * convention `getBackupsPvc` above uses.
+ */
+export async function getProjectDatabasePod(
+  project: SupabaseProject,
+): Promise<K8sResult<{ namespace: string; serviceName: string; podName: string } | null>> {
+  const servicesResult = await listNamespaceServices(project.namespace);
+  if (!servicesResult.ok) return servicesResult;
+  const dbService = servicesResult.data.find(
+    (s) =>
+      s.labels["app.kubernetes.io/component"] === "database" &&
+      (project.databaseRefName ? s.labels["app.kubernetes.io/instance"] === project.databaseRefName : true),
+  );
+  if (!dbService) return { ok: true, data: null };
+  return {
+    ok: true,
+    data: {
+      namespace: project.namespace,
+      serviceName: dbService.name,
+      podName: `${dbService.name}-0`,
+    },
+  };
 }
 
 // ------------------------------------------------------- Service Discovery
