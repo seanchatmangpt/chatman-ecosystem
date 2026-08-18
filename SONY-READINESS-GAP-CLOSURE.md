@@ -232,10 +232,14 @@ Verbatim from the survey, every entry not in `top5`:
 - No multi-tenant billing/metering enforcement tied to hard resource caps beyond ResourceQuota
   per namespace -- 'usage-billing-math-verified-real' control computes cost math but no
   evidence of billing-triggered throttling/suspension.
-- No SOC2/compliance attestation path beyond the explicit self-disclaimer that
-  control-evidence-bundle.json 'is NOT a SOC 2 report... NOT an auditor's opinion' -- no mapping
-  to SOC2 Trust Services Criteria, ISO 27001, or NIST CSF controls despite
-  ggen-marketplace/packs/soc2-audit-pack existing as a reference doctrine.
+- ~~No SOC2/compliance attestation path... no mapping to SOC2 Trust Services Criteria~~ --
+  **CLOSED**: `platform-console/docs/SOC2-CONTROL-MAPPING.md` maps all 63 original
+  control-evidence-bundle.json controls to the AICPA TSC framework per
+  `ggen-marketplace/packs/soc2-audit-pack/ontology.ttl`'s SKOS schemes (54 of 62 distinct
+  control names mapped, 7 explicitly marked Not mapped rather than force-fit). Still
+  explicitly a self-assessment, not a SOC2 report or auditor's opinion -- no ISO 27001 or
+  NIST CSF mapping was attempted (out of scope for this closure; only SOC2 TSC doctrine
+  exists as reference material in this ecosystem).
 - No incident-response automation/runbook beyond the single documented DR narrative
   (docs/DISASTER-RECOVERY.md) -- no paging/on-call integration, no automated failover, no tested
   tabletop exercise for a security breach (as opposed to infra crash) scenario.

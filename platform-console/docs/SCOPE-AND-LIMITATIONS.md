@@ -115,5 +115,7 @@ does; the topology it operates over is not.
 - `README.md` -- "What 'PaaS' concretely means here" (the top-level disclaimer this document
   expands on)
 - `docs/DISASTER-RECOVERY.md` -- the real incident and runbook behind limitation #1
+- `docs/DATA-RESIDENCY.md` -- the procurement-facing "where does data physically live" answer
+  that limitations #1-#3 above imply but do not state directly
 - `evidence/control-evidence-bundle.json` -- per-control evidence and disclaimer; the
   `platform_scope_and_limitations` top-level field points back to this document

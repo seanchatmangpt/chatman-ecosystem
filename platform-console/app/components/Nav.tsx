@@ -22,6 +22,7 @@ const links = [
   { href: "/feature-flags", label: "Feature Flags" },
   { href: "/usage", label: "Usage" },
   { href: "/billing", label: "Billing" },
+  { href: "/cost", label: "Cost" },
   { href: "/budget-alerts", label: "Budget Alerts" },
   { href: "/logs", label: "Logs" },
   { href: "/exec", label: "Container Exec" },

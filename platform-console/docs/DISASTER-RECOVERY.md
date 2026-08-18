@@ -10,6 +10,14 @@ command run against the live cluster while writing this document (transcripts in
 detail cannot be verified from either source, that gap is stated explicitly rather than filled
 in from memory — see "What this document can and cannot verify" at the end.
 
+**This is a technical runbook, not a status update.** It is written for an engineer to follow
+to bring the cluster back and assumes `kubectl`/`etcd`/Kubernetes literacy throughout. It is not
+something to forward to a leadership chain or a customer during an active incident. For that,
+use `docs/INCIDENT-COMMUNICATION-TEMPLATE.md` — a separate, non-technical, fill-in-the-blank
+template (initial notification / ongoing update / resolution notice) that translates an incident
+like this one into language a non-technical reader can act on, without exposing internal
+implementation detail. That template's worked example is this exact incident, translated.
+
 ## 1. The incident (real, cited)
 
 The control-plane node this cluster runs on today, `platform-eng-colima-control-plane`, has
