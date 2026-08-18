@@ -110,6 +110,37 @@ rules:
   - apiGroups: [""]
     resources: ["endpoints"]
     verbs: ["get", "list", "watch"]
+  # Network Topology module (lib/network.ts, app/network): real Node.spec.
+  # podCIDR is the authoritative per-node Pod CIDR allocation (kubeadm's
+  # own controller writes this, not a config-file guess) -- a cluster-
+  # scoped resource, so this rule cannot be namespace-narrowed the way
+  # Secrets/Logs above are. Confirmed not already covered before adding
+  # (`kubectl auth can-i get nodes --as=...platform-console` returned a
+  # real `no` prior to this rule). Node objects carry no Secret data;
+  # same read-mostly-workload-metadata sensitivity class as Services/
+  # Deployments/Roles already granted cluster-wide above -- deliberately
+  # NOT combined with any kube-system-scoped grant (e.g. reading the
+  # kube-apiserver Pod spec or the kubeadm-config ConfigMap to get the
+  # configured --service-cluster-ip-range/serviceSubnet flag): kube-system
+  # is intentionally outside every grant in this file (see the Secrets/
+  # Logs section comments), so the Service CIDR is instead derived live
+  # from observed Service ClusterIPs (lib/network.ts), never from a
+  # kube-system read.
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list"]
+  # Network Topology module, mTLS boundary half: read-only Istio
+  # PeerAuthentication objects cluster-wide -- the real enforced-mTLS-mode
+  # source (`STRICT`/`PERMISSIVE`/unset) the IAM module's RBAC/
+  # NetworkPolicy inventory doesn't cover. Same sensitivity class as
+  # NetworkPolicies/Roles already granted cluster-wide above (workload
+  # security posture, not credential material); confirmed not already
+  # covered before adding (`kubectl auth can-i list
+  # peerauthentications.security.istio.io --as=...platform-console -A`
+  # returned a real `no` prior to this rule).
+  - apiGroups: ["security.istio.io"]
+    resources: ["peerauthentications"]
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

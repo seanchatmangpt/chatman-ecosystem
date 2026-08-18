@@ -2227,3 +2227,158 @@ export async function createOrUpdateConfigMap(
   if (!result.ok) return result;
   return { ok: true, data: toFeatureFlagsConfigMap(result.data) };
 }
+
+// ---------------------------------------------------------- Network Topology
+//
+// Real hyperscaler-VPC-console-style Network Topology primitive (AWS VPC
+// console / GCP VPC Network Topology / Azure Virtual Network diagram
+// equivalent). Three real, distinct sources, each read live off the k8s
+// API -- never a hardcoded CIDR guess or a fabricated matrix:
+//
+// 1. Pod CIDR: the AUTHORITATIVE source is `Node.spec.podCIDR` -- the
+//    real per-node allocation kubeadm's node-ipam controller writes,
+//    visible via a new cluster-scoped `nodes` get/list RBAC grant (see
+//    k8s/paas-rbac.yaml). This is not the same thing as the
+//    `--service-cluster-ip-range`/`podSubnet` flags configured on the
+//    kube-apiserver/kubeadm-config ConfigMap in kube-system -- this
+//    console deliberately has no RBAC into kube-system (see the Secrets/
+//    Logs sections above), so those flags are NOT read here. Corroborated
+//    (not replaced) by an OBSERVED range computed from real live Pod IPs
+//    across the platform namespaces this console already has `pods`
+//    RBAC for (listPods, reused as-is).
+// 2. Service CIDR: no RBAC exists (and none was added) to read the
+//    `--service-cluster-ip-range` flag or the kubeadm-config ConfigMap
+//    (both live in kube-system) -- so the ONLY honest method here is
+//    OBSERVED: the smallest CIDR block that contains every real
+//    ClusterIP returned by a cluster-wide Services list (already granted
+//    -- confirmed live via `kubectl auth can-i list services
+//    --all-namespaces`). Labeled as observed, not authoritative, in the
+//    returned struct so no caller can mistake it for a config read.
+// 3. mTLS boundary: real `security.istio.io/v1` PeerAuthentication
+//    objects, cluster-wide (new RBAC, same pattern as `networkpolicies`
+//    above) -- namespace-wide mode (no `spec.selector`) is distinguished
+//    from a workload-scoped override (`spec.selector` present), since
+//    conflating the two would misreport a namespace's actual default
+//    mTLS posture.
+
+export interface K8sNodePodCidr {
+  name: string;
+  podCIDRs: string[];
+}
+
+interface PodIpListResponse {
+  items?: Array<{ status?: { podIP?: string } }>;
+}
+
+/** Real live `status.podIP` for every Pod in one namespace -- the exact
+ * same `/api/v1/namespaces/{ns}/pods` endpoint `listPods` above already
+ * reads (same per-namespace `pods` RBAC, no new grant), just pulling the
+ * one extra field `listPods`'s `K8sPod` shape doesn't carry (it never
+ * needed an IP for the Logs page). Used by `lib/network.ts` to compute
+ * the OBSERVED Pod CIDR corroboration -- never a hardcoded range. */
+export async function listPodIPs(namespace: string): Promise<K8sResult<string[]>> {
+  const result = await k8sRequest<PodIpListResponse>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/pods`,
+  );
+  if (!result.ok) return result;
+  const ips: string[] = [];
+  for (const item of result.data.items ?? []) {
+    if (item.status?.podIP) ips.push(item.status.podIP);
+  }
+  return { ok: true, data: ips };
+}
+
+interface NodeListResponse {
+  items?: Array<{
+    metadata: { name: string };
+    spec?: { podCIDR?: string; podCIDRs?: string[] };
+  }>;
+}
+
+/** Real, authoritative per-node Pod CIDR allocations (`Node.spec.podCIDR(s)`
+ * -- kubeadm's node-ipam controller writes this at node registration
+ * time). Requires the new cluster-scoped `nodes` get/list RBAC grant. */
+export async function listNodes(): Promise<K8sResult<K8sNodePodCidr[]>> {
+  const result = await k8sRequest<NodeListResponse>("/api/v1/nodes");
+  if (!result.ok) return result;
+  return {
+    ok: true,
+    data: (result.data.items ?? []).map((item) => ({
+      name: item.metadata.name,
+      podCIDRs: item.spec?.podCIDRs ?? (item.spec?.podCIDR ? [item.spec.podCIDR] : []),
+    })),
+  };
+}
+
+/** Real cluster-wide Services list (every namespace in one call) --
+ * distinct from `listNamespaceServices` above, which is scoped to one
+ * namespace. Uses the exact same cluster-wide `services` get/list/watch
+ * grant `listTopology`'s per-namespace calls already rely on (confirmed
+ * live: `kubectl auth can-i list services --all-namespaces` -> `yes`, no
+ * new RBAC needed). Used only to derive the OBSERVED Service CIDR below
+ * -- never to read a Secret or any other sensitive field. */
+export async function listAllServices(): Promise<K8sResult<K8sService[]>> {
+  const result = await k8sRequest<ServiceListResponse>("/api/v1/services");
+  if (!result.ok) return result;
+  return {
+    ok: true,
+    data: (result.data.items ?? []).map((svc) => ({
+      name: svc.metadata.name,
+      namespace: svc.metadata.namespace,
+      clusterIP: svc.spec?.clusterIP ?? null,
+      ports: (svc.spec?.ports ?? []).map((p) => ({
+        name: p.name,
+        port: p.port,
+        targetPort: p.targetPort,
+        protocol: p.protocol ?? "TCP",
+      })),
+      labels: svc.metadata.labels ?? {},
+      dns: `${svc.metadata.name}.${svc.metadata.namespace}.svc.cluster.local`,
+    })),
+  };
+}
+
+export interface IamPeerAuthentication {
+  name: string;
+  namespace: string;
+  /** `null` when the object sets no `spec.mtls.mode` at all (inherits the
+   * mesh-wide/namespace-wide default from elsewhere -- never guessed
+   * here). */
+  mode: "STRICT" | "PERMISSIVE" | "DISABLE" | null;
+  /** True when `spec.selector` is present -- a workload-scoped override,
+   * not this namespace's blanket default. */
+  workloadScoped: boolean;
+}
+
+interface PeerAuthenticationListResponse {
+  items?: Array<{
+    metadata: { name: string; namespace: string };
+    spec?: {
+      mtls?: { mode?: string };
+      selector?: unknown;
+    };
+  }>;
+}
+
+/** Real `security.istio.io/v1` PeerAuthentication objects, cluster-wide.
+ * Requires the new `security.istio.io/peerauthentications` get/list/watch
+ * RBAC grant (k8s/paas-rbac.yaml). */
+export async function listPeerAuthentications(): Promise<K8sResult<IamPeerAuthentication[]>> {
+  const result = await k8sRequest<PeerAuthenticationListResponse>(
+    "/apis/security.istio.io/v1/peerauthentications",
+  );
+  if (!result.ok) return result;
+  const validModes = new Set(["STRICT", "PERMISSIVE", "DISABLE"]);
+  return {
+    ok: true,
+    data: (result.data.items ?? []).map((item) => {
+      const rawMode = item.spec?.mtls?.mode;
+      return {
+        name: item.metadata.name,
+        namespace: item.metadata.namespace,
+        mode: rawMode && validModes.has(rawMode) ? (rawMode as IamPeerAuthentication["mode"]) : null,
+        workloadScoped: item.spec?.selector !== undefined,
+      };
+    }),
+  };
+}
