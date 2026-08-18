@@ -2,8 +2,10 @@ import { cookies } from "next/headers";
 import Nav from "@/components/Nav";
 import ProjectSubNav from "@/components/ProjectSubNav";
 import RedisCachePanel from "@/components/RedisCachePanel";
+import NatsQueuePanel from "@/components/NatsQueuePanel";
 import { getProject, listNamespaceServices, type K8sService } from "@/lib/k8s";
 import { getRedisStatus } from "@/lib/redis";
+import { getQueueStatus } from "@/lib/queue";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
 import { getRoleFor, type Role } from "@/lib/authz";
 
@@ -111,6 +113,11 @@ export default async function ProjectDatabasePage({
     ? redisStatusResult.data
     : { name: `${project.name}-redis`, namespace: project.namespace, provisioned: false, ready: false, host: "", port: 6379 };
 
+  const queueStatusResult = await getQueueStatus(project);
+  const queueStatus = queueStatusResult.ok
+    ? queueStatusResult.data
+    : { name: `${project.name}-queue`, namespace: project.namespace, provisioned: false, ready: false, host: "", port: 4222 };
+
   return (
     <>
       <Nav />
@@ -133,6 +140,12 @@ export default async function ProjectDatabasePage({
             canProvision={canProvisionCache}
             canReveal={canRevealCache}
             initialStatus={redisStatus}
+          />
+          <NatsQueuePanel
+            projectName={project.name}
+            canProvision={canProvisionCache}
+            canReveal={canRevealCache}
+            initialStatus={queueStatus}
           />
         </div>
       </main>
