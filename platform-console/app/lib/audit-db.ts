@@ -132,6 +132,19 @@ export function writeAuditLogEntry(entry: AuditLogEntry): void {
   });
 }
 
+/**
+ * Exposes the same single-flight, self-healing pool every reader/writer in
+ * this module already shares -- for lib/audit-export.ts's streaming NDJSON
+ * export, which needs a raw `PoolClient` (to run several keyset-paginated
+ * batch queries against one held connection) rather than the one-shot
+ * `pool.query` calls `queryAuditLog` below issues. Returns `null` under the
+ * exact same fail-closed conditions as every other reader here (no
+ * in-cluster credentials, or the live cluster DB unreachable).
+ */
+export async function getAuditDbPool(): Promise<Pool | null> {
+  return resolvePool();
+}
+
 // --------------------------------------------------------- Querying (/audit)
 
 export interface AuditLogRow {

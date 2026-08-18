@@ -71,6 +71,22 @@ export default function AuditLogPanel({
     void runQuery(1);
   }
 
+  function onExport() {
+    // Real SIEM-format bulk export (GET /api/audit/export ->
+    // lib/audit-export.ts's streamAuditLogAsEcsNdjson): reuses this same
+    // panel's current from/to date-range filter (actor/path are display
+    // filters only -- the export intentionally ships the full ECS-shaped
+    // history for the date range, not a client-side-narrowed subset).
+    // Plain navigation, not fetch+blob: the browser streams the response
+    // straight to disk itself, honoring the route's own
+    // Content-Disposition: attachment header, without this tab ever
+    // buffering the export in JS memory.
+    const params = new URLSearchParams();
+    if (from) params.set("from", new Date(from).toISOString());
+    if (to) params.set("to", new Date(to).toISOString());
+    window.location.href = `/api/audit/export?${params.toString()}`;
+  }
+
   function onReset() {
     setActor("");
     setPath("");
@@ -138,6 +154,15 @@ export default function AuditLogPanel({
             className="rounded-md border border-border px-4 py-2 text-sm text-gray-300 disabled:opacity-50"
           >
             Reset
+          </button>
+          <button
+            type="button"
+            onClick={onExport}
+            disabled={loading}
+            title="Streams the full ECS-shaped NDJSON export for the From/To range above (owner-only, GET /api/audit/export) -- for pulling this history into an external SIEM (Splunk, Datadog, ...)"
+            className="ml-auto rounded-md border border-border px-4 py-2 text-sm text-gray-300 disabled:opacity-50"
+          >
+            Export (NDJSON)
           </button>
         </div>
       </form>
