@@ -37,6 +37,11 @@ class PlatformReconstitutionTests(unittest.TestCase):
         candidate["calculus"]["ambient_do"] = True
         self.assertIn("BENCHMARK_CALCULUS_VIOLATION", self.codes(candidate))
 
+    def test_non_ggen_legacy_reconstitution_is_refused(self) -> None:
+        candidate = copy.deepcopy(self.data)
+        candidate["calculus"]["reconstitution_path"] = "ggen"
+        self.assertIn("BENCHMARK_CALCULUS_VIOLATION", self.codes(candidate))
+
     def test_non_brce_do_is_refused(self) -> None:
         candidate = copy.deepcopy(self.data)
         candidate["calculus"]["do_path"] = "agent"
