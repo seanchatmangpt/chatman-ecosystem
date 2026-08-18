@@ -1,0 +1,42 @@
+[scenario]
+id = "regulated-claims"
+canonical_semantics = "admitted_graph"
+projection_is_source = false
+pii_region_bound = true
+consequential_do_requires_authority = true
+interfaces = ["cli", "api", "mcp", "a2a"]
+required_capabilities = [
+  "claims-intake",
+  "claims-decision",
+  "regional-pii-policy",
+  "authority-policy",
+  "process-provenance",
+  "disaster-reconstitution",
+]
+
+[reconstitution]
+delete_projection_classes = [
+  "application-source",
+  "api",
+  "cli",
+  "mcp",
+  "a2a",
+  "ui",
+  "data-schema",
+  "database",
+  "infrastructure",
+  "policy",
+  "tests",
+  "documentation",
+  "sbom",
+]
+preserve = [
+  "admitted-graph",
+  "manufacturing-rules",
+  "toolchain-identities",
+  "policies",
+  "proof-obligations",
+  "historical-receipts",
+]
+require_semantic_equivalence = true
+require_new_subject_standing = true

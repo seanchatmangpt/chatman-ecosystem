@@ -1,0 +1,137 @@
+[benchmark]
+id = "platform-reconstitution-v1"
+version = "1.0.0"
+claim = "A single admitted semantic subject can manufacture, actuate through BRCE, receipt, delete, reconstitute, and replay an enterprise capability across heterogeneous deployment substrates without projection-owned business meaning."
+scenario = "benchmarks/platform-reconstitution/v1/scenarios/regulated-claims.toml"
+standing = "UNKNOWN"
+
+[marketplace]
+repository = "seanchatmangpt/ggen-marketplace"
+ref = "main"
+sha = "14f122414e72291a69975523601305fc346b118d"
+required_packs = [
+  "dfcm-full-deployment-pack",
+  "domain-capability-pack",
+  "fortune5-deployment-blocks-pack",
+  "ggen-combinatorial-maximalism-pack",
+  "mfact-pack",
+  "mfw-pack",
+  "praxis-core-pack",
+  "shacl-projection-pack",
+  "standing-ladder-pack",
+]
+
+[toolchain]
+release_manifest = "release/v26.9.1/manifest.toml"
+
+[[toolchain.components]]
+id = "open-ontologies"
+repository = "seanchatmangpt/open-ontologies"
+ref = "main"
+sha = "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99"
+role = "public-ontology"
+
+[[toolchain.components]]
+id = "star-toml"
+repository = "seanchatmangpt/star-toml"
+ref = "main"
+sha = "8395515cf8e68bfdc9edff49fb358c4f1da7c795"
+role = "config-admission"
+
+[[toolchain.components]]
+id = "ggen"
+repository = "seanchatmangpt/ggen"
+ref = "main"
+sha = "162e466d8f07d0a75a468b4441b4bc8b1aad369b"
+role = "manufacture"
+
+[[toolchain.components]]
+id = "ggen-legacy"
+repository = "seanchatmangpt/ggen-legacy"
+ref = "main"
+sha = "61991c2fdec6ab32f281ddd2b005eeef28752744"
+role = "reconstitution-compiler"
+
+[[toolchain.components]]
+id = "mfact"
+repository = "seanchatmangpt/mfact"
+ref = "main"
+sha = "308384002a15b9946acbcd6f560c5819723d79dc"
+role = "formal-proof"
+
+[[toolchain.components]]
+id = "mfw"
+repository = "seanchatmangpt/mfw"
+ref = "agent/finish-cmca-mfw"
+sha = "2ecde02f9d7eaea50cfb4ea7876340c6463ac3a1"
+role = "orchestration"
+
+[[toolchain.components]]
+id = "gymact"
+repository = "seanchatmangpt/gymact"
+ref = "feat/llmless-ggen-agents-fortune5-mna"
+sha = "cf9a36fcc5b0738269809b83e3ffcad7dae0a5c4"
+role = "actuation"
+
+[[toolchain.components]]
+id = "wasm4pm"
+repository = "seanchatmangpt/wasm4pm"
+ref = "main"
+sha = "b7ebccb53b1249d45d2472f7754c997982b2f1b7"
+role = "process-execution"
+
+[[toolchain.components]]
+id = "affidavit"
+repository = "seanchatmangpt/affidavit"
+ref = "feat/ecosystem-standing-receipts-20260812"
+sha = "5dc78f113e60ba95a4b4594a6da3511334e86024"
+role = "provenance"
+
+[calculus]
+canonical_semantics = "admitted_graph"
+select_path = "candidate_graph"
+construct_path = "ggen"
+reconstitution_path = "ggen-legacy"
+do_path = "BRCE"
+ambient_do = false
+hooks_actuate = false
+planner_actuate = false
+receipt_required = true
+replay_required = true
+exact_subject_required = true
+
+[coverage]
+ontology_sources = ["public", "custom"]
+projection_classes = [
+  "application-source",
+  "api",
+  "cli",
+  "mcp",
+  "a2a",
+  "ui",
+  "data-schema",
+  "database",
+  "infrastructure",
+  "policy",
+  "tests",
+  "documentation",
+  "sbom",
+  "receipt",
+  "replay",
+]
+substrates = [
+  "local",
+  "kubernetes",
+  "aws",
+  "azure",
+  "gcp",
+  "wasm-edge",
+  "airgap",
+]
+negative_controls = [
+  "ambient-do-refused",
+  "direct-mcp-mutation-refused",
+  "unauthorized-actuation-refused",
+  "projection-loss-recoverable",
+  "stale-subject-refused",
+]
