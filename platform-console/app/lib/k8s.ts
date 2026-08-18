@@ -22,7 +22,7 @@ export type K8sResult<T> =
   | { ok: true; data: T }
   | { ok: false; error: string };
 
-interface InClusterConfig {
+export interface InClusterConfig {
   token: string;
   ca: Buffer;
   host: string;
@@ -58,6 +58,19 @@ function readInClusterConfig(): InClusterConfig | null {
 /** True when a real in-cluster ServiceAccount identity is available. */
 export function hasClusterCredentials(): boolean {
   return readInClusterConfig() !== null;
+}
+
+/**
+ * Exposes the raw in-cluster ServiceAccount token/CA/host/port -- the same
+ * cached config every k8sRequest call already uses internally -- for the
+ * one caller in this codebase that cannot go through k8sRequest's plain-
+ * HTTPS primitive: lib/container-exec.ts's real WebSocket connection to
+ * the pods/exec subresource (`GET .../pods/{pod}/exec?...` upgraded to a
+ * WebSocket, never a normal JSON request/response). Same fail-closed
+ * `null`-when-not-configured contract as hasClusterCredentials above.
+ */
+export function getInClusterConfig(): InClusterConfig | null {
+  return readInClusterConfig();
 }
 
 /**

@@ -899,3 +899,198 @@ roleRef:
   kind: Role
   name: platform-console-canary-autofde-lab
   apiGroup: rbac.authorization.k8s.io
+---
+# ------------------------------------------------------------ Container Exec
+#
+# Real hyperscaler-PaaS-style browser-based shell access (AWS Systems
+# Manager Session Manager / GCP Cloud Shell / Azure Cloud Shell "run a
+# command in a running instance/pod" equivalent), lib/container-exec.ts.
+# One Role + RoleBinding per platform namespace -- the exact same 6
+# namespaces (5 platform namespaces plus platform-console's own) as the
+# Logs section above, same per-namespace-Role-not-ClusterRole reasoning:
+# `pods/exec` is a DISTINCT, more sensitive subresource than `pods`/
+# `pods/log` (k8s itself treats it separately -- a real container command
+# execution channel, not a read), so it is never folded into the existing
+# Logs Role and never granted cluster-wide.
+#
+# Two verbs, both real requirements, confirmed live against this cluster's
+# actual v1.34 API server before this grant existed (same
+# `kubectl auth can-i` / real-403-then-fixed discipline every other
+# section of this file already documents):
+#   - `create`: the conventional verb for the pods/exec subresource (what
+#     `kubectl auth can-i create pods/exec` checks, and what a POST/SPDY-
+#     style exec client uses).
+#   - `get`: what this console's OWN WebSocket-based exec client actually
+#     needs. lib/container-exec.ts opens the exec subresource via a plain
+#     HTTP GET upgraded to a WebSocket (the same mechanism a browser's
+#     `new WebSocket(...)` performs) rather than the POST+SPDY upgrade
+#     `kubectl exec` traditionally used -- k8s's authorizer maps a GET
+#     request's verb to "get", not "create", confirmed live: an identical
+#     WebSocket exec request using this ServiceAccount's real token with
+#     ONLY the conventional `create` verb granted came back with a real,
+#     live `403` reading "cannot get resource \"pods/exec\"" (the API
+#     server naming the verb it actually evaluated); adding `get` to this
+#     Role, with no other change, made the exact same request succeed.
+#     Both verbs are kept -- `create` because it's the documented/
+#     conventional grant every k8s exec guide names, `get` because it's
+#     the one this console's real WebSocket-upgrade client actually
+#     exercises.
+# No update/patch/delete/list/watch: this subresource has no meaningful
+# list, and this console only ever opens a fresh one-shot exec session,
+# never watches or mutates anything past it.
+
+# --------------------------------------------------------- autofde-lab
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-exec
+  namespace: autofde-lab
+rules:
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-exec-binding
+  namespace: autofde-lab
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-exec
+  apiGroup: rbac.authorization.k8s.io
+
+# -------------------------------------------------------------- gymact
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-exec
+  namespace: gymact
+rules:
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-exec-binding
+  namespace: gymact
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-exec
+  apiGroup: rbac.authorization.k8s.io
+
+# ---------------------------------------------------------------- ggen
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-exec
+  namespace: ggen
+rules:
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-exec-binding
+  namespace: ggen
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-exec
+  apiGroup: rbac.authorization.k8s.io
+
+# ----------------------------------------------------- ggen-marketplace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-exec
+  namespace: ggen-marketplace
+rules:
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-exec-binding
+  namespace: ggen-marketplace
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-exec
+  apiGroup: rbac.authorization.k8s.io
+
+# --------------------------------------------------------- supabase-demo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-exec
+  namespace: supabase-demo
+rules:
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-exec-binding
+  namespace: supabase-demo
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-exec
+  apiGroup: rbac.authorization.k8s.io
+
+# ----------------------------------------------------- platform-console
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-exec
+  namespace: platform-console
+rules:
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-exec-binding
+  namespace: platform-console
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-exec
+  apiGroup: rbac.authorization.k8s.io

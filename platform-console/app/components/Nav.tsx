@@ -22,6 +22,7 @@ const links = [
   { href: "/usage", label: "Usage" },
   { href: "/billing", label: "Billing" },
   { href: "/logs", label: "Logs" },
+  { href: "/exec", label: "Container Exec" },
   { href: "/observability", label: "Observability" },
   { href: "/alerts", label: "Alerting" },
   { href: "/gitops", label: "GitOps" },

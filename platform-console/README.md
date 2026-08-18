@@ -69,6 +69,7 @@ or global footprint.
 | `/deployments/canary` | Real **Canary/Blue-Green deployment control** (AWS CodeDeploy traffic-shifting / GCP traffic-splitting / Azure deployment slots equivalent) for `autofde-lab-status` -- real Istio weighted `VirtualService` routing between two Deployments (`autofde-lab-status`/`autofde-lab-status-canary`, same image, distinguished by a `version` pod label and a runtime `CANARY_VERSION` env var) sharing one Service, split by a real `DestinationRule`'s `stable`/`canary` subsets, in place of the all-or-nothing `kubectl rollout restart` every other Deployment here still uses. Owner-gated weight slider (0-100), live weight + Deployment-readiness display, a **promote** action (100% canary, delete stable) and a **rollback** action (100% stable, delete canary). See "Canary / Blue-Green deployment control" below and `canary-traffic-split-measured-real` in `evidence/control-evidence-bundle.json` for the real per-request tabulated proof at 50/50, 100/0, post-promote, and the final clean steady state | `lib/canary.ts`, `app/api/deployments/canary/route.ts`, `app/app/deployments/canary/page.tsx`, `k8s/canary.yaml` |
 | `/load-test` | Real **Load Testing / performance benchmarking self-service** (AWS Distributed Load Testing solution / GCP load-testing guidance tooling equivalent): member+-gated, fires real concurrent HTTP requests (Node's built-in `fetch`, a `Promise.all`-based worker pool, no new dependency) against one service from a fixed allowlist of this platform's own status services -- never an arbitrary user-supplied URL, which would be a real SSRF vector -- and measures real p50/p95/p99 latency and real success/error counts from the actual responses received, not simulated numbers. See "Load Testing" below and `load-test-drives-real-autoscale-event` in `evidence/control-evidence-bundle.json` for the real measured percentiles and the real HPA `SuccessfulRescale` scale-up/scale-down events they drove against `gymact-status` | `lib/load-test.ts`, `app/api/load-test/route.ts`, `app/app/load-test/page.tsx` |
 | `/logs` | Namespace → pod → container drill-down over real pod stdout/stderr via the k8s pod-log subresource | `app/api/logs/route.ts`, `lib/k8s.ts` |
+| `/exec` | **Container Exec / browser-based shell access** (AWS Systems Manager Session Manager / GCP Cloud Shell / Azure Cloud Shell equivalent): owner-only, real command execution inside a real running pod over the k8s API's real `pods/exec` subresource, upgraded to a real WebSocket (the same mechanism `kubectl exec` itself uses -- confirmed live to work over a plain WebSocket upgrade against this cluster's real v1.34 API server using the `v4.channel.k8s.io` subprotocol, not just SPDY). Two independent execution paths, both resolving `commandId` against the exact same fixed, server-side allowlist (`lib/container-exec.ts`'s `ALLOWED_EXEC_COMMANDS`: `cat /app/facts.json`, `echo`, `env`, `ls -la /app` -- no free-text command field anywhere): a buffered `POST /api/exec` (Node-runtime API route), and a real live-streaming relay at `/ws/exec` (`server.js`, reusing the Realtime Notifications pass's WebSocket-upgrade infrastructure) that opens its own real WebSocket straight through to the target pod's exec subresource and forwards every real stdout/stderr/status frame to the browser as it arrives. Three independent gates before any command ever runs: an unrecognized `commandId` is rejected before any k8s connection is attempted (server-side, both paths); a non-owner session is rejected before the allowlist is even checked; and the k8s API itself enforces a new, real, per-namespace `pods/exec` RBAC grant (`get`+`create`, see below) -- a request that cleared every app-level gate would still get a real 403 from the API server without it. See `container-exec-output-matches-kubectl` in `evidence/control-evidence-bundle.json` for the real byte-for-byte proof | `lib/container-exec.ts`, `app/api/exec/route.ts`, `app/exec/page.tsx`, `components/ExecPanel.tsx`, `server.js` |
 | `/registry` | Container Registry as an honest **image inventory**: this cluster has no push-capable registry (images are built locally and `kind load docker-image`d straight into containerd), so every real Deployment container's `image` field is cross-referenced against real Pod `containerStatuses` (digest + ready state), flagging any image not confirmed present or stuck on a real pull failure | `lib/k8s.ts` |
 | `/projects/[name]/backups` | Database Backups (RDS/Cloud SQL/Cloud Spanner automated-backup equivalent), project-scoped like Database/Auth/Storage/Functions above -- not a global page. Resolves the target project's real Postgres StatefulSet Pod live via `getProjectDatabasePod` (never a literal `demo-db-postgres`): "Run backup now" creates a real `batch/v1` Job that runs `pg_dump` against that database's real Service, using the exact image and password Secret/key read live off the source Pod's own spec; the dump lands on `platform-backups-pvc`, at a path namespaced by `<namespace>/<database-stem>/`. PVC contents aren't directly queryable via the k8s API, so the Job listing itself (name encodes the timestamp, real completion status, real duration) *is* the backup inventory -- scoped to `app=platform-backups,database=<stem>` so two projects sharing one namespace never see each other's Jobs. **Restore** (the RDS/Cloud SQL point-in-time-restore equivalent): "Restore" next to any `Complete` backup, gated behind a type-the-backup-name-to-confirm step and a server-side same-project-ownership check (the named backup Job must belong to this project's own database, or the API refuses with a real 403), creates a real `batch/v1` Job that mounts the same PVC read-only, locates that backup's real dump file, clears the target's real table data (`TRUNCATE` per table -- not `DROP SCHEMA`, since the same credential createBackupJob discovers is not a superuser and owns none of the real schemas here; see the module doc in `lib/k8s.ts`), then replays the dump via `psql -f`. Real, disclosed limitation: a plain `pg_dump` with no FK-aware ordering can leave a same-run child-table row unrestored when its parent lands later in the file (observed live, see the evidence bundle) -- the primary data (e.g. a deleted user's own row) restores correctly; dependent rows loaded out of FK order do not, in the same restore pass. See `multi-project-tenancy-verified` in `evidence/control-evidence-bundle.json` for the real second-project proof (this module was the one genuinely hardcoded module found; Database/Auth/Storage/Functions were already project-agnostic) | `app/app/api/projects/[name]/backups/route.ts`, `lib/k8s.ts` (`getProjectDatabasePod`, `createBackupJob`, `createRestoreJob`) |
 | `/api-gateway` | Documentation/visibility only -- the real control is enforced entirely by Istio (see "Rate limiting" below); this page just states the configured limit and points to `k8s/ratelimit.yaml` | (static; enforcement in `k8s/ratelimit.yaml`) |
@@ -167,6 +168,76 @@ low-sensitivity signal every hyperscaler console's own bell shows to any signed-
 The full audit *log* page (`/audit`, actor/path substring search, pagination, raw rows) stays
 owner-gated exactly as before this pass — the bell is a notice, not that report.
 
+## Container Exec
+
+Real browser-based shell access into a real running pod (the AWS Systems Manager Session
+Manager / GCP Cloud Shell / Azure Cloud Shell "run a command in a running instance/pod"
+equivalent) — the most sensitive capability in this console, over the k8s API's real
+`pods/exec` subresource.
+
+**The mechanism, confirmed live before any application code was written.** `kubectl exec`
+traditionally upgrades an HTTP POST to SPDY; this console instead confirmed live against this
+cluster's real v1.34 API server that a plain GET request to
+`.../pods/{pod}/exec?command=...&stdout=true&stderr=true` upgraded to an ordinary WebSocket
+(`Sec-WebSocket-Protocol: v4.channel.k8s.io`, the same subprotocol name `client-go`'s own
+WebSocket exec executor negotiates) is accepted and works identically — a headless Node `ws`
+client, authenticated first with a real client certificate and then with this
+ServiceAccount's own real bearer token, received real demuxed stdout/status frames
+(`channel 1` = stdout, `channel 3` = a final `{"status":"Success"}` JSON object) matching
+`kubectl exec`'s own output exactly. This is the real mechanism `lib/container-exec.ts` and
+`server.js`'s `/ws/exec` relay both use — no SPDY library, no external k8s client SDK, just
+the `ws` package already vendored for Realtime Notifications, pointed at a different
+subresource.
+
+**The real security boundary: a fixed, server-side command allowlist.** A `pods/exec`
+request's `command` array is handed straight to the container runtime — accepting free text
+here would be a textbook RCE backdoor with a UI. `lib/container-exec.ts`'s
+`ALLOWED_EXEC_COMMANDS` is a small, fixed map of command **ids** to real, hardcoded argv
+arrays (`cat /app/facts.json`, `echo`, `env`, `ls -la /app`) — read-only diagnostics only.
+Every caller (the buffered `POST /api/exec` route, and `server.js`'s `/ws/exec` upgrade
+handler, which duplicates this same small allowlist inline for the same module-boundary
+reason `server.js`'s own header comment already documents for `lib/k8s.ts`/`lib/session.ts`)
+resolves the request's `commandId` against this allowlist BEFORE any connection to the k8s
+API is attempted; an unrecognized id gets a real `400` with zero k8s API traffic. There is no
+free-text command field anywhere in the UI, the API route body, or the WebSocket query
+string.
+
+**Two independent execution paths, one allowlist.** `POST /api/exec` (Node-runtime API
+route, owner-gated) runs `lib/container-exec.ts#execAllowedCommand` and returns the full
+buffered stdout/stderr once the real k8s exec session closes. `/ws/exec` (`server.js`,
+reusing the exact WebSocket-upgrade infrastructure the Realtime Notifications pass built)
+opens its own real WebSocket straight through to the target pod's exec subresource and
+relays every real stdout/stderr/status frame to the browser the instant it arrives — a true
+live relay, not a buffered round trip. Both resolve the same commandId against the same
+allowlist content (one canonical, one disclosed-duplicate, per the module-boundary
+constraint above); neither ever accepts raw command text.
+
+**Owner-only, three independent gates.** This is the single most sensitive capability in the
+console, so it gets the same "owner" floor as Canary Deploy and Audit Log — enforced
+independently by the `/exec` page's own gate, `GET`/`POST /api/exec`'s
+`requireRole(session, "owner")`, and `server.js`'s `/ws/exec` upgrade handler's own role
+check (a small, disclosed mirror of `lib/authz.ts#getRoleFor` against the real
+`platform-console-org-roles` ConfigMap — the same one every other role check in this app
+reads). The role check runs before the namespace/command allowlists, which run before any
+k8s connection: a non-owner session, or an unrecognized command, never reaches the k8s API
+at all.
+
+**Real proof, not "trust the UI".** Through the real deployed pod (port-forwarded, real
+`admin` session cookie from a real `POST /api/login`), `GET /api/exec?namespace=autofde-lab`
+returned the real live pod (`autofde-lab-status-...`) and the real 4-command allowlist. A
+headless Node `ws` client then opened `/ws/exec?namespace=autofde-lab&pod=...&commandId=
+cat-facts` through the console's own relay and received the real streamed output; saved to a
+file and compared with `diff` and `sha256sum` against `kubectl exec ... -- cat
+/app/facts.json` run directly against the same pod at the same time — **0 differences, an
+identical `sha256:d801e525...` on both sides**. Two disallowed `commandId` values
+(`rm-rf-slash`, and a real semicolon-injection attempt `cat /etc/passwd; whoami`) both got an
+immediate real `400` over the WebSocket upgrade itself (`UNEXPECTED-RESPONSE 400`, zero
+bytes of body) — confirmed via the pod's own stdout audit line
+(`{"execAudit":true,...,"status":400,"reason":"commandId not on allowlist -- rejected before
+any k8s API call"}`) that this was a same-process rejection, not a k8s-side denial. See
+`container-exec-output-matches-kubectl` in `evidence/control-evidence-bundle.json` for the
+full transcript.
+
 ## Identity federation
 
 A second, additive login path (the AWS IAM Identity Center / Azure AD / GCP Identity
@@ -230,15 +301,23 @@ the change). No Secrets, no exec/log, no wildcards, no write verb anywhere outsi
 `kubectl auth can-i --as=system:serviceaccount:platform-console:platform-console` calls — see
 `evidence/control-evidence-bundle.json` for the exact denials and allows observed.
 
-The `/secrets`, `/logs`, and `/scheduled-jobs` modules are each backed by their **own**
-per-namespace `Role`/`RoleBinding` pairs in `k8s/paas-rbac.yaml` — `platform-console-secrets`
-(`get/list/create/delete` on `secrets`), `platform-console-logs-reader` (`get/list` on `pods`,
-`get` on `pods/log`), and `platform-console-scheduled-jobs` (`get/list/create/delete` on
-`batch/cronjobs`) — deliberately kept **out of** the cluster-wide
-`ClusterRole/platform-console-paas` above, since all three resource types are more sensitive
-than the read-mostly resources that ClusterRole grants (a CronJob's Pod runs a real,
-unattended container on a real schedule — the same blast-radius class as a Secret). Scoped to
-the platform's own namespaces only, never cluster-wide, never `kube-system`.
+The `/secrets`, `/logs`, `/scheduled-jobs`, and `/exec` modules are each backed by their
+**own** per-namespace `Role`/`RoleBinding` pairs in `k8s/paas-rbac.yaml` —
+`platform-console-secrets` (`get/list/create/delete` on `secrets`),
+`platform-console-logs-reader` (`get/list` on `pods`, `get` on `pods/log`),
+`platform-console-scheduled-jobs` (`get/list/create/delete` on `batch/cronjobs`), and
+`platform-console-exec` (`get`+`create` on `pods/exec`) — deliberately kept **out of** the
+cluster-wide `ClusterRole/platform-console-paas` above, since all four resource types are
+more sensitive than the read-mostly resources that ClusterRole grants (a CronJob's Pod runs
+a real, unattended container on a real schedule, and `pods/exec` is a real command-execution
+channel — the same or greater blast-radius class as a Secret). `pods/exec` is a genuinely
+distinct k8s subresource from `pods`/`pods/log` — never folded into
+`platform-console-logs-reader` even though both are pod-scoped — and needed BOTH verbs, not
+just the conventional `create`: this console's own exec client connects via a GET request
+upgraded to a WebSocket (see "Container Exec" below), which the API server's authorizer
+evaluates as the `get` verb, confirmed live by a real `403` ("cannot get resource
+\"pods/exec\"") with only `create` granted, fixed by adding `get`. Scoped to the platform's
+own namespaces only, never cluster-wide, never `kube-system`.
 
 ## Application-level RBAC
 
