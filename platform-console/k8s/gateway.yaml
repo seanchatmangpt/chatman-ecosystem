@@ -65,7 +65,14 @@ spec:
   gateways:
     - platform-console-gateway
   http:
-    - route:
+    # Named explicitly so k8s/ratelimit.yaml's EnvoyFilter can target this
+    # exact Envoy route (routeConfiguration.vhost.route.name) without
+    # touching the sibling grafana-route rules on the same platform.local
+    # vhost -- confirmed via `istioctl proxy-config routes` that unnamed
+    # routes get no Envoy route.name at all, so the name below is required
+    # for a route-scoped (not gateway-wide) local rate limit.
+    - name: platform-console-root
+      route:
         - destination:
             host: platform-console-gateway.platform-console.svc.cluster.local
             port:
