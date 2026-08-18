@@ -1,0 +1,153 @@
+{
+  "generated_at": "2026-08-18T22:08:38.544Z",
+  "source": "scripts/snapshot-data.mjs (real kubectl + real evidence bundle read at build time)",
+  "kube_context": "kind-platform-eng-colima",
+  "cluster": {
+    "status": "live",
+    "node_count": 1,
+    "nodes": [
+      {
+        "name": "platform-eng-colima-control-plane",
+        "ready": true,
+        "kubelet_version": "v1.34.0",
+        "creation_timestamp": "2026-08-18T01:11:54Z"
+      }
+    ]
+  },
+  "namespaces": {
+    "status": "live",
+    "count": 16,
+    "names": [
+      "autofde-lab",
+      "castle",
+      "default",
+      "flux-system",
+      "ggen",
+      "ggen-marketplace",
+      "gymact",
+      "istio-system",
+      "kube-node-lease",
+      "kube-public",
+      "kube-system",
+      "local-path-storage",
+      "monitoring",
+      "platform-console",
+      "supabase-demo",
+      "supabase-system"
+    ]
+  },
+  "pods": {
+    "status": "live",
+    "total": 42,
+    "by_namespace": {
+      "autofde-lab": {
+        "total": 2,
+        "running": 2,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 0,
+        "other": 0
+      },
+      "flux-system": {
+        "total": 4,
+        "running": 4,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 0,
+        "other": 0
+      },
+      "ggen": {
+        "total": 1,
+        "running": 1,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 0,
+        "other": 0
+      },
+      "ggen-marketplace": {
+        "total": 1,
+        "running": 1,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 0,
+        "other": 0
+      },
+      "gymact": {
+        "total": 1,
+        "running": 1,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 0,
+        "other": 0
+      },
+      "istio-system": {
+        "total": 3,
+        "running": 3,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 0,
+        "other": 0
+      },
+      "kube-system": {
+        "total": 9,
+        "running": 9,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 0,
+        "other": 0
+      },
+      "local-path-storage": {
+        "total": 1,
+        "running": 1,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 0,
+        "other": 0
+      },
+      "monitoring": {
+        "total": 6,
+        "running": 6,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 0,
+        "other": 0
+      },
+      "platform-console": {
+        "total": 4,
+        "running": 4,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 0,
+        "other": 0
+      },
+      "supabase-demo": {
+        "total": 9,
+        "running": 6,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 3,
+        "other": 0
+      },
+      "supabase-system": {
+        "total": 1,
+        "running": 1,
+        "pending": 0,
+        "failed": 0,
+        "succeeded": 0,
+        "other": 0
+      }
+    }
+  },
+  "evidence_bundle": {
+    "status": "live",
+    "path": "platform-console/evidence/control-evidence-bundle.json",
+    "schema": "platform-console.control-evidence.v1",
+    "control_count": 72,
+    "gap_count": 0,
+    "digest": {
+      "algorithm": "blake3",
+      "value": "89c94ada0ea6673c1feeead97eacf4d30a4b9ea9355d52c0bebb7bc1d7e17857"
+    },
+    "bundle_generated_at": "2026-08-18T21:45:00Z"
+  }
+}

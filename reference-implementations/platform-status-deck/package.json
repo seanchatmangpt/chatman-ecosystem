@@ -1,0 +1,20 @@
+{
+  "name": "platform-status-deck",
+  "type": "module",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "snapshot": "node scripts/snapshot-data.mjs",
+    "predev": "node scripts/snapshot-data.mjs",
+    "prebuild": "node scripts/snapshot-data.mjs",
+    "dev": "slidev --open",
+    "build": "slidev build",
+    "export": "slidev export"
+  },
+  "dependencies": {
+    "@slidev/cli": "^52.19.0",
+    "@slidev/theme-default": "latest",
+    "@slidev/theme-seriph": "latest",
+    "vue": "^3.5.0"
+  }
+}
