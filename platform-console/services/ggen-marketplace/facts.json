@@ -1,9 +1,15 @@
 {
   "service": "ggen-marketplace-status",
   "repo": "ggen-marketplace",
-  "git_head": "0b35775bf555c75b237cb8a0e4f9fbc53e160b3d",
-  "git_head_short": "0b35775",
-  "git_head_subject": "ontologies: host curated public ontology library, wired into ggen",
-  "pack_count": 122,
-  "checked_at": "2026-08-18T00:31:34Z"
+  "git_head": "4886593fe6417d231959450bf3c2c78487c3a9b9",
+  "git_head_short": "4886593",
+  "git_head_subject": "fix: 6 real defects found by a marketplace-experience audit (docs drift, dashboard bugs)",
+  "pack_count": 147,
+  "registry_pack_count": 2,
+  "ggen_binary_version": "26.8.12",
+  "pack_query_subcommand_present": true,
+  "checked_at": "2026-08-18T21:19:07Z",
+  "notes": [
+    "pack_count is the source-tree packs/ subdirectory count (marketplace repo layout, one dir per pack with its own ontology.ttl); registry_pack_count is the separate, smaller set of *.toml pack manifests this service's GET /packs and POST /query actually query, via ggen's try_get_packs_dir() resolver -- the two are not the same registry format and are not currently bridged."
+  ]
 }

@@ -117,3 +117,9 @@ id = "release_admission"
 standing = "ALIVE"
 subject = "SELF"
 evidence = [".github/workflows/crown.yml", "docs/OPERATIONS.md"]
+
+[[rail]]
+id = "ggen"
+standing = "PARTIAL_ALIVE"
+subject = "SELF"
+evidence = ["platform-console/services/ggen/app.py", "docs/jira/v26.8.18/02-GGEN-AS-PAAS.md"]

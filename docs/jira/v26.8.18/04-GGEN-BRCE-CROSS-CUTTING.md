@@ -4,10 +4,11 @@ Part of [00-OVERVIEW](00-OVERVIEW.md), read alongside [01-GGEN-AS-IAAS](01-GGEN-
 [02-GGEN-AS-PAAS](02-GGEN-AS-PAAS.md), and [03-GGEN-AS-SAAS](03-GGEN-AS-SAAS.md). Those three
 tickets propose a layer each; this one argues the layers are not three products but three
 different actuation-authority boundaries wrapped around one core, and names the single invariant
-none of them may opt out of: `CONSTITUTION.md`'s "Zero unreceipted actuation" — the broker (BRCE)
-is the only lawful DO path, everything else may only submit intentions, and the governing
-equation `A = mu(O*)`, `R = receipt(A)` binds admitted observation to lawful manufacture to
-artifact to receipt at every scale this repository recognizes.
+none of them may opt out of: `CONSTITUTION.md`'s law 1, "Zero unreceipted actuation," and law 2,
+"Broker-only DO. Adapters submit intentions; the authority broker decides whether an actuation
+is lawful" — the mechanism this ecosystem names BRCE in `docs/09-brce-no-unreceipted-actuation.md`
+— and the governing equation `A = μ(O*)` binds admitted observation to lawful manufacture to
+artifact-with-evidence-backed-standing at every scale this repository recognizes.
 
 ## Why layering does not relax the invariant
 
@@ -27,10 +28,13 @@ receipt is not a log line, it is the product's proof of having happened at all.
 
 ## Derivation receipts vs. actuation receipts, mapped onto the three layers
 
-`CONSTITUTION.md` draws a load-bearing distinction: "Derivation receipt != Actuation receipt."
-A derivation receipt attests that a computation happened; an actuation receipt attests that a
-real-world mutation happened through the one lawful DO path. This distinction sharpens, not
-blurs, as the layers stack:
+`docs/10-receipt-bifurcation.md` draws a load-bearing distinction this ecosystem's constitution
+implies but does not itself spell out in those words: "Receipt validation should reject any
+attempt to satisfy BRCE with a derivation receipt, even when the underlying semantic artifact is
+perfectly valid." A derivation receipt attests that a computation happened; an actuation receipt
+attests that a real-world mutation happened through the one lawful DO path
+(`CONSTITUTION.md` law 2, "Broker-only DO"). This distinction sharpens, not blurs, as the layers
+stack:
 
 - **IaaS.** Most receipts in play are pure derivation — the sync pipeline's internal stage
   transitions (`pipeline.load`/`extract`/`validate`/`generate`/`emit`, per the OTEL contract
@@ -44,35 +48,44 @@ blurs, as the layers stack:
   `ReceiptRecord::origin = "unattended-dispatch"` and logs the attempt — success or failure — to
   `.ggen/unattended-dispatch-log.jsonl` every time, not only on success. A PaaS-scale "managed
   pipeline runs and deploys without a human clicking confirm" is structurally the same shape as
-  this dispatcher, just crossing a tenant boundary instead of a single project's working tree; no
-  existing analogue in this repo crosses that boundary today, but the receipt-tagging discipline
-  the dispatcher already proves is the correct model to extend.
+  this dispatcher, just crossing a tenant boundary instead of a single project's working tree.
+  Since this ticket was written, `platform-console/services/ggen/app.py`'s `/provision`
+  endpoint has become a real (if partial) instance of exactly this crossing — it resolves a
+  real per-tenant Kubernetes namespace, tags its response with a BRCE-style origin, and logs
+  every attempt to a durable JSONL file — modeled on, though not identical to, the dispatcher's
+  own `origin = "unattended-dispatch"` receipt-tagging discipline (see the PaaS evidence bullet
+  below for the exact gaps still open).
 - **SaaS.** The actuation receipt is not a byproduct of the product, it is the product. A
   capability purchased one-click has no other deliverable that satisfies "zero unreceipted
   actuation" — the receipt itself is what the buyer is buying proof of having received.
 
 ## Registering each layer as its own rail
 
-`catalog/rails.toml` names 19 rails today (`constitutional_core`, `catalog`, `authority`,
+`catalog/rails.toml` names 21 rails today (`constitutional_core`, `catalog`, `authority`,
 `evidence`, `receipts`, `projection`, `cli`, `storage_sqlx`, `mcp_boundary`,
-`gall_checkpoints`, and others), each carrying a real standing value
-(ALIVE/CANDIDATE/REJECTED/PARTIAL_ALIVE) backed by cited evidence files. ggen itself is already
-tracked this way at the repository level: `status/repos/ggen.md` pins it at
-`main@162e466d8f07`, role `manufacture`, standing `PARTIAL_ALIVE`, and `status/snapshot.json` is
-the canonical fleet-status view that standing rolls up into. A layered ggen implies three
-candidate rails — `ggen_iaas`, `ggen_paas`, `ggen_saas` — each with its own standing, not one
-rail inherited wholesale from the repo-level `PARTIAL_ALIVE` pin. This matters because the three
-layers will not mature at the same rate or on the same evidence: IaaS-layer receipt mechanics are
-already substantially real (the sync pipeline, the receipt chain, `ggen receipt verify`); PaaS-
-and SaaS-layer actuation across tenant boundaries has no existing analogue and would enter the
-catalog at `CANDIDATE`, not `PARTIAL_ALIVE`, until it can cite its own evidence files the way the
-19 existing rails do.
+`gall_checkpoints`, `release_admission`, `ggen`, and others), each carrying a real standing
+value (ALIVE/CANDIDATE/REJECTED/PARTIAL_ALIVE) backed by cited evidence files. ggen itself is
+now tracked two ways at once: at the repository level, `status/repos/ggen.md` pins it at
+`main@162e466d8f07`, role `manufacture`, standing `PARTIAL_ALIVE` (rendered from
+`status/snapshot.json`, the canonical fleet-status view that standing rolls up into); and, since
+this ticket was written, `catalog/rails.toml` also now carries a single `id = "ggen"` rail at
+`PARTIAL_ALIVE`, evidencing `platform-console/services/ggen/app.py` and
+`docs/jira/v26.8.18/02-GGEN-AS-PAAS.md`. A layered ggen still implies three candidate rails —
+`ggen_iaas`, `ggen_paas`, `ggen_saas` — each with its own standing, distinct from both the
+repo-level pin and the new single `ggen` rail, which conflates layers that have not equally
+matured. This matters because the three layers will not mature at the same rate or on the same
+evidence: IaaS-layer receipt mechanics are already substantially real (the sync pipeline, the
+receipt chain, `ggen receipt verify`, and now a real HTTP `/provision` endpoint exercising all
+of it); PaaS-layer tenant-namespace actuation is now also real (see the PaaS bullet below);
+SaaS-layer actuation across a purchase/fulfillment boundary has no existing analogue and would
+enter the catalog at `CANDIDATE`, not `PARTIAL_ALIVE`, until it can cite its own evidence files
+the way the other existing rails do.
 
 ## OCEL v2 as the shared process vocabulary
 
 `docs/39-process-is-state.md`'s "Process as State: OCEL v2 and the Collapse of
 Workflow/Data Separation" is not a proposed integration point for a layered ggen — it is a real
-point of kinship that already exists. ggen's own `crates/ggen-graph/ocel/pack_events.rs` emits
+point of kinship that already exists. ggen's own `crates/ggen-graph/src/ocel/pack_events.rs` emits
 OCEL events today. Any of the three layers that need to describe "what happened, to what object,
 in what order" (a tenant's deploy history at PaaS, a purchased capability's fulfillment lifecycle
 at SaaS) can project into the same OCEL v2 event vocabulary the ecosystem's constitution already
@@ -99,27 +112,73 @@ pattern rather than inventing a second, weaker authority check at the tenant bou
 
 Concrete, per-layer evidence — not narrative — is what the existing rails in
 `catalog/rails.toml` require, and a `ggen_iaas`/`ggen_paas`/`ggen_saas` rail set would need the
-same:
+same. Since this ticket was written, `platform-console/services/ggen/app.py` gained a real
+`POST /provision` endpoint; the status below is checked against that file directly, not against
+this ticket set's own earlier prose.
 
 - **IaaS.** A real receipt round-trip demonstrated end to end: `ggen sync run` producing a
   chained `.ggen-v2/receipt.json`, followed by a real `ggen receipt verify` pass against that
-  same receipt — this loop already exists and is the evidence bar, not a proposal.
-- **PaaS.** A real BRCE-gated write demonstrated crossing a tenant boundary: an
-  `unattended_dispatch`-style write with `origin = "unattended-dispatch"` (or an equivalent
-  tenant-scoped origin tag) landing in a provisioned tenant environment, with the corresponding
+  same receipt — this loop already exists and is the evidence bar, not a proposal. **DONE**,
+  and now also exercised from outside the CLI: `platform-console/services/ggen/app.py`'s
+  `provision()` shells out to the real `ggen` binary (`init` → `packs install` → `sync run` →
+  `receipt verify`, all via real `subprocess.run`, per that file's own "Nothing here is
+  simulated" doc comment) and returns the real chained, BLAKE3-hashed, ed25519-signed
+  `ReceiptRecord`, independently verified (`signature_valid: true`) in this session.
+  `platform-console/k8s/services-and-deployments.yaml:489` now points the `ggen-status`
+  Deployment at `image: platform-console/ggen-status:v26.8.18-live` (no longer `:latest`), so
+  the committed manifest targets the rebuilt image — but this pass could not reach a live
+  cluster (`kubectl get pods -n ggen` timed out) to confirm the running pod is actually serving
+  it. The IaaS receipt loop is real and callable over HTTP in the built service and the
+  manifest now points at it; whether it is live in production is unverified in this pass, not
+  confirmed either way.
+- **PaaS.** A real BRCE-gated write demonstrated crossing a tenant boundary: a write tagged
+  with a BRCE-style origin landing in a provisioned tenant environment, with the corresponding
   entry appearing in a durable attempt log the same way `.ggen/unattended-dispatch-log.jsonl`
-  already logs every attempt, success or failure.
+  already logs every attempt, success or failure. **DONE, at the process level; not yet a
+  separate per-tenant capsule.** `app.py`'s `/provision` no longer runs inside one flat shared
+  `WORKSPACE_ROOT` run directory — it now resolves a real per-tenant Kubernetes namespace via
+  `resolve_tenant_namespace()` (`app.py:214-236`, using the same `k8sRequest`-based in-cluster
+  pattern `redis.ts`/`queue.ts` already use), nests the run under
+  `WORKSPACE_ROOT/<namespace>/run-<uuid>`, tags every response `"origin":
+  "ggen-paas-provision"` (`app.py:92,469`, distinct from but modeled on
+  `unattended_dispatch.rs`'s `origin = "unattended-dispatch"` convention), and appends one JSON
+  line per attempt — `applied` or `refused_or_error`, success or failure — to
+  `PROVISION_LOG_PATH` (`append_provision_log()`, `app.py:238-249`), the same "log every
+  attempt" discipline `.ggen/unattended-dispatch-log.jsonl` uses. The prior grep-confirmed claim
+  that no `origin`/`unattended-dispatch` string appears in `app.py` no longer holds — both now
+  appear, repeatedly. What remains open: this is one shared service process picking a tenant
+  namespace per request, not an isolated per-tenant pod/capsule (see
+  [01-GGEN-AS-IAAS](01-GGEN-AS-IAAS.md)); the receipt volume and the attempt log both live on
+  the pod's local `emptyDir` (no PVC), so they do not survive a pod restart; and the receipt's
+  own signed bytes still carry `origin: null` (the CLI has no `--receipt-origin` flag) — only
+  the HTTP response envelope is tagged, disclosed honestly in the module's own docstring rather
+  than forged into the signed receipt.
 - **SaaS.** A real capability-purchase-to-actuation-receipt path demonstrated: a purchase event
   resolving to one concrete actuation receipt the buyer can independently verify, with a hard
   refusal (not a warning) at any trust-tier boundary the purchase would otherwise cross, mirroring
-  `verify_trust_tier`'s existing `Err`-not-warning discipline.
+  `verify_trust_tier`'s existing `Err`-not-warning discipline. **Still open** — no purchase/
+  fulfillment path exists in `platform-console/services/ggen/app.py` or elsewhere in this
+  session's changes; `/provision` has no caller-facing purchase or entitlement concept, only an
+  ontology/packs request body.
 
-Until each of those three demonstrations exists and is cited the way `catalog/rails.toml`'s
-existing 19 rails cite their own evidence files, the honest standing for `ggen_paas` and
-`ggen_saas` is `CANDIDATE`. `ggen_iaas` can plausibly enter at `PARTIAL_ALIVE`, matching ggen's
-own repo-level pin in `status/repos/ggen.md`, on the strength of the sync/receipt loop that
-already exists — but even that requires the rail's own evidence citation, not an inherited
-assumption from the repo-level standing.
+Since this was written, `catalog/rails.toml` has in fact gained a ggen rail — but as one
+repo-level entry (`id = "ggen"`, `standing = "PARTIAL_ALIVE"`, `evidence = [
+"platform-console/services/ggen/app.py", "docs/jira/v26.8.18/02-GGEN-AS-PAAS.md"]`), not the
+three-way `ggen_iaas`/`ggen_paas`/`ggen_saas` split this ticket proposes. That single rail's
+`PARTIAL_ALIVE` standing is defensible for the IaaS-level receipt loop and for the
+PaaS-level tenant-namespace/origin/attempt-log mechanics described above (both real,
+independently verified, still not confirmed live in a running cluster as of 2026-08-18 — a
+verification attempt against `kind-platform-eng-colima` found `docker ps` reporting the kind
+control-plane container up, but `kubectl get nodes` failing with a TLS handshake timeout on two
+retries; the cluster's API server was unreachable and no build/load/apply/curl verification could
+be performed, so standing remains `PARTIAL_ALIVE` on code-level evidence alone, not live-cluster
+evidence), but it is not yet
+defensible for the SaaS layer, which has no capability-purchase or catalog surface at all — a
+single undifferentiated `PARTIAL_ALIVE` rail risks reading as covering all three layers when
+only two have any real evidence. The per-layer split this ticket proposes remains the more
+honest shape: it would let `ggen_iaas` and `ggen_paas` carry their own real, cited evidence
+while `ggen_saas` stays `CANDIDATE` until a real purchase/fulfillment path exists — rather than
+one rail's `PARTIAL_ALIVE` standing being read as covering ground it does not yet cover.
 
 ## See Also
 

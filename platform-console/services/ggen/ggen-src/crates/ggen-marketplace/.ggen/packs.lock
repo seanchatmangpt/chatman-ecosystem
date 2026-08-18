@@ -1,0 +1,36 @@
+{
+  "packs": {
+    "io.ggen.tests.default-ok": {
+      "version": "1.0.0",
+      "source": {
+        "type": "Local",
+        "path": "/Users/sac/.cache/tmp/.tmpVC3NgK/install-target"
+      },
+      "integrity": "sha256-ad7525c48153df50e088040dcb0afc65b529180ed4eaa85f4719acd065022b34",
+      "installed_at": "2026-08-18T20:00:05.864608Z",
+      "dependencies": []
+    },
+    "io.ggen.trust-ok": {
+      "version": "1.0.0",
+      "source": {
+        "type": "Local",
+        "path": "/Users/sac/.cache/tmp/.tmpxzuae2/install-target"
+      },
+      "integrity": "sha256-bb5f7466bdab6b24c100a4120070206e3f59d27e9522069a318c52639a8dc957",
+      "installed_at": "2026-08-18T20:34:30.992287Z",
+      "dependencies": []
+    },
+    "io.ggen.wrapper-ok": {
+      "version": "1.0.0",
+      "source": {
+        "type": "Local",
+        "path": "/Users/sac/.cache/tmp/.tmpTamqTS/install-target"
+      },
+      "integrity": "sha256-e393a775eacd397ccab2f09d33ccf2608dc89ba9b8f0267eeb98c53ae051003f",
+      "installed_at": "2026-08-18T20:34:30.995601Z",
+      "dependencies": []
+    }
+  },
+  "updated_at": "2026-08-18T20:34:30.995602Z",
+  "ggen_version": "26.8.4"
+}

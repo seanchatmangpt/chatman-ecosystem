@@ -38,17 +38,20 @@ the packs, the rendered output tree) is a PaaS/SaaS concern layered on top.
 
 ## Why BRCE's invariant bites hardest here
 
-`CONSTITUTION.md`'s governing equation is `A = mu(O*), R = receipt(A)`: admitted observation to
-lawful manufacture to artifact to receipt, under the repeated invariant "Zero unreceipted
-actuation" — BRCE is the only lawful DO path; everything else can only submit intentions. At the
+`CONSTITUTION.md`'s governing equation is `A = μ(O*)` (admitted observation to lawful
+manufacture to artifact-with-evidence-backed-standing), under law 1, "Zero unreceipted
+actuation," and law 2, "Broker-only DO. Adapters submit intentions; the authority broker
+decides whether an actuation is lawful" — the mechanism this repo names BRCE elsewhere
+(`docs/09-brce-no-unreceipted-actuation.md`). At the
 PaaS and SaaS layers a tenant interacts through a curated surface (a pack registry, a console, an
 API) that can mediate every write. At the IaaS layer, by construction, a tenant has raw access to
 ggen's own Write stage — the fifth stage of the sync pipeline that actually touches the
 filesystem. That is precisely the point where "zero unreceipted actuation" is easiest to violate
 by omission: a tenant capsule that lets `sync run` execute without a receipt volume mounted, or
 without signing keys provisioned, produces real filesystem mutation with no admissible evidence
-trail — the exact failure mode `CONSTITUTION.md` names ("Derivation receipt != Actuation
-receipt") and the exact failure mode ggen's own `docs/jira/v26.7.16/` receipt-chain work exists to
+trail — the exact failure mode `docs/10-receipt-bifurcation.md` names ("Receipt validation
+should reject any attempt to satisfy BRCE with a derivation receipt") and the exact failure
+mode ggen's own `docs/jira/v26.7.16/` receipt-chain work exists to
 prevent inside the ggen repo. An IaaS layer that provisions compute without provisioning receipt
 custody as a co-equal, non-optional resource would reintroduce that gap at the ecosystem boundary
 even though ggen itself already closes it internally.
@@ -61,42 +64,64 @@ capsule boundary instead of inside a single binary invocation.
 
 ## What would need to be built (concrete, greenfield)
 
-None of the following exists today. Each item names the real chatman-ecosystem or ggen artifact
-it would extend or reuse, per the grounding facts for this ticket set:
+Status as of this pass, checked against the real files, not the other tickets' prose:
 
-- **A capsule provisioning API.** A new endpoint (illustrative example, not existing:
-  `POST /iaas/ggen/capsules`) that stands up one isolated `ggen sync`-pipeline instance per
-  tenant — pinned binary version, sandboxed the same way platform-console's per-tenant Postgres
-  pods already are today. `k8s/paas-rbac.yaml` and `k8s/network-policies.yaml` are the literal
-  templates to reuse: `paas-rbac.yaml`'s per-namespace least-privilege Role/RoleBinding pattern
-  (never a ClusterRole for tenant-writable resources) and `network-policies.yaml`'s
-  default-deny-plus-explicit-allow pattern (its own file notes the deliberate current caveat that
-  `[Ingress, Egress]` with an empty egress list blocks all egress including DNS, left for a
-  later narrow `*-allow-egress-dns-istiod` policy — a ggen capsule's NetworkPolicy would need
-  that same follow-up, since `sync run` needs no external network access in the base case but a
-  capsule's own DNS resolution still does).
-- **A receipt-volume lifecycle.** Provision, per capsule: one durable volume for
-  `.ggen-v2/receipt.json` + `.ggen-v2/receipt-log.jsonl`, sized and retained independently of the
-  capsule's compute lifecycle (a capsule can be torn down and recreated; its receipt history must
-  not be). `k8s/resource-quotas.yaml`'s per-project quota pattern is the template for bounding
-  this volume's growth per tenant.
-- **A signing-key custody model.** Decide and implement where `.ggen/keys/signing.key` lives for
-  a provisioned capsule — generated in-capsule on first sync (mirroring
-  `crates/ggen-engine/src/keys.rs`'s existing single-machine behavior) versus injected from an
-  ecosystem-level secret store. `platform-console`'s own `SONY-READINESS-GAP-CLOSURE.md` already
-  flags "Secrets-at-rest encryption (envelope/KMS) for k8s Secrets" as an open IaaS-layer gap for
-  the console generally; a ggen capsule's signing key inherits that same open gap and should not
-  be treated as solved by this proposal.
-- **A capsule-to-BRCE admission check.** Before a capsule's `sync run` is allowed to write,
-  confirm receipt volume + keypair are both bound (see the invariant discussion above). No
-  existing chatman-ecosystem mechanism performs this check for ggen specifically; it would be new
-  code, most naturally living beside wherever the capsule provisioning API above is implemented.
-- **Tenant bring-your-own ontology.** The capsule accepts a tenant-supplied `.specify/*.ttl` and
-  `ggen.toml` at provisioning or mount time — IaaS does not ship, validate, or interpret ontology
-  content; that is explicitly out of scope here and belongs at the PaaS layer
-  (see [02-GGEN-AS-PAAS](02-GGEN-AS-PAAS.md)) where marketplace packs and qualified reusable
-  ontology enter the picture (`docs/51-ecosystem-map.md`'s pipeline: open-ontologies →
-  ggen-marketplace → ggen).
+- **A capsule provisioning API — done at the process level, still one shared process, not one
+  capsule per tenant.** `platform-console/services/ggen/app.py` (560 lines) has a real
+  `POST /provision` endpoint (not the illustrative `POST /iaas/ggen/capsules` shape below, but
+  the same real substance): it shells out to the real `ggen` binary (`run_ggen`,
+  `subprocess.run`), runs the real `ggen init` → ontology write → `ggen packs install` →
+  `ggen sync run` sequence (`provision()`/`_provision_inner()`, `app.py:312-481`), and returns
+  the real BLAKE3-chained, ed25519-signed receipt plus an independent `ggen receipt verify`
+  result inline in the response (`receipt_verification.result`) — this was independently
+  verified this session (`signature_valid: true`). Since this ticket was first drafted,
+  per-tenant scoping has landed: `/provision` now requires a `project` field, and
+  `resolve_tenant_namespace()` (`app.py:214-236`) picks or provisions a real Kubernetes
+  namespace for it via `k8s_request()`'s in-cluster ServiceAccount HTTPS client, with each
+  run directory nested under `WORKSPACE_ROOT/<namespace>/run-<uuid>` instead of one shared
+  flat run directory. What remains open: this is a namespace-scoped run directory inside one
+  still-shared service process, not a separate pod/capsule per tenant, and there is still no
+  `paas-rbac.yaml`/`network-policies.yaml` RoleBinding/NetworkPolicy scoping that namespace to
+  a single tenant's capsule the way those two files already do for other per-tenant workloads.
+  `k8s/services-and-deployments.yaml:489` now points the `ggen-status` Deployment at
+  `image: platform-console/ggen-status:v26.8.18-live` (no longer `:latest`), so the manifest has
+  been updated toward the new `/provision` code — but this pass could not reach a live cluster
+  (`kubectl get pods -n ggen` timed out) to confirm the pod is actually running that image.
+  State this precisely: the provisioning logic is real, tenant-namespace-scoped, and verified
+  locally; the manifest now targets a rebuilt image; actual live-pod confirmation is unverified.
+- **A receipt-volume lifecycle — still open.** `app.py` writes receipts under
+  `WORKSPACE_ROOT` (`/app/state/runs/run-<uuid>/.ggen-v2/receipt.json` +
+  `receipt-log.jsonl`), and the module's own docstring states plainly that no PersistentVolume
+  backs `/app/state` for this Deployment today, so a pod restart loses all prior run receipts —
+  this is the same gap the ticket originally named, not yet closed. The per-project managed-addon
+  precedent that landed this session (`platform-console/app/lib/redis.ts`'s
+  `provisionProjectRedis` and `platform-console/app/lib/queue.ts`'s `provisionProjectQueue`, each
+  a real Deployment+Service+NetworkPolicy+Secret provisioned per project) is a real, closer
+  template for a future receipt volume than `k8s/resource-quotas.yaml` alone — but neither module
+  provisions a PVC (both explicitly use `emptyDir`/no volume, per their own doc comments), so
+  durable per-tenant receipt storage remains unbuilt.
+- **A signing-key custody model — partially done.** `app.py`'s `resolve_signing_key()`
+  (`app.py:251-269`) implements a real, working precedence — `GGEN_SIGNING_KEY` env var if the
+  operator injected one, else a previously-generated key at `SIGNING_KEY_PATH`, else a freshly
+  generated `secrets.token_hex(32)` seed persisted with `0o600` perms — resolved once at process
+  start and exported into every `ggen` subprocess's environment. This is a real decision and a
+  real implementation, not illustrative. What remains open, and is disclosed in the module's own
+  docstring rather than hidden: `SIGNING_KEY_PATH` has no PersistentVolume backing it either, so
+  a pod restart mints a new key and orphans receipts signed under the old one; wiring a PVC or a
+  real k8s Secret is still needed for production durability.  `SONY-READINESS-GAP-CLOSURE.md`'s
+  "Secrets-at-rest encryption (envelope/KMS) for k8s Secrets" gap still applies unchanged.
+- **A capsule-to-BRCE admission check — still open.** `_provision_inner()` refuses to run only
+  when the `ggen` binary itself is missing (`app.py:354-361`, a real 503 refusal, not a
+  synthesized "ok") or when tenant-namespace resolution fails (`app.py:371-379`, a real 502
+  refusal); it does not refuse when the receipt volume is non-durable or when the signing key was
+  just freshly minted rather than operator-provisioned — both conditions the invariant discussion
+  above says should gate `sync run`. No such admission check exists yet.
+- **Tenant bring-your-own ontology — done, in the per-tenant form this layer needs.**
+  `/provision`'s request body already carries a caller-supplied `ontology` string, written
+  verbatim to `run_dir / "schema" / "domain.ttl"` before `sync run` (`app.py:402-404`), inside
+  the now-tenant-namespaced `run_dir` described above — the service does not validate or
+  interpret its content, matching the ticket's original scope split (IaaS accepts; PaaS/SaaS
+  validate and curate, see [02-GGEN-AS-PAAS](02-GGEN-AS-PAAS.md)).
 
 ## Rail registration
 

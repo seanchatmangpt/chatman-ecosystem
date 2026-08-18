@@ -1,0 +1,10 @@
+---
+to: infra/scripts/smoke/wasm-node.sh
+sparql:
+  row: |
+    PREFIX tcps: <http://seanchatmangpt.github.io/packs/tcps-release#>
+    SELECT ?body WHERE {
+      tcps:WasmNodeSmokeShScript tcps:artifactBody ?body .
+    } ORDER BY ?body
+---
+{{ row[0].body }}

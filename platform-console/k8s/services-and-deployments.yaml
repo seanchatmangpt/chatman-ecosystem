@@ -469,17 +469,48 @@ spec:
     metadata:
       labels:
         app: ggen-status
+      annotations:
+        # ggen namespace has istio-injection: enabled + pod-security.kubernetes.io/enforce:
+        # restricted. The istio-init sidecar (NET_ADMIN/NET_RAW, runAsUser 0) cannot satisfy
+        # the restricted PodSecurity profile, so mesh injection is disabled for this plain
+        # status/provision HTTP service until istio-cni (init-container-free injection) is
+        # adopted cluster-wide.
+        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: ggen-status-reader
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: ggen-status
-          image: platform-console/ggen-status:latest
+          image: platform-console/ggen-status:v26.8.18-live
           imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
           ports:
             - containerPort: 8080
           env:
             - name: PORT
               value: "8080"
+            # Matches services/ggen/Dockerfile's ENV defaults (image-build time) --
+            # made explicit here so the manifest itself carries a record of these
+            # paths, since app.py's os.environ.get() fallbacks aren't visible from
+            # a manifest-only read.
+            - name: GGEN_BIN
+              value: "/usr/local/bin/ggen"
+            - name: WORKSPACE_ROOT
+              value: "/app/state/runs"
+            - name: SIGNING_KEY_PATH
+              value: "/app/state/keys/signing.key"
+            - name: PROVISION_LOG_PATH
+              value: "/app/state/ggen-paas-provision-log.jsonl"
           resources:
             requests:
               cpu: "50m"
@@ -552,15 +583,35 @@ spec:
         app: ggen-marketplace-status
     spec:
       serviceAccountName: ggen-marketplace-status-reader
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: ggen-marketplace-status
-          image: platform-console/ggen-marketplace-status:latest
+          image: platform-console/ggen-marketplace-status:v26.8.18-live
           imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
           ports:
             - containerPort: 8080
           env:
             - name: PORT
               value: "8080"
+            # Matches services/ggen-marketplace/Dockerfile's ENV defaults (image-build
+            # time) -- made explicit here so the manifest itself carries a record of
+            # these paths, since app.py's os.environ.get() fallbacks aren't visible
+            # from a manifest-only read.
+            - name: GGEN_BIN
+              value: "/usr/local/bin/ggen"
+            - name: GGEN_PACKS_DIR
+              value: "/app/packs-registry"
           resources:
             requests:
               cpu: "50m"

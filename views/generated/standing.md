@@ -16,6 +16,7 @@
 | `document_connector` | `Alive` | `SELF` | crates/ecosystem-runtime/src/lib.rs<br>catalog/documents.toml |
 | `evidence` | `Alive` | `SELF` | crates/ecosystem-core/src/lib.rs<br>schemas/receipt.schema.json |
 | `gall_checkpoints` | `Alive` | `SELF` | .github/workflows/gall.yml<br>catalog/repositories.toml |
+| `ggen` | `PartialAlive` | `SELF` | platform-console/services/ggen/app.py<br>docs/jira/v26.8.18/02-GGEN-AS-PAAS.md |
 | `github_connector` | `Alive` | `SELF` | crates/ecosystem-runtime/src/lib.rs<br>.github/workflows/github-smoke.yml |
 | `governor_runtime` | `Alive` | `SELF` | crates/ecosystem-runtime/src/lib.rs<br>catalog/automations.toml |
 | `mcp_boundary` | `Alive` | `SELF` | crates/ecosystem-runtime/src/lib.rs<br>docs/ARCHITECTURE.md |

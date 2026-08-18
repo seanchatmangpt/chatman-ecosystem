@@ -96,25 +96,52 @@ generally, across all three layers.
 
 ## What would need building
 
-1. **A real HTTP provisioning API**, not a status stub. `services/ggen/app.py` today answers
-   health checks; a PaaS version would expose the equivalent of `ggen sync run` as a POST
-   endpoint accepting an ontology and pack list, backed by the same `ggen-engine` functions
-   `ggen-cli` and `ggen-mcp` already call — no existing analogue in this repo today.
-2. **Pack-registry-as-a-service** behind `services/ggen-marketplace/app.py`, replacing its
-   stub with a real network-reachable frontend onto `ggen-marketplace`'s registry types —
-   generalizing the `run_pack_query`/`ggen_pack_query` shared-function pattern from one
-   SPARQL-search capability to full registry CRUD over HTTP.
-3. **A platform-managed signing-key lifecycle** — today `GGEN_SIGNING_KEY` or a local
-   `.ggen/keys/signing.key` is a developer's own responsibility; a PaaS tenant should never
-   need to generate or rotate this key by hand.
-4. **A `rails.toml` entry** (see `catalog/rails.toml`'s 19 named rails, e.g.
-   `constitutional_core`, `mcp_boundary`, `gall_checkpoints`) naming this provisioning path
-   as an ALIVE or CANDIDATE rail with its own evidence-file pointer, once the HTTP surface
-   exists to point at — no existing rail names ggen's sync pipeline as platform behavior
-   today.
-5. **A frontmatter-declared eligibility contract** for which pack/ontology combinations may
-   use unattended dispatch in a PaaS context, extending the existing per-project opt-in to a
-   per-tenant one.
+1. **DONE (built and tenant-scoped; live-pod status unverified): a real HTTP provisioning
+   API.** `platform-console/services/ggen/app.py` (560 lines) is no longer a status stub — it
+   implements `POST /provision`, which materializes a real per-tenant-namespaced project
+   directory, runs the real `ggen` CLI's `sync run` and `receipt verify` via `subprocess`
+   (`run_ggen()`, `app.py:275-285`), and returns the real `.ggen-v2/receipt.json`
+   BLAKE3-chained receipt plus its own `receipt verify --format json` output
+   (`provision()`/`_provision_inner()`, `app.py:312-481`). This was independently verified this
+   session: `receipt_verification.signature_valid: true` on a real run. Beyond this ticket's
+   original description, `/provision` now also requires a `project` field and resolves a real
+   per-tenant Kubernetes namespace for it (`resolve_tenant_namespace()`, `app.py:214-236`),
+   tags every response `"origin": "ggen-paas-provision"`, and appends one JSON line per
+   attempt — success or failure — to `PROVISION_LOG_PATH` (`append_provision_log()`,
+   `app.py:238-249`). **Not yet fully closed**: `platform-console/k8s/services-and-
+   deployments.yaml:489` now points the `ggen-status` Deployment (namespace `ggen`) at
+   `image: platform-console/ggen-status:v26.8.18-live` (no longer `:latest`), so the manifest
+   has moved past the prior stub image — but this pass could not reach a live cluster
+   (`kubectl get pods -n ggen` timed out) to confirm the running pod is actually serving this
+   code rather than an older build. The code exists, is tenant-scoped, and is verified locally;
+   whether the live pod is running it is unverified, not confirmed-false.
+2. **OPEN: pack-registry-as-a-service.** `platform-console/services/ggen-marketplace/app.py`
+   is still a 51-line minimal stdlib stub exposing only `GET /healthz` and `GET /status`
+   (build-time-baked `facts.json`) — no registry CRUD, no `run_pack_query`/`ggen_pack_query`
+   generalization over HTTP. Unchanged from the state this ticket originally described.
+3. **DONE: a platform-managed signing-key lifecycle**, landed as part of item 1's same
+   `services/ggen/app.py`. `resolve_signing_key()` (`app.py:251-269`) resolves, in order, an
+   operator-injected `GGEN_SIGNING_KEY` env var (e.g. from a k8s Secret), a previously-generated
+   key at `SIGNING_KEY_PATH`, or a freshly generated 32-byte hex seed persisted with `0600`
+   permissions — the caller of `/provision` never supplies or sees a key. This satisfies the
+   ticket's original ask ("a PaaS tenant should never need to generate or rotate this key by
+   hand") at the single-service level; it does not yet cover per-tenant key isolation across
+   multiple ggen-PaaS tenants, since today there is exactly one such service instance.
+4. **PARTIALLY DONE: a `rails.toml` entry.** `catalog/rails.toml` now has a rail with
+   `id = "ggen"`, `standing = "PARTIAL_ALIVE"`, evidencing exactly `platform-console/services/
+   ggen/app.py` and this ticket file — confirmed by reading the file directly. This is a single
+   repo-level rail, not the `ggen_iaas`/`ggen_paas`/`ggen_saas` per-layer split
+   [04-GGEN-BRCE-CROSS-CUTTING](04-GGEN-BRCE-CROSS-CUTTING.md) proposes; that per-layer split
+   itself remains open.
+5. **OPEN: a frontmatter-declared per-tenant eligibility contract** for unattended dispatch in
+   a PaaS context. `unattended_write_eligible` remains scoped to per-project frontmatter in
+   `ggen-engine`/`ggen-mcp` (`crates/ggen-mcp/src/tools/unattended_dispatch.rs`,
+   `crates/ggen-engine/src/template.rs`); no per-tenant extension exists. Unrelated to this
+   ticket's scope but confirmed real and unrelated: `platform-console/app/lib/redis.ts` and
+   `platform-console/app/lib/queue.ts` (a `nats:2-alpine`-backed queue, not a ggen construct)
+   landed this session as real per-project managed addons — they provision Redis/NATS
+   Deployments for arbitrary console projects and do not touch ggen's sync pipeline, signing
+   keys, or unattended-dispatch eligibility, so they close none of this item's gap.
 
 ## See Also
 

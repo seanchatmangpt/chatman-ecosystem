@@ -13,18 +13,23 @@ analogue in this repo implements that catalog or delivery path today; this propo
 
 ## Why this is not a new concept, only a new audience
 
-ggen's own pack ecosystem in `~/ggen-marketplace` already models "capability" as a
-first-class, purchasable/measurable unit — this is a genuine architectural fact, not an
-analogy invented for this ticket. Three real packs make the point directly:
+ggen's own pack ecosystem already models "capability" as a first-class,
+purchasable/measurable unit — this is a genuine architectural fact, not an analogy
+invented for this ticket. Three real packs make the point directly:
 
-- `fortune5-required-capabilities-pack` (26.7.30) — "the bounded 19-capability,
-  57-surface Fortune-5 control plane," per its own `pack.toml` description
-  (transcribed verbatim in `/Users/sac/ggen/.claude/rules/architecture.md`'s Pack
-  Inventory table).
-- `pcq-marketplace-pack` (26.8.2) — "a real-time Next.js 16 + deck.gl capability
-  marketplace with fixed-supply PCQ settlement, SSE streams, receipts."
-- `sbb-capability-density-pack` (26.8.3) — "a density unit is one [Solution Building
-  Block]," an explicit admitted quantitative unit for a capability.
+- `~/ggen-marketplace/packs/fortune5-required-capabilities-pack/pack.toml` (26.7.30) —
+  "the bounded 19-capability, 57-surface Fortune-5 control plane," per its own
+  `pack.toml` description (transcribed verbatim in
+  `/Users/sac/ggen/.claude/rules/architecture.md`'s Pack Inventory table).
+- `~/ggen-marketplace/packs/pcq-marketplace-pack/pack.toml` (26.8.2) — "a real-time
+  Next.js 16 + deck.gl capability marketplace with fixed-supply PCQ settlement, SSE
+  streams, receipts."
+- `/Users/sac/ggen/packs/sbb-capability-density-pack/pack.toml` (26.8.3) — corrected
+  location: this pack lives in the `ggen` repo's own `packs/`, not in the
+  `~/ggen-marketplace` content repo the other two packs above live in. "A density unit
+  is one unique Git commit with a complete observed manufacturing and falsification
+  evidence chain," per its own `pack.toml` description — an explicit admitted
+  quantitative unit for a capability.
 
 A ggen-SaaS product catalog is therefore an act of exposure, not invention: take the
 `capability`-as-unit vocabulary that already lives in these packs' ontologies and put a
@@ -60,9 +65,11 @@ tenant offering, not a separate system:
 
 - "Tamper-evident, isolated audit log store" — a ggen-SaaS tenant's receipt log
   (`receipt-log.jsonl` per invocation) needs the same tamper-evidence guarantee applied
-  to it that the gap-closure doc asked for generally; today nothing in
-  `platform-console/services/ggen/app.py` (currently a bare health/status stub, per the
-  grounding facts) stores or isolates receipt history per tenant.
+  to it that the gap-closure doc asked for generally; `platform-console/services/ggen/
+  app.py` now writes each run's receipt under a per-tenant-namespaced directory (see the
+  Grounding update below) and appends every provisioning attempt to a durable JSONL log, but
+  neither is tamper-evident (no hash-chaining or signing of the log itself) and neither is a
+  buyer-queryable isolated store — the gap this SaaS-layer item names is narrowed, not closed.
 - "Content/IP protection primitives (signed, expiring asset URLs)" — a buyer's generated
   Next.js CRUD app or ERRC report is IP the moment it's delivered; ggen-SaaS needs the
   same signed/expiring URL mechanism the gap-closure doc calls for, applied to generated
@@ -81,6 +88,28 @@ the fix inside the same "control plane, not a source-code monorepo" posture
 
 ## What would need to be built
 
+Grounding update: since this ticket was written, `platform-console/services/ggen/app.py`
+gained a real `POST /provision` endpoint (subprocess-driving the actual `ggen init` /
+`ggen packs install` / `ggen sync run` / `ggen receipt verify` pipeline, resolving a
+platform-managed signing key per the precedence documented in the file's own module
+docstring) that returns a real BLAKE3-chained, ed25519-signed `ReceiptRecord`, independently
+re-verified (`receipt_verification.result.signature_valid: true`), and — beyond what this
+ticket originally described — now resolves a real per-tenant Kubernetes namespace
+(`resolve_tenant_namespace()`), nests each run under it, tags the response with a BRCE
+origin, and appends every attempt to a durable `PROVISION_LOG_PATH` JSONL log. This closes
+02-GGEN-AS-PAAS's item 1 and gives the SaaS layer below a real, tenant-namespaced receipt to
+point at instead of a hypothetical one. `platform-console/k8s/services-and-deployments.yaml`
+now points the `ggen-status` Deployment at `image: platform-console/ggen-status:v26.8.18-live`
+(no longer `:latest`) — but this pass could not reach a live cluster to confirm the running
+pod actually serves this image, so whether it is live in production is unverified rather than
+confirmed either way. None of this ticket's five items are satisfied by that endpoint or by
+the real per-project managed Redis (`platform-console/app/lib/redis.ts`) / NATS-queue
+(`platform-console/app/lib/queue.ts`) addons that also landed this session — both addons
+provision per-project cache/queue infrastructure with no tenant-billing, capability-catalog,
+or receipt-metering concern wired to them, and `platform-console/services/autofde-lab-mcp/`
+is an unrelated MCP service (no catalog, metering, or SaaS-delivery code). All five items
+below remain open, though item 3's tenant-isolation gap is narrower than before (see below).
+
 1. **Capability catalog UI** — reuses the console app's existing self-service UX pattern
    (the real Next.js console in `platform-console/` that already POSTs
    Supabase-operator-style CRDs and polls `status.conditions[Ready]`, per the PaaS-layer
@@ -91,7 +120,8 @@ the fix inside the same "control plane, not a source-code monorepo" posture
    `ggen_marketplace::packs_registry::sparql_executor::run_pack_query`) is direct
    precedent that pack-registry facts can already be queried by a non-CLI consumer — the
    catalog UI would be that same query surface with a storefront skin, not a new
-   query path.
+   query path. Still open — no catalog route or card component exists in
+   `platform-console/` today.
 2. **Per-invocation metering tied to receipts** — every `ReceiptRecord` already carries
    a chain hash and (per the ggen workspace's own "Bounded Unattended-Write Dispatcher"
    convention) an `origin` field distinguishing how a write was triggered. Extending
@@ -99,22 +129,38 @@ the fix inside the same "control plane, not a source-code monorepo" posture
    receipt emission (not off a separate, driftable counter) satisfies the "reduce
    drift" half of ggen's own coding-agent-mistakes gate: the receipt becomes the sole
    source of truth for what was billed, exactly as it is already the sole source of
-   truth for what was generated.
+   truth for what was generated. Still open, but on firmer ground than when this was
+   written: `services/ggen/app.py`'s `/provision` now really emits one of these
+   `ReceiptRecord`s per HTTP call, so the metering hook has a real event to attach to —
+   `provision()`'s response body has no tenant/subscription identifier field yet, and no
+   counter or billing sink consumes its `receipt` field today.
 3. **Tamper-evident, isolated audit log store** — the receipt-log rail already exists per
    invocation locally (`.ggen-v2/receipt-log.jsonl`); a ggen-SaaS tenant needs that log
    promoted to isolated, append-only, tenant-scoped storage the tenant (and only the
-   tenant) can query — the SONY gap item applied literally, not reinvented.
+   tenant) can query — the SONY gap item applied literally, not reinvented. Narrower than
+   before, still open: `/provision` now writes each run's `receipt-log.jsonl` under a
+   per-tenant-namespaced `WORKSPACE_ROOT/<namespace>/run-<uuid>` directory rather than a flat
+   shared one, and every provisioning attempt is appended to `PROVISION_LOG_PATH` — a real
+   filesystem-level isolation boundary between tenants' runs now exists. What remains open:
+   this is still on the pod's local `emptyDir` filesystem (confirmed: `k8s/services-and-
+   deployments.yaml`'s `state` volume is `emptyDir: {}`, not a PVC), nothing survives a pod
+   restart, the log is not tamper-evident (no hash-chaining/signing of the log itself), and
+   there is no tenant-facing query surface — only the raw JSONL file on disk.
 4. **Signed, expiring asset URLs for delivered artifacts** — illustrative example, not
-   existing: when a subscriber's "compliant Next.js CRUD app" capability run completes,
-   the delivered archive would be served from a signed URL with an expiry, the same
-   primitive SONY-READINESS names for platform-console generally, rather than a bare
-   static-file link with no revocation or access boundary.
+   existing: `/provision`'s response inlines generated artifact file contents directly
+   in the JSON body (`provision()`'s `artifacts` dict) rather than serving them from any
+   URL, signed or otherwise; when a subscriber's "compliant Next.js CRUD app" capability
+   run completes, the delivered archive would need to move to a signed URL with an
+   expiry, the same primitive SONY-READINESS names for platform-console generally.
 5. **Trust-tier-aware capability pricing/gating** — `ggen-marketplace`'s existing
    `marketplace/install.rs`'s `verify_trust_tier` (returns `Err`, not a warning — a real,
    already-enforced fail-closed control) is the natural admission gate for which
    catalog capabilities a given subscription tier may invoke; a SaaS pricing tier maps
    onto pack trust tiers that already exist, rather than requiring a new authorization
-   model bolted on separately.
+   model bolted on separately. Still open — `/provision`'s pack-install loop (`packs
+   result` in `app.py`) accepts any pack ID unconditionally and reports
+   `installed`/`declared`/error per pack, with no trust-tier or subscription check
+   gating which pack IDs a given caller may pass.
 
 ## What this ticket does not resolve
 
