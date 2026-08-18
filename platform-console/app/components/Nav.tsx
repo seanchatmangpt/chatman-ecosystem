@@ -8,6 +8,7 @@ import NotificationBell from "@/components/NotificationBell";
 
 const links = [
   { href: "/", label: "Overview" },
+  { href: "/quickstart", label: "Quickstart" },
   { href: "/autofde-lab", label: "autofde-lab" },
   { href: "/gymact", label: "gymact" },
   { href: "/ggen", label: "ggen" },

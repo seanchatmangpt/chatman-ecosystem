@@ -9,6 +9,18 @@ per-namespace ResourceQuotas. It provisions and inspects real backing services t
 `SingleDatabase`) already installed on the cluster, and reads (never writes) Flux GitOps
 objects and cluster RBAC/NetworkPolicy state.
 
+## Get started in 5 minutes
+
+**[`/quickstart`](app/app/quickstart/page.tsx)** is the `aws configure` / `gcloud init` /
+Vercel CLI equivalent for this console: log in, open `/quickstart`, and download a real,
+personalized `quickstart.sh` that creates an API key, provisions a real project, waits for it
+to reach real `Ready` status, backs it up, and cleans up — five `curl` calls against this
+deployment's own real HTTP API, nothing simulated, tying together the API Keys, Projects, and
+Database Backups modules below into one runnable script instead of leaving a first-time user
+to find each module's page on their own. See `quickstart-script-runs-clean-end-to-end` in
+`evidence/control-evidence-bundle.json` for a real, unedited transcript of that exact script
+run start to finish against this live cluster.
+
 ## What "PaaS" concretely means here
 
 This is **not** a claim of hyperscaler-grade infrastructure. It genuinely does not provide
@@ -43,6 +55,7 @@ or global footprint.
 | Route | What it does | Backing evidence |
 |---|---|---|
 | `/login` | Two independent, additive login paths: the original seeded local-admin form, and a second real **identity federation** form (email/password signup/login against the live GoTrue instance's own user-facing REST API) -- see "Identity federation" below | `app/app/api/auth/gotrue-login/route.ts`, `app/app/api/auth/gotrue-signup/route.ts`, `lib/gotrue-auth.ts`, `lib/session.ts` |
+| `/quickstart` | **Getting-started quickstart** (AWS CLI getting-started / `gcloud init` / Vercel CLI equivalent): session-gated, any role. Generates a real, personalized `quickstart.sh` -- this deployment's real base URL (resolved from the request's own `Host` header) plus the viewer's own live session cookie, embedded so the script's first call can bootstrap without a browser -- demonstrating five real curl calls against this console's own API: create an API key (`/api/api-keys`), create a project (`/api/projects`), poll it to real `Ready` (`/api/projects`), run a real backup (`/api/projects/[name]/backups`), then delete the project (`/api/projects/[name]` DELETE, added alongside this page -- the console previously had no self-service project-deletion capability at all). No new backend capability beyond that one DELETE route; every other step reuses an API route that already existed. Download reuses `ManifestActions.tsx`'s `data:`-URL copy/download pattern from the IaC export page. See `quickstart-script-runs-clean-end-to-end` in `evidence/control-evidence-bundle.json` for the real, unedited transcript of this exact script run against this live cluster | `lib/quickstart.ts`, `app/app/quickstart/page.tsx`, `app/app/api/projects/[name]/route.ts`, `components/ManifestActions.tsx` |
 | `/projects` | Lists real `Project` CRs cluster-wide; form POSTs a paired `SingleDatabase` + `Project` manifest, reaching `Ready` end to end. `createProject`'s manifest sets `spec.auth`/`rest`/`realtime`/`functions`/`storage`/`studio` (not just `databaseRef`/`http`) so the operator actually stands up all 6 component Deployments+Services, not just the database -- a real defect (Ready=True with zero component Services created) was caught live and fixed during the `multi-project-tenancy-verified` pass, see `evidence/control-evidence-bundle.json` | `app/api/projects/route.ts`, `lib/k8s.ts` (`createProject`) |
 | `/projects/[name]/database` | Reads real Postgres/PostgREST `Service` objects (ClusterIP, ports, DNS names) | `lib/k8s.ts` |
 | `/projects/[name]/auth` | Proxies real GoTrue `/admin/users`, gated on `SUPABASE_SERVICE_ROLE_KEY` | `lib/gotrue.ts` |

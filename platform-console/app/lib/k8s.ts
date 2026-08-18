@@ -346,6 +346,68 @@ export async function createProjectWithDatabase(
   return projectResult;
 }
 
+/**
+ * Deletes a Project CR only (no paired database) -- the DELETE-verb
+ * counterpart to createProject above, same k8sRequest primitive
+ * deleteSecret already uses for a namespaced-resource DELETE. Idempotent:
+ * a 404 from the API server is treated the same honest-absence way
+ * getRawProject already does (an already-gone Project is not an error a
+ * cleanup step should fail on).
+ */
+export async function deleteProject(
+  namespace: string,
+  name: string,
+): Promise<K8sResult<null>> {
+  const result = await k8sRequest<unknown>(
+    `/apis/core.supabase.io/v1alpha1/namespaces/${encodeURIComponent(namespace)}/projects/${encodeURIComponent(name)}`,
+    "DELETE",
+  );
+  if (!result.ok) {
+    if (/not found/i.test(result.error)) return { ok: true, data: null };
+    return result;
+  }
+  return { ok: true, data: null };
+}
+
+/** DELETE-verb counterpart to createSingleDatabase above. Same idempotent
+ * not-found handling as deleteProject. */
+export async function deleteSingleDatabase(
+  namespace: string,
+  name: string,
+): Promise<K8sResult<null>> {
+  const result = await k8sRequest<unknown>(
+    `/apis/core.supabase.io/v1alpha1/namespaces/${encodeURIComponent(namespace)}/singledatabases/${encodeURIComponent(name)}`,
+    "DELETE",
+  );
+  if (!result.ok) {
+    if (/not found/i.test(result.error)) return { ok: true, data: null };
+    return result;
+  }
+  return { ok: true, data: null };
+}
+
+/**
+ * Deletes a Project CR and its paired SingleDatabase CR -- the teardown
+ * counterpart to createProjectWithDatabase, used by the self-service
+ * DELETE /api/projects/[name] route (the cleanup step of the /quickstart
+ * flow). Deletes the Project first, then its database, mirroring
+ * createProjectWithDatabase's own database-then-project creation order in
+ * reverse -- the Project's spec.databaseRef only makes sense to remove
+ * once nothing still references it.
+ */
+export async function deleteProjectWithDatabase(
+  project: SupabaseProject,
+): Promise<K8sResult<null>> {
+  const projectResult = await deleteProject(project.namespace, project.name);
+  if (!projectResult.ok) return projectResult;
+
+  if (project.databaseRefName) {
+    const dbResult = await deleteSingleDatabase(project.namespace, project.databaseRefName);
+    if (!dbResult.ok) return dbResult;
+  }
+  return { ok: true, data: null };
+}
+
 // -------------------------------------------------------- Raw CR (IaC/drift)
 //
 // Real, full-fidelity single-object GETs for the Infrastructure-as-Code

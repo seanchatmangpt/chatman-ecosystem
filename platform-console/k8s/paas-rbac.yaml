@@ -42,17 +42,21 @@ metadata:
   name: platform-console-paas
 rules:
   # Projects module: list/watch Supabase Project CRs cluster-wide for the
-  # /projects list page, create for the "Create project" form. No
-  # update/patch/delete -- this console only ever creates or reads.
+  # /projects list page, create for the "Create project" form. delete was
+  # added for the /quickstart flow's real cleanup step
+  # (deleteProject/deleteProjectWithDatabase, lib/k8s.ts) -- self-service
+  # lifecycle completion (create -> read -> delete), still no update/patch
+  # (this console never mutates a Project's spec in place).
   - apiGroups: ["core.supabase.io"]
     resources: ["projects"]
-    verbs: ["get", "list", "watch", "create"]
-  # Projects module (createProjectWithDatabase): create the SingleDatabase
-  # CR paired with each new Project via spec.databaseRef -- same verbs, same
-  # no-update/patch/delete reasoning as the projects rule above.
+    verbs: ["get", "list", "watch", "create", "delete"]
+  # Projects module (createProjectWithDatabase/deleteProjectWithDatabase):
+  # create + delete the SingleDatabase CR paired with each Project via
+  # spec.databaseRef -- same verbs, same reasoning as the projects rule
+  # above.
   - apiGroups: ["core.supabase.io"]
     resources: ["singledatabases"]
-    verbs: ["get", "list", "watch", "create"]
+    verbs: ["get", "list", "watch", "create", "delete"]
   # Database module: read Service objects (DNS name + port only, never
   # Secrets) in a project's namespace to show real connection info.
   - apiGroups: [""]
