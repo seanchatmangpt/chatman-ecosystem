@@ -331,6 +331,138 @@ export async function listNamespaceServices(
   return { ok: true, data: items };
 }
 
+// ------------------------------------------------------- Service Discovery
+//
+// Real hyperscaler-PaaS-style Service Discovery primitive (AWS Route53
+// private hosted zones / GCP Cloud DNS internal zones / Azure Private DNS
+// equivalent) -- not decorative, because this cluster's actual internal
+// DNS/service-discovery layer already exists and every other module's
+// cluster-internal URLs (the Database module's Postgres/PostgREST hosts,
+// the Backups module's `<stem>.<namespace>.svc.cluster.local` pg_dump
+// target) already depend on it: CoreDNS resolves `<svc>.<namespace>.svc.
+// cluster.local` to a Service's ClusterIP because the Service+Endpoints
+// objects are the real, live source of truth CoreDNS's kubernetes plugin
+// reads directly from the API server -- this module reads that exact same
+// pair of objects, not a separate DNS-specific API. `listNamespaceServices`
+// above already provides the DNS-name-bearing half (Service); the
+// Endpoints half below adds the load-bearing "is this record actually
+// resolving to something healthy" signal -- how many backing Pod IPs are
+// currently Ready versus configured, the thing a DNS name alone cannot
+// tell you. No new RBAC for Services (already granted cluster-wide by the
+// `services` rule above); Endpoints get their own new cluster-wide rule
+// in `k8s/paas-rbac.yaml`, same sensitivity class (workload IPs, not
+// secrets) as the Services/Deployments/Roles already granted there.
+
+export interface K8sEndpointSubsetAddress {
+  ip: string;
+  podName: string | null;
+}
+
+export interface K8sServiceEndpoints {
+  name: string;
+  namespace: string;
+  readyAddresses: K8sEndpointSubsetAddress[];
+  notReadyAddresses: K8sEndpointSubsetAddress[];
+}
+
+interface EndpointsListResponse {
+  items?: Array<{
+    metadata: { name: string; namespace: string };
+    subsets?: Array<{
+      addresses?: Array<{ ip: string; targetRef?: { kind?: string; name?: string } }>;
+      notReadyAddresses?: Array<{ ip: string; targetRef?: { kind?: string; name?: string } }>;
+    }>;
+  }>;
+}
+
+function toAddress(a: { ip: string; targetRef?: { kind?: string; name?: string } }): K8sEndpointSubsetAddress {
+  return { ip: a.ip, podName: a.targetRef?.kind === "Pod" ? a.targetRef.name ?? null : null };
+}
+
+/**
+ * Lists real core/v1 Endpoints in one namespace -- one object per Service
+ * of the same name (the endpoint-controller creates/maintains this
+ * automatically from the Service's selector matching real Pod IPs, the
+ * same object CoreDNS's kubernetes plugin reads to answer SRV/A queries
+ * for that Service's DNS name). `readyAddresses` are backing Pod IPs
+ * currently passing readiness (what a client actually gets routed to
+ * today); `notReadyAddresses` are Pod IPs the Service selects but that
+ * have not yet passed a readiness probe -- kept separate, never merged,
+ * so callers can distinguish "0 ready" from "misconfigured selector,
+ * nothing at all".
+ */
+export async function listEndpoints(namespace: string): Promise<K8sResult<K8sServiceEndpoints[]>> {
+  const result = await k8sRequest<EndpointsListResponse>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/endpoints`,
+  );
+  if (!result.ok) return result;
+  const items = (result.data.items ?? []).map((item) => {
+    const ready: K8sEndpointSubsetAddress[] = [];
+    const notReady: K8sEndpointSubsetAddress[] = [];
+    for (const subset of item.subsets ?? []) {
+      for (const a of subset.addresses ?? []) ready.push(toAddress(a));
+      for (const a of subset.notReadyAddresses ?? []) notReady.push(toAddress(a));
+    }
+    return {
+      name: item.metadata.name,
+      namespace: item.metadata.namespace,
+      readyAddresses: ready,
+      notReadyAddresses: notReady,
+    };
+  });
+  return { ok: true, data: items };
+}
+
+export interface ServiceDiscoveryRecord {
+  name: string;
+  namespace: string;
+  dns: string;
+  clusterIP: string | null;
+  ports: Array<{ name?: string; port: number; targetPort?: number | string; protocol: string }>;
+  /** Number of backing Pod IPs currently passing readiness -- what this
+   * DNS name actually routes traffic to right now, read live from the
+   * matching Endpoints object. `null` when no Endpoints object exists at
+   * all for this Service name (a real, honest "no backing record" state,
+   * distinct from 0/0). */
+  readyEndpoints: number | null;
+  totalEndpoints: number | null;
+}
+
+/**
+ * Combines real Services (the DNS name + ClusterIP half) with real
+ * Endpoints (the "is it actually resolving to something healthy" half)
+ * for one namespace -- one HTTP round trip each, joined client-side by
+ * Service/Endpoints name, which is always identical for a same-namespace
+ * pair (the endpoint-controller's own naming convention, never a guess).
+ */
+export async function listServicesWithEndpoints(
+  namespace: string,
+): Promise<K8sResult<ServiceDiscoveryRecord[]>> {
+  const [servicesResult, endpointsResult] = await Promise.all([
+    listNamespaceServices(namespace),
+    listEndpoints(namespace),
+  ]);
+  if (!servicesResult.ok) return servicesResult;
+  if (!endpointsResult.ok) return endpointsResult;
+
+  const endpointsByName = new Map(endpointsResult.data.map((e) => [e.name, e]));
+  return {
+    ok: true,
+    data: servicesResult.data.map((svc) => {
+      const eps = endpointsByName.get(svc.name);
+      return {
+        name: svc.name,
+        namespace: svc.namespace,
+        dns: svc.dns,
+        clusterIP: svc.clusterIP,
+        ports: svc.ports,
+        readyEndpoints: eps ? eps.readyAddresses.length : null,
+        totalEndpoints: eps ? eps.readyAddresses.length + eps.notReadyAddresses.length : null,
+      };
+    }),
+  };
+}
+
 // -------------------------------------------------------------- Namespaces
 
 interface NamespaceListResponse {

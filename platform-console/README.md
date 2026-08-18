@@ -57,6 +57,7 @@ or global footprint.
 | `/api-gateway` | Documentation/visibility only -- the real control is enforced entirely by Istio (see "Rate limiting" below); this page just states the configured limit and points to `k8s/ratelimit.yaml` | (static; enforcement in `k8s/ratelimit.yaml`) |
 | `/usage` | Cost & Usage (AWS Cost Explorer / GCP Billing Reports / Azure Cost Management equivalent, deliberately **without** any payment processor or currency): real live per-namespace CPU/memory usage from `metrics.k8s.io` (the same source `kubectl top pods` reads) against the real `ResourceQuota` hard `limits.cpu`/`limits.memory` ceiling, with a plain percentage-of-quota figure -- never a dollar amount | `lib/k8s.ts` (`getResourceUsage`, `getResourceQuota`) |
 | `/alerts` | Alerting (CloudWatch Alarms / GCP Alerting Policies / Azure Monitor Alerts equivalent): real current alert state read live from the in-cluster Alertmanager's `/api/v2/alerts`, rendered as a table (alertname, state, severity, namespace, since, summary); shows an honest "0 active alerts" when none are firing rather than fabricating one -- see `alerting-pipeline-verified-live` in `evidence/control-evidence-bundle.json` for the real fired-and-cleared synthetic-rule verification | `app/api/alerts/route.ts`, `lib/alertmanager.ts` |
+| `/service-discovery` | Service Discovery (AWS Route53 private hosted zone / GCP Cloud DNS internal zone / Azure Private DNS equivalent) -- **not decorative**: CoreDNS plus real k8s `Service`/`Endpoints` objects already are the cluster's internal DNS layer every other module's cluster-internal URLs depend on. Table across the platform's 6 namespaces: Service, real DNS name (`<svc>.<namespace>.svc.cluster.local`), ClusterIP, ports, and ready/total backing-Pod-IP count read live from the matching `Endpoints` object -- the "does this record actually resolve to something healthy" signal. Live-verified with real `nslookup` from a throwaway pod against 4 services: resolved IPs matched the page's ClusterIPs byte-for-byte, and ready-endpoint counts matched `kubectl get endpoints` exactly -- see `service-discovery-dns-resolves-live` in `evidence/control-evidence-bundle.json` | `lib/k8s.ts` (`listEndpoints`, `listServicesWithEndpoints`) |
 
 `lib/k8s.ts` is a hand-rolled Kubernetes API client using the pod's own in-cluster
 ServiceAccount token/CA (`/var/run/secrets/kubernetes.io/serviceaccount`) — no external k8s
@@ -72,8 +73,12 @@ module's `Project` and paired `SingleDatabase` CRs only) on exactly the resource
 `services`, `namespaces`, Flux `kustomizations`/`helmreleases`,
 `rbac.authorization.k8s.io/roles`, `rolebindings`, `networking.k8s.io/networkpolicies`,
 `apps/deployments`, `metrics.k8s.io/pods` (real live per-pod CPU/memory usage, the Cost &
-Usage module), and `resourcequotas` (the same Cost & Usage module's quota ceiling). No
-Secrets, no exec/log, no wildcards, no write verb anywhere outside
+Usage module), `resourcequotas` (the same Cost & Usage module's quota ceiling), and
+`endpoints` (the Service Discovery module's "is this DNS record actually resolving to
+something healthy" signal -- `services` was already granted here for the Database module,
+so only `endpoints` was a new grant, confirmed via `kubectl auth can-i list endpoints
+--as=system:serviceaccount:platform-console:platform-console` returning a real `no` before
+the change). No Secrets, no exec/log, no wildcards, no write verb anywhere outside
 `projects:create`/`singledatabases:create`. Verified live with real
 `kubectl auth can-i --as=system:serviceaccount:platform-console:platform-console` calls — see
 `evidence/control-evidence-bundle.json` for the exact denials and allows observed.
@@ -236,13 +241,14 @@ currently take payment.
 a compliance determination — those can only come from a licensed CPA firm after an
 independent audit. It records exactly which technical controls were actually observed
 enforced (with real command output as evidence, re-run fresh against the current cluster)
-versus which are configured but not currently enacted. As of this run: **14 controls verified
+versus which are configured but not currently enacted. As of this run: **17 controls verified
 with fresh live evidence** (resource-quotas-enforced, network-segmentation,
 least-privilege-rbac, audit-logging, self-service-project-provisioning,
 observability-proxy-least-privilege, gitops-read-only-visibility, mtls-enforced,
 autoscaling-enforced, secrets-never-logged-or-rendered,
 least-privilege-per-namespace-secrets-rbac, registry-visibility-least-privilege,
-backup-job-verified-nonempty, rate-limiting-enforced) and **1 disclosed gap**
+backup-job-verified-nonempty, rate-limiting-enforced, usage-metrics-real-not-fabricated,
+alerting-pipeline-verified-live, service-discovery-dns-resolves-live) and **1 disclosed gap**
 (registry-visibility-least-privilege's image-pull-failure path is real code, untriggered on
 this cluster today -- see the bundle). mtls-enforced's prior gap (PeerAuthentication
 STRICT configured but not enacted by any sidecar) was closed in an earlier pass; see the

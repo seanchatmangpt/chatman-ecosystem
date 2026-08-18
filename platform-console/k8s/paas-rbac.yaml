@@ -100,6 +100,16 @@ rules:
   - apiGroups: [""]
     resources: ["resourcequotas"]
     verbs: ["get", "list"]
+  # Service Discovery module: read-only core/v1 Endpoints -- the real
+  # backing-Pod-IP half of the DNS/service-discovery view (Services alone,
+  # already granted above, only give the name/ClusterIP half). Workload
+  # IPs, not secrets -- same sensitivity class as the Services/Deployments/
+  # Roles already granted cluster-wide above, confirmed not already
+  # covered before adding (`kubectl auth can-i list endpoints` returned a
+  # real `no` prior to this rule).
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
