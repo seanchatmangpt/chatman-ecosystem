@@ -175,6 +175,26 @@ def _validate_evidence(
     return normalized
 
 
+def _edge_set_standing(standings: dict[str, str]) -> str:
+    """Use the same aggregate standing law as the canonical release graph."""
+    values = list(standings.values())
+    if not values:
+        return "UNKNOWN"
+    if "BUILD_BROKEN" in values:
+        return "BUILD_BROKEN"
+    if "BLOCKED" in values:
+        return "BLOCKED"
+    if "UNKNOWN" in values:
+        return "UNKNOWN"
+    if "PARTIAL_ALIVE" in values:
+        return "PARTIAL_ALIVE"
+    if "UNSUPPORTED" in values:
+        return "UNSUPPORTED"
+    if all(value == "ALIVE" for value in values):
+        return "ALIVE"
+    return "UNKNOWN"
+
+
 def _topology_digest(policy: dict[str, Any]) -> str:
     topology = {
         "schema": SCHEMA,
@@ -301,17 +321,23 @@ def verify(data: dict[str, Any]) -> dict[str, Any]:
                     f"REFUSED:CROWN_EDGE_BUILD_BROKEN_WITHOUT_EXECUTION:{edge_id}"
                 )
 
+    derived_standing = _edge_set_standing(standings)
+    if crown["standing"] == "ALIVE" and derived_standing != "ALIVE":
+        raise CrownEdgeRefusal("REFUSED:CROWN_ALIVE_WITH_UNRESOLVED_EDGES")
+    if derived_standing == "ALIVE" and crown["standing"] != "ALIVE":
+        raise CrownEdgeRefusal("REFUSED:CROWN_STANDING_STALE")
+    if crown["standing"] != derived_standing:
+        raise CrownEdgeRefusal(
+            f"REFUSED:CROWN_STANDING_DERIVATION:declared={crown['standing']}:derived={derived_standing}"
+        )
+
     unresolved = [edge for edge in MANDATORY_EDGES if standings[edge] != "ALIVE"]
     all_alive = not unresolved
-    if crown["standing"] == "ALIVE" and not all_alive:
-        raise CrownEdgeRefusal("REFUSED:CROWN_ALIVE_WITH_UNRESOLVED_EDGES")
-    if all_alive and crown["standing"] != "ALIVE":
-        raise CrownEdgeRefusal("REFUSED:CROWN_STANDING_STALE")
-
     return {
         "schema": SCHEMA,
         "version": VERSION,
         "mandatory_edge_count": len(MANDATORY_EDGES),
+        "edge_set_standing": derived_standing,
         "unresolved_edges": unresolved,
         "mandatory_edges_ready": all_alive,
         "release_candidate_ready": False,
