@@ -1,0 +1,137 @@
+# Real status-page data source: platform-prober (services/platform-prober)
+# performs a genuine HTTP/TCP check against all 8 status-page components on
+# every Prometheus scrape and exposes the real outcome as `up{component=...}`
+# in real Prometheus exposition format on :8080/metrics.
+#
+# Deliberately placed in the platform-console namespace, not a new namespace:
+# that namespace carries no NetworkPolicy at all (see
+# network-policies.yaml's own header comment on why), and the 4 project
+# namespaces already carry an `*-allow-from-platform-console`
+# NetworkPolicy permitting ingress from platform-console on port 8080 --
+# so this exporter reaches autofde-lab-status / gymact-status / ggen-status
+# / ggen-marketplace-status without any NetworkPolicy change, reaches
+# platform-console-gateway locally (same namespace), and reaches
+# supabase-demo's postgres/auth/rest (that namespace carries no
+# NetworkPolicy either -- confirmed via `kubectl get networkpolicy -n
+# supabase-demo` returning empty). Prometheus (monitoring namespace, also
+# unrestricted) can scrape it straight back with no NetworkPolicy change
+# either.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platform-prober
+  namespace: platform-console
+  labels:
+    app: platform-prober
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: platform-prober
+  template:
+    metadata:
+      labels:
+        app: platform-prober
+    spec:
+      containers:
+        - name: platform-prober
+          image: platform-console/platform-prober:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platform-prober
+  namespace: platform-console
+  labels:
+    app: platform-prober
+spec:
+  selector:
+    app: platform-prober
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+---
+# Confirmed live blocker before adding this: with only the namespace-wide
+# STRICT PeerAuthentication (k8s/mtls.yaml's `platform-console-mtls`), the
+# ServiceMonitor above showed target health "down" with a real
+# `read: connection reset by peer` error -- Prometheus (monitoring
+# namespace) is not an Istio mesh member and cannot originate mTLS, so the
+# platform-prober pod's istio-proxy sidecar rejected its plaintext scrape.
+# Real, standard Istio fix, scoped as narrowly as possible: PERMISSIVE
+# (accept both mTLS and plaintext) on exactly port 8080 of exactly the
+# platform-prober pods, via `selector` + `portLevelMtls` -- every other
+# pod in platform-console, and every other port on this pod (there are
+# none besides 8080), keeps the namespace's STRICT default unchanged. This
+# does not weaken the namespace-wide policy; it is the same disclosed,
+# minimal-scope pattern already used elsewhere in this repo (see e.g.
+# services-and-deployments.yaml's registry-policy caveat).
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: platform-prober-metrics-permissive
+  namespace: platform-console
+spec:
+  selector:
+    matchLabels:
+      app: platform-prober
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    "8080":
+      mode: PERMISSIVE
+---
+# `release: monitoring` matches this Prometheus CR's real
+# serviceMonitorSelector (`kubectl -n monitoring get prometheus -o yaml`),
+# and serviceMonitorNamespaceSelector is `{}` (any namespace) -- so this
+# object living in platform-console, not monitoring, is real and picked up,
+# not a guess.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: platform-prober
+  namespace: platform-console
+  labels:
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: platform-prober
+  namespaceSelector:
+    matchNames:
+      - platform-console
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+      scrapeTimeout: 10s

@@ -10,6 +10,10 @@ const PUBLIC_PATHS = [
   "/api/login",
   "/api/auth/gotrue-login",
   "/api/auth/gotrue-signup",
+  // Public status page -- matches AWS Service Health Dashboard /
+  // statuspage.io convention (no login to view real-time platform status).
+  "/status",
+  "/api/status",
 ];
 
 function isPublicPath(pathname: string): boolean {

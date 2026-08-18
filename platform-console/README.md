@@ -63,6 +63,7 @@ or global footprint.
 | `/topology` | Cluster Topology -- a **visualization, not a security control** (recorded in the evidence bundle for consistency with this file's "real vs decorative" practice, not because it enforces anything). deck.gl (`OrthographicView`, not a geospatial `MapView` -- there is no real geography here) rendering the exact same `listServicesWithEndpoints` data `/service-discovery` already shows as a table: one `ScatterplotLayer` node per Service (fill = the same ready/total status vocabulary as `EndpointsBadge`, size = ready-endpoint count), grouped into deterministic per-namespace grid clusters computed in `lib/topology.ts` (no randomness, no force-simulation step -- same input always produces the same layout). `ArcLayer` connections are drawn **only** where a real `NetworkPolicy` ingress rule's `namespaceSelector` names a source namespace (`lib/k8s.ts`'s `listNetworkPolicies` was extended with `ingressFromNamespaces`, parsed from `spec.ingress[].from[].namespaceSelector.matchLabels["kubernetes.io/metadata.name"]`) -- never inferred or fabricated traffic. Live-verified: authenticated `GET /topology` returned 200 with all 12 real Services across 6 namespaces embedded in the hydration payload (`autofde-lab-status`, `demo-db-postgres`, `gymact-status`, `ggen-status`, `ggen-marketplace-status`, `platform-console-gateway`, plus the 6 `demo-project-*` Services), real ClusterIPs matching `service-discovery-dns-resolves-live`'s recorded values byte-for-byte, and exactly 4 real cross-namespace edges (`platform-console` → `autofde-lab`/`gymact`/`ggen`/`ggen-marketplace`, matching `k8s/network-policies.yaml`'s `*-allow-from-platform-console` rules) -- see `topology-visualization-real-data` in `evidence/control-evidence-bundle.json` | `lib/topology.ts`, `components/DeckTopology.tsx`, `lib/k8s.ts` (`listNetworkPolicies`) |
 | `/audit` | Durable, queryable **Audit Log** (AWS CloudTrail / GCP Audit Logs / Azure Monitor Activity Log equivalent) -- closes the gap that `lib/audit-log.ts`'s existing stdout line is real but ephemeral (gone on pod restart, not filterable/queryable). Every `/api/*` route now also INSERTs the same entry into a real `platform_console.audit_log` table (dedicated schema, one-time migration applied via direct `psql`) on the live demo-project Postgres this console already trusts for Backups, via `lib/audit-db.ts` -- new `lib/k8s.ts` functions (`getSecretValue`, `getPostgresConnectionInfo`) extend the exact backup/restore credential-discovery pattern one step further (a real Secret GET to decode the plaintext a long-running Node.js process needs for a direct connection, vs. a Job's own kubelet-resolved env). Deliberately kept out of `middleware.ts`'s import graph (the `pg` driver needs Node.js `net`/`tls`, which the edge runtime cannot bundle -- same reason `lib/credentials.ts` is edge-excluded); every route handler already runs on the Node.js runtime, so each one's `writeAuditLogEntry` import was switched to the new module instead. Owner-gated (`requireRole(session, "owner")`, same boundary as `/org`), real actor/path substring filter + timestamp range + pagination. **Live-verified**: 7 real requests across both auth providers cross-matched byte-for-byte across stdout, the app's own `/api/audit`, and a direct `psql SELECT`; a pod holding all 7 requests was then deleted outright, showing its stdout genuinely gone (`kubectl logs` -> `NotFound`) while every DB row survived -- see `audit-log-durable-and-queryable` in `evidence/control-evidence-bundle.json` | `lib/audit-db.ts`, `lib/k8s.ts` (`getSecretValue`, `getPostgresConnectionInfo`), `app/app/api/audit/route.ts`, `app/app/audit/page.tsx` |
 | `/projects/[name]/iac` | **Infrastructure as Code export + drift detection** (AWS CloudFormation drift detection / `terraform plan` / GCP Deployment Manager equivalent), scoped to this console's own self-service Project+SingleDatabase resources. `exportProjectManifest` reads the ACTUAL live Project + SingleDatabase CRs and re-serializes them as real, valid, re-appliable multi-document YAML (every operator-defaulted field included -- a genuine snapshot of what's really running, not a template guess), with Copy/Download (a client-side `data:` URL, no backend file endpoint needed). `detectDrift` reconstructs, via the exact same `buildProjectManifest`/`buildSingleDatabaseManifest` functions a real create call uses, what a fresh "Create Project" submission would produce for that project name today, then walks only the fields the create path actually sets (never the operator's own defaulted fields) plus `metadata.labels`/`annotations` (which the create path never sets at all), reporting every real field-level mismatch. Live-verified end to end: the real exported YAML for `demo-project` passed `kubectl apply --dry-run=server` with zero errors, and `kubectl diff -f` against the live cluster produced zero output (true no-op, not just "no error") -- proving the export is genuinely re-appliable. A real, harmless label was then hand-applied to `demo-db` via `kubectl patch` (outside the console entirely); the drift report immediately showed that exact new field, then cleared it back to baseline the moment the patch was reverted -- see `iac-export-reappliable-and-drift-detected` in `evidence/control-evidence-bundle.json` for the full before/after/revert transcript, including the 2 real pre-existing baseline differences (`demo-project` was bootstrapped via `kubectl apply` before this console's create flow existed, so its `databaseRef.name`/`studio.orgName` genuinely don't match today's naming convention -- reported honestly, not hidden) | `lib/iac.ts`, `app/api/projects/[name]/iac/route.ts`, `app/app/projects/[name]/iac/page.tsx` |
+| `/status` | **Public Status Page** (AWS Service Health Dashboard / statuspage.io equivalent) -- the only route in this app that is deliberately unauthenticated (added to `middleware.ts`'s `PUBLIC_PATHS`, matching how real hyperscaler status pages work). Renders a real computed uptime% and current up/down state for all 8 platform components (the 4 status services, `platform-console-gateway` itself, and demo-project's postgres/auth/rest), computed with genuine `avg_over_time(up{component="..."}[1h])`-style PromQL against the real in-cluster Prometheus -- never a static "all systems operational" placeholder. See "Status page" below and `status-page-slo-reflects-real-state` in `evidence/control-evidence-bundle.json` for the real induced-outage proof | `lib/status-page.ts`, `app/api/status/route.ts`, `app/status/page.tsx`, `services/platform-prober` |
 | `/org` | **Application-level RBAC** (AWS IAM Identity Center permission sets / GCP Org Policy / Azure AD role assignments equivalent), layered on top of -- never replacing -- the console's own k8s ServiceAccount RBAC. Owner-only page listing real role assignments (`viewer` < `member` < `owner`) from one real k8s `ConfigMap` (`platform-console-org-roles`, `platform-console` namespace, identifier → role), with a form to change a user's role, itself owner-gated. Before this module every authenticated session got identical full access regardless of provider; `POST /api/projects` is now owner-only, `POST`/`DELETE /api/secrets` and `POST /api/feature-flags` are member+ -- every GET stays open to any authenticated user. See "Application-level RBAC" below and `application-rbac-role-enforced` in `evidence/control-evidence-bundle.json` for the real 403-then-403-then-201 promotion sequence | `lib/authz.ts`, `app/api/org/roles/route.ts`, `app/app/org/page.tsx` |
 
 `lib/k8s.ts` is a hand-rolled Kubernetes API client using the pod's own in-cluster
@@ -199,10 +200,12 @@ the ServiceAccount already has.
 - `monitoring` (kube-prometheus-stack: Prometheus, Alertmanager, Grafana, kube-state-metrics)
   and `flux-system` (Flux controllers; CRDs installed, no Kustomization/HelmRelease objects
   created yet on this cluster — an honest empty GitOps state, not a fabricated one).
+- `platform-prober` (`platform-console` namespace, `k8s/status-page.yaml`): the public
+  Status Page's real data source -- see "Status page" below.
 - Manifests applied in order from `k8s/`: `namespaces.yaml`, `rbac.yaml`, `paas-rbac.yaml`,
   `resource-quotas.yaml`, `network-policies.yaml`, `mtls.yaml`, `feature-flags.yaml`,
   `services-and-deployments.yaml`, `gateway.yaml`, `grafana-route.yaml`, `hpa.yaml`,
-  `ratelimit.yaml`.
+  `ratelimit.yaml`, `status-page.yaml`.
 
 ## Rate limiting
 
@@ -351,6 +354,48 @@ dependency, no separate flag-evaluation service.
   and a direct external `curl` through `kubectl port-forward` to the real `Service`) ->
   toggle back to `"false"` -> field disappears, confirmed the same two ways.
 
+## Status page
+
+A real public Status Page (the AWS Service Health Dashboard / statuspage.io equivalent),
+computing genuine uptime/SLO numbers from real historical Prometheus data -- not a static "all
+systems operational" placeholder.
+
+- **Why a purpose-built exporter, not the 4 status services' own `/status`/`/healthz`
+  responses directly**: Prometheus's own `up` metric requires the scraped target to serve
+  Prometheus text-exposition format, which none of this platform's third-party components
+  (`supabase/gotrue`, `postgrest/postgrest`) expose, and Postgres isn't HTTP at all. Rather
+  than fabricate a number for those three, `services/platform-prober` (stdlib Python, no
+  dependencies) performs a genuine HTTP GET or TCP connect against all 8 components on every
+  single Prometheus scrape (no caching between scrapes) and exposes the real outcome as
+  `up{component="<id>"} 1|0` in real Prometheus text format on `:8080/metrics` -- the same
+  synthetic-canary technique a real hyperscaler status page's monitoring layer uses.
+- `lib/status-page.ts`'s `getStatusPageData()` runs genuine PromQL against the real in-cluster
+  Prometheus via the existing `lib/prometheus.ts` proxy: an instant `up{component!=""}` query
+  for current state, plus `avg_over_time(up{component!=""}[1h]) * 100` and a 24h variant for
+  the uptime% columns -- real math over real, previously-recorded, timestamped samples, never
+  computed from a request-time snapshot. A component with zero samples in a window renders as
+  "no data", never a fabricated 100%.
+- `app/status/page.tsx` (server component, `force-dynamic`, 15s meta-refresh) and
+  `app/api/status/route.ts` (JSON) are the only unauthenticated routes in this app --
+  `middleware.ts`'s `PUBLIC_PATHS` lists `/status` and `/api/status` explicitly, matching how
+  real hyperscaler status pages work (every other route still redirects to `/login`, confirmed
+  live -- see the evidence bundle).
+- **Istio caveat, confirmed live and fixed, not silently worked around**: the namespace-wide
+  `platform-console-mtls` `PeerAuthentication` (STRICT, `k8s/mtls.yaml`) rejected Prometheus's
+  plaintext scrape of `platform-prober` with a real `connection reset by peer` (Prometheus is
+  not an Istio mesh member and cannot originate mTLS). Fixed with a second, narrowly-scoped
+  `PeerAuthentication` (`k8s/status-page.yaml`) selecting only `app: platform-prober` pods,
+  PERMISSIVE on exactly port 8080 -- every other pod and every other port keeps the
+  namespace's STRICT default unchanged.
+- See `status-page-slo-reflects-real-state` in `evidence/control-evidence-bundle.json` for the
+  real before/during/after transcript: a deliberate `kubectl scale --replicas=0` outage of
+  `gymact-status`, the public page's current-state indicator flipping to "down" within one
+  15s scrape cycle (confirmed by polling `/api/status` through the real Istio ingress gateway,
+  no session cookie sent), the real historical uptime% dropping from 100% to 53.85% as down
+  samples accumulated, the indicator flipping back to healthy after `--replicas=1`, and the
+  `gymact-status-hpa` HorizontalPodAutoscaler settling back at its normal `REPLICAS: 1`
+  (never stuck at 0).
+
 ## How to reach it
 
 ```
@@ -391,7 +436,7 @@ currently take payment.
 a compliance determination — those can only come from a licensed CPA firm after an
 independent audit. It records exactly which technical controls were actually observed
 enforced (with real command output as evidence, re-run fresh against the current cluster)
-versus which are configured but not currently enacted. As of this run: **24 controls verified
+versus which are configured but not currently enacted. As of this run: **27 controls verified
 with fresh live evidence** (resource-quotas-enforced, network-segmentation,
 least-privilege-rbac, audit-logging, self-service-project-provisioning,
 observability-proxy-least-privilege, gitops-read-only-visibility, mtls-enforced,
@@ -402,7 +447,9 @@ alerting-pipeline-verified-live, service-discovery-dns-resolves-live,
 feature-flag-live-toggle-verified, topology-visualization-real-data,
 identity-federation-live-verified, application-rbac-role-enforced,
 restore-recovers-real-deleted-data, edge-function-invocation-verified,
-audit-log-durable-and-queryable) and **1 disclosed
+multi-project-tenancy-verified, audit-log-durable-and-queryable,
+iac-export-reappliable-and-drift-detected, status-page-slo-reflects-real-state) and **1
+disclosed
 gap** (registry-visibility-least-privilege's image-pull-failure path is real code,
 untriggered on this cluster today -- see the bundle). mtls-enforced's prior gap
 (PeerAuthentication STRICT configured but not enacted by any sidecar) was closed in an
@@ -414,8 +461,13 @@ module's prior disclosed gap (no invocation, connection info only) by deploying 
 minimal Edge Function through the supabase-operator's own `Function` CRD -- investigated
 live rather than guessed, confirmed the operator auto-mounts and rolls the functions
 Deployment on a new Function CR with zero manual YAML edits -- and wiring a real,
-RBAC-gated invoke path through the console into it. This doctrine follows
-`ggen-marketplace/packs/soc2-audit-pack`: evidence-bundle-complete, never "compliant".
+RBAC-gated invoke path through the console into it. status-page-slo-reflects-real-state
+records a real, deliberate induced outage (`kubectl scale --replicas=0` on `gymact-status`,
+gymact namespace, restored afterward) proving the public `/status` page's uptime% and
+current-state indicator both genuinely react to real Prometheus data rather than rendering a
+static number -- see the bundle for the full before/during/after transcript. This doctrine
+follows `ggen-marketplace/packs/soc2-audit-pack`: evidence-bundle-complete, never
+"compliant".
 
 `digest` at the bottom of the bundle is a BLAKE3 hash over the bundle's own content, so any
 edit to a control's evidence text is detectable. Method, confirmed by reproducing the prior
