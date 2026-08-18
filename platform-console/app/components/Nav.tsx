@@ -29,6 +29,7 @@ const links = [
   { href: "/security-scan", label: "Vulnerability Scanning" },
   { href: "/castle", label: "Castle" },
   { href: "/observability", label: "Observability" },
+  { href: "/tracing", label: "Tracing" },
   { href: "/dashboards", label: "Dashboards" },
   { href: "/alerts", label: "Alerting" },
   { href: "/gitops", label: "GitOps" },

@@ -1,0 +1,153 @@
+# Minimal real distributed-tracing backend, closing the gap in the 72-control
+# evidence bundle: every hyperscaler PaaS ships a tracing control (AWS X-Ray,
+# GCP Cloud Trace, Azure Application Insights) and this cluster had none.
+#
+# Verified live before writing this file (not assumed):
+#   - `kubectl get pods -n monitoring` -> kube-prometheus-stack only
+#     (Prometheus, Grafana, Alertmanager, kube-state-metrics,
+#     node-exporter). No Jaeger/Tempo/Zipkin anywhere in the cluster
+#     (`kubectl get pods -A | grep -iE "jaeger|tempo|zipkin"` -> empty).
+#   - `kubectl get configmap istio -n istio-system -o jsonpath='{.data.mesh}'`
+#     already declares an unused `extensionProviders` entry named "jaeger"
+#     (OpenTelemetry provider, port 4317, service
+#     jaeger-collector.istio-system.svc.cluster.local) -- pre-wired by
+#     whatever installed Istio, but nothing was ever deployed to satisfy it,
+#     and no Telemetry resource enabled it (`kubectl get telemetry -A` ->
+#     "No resources found"). This manifest is the minimal real addition: a
+#     single Jaeger all-in-one pod that IS that already-referenced service.
+#   - `istio-system` carries no PeerAuthentication (`kubectl get
+#     peerauthentication -A` lists only per-namespace STRICT policies in
+#     autofde-lab/ggen/ggen-marketplace/gymact/platform-console) so a plain
+#     non-mesh pod in istio-system is reachable in plaintext from istiod's
+#     and the ingress gateway's Envoy sidecars -- the same reasoning
+#     k8s/grafana-route.yaml documents for monitoring-grafana, just without
+#     even needing a DestinationRule override since istio-system has no
+#     mesh-wide STRICT default either.
+#   - Single-node colima profile: `kubectl top nodes` showed 64% memory
+#     already in use, so this pod is sized minimal (all-in-one binary,
+#     in-memory storage, no persistence) rather than the production
+#     Jaeger Operator + Elasticsearch/Cassandra topology.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger
+  namespace: istio-system
+  labels:
+    app: jaeger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      labels:
+        app: jaeger
+      # Deliberately NOT istio-injected: this collector must be reachable
+      # by Envoy sidecars across every mesh namespace via plaintext OTLP,
+      # matching the un-injected monitoring-grafana precedent.
+    spec:
+      containers:
+        - name: jaeger
+          image: jaegertracing/all-in-one:1.60
+          args:
+            - --collector.otlp.enabled=true
+          env:
+            - name: COLLECTOR_OTLP_ENABLED
+              value: "true"
+            - name: SPAN_STORAGE_TYPE
+              value: memory
+            - name: MEMORY_MAX_TRACES
+              value: "50000"
+          ports:
+            - name: otlp-grpc
+              containerPort: 4317
+            - name: query-http
+              containerPort: 16686
+            - name: collector-http
+              containerPort: 14268
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 300m
+              memory: 384Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 16686
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 16686
+            initialDelaySeconds: 10
+            periodSeconds: 10
+---
+# Service name matches the mesh config's pre-wired extensionProviders
+# entry exactly: jaeger-collector.istio-system.svc.cluster.local:4317.
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger-collector
+  namespace: istio-system
+  labels:
+    app: jaeger
+spec:
+  selector:
+    app: jaeger
+  ports:
+    # appProtocol: grpc is load-bearing, not decoration -- verified live: without
+    # it, Istio's Envoy sidecars treat the outbound cluster as plain HTTP/1.1 by
+    # default protocol detection, and the OpenTelemetry gRPC exporter's h2c
+    # frames arrive as a "bogus greeting" to Jaeger's gRPC server (confirmed via
+    # `kubectl logs deploy/jaeger`: "received bogus greeting from client:
+    # \"POST /opentelemetry.prot...\"", and `rq_error` == `rq_total` on the
+    # ingressgateway's outbound|4317| cluster stats). Declaring appProtocol here
+    # makes Istio configure the cluster for HTTP/2, which is what an OTLP/gRPC
+    # exporter requires.
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+      appProtocol: grpc
+    - name: collector-http
+      port: 14268
+      targetPort: 14268
+---
+# Separate Service for the query API/UI (port 16686) -- kept distinct from
+# jaeger-collector so the OTLP ingest service stays a precise match for the
+# mesh config's provider hostname; platform-console's server-side proxy
+# (lib/tracing.ts) reads from this one.
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger-query
+  namespace: istio-system
+  labels:
+    app: jaeger
+spec:
+  selector:
+    app: jaeger
+  ports:
+    - name: query-http
+      port: 16686
+      targetPort: 16686
+---
+# Enables Istio proxy tracing mesh-wide, routed to the "jaeger"
+# extensionProvider already declared in the istio ConfigMap. 100% sampling
+# is a deliberate demo/evidence choice (this is a small single-node
+# cluster, not a high-QPS production mesh) so a single manually-triggered
+# request through the gateway is guaranteed to produce a visible span,
+# rather than being statistically likely to.
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: mesh-default-tracing
+  namespace: istio-system
+spec:
+  tracing:
+    - providers:
+        - name: jaeger
+      randomSamplingPercentage: 100.0
