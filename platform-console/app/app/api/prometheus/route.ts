@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
-import { queryPrometheus } from "@/lib/prometheus";
+import { ALLOWED_PROMETHEUS_QUERIES, queryPrometheus } from "@/lib/prometheus";
 
-const ALLOWED_QUERIES = new Set(["up", "kube_pod_status_ready", "container_memory_working_set_bytes"]);
-
-// A fixed allowlist of PromQL queries, not an open passthrough -- this
+// Allowlist now lives in lib/prometheus.ts (ALLOWED_PROMETHEUS_QUERIES) --
+// shared with lib/dashboards.ts's saved promql widgets, so a dashboard
+// widget can never run a query this route itself would refuse. This
 // route is reachable by any authenticated console user and Prometheus's
 // query language can be used for extraction/DoS-shaped abuse if fully
 // open. Extend the allowlist deliberately, not by accepting arbitrary
@@ -19,9 +19,9 @@ export async function GET(request: NextRequest) {
   }
 
   const query = request.nextUrl.searchParams.get("query") ?? "up";
-  if (!ALLOWED_QUERIES.has(query)) {
+  if (!ALLOWED_PROMETHEUS_QUERIES.has(query)) {
     return NextResponse.json(
-      { error: `query not in allowlist: ${[...ALLOWED_QUERIES].join(", ")}` },
+      { error: `query not in allowlist: ${[...ALLOWED_PROMETHEUS_QUERIES].join(", ")}` },
       { status: 400 },
     );
   }

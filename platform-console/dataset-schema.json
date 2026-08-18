@@ -1,0 +1,1460 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-18T15:56:35Z",
+  "description": "Real data schema + representative mock data for every dashboard module in platform-console, derived from the actual TypeScript source in app/lib/*.ts -- not invented.",
+  "modules": {
+    "active-sessions": {
+      "source_file": "app/lib/active-sessions.ts",
+      "route": "/sessions",
+      "description": "Real Active Session Management -- the AWS IAM Identity Center 'active sessions' view / GCP Console 'manage devices & activity' equivalent.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "sessionId": {"type": "string"},
+          "identifier": {"type": "string"},
+          "authProvider": {"type": "string", "enum": ["local-admin", "gotrue", "oidc-external", "api-key"]},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "lastSeenAt": {"type": "string", "format": "date-time"},
+          "ip": {"type": ["string", "null"]},
+          "userAgent": {"type": ["string", "null"]},
+          "revoked": {"type": "boolean"},
+          "revokedAt": {"type": ["string", "null"], "format": "date-time"},
+          "revokedBy": {"type": ["string", "null"]}
+        },
+        "required": ["sessionId", "identifier", "authProvider", "createdAt", "lastSeenAt", "ip", "userAgent", "revoked", "revokedAt", "revokedBy"]
+      },
+      "mock_data": [
+        {
+          "sessionId": "sess-000001",
+          "identifier": "example-user@example.com",
+          "authProvider": "gotrue",
+          "createdAt": "2026-08-01T09:00:00Z",
+          "lastSeenAt": "2026-08-17T14:32:00Z",
+          "ip": "203.0.113.10",
+          "userAgent": "Mozilla/5.0 (example)",
+          "revoked": false,
+          "revokedAt": null,
+          "revokedBy": null
+        }
+      ]
+    },
+    "alerts": {
+      "source_file": "app/lib/alertmanager.ts",
+      "route": "/alerts",
+      "description": "Server-side proxy to the real in-cluster Alertmanager deployed by the monitoring stack.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "labels": {"type": "object", "additionalProperties": {"type": "string"}},
+          "annotations": {"type": "object", "additionalProperties": {"type": "string"}},
+          "startsAt": {"type": "string", "format": "date-time"},
+          "endsAt": {"type": "string", "format": "date-time"},
+          "updatedAt": {"type": "string", "format": "date-time"},
+          "fingerprint": {"type": "string"},
+          "status": {
+            "type": "object",
+            "properties": {
+              "state": {"type": "string", "enum": ["unprocessed", "active", "suppressed"]},
+              "silencedBy": {"type": "array", "items": {"type": "string"}},
+              "inhibitedBy": {"type": "array", "items": {"type": "string"}}
+            },
+            "required": ["state", "silencedBy", "inhibitedBy"]
+          },
+          "receivers": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}}, "required": ["name"]}}
+        },
+        "required": ["labels", "annotations", "startsAt", "endsAt", "updatedAt", "fingerprint", "status", "receivers"]
+      },
+      "mock_data": [
+        {
+          "labels": {"alertname": "ExampleHighLatency", "namespace": "example-ns", "severity": "warning"},
+          "annotations": {"summary": "Example latency alert"},
+          "startsAt": "2026-08-17T12:00:00Z",
+          "endsAt": "0001-01-01T00:00:00Z",
+          "updatedAt": "2026-08-17T14:00:00Z",
+          "fingerprint": "abc123def456",
+          "status": {"state": "active", "silencedBy": [], "inhibitedBy": []},
+          "receivers": [{"name": "default"}]
+        }
+      ]
+    },
+    "api-keys": {
+      "source_file": "app/lib/api-keys.ts",
+      "route": "/api-keys",
+      "description": "Real hyperscaler-PaaS-style API key self-service (AWS IAM access keys / GCP service account keys / Stripe API keys equivalent).",
+      "schema": {
+        "type": "object",
+        "description": "ApiKeySummary = ApiKeyRecord minus hash (never displayed).",
+        "properties": {
+          "id": {"type": "string"},
+          "prefix": {"type": "string", "description": "shown in listings, never the full key"},
+          "identifier": {"type": "string"},
+          "role": {"type": "string", "enum": ["viewer", "member", "owner"]},
+          "createdBy": {"type": "string"},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "name": {"type": "string"},
+          "revoked": {"type": "boolean"},
+          "revokedAt": {"type": ["string", "null"], "format": "date-time"}
+        },
+        "required": ["id", "prefix", "identifier", "role", "createdBy", "createdAt", "name", "revoked", "revokedAt"]
+      },
+      "mock_data": [
+        {
+          "id": "key-000001",
+          "prefix": "pk_live_AbCd1234...",
+          "identifier": "example-user@example.com",
+          "role": "member",
+          "createdBy": "example-user@example.com",
+          "createdAt": "2026-07-01T00:00:00Z",
+          "name": "example key",
+          "revoked": false,
+          "revokedAt": null
+        }
+      ]
+    },
+    "audit": {
+      "source_file": "app/lib/audit-db.ts",
+      "route": "/audit",
+      "description": "Node.js-only durable persistence for the audit log -- the real hyperscaler CloudTrail / GCP Audit Logs / Azure Monitor Activity Log equivalent.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "integer"},
+          "requestId": {"type": "string"},
+          "ts": {"type": "string", "format": "date-time"},
+          "actor": {"type": "string"},
+          "method": {"type": "string"},
+          "path": {"type": "string"},
+          "status": {"type": "integer"},
+          "insertedAt": {"type": "string", "format": "date-time"}
+        },
+        "required": ["id", "requestId", "ts", "actor", "method", "path", "status", "insertedAt"]
+      },
+      "mock_data": [
+        {
+          "id": 1,
+          "requestId": "req-000001",
+          "ts": "2026-08-17T10:00:00Z",
+          "actor": "example-user@example.com",
+          "method": "GET",
+          "path": "/api/projects",
+          "status": 200,
+          "insertedAt": "2026-08-17T10:00:00Z"
+        }
+      ]
+    },
+    "audit-export": {
+      "source_file": "app/lib/audit-export.ts",
+      "route": "not found (no page.tsx imports it directly; consumed via app/app/api/audit/export/route.ts)",
+      "description": "Real SIEM-format export for the durable audit trail -- the AWS CloudTrail 'S3/log export' / GCP Cloud Logging 'log sink export' equivalent.",
+      "schema": {
+        "type": "object",
+        "description": "EcsAuditEvent -- Elastic Common Schema mapping of an AuditLogRow.",
+        "properties": {
+          "@timestamp": {"type": "string", "format": "date-time"},
+          "event": {
+            "type": "object",
+            "properties": {
+              "dataset": {"type": "string"},
+              "action": {"type": "string"},
+              "outcome": {"type": "string", "enum": ["success", "failure"]},
+              "id": {"type": "string"}
+            },
+            "required": ["dataset", "action", "outcome", "id"]
+          },
+          "user": {"type": "object", "properties": {"name": {"type": "string"}}, "required": ["name"]},
+          "http": {
+            "type": "object",
+            "properties": {
+              "request": {"type": "object", "properties": {"method": {"type": "string"}}, "required": ["method"]},
+              "response": {"type": "object", "properties": {"status_code": {"type": "integer"}}, "required": ["status_code"]}
+            },
+            "required": ["request", "response"]
+          },
+          "url": {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]},
+          "ecs": {"type": "object", "properties": {"version": {"type": "string"}}, "required": ["version"]}
+        },
+        "required": ["@timestamp", "event", "user", "http", "url", "ecs"]
+      },
+      "mock_data": [
+        {
+          "@timestamp": "2026-08-17T10:00:00Z",
+          "event": {"dataset": "platform-console.audit", "action": "GET /api/projects", "outcome": "success", "id": "req-000001"},
+          "user": {"name": "example-user@example.com"},
+          "http": {"request": {"method": "GET"}, "response": {"status_code": 200}},
+          "url": {"path": "/api/projects"},
+          "ecs": {"version": "1.12.0"}
+        }
+      ]
+    },
+    "audit-log-entry": {
+      "source_file": "app/lib/audit-log.ts",
+      "route": "not found (underlies audit-db.ts and middleware.ts; not a standalone page)",
+      "description": "The real, mechanical 'access is logged' control: one JSON line per authenticated request, written to stdout via console.log, in a fixed schema.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "timestamp": {"type": "string", "format": "date-time"},
+          "actor": {"type": "string", "description": "session subject (username), or 'anonymous'"},
+          "method": {"type": "string"},
+          "path": {"type": "string"},
+          "status": {"type": "integer"},
+          "requestId": {"type": "string"}
+        },
+        "required": ["timestamp", "actor", "method", "path", "status", "requestId"]
+      },
+      "mock_data": [
+        {
+          "timestamp": "2026-08-17T10:00:00Z",
+          "actor": "anonymous",
+          "method": "GET",
+          "path": "/api/status",
+          "status": 200,
+          "requestId": "req-000002"
+        }
+      ]
+    },
+    "org-roles": {
+      "source_file": "app/lib/authz.ts",
+      "route": "/org",
+      "description": "Real application-level RBAC (AWS IAM Identity Center permission sets / GCP Org Policy / Azure AD role assignments equivalent), layered on top of -- never replacing -- the k8s-level RBAC the console's own ServiceAccount already has.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "identifier": {"type": "string"},
+          "role": {"type": "string", "enum": ["viewer", "member", "owner"]}
+        },
+        "required": ["identifier", "role"]
+      },
+      "mock_data": [
+        {"identifier": "example-user@example.com", "role": "member"},
+        {"identifier": "example-admin@example.com", "role": "owner"}
+      ]
+    },
+    "batch-jobs": {
+      "source_file": "app/lib/batch-jobs.ts",
+      "route": "/batch-jobs",
+      "description": "Real hyperscaler-PaaS-style Batch Compute primitive (AWS Batch / GCP Batch / Azure Batch equivalent).",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "namespace": {"type": "string"},
+          "commandId": {"type": ["string", "null"]},
+          "image": {"type": ["string", "null"]},
+          "parallelism": {"type": "integer"},
+          "completions": {"type": "integer"},
+          "active": {"type": "integer"},
+          "succeeded": {"type": "integer"},
+          "failed": {"type": "integer"},
+          "status": {"type": "string", "enum": ["Pending", "Running", "Complete", "Failed"]},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "startTime": {"type": ["string", "null"], "format": "date-time"},
+          "completionTime": {"type": ["string", "null"], "format": "date-time"},
+          "completedIndexes": {"type": ["string", "null"]}
+        },
+        "required": ["name", "namespace", "commandId", "image", "parallelism", "completions", "active", "succeeded", "failed", "status", "createdAt", "startTime", "completionTime", "completedIndexes"]
+      },
+      "mock_data": [
+        {
+          "name": "example-batch-job",
+          "namespace": "example-ns",
+          "commandId": "square-index",
+          "image": "curlimages/curl:8.10.1",
+          "parallelism": 4,
+          "completions": 4,
+          "active": 0,
+          "succeeded": 4,
+          "failed": 0,
+          "status": "Complete",
+          "createdAt": "2026-08-17T09:00:00Z",
+          "startTime": "2026-08-17T09:00:05Z",
+          "completionTime": "2026-08-17T09:01:00Z",
+          "completedIndexes": "0-3"
+        }
+      ]
+    },
+    "budget-alerts": {
+      "source_file": "app/lib/budget-alerts.ts",
+      "route": "/budget-alerts",
+      "description": "Real Budget Alerts (AWS Budgets / GCP Billing Budgets equivalent): an operator sets one real threshold per namespace and gets a real, HMAC-SHA256-signed webhook the moment real measured usage genuinely crosses it.",
+      "schema": {
+        "type": "object",
+        "description": "BudgetUsage",
+        "properties": {
+          "namespace": {"type": "string"},
+          "metric": {"type": "string", "enum": ["cpu-core-hours", "cost-usd"]},
+          "threshold": {"type": "number"},
+          "currentValue": {"type": ["number", "null"], "description": "null only when the real Prometheus query failed"},
+          "overThreshold": {"type": "boolean"},
+          "alreadyAlerted": {"type": "boolean"},
+          "error": {"type": ["string", "null"]}
+        },
+        "required": ["namespace", "metric", "threshold", "currentValue", "overThreshold", "alreadyAlerted", "error"]
+      },
+      "mock_data": [
+        {
+          "namespace": "example-ns",
+          "metric": "cpu-core-hours",
+          "threshold": 100,
+          "currentValue": 42.5,
+          "overThreshold": false,
+          "alreadyAlerted": false,
+          "error": null
+        }
+      ]
+    },
+    "canary": {
+      "source_file": "app/lib/canary.ts",
+      "route": "/deployments/canary",
+      "description": "Real Canary/Blue-Green deployment traffic control (AWS CodeDeploy traffic-shifting / GCP traffic-splitting / Azure deployment slots equivalent), built on Istio's real weighted VirtualService routing.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "weights": {
+            "type": "object",
+            "properties": {"stable": {"type": "integer"}, "canary": {"type": "integer"}},
+            "required": ["stable", "canary"]
+          },
+          "stableDeployment": {
+            "type": "object",
+            "properties": {"exists": {"type": "boolean"}, "replicasDesired": {"type": "integer"}, "replicasReady": {"type": "integer"}},
+            "required": ["exists", "replicasDesired", "replicasReady"]
+          },
+          "canaryDeployment": {
+            "type": "object",
+            "properties": {"exists": {"type": "boolean"}, "replicasDesired": {"type": "integer"}, "replicasReady": {"type": "integer"}},
+            "required": ["exists", "replicasDesired", "replicasReady"]
+          }
+        },
+        "required": ["weights", "stableDeployment", "canaryDeployment"]
+      },
+      "mock_data": [
+        {
+          "weights": {"stable": 90, "canary": 10},
+          "stableDeployment": {"exists": true, "replicasDesired": 3, "replicasReady": 3},
+          "canaryDeployment": {"exists": true, "replicasDesired": 1, "replicasReady": 1}
+        }
+      ]
+    },
+    "certificates": {
+      "source_file": "app/lib/cert-lifecycle.ts",
+      "route": "/certificates",
+      "description": "Real Certificate Lifecycle tracking: this module reads the same live Secrets the cluster's own Envoy/SDS layer already reads and parses each real certificate's real notAfter with Node's own crypto.X509Certificate.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "secretName": {"type": "string"},
+          "namespace": {"type": "string"},
+          "kind": {"type": "string", "enum": ["custom-domain", "platform-console-tls", "mtls-backups", "other"]},
+          "hostname": {"type": ["string", "null"]},
+          "subject": {"type": "string"},
+          "issuer": {"type": "string"},
+          "serialNumber": {"type": "string"},
+          "notBefore": {"type": "string", "format": "date-time"},
+          "notAfter": {"type": "string", "format": "date-time"},
+          "daysUntilExpiry": {"type": "integer"},
+          "expiringSoon": {"type": "boolean"},
+          "expired": {"type": "boolean"},
+          "rotatable": {"type": "boolean"}
+        },
+        "required": ["secretName", "namespace", "kind", "hostname", "subject", "issuer", "serialNumber", "notBefore", "notAfter", "daysUntilExpiry", "expiringSoon", "expired", "rotatable"]
+      },
+      "mock_data": [
+        {
+          "secretName": "example-tls",
+          "namespace": "example-ns",
+          "kind": "custom-domain",
+          "hostname": "app.example.com",
+          "subject": "CN=app.example.com",
+          "issuer": "CN=Example Self-Signed CA",
+          "serialNumber": "01A2B3C4",
+          "notBefore": "2026-07-01T00:00:00Z",
+          "notAfter": "2026-10-01T00:00:00Z",
+          "daysUntilExpiry": 45,
+          "expiringSoon": false,
+          "expired": false,
+          "rotatable": true
+        }
+      ]
+    },
+    "container-exec": {
+      "source_file": "app/lib/container-exec.ts",
+      "route": "/exec",
+      "description": "Container Exec: runs a fixed allowlist of harmless commands inside a real pod (no arbitrary shell).",
+      "schema": {
+        "type": "object",
+        "description": "ExecResult",
+        "properties": {
+          "stdout": {"type": "string"},
+          "stderr": {"type": "string"},
+          "exitSuccess": {"type": "boolean"},
+          "statusMessage": {"type": ["string", "null"]}
+        },
+        "required": ["stdout", "stderr", "exitSuccess", "statusMessage"]
+      },
+      "mock_data": [
+        {
+          "stdout": "platform-console container-exec diagnostic",
+          "stderr": "",
+          "exitSuccess": true,
+          "statusMessage": null
+        }
+      ]
+    },
+    "custom-domains": {
+      "source_file": "app/lib/custom-domains.ts",
+      "route": "/custom-domains",
+      "description": "Real Custom Domain self-service: an operator names a hostname and picks one of the platform's own real Services as the routing target.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "hostname": {"type": "string"},
+          "slug": {"type": "string"},
+          "target": {
+            "type": "object",
+            "properties": {
+              "serviceName": {"type": "string"},
+              "serviceNamespace": {"type": "string"},
+              "servicePort": {"type": "integer"}
+            },
+            "required": ["serviceName", "serviceNamespace", "servicePort"]
+          },
+          "secretName": {"type": "string"},
+          "gatewayName": {"type": "string"},
+          "virtualServiceName": {"type": "string"},
+          "certificateNotAfter": {"type": ["string", "null"], "format": "date-time"},
+          "createdAt": {"type": "string", "format": "date-time"}
+        },
+        "required": ["hostname", "slug", "target", "secretName", "gatewayName", "virtualServiceName", "certificateNotAfter", "createdAt"]
+      },
+      "mock_data": [
+        {
+          "hostname": "app.example.com",
+          "slug": "app-example-com",
+          "target": {"serviceName": "example-svc", "serviceNamespace": "example-ns", "servicePort": 8080},
+          "secretName": "app-example-com-tls",
+          "gatewayName": "app-example-com-gateway",
+          "virtualServiceName": "app-example-com-vs",
+          "certificateNotAfter": "2026-11-01T00:00:00Z",
+          "createdAt": "2026-08-01T00:00:00Z"
+        }
+      ]
+    },
+    "dashboards": {
+      "source_file": "app/lib/dashboards.ts",
+      "route": "/dashboards",
+      "description": "Real Custom Dashboards / Saved Queries: an operator saves a real query -- either PromQL or a filtered lookup against the real durable audit log.",
+      "schema": {
+        "type": "object",
+        "description": "Widget",
+        "properties": {
+          "id": {"type": "string"},
+          "title": {"type": "string"},
+          "type": {"type": "string", "enum": ["promql", "audit-query"]},
+          "query": {"type": "string"},
+          "createdBy": {"type": "string"},
+          "createdAt": {"type": "string", "format": "date-time"}
+        },
+        "required": ["id", "title", "type", "query", "createdBy", "createdAt"]
+      },
+      "mock_data": [
+        {
+          "id": "widget-000001",
+          "title": "Example uptime widget",
+          "type": "promql",
+          "query": "up{namespace=\"example-ns\"}",
+          "createdBy": "example-user@example.com",
+          "createdAt": "2026-08-10T00:00:00Z"
+        }
+      ]
+    },
+    "functions": {
+      "source_file": "app/lib/functions-api.ts",
+      "route": "/projects/[name]/functions",
+      "description": "Server-side proxy to a project's real Supabase Edge Functions runtime (supabase/edge-runtime, started with --main-service).",
+      "schema": {
+        "oneOf": [
+          {"type": "object", "properties": {"ok": {"const": true}, "status": {"type": "integer"}, "body": {"type": "string"}, "durationMs": {"type": "number"}}, "required": ["ok", "status", "body", "durationMs"]},
+          {"type": "object", "properties": {"ok": {"const": false}, "notConfigured": {"const": true}}, "required": ["ok", "notConfigured"]},
+          {"type": "object", "properties": {"ok": {"const": false}, "notConfigured": {"const": false}, "error": {"type": "string"}}, "required": ["ok", "notConfigured", "error"]}
+        ]
+      },
+      "mock_data": [
+        {"ok": true, "status": 200, "body": "{\"result\":\"ok\"}", "durationMs": 42.3},
+        {"ok": false, "notConfigured": true}
+      ]
+    },
+    "global-search": {
+      "source_file": "app/lib/global-search.ts",
+      "route": "not found (backs /api/search; results link out to /service-discovery, /projects/[name]/database, /secrets, /scheduled-jobs, /projects/[name]/backups, /webhooks)",
+      "description": "Global Search / Command Palette: real cross-resource lookup, run live against the exact same lib functions every individual module already calls -- never a client-side static index.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "type": {"type": "string", "enum": ["service", "project", "secret", "cronjob", "backup", "webhook"]},
+          "name": {"type": "string"},
+          "detail": {"type": "string"},
+          "path": {"type": "string"}
+        },
+        "required": ["type", "name", "detail", "path"]
+      },
+      "mock_data": [
+        {"type": "project", "name": "example-project", "detail": "namespace: example-ns", "path": "/projects/example-project"}
+      ]
+    },
+    "gotrue-auth": {
+      "source_file": "app/lib/gotrue-auth.ts",
+      "route": "not found (backs /api/auth/gotrue-signup and /api/auth/gotrue-login)",
+      "description": "Real, server-side calls to GoTrue's real end-user auth REST endpoints -- POST /signup and POST /token?grant_type=password -- against the live GoTrue (Supabase Auth) instance already running in this cluster.",
+      "schema": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "ok": {"const": true},
+              "user": {
+                "type": "object",
+                "properties": {
+                  "id": {"type": "string"},
+                  "email": {"type": "string"},
+                  "emailConfirmedAt": {"type": ["string", "null"], "format": "date-time"}
+                },
+                "required": ["id", "email", "emailConfirmedAt"]
+              },
+              "accessToken": {"type": "string"},
+              "expiresAt": {"type": "number"}
+            },
+            "required": ["ok", "user", "accessToken", "expiresAt"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "ok": {"const": false},
+              "status": {"type": "integer"},
+              "errorCode": {"type": "string"},
+              "message": {"type": "string"}
+            },
+            "required": ["ok", "status", "message"]
+          }
+        ]
+      },
+      "mock_data": [
+        {
+          "ok": true,
+          "user": {"id": "00000000-0000-0000-0000-000000000001", "email": "example-user@example.com", "emailConfirmedAt": "2026-08-01T00:00:00Z"},
+          "accessToken": "example.jwt.token",
+          "expiresAt": 1755500000
+        }
+      ]
+    },
+    "project-auth": {
+      "source_file": "app/lib/gotrue.ts",
+      "route": "/projects/[name]/auth",
+      "description": "Server-side, read-only proxy to a project's real GoTrue (Supabase Auth) admin API.",
+      "schema": {
+        "oneOf": [
+          {"type": "object", "properties": {"ok": {"const": true}, "userCount": {"type": "integer"}}, "required": ["ok", "userCount"]},
+          {"type": "object", "properties": {"ok": {"const": false}, "notConfigured": {"const": true}}, "required": ["ok", "notConfigured"]},
+          {"type": "object", "properties": {"ok": {"const": false}, "notConfigured": {"const": false}, "error": {"type": "string"}}, "required": ["ok", "notConfigured", "error"]}
+        ]
+      },
+      "mock_data": [
+        {"ok": true, "userCount": 12}
+      ]
+    },
+    "iac": {
+      "source_file": "app/lib/iac.ts",
+      "route": "/projects/[name]/iac",
+      "description": "Real Infrastructure as Code export + drift detection primitives -- the AWS CloudFormation drift-detection / Terraform plan / GCP Deployment Manager equivalent for this console's own self-service Project+Database resources.",
+      "schema": {
+        "type": "object",
+        "description": "DriftReport",
+        "properties": {
+          "projectName": {"type": "string"},
+          "namespace": {"type": "string"},
+          "generatedAt": {"type": "string", "format": "date-time"},
+          "desiredInputs": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "namespace": {"type": "string"},
+              "databaseRefName": {"type": "string"},
+              "hostname": {"type": "string"},
+              "protocol": {"type": "string", "enum": ["http", "https"]},
+              "dbStorageSize": {"type": "string"}
+            },
+            "required": ["name", "namespace", "databaseRefName", "hostname", "protocol", "dbStorageSize"]
+          },
+          "drift": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "resource": {"type": "string", "enum": ["Project", "SingleDatabase"]},
+                "path": {"type": "string"},
+                "desired": {},
+                "actual": {}
+              },
+              "required": ["resource", "path", "desired", "actual"]
+            }
+          },
+          "hasDrift": {"type": "boolean"}
+        },
+        "required": ["projectName", "namespace", "generatedAt", "desiredInputs", "drift", "hasDrift"]
+      },
+      "mock_data": [
+        {
+          "projectName": "example-project",
+          "namespace": "example-ns",
+          "generatedAt": "2026-08-17T10:00:00Z",
+          "desiredInputs": {
+            "name": "example-project",
+            "namespace": "example-ns",
+            "databaseRefName": "example-db",
+            "hostname": "example-project.apps.example.com",
+            "protocol": "https",
+            "dbStorageSize": "1Gi"
+          },
+          "drift": [],
+          "hasDrift": false
+        }
+      ]
+    },
+    "billing": {
+      "source_file": "app/lib/invoice-preview.ts",
+      "route": "/billing",
+      "description": "Cost-preview calculation (AWS Cost Explorer 'forecasted bill' / GCP Billing cost-breakdown equivalent) computed over real metered Prometheus data.",
+      "schema": {
+        "type": "object",
+        "description": "InvoicePreview",
+        "properties": {
+          "windowLabel": {"type": "string"},
+          "windowHours": {"type": "number"},
+          "rates": {
+            "type": "object",
+            "properties": {"cpuPerCoreHour": {"type": "number"}, "memoryPerGiBHour": {"type": "number"}},
+            "required": ["cpuPerCoreHour", "memoryPerGiBHour"]
+          },
+          "lineItems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "namespace": {"type": "string"},
+                "cpuCoreHours": {"type": "number"},
+                "memoryGiBHours": {"type": "number"},
+                "cpuCost": {"type": "number"},
+                "memoryCost": {"type": "number"},
+                "totalCost": {"type": "number"}
+              },
+              "required": ["namespace", "cpuCoreHours", "memoryGiBHours", "cpuCost", "memoryCost", "totalCost"]
+            }
+          },
+          "totalCost": {"type": "number"},
+          "errors": {"type": "array", "items": {"type": "object", "properties": {"namespace": {"type": "string"}, "error": {"type": "string"}}, "required": ["namespace", "error"]}},
+          "generatedAt": {"type": "string", "format": "date-time"}
+        },
+        "required": ["windowLabel", "windowHours", "rates", "lineItems", "totalCost", "errors", "generatedAt"]
+      },
+      "mock_data": [
+        {
+          "windowLabel": "last 30 days",
+          "windowHours": 720,
+          "rates": {"cpuPerCoreHour": 0.02, "memoryPerGiBHour": 0.01},
+          "lineItems": [
+            {"namespace": "example-ns", "cpuCoreHours": 120.5, "memoryGiBHours": 60.2, "cpuCost": 2.41, "memoryCost": 0.60, "totalCost": 3.01}
+          ],
+          "totalCost": 3.01,
+          "errors": [],
+          "generatedAt": "2026-08-17T10:00:00Z"
+        }
+      ]
+    },
+    "service-discovery": {
+      "source_file": "app/lib/k8s.ts",
+      "route": "/service-discovery",
+      "description": "Minimal Kubernetes API client using the pod's own in-cluster ServiceAccount token -- no external k8s client library, no fabricated client-side state. ServiceDiscoveryRecord is the merged Service+Endpoints view shown on /service-discovery.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "namespace": {"type": "string"},
+          "dns": {"type": "string"},
+          "clusterIP": {"type": ["string", "null"]},
+          "ports": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {"type": "string"},
+                "port": {"type": "integer"},
+                "targetPort": {"type": ["integer", "string"]},
+                "protocol": {"type": "string"}
+              },
+              "required": ["port", "protocol"]
+            }
+          },
+          "readyEndpoints": {"type": ["integer", "null"]},
+          "totalEndpoints": {"type": ["integer", "null"]},
+          "labels": {"type": "object", "additionalProperties": {"type": "string"}}
+        },
+        "required": ["name", "namespace", "dns", "clusterIP", "ports", "readyEndpoints", "totalEndpoints", "labels"]
+      },
+      "mock_data": [
+        {
+          "name": "example-svc",
+          "namespace": "example-ns",
+          "dns": "example-svc.example-ns.svc.cluster.local",
+          "clusterIP": "10.96.0.10",
+          "ports": [{"name": "http", "port": 80, "targetPort": 8080, "protocol": "TCP"}],
+          "readyEndpoints": 2,
+          "totalEndpoints": 2,
+          "labels": {"app": "example-svc"}
+        }
+      ]
+    },
+    "projects": {
+      "source_file": "app/lib/k8s.ts",
+      "route": "/projects",
+      "description": "SupabaseProject -- the real self-service Project custom resource status shown on /projects.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "namespace": {"type": "string"},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "databaseRefName": {"type": ["string", "null"]},
+          "hostname": {"type": ["string", "null"]},
+          "ready": {"type": ["boolean", "null"], "description": "null when no Ready condition has been reported yet"},
+          "reason": {"type": ["string", "null"]},
+          "message": {"type": ["string", "null"]},
+          "labels": {"type": "object", "additionalProperties": {"type": "string"}}
+        },
+        "required": ["name", "namespace", "createdAt", "databaseRefName", "hostname", "ready", "reason", "message", "labels"]
+      },
+      "mock_data": [
+        {
+          "name": "example-project",
+          "namespace": "example-ns",
+          "createdAt": "2026-08-01T00:00:00Z",
+          "databaseRefName": "example-db",
+          "hostname": "example-project.apps.example.com",
+          "ready": true,
+          "reason": "Ready",
+          "message": "Project is ready",
+          "labels": {"platform-console.io/tag-team": "example"}
+        }
+      ]
+    },
+    "iam": {
+      "source_file": "app/lib/k8s.ts",
+      "route": "/iam",
+      "description": "RbacRole, IamNetworkPolicy, IamPeerAuthentication -- real k8s RBAC/NetworkPolicy/Istio PeerAuthentication objects shown on /iam.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {"type": "string", "enum": ["Role", "RoleBinding"]},
+                "name": {"type": "string"},
+                "namespace": {"type": "string"},
+                "detail": {"type": "string"}
+              },
+              "required": ["kind", "name", "namespace", "detail"]
+            }
+          },
+          "networkPolicies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {"type": "string"},
+                "namespace": {"type": "string"},
+                "policyTypes": {"type": "array", "items": {"type": "string"}},
+                "ingressFromNamespaces": {"type": "array", "items": {"type": "string"}}
+              },
+              "required": ["name", "namespace", "policyTypes", "ingressFromNamespaces"]
+            }
+          }
+        }
+      },
+      "mock_data": [
+        {
+          "roles": [{"kind": "RoleBinding", "name": "example-binding", "namespace": "example-ns", "detail": "example-user@example.com -> example-role"}],
+          "networkPolicies": [{"name": "example-policy", "namespace": "example-ns", "policyTypes": ["Ingress"], "ingressFromNamespaces": ["example-ns"]}]
+        }
+      ]
+    },
+    "load-test": {
+      "source_file": "app/lib/load-test.ts",
+      "route": "/load-test",
+      "description": "Real Load Testing / performance benchmarking self-service: fires real concurrent HTTP requests against one of the platform's own services and measures real p50/p95/p99 latency and real success/error counts.",
+      "schema": {
+        "type": "object",
+        "description": "LoadTestResult",
+        "properties": {
+          "targetUrl": {"type": "string"},
+          "concurrency": {"type": "integer"},
+          "durationSec": {"type": "integer"},
+          "startedAt": {"type": "string", "format": "date-time"},
+          "finishedAt": {"type": "string", "format": "date-time"},
+          "wallMs": {"type": "number"},
+          "totalRequests": {"type": "integer"},
+          "successCount": {"type": "integer"},
+          "errorCount": {"type": "integer"},
+          "errorRate": {"type": "number"},
+          "requestsPerSec": {"type": "number"},
+          "latencyMs": {
+            "type": "object",
+            "properties": {
+              "min": {"type": "number"},
+              "mean": {"type": "number"},
+              "p50": {"type": "number"},
+              "p95": {"type": "number"},
+              "p99": {"type": "number"},
+              "max": {"type": "number"}
+            },
+            "required": ["min", "mean", "p50", "p95", "p99", "max"]
+          },
+          "sampleErrors": {"type": "array", "items": {"type": "string"}}
+        },
+        "required": ["targetUrl", "concurrency", "durationSec", "startedAt", "finishedAt", "wallMs", "totalRequests", "successCount", "errorCount", "errorRate", "requestsPerSec", "latencyMs", "sampleErrors"]
+      },
+      "mock_data": [
+        {
+          "targetUrl": "http://example-status.example-ns.svc.cluster.local/status",
+          "concurrency": 10,
+          "durationSec": 10,
+          "startedAt": "2026-08-17T10:00:00Z",
+          "finishedAt": "2026-08-17T10:00:10Z",
+          "wallMs": 10032,
+          "totalRequests": 480,
+          "successCount": 478,
+          "errorCount": 2,
+          "errorRate": 0.0042,
+          "requestsPerSec": 47.8,
+          "latencyMs": {"min": 3.1, "mean": 20.4, "p50": 18.0, "p95": 45.2, "p99": 70.1, "max": 120.5},
+          "sampleErrors": ["timeout after 5000ms"]
+        }
+      ]
+    },
+    "migrations": {
+      "source_file": "app/lib/migrations.ts",
+      "route": "/projects/[name]/migrations",
+      "description": "Real self-service Database Schema Migrations: an operator submits a real versioned up/down SQL pair, applied inside a real Postgres transaction against that project's own live database.",
+      "schema": {
+        "type": "object",
+        "description": "MigrationRow",
+        "properties": {
+          "version": {"type": "integer"},
+          "name": {"type": "string"},
+          "appliedAt": {"type": "string", "format": "date-time"},
+          "checksum": {"type": "string"},
+          "upSql": {"type": "string"},
+          "downSql": {"type": "string"}
+        },
+        "required": ["version", "name", "appliedAt", "checksum", "upSql", "downSql"]
+      },
+      "mock_data": [
+        {
+          "version": 1,
+          "name": "create_example_table",
+          "appliedAt": "2026-08-01T00:00:00Z",
+          "checksum": "sha256:abcdef0123456789",
+          "upSql": "CREATE TABLE example (id serial primary key);",
+          "downSql": "DROP TABLE example;"
+        }
+      ]
+    },
+    "network": {
+      "source_file": "app/lib/network.ts",
+      "route": "/network",
+      "description": "Real hyperscaler-VPC-console-style Network Topology primitive: Pod/Service CIDR ranges, a per-namespace reachability matrix, and the Istio mTLS trust boundary, all in one place.",
+      "schema": {
+        "type": "object",
+        "description": "NetworkTopologySnapshot",
+        "properties": {
+          "cidr": {
+            "type": "object",
+            "properties": {
+              "podCidr": {
+                "type": "object",
+                "properties": {
+                  "authoritative": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "podCIDRs": {"type": "array", "items": {"type": "string"}}}, "required": ["name", "podCIDRs"]}},
+                  "observed": {"type": "object", "properties": {"cidr": {"type": ["string", "null"]}, "prefixLength": {"type": ["integer", "null"]}, "min": {"type": ["string", "null"]}, "max": {"type": ["string", "null"]}, "sampleCount": {"type": "integer"}}},
+                  "method": {"type": "string"}
+                }
+              },
+              "serviceCidr": {
+                "type": "object",
+                "properties": {
+                  "observed": {"type": "object", "properties": {"cidr": {"type": ["string", "null"]}, "prefixLength": {"type": ["integer", "null"]}, "min": {"type": ["string", "null"]}, "max": {"type": ["string", "null"]}, "sampleCount": {"type": "integer"}}},
+                  "method": {"type": "string"}
+                }
+              }
+            }
+          },
+          "reachability": {
+            "type": "object",
+            "properties": {
+              "namespaces": {"type": "array", "items": {"type": "string"}},
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "source": {"type": "string"},
+                    "target": {"type": "string"},
+                    "verdict": {"type": "string", "enum": ["allow", "deny"]},
+                    "policyNames": {"type": "array", "items": {"type": "string"}},
+                    "reason": {"type": "string"}
+                  },
+                  "required": ["source", "target", "verdict", "policyNames", "reason"]
+                }
+              }
+            }
+          },
+          "mtls": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "namespace": {"type": "string"},
+                "namespaceWide": {"type": ["object", "null"]},
+                "workloadOverrides": {"type": "array"}
+              }
+            }
+          },
+          "policyError": {"type": ["string", "null"]},
+          "peerAuthError": {"type": ["string", "null"]},
+          "cidrError": {"type": ["string", "null"]}
+        }
+      },
+      "mock_data": [
+        {
+          "cidr": {
+            "podCidr": {"authoritative": [{"name": "node-1", "podCIDRs": ["10.244.0.0/24"]}], "observed": {"cidr": "10.244.0.0/24", "prefixLength": 24, "min": "10.244.0.1", "max": "10.244.0.254", "sampleCount": 12}, "method": "authoritative (Node.spec.podCIDR), corroborated by observed live Pod IPs"},
+            "serviceCidr": {"observed": {"cidr": "10.96.0.0/16", "prefixLength": 16, "min": "10.96.0.1", "max": "10.96.255.254", "sampleCount": 20}, "method": "observed only (derived from live Service ClusterIPs)"}
+          },
+          "reachability": {"namespaces": ["example-ns"], "cells": [{"source": "example-ns", "target": "example-ns", "verdict": "allow", "policyNames": [], "reason": "no policies restrict this namespace"}]},
+          "mtls": [{"namespace": "example-ns", "namespaceWide": null, "workloadOverrides": []}],
+          "policyError": null,
+          "peerAuthError": null,
+          "cidrError": null
+        }
+      ]
+    },
+    "oidc-federation": {
+      "source_file": "app/lib/oidc-federation.ts",
+      "route": "not found (backs /api/auth/oidc-login and /api/auth/oidc-callback)",
+      "description": "External OIDC federation -- the 'Sign in with Google/GitHub/Microsoft' pattern, layered alongside the local-admin path and the internal GoTrue identity-federation path.",
+      "schema": {
+        "type": "object",
+        "description": "OidcVerifiedIdentity",
+        "properties": {
+          "sub": {"type": "string"},
+          "email": {"type": "string"},
+          "emailVerified": {"type": "boolean"},
+          "name": {"type": ["string", "null"]},
+          "alg": {"type": "string"},
+          "kid": {"type": ["string", "null"]}
+        },
+        "required": ["sub", "email", "emailVerified", "name", "alg"]
+      },
+      "mock_data": [
+        {"sub": "example-sub-000001", "email": "example-user@example.com", "emailVerified": true, "name": "Example User", "alg": "RS256", "kid": "example-key-id"}
+      ]
+    },
+    "policy": {
+      "source_file": "app/lib/policy.ts",
+      "route": "/policy",
+      "description": "Real Policy-as-Code / Organization Policy surface (AWS Config Rules / GCP Org Policy equivalent) -- read-only.",
+      "schema": {
+        "type": "object",
+        "description": "ActivePolicyBundle",
+        "properties": {
+          "policies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {"type": "string"},
+                "failurePolicy": {"type": ["string", "null"]},
+                "matchConstraints": {"type": "array", "items": {"type": "object", "properties": {"apiGroups": {"type": "array", "items": {"type": "string"}}, "apiVersions": {"type": "array", "items": {"type": "string"}}, "operations": {"type": "array", "items": {"type": "string"}}, "resources": {"type": "array", "items": {"type": "string"}}}}},
+                "validations": {"type": "array", "items": {"type": "object", "properties": {"expression": {"type": "string"}, "message": {"type": ["string", "null"]}, "reason": {"type": ["string", "null"]}}}},
+                "createdAt": {"type": "string", "format": "date-time"}
+              },
+              "required": ["name", "failurePolicy", "matchConstraints", "validations", "createdAt"]
+            }
+          },
+          "bindings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {"type": "string"},
+                "policyName": {"type": "string"},
+                "validationActions": {"type": "array", "items": {"type": "string"}},
+                "namespaceSelectorRules": {"type": "array", "items": {"type": "object", "properties": {"key": {"type": "string"}, "operator": {"type": "string"}, "values": {"type": "array", "items": {"type": "string"}}}}},
+                "createdAt": {"type": "string", "format": "date-time"}
+              },
+              "required": ["name", "policyName", "validationActions", "namespaceSelectorRules", "createdAt"]
+            }
+          }
+        },
+        "required": ["policies", "bindings"]
+      },
+      "mock_data": [
+        {
+          "policies": [{"name": "example-policy", "failurePolicy": "Fail", "matchConstraints": [{"apiGroups": [""], "apiVersions": ["v1"], "operations": ["CREATE"], "resources": ["pods"]}], "validations": [{"expression": "object.spec.containers.size() > 0", "message": "at least one container required", "reason": null}], "createdAt": "2026-07-01T00:00:00Z"}],
+          "bindings": [{"name": "example-binding", "policyName": "example-policy", "validationActions": ["Deny"], "namespaceSelectorRules": [{"key": "kubernetes.io/metadata.name", "operator": "In", "values": ["example-ns"]}], "createdAt": "2026-07-01T00:00:00Z"}]
+        }
+      ]
+    },
+    "observability": {
+      "source_file": "app/lib/prometheus.ts",
+      "route": "/observability",
+      "description": "Server-side proxy to the real in-cluster Prometheus instance deployed by the monitoring stack.",
+      "schema": {
+        "type": "object",
+        "description": "PrometheusQueryResponse",
+        "properties": {
+          "status": {"type": "string", "enum": ["success", "error"]},
+          "data": {
+            "type": "object",
+            "properties": {
+              "resultType": {"type": "string"},
+              "result": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "metric": {"type": "object", "additionalProperties": {"type": "string"}},
+                    "value": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "string"}]}
+                  }
+                }
+              }
+            }
+          },
+          "error": {"type": "string"}
+        },
+        "required": ["status"]
+      },
+      "mock_data": [
+        {
+          "status": "success",
+          "data": {"resultType": "vector", "result": [{"metric": {"__name__": "up", "namespace": "example-ns"}, "value": [1755428400, "1"]}]}
+        }
+      ]
+    },
+    "quickstart": {
+      "source_file": "app/lib/quickstart.ts",
+      "route": "/quickstart",
+      "description": "Generates the /quickstart page's personalized quickstart.sh: a real bash script that drives this exact deployment's real HTTP API with curl + jq -- the AWS CLI getting-started / gcloud init / Vercel CLI equivalent for this PaaS.",
+      "schema": {
+        "type": "object",
+        "description": "QuickstartScriptInput -- output of buildQuickstartScript is a templated shell-script string, not structured dashboard data.",
+        "properties": {
+          "baseUrl": {"type": "string"},
+          "sessionCookie": {"type": "string"},
+          "identifier": {"type": "string"},
+          "role": {"type": "string"},
+          "generatedAt": {"type": "string", "format": "date-time"}
+        },
+        "required": ["baseUrl", "sessionCookie", "identifier", "role", "generatedAt"]
+      },
+      "mock_data": [
+        {
+          "baseUrl": "https://console.example.com",
+          "sessionCookie": "example-session-cookie-value",
+          "identifier": "example-user@example.com",
+          "role": "member",
+          "generatedAt": "2026-08-17T10:00:00Z"
+        }
+      ]
+    },
+    "scheduled-jobs": {
+      "source_file": "app/lib/scheduled-jobs.ts",
+      "route": "/scheduled-jobs",
+      "description": "Real hyperscaler-PaaS-style Scheduled Jobs primitive (AWS EventBridge Scheduler / GCP Cloud Scheduler / Azure Logic Apps recurring-trigger equivalent): self-service creation of real k8s batch/v1 CronJobs.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "namespace": {"type": "string"},
+          "schedule": {"type": "string"},
+          "suspend": {"type": "boolean"},
+          "commandId": {"type": ["string", "null"]},
+          "image": {"type": ["string", "null"]},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "lastScheduleTime": {"type": ["string", "null"], "format": "date-time"},
+          "lastSuccessfulTime": {"type": ["string", "null"], "format": "date-time"}
+        },
+        "required": ["name", "namespace", "schedule", "suspend", "commandId", "image", "createdAt", "lastScheduleTime", "lastSuccessfulTime"]
+      },
+      "mock_data": [
+        {
+          "name": "example-cronjob",
+          "namespace": "example-ns",
+          "schedule": "*/5 * * * *",
+          "suspend": false,
+          "commandId": "echo-timestamp",
+          "image": "busybox:1.36",
+          "createdAt": "2026-08-01T00:00:00Z",
+          "lastScheduleTime": "2026-08-17T10:00:00Z",
+          "lastSuccessfulTime": "2026-08-17T10:00:00Z"
+        }
+      ]
+    },
+    "session": {
+      "source_file": "app/lib/session.ts",
+      "route": "not found (server-only auth helper consumed by every page and API route to verify the session cookie)",
+      "description": "Hand-rolled session handling using jose (HS256 JWT), edge-runtime safe so it can run inside middleware.ts without pulling in Node-only crypto APIs.",
+      "schema": {
+        "oneOf": [
+          {"type": "object", "properties": {"sub": {"type": "string"}, "role": {"const": "admin"}, "authProvider": {"const": "local-admin"}, "sessionId": {"type": "string"}}, "required": ["sub", "role", "authProvider"]},
+          {"type": "object", "properties": {"sub": {"type": "string"}, "role": {"const": "authenticated"}, "authProvider": {"const": "gotrue"}, "email": {"type": "string"}, "sessionId": {"type": "string"}}, "required": ["sub", "role", "authProvider", "email"]},
+          {"type": "object", "properties": {"sub": {"type": "string"}, "role": {"const": "authenticated"}, "authProvider": {"const": "oidc-external"}, "email": {"type": "string"}, "idpIssuer": {"type": "string"}, "sessionId": {"type": "string"}}, "required": ["sub", "role", "authProvider", "email", "idpIssuer"]},
+          {"type": "object", "properties": {"sub": {"type": "string"}, "role": {"const": "api-key"}, "authProvider": {"const": "api-key"}, "boundRole": {"type": "string", "enum": ["viewer", "member", "owner"]}, "keyId": {"type": "string"}, "sessionId": {"type": "string"}}, "required": ["sub", "role", "authProvider", "boundRole", "keyId"]}
+        ]
+      },
+      "mock_data": [
+        {"sub": "admin", "role": "admin", "authProvider": "local-admin", "sessionId": "sess-000001"}
+      ]
+    },
+    "status-page": {
+      "source_file": "app/lib/status-page.ts",
+      "route": "/status",
+      "description": "Real public status-page data: uptime% and current up/down state for every platform component, computed with genuine PromQL over the real up time series that services/platform-prober writes into the cluster's real Prometheus.",
+      "schema": {
+        "type": "object",
+        "description": "StatusPageData",
+        "properties": {
+          "generatedAt": {"type": "string", "format": "date-time"},
+          "windowLabel": {"type": "string"},
+          "windowSeconds": {"type": "integer"},
+          "reachable": {"type": "boolean"},
+          "prometheusError": {"type": ["string", "null"]},
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {"type": "string"},
+                "label": {"type": "string"},
+                "namespace": {"type": "string"},
+                "up": {"type": ["boolean", "null"]},
+                "uptimePercentWindow": {"type": ["number", "null"]},
+                "uptimePercentDay": {"type": ["number", "null"]},
+                "state": {"type": "string", "enum": ["operational", "degraded", "down", "unknown"]}
+              },
+              "required": ["id", "label", "namespace", "up", "uptimePercentWindow", "uptimePercentDay", "state"]
+            }
+          },
+          "overall": {"type": "string", "enum": ["operational", "degraded", "down", "unknown"]}
+        },
+        "required": ["generatedAt", "windowLabel", "windowSeconds", "reachable", "prometheusError", "components", "overall"]
+      },
+      "mock_data": [
+        {
+          "generatedAt": "2026-08-17T10:00:00Z",
+          "windowLabel": "last 1 hour",
+          "windowSeconds": 3600,
+          "reachable": true,
+          "prometheusError": null,
+          "components": [{"id": "example-status", "label": "example status service", "namespace": "example-ns", "up": true, "uptimePercentWindow": 99.98, "uptimePercentDay": 99.95, "state": "operational"}],
+          "overall": "operational"
+        }
+      ]
+    },
+    "project-status": {
+      "source_file": "app/lib/status.ts",
+      "route": "/gymact, /ggen-marketplace, /ggen, /autofde-lab (one fetcher per project)",
+      "description": "Server-side fetchers for each project's cluster-internal /status endpoint.",
+      "schema": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "AutofdeLabStatus",
+            "properties": {
+              "service": {"type": "string"},
+              "repo": {"type": "string"},
+              "git_head": {"type": "string"},
+              "git_head_subject": {"type": "string"},
+              "justfile_targets_present": {"type": "array", "items": {"type": "string"}},
+              "checked_at": {"type": "string", "format": "date-time"}
+            },
+            "required": ["service", "repo", "git_head", "git_head_subject", "justfile_targets_present", "checked_at"]
+          },
+          {
+            "type": "object",
+            "description": "GymactStatus",
+            "properties": {
+              "service": {"type": "string"},
+              "repo": {"type": "string"},
+              "git_head": {"type": "string"},
+              "cli_version": {"type": "string"},
+              "providers": {"type": "object", "properties": {"builtins": {"type": "array", "items": {"type": "string"}}}, "required": ["builtins"]},
+              "checked_at": {"type": "string", "format": "date-time"}
+            },
+            "required": ["service", "repo", "git_head", "cli_version", "providers", "checked_at"]
+          },
+          {
+            "type": "object",
+            "description": "GgenStatus",
+            "properties": {
+              "service": {"type": "string"},
+              "repo": {"type": "string"},
+              "git_head": {"type": "string"},
+              "installed_binary_version": {"type": "string"},
+              "workspace_cargo_version": {"type": "string"},
+              "sync_run_subcommand_present": {"type": "boolean"},
+              "checked_at": {"type": "string", "format": "date-time"}
+            },
+            "required": ["service", "repo", "git_head", "installed_binary_version", "workspace_cargo_version", "sync_run_subcommand_present", "checked_at"]
+          },
+          {
+            "type": "object",
+            "description": "GgenMarketplaceStatus",
+            "properties": {
+              "service": {"type": "string"},
+              "repo": {"type": "string"},
+              "git_head": {"type": "string"},
+              "pack_count": {"type": "integer"},
+              "checked_at": {"type": "string", "format": "date-time"}
+            },
+            "required": ["service", "repo", "git_head", "pack_count", "checked_at"]
+          }
+        ]
+      },
+      "mock_data": [
+        {
+          "service": "autofde-lab",
+          "repo": "example/autofde-lab",
+          "git_head": "abc1234",
+          "git_head_subject": "Example commit subject",
+          "justfile_targets_present": ["build", "test"],
+          "checked_at": "2026-08-17T10:00:00Z"
+        },
+        {
+          "service": "ggen-marketplace",
+          "repo": "example/ggen-marketplace",
+          "git_head": "def5678",
+          "pack_count": 12,
+          "checked_at": "2026-08-17T10:00:00Z"
+        }
+      ]
+    },
+    "storage": {
+      "source_file": "app/lib/storage-api.ts",
+      "route": "/projects/[name]/storage",
+      "description": "Server-side, read-only proxy to a project's real Supabase Storage API (GET /bucket).",
+      "schema": {
+        "oneOf": [
+          {"type": "object", "properties": {"ok": {"const": true}, "bucketCount": {"type": "integer"}, "bucketNames": {"type": "array", "items": {"type": "string"}}}, "required": ["ok", "bucketCount", "bucketNames"]},
+          {"type": "object", "properties": {"ok": {"const": false}, "notConfigured": {"const": true}}, "required": ["ok", "notConfigured"]},
+          {"type": "object", "properties": {"ok": {"const": false}, "notConfigured": {"const": false}, "error": {"type": "string"}}, "required": ["ok", "notConfigured", "error"]}
+        ]
+      },
+      "mock_data": [
+        {"ok": true, "bucketCount": 2, "bucketNames": ["avatars", "uploads"]}
+      ]
+    },
+    "tags": {
+      "source_file": "app/lib/tags.ts",
+      "route": "/tags",
+      "description": "Real hyperscaler-PaaS-style Resource Tagging / Organization primitive (AWS Resource Groups & Tag Editor / GCP Labels / Azure Tags equivalent): a key=value pair attached to a real platform resource, backed by genuine Kubernetes metadata.labels.",
+      "schema": {
+        "type": "object",
+        "description": "TaggedResource",
+        "properties": {
+          "type": {"type": "string", "enum": ["service", "project", "cronjob", "feature-flags", "webhooks"]},
+          "name": {"type": "string"},
+          "namespace": {"type": "string"},
+          "detail": {"type": "string"},
+          "path": {"type": "string"}
+        },
+        "required": ["type", "name", "namespace", "detail", "path"]
+      },
+      "mock_data": [
+        {"type": "project", "name": "example-project", "namespace": "example-ns", "detail": "team=example", "path": "/projects/example-project"}
+      ]
+    },
+    "topology": {
+      "source_file": "app/lib/topology.ts",
+      "route": "/topology",
+      "description": "Deterministic 2D layout for the Cluster Topology visualization.",
+      "schema": {
+        "type": "object",
+        "description": "TopologySnapshot",
+        "properties": {
+          "nodes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {"type": "string"},
+                "namespace": {"type": "string"},
+                "name": {"type": "string"},
+                "dns": {"type": "string"},
+                "clusterIP": {"type": ["string", "null"]},
+                "readyEndpoints": {"type": ["integer", "null"]},
+                "totalEndpoints": {"type": ["integer", "null"]},
+                "x": {"type": "number"},
+                "y": {"type": "number"}
+              },
+              "required": ["id", "namespace", "name", "dns", "clusterIP", "readyEndpoints", "totalEndpoints", "x", "y"]
+            }
+          },
+          "clusters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {"namespace": {"type": "string"}, "x": {"type": "number"}, "y": {"type": "number"}, "serviceCount": {"type": "integer"}},
+              "required": ["namespace", "x", "y", "serviceCount"]
+            }
+          },
+          "edges": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {"type": "string"},
+                "policyName": {"type": "string"},
+                "sourceNamespace": {"type": "string"},
+                "targetNamespace": {"type": "string"},
+                "sourceX": {"type": "number"},
+                "sourceY": {"type": "number"},
+                "targetX": {"type": "number"},
+                "targetY": {"type": "number"}
+              },
+              "required": ["id", "policyName", "sourceNamespace", "targetNamespace", "sourceX", "sourceY", "targetX", "targetY"]
+            }
+          }
+        },
+        "required": ["nodes", "clusters", "edges"]
+      },
+      "mock_data": [
+        {
+          "nodes": [{"id": "example-svc", "namespace": "example-ns", "name": "example-svc", "dns": "example-svc.example-ns.svc.cluster.local", "clusterIP": "10.96.0.10", "readyEndpoints": 2, "totalEndpoints": 2, "x": 100.0, "y": 200.0}],
+          "clusters": [{"namespace": "example-ns", "x": 100.0, "y": 200.0, "serviceCount": 1}],
+          "edges": []
+        }
+      ]
+    },
+    "vuln-scan": {
+      "source_file": "app/lib/vuln-scan.ts",
+      "route": "/security-scan",
+      "description": "Real Container Vulnerability Scanning (AWS ECR image scanning / GCP Artifact Registry vulnerability scanning / Azure Defender for Containers equivalent). Runs the real, open-source trivy scanner.",
+      "schema": {
+        "type": "object",
+        "description": "VulnScanRun",
+        "properties": {
+          "jobName": {"type": "string"},
+          "namespace": {"type": "string"},
+          "createdAt": {"type": ["string", "null"], "format": "date-time"},
+          "completions": {"type": "integer"},
+          "succeeded": {"type": "integer"},
+          "failed": {"type": "integer"},
+          "active": {"type": "integer"},
+          "complete": {"type": "boolean"},
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "target": {
+                  "type": "object",
+                  "properties": {
+                    "id": {"type": "string"},
+                    "label": {"type": "string"},
+                    "ref": {"type": "string"},
+                    "source": {"type": "string", "enum": ["containerd", "remote"]},
+                    "isControl": {"type": "boolean"}
+                  },
+                  "required": ["id", "label", "ref", "source", "isControl"]
+                },
+                "pod": {"type": ["string", "null"]},
+                "phase": {"type": "string"},
+                "exitReason": {"type": ["string", "null"]},
+                "findings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "pkgName": {"type": "string"},
+                      "installedVersion": {"type": "string"},
+                      "fixedVersion": {"type": ["string", "null"]},
+                      "vulnerabilityId": {"type": "string"},
+                      "severity": {"type": "string", "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "UNKNOWN"]},
+                      "title": {"type": "string"}
+                    },
+                    "required": ["pkgName", "installedVersion", "fixedVersion", "vulnerabilityId", "severity", "title"]
+                  }
+                },
+                "severityCounts": {"type": "object", "additionalProperties": {"type": "integer"}},
+                "error": {"type": ["string", "null"]}
+              },
+              "required": ["target", "pod", "phase", "exitReason", "findings", "severityCounts", "error"]
+            }
+          }
+        },
+        "required": ["jobName", "namespace", "createdAt", "completions", "succeeded", "failed", "active", "complete", "images"]
+      },
+      "mock_data": [
+        {
+          "jobName": "example-vuln-scan-1",
+          "namespace": "example-ns",
+          "createdAt": "2026-08-17T09:00:00Z",
+          "completions": 1,
+          "succeeded": 1,
+          "failed": 0,
+          "active": 0,
+          "complete": true,
+          "images": [
+            {
+              "target": {"id": "console", "label": "example/console", "ref": "docker.io/example/console:latest", "source": "containerd", "isControl": false},
+              "pod": "example-vuln-scan-1-abcde",
+              "phase": "Succeeded",
+              "exitReason": null,
+              "findings": [{"pkgName": "libexample", "installedVersion": "1.2.3", "fixedVersion": "1.2.4", "vulnerabilityId": "CVE-2026-00001", "severity": "MEDIUM", "title": "Example vulnerability"}],
+              "severityCounts": {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 1, "LOW": 0, "UNKNOWN": 0},
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    "webhooks": {
+      "source_file": "app/lib/webhooks.ts",
+      "route": "/webhooks",
+      "description": "Real hyperscaler-PaaS-style Outbound Webhooks / Event Notifications primitive (AWS EventBridge / GCP Eventarc / Azure Event Grid equivalent): HMAC-SHA256-signed HTTP POST notifications on real platform events.",
+      "schema": {
+        "type": "object",
+        "description": "WebhookSubscription",
+        "properties": {
+          "id": {"type": "string"},
+          "eventType": {"type": "string", "enum": ["project.created", "backup.completed", "alert.firing", "budget.threshold_crossed"]},
+          "url": {"type": "string"},
+          "secret": {"type": "string", "description": "HMAC-SHA256 signing secret"},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "createdBy": {"type": "string"}
+        },
+        "required": ["id", "eventType", "url", "secret", "createdAt", "createdBy"]
+      },
+      "mock_data": [
+        {
+          "id": "sub-000001-abc123",
+          "eventType": "project.created",
+          "url": "https://hooks.example.com/example-endpoint",
+          "secret": "example-hmac-secret-not-real",
+          "createdAt": "2026-08-01T00:00:00Z",
+          "createdBy": "example-user@example.com"
+        }
+      ]
+    }
+  }
+}
