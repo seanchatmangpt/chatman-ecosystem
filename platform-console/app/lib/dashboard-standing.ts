@@ -1,6 +1,13 @@
 import type { DashboardModel, DashboardStanding } from "@/components/CloudLayerDashboard";
 
-const HEALTHY_STATES = new Set(["ALIVE", "COMPLETE", "LIVE", "READY", "RUNNING"]);
+const HEALTHY_STATES = new Set([
+  "ALIVE",
+  "COMPLETE",
+  "LIVE",
+  "READY",
+  "RUNNING",
+  "SUCCEEDED",
+]);
 
 export interface StandingGuard {
   kind: string;
@@ -11,7 +18,9 @@ export interface StandingGuard {
  * Applies postcondition evidence after a dashboard has successfully observed
  * its sources. API readability is not health: an observation-only ALIVE view
  * is demoted to PARTIAL_ALIVE when a required resource class is absent or any
- * observed resource in that class reports a non-healthy state.
+ * observed resource in that class reports a non-healthy state. Successful
+ * terminal workloads (for example Kubernetes Pods in Succeeded phase) count
+ * as healthy evidence even though they are no longer Ready.
  *
  * Existing BLOCKED / UNKNOWN / PARTIAL_ALIVE standing is never promoted here.
  */
