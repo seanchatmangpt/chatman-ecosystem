@@ -1,0 +1,161 @@
+name: Chateco Edition 2 Bootstrap
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/.chateco-ed2-bootstrap/**
+      - .github/workflows/chateco-ed2-bootstrap.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: chateco-ed2-bootstrap-main
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Verify and publish expanded Edition 2 source
+    runs-on: ubuntu-latest
+    env:
+      ARCHIVE_SHA256: 1102c9afbfed43122742f5f66334116bf49eca6dcd20d921ec0489a0197830d5
+    steps:
+      - name: Checkout exact main subject
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify exact checkout and branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/main"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          printf 'bootstrap_subject=%s\n' "$GITHUB_SHA"
+
+      - name: Reconstruct and fence content-addressed source
+        shell: bash
+        run: |
+          set -euo pipefail
+          bootstrap="docs/.chateco-ed2-bootstrap"
+          test -d "$bootstrap"
+          cat "$bootstrap"/part-* | base64 --decode > /tmp/chateco-ed2-main.tar.xz
+          echo "$ARCHIVE_SHA256  /tmp/chateco-ed2-main.tar.xz" | sha256sum --check -
+
+          python3 - <<'PY'
+          from pathlib import PurePosixPath
+          import tarfile
+
+          archive = "/tmp/chateco-ed2-main.tar.xz"
+          with tarfile.open(archive, "r:xz") as tf:
+              members = tf.getmembers()
+              if not members:
+                  raise SystemExit("REFUSED:EMPTY_EDITION_2_ARCHIVE")
+              for member in members:
+                  path = PurePosixPath(member.name)
+                  if path.is_absolute() or ".." in path.parts:
+                      raise SystemExit(f"REFUSED:UNSAFE_ARCHIVE_PATH:{member.name}")
+                  allowed = (
+                      len(path.parts) >= 2 and path.parts[:2] == ("docs", "chateco-phd")
+                  ) or path.parts == (".github", "workflows", "mdbook.yml")
+                  if not allowed:
+                      raise SystemExit(f"REFUSED:OUT_OF_SCOPE_ARCHIVE_PATH:{member.name}")
+                  if member.issym() or member.islnk():
+                      raise SystemExit(f"REFUSED:ARCHIVE_LINK:{member.name}")
+          PY
+
+      - name: Expand Edition 2 and permanent mdBook workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar -xJf /tmp/chateco-ed2-main.tar.xz
+          rm -rf docs/.chateco-ed2-bootstrap
+          rm -f .github/workflows/chateco-ed2-bootstrap.yml
+
+      - name: Verify rewritten manuscript
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 docs/chateco-phd/verify.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json
+
+          root = Path("docs/chateco-phd")
+          manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+          assert manifest["edition"] == 2
+          assert manifest["chapter_count"] == 141
+          assert manifest["appendix_count"] == 26
+          assert manifest["summary_target_count"] == 173
+          assert manifest["markdown_file_count"] == 174
+          assert manifest["base_sha"] == "baf153296de42a6af336a42b21c39b43ec250bf0"
+
+          files = []
+          for path in root.rglob("*"):
+              if not path.is_file():
+                  continue
+              rel = path.relative_to(root)
+              if rel.name == "manifest.json" or rel.parts[0] == "book":
+                  continue
+              files.append((rel, path))
+          h = hashlib.sha256()
+          for rel, path in sorted(files):
+              rb = rel.as_posix().encode()
+              data = path.read_bytes()
+              h.update(len(rb).to_bytes(4, "big")); h.update(rb)
+              h.update(len(data).to_bytes(8, "big")); h.update(data)
+          actual = h.hexdigest()
+          expected = manifest["edition_2_source_tree_sha256"]
+          if actual != expected:
+              raise SystemExit(f"REFUSED:EDITION_2_SOURCE_DIGEST:{actual}:{expected}")
+          print(f"edition_2_source_tree_sha256={actual}")
+          PY
+
+      - name: Install verified mdBook 0.5.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="0.5.4"
+          archive="mdbook-v${version}-x86_64-unknown-linux-gnu.tar.gz"
+          curl --fail --location --silent --show-error \
+            "https://github.com/rust-lang/mdBook/releases/download/v${version}/${archive}" \
+            --output "${archive}"
+          echo "3f28de05dafca9d0f2eab99c662116b0e37b89b1d96a08f8f430b9eeae958cd7  ${archive}" | sha256sum --check -
+          tar -xzf "$archive"
+          install -d "$HOME/.local/bin"
+          install -m 0755 mdbook "$HOME/.local/bin/mdbook"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/mdbook" --version
+
+      - name: Build and inspect Edition 2 before main mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          mdbook build docs/chateco-phd
+          root="docs/chateco-phd/book"
+          test -s "$root/index.html"
+          test -s "$root/chapters/001-the-industrialization-of-knowledge-work.html"
+          test -s "$root/chapters/028-zero-unreceipted-actuation.html"
+          test -s "$root/chapters/141-final-receipt.html"
+          test -s "$root/appendices/z-machine-readable-thesis-manifest.html"
+          find "$root" -type f -name 'searchindex*.js' -size +0c -print -quit | grep -q .
+          grep -q "Second Edition" "$root/index.html"
+          grep -q "Zero Unreceipted Actuation" "$root/chapters/028-zero-unreceipted-actuation.html"
+          rm -rf "$root"
+
+      - name: Commit exact expanded source to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- docs/chateco-phd docs/.chateco-ed2-bootstrap .github/workflows/mdbook.yml .github/workflows/chateco-ed2-bootstrap.yml
+          test -n "$(git diff --cached --name-only)"
+          git commit -m "docs: publish Chateco Research Program second edition"
+          published="$(git rev-parse HEAD)"
+          git push origin HEAD:main
+          printf 'published_subject=%s\n' "$published"
