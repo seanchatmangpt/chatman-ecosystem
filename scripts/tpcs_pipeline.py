@@ -13,6 +13,7 @@ from typing import Iterable
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "catalog" / "tpcs.toml"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
+SHA64 = re.compile(r"^[0-9a-f]{64}$")
 
 
 class Refusal(RuntimeError):
@@ -207,18 +208,32 @@ def level_schedule(frontier: Iterable[WorkItem], cfg: dict) -> list[WorkItem]:
     return scheduled
 
 
+def _work_payload(item: WorkItem) -> dict:
+    payload = asdict(item)
+    payload["work_id"] = item.id
+    return payload
+
+
 def plan(items: Iterable[WorkItem], cfg: dict) -> dict:
     validate_config(cfg)
     candidates = list(items)
     frontier = pareto_frontier(candidates, cfg)
     schedule = level_schedule(frontier, cfg)
     selected = schedule[0]
+    inputs = [_work_payload(item) for item in sorted(candidates, key=lambda item: item.id)]
+    subjects = sorted({item.subject for item in candidates})
     payload = {
         "version": cfg["version"],
         "config_digest": config_digest(cfg),
         "candidate_count": len(candidates),
+        "inputs": inputs,
+        "input_digest": canonical_digest(inputs),
+        "subjects": subjects,
+        "subjects_digest": canonical_digest(subjects),
         "frontier": [item.id for item in frontier],
+        "frontier_digest": canonical_digest([item.id for item in frontier]),
         "schedule": [item.id for item in schedule],
+        "schedule_digest": canonical_digest([item.id for item in schedule]),
         "selected": selected.id,
         "selection_reversible": True,
         "irreversible_selections": 0,
@@ -226,6 +241,27 @@ def plan(items: Iterable[WorkItem], cfg: dict) -> dict:
         "actuation": False,
     }
     return {**payload, "sha256": canonical_digest(payload)}
+
+
+def verify_plan(record: dict, cfg: dict) -> bool:
+    supplied = record.get("sha256")
+    payload = {k: v for k, v in record.items() if k != "sha256"}
+    if not isinstance(supplied, str) or supplied != canonical_digest(payload):
+        return False
+    if record.get("config_digest") != config_digest(cfg):
+        return False
+    if record.get("planner_authority") != "SELECT" or record.get("actuation") is not False:
+        return False
+    if record.get("selection_reversible") is not True or record.get("irreversible_selections") != 0:
+        return False
+    inputs = record.get("inputs")
+    if not isinstance(inputs, list) or record.get("input_digest") != canonical_digest(inputs):
+        return False
+    try:
+        expected = plan([WorkItem(**row) for row in inputs], cfg)
+    except (TypeError, ValueError, Refusal):
+        return False
+    return expected == record
 
 
 def flow_metrics(
@@ -294,12 +330,6 @@ def kaizen_proposal(bottleneck_result: dict, cfg: dict) -> dict | None:
     }
 
 
-def _work_payload(item: WorkItem) -> dict:
-    payload = asdict(item)
-    payload["work_id"] = item.id
-    return payload
-
-
 def receipt(
     item: WorkItem,
     cfg: dict,
@@ -307,9 +337,24 @@ def receipt(
     frontier_ids: Iterable[str] = (),
     schedule_ids: Iterable[str] = (),
     previous_receipt: str | None = None,
+    plan_record: dict | None = None,
 ) -> dict:
     frontier_ids = list(frontier_ids)
     schedule_ids = list(schedule_ids)
+    plan_digest = None
+    plan_input_digest = None
+    if plan_record is not None:
+        if not verify_plan(plan_record, cfg) or item.subject not in plan_record["subjects"]:
+            raise Refusal(cfg["refusals"]["invalid_plan_receipt"])
+        frontier_ids = list(plan_record["frontier"])
+        schedule_ids = list(plan_record["schedule"])
+        plan_digest = plan_record["sha256"]
+        plan_input_digest = plan_record["input_digest"]
+        if previous_receipt is not None and previous_receipt != plan_digest:
+            raise Refusal(cfg["refusals"]["invalid_previous_receipt"])
+        previous_receipt = plan_digest
+    if previous_receipt is not None and not SHA64.fullmatch(previous_receipt):
+        raise Refusal(cfg["refusals"]["invalid_previous_receipt"])
     standing = (
         "ALIVE"
         if item.acceptance_passed
@@ -336,6 +381,8 @@ def receipt(
         "frontier_digest": canonical_digest(frontier_ids),
         "schedule_digest": canonical_digest(schedule_ids),
         "previous_receipt": previous_receipt,
+        "plan_digest": plan_digest,
+        "plan_input_digest": plan_input_digest,
         "standing": standing,
         "stages": [s["id"] for s in cfg["stage"]],
     }
@@ -360,6 +407,7 @@ def run(
     frontier_ids: Iterable[str] = (),
     schedule_ids: Iterable[str] = (),
     previous_receipt: str | None = None,
+    plan_record: dict | None = None,
 ) -> dict:
     validate_config(cfg)
     admit(item, cfg)
@@ -371,6 +419,7 @@ def run(
         frontier_ids=frontier_ids,
         schedule_ids=schedule_ids,
         previous_receipt=previous_receipt,
+        plan_record=plan_record,
     )
     verified = verify_receipt(out, cfg)
     if not verified:
@@ -431,6 +480,7 @@ def main() -> int:
     parser.add_argument("--authority", choices=["SELECT", "CONSTRUCT", "DO"])
     parser.add_argument("--acceptance-passed", action="store_true")
     parser.add_argument("--previous-receipt")
+    parser.add_argument("--from-plan-receipt")
     parser.add_argument("--receipt")
     parser.add_argument("--plan-file")
     parser.add_argument("--plan-receipt")
@@ -446,7 +496,7 @@ def main() -> int:
     if args.plan_file:
         result = plan(load_work_items(Path(args.plan_file)), cfg)
         encoded = json.dumps(result, indent=2, sort_keys=True) + "\n"
-        if args.plan_receipt:
+        if args.plan_reccipt:
             Path(args.plan_receipt).write_text(encoded, encoding="utf-8")
         print(encoded, end="")
         return 0
@@ -465,7 +515,10 @@ def main() -> int:
         work_id=args.work_id or "",
         acceptance_passed=args.acceptance_passed,
     )
-    result = run(item, cfg, previous_receipt=args.previous_receipt)
+    plan_record = None
+    if args.from_plan_receipt:
+        plan_record = json.loads(Path(args.from_plan_receipt).read_text(encoding="utf-8"))
+    result = run(item, cfg, previous_receipt=args.previous_receipt, plan_record=plan_record)
     encoded = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.receipt:
         Path(args.receipt).write_text(encoded, encoding="utf-8")
