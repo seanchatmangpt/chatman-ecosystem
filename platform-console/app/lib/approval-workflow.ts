@@ -63,7 +63,8 @@ export type ApprovalAction =
   | "freeze.override"
   | "environment.promote"
   | "deployment.quarantine"
-  | "sla.credit.apply";
+  | "sla.credit.apply"
+  | "patch-sla.credit.apply";
 export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   "org.delete",
   "quota.override",
@@ -162,6 +163,14 @@ export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   // `requestedSlaCreditMonth` on ApprovalResourcePayload below for the
   // month a second approver actually reviews before signing off.
   "sla.credit.apply",
+  // Real Contractual Patch-Timeliness SLA Tier (CVE Remediation Credits,
+  // lib/patch-sla.ts / POST /api/orgs/[id]/patch-sla-credits): the exact
+  // same "moves real money off a customer's Stripe balance with no
+  // per-transaction human review of the amount" blast radius as
+  // `sla.credit.apply` immediately above -- reuses
+  // applySlaCreditToStripeBalance wholesale, so it earns the identical
+  // maker-checker bar, no opt-out.
+  "patch-sla.credit.apply",
 ];
 
 export type ApprovalStatus = "pending" | "approved" | "rejected";

@@ -16,6 +16,7 @@
  * fabricating "100%" or "all systems operational".
  */
 import { queryPrometheus, queryPrometheusRange } from "@/lib/prometheus";
+import { createOrUpdateConfigMap, getConfigMap, type K8sResult } from "@/lib/k8s";
 
 export interface StatusComponent {
   id: string;
@@ -226,4 +227,116 @@ export async function getComponentDownWindows(
     }
   }
   return { ok: true, data: windows };
+}
+
+// --- Change detection for Status-Page Change Subscription --------------
+//
+// A single real k8s ConfigMap key holds the "state" half of the diff:
+// the `state` field of every component from the PREVIOUS cron tick,
+// keyed by component id. Same get-then-create-or-patch primitive every
+// other ConfigMap-backed module here uses (lib/k8s.ts's getConfigMap /
+// createOrUpdateConfigMap) -- one ConfigMap, one namespace, no new k8s
+// resource kind or RBAC verb (see lib/status-subscriptions.ts's header
+// comment for the shared RBAC reasoning).
+//
+// Deliberately its own tiny ConfigMap (`platform-console-status-snapshot`)
+// rather than a key inside `platform-console-status-subscriptions`: the
+// snapshot is single-writer, single-key, unrelated-lifecycle state (it
+// exists even with zero subscribers, since detecting "did anything
+// change" is a prerequisite for notifying anyone, not a property of the
+// subscription list itself).
+export const STATUS_SNAPSHOT_NAMESPACE = "platform-console";
+export const STATUS_SNAPSHOT_CONFIGMAP = "platform-console-status-snapshot";
+const SNAPSHOT_KEY = "last-component-states";
+
+interface StatusSnapshot {
+  generatedAt: string;
+  states: Record<string, StatusComponent["state"]>;
+}
+
+async function readLastSnapshot(): Promise<StatusSnapshot | null> {
+  const result = await getConfigMap(STATUS_SNAPSHOT_NAMESPACE, STATUS_SNAPSHOT_CONFIGMAP);
+  if (!result.ok || !result.data) return null;
+  const raw = result.data.data?.[SNAPSHOT_KEY];
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as Partial<StatusSnapshot>;
+    if (typeof parsed.generatedAt === "string" && parsed.states && typeof parsed.states === "object") {
+      return { generatedAt: parsed.generatedAt, states: parsed.states as Record<string, StatusComponent["state"]> };
+    }
+  } catch {
+    // fall through to null -- a corrupt/missing snapshot is treated as
+    // "no prior snapshot" (first-ever tick), never a thrown error.
+  }
+  return null;
+}
+
+async function writeSnapshot(snapshot: StatusSnapshot): Promise<K8sResult<null>> {
+  const result = await createOrUpdateConfigMap(STATUS_SNAPSHOT_NAMESPACE, STATUS_SNAPSHOT_CONFIGMAP, {
+    [SNAPSHOT_KEY]: JSON.stringify(snapshot),
+  });
+  if (!result.ok) return result;
+  return { ok: true, data: null };
+}
+
+export interface StatusChangeDetectionResult {
+  reachable: boolean;
+  generatedAt: string;
+  /** Components whose `state` differs from the persisted last snapshot.
+   * Empty on the very first tick ever run (nothing to diff against yet
+   * -- the first tick only establishes a baseline, it never reports
+   * every component as "changed" purely because no prior snapshot
+   * existed). */
+  changedComponents: StatusComponent[];
+  snapshotWriteError: string | null;
+}
+
+/**
+ * Real change detection: fetches the CURRENT status-page data
+ * (getStatusPageData(), the exact same Prometheus-derived data GET
+ * /api/status already returns), diffs each component's `state` against
+ * the LAST persisted snapshot, and persists the new snapshot for the
+ * next tick to diff against -- called exclusively by POST
+ * /api/cron/status-change-notify, never by a page-view path (same
+ * "only the cron/poller may observe-and-mark" discipline
+ * lib/budget-alerts.ts's header comment documents for its own
+ * alerted-state ConfigMap, for the identical reason: a page view
+ * racing the cron tick must never silently consume the one snapshot
+ * transition a real subscriber was about to be notified of).
+ *
+ * If the live status data itself is unreachable (`reachable: false`),
+ * this returns zero changed components and does NOT overwrite the
+ * snapshot -- a Prometheus outage must never be reported to subscribers
+ * as "every component's state is now unknown", and must never silently
+ * erase the last known-good snapshot a real subsequent recovery tick
+ * needs to diff against.
+ */
+export async function detectStatusChanges(): Promise<StatusChangeDetectionResult> {
+  const current = await getStatusPageData();
+  if (!current.reachable) {
+    return {
+      reachable: false,
+      generatedAt: current.generatedAt,
+      changedComponents: [],
+      snapshotWriteError: null,
+    };
+  }
+
+  const previous = await readLastSnapshot();
+  const changedComponents = previous
+    ? current.components.filter((c) => previous.states[c.id] !== c.state)
+    : [];
+
+  const nextSnapshot: StatusSnapshot = {
+    generatedAt: current.generatedAt,
+    states: Object.fromEntries(current.components.map((c) => [c.id, c.state])),
+  };
+  const writeResult = await writeSnapshot(nextSnapshot);
+
+  return {
+    reachable: true,
+    generatedAt: current.generatedAt,
+    changedComponents,
+    snapshotWriteError: writeResult.ok ? null : writeResult.error,
+  };
 }

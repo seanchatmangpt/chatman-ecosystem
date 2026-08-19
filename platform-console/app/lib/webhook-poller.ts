@@ -50,6 +50,7 @@ import { reconcilePlanState } from "@/lib/plan-state";
 import { recomputeAllOverageEstimates } from "@/lib/overage-billing";
 import { deliverWebhookEvent, redeliverStoredEvent, type WebhookEventType } from "@/lib/webhooks";
 import { listDueRetries } from "@/lib/webhook-deliveries";
+import { redeliverStatusSubscriptionEvent } from "@/lib/status-subscriptions";
 import { checkSupportTicketBreaches } from "@/lib/support-tickets";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 
@@ -332,6 +333,22 @@ async function pollWebhookRetries(): Promise<void> {
     return;
   }
   for (const delivery of result.data) {
+    // `statussub-...` ids belong to lib/status-subscriptions.ts's own
+    // registry (public, self-service status-change subscribers), never
+    // to this module's `platform-console-webhooks` registry -- route
+    // the redelivery accordingly. Both share the exact same
+    // lib/webhook-deliveries.ts retry-with-backoff/DLQ/ledger
+    // infrastructure this loop already drives; only the subscription
+    // lookup differs.
+    if (delivery.subscriptionId.startsWith("statussub-")) {
+      await redeliverStatusSubscriptionEvent({
+        deliveryId: delivery.deliveryId,
+        subscriptionId: delivery.subscriptionId,
+        body: delivery.body,
+        attemptNumber: delivery.attemptNumber + 1,
+      });
+      continue;
+    }
     await redeliverStoredEvent({
       deliveryId: delivery.deliveryId,
       subscriptionId: delivery.subscriptionId,

@@ -11,6 +11,7 @@ import {
   syncVulnDenylist,
 } from "@/lib/vuln-scan";
 import { autoRemediateCriticalFindings, type AutoRemediationResult } from "@/lib/security-scan-auto-remediate";
+import { recordScanFindings, type RecordScanFindingsSummary } from "@/lib/patch-sla";
 
 // Owner-only, both verbs -- Container Vulnerability Scanning creates a real
 // k8s Job with a hostPath mount onto the node's own containerd socket, the
@@ -106,12 +107,29 @@ export async function GET(request: NextRequest) {
   let denylist: { pattern: string; blockedRefs: string[] } | null = null;
   let denylistSyncError: string | null = null;
   let autoRemediation: AutoRemediationResult | null = null;
+  let patchSla: RecordScanFindingsSummary | null = null;
+  let patchSlaError: string | null = null;
   if (result.data.complete) {
     const sync = await syncVulnDenylist(result.data);
     if (sync.ok) {
       denylist = sync.data;
     } else {
       denylistSyncError = sync.error;
+    }
+
+    // Real Patch-Timeliness SLA lifecycle write (lib/patch-sla.ts): the
+    // detectedAt/remediatedAt half of CVE Remediation Credits -- sets
+    // detectedAt the first time this run observes a CRITICAL/HIGH
+    // finding, and closes remediatedAt for any previously-open finding
+    // this finished run no longer reports. Same "independent consumer of
+    // the same real scan result, one failing must never skip the other"
+    // discipline autoRemediation below already follows -- attempted
+    // regardless of whether the denylist sync succeeded.
+    const patchSlaResult = await recordScanFindings(result.data);
+    if (patchSlaResult.ok) {
+      patchSla = patchSlaResult.data;
+    } else {
+      patchSlaError = patchSlaResult.error;
     }
 
     // Natural next step after syncVulnDenylist: syncVulnDenylist closes
@@ -128,7 +146,14 @@ export async function GET(request: NextRequest) {
     autoRemediation = await autoRemediateCriticalFindings(result.data);
   }
 
-  return NextResponse.json({ run: result.data, denylist, denylistSyncError, autoRemediation });
+  return NextResponse.json({
+    run: result.data,
+    denylist,
+    denylistSyncError,
+    autoRemediation,
+    patchSla,
+    patchSlaError,
+  });
 }
 
 export async function DELETE(request: NextRequest) {

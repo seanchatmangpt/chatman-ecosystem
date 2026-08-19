@@ -60,6 +60,30 @@ function reservationConfigMapKey(orgId: string): string {
   return `reservation.${orgId}`;
 }
 
+/** Real Reserved-Capacity Secondary Marketplace resale state
+ * (lib/reservation-marketplace.ts): present only while some portion of
+ * THIS reservation's own committed capacity is currently listed for
+ * resale on the marketplace. `unitsAvailable` is denominated in whole
+ * CPU-core-equivalent units (lib/reservation-marketplace.ts's own
+ * `UNIT_CPU_CORES = 1` convention -- each unit bundles 1 committed CPU
+ * core plus its proportional share of `committedMemoryGi`, so a listing
+ * never sells CPU and memory as two independently-priced things).
+ * `pricePerUnit` is the seller's own asking price for the REMAINING TERM
+ * of this reservation, not a per-hour rate -- see
+ * lib/reservation-marketplace.ts's `validateResalePrice` for the real
+ * bounds (seller's own sunk discounted cost as the floor, standard/
+ * overage cost as the ceiling) this field is validated against at
+ * listing time. Written and cleared exclusively by
+ * lib/reservation-marketplace.ts via `putReservationRecord` below --
+ * this module itself never sets or reads this field's business meaning,
+ * only persists it, same "capacity-reservations.ts enforces the k8s
+ * primitive, invoice-preview.ts prices it" separation of concerns this
+ * module's own header comment establishes for discountPct. */
+export interface ResaleListingSummary {
+  pricePerUnit: number;
+  unitsAvailable: number;
+}
+
 export interface CapacityReservation {
   orgId: string;
   namespace: string;
@@ -71,6 +95,7 @@ export interface CapacityReservation {
   startDate: string;
   endDate: string;
   createdBy: string;
+  listedForResale?: ResaleListingSummary;
 }
 
 function parseStoredReservation(orgId: string, raw: string): CapacityReservation | null {
@@ -87,6 +112,13 @@ function parseStoredReservation(orgId: string, raw: string): CapacityReservation
       typeof p.endDate === "string" &&
       typeof p.createdBy === "string"
     ) {
+      const rawResale = p.listedForResale as Partial<ResaleListingSummary> | undefined;
+      const listedForResale: ResaleListingSummary | undefined =
+        rawResale &&
+        typeof rawResale.pricePerUnit === "number" &&
+        typeof rawResale.unitsAvailable === "number"
+          ? { pricePerUnit: rawResale.pricePerUnit, unitsAvailable: rawResale.unitsAvailable }
+          : undefined;
       return {
         orgId,
         namespace: p.namespace,
@@ -98,6 +130,7 @@ function parseStoredReservation(orgId: string, raw: string): CapacityReservation
         startDate: p.startDate,
         endDate: p.endDate,
         createdBy: p.createdBy,
+        ...(listedForResale ? { listedForResale } : {}),
       };
     }
     return null;
@@ -146,6 +179,21 @@ async function putReservation(reservation: CapacityReservation): Promise<K8sResu
   if (!result.ok) return result;
   return { ok: true, data: reservation };
 }
+
+/** Real, exported write-back for an already-existing
+ * `CapacityReservation` record -- the one seam
+ * lib/reservation-marketplace.ts is allowed to use to persist a
+ * reservation whose `committedCpuCores`/`committedMemoryGi`/
+ * `listedForResale` changed because of a real marketplace listing or
+ * sale (the ResourceQuota patch and the ConfigMap write for the SAME
+ * reservation record must both happen, so the marketplace module reuses
+ * this module's own storage primitive rather than re-implementing the
+ * `reservation.<orgId>` key convention a second time). Deliberately just
+ * `putReservation` under an exported name -- no extra validation here,
+ * since the marketplace module owns validating the resale-specific
+ * invariants (remaining term, price bounds, units available) before
+ * ever calling this. */
+export const putReservationRecord = putReservation;
 
 /** Real key removal via an RFC 7386 JSON merge patch that sets the key
  * to `null` -- the standard merge-patch "delete this key" idiom, same

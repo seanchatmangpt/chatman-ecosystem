@@ -84,7 +84,8 @@ export type WebhookEventType =
   | "quota.enforcement_triggered"
   | "plan_state.enforcement_triggered"
   | "cost.anomaly_detected"
-  | "support.sla_breached";
+  | "support.sla_breached"
+  | "status.component_changed";
 export const WEBHOOK_EVENT_TYPES: WebhookEventType[] = [
   "project.created",
   "backup.completed",
@@ -94,6 +95,7 @@ export const WEBHOOK_EVENT_TYPES: WebhookEventType[] = [
   "plan_state.enforcement_triggered",
   "cost.anomaly_detected",
   "support.sla_breached",
+  "status.component_changed",
 ];
 
 export interface WebhookSubscription {
@@ -253,7 +255,17 @@ const DELIVERY_TIMEOUT_MS = 5000;
  * caller (first attempt, scheduled retry, manual replay) handles both
  * the same way.
  */
-async function performHttpDelivery(
+/** Exported for reuse by lib/status-subscriptions.ts, which delivers
+ * `status.component_changed` to webhook-type status subscribers using
+ * this exact same signed-POST primitive (and lib/webhook-deliveries.ts's
+ * same recordDeliveryAttempt ledger) rather than a second, divergent
+ * HTTP-delivery implementation -- status subscriptions live in their own
+ * ConfigMap (never the `platform-console-webhooks` registry this module
+ * owns, since a status subscriber is unauthenticated/self-service, not
+ * an owner-gated platform subscription), so they cannot go through
+ * deliverWebhookEvent's listWebhookSubscriptions lookup, but they reuse
+ * everything downstream of "subscription resolved to a URL+secret". */
+export async function performHttpDelivery(
   url: string,
   body: string,
   secret: string,

@@ -48,6 +48,10 @@ const PUBLIC_PATHS = [
   // statuspage.io convention (no login to view real-time platform status).
   "/status",
   "/api/status",
+  // Public, self-service status-change subscribe/unsubscribe form --
+  // same unauthenticated posture as /api/status itself (see lib/
+  // status-subscriptions.ts's header comment).
+  "/api/status/subscribe",
   // Public Trust / Security Posture page -- same public-with-no-login
   // convention as /status above (aggregate CVE/cert/uptime counts only,
   // no secrets, no internal hostnames -- see lib/trust-page.ts).

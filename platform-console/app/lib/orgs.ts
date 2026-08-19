@@ -40,6 +40,7 @@ import {
   DEFAULT_SLA_TIER,
   type ProjectTier,
   type SlaTier,
+  type PatchSlaTier,
 } from "@/lib/tiers";
 
 export const ORGS_REGISTRY_NAMESPACE = "platform-console";
@@ -109,6 +110,35 @@ export interface Org {
    */
   customDomain?: string;
   customDomainStatus?: "pending" | "issued" | "failed";
+  /**
+   * Contractual Patch-Timeliness SLA Tier (CVE Remediation Credits,
+   * lib/patch-sla.ts): a SEPARATE contracted commitment from `slaTier`
+   * above (that one is uptime/support-response; this one is "how fast
+   * does a CRITICAL/HIGH CVE actually get remediated"). Unset by default
+   * -- an org with no `patchSlaTier` has made no patch-timeliness
+   * commitment at all and is never walked by the breach-detection cron
+   * (app/api/cron/patch-sla-breach-scan/route.ts checks `patchSlaTier !=
+   * null` before scoring any org), same "opt-in, never fires uninvited"
+   * discipline `autoRemediateCritical` above already establishes. See
+   * lib/tiers.ts's `PATCH_SLA_COMMITTED_HOURS` for the fixed per-tier,
+   * per-severity remediation-window table this is scored against.
+   */
+  patchSlaTier?: PatchSlaTier;
+  /**
+   * Partner/MSP Multi-Tenant Management Console (lib/partners.ts): the
+   * id of the `Partner` record that manages this org, if any -- the
+   * missing "managing identity above a single org" concept this file's
+   * own module doc used to have no way to express. Purely denormalized
+   * from a Partner's own `managedOrgIds` list (the Partner record is
+   * still the source of truth an MSP CRUDs); kept here too so a reader
+   * that already has an `Org` (e.g. an org's own admin page) can show
+   * "managed by <partner>" without a second registry scan. Optional and
+   * unset by default, same forward-compatible-optional-field round-trip
+   * discipline as every other optional field on this type -- every org
+   * registered before this field existed round-trips through
+   * JSON.parse/stringify with `managingPartnerId: undefined`.
+   */
+  managingPartnerId?: string;
 }
 
 interface OrgRegistryEntry {
@@ -161,6 +191,16 @@ interface OrgRegistryEntry {
   // other optional registry field above.
   customDomain?: string;
   customDomainStatus?: "pending" | "issued" | "failed";
+  // Patch-Timeliness SLA tier -- see the identically-named field on `Org`
+  // above for the full rationale. Optional and unset by default, same
+  // forward-compatible-optional-field round-trip discipline as every
+  // other optional registry field above.
+  patchSlaTier?: PatchSlaTier;
+  // Partner/MSP managing-identity link -- see the identically-named
+  // field on `Org` above for the full rationale. Optional and unset by
+  // default, same forward-compatible-optional-field round-trip
+  // discipline as every other optional registry field above.
+  managingPartnerId?: string;
 }
 
 const PRODUCT_NAME_MAX_LENGTH = 60;
@@ -678,6 +718,42 @@ export async function setOrgSla(id: string, slaTier: SlaTier): Promise<K8sResult
 }
 
 /**
+ * Real Patch-Timeliness SLA-tier write: backs PUT on the patch-SLA config
+ * (no dedicated PUT route was in this pass's scope -- setOrgSla's sibling
+ * exists so any future admin UI/route has a real writer to call, same
+ * "module exposes the setter, the route decides who may call it" division
+ * of labor as every other setter in this file). Unlike `slaTier` this
+ * tier has no derived-numbers side table to also write -- the committed-
+ * hours lookup (`PATCH_SLA_COMMITTED_HOURS`, lib/tiers.ts) is read fresh
+ * by lib/patch-sla.ts at breach-detection time, never copied onto the
+ * registry entry, so a later change to that table takes effect on the
+ * NEXT scan for every org already on that tier (deliberately different
+ * from setOrgSla's copy-at-write-time choice: a patch-timeliness
+ * commitment is scored against whatever window is CURRENTLY contracted
+ * for that tier, not a snapshot frozen at enrollment). Merge-patches only
+ * `patchSlaTier`, same one-key-at-a-time discipline as every other setter
+ * in this module. `null` clears the commitment (org opts out of the
+ * patch-timeliness SLA entirely).
+ */
+export async function setOrgPatchSla(
+  id: string,
+  patchSlaTier: PatchSlaTier | null,
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const updatedEntry: OrgRegistryEntry = { ...entry, patchSlaTier: patchSlaTier ?? undefined };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
  * Real per-org auto-remediation opt-in write: backs
  * PUT /api/orgs/[id]/auto-remediate-critical (and any admin UI toggle).
  * Same one-key-at-a-time merge-patch discipline as setOrgBranding/
@@ -723,6 +799,36 @@ export async function setOrgLastSlaCreditAppliedMonth(
   if (!entry) return { ok: true, data: null };
 
   const updatedEntry: OrgRegistryEntry = { ...entry, lastSlaCreditAppliedMonth: month };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
+ * Partner/MSP managing-identity link writer -- called from
+ * lib/partners.ts whenever a Partner's own `managedOrgIds` changes, so
+ * this denormalized pointer on the Org side never drifts from the
+ * Partner record that is its source of truth. `partnerId: null` clears
+ * the link (an org removed from a partner's managed list, or the
+ * partner itself deleted). Same partial-merge-write convention as
+ * setOrgLastSlaCreditAppliedMonth immediately above.
+ */
+export async function setOrgManagingPartnerId(
+  id: string,
+  partnerId: string | null,
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const updatedEntry: OrgRegistryEntry = {
+    ...entry,
+    managingPartnerId: partnerId ?? undefined,
+  };
   const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
     [id]: JSON.stringify(updatedEntry),
   });

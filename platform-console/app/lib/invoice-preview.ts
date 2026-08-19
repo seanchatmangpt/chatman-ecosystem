@@ -168,7 +168,61 @@ export interface ReservedCapacityDiscountLineItem {
   totalCost: number;
 }
 
-export type AnyInvoiceLineItem = InvoiceLineItem | NetworkEgressLineItem | ReservedCapacityDiscountLineItem;
+/**
+ * Real "Marketplace transaction fee" line item (Reserved-Capacity
+ * Secondary Marketplace, lib/reservation-marketplace.ts): the platform's
+ * own cut of a real resale between two orgs -- the exact "reduces the
+ * CFO objection that currently caps how large a reservation buyers are
+ * willing to make" lever this capability exists for. Computed by
+ * `computeMarketplaceFeeLineItem` below at the moment a listing is
+ * bought, over the REAL `purchaseAmount` (units bought x the listing's
+ * own `pricePerUnit`, never re-derived from ILLUSTRATIVE_RATES -- a
+ * resale price is a negotiated secondary-market number, not a metered
+ * usage figure), same "informational, real arithmetic, no payment
+ * processor involved" posture every other line item in this module
+ * already carries. `totalCost` is always >= 0 (a real charge to the
+ * buyer, on top of `purchaseAmount`), never a credit.
+ */
+export interface MarketplaceFeeLineItem {
+  type: "marketplace_fee";
+  listingId: string;
+  sellerOrgId: string;
+  buyerOrgId: string;
+  purchaseAmount: number;
+  feePct: number;
+  totalCost: number;
+}
+
+/** Illustrative platform take-rate on every real marketplace resale --
+ * same "explicitly illustrative, not a real contracted price" disclosure
+ * ILLUSTRATIVE_RATES carries above, just for a percentage rather than a
+ * per-unit dollar rate. */
+export const MARKETPLACE_FEE_PCT = 10;
+
+/**
+ * Pure arithmetic, same shape as computeEgressLineItems: a real
+ * `purchaseAmount` (units x pricePerUnit, computed by the caller from
+ * the real listing and the real quantity bought) x `feePct` -> one real
+ * fee line item. Takes no network dependency, so it is trivially
+ * callable with a hand-constructed purchase amount to check the math in
+ * isolation, same as every other compute* function in this module.
+ */
+export function computeMarketplaceFeeLineItem(
+  listingId: string,
+  sellerOrgId: string,
+  buyerOrgId: string,
+  purchaseAmount: number,
+  feePct: number = MARKETPLACE_FEE_PCT,
+): MarketplaceFeeLineItem {
+  const totalCost = purchaseAmount * (feePct / 100);
+  return { type: "marketplace_fee", listingId, sellerOrgId, buyerOrgId, purchaseAmount, feePct, totalCost };
+}
+
+export type AnyInvoiceLineItem =
+  | InvoiceLineItem
+  | NetworkEgressLineItem
+  | ReservedCapacityDiscountLineItem
+  | MarketplaceFeeLineItem;
 
 export interface InvoicePreview {
   windowLabel: string;

@@ -199,6 +199,46 @@ export const SLA_TIER_DEFAULTS: Record<SlaTier, SlaTierDefault> = {
 };
 
 /**
+ * Real Contractual Patch-Timeliness SLA Tier (CVE Remediation Credits):
+ * a SEPARATE axis from `SlaTier` above -- that one is uptime/support-
+ * response, this one is "how fast does a CRITICAL/HIGH CVE actually get
+ * remediated". Fortune 5 security/procurement review increasingly asks
+ * for a written patch-timeliness commitment (e.g. "CRITICAL CVEs
+ * remediated within 24h") with financial credits on breach, distinct
+ * from the existing uptime SLA -- an org can be on `enterprise-247` for
+ * uptime while still on `standard` patch timeliness, or vice versa, so
+ * this reuses the SlaTier union (same three named tiers procurement
+ * already recognizes) rather than inventing a fourth naming scheme, but
+ * is tracked as its OWN field on Org (`patchSlaTier`, lib/orgs.ts) so
+ * the two commitments can be priced/contracted independently.
+ */
+export type PatchSlaTier = SlaTier;
+
+export const PATCH_SLA_TIERS: readonly PatchSlaTier[] = SLA_TIERS;
+
+export function isPatchSlaTier(value: string): value is PatchSlaTier {
+  return isSlaTier(value);
+}
+
+/**
+ * Committed remediation window, in hours, keyed by (patch SLA tier,
+ * finding severity) -- the actual numbers procurement signs. Only
+ * CRITICAL and HIGH severities carry a contractual commitment (MEDIUM/
+ * LOW/UNKNOWN findings are tracked by lib/vuln-scan.ts but never breach
+ * a patch-timeliness SLA in this table, same "real but out of the
+ * contracted commitment's scope" distinction lib/incidents.ts's
+ * severityForDurationMs draws for sub-5-minute uptime blips). Same
+ * "fixed lookup table, never a free-text/client-supplied number"
+ * discipline SLA_TIER_DEFAULTS/TIER_RESOURCE_QUOTAS above already
+ * establish.
+ */
+export const PATCH_SLA_COMMITTED_HOURS: Record<PatchSlaTier, { CRITICAL: number; HIGH: number }> = {
+  standard: { CRITICAL: 24, HIGH: 72 },
+  priority: { CRITICAL: 12, HIGH: 48 },
+  "enterprise-247": { CRITICAL: 4, HIGH: 24 },
+};
+
+/**
  * Real Committed-Use Capacity Reservation discount table (AWS Reserved
  * Instances / GCP Committed Use Discounts equivalent): closes the gap
  * that TIER_RESOURCE_QUOTAS above only ever sets a FIXED per-tier
