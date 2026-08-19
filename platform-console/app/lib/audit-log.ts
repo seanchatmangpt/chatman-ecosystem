@@ -80,6 +80,20 @@ export interface AuditLogEntry {
    * skips NULLs rather than treating them as zero.
    */
   durationMs?: number;
+  /**
+   * SLA credit auto-application (POST /api/orgs/[id]/sla-credits): the
+   * real Stripe customer-balance transaction id
+   * (lib/stripe-billing.ts's applySlaCreditToStripeBalance), the exact
+   * amount actually credited in integer cents, and the "YYYY-MM" month
+   * it was applied for -- present only on the one audit row that records
+   * a real credit actually landing on a customer's Stripe balance, so a
+   * reviewer can cross-reference this platform's own hash-chained audit
+   * trail against Stripe's own dashboard/API record of the same
+   * transaction. All three are set together or not at all.
+   */
+  slaCreditStripeTransactionId?: string;
+  slaCreditAmountCents?: number;
+  slaCreditMonth?: string;
 }
 
 export function writeAuditLogEntry(entry: AuditLogEntry): void {

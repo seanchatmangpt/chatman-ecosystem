@@ -563,3 +563,74 @@ export async function applyStripeEvent(event: Stripe.Event): Promise<StripeResul
 
   return { ok: true, data: null };
 }
+
+/**
+ * Real Stripe customer-balance credit -- the actual (test-mode-honest,
+ * see this file's header) mechanism that closes the gap
+ * lib/incidents.ts's computeCredit's own doc comment names: a
+ * `creditPctOfMonthlySpend` figure is real arithmetic over real downtime,
+ * but until it lands somewhere Stripe honors it it is only "a number on a
+ * report." This function is that landing: `stripe.customers
+ * .createBalanceTransaction`, a real negative-amount entry on the
+ * customer's Stripe balance, which Stripe itself automatically applies
+ * to reduce the amount due on that customer's NEXT real invoice -- no
+ * separate credit-note/refund flow, no manual finance step.
+ *
+ * `creditPctOfMonthlySpend` is a PERCENTAGE (0-100), not a dollar amount
+ * (computeCredit's own contract) -- this function is the one place that
+ * percentage is ever converted into real cents, and it converts it
+ * against this customer's OWN real Stripe subscription price, never a
+ * caller-supplied or fabricated dollar figure: it retrieves the live
+ * Stripe Subscription for `subscriptionId` and sums
+ * `unit_amount * quantity` across its real recurring subscription items
+ * to get the real monthly recurring amount in the subscription's own
+ * real `currency`, then applies the percentage to THAT. A subscription
+ * with no real recurring amount on file (e.g. a $0 metered-only plan)
+ * fails closed with an honest error rather than crediting $0 silently.
+ *
+ * Fails closed (an honest `StripeResult` error, never a fabricated
+ * transaction id) when Stripe isn't configured, when the percentage is
+ * not a real positive number, when the subscription can't be retrieved,
+ * or when the computed credit rounds to zero cents -- the same
+ * fail-closed discipline `createOverageInvoiceItem`'s `amountUsd > 0`
+ * guard already establishes for the opposite (positive-charge) case.
+ */
+export async function applySlaCreditToStripeBalance(params: {
+  customerId: string;
+  subscriptionId: string;
+  creditPctOfMonthlySpend: number;
+  month: string; // "YYYY-MM", used only in the transaction's human-readable description
+}): Promise<StripeResult<{ id: string; amountCents: number; currency: string }>> {
+  const stripe = getStripeClient();
+  if (!stripe) return { ok: false, error: "STRIPE_SECRET_KEY not configured" };
+  if (!(params.creditPctOfMonthlySpend > 0)) {
+    return { ok: false, error: "creditPctOfMonthlySpend must be a real positive SLA credit percentage" };
+  }
+  try {
+    const subscription = await stripe.subscriptions.retrieve(params.subscriptionId);
+    const currency = subscription.currency;
+    const monthlySpendCents = subscription.items.data.reduce((sum, item) => {
+      const unitAmount = item.price.unit_amount ?? 0;
+      const quantity = item.quantity ?? 1;
+      return sum + unitAmount * quantity;
+    }, 0);
+    if (monthlySpendCents <= 0) {
+      return {
+        ok: false,
+        error: `subscription ${params.subscriptionId} has no real recurring monthly amount to compute an SLA credit against`,
+      };
+    }
+    const creditCents = Math.round(monthlySpendCents * (params.creditPctOfMonthlySpend / 100));
+    if (creditCents <= 0) {
+      return { ok: false, error: "computed SLA credit amount rounds to zero cents" };
+    }
+    const balanceTransaction = await stripe.customers.createBalanceTransaction(params.customerId, {
+      amount: -creditCents,
+      currency,
+      description: `SLA credit for ${params.month}`,
+    });
+    return { ok: true, data: { id: balanceTransaction.id, amountCents: creditCents, currency } };
+  } catch (e) {
+    return { ok: false, error: `Stripe API error: ${(e as Error).message}` };
+  }
+}

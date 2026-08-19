@@ -180,6 +180,16 @@ function computeRowHash(prevHash: string, entry: AuditLogEntry): string {
   // explicitly rather than relying on Array.join's implicit toString.
   if (entry.keyId) parts.push(entry.keyId);
   if (entry.durationMs !== undefined) parts.push(String(entry.durationMs));
+  // Same backward-compatible "appended last, only when present" rule as
+  // the fields above -- every row written before SLA credit
+  // auto-application existed recomputes to its original row_hash
+  // unchanged. Committing these into the chain means tampering with any
+  // of them after the fact (e.g. relabeling which month a real Stripe
+  // credit was recorded against) breaks the chain exactly like tampering
+  // with actor or status would.
+  if (entry.slaCreditStripeTransactionId) parts.push(entry.slaCreditStripeTransactionId);
+  if (entry.slaCreditAmountCents !== undefined) parts.push(String(entry.slaCreditAmountCents));
+  if (entry.slaCreditMonth) parts.push(entry.slaCreditMonth);
   const material = parts.join(" ");
   return createHash("sha256").update(material, "utf8").digest("hex");
 }
@@ -251,6 +261,20 @@ async function ensureAuditLogChainColumns(pool: Pool): Promise<void> {
        ON platform_console.audit_log (key_id, ts)
        WHERE key_id IS NOT NULL`,
   );
+  // SLA credit auto-application columns (POST /api/orgs/[id]/sla-credits):
+  // the real Stripe balance-transaction id, the exact amount actually
+  // credited (integer cents), and the month it was applied for. Nullable
+  // -- absent for every row written before this column existed and for
+  // every row that isn't the one real "credit actually applied" event.
+  // Same idempotent ADD COLUMN IF NOT EXISTS self-bootstrap convention as
+  // every other column above.
+  await pool.query(
+    `ALTER TABLE platform_console.audit_log ADD COLUMN IF NOT EXISTS sla_credit_stripe_transaction_id text`,
+  );
+  await pool.query(
+    `ALTER TABLE platform_console.audit_log ADD COLUMN IF NOT EXISTS sla_credit_amount_cents integer`,
+  );
+  await pool.query(`ALTER TABLE platform_console.audit_log ADD COLUMN IF NOT EXISTS sla_credit_month text`);
 }
 
 /**
@@ -281,8 +305,12 @@ async function backfillAuditLogChain(pool: Pool): Promise<void> {
       org_id: string | null;
       key_id: string | null;
       duration_ms: number | null;
+      sla_credit_stripe_transaction_id: string | null;
+      sla_credit_amount_cents: number | null;
+      sla_credit_month: string | null;
     }>(
-      `SELECT id, request_id, ts, actor, method, path, status, castle_receipt_digest, org_id, key_id, duration_ms
+      `SELECT id, request_id, ts, actor, method, path, status, castle_receipt_digest, org_id, key_id, duration_ms,
+              sla_credit_stripe_transaction_id, sla_credit_amount_cents, sla_credit_month
        FROM platform_console.audit_log
        WHERE row_hash IS NULL
        ORDER BY id ASC`,
@@ -304,6 +332,11 @@ async function backfillAuditLogChain(pool: Pool): Promise<void> {
           ...(r.org_id ? { orgId: r.org_id } : {}),
           ...(r.key_id ? { keyId: r.key_id } : {}),
           ...(r.duration_ms !== null ? { durationMs: r.duration_ms } : {}),
+          ...(r.sla_credit_stripe_transaction_id
+            ? { slaCreditStripeTransactionId: r.sla_credit_stripe_transaction_id }
+            : {}),
+          ...(r.sla_credit_amount_cents !== null ? { slaCreditAmountCents: r.sla_credit_amount_cents } : {}),
+          ...(r.sla_credit_month ? { slaCreditMonth: r.sla_credit_month } : {}),
         };
         const rowHash = computeRowHash(prevHash, entry);
         await client.query(
@@ -365,8 +398,8 @@ async function persistAuditLogEntry(entry: AuditLogEntry): Promise<void> {
     const rowHash = computeRowHash(prevHash, entry);
     await client.query(
       `INSERT INTO platform_console.audit_log
-         (request_id, ts, actor, method, path, status, prev_hash, row_hash, castle_receipt_digest, impersonated_by, impersonation_session_id, org_id, key_id, duration_ms)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
+         (request_id, ts, actor, method, path, status, prev_hash, row_hash, castle_receipt_digest, impersonated_by, impersonation_session_id, org_id, key_id, duration_ms, sla_credit_stripe_transaction_id, sla_credit_amount_cents, sla_credit_month)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`,
       [
         entry.requestId,
         entry.timestamp,
@@ -382,6 +415,9 @@ async function persistAuditLogEntry(entry: AuditLogEntry): Promise<void> {
         entry.orgId ?? null,
         entry.keyId ?? null,
         entry.durationMs ?? null,
+        entry.slaCreditStripeTransactionId ?? null,
+        entry.slaCreditAmountCents ?? null,
+        entry.slaCreditMonth ?? null,
       ],
     );
     await client.query("COMMIT");
