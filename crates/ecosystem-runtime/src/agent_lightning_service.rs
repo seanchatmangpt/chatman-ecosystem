@@ -670,7 +670,94 @@ fn request(org: &str, mode: Mode, suffix: &str) -> JobRequest {
     }
 }
 fn neg(value: bool) -> usize {
-    if value { 1 } else { 0 }
+    usize::from(value)
+}
+
+fn verify_provider_fixture(
+    index: usize,
+    provider: Provider,
+) -> Result<(String, String, usize, usize), Error> {
+    let (mut commerce, context, fulfillment) = commerce_fixture(provider)?;
+    let org = format!("organization:{}-customer", provider.as_str());
+    let mut service = Service::new(Policy::agent_lightning(), "2026-08-19T00:00:00Z")?;
+    service.bind_entitlement(grant(&org), &fulfillment, Authority::PersistControlPlane)?;
+    let principal = Principal {
+        organization: org.clone(),
+        subject: format!("service-account:{}", provider.as_str()),
+        key_fingerprint: format!("blake3:{}", "0".repeat(64)),
+    };
+    let mode = [Mode::Hosted, Mode::Byoc, Mode::Private][index];
+    let job = request(&org, mode, provider.as_str());
+    let reservation = service.admit_job(&principal, &job, Authority::PersistControlPlane)?;
+    if service
+        .admit_job(&principal, &job, Authority::PersistControlPlane)?
+        .id
+        != reservation.id
+    {
+        return Err(Error::Receipt("IDEMPOTENT_REPLAY_DIVERGED".into()));
+    }
+
+    let mut negatives = 0;
+    let mut attacker = principal.clone();
+    attacker.organization = "organization:attacker".into();
+    negatives += neg(service
+        .admit_job(&attacker, &job, Authority::PersistControlPlane)
+        .is_err());
+    let mut wrong = request(&org, mode, "wrong-sha");
+    wrong.workload.sha = "1".repeat(40);
+    negatives += neg(service
+        .admit_job(&principal, &wrong, Authority::PersistControlPlane)
+        .is_err());
+    let mut over = request(&org, mode, "over-quota");
+    over.requested.insert(Meter::GpuSeconds, 20_001);
+    negatives += neg(service
+        .admit_job(&principal, &over, Authority::PersistControlPlane)
+        .is_err());
+    negatives += neg(service
+        .authorize_actuation(&reservation.id, Authority::Observe)
+        .is_err());
+    let permit = service.authorize_actuation(&reservation.id, Authority::ModifyExternalObject)?;
+    if permit.receipt_digest.is_empty() {
+        return Err(Error::Receipt("UNRECEIPTED_ACTUATION_PERMIT".into()));
+    }
+    negatives += neg(service
+        .reconcile_usage(
+            &permit,
+            BTreeMap::from([(Meter::GpuSeconds, 3_601)]),
+            Authority::PersistControlPlane,
+        )
+        .is_err());
+    service.reconcile_usage(
+        &permit,
+        BTreeMap::from([
+            (Meter::GpuSeconds, 3_000),
+            (Meter::InputTokens, 90_000),
+            (Meter::OutputTokens, 15_000),
+            (Meter::Rollouts, 1),
+        ]),
+        Authority::PersistControlPlane,
+    )?;
+    let suspended = commerce.observe(&observation(
+        &context,
+        ProviderEventKind::Suspended,
+        "suspended",
+        1,
+    ))?;
+    service.apply_entitlement_event(&suspended, Authority::PersistControlPlane)?;
+    negatives += neg(service
+        .admit_job(
+            &principal,
+            &request(&org, mode, "suspended"),
+            Authority::PersistControlPlane,
+        )
+        .is_err());
+
+    Ok((
+        provider.as_str().into(),
+        format!("{mode:?}").to_ascii_lowercase(),
+        service.replay_verify()?,
+        negatives,
+    ))
 }
 
 pub fn verify_fixtures() -> Result<VerificationReport, Error> {
@@ -682,82 +769,12 @@ pub fn verify_fixtures() -> Result<VerificationReport, Error> {
         .into_iter()
         .enumerate()
     {
-        let (mut commerce, context, fulfillment) = commerce_fixture(provider)?;
-        let org = format!("organization:{}-customer", provider.as_str());
-        let mut service = Service::new(Policy::agent_lightning(), "2026-08-19T00:00:00Z")?;
-        service.bind_entitlement(grant(&org), &fulfillment, Authority::PersistControlPlane)?;
-        let principal = Principal {
-            organization: org.clone(),
-            subject: format!("service-account:{}", provider.as_str()),
-            key_fingerprint: format!("blake3:{}", "0".repeat(64)),
-        };
-        let mode = [Mode::Hosted, Mode::Byoc, Mode::Private][index];
-        modes.insert(format!("{mode:?}").to_ascii_lowercase());
-        let job = request(&org, mode, provider.as_str());
-        let reservation = service.admit_job(&principal, &job, Authority::PersistControlPlane)?;
-        if service
-            .admit_job(&principal, &job, Authority::PersistControlPlane)?
-            .id
-            != reservation.id
-        {
-            return Err(Error::Receipt("IDEMPOTENT_REPLAY_DIVERGED".into()));
-        }
-        let mut attacker = principal.clone();
-        attacker.organization = "organization:attacker".into();
-        negatives += neg(service
-            .admit_job(&attacker, &job, Authority::PersistControlPlane)
-            .is_err());
-        let mut wrong = request(&org, mode, "wrong-sha");
-        wrong.workload.sha = "1".repeat(40);
-        negatives += neg(service
-            .admit_job(&principal, &wrong, Authority::PersistControlPlane)
-            .is_err());
-        let mut over = request(&org, mode, "over-quota");
-        over.requested.insert(Meter::GpuSeconds, 20_001);
-        negatives += neg(service
-            .admit_job(&principal, &over, Authority::PersistControlPlane)
-            .is_err());
-        negatives += neg(service
-            .authorize_actuation(&reservation.id, Authority::Observe)
-            .is_err());
-        let permit =
-            service.authorize_actuation(&reservation.id, Authority::ModifyExternalObject)?;
-        if permit.receipt_digest.is_empty() {
-            return Err(Error::Receipt("UNRECEIPTED_ACTUATION_PERMIT".into()));
-        }
-        negatives += neg(service
-            .reconcile_usage(
-                &permit,
-                BTreeMap::from([(Meter::GpuSeconds, 3_601)]),
-                Authority::PersistControlPlane,
-            )
-            .is_err());
-        service.reconcile_usage(
-            &permit,
-            BTreeMap::from([
-                (Meter::GpuSeconds, 3_000),
-                (Meter::InputTokens, 90_000),
-                (Meter::OutputTokens, 15_000),
-                (Meter::Rollouts, 1),
-            ]),
-            Authority::PersistControlPlane,
-        )?;
-        let suspended = commerce.observe(&observation(
-            &context,
-            ProviderEventKind::Suspended,
-            "suspended",
-            1,
-        ))?;
-        service.apply_entitlement_event(&suspended, Authority::PersistControlPlane)?;
-        negatives += neg(service
-            .admit_job(
-                &principal,
-                &request(&org, mode, "suspended"),
-                Authority::PersistControlPlane,
-            )
-            .is_err());
-        receipts += service.replay_verify()?;
-        providers.push(provider.as_str().into());
+        let (provider_name, mode, provider_receipts, provider_negatives) =
+            verify_provider_fixture(index, provider)?;
+        providers.push(provider_name);
+        modes.insert(mode);
+        receipts += provider_receipts;
+        negatives += provider_negatives;
     }
     Ok(VerificationReport {
         standing: "PARTIAL_ALIVE".into(),
@@ -784,7 +801,6 @@ pub fn verify_fixtures() -> Result<VerificationReport, Error> {
         ],
     })
 }
-
 #[cfg(test)]
 mod tests {
     use super::*;
