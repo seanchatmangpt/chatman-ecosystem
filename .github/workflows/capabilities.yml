@@ -5,6 +5,7 @@ on:
     paths:
       - 'catalog/capabilities.toml'
       - 'catalog/capabilities-decision-graph.toml'
+      - 'catalog/repositories.toml'
       - 'ontology/capabilities.ttl'
       - 'scripts/verify_capabilities.py'
       - 'scripts/verify_capability_ontology.py'
@@ -16,6 +17,7 @@ on:
       - 'apps/ecosystem-cli/tests/capabilities.rs'
       - 'views/generated/capabilities.md'
       - 'views/generated/capabilities-decision-graph.md'
+      - 'views/generated/portfolio.md'
       - '.github/workflows/capabilities.yml'
   workflow_dispatch:
 
@@ -38,7 +40,7 @@ jobs:
           actual="$(git rev-parse HEAD)"
           test "$actual" = "$expected"
           echo "EXACT_SUBJECT=$actual"
-      - name: Verify capability catalogs and deterministic projections
+      - name: Verify capability catalogs, owners, and deterministic projections
         run: python3 scripts/verify_capabilities.py
       - name: Verify public/custom ontology boundary
         run: python3 scripts/verify_capability_ontology.py
