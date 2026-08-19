@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seanchatman.github.io/chatman-ecosystem/schemas/marketplace-commerce.schema.json",
+  "title": "Normalized marketplace provider observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "provider", "kind", "event_ref", "buyer_ref", "product_ref", "agreement_ref",
+    "entitlement_ref", "subscription_ref", "plan", "dimension", "quantity", "units",
+    "amount_micros", "currency"
+  ],
+  "properties": {
+    "provider": { "enum": ["aws", "microsoft", "google"] },
+    "kind": { "enum": ["agreement", "entitlement", "entitlement_changed", "suspended", "reinstated", "revoked", "meter_accepted", "settlement"] },
+    "event_ref": { "type": "string", "minLength": 1 },
+    "buyer_ref": { "type": "string", "minLength": 1 },
+    "product_ref": { "type": "string", "minLength": 1 },
+    "agreement_ref": { "type": "string", "minLength": 1 },
+    "entitlement_ref": { "type": "string", "minLength": 1 },
+    "subscription_ref": { "type": "string", "minLength": 1 },
+    "plan": { "type": "string", "minLength": 1 },
+    "dimension": { "type": "string", "minLength": 1 },
+    "quantity": { "type": "integer", "minimum": 0 },
+    "units": { "type": "integer", "minimum": 0 },
+    "amount_micros": { "type": "integer", "minimum": 0 },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+  }
+}
