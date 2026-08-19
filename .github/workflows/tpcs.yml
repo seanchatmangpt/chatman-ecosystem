@@ -1,0 +1,76 @@
+name: Toyota Code Production System
+
+on:
+  pull_request:
+    paths:
+      - 'catalog/tpcs.toml'
+      - 'scripts/tpcs_pipeline.py'
+      - 'tests/test_tpcs_pipeline.py'
+      - '.github/workflows/tpcs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tpcs-court:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve exact subject
+        id: subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "sha=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ steps.subject.outputs.sha }}
+          persist-credentials: false
+
+      - name: Admit exact head
+        env:
+          SUBJECT_SHA: ${{ steps.subject.outputs.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${SUBJECT_SHA}"
+          test "${#SUBJECT_SHA}" -eq 40
+
+      - name: Verify pipeline law and falsifiers
+        run: |
+          set -euo pipefail
+          python3 scripts/tpcs_pipeline.py --self-test
+          python3 -m unittest tests.test_tpcs_pipeline -v
+
+      - name: Manufacture exact-subject receipt after acceptance
+        env:
+          SUBJECT_SHA: ${{ steps.subject.outputs.sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p receipts/tpcs-ci
+          python3 scripts/tpcs_pipeline.py \
+            --subject "${SUBJECT_SHA}" \
+            --acceptance "python3 -m unittest tests.test_tpcs_pipeline -v" \
+            --authority CONSTRUCT \
+            --acceptance-passed \
+            --receipt receipts/tpcs-ci/receipt.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('receipts/tpcs-ci/receipt.json').read_text())
+          assert r['standing'] == 'ALIVE'
+          assert r['acceptance_passed'] is True
+          assert r['replay_match'] is True
+          assert r['zero_unreceipted_actuation'] is True
+          PY
+
+      - name: Preserve court receipt
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+        with:
+          name: tpcs-receipt-${{ steps.subject.outputs.sha }}
+          path: receipts/tpcs-ci/receipt.json
+          if-no-files-found: error
