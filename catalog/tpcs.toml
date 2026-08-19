@@ -1,0 +1,74 @@
+version = "tpcs/1"
+name = "Toyota Code Production System"
+constitutional_equation = "A = mu(O*)"
+flow_equation = "WIP = throughput * cycle_time"
+mode = "pull"
+zero_unreceipted_actuation = true
+acceptance_mutation_authority = false
+
+[admission]
+require_exact_subject = true
+require_acceptance_command = true
+require_authority_class = true
+require_reversible_plan = true
+max_batch_size = 1
+
+[andon]
+stop_on_defect = true
+stop_on_identity_drift = true
+stop_on_receipt_failure = true
+stop_on_acceptance_mutation = true
+
+[[stage]]
+id = "observe"
+authority = "SELECT"
+wip_limit = 8
+exit_evidence = "bounded_observation"
+
+[[stage]]
+id = "admit"
+authority = "SELECT"
+wip_limit = 4
+exit_evidence = "admitted_subject"
+
+[[stage]]
+id = "construct"
+authority = "CONSTRUCT"
+wip_limit = 4
+exit_evidence = "candidate_artifact"
+
+[[stage]]
+id = "verify"
+authority = "SELECT"
+wip_limit = 4
+exit_evidence = "behavioral_evidence"
+
+[[stage]]
+id = "receipt"
+authority = "SELECT"
+wip_limit = 8
+exit_evidence = "receipt"
+
+[[stage]]
+id = "replay"
+authority = "SELECT"
+wip_limit = 4
+exit_evidence = "replay_match"
+
+[[stage]]
+id = "standing"
+authority = "SELECT"
+wip_limit = 4
+exit_evidence = "standing"
+
+[standing]
+allowed = ["UNKNOWN", "PARTIAL_ALIVE", "ALIVE", "BLOCKED", "BUILD_BROKEN", "UNSUPPORTED"]
+alive_requires = ["exact_subject", "acceptance_passed", "receipt_verified", "replay_match", "zero_unreceipted_actuation"]
+
+[refusals]
+invalid_subject = "REFUSED_INVALID_SUBJECT"
+wip_exceeded = "REFUSED_WIP_LIMIT"
+acceptance_mutation = "REFUSED_ACCEPTANCE_MUTATION"
+unreceipted_actuation = "REFUSED_UNRECEIPTED_ACTUATION"
+identity_drift = "REFUSED_IDENTITY_DRIFT"
+replay_mismatch = "REFUSED_REPLAY_MISMATCH"
