@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Read-only capability control kernel for Chatman Ecosystem v26.9.1.
 
-The canonical source is catalog/capabilities.toml. This executable projects the
-same admitted capability semantics into CLI/API/MCP/A2A discovery views and
-computes a reversible DfCM frontier. It manufactures intents and descriptions;
-it never performs consequential DO.
+The canonical sources are the capability TOML catalogs. This executable projects
+the same admitted semantics into CLI/API/MCP/A2A discovery views and computes a
+reversible DfCM frontier. It manufactures intents and descriptions; it never
+performs consequential DO.
 """
 from __future__ import annotations
 
@@ -33,8 +33,11 @@ class ControlError(RuntimeError):
 
 
 def catalog_items(path: pathlib.Path | None = None) -> list[dict[str, Any]]:
-    source = path or ROOT / "catalog" / "capabilities.toml"
-    return verify_capabilities.verify(verify_capabilities.load(source))
+    if path is None:
+        catalog = verify_capabilities.load_default(ROOT)
+    else:
+        catalog = verify_capabilities.load_default(ROOT, path)
+    return verify_capabilities.verify(catalog)
 
 
 def by_id(items: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -58,6 +61,7 @@ def public_contract(item: dict[str, Any]) -> dict[str, Any]:
         "depends_on": item.get("depends_on", []),
         "refusals": item["refusals"],
         "interfaces": item["interfaces"],
+        "source_repositories": item["source_repositories"],
         "authority_from_surface": False,
     }
 
@@ -70,7 +74,7 @@ def surface_projection(surface: str, items: list[dict[str, Any]]) -> dict[str, A
         contract = public_contract(item)
         if surface == "cli":
             binding = {
-                "discovery": f"ecosystem-capability show {item['id']}",
+                "discovery": f"ecosystem capability show {item['id']}",
                 "execution": "intent-only",
             }
         elif surface == "api":
@@ -83,7 +87,7 @@ def surface_projection(surface: str, items: list[dict[str, Any]]) -> dict[str, A
             binding = {
                 "resource": f"capability://{item['id']}",
                 "tool": "ecosystem.capability.describe",
-                "execution": "read-only",
+                "execution": "contract-only",
             }
         else:
             binding = {
@@ -97,8 +101,11 @@ def surface_projection(surface: str, items: list[dict[str, Any]]) -> dict[str, A
     return {
         "schema": "chatman.capability-surface.v1",
         "surface": surface,
-        "subject": "catalog/capabilities.toml",
-        "transport_execution_claimed": surface in {"cli", "mcp"},
+        "subjects": [
+            "catalog/capabilities.toml",
+            "catalog/capabilities-decision-graph.toml",
+        ],
+        "transport_execution_claimed": surface == "cli",
         "consequential_do_claimed": False,
         "capabilities": contracts,
     }
@@ -122,7 +129,6 @@ def dfcm_frontier(
     DO is excluded by default. If requested, it still requires its exact authority
     plus the catalog's broker and receipt fences.
     """
-    index = by_id(items)
     frontier: list[dict[str, Any]] = []
     blocked: list[dict[str, Any]] = []
 
@@ -142,6 +148,7 @@ def dfcm_frontier(
         record = {
             "id": cid,
             "class": item["class"],
+            "owner": item["owner"],
             "reversible": item["reversible"],
             "required_authority": item["required_authority"],
             "missing_alive_dependencies": missing,
@@ -175,7 +182,7 @@ def emit(value: Any) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Chatman Ecosystem capability control kernel")
-    parser.add_argument("--catalog", type=pathlib.Path, default=ROOT / "catalog" / "capabilities.toml")
+    parser.add_argument("--catalog", type=pathlib.Path, default=None)
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("list")
@@ -209,7 +216,10 @@ def main(argv: list[str] | None = None) -> int:
         if not isinstance(payload, dict):
             raise ControlError("REFUSED:DFCM_STATE_SHAPE")
         observed = payload.get("standing", {})
-        if not isinstance(observed, dict) or any(not isinstance(k, str) or not isinstance(v, str) for k, v in observed.items()):
+        if not isinstance(observed, dict) or any(
+            not isinstance(key, str) or not isinstance(value, str)
+            for key, value in observed.items()
+        ):
             raise ControlError("REFUSED:DFCM_STANDING_SHAPE")
         emit(dfcm_frontier(items, observed, set(args.authority), args.include_do))
     return 0
