@@ -1,0 +1,38 @@
+@prefix tpcsf: <https://chatman.ai/ontology/tpcs-federation#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<urn:chatman-ecosystem:tcps-federation>
+    a prov:Entity ;
+    dcterms:title "TCPS canonical factory federation" ;
+    dcterms:description "Composition-only binding from the Chatman Ecosystem to the canonical Toyota Code Production System factory. This graph confers no implementation or actuation authority." ;
+    tpcsf:canonicalRepo "seanchatmangpt/tcps" ;
+    tpcsf:canonicalPullRequest "1" ;
+    tpcsf:canonicalRef "agent/tcps-v1979-reconstitution" ;
+    tpcsf:canonicalHead "a649ac686466e47463f13707e7abc8c549179eb3" ;
+    tpcsf:canonicalVersion "1979.1.1" ;
+    tpcsf:owningCourt "tcps-ci" ;
+    tpcsf:implementationAuthority false ;
+    tpcsf:actuationAuthority false ;
+    tpcsf:acceptanceMutationAuthority false ;
+    tpcsf:wipMutationAuthority false ;
+    tpcsf:zeroUnreceiptedActuation true ;
+    tpcsf:requiresRuntimeReceipt true ;
+    tpcsf:requiresProjectionReceipt true .
+
+<urn:chatman-ecosystem:tcps-authority-ceiling>
+    a odrl:Policy ;
+    dcterms:title "TCPS federation authority ceiling" ;
+    dcterms:description "The ecosystem composition root may observe, bind, verify, and report canonical TCPS evidence. It may not implement the factory, mutate its acceptance or WIP law, or actuate production on its behalf." .
+
+<urn:chatman-ecosystem:tcps-runtime-evidence>
+    a prov:Entity ;
+    skos:prefLabel "Exact-head TCPS runtime verifier receipt"@en ;
+    tpcsf:expectedArtifact "tcps-runtime-a649ac686466e47463f13707e7abc8c549179eb3" .
+
+<urn:chatman-ecosystem:tcps-projection-evidence>
+    a prov:Entity ;
+    skos:prefLabel "Exact-head TCPS ggen projection receipt"@en ;
+    tpcsf:expectedArtifact "tcps-projection-a649ac686466e47463f13707e7abc8c549179eb3" .

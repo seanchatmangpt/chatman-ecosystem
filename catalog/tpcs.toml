@@ -1,74 +1,57 @@
-version = "tpcs/1"
-name = "Toyota Code Production System"
-constitutional_equation = "A = mu(O*)"
-flow_equation = "WIP = throughput * cycle_time"
-mode = "pull"
-zero_unreceipted_actuation = true
+version = "tpcs-federation/1"
+name = "Toyota Code Production System federation"
+role = "composition-and-standing"
+canonical_repo = "seanchatmangpt/tcps"
+canonical_pr = 1
+canonical_ref = "agent/tcps-v1979-reconstitution"
+canonical_head = "a649ac686466e47463f13707e7abc8c549179eb3"
+canonical_version = "1979.1.1"
+owning_court = "tcps-ci"
+projector_sha = "59c95cac18d49c62533918c906524be0fc4063ec"
+canonical_standing = "PARTIAL_ALIVE"
+implementation_code_allowed = false
+actuation_authority = false
 acceptance_mutation_authority = false
+wip_mutation_authority = false
+zero_unreceipted_actuation = true
 
-[admission]
-require_exact_subject = true
-require_acceptance_command = true
-require_authority_class = true
-require_reversible_plan = true
-max_batch_size = 1
+[ownership]
+factory = "seanchatmangpt/tcps"
+composition = "seanchatmangpt/chatman-ecosystem"
+marketplace = "seanchatmangpt/ggen-marketplace"
+falsification = "seanchatmangpt/gymact"
+authority = "seanchatmangpt/castle"
 
-[andon]
-stop_on_defect = true
-stop_on_identity_drift = true
-stop_on_receipt_failure = true
-stop_on_acceptance_mutation = true
+[evidence]
+receipts_bound = false
+runtime_receipt_required = true
+projection_receipt_required = true
+runtime_artifact = "tcps-runtime-a649ac686466e47463f13707e7abc8c549179eb3"
+projection_artifact = "tcps-projection-a649ac686466e47463f13707e7abc8c549179eb3"
+runtime_receipt_path = "receipts/tcps/runtime.json"
+projection_receipt_path = "receipts/tcps/projection.json"
 
-[[stage]]
-id = "observe"
-authority = "SELECT"
-wip_limit = 8
-exit_evidence = "bounded_observation"
-
-[[stage]]
-id = "admit"
-authority = "SELECT"
-wip_limit = 4
-exit_evidence = "admitted_subject"
-
-[[stage]]
-id = "construct"
-authority = "CONSTRUCT"
-wip_limit = 4
-exit_evidence = "candidate_artifact"
-
-[[stage]]
-id = "verify"
-authority = "SELECT"
-wip_limit = 4
-exit_evidence = "behavioral_evidence"
-
-[[stage]]
-id = "receipt"
-authority = "SELECT"
-wip_limit = 8
-exit_evidence = "receipt"
-
-[[stage]]
-id = "replay"
-authority = "SELECT"
-wip_limit = 4
-exit_evidence = "replay_match"
-
-[[stage]]
-id = "standing"
-authority = "SELECT"
-wip_limit = 4
-exit_evidence = "standing"
-
-[standing]
-allowed = ["UNKNOWN", "PARTIAL_ALIVE", "ALIVE", "BLOCKED", "BUILD_BROKEN", "UNSUPPORTED"]
-alive_requires = ["exact_subject", "acceptance_passed", "receipt_verified", "replay_match", "zero_unreceipted_actuation"]
+[capabilities]
+required = [
+  "exact-work-observation",
+  "dfcm-pareto-frontier",
+  "deterministic-heijunka",
+  "one-piece-kanban-pull",
+  "jidoka-andon",
+  "poka-yoke-refusals",
+  "takt-and-littles-law",
+  "bottleneck-observation",
+  "non-actuating-kaizen",
+  "select-construct-do-separation",
+  "durable-pre-receipt-before-do",
+  "final-receipt-and-replay",
+  "exact-ggen-zero-diff-projection",
+  "eve-wizard-telco-robot-role-projection",
+]
 
 [refusals]
-invalid_subject = "REFUSED_INVALID_SUBJECT"
-wip_exceeded = "REFUSED_WIP_LIMIT"
-acceptance_mutation = "REFUSED_ACCEPTANCE_MUTATION"
-unreceipted_actuation = "REFUSED_UNRECEIPTED_ACTUATION"
-identity_drift = "REFUSED_IDENTITY_DRIFT"
-replay_mismatch = "REFUSED_REPLAY_MISMATCH"
+invalid_contract = "REFUSED_INVALID_TPCS_FEDERATION"
+identity_drift = "REFUSED_TPCS_IDENTITY_DRIFT"
+runtime_receipt = "REFUSED_INVALID_TPCS_RUNTIME_RECEIPT"
+projection_receipt = "REFUSED_INVALID_TPCS_PROJECTION_RECEIPT"
+authority_escalation = "REFUSED_TPCS_AUTHORITY_ESCALATION"
