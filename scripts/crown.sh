@@ -26,6 +26,7 @@ cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- receipt verify-al
 cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- projection check
 cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- architecture check
 cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- storage verify
+cargo run --locked --quiet -p ecosystem-runtime --bin marketplace-commerce -- verify-fixtures >/dev/null
 cargo run --locked --quiet -p chatman-ecosystem-gall --bin gall
 
 ./scripts/cold-cache.sh
@@ -76,6 +77,7 @@ cat > target/crown/admission.json <<JSON
     "projection",
     "architecture",
     "storage_differential",
+    "marketplace_commerce",
     "gall_sequence",
     "cold_cache",
     "github_read",

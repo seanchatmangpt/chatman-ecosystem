@@ -1,0 +1,48 @@
+@prefix ce: <https://seanchatman.github.io/chatman-ecosystem/ontology/marketplace-commerce#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ce:AgreementShape a sh:NodeShape ;
+    sh:targetClass ce:Agreement ;
+    sh:property [ sh:path ce:provider ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ce:Marketplace ] ;
+    sh:property [ sh:path ce:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ce:Buyer ] ;
+    sh:property [ sh:path ce:product ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ce:Product ] ;
+    sh:property [ sh:path ce:offer ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ce:Offer ] ;
+    sh:property [ sh:path ce:providerAgreementRef ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] .
+
+ce:EntitlementShape a sh:NodeShape ;
+    sh:targetClass ce:Entitlement ;
+    sh:property [ sh:path ce:agreement ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ce:Agreement ] ;
+    sh:property [ sh:path ce:providerEntitlementRef ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] ;
+    sh:property [ sh:path ce:entitlementStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( ce:Active ce:Suspended ce:Revoked ) ] .
+
+ce:FulfillmentShape a sh:NodeShape ;
+    sh:targetClass ce:Fulfillment ;
+    sh:property [ sh:path ce:entitlement ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ce:Entitlement ] ;
+    sh:property [ sh:path ce:receipt ; sh:minCount 1 ; sh:class ce:CommercialReceipt ] .
+
+ce:UsageEventShape a sh:NodeShape ;
+    sh:targetClass ce:UsageEvent ;
+    sh:property [ sh:path ce:fulfillment ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ce:Fulfillment ] ;
+    sh:property [ sh:path ce:sourceReceipt ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ce:CommercialReceipt ] ;
+    sh:property [ sh:path ce:units ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ; sh:minExclusive 0 ] .
+
+ce:MeterEventShape a sh:NodeShape ;
+    sh:targetClass ce:MeterEvent ;
+    sh:property [ sh:path ce:usageEvent ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ce:UsageEvent ] ;
+    sh:property [ sh:path ce:sourceReceipt ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ce:CommercialReceipt ] ;
+    sh:property [ sh:path ce:providerEventRef ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] ;
+    sh:property [ sh:path ce:units ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ; sh:minExclusive 0 ] .
+
+ce:SettlementShape a sh:NodeShape ;
+    sh:targetClass ce:Settlement ;
+    sh:property [ sh:path ce:meterEvent ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ce:MeterEvent ] ;
+    sh:property [ sh:path ce:sourceReceipt ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ce:CommercialReceipt ] ;
+    sh:property [ sh:path ce:amountMicros ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ] ;
+    sh:property [ sh:path ce:currency ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^[A-Z]{3}$" ] .
+
+ce:CommercialReceiptShape a sh:NodeShape ;
+    sh:targetClass ce:CommercialReceipt ;
+    sh:property [ sh:path ce:receiptKind ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] ;
+    sh:property [ sh:path ce:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] ;
+    sh:property [ sh:path ce:blake3 ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^blake3:[0-9A-Fa-f]{64}$" ] .

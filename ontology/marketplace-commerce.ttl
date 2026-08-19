@@ -1,0 +1,107 @@
+@prefix ce: <https://seanchatman.github.io/chatman-ecosystem/ontology/marketplace-commerce#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://seanchatman.github.io/chatman-ecosystem/ontology/marketplace-commerce>
+    a owl:Ontology ;
+    dcterms:title "Chatman Marketplace Commerce Ontology" ;
+    dcterms:description "Canonical commercial-standing graph for marketplace purchase, entitlement, fulfillment, usage, metering, settlement, adjustment, receipt, and replay." ;
+    owl:versionInfo "26.8.19" .
+
+ce:Seller a owl:Class ; rdfs:subClassOf prov:Agent, gr:BusinessEntity .
+ce:Buyer a owl:Class ; rdfs:subClassOf prov:Agent, gr:BusinessEntity .
+ce:Marketplace a owl:Class ; rdfs:subClassOf prov:Agent .
+ce:Product a owl:Class ; rdfs:subClassOf gr:ProductOrService .
+ce:Capability a owl:Class .
+ce:SKU a owl:Class ; rdfs:subClassOf gr:Offering .
+ce:Offer a owl:Class ; rdfs:subClassOf odrl:Offer, gr:Offering .
+ce:PublicOffer a owl:Class ; rdfs:subClassOf ce:Offer .
+ce:PrivateOffer a owl:Class ; rdfs:subClassOf ce:Offer .
+ce:Order a owl:Class ; rdfs:subClassOf prov:Entity .
+ce:Agreement a owl:Class ; rdfs:subClassOf odrl:Agreement, prov:Entity .
+ce:Subscription a owl:Class ; rdfs:subClassOf prov:Entity .
+ce:Entitlement a owl:Class ; rdfs:subClassOf odrl:Permission, prov:Entity .
+ce:Fulfillment a owl:Class ; rdfs:subClassOf prov:Activity .
+ce:Artifact a owl:Class ; rdfs:subClassOf prov:Entity .
+ce:UsageEvent a owl:Class ; rdfs:subClassOf prov:Activity .
+ce:MeterEvent a owl:Class ; rdfs:subClassOf prov:Activity .
+ce:Settlement a owl:Class ; rdfs:subClassOf prov:Entity .
+ce:Credit a owl:Class ; rdfs:subClassOf prov:Entity .
+ce:Refund a owl:Class ; rdfs:subClassOf prov:Entity .
+ce:CommercialReceipt a owl:Class ; rdfs:subClassOf prov:Entity .
+ce:ProviderObservation a owl:Class ; rdfs:subClassOf prov:Entity .
+ce:ExternalRequirement a owl:Class .
+
+ce:AWSMarketplace a ce:Marketplace ; rdfs:label "AWS Marketplace" .
+ce:MicrosoftMarketplace a ce:Marketplace ; rdfs:label "Microsoft Marketplace" .
+ce:GoogleCloudMarketplace a ce:Marketplace ; rdfs:label "Google Cloud Marketplace" .
+
+ce:DeliveryForm a owl:Class .
+ce:SAAS a ce:DeliveryForm .
+ce:Container a ce:DeliveryForm .
+ce:VirtualMachine a ce:DeliveryForm .
+ce:ManagedApplication a ce:DeliveryForm .
+ce:Kubernetes a ce:DeliveryForm .
+
+ce:EntitlementStatus a owl:Class .
+ce:Active a ce:EntitlementStatus .
+ce:Suspended a ce:EntitlementStatus .
+ce:Revoked a ce:EntitlementStatus .
+
+ce:provider a owl:ObjectProperty ; rdfs:range ce:Marketplace .
+ce:seller a owl:ObjectProperty ; rdfs:range ce:Seller .
+ce:buyer a owl:ObjectProperty ; rdfs:range ce:Buyer .
+ce:product a owl:ObjectProperty ; rdfs:range ce:Product .
+ce:capability a owl:ObjectProperty ; rdfs:range ce:Capability .
+ce:sku a owl:ObjectProperty ; rdfs:range ce:SKU .
+ce:offer a owl:ObjectProperty ; rdfs:range ce:Offer .
+ce:order a owl:ObjectProperty ; rdfs:range ce:Order .
+ce:agreement a owl:ObjectProperty ; rdfs:range ce:Agreement .
+ce:subscription a owl:ObjectProperty ; rdfs:range ce:Subscription .
+ce:entitlement a owl:ObjectProperty ; rdfs:range ce:Entitlement .
+ce:fulfillment a owl:ObjectProperty ; rdfs:range ce:Fulfillment .
+ce:artifact a owl:ObjectProperty ; rdfs:range ce:Artifact .
+ce:usageEvent a owl:ObjectProperty ; rdfs:range ce:UsageEvent .
+ce:meterEvent a owl:ObjectProperty ; rdfs:range ce:MeterEvent .
+ce:settlement a owl:ObjectProperty ; rdfs:range ce:Settlement .
+ce:receipt a owl:ObjectProperty ; rdfs:range ce:CommercialReceipt .
+ce:previousReceipt a owl:ObjectProperty ; rdfs:domain ce:CommercialReceipt ; rdfs:range ce:CommercialReceipt .
+ce:sourceReceipt a owl:ObjectProperty ; rdfs:range ce:CommercialReceipt .
+ce:deliveryForm a owl:ObjectProperty ; rdfs:range ce:DeliveryForm .
+ce:entitlementStatus a owl:ObjectProperty ; rdfs:domain ce:Entitlement ; rdfs:range ce:EntitlementStatus .
+
+ce:providerBuyerRef a owl:DatatypeProperty ; rdfs:range xsd:string .
+ce:providerProductRef a owl:DatatypeProperty ; rdfs:range xsd:string .
+ce:providerAgreementRef a owl:DatatypeProperty ; rdfs:range xsd:string .
+ce:providerEntitlementRef a owl:DatatypeProperty ; rdfs:range xsd:string .
+ce:providerSubscriptionRef a owl:DatatypeProperty ; rdfs:range xsd:string .
+ce:providerEventRef a owl:DatatypeProperty ; rdfs:range xsd:string .
+ce:idempotencyKey a owl:DatatypeProperty ; rdfs:range xsd:string .
+ce:plan a owl:DatatypeProperty ; rdfs:range xsd:string .
+ce:quantity a owl:DatatypeProperty ; rdfs:range xsd:nonNegativeInteger .
+ce:units a owl:DatatypeProperty ; rdfs:range xsd:nonNegativeInteger .
+ce:unitPriceMicros a owl:DatatypeProperty ; rdfs:range xsd:nonNegativeInteger .
+ce:amountMicros a owl:DatatypeProperty ; rdfs:range xsd:nonNegativeInteger .
+ce:currency a owl:DatatypeProperty ; rdfs:range xsd:string .
+ce:blake3 a owl:DatatypeProperty ; rdfs:range xsd:string .
+ce:receiptKind a owl:DatatypeProperty ; rdfs:range xsd:string .
+ce:commercialStateBefore a owl:DatatypeProperty ; rdfs:range xsd:string .
+ce:commercialStateAfter a owl:DatatypeProperty ; rdfs:range xsd:string .
+
+ce:ZeroUnentitledFulfillment a ce:ExternalRequirement ;
+    rdfs:label "Every fulfillment must reference an active admitted entitlement." .
+ce:ZeroUnreceiptedUsage a ce:ExternalRequirement ;
+    rdfs:label "Every usage event must derive from a known fulfillment or delivery receipt." .
+ce:ZeroUnreconciledBilling a ce:ExternalRequirement ;
+    rdfs:label "Every settlement must bind a meter receipt and reconcile amount and currency." .
+ce:SellerEnrollment a ce:ExternalRequirement ;
+    rdfs:label "Real provider seller enrollment, tax profile, and payout profile require external legal authority." .
+ce:IndependentAudit a ce:ExternalRequirement ;
+    rdfs:label "Independent SOC 2 auditor opinion is external evidence and cannot be self-issued." .
