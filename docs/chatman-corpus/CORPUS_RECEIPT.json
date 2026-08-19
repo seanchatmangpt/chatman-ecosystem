@@ -1,0 +1,18 @@
+{
+  "repo": "seanchatmangpt/chatman-ecosystem",
+  "base": "495cb16e91b2ac208043e19a432d3cc477ec77aa",
+  "generated_on": "2026-08-19",
+  "source_capsule": "docs/chatman-corpus/source/chatman-corpus-mdbook.tar.gz",
+  "source_capsule_sha256": "b88b3b6d7cfa9578b8e123ccde1c9cf19d8b500a77459d04e93d04ae674a8b6f",
+  "chapter_targets": 317,
+  "rendered_word_count": 188262,
+  "missing_targets": [],
+  "broken_local_links": [],
+  "mdbook_runtime": "UNSUPPORTED: mdbook binary unavailable in local execution environment",
+  "pdf": {
+    "pages": 640,
+    "sha256": "018c797f25daa8ae496554f020a4433781e78e017ea5979b87dbe45ba3191fa8",
+    "renderer": "WeasyPrint 68.0 from exact SUMMARY order with mdBook include expansion"
+  },
+  "catalog_repositories_blob": "bb2152bb702843fa3fbb068f973266ea94eb8ab0"
+}
