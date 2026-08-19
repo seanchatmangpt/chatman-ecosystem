@@ -1,0 +1,5 @@
+templates:
+  - template: summary.md.j2
+    filter: "."
+    application_mode: single
+    file_name: CHATMAN_ECOSYSTEM_WEAVER.md
