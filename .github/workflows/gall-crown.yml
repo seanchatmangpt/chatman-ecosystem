@@ -14,6 +14,9 @@ concurrency:
   group: gall-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+
 jobs:
   gall:
     name: S0-S3 exact-head crown
@@ -22,7 +25,15 @@ jobs:
 
     steps:
       - name: Checkout exact candidate
-        uses: actions/checkout@v4
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Assert exact candidate identity
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
 
       - name: Install pinned Rust
         uses: dtolnay/rust-toolchain@1.97.1
@@ -53,7 +64,7 @@ jobs:
           PY
 
       - name: Upload replay receipt
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: gall-receipt
           path: gall-receipt.json

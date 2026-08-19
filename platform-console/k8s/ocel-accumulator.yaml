@@ -1,0 +1,105 @@
+# Real continuous OCEL v2 log accumulator (plan step C). First real caller
+# of otel_span_to_ocel_evidence() -- receives spans via OTLP-HTTP/JSON from
+# the Collector's new otlphttp/ocel-consumer exporter (see
+# k8s/otel-collector.yaml), admits each through the unmodified
+# otel-weaver-ocel-pack transformer, and appends admitted events to an
+# append-only OCEL v2 JSONL sidecar with real object-id dedup (the plan's
+# flagged highest-risk, no-precedent piece -- see
+# ggen-marketplace/packs/otel-weaver-ocel-pack/generated/src/bin/
+# ocel_accumulator.rs).
+#
+# Storage: emptyDir, not a PVC -- this cluster (kind, `local-path-provisioner`
+# as its only StorageClass) does carry a real dynamic provisioner, but this
+# accumulator is a single-replica Deployment where a PVC's only real benefit
+# over emptyDir is surviving pod eviction, not restart-on-same-node; kept as
+# emptyDir per the plan's stated fallback, with data-loss-on-restart an
+# explicitly accepted limitation for this pass, matching jaeger/weaver's own
+# no-persistence precedent in this same directory.
+#
+# Deliberately NOT istio-injected, same plaintext-reachable rationale as
+# otel-collector.yaml/weaver-livecheck (istio-system carries no
+# PeerAuthentication).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocel-accumulator
+  namespace: istio-system
+  labels:
+    app: ocel-accumulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ocel-accumulator
+  template:
+    metadata:
+      labels:
+        app: ocel-accumulator
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: ocel-accumulator
+          image: ocel-accumulator:local
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: OCEL_ACCUMULATOR_BIND
+              value: "0.0.0.0:4900"
+            - name: OCEL_ACCUMULATOR_DATA_DIR
+              value: "/data"
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 65532
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - name: http
+              containerPort: 4900
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 4900
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 4900
+            initialDelaySeconds: 5
+            periodSeconds: 20
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ocel-accumulator
+  namespace: istio-system
+  labels:
+    app: ocel-accumulator
+spec:
+  selector:
+    app: ocel-accumulator
+  ports:
+    - name: http
+      port: 4900
+      targetPort: 4900
