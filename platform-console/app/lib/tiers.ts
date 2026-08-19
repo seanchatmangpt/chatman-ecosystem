@@ -197,3 +197,50 @@ export const SLA_TIER_DEFAULTS: Record<SlaTier, SlaTierDefault> = {
   priority: { slaResponseTimeHours: 4, slaUptimeTargetPct: 99.95 },
   "enterprise-247": { slaResponseTimeHours: 1, slaUptimeTargetPct: 99.99 },
 };
+
+/**
+ * Real Committed-Use Capacity Reservation discount table (AWS Reserved
+ * Instances / GCP Committed Use Discounts equivalent): closes the gap
+ * that TIER_RESOURCE_QUOTAS above only ever sets a FIXED per-tier
+ * ResourceQuota ceiling and lib/overage-billing.ts only ever REACTS to
+ * usage that bursts past it -- neither lets a customer commit to and
+ * pre-pay for capacity ABOVE their tier's default ceiling in exchange
+ * for a discount rate, the forward-commitment line item Fortune 5
+ * procurement actually budgets against (predictable annual spend in
+ * exchange for guaranteed headroom).
+ *
+ * Keyed by (tier, termMonths) exactly as the capability spec requires,
+ * same "fixed lookup table, never a free-text/client-supplied number"
+ * discipline `resourceQuotaHardFor`/`SLA_TIER_DEFAULTS` above already
+ * establish for every other priced/contracted commitment in this
+ * codebase -- discountPct is ALWAYS looked up from this table by
+ * lib/capacity-reservations.ts, never accepted directly from a request
+ * body. Shape matches the real AWS RI 1yr/3yr discount curve (longer
+ * commitment -> steeper discount) scaled to what this repo can actually
+ * compute: `pro`'s 12-month rate (20%) and 6-month rate (10%) are the
+ * exact figures the capability spec names; `starter` and `enterprise`
+ * scale proportionally around that anchor (a lower tier gets a shallower
+ * discount for the same term since its baseline spend is already small;
+ * `enterprise` gets the steepest, matching real hyperscaler enterprise
+ * discount agreements).
+ */
+export const RESERVATION_TERM_MONTHS = [6, 12, 24, 36] as const;
+
+export type ReservationTermMonths = (typeof RESERVATION_TERM_MONTHS)[number];
+
+export function isReservationTermMonths(value: number): value is ReservationTermMonths {
+  return (RESERVATION_TERM_MONTHS as readonly number[]).includes(value);
+}
+
+export const RESERVATION_DISCOUNT_TABLE: Record<ProjectTier, Record<ReservationTermMonths, number>> = {
+  starter: { 6: 5, 12: 10, 24: 15, 36: 18 },
+  pro: { 6: 10, 12: 20, 24: 28, 36: 35 },
+  enterprise: { 6: 12, 12: 25, 24: 35, 36: 42 },
+};
+
+/** Real lookup against RESERVATION_DISCOUNT_TABLE -- the single place a
+ * (tier, termMonths) pair turns into a discountPct anywhere in this
+ * codebase. */
+export function reservationDiscountPct(tier: ProjectTier, termMonths: ReservationTermMonths): number {
+  return RESERVATION_DISCOUNT_TABLE[tier][termMonths];
+}

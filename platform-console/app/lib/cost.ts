@@ -25,13 +25,16 @@
  * rather than implying a billing history this platform doesn't have.
  */
 import {
+  computeEgressLineItems,
   computeLineItems,
   getNamespaceUsageMetrics,
   ILLUSTRATIVE_RATES,
   type InvoiceLineItem,
   type NamespaceUsageMetrics,
+  type NetworkEgressLineItem,
   type RateTable,
 } from "@/lib/invoice-preview";
+import { listNamespaceEgressMetrics } from "@/lib/network-usage";
 import { listBudgetThresholds, listBudgetUsages, type BudgetUsage } from "@/lib/budget-alerts";
 
 export interface CostTrendPoint {
@@ -94,6 +97,25 @@ export interface NamespaceCostRow {
   status: BudgetStatus;
 }
 
+/**
+ * Network-egress counterpart to NamespaceCostRow -- one real row per
+ * namespace joining the real network_egress line item
+ * (lib/invoice-preview.ts's computeEgressLineItems, backed by
+ * lib/network-usage.ts's real cross-namespace Istio mesh byte metering)
+ * with that namespace's real cost-usd budget threshold, same join and
+ * same status convention as getCostDashboardRows below. Kept as a
+ * separate row/query rather than merged into NamespaceCostRow.lineItem
+ * because compute (`InvoiceLineItem`) and egress (`NetworkEgressLineItem`)
+ * are distinct line-item shapes/units -- merging them would either lose
+ * the byte/GB figures or force an artificial common shape.
+ */
+export interface NamespaceNetworkCostRow {
+  namespace: string;
+  lineItem: NetworkEgressLineItem | null;
+  budget: BudgetUsage | null;
+  status: BudgetStatus;
+}
+
 function statusFor(budget: BudgetUsage | null): BudgetStatus {
   if (!budget) return "no-budget";
   if (budget.error) return "unknown";
@@ -149,4 +171,48 @@ export async function getCostDashboardRows(
   const totalCost = lineItems.reduce((sum, li) => sum + li.totalCost, 0);
 
   return { rows, errors, totalCost, generatedAt: new Date().toISOString() };
+}
+
+/**
+ * Network-egress counterpart to getCostDashboardRows: one real row per
+ * namespace joining the real network_egress line item with that
+ * namespace's cost-usd budget threshold, using the exact same
+ * "cost-usd metric only, threshold shared with compute" join
+ * getCostDashboardRows already applies -- this deployment has no separate
+ * egress-specific budget metric, so a namespace's existing cost-usd
+ * threshold (if configured) is reused to flag egress spend the same way
+ * it flags compute spend.
+ */
+export async function getNetworkCostDashboardRows(
+  namespaces: string[],
+  windowLabel: string,
+  windowHours: number,
+): Promise<{
+  rows: NamespaceNetworkCostRow[];
+  errors: Array<{ namespace: string; error: string }>;
+  totalCost: number;
+  generatedAt: string;
+}> {
+  const egress = await listNamespaceEgressMetrics(namespaces, windowLabel, windowHours);
+  const lineItems = computeEgressLineItems(egress.metrics);
+  const lineItemByNamespace = new Map(lineItems.map((li) => [li.namespace, li]));
+
+  const budgetsResult = await listBudgetThresholds();
+  const usagesResult = await listBudgetUsages();
+  const usagesByNamespace = new Map<string, BudgetUsage>();
+  if (budgetsResult.ok && usagesResult.ok) {
+    for (const u of usagesResult.data) {
+      if (u.metric === "cost-usd") usagesByNamespace.set(u.namespace, u);
+    }
+  }
+
+  const rows: NamespaceNetworkCostRow[] = namespaces.map((namespace) => {
+    const lineItem = lineItemByNamespace.get(namespace) ?? null;
+    const budget = usagesByNamespace.get(namespace) ?? null;
+    return { namespace, lineItem, budget, status: statusFor(budget) };
+  });
+
+  const totalCost = lineItems.reduce((sum, li) => sum + li.totalCost, 0);
+
+  return { rows, errors: egress.errors, totalCost, generatedAt: new Date().toISOString() };
 }

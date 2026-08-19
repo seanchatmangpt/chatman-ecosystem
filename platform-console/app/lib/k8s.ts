@@ -2429,6 +2429,8 @@ function quantityToMiB(raw: string | undefined): number | null {
   return bytes === null ? null : bytes / (1024 * 1024);
 }
 
+export { quantityToMillicores, quantityToMiB };
+
 export interface ResourceQuotaSnapshot {
   name: string;
   namespace: string;
@@ -2721,6 +2723,88 @@ export async function getResourceUsage(
       quota,
       cpuPercentOfQuota,
       memoryPercentOfQuota,
+    },
+  };
+}
+
+export interface NamespacePodRequests {
+  namespace: string;
+  /** Real sum of every live (non-terminal) Pod's every container's
+   * `resources.requests.cpu`, across the namespace -- the same reservation
+   * figure the scheduler itself sums when deciding whether a new Pod fits
+   * a node, and the same field ResourceQuota's `requests.cpu` accounting
+   * reads. Containers with no CPU request set contribute 0, disclosed via
+   * `containersWithoutCpuRequest` rather than silently treated as
+   * "no reservation" being indistinguishable from "reservation of zero". */
+  cpuRequestMillicores: number;
+  memoryRequestMiB: number;
+  podsCounted: number;
+  containersWithoutCpuRequest: number;
+  containersWithoutMemoryRequest: number;
+}
+
+interface PodSpecResponse {
+  items?: Array<{
+    metadata: { name: string; namespace: string };
+    spec?: {
+      containers?: Array<{
+        name: string;
+        resources?: { requests?: Record<string, string>; limits?: Record<string, string> };
+      }>;
+    };
+    status?: { phase?: string };
+  }>;
+}
+
+/**
+ * Real sum of `spec.containers[].resources.requests` across every live
+ * Pod in `namespace` -- the exact same per-Pod spec `getResourceUsage`'s
+ * ResourceQuota-based numbers are checked against, but read directly from
+ * the real Pod objects (not the aggregate ResourceQuota `status.used`
+ * counter, which a namespace may not have at all -- see `getResourceQuota`'s
+ * own `null`-is-not-an-error convention) so it works even for a namespace
+ * with no ResourceQuota object. `Succeeded`/`Failed` (terminal) Pods are
+ * excluded -- their reservations are no longer held against the node --
+ * matching kube-scheduler's own live-reservation accounting.
+ */
+export async function getNamespacePodRequests(
+  namespace: string,
+): Promise<K8sResult<NamespacePodRequests>> {
+  const result = await k8sRequest<PodSpecResponse>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/pods`,
+  );
+  if (!result.ok) return result;
+
+  let cpuRequestMillicores = 0;
+  let memoryRequestMiB = 0;
+  let podsCounted = 0;
+  let containersWithoutCpuRequest = 0;
+  let containersWithoutMemoryRequest = 0;
+
+  for (const pod of result.data.items ?? []) {
+    const phase = pod.status?.phase ?? "Unknown";
+    if (phase === "Succeeded" || phase === "Failed") continue;
+    podsCounted += 1;
+    for (const container of pod.spec?.containers ?? []) {
+      const requests = container.resources?.requests ?? {};
+      const cpu = quantityToMillicores(requests.cpu);
+      const mem = quantityToMiB(requests.memory);
+      if (cpu === null) containersWithoutCpuRequest += 1;
+      else cpuRequestMillicores += cpu;
+      if (mem === null) containersWithoutMemoryRequest += 1;
+      else memoryRequestMiB += mem;
+    }
+  }
+
+  return {
+    ok: true,
+    data: {
+      namespace,
+      cpuRequestMillicores,
+      memoryRequestMiB,
+      podsCounted,
+      containersWithoutCpuRequest,
+      containersWithoutMemoryRequest,
     },
   };
 }

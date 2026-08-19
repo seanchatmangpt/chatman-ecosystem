@@ -354,6 +354,85 @@ export default async function BillingPage() {
           </Table>
         </Card>
 
+        <Card className="mt-6 mb-6 overflow-x-auto">
+          <div className="p-4 pb-0">
+            <h2 className="mb-1 text-sm font-semibold text-foreground">
+              Network egress (real cross-namespace mesh byte metering)
+            </h2>
+            <p className="mb-3 text-xs text-muted-foreground">
+              Real bytes read from this cluster&apos;s live Istio sidecar
+              proxies (<code>istio_tcp_sent_bytes_total</code>), for traffic
+              that crosses a Kubernetes namespace boundary over the last{" "}
+              {preview?.windowLabel ?? WINDOW_LABEL}, x an illustrative{" "}
+              <code>${ILLUSTRATIVE_RATES.egressPerGb}/GB</code> rate. Every
+              namespace in this cluster runs on one physical host, so this is
+              a real, live-measured stand-in for hyperscaler Data Transfer
+              Out billing (a shape claim: traffic crossing a billing
+              boundary), not a claim of real inter-region/internet egress
+              (a scale claim this single-cluster deployment cannot make) --
+              see <code>lib/network-usage.ts</code> for the full disclosure.
+            </p>
+          </div>
+          {preview && preview.networkErrors.length > 0 && (
+            <div className="px-4 pb-2 space-y-2">
+              {preview.networkErrors.map((e) => (
+                <Alert key={e.namespace} variant="destructive">
+                  <AlertDescription>
+                    {e.namespace}: {e.error}
+                  </AlertDescription>
+                </Alert>
+              ))}
+            </div>
+          )}
+          <Table className="min-w-[700px]">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Namespace</TableHead>
+                <TableHead>Egress bytes (real)</TableHead>
+                <TableHead>Egress GB (real)</TableHead>
+                <TableHead>Egress cost (illustrative)</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {(!preview || preview.networkLineItems.length === 0) && (
+                <TableRow>
+                  <TableCell colSpan={4} className="py-6 text-sm text-muted-foreground">
+                    {clusterConfigured ? "No namespaces measured." : "—"}
+                  </TableCell>
+                </TableRow>
+              )}
+              {preview?.networkLineItems.map((li) => (
+                <TableRow key={li.namespace}>
+                  <TableCell className="text-foreground">
+                    <code>{li.namespace}</code>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {li.egressBytes.toLocaleString()}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {li.egressGb.toFixed(6)}
+                  </TableCell>
+                  <TableCell className="font-medium text-foreground">
+                    {formatUsd(li.egressCost)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+            {preview && preview.networkLineItems.length > 0 && (
+              <tfoot>
+                <TableRow>
+                  <TableCell colSpan={3} className="text-right font-medium text-foreground">
+                    Total egress (illustrative)
+                  </TableCell>
+                  <TableCell className="font-semibold text-foreground">
+                    {formatUsd(preview.networkTotalCost)}
+                  </TableCell>
+                </TableRow>
+              </tfoot>
+            )}
+          </Table>
+        </Card>
+
         <p className="mt-4 text-xs text-muted-foreground">
           CPU-core-hours = real <code>increase()</code> of the cumulative{" "}
           <code>container_cpu_usage_seconds_total</code> cAdvisor counter

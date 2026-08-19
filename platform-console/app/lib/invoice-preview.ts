@@ -11,11 +11,19 @@
  * never silently zeroed or fabricated into the total.
  */
 import { queryPrometheus } from "./prometheus";
+import { listNamespaceEgressMetrics, type NamespaceEgressMetrics } from "./network-usage";
 
 /** Explicitly illustrative dollar rates -- not a real contracted price. */
 export const ILLUSTRATIVE_RATES = {
   cpuPerCoreHour: 0.02,
   memoryPerGiBHour: 0.01,
+  // Egress rate: illustrative only, chosen in the ballpark of a real
+  // hyperscaler's per-GB Data Transfer Out charge to make the line item
+  // legible, not a real contracted price. See lib/network-usage.ts's
+  // header comment for the "shape claim, not scale claim" disclosure the
+  // underlying byte count carries (real cross-namespace bytes on one
+  // physical host, standing in for real inter-region/internet egress).
+  egressPerGb: 0.09,
 } as const;
 
 export type RateTable = typeof ILLUSTRATIVE_RATES;
@@ -96,6 +104,7 @@ export async function getNamespaceUsageMetrics(
 }
 
 export interface InvoiceLineItem {
+  type: "compute";
   namespace: string;
   cpuCoreHours: number;
   memoryGiBHours: number;
@@ -104,13 +113,75 @@ export interface InvoiceLineItem {
   totalCost: number;
 }
 
+/**
+ * Real per-namespace network-egress line item (docs/SCOPE-AND-LIMITATIONS.md
+ * "shape claim, not scale claim" convention -- see lib/network-usage.ts's
+ * header comment for the full disclosure). `egressGb` is real metered
+ * cross-namespace `istio_tcp_sent_bytes_total` traffic, converted from
+ * bytes (1024**3 divisor, same binary-GiB-as-"GB" convention
+ * memoryGiBHours already uses in this module) and multiplied by the
+ * illustrative `egressPerGb` rate to produce `egressCost`.
+ */
+export interface NetworkEgressLineItem {
+  type: "network_egress";
+  namespace: string;
+  egressBytes: number;
+  egressGb: number;
+  egressCost: number;
+  totalCost: number;
+}
+
+/**
+ * Real per-namespace Committed-Use Capacity Reservation input to
+ * `computeLineItems`/`computeReservedCapacityDiscountLineItems` below
+ * (lib/capacity-reservations.ts's own CapacityReservation, reduced to
+ * exactly the numbers this module's arithmetic needs and converted to
+ * the SAME core-hour/GiB-hour unit `NamespaceUsageMetrics` measures
+ * usage in -- `committedCpuCores * windowHours`,
+ * `committedMemoryGi * windowHours` -- so a reservation's committed
+ * amount is directly comparable to real metered usage over the same
+ * window, never a raw core/GiB count compared against an hours figure).
+ */
+export interface ReservedCapacityInput {
+  committedCpuCoreHours: number;
+  committedMemoryGiBHours: number;
+  discountPct: number;
+}
+
+/**
+ * Real "Reserved capacity discount" line item (Committed-Use Capacity
+ * Reservations): the dollar amount a namespace's committed reservation
+ * actually saved versus the standard rate over this window, shown as its
+ * own informational line alongside the (already-discounted)
+ * `InvoiceLineItem` for the same namespace -- the same "show the
+ * discount as its own line, not folded silently into the total" shape
+ * AWS Cost Explorer's own RI/Savings Plans "Amortized cost" breakdown
+ * uses. `totalCost` is always <= 0 (a real savings, shown as a real
+ * credit against the bill), never a positive charge.
+ */
+export interface ReservedCapacityDiscountLineItem {
+  type: "reserved_capacity_discount";
+  namespace: string;
+  discountPct: number;
+  cpuCoreHoursDiscounted: number;
+  memoryGiBHoursDiscounted: number;
+  totalCost: number;
+}
+
+export type AnyInvoiceLineItem = InvoiceLineItem | NetworkEgressLineItem | ReservedCapacityDiscountLineItem;
+
 export interface InvoicePreview {
   windowLabel: string;
   windowHours: number;
   rates: RateTable;
   lineItems: InvoiceLineItem[];
+  networkLineItems: NetworkEgressLineItem[];
+  reservationLineItems: ReservedCapacityDiscountLineItem[];
   totalCost: number;
+  networkTotalCost: number;
+  reservationDiscountTotalCost: number;
   errors: Array<{ namespace: string; error: string }>;
+  networkErrors: Array<{ namespace: string; error: string }>;
   generatedAt: string;
 }
 
@@ -124,17 +195,117 @@ export interface InvoicePreview {
 export function computeLineItems(
   metrics: NamespaceUsageMetrics[],
   rates: RateTable = ILLUSTRATIVE_RATES,
+  reservations: Record<string, ReservedCapacityInput> = {},
 ): InvoiceLineItem[] {
   return metrics.map((m) => {
-    const cpuCost = m.cpuCoreHours * rates.cpuPerCoreHour;
-    const memoryCost = m.memoryGiBHours * rates.memoryPerGiBHour;
+    const reservation = reservations[m.namespace];
+    if (!reservation) {
+      const cpuCost = m.cpuCoreHours * rates.cpuPerCoreHour;
+      const memoryCost = m.memoryGiBHours * rates.memoryPerGiBHour;
+      return {
+        type: "compute",
+        namespace: m.namespace,
+        cpuCoreHours: m.cpuCoreHours,
+        memoryGiBHours: m.memoryGiBHours,
+        cpuCost,
+        memoryCost,
+        totalCost: cpuCost + memoryCost,
+      };
+    }
+
+    // Real Committed-Use Capacity Reservation pricing: usage up to the
+    // committed amount is billed at the discounted rate; usage above it
+    // is billed at the standard rate -- the exact same "already covered
+    // by your plan below the line, standard rate above it" shape
+    // lib/overage-billing.ts's computeOverageAmount already established
+    // for the tier-baseline case, applied here against a committed
+    // reservation amount instead of a tier's default entitlement.
+    const cpuWithinCommit = Math.min(m.cpuCoreHours, reservation.committedCpuCoreHours);
+    const cpuAboveCommit = Math.max(0, m.cpuCoreHours - reservation.committedCpuCoreHours);
+    const memoryWithinCommit = Math.min(m.memoryGiBHours, reservation.committedMemoryGiBHours);
+    const memoryAboveCommit = Math.max(0, m.memoryGiBHours - reservation.committedMemoryGiBHours);
+    const discountMultiplier = 1 - reservation.discountPct / 100;
+
+    const cpuCost =
+      cpuWithinCommit * rates.cpuPerCoreHour * discountMultiplier + cpuAboveCommit * rates.cpuPerCoreHour;
+    const memoryCost =
+      memoryWithinCommit * rates.memoryPerGiBHour * discountMultiplier +
+      memoryAboveCommit * rates.memoryPerGiBHour;
+
     return {
+      type: "compute",
       namespace: m.namespace,
       cpuCoreHours: m.cpuCoreHours,
       memoryGiBHours: m.memoryGiBHours,
       cpuCost,
       memoryCost,
       totalCost: cpuCost + memoryCost,
+    };
+  });
+}
+
+/**
+ * Real "Reserved capacity discount" line items -- one real, informational
+ * credit per namespace whose committed reservation actually reduced its
+ * `computeLineItems` cost versus the standard (undiscounted) rate over
+ * this same window. A namespace with a reservation but zero usage within
+ * the committed amount (e.g. a brand-new commitment with no usage yet)
+ * produces no line item -- there is no real savings to report, never a
+ * fabricated $0.00 row.
+ */
+export function computeReservedCapacityDiscountLineItems(
+  metrics: NamespaceUsageMetrics[],
+  rates: RateTable = ILLUSTRATIVE_RATES,
+  reservations: Record<string, ReservedCapacityInput> = {},
+): ReservedCapacityDiscountLineItem[] {
+  const items: ReservedCapacityDiscountLineItem[] = [];
+  for (const m of metrics) {
+    const reservation = reservations[m.namespace];
+    if (!reservation) continue;
+
+    const cpuWithinCommit = Math.min(m.cpuCoreHours, reservation.committedCpuCoreHours);
+    const memoryWithinCommit = Math.min(m.memoryGiBHours, reservation.committedMemoryGiBHours);
+    const discountAmount =
+      cpuWithinCommit * rates.cpuPerCoreHour * (reservation.discountPct / 100) +
+      memoryWithinCommit * rates.memoryPerGiBHour * (reservation.discountPct / 100);
+
+    if (discountAmount <= 0) continue;
+
+    items.push({
+      type: "reserved_capacity_discount",
+      namespace: m.namespace,
+      discountPct: reservation.discountPct,
+      cpuCoreHoursDiscounted: cpuWithinCommit,
+      memoryGiBHoursDiscounted: memoryWithinCommit,
+      totalCost: -discountAmount,
+    });
+  }
+  return items;
+}
+
+/**
+ * Same pure-arithmetic shape as computeLineItems, for the new
+ * `network_egress` line item type: real per-namespace metered egress
+ * bytes x the illustrative `egressPerGb` rate -> real per-namespace
+ * egress line items. Takes no network dependency itself, so it is
+ * trivially callable with hand-constructed `NamespaceEgressMetrics` to
+ * check the math in isolation from Prometheus reachability, same as
+ * computeLineItems.
+ */
+export function computeEgressLineItems(
+  metrics: NamespaceEgressMetrics[],
+  rates: RateTable = ILLUSTRATIVE_RATES,
+): NetworkEgressLineItem[] {
+  return metrics.map((m) => {
+    const egressGb = m.egressBytes / 1024 ** 3;
+    const egressCost = egressGb * rates.egressPerGb;
+    return {
+      type: "network_egress",
+      namespace: m.namespace,
+      egressBytes: m.egressBytes,
+      egressGb,
+      egressCost,
+      totalCost: egressCost,
     };
   });
 }
@@ -153,9 +324,13 @@ export async function getInvoicePreview(
   windowHours: number,
   rates: RateTable = ILLUSTRATIVE_RATES,
 ): Promise<InvoicePreview> {
-  const results = await Promise.all(
-    namespaces.map((namespace) => getNamespaceUsageMetrics(namespace, windowLabel, windowHours)),
-  );
+  const [results, egress, reservations] = await Promise.all([
+    Promise.all(
+      namespaces.map((namespace) => getNamespaceUsageMetrics(namespace, windowLabel, windowHours)),
+    ),
+    listNamespaceEgressMetrics(namespaces, windowLabel, windowHours),
+    reservedCapacityInputsByNamespace(windowHours),
+  ]);
 
   const metrics: NamespaceUsageMetrics[] = [];
   const errors: Array<{ namespace: string; error: string }> = [];
@@ -164,16 +339,66 @@ export async function getInvoicePreview(
     else errors.push({ namespace: r.namespace, error: r.error });
   }
 
-  const lineItems = computeLineItems(metrics, rates);
+  const lineItems = computeLineItems(metrics, rates, reservations);
   const totalCost = lineItems.reduce((sum, li) => sum + li.totalCost, 0);
+
+  const networkLineItems = computeEgressLineItems(egress.metrics, rates);
+  const networkTotalCost = networkLineItems.reduce((sum, li) => sum + li.totalCost, 0);
+
+  const reservationLineItems = computeReservedCapacityDiscountLineItems(metrics, rates, reservations);
+  const reservationDiscountTotalCost = reservationLineItems.reduce((sum, li) => sum + li.totalCost, 0);
 
   return {
     windowLabel,
     windowHours,
     rates,
     lineItems,
+    networkLineItems,
+    reservationLineItems,
     totalCost,
+    networkTotalCost,
+    reservationDiscountTotalCost,
     errors,
+    networkErrors: egress.errors,
     generatedAt: new Date().toISOString(),
   };
+}
+
+/**
+ * Real per-namespace `ReservedCapacityInput` map, built from every
+ * currently-stored Committed-Use Capacity Reservation
+ * (lib/capacity-reservations.ts's listReservations) converted from
+ * `committedCpuCores`/`committedMemoryGi` into this window's own
+ * core-hour/GiB-hour unit (`committed * windowHours`) -- the real
+ * conversion this module's own header comment on `ReservedCapacityInput`
+ * documents. A reservations-list failure (ConfigMap unreachable) fails
+ * OPEN on this optional pricing input only -- an invoice preview still
+ * renders standard-rate line items rather than a hard 502, the same
+ * "this is pricing visibility, never a payment obligation" posture this
+ * module's own header comment already establishes for Prometheus
+ * failures (surfaced per-namespace in `errors`, never fabricated).
+ * Reservations for a namespace outside `namespaces` are simply never
+ * looked up here (the map is namespace-keyed, read via
+ * `reservations[m.namespace]` in computeLineItems), so this never
+ * over-applies a discount to a namespace this preview wasn't asked
+ * about.
+ */
+async function reservedCapacityInputsByNamespace(
+  windowHours: number,
+): Promise<Record<string, ReservedCapacityInput>> {
+  const { listReservations } = await import("@/lib/capacity-reservations");
+  const result = await listReservations();
+  if (!result.ok) return {};
+
+  const now = Date.now();
+  const map: Record<string, ReservedCapacityInput> = {};
+  for (const reservation of result.data) {
+    if (Date.parse(reservation.endDate) <= now) continue; // expired -- no discount applies
+    map[reservation.namespace] = {
+      committedCpuCoreHours: reservation.committedCpuCores * windowHours,
+      committedMemoryGiBHours: reservation.committedMemoryGi * windowHours,
+      discountPct: reservation.discountPct,
+    };
+  }
+  return map;
 }
