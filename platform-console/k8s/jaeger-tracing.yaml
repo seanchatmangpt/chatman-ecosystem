@@ -135,12 +135,23 @@ spec:
       port: 16686
       targetPort: 16686
 ---
-# Enables Istio proxy tracing mesh-wide, routed to the "jaeger"
-# extensionProvider already declared in the istio ConfigMap. 100% sampling
-# is a deliberate demo/evidence choice (this is a small single-node
-# cluster, not a high-QPS production mesh) so a single manually-triggered
-# request through the gateway is guaranteed to produce a visible span,
-# rather than being statistically likely to.
+# Enables Istio proxy tracing mesh-wide, routed to the "otel-collector"
+# extensionProvider (istio ConfigMap) instead of "jaeger" directly.
+#
+# Istio's Telemetry API on this cluster version confirmed-rejects more
+# than one provider in spec.tracing[0].providers (see
+# k8s/weaver-livecheck.yaml's header for the exact reproduction: admission
+# accepted the patch but warned "multiple providers is not currently
+# supported", and the second provider's Envoy cluster showed 0 stats).
+# Routing through k8s/otel-collector.yaml's Collector instead keeps this
+# Telemetry resource single-provider (satisfying that constraint) while
+# still reaching both Jaeger and weaver -- the Collector fans the one
+# incoming stream out to both via its own exporters, so Istio itself only
+# ever talks to the Collector.
+#
+# 100% sampling is unchanged from before: a deliberate demo/evidence
+# choice (small single-node cluster, not high-QPS production) so traffic
+# through the gateway reliably produces a visible span.
 apiVersion: telemetry.istio.io/v1
 kind: Telemetry
 metadata:
@@ -149,5 +160,5 @@ metadata:
 spec:
   tracing:
     - providers:
-        - name: jaeger
+        - name: otel-collector
       randomSamplingPercentage: 100.0

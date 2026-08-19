@@ -1,0 +1,252 @@
+# Real OTel Collector fan-out, routing around two confirmed dead ends
+# (see k8s/weaver-livecheck.yaml's header): Istio's Telemetry API rejects
+# more than one tracing provider on mesh-default-tracing, and Envoy's OTel
+# gRPC exporter never completed a successful export RPC directly against
+# weaver's tonic OTLP server. Both are sidestepped here by making the
+# Collector Istio's ONE provider; the Collector itself (a full OTel-spec
+# relay, not a novel integration) then fans every span out to both
+# jaeger-collector and weaver's live-check OTLP-gRPC endpoint.
+#
+# image: otel/opentelemetry-collector (core), NOT -contrib -- the otlp
+# receiver and otlp/otlphttp exporters used here are all core components,
+# and core is smaller/simpler than pulling in -contrib's much larger
+# component set for features this pipeline doesn't use.
+#
+# Deliberately NOT istio-injected, matching jaeger-tracing.yaml's jaeger
+# Deployment: istio-system carries no PeerAuthentication, so a plain
+# non-mesh pod here is reachable in plaintext from every Envoy sidecar in
+# the mesh without any DestinationRule/mTLS override, exactly like the
+# existing jaeger and (planned) weaver-livecheck services.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+  namespace: istio-system
+  labels:
+    app: otel-collector
+data:
+  config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+
+    exporters:
+      otlp/jaeger:
+        endpoint: jaeger-collector.istio-system.svc.cluster.local:4317
+        tls:
+          insecure: true
+      otlp/weaver:
+        # weaver's live-check --otlp-grpc-port is a real gRPC endpoint
+        # (4319), not HTTP -- so this uses the Collector's OTLP-gRPC
+        # exporter (component name "otlp", not "otlphttp"). The plan step
+        # named this "exporters.otlphttp/weaver" generically to describe
+        # "weaver's live-check OTLP endpoint"; the concrete endpoint weaver
+        # actually exposes (chicago-tdd-tools' `--otlp-grpc-port 4319`) is
+        # gRPC, so the matching Collector exporter component is otlp, not
+        # otlphttp -- using otlphttp against a gRPC-only server would fail
+        # at the protocol layer exactly like the confirmed-BLOCKED direct
+        # Envoy->weaver attempt in k8s/weaver-livecheck.yaml.
+        endpoint: weaver-livecheck.istio-system.svc.cluster.local:4319
+        tls:
+          insecure: true
+        # weaver's tonic OTLP server rejects gzip-compressed requests
+        # (confirmed live: "rpc error: code = Unimplemented desc = Content
+        # is compressed with `gzip` which isn't supported"), unlike
+        # Jaeger's collector which accepts the Collector's gzip default.
+        compression: none
+
+      debug:
+        verbosity: basic
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          exporters: [otlp/jaeger, otlp/weaver]
+      telemetry:
+        metrics:
+          readers:
+            - pull:
+                exporter:
+                  prometheus:
+                    host: 0.0.0.0
+                    port: 8888
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  namespace: istio-system
+  labels:
+    app: otel-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-collector
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: otel-collector
+          image: otel/opentelemetry-collector:0.110.0
+          args:
+            - --config=/etc/otel/config.yaml
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 10001
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - name: otlp-grpc
+              containerPort: 4317
+            - name: metrics
+              containerPort: 8888
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otel
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 8888
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 8888
+            initialDelaySeconds: 10
+            periodSeconds: 20
+      volumes:
+        - name: config
+          configMap:
+            name: otel-collector-config
+---
+# appProtocol: grpc is load-bearing here too, same reasoning as
+# jaeger-tracing.yaml's jaeger-collector Service -- Istio's Envoy sidecars
+# need it declared to configure the outbound cluster for HTTP/2 so the
+# OpenTelemetry gRPC exporter's h2c frames are handled correctly.
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+  namespace: istio-system
+  labels:
+    app: otel-collector
+spec:
+  selector:
+    app: otel-collector
+  ports:
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+      appProtocol: grpc
+    - name: metrics
+      port: 8888
+      targetPort: 8888
+---
+# Standing weaver registry live-check service -- containerized (not a
+# backgrounded host shell job) via the real open-telemetry/weaver linux
+# release binary, built from ~/chicago-tdd-tools/Dockerfile.weaver and
+# loaded into the kind cluster as weaver-livecheck:local (node arch is
+# arm64, matching this Mac, so no cross-compilation was needed -- just
+# downloading the matching upstream release asset). Deliberately NOT
+# istio-injected, same plaintext-reachable rationale as jaeger/collector.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weaver-livecheck
+  namespace: istio-system
+  labels:
+    app: weaver-livecheck
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weaver-livecheck
+  template:
+    metadata:
+      labels:
+        app: weaver-livecheck
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: weaver-livecheck
+          image: weaver-livecheck:local
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 65532
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - name: otlp-grpc
+              containerPort: 4319
+            - name: admin
+              containerPort: 4321
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
+          readinessProbe:
+            tcpSocket:
+              port: 4321
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 4321
+            initialDelaySeconds: 10
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weaver-livecheck
+  namespace: istio-system
+  labels:
+    app: weaver-livecheck
+spec:
+  selector:
+    app: weaver-livecheck
+  ports:
+    - name: otlp-grpc
+      port: 4319
+      targetPort: 4319
+      appProtocol: grpc
+    - name: admin
+      port: 4321
+      targetPort: 4321
