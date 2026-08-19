@@ -1,0 +1,65 @@
+version: challenger-value/1
+purpose: evidence-bounded Challenger commercial projection
+commercial_invariant:
+  canonical_evidence_is_not_mutated_by_tailoring: true
+  observed_fact_may_not_be_manufactured: true
+  inferred_claim_must_remain_labeled: true
+  hypothesis_must_remain_labeled: true
+  customer_outcome_requires_verified_evidence: true
+  metric_requires_source: true
+  alive_requires_standing_evidence: true
+  proof_requires_exact_subject: true
+challenger:
+  phases: [TEACH, REFRAME, RATIONAL_IMPACT, NEW_WAY, PROOF, TAKE_CONTROL]
+  proof_evidence_kind: VERIFIED
+  take_control_is_diagnostic_intent_only: true
+dfcm:
+  enumerate_bounded_narrative_candidates: true
+  candidate_bound: 4096
+  pareto_dimensions: [evidence_density, buyer_relevance, falsifiability, materiality, claim_risk]
+  preserve_nondominated_frontier: true
+  irreversible_selections: 0
+authority:
+  SELECT: reversible-presentation
+  CONSTRUCT: brief-only
+  DO: none
+  actuation: false
+buyers:
+  - cio-cto
+  - ciso
+  - cfo
+  - platform
+  - fortune5-buyer
+  - hiring-manager
+refusals:
+  - UNSUPPORTED_CLAIM
+  - PROOF_WITHOUT_SOURCE
+  - PROOF_WITHOUT_EXACT_SUBJECT
+  - METRIC_WITHOUT_SOURCE
+  - ALIVE_WITHOUT_STANDING
+  - OUTCOME_AS_FACT
+  - UNSUPPORTED_AUDIENCE
+  - DUPLICATE_CLAIM_ID
+  - CANDIDATE_BOUND_EXCEEDED
+  - EMPTY_FRONTIER
+receipts:
+  canonical_json_digest: sha256
+  binds: [protocol, audience, candidate_frontier, recommendation, brief, authority]
+  deterministic_replay_required: true
+integration_subjects:
+  ggen-marketplace:
+    pr: 85
+    head: 046ea13ac2830dd039e128b07ee2d2796a1db183
+    authority: CONSTRUCT
+    role: canonical-ontology-and-conformance-pack
+    owning_court: Challenger Value Court
+  tcps:
+    pr: 2
+    head: 18977d274ff05a7c8b96f9f64c25120835c94e52
+    authority: SELECT
+    role: bounded-dfcm-value-compiler
+    owning_court: pytest-challenger
+integration_owners:
+  ggen-marketplace: manufacture-and-distribute-contract
+  tcps: expand-prune-and-render-reversible-brief
+  chatman-ecosystem: bind-cross-repo-subjects-and-commercial-authority
