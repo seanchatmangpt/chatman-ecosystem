@@ -6,14 +6,27 @@ Version: `0.1.0`
 
 | Repository | Role | Standing |
 |---|---|---|
+| `repository:affidavit` | evidence-standing-attestation | `Observed` |
 | `repository:agent-scaffold` | doctrine-projection-tool | `Candidate` |
 | `repository:ai-agent-boilerplate` | behavioral-fixture | `Candidate` |
+| `repository:autofde` | persistent-runtime-and-brce-boundary | `Observed` |
+| `repository:autofde-lab` | planning-reasoning-falsification-capability-admission | `Observed` |
+| `repository:bcinr` | bounded-cmca | `Observed` |
 | `repository:better-fullstack` | gall-checkpoint | `Candidate` |
+| `repository:biblegym` | bounded-domain-gym | `Observed` |
 | `repository:chatman-ecosystem` | constitutional-control-plane | `Alive` |
+| `repository:dsrust` | optional-bounded-compiler-oracle | `Observed` |
 | `repository:entity-derive` | generated-adapter-experiment | `Candidate` |
+| `repository:ggen` | deterministic-manufacturer | `Observed` |
+| `repository:ggen-legacy` | bounded-reconstitution | `Observed` |
+| `repository:ggen-marketplace` | executable-knowledge-distribution | `Observed` |
 | `repository:goat-billing-proxy` | rejected-code-fixture-only | `Rejected` |
+| `repository:gymact` | executable-world-runtime | `Observed` |
 | `repository:hyperlane-broadcast` | rejected-ephemeral-broadcast-wrapper | `Rejected` |
+| `repository:lifegym` | bounded-domain-gym | `Observed` |
 | `repository:mcpkit` | mcp-conformance-checkpoint | `Candidate` |
+| `repository:mfw` | manufacturing-work-orchestration | `Observed` |
+| `repository:rrgym` | bounded-domain-gym | `Observed` |
 | `repository:rust-enterprise-boilerplate` | architecture-pattern | `Candidate` |
 | `repository:rust-react-microservices` | pattern-donor | `Observed` |
 | `repository:service-daemon-rs` | experimental-runtime | `Candidate` |
@@ -21,6 +34,7 @@ Version: `0.1.0`
 | `repository:systemprompt-template` | governance-benchmark | `Candidate` |
 | `repository:uniplate` | bounded-tree-rewrite-experiment | `Candidate` |
 | `repository:vk-bot-api` | deferred-connector | `Unsupported` |
+| `repository:ww3gym` | simulation-evaluation-only-gym | `Observed` |
 
 ## Documents
 
