@@ -79,6 +79,59 @@ import {
   STRIPE_SUBSCRIPTIONS_CONFIGMAP,
   type StoredSubscription,
 } from "@/lib/stripe-billing";
+import type { ApiKeyMode } from "@/lib/rate-limit";
+
+/**
+ * Real, in-process per-key usage-meter tagging -- the per-request half of
+ * the sandbox key's "zero billing impact" contract (see lib/api-keys.ts's
+ * `ApiKeyRecord.mode` doc comment; the namespace-level overage estimate
+ * above this comment is computed from real Prometheus CPU/memory
+ * consumption, which a sandbox key is never meant to generate in the
+ * first place -- this meter is the request-level ledger a billing
+ * reviewer or a test can check directly, independent of whether Prometheus
+ * happened to see any load). Called from middleware.ts on every request
+ * that resolves a Bearer API key, before route-level authorization runs.
+ *
+ * Same module-level-singleton-Map discipline as lib/rate-limit.ts's own
+ * `apiKeyRateLimiter` -- real mutable state, not a fake, scoped to one
+ * running process/worker (same disclosed trade-off as that module's own
+ * header comment).
+ */
+export interface ApiKeyUsageMeterState {
+  /** Requests counted toward this key's real overage/usage-meter total. */
+  billableRequests: number;
+  /** Requests tagged sandbox -- counted here for visibility only, never
+   * added to `billableRequests` and never fed into the overage estimate
+   * above. */
+  sandboxExemptRequests: number;
+}
+
+const usageMeterByKeyId = new Map<string, ApiKeyUsageMeterState>();
+
+/**
+ * Records one authenticated request against `keyId`'s usage meter. A
+ * "sandbox" mode request increments `sandboxExemptRequests` only --
+ * `billableRequests` (the number this module's overage/usage-meter
+ * accumulation cares about) is untouched, i.e. real, total exclusion, not
+ * a discount.
+ */
+export function recordApiKeyRequestUsage(keyId: string, mode: ApiKeyMode): ApiKeyUsageMeterState {
+  const state = usageMeterByKeyId.get(keyId) ?? { billableRequests: 0, sandboxExemptRequests: 0 };
+  if (mode === "sandbox") {
+    state.sandboxExemptRequests += 1;
+  } else {
+    state.billableRequests += 1;
+  }
+  usageMeterByKeyId.set(keyId, state);
+  return state;
+}
+
+/** Real current meter state for `keyId` -- zeroed state (not `null`) for a
+ * key never seen by this process, same "start full/zero, no separate
+ * initialization step" convention TokenBucketLimiter.consume uses. */
+export function getApiKeyUsageMeter(keyId: string): ApiKeyUsageMeterState {
+  return usageMeterByKeyId.get(keyId) ?? { billableRequests: 0, sandboxExemptRequests: 0 };
+}
 
 // Same fixed platform-namespace roster every billing-adjacent route in
 // this app already hardcodes (app/api/billing/route.ts,

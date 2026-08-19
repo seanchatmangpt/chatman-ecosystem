@@ -25,6 +25,14 @@
  * attempt-by-attempt forensic trail for every outbound webhook, not just
  * whatever the most recent attempt happened to be.
  *
+ * Every attempt this module records originates from this platform's
+ * published static outbound IP ranges -- see lib/egress-ips.ts
+ * (`PLATFORM_EGRESS_CIDRS`), surfaced on the public trust page
+ * (app/api/trust/route.ts) and on GET app/api/webhooks/route.ts so a
+ * customer's InfoSec team can whitelist exactly the source IPs these
+ * deliveries come from in their own inbound firewall.
+ *
+
  * `platform_console.webhook_deliveries` remains, but is now explicitly a
  * DERIVED / SUMMARY PROJECTION of that attempt log, not the record of
  * truth -- one row per LOGICAL delivery (one event to one subscription),

@@ -29,6 +29,8 @@
  * to trust it stays published).
  */
 import { createOrUpdateConfigMap, getConfigMap, type K8sResult } from "@/lib/k8s";
+import { queryDeprecationImpact, type DeprecationImpactKeyUsage } from "@/lib/audit-db";
+import { listApiKeysForOrg } from "@/lib/api-keys";
 
 export const API_DEPRECATIONS_NAMESPACE = "platform-console";
 export const API_DEPRECATIONS_CONFIGMAP = "platform-api-deprecations";
@@ -198,6 +200,115 @@ export async function appendApiDeprecation(
   });
   if (!result.ok) return result;
   return { ok: true, data: entry };
+}
+
+/**
+ * Single-notice lookup by id -- backs GET /api/api-deprecations/[id] and
+ * the impact route below. Real linear scan over listApiDeprecations'
+ * already-fetched array (this ConfigMap holds, at most, a modest
+ * hand-curated feed -- same "no separate index" tradeoff
+ * listApiKeysForOrg accepts over listApiKeys). Returns `data: null` on a
+ * real-but-unresolved id, distinct from the `ok: false` transport/
+ * ConfigMap-read failure path.
+ */
+export async function getApiDeprecationById(
+  id: string,
+): Promise<K8sResult<ApiDeprecationEntry | null>> {
+  const result = await listApiDeprecations();
+  if (!result.ok) return result;
+  return { ok: true, data: result.data.find((entry) => entry.id === id) ?? null };
+}
+
+export const DEPRECATION_IMPACT_LOOKBACK_DAYS = 30;
+
+export interface DeprecationImpactKeyReport extends DeprecationImpactKeyUsage {
+  /** This org's own display name/label for the key, when it still resolves to a live key record. */
+  keyName: string | null;
+  /** True when this keyId no longer resolves to a live (non-revoked) key record for this org. */
+  keyRevokedOrUnknown: boolean;
+}
+
+export interface DeprecationImpactReport {
+  deprecation: ApiDeprecationEntry;
+  orgId: string;
+  lookbackDays: number;
+  generatedAt: string;
+  totalCalls: number;
+  callingKeys: DeprecationImpactKeyReport[];
+}
+
+export type DeprecationImpactOutcome =
+  | { ok: true; data: DeprecationImpactReport }
+  | { ok: false; error: string };
+
+/**
+ * The real per-org "which of MY api keys call this deprecated endpoint"
+ * impact report -- turns the platform-wide, customer-agnostic feed above
+ * into an actionable, audit-ready migration checklist for one specific
+ * org, the way AWS Trusted Advisor / GCP Deprecation Insights turn a
+ * passive announcement into per-account impact analysis.
+ *
+ * Two real data sources, joined here:
+ *   1. lib/audit-db.ts's queryDeprecationImpact -- a real aggregation
+ *      over `orgId`'s own logged requests (platform_console.audit_log)
+ *      whose method+path actually match this notice's
+ *      endpointPattern+method, within DEPRECATION_IMPACT_LOOKBACK_DAYS.
+ *      Never a synthetic estimate: every call counted here really
+ *      happened and was really logged with this org's own org_id.
+ *   2. lib/api-keys.ts's listApiKeysForOrg -- resolves each calling
+ *      key_id to that key's current human-readable `name`, so the
+ *      report reads as "the 'ci-deploy-bot' key called this 47 times",
+ *      not a bare opaque id. A key_id that no longer resolves to a live
+ *      record for this org (revoked since, or -- impossible under
+ *      correct org-scoping, but defensively handled -- never actually
+ *      this org's) is flagged via `keyRevokedOrUnknown` rather than
+ *      silently dropped, since "a now-revoked key was still calling this
+ *      right up to when it was revoked" is itself relevant migration
+ *      history, not noise to hide.
+ */
+export async function computeDeprecationImpact(
+  orgId: string,
+  deprecationId: string,
+): Promise<DeprecationImpactOutcome> {
+  const deprecationResult = await getApiDeprecationById(deprecationId);
+  if (!deprecationResult.ok) return deprecationResult;
+  if (!deprecationResult.data) {
+    return { ok: false, error: `no api deprecation notice found with id '${deprecationId}'` };
+  }
+  const deprecation = deprecationResult.data;
+
+  const impactResult = await queryDeprecationImpact(
+    orgId,
+    deprecation.endpointPattern,
+    deprecation.method,
+    DEPRECATION_IMPACT_LOOKBACK_DAYS,
+  );
+  if (!impactResult.ok) return impactResult;
+
+  const keysResult = await listApiKeysForOrg(orgId);
+  if (!keysResult.ok) return keysResult;
+  const keysById = new Map(keysResult.data.map((k) => [k.id, k]));
+
+  const callingKeys: DeprecationImpactKeyReport[] = impactResult.data.callingKeys.map((usage) => {
+    const key = keysById.get(usage.keyId);
+    return {
+      ...usage,
+      keyName: key?.name ?? null,
+      keyRevokedOrUnknown: !key || key.revoked,
+    };
+  });
+
+  return {
+    ok: true,
+    data: {
+      deprecation,
+      orgId,
+      lookbackDays: DEPRECATION_IMPACT_LOOKBACK_DAYS,
+      generatedAt: new Date().toISOString(),
+      totalCalls: impactResult.data.totalCalls,
+      callingKeys,
+    },
+  };
 }
 
 /**

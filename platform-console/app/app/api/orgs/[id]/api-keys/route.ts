@@ -4,7 +4,7 @@ import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { requireRoleIn, ROLES, roleIdentifierFor, type Role } from "@/lib/authz";
 import { createApiKey, listApiKeysForOrg } from "@/lib/api-keys";
 import { getOrg } from "@/lib/orgs";
-import { isApiKeyTier } from "@/lib/rate-limit";
+import { isApiKeyMode, isApiKeyTier } from "@/lib/rate-limit";
 
 // Org-scoped counterpart to /api/api-keys: same owner-gated, real
 // crypto-random-key-material, hash-only-storage discipline as
@@ -116,6 +116,7 @@ export async function POST(
       : undefined;
   const name = typeof body?.name === "string" ? body.name : "";
   const requestedTier = isApiKeyTier(body?.tier) ? body.tier : undefined;
+  const requestedMode = isApiKeyMode(body?.mode) ? body.mode : undefined;
 
   const result = await createApiKey({
     identifier: actor,
@@ -125,6 +126,7 @@ export async function POST(
     requestedRole,
     name,
     tier: requestedTier,
+    mode: requestedMode,
   });
 
   writeAuditLogEntry({

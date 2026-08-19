@@ -3,7 +3,14 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { ApiKeySummary } from "@/lib/api-keys";
-import { API_KEY_TIERS, TIER_LIMITS, type ApiKeyTier } from "@/lib/rate-limit";
+import {
+  API_KEY_MODES,
+  API_KEY_TIERS,
+  SANDBOX_TIER_LIMIT,
+  TIER_LIMITS,
+  type ApiKeyMode,
+  type ApiKeyTier,
+} from "@/lib/rate-limit";
 
 const ROLE_OPTIONS = ["viewer", "member", "owner"] as const;
 
@@ -37,6 +44,7 @@ export default function ApiKeysPanel({
   const [name, setName] = useState("");
   const [role, setRole] = useState<string>(creatorRole);
   const [tier, setTier] = useState<ApiKeyTier>("standard");
+  const [mode, setMode] = useState<ApiKeyMode>("live");
   const [orgId, setOrgId] = useState<string>(orgs[0]?.id ?? "");
   const [orgFilter, setOrgFilter] = useState<string>("all");
   const [creating, setCreating] = useState(false);
@@ -95,7 +103,7 @@ export default function ApiKeysPanel({
       const res = await fetch(`/api/orgs/${encodeURIComponent(orgId)}/api-keys`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, role, tier }),
+        body: JSON.stringify({ name, role, tier, mode }),
       });
       const body = await res.json();
       if (!res.ok) {
@@ -194,6 +202,18 @@ export default function ApiKeysPanel({
                 <div>
                   <p className="text-sm font-medium text-white">
                     <code>{k.prefix}</code>
+                    {k.mode === "sandbox" ? (
+                      <span
+                        className="ml-2 rounded-md border border-amber-800 bg-amber-950/40 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-300"
+                        title={`Sandbox key -- fixed ${SANDBOX_TIER_LIMIT.maxTokens} req/${SANDBOX_TIER_LIMIT.fillIntervalMs / 1000}s ceiling, zero billing/overage impact, no real k8s resources.`}
+                      >
+                        sandbox
+                      </span>
+                    ) : (
+                      <span className="ml-2 rounded-md border border-emerald-900 bg-emerald-950/30 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-400">
+                        live
+                      </span>
+                    )}
                     {k.name && <span className="ml-2 text-gray-400">{k.name}</span>}
                   </p>
                   <p className="text-xs text-gray-500">
@@ -325,7 +345,8 @@ export default function ApiKeysPanel({
             <select
               value={tier}
               onChange={(e) => setTier(e.target.value as ApiKeyTier)}
-              className="w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-white"
+              disabled={mode === "sandbox"}
+              className="w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-white disabled:opacity-50"
             >
               {API_KEY_TIERS.map((t) => (
                 <option key={t} value={t}>
@@ -334,7 +355,31 @@ export default function ApiKeysPanel({
               ))}
             </select>
           </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-gray-400">Key class</span>
+            <select
+              value={mode}
+              onChange={(e) => setMode(e.target.value as ApiKeyMode)}
+              className="w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-white"
+            >
+              {API_KEY_MODES.map((m) => (
+                <option key={m} value={m}>
+                  {m === "sandbox"
+                    ? `sandbox (fixed ${SANDBOX_TIER_LIMIT.maxTokens} req/${SANDBOX_TIER_LIMIT.fillIntervalMs / 1000}s, zero billing impact)`
+                    : "live (real quota + billing)"}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
+        {mode === "sandbox" && (
+          <p className="text-xs text-amber-400">
+            Sandbox keys are for CI/integration testing only -- they carry a fixed{" "}
+            {SANDBOX_TIER_LIMIT.maxTokens} req/{SANDBOX_TIER_LIMIT.fillIntervalMs / 1000}s ceiling
+            regardless of plan tier, and requests made with them are excluded entirely from usage
+            metering and overage billing.
+          </p>
+        )}
         <button
           type="submit"
           disabled={creating || !orgId}

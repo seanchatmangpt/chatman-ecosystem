@@ -38,7 +38,11 @@ export interface AllowedCommand {
  * `buildContainerCommand`'s switch below is statically checked exhaustive
  * by the compiler: adding a new id to this union without adding a case
  * there is a real compile error, not a silent `undefined` command. */
-export type AllowedCommandId = "echo-timestamp" | "curl-status" | "cost-report-snapshot";
+export type AllowedCommandId =
+  | "echo-timestamp"
+  | "curl-status"
+  | "cost-report-snapshot"
+  | "latency-benchmark-snapshot";
 
 /**
  * The fixed, small allowlist. Every entry maps to one hardcoded container
@@ -68,6 +72,13 @@ export const ALLOWED_COMMANDS: Record<AllowedCommandId, AllowedCommand> = {
     label: "Capture a cost & usage report snapshot",
     description:
       "POSTs this console's own internal /api/internal/cost-report-snapshot route (cluster-internal only, shared-secret authenticated), which re-runs the same real, metered-from-Prometheus usage computation lib/invoice-preview.ts already exposes on demand for this CronJob's own namespace and appends one record to that namespace's cost-report history -- the FinOps-trend capability this command exists to schedule.",
+    image: "curlimages/curl:8.10.1",
+  },
+  "latency-benchmark-snapshot": {
+    id: "latency-benchmark-snapshot",
+    label: "Capture a scheduled multi-node latency benchmark",
+    description:
+      "POSTs this console's own internal /api/internal/latency-benchmark-snapshot route (cluster-internal only, shared-secret authenticated), which re-runs lib/load-test.ts's runScheduledLatencyBenchmark -- a real, short, low-concurrency load test against every entry in the fixed LOAD_TEST_TARGETS allowlist -- and appends one p50/p95/p99 record per target to this namespace's latency-benchmark history, the SLA-evidence trend line this command exists to schedule.",
     image: "curlimages/curl:8.10.1",
   },
 };
@@ -119,6 +130,21 @@ function buildContainerCommand(commandId: AllowedCommandId, namespace: string): 
         `curl -sS -m 30 -X POST -H "x-cost-report-cron-secret: $COST_REPORT_CRON_SECRET" ` +
           `-H "x-cost-report-namespace: ${namespace}" ` +
           `"http://platform-console.platform-console.svc.cluster.local/api/internal/cost-report-snapshot" && echo`,
+      ];
+    case "latency-benchmark-snapshot":
+      // Same cluster-internal, shared-secret-authenticated curl shape as
+      // the "cost-report-snapshot" case above -- POSTs this console's own
+      // Service DNS name, `namespace` (this CronJob's own namespace,
+      // always one of SCHEDULABLE_NAMESPACES) travels as a request
+      // header the same way, and the route (never this module) is the
+      // one place that header is validated before being used as the
+      // persisted snapshot's orgId.
+      return [
+        "sh",
+        "-c",
+        `curl -sS -m 60 -X POST -H "x-latency-benchmark-cron-secret: $LATENCY_BENCHMARK_CRON_SECRET" ` +
+          `-H "x-latency-benchmark-org: ${namespace}" ` +
+          `"http://platform-console.platform-console.svc.cluster.local/api/internal/latency-benchmark-snapshot" && echo`,
       ];
   }
 }
@@ -262,6 +288,16 @@ export async function listCronJobs(
 export const COST_REPORT_CRON_SECRET_NAME = "platform-cost-report-cron-secret";
 export const COST_REPORT_CRON_SECRET_KEY = "secret";
 
+// Same one-time-operator-provisioning convention as
+// COST_REPORT_CRON_SECRET_NAME above, for the "latency-benchmark-snapshot"
+// command's curl call (`kubectl create secret generic
+// platform-latency-benchmark-cron-secret --from-literal=secret=...` in the
+// `platform-console` namespace, then setting the matching
+// `LATENCY_BENCHMARK_CRON_SECRET` env on the console's own Deployment so
+// POST /api/internal/latency-benchmark-snapshot can compare against it).
+export const LATENCY_BENCHMARK_CRON_SECRET_NAME = "platform-latency-benchmark-cron-secret";
+export const LATENCY_BENCHMARK_CRON_SECRET_KEY = "secret";
+
 export interface CreateCronJobInput {
   namespace: SchedulableNamespace;
   name: string;
@@ -337,7 +373,21 @@ export async function createCronJob(
                           },
                         ],
                       }
-                    : {}),
+                    : input.commandId === "latency-benchmark-snapshot"
+                      ? {
+                          env: [
+                            {
+                              name: "LATENCY_BENCHMARK_CRON_SECRET",
+                              valueFrom: {
+                                secretKeyRef: {
+                                  name: LATENCY_BENCHMARK_CRON_SECRET_NAME,
+                                  key: LATENCY_BENCHMARK_CRON_SECRET_KEY,
+                                },
+                              },
+                            },
+                          ],
+                        }
+                      : {}),
                   // Real, live-discovered requirement, not a stylistic
                   // choice: 4 of this platform's 5 schedulable namespaces
                   // carry a ResourceQuota with hard `limits.cpu`/

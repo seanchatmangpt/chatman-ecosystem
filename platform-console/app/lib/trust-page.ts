@@ -32,6 +32,7 @@
 import { getStatusPageData, type StatusPageData } from "@/lib/status-page";
 import { getLatestVulnScanRun, type Severity, type VulnScanRun } from "@/lib/vuln-scan";
 import { listManagedCertificates, EXPIRY_WARNING_DAYS } from "@/lib/cert-lifecycle";
+import { getEgressIpAllowlist, type EgressIpAllowlist } from "@/lib/egress-ips";
 
 export interface VulnPostureSummary {
   reachable: boolean;
@@ -62,12 +63,24 @@ export interface CertPostureSummary {
   expiryWarningThresholdDays: number;
 }
 
+export interface EgressIpPostureSummary {
+  reachable: boolean;
+  error: string | null;
+  allowlist: EgressIpAllowlist | null;
+}
+
 export interface TrustPageData {
   generatedAt: string;
   uptime: StatusPageData | null;
   uptimeError: string | null;
   vulnPosture: VulnPostureSummary | null;
   certPosture: CertPostureSummary | null;
+  /** Static outbound IP ranges this platform delivers webhooks from --
+   * see lib/egress-ips.ts for why this is a static, versioned constant
+   * rather than a live-polled value. Enterprise buyers' InfoSec teams
+   * whitelist these CIDRs in their own inbound firewall to receive this
+   * platform's webhook deliveries. */
+  egressIpPosture: EgressIpPostureSummary | null;
 }
 
 function emptySeverityCounts(): Record<Severity, number> {
@@ -159,11 +172,20 @@ async function getCertPosture(): Promise<CertPostureSummary> {
  * healthy value -- callers (app/app/trust/page.tsx, app/app/api/trust/
  * route.ts) render each section's own unreachable state independently.
  */
+async function getEgressIpPosture(): Promise<EgressIpPostureSummary> {
+  const result = await getEgressIpAllowlist();
+  if (!result.ok) {
+    return { reachable: false, error: result.error, allowlist: null };
+  }
+  return { reachable: true, error: null, allowlist: result.data };
+}
+
 export async function getTrustPageData(): Promise<TrustPageData> {
-  const [uptimeResult, vulnPosture, certPosture] = await Promise.allSettled([
+  const [uptimeResult, vulnPosture, certPosture, egressIpPosture] = await Promise.allSettled([
     getStatusPageData(),
     getVulnPosture(),
     getCertPosture(),
+    getEgressIpPosture(),
   ]);
 
   return {
@@ -172,5 +194,6 @@ export async function getTrustPageData(): Promise<TrustPageData> {
     uptimeError: uptimeResult.status === "rejected" ? String(uptimeResult.reason) : null,
     vulnPosture: vulnPosture.status === "fulfilled" ? vulnPosture.value : null,
     certPosture: certPosture.status === "fulfilled" ? certPosture.value : null,
+    egressIpPosture: egressIpPosture.status === "fulfilled" ? egressIpPosture.value : null,
   };
 }

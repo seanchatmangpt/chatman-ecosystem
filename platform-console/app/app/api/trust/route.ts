@@ -8,7 +8,10 @@ import { getTrustPageData } from "@/lib/trust-page";
 // percentages -- lib/trust-page.ts's own module doc comment states exactly
 // which per-record fields (secretName, hostname, per-finding CVE detail)
 // are deliberately never included here. No secrets, no per-request
-// audit-log-worthy admin action.
+// audit-log-worthy admin action. Also includes `egressIpPosture` --
+// lib/egress-ips.ts's static, versioned outbound-IP allowlist -- since a
+// buyer's InfoSec team needs it during the same procurement review that
+// asks for the rest of this page, not gated behind a login.
 export const dynamic = "force-dynamic";
 
 export async function GET() {

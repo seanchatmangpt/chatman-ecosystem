@@ -3,7 +3,7 @@ import { SESSION_COOKIE_NAME, verifySessionToken, type SessionPayload } from "@/
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { requireRole, ROLES, roleIdentifierFor, type Role } from "@/lib/authz";
 import { createApiKey, listApiKeys, listApiKeysForOrg, revokeApiKey } from "@/lib/api-keys";
-import { isApiKeyTier } from "@/lib/rate-limit";
+import { isApiKeyMode, isApiKeyTier } from "@/lib/rate-limit";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -109,6 +109,11 @@ export async function POST(request: NextRequest) {
   // from app-level RBAC. Falls back to "standard" for an omitted or
   // invalid value -- same default lib/api-keys.ts's createApiKey applies.
   const requestedTier = isApiKeyTier(body?.tier) ? body.tier : undefined;
+  // Sandbox vs. live key class (lib/api-keys.ts's ApiKeyRecord.mode) --
+  // same "never clamped against the creator's role" treatment as tier:
+  // an orthogonal axis, defaults to "live" for an omitted or invalid
+  // value.
+  const requestedMode = isApiKeyMode(body?.mode) ? body.mode : undefined;
 
   // A key is always minted FOR the creating owner's own identity -- never
   // an arbitrary other identity (that would be identity spoofing, not a
@@ -127,6 +132,7 @@ export async function POST(request: NextRequest) {
     requestedRole,
     name,
     tier: requestedTier,
+    mode: requestedMode,
   });
 
   writeAuditLogEntry({

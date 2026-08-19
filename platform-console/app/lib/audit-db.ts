@@ -1754,6 +1754,119 @@ export async function queryOrgSpendHistory(
   };
 }
 
+export interface DeprecationImpactKeyUsage {
+  keyId: string;
+  callCount: number;
+  lastSeenAt: string;
+}
+
+export interface DeprecationImpactQueryResult {
+  callingKeys: DeprecationImpactKeyUsage[];
+  totalCalls: number;
+}
+
+export type DeprecationImpactQueryOutcome =
+  | { ok: true; data: DeprecationImpactQueryResult }
+  | { ok: false; error: string };
+
+/**
+ * Converts a deprecation-notice `endpointPattern` (e.g.
+ * "/api/v1/projects/:name") into the anchored POSIX regex Postgres's `~`
+ * operator needs to match it against real logged `path` values. Each
+ * `:segment` placeholder becomes `[^/]+` (matches exactly one real path
+ * segment, same as this codebase's other route-pattern matchers), every
+ * other regex metacharacter in the literal portions is escaped so a
+ * pattern containing e.g. a literal `.` in a path segment can't
+ * accidentally widen the match. Anchored at both ends (`^...$`) so
+ * "/api/v1/projects/:name" never also matches
+ * "/api/v1/projects/:name/deploy".
+ */
+export function deprecationPatternToRegex(pattern: string): string {
+  const escaped = pattern
+    .split("/")
+    .map((segment) =>
+      segment.startsWith(":")
+        ? "[^/]+"
+        : segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+    )
+    .join("/");
+  return `^${escaped}$`;
+}
+
+/**
+ * Real per-org "which of my API keys hit this soon-to-sunset endpoint"
+ * query -- backs computeDeprecationImpact (lib/api-deprecations.ts) and,
+ * through it, GET /api/api-deprecations/[id]/impact. Scoped by BOTH
+ * org_id and a real Postgres regex match against the logged `path` and
+ * `method` columns (never org_id alone) -- same tenant-isolation
+ * discipline queryApiKeyUsage above already applies to key_id. Only rows
+ * carrying a real (non-null) key_id are counted: an unauthenticated or
+ * session-authenticated hit to the deprecated path isn't "one of this
+ * org's own API keys", so it's excluded rather than misreported as an
+ * anonymous "key".
+ *
+ * Real aggregation over the live audit log within `lookbackDays` --
+ * never a synthetic estimate -- grouped by key_id, with both a call
+ * count and the real max(ts) last-seen timestamp per key so a migration
+ * lead can tell "is this key still actively hitting the deprecated
+ * endpoint, or was its last call weeks ago."
+ */
+export async function queryDeprecationImpact(
+  orgId: string,
+  endpointPattern: string,
+  method: string,
+  lookbackDays: number,
+): Promise<DeprecationImpactQueryOutcome> {
+  const pool = await resolvePool();
+  if (!pool) {
+    return {
+      ok: false,
+      error:
+        "audit log database not configured or unreachable -- see the stdout log (kubectl logs) for this environment's real-time record",
+    };
+  }
+
+  const pathRegex = deprecationPatternToRegex(endpointPattern);
+
+  try {
+    const result = await pool.query<{
+      key_id: string;
+      call_count: string;
+      last_seen_at: string;
+    }>(
+      `SELECT
+         key_id,
+         count(*)::bigint AS call_count,
+         max(ts) AS last_seen_at
+       FROM platform_console.audit_log
+       WHERE org_id = $1
+         AND key_id IS NOT NULL
+         AND method = $2
+         AND path ~ $3
+         AND ts >= now() - ($4 || ' days')::interval
+       GROUP BY key_id
+       ORDER BY call_count DESC`,
+      [orgId, method, pathRegex, lookbackDays],
+    );
+
+    const callingKeys: DeprecationImpactKeyUsage[] = result.rows.map((r) => ({
+      keyId: r.key_id,
+      callCount: Number(r.call_count),
+      lastSeenAt: new Date(r.last_seen_at).toISOString(),
+    }));
+
+    return {
+      ok: true,
+      data: {
+        callingKeys,
+        totalCalls: callingKeys.reduce((sum, k) => sum + k.callCount, 0),
+      },
+    };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
 /**
  * Real RFC4180 CSV rendering of an OrgSpendHistoryResult -- the FinOps-
  * tooling-ingestion export format the spec calls for (`?format=csv`).

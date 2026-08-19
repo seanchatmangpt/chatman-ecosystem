@@ -5,6 +5,7 @@ import { resolveApiKeyAuth } from "@/lib/api-keys";
 import { checkAndTouchSession } from "@/lib/active-sessions";
 import { clientIpFrom } from "@/lib/request-meta";
 import { apiKeyRateLimiter } from "@/lib/rate-limit";
+import { recordApiKeyRequestUsage } from "@/lib/overage-billing";
 import { checkIpAllowed, IP_ALLOWLIST_NAMESPACE } from "@/lib/ip-allowlist";
 import { orgIdFromRequestPath } from "@/lib/authz";
 import { getActiveImpersonationSessionForAdmin } from "@/lib/impersonation";
@@ -180,7 +181,7 @@ export async function middleware(request: NextRequest) {
         // request -- a throttled caller never reaches route-level
         // authorization at all, same "fail before doing real work" shape
         // as every other gate in this function.
-        const limitResult = apiKeyRateLimiter.consume(resolved.keyId, resolved.tier);
+        const limitResult = apiKeyRateLimiter.consume(resolved.keyId, resolved.tier, resolved.mode);
         if (!limitResult.allowed) {
           const response = NextResponse.json(
             { error: "rate_limited", tier: resolved.tier, limit: limitResult.limit },
@@ -223,6 +224,11 @@ export async function middleware(request: NextRequest) {
         forwardHeaders.set("cookie", `${SESSION_COOKIE_NAME}=${apiKeyToken}`);
         session = await verifySessionToken(apiKeyToken);
         authenticatedKeyId = resolved.keyId;
+        // Real usage-meter tagging (lib/overage-billing.ts): a request
+        // authenticated with a sandbox key is recorded as exempt and
+        // never accumulates toward that key's billable usage total --
+        // the "zero billing impact" half of the sandbox key contract.
+        recordApiKeyRequestUsage(resolved.keyId, resolved.mode);
       }
     }
   }

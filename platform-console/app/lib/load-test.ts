@@ -243,3 +243,95 @@ export async function runLoadTestAgainstTarget(
   const data = await runLoadTest(target.url, options);
   return { ok: true, data };
 }
+
+// ------------------------------------------- Scheduled Benchmark History
+//
+// The missing piece this module's own header comment identifies:
+// `runLoadTestAgainstTarget` already runs a real load test on demand, but
+// produces no persisted historical record and no scheduled recurrence --
+// exactly the same "ad hoc capability exists, historical/scheduled
+// reporting layer does not" gap lib/cost-report-history.ts already closed
+// for cost data. `runScheduledLatencyBenchmark` is the recurring-job side
+// of that fix: it walks every entry in the fixed `LOAD_TEST_TARGETS`
+// allowlist above (never an arbitrary URL), runs one real, short,
+// low-concurrency `runLoadTest` against each, and returns one
+// `LatencyBenchmarkSnapshot` per target for the caller (the internal cron
+// route below) to persist via lib/latency-history.ts's
+// `appendLatencyBenchmarkSnapshots` -- this module performs no
+// persistence itself, same "compute here, persist there" split
+// lib/invoice-preview.ts's on-demand cost preview and
+// lib/cost-report-history.ts already established.
+export interface LatencyBenchmarkSnapshot {
+  orgId: string;
+  targetId: string;
+  targetLabel: string;
+  capturedAt: string;
+  concurrency: number;
+  durationSec: number;
+  totalRequests: number;
+  errorCount: number;
+  errorRate: number;
+  requestsPerSecond: number;
+  p50Ms: number;
+  p95Ms: number;
+  p99Ms: number;
+}
+
+// Deliberately small and short: a scheduled sweep across every target
+// runs unattended on a recurring cadence (weekly by default, see
+// lib/scheduled-jobs.ts's "latency-benchmark-snapshot" command), so it
+// must stay cheap enough to run against every allowlisted internal
+// service back-to-back without becoming a real capacity problem itself --
+// unlike the ad hoc POST /api/load-test path (up to 300 concurrency / 180s
+// per call, operator-chosen), this fixed, small shape is the only one the
+// scheduled sweep ever uses.
+export const SCHEDULED_BENCHMARK_CONCURRENCY = 10;
+export const SCHEDULED_BENCHMARK_DURATION_SEC = 5;
+
+/**
+ * Runs one real load test against every entry in `LOAD_TEST_TARGETS`,
+ * sequentially (never in parallel -- concurrently hammering every
+ * internal service at once from one scheduled firing would itself be a
+ * real, unwanted load spike across the whole platform), and returns one
+ * `LatencyBenchmarkSnapshot` per target that actually completed. A target
+ * whose `runLoadTest` call throws (network error, DNS failure) is skipped
+ * -- never a fabricated all-zero snapshot -- so the returned array can be
+ * shorter than `LOAD_TEST_TARGETS` on a bad run; callers persist whatever
+ * came back, same "one bad row doesn't break the whole list" discipline
+ * lib/cost-report-history.ts's getRegistry already uses.
+ */
+export async function runScheduledLatencyBenchmark(
+  orgId: string,
+): Promise<LatencyBenchmarkSnapshot[]> {
+  const snapshots: LatencyBenchmarkSnapshot[] = [];
+  const options: LoadTestOptions = {
+    concurrency: SCHEDULED_BENCHMARK_CONCURRENCY,
+    durationSec: SCHEDULED_BENCHMARK_DURATION_SEC,
+  };
+
+  for (const target of LOAD_TEST_TARGETS) {
+    try {
+      const result = await runLoadTest(target.url, options);
+      snapshots.push({
+        orgId,
+        targetId: target.id,
+        targetLabel: target.label,
+        capturedAt: result.finishedAt,
+        concurrency: result.concurrency,
+        durationSec: result.durationSec,
+        totalRequests: result.totalRequests,
+        errorCount: result.errorCount,
+        errorRate: result.errorRate,
+        requestsPerSecond: result.requestsPerSec,
+        p50Ms: result.latencyMs.p50,
+        p95Ms: result.latencyMs.p95,
+        p99Ms: result.latencyMs.p99,
+      });
+    } catch {
+      // Real network/DNS failure against one target -- skip it, keep
+      // going against the rest, same reasoning as the comment above.
+    }
+  }
+
+  return snapshots;
+}

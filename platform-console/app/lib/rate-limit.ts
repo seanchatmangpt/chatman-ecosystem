@@ -38,6 +38,27 @@
 
 export type ApiKeyTier = "standard" | "pro" | "enterprise";
 
+// Sandbox-mode ceiling (lib/api-keys.ts's `ApiKeyRecord.mode`) -- fixed,
+// deliberately independent of the key's own `tier`. A sandbox key exists
+// to let CI/integration testing happen safely, never to be a cheap way to
+// get "enterprise" throughput against real infrastructure; every sandbox
+// key gets this exact ceiling regardless of what plan tier its record
+// otherwise carries. 60/min matches the real hyperscaler convention
+// (Stripe/Twilio/AWS test-mode keys: generous enough for a real CI suite
+// to run end-to-end, low enough that it is never mistaken for a
+// production-capacity ceiling).
+export const SANDBOX_TIER_LIMIT: TierLimit = { maxTokens: 60, fillIntervalMs: 60_000 };
+
+export type ApiKeyMode = "sandbox" | "live";
+
+export const API_KEY_MODES: ApiKeyMode[] = ["sandbox", "live"];
+
+export const DEFAULT_API_KEY_MODE: ApiKeyMode = "live";
+
+export function isApiKeyMode(value: unknown): value is ApiKeyMode {
+  return typeof value === "string" && (API_KEY_MODES as string[]).includes(value);
+}
+
 export const API_KEY_TIERS: ApiKeyTier[] = ["standard", "pro", "enterprise"];
 
 export const DEFAULT_API_KEY_TIER: ApiKeyTier = "standard";
@@ -101,8 +122,10 @@ export class TokenBucketLimiter {
    * (or since it was first created, for a bucket seen for the first
    * time -- which starts full, same as a fresh Envoy token bucket does).
    */
-  consume(keyId: string, tier: ApiKeyTier): RateLimitResult {
-    const limit = TIER_LIMITS[tier];
+  consume(keyId: string, tier: ApiKeyTier, mode: ApiKeyMode = DEFAULT_API_KEY_MODE): RateLimitResult {
+    // Sandbox ceiling wins outright, independent of `tier` -- see
+    // SANDBOX_TIER_LIMIT's doc comment above.
+    const limit = mode === "sandbox" ? SANDBOX_TIER_LIMIT : TIER_LIMITS[tier];
     const now = this.now();
     let bucket = this.buckets.get(keyId);
     if (!bucket) {

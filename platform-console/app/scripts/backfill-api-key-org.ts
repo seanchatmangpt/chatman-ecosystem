@@ -67,6 +67,7 @@ function parseRawRecord(raw: string): ApiKeyRecord | null {
       revoked: parsed.revoked,
       revokedAt: typeof parsed.revokedAt === "string" ? parsed.revokedAt : null,
       tier: (parsed.tier as ApiKeyRecord["tier"]) ?? "standard",
+      mode: (parsed.mode as ApiKeyRecord["mode"]) ?? "live",
     };
   } catch {
     return null;

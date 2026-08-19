@@ -9,6 +9,7 @@ import {
   WEBHOOK_EVENT_TYPES,
   type WebhookEventType,
 } from "@/lib/webhooks";
+import { getEgressIpAllowlist } from "@/lib/egress-ips";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -49,7 +50,10 @@ export async function GET(request: NextRequest) {
     return access.response!;
   }
 
-  const result = await listWebhookSubscriptions();
+  const [result, egressIpResult] = await Promise.all([
+    listWebhookSubscriptions(),
+    getEgressIpAllowlist(),
+  ]);
 
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),
@@ -63,7 +67,17 @@ export async function GET(request: NextRequest) {
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 502 });
   }
-  return NextResponse.json({ subscriptions: result.data });
+  // egressIpAllowlist: the static outbound IP ranges every delivery this
+  // subscription list will ever trigger comes from (lib/egress-ips.ts) --
+  // surfaced here, not just on the public /trust page, so whoever is
+  // configuring their own webhook receiver sees exactly which source IPs
+  // to expect deliveries from in the same response that lists their
+  // subscriptions. Honestly `null` (never fabricated) if the underlying
+  // k8s ConfigMap read failed.
+  return NextResponse.json({
+    subscriptions: result.data,
+    egressIpAllowlist: egressIpResult.ok ? egressIpResult.data : null,
+  });
 }
 
 export async function POST(request: NextRequest) {

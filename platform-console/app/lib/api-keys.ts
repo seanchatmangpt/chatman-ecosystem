@@ -48,12 +48,30 @@
 import crypto from "node:crypto";
 import { createOrUpdateSecret, getSecretData, type K8sResult } from "@/lib/k8s";
 import { ROLES, type Role } from "@/lib/authz";
-import { DEFAULT_API_KEY_TIER, isApiKeyTier, type ApiKeyTier } from "@/lib/rate-limit";
+import {
+  DEFAULT_API_KEY_MODE,
+  DEFAULT_API_KEY_TIER,
+  isApiKeyMode,
+  isApiKeyTier,
+  type ApiKeyMode,
+  type ApiKeyTier,
+} from "@/lib/rate-limit";
 
 export const API_KEYS_NAMESPACE = "platform-console";
 export const API_KEYS_SECRET = "platform-console-api-keys";
 
-const KEY_PREFIX = "pk_live_";
+// Two real, distinct prefixes -- same convention Stripe uses for its own
+// `sk_live_`/`sk_test_` split. Deliberately branchable on the prefix alone
+// (see resolveApiKeyAuth below): a caller/downstream system can tell a
+// sandbox key from a live one just by looking at the string, with no
+// Secret lookup required, exactly like Stripe's own dashboards/SDKs do.
+const KEY_PREFIX_BY_MODE: Record<ApiKeyMode, string> = {
+  live: "pk_live_",
+  sandbox: "pk_sandbox_",
+};
+// Kept for the historical constant name other modules might still expect;
+// resolves to the live prefix.
+const KEY_PREFIX = KEY_PREFIX_BY_MODE.live;
 
 // Sentinel orgId for keys that predate the orgId field and could not be
 // confidently inferred by scripts/backfill-api-key-org.ts (identifier not
@@ -90,6 +108,18 @@ export interface ApiKeyRecord {
   // so a pre-existing key's effective ceiling is unchanged by this
   // addition, not silently widened or narrowed.
   tier: ApiKeyTier;
+  // Sandbox vs. live key class (lib/rate-limit.ts's ApiKeyMode) -- the
+  // capability this field exists for: a buyer's CI pipeline can integrate
+  // against this API without touching real k8s resources, real quota, or
+  // real billing meters. Defaults to "live" on read (see parseRecord
+  // below) for full backward compatibility with every key minted before
+  // this field existed -- an old key's effective behavior is completely
+  // unchanged by this addition. A key's mode is fixed at mint time
+  // (baked into which prefix it was issued with, KEY_PREFIX_BY_MODE) and
+  // never mutated afterward -- switching an existing key's mode would
+  // silently change its billing/rate-limit class out from under whoever
+  // is holding it, which is not a real provider's UX either.
+  mode: ApiKeyMode;
 }
 
 export type ApiKeySummary = Omit<ApiKeyRecord, "hash">;
@@ -143,6 +173,12 @@ function parseRecord(raw: string): ApiKeyRecord | null {
       // ceiling every key effectively had (via the flat Envoy filter)
       // before per-tier limits existed.
       tier: isApiKeyTier(parsed.tier) ? parsed.tier : DEFAULT_API_KEY_TIER,
+      // Backward compatible, same discipline as `tier` above: a record
+      // written before this field existed has no `mode` key at all --
+      // defaults to "live", so a pre-existing key's effective billing/
+      // rate-limit class is unchanged by this addition, never silently
+      // downgraded to sandbox nor silently exempted from billing.
+      mode: isApiKeyMode(parsed.mode) ? parsed.mode : DEFAULT_API_KEY_MODE,
     };
   } catch {
     return null;
@@ -150,14 +186,15 @@ function parseRecord(raw: string): ApiKeyRecord | null {
 }
 
 /** Real cryptographically random key material -- never derived, never predictable. */
-function generateKeyMaterial(): { plaintext: string; hash: string; prefix: string } {
-  const plaintext = `${KEY_PREFIX}${crypto.randomBytes(32).toString("base64url")}`;
+function generateKeyMaterial(mode: ApiKeyMode): { plaintext: string; hash: string; prefix: string } {
+  const keyPrefix = KEY_PREFIX_BY_MODE[mode];
+  const plaintext = `${keyPrefix}${crypto.randomBytes(32).toString("base64url")}`;
   const hash = crypto.createHash("sha256").update(plaintext, "utf8").digest("hex");
   // Shown in listings so an owner can tell keys apart without the console
   // ever holding the full value again -- same convention real providers
   // use (Stripe shows `sk_live_51H...`, AWS shows the access key ID in
   // full but never the paired secret key past creation).
-  const prefix = `${plaintext.slice(0, KEY_PREFIX.length + 8)}...`;
+  const prefix = `${plaintext.slice(0, keyPrefix.length + 8)}...`;
   return { plaintext, hash, prefix };
 }
 
@@ -197,6 +234,11 @@ export interface CreateApiKeyInput {
   // any owner may mint a key at any tier for their own identity. Defaults
   // to "standard" when omitted or invalid.
   tier?: ApiKeyTier;
+  // Sandbox vs. live key class -- see ApiKeyRecord.mode's doc comment.
+  // Defaults to "live" when omitted or invalid, same convention `tier`
+  // above uses, so an existing caller that never passes this continues
+  // minting ordinary live keys exactly as before this field existed.
+  mode?: ApiKeyMode;
 }
 
 export async function createApiKey(
@@ -206,7 +248,8 @@ export async function createApiKey(
     return { ok: false, error: "orgId is required to create an API key" };
   }
   const role = clampRoleToCreator(input.requestedRole, input.creatorRole);
-  const { plaintext, hash, prefix } = generateKeyMaterial();
+  const mode: ApiKeyMode = isApiKeyMode(input.mode) ? input.mode : DEFAULT_API_KEY_MODE;
+  const { plaintext, hash, prefix } = generateKeyMaterial(mode);
   const record: ApiKeyRecord = {
     id: crypto.randomBytes(6).toString("hex"),
     prefix,
@@ -220,6 +263,7 @@ export async function createApiKey(
     revoked: false,
     revokedAt: null,
     tier: isApiKeyTier(input.tier) ? input.tier : DEFAULT_API_KEY_TIER,
+    mode,
   };
 
   const result = await createOrUpdateSecret(API_KEYS_NAMESPACE, API_KEYS_SECRET, {
@@ -325,6 +369,7 @@ export interface ResolvedApiKeyAuth {
   role: Role;
   keyId: string;
   tier: ApiKeyTier;
+  mode: ApiKeyMode;
 }
 
 /**
@@ -339,7 +384,14 @@ export interface ResolvedApiKeyAuth {
 export async function resolveApiKeyAuth(
   presentedKey: string,
 ): Promise<ResolvedApiKeyAuth | null> {
-  if (!presentedKey.startsWith(KEY_PREFIX)) return null;
+  // Branchable on prefix alone, no lookup needed (see KEY_PREFIX_BY_MODE's
+  // doc comment) -- but here we still need the real record either way, so
+  // this just rejects anything that is neither a live nor a sandbox key
+  // up front, same fast-reject shape the single-prefix check had before.
+  const presentedMode = Object.entries(KEY_PREFIX_BY_MODE).find(([, prefix]) =>
+    presentedKey.startsWith(prefix),
+  )?.[0] as ApiKeyMode | undefined;
+  if (!presentedMode) return null;
   const hash = crypto.createHash("sha256").update(presentedKey, "utf8").digest("hex");
 
   const result = await getSecretData(API_KEYS_NAMESPACE, API_KEYS_SECRET);
@@ -349,7 +401,13 @@ export async function resolveApiKeyAuth(
     const record = parseRecord(raw);
     if (record && safeEqualHex(record.hash, hash)) {
       if (record.revoked) return null;
-      return { identifier: record.identifier, role: record.role, keyId: record.id, tier: record.tier };
+      return {
+        identifier: record.identifier,
+        role: record.role,
+        keyId: record.id,
+        tier: record.tier,
+        mode: record.mode,
+      };
     }
   }
   return null;
