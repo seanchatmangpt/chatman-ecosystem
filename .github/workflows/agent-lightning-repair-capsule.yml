@@ -1,8 +1,8 @@
 name: Agent Lightning Repair Capsule
 
 on:
-  push:
-    branches: [feat/agent-lightning-commercial-runtime]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: write
@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ github.event.pull_request.head.sha }}
       - uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
         with:
           toolchain: 1.97.1
@@ -24,17 +24,11 @@ jobs:
           from pathlib import Path
           path = Path('crates/ecosystem-runtime/src/agent_lightning_service.rs')
           text = path.read_text()
-          old_neg = '''fn neg(value: bool) -> usize {
-              if value { 1 } else { 0 }
-          }
-          '''.replace('          ', '')
-          new_neg = '''fn neg(value: bool) -> usize {
-              usize::from(value)
-          }
-          '''.replace('          ', '')
-          if old_neg not in text:
+          old = '    if value { 1 } else { 0 }'
+          new = '    usize::from(value)'
+          if old not in text:
               raise SystemExit('neg fixture helper shape changed')
-          text = text.replace(old_neg, new_neg, 1)
+          text = text.replace(old, new, 1)
 
           start = text.index('pub fn verify_fixtures() -> Result<VerificationReport, Error> {')
           end = text.index('\n#[cfg(test)]', start)
@@ -210,4 +204,4 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add crates/ecosystem-runtime/src/agent_lightning_service.rs
           git commit -m 'fix: satisfy Agent Lightning commercial lint court'
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_HEAD_REF}"
