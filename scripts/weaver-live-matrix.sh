@@ -38,25 +38,48 @@ run_required() {
   fi
 }
 
+# Weaver 0.25.1 supports definition/2 but still classifies that file format as
+# alpha/unstable. Its --future mode intentionally promotes that warning to a
+# fatal diagnostic. Preserve the v2 registry and execute the future edge as an
+# explicit typed negative control instead of weakening the registry to v1 or
+# misclassifying an upstream stability fence as BUILD_BROKEN.
+test "$(grep -c '^    requirement_level: recommended$' telemetry/weaver/model/chatman-ecosystem.yaml)" -eq 4
+set +e
+weaver --future registry check -r "${REGISTRY}" --v2 >"${OUT}/logs/check.future-v2-alpha-fence.log" 2>&1
+future_rc=$?
+set -e
+if [[ $future_rc -eq 0 ]]; then
+  record "check.future-v2-alpha-fence" "SELECT" "ALIVE" 0 "upstream now admits definition/2 under future validation"
+else
+  grep -q 'File format `definition/2` is not yet stable' "${OUT}/logs/check.future-v2-alpha-fence.log"
+  test "$(grep -c '×' "${OUT}/logs/check.future-v2-alpha-fence.log" || true)" -eq 1
+  if grep -q 'does not set `requirement_level`' "${OUT}/logs/check.future-v2-alpha-fence.log"; then
+    cat "${OUT}/logs/check.future-v2-alpha-fence.log" >&2
+    exit 1
+  fi
+  record "check.future-v2-alpha-fence" "SELECT" "UNSUPPORTED" "$future_rc" \
+    "Weaver 0.25.1 rejects alpha definition/2 only under --future; v2 signal requirement levels are present"
+fi
+
 run_required "ecosystem.check_refs" "SELECT" python3 scripts/verify_release.py --check-refs
 run_required "cli.help" "SELECT" weaver --help
-run_required "registry.help" "SELECT" weaver --future registry --help
+run_required "registry.help" "SELECT" weaver registry --help
 for fmt in ansi json gh_workflow_command; do
-  run_required "check.${fmt}" "SELECT" weaver --future registry check -r "${REGISTRY}" --v2 --diagnostic-format "${fmt}"
+  run_required "check.${fmt}" "SELECT" weaver registry check -r "${REGISTRY}" --v2 --diagnostic-format "${fmt}"
 done
-run_required "check.local" "SELECT" weaver --future registry check -r "${REGISTRY}" --v2
-run_required "check.git_exact_sha" "SELECT" weaver --future registry check \
+run_required "check.local" "SELECT" weaver registry check -r "${REGISTRY}" --v2
+run_required "check.git_exact_sha" "SELECT" weaver registry check \
   -r "https://github.com/${REPO}.git@${SUBJECT_SHA}[telemetry/weaver]" --v2
 
-run_required "generate" "CONSTRUCT" weaver --future registry generate ecosystem "${OUT}/generated" \
+run_required "generate" "CONSTRUCT" weaver registry generate ecosystem "${OUT}/generated" \
   -r "${REGISTRY}" --v2 -t "${TEMPLATES}"
 test -s "${OUT}/generated/CHATMAN_ECOSYSTEM_WEAVER.md"
-run_required "resolve.deprecated" "CONSTRUCT" weaver --future registry resolve \
+run_required "resolve.deprecated" "CONSTRUCT" weaver registry resolve \
   -r "${REGISTRY}" --v2 --format json -o "${OUT}/resolved.json"
 test -s "${OUT}/resolved.json"
 
 set +e
-weaver --future registry search -r "${REGISTRY}" --v2 chatman >"${OUT}/logs/search.deprecated.log" 2>&1
+weaver registry search -r "${REGISTRY}" --v2 chatman >"${OUT}/logs/search.deprecated.log" 2>&1
 search_rc=$?
 set -e
 if [[ $search_rc -eq 0 ]]; then
@@ -66,26 +89,26 @@ else
 fi
 
 for fmt in text json yaml jsonl mute; do
-  run_required "stats.${fmt}" "SELECT" weaver --future registry stats -r "${REGISTRY}" --v2 --format "${fmt}"
+  run_required "stats.${fmt}" "SELECT" weaver registry stats -r "${REGISTRY}" --v2 --format "${fmt}"
 done
 
 mkdir -p "${OUT}/markdown"
 cp README.md "${OUT}/markdown/README.md"
 before="$(sha256sum README.md | awk '{print $1}')"
-run_required "update-markdown" "CONSTRUCT" weaver --future registry update-markdown "${OUT}/markdown" \
+run_required "update-markdown" "CONSTRUCT" weaver registry update-markdown "${OUT}/markdown" \
   -r "${REGISTRY}" --v2 -t "${TEMPLATES}" --target ecosystem
 test "$(sha256sum README.md | awk '{print $1}')" = "${before}"
 
 for schema in resolved-registry semconv-group semconv-definition-v2 resolved-registry-v2 materialized-registry-v2 diff diff-v2 publication-manifest-v2 definition-manifest-v2 policy-finding weaver-config; do
-  run_required "json-schema.${schema}" "CONSTRUCT" weaver --future registry json-schema \
+  run_required "json-schema.${schema}" "CONSTRUCT" weaver registry json-schema \
     --json-schema "${schema}" -o "${OUT}/schemas/${schema}.json"
   test -s "${OUT}/schemas/${schema}.json"
 done
 for fmt in ansi json markdown; do
-  run_required "diff.${fmt}" "SELECT" weaver --future registry diff -r "${REGISTRY}" \
+  run_required "diff.${fmt}" "SELECT" weaver registry diff -r "${REGISTRY}" \
     --baseline-registry "${REGISTRY}" --v2 --format "${fmt}"
 done
-run_required "package" "CONSTRUCT" weaver --future registry package -r "${REGISTRY}" --v2 \
+run_required "package" "CONSTRUCT" weaver registry package -r "${REGISTRY}" --v2 \
   -o "${OUT}/package" --resolved-registry-uri "https://chatmangpt.com/schemas/chatman-ecosystem/${SUBJECT_SHA}"
 test -n "$(find "${OUT}/package" -type f -print -quit)"
 
@@ -101,26 +124,26 @@ printf '%s\n' \
   "chatman.ecosystem.subject.sha=${SUBJECT_SHA}" \
   "chatman.ecosystem.command=release.check-refs" \
   "chatman.ecosystem.result=ok" "" \
-| weaver --future registry live-check -r "${REGISTRY}" --v2 --input-source stdin --input-format text \
+| weaver registry live-check -r "${REGISTRY}" --v2 --input-source stdin --input-format text \
     --fail-on none --output none >"${OUT}/logs/live-check.ecosystem.log" 2>&1
 record "live-check.ecosystem" "SELECT" "ALIVE" 0 "real verify_release.py result assessed against exact-subject registry"
 
-weaver --future registry live-check -r "${REGISTRY}" --v2 --input-source otlp \
+weaver registry live-check -r "${REGISTRY}" --v2 --input-source otlp \
   --otlp-grpc-address 127.0.0.1 --otlp-grpc-port 14317 --admin-port 14320 \
   --inactivity-timeout 4 --fail-on none --output none >"${OUT}/logs/live-check.otlp.log" 2>&1 &
 live_pid=$!
 sleep 2
-run_required "emit.loopback" "DO" weaver --future registry emit -r "${REGISTRY}" --v2 \
+run_required "emit.loopback" "DO" weaver registry emit -r "${REGISTRY}" --v2 \
   --skip-policies --endpoint http://127.0.0.1:14317
 wait "${live_pid}"
 record "live-check.otlp" "DO" "ALIVE" 0 "loopback receiver observed Weaver-emitted registry telemetry"
 
 rm -rf "${OUT}/inferred"
-weaver --future registry infer -o "${OUT}/inferred" --grpc-address 127.0.0.1 --grpc-port 14417 \
+weaver registry infer -o "${OUT}/inferred" --grpc-address 127.0.0.1 --grpc-port 14417 \
   --admin-port 14420 --inactivity-timeout 4 >"${OUT}/logs/infer.log" 2>&1 &
 infer_pid=$!
 sleep 2
-run_required "emit.to-infer" "DO" weaver --future registry emit -r "${REGISTRY}" --v2 \
+run_required "emit.to-infer" "DO" weaver registry emit -r "${REGISTRY}" --v2 \
   --skip-policies --endpoint http://127.0.0.1:14417
 wait "${infer_pid}"
 test -n "$(find "${OUT}/inferred" -type f -print -quit)"
@@ -131,7 +154,7 @@ printf '%s\n' \
 '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"chatman-ecosystem-weaver","version":"26.8.18"}}}' \
 '{"jsonrpc":"2.0","method":"notifications/initialized","params":{}}' \
 '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
-| timeout 10s weaver --future registry mcp -r "${REGISTRY}" --v2 >"${OUT}/logs/mcp.log" 2>&1
+| timeout 10s weaver registry mcp -r "${REGISTRY}" --v2 >"${OUT}/logs/mcp.log" 2>&1
 mcp_rc=${PIPESTATUS[1]}
 set -e
 if grep -q '"result"' "${OUT}/logs/mcp.log"; then
@@ -142,7 +165,7 @@ else
   exit 1
 fi
 
-weaver --future serve -r "${REGISTRY}" --v2 --bind 127.0.0.1:18080 >"${OUT}/logs/serve.log" 2>&1 &
+weaver serve -r "${REGISTRY}" --v2 --bind 127.0.0.1:18080 >"${OUT}/logs/serve.log" 2>&1 &
 serve_pid=$!
 serve_ok=0
 for _ in $(seq 1 20); do
@@ -162,7 +185,7 @@ fi
 jq -s --arg subject "git:${SUBJECT_SHA}" --arg weaver "$(cat "${OUT}/weaver-version.txt")" \
   '{schema:"https://chatmangpt.com/receipts/weaver-capability/v1",subject:$subject,weaver:$weaver,capabilities:.}' \
   "${OUT}/receipt.jsonl" > "${OUT}/receipt.json"
-required=(cli.help registry.help check.local check.git_exact_sha generate resolve.deprecated stats.json update-markdown \
+required=(check.future-v2-alpha-fence cli.help registry.help check.local check.git_exact_sha generate resolve.deprecated stats.json update-markdown \
   json-schema.semconv-definition-v2 diff.json package diagnostic.init completion.bash live-check.ecosystem \
   live-check.otlp emit.loopback infer mcp serve.experimental)
 for cap in "${required[@]}"; do
