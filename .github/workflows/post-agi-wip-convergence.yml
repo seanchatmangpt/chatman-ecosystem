@@ -13,13 +13,13 @@ permissions:
 
 concurrency:
   group: post-agi-wip-convergence-${{ github.event.pull_request.head.ref || github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
   TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
-  P28_BASE: 2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01
-  P28_HEAD: a8afc4b4c55600d1568cac876ea5216941c0b482
+  P28_BASE: 441a5642531977aa766bfd4827774a4b64945789
+  P28_HEAD: 29e224dcc1d6a49c40034bc2128a8f82031a0412
   P29_BASE: 2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01
   P29_HEAD: 35be09aca696d3c1ad68bc66b2ab623d8297cd04
   P30_BASE: 441a5642531977aa766bfd4827774a4b64945789
