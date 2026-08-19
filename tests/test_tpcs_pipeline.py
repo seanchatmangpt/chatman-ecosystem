@@ -30,12 +30,15 @@ class ToyotaCodeProductionSystemTest(unittest.TestCase):
             ["observe", "admit", "construct", "verify", "receipt", "replay", "standing"],
         )
 
-    def test_good_construct_reaches_alive_with_receipt(self) -> None:
-        item = mod.WorkItem("a" * 40, "python3 -m unittest", "CONSTRUCT")
-        result = mod.run(item, self.cfg)
-        self.assertEqual(result["standing"], "ALIVE")
-        self.assertRegex(result["sha256"], r"^[0-9a-f]{64}$")
-        self.assertTrue(result["replay_match"])
+    def test_acceptance_evidence_controls_standing(self) -> None:
+        pending = mod.run(mod.WorkItem("a" * 40, "python3 -m unittest", "CONSTRUCT"), self.cfg)
+        alive = mod.run(
+            mod.WorkItem("a" * 40, "python3 -m unittest", "CONSTRUCT", acceptance_passed=True),
+            self.cfg,
+        )
+        self.assertEqual(pending["standing"], "PARTIAL_ALIVE")
+        self.assertEqual(alive["standing"], "ALIVE")
+        self.assertRegex(alive["sha256"], r"^[0-9a-f]{64}$")
 
     def assert_refused(self, item, expected: str) -> None:
         with self.assertRaises(mod.Refusal) as ctx:
