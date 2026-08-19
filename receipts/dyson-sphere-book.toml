@@ -8,6 +8,7 @@ observed = [
     "existing nested-book convention under docs",
     "admitted 27-part, 104-chapter outline",
     "initial generated head contained Python escape corruption in LaTeX and was treated as BUILD_BROKEN",
+    "canonical receipt schema requires typed authority, legal standing transitions, and BLAKE3 sealing",
 ]
 executed = [
     "repaired the canonical generator to preserve LaTeX backslashes",
