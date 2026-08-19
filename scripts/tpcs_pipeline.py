@@ -496,7 +496,7 @@ def main() -> int:
     if args.plan_file:
         result = plan(load_work_items(Path(args.plan_file)), cfg)
         encoded = json.dumps(result, indent=2, sort_keys=True) + "\n"
-        if args.plan_reccipt:
+        if args.plan_receipt:
             Path(args.plan_receipt).write_text(encoded, encoding="utf-8")
         print(encoded, end="")
         return 0
