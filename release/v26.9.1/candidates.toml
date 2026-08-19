@@ -1,6 +1,6 @@
 [candidate_ledger]
 release = "26.9.1"
-observed_at = "2026-08-14T14:24:00-07:00"
+observed_at = "2026-08-19T10:22:45-07:00"
 authority = "authenticated-github-connector"
 
 [[candidates]]
@@ -13,5 +13,18 @@ integration_base_sha = "398e42c55dd7e6471aa3488b194fc0662a74f30c"
 candidate_sha = "646d718882c4f66470f0de801db84f43f3e8c996"
 scope = "Fortune-5 capstone plus 5x7 maturity evidence and pinned CI supply chain"
 scope_standing = "PARTIAL_ALIVE"
+release_standing = "UNKNOWN"
+exact_head_ci = "SUCCESS"
+
+[[candidates]]
+component = "ggen"
+repository = "seanchatmangpt/ggen"
+pr = 655
+branch = "integration/all-relevant-20260819"
+admitted_sha = "162e466d8f07d0a75a468b4441b4bc8b1aad369b"
+integration_base_sha = "4c43154ed122c3c1e3d65467bec5138ffea41f27"
+candidate_sha = "c0f4c7c13f3c607d646fce4b198a233d66e49180"
+scope = "single current integration surface; CI, DDUI ecosystem profile, and Federated Capability Owner all succeeded at the exact head"
+scope_standing = "ALIVE"
 release_standing = "UNKNOWN"
 exact_head_ci = "SUCCESS"
