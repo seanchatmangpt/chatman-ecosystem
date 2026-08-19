@@ -20,7 +20,7 @@ cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
 cargo test --locked --workspace --all-features
 RUSTDOCFLAGS="-D warnings" cargo doc --locked --workspace --all-features --no-deps
 cargo deny check
-cargo machete
+cargo machete apps/ecosystem-cli crates/ecosystem-core crates/ecosystem-runtime crates/gall
 cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- catalog validate
 cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- receipt verify-all
 cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- projection check

@@ -1,0 +1,377 @@
+schema = "chatman.capability-catalog.v1"
+version = "26.9.1"
+subject = "SELF"
+
+[[capability]]
+id = "capability:observe-exact-github-subject"
+title = "Observe exact GitHub subject"
+class = "OBSERVE"
+owner = "repository:chatman-ecosystem"
+required_authority = "observe"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["repository coordinate", "branch/ref or PR"]
+outputs = ["default branch", "base SHA", "head SHA", "tree/ref identity"]
+depends_on = []
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:SUBJECT_IDENTITY_UNRESOLVED"]
+
+[[capability]]
+id = "capability:inventory-branch-pr-graph"
+title = "Inventory branch and pull-request graph"
+class = "OBSERVE"
+owner = "repository:chatman-ecosystem"
+required_authority = "observe"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["exact repository subject"]
+outputs = ["branch set", "open PR set", "orphan/historical candidates"]
+depends_on = ["capability:observe-exact-github-subject"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:BRANCH_INVENTORY_INCOMPLETE"]
+
+[[capability]]
+id = "capability:classify-branch-standing"
+title = "Classify branch standing"
+class = "SELECT"
+owner = "repository:chatman-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["branch graph", "PR state", "exact execution evidence"]
+outputs = ["ACTIVE_CROWN", "MERGED_EQUIVALENT", "UNIQUE_DELTA", "DIVERGED", "HISTORICAL", "BLOCKED", "UNKNOWN"]
+depends_on = ["capability:inventory-branch-pr-graph"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:STANDING_FROM_BRANCH_EXISTENCE", "REFUSED:STALE_EXECUTION_TRANSFER"]
+
+[[capability]]
+id = "capability:detect-base-drift"
+title = "Detect exact-base drift"
+class = "OBSERVE"
+owner = "repository:chatman-ecosystem"
+required_authority = "observe"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["PR frozen base", "live default head", "merge base"]
+outputs = ["ahead/behind relation", "overlap classification", "compatibility requirement"]
+depends_on = ["capability:observe-exact-github-subject"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:SILENT_BASE_MOVE"]
+
+[[capability]]
+id = "capability:recompose-current-base"
+title = "Recompose a purpose branch onto current base"
+class = "CONSTRUCT"
+owner = "repository:chatman-ecosystem"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["current base tree", "exact feature blobs", "overlap proof"]
+outputs = ["non-force compatibility commit", "new exact head"]
+depends_on = ["capability:detect-base-drift", "capability:classify-branch-standing"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:STALE_TREE_IDENTITY", "REFUSED:OVERLAP_UNRESOLVED", "REFUSED:FORCE_PUSH_REQUIRED"]
+
+[[capability]]
+id = "capability:observe-exact-head-workflows"
+title = "Observe exact-head workflow execution"
+class = "OBSERVE"
+owner = "repository:chatman-ecosystem"
+required_authority = "observe"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["exact head SHA"]
+outputs = ["workflow run identities", "job conclusions", "step-level causal evidence"]
+depends_on = ["capability:observe-exact-github-subject"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:WORKFLOW_METADATA_AS_EXECUTION", "REFUSED:PREDECESSOR_HEAD_STANDING_TRANSFER"]
+
+[[capability]]
+id = "capability:localize-ci-failure"
+title = "Localize a CI failure to a falsifiable boundary"
+class = "SELECT"
+owner = "repository:chatman-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["exact-head workflow jobs", "logs/annotations"]
+outputs = ["typed failing boundary", "repair hypothesis or cause-unobserved"]
+depends_on = ["capability:observe-exact-head-workflows"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:SPECULATIVE_REPAIR", "REFUSED:UNCHANGED_FAILURE_RERUN"]
+
+[[capability]]
+id = "capability:bounded-compatibility-repair"
+title = "Apply bounded authority-preserving compatibility repair"
+class = "CONSTRUCT"
+owner = "repository:chatman-ecosystem"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["concrete falsifier", "owning source surface"]
+outputs = ["smallest coherent repair", "new exact head", "fresh verifier target"]
+depends_on = ["capability:localize-ci-failure"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:GENERATED_HAND_EDIT", "REFUSED:AUTHORITY_WIDENING"]
+
+[[capability]]
+id = "capability:verify-source-correspondence"
+title = "Verify exact source-to-model correspondence"
+class = "OBSERVE"
+owner = "repository:chatman-ecosystem"
+required_authority = "observe"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted upstream SHA", "marketplace/model ontology"]
+outputs = ["correspondence verdict", "typed source-head drift refusal"]
+depends_on = ["capability:observe-exact-github-subject"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen-marketplace"]
+refusals = ["REFUSED:SOURCE_HEAD_MOVED", "REFUSED:MODEL_SOURCE_DRIFT"]
+
+[[capability]]
+id = "capability:audit-vacuity"
+title = "Audit vacuity and ERRC regressions"
+class = "OBSERVE"
+owner = "repository:chatman-ecosystem"
+required_authority = "observe"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["exact source corpus"]
+outputs = ["vacuity findings", "preservation receipt", "regression refusals"]
+depends_on = ["capability:observe-exact-head-workflows"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen-marketplace"]
+refusals = ["REFUSED:VACUITY_REGRESSION", "REFUSED:CANCELLED_AS_SUCCESS"]
+
+[[capability]]
+id = "capability:manufacture-deterministic-projection"
+title = "Manufacture deterministic projection with real ggen"
+class = "CONSTRUCT"
+owner = "repository:chatman-ecosystem"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted ontology/source graph", "pinned ggen manufacturer"]
+outputs = ["generated projection", "source digest", "consequence digest", "receipt"]
+depends_on = ["capability:verify-source-correspondence"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace"]
+refusals = ["REFUSED:NONDETERMINISTIC_MANUFACTURE", "REFUSED:QUALIFICATION_SOURCE_MUTATION"]
+
+[[capability]]
+id = "capability:replay-manufacture"
+title = "Replay manufacture from exact admitted subject"
+class = "OBSERVE"
+owner = "repository:chatman-ecosystem"
+required_authority = "observe"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["manufacture receipt", "exact source/manufacturer identities"]
+outputs = ["REPLAY_MATCH or typed drift"]
+depends_on = ["capability:manufacture-deterministic-projection"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:REPLAY_IDENTITY_DRIFT", "REFUSED:REACTUATION_ON_REPLAY"]
+
+[[capability]]
+id = "capability:reconstitute-with-ggen-legacy"
+title = "Reconstitute a predecessor with ggen-legacy"
+class = "CONSTRUCT"
+owner = "repository:chatman-ecosystem"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["bounded predecessor observations", "authority contract", "public/custom ontology"]
+outputs = ["O", "O*", "replacement candidate", "equivalence evidence", "retirement disposition"]
+depends_on = ["capability:manufacture-deterministic-projection", "capability:replay-manufacture"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen-legacy", "ggen"]
+refusals = ["REFUSED:MISSING_AUTHORITY_CONTRACT", "REFUSED:PREDECESSOR_RETIREMENT_WITHOUT_EQUIVALENCE"]
+
+[[capability]]
+id = "capability:admit-public-custom-ontology"
+title = "Admit public and custom ontology closure"
+class = "SELECT"
+owner = "repository:chatman-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["public ontology mappings", "custom ontology remainder", "SHACL/formal constraints"]
+outputs = ["admitted O* or typed refusal"]
+depends_on = ["capability:verify-source-correspondence"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:PUBLIC_EQUIVALENT_REDEFINED", "REFUSED:SHACL_ADMISSION_FAILURE"]
+
+[[capability]]
+id = "capability:project-interface-surfaces"
+title = "Project one capability semantics to CLI/API/MCP/A2A"
+class = "CONSTRUCT"
+owner = "repository:chatman-ecosystem"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted capability identity", "input/output shapes", "authority class"]
+outputs = ["CLI contract", "HTTP/API contract", "MCP contract", "A2A contract"]
+depends_on = ["capability:admit-public-custom-ontology"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem", "ggen", "ggen-marketplace"]
+refusals = ["REFUSED:SURFACE_SEMANTIC_DIVERGENCE", "REFUSED:SURFACE_IMPLIES_AUTHORITY"]
+
+[[capability]]
+id = "capability:enforce-authority-ceiling"
+title = "Enforce SELECT/CONSTRUCT/DO authority ceiling"
+class = "SELECT"
+owner = "repository:chatman-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["capability contract", "requested transition"]
+outputs = ["admit/refuse decision", "required exact authority"]
+depends_on = ["capability:project-interface-surfaces"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem"]
+refusals = ["REFUSED:CAPABILITY_AS_AUTHORITY", "REFUSED:AMBIENT_DO", "BLOCKED:LIVE_AZURE_AUTHORITY"]
+
+[[capability]]
+id = "capability:write-pr-receipt"
+title = "Write exact-subject pull-request receipt"
+class = "CONSTRUCT"
+owner = "repository:chatman-ecosystem"
+required_authority = "draft"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["base/head SHA", "changed files", "commands/exits", "authority ceiling", "receipts/replay", "falsifiers", "rollback"]
+outputs = ["bounded PR evidence body"]
+depends_on = ["capability:observe-exact-head-workflows", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:STALE_PR_RECEIPT", "REFUSED:ALIVE_FROM_PR_STATE"]
+
+[[capability]]
+id = "capability:advance-review-readiness"
+title = "Advance a dependency-closed draft to review-ready"
+class = "DO"
+owner = "repository:chatman-ecosystem"
+required_authority = "modify_external_object"
+broker_required = true
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["mergeable draft", "exact-head successful bounded courts", "current receipt"]
+outputs = ["ready-for-review PR metadata"]
+depends_on = ["capability:write-pr-receipt", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:READINESS_WITH_UNOBSERVED_REQUIRED_GATE"]
+
+[[capability]]
+id = "capability:merge-exact-head"
+title = "Merge an explicitly authorized exact PR head"
+class = "DO"
+owner = "repository:chatman-ecosystem"
+required_authority = "merge"
+broker_required = true
+receipt_required = true
+reversible = false
+standing = "CANDIDATE"
+inputs = ["explicit merge authority", "expected head SHA", "mergeable PR", "required exact-head standing"]
+outputs = ["merge result", "post-merge identity receipt"]
+depends_on = ["capability:advance-review-readiness"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:MERGE_AUTHORITY_MISSING", "REFUSED:EXPECTED_HEAD_MOVED", "REFUSED:REQUIRED_GATE_NOT_ALIVE"]
+
+[[capability]]
+id = "capability:retire-merged-equivalent-branch"
+title = "Retire a merged-equivalent historical branch"
+class = "DO"
+owner = "repository:chatman-ecosystem"
+required_authority = "delete"
+broker_required = true
+receipt_required = true
+reversible = false
+standing = "CANDIDATE"
+inputs = ["branch classification", "tree/ancestry equivalence proof", "explicit delete authority"]
+outputs = ["deleted branch receipt"]
+depends_on = ["capability:classify-branch-standing"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:UNIQUE_DELTA_PRESENT", "REFUSED:DELETE_AUTHORITY_MISSING"]
+
+[[capability]]
+id = "capability:type-blocker-standing"
+title = "Type blockers without laundering standing"
+class = "SELECT"
+owner = "repository:chatman-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["failed/blocked execution boundary", "causal evidence"]
+outputs = ["BLOCKED", "BUILD_BROKEN", "UNSUPPORTED", "UNKNOWN", "typed refusal"]
+depends_on = ["capability:localize-ci-failure"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:UNKNOWN_AS_ADMITTED", "REFUSED:INFRA_BLOCK_AS_SOURCE_FAILURE"]
+
+[[capability]]
+id = "capability:consolidate-wip-train"
+title = "Consolidate branch generations into one surviving crown"
+class = "CONSTRUCT"
+owner = "repository:chatman-ecosystem"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["classified branch set", "current main", "unique deltas"]
+outputs = ["one purpose branch", "supersession map", "closure candidates"]
+depends_on = ["capability:classify-branch-standing", "capability:recompose-current-base"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
+refusals = ["REFUSED:UNPROVEN_DELTA_DROP", "REFUSED:COMPONENT_STANDING_TRANSFER"]

@@ -6,6 +6,104 @@ role = "constitutional-control-plane"
 standing = "ALIVE"
 
 [[repository]]
+id = "repository:autofde-lab"
+name = "autofde-lab"
+url = "https://github.com/seanchatmangpt/autofde-lab"
+role = "planning-reasoning-falsification-capability-admission"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:gymact"
+name = "gymact"
+url = "https://github.com/seanchatmangpt/gymact"
+role = "executable-world-runtime"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:autofde"
+name = "autofde"
+url = "https://github.com/seanchatmangpt/autofde"
+role = "persistent-runtime-and-brce-boundary"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ggen"
+name = "ggen"
+url = "https://github.com/seanchatmangpt/ggen"
+role = "deterministic-manufacturer"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ggen-marketplace"
+name = "ggen-marketplace"
+url = "https://github.com/seanchatmangpt/ggen-marketplace"
+role = "executable-knowledge-distribution"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ggen-legacy"
+name = "ggen-legacy"
+url = "https://github.com/seanchatmangpt/ggen-legacy"
+role = "bounded-reconstitution"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:dsrust"
+name = "dsrust"
+url = "https://github.com/seanchatmangpt/dsrust"
+role = "optional-bounded-compiler-oracle"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:bcinr"
+name = "bcinr"
+url = "https://github.com/seanchatmangpt/bcinr"
+role = "bounded-cmca"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:mfw"
+name = "mfw"
+url = "https://github.com/seanchatmangpt/mfw"
+role = "manufacturing-work-orchestration"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:affidavit"
+name = "affidavit"
+url = "https://github.com/seanchatmangpt/affidavit"
+role = "evidence-standing-attestation"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:rrgym"
+name = "rrgym"
+url = "https://github.com/seanchatmangpt/rrgym"
+role = "bounded-domain-gym"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:lifegym"
+name = "lifegym"
+url = "https://github.com/seanchatmangpt/lifegym"
+role = "bounded-domain-gym"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ww3gym"
+name = "ww3gym"
+url = "https://github.com/seanchatmangpt/ww3gym"
+role = "simulation-evaluation-only-gym"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:biblegym"
+name = "biblegym"
+url = "https://github.com/seanchatmangpt/biblegym"
+role = "bounded-domain-gym"
+standing = "OBSERVED"
+
+[[repository]]
 id = "repository:better-fullstack"
 name = "Better-Fullstack"
 url = "https://github.com/Marve10s/Better-Fullstack"
