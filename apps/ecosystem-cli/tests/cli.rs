@@ -255,24 +255,27 @@ fn crown_requires_exact_admission_evidence() -> Result<(), Box<dyn std::error::E
         fs::remove_file(&path)?;
     }
 
-    let refused = run(&["crown", "--verify"])?;
+    let refused = run(&["crown", "--json"])?;
     assert!(!refused.status.success());
 
+    let exact_subject = git_subject()?;
     fs::create_dir_all(path.parent().ok_or("admission parent missing")?)?;
     fs::write(
         &path,
         serde_json::to_vec_pretty(&json!({
-            "subject": git_subject()?,
+            "subject": exact_subject,
             "gates": REQUIRED_ADMISSION_GATES,
         }))?,
     )?;
 
-    let admitted = run(&["crown", "--verify"])?;
+    let admitted = run(&["crown", "--json"])?;
     assert!(
         admitted.status.success(),
         "{}",
         String::from_utf8_lossy(&admitted.stderr)
     );
+    let report: serde_json::Value = serde_json::from_slice(&admitted.stdout)?;
+    assert_eq!(report.get("subject").and_then(serde_json::Value::as_str), Some(exact_subject.as_str()));
     fs::remove_file(path)?;
     Ok(())
 }
