@@ -31,6 +31,37 @@ import type { SessionPayload } from "@/lib/session";
 export const ORG_ROLES_NAMESPACE = "platform-console";
 export const ORG_ROLES_CONFIGMAP = "platform-console-org-roles";
 
+// Matches every org-scoped route this app has (`/orgs/<id>/...` pages and
+// `/api/orgs/<id>/...` routes) -- both share the same `<id>` segment
+// shape, the org id lib/orgs.ts's getOrg/createOrg use and the exact
+// value lib/impersonation.ts's targetOrgId is stored as (see
+// app/api/support/impersonate/route.ts's POST, which passes the same
+// `targetOrgId` straight to both `getOrg` and `startImpersonation`).
+// Deliberately a plain path match, not a live `getOrg` lookup: this is
+// used by middleware.ts on every request to decide whether an active
+// impersonation session's targetOrgId applies to the org THIS request is
+// scoped to, and middleware must stay a lightweight, synchronous-shaped
+// check -- not a second k8s round trip on top of the one the route
+// handler itself will already make.
+const ORG_SCOPED_PATH_PATTERN = /^\/(?:api\/)?orgs\/([^/]+)(?:\/|$)/;
+
+/**
+ * Extracts the org id a request path is scoped to, if any -- `null` for
+ * every path that isn't under `/orgs/<id>` or `/api/orgs/<id>`. The
+ * captured segment is URL-decoded so an org id containing characters that
+ * needed percent-encoding in the URL still compares equal to the plain
+ * id lib/orgs.ts and lib/impersonation.ts operate on.
+ */
+export function orgIdFromRequestPath(pathname: string): string | null {
+  const match = ORG_SCOPED_PATH_PATTERN.exec(pathname);
+  if (!match) return null;
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
+  }
+}
+
 export type Role = "viewer" | "member" | "owner";
 
 const ROLE_RANK: Record<Role, number> = { viewer: 0, member: 1, owner: 2 };

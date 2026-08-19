@@ -5,19 +5,20 @@
  * pod-log line lib/audit-log.ts already writes (real, but gone the moment
  * a pod restarts).
  *
- * Deliberately a SEPARATE module from lib/audit-log.ts, and never imported
- * by middleware.ts: middleware runs on the Next.js edge runtime, and the
- * `pg` driver this module uses pulls in real Node.js `net`/`tls` core
- * modules the edge runtime cannot bundle -- the exact same reason
- * lib/credentials.ts (bcryptjs) is kept out of middleware, documented in
- * that file's own header comment. Every `/api/*` route handler already
- * runs on the Node.js runtime (default for route handlers, documented in
- * each route file's own header comment), so this module is safe to import
- * there. middleware.ts keeps calling the original, stdout-only
- * writeAuditLogEntry from lib/audit-log.ts unchanged -- its own generic
- * per-request line ("authenticated and forwarded") is intentionally left
- * out of the durable store; every actual API action already logs its own,
- * more specific entry through THIS module instead.
+ * Deliberately a SEPARATE module from lib/audit-log.ts. Originally never
+ * imported by middleware.ts, because middleware ran on the Next.js edge
+ * runtime and the `pg` driver this module uses pulls in real Node.js
+ * `net`/`tls` core modules the edge runtime cannot bundle -- the exact
+ * same reason lib/credentials.ts (bcryptjs) was kept out of middleware.
+ * middleware.ts now opts into `export const runtime = "nodejs"` (see its
+ * own header comment, added to resolve Bearer API keys via lib/k8s.ts),
+ * which makes this module safe to import there too -- middleware.ts's
+ * generic per-request line ("authenticated and forwarded") now goes
+ * through THIS module so it lands in the same durable, hash-chained
+ * `platform_console.audit_log` table (with impersonation actor-tagging
+ * attached when it applies) instead of only the ephemeral stdout line.
+ * Every actual API action still ALSO logs its own, more specific entry
+ * through this module from its own route handler.
  *
  * `writeAuditLogEntry` here is a drop-in replacement for lib/audit-log.ts's
  * export of the same name (same signature, same args) -- callers just
@@ -151,6 +152,15 @@ function computeRowHash(prevHash: string, entry: AuditLogEntry): string {
   // after the fact breaks this chain the same way tampering with actor or
   // status would.
   if (entry.castleReceiptDigest) parts.push(entry.castleReceiptDigest);
+  // Same backward-compatible "appended last, only when present" rule as
+  // castleReceiptDigest above -- every row written before impersonation
+  // actor-tagging existed recomputes to its original row_hash unchanged.
+  // Committing both fields into the chain means tampering with either one
+  // after the fact (e.g. stripping impersonatedBy off a row to make a
+  // support action look like normal customer activity) breaks the chain
+  // exactly like tampering with actor or status would.
+  if (entry.impersonatedBy) parts.push(entry.impersonatedBy);
+  if (entry.impersonationSessionId) parts.push(entry.impersonationSessionId);
   const material = parts.join(" ");
   return createHash("sha256").update(material, "utf8").digest("hex");
 }
@@ -178,6 +188,19 @@ async function ensureAuditLogChainColumns(pool: Pool): Promise<void> {
   // Nullable, absent for every row that isn't a castle GymAct run -- see
   // AuditLogEntry.castleReceiptDigest's doc comment in lib/audit-log.ts.
   await pool.query(`ALTER TABLE platform_console.audit_log ADD COLUMN IF NOT EXISTS castle_receipt_digest text`);
+  // Impersonation actor-tagging columns -- same idempotent ADD COLUMN IF
+  // NOT EXISTS self-bootstrap convention as every other column above and
+  // as lib/impersonation.ts's own ensureImpersonationTable. Nullable,
+  // absent for every non-impersonated row.
+  await pool.query(`ALTER TABLE platform_console.audit_log ADD COLUMN IF NOT EXISTS impersonated_by text`);
+  await pool.query(
+    `ALTER TABLE platform_console.audit_log ADD COLUMN IF NOT EXISTS impersonation_session_id text`,
+  );
+  await pool.query(
+    `CREATE INDEX IF NOT EXISTS audit_log_impersonation_session_id_idx
+       ON platform_console.audit_log (impersonation_session_id)
+       WHERE impersonation_session_id IS NOT NULL`,
+  );
 }
 
 /**
@@ -285,8 +308,9 @@ async function persistAuditLogEntry(entry: AuditLogEntry): Promise<void> {
     const prevHash = tail.rows[0]?.row_hash ?? GENESIS_HASH;
     const rowHash = computeRowHash(prevHash, entry);
     await client.query(
-      `INSERT INTO platform_console.audit_log (request_id, ts, actor, method, path, status, prev_hash, row_hash, castle_receipt_digest)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      `INSERT INTO platform_console.audit_log
+         (request_id, ts, actor, method, path, status, prev_hash, row_hash, castle_receipt_digest, impersonated_by, impersonation_session_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
       [
         entry.requestId,
         entry.timestamp,
@@ -297,6 +321,8 @@ async function persistAuditLogEntry(entry: AuditLogEntry): Promise<void> {
         prevHash,
         rowHash,
         entry.castleReceiptDigest ?? null,
+        entry.impersonatedBy ?? null,
+        entry.impersonationSessionId ?? null,
       ],
     );
     await client.query("COMMIT");
@@ -346,6 +372,9 @@ export interface AuditLogRow {
   insertedAt: string; // RFC3339
   /** See AuditLogEntry.castleReceiptDigest -- absent for non-castle-GymAct rows. */
   castleReceiptDigest?: string;
+  /** See AuditLogEntry.impersonatedBy/impersonationSessionId -- both absent for non-impersonated rows. */
+  impersonatedBy?: string;
+  impersonationSessionId?: string;
 }
 
 export interface AuditLogQueryParams {
@@ -412,7 +441,8 @@ export async function queryAuditLog(params: AuditLogQueryParams): Promise<AuditL
     const total = Number(countResult.rows[0]?.count ?? "0");
 
     const rowsResult = await pool.query(
-      `SELECT id, request_id, ts, actor, method, path, status, inserted_at, castle_receipt_digest
+      `SELECT id, request_id, ts, actor, method, path, status, inserted_at, castle_receipt_digest,
+              impersonated_by, impersonation_session_id
        FROM platform_console.audit_log
        ${where}
        ORDER BY ts DESC, id DESC
@@ -420,19 +450,64 @@ export async function queryAuditLog(params: AuditLogQueryParams): Promise<AuditL
       [...values, params.limit, params.offset],
     );
 
-    const rows: AuditLogRow[] = rowsResult.rows.map((r) => ({
-      id: Number(r.id),
-      requestId: r.request_id as string,
-      ts: new Date(r.ts as string).toISOString(),
-      actor: r.actor as string,
-      method: r.method as string,
-      path: r.path as string,
-      status: Number(r.status),
-      insertedAt: new Date(r.inserted_at as string).toISOString(),
-      ...(r.castle_receipt_digest ? { castleReceiptDigest: r.castle_receipt_digest as string } : {}),
-    }));
+    const rows: AuditLogRow[] = rowsResult.rows.map(toAuditLogRow);
 
     return { ok: true, data: { rows, total } };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+function toAuditLogRow(r: Record<string, unknown>): AuditLogRow {
+  return {
+    id: Number(r.id),
+    requestId: r.request_id as string,
+    ts: new Date(r.ts as string).toISOString(),
+    actor: r.actor as string,
+    method: r.method as string,
+    path: r.path as string,
+    status: Number(r.status),
+    insertedAt: new Date(r.inserted_at as string).toISOString(),
+    ...(r.castle_receipt_digest ? { castleReceiptDigest: r.castle_receipt_digest as string } : {}),
+    ...(r.impersonated_by ? { impersonatedBy: r.impersonated_by as string } : {}),
+    ...(r.impersonation_session_id
+      ? { impersonationSessionId: r.impersonation_session_id as string }
+      : {}),
+  };
+}
+
+/**
+ * Real, per-session read: every audit_log row tagged with one specific
+ * impersonation_session_id, oldest first -- backs the "for one session
+ * id, the exact list of actions taken" reviewer view on
+ * GET /api/orgs/[id]/impersonation-log?sessionId=... . Distinct from
+ * queryAuditLog above (which filters by actor/path/time and is meant for
+ * the general /audit browser) -- this is the exact-match, no-pagination
+ * lookup a reviewer wants when they already have one session id in hand
+ * from listImpersonationSessionsForOrg.
+ */
+export async function queryAuditLogForImpersonationSession(
+  impersonationSessionId: string,
+): Promise<AuditLogQueryOutcome> {
+  const pool = await resolvePool();
+  if (!pool) {
+    return {
+      ok: false,
+      error:
+        "audit log database not configured or unreachable -- see the stdout log (kubectl logs) for this environment's real-time record",
+    };
+  }
+  try {
+    const rowsResult = await pool.query(
+      `SELECT id, request_id, ts, actor, method, path, status, inserted_at, castle_receipt_digest,
+              impersonated_by, impersonation_session_id
+       FROM platform_console.audit_log
+       WHERE impersonation_session_id = $1
+       ORDER BY ts ASC, id ASC`,
+      [impersonationSessionId],
+    );
+    const rows: AuditLogRow[] = rowsResult.rows.map(toAuditLogRow);
+    return { ok: true, data: { rows, total: rows.length } };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
@@ -482,8 +557,11 @@ export async function verifyAuditChain(): Promise<AuditChainVerifyOutcome> {
       prev_hash: string | null;
       row_hash: string | null;
       castle_receipt_digest: string | null;
+      impersonated_by: string | null;
+      impersonation_session_id: string | null;
     }>(
-      `SELECT id, request_id, ts, actor, method, path, status, prev_hash, row_hash, castle_receipt_digest
+      `SELECT id, request_id, ts, actor, method, path, status, prev_hash, row_hash, castle_receipt_digest,
+              impersonated_by, impersonation_session_id
        FROM platform_console.audit_log
        ORDER BY id ASC`,
     );
@@ -498,6 +576,10 @@ export async function verifyAuditChain(): Promise<AuditChainVerifyOutcome> {
         path: r.path,
         status: Number(r.status),
         ...(r.castle_receipt_digest ? { castleReceiptDigest: r.castle_receipt_digest } : {}),
+        ...(r.impersonated_by ? { impersonatedBy: r.impersonated_by } : {}),
+        ...(r.impersonation_session_id
+          ? { impersonationSessionId: r.impersonation_session_id }
+          : {}),
       };
       if (r.prev_hash !== expectedPrevHash) {
         return {

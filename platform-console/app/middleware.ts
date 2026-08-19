@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, createApiKeySessionToken, verifySessionToken } from "@/lib/session";
-import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
+import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { resolveApiKeyAuth } from "@/lib/api-keys";
 import { checkAndTouchSession } from "@/lib/active-sessions";
 import { clientIpFrom } from "@/lib/request-meta";
 import { apiKeyRateLimiter } from "@/lib/rate-limit";
 import { checkIpAllowed, IP_ALLOWLIST_NAMESPACE } from "@/lib/ip-allowlist";
+import { orgIdFromRequestPath } from "@/lib/authz";
+import { getActiveImpersonationSessionForAdmin } from "@/lib/impersonation";
 
 // Runs on the Node.js middleware runtime (`export const runtime = "nodejs"`
 // below -- Next.js 15's node-middleware support, not the edge runtime this
@@ -253,6 +255,33 @@ export async function middleware(request: NextRequest) {
     : NextResponse.next();
   response.headers.set("x-request-id", requestId);
 
+  // Real impersonation actor-tagging (the SOC2/ISO27001 control gap this
+  // pass closes): a lightweight lookup against lib/impersonation.ts for
+  // an active session started by THIS authenticated identity, checked
+  // ONLY when the active session's own targetOrgId matches the org this
+  // request is scoped to (an admin's unrelated, still-open session from a
+  // support call to a DIFFERENT org must never tag a request against
+  // this one). Deliberately keyed off the real session identity
+  // (`session.sub`) rather than any client-supplied header -- the same
+  // "never trust the caller's own claim" discipline
+  // resolveRequestImpersonation already documents, just applied without
+  // needing a header at all, since the admin's own active session is
+  // itself the trusted signal. A lookup failure (store unreachable) fails
+  // open on the tag only -- exactly like the IP allowlist / session
+  // registry checks above, this never blocks the request itself, it only
+  // means this one entry goes untagged rather than the request being
+  // rejected for an audit-plumbing outage.
+  const scopedOrgId = orgIdFromRequestPath(pathname);
+  let impersonatedBy: string | undefined;
+  let impersonationSessionId: string | undefined;
+  if (scopedOrgId) {
+    const activeImpersonation = await getActiveImpersonationSessionForAdmin(session.sub);
+    if (activeImpersonation.ok && activeImpersonation.data?.targetOrgId === scopedOrgId) {
+      impersonatedBy = activeImpersonation.data.adminUserId;
+      impersonationSessionId = activeImpersonation.data.id;
+    }
+  }
+
   // Structured audit-log line for this authenticated request. Status is
   // recorded as 200 at the point middleware allows the request through --
   // middleware runs before the route handler produces its own status, so
@@ -260,6 +289,13 @@ export async function middleware(request: NextRequest) {
   // downstream handler's final status code. `actor` is the API key's
   // bound identifier when this request authenticated via Bearer token,
   // same field, same shape as a cookie-authenticated request's actor.
+  // When an active impersonation session applies (see above),
+  // impersonatedBy/impersonationSessionId are attached so this row is
+  // provably attributable to the acting admin, not silently recorded as
+  // the target org's own actor -- `actor` itself is left unchanged
+  // (still `session.sub`, the admin's own identity, since impersonation
+  // in this app never rewrites the session's own subject) so this is
+  // purely additive tagging, never a masking of who acted.
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),
     actor: session.sub,
@@ -267,6 +303,8 @@ export async function middleware(request: NextRequest) {
     path: pathname,
     status: 200,
     requestId,
+    ...(impersonatedBy ? { impersonatedBy } : {}),
+    ...(impersonationSessionId ? { impersonationSessionId } : {}),
   });
 
   return response;

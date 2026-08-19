@@ -69,7 +69,11 @@ export function isStripeTestMode(): boolean {
   return (process.env.STRIPE_SECRET_KEY ?? "").startsWith("sk_test_");
 }
 
-function getStripeClient(): Stripe | null {
+// Exported so lib/invoice-history.ts (real Stripe invoice history/PDF
+// export) can reuse the exact same cached client this module already
+// builds from STRIPE_SECRET_KEY -- one Stripe client per process, not a
+// second construction path with its own cache.
+export function getStripeClient(): Stripe | null {
   if (cachedClient !== undefined) return cachedClient;
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) {

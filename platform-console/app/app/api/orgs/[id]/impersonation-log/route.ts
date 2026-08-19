@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireRoleIn, roleIdentifierFor } from "@/lib/authz";
 import { getOrg } from "@/lib/orgs";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
-import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
+import {
+  newRequestId,
+  writeAuditLogEntry,
+  queryAuditLogForImpersonationSession,
+} from "@/lib/audit-db";
 import { listImpersonationSessionsForOrg } from "@/lib/impersonation";
 
 // Customer-facing compliance/trust endpoint: every impersonation session
@@ -51,6 +55,57 @@ export async function GET(
       requestId,
     });
     return access.response!;
+  }
+
+  // Real reviewer drill-down: ?sessionId=<id> joins one specific
+  // impersonation session (must belong to THIS org -- checked below, so
+  // an org member can never pull another org's session's action list by
+  // guessing a session id) against every audit_log row middleware.ts
+  // actor-tagged with it -- "for one session id, the exact list of
+  // actions taken", the spec's own phrasing for this control's proof.
+  const sessionIdParam = request.nextUrl.searchParams.get("sessionId")?.trim();
+  if (sessionIdParam) {
+    const sessionsResult = await listImpersonationSessionsForOrg(id);
+    if (!sessionsResult.ok) {
+      writeAuditLogEntry({
+        timestamp: new Date().toISOString(),
+        actor,
+        method: "GET",
+        path: `/api/orgs/${id}/impersonation-log`,
+        status: 502,
+        requestId,
+      });
+      return NextResponse.json({ error: sessionsResult.error }, { status: 502 });
+    }
+    const matchingSession = sessionsResult.data.find((s) => s.id === sessionIdParam);
+    if (!matchingSession) {
+      writeAuditLogEntry({
+        timestamp: new Date().toISOString(),
+        actor,
+        method: "GET",
+        path: `/api/orgs/${id}/impersonation-log`,
+        status: 404,
+        requestId,
+      });
+      return NextResponse.json(
+        { error: "impersonation session not found for this org" },
+        { status: 404 },
+      );
+    }
+
+    const actionsResult = await queryAuditLogForImpersonationSession(sessionIdParam);
+    writeAuditLogEntry({
+      timestamp: new Date().toISOString(),
+      actor,
+      method: "GET",
+      path: `/api/orgs/${id}/impersonation-log`,
+      status: actionsResult.ok ? 200 : 502,
+      requestId,
+    });
+    if (!actionsResult.ok) {
+      return NextResponse.json({ error: actionsResult.error }, { status: 502 });
+    }
+    return NextResponse.json({ session: matchingSession, actions: actionsResult.data.rows });
   }
 
   const result = await listImpersonationSessionsForOrg(id);

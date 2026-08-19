@@ -24,6 +24,22 @@ export interface AuditLogEntry {
    * walk from one to the other.
    */
   castleReceiptDigest?: string;
+  /**
+   * Impersonation actor-tagging (SOC2/ISO27001 "prove exactly what an
+   * engineer touched while impersonating", not just "we logged the
+   * start/end of the session"): set by middleware.ts on every request
+   * made while an active lib/impersonation.ts session's targetOrgId
+   * matches the org this request is scoped to. `impersonatedBy` is the
+   * real admin identity that started the session (never the target
+   * org's own actor -- `actor` above stays whatever it already was, this
+   * field is additive, not a replacement, so existing readers of `actor`
+   * are unaffected); `impersonationSessionId` cross-references the exact
+   * row in `platform_console.impersonation_sessions` this action
+   * happened under. Both absent for every normal, non-impersonated
+   * request -- the overwhelming majority of rows.
+   */
+  impersonatedBy?: string;
+  impersonationSessionId?: string;
 }
 
 export function writeAuditLogEntry(entry: AuditLogEntry): void {

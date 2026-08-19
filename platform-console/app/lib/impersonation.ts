@@ -225,6 +225,44 @@ export async function getActiveImpersonationSession(
 }
 
 /**
+ * Real per-request-path lookup: the currently active (not ended, not yet
+ * expired) impersonation session started BY this admin, if any -- the
+ * exact query middleware.ts's actor-tagging needs (it has an admin
+ * identity from the verified session cookie/API key, but no
+ * `x-impersonation-session` header to resolve by id the way
+ * resolveRequestImpersonation below does for routes that carry one).
+ * Same lazy TTL auto-expiry as every other read here. An admin can only
+ * ever have one active session at a time in practice (starting a second
+ * one while the first is still open is allowed by startImpersonation
+ * today, but not expected) -- this returns the most recently started
+ * active one, which is the one a reviewer would expect "currently
+ * impersonating" to mean.
+ */
+export async function getActiveImpersonationSessionForAdmin(
+  adminUserId: string,
+): Promise<ImpersonationOutcome<ImpersonationSession | null>> {
+  const pool = await resolveReadyPool();
+  if (!pool) {
+    return { ok: false, error: "impersonation session store not configured or unreachable" };
+  }
+  try {
+    const result = await pool.query(
+      `SELECT ${SELECT_COLUMNS} FROM platform_console.impersonation_sessions
+       WHERE admin_user_id = $1 AND ended_at IS NULL
+       ORDER BY started_at DESC
+       LIMIT 1`,
+      [adminUserId],
+    );
+    if (result.rowCount === 0) return { ok: true, data: null };
+    const session = await applyLazyExpiry(pool, toSession(result.rows[0]));
+    if (session.endedAt) return { ok: true, data: null }; // lazily expired just now -- no longer active
+    return { ok: true, data: session };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+/**
  * Ends an impersonation session early ("DELETE to end early" in the
  * spec) -- only the admin who started it may end it (enforced by the
  * caller's requireActiveImpersonationSession + an explicit adminUserId
