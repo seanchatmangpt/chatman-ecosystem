@@ -1,0 +1,90 @@
+schema = "chatman.gcp-exact-conformance.v1"
+version = "26.8.18"
+objective = "Externally observable GCP equivalence over every admitted public contract unit"
+standing = "PARTIAL_ALIVE"
+
+[exactness]
+claim = false
+admitted_contract_units = 0
+paired_alive_units = 0
+unknown_units = 0
+partial_alive_units = 0
+blocked_units = 0
+unsupported_units = 0
+refused_units = 0
+duplicate_units = 0
+unreceipted_alive_units = 0
+
+[[subjects]]
+id = "gymact-gcp-runtime"
+repository = "seanchatmangpt/gymact"
+ref = "agent/gcp-exact-conformance"
+sha = "4734d4b19177890d17f6f75929d4ae08e2772992"
+role = "runtime-differential-conformance"
+standing = "UNKNOWN"
+required = true
+depends_on = []
+evidence = []
+exclusions = ["prior-head-workflow-evidence-does-not-transfer", "generic-world-crown-does-not-prove-gcp-exactness"]
+
+[[subjects]]
+id = "gcp-exact-conformance-pack"
+repository = "seanchatmangpt/ggen-marketplace"
+ref = "agent/gcp-exact-conformance-pack"
+sha = "3de0ee0106dc3e0d5b6c532de2a3df4a86b9bf26"
+role = "semantic-manufacturing-projection"
+standing = "UNKNOWN"
+required = true
+depends_on = ["gymact-gcp-runtime"]
+evidence = []
+exclusions = ["pack-qualification-does-not-prove-live-gcp-equivalence"]
+
+[[contract_sources]]
+id = "discovery"
+kind = "public-machine-contract"
+required = true
+[[contract_sources]]
+id = "googleapis-proto"
+kind = "public-machine-contract"
+required = true
+[[contract_sources]]
+id = "service-config"
+kind = "public-machine-contract"
+required = true
+[[contract_sources]]
+id = "asset-inventory"
+kind = "public-observation"
+required = true
+[[contract_sources]]
+id = "audit-logs"
+kind = "public-observation"
+required = true
+[[contract_sources]]
+id = "iam"
+kind = "public-behavior"
+required = true
+[[contract_sources]]
+id = "quota"
+kind = "public-behavior"
+required = true
+[[contract_sources]]
+id = "long-running-operations"
+kind = "public-behavior"
+required = true
+[[contract_sources]]
+id = "human-docs"
+kind = "public-documentation"
+required = true
+[[contract_sources]]
+id = "empirical-observation"
+kind = "receipted-observation"
+required = true
+
+[invariants]
+all_required_sources_present = true
+all_subjects_exact_sha = true
+select_construct_do_separated = true
+zero_unreceipted_actuation = true
+unknown_ne_alive = true
+exactness_requires_paired_receipts = true
+exactness_requires_zero_gaps = true
