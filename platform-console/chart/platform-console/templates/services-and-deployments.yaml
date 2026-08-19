@@ -1,0 +1,961 @@
+# Chart-wrapped copy of k8s/services-and-deployments.yaml, static (not yet .Values-parameterized).
+# See chart/platform-console/values.yaml's header for the known EnvoyFilter
+# alpha-API limitation and the disclosed parameterization gap.
+---
+# Deployment + Service for each of the 4 status services (1 replica each)
+# and the Next.js console (2 replicas). Images are locally built and
+# kind-loaded (`kind load docker-image ... --name platform-eng-colima`),
+# not pulled from a registry -- imagePullPolicy: IfNotPresent throughout.
+# Status container port is 8080 everywhere (app.py: PORT env, default
+# 8080 -- see services/<project>/app.py and Dockerfile). Console container
+# port is 3000 (Next.js standalone server -- see app/Dockerfile).
+#
+# platform-console's env vars for the 4 backend URLs use the same
+# <project>-status.<project>.svc.cluster.local convention that
+# lib/status.ts already defaults to, so setting them here is redundant
+# with the code's own defaults but explicit per the task's ask.
+#
+# AUTH_SECRET / ADMIN_USERNAME / ADMIN_PASSWORD_HASH / SUPABASE_SERVICE_ROLE_KEY
+# are sourced from a Secret named platform-console-secrets that is NOT
+# created by any file in this k8s/ directory (no plaintext secret belongs
+# in checked-in YAML). Before applying this Deployment, create it once,
+# e.g.:
+#   kubectl create secret generic platform-console-secrets \
+#     -n platform-console \
+#     --from-literal=AUTH_SECRET="$(openssl rand -base64 48)" \
+#     --from-literal=ADMIN_USERNAME=admin \
+#     --from-literal=ADMIN_PASSWORD_HASH='<bcrypt hash from data/plans.ts prep>' \
+#     --from-literal=SUPABASE_SERVICE_ROLE_KEY='<demo-project-jwt Secret's service-key, supabase-demo namespace>' \
+#     --from-literal=OIDC_CLIENT_SECRET="$(openssl rand -base64 32)" \
+#     --from-literal=IDP_DEMO_PASSWORD_HASH='<bcrypt hash of the oidc-idp demo account's password>'
+# OIDC_CLIENT_SECRET is shared, byte-for-byte, between the console
+# Deployment below (the RP, lib/oidc-federation.ts) and the
+# platform-console-oidc-idp Deployment (the real, separate OIDC provider,
+# services/oidc-idp) -- the same client_secret_basic credential both sides
+# of a real OAuth2 client registration always share. IDP_DEMO_PASSWORD_HASH
+# is consumed only by platform-console-oidc-idp itself (the third auth
+# path's one seeded demo end user -- see services/oidc-idp/server.js).
+# SUPABASE_SERVICE_ROLE_KEY is the real GoTrue service-role JWT for
+# demo-project-auth (already exists in this cluster as the `service-key`
+# key of Secret demo-project-jwt in namespace supabase-demo -- this command
+# copies it into platform-console's own Secret rather than referencing
+# another namespace's Secret directly, since a Pod's env can only pull
+# secretKeyRef from a Secret in its own namespace).
+#
+# Deployment-level labels (team/owner/cost-center/compliance-level) satisfy
+# the cluster's existing Gatekeeper constraints (k8srequirelabels
+# require-labels and require-compliance-labels -- both currently
+# enforcementAction: dryrun, confirmed via `kubectl get constrainttemplates`
+# / `kubectl get k8srequirelabels -o yaml`), so these manifests pass real
+# cluster policy rather than merely being unblocked by dry-run mode.
+# Known, disclosed exception: `k8srestrictimageregistries` only allows
+# gcr.io/, registry.example.com/, quay.io/my-org/ -- these images
+# (platform-console/*, kind-loaded, no registry) do not match any of
+# those prefixes and will show as a dryrun violation. That policy is also
+# dryrun-only (non-blocking) and the task explicitly specified
+# kind-loaded local images over a registry, so this is named here rather
+# than silently worked around.
+#
+# Pod-level `sidecar.istio.io/inject: "false"` annotation -- REMOVED, then
+# RESTORED for autofde-lab-status specifically.
+# History: these 5 namespaces carry `istio-injection: enabled`
+# (namespaces.yaml), but network-policies.yaml's default-deny Egress
+# (deliberately, per its own header comment, including DNS/istiod) meant
+# an injected istio-proxy could never resolve or reach istiod -- the
+# sidecar's startup probe on :15021/healthz/ready failed forever and the
+# pod never left Init:1/2 (confirmed live). Injection was disabled at the
+# pod template level as a stopgap so the plain containers could start.
+#
+# Fix: network-policies.yaml now carries a narrow, additional
+# `*-allow-egress-dns-istiod` Egress policy per project namespace
+# (kube-dns UDP/TCP 53, istiod TCP 15012/15017 -- nothing else), applied
+# alongside the unchanged default-deny + allow-from-platform-console
+# policies. With that egress path open, injection is re-enabled here by
+# removing the annotation -- `istio-injection: enabled` at the namespace
+# level is no longer overridden per-pod, so the mutating webhook injects
+# istio-proxy normally on the next pod recreation (`kubectl rollout
+# restart`).
+#
+# Second incident (autofde-lab namespace only, after
+# `pod-security.kubernetes.io/enforce: restricted` was applied to it --
+# see namespaces.yaml): this cluster's Istio install has no istio-cni
+# DaemonSet, so injection falls back to the legacy `istio-init` init
+# container (a privileged NET_ADMIN/NET_RAW iptables container), which
+# PodSecurity `restricted` rejects outright -- the pod's init container
+# never got past admission, blocking the whole Deployment. Fixed live via
+# `kubectl patch`: re-added `sidecar.istio.io/inject: "false"` to this
+# Deployment's pod template only (the other 3 project-status Deployments
+# above/below are unaffected -- their namespaces are not `restricted`),
+# plus an explicit PodSecurity-`restricted`-compatible container
+# `securityContext` (runAsNonRoot, numeric runAsUser, seccompProfile
+# RuntimeDefault, allowPrivilegeEscalation: false, capabilities: drop
+# [ALL]) so the plain container itself also satisfies `restricted`
+# without relying on any cluster/namespace-level default. Backported here
+# from the live object (`kubectl get deployment autofde-lab-status -n
+# autofde-lab -o yaml`) so `kubectl apply` doesn't regress the namespace.
+
+# ---------------------------------------------------------------- autofde-lab
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autofde-lab-status
+  namespace: autofde-lab
+  labels:
+    app: autofde-lab-status
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autofde-lab-status
+  template:
+    metadata:
+      annotations:
+        # See the "Second incident" comment above the Deployment header --
+        # PodSecurity `restricted` (namespaces.yaml) rejects this cluster's
+        # legacy istio-init sidecar (no istio-cni DaemonSet installed), so
+        # injection is disabled for this Deployment specifically.
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: autofde-lab-status
+        # Canary/stable subset label -- see k8s/canary.yaml's
+        # DestinationRule, which defines the `stable` subset as exactly
+        # this label. The Service selector below stays scoped to `app`
+        # only (unchanged), so it keeps matching both this Deployment's
+        # pods AND autofde-lab-status-canary's pods; Istio's
+        # DestinationRule/VirtualService pair is what actually splits
+        # traffic between the two `version` values, not the Service.
+        version: stable
+    spec:
+      serviceAccountName: autofde-lab-status-reader
+      containers:
+        - name: autofde-lab-status
+          image: platform-console/autofde-lab-status:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            # Feature Flags live-toggle proof (app.py's module docstring):
+            # explicit here per the task's ask, redundant with app.py's
+            # own defaults (see services/autofde-lab/Dockerfile).
+            - name: FEATURE_FLAGS_NAMESPACE
+              value: "platform-console"
+            - name: FEATURE_FLAGS_CONFIGMAP
+              value: "platform-feature-flags"
+            # Real runtime canary marker (app.py's "Canary marker" doc
+            # section) -- explicit here, redundant with the image's own
+            # ENV CANARY_VERSION=stable default, same "explicit per the
+            # task's ask" convention as the two vars above.
+            - name: CANARY_VERSION
+              value: "stable"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          securityContext:
+            # PodSecurity `restricted` (namespaces.yaml: autofde-lab
+            # carries pod-security.kubernetes.io/enforce: restricted) --
+            # backported from the live `kubectl patch` fix. See "Second
+            # incident" comment above.
+            runAsNonRoot: true
+            runAsUser: 65534
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: autofde-lab-status
+  namespace: autofde-lab
+  labels:
+    app: autofde-lab-status
+spec:
+  selector:
+    app: autofde-lab-status
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+
+# ------------------------------------------------------------ autofde-lab-mcp
+# Real second Deployment in the autofde-lab namespace, alongside (not
+# replacing) autofde-lab-status above. That Deployment serves the
+# build-time-baked facts.json stub; this one runs the actual autofde_lab
+# package's OpenClaw MCP bridge (services/autofde-lab-mcp -- real
+# catalog()/execute() dispatch over HTTP, see that directory's
+# Dockerfile/openclaw_http.py for how the image is built and verified
+# live: healthz + tools/list + a real 31-domain/57-solver
+# tools/call(autofde_lab_catalog) response). lib/openclaw.ts is the
+# first platform-console caller reaching this real surface.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autofde-lab-mcp
+  namespace: autofde-lab
+  labels:
+    app: autofde-lab-mcp
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autofde-lab-mcp
+  template:
+    metadata:
+      annotations:
+        # Same "Second incident" rationale as autofde-lab-status above --
+        # autofde-lab carries PodSecurity `restricted` (namespaces.yaml)
+        # and this cluster's Istio install has no istio-cni DaemonSet, so
+        # the legacy istio-init sidecar (privileged NET_ADMIN/NET_RAW)
+        # would be rejected by admission. Disabled here up front rather
+        # than discovered live a second time.
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: autofde-lab-mcp
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: autofde-lab-mcp
+          image: platform-console/autofde-lab-mcp:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8090
+          env:
+            - name: PORT
+              value: "8090"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8090
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8090
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: autofde-lab-mcp
+  namespace: autofde-lab
+  labels:
+    app: autofde-lab-mcp
+spec:
+  selector:
+    app: autofde-lab-mcp
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8090
+
+# -------------------------------------------------------------------- gymact
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gymact-status
+  namespace: gymact
+  labels:
+    app: gymact-status
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gymact-status
+  template:
+    metadata:
+      labels:
+        app: gymact-status
+      annotations:
+        # This cluster has no istio-cni DaemonSet, so any injected sidecar's
+        # istio-init container requests NET_ADMIN/NET_RAW and runAsUser:0 for
+        # iptables setup -- which PodSecurity `restricted` unconditionally
+        # forbids, taking the pod down on any re-admission (deploy, node
+        # move, scale event). Live-patched after a real incident this
+        # session (a traffic-generator PodSecurity test on a different
+        # Deployment triggered a re-admission of this pod and it could not
+        # come back up until this was applied) -- same documented pattern
+        # already used by autofde-lab-status.
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: gymact-status-reader
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: gymact-status
+          image: platform-console/gymact-status:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 65534
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gymact-status
+  namespace: gymact
+  labels:
+    app: gymact-status
+spec:
+  selector:
+    app: gymact-status
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+
+# ------------------------------------------------------------- gymact-kernel
+#
+# The real gymact FastAPI kernel (src/gymact/surfaces/fastapi.py's
+# create_app() -- the actual materialize/act/verify/checkpoint DCM
+# production surface), distinct from gymact-status above, which only
+# re-serves a build-time facts.json snapshot and exposes no /episodes
+# surface at all. platform-console's lib/gymact-kernel.ts and
+# /api/gymact-kernel proxy to this Service.
+#
+# NOT YET APPLIED to the live cluster as of this pass: image build is
+# blocked. `gymact`'s pyproject.toml depends (via `powl`) on the Rust
+# crate `rustxes` (a maturin/pyo3 native extension in turn pulling in
+# polars), and polars' own transitive dependency `ethnum 1.4.0` fails to
+# compile against current stable rustc on linux/arm64 with a hard
+# `error[E0512]: cannot transmute between types of different sizes` in
+# ethnum's error.rs -- a real upstream bug in that pinned crate version,
+# unrelated to any gymact/platform-console code. Confirmed real and
+# working OUTSIDE a container: the identical `gymact serve` kernel runs
+# correctly against the host's already-resolved `.venv` (real `/health`,
+# `/providers`, `/episodes` POST -> materialize, `/episodes/{id}/verify`
+# POST -> verify, `/evidence` all exercised live, real receipts/digests
+# returned). Applying this Deployment as-is today would only produce a
+# real, but uninformative, ImagePullBackOff (no image exists to load into
+# the kind node) -- left staged, not applied, rather than deployed in a
+# broken state. See services/gymact-kernel/ (if present) or the session
+# notes for the exact uv.sources build-context workaround and the
+# remaining rustc/ethnum blocker.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gymact-kernel
+  namespace: gymact
+  labels:
+    app: gymact-kernel
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gymact-kernel
+  template:
+    metadata:
+      labels:
+        app: gymact-kernel
+    spec:
+      containers:
+        - name: gymact-kernel
+          image: gymact-kernel:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gymact-kernel
+  namespace: gymact
+  labels:
+    app: gymact-kernel
+spec:
+  selector:
+    app: gymact-kernel
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+
+# ---------------------------------------------------------------------- ggen
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ggen-status
+  namespace: ggen
+  labels:
+    app: ggen-status
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ggen-status
+  template:
+    metadata:
+      labels:
+        app: ggen-status
+      annotations:
+        # ggen namespace has istio-injection: enabled + pod-security.kubernetes.io/enforce:
+        # restricted. The istio-init sidecar (NET_ADMIN/NET_RAW, runAsUser 0) cannot satisfy
+        # the restricted PodSecurity profile, so mesh injection is disabled for this plain
+        # status/provision HTTP service until istio-cni (init-container-free injection) is
+        # adopted cluster-wide.
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: ggen-status-reader
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: ggen-status
+          image: platform-console/ggen-status:v26.8.18-live
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            # Matches services/ggen/Dockerfile's ENV defaults (image-build time) --
+            # made explicit here so the manifest itself carries a record of these
+            # paths, since app.py's os.environ.get() fallbacks aren't visible from
+            # a manifest-only read.
+            - name: GGEN_BIN
+              value: "/usr/local/bin/ggen"
+            - name: WORKSPACE_ROOT
+              value: "/app/state/runs"
+            - name: SIGNING_KEY_PATH
+              value: "/app/state/keys/signing.key"
+            - name: PROVISION_LOG_PATH
+              value: "/app/state/ggen-paas-provision-log.jsonl"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          volumeMounts:
+            - name: state
+              mountPath: /app/state
+      volumes:
+        # emptyDir, not a PVC: the /provision endpoint's platform-managed signing key
+        # and per-run workspaces live here (see app.py's resolve_signing_key
+        # docstring). Ephemeral by design for this pass -- a pod restart mints a
+        # fresh signing key, so receipts signed before a restart can no longer be
+        # verified against the new key. Backing this with a real PVC (or sourcing
+        # GGEN_SIGNING_KEY from a k8s Secret instead) is the production fix and is
+        # out of scope for this pass.
+        - name: state
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ggen-status
+  namespace: ggen
+  labels:
+    app: ggen-status
+spec:
+  selector:
+    app: ggen-status
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+
+# ----------------------------------------------------------- ggen-marketplace
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ggen-marketplace-status
+  namespace: ggen-marketplace
+  labels:
+    app: ggen-marketplace-status
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ggen-marketplace-status
+  template:
+    metadata:
+      labels:
+        app: ggen-marketplace-status
+    spec:
+      serviceAccountName: ggen-marketplace-status-reader
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: ggen-marketplace-status
+          image: platform-console/ggen-marketplace-status:v26.8.18-live
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            # Matches services/ggen-marketplace/Dockerfile's ENV defaults (image-build
+            # time) -- made explicit here so the manifest itself carries a record of
+            # these paths, since app.py's os.environ.get() fallbacks aren't visible
+            # from a manifest-only read.
+            - name: GGEN_BIN
+              value: "/usr/local/bin/ggen"
+            - name: GGEN_PACKS_DIR
+              value: "/app/packs-registry"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ggen-marketplace-status
+  namespace: ggen-marketplace
+  labels:
+    app: ggen-marketplace-status
+spec:
+  selector:
+    app: ggen-marketplace-status
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+
+# ------------------------------------------------------------ platform-console
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platform-console-gateway
+  namespace: platform-console
+  labels:
+    app: platform-console-gateway
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: platform-console-gateway
+  template:
+    metadata:
+      labels:
+        app: platform-console-gateway
+      annotations:
+        # Confirmed live (this pass): with `pod-security.kubernetes.io/
+        # enforce: restricted` added to platform-console (namespaces.yaml),
+        # istio-injection's istio-init container (this cluster has no
+        # istio-cni DaemonSet, so injection always uses the legacy
+        # NET_ADMIN/NET_RAW/root init-container iptables method, never the
+        # CNI plugin) is rejected outright by PodSecurity admission:
+        # `container "istio-init" must not include "NET_ADMIN", "NET_RAW"`.
+        # Real, reproduced-live incompatibility between this cluster's
+        # Istio install and restricted, not a hypothetical -- same
+        # conflict independently confirmed against autofde-lab (which
+        # already carried both settings) during this pass's live
+        # verification. Disabling injection per-pod here is the same
+        # documented stopgap this file already used once before (see this
+        # file's header comment on the network-policies.yaml DNS/istiod
+        # egress fix) -- the real fix (installing istio-cni so the
+        # init-container step moves out of the pod) is out of scope for a
+        # namespace-label change and is disclosed here rather than
+        # silently reverting the restricted enforcement.
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: platform-console
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: console
+          image: platform-console/console:latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            # Explicit numeric UID: the image's `USER nextjs` (Dockerfile
+            # `useradd --uid 1001`) is a non-numeric name, and the kubelet's
+            # runAsNonRoot check cannot resolve /etc/passwd inside the image
+            # to verify it -- it rejects with "container has runAsNonRoot
+            # and image has non-numeric user" unless runAsUser is numeric.
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: HOSTNAME
+              value: "0.0.0.0"
+            - name: AUTOFDE_LAB_STATUS_URL
+              value: "http://autofde-lab-status.autofde-lab.svc.cluster.local/status"
+            - name: GYMACT_STATUS_URL
+              value: "http://gymact-status.gymact.svc.cluster.local/status"
+            - name: GGEN_STATUS_URL
+              value: "http://ggen-status.ggen.svc.cluster.local/status"
+            - name: GGEN_MARKETPLACE_STATUS_URL
+              value: "http://ggen-marketplace-status.ggen-marketplace.svc.cluster.local/status"
+            # Identity federation (additive login path): the real GoTrue
+            # (Supabase Auth) instance's user-facing REST API -- plain
+            # internal Service DNS, not sensitive, same pattern as the
+            # *_STATUS_URL vars above. See lib/gotrue-auth.ts.
+            - name: GOTRUE_AUTH_URL
+              value: "http://demo-project-auth.supabase-demo.svc.cluster.local:9999"
+            # Third, distinct real auth path -- external OIDC federation
+            # (lib/oidc-federation.ts) against the real, genuinely separate
+            # platform-console-oidc-idp service defined below in this same
+            # file. Plain internal Service DNS + a fixed, disclosed
+            # redirect_uri -- same sensitivity class as GOTRUE_AUTH_URL
+            # above, not a secret.
+            - name: OIDC_ISSUER_URL
+              value: "http://platform-console-oidc-idp.platform-console.svc.cluster.local:8081"
+            - name: OIDC_CLIENT_ID
+              value: "platform-console"
+            - name: OIDC_REDIRECT_URI
+              value: "http://platform.local/api/auth/oidc-callback"
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: OIDC_CLIENT_SECRET
+            - name: AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: AUTH_SECRET
+            - name: ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: ADMIN_USERNAME
+            - name: ADMIN_PASSWORD_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: ADMIN_PASSWORD_HASH
+            # Real GoTrue service-role JWT for demo-project-auth. Used both
+            # by the pre-existing lib/gotrue.ts read-only admin-API proxy
+            # and, new this pass, by lib/gotrue-auth.ts to auto-confirm a
+            # freshly signed-up user on this specific mailer-less cluster
+            # (see that file's doc comment for why). A real secret --
+            # sourced from the platform-console-secrets Secret, never
+            # committed to this repo in plaintext.
+            - name: SUPABASE_SERVICE_ROLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: SUPABASE_SERVICE_ROLE_KEY
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platform-console-gateway
+  namespace: platform-console
+  labels:
+    app: platform-console-gateway
+spec:
+  selector:
+    app: platform-console-gateway
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 3000
+
+# ------------------------------------------------------- oidc-idp (third auth path)
+# Real, minimal, spec-compliant OIDC provider -- a genuinely separate
+# service/process/image from platform-console itself, standing in for a
+# real public Google/GitHub/Microsoft OIDC provider (see
+# services/oidc-idp/server.js and lib/oidc-federation.ts's module docs for
+# the full "which real path, and why" reasoning). No ServiceAccount/RBAC
+# needed -- this service never talks to the k8s API, only real OIDC HTTP
+# endpoints of its own.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platform-console-oidc-idp
+  namespace: platform-console
+  labels:
+    app: platform-console-oidc-idp
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: platform-console-oidc-idp
+  template:
+    metadata:
+      labels:
+        app: platform-console-oidc-idp
+      annotations:
+        # Same real istio-init/restricted PodSecurity incompatibility as
+        # platform-console-gateway above -- see that Deployment's
+        # annotation comment for the full reasoning.
+        sidecar.istio.io/inject: "false"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: oidc-idp
+          image: platform-console/oidc-idp:latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            # Same non-numeric-USER gotcha as platform-console-gateway
+            # above: image's `USER oidcidp` (Dockerfile `useradd --uid
+            # 1001`) needs an explicit numeric runAsUser here.
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 8081
+          env:
+            - name: PORT
+              value: "8081"
+            - name: OIDC_IDP_ISSUER
+              value: "http://platform-console-oidc-idp.platform-console.svc.cluster.local:8081"
+            - name: OIDC_CLIENT_ID
+              value: "platform-console"
+            # Must be the exact same real redirect_uri the console's own
+            # OIDC_REDIRECT_URI (this file's platform-console-gateway
+            # Deployment, above) sends at /authorize and /token time -- a
+            # real OIDC provider rejects any mismatch (RFC 6749 3.1.2).
+            - name: OIDC_CLIENT_REDIRECT_URIS
+              value: "http://platform.local/api/auth/oidc-callback"
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: OIDC_CLIENT_SECRET
+            - name: IDP_DEMO_EMAIL
+              value: "demo.user@platform-eng-colima.local"
+            - name: IDP_DEMO_NAME
+              value: "Demo Federated User"
+            - name: IDP_DEMO_PASSWORD_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: platform-console-secrets
+                  key: IDP_DEMO_PASSWORD_HASH
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "96Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          readinessProbe:
+            httpGet:
+              path: /.well-known/openid-configuration
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /.well-known/openid-configuration
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platform-console-oidc-idp
+  namespace: platform-console
+  labels:
+    app: platform-console-oidc-idp
+spec:
+  selector:
+    app: platform-console-oidc-idp
+  ports:
+    - name: http
+      port: 8081
+      targetPort: 8081

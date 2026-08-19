@@ -1,0 +1,94 @@
+# Chart-wrapped copy of k8s/mtls-gateway.yaml, static (not yet .Values-parameterized).
+# See chart/platform-console/values.yaml's header for the known EnvoyFilter
+# alpha-API limitation and the disclosed parameterization gap.
+---
+# Private Connectivity for the backups/restore control plane -- the
+# AWS PrivateLink / GCP Private Service Connect / Azure Private Link
+# equivalent implemented at the Istio ingress edge: a route that requires
+# the CALLER to present a valid client certificate (mutual TLS at the
+# gateway), separate from and in addition to the mesh's existing
+# service-to-service STRICT mTLS (k8s/mtls.yaml) and the app's own
+# session-cookie auth on the route handler itself.
+#
+# Scope, deliberately narrow: only the backups/restore control path --
+# `/api/projects/*/backups` (app/app/api/projects/[name]/backups/route.ts,
+# handles both "run a pg_dump backup" and, via body.action=="restore",
+# "drop+replay a backup into the live database" -- see lib/k8s.ts
+# createBackupJob / createRestoreJob) and the matching UI page
+# `/projects/*/backups` -- is gated. Every other platform-console route
+# keeps using the existing plain-HTTP platform.local:80 Gateway/VirtualService
+# in k8s/gateway.yaml, untouched.
+#
+# Why a *second* Gateway+host instead of just flipping the existing HTTPS
+# server's tls.mode to MUTUAL: the existing platform-console-gateway HTTPS
+# server (k8s/gateway.yaml, port 443, host platform.local) fronts the whole
+# app for normal users -- forcing a client cert there would break every
+# other page. A distinct port (8444) and distinct host
+# (backups.platform.local) isolates the mTLS requirement to exactly the
+# sensitive surface, the same segmentation PrivateLink/PSC endpoints give a
+# specific service without touching a VPC's normal public ingress.
+#
+# Client cert issuance: see README.md "Private Connectivity: client
+# certificate issuance" for how an operator gets a real cert signed by this
+# CA. The CA key lives ONLY in the operator's own secure storage -- it is
+# never committed to this repo and never stored in the cluster; the cluster
+# only holds the CA's public certificate (to validate presented client
+# certs) plus the gateway's own server cert/key, all inside the
+# `platform-backups-mtls-credential` Secret (istio-system), e.g.:
+#   kubectl create secret generic platform-backups-mtls-credential \
+#     -n istio-system \
+#     --from-file=tls.crt=server.crt --from-file=tls.key=server.key \
+#     --from-file=ca.crt=ca.crt
+#
+# Exposure: the shared istio-ingressgateway Service (istio-system, not
+# owned by this directory) needed a new port added for 8444 -- see the
+# `kubectl patch svc istio-ingressgateway` note in README.md; that patch is
+# NOT re-applied automatically by anything in this directory and must be
+# redone if the Service is ever reconciled back to its Helm-rendered state.
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: platform-console-mtls-gateway
+  namespace: platform-console
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        name: mtls-backups
+        number: 8444
+        protocol: HTTPS
+      hosts:
+        - backups.platform.local
+      tls:
+        mode: MUTUAL
+        credentialName: platform-backups-mtls-credential
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: platform-console-mtls-backups
+  namespace: platform-console
+spec:
+  hosts:
+    - backups.platform.local
+  gateways:
+    - platform-console-mtls-gateway
+  http:
+    - name: platform-console-backups-mtls
+      match:
+        # Matches both the JSON API (`/api/projects/<name>/backups`, GET
+        # list + POST create-backup/restore) and the UI page
+        # (`/projects/<name>/backups`) under the same client-cert gate --
+        # the UI page server-renders by calling the same lib/k8s.ts
+        # functions the API route calls, so both surfaces touch the real
+        # destructive restore path and both belong behind the gate.
+        - uri:
+            regex: ^/api/projects/[^/]+/backups$
+        - uri:
+            regex: ^/projects/[^/]+/backups$
+      route:
+        - destination:
+            host: platform-console-gateway.platform-console.svc.cluster.local
+            port:
+              number: 8080
