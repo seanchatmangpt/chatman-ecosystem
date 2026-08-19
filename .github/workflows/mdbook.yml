@@ -22,6 +22,150 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  expand-chateco:
+    name: Expand verified Chateco manuscript
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      EXACT_SHA: ${{ github.event.pull_request.head.sha }}
+      ARCHIVE_SHA256: e90331785c29d0535ffad6f9e60167b671b148e609b0781fcb25f1fa36b144b4
+    steps:
+      - name: Checkout exact pull-request subject
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ env.EXACT_SHA }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify exact checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_SHA"
+          printf 'exact_subject=%s\n' "$EXACT_SHA"
+
+      - name: Expand content-addressed doctoral manuscript
+        id: expand
+        shell: bash
+        run: |
+          set -euo pipefail
+          bootstrap="docs/.chateco-phd-bootstrap"
+          if [[ ! -d "$bootstrap" ]]; then
+            echo "expanded=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          test "$GITHUB_HEAD_REF" = "agent/chateco-phd-book"
+          cat "$bootstrap"/part-* | base64 --decode > /tmp/chateco-phd-source.tar.xz
+          echo "$ARCHIVE_SHA256  /tmp/chateco-phd-source.tar.xz" | sha256sum --check -
+
+          python3 - <<'PY'
+          from pathlib import PurePosixPath
+          import tarfile
+
+          archive = "/tmp/chateco-phd-source.tar.xz"
+          with tarfile.open(archive, "r:xz") as tf:
+              members = tf.getmembers()
+              if not members:
+                  raise SystemExit("REFUSED:EMPTY_BOOTSTRAP_ARCHIVE")
+              for member in members:
+                  path = PurePosixPath(member.name)
+                  if path.is_absolute() or ".." in path.parts:
+                      raise SystemExit(f"REFUSED:UNSAFE_ARCHIVE_PATH:{member.name}")
+                  if len(path.parts) < 2 or path.parts[:2] != ("docs", "chateco-phd"):
+                      raise SystemExit(f"REFUSED:OUT_OF_SCOPE_ARCHIVE_PATH:{member.name}")
+                  if member.issym() or member.islnk():
+                      raise SystemExit(f"REFUSED:ARCHIVE_LINK:{member.name}")
+          PY
+
+          tar -xJf /tmp/chateco-phd-source.tar.xz
+          rm -rf "$bootstrap"
+          echo "expanded=true" >> "$GITHUB_OUTPUT"
+
+      - name: Verify manufactured manuscript before publication
+        if: steps.expand.outputs.expanded == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 docs/chateco-phd/verify.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          import re
+
+          root = Path("docs/chateco-phd")
+          manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+          assert manifest["chapter_count"] == 141
+          assert manifest["appendix_count"] == 26
+          assert manifest["summary_target_count"] == 172
+          assert manifest["base_sha"] == "495cb16e91b2ac208043e19a432d3cc477ec77aa"
+          assert manifest["source_corpus_sha256"] == "3a7cbe92378c0f645f4acfbf898b5145583b2b801835e7fa5b5f0c5b398378cf"
+
+          markdown = list((root / "src").rglob("*.md"))
+          if len(markdown) != 173:
+              raise SystemExit(f"expected 173 source markdown files, got {len(markdown)}")
+          bad = []
+          for path in markdown:
+              text = path.read_text(encoding="utf-8")
+              if any(ord(ch) < 32 and ch not in "\n\r\t" for ch in text):
+                  bad.append(str(path))
+              if re.search(r"\b(?:TODO|TBD)\b", text):
+                  bad.append(str(path))
+          if bad:
+              raise SystemExit(f"REFUSED:MANUSCRIPT_HYGIENE:{bad[:10]}")
+          print("manuscript_hygiene=PASS")
+          PY
+
+      - name: Install verified mdBook 0.5.4
+        if: steps.expand.outputs.expanded == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="0.5.4"
+          archive="mdbook-v${version}-x86_64-unknown-linux-gnu.tar.gz"
+          curl --fail --location --silent --show-error \
+            "https://github.com/rust-lang/mdBook/releases/download/v${version}/${archive}" \
+            --output "${archive}"
+          echo "3f28de05dafca9d0f2eab99c662116b0e37b89b1d96a08f8f430b9eeae958cd7  ${archive}" | sha256sum --check -
+          tar -xzf "${archive}"
+          install -d "$HOME/.local/bin"
+          install -m 0755 mdbook "$HOME/.local/bin/mdbook"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/mdbook" --version
+
+      - name: Build and inspect doctoral manuscript before publication
+        if: steps.expand.outputs.expanded == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mdbook build docs/chateco-phd
+          root="docs/chateco-phd/book"
+          test -s "$root/index.html"
+          test -s "$root/chapters/001-the-industrialization-of-knowledge-work.html"
+          test -s "$root/chapters/028-zero-unreceipted-actuation.html"
+          test -s "$root/chapters/141-final-receipt.html"
+          test -s "$root/appendices/z-machine-readable-thesis-manifest.html"
+          find "$root" -type f -name 'searchindex*.js' -size +0c -print -quit | grep -q .
+          grep -q "The Chateco Research Program" "$root/index.html"
+          grep -q "Zero Unreceipted Actuation" "$root/chapters/028-zero-unreceipted-actuation.html"
+
+      - name: Publish expanded Markdown source to the PR branch
+        if: steps.expand.outputs.expanded == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf docs/chateco-phd/book
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- docs/chateco-phd docs/.chateco-phd-bootstrap
+          test -n "$(git diff --cached --name-only)"
+          git commit -m "docs: expand full Chateco PhD book"
+          published="$(git rev-parse HEAD)"
+          git push origin "HEAD:${GITHUB_HEAD_REF}"
+          printf 'published_subject=%s\n' "$published"
+
   build:
     name: Build canonical mdBook
     runs-on: ubuntu-latest
@@ -119,9 +263,6 @@ jobs:
           handbook_summary = handbook / "SUMMARY.md"
           handbook_targets = verify_targets(handbook, handbook_summary)
 
-          # The root mdBook is the publication surface. Every handbook chapter and
-          # appendix linked from the handbook's local SUMMARY must also be reachable
-          # from the root SUMMARY so publication cannot silently omit book content.
           root_handbook_targets = {
               target.removeprefix("post-agi-platform-handbook/")
               for target in root_targets
@@ -162,6 +303,24 @@ jobs:
           grep -q "Current operational snapshot" book/index.html
           grep -q "Documentation Inventory" book/index.html
           grep -q "Reality as the Runtime" book/post-agi-platform-handbook/part-16-complete-calculus/65-reality-runtime.html
+
+      - name: Verify standalone Chateco doctoral book
+        if: hashFiles('docs/chateco-phd/manifest.json') != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 docs/chateco-phd/verify.py
+          mdbook build docs/chateco-phd
+          root="docs/chateco-phd/book"
+          test -s "$root/index.html"
+          test -s "$root/chapters/001-the-industrialization-of-knowledge-work.html"
+          test -s "$root/chapters/028-zero-unreceipted-actuation.html"
+          test -s "$root/chapters/141-final-receipt.html"
+          test -s "$root/appendices/z-machine-readable-thesis-manifest.html"
+          find "$root" -type f -name 'searchindex*.js' -size +0c -print -quit | grep -q .
+          grep -q "The Chateco Research Program" "$root/index.html"
+          grep -q "Zero Unreceipted Actuation" "$root/chapters/028-zero-unreceipted-actuation.html"
+          printf 'chateco_exact_subject=%s\n' "$(git rev-parse HEAD)"
 
       - name: Preserve rendered book
         uses: actions/upload-artifact@v7

@@ -1,0 +1,22 @@
+{
+  "book": "The Chateco Research Program",
+  "chapter_count": 141,
+  "appendix_count": 26,
+  "base_repo": "seanchatmangpt/chatman-ecosystem",
+  "base_sha": "495cb16e91b2ac208043e19a432d3cc477ec77aa",
+  "initial_base_sha": "fd64b845c145812fb05ef2ced52a14081807f86d",
+  "source_corpus_sha256": "3a7cbe92378c0f645f4acfbf898b5145583b2b801835e7fa5b5f0c5b398378cf",
+  "status": "CANDIDATE",
+  "standing_note": "Authored manuscript source. Structural and parser validation do not establish mdBook execution or research-crown ALIVE.",
+  "base_drift": {
+    "from": "fd64b845c145812fb05ef2ced52a14081807f86d",
+    "to": "495cb16e91b2ac208043e19a432d3cc477ec77aa",
+    "ahead_by": 2,
+    "overlap_with_book_paths": false,
+    "disposition": "recomposed onto current main after GitHub compare showed only disjoint docs/jira and platform-console changes"
+  },
+  "chapter_words": 183555,
+  "appendix_words": 21553,
+  "summary_target_count": 172,
+  "source_anchor_policy": "Each chapter names its curated source anchor in the chapter body; SUMMARY.md is the canonical navigation graph."
+}

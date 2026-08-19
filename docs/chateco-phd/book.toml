@@ -1,0 +1,22 @@
+[book]
+title = "The Chateco Research Program"
+authors = ["Sean Chatman"]
+description = "Standing-bearing manufacture, constitutional computation, and the industrialization of knowledge work."
+language = "en"
+src = "src"
+
+[build]
+build-dir = "book"
+create-missing = false
+
+[output.html]
+mathjax-support = true
+smart-punctuation = true
+definition-lists = true
+admonitions = true
+no-section-label = true
+
+[output.html.search]
+enable = true
+limit-results = 30
+heading-split-level = 3
