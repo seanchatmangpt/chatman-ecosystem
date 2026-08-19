@@ -80,6 +80,24 @@ jobs:
           git diff --binary "$P31_BASE" "$P31_HEAD" -- . > /tmp/p31.patch
           git apply --index --3way /tmp/p31.patch
 
+      - name: Normalize imported Markdown whitespace
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          for name in (
+              "README.md",
+              "docs/00-introduction.md",
+              "docs/DOCUMENTATION-INVENTORY.md",
+              "docs/README.md",
+          ):
+              path = Path(name)
+              lines = path.read_text().splitlines()
+              path.write_text("\n".join(line.rstrip() for line in lines) + "\n")
+          PY
+
       - name: Manufacture canonical document union
         shell: bash
         run: |
