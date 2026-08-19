@@ -47,6 +47,7 @@ Version: `0.1.0`
 | `document:docs-maintenance` | `docs/DOCS-MAINTENANCE.md` | false |
 | `document:documentation-inventory` | `docs/DOCUMENTATION-INVENTORY.md` | true |
 | `document:ggen-service` | `docs/GGEN-SERVICE.md` | false |
+| `document:how-to-build-a-dyson-sphere` | `docs/how-to-build-a-dyson-sphere/README.md` | false |
 | `document:hyperdimensional-information-encryption` | `docs/architecture/hyperdimensional-information-encryption.md` | false |
 | `document:observability` | `docs/OBSERVABILITY.md` | false |
 | `document:ocel-process-evidence` | `docs/OCEL-PROCESS-EVIDENCE.md` | false |

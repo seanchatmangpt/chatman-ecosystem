@@ -38,10 +38,8 @@ excluded = [
     "root release Crown is not asserted by this documentation change",
     "hosted exact-head execution evidence is evaluated independently of this source receipt",
 ]
-replay = [
-    "python3 scripts/generate_dyson_sphere_book.py",
-]
+replay = ["python3 scripts/generate_dyson_sphere_book.py"]
 standing_before = "CANDIDATE"
 standing_after = "PARTIAL_ALIVE"
 timestamp = "2026-08-19T19:51:46.089511+00:00"
-digest = ""
+digest = "blake3:c222087fed624ce4be845cf19dfbbf02b9b281e0654e50b056114187b1320666"
