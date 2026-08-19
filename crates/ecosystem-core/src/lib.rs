@@ -809,6 +809,14 @@ fn verify_admission(root: &Path, subject: &str) -> Result<(), Error> {
     Ok(())
 }
 
+fn required_rails_alive(rails: &[Rail]) -> bool {
+    REQUIRED_RAILS.iter().all(|required| {
+        rails
+            .iter()
+            .any(|rail| rail.id == *required && rail.standing == Standing::Alive)
+    })
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct CrownReport {
     pub subject: String,
@@ -818,6 +826,8 @@ pub struct CrownReport {
 
 impl CrownReport {
     /// Evaluates every required rail against exact-subject admission evidence.
+    /// Optional product rails preserve their own standing and do not silently
+    /// become constitutional Crown requirements.
     ///
     /// # Errors
     /// Returns an error when the subject, catalog, receipts, projections, architecture, or admission evidence fails.
@@ -835,14 +845,7 @@ impl CrownReport {
         check_projections(root)?;
         check_architecture(root)?;
         verify_admission(root, &subject)?;
-        let all_alive = catalog
-            .rails
-            .rail
-            .iter()
-            .all(|x| x.standing == Standing::Alive)
-            && REQUIRED_RAILS
-                .iter()
-                .all(|required| catalog.rails.rail.iter().any(|x| x.id == *required));
+        let all_alive = required_rails_alive(&catalog.rails.rail);
         let rails = catalog
             .rails
             .rail
@@ -925,6 +928,32 @@ mod tests {
         }
         assert!(check_core_manifest("[dependencies]\nblake3 = \"1\"\ntoml = \"0.8\"\n").is_ok());
         assert!(check_core_manifest("not = valid = toml").is_err());
+    }
+
+    #[test]
+    fn optional_rails_do_not_inherit_crown_requirement() {
+        let mut rails = REQUIRED_RAILS
+            .iter()
+            .map(|id| Rail {
+                id: (*id).to_owned(),
+                standing: Standing::Alive,
+                subject: "SELF".to_owned(),
+                evidence: vec!["evidence".to_owned()],
+            })
+            .collect::<Vec<_>>();
+        rails.push(Rail {
+            id: "ggen".to_owned(),
+            standing: Standing::PartialAlive,
+            subject: "SELF".to_owned(),
+            evidence: vec!["evidence".to_owned()],
+        });
+        assert!(required_rails_alive(&rails));
+
+        assert!(!rails.is_empty());
+        if let Some(first) = rails.first_mut() {
+            first.standing = Standing::PartialAlive;
+        }
+        assert!(!required_rails_alive(&rails));
     }
 
     #[test]
