@@ -141,3 +141,9 @@ id = "document:hyperdimensional-information-encryption"
 title = "Hyperdimensional Information Encryption and the Construct-Only Standing Runtime"
 path = "docs/architecture/hyperdimensional-information-encryption.md"
 canonical = false
+
+[[document]]
+id = "document:how-to-build-a-dyson-sphere"
+title = "How to Build a Dyson Sphere with the Chatman Ecosystem"
+path = "docs/how-to-build-a-dyson-sphere/README.md"
+canonical = false
