@@ -4,15 +4,20 @@ on:
   push:
     branches:
       - agent/post-agi-wip-convergence-v26.8.18
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
 
 concurrency:
-  group: post-agi-wip-convergence-${{ github.ref }}
+  group: post-agi-wip-convergence-${{ github.event.pull_request.head.ref || github.ref }}
   cancel-in-progress: false
 
 env:
+  CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
   P28_BASE: 2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01
   P28_HEAD: a8afc4b4c55600d1568cac876ea5216941c0b482
   P29_BASE: 2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01
@@ -30,13 +35,13 @@ jobs:
       - name: Checkout exact convergence seed
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ env.CANDIDATE_SHA }}
           fetch-depth: 0
           persist-credentials: true
 
       - name: Assert exact seed identity
         shell: bash
-        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+        run: test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
 
       - name: Fetch admitted source heads
         shell: bash
@@ -143,4 +148,4 @@ jobs:
 
           Manufacture: net-delta reconstitution; no branch merge; generated projections regenerated from canonical sources; Weaver definition/2 admitted with explicit future semantics."
           test ! -e .github/workflows/post-agi-wip-convergence.yml
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git push origin "HEAD:${TARGET_BRANCH}"
