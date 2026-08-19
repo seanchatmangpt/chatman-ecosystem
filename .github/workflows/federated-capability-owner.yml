@@ -56,8 +56,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          control_root="$(realpath control-plane)"
           python3 control-plane/scripts/verify_federated_capability_owner.py \
-            --control-plane-root control-plane \
+            --control-plane-root "$control_root" \
             --subject-root subject \
             --descriptor "subject/${{ inputs.descriptor-path }}" \
             --expected-repository '${{ github.repository }}' | tee /tmp/federation-receipt.json
