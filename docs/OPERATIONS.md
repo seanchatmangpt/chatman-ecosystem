@@ -1,6 +1,6 @@
 # Operations and Admission — v26.8.18
 
-> Reviewed subject: `seanchatmangpt/chatman-ecosystem@1ed4972318467c5bfb5d283505893a361536d37a`
+> Reviewed implementation baseline: `seanchatmangpt/chatman-ecosystem@2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01`
 
 ## Operating law
 
@@ -50,7 +50,7 @@ Platform-console uses per-control evidence rather than one blanket readiness lab
 
 `platform-console/evidence/control-evidence-bundle.json`
 
-At the reviewed base it records live-tested controls and points to `platform-console/docs/SCOPE-AND-LIMITATIONS.md` for cross-cutting topology limits. Replaying one control does not automatically replay every other control.
+At the reviewed implementation baseline it records live-tested controls and points to `platform-console/docs/SCOPE-AND-LIMITATIONS.md` for cross-cutting topology limits. Replaying one control does not automatically replay every other control.
 
 Operational evidence in the 2026-08-18 implementation sequence includes real tests of:
 
@@ -68,6 +68,7 @@ Operational evidence in the 2026-08-18 implementation sequence includes real tes
 - Loki log ingestion and query;
 - storage edge-cache MISS/HIT/backend-bypass behavior;
 - OTel Collector span acceptance and fan-out to the standing-weaver path;
+- OCEL accumulator event/object growth driven by real gateway traffic;
 - cold-standby cluster materialization without destroying the primary cluster.
 
 These observations are persisted evidence from the reviewed tree/history. A future head must not inherit them automatically after subject drift.
@@ -100,7 +101,7 @@ Current limitations remain material:
 - receipt/attempt durability is bounded by the deployed storage configuration;
 - SaaS purchase/entitlement/billing is not implied by successful provisioning.
 
-## Observability operations
+## Observability and OCEL operations
 
 Current local topology:
 
@@ -109,6 +110,10 @@ Istio / workload tracing
       -> OTel Collector
            -> Jaeger
            -> standing weaver live-check
+           -> OCEL v2 accumulator
+                -> /status
+                -> /ocel-log
+                -> /discovery (incomplete, fail-closed)
 
 container logs -> Promtail -> Loki
 metrics        -> Prometheus
@@ -116,7 +121,11 @@ metrics        -> Prometheus
 
 When validating this stack, verify both producer and consumer consequences. A healthy Deployment or open TCP connection is insufficient.
 
-For example, a tracing replay should show the request being generated, the Collector accepting spans, and downstream observation in the intended sink. The reviewed implementation fixed real transport/compression/network-policy failures before recording success.
+For tracing/standing replay, show the request being generated, the Collector accepting spans, and downstream observation in the intended sink. The reviewed implementation fixed real transport/compression/network-policy failures before recording success.
+
+For OCEL replay, the evidence bar is stronger than manifest presence: real traffic must increase the accumulator's event/object counts and the dashboard/server proxy must return those real values. The reviewed implementation observed 24→29 events and 14→17 objects. `/discovery` must remain an explicit failure until the accumulator's real wasm4pm subprocess bridge exists and executes successfully.
+
+The accumulator's current `emptyDir` is a durability ceiling. Pod restart persistence must not be inferred until the storage policy changes and is replay-tested.
 
 The remaining unattended-traffic limitation must stay explicit until a generator can sustain the observation path without a human-driven request source in the admitted topology.
 

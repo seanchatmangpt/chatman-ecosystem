@@ -3,7 +3,7 @@
 The constitutional control plane, executable platform surface, project graph, documentation registry, automation-policy layer, and evidence ledger for the Chatman Ecosystem.
 
 > **Current operational snapshot:** `v26.8.18`  
-> **Reviewed base:** `1ed4972318467c5bfb5d283505893a361536d37a`  
+> **Reviewed implementation baseline:** `2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01`  
 > **Ecosystem standing:** `PARTIAL_ALIVE`  
 > **Next composition crown:** `v26.9.1` (future release graph, not renamed or collapsed into this snapshot)
 
@@ -24,12 +24,13 @@ Models, planners, generated code, hooks, proofs, connectors, MCP handlers, and w
 
 ## v26.8.18 at a glance
 
-The 2026-08-18 implementation pass moved the repository far beyond its original v0.1 control-plane-only surface. At the reviewed base the repo contains:
+The 2026-08-18 implementation pass moved the repository far beyond its original v0.1 control-plane-only surface. At the reviewed implementation baseline the repo contains:
 
 - the Rust constitutional core, runtime adapters, CLI, receipts, catalog, deterministic projections, Crown gates, and Gall capsule;
 - a live-tested Kubernetes platform console with project provisioning, RBAC, policy-as-code admission, Istio mTLS, NetworkPolicy isolation, vulnerability scanning, GitOps visibility, audit evidence, dashboards, quota enforcement, and topology views;
 - per-project Postgres, Redis, and NATS/JetStream managed-service shapes with bounded operator APIs;
-- Prometheus observability plus Jaeger tracing, Loki/Promtail centralized logs, an OpenTelemetry Collector fan-out, and a standing-weaver live-check path;
+- Prometheus observability plus Jaeger tracing, Loki/Promtail centralized logs, and an OpenTelemetry Collector fan-out to Jaeger, a standing-weaver live-check, and an OCEL v2 accumulator;
+- a live `/ocel-log` surface backed by admitted OTLP-derived events/objects, while the deeper `/discovery` bridge remains fail-closed and incomplete;
 - ggen `POST /provision` integration using a real ggen binary, per-tenant workspace/namespace resolution, signed receipt output, and a marketplace registry bridge exposing 151 pack records at the observed implementation point;
 - Castle as a bounded, allowlisted one-shot lifecycle surface and a second planner path through AutoFDE-lab;
 - a cold-standby second kind cluster and disaster-recovery materialization path;
@@ -80,7 +81,7 @@ Use the release-standing states distinctly:
 
 Typed refusal is behavior, not a degraded success state. Inspection is not execution; workflow existence is not a successful run; a named receipt is not proof that its digest/replay verified.
 
-At the reviewed base, `catalog/rails.toml` marks the repo-level ggen rail `PARTIAL_ALIVE`. That alone prevents an ecosystem-wide `ALIVE` claim for this snapshot.
+At the reviewed implementation baseline, `catalog/rails.toml` marks the repo-level ggen rail `PARTIAL_ALIVE`. That alone prevents an ecosystem-wide `ALIVE` claim for this snapshot.
 
 ## Admission and replay
 
@@ -118,7 +119,8 @@ The current implementation has real live-cluster evidence, but the following rem
 - SOC 2 material is readiness evidence only; certification/attestation requires an independent licensed auditor;
 - ggen IaaS/PaaS paths have implementation evidence, while SaaS purchase, entitlement, metering, and billing remain incomplete;
 - GymAct verification exists, but the heavier GymAct/Castle `execute` path is not yet the admitted BRCE `DO` route;
-- the OpenTelemetry/standing-weaver pipeline is wired and live-tested, but unattended continuous traffic generation remains blocked on the reviewed local cluster configuration.
+- the OpenTelemetry/standing-weaver/OCEL pipeline is wired and live-tested, but unattended continuous traffic generation remains blocked on the reviewed local cluster configuration;
+- OCEL accumulation/status is live, while `/discovery` remains a fail-closed incomplete edge rather than a fabricated process-mining result.
 
 See [`platform-console/docs/SCOPE-AND-LIMITATIONS.md`](platform-console/docs/SCOPE-AND-LIMITATIONS.md) for module-level boundaries.
 

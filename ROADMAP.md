@@ -2,13 +2,18 @@
 
 ## Current frontier
 
-`v26.8.18` is the current operational/documentation snapshot. The reviewed base is:
+`v26.8.18` is the current operational/documentation snapshot. The review began at
+`1ed4972318467c5bfb5d283505893a361536d37a` and explicitly admitted the one observed descendant
+head-drift commit `2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01`, which completed the current
+OTel→OCEL accumulator/dashboard edge.
 
-`seanchatmangpt/chatman-ecosystem@1ed4972318467c5bfb5d283505893a361536d37a`
+The repo has crossed the original four-checkpoint Gall bootstrap and now contains a live-tested
+local platform surface, ggen provisioning, marketplace bridging, security/admission controls,
+multi-signal observability, OCEL v2 accumulation, cold-standby DR, and compliance-readiness
+evidence.
 
-The repo has crossed the original four-checkpoint Gall bootstrap and now contains a live-tested local platform surface, ggen provisioning, marketplace bridging, security/admission controls, multi-signal observability, cold-standby DR, and compliance-readiness evidence.
-
-The next crown remains `v26.9.1`. Work should close evidence and implementation edges without reopening the frozen constitutional calculus unless a real falsifier is found.
+The next crown remains `v26.9.1`. Work should close evidence and implementation edges without
+reopening the frozen constitutional calculus unless a real falsifier is found.
 
 ## Preserve
 
@@ -32,6 +37,7 @@ The next crown remains `v26.9.1`. Work should close evidence and implementation 
 | ggen SaaS | incomplete | executable entitlement, purchase, billing/metering, fulfillment receipts |
 | Castle / planner integration | bounded execution exists | complete admitted GymAct `execute`/BRCE path |
 | Observability | metrics + traces + logs + OTel fan-out | unattended traffic/replay and durable production-grade stores |
+| OCEL v2 | live accumulation/status/dashboard | durable storage plus real wasm4pm-backed `/discovery` execution |
 | DR | cold standby | real multi-node/multi-region infrastructure before HA claims |
 | SOC 2 | readiness evidence | real independent audit engagement for any audit opinion |
 | v26.9.1 composition | future release graph | exact-head component receipts, replay, class closure, Crown |
@@ -78,10 +84,11 @@ Only the last category reopens foundational law.
 1. **ggen SaaS closure** — add real entitlement/purchase/metering semantics rather than renaming PaaS provisioning.
 2. **BRCE execution closure** — wire GymAct/Castle execution through the final admitted authority/receipt path with negative fixtures.
 3. **Unattended observability standing** — make traffic/replay self-sustaining and prove Collector → downstream consequence without human request generation.
-4. **Durability** — move local ephemeral evidence/service state that matters for standing onto explicitly verified durable storage.
-5. **Infrastructure topology** — do not claim HA until there is real multi-node/multi-failure-domain infrastructure and failure injection evidence.
-6. **Fleet regeneration** — refresh canonical snapshots and generated status projections from current exact repository heads rather than hand-editing stale projections.
-7. **v26.9.1 Crown** — resolve every required component to exact identity, owning verifier, receipt, replay, and class-closure evidence.
+4. **OCEL discovery closure** — execute the real wasm4pm bridge against the accumulated OCEL log and keep sparse/failed process discovery typed rather than fabricated.
+5. **Durability** — move local ephemeral evidence/service state that matters for standing, including OCEL accumulation, onto explicitly verified durable storage.
+6. **Infrastructure topology** — do not claim HA until there is real multi-node/multi-failure-domain infrastructure and failure injection evidence.
+7. **Fleet regeneration** — refresh canonical snapshots and generated status projections from current exact repository heads rather than hand-editing stale projections.
+8. **v26.9.1 Crown** — resolve every required component to exact identity, owning verifier, receipt, replay, and class-closure evidence.
 
 ## Falsifiers
 
@@ -93,4 +100,5 @@ The roadmap is invalidated by any observation that:
 4. allows generated prose/projections to outrank canonical source;
 5. reports a later checkpoint or release Crown after an earlier required edge failed;
 6. cannot reproduce the claimed exact-head evidence with the documented verifier;
-7. converts a local mechanism claim into an unsupported scale, compliance, or availability claim.
+7. converts a local mechanism claim into an unsupported scale, compliance, or availability claim;
+8. presents OCEL discovery as successful while the real `/discovery` edge is still fail-closed.

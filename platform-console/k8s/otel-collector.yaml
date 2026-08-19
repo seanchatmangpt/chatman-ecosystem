@@ -57,6 +57,30 @@ data:
         # Jaeger's collector which accepts the Collector's gzip default.
         compression: none
 
+      otlphttp/ocel-consumer:
+        # Plan step C's third fan-out leg: real continuous OCEL v2 log
+        # accumulator (ocel-accumulator.yaml). Genuinely OTLP-HTTP (unlike
+        # the otlp/weaver exporter above, which is gRPC despite the plan's
+        # generic "otlphttp/ocel-consumer" naming) -- the accumulator's
+        # ingest server is tiny_http parsing OTLP-HTTP/JSON bodies, so this
+        # is the Collector's real otlphttp component, with json encoding so
+        # the accumulator doesn't need a protobuf/prost dependency.
+        # NOTE: no /v1/traces suffix here -- the otlphttp exporter appends
+        # its own signal-specific path (/v1/traces) to whatever endpoint is
+        # given; confirmed live (a first attempt with the suffix included
+        # produced real double-appended 404s: ".../v1/traces/v1/traces").
+        endpoint: http://ocel-accumulator.istio-system.svc.cluster.local:4900
+        encoding: json
+        # ocel_accumulator's tiny_http ingest reads the body as plain UTF-8
+        # JSON with no gzip decompression (no precedent for one in this
+        # crate) -- same "compression: none" fix already applied to
+        # otlp/weaver above, needed here for the same reason: the
+        # exporter's gzip default would hand the accumulator a binary body
+        # it can't read as a UTF-8 string.
+        compression: none
+        tls:
+          insecure: true
+
       debug:
         verbosity: basic
 
@@ -64,7 +88,7 @@ data:
       pipelines:
         traces:
           receivers: [otlp]
-          exporters: [otlp/jaeger, otlp/weaver]
+          exporters: [otlp/jaeger, otlp/weaver, otlphttp/ocel-consumer]
       telemetry:
         metrics:
           readers:

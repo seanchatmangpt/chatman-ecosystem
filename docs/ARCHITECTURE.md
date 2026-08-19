@@ -1,6 +1,6 @@
 # Architecture — v26.8.18
 
-> Reviewed subject: `seanchatmangpt/chatman-ecosystem@1ed4972318467c5bfb5d283505893a361536d37a`
+> Reviewed implementation baseline: `seanchatmangpt/chatman-ecosystem@2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01`
 
 ## Constitutional dependency direction
 
@@ -55,6 +55,7 @@ Adapters construct observations and intentions. They do not manufacture constitu
 - signed storage access, edge caching, backup/restore, dashboards, cost visibility, and quota enforcement;
 - topology views using shared service-discovery data;
 - Prometheus metrics, Jaeger tracing, Loki/Promtail log aggregation, and OTel Collector fan-out;
+- an OCEL v2 accumulator and `/ocel-log` dashboard driven by the same real telemetry stream;
 - ggen and ggen-marketplace service bridges;
 - bounded Castle execution and AutoFDE-lab planner integration;
 - cold-standby disaster-recovery materialization.
@@ -127,7 +128,7 @@ ggen SaaS commerce           -> incomplete
 
 Purchase, entitlement, external billing/metering, and full product-lifecycle semantics are not inferred from `/provision` or `/packs`.
 
-## Observability boundary
+## Observability and process-evidence boundary
 
 v26.8.18 extends the platform from metrics-only observation to a multi-signal local stack:
 
@@ -136,6 +137,11 @@ workload / Envoy spans
       -> OTel Collector
           -> Jaeger
           -> standing weaver live-check
+          -> OCEL v2 accumulator
+               -> deduplicated append-only JSONL
+               -> canonical OCEL v2 JSON
+               -> /ocel-log status/dashboard
+               -> /discovery (incomplete, fail-closed)
 
 container logs
       -> Promtail
@@ -145,7 +151,11 @@ metrics
       -> Prometheus
 ```
 
-The OTel Collector is the single mesh tracing provider at the reviewed head and fans out to both downstream consumers. This topology was chosen after direct Envoy-to-weaver and dual-Istio-provider paths failed in live testing. The remaining boundary is explicit: the local cluster does not yet provide self-sustaining unattended traffic generation for the standing pipeline.
+The OTel Collector is the single mesh tracing provider at the reviewed head and fans out to three downstream consumers. Direct Envoy-to-weaver and dual-Istio-provider approaches had already failed in live testing and were replaced by this fan-out topology.
+
+The OCEL accumulator is a real third consumer: live traffic caused its event/object counts to grow from 24→29 events and 14→17 objects in the observed run. Its storage is currently `emptyDir`, and the wasm4pm-backed `/discovery` endpoint remains incomplete. The dashboard correctly surfaces that incomplete edge as failure rather than fabricating a result.
+
+The remaining unattended-traffic boundary is also explicit: the local cluster still does not provide self-sustaining continuous traffic generation for the standing pipeline.
 
 ## Security boundary
 
