@@ -6,11 +6,14 @@ on:
       - '.github/workflows/portfolio-survey.yml'
       - 'scripts/survey_portfolio.py'
       - 'scripts/verify_portfolio.py'
+      - 'scripts/errc_portfolio.py'
       - 'tests/test_survey_portfolio.py'
       - 'tests/test_portfolio_control.py'
+      - 'tests/test_errc_portfolio.py'
       - 'release/v26.9.1/manifest.toml'
       - 'release/v26.9.1/fleet-policy.toml'
       - 'release/v26.9.1/constitutional-role-crosswalk.toml'
+      - 'release/v26.9.1/errc-policy.toml'
   workflow_dispatch:
   schedule:
     - cron: '17 12 * * *'
@@ -26,14 +29,23 @@ env:
 jobs:
   survey:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout exact subject
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
 
+      - name: Assert exact subject identity
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+
       - name: Verify local portfolio law
         run: |
           python3 scripts/verify_portfolio.py
-          python3 -m unittest -v tests.test_portfolio_control tests.test_survey_portfolio
+          python3 -m unittest -v \
+            tests.test_portfolio_control \
+            tests.test_survey_portfolio \
+            tests.test_errc_portfolio
 
       - name: Observe owner portfolio and exact required refs
         env:
@@ -45,6 +57,17 @@ jobs:
             --output-dir .artifacts/portfolio-survey \
             --fail-on-blocking
           cat .artifacts/portfolio-survey/REPORT.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Manufacture 80/20 ERRC plan
+        run: |
+          python3 scripts/errc_portfolio.py \
+            --manifest release/v26.9.1/manifest.toml \
+            --fleet release/v26.9.1/fleet-policy.toml \
+            --policy release/v26.9.1/errc-policy.toml \
+            --survey .artifacts/portfolio-survey/FINDINGS.json \
+            --output-dir .artifacts/portfolio-survey \
+            --require-target
+          cat .artifacts/portfolio-survey/ERRC.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Seal generated survey bundle
         run: |
