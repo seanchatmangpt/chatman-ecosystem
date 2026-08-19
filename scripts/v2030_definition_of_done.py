@@ -1,26 +1,28 @@
 #!/usr/bin/env python3
-"""Executable v2030.1.1 definition-of-done reference court.
+"""v2030.1.1 end-to-end consequence court over the canonical DFCM finisher.
 
-This module composes existing Chatman Ecosystem constitutional laws into one
-bounded end-to-end transaction:
+PR #40 owns release-graph Definition of Done, DFCM repair selection, exact BRCE
+admission, receipt chaining, and deterministic replay. This module does not
+replace that engine. It extends it across the remaining v2030 product boundary:
 
-INTENT -> OBSERVE -> ADMIT O* -> PRESERVE DfCM FRONTIER -> SELECT -> CONSTRUCT
--> ADMIT/VERIFY -> AUTHORIZE -> BRCE DO -> OBSERVE POSTCONDITION -> RECEIPT
--> REPLAY -> STANDING
+INTENT -> OBSERVE -> ADMIT O* -> PRESERVE ACTION FRONTIER -> SELECT -> CONSTRUCT
+-> ADMIT/VERIFY -> [external exact authority] -> BRCE DO -> OBSERVE POSTCONDITION
+-> RECEIPT -> REPLAY -> STANDING
 
-It is deliberately a control-plane reference implementation. It does not grant
-ambient production authority and it does not claim that an in-memory test proves
-an external provider boundary. External runtimes can supply their own actuator,
-observer, and durable receipt store while preserving the same admission law.
+`prepare()` is SELECT/CONSTRUCT only and cannot actuate. The caller must supply
+an independently created exact grant for the prepared intent digest before
+`execute()` can cross the BRCE boundary. Receipt capability is reserved before
+actuation, and replay never calls the actuator.
 """
 from __future__ import annotations
 
 import argparse
-import hashlib
+import importlib.util
 import json
 import re
+import sys
 import tomllib
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
 
@@ -59,17 +61,31 @@ REQUIRED_CAPABILITIES = {
 }
 
 
+def _load_dfcm_module():
+    path = Path(__file__).with_name("dfcm_autonomic_finish.py")
+    spec = importlib.util.spec_from_file_location("chatman_dfcm_autonomic_finish", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("cannot load canonical DFCM finisher")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+dfcm = _load_dfcm_module()
+
+
 class Refusal(RuntimeError):
-    """Typed fail-closed outcome."""
+    """Typed fail-closed outcome for the v2030 consequence boundary."""
 
     def __init__(self, code: str) -> None:
         self.code = code
         super().__init__(code)
 
 
-def canonical_digest(value: object) -> str:
-    encoded = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode()
-    return "sha256:" + hashlib.sha256(encoded).hexdigest()
+def digest(value: object) -> str:
+    """Use the canonical DFCM finisher's deterministic digest."""
+    return dfcm.digest(value)
 
 
 def load_toml(path: Path) -> dict:
@@ -78,7 +94,11 @@ def load_toml(path: Path) -> dict:
 
 
 def validate_repository_contract() -> None:
-    """Bind the reference court to the admitted capability/TPCS control plane."""
+    """Bind this extension to current capability/TPCS and PR #40 ownership."""
+    for name in ("definition_of_done", "frontier", "admit_do", "receipt", "replay_receipts"):
+        if not callable(getattr(dfcm, name, None)):
+            raise Refusal(f"REFUSED_DFCM_OWNER_MISSING:{name}")
+
     capabilities = load_toml(CAPABILITY_GRAPH).get("capability", [])
     by_id = {item.get("id"): item for item in capabilities}
     for capability_id, capability_class in REQUIRED_CAPABILITIES.items():
@@ -118,39 +138,12 @@ class Candidate:
 
 
 @dataclass(frozen=True)
-class AuthorityGrant:
-    grant_id: str
-    subject: str
-    consequence: str
-    scope: str
-    authority: str = "DO"
-    receipt_required: bool = True
-
-    def validate(self, subject: str, consequence: str) -> None:
-        if self.authority != "DO":
-            raise Refusal("REFUSED_AUTHORITY_CLASS_MISMATCH")
-        if self.subject != subject:
-            raise Refusal("REFUSED_AUTHORITY_SUBJECT_MISMATCH")
-        if self.consequence != consequence:
-            raise Refusal("REFUSED_AUTHORITY_CONSEQUENCE_MISMATCH")
-        if not self.scope.strip():
-            raise Refusal("REFUSED_AUTHORITY_SCOPE_MISSING")
-        if not self.receipt_required:
-            raise Refusal("REFUSED_AUTHORITY_WITHOUT_RECEIPT")
-
-    @property
-    def digest(self) -> str:
-        return canonical_digest(asdict(self))
-
-
-@dataclass(frozen=True)
 class DefinitionOfDoneRequest:
     subject: str
     intent: str
     observations: tuple[str, ...]
     candidates: tuple[Candidate, ...]
     selected_candidate: str
-    authority: AuthorityGrant
     idempotency_key: str
     expected_precondition: str
     expected_postcondition: str
@@ -158,12 +151,46 @@ class DefinitionOfDoneRequest:
     verification_evidence: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class AuthorityGrant:
+    """Exact external grant. The runner never manufactures this object."""
+
+    authority_id: str
+    subject_sha: str
+    intent_digest: str
+    consequence: str
+    scope: str = "BRCE:VERIFY_REPAIR_ONLY"
+    expires_at: str = "bounded-reference-window"
+
+    def as_broker_grant(self) -> dict[str, str]:
+        return {
+            "authority_id": self.authority_id,
+            "subject_sha": self.subject_sha,
+            "intent_digest": self.intent_digest,
+            "scope": self.scope,
+            "expires_at": self.expires_at,
+        }
+
+
+@dataclass(frozen=True)
+class PreparedExecution:
+    request: DefinitionOfDoneRequest
+    o_star: dict
+    frontier: tuple[Candidate, ...]
+    excluded: dict[str, str]
+    selected: Candidate
+    artifact: dict
+    verification: dict
+    intent: dict
+
+
 @dataclass
 class ReceiptStore:
-    """Minimal two-phase receipt-capability reference store.
+    """Two-phase receipt capability.
 
-    `reserve` executes before DO. An unavailable receipt path therefore refuses
-    before actuation. `commit` seals the observed consequence after DO.
+    Reservation occurs before DO. If reservation is impossible, the actuator is
+    never called. Final receipt sealing delegates to PR #40's canonical receipt
+    implementation and replay court.
     """
 
     available: bool = True
@@ -180,34 +207,39 @@ class ReceiptStore:
             raise Refusal("REFUSED_IDEMPOTENCY_CONFLICT")
         self.reservations[key] = intent_digest
 
-    def commit(self, key: str, payload: dict) -> dict:
+    def commit(self, key: str, event: dict) -> dict:
         expected_intent = self.reservations.get(key)
         if expected_intent is None:
             raise Refusal("REFUSED_RECEIPT_WITHOUT_RESERVATION")
-        if payload.get("intent_digest") != expected_intent:
+        if event.get("intent_digest") != expected_intent:
             raise Refusal("REFUSED_RECEIPT_INTENT_DRIFT")
-        unsigned = dict(payload)
-        unsigned.pop("digest", None)
-        receipt = {**unsigned, "digest": canonical_digest(unsigned)}
+        envelope = dfcm.receipt(event)
+        stored = {
+            "idempotency_key": key,
+            "intent_digest": expected_intent,
+            "envelope": envelope,
+        }
         prior = self.receipts.get(key)
-        if prior is not None and prior != receipt:
+        if prior is not None and prior != stored:
             raise Refusal("REFUSED_RECEIPT_REWRITE")
-        self.receipts[key] = receipt
-        return receipt
+        self.receipts[key] = stored
+        return stored
 
-    def verify(self, receipt: dict) -> None:
-        unsigned = dict(receipt)
-        digest = unsigned.pop("digest", None)
-        if digest != canonical_digest(unsigned):
-            raise Refusal("REFUSED_RECEIPT_TAMPERED")
-        key = receipt.get("idempotency_key")
-        if not isinstance(key, str) or self.receipts.get(key) != receipt:
+    def verify(self, stored: dict) -> str:
+        key = stored.get("idempotency_key")
+        if not isinstance(key, str) or self.receipts.get(key) != stored:
             raise Refusal("REFUSED_RECEIPT_NOT_PERSISTED")
+        if stored.get("intent_digest") != self.reservations.get(key):
+            raise Refusal("REFUSED_RECEIPT_RESERVATION_DRIFT")
+        try:
+            return dfcm.replay_receipts([stored["envelope"]])
+        except (KeyError, dfcm.Refusal) as exc:
+            raise Refusal("REFUSED_RECEIPT_TAMPERED") from exc
 
 
 @dataclass
 class MemoryWorld:
-    """Bounded executable subject used by the reference self-test only."""
+    """Bounded subject used only by the exact executable reference fixture."""
 
     state: str
     actuation_count: int = 0
@@ -230,11 +262,11 @@ def admit_observation(request: DefinitionOfDoneRequest) -> dict:
     if not facts:
         raise Refusal("REFUSED_EMPTY_OBSERVATION")
     admitted = {"subject": request.subject, "facts": facts}
-    return {**admitted, "digest": canonical_digest(admitted)}
+    return {**admitted, "digest": digest(admitted)}
 
 
-def preserve_dfcm_frontier(candidates: tuple[Candidate, ...]) -> tuple[list[Candidate], dict[str, str]]:
-    """Preserve every reversible lawful candidate; exclusions remain topology."""
+def preserve_action_frontier(candidates: tuple[Candidate, ...]) -> tuple[list[Candidate], dict[str, str]]:
+    """Preserve every reversible lawful action edge; exclusions remain topology."""
     seen: set[str] = set()
     frontier: list[Candidate] = []
     excluded: dict[str, str] = {}
@@ -275,7 +307,7 @@ def construct_intent(subject: str, o_star: dict, candidate: Candidate) -> dict:
         "consequence": candidate.consequence,
         "evidence": list(candidate.evidence),
     }
-    return {**payload, "digest": canonical_digest(payload)}
+    return {**payload, "digest": digest(payload)}
 
 
 def admit_verification(request: DefinitionOfDoneRequest, artifact: dict) -> dict:
@@ -285,56 +317,69 @@ def admit_verification(request: DefinitionOfDoneRequest, artifact: dict) -> dict
     if not evidence:
         raise Refusal("REFUSED_VERIFICATION_EVIDENCE_MISSING")
     payload = {"artifact": artifact["digest"], "evidence": evidence, "passed": True}
-    return {**payload, "digest": canonical_digest(payload)}
+    return {**payload, "digest": digest(payload)}
 
 
-def intent_digest(
-    request: DefinitionOfDoneRequest,
-    o_star: dict,
-    frontier: list[Candidate],
-    artifact: dict,
-    verification: dict,
-    selected: Candidate,
-) -> str:
-    return canonical_digest(
-        {
-            "subject": request.subject,
-            "intent": request.intent,
-            "o_star": o_star["digest"],
-            "frontier": [item.id for item in frontier],
-            "selected": selected.id,
-            "artifact": artifact["digest"],
-            "verification": verification["digest"],
-            "authority": request.authority.digest,
-            "expected_precondition": request.expected_precondition,
-            "expected_postcondition": request.expected_postcondition,
-        }
+def prepare(request: DefinitionOfDoneRequest) -> PreparedExecution:
+    """SELECT/CONSTRUCT-only half. No authority object is accepted or created."""
+    validate_repository_contract()
+    o_star = admit_observation(request)
+    frontier, excluded = preserve_action_frontier(request.candidates)
+    selected = select_candidate(frontier, request.selected_candidate)
+    artifact = construct_intent(request.subject, o_star, selected)
+    verification = admit_verification(request, artifact)
+    intent = {
+        "schema": "urn:chatman:v2030:consequence-intent:v1",
+        "subject": {
+            "component": selected.id,
+            "repository": "seanchatmangpt/chatman-ecosystem",
+            "ref": "exact-subject",
+            "sha": request.subject,
+        },
+        "consequence": selected.consequence,
+        "o_star": o_star["digest"],
+        "frontier": [item.id for item in frontier],
+        "excluded": excluded,
+        "artifact": artifact["digest"],
+        "verification": verification["digest"],
+        "expected_precondition": request.expected_precondition,
+        "expected_postcondition": request.expected_postcondition,
+    }
+    intent["intent_digest"] = digest(intent)
+    return PreparedExecution(
+        request=request,
+        o_star=o_star,
+        frontier=tuple(frontier),
+        excluded=excluded,
+        selected=selected,
+        artifact=artifact,
+        verification=verification,
+        intent=intent,
     )
 
 
-def brce_do(
-    request: DefinitionOfDoneRequest,
-    selected: Candidate,
-    o_star: dict,
-    frontier: list[Candidate],
-    excluded: dict[str, str],
-    artifact: dict,
-    verification: dict,
+def execute(
+    prepared: PreparedExecution,
+    grant: AuthorityGrant,
     store: ReceiptStore,
     actuator: Callable[[str], str],
     observer: Callable[[], str],
 ) -> dict:
-    """Exclusive consequential path with pre-reserved receipt capability."""
-    request.authority.validate(request.subject, selected.consequence)
-    digest = intent_digest(request, o_star, frontier, artifact, verification, selected)
-    store.reserve(request.idempotency_key, digest)
+    """Cross the canonical BRCE admission, actuate once, observe, receipt, replay."""
+    request = prepared.request
+    selected = prepared.selected
+    if grant.consequence != selected.consequence:
+        raise Refusal("REFUSED_AUTHORITY_CONSEQUENCE_MISMATCH")
+    try:
+        broker_admission = dfcm.admit_do(prepared.intent, grant.as_broker_grant())
+    except dfcm.Refusal as exc:
+        raise Refusal(f"REFUSED_DFCM_{exc.code}") from exc
 
+    store.reserve(request.idempotency_key, prepared.intent["intent_digest"])
     prior = store.receipts.get(request.idempotency_key)
     if prior is not None:
-        store.verify(prior)
-        if prior.get("intent_digest") != digest:
-            raise Refusal("REFUSED_REPLAY_IDENTITY_DRIFT")
-        return prior
+        replay_status = store.verify(prior)
+        return _result(prepared, grant, prior, replay_status)
 
     before = observer()
     if before != request.expected_precondition:
@@ -343,107 +388,70 @@ def brce_do(
     execution_error: str | None = None
     try:
         actuator(selected.consequence)
-    except Exception as exc:  # external adapters are allowed to fail; failure must still be receipted
+    except Exception as exc:  # external failure is evidence and must still be receipted
         execution_error = f"{type(exc).__name__}:{exc}"
 
     after = observer()
     postcondition_ok = execution_error is None and after == request.expected_postcondition
-    outcome = "succeeded" if postcondition_ok else "blocked"
-    payload = {
+    event = {
         "version": "v2030.1.1",
+        "phase": "BRCE_CONSEQUENCE",
         "subject": request.subject,
-        "idempotency_key": request.idempotency_key,
-        "intent_digest": digest,
-        "o_star": o_star["digest"],
-        "frontier": [item.id for item in frontier],
-        "excluded": excluded,
+        "intent_digest": prepared.intent["intent_digest"],
+        "o_star": prepared.o_star["digest"],
+        "frontier": [item.id for item in prepared.frontier],
+        "excluded": prepared.excluded,
         "selected_candidate": selected.id,
-        "artifact": artifact["digest"],
-        "verification": verification["digest"],
-        "authority": request.authority.digest,
+        "artifact": prepared.artifact["digest"],
+        "verification": prepared.verification["digest"],
+        "broker_admission": broker_admission,
         "precondition": before,
         "requested_consequence": selected.consequence,
         "observed_postcondition": after,
         "expected_postcondition": request.expected_postcondition,
         "postcondition_verified": postcondition_ok,
         "execution_error": execution_error,
-        "outcome": outcome,
-        "replay_class": "deterministic_receipt_verification_no_reactuation",
+        "outcome": "succeeded" if postcondition_ok else "blocked",
+        "replay_class": "canonical_dfcm_receipt_no_reactuation",
     }
-    return store.commit(request.idempotency_key, payload)
+    stored = store.commit(request.idempotency_key, event)
+    replay_status = store.verify(stored)
+    return _result(prepared, grant, stored, replay_status)
 
 
-def replay(receipt: dict, store: ReceiptStore) -> str:
-    """Verify persisted consequence evidence without calling an actuator."""
-    store.verify(receipt)
-    if receipt.get("replay_class") != "deterministic_receipt_verification_no_reactuation":
-        raise Refusal("REFUSED_REPLAY_CLASS_UNSUPPORTED")
-    return "REPLAY_MATCH"
-
-
-def run(
-    request: DefinitionOfDoneRequest,
-    store: ReceiptStore,
-    actuator: Callable[[str], str],
-    observer: Callable[[], str],
-) -> dict:
-    """Execute the complete bounded v2030.1.1 DoD loop."""
-    validate_repository_contract()
-    o_star = admit_observation(request)
-    frontier, excluded = preserve_dfcm_frontier(request.candidates)
-    selected = select_candidate(frontier, request.selected_candidate)
-    artifact = construct_intent(request.subject, o_star, selected)
-    verification = admit_verification(request, artifact)
-    receipt = brce_do(
-        request,
-        selected,
-        o_star,
-        frontier,
-        excluded,
-        artifact,
-        verification,
-        store,
-        actuator,
-        observer,
-    )
-    replay_status = replay(receipt, store)
-    standing = "ALIVE" if receipt["outcome"] == "succeeded" and replay_status == "REPLAY_MATCH" else "BLOCKED"
+def _result(prepared: PreparedExecution, grant: AuthorityGrant, stored: dict, replay_status: str) -> dict:
+    event = stored["envelope"]["event"]
+    standing = "ALIVE" if event["outcome"] == "succeeded" and replay_status.startswith("ALIVE:REPLAY:") else "BLOCKED"
     return {
         "version": "v2030.1.1",
-        "subject": request.subject,
+        "subject": prepared.request.subject,
         "stages": list(STAGES),
-        "o_star": o_star["digest"],
-        "frontier": [item.id for item in frontier],
-        "excluded": excluded,
-        "selected": selected.id,
-        "artifact": artifact["digest"],
-        "verification": verification["digest"],
-        "authority": request.authority.digest,
-        "receipt": receipt["digest"],
+        "o_star": prepared.o_star["digest"],
+        "frontier": [item.id for item in prepared.frontier],
+        "excluded": prepared.excluded,
+        "selected": prepared.selected.id,
+        "artifact": prepared.artifact["digest"],
+        "verification": prepared.verification["digest"],
+        "authority_id": grant.authority_id,
+        "intent_digest": prepared.intent["intent_digest"],
+        "receipt": stored["envelope"]["receipt_digest"],
         "replay": replay_status,
         "standing": standing,
     }
 
 
 def reference_request(subject: str = "a" * 40) -> DefinitionOfDoneRequest:
-    candidates = (
-        Candidate("candidate:portable-a", "deployed", True, cost_units=30, evidence=("fixture:a",)),
-        Candidate("candidate:portable-b", "deployed", True, cost_units=20, evidence=("fixture:b",)),
-        Candidate("candidate:blocked-edge", "deployed", True, cost_units=10, constraints_satisfied=False),
-        Candidate("candidate:irreversible-edge", "deployed", False, cost_units=1),
-    )
     return DefinitionOfDoneRequest(
         subject=subject,
         intent="apply one bounded verified consequence",
         observations=("world.state=planned", "receipt.capability=available"),
-        candidates=candidates,
-        selected_candidate="candidate:portable-b",
-        authority=AuthorityGrant(
-            grant_id="authority:reference-do",
-            subject=subject,
-            consequence="deployed",
-            scope="memory-world/reference",
+        candidates=(
+            Candidate("candidate:portable-a", "deployed", True, cost_units=30, evidence=("fixture:a",)),
+            Candidate("candidate:portable-b", "deployed", True, cost_units=20, evidence=("fixture:b",)),
+            Candidate("candidate:blocked-edge", "deployed", True, cost_units=10, constraints_satisfied=False),
+            Candidate("candidate:irreversible-edge", "deployed", False, cost_units=1),
         ),
+        selected_candidate="candidate:portable-b",
         idempotency_key="v2030-reference-1",
         expected_precondition="planned",
         expected_postcondition="deployed",
@@ -452,27 +460,48 @@ def reference_request(subject: str = "a" * 40) -> DefinitionOfDoneRequest:
     )
 
 
+def reference_grant(prepared: PreparedExecution) -> AuthorityGrant:
+    """External-authority fixture used only by tests/self-test, never by execute()."""
+    return AuthorityGrant(
+        authority_id="authority:reference-do",
+        subject_sha=prepared.request.subject,
+        intent_digest=prepared.intent["intent_digest"],
+        consequence=prepared.selected.consequence,
+    )
+
+
 def self_test() -> dict:
+    request = reference_request()
+    prepared = prepare(request)
+    grant = reference_grant(prepared)
     world = MemoryWorld("planned")
     store = ReceiptStore()
-    request = reference_request()
-    result = run(request, store, world.actuate, world.observe)
+    result = execute(prepared, grant, store, world.actuate, world.observe)
     if result["standing"] != "ALIVE":
         raise AssertionError(result)
     if result["frontier"] != ["candidate:portable-b", "candidate:portable-a"]:
-        raise AssertionError("DfCM frontier was not preserved")
+        raise AssertionError("action frontier was not preserved")
     if result["excluded"].get("candidate:blocked-edge") != "EXCLUDED_CONSTRAINT":
         raise AssertionError("constraint exclusion missing")
     if world.actuation_count != 1:
         raise AssertionError("expected exactly one actuation")
 
-    replayed = run(request, store, world.actuate, world.observe)
+    replayed = execute(prepared, grant, store, world.actuate, world.observe)
     if replayed["receipt"] != result["receipt"] or world.actuation_count != 1:
         raise AssertionError("idempotent replay re-actuated or changed receipt")
 
+    blocked_request = reference_request("b" * 40)
+    blocked_prepared = prepare(blocked_request)
+    blocked_grant = reference_grant(blocked_prepared)
     blocked_world = MemoryWorld("planned")
     try:
-        run(reference_request("b" * 40), ReceiptStore(available=False), blocked_world.actuate, blocked_world.observe)
+        execute(
+            blocked_prepared,
+            blocked_grant,
+            ReceiptStore(available=False),
+            blocked_world.actuate,
+            blocked_world.observe,
+        )
     except Refusal as exc:
         if exc.code != "REFUSED_RECEIPT_CAPABILITY_UNAVAILABLE":
             raise
@@ -484,12 +513,12 @@ def self_test() -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Chatman Ecosystem v2030.1.1 executable definition-of-done court")
+    parser = argparse.ArgumentParser(description="Chatman Ecosystem v2030.1.1 executable consequence court")
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
     if not args.self_test:
-        parser.error("--self-test is required; external DO adapters must be integrated by an owning runtime")
+        parser.error("--self-test is required; external DO adapters belong to an owning runtime")
     result = self_test()
     if args.json:
         print(json.dumps(result, indent=2, sort_keys=True))
