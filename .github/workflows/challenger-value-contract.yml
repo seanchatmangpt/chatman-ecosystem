@@ -1,0 +1,35 @@
+name: Challenger Value Contract
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "contracts/challenger-value.yaml"
+      - "tests/test_challenger_value_contract.py"
+      - ".github/workflows/challenger-value-contract.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Assert exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$expected"
+
+      - name: Verify commercial authority contract
+        run: python -m unittest tests.test_challenger_value_contract
