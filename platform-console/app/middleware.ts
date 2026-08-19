@@ -48,6 +48,11 @@ const PUBLIC_PATHS = [
   // statuspage.io convention (no login to view real-time platform status).
   "/status",
   "/api/status",
+  // Public Trust / Security Posture page -- same public-with-no-login
+  // convention as /status above (aggregate CVE/cert/uptime counts only,
+  // no secrets, no internal hostnames -- see lib/trust-page.ts).
+  "/trust",
+  "/api/trust",
 ];
 
 // Real bearer-style signed-URL download route (control:

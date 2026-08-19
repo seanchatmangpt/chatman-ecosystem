@@ -36,6 +36,8 @@
 // of what was torn down -- never a fabricated "success" with nothing
 // actually deleted.
 import { k8sRequest, getConfigMap, createOrUpdateConfigMap, getPodLogs, type K8sResult } from "@/lib/k8s";
+import { checkFreezeGuard, type FreezeWindow } from "@/lib/freeze-windows";
+import type { ApprovalRequest } from "@/lib/approval-workflow";
 
 export const CASTLE_NAMESPACE = "castle";
 export const CASTLE_DEPLOYMENT_CONFIGMAP = "platform-castle-deployment";
@@ -212,10 +214,63 @@ function buildJobName(verbId: AllowedCastleVerbId): string {
  * whichever image DEPLOY most recently recorded. Fails closed if nothing
  * has been deployed yet -- RUN never falls back to a guessed image.
  */
+/** Real, structured rejection when a declared change-freeze window
+ * (lib/freeze-windows.ts) blocks this Run -- distinct from a plain
+ * K8sResult error string so the calling route (app/api/castle/run) can
+ * build the real 403 the spec requires and surface exactly which window
+ * blocked it, plus a pending `freeze.override` approval request when the
+ * window allows one. */
+export interface CastleRunFrozenError {
+  ok: false;
+  frozen: true;
+  freeze: FreezeWindow;
+  overrideRequest?: ApprovalRequest;
+}
+
+export type CastleRunResult = K8sResult<CastleJob> | CastleRunFrozenError;
+
+function isCastleRunFrozenError(value: CastleRunResult): value is CastleRunFrozenError {
+  return !value.ok && "frozen" in value && value.frozen === true;
+}
+export { isCastleRunFrozenError };
+
+/**
+ * RUN: creates one real `batch/v1` Job that invokes the castle binary
+ * with the fixed argv for `verbId` (see ALLOWED_CASTLE_VERBS), against
+ * whichever image DEPLOY most recently recorded. Fails closed if nothing
+ * has been deployed yet -- RUN never falls back to a guessed image.
+ *
+ * `orgId`, when supplied by the caller, is checked against
+ * lib/freeze-windows.ts's checkFreezeGuard BEFORE the Job is ever
+ * created: a declared, active freeze window for that org blocks the Run
+ * unless a fresh `freeze.override` approval already exists (or one gets
+ * created here for the actor to have a second owner approve). Castle
+ * itself has no org-scoping concept in this console today (see this
+ * file's own header comment -- it is cluster infrastructure, not a
+ * per-tenant resource), so `orgId` is optional: when the caller omits it
+ * (the current app/api/castle/run route, which has no org context to
+ * pass), no freeze check is possible or performed, same as before this
+ * guard existed. Passing `orgId` is how a future org-scoped castle
+ * invocation opts into real enforcement.
+ */
 export async function runCastleVerb(
   verbId: AllowedCastleVerbId,
   actor: string,
-): Promise<K8sResult<CastleJob>> {
+  orgId?: string,
+): Promise<CastleRunResult> {
+  if (orgId) {
+    const guard = await checkFreezeGuard(orgId, actor);
+    if (!guard.ok) return guard;
+    if (guard.data.blocked) {
+      return {
+        ok: false,
+        frozen: true,
+        freeze: guard.data.freeze,
+        ...(guard.data.overrideRequest ? { overrideRequest: guard.data.overrideRequest } : {}),
+      };
+    }
+  }
+
   const deployment = await getCastleDeployment();
   if (!deployment.ok) return deployment;
   if (!deployment.data) {

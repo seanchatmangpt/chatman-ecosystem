@@ -40,6 +40,16 @@ export interface AuditLogEntry {
    */
   impersonatedBy?: string;
   impersonationSessionId?: string;
+  /**
+   * Custom RBAC (lib/custom-roles.ts) cross-reference: the fine-grained
+   * Permission a request was gated on when the decision came from
+   * lib/authz.ts's hasPermission fallback (a custom-role grant) rather
+   * than the built-in viewer/member/owner rank -- lets a reviewer see
+   * exactly which narrower, least-privilege grant authorized (or denied)
+   * an action, on top of the existing role-rank audit trail. Absent for
+   * every request gated purely by the built-in rank.
+   */
+  requiredPermission?: string;
 }
 
 export function writeAuditLogEntry(entry: AuditLogEntry): void {

@@ -3,6 +3,7 @@ import { requireRoleIn, roleIdentifierFor } from "@/lib/authz";
 import { getOrg, getOrgProjectTier } from "@/lib/orgs";
 import { listProjects, setProjectTier } from "@/lib/k8s";
 import { requireApproval } from "@/lib/approval-workflow";
+import { checkFreezeGuard } from "@/lib/freeze-windows";
 import { isProjectTier, tierAtLeast, SEAT_LIMITS, type ProjectTier } from "@/lib/tiers";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
@@ -78,6 +79,43 @@ export async function POST(
       requestId,
     });
     return access.response!;
+  }
+
+  // Change-freeze guard (lib/freeze-windows.ts, SOC2 CC8 / ITIL change
+  // management): a declared, active freeze window for this org blocks
+  // ANY tier change (upgrade or downgrade both mutate live Project/
+  // ResourceQuota state) unless a fresh `freeze.override` approval
+  // already exists, or the window itself permits creating one.
+  const freezeGuard = await checkFreezeGuard(id, actor);
+  if (!freezeGuard.ok) {
+    return NextResponse.json({ error: freezeGuard.error }, { status: 502 });
+  }
+  if (freezeGuard.data.blocked) {
+    writeAuditLogEntry({
+      timestamp: new Date().toISOString(),
+      actor,
+      method: "POST",
+      path: `/api/orgs/${id}/tier`,
+      status: 403,
+      requestId,
+    });
+    return NextResponse.json(
+      {
+        error: `a declared change-freeze window blocks this action: ${freezeGuard.data.freeze.reason}`,
+        freeze: freezeGuard.data.freeze,
+        ...(freezeGuard.data.overrideRequest
+          ? {
+              status: "pending_freeze_override",
+              approval: freezeGuard.data.overrideRequest,
+              message:
+                "freeze.override requires a second, distinct owner-role approver -- POST /api/approvals/" +
+                `${freezeGuard.data.overrideRequest.requestId} {decision:'approved'} to authorize this ` +
+                "change during the freeze, then retry POST.",
+            }
+          : {}),
+      },
+      { status: 403 },
+    );
   }
 
   const body = await request.json().catch(() => null);

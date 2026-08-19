@@ -51,7 +51,7 @@
 // its own new per-namespace Role, same shape as Scheduled Jobs'
 // `platform-console-scheduled-jobs` Role.
 import { k8sRequest, type K8sResult } from "@/lib/k8s";
-import { SCHEDULABLE_NAMESPACES, isSchedulableNamespace } from "@/lib/scheduled-jobs";
+import { SCHEDULABLE_NAMESPACES, isSchedulableNamespace, type ScheduledJob } from "@/lib/scheduled-jobs";
 
 // -------------------------------------------------------------- Namespaces
 //
@@ -597,5 +597,177 @@ export async function deleteBatchJob(namespace: string, name: string): Promise<K
     }
   }
 
+  return { ok: true, data: null };
+}
+
+// -------------------------------- Castle Scheduled-Verb Poller CronJob
+//
+// Real, unattended trigger for Maintenance-Window-Gated Castle Verb
+// Scheduling (lib/scheduled-verbs.ts): a real `batch/v1` `CronJob`,
+// firing every few minutes, that POSTs into this console's own
+// POST /api/castle/schedule/run-due route -- the SAME
+// shared-secret-header-authenticated curl-from-inside-the-cluster
+// pattern lib/scheduled-jobs.ts's createComplianceReportCronJob and
+// createExportSubscriptionCronJob already establish (see either of
+// those functions' own header comments for the one-time operator
+// provisioning step: `kubectl create secret generic
+// platform-castle-schedule-cron-secret --from-literal=secret=...` in the
+// `platform-console` namespace). Reuses the exact `curlimages/curl`
+// image, `sh -c curl ...` command shape, and `secretKeyRef`-injected
+// header those two CronJobs already use -- no new mechanism, just a new
+// fixed target path and a new dedicated secret name so this poller's
+// credential is scoped independently of the other two.
+//
+// This module (Batch Compute) is the one this repo's own Indexed-Job
+// fan-out pattern lives in, which is why this poller's CronJob-creation
+// helper is added here rather than duplicated into lib/castle.ts or
+// lib/scheduled-verbs.ts itself -- CronJob-object creation is this
+// module's own established responsibility (see this file's own header
+// comment's "distinct from the existing Scheduled Jobs module" framing);
+// lib/scheduled-verbs.ts owns the polling LOGIC (runDueScheduledVerbs),
+// this function only owns the k8s CronJob OBJECT that fires it on a
+// cadence, same "who owns what" split lib/scheduled-jobs.ts's own
+// CronJob-creation functions and their callers already keep.
+export const CASTLE_SCHEDULE_CRON_SECRET_NAME = "platform-castle-schedule-cron-secret";
+export const CASTLE_SCHEDULE_CRON_SECRET_KEY = "secret";
+export const CASTLE_SCHEDULE_CRON_JOB_NAME = "platform-castle-scheduled-verbs";
+export const CASTLE_SCHEDULE_CRON_JOB_LABEL = "castle-schedule-cronjob";
+// Fires every 5 minutes -- fine-grained enough that a ScheduledVerb whose
+// requestedFor falls inside a short maintenance window is picked up
+// promptly once it comes due, without hammering the k8s API.
+export const CASTLE_SCHEDULE_CRON_SCHEDULE = "*/5 * * * *";
+
+const CASTLE_SCHEDULE_MANAGED_BY_LABEL = "app";
+const CASTLE_SCHEDULE_MANAGED_BY_VALUE = "platform-castle-schedule-cronjob";
+
+interface CastleScheduleCronJobItem {
+  metadata: {
+    name: string;
+    namespace: string;
+    creationTimestamp: string;
+    labels?: Record<string, string>;
+  };
+  spec?: {
+    schedule?: string;
+    suspend?: boolean;
+    jobTemplate?: {
+      spec?: { template?: { spec?: { containers?: Array<{ image?: string }> } } };
+    };
+  };
+  status?: {
+    lastScheduleTime?: string;
+    lastSuccessfulTime?: string;
+  };
+}
+
+function toCastleScheduleCronJob(item: CastleScheduleCronJobItem): ScheduledJob {
+  return {
+    name: item.metadata.name,
+    namespace: item.metadata.namespace,
+    schedule: item.spec?.schedule ?? "",
+    suspend: item.spec?.suspend ?? false,
+    commandId: item.metadata.labels?.[CASTLE_SCHEDULE_CRON_JOB_LABEL] ?? null,
+    image: item.spec?.jobTemplate?.spec?.template?.spec?.containers?.[0]?.image ?? null,
+    createdAt: item.metadata.creationTimestamp,
+    lastScheduleTime: item.status?.lastScheduleTime ?? null,
+    lastSuccessfulTime: item.status?.lastSuccessfulTime ?? null,
+  };
+}
+
+function buildCastleScheduleCronCommand(): string[] {
+  return [
+    "sh",
+    "-c",
+    `curl -sS -m 60 -X POST -H "x-castle-schedule-cron-secret: $CASTLE_SCHEDULE_CRON_SECRET" ` +
+      `"http://platform-console.platform-console.svc.cluster.local/api/castle/schedule/run-due" && echo`,
+  ];
+}
+
+/**
+ * Creates the real, one-per-deployment recurring castle-scheduled-verb
+ * poller CronJob in the `platform-console` namespace -- same
+ * one-CronJob-fans-out-across-every-row shape
+ * createExportSubscriptionCronJob already uses (lib/scheduled-verbs.ts's
+ * runDueScheduledVerbs already walks every real ScheduledVerb row and
+ * skips anything not yet due, so there is no need for a per-row or
+ * per-org CronJob object). Idempotent from the caller's perspective the
+ * same way: a second POST for the same fixed name 409s against the real
+ * k8s API, surfaced as a real K8sResult error, never silently swallowed.
+ */
+export async function createCastleScheduleCronJob(): Promise<K8sResult<ScheduledJob>> {
+  const manifest = {
+    apiVersion: "batch/v1",
+    kind: "CronJob",
+    metadata: {
+      name: CASTLE_SCHEDULE_CRON_JOB_NAME,
+      namespace: "platform-console",
+      labels: {
+        [CASTLE_SCHEDULE_MANAGED_BY_LABEL]: CASTLE_SCHEDULE_MANAGED_BY_VALUE,
+        [CASTLE_SCHEDULE_CRON_JOB_LABEL]: CASTLE_SCHEDULE_CRON_JOB_LABEL,
+      },
+    },
+    spec: {
+      schedule: CASTLE_SCHEDULE_CRON_SCHEDULE,
+      concurrencyPolicy: "Forbid",
+      successfulJobsHistoryLimit: 3,
+      failedJobsHistoryLimit: 3,
+      jobTemplate: {
+        spec: {
+          backoffLimit: 0,
+          activeDeadlineSeconds: 60,
+          template: {
+            metadata: {
+              labels: {
+                [CASTLE_SCHEDULE_MANAGED_BY_LABEL]: CASTLE_SCHEDULE_MANAGED_BY_VALUE,
+                "cronjob-name": CASTLE_SCHEDULE_CRON_JOB_NAME,
+              },
+            },
+            spec: {
+              restartPolicy: "Never",
+              containers: [
+                {
+                  name: "castle-schedule-poll",
+                  image: "curlimages/curl:8.10.1",
+                  imagePullPolicy: "IfNotPresent",
+                  command: buildCastleScheduleCronCommand(),
+                  env: [
+                    {
+                      name: "CASTLE_SCHEDULE_CRON_SECRET",
+                      valueFrom: {
+                        secretKeyRef: {
+                          name: CASTLE_SCHEDULE_CRON_SECRET_NAME,
+                          key: CASTLE_SCHEDULE_CRON_SECRET_KEY,
+                        },
+                      },
+                    },
+                  ],
+                  resources: {
+                    requests: { cpu: "10m", memory: "16Mi" },
+                    limits: { cpu: "50m", memory: "32Mi" },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const result = await k8sRequest<CastleScheduleCronJobItem>(
+    `/apis/batch/v1/namespaces/platform-console/cronjobs`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toCastleScheduleCronJob(result.data) };
+}
+
+export async function deleteCastleScheduleCronJob(): Promise<K8sResult<null>> {
+  const result = await k8sRequest<unknown>(
+    `/apis/batch/v1/namespaces/platform-console/cronjobs/${encodeURIComponent(CASTLE_SCHEDULE_CRON_JOB_NAME)}`,
+    "DELETE",
+  );
+  if (!result.ok) return result;
   return { ok: true, data: null };
 }

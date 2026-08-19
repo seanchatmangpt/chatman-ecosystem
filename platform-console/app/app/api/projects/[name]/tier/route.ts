@@ -4,6 +4,8 @@ import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { getProject, setProjectTier } from "@/lib/k8s";
 import { requireRole } from "@/lib/authz";
 import { isProjectTier } from "@/lib/tiers";
+import { checkFreezeGuard } from "@/lib/freeze-windows";
+import { listOrgs } from "@/lib/orgs";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -69,6 +71,49 @@ export async function POST(
       requestId,
     });
     return NextResponse.json({ error: `project '${name}' not found` }, { status: 404 });
+  }
+  const project = projectResult.data;
+
+  // Change-freeze guard (lib/freeze-windows.ts, SOC2 CC8 / ITIL change
+  // management) -- same org-lookup-by-namespace convention the sibling
+  // quota route uses.
+  const orgsResult = await listOrgs();
+  if (!orgsResult.ok) {
+    return NextResponse.json({ error: orgsResult.error }, { status: 502 });
+  }
+  const owningOrg = orgsResult.data.find((o) => o.namespace === project.namespace);
+  if (owningOrg) {
+    const freezeGuard = await checkFreezeGuard(owningOrg.id, actor);
+    if (!freezeGuard.ok) {
+      return NextResponse.json({ error: freezeGuard.error }, { status: 502 });
+    }
+    if (freezeGuard.data.blocked) {
+      writeAuditLogEntry({
+        timestamp: new Date().toISOString(),
+        actor,
+        method: "POST",
+        path: `/api/projects/${name}/tier`,
+        status: 403,
+        requestId,
+      });
+      return NextResponse.json(
+        {
+          error: `a declared change-freeze window blocks this action: ${freezeGuard.data.freeze.reason}`,
+          freeze: freezeGuard.data.freeze,
+          ...(freezeGuard.data.overrideRequest
+            ? {
+                status: "pending_freeze_override",
+                approval: freezeGuard.data.overrideRequest,
+                message:
+                  "freeze.override requires a second, distinct owner-role approver -- POST /api/approvals/" +
+                  `${freezeGuard.data.overrideRequest.requestId} {decision:'approved'} to authorize this ` +
+                  "change during the freeze, then retry POST.",
+              }
+            : {}),
+        },
+        { status: 403 },
+      );
+    }
   }
 
   const result = await setProjectTier(name, projectResult.data.namespace, tier);

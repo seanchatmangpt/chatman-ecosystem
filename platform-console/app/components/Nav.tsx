@@ -6,6 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import NotificationBell from "@/components/NotificationBell";
 import OrgBrandMark from "@/components/OrgBrandMark";
+import FreezeBanner from "@/components/FreezeBanner";
 
 const links = [
   { href: "/", label: "Overview" },
@@ -44,6 +45,7 @@ const links = [
   { href: "/org/security", label: "Org Security" },
   { href: "/org/branding", label: "Org Branding" },
   { href: "/org/incidents", label: "SLA Incidents" },
+  { href: "/org/freeze-windows", label: "Freeze Windows" },
   { href: "/approvals", label: "Approvals" },
   { href: "/api-keys", label: "API Keys" },
   { href: "/webhooks", label: "Webhooks" },
@@ -67,6 +69,7 @@ export default function Nav() {
 
   return (
     <nav className="border-b border-border bg-panel">
+      <FreezeBanner />
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="text-sm font-semibold tracking-wide text-foreground">

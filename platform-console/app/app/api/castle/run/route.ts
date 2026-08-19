@@ -5,6 +5,7 @@ import { requireRole } from "@/lib/authz";
 import {
   ALLOWED_CASTLE_VERBS,
   getCastleJobOutput,
+  isCastleRunFrozenError,
   parseCastleReceiptDigest,
   resolveCastleVerb,
   runCastleVerb,
@@ -56,8 +57,40 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
   }
+  // Optional org scope for the change-freeze guard (lib/freeze-windows.ts)
+  // -- see runCastleVerb's own doc comment for why this is optional
+  // rather than required.
+  const orgId = typeof body?.orgId === "string" && body.orgId.trim() ? body.orgId.trim() : undefined;
 
-  const result = await runCastleVerb(verb.id, actor);
+  const result = await runCastleVerb(verb.id, actor, orgId);
+
+  if (isCastleRunFrozenError(result)) {
+    writeAuditLogEntry({
+      timestamp: new Date().toISOString(),
+      actor,
+      method: "POST",
+      path: "/api/castle/run",
+      status: 403,
+      requestId,
+    });
+    return NextResponse.json(
+      {
+        error: `a declared change-freeze window blocks this action: ${result.freeze.reason}`,
+        freeze: result.freeze,
+        ...(result.overrideRequest
+          ? {
+              status: "pending_freeze_override",
+              approval: result.overrideRequest,
+              message:
+                "freeze.override requires a second, distinct owner-role approver -- POST /api/approvals/" +
+                `${result.overrideRequest.requestId} {decision:'approved'} to authorize running during ` +
+                "this freeze, then retry POST.",
+            }
+          : {}),
+      },
+      { status: 403 },
+    );
+  }
 
   // Best-effort cross-reference to castle's own BLAKE3 receipt chain: the
   // Job the line above just created is almost always still Pending/

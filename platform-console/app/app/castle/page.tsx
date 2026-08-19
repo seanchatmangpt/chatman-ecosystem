@@ -22,6 +22,7 @@ import {
   getCastleDeployment,
   listCastleJobs,
 } from "@/lib/castle";
+import { listScheduledVerbs } from "@/lib/scheduled-verbs";
 
 export const dynamic = "force-dynamic";
 
@@ -43,9 +44,9 @@ export default async function CastlePage() {
   const canDeploy = ROLE_RANK[role] >= ROLE_RANK.owner;
   const canRunOrSunset = ROLE_RANK[role] >= ROLE_RANK.member;
 
-  const [deployment, jobs] = clusterConfigured
-    ? await Promise.all([getCastleDeployment(), listCastleJobs()])
-    : [null, null];
+  const [deployment, jobs, scheduled] = clusterConfigured
+    ? await Promise.all([getCastleDeployment(), listCastleJobs(), listScheduledVerbs()])
+    : [null, null, null];
 
   return (
     <>
@@ -162,6 +163,79 @@ export default async function CastlePage() {
                             </TableCell>
                           </TableRow>
                         ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle>Scheduled verbs (maintenance-window-gated)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  A scheduled verb only ever runs after a second, distinct{" "}
+                  <code>owner</code>-role approver signs off via{" "}
+                  <code>POST /api/approvals/[id]</code>, and only once the
+                  real polling CronJob (
+                  <code>platform-castle-scheduled-verbs</code>) observes
+                  the current time has reached <code>requestedFor</code>.
+                  An approved-but-not-yet-due row stays{" "}
+                  <code>pending</code> until then; an unapproved-but-due
+                  row also stays <code>pending</code> until it is approved.
+                </p>
+
+                {scheduled && !scheduled.ok && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{scheduled.error}</AlertDescription>
+                  </Alert>
+                )}
+
+                {scheduled?.ok && scheduled.data.length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    No scheduled verbs yet -- use &quot;Schedule for
+                    maintenance window...&quot; above.
+                  </p>
+                )}
+
+                {scheduled?.ok && scheduled.data.length > 0 && (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Verb</TableHead>
+                        <TableHead>Requested for</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Requested by</TableHead>
+                        <TableHead>Approved by</TableHead>
+                        <TableHead>Job</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {scheduled.data.map((row) => (
+                        <TableRow key={row.id}>
+                          <TableCell>{row.verbId}</TableCell>
+                          <TableCell className="text-xs text-muted-foreground">
+                            {new Date(row.requestedFor).toLocaleString()}
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={
+                                row.status === "executed"
+                                  ? "default"
+                                  : row.status === "cancelled"
+                                    ? "secondary"
+                                    : "outline"
+                              }
+                            >
+                              {row.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground">{row.requestedBy}</TableCell>
+                          <TableCell className="text-xs text-muted-foreground">{row.approvedBy ?? "-"}</TableCell>
+                          <TableCell className="font-mono text-xs">{row.jobName ?? "-"}</TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 )}

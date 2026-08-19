@@ -57,7 +57,9 @@ export type ApprovalAction =
   | "backup.retention.change"
   | "export-subscription.update"
   | "dr.failover"
-  | "dsar.erasure";
+  | "dsar.erasure"
+  | "castle.verb.schedule"
+  | "freeze.override";
 export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   "org.delete",
   "quota.override",
@@ -89,6 +91,30 @@ export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   // destructive, one owner acting alone is not enough" bar org.delete
   // and dr.failover already set. See lib/dsar.ts.
   "dsar.erasure",
+  // Maintenance-Window-Gated Castle Verb Scheduling
+  // (lib/scheduled-verbs.ts): scheduleCastleVerb queues a real castle
+  // actuation verb (a real batch/v1 Job -- see lib/castle.ts's
+  // runCastleVerb) to run unattended, later, inside a pre-announced
+  // maintenance window, with no human present to review the actual
+  // moment it fires. That is exactly the "can execute later, unattended,
+  // with no one watching" class of risk org.delete and dr.failover's own
+  // header comments already set the bar for -- the requester's own
+  // maker-checker sign-off is not sufficient; a second, distinct
+  // owner-role approver must sign off BEFORE the entry is ever eligible
+  // for the poller to run it, same as every other action in this list.
+  "castle.verb.schedule",
+  // Declared change-freeze window override (lib/freeze-windows.ts, ITIL
+  // / SOC2 CC8 change-management control): a freeze window whose
+  // `allowEmergencyOverride` is true lets a mutating action (a castle
+  // verb Run, a project tier change, a quota patch) still execute during
+  // the window, but only after a SECOND, distinct owner-role approver
+  // signs off on breaking a freeze the org itself declared -- the
+  // requester's own judgment that "this is an emergency" is not
+  // sufficient by itself, same maker-checker bar every other action in
+  // this list sets. A freeze window with `allowEmergencyOverride: false`
+  // never reaches this at all -- checkFreezeGuard refuses to create an
+  // override request for it, it is a hard block.
+  "freeze.override",
 ];
 
 export type ApprovalStatus = "pending" | "approved" | "rejected";
@@ -140,6 +166,23 @@ export interface ApprovalResourcePayload {
     fromRegion: string;
     toRegion: string;
     reason: string;
+  };
+  /** castle.verb.schedule: the non-secret shape of the requested
+   * scheduled castle verb -- which allowlisted verb, and the exact ISO
+   * timestamp it is requested to fire at -- so a second approver can see
+   * exactly what will run, and when, before signing off. `targetId` on
+   * the ApprovalRequest itself is the ScheduledVerb's own id
+   * (lib/scheduled-verbs.ts), not the verb id, so this is the field an
+   * approver actually reads to know which castle verb is in play. */
+  /** freeze.override: the non-secret shape of the freeze window being
+   * overridden -- which window (by id) and its human-supplied reason --
+   * so a second approver can see exactly which declared freeze they are
+   * being asked to authorize breaking. */
+  requestedFreezeId?: string;
+  requestedFreezeReason?: string;
+  requestedScheduledVerb?: {
+    verbId: string;
+    requestedFor: string;
   };
 }
 

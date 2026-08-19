@@ -5,6 +5,8 @@ import { getProject, parseK8sQuantity, patchResourceQuotaHard } from "@/lib/k8s"
 import { requireRole, roleIdentifierFor } from "@/lib/authz";
 import { requireApproval } from "@/lib/approval-workflow";
 import { resourceQuotaHardFor } from "@/lib/tiers";
+import { checkFreezeGuard } from "@/lib/freeze-windows";
+import { listOrgs } from "@/lib/orgs";
 
 // Real maker-checker-gated ResourceQuota override: raising a namespace's
 // ResourceQuota ceiling ABOVE its current plan tier's table
@@ -132,6 +134,55 @@ export async function PATCH(
     return NextResponse.json({ error: `project '${name}' not found` }, { status: 404 });
   }
   const project = projectResult.data;
+
+  // Change-freeze guard (lib/freeze-windows.ts, SOC2 CC8 / ITIL change
+  // management): resolve the org this Project's namespace belongs to
+  // (an org's namespace is 1:1 with its Projects -- same lookup
+  // app/api/orgs/[id]/tier/route.ts's sibling uses in reverse) and block
+  // ANY quota patch during a declared, active freeze for that org unless
+  // a fresh `freeze.override` approval already exists. A Project whose
+  // namespace matches no registered org (e.g. the console's own
+  // operational "demo-project") has nothing to check against and is
+  // never blocked.
+  const orgsResult = await listOrgs();
+  if (!orgsResult.ok) {
+    return NextResponse.json({ error: orgsResult.error }, { status: 502 });
+  }
+  const owningOrg = orgsResult.data.find((o) => o.namespace === project.namespace);
+  if (owningOrg) {
+    const freezeGuard = await checkFreezeGuard(owningOrg.id, actor);
+    if (!freezeGuard.ok) {
+      return NextResponse.json({ error: freezeGuard.error }, { status: 502 });
+    }
+    if (freezeGuard.data.blocked) {
+      writeAuditLogEntry({
+        timestamp: new Date().toISOString(),
+        actor,
+        method: "PATCH",
+        path: `/api/projects/${name}/quota`,
+        status: 403,
+        requestId,
+      });
+      return NextResponse.json(
+        {
+          error: `a declared change-freeze window blocks this action: ${freezeGuard.data.freeze.reason}`,
+          freeze: freezeGuard.data.freeze,
+          ...(freezeGuard.data.overrideRequest
+            ? {
+                status: "pending_freeze_override",
+                approval: freezeGuard.data.overrideRequest,
+                message:
+                  "freeze.override requires a second, distinct owner-role approver -- POST /api/approvals/" +
+                  `${freezeGuard.data.overrideRequest.requestId} {decision:'approved'} to authorize this ` +
+                  "patch during the freeze, then retry PATCH.",
+              }
+            : {}),
+        },
+        { status: 403 },
+      );
+    }
+  }
+
   const tierHard = resourceQuotaHardFor(project.tier);
 
   if (!exceedsTierCeiling(requestedHard, tierHard)) {

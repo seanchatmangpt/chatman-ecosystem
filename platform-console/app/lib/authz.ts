@@ -27,6 +27,7 @@
 import { NextResponse } from "next/server";
 import { createOrUpdateConfigMap, getConfigMap, type K8sResult } from "@/lib/k8s";
 import type { SessionPayload } from "@/lib/session";
+import { identifierHasCustomPermission, type Permission } from "@/lib/custom-roles";
 
 export const ORG_ROLES_NAMESPACE = "platform-console";
 export const ORG_ROLES_CONFIGMAP = "platform-console-org-roles";
@@ -303,6 +304,48 @@ export async function requireRole(
       { status: 403 },
     ),
   };
+}
+
+/**
+ * Fine-grained permission check, additive to the built-in viewer/member/
+ * owner rank above -- never a replacement for it. Order of evaluation:
+ *
+ *   1. Built-in rank: "owner" already implies every permission (an owner
+ *      can already do anything a narrower custom role could grant), so an
+ *      owner identifier short-circuits to true without a custom-roles
+ *      ConfigMap read.
+ *   2. Custom-role fallback: does ANY custom role assigned to this
+ *      identifier, scoped to this orgId, grant the specific permission?
+ *      (lib/custom-roles.ts's identifierHasCustomPermission, itself
+ *      fail-closed to false on any read error.)
+ *
+ * A plain viewer/member with no matching custom-role grant returns false
+ * -- exactly the same fail-closed behavior every identifier had before
+ * this function existed. Scoped by the platform's own role assignments
+ * (getOrgRoleAssignments), matching the orgId-less rank lib/authz.ts's
+ * getRoleFor already resolves; callers gating a specific customer org's
+ * own namespace should combine this with requireRoleIn's namespace-scoped
+ * rank check instead of getRoleFor's platform-level one.
+ */
+export async function hasPermission(
+  identifier: string,
+  orgId: string,
+  permission: Permission,
+): Promise<boolean> {
+  const assignments = await getOrgRoleAssignments();
+  if (assignments.ok) {
+    const found = assignments.data.find((a) => a.identifier === identifier);
+    if (found?.role === "owner") return true;
+  } else if (identifier === ADMIN_IDENTIFIER) {
+    // Same fail-closed-except-local-admin-default as getRoleFor: if the
+    // ConfigMap is genuinely unreachable, local-admin still resolves to
+    // its documented "owner" default, so it should still short-circuit
+    // here rather than falling through to a custom-roles read that would
+    // also fail.
+    return true;
+  }
+
+  return identifierHasCustomPermission(identifier, orgId, permission);
 }
 
 // ---------------------------------------------------------------------

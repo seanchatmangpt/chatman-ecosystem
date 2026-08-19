@@ -526,6 +526,43 @@ export async function getVulnScanRun(jobName: string): Promise<K8sResult<VulnSca
   };
 }
 
+interface JobListItem {
+  metadata: { name: string; creationTimestamp?: string };
+}
+interface JobListResponse {
+  items?: JobListItem[];
+}
+
+/**
+ * Finds the most recently created real vuln-scan Job in
+ * `VULN_SCAN_NAMESPACE` (`app=platform-console-vuln-scan` label, the same
+ * one `createVulnScanJob` stamps -- "the listing IS the record" convention
+ * `listBatchJobs` already uses) and, if one exists, returns its full real
+ * status via `getVulnScanRun`. Returns `{ ok: true, data: null }` when no
+ * scan has ever been run in this cluster -- a real, honest "no data yet",
+ * never a fabricated zero-findings result. Used by lib/trust-page.ts so the
+ * public trust page always reflects the actual last completed/in-flight
+ * scan without the caller needing to already know a job name.
+ */
+export async function getLatestVulnScanRun(): Promise<K8sResult<VulnScanRun | null>> {
+  const listResult = await k8sRequest<JobListResponse>(
+    `/apis/batch/v1/namespaces/${VULN_SCAN_NAMESPACE}/jobs?labelSelector=${encodeURIComponent(
+      `${MANAGED_BY_LABEL}=${MANAGED_BY_VALUE}`,
+    )}`,
+  );
+  if (!listResult.ok) return listResult;
+
+  const jobs = (listResult.data.items ?? []).slice().sort((a, b) => {
+    const at = a.metadata.creationTimestamp ? Date.parse(a.metadata.creationTimestamp) : 0;
+    const bt = b.metadata.creationTimestamp ? Date.parse(b.metadata.creationTimestamp) : 0;
+    return bt - at;
+  });
+  const latest = jobs[0];
+  if (!latest) return { ok: true, data: null };
+
+  return getVulnScanRun(latest.metadata.name);
+}
+
 /** Deletes the real Job (background propagation, cleaning up its child
  * Pods too) -- called once a run's results have been collected, same
  * "ephemeral, not accumulated forever" convention as
