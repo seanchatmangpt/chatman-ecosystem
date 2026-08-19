@@ -57,3 +57,9 @@ id = "document:platform-engineers-handbook-capability-roadmap"
 title = "The Platform Engineer's Handbook — Capability Roadmap"
 path = "docs/platform-engineers-handbook-capability-roadmap.md"
 canonical = false
+
+[[document]]
+id = "document:hyperdimensional-information-encryption"
+title = "Hyperdimensional Information Encryption and the Construct-Only Standing Runtime"
+path = "docs/architecture/hyperdimensional-information-encryption.md"
+canonical = false

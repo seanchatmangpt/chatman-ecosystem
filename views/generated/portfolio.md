@@ -28,6 +28,7 @@ Version: `0.1.0`
 |---|---|---|
 | `document:architecture` | `docs/ARCHITECTURE.md` | true |
 | `document:constitution` | `CONSTITUTION.md` | true |
+| `document:hyperdimensional-information-encryption` | `docs/architecture/hyperdimensional-information-encryption.md` | false |
 | `document:operations` | `docs/OPERATIONS.md` | true |
 | `document:platform-engineers-handbook-backport` | `docs/platform-engineers-handbook-backport.md` | false |
 | `document:platform-engineers-handbook-backward-chain` | `docs/platform-engineers-handbook-backward-chain.md` | false |
