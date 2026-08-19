@@ -1,0 +1,213 @@
+name: Agent Lightning Repair Capsule
+
+on:
+  push:
+    branches: [feat/agent-lightning-commercial-runtime]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+      - uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
+        with:
+          toolchain: 1.97.1
+          components: clippy,rustfmt
+      - name: Repair bounded lint findings structurally
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('crates/ecosystem-runtime/src/agent_lightning_service.rs')
+          text = path.read_text()
+          old_neg = '''fn neg(value: bool) -> usize {
+              if value { 1 } else { 0 }
+          }
+          '''.replace('          ', '')
+          new_neg = '''fn neg(value: bool) -> usize {
+              usize::from(value)
+          }
+          '''.replace('          ', '')
+          if old_neg not in text:
+              raise SystemExit('neg fixture helper shape changed')
+          text = text.replace(old_neg, new_neg, 1)
+
+          start = text.index('pub fn verify_fixtures() -> Result<VerificationReport, Error> {')
+          end = text.index('\n#[cfg(test)]', start)
+          replacement = r'''fn verify_provider_fixture(
+              index: usize,
+              provider: Provider,
+          ) -> Result<(String, String, usize, usize), Error> {
+              let (mut commerce, context, fulfillment) = commerce_fixture(provider)?;
+              let org = format!("organization:{}-customer", provider.as_str());
+              let mut service = Service::new(Policy::agent_lightning(), "2026-08-19T00:00:00Z")?;
+              service.bind_entitlement(grant(&org), &fulfillment, Authority::PersistControlPlane)?;
+              let principal = Principal {
+                  organization: org.clone(),
+                  subject: format!("service-account:{}", provider.as_str()),
+                  key_fingerprint: format!("blake3:{}", "0".repeat(64)),
+              };
+              let mode = [Mode::Hosted, Mode::Byoc, Mode::Private][index];
+              let job = request(&org, mode, provider.as_str());
+              let reservation = service.admit_job(&principal, &job, Authority::PersistControlPlane)?;
+              if service
+                  .admit_job(&principal, &job, Authority::PersistControlPlane)?
+                  .id
+                  != reservation.id
+              {
+                  return Err(Error::Receipt("IDEMPOTENT_REPLAY_DIVERGED".into()));
+              }
+
+              let mut negatives = 0;
+              let mut attacker = principal.clone();
+              attacker.organization = "organization:attacker".into();
+              negatives += neg(
+                  service
+                      .admit_job(&attacker, &job, Authority::PersistControlPlane)
+                      .is_err(),
+              );
+              let mut wrong = request(&org, mode, "wrong-sha");
+              wrong.workload.sha = "1".repeat(40);
+              negatives += neg(
+                  service
+                      .admit_job(&principal, &wrong, Authority::PersistControlPlane)
+                      .is_err(),
+              );
+              let mut over = request(&org, mode, "over-quota");
+              over.requested.insert(Meter::GpuSeconds, 20_001);
+              negatives += neg(
+                  service
+                      .admit_job(&principal, &over, Authority::PersistControlPlane)
+                      .is_err(),
+              );
+              negatives += neg(
+                  service
+                      .authorize_actuation(&reservation.id, Authority::Observe)
+                      .is_err(),
+              );
+              let permit =
+                  service.authorize_actuation(&reservation.id, Authority::ModifyExternalObject)?;
+              if permit.receipt_digest.is_empty() {
+                  return Err(Error::Receipt("UNRECEIPTED_ACTUATION_PERMIT".into()));
+              }
+              negatives += neg(
+                  service
+                      .reconcile_usage(
+                          &permit,
+                          BTreeMap::from([(Meter::GpuSeconds, 3_601)]),
+                          Authority::PersistControlPlane,
+                      )
+                      .is_err(),
+              );
+              service.reconcile_usage(
+                  &permit,
+                  BTreeMap::from([
+                      (Meter::GpuSeconds, 3_000),
+                      (Meter::InputTokens, 90_000),
+                      (Meter::OutputTokens, 15_000),
+                      (Meter::Rollouts, 1),
+                  ]),
+                  Authority::PersistControlPlane,
+              )?;
+              let suspended = commerce.observe(&observation(
+                  &context,
+                  ProviderEventKind::Suspended,
+                  "suspended",
+                  1,
+              ))?;
+              service.apply_entitlement_event(&suspended, Authority::PersistControlPlane)?;
+              negatives += neg(
+                  service
+                      .admit_job(
+                          &principal,
+                          &request(&org, mode, "suspended"),
+                          Authority::PersistControlPlane,
+                      )
+                      .is_err(),
+              );
+
+              Ok((
+                  provider.as_str().into(),
+                  format!("{mode:?}").to_ascii_lowercase(),
+                  service.replay_verify()?,
+                  negatives,
+              ))
+          }
+
+          pub fn verify_fixtures() -> Result<VerificationReport, Error> {
+              let mut providers = Vec::new();
+              let mut modes = BTreeSet::new();
+              let mut receipts = 0;
+              let mut negatives = 0;
+              for (index, provider) in [Provider::Aws, Provider::Microsoft, Provider::Google]
+                  .into_iter()
+                  .enumerate()
+              {
+                  let (provider_name, mode, provider_receipts, provider_negatives) =
+                      verify_provider_fixture(index, provider)?;
+                  providers.push(provider_name);
+                  modes.insert(mode);
+                  receipts += provider_receipts;
+                  negatives += provider_negatives;
+              }
+              Ok(VerificationReport {
+                  standing: "PARTIAL_ALIVE".into(),
+                  repository: REPOSITORY.into(),
+                  sha: SHA.into(),
+                  providers_verified: providers,
+                  modes_verified: modes.into_iter().collect(),
+                  receipts_verified: receipts,
+                  negative_fixtures_verified: negatives,
+                  invariants: vec![
+                      "exact Agent Lightning Git identity admitted".into(),
+                      "tenant identity bound to commercial entitlement".into(),
+                      "quota reserved before DO".into(),
+                      "actuation permit contains a prior signed receipt digest".into(),
+                      "actual usage cannot exceed reservation".into(),
+                      "suspension blocks new admission".into(),
+                      "receipt chain and source edges replay".into(),
+                  ],
+                  blockers: vec![
+                      "BLOCKED:LIVE_AGENT_LIGHTNING_EXECUTION_AT_PINNED_SHA_NOT_OBSERVED".into(),
+                      "BLOCKED:DURABLE_TENANT_IDENTITY_API_KEY_ROTATION_NOT_WIRED".into(),
+                      "BLOCKED:LIVE_PURCHASE_METER_AND_SETTLEMENT_RECEIPTS_NOT_OBSERVED".into(),
+                      "BLOCKED:PRODUCTION_GPU_COST_LIMITS_HA_AND_DR_NOT_OBSERVED".into(),
+                  ],
+              })
+          }
+          '''
+          replacement = '\n'.join(line[10:] if line.startswith('          ') else line for line in replacement.splitlines())
+          path.write_text(text[:start] + replacement + text[end:])
+          PY
+          rustfmt --edition 2024 crates/ecosystem-runtime/src/agent_lightning_service.rs
+          git diff --check -- crates/ecosystem-runtime/src/agent_lightning_service.rs
+      - name: Verify repaired commercial subject
+        run: |
+          cargo check --locked -p ecosystem-runtime --bin agent-lightning-commercial
+          cargo clippy --locked -p ecosystem-runtime --bin agent-lightning-commercial -- -D warnings
+          cargo test --locked -p ecosystem-runtime --bin agent-lightning-commercial
+          cargo run --locked --quiet -p ecosystem-runtime --bin agent-lightning-commercial -- verify-fixtures > /tmp/report.json
+          python - <<'PY'
+          import json
+          report=json.load(open('/tmp/report.json'))
+          assert report['standing']=='PARTIAL_ALIVE'
+          assert report['sha']=='bd80905120affc576eb383f3b4bcc35cacc0e1d0'
+          assert report['receipts_verified'] >= 15
+          assert report['negative_fixtures_verified'] >= 18
+          print(json.dumps({'validated': True, 'receipts': report['receipts_verified'], 'negative_fixtures': report['negative_fixtures_verified']}, sort_keys=True))
+          PY
+      - name: Commit verified repair when required
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- crates/ecosystem-runtime/src/agent_lightning_service.rs; then
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add crates/ecosystem-runtime/src/agent_lightning_service.rs
+          git commit -m 'fix: satisfy Agent Lightning commercial lint court'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
