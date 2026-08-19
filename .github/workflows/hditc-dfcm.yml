@@ -1,0 +1,65 @@
+name: HDITC DfCM runtime
+
+on:
+  pull_request:
+    paths:
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "crates/hditc/**"
+      - "docs/HDITC-DFCM-RUNTIME.md"
+      - ".github/workflows/hditc-dfcm.yml"
+  push:
+    branches:
+      - "agent/dfcm-do-runtime"
+    paths:
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "crates/hditc/**"
+      - "docs/HDITC-DFCM-RUNTIME.md"
+      - ".github/workflows/hditc-dfcm.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hditc-dfcm-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+
+      - name: Toolchain identity
+        run: |
+          rustc --version
+          cargo --version
+
+      - name: Admit workspace lock projection
+        run: cargo metadata --format-version 1 >/dev/null
+
+      - name: Persist lock projection on branch pushes
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          if [ -n "$(git status --porcelain -- Cargo.lock)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -- Cargo.lock
+            git commit -m "build: lock HDITC runtime"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: Format HDITC crate
+        run: cargo fmt --package hditc -- --check
+
+      - name: Compile and execute HDITC tests
+        run: cargo test -p hditc --all-targets --locked
+
+      - name: Clippy HDITC crate
+        run: cargo clippy -p hditc --all-targets --locked -- -D warnings
