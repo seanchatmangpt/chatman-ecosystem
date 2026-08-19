@@ -1,0 +1,36 @@
+name: DFCM Autonomic Finish
+
+on:
+  pull_request:
+    paths:
+      - "scripts/dfcm_autonomic_finish.py"
+      - "tests/test_dfcm_autonomic_finish.py"
+      - "release/v26.9.1/manifest.toml"
+      - ".github/workflows/dfcm-autonomic-finish.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  autonomic-court:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit court
+        run: python3 -m unittest -v tests/test_dfcm_autonomic_finish.py
+      - name: Exact manifest cycle
+        run: python3 scripts/dfcm_autonomic_finish.py --manifest release/v26.9.1/manifest.toml --limit 3 > dfcm-cycle.json
+      - name: Deterministic replay
+        run: |
+          python3 scripts/dfcm_autonomic_finish.py --manifest release/v26.9.1/manifest.toml --limit 3 > dfcm-cycle-2.json
+          cmp dfcm-cycle.json dfcm-cycle-2.json
+      - name: Compile
+        run: python3 -m py_compile scripts/dfcm_autonomic_finish.py tests/test_dfcm_autonomic_finish.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dfcm-autonomic-cycle
+          path: dfcm-cycle.json
