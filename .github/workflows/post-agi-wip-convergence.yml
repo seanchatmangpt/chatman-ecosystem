@@ -20,7 +20,7 @@ env:
   P30_BASE: 441a5642531977aa766bfd4827774a4b64945789
   P30_HEAD: 20f746d515148b2b857e0ea8bbbab35aab18a9f6
   P31_BASE: 441a5642531977aa766bfd4827774a4b64945789
-  P31_HEAD: 89558fc5cf4ce2d36cf593767f560af3c7e7a380
+  P31_HEAD: ebb806cb8bc38dccbcdff104195f5b9511d2d92e
 
 jobs:
   manufacture:
@@ -89,6 +89,23 @@ jobs:
           canonical = false
           EOF
 
+      - name: Admit Weaver definition/2 through explicit future semantics
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path("scripts/weaver-live-matrix.sh")
+          text = path.read_text()
+          text = text.replace("weaver --future registry", "weaver registry")
+          text = text.replace("weaver registry", "weaver --future registry")
+          text = text.replace("weaver serve", "weaver --future serve")
+          path.write_text(text)
+          PY
+          grep -q 'weaver --future registry check' scripts/weaver-live-matrix.sh
+          grep -q 'weaver --future registry generate' scripts/weaver-live-matrix.sh
+          grep -q 'weaver --future serve' scripts/weaver-live-matrix.sh
+
       - name: Regenerate canonical projections
         shell: bash
         run: |
@@ -124,6 +141,6 @@ jobs:
           - PR #30 @ ${P30_HEAD}
           - PR #31 @ ${P31_HEAD}
 
-          Manufacture: net-delta reconstitution; no branch merge; generated projections regenerated from canonical sources."
+          Manufacture: net-delta reconstitution; no branch merge; generated projections regenerated from canonical sources; Weaver definition/2 admitted with explicit future semantics."
           test ! -e .github/workflows/post-agi-wip-convergence.yml
           git push origin "HEAD:${GITHUB_REF_NAME}"
