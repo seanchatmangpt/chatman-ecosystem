@@ -77,6 +77,15 @@ class ERRCPlanTests(unittest.TestCase):
         selected = {row["component"] for row in focus["selected"]}
         self.assertNotIn("e", selected)
 
+    def test_multi_root_downstream_is_not_credited_until_all_root_blockers_are_selected(self) -> None:
+        narrow = copy.deepcopy(policy())
+        narrow["errc"]["focus_fraction"] = 0.2
+        narrow["errc"]["minimum_relief_coverage"] = 0.1
+        result = errc.focus(manifest(), narrow)
+        self.assertEqual(1, result["budget"])
+        self.assertNotIn("e", result["covered"])
+        self.assertIn("e", result["uncovered"])
+
     def test_cycle_is_refused(self) -> None:
         data = manifest()
         data["components"][0]["depends_on"] = ["e"]
