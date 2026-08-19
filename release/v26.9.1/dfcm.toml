@@ -1,0 +1,165 @@
+schema = "chatman.dfcm-release.v1"
+version = "26.9.1"
+ambient_do = false
+automatic_irreversible_do = false
+required_stages = ["OBSERVE", "ADMIT", "SELECT", "CONSTRUCT", "AUTHORIZE", "DO", "RECEIPT", "REPLAY"]
+
+[[component]]
+id = "open-ontologies"
+repository = "seanchatmangpt/open-ontologies"
+role = "public-ontology"
+depends_on = []
+allowed_authorities = ["observe", "classify", "persist_control_plane"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = []
+
+[[component]]
+id = "process-intelligence"
+repository = "seanchatmangpt/process-intelligence"
+role = "research"
+depends_on = []
+allowed_authorities = ["observe", "classify"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = []
+
+[[component]]
+id = "wasm4pm-compat"
+repository = "seanchatmangpt/wasm4pm-compat"
+role = "process-type-law"
+depends_on = []
+allowed_authorities = ["observe", "classify", "persist_control_plane"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = []
+
+[[component]]
+id = "star-toml"
+repository = "seanchatmangpt/star-toml"
+role = "config-admission"
+depends_on = ["wasm4pm-compat"]
+allowed_authorities = ["observe", "classify"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = []
+
+[[component]]
+id = "ggen"
+repository = "seanchatmangpt/ggen"
+role = "manufacture"
+depends_on = []
+allowed_authorities = ["persist_control_plane"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = ["capability:manufacture-with-ggen"]
+
+[[component]]
+id = "ggen-marketplace"
+repository = "seanchatmangpt/ggen-marketplace"
+role = "pack-marketplace"
+depends_on = ["ggen"]
+allowed_authorities = ["persist_control_plane"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = ["capability:distribute-ggen-pack"]
+
+[[component]]
+id = "mfact"
+repository = "seanchatmangpt/mfact"
+role = "formal-proof"
+depends_on = ["ggen"]
+allowed_authorities = ["observe", "classify", "persist_control_plane"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = []
+
+[[component]]
+id = "bcinr"
+repository = "seanchatmangpt/bcinr"
+role = "cmca-kernel"
+depends_on = []
+allowed_authorities = ["persist_control_plane"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = ["capability:compute-bounded-cmca"]
+
+[[component]]
+id = "mfw"
+repository = "seanchatmangpt/mfw"
+role = "orchestration"
+depends_on = ["bcinr"]
+allowed_authorities = ["persist_control_plane"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = ["capability:orchestrate-manufacturing-work"]
+
+[[component]]
+id = "gymact"
+repository = "seanchatmangpt/gymact"
+role = "actuation"
+depends_on = ["ggen", "open-ontologies"]
+allowed_authorities = ["persist_control_plane"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = ["capability:execute-gym-world", "capability:execute-bounded-domain-gym"]
+
+[[component]]
+id = "autofde-lab"
+repository = "seanchatmangpt/autofde-lab"
+role = "explore"
+depends_on = ["bcinr", "gymact"]
+allowed_authorities = ["classify"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = ["capability:admit-planner-policy-role-separation", "capability:plan-decision-frontier", "capability:falsify-candidate-plan", "capability:admit-capability-plan"]
+
+[[component]]
+id = "wasm4pm"
+repository = "seanchatmangpt/wasm4pm"
+role = "process-execution"
+depends_on = ["wasm4pm-compat"]
+allowed_authorities = ["observe", "classify", "persist_control_plane"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = []
+
+[[component]]
+id = "affidavit"
+repository = "seanchatmangpt/affidavit"
+role = "provenance"
+depends_on = []
+allowed_authorities = ["persist_control_plane"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = ["capability:attest-affidavit-standing"]
+
+[[component]]
+id = "praxis"
+repository = "seanchatmangpt/praxis"
+role = "fleet-conformance"
+depends_on = ["ggen"]
+allowed_authorities = ["observe", "classify", "persist_control_plane"]
+simulation_only = false
+do_mode = "none"
+owned_capabilities = []
+
+[[component]]
+id = "autofde"
+repository = "seanchatmangpt/autofde"
+role = "product"
+depends_on = ["ggen", "gymact", "mfact", "open-ontologies", "star-toml"]
+allowed_authorities = ["persist_control_plane", "modify_external_object"]
+simulation_only = false
+do_mode = "brokered"
+owned_capabilities = ["capability:persist-autofde-runtime", "capability:broker-consequential-do"]
+
+[[component]]
+id = "fdegym"
+repository = "seanchatmangpt/fdegym"
+role = "capstone"
+depends_on = ["affidavit", "autofde", "autofde-lab", "gymact", "mfact", "mfw", "wasm4pm"]
+allowed_authorities = ["observe", "classify"]
+simulation_only = true
+do_mode = "none"
+owned_capabilities = []

@@ -1,0 +1,42 @@
+name: Federated Capability Control
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/verify_federated_capability_owner.py'
+      - 'tests/test_federated_capability_owner.py'
+      - '.github/workflows/federated-capability-owner.yml'
+      - '.github/workflows/federated-capability-control.yml'
+      - 'catalog/capabilities.toml'
+      - 'catalog/capabilities-decision-graph.toml'
+      - 'catalog/repositories.toml'
+      - 'release/v26.9.1/manifest.toml'
+      - 'release/v26.9.1/dfcm.toml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  federation-self-court:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact subject with ancestry
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Assert exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected='${{ github.event.pull_request.head.sha || github.sha }}'
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$expected"
+          echo "FEDERATION_CONTROL_SUBJECT=$actual"
+      - name: Execute DfCM federation refusal courts
+        run: python3 -m unittest tests.test_federated_capability_owner -v
+      - name: Compile verifier
+        run: python3 -m py_compile scripts/verify_federated_capability_owner.py

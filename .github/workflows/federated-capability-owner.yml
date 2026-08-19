@@ -1,0 +1,75 @@
+name: Federated Capability Owner
+
+on:
+  workflow_call:
+    inputs:
+      control-plane-sha:
+        description: Exact chatman-ecosystem commit containing the canonical graph and verifier
+        required: true
+        type: string
+      descriptor-path:
+        description: Repository-local ownership projection
+        required: false
+        default: ecosystem/capability-owner.toml
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  admit-owner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact caller subject with ancestry
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: subject
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Assert exact caller subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected='${{ github.event.pull_request.head.sha || github.sha }}'
+          actual="$(git -C subject rev-parse HEAD)"
+          test "$actual" = "$expected"
+          echo "FEDERATED_SUBJECT=$actual"
+      - name: Checkout exact control-plane subject
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: seanchatmangpt/chatman-ecosystem
+          ref: ${{ inputs.control-plane-sha }}
+          path: control-plane
+          persist-credentials: false
+      - name: Assert exact control-plane subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected='${{ inputs.control-plane-sha }}'
+          actual="$(git -C control-plane rev-parse HEAD)"
+          test "$actual" = "$expected"
+          test "${#actual}" -eq 40
+          echo "CONTROL_PLANE_SUBJECT=$actual"
+      - name: Admit DfCM federation projection
+        shell: bash
+        run: |
+          set -euo pipefail
+          control_root="$(realpath control-plane)"
+          python3 control-plane/scripts/verify_federated_capability_owner.py \
+            --control-plane-root "$control_root" \
+            --subject-root subject \
+            --descriptor "subject/${{ inputs.descriptor-path }}" \
+            --expected-repository '${{ github.repository }}' | tee /tmp/federation-receipt.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          receipt = json.loads(Path('/tmp/federation-receipt.json').read_text())
+          assert receipt['standing'] == 'ALIVE'
+          assert receipt['ambient_do'] is False
+          assert receipt['automatic_irreversible_do'] is False
+          assert receipt['capability_standing_promoted'] is False
+          assert receipt['base_ancestry_verified'] is True
+          print('DFCM_FEDERATED_CAPABILITY_OWNER_ALIVE')
+          PY
