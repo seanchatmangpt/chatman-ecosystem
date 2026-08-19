@@ -43,6 +43,7 @@ const links = [
   { href: "/org", label: "Org Roles" },
   { href: "/org/security", label: "Org Security" },
   { href: "/org/branding", label: "Org Branding" },
+  { href: "/org/incidents", label: "SLA Incidents" },
   { href: "/approvals", label: "Approvals" },
   { href: "/api-keys", label: "API Keys" },
   { href: "/webhooks", label: "Webhooks" },

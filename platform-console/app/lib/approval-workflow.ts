@@ -50,11 +50,28 @@ export const APPROVALS_CONFIGMAP = "platform-console-approvals";
 // today, so it must not silently authorize it.
 export const APPROVAL_TTL_HOURS = 24;
 
-export type ApprovalAction = "org.delete" | "quota.override" | "tier.downgrade";
+export type ApprovalAction =
+  | "org.delete"
+  | "quota.override"
+  | "tier.downgrade"
+  | "backup.retention.change"
+  | "export-subscription.update";
 export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   "org.delete",
   "quota.override",
   "tier.downgrade",
+  "backup.retention.change",
+  // A scheduled export subscription is a real, standing data-
+  // exfiltration control: once saved, it recurringly ships this org's
+  // audit log or full export bundle to a bucket a THIRD PARTY (the
+  // customer's own SIEM/data-lake pipeline) controls, completely
+  // unattended. That is exactly the "can quietly move data out of the
+  // platform on an ongoing basis" class of change org.delete's own
+  // header comment already documents the bar for -- one owner acting
+  // alone (lib/authz.ts's requireRoleIn) is not sufficient; a second,
+  // distinct owner-role approver must sign off before bucket
+  // credentials + schedule are ever accepted.
+  "export-subscription.update",
 ];
 
 export type ApprovalStatus = "pending" | "approved" | "rejected";
@@ -77,6 +94,27 @@ export interface ApprovalResourcePayload {
   requestedHard?: Record<string, string>;
   /** tier.downgrade: the tier the Project would move to once approved. */
   requestedTier?: ProjectTier;
+  /** backup.retention.change: the retention window (in days) the org's
+   * backup policy would move to once approved. */
+  requestedRetentionDays?: number;
+  /** export-subscription.update: the non-secret shape of the requested
+   * bucket subscription -- bucket endpoint/name/prefix/cadence/scope --
+   * so a second approver can see WHERE this org's data would be shipped
+   * and how often before signing off. Deliberately excludes the access
+   * key id and secret access key: an approval request row lives in the
+   * same platform-console-approvals ConfigMap every other approval type
+   * does, and credential material must never be readable there even in
+   * transit through a pending approval -- lib/s3-export-subscription.ts's
+   * own encrypted-at-rest storage is the only place those two fields are
+   * ever persisted. */
+  requestedExportSubscription?: {
+    bucketEndpoint: string;
+    bucketName: string;
+    prefix: string;
+    cadence: string;
+    scope: string;
+    enabled: boolean;
+  };
 }
 
 export interface ApprovalRequest {

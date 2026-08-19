@@ -495,3 +495,38 @@ export async function revokeOrgInviteIn(
   if (!result.ok) return result;
   return { ok: true, data: revoked };
 }
+
+// ---------------------------------------------------------------------
+// Platform-admin gate: the "platform-admin role" the Admin Impersonation
+// spec (lib/impersonation.ts, /api/support/impersonate) requires. This
+// codebase's role model has exactly one PLATFORM-wide (as opposed to
+// per-customer-org) role assignment set: the `platform-console-org-roles`
+// ConfigMap in the `platform-console` namespace that getOrgRoleAssignments
+// / requireRole already read -- "owner" there is, and always has been,
+// the platform operator's own admin role (the local-admin account is
+// seeded into it as "owner" by default, see getOrgRoleAssignments' doc
+// comment above). "platform-admin" is therefore not a fourth Role rank to
+// add to ROLE_RANK (which would fork every existing per-org owner/member/
+// viewer comparison); it's this exact existing check -- an "owner" of the
+// platform's own roles ConfigMap -- named and exposed under the identifier
+// the spec uses, so a support-impersonation route can gate on it without
+// silently reinventing what "owner" already means at the platform level.
+export interface PlatformAdminCheck {
+  ok: boolean;
+  response?: NextResponse;
+}
+
+export async function requirePlatformAdmin(session: SessionPayload): Promise<PlatformAdminCheck> {
+  const access = await requireRole(session, "owner");
+  if (access.ok) return { ok: true };
+  return {
+    ok: false,
+    response: NextResponse.json(
+      {
+        error: "forbidden",
+        reason: `role '${access.role}' does not have platform-admin (platform-level owner) access required to start a support-impersonation session`,
+      },
+      { status: 403 },
+    ),
+  };
+}

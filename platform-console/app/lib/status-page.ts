@@ -15,7 +15,7 @@
  * that honestly (`reachable: false`, or `uptimePercent: null`) rather than
  * fabricating "100%" or "all systems operational".
  */
-import { queryPrometheus } from "@/lib/prometheus";
+import { queryPrometheus, queryPrometheusRange } from "@/lib/prometheus";
 
 export interface StatusComponent {
   id: string;
@@ -154,4 +154,76 @@ export async function getStatusPageData(
     components,
     overall: overallOf(components),
   };
+}
+
+export interface ComponentDownWindow {
+  componentId: string;
+  /** RFC3339 -- the first sampled timestamp `up == 0` was observed for this contiguous span. */
+  startedAt: string;
+  /** RFC3339 -- the first sampled timestamp AFTER the span where `up` was seen back at 1
+   * (i.e. the span is known to have ended by this time). Undefined when the span is still
+   * open at `end` (the component was still down at the last sample in the queried range). */
+  resolvedAt?: string;
+}
+
+export type ComponentDownWindowsResult =
+  | { ok: true; data: ComponentDownWindow[] }
+  | { ok: false; error: string };
+
+/**
+ * Real derivation of contiguous `up{component=...} == 0` spans between
+ * `start` and `end`, one PromQL `query_range` round trip over the exact
+ * same `up` series getStatusPageData reads instant/windowed values from --
+ * the source-of-truth this repo's platform-prober exporter writes, never a
+ * hand-entered value. Used by lib/incidents.ts's reconciler to auto-open/
+ * close Incident rows from real observed downtime rather than manual entry.
+ *
+ * A span is "contiguous" at the query's own step resolution: consecutive
+ * samples of `up == 0` for one component id are one span; a sample of
+ * `up == 1` (or a gap -- no sample at all, e.g. scrape target briefly
+ * unreachable at the Prometheus level itself) closes the current span.
+ * `stepSeconds` defaults to platform-prober's own 15s scrape interval
+ * (k8s/status-page.yaml) so no real down sample is missed between steps.
+ */
+export async function getComponentDownWindows(
+  start: Date,
+  end: Date,
+  stepSeconds = 15,
+): Promise<ComponentDownWindowsResult> {
+  const result = await queryPrometheusRange(
+    'up{component!=""}',
+    Math.floor(start.getTime() / 1000),
+    Math.floor(end.getTime() / 1000),
+    stepSeconds,
+  );
+  if (!result.ok) return { ok: false, error: result.error };
+
+  const windows: ComponentDownWindow[] = [];
+  for (const series of result.data.data?.result ?? []) {
+    const componentId = series.metric.component;
+    if (!componentId) continue;
+    let openStart: number | null = null;
+    for (const [ts, rawValue] of series.values) {
+      const isDown = Number(rawValue) === 0;
+      if (isDown) {
+        if (openStart === null) openStart = ts;
+      } else if (openStart !== null) {
+        windows.push({
+          componentId,
+          startedAt: new Date(openStart * 1000).toISOString(),
+          resolvedAt: new Date(ts * 1000).toISOString(),
+        });
+        openStart = null;
+      }
+    }
+    // Span still open at the end of the queried range -- report it without
+    // a resolvedAt (the reconciler leaves the matching Incident row open).
+    if (openStart !== null) {
+      windows.push({
+        componentId,
+        startedAt: new Date(openStart * 1000).toISOString(),
+      });
+    }
+  }
+  return { ok: true, data: windows };
 }

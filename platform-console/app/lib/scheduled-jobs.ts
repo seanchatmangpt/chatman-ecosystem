@@ -451,6 +451,244 @@ export async function createComplianceReportCronJob(input: {
   return { ok: true, data: toScheduledJob(result.data) };
 }
 
+// -------------------------------------------------- Export Subscriptions
+//
+// Real recurring "bring your own bucket" export delivery
+// (lib/s3-export-subscription.ts): unlike createComplianceReportCronJob
+// above (one CronJob per org, each POSTing into ITS OWN org id path),
+// this one platform-wide CronJob fans out across every org in a single
+// firing -- lib/s3-export-subscription.ts's runDueExportSubscriptions
+// already walks the whole `platform-console-export-subscriptions`
+// registry and skips anything not yet due (isSubscriptionDue), so there
+// is no need for a per-org schedule/CronJob object at all; one CronJob in
+// the platform's own `platform-console` namespace, firing more often than
+// the shortest configured cadence (daily), is both simpler and avoids
+// creating/tearing down a CronJob every time an org enables or disables
+// its subscription.
+//
+// Same shared-secret authentication pattern as
+// COMPLIANCE_CRON_SECRET/buildComplianceReportCommand above (see that
+// header comment for the one-time operator provisioning step): the
+// secret is injected via a real k8s `secretKeyRef` against a
+// `platform-export-subscription-cron-secret` Secret this module never
+// creates itself, and the only two values ever interpolated into the
+// fixed curl template are constants -- never request-supplied text.
+export const EXPORT_SUBSCRIPTION_CRON_SECRET_NAME = "platform-export-subscription-cron-secret";
+export const EXPORT_SUBSCRIPTION_CRON_SECRET_KEY = "secret";
+export const EXPORT_SUBSCRIPTION_CRON_JOB_NAME = "platform-export-subscriptions";
+export const EXPORT_SUBSCRIPTION_CRON_JOB_LABEL = "export-subscription-cronjob";
+// Fires every 4 hours -- comfortably more often than the shortest
+// configured cadence ("daily", due after 20h per isSubscriptionDue), so
+// no enabled subscription can ever drift more than one firing interval
+// past its own due window.
+export const EXPORT_SUBSCRIPTION_CRON_SCHEDULE = "23 */4 * * *";
+
+function buildExportSubscriptionCronCommand(): string[] {
+  return [
+    "sh",
+    "-c",
+    `curl -sS -m 60 -X POST -H "x-export-subscription-cron-secret: $EXPORT_SUBSCRIPTION_CRON_SECRET" ` +
+      `"http://platform-console.platform-console.svc.cluster.local/api/orgs/_cron/export-subscription" && echo`,
+  ];
+}
+
+/**
+ * Creates the real, one-per-deployment recurring export-subscription
+ * CronJob in the `platform-console` namespace. Idempotent from the
+ * caller's perspective the same way createComplianceReportCronJob's own
+ * callers are expected to be -- calling this twice creates two CronJobs
+ * with the same fixed name only if the k8s API itself allows it (it does
+ * not; a second POST for the same name 409s, surfaced as a real
+ * `K8sResult` error, not silently swallowed).
+ */
+export async function createExportSubscriptionCronJob(): Promise<K8sResult<ScheduledJob>> {
+  const manifest = {
+    apiVersion: "batch/v1",
+    kind: "CronJob",
+    metadata: {
+      name: EXPORT_SUBSCRIPTION_CRON_JOB_NAME,
+      namespace: "platform-console",
+      labels: {
+        [MANAGED_BY_LABEL]: MANAGED_BY_VALUE,
+        [COMMAND_LABEL]: EXPORT_SUBSCRIPTION_CRON_JOB_LABEL,
+      },
+    },
+    spec: {
+      schedule: EXPORT_SUBSCRIPTION_CRON_SCHEDULE,
+      concurrencyPolicy: "Forbid",
+      successfulJobsHistoryLimit: 3,
+      failedJobsHistoryLimit: 3,
+      jobTemplate: {
+        spec: {
+          backoffLimit: 0,
+          activeDeadlineSeconds: 120,
+          template: {
+            metadata: {
+              labels: { [MANAGED_BY_LABEL]: MANAGED_BY_VALUE, "cronjob-name": EXPORT_SUBSCRIPTION_CRON_JOB_NAME },
+            },
+            spec: {
+              restartPolicy: "Never",
+              containers: [
+                {
+                  name: "export-subscriptions",
+                  image: "curlimages/curl:8.10.1",
+                  imagePullPolicy: "IfNotPresent",
+                  command: buildExportSubscriptionCronCommand(),
+                  env: [
+                    {
+                      name: "EXPORT_SUBSCRIPTION_CRON_SECRET",
+                      valueFrom: {
+                        secretKeyRef: {
+                          name: EXPORT_SUBSCRIPTION_CRON_SECRET_NAME,
+                          key: EXPORT_SUBSCRIPTION_CRON_SECRET_KEY,
+                        },
+                      },
+                    },
+                  ],
+                  resources: {
+                    requests: { cpu: "10m", memory: "16Mi" },
+                    limits: { cpu: "50m", memory: "32Mi" },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const result = await k8sRequest<CronJobItem>(
+    `/apis/batch/v1/namespaces/platform-console/cronjobs`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toScheduledJob(result.data) };
+}
+
+// ------------------------------------------------------ Backup Retention
+//
+// Real per-org recurring backup CronJob (lib/backup-retention.ts's own
+// capability): same "org namespace is not a fixed, enumerable list" split
+// from `createCronJob` above that `createComplianceReportCronJob`
+// already established -- this is its own function, not a 6th
+// `SCHEDULABLE_NAMESPACES` entry.
+//
+// Unlike the compliance CronJob (which authenticates with a dedicated
+// `COMPLIANCE_CRON_SECRET` header this console's own route checks),
+// this CronJob authenticates the SAME way any of this console's own API
+// automation would: a real `Authorization: Bearer <api key>` header
+// against the live `platform-console-api-keys` Secret
+// (lib/api-keys.ts/middleware.ts's existing Bearer-API-key auth path) --
+// no new auth mechanism, no new route-level secret check. The API key
+// itself is injected via a real k8s `secretKeyRef` against a
+// `platform-backup-cron-secret` Secret this module never creates itself
+// (provisioning it -- `kubectl create secret generic
+// platform-backup-cron-secret --from-literal=apiKey=pk_live_...` in the
+// `platform-console` namespace, using a real key minted through this
+// org's own API-keys UI -- is a one-time operator step, same
+// documented-not-silently-claimed-done disclosure
+// `createComplianceReportCronJob`'s header comment already uses for a
+// new schedulable namespace's RBAC grants).
+//
+// Hits GET /api/orgs/<orgId>/backups, which itself runs
+// cleanupExpiredBackups (real Job delete + ConfigMap row removal) before
+// returning -- so this CronJob's real, scheduled side effect IS the
+// tiered retention enforcement the capability's spec asks for, using the
+// exact same code path a human viewing the backup-history page triggers,
+// never a separate/duplicated cleanup implementation.
+export const BACKUP_CRON_SECRET_NAME = "platform-backup-cron-secret";
+export const BACKUP_CRON_SECRET_KEY = "apiKey";
+export const BACKUP_CRON_JOB_LABEL = "backup-retention-cronjob";
+
+function buildBackupRetentionCommand(orgId: string): string[] {
+  return [
+    "sh",
+    "-c",
+    `curl -sS -m 30 -H "Authorization: Bearer $BACKUP_CRON_API_KEY" ` +
+      `"http://platform-console.platform-console.svc.cluster.local/api/orgs/${orgId}/backups" && echo`,
+  ];
+}
+
+/**
+ * Creates the real, per-org recurring backup-retention-enforcement
+ * CronJob. `name` must already pass `isValidJobName` and `schedule` must
+ * already pass `isValidCronSchedule` -- same caller-validates-before-
+ * calling contract `createCronJob`/`createComplianceReportCronJob` above
+ * use.
+ */
+export async function createOrgBackupCronJob(input: {
+  namespace: string;
+  orgId: string;
+  name: string;
+  schedule: string;
+}): Promise<K8sResult<ScheduledJob>> {
+  const manifest = {
+    apiVersion: "batch/v1",
+    kind: "CronJob",
+    metadata: {
+      name: input.name,
+      namespace: input.namespace,
+      labels: {
+        [MANAGED_BY_LABEL]: MANAGED_BY_VALUE,
+        [COMMAND_LABEL]: BACKUP_CRON_JOB_LABEL,
+      },
+    },
+    spec: {
+      schedule: input.schedule,
+      concurrencyPolicy: "Forbid",
+      successfulJobsHistoryLimit: 3,
+      failedJobsHistoryLimit: 3,
+      jobTemplate: {
+        spec: {
+          backoffLimit: 0,
+          activeDeadlineSeconds: 60,
+          template: {
+            metadata: {
+              labels: { [MANAGED_BY_LABEL]: MANAGED_BY_VALUE, "cronjob-name": input.name },
+            },
+            spec: {
+              restartPolicy: "Never",
+              containers: [
+                {
+                  name: "backup-retention",
+                  image: "curlimages/curl:8.10.1",
+                  imagePullPolicy: "IfNotPresent",
+                  command: buildBackupRetentionCommand(input.orgId),
+                  env: [
+                    {
+                      name: "BACKUP_CRON_API_KEY",
+                      valueFrom: {
+                        secretKeyRef: {
+                          name: BACKUP_CRON_SECRET_NAME,
+                          key: BACKUP_CRON_SECRET_KEY,
+                        },
+                      },
+                    },
+                  ],
+                  resources: {
+                    requests: { cpu: "10m", memory: "16Mi" },
+                    limits: { cpu: "50m", memory: "32Mi" },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const result = await k8sRequest<CronJobItem>(
+    `/apis/batch/v1/namespaces/${encodeURIComponent(input.namespace)}/cronjobs`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toScheduledJob(result.data) };
+}
+
 export async function deleteCronJob(
   namespace: string,
   name: string,
