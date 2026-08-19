@@ -1466,12 +1466,18 @@ export interface K8sPod {
   phase: string;
   containers: string[];
   ready: boolean;
+  /** Real `spec.nodeName` -- the node the scheduler actually bound this
+   * Pod to. `null` until the scheduler assigns one (Pending). Used by
+   * lib/data-residency-attestation.ts to resolve a Pod's ACTUAL placement
+   * back to that node's real `topology.kubernetes.io/region` label, never
+   * assumed from the org's pinned `region` alone. */
+  nodeName: string | null;
 }
 
 interface PodListResponse {
   items?: Array<{
     metadata: { name: string; namespace: string };
-    spec?: { containers?: Array<{ name: string }> };
+    spec?: { containers?: Array<{ name: string }>; nodeName?: string };
     status?: {
       phase?: string;
       containerStatuses?: Array<{ ready: boolean }>;
@@ -1498,6 +1504,7 @@ export async function listPods(
         phase: item.status?.phase ?? "Unknown",
         containers: (item.spec?.containers ?? []).map((c) => c.name),
         ready: statuses.length > 0 && statuses.every((cs) => cs.ready),
+        nodeName: item.spec?.nodeName ?? null,
       };
     }),
   };
@@ -3145,6 +3152,27 @@ export async function listNodeRegions(): Promise<K8sResult<string[]>> {
     if (region) regions.add(region);
   }
   return { ok: true, data: Array.from(regions).sort() };
+}
+
+/**
+ * Real per-node `topology.kubernetes.io/region` label map -- the exact
+ * same `/api/v1/nodes` read `listNodeRegions` above already makes, kept
+ * separately because `listNodeRegions` collapses the result into a
+ * deduped, sorted set of region NAMES (for offering a region picker),
+ * while lib/data-residency-attestation.ts needs the per-node mapping
+ * itself to resolve one specific Pod's `spec.nodeName` back to that
+ * node's real, live-observed region label. A node with no region label
+ * maps to `undefined` (never fabricated as "unknown-but-compliant") --
+ * callers must treat an undefined region the same as a mismatched one.
+ */
+export async function getNodeRegionLabels(): Promise<K8sResult<Record<string, string | undefined>>> {
+  const result = await k8sRequest<NodeListResponse>("/api/v1/nodes");
+  if (!result.ok) return result;
+  const map: Record<string, string | undefined> = {};
+  for (const item of result.data.items ?? []) {
+    map[item.metadata.name] = item.metadata.labels?.[REGION_NODE_LABEL];
+  }
+  return { ok: true, data: map };
 }
 
 /** Real cluster-wide Services list (every namespace in one call) --

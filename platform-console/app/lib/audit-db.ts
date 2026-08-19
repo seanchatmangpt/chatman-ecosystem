@@ -143,7 +143,7 @@ import { createHash, randomBytes } from "node:crypto";
 // at a glance from any real sha256 digest (which is lowercase hex).
 const GENESIS_HASH = "GENESIS-" + "0".repeat(56);
 
-function computeRowHash(prevHash: string, entry: AuditLogEntry): string {
+export function computeRowHash(prevHash: string, entry: AuditLogEntry): string {
   const parts = [prevHash, entry.requestId, entry.timestamp, entry.actor, entry.method, entry.path, String(entry.status)];
   // Appended LAST, and only when present, so every row written before this
   // field existed recomputes to the exact same row_hash it always had --

@@ -27,6 +27,7 @@
  * app/api/roles/route.ts and app/api/org-invites/route.ts already use
  * for platform-wide (not single-org) privileged actions.
  */
+import type { Pool } from "pg";
 import { createOrUpdateConfigMap, getConfigMap, type K8sResult } from "@/lib/k8s";
 import { getOrg, getOrgProjectTier, setOrgManagingPartnerId, type Org } from "@/lib/orgs";
 import {
@@ -35,6 +36,7 @@ import {
   type InsufficientBenchmarkResult,
 } from "@/lib/usage-benchmarks";
 import { listIncidents } from "@/lib/incidents";
+import { getAuditDbPool, queryOrgSpendHistory } from "@/lib/audit-db";
 import type { ProjectTier } from "@/lib/tiers";
 
 export const PARTNERS_NAMESPACE = "platform-console";
@@ -50,12 +52,28 @@ export interface Partner {
    * immediately if one of its managed orgs was deleted out from under
    * it. */
   managedOrgIds: string[];
+  /**
+   * Optional recurring channel/reseller commission rate, as a percentage
+   * (e.g. `15` = 15%) of this partner's total managed-org spend for a
+   * period -- the standard AWS/Azure/GCP partner-program shape (a
+   * percentage-of-managed-spend cut), distinct from the one-time
+   * referral-signup credit lib/referral-ledger.ts already tracks.
+   * Same optional/forward-compatible-field round-trip discipline
+   * lib/orgs.ts's `Org.branding` establishes: absent on every partner
+   * created before this field existed, round-trips through
+   * `createPartner`/`updatePartner` untouched with `commissionRatePct:
+   * undefined`, and `computePartnerCommission` below refuses (a real,
+   * reported error, never a fabricated 0%) to compute a commission for a
+   * partner that has never had a rate set.
+   */
+  commissionRatePct?: number;
   createdAt: string;
 }
 
 interface PartnerRecord {
   name: string;
   managedOrgIds: string[];
+  commissionRatePct?: number;
   createdAt: string;
 }
 
@@ -72,7 +90,8 @@ async function getRegistry(): Promise<K8sResult<Record<string, PartnerRecord>>> 
         typeof entry?.name === "string" &&
         Array.isArray(entry?.managedOrgIds) &&
         entry.managedOrgIds.every((o) => typeof o === "string") &&
-        typeof entry?.createdAt === "string"
+        typeof entry?.createdAt === "string" &&
+        (entry.commissionRatePct === undefined || typeof entry.commissionRatePct === "number")
       ) {
         parsed[id] = entry;
       }
@@ -106,12 +125,14 @@ export async function getPartner(id: string): Promise<K8sResult<Partner | null>>
 export async function createPartner(input: {
   name: string;
   managedOrgIds: string[];
+  commissionRatePct?: number;
 }): Promise<K8sResult<Partner>> {
   const id = globalThis.crypto.randomUUID();
   const createdAt = new Date().toISOString();
   const record: PartnerRecord = {
     name: input.name,
     managedOrgIds: [...new Set(input.managedOrgIds)],
+    ...(input.commissionRatePct !== undefined ? { commissionRatePct: input.commissionRatePct } : {}),
     createdAt,
   };
   const result = await createOrUpdateConfigMap(PARTNERS_NAMESPACE, PARTNERS_CONFIGMAP, {
@@ -136,7 +157,7 @@ export async function createPartner(input: {
  */
 export async function updatePartner(
   id: string,
-  input: { name?: string; managedOrgIds?: string[] },
+  input: { name?: string; managedOrgIds?: string[]; commissionRatePct?: number },
 ): Promise<K8sResult<Partner | null>> {
   const registry = await getRegistry();
   if (!registry.ok) return registry;
@@ -146,6 +167,7 @@ export async function updatePartner(
   const record: PartnerRecord = {
     name: input.name?.trim() || existing.name,
     managedOrgIds: input.managedOrgIds ? [...new Set(input.managedOrgIds)] : existing.managedOrgIds,
+    commissionRatePct: input.commissionRatePct !== undefined ? input.commissionRatePct : existing.commissionRatePct,
     createdAt: existing.createdAt,
   };
   const result = await createOrUpdateConfigMap(PARTNERS_NAMESPACE, PARTNERS_CONFIGMAP, {
@@ -311,4 +333,267 @@ export async function getPartnerOrgsRollup(partner: Partner): Promise<PartnerOrg
  */
 export function formatPartnerSwitchActor(baseActor: string, partnerId: string, orgId: string): string {
   return `${baseActor} (partner ${partnerId} switching into org ${orgId})`;
+}
+
+// ---------------------------------------------------------------------------
+// Partner revenue-share / commission ledger
+// ---------------------------------------------------------------------------
+
+/**
+ * Real recurring channel/reseller commission ledger -- the piece the
+ * rollup above (getPartnerOrgsRollup) and the one-time referral-signup
+ * credit (lib/referral-ledger.ts) both leave open: neither computes an
+ * ONGOING percentage-of-managed-spend payout, the standard AWS/Azure/GCP
+ * partner-program shape a Fortune-5 channel deal is actually priced on.
+ *
+ * Storage: a new `platform_console.partner_commissions` Postgres table
+ * on the SAME audit-db.ts pool, `CREATE TABLE IF NOT EXISTS`
+ * self-bootstrap convention lib/incidents.ts's `ensureIncidentsTable` and
+ * lib/patch-sla.ts's `ensurePatchSlaTables` both already establish -- one
+ * IMMUTABLE row per (partner_id, period): `UNIQUE (partner_id, period)`
+ * means a period that has already been computed is never silently
+ * recomputed with different numbers later (a re-run of
+ * `computePartnerCommission` for an already-recorded period returns the
+ * SAME persisted row, not a fresh recomputation), the exact auditability
+ * guarantee a partner's finance/procurement team needs before it will
+ * sign a channel agreement against this ledger.
+ */
+export type PartnerCommissionPeriod = string; // "YYYY-MM", UTC calendar month
+
+const PERIOD_PATTERN = /^\d{4}-(0[1-9]|1[0-2])$/;
+
+export function isValidCommissionPeriod(value: string): value is PartnerCommissionPeriod {
+  return PERIOD_PATTERN.test(value);
+}
+
+/** [start, end) UTC month bounds for a "YYYY-MM" period string. */
+function periodBounds(period: PartnerCommissionPeriod): { from: Date; to: Date } {
+  const [yearStr, monthStr] = period.split("-");
+  const year = Number(yearStr);
+  const monthIndex = Number(monthStr) - 1; // 0-based for Date.UTC
+  const from = new Date(Date.UTC(year, monthIndex, 1));
+  const to = new Date(Date.UTC(year, monthIndex + 1, 1));
+  return { from, to };
+}
+
+/** One managed org's real contribution to a partner's total managed
+ * spend for the period -- the per-org breakdown a partner's finance team
+ * audits the commission total against. */
+export interface PartnerCommissionOrgLine {
+  orgId: string;
+  orgName?: string;
+  /** Real Stripe-invoice-derived spend for this org over the period,
+   * from lib/audit-db.ts's `queryOrgSpendHistory` -- the SAME real
+   * dollar source lib/audit-db.ts's own /orgs/[id]/spend-history route
+   * already exposes for a single org, reused here across every org a
+   * partner manages rather than re-derived. `null` when the org has no
+   * Stripe billing on file or the underlying query failed -- excluded
+   * from the total, never fabricated as zero. */
+  spendUsd: number | null;
+  error?: string;
+}
+
+export interface PartnerCommissionResult {
+  partnerId: string;
+  period: PartnerCommissionPeriod;
+  commissionRatePct: number;
+  /** Sum of every line's real, non-null spendUsd -- orgs with a query
+   * error or no Stripe billing on file are excluded from this total,
+   * never zeroed into it. */
+  totalManagedSpendUsd: number;
+  /** totalManagedSpendUsd * commissionRatePct / 100, rounded to cents --
+   * the amount owed to the partner for this period. Illustrative in the
+   * same sense lib/patch-sla.ts's computePatchSlaCredit and
+   * lib/incidents.ts's computeCredit are: real arithmetic over real
+   * spend data, but NOT a Stripe payout -- this module computes and
+   * persists the owed amount only, no payout automation. */
+  commissionOwedUsd: number;
+  orgLines: PartnerCommissionOrgLine[];
+  computedAt: string;
+}
+
+async function ensurePartnerCommissionsTable(pool: Pool): Promise<void> {
+  await pool.query(`CREATE SCHEMA IF NOT EXISTS platform_console`);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS platform_console.partner_commissions (
+      id                      uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+      partner_id              text NOT NULL,
+      period                  text NOT NULL,
+      commission_rate_pct     double precision NOT NULL,
+      total_managed_spend_usd double precision NOT NULL,
+      commission_owed_usd     double precision NOT NULL,
+      org_lines               jsonb NOT NULL,
+      computed_at             timestamptz NOT NULL DEFAULT now(),
+      -- Immutable-per-period: a period already computed for this partner
+      -- is never silently recomputed to a different number later.
+      UNIQUE (partner_id, period)
+    )
+  `);
+  await pool.query(`CREATE EXTENSION IF NOT EXISTS pgcrypto`).catch(() => {});
+  await pool.query(
+    `CREATE INDEX IF NOT EXISTS partner_commissions_partner_idx ON platform_console.partner_commissions (partner_id, period)`,
+  );
+}
+
+let commissionsTableReady: Promise<void> | null = null;
+
+async function resolveCommissionsPool(): Promise<Pool | null> {
+  const pool = await getAuditDbPool();
+  if (!pool) return null;
+  if (!commissionsTableReady) {
+    commissionsTableReady = ensurePartnerCommissionsTable(pool);
+  }
+  await commissionsTableReady;
+  return pool;
+}
+
+function toCommissionResult(r: Record<string, unknown>): PartnerCommissionResult {
+  return {
+    partnerId: r.partner_id as string,
+    period: r.period as string,
+    commissionRatePct: r.commission_rate_pct as number,
+    totalManagedSpendUsd: r.total_managed_spend_usd as number,
+    commissionOwedUsd: r.commission_owed_usd as number,
+    orgLines: (typeof r.org_lines === "string"
+      ? JSON.parse(r.org_lines)
+      : r.org_lines) as PartnerCommissionOrgLine[],
+    computedAt: new Date(r.computed_at as string).toISOString(),
+  };
+}
+
+export type PartnerCommissionOutcome<T> = { ok: true; data: T } | { ok: false; error: string };
+
+/**
+ * Real per-org spend line for one org in a partner's managed set, over
+ * one UTC calendar-month period -- reuses `queryOrgSpendHistory`
+ * (lib/audit-db.ts), the SAME real Stripe-invoice-derived monthly spend
+ * figure `getPartnerOrgsRollup` already fans out per-org readers to
+ * compute a live rollup from, at `monthly` granularity so exactly one
+ * bucket covers the whole requested period.
+ */
+async function spendLineForOrg(
+  orgId: string,
+  period: PartnerCommissionPeriod,
+): Promise<PartnerCommissionOrgLine> {
+  const orgResult = await getOrg(orgId);
+  if (!orgResult.ok) {
+    return { orgId, spendUsd: null, error: orgResult.error };
+  }
+  const org = orgResult.data;
+  if (!org) {
+    return { orgId, spendUsd: null, error: "org not found" };
+  }
+
+  const { from, to } = periodBounds(period);
+  const historyResult = await queryOrgSpendHistory(orgId, org.namespace, { from, to, granularity: "monthly" });
+  if (!historyResult.ok) {
+    return { orgId, orgName: org.name, spendUsd: null, error: historyResult.error };
+  }
+
+  return { orgId, orgName: org.name, spendUsd: historyResult.data.totalCostUsd };
+}
+
+/**
+ * Real commission computation, immutable-per-period: reuses the exact
+ * per-org fan-out shape `getPartnerOrgsRollup` already established
+ * (Promise.all over `partner.managedOrgIds`), but sources each org's
+ * dollar figure from `queryOrgSpendHistory`'s real Stripe-invoice-backed
+ * monthly spend rather than the benchmark's cost-per-pod-hour metric --
+ * a commission is owed on actual billed spend, not a normalized
+ * per-pod-hour comparison figure.
+ *
+ * If this (partnerId, period) has already been computed, the SAME
+ * persisted row is returned (never recomputed to a possibly-different
+ * number from a later, possibly-different live spend read) -- the
+ * auditable-ledger guarantee this capability exists for. A partner with
+ * no `commissionRatePct` set is a real, reported error, never a silent
+ * 0%.
+ */
+export async function computePartnerCommission(
+  partner: Partner,
+  period: PartnerCommissionPeriod,
+): Promise<PartnerCommissionOutcome<PartnerCommissionResult>> {
+  if (!isValidCommissionPeriod(period)) {
+    return { ok: false, error: `invalid period "${period}" -- expected "YYYY-MM"` };
+  }
+  if (partner.commissionRatePct === undefined) {
+    return { ok: false, error: `partner ${partner.id} has no commissionRatePct set` };
+  }
+
+  const pool = await resolveCommissionsPool();
+  if (!pool) return { ok: false, error: "partner-commissions store not configured or unreachable" };
+
+  const existing = await pool.query(
+    `SELECT * FROM platform_console.partner_commissions WHERE partner_id = $1 AND period = $2`,
+    [partner.id, period],
+  );
+  if (existing.rows[0]) {
+    return { ok: true, data: toCommissionResult(existing.rows[0]) };
+  }
+
+  const orgLines = await Promise.all(partner.managedOrgIds.map((orgId) => spendLineForOrg(orgId, period)));
+  const totalManagedSpendUsd = orgLines.reduce((sum, line) => sum + (line.spendUsd ?? 0), 0);
+  const commissionOwedUsd = Math.round(totalManagedSpendUsd * (partner.commissionRatePct / 100) * 100) / 100;
+  const computedAt = new Date().toISOString();
+
+  const inserted = await pool.query(
+    `INSERT INTO platform_console.partner_commissions
+       (partner_id, period, commission_rate_pct, total_managed_spend_usd, commission_owed_usd, org_lines, computed_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     ON CONFLICT (partner_id, period) DO NOTHING
+     RETURNING *`,
+    [partner.id, period, partner.commissionRatePct, totalManagedSpendUsd, commissionOwedUsd, JSON.stringify(orgLines), computedAt],
+  );
+
+  if (inserted.rows[0]) {
+    return { ok: true, data: toCommissionResult(inserted.rows[0]) };
+  }
+
+  // Lost the race to a concurrent computation of the same period --
+  // read back the row it wrote, same "the persisted row wins" guarantee.
+  const winner = await pool.query(
+    `SELECT * FROM platform_console.partner_commissions WHERE partner_id = $1 AND period = $2`,
+    [partner.id, period],
+  );
+  if (winner.rows[0]) {
+    return { ok: true, data: toCommissionResult(winner.rows[0]) };
+  }
+  return { ok: false, error: "commission insert raced and no row could be read back" };
+}
+
+/** Real, immutable list of every period already computed for this
+ * partner, most recent first -- backs GET
+ * /api/partners/[partnerId]/commissions. */
+export async function listPartnerCommissions(
+  partnerId: string,
+): Promise<PartnerCommissionOutcome<PartnerCommissionResult[]>> {
+  const pool = await resolveCommissionsPool();
+  if (!pool) return { ok: false, error: "partner-commissions store not configured or unreachable" };
+  const result = await pool.query(
+    `SELECT * FROM platform_console.partner_commissions WHERE partner_id = $1 ORDER BY period DESC`,
+    [partnerId],
+  );
+  return { ok: true, data: result.rows.map(toCommissionResult) };
+}
+
+/** Real read of one already-computed period's full breakdown (the
+ * per-org spend lines that produced the total) -- backs GET
+ * /api/partners/[partnerId]/commissions/[period]. Returns `data: null`
+ * (not an error) when that period has never been computed for this
+ * partner. */
+export async function getPartnerCommission(
+  partnerId: string,
+  period: string,
+): Promise<PartnerCommissionOutcome<PartnerCommissionResult | null>> {
+  if (!isValidCommissionPeriod(period)) {
+    return { ok: false, error: `invalid period "${period}" -- expected "YYYY-MM"` };
+  }
+  const pool = await resolveCommissionsPool();
+  if (!pool) return { ok: false, error: "partner-commissions store not configured or unreachable" };
+  const result = await pool.query(
+    `SELECT * FROM platform_console.partner_commissions WHERE partner_id = $1 AND period = $2`,
+    [partnerId, period],
+  );
+  const row = result.rows[0];
+  return { ok: true, data: row ? toCommissionResult(row) : null };
 }

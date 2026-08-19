@@ -42,6 +42,7 @@ import {
   type SlaTier,
   type PatchSlaTier,
 } from "@/lib/tiers";
+import type { SamlConfig } from "@/lib/saml-config";
 
 export const ORGS_REGISTRY_NAMESPACE = "platform-console";
 export const ORGS_REGISTRY_CONFIGMAP = "platform-console-orgs";
@@ -139,6 +140,22 @@ export interface Org {
    * JSON.parse/stringify with `managingPartnerId: undefined`.
    */
   managingPartnerId?: string;
+  /**
+   * Customer-facing SAML 2.0 metadata configuration surface (config-only,
+   * fail-closed -- see lib/saml-config.ts's module doc for the full
+   * rationale): an org admin's submitted IdP Entity ID / SSO URL / signing
+   * certificate, structurally validated offline and persisted here so it
+   * round-trips exactly like `branding`/`region` above. `status` tracks
+   * `unconfigured` (never set) -> `configured` (validated shape saved,
+   * no real assertion flow wired) -> `validated` reserved for a later
+   * pass that actually exercises the IdP's real SSO redirect. No code
+   * path in lib/session.ts or any auth callback route reads this field
+   * to authenticate a session -- the existing OIDC/Supabase login path
+   * is entirely unaffected by this field's presence or value. Optional
+   * and unset by default, same forward-compatible-optional-field round-
+   * trip discipline as every other optional field on this type.
+   */
+  samlConfig?: SamlConfig;
 }
 
 interface OrgRegistryEntry {
@@ -201,6 +218,11 @@ interface OrgRegistryEntry {
   // default, same forward-compatible-optional-field round-trip
   // discipline as every other optional registry field above.
   managingPartnerId?: string;
+  // SAML metadata configuration -- see the identically-named field on
+  // `Org` above for the full rationale. Optional and unset by default,
+  // same forward-compatible-optional-field round-trip discipline as
+  // every other optional registry field above.
+  samlConfig?: SamlConfig;
 }
 
 const PRODUCT_NAME_MAX_LENGTH = 60;
@@ -414,6 +436,58 @@ export async function setOrgBranding(
   if (!entry) return { ok: true, data: null };
 
   const updatedEntry: OrgRegistryEntry = { ...entry, branding };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
+ * Real SAML config read: backs GET /api/orgs/[id]/saml-config. Same
+ * "`{ok: true, data: null}` is not an error" convention as
+ * getOrgBranding/getOrgRegion -- distinguishes "org exists but has never
+ * configured SAML metadata" from a real registry-read failure.
+ */
+export async function getOrgSamlConfig(id: string): Promise<K8sResult<SamlConfig | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  return { ok: true, data: entry?.samlConfig ?? null };
+}
+
+/**
+ * Real SAML config write: backs PUT /api/orgs/[id]/saml-config. Callers
+ * must run `validateSamlConfig` (lib/saml-config.ts) first -- same
+ * "route validates, lib function merge-patches already-valid input"
+ * split as setOrgBranding/validateBranding -- then this merge-patches
+ * only this org's registry entry's `samlConfig` key, same one-key-at-a-
+ * time discipline as setOrgBranding/setOrgRegion. On success the persisted
+ * status is always `"configured"`: this write only ever proves the
+ * submitted metadata is structurally well-formed, never that a real SAML
+ * assertion flow has been exercised end to end (that would be
+ * `"validated"`, reserved for a later pass -- see lib/saml-config.ts's
+ * module doc). Fail-closed: this function has no side effect on
+ * lib/session.ts or any auth callback route.
+ */
+export async function setOrgSamlConfig(
+  id: string,
+  input: { entityId: string; ssoUrl: string; certificatePem: string },
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const samlConfig: SamlConfig = {
+    entityId: input.entityId,
+    ssoUrl: input.ssoUrl,
+    certificatePem: input.certificatePem,
+    status: "configured",
+    updatedAt: new Date().toISOString(),
+  };
+  const updatedEntry: OrgRegistryEntry = { ...entry, samlConfig };
   const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
     [id]: JSON.stringify(updatedEntry),
   });
