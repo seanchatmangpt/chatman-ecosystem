@@ -6,7 +6,9 @@ on:
       - 'catalog/capabilities.toml'
       - 'ontology/capabilities.ttl'
       - 'scripts/verify_capabilities.py'
+      - 'scripts/capability_control.py'
       - 'tests/test_capabilities.py'
+      - 'tests/test_capability_control.py'
       - 'views/generated/capabilities.md'
       - '.github/workflows/capabilities.yml'
   workflow_dispatch:
@@ -32,8 +34,50 @@ jobs:
           echo "EXACT_SUBJECT=$actual"
       - name: Verify capability catalog and deterministic projection
         run: python3 scripts/verify_capabilities.py
-      - name: Run capability refusal courts
-        run: python3 -m unittest tests.test_capabilities -v
+      - name: Run capability refusal and DfCM courts
+        run: python3 -m unittest tests.test_capabilities tests.test_capability_control -v
+      - name: Execute all interface projections
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/capability_control.py list >/tmp/capabilities-list.json
+          python3 scripts/capability_control.py graph >/tmp/capabilities-graph.json
+          for surface in cli api mcp a2a; do
+            python3 scripts/capability_control.py surface "$surface" >"/tmp/capabilities-${surface}.json"
+          done
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          ids = [item['id'] for item in json.loads(Path('/tmp/capabilities-list.json').read_text())]
+          assert len(ids) == 22 and len(ids) == len(set(ids))
+          for surface in ('cli', 'api', 'mcp', 'a2a'):
+              payload = json.loads(Path(f'/tmp/capabilities-{surface}.json').read_text())
+              assert payload['consequential_do_claimed'] is False
+              assert [item['id'] for item in payload['capabilities']] == ids
+              assert all(item['authority_from_surface'] is False for item in payload['capabilities'])
+          print('CAPABILITY_SURFACES_ALIVE count=22 surfaces=4 do=false')
+          PY
+      - name: Execute DfCM reversible frontier and DO refusal
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '{"standing":{}}\n' >/tmp/dfcm-state.json
+          python3 scripts/capability_control.py dfcm \
+            --state /tmp/dfcm-state.json \
+            --authority observe \
+            --authority classify \
+            --authority persist_control_plane \
+            --authority draft >/tmp/dfcm-frontier.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          payload = json.loads(Path('/tmp/dfcm-frontier.json').read_text())
+          assert payload['selection_performed'] is False
+          assert payload['consequential_do_performed'] is False
+          blocked = {item['id']: item for item in payload['blocked']}
+          assert 'REFUSED:DO_NOT_ADMITTED_BY_DFCM' in blocked['capability:merge-exact-head']['reasons']
+          print('DFCM_FRONTIER_ALIVE selection=false do=false')
+          PY
       - name: Refuse generated projection drift
         shell: bash
         run: |
