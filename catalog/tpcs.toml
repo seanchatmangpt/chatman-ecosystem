@@ -1,10 +1,12 @@
-version = "tpcs/1"
+version = "tpcs/2"
 name = "Toyota Code Production System"
 constitutional_equation = "A = mu(O*)"
 flow_equation = "WIP = throughput * cycle_time"
 mode = "pull"
 zero_unreceipted_actuation = true
 acceptance_mutation_authority = false
+planner_actuation_authority = false
+generated_projection_authority = false
 
 [admission]
 require_exact_subject = true
@@ -12,12 +14,58 @@ require_acceptance_command = true
 require_authority_class = true
 require_reversible_plan = true
 max_batch_size = 1
+deduplicate_work_id = true
 
-[andon]
+[dfcm]
+preserve_frontier = true
+selection = "deterministic_reversible"
+maximize = ["value", "urgency", "evidence"]
+minimize = ["risk", "cost", "cycle_time"]
+max_frontier = 64
+tie_break = ["class_rank", "urgency", "value", "evidence", "risk", "cost", "cycle_time", "age", "work_id", "subject"]
+
+[kanban]
+pull_only = true
+require_downstream_capacity = true
+tokens_per_item = 1
+
+[heijunka]
+enabled = true
+level_by = ["class_of_service", "value_stream"]
+max_expedite_in_row = 1
+
+[jidoka]
 stop_on_defect = true
 stop_on_identity_drift = true
 stop_on_receipt_failure = true
 stop_on_acceptance_mutation = true
+stop_on_replay_mismatch = true
+andon_blocks_pull = true
+
+[poka_yoke]
+reject_duplicate_work_id = true
+reject_stale_subject = true
+reject_acceptance_mutation = true
+reject_unreceipted_do = true
+
+[kaizen]
+proposal_authority = "SELECT"
+auto_apply = false
+may_mutate_acceptance = false
+may_mutate_wip_limits = false
+
+[class_of_service.expedite]
+rank = 0
+max_in_frontier = 1
+
+[class_of_service.fixed_date]
+rank = 1
+
+[class_of_service.standard]
+rank = 2
+
+[class_of_service.debt]
+rank = 3
 
 [[stage]]
 id = "observe"
@@ -63,12 +111,21 @@ exit_evidence = "standing"
 
 [standing]
 allowed = ["UNKNOWN", "PARTIAL_ALIVE", "ALIVE", "BLOCKED", "BUILD_BROKEN", "UNSUPPORTED"]
-alive_requires = ["exact_subject", "acceptance_passed", "receipt_verified", "replay_match", "zero_unreceipted_actuation"]
+alive_requires = ["exact_subject", "acceptance_passed", "receipt_verified", "replay_match", "zero_unreceipted_actuation", "andon_clear"]
 
 [refusals]
 invalid_subject = "REFUSED_INVALID_SUBJECT"
+missing_acceptance = "REFUSED_MISSING_ACCEPTANCE"
+invalid_authority = "REFUSED_INVALID_AUTHORITY"
+irreversible_plan = "REFUSED_IRREVERSIBLE_PLAN"
 wip_exceeded = "REFUSED_WIP_LIMIT"
 acceptance_mutation = "REFUSED_ACCEPTANCE_MUTATION"
 unreceipted_actuation = "REFUSED_UNRECEIPTED_ACTUATION"
 identity_drift = "REFUSED_IDENTITY_DRIFT"
 replay_mismatch = "REFUSED_REPLAY_MISMATCH"
+duplicate_work = "REFUSED_DUPLICATE_WORK_ID"
+andon_active = "REFUSED_ANDON_ACTIVE"
+no_capacity = "REFUSED_NO_KANBAN_CAPACITY"
+empty_frontier = "REFUSED_EMPTY_FRONTIER"
+invalid_metric = "REFUSED_INVALID_FLOW_METRIC"
+unknown_class = "REFUSED_UNKNOWN_CLASS_OF_SERVICE"
