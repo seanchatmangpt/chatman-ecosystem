@@ -1,0 +1,140 @@
+[profile]
+id = "construct-only-standing-runtime-v1"
+version = "0.1.0"
+standing = "CANDIDATE"
+equation = "A=mu(O*)"
+objective = "machine-native manufacture with no ambient instruction channel"
+
+[knowledge]
+human_has_ambient_authority = false
+llm_has_ambient_authority = false
+knowledge_equals_standing = false
+repeated_cognition_should_be_manufactured = true
+decomposition_leaf_classes = [
+  "known",
+  "inferable",
+  "searchable",
+  "tool-executable",
+  "verifiable",
+]
+
+[observation]
+candidate_symbol = "O"
+admitted_symbol = "O*"
+exact_subject_required = true
+shared_corpus_required = true
+corpus_digest = "BLAKE3"
+foreign_corpus_has_standing = false
+
+[manufacture]
+operator_symbol = "mu"
+construct_only = true
+runtime_query_text = false
+runtime_executable_ir = false
+runtime_prompt_instructions = false
+runtime_shell_instructions = false
+runtime_dynamic_query_fragments = false
+artifact_must_follow_equation = true
+
+[interaction]
+standing_precedes_interaction = true
+first_handshake_evidence = "OCEL_V2"
+requires_process_conformance = true
+requires_exact_corpus_correspondence = true
+requires_exact_part_correspondence = true
+mismatch_behavior = "REFUSE_NO_INTERACTION"
+
+[process]
+carrier = "OCEL_V2"
+process_is_state_evidence = true
+process_is_creation_standing = true
+history_is_not_merely_audit_log = true
+
+[process.algebra]
+enabled = true
+lawful_composition = true
+noncommutative_operations_admitted = true
+undefined_compositions_refuse = true
+
+[process.geometry]
+enabled = true
+trajectory_symbol = "Gamma"
+admitted_manifold_symbol = "M*"
+route_is_part_of_subject = true
+endpoint_equality_does_not_imply_standing_equality = true
+creation_key_is_process_geometry = true
+
+[process.calculus]
+enabled = true
+first_derivative_conformance = true
+second_derivative_conformance = true
+integral_process_invariants = true
+lawful_flow_required = true
+
+[wasm]
+role = "signed_interchangeable_part"
+exact_part_digest = "BLAKE3"
+signed_part_required = true
+source_semantics_required_at_runtime = false
+manufacturing_history_required_inside_part = false
+zero_cost_rust_target = true
+branchless_runtime_target = true
+embedded_strings_policy = "IMPORT_EXPORT_ONLY"
+ambient_host_capabilities = false
+
+[dispatch]
+wire_width_bits = 8
+minimum_selector = 0
+maximum_selector = 255
+selector_meaning = "pre_admitted_execution_capsule"
+selector_transports_query_text = false
+selector_transports_code = false
+selector_transports_ir = false
+selector_may_bind_wasm_part = true
+selector_may_bind_construct = true
+selector_may_bind_graph_view = true
+selector_may_bind_policy = true
+selector_may_bind_receipt_shape = true
+exhaustive_selector_space = true
+
+[standing]
+behavioral_equivalence_implies_standing = false
+artifact_possession_implies_standing = false
+architecture_knowledge_implies_authority = false
+modified_artifact_preserves_standing = false
+modified_process_preserves_standing = false
+modified_corpus_preserves_standing = false
+
+[hyperdimensional_information_encryption]
+enabled = true
+meaning_lives_in_cross_dimensional_relations = true
+single_projection_is_authoritative = false
+master_rosetta_stone_required = false
+manufacture_may_be_non_injective = true
+runtime_artifact_need_not_encode_factory = true
+projections = [
+  "RDF_ONTOLOGY",
+  "SPARQL_CONSTRUCT",
+  "OCEL_V2_PROCESS_GEOMETRY",
+  "BLAKE3_EXACT_IDENTITY",
+  "RUST_ZERO_COST_MANUFACTURE",
+  "WASM_INTERCHANGEABLE_PART",
+  "U8_DISPATCH",
+  "STANDING",
+  "BRCE_AUTHORITY",
+]
+
+[security]
+attack_surface_model = "LAWFUL_REACHABILITY"
+foreign_instruction_language = false
+probing_can_create_new_transition = false
+attacker_intelligence_can_create_new_transition = false
+red_team_goal_must_be_reachable_inside_constitution = true
+counterexample_is_constitutional_evidence = true
+
+[vision_2030]
+style = "BORING_BY_DESIGN"
+integration_requires_conformance_before_interaction = true
+runtime_semantic_negotiation = false
+manual_reconciliation_is_targeted_for_elimination = true
+works_or_does_not_participate = true

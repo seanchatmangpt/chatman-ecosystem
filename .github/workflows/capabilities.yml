@@ -1,0 +1,121 @@
+name: Capability Catalog
+
+on:
+  pull_request:
+    paths:
+      - 'catalog/capabilities.toml'
+      - 'catalog/capabilities-decision-graph.toml'
+      - 'catalog/repositories.toml'
+      - 'ontology/capabilities.ttl'
+      - 'scripts/verify_capabilities.py'
+      - 'scripts/verify_capability_ontology.py'
+      - 'scripts/render_capability_rdf.py'
+      - 'scripts/capability_control.py'
+      - 'tests/test_capabilities.py'
+      - 'tests/test_capability_control.py'
+      - 'tests/test_capability_ontology.py'
+      - 'tests/test_capability_rdf.py'
+      - 'apps/ecosystem-cli/src/main.rs'
+      - 'apps/ecosystem-cli/tests/capabilities.rs'
+      - 'views/generated/capabilities.md'
+      - 'views/generated/capabilities-decision-graph.md'
+      - 'views/generated/portfolio.md'
+      - '.github/workflows/capabilities.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  capability-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Assert exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected='${{ github.event.pull_request.head.sha || github.sha }}'
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$expected"
+          echo "EXACT_SUBJECT=$actual"
+      - name: Verify capability catalogs, owners, and deterministic projections
+        run: python3 scripts/verify_capabilities.py
+      - name: Verify public/custom ontology boundary
+        run: python3 scripts/verify_capability_ontology.py
+      - name: Run capability, ontology, RDF and DfCM refusal courts
+        run: python3 -m unittest tests.test_capabilities tests.test_capability_control tests.test_capability_ontology tests.test_capability_rdf -v
+      - name: Execute SHACL admission over generated capability RDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check 'pyshacl==0.40.1'
+          python3 scripts/render_capability_rdf.py /tmp/capabilities.ttl
+          pyshacl -s ontology/capabilities.ttl /tmp/capabilities.ttl
+          echo 'CAPABILITY_SHACL_ALIVE engine=pyshacl@0.40.1 instances=39'
+      - name: Execute all interface projections
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/capability_control.py list >/tmp/capabilities-list.json
+          python3 scripts/capability_control.py graph >/tmp/capabilities-graph.json
+          for surface in cli api mcp a2a; do
+            python3 scripts/capability_control.py surface "$surface" >"/tmp/capabilities-${surface}.json"
+          done
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          ids = [item['id'] for item in json.loads(Path('/tmp/capabilities-list.json').read_text())]
+          assert len(ids) == 39 and len(ids) == len(set(ids))
+          for surface in ('cli', 'api', 'mcp', 'a2a'):
+              payload = json.loads(Path(f'/tmp/capabilities-{surface}.json').read_text())
+              assert payload['consequential_do_claimed'] is False
+              assert [item['id'] for item in payload['capabilities']] == ids
+              assert all(item['authority_from_surface'] is False for item in payload['capabilities'])
+          print('CAPABILITY_SURFACES_ALIVE count=39 surfaces=4 do=false')
+          PY
+      - name: Execute DfCM reversible frontier and DO refusal
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '{"standing":{}}\n' >/tmp/dfcm-state.json
+          python3 scripts/capability_control.py dfcm \
+            --state /tmp/dfcm-state.json \
+            --authority observe \
+            --authority classify \
+            --authority persist_control_plane \
+            --authority draft >/tmp/dfcm-frontier.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          payload = json.loads(Path('/tmp/dfcm-frontier.json').read_text())
+          assert payload['selection_performed'] is False
+          assert payload['consequential_do_performed'] is False
+          blocked = {item['id']: item for item in payload['blocked']}
+          assert 'REFUSED:DO_NOT_ADMITTED_BY_DFCM' in blocked['capability:merge-exact-head']['reasons']
+          assert 'REFUSED:DO_NOT_ADMITTED_BY_DFCM' in blocked['capability:broker-consequential-do']['reasons']
+          print('DFCM_FRONTIER_ALIVE selection=false do=false')
+          PY
+      - name: Refuse generated projection drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp views/generated/capabilities.md /tmp/capabilities.before
+          cp views/generated/capabilities-decision-graph.md /tmp/decision-capabilities.before
+          python3 scripts/verify_capabilities.py --write
+          cmp /tmp/capabilities.before views/generated/capabilities.md
+          cmp /tmp/decision-capabilities.before views/generated/capabilities-decision-graph.md
+      - name: Authority ceiling
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'required_authority = "merge"' catalog/capabilities.toml
+          grep -q 'required_authority = "delete"' catalog/capabilities.toml
+          grep -q 'id = "capability:broker-consequential-do"' catalog/capabilities-decision-graph.toml
+          grep -A8 'id = "capability:broker-consequential-do"' catalog/capabilities-decision-graph.toml | grep -q 'broker_required = true'
+          grep -A8 'id = "capability:broker-consequential-do"' catalog/capabilities-decision-graph.toml | grep -q 'receipt_required = true'
+          grep -q 'standing = "BLOCKED"' catalog/capabilities-decision-graph.toml
+          echo 'CAPABILITY_AUTHORITY_CEILING_ADMITTED'

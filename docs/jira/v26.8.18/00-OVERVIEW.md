@@ -1,64 +1,118 @@
-# ggen as IaaS/PaaS/SaaS — Design Proposal v26.8.18
+# ggen IaaS/PaaS/SaaS — v26.8.18 Reconciled Status
 
-Index ticket for a four-part design proposal on layering ggen's own manufacturing role
-inside chatman-ecosystem, following the same IaaS/PaaS/SaaS taxonomy
-`SONY-READINESS-GAP-CLOSURE.md` already applies to `platform-console` as a whole, applied here
-specifically to ggen for the first time. The set was prompted by a design conversation about
-what ggen would concretely look like at each layer — as raw manufacturing capacity, as a
-managed self-service pipeline, and as a tenant-facing capability product — given that ggen is
-today only a bare status stub tenant of `platform-console`
-(`platform-console/services/ggen/app.py`) and a `PARTIAL_ALIVE`-pinned external repository in
-`status/repos/ggen.md`, not a provisioned service. This is a design-proposal ticket set, not a
-defect/bug ticket set like `docs/jira/v26.8.16/`: no code changes accompany it. It documents an
-architecture direction for future work, grounded in real, already-verified facts about both
-repos — including one real, working precedent from this session (the shared
-`run_pack_query` implementation reachable from both a CLI verb and an MCP tool), not
-speculation.
+This directory began as a four-part design proposal. By the reviewed repository subject
+`1ed4972318467c5bfb5d283505893a361536d37a`, implementation work has overtaken parts of the
+proposal. This index therefore records the **current evidence state** instead of continuing to
+claim that no code changes accompany the ticket set.
 
-## Repo root paths (referenced throughout)
+The governing boundary remains `CONSTITUTION.md`'s zero-unreceipted-actuation rule. Successful
+manufacture, API exposure, marketplace discovery, and product commerce are different closures
+and must not be collapsed into one "ggen is SaaS" claim.
 
-| Repo | Root path | Role in this ticket set |
+## Current layer state
+
+| Layer | v26.8.18 state | Evidence ceiling |
 |---|---|---|
-| chatman-ecosystem | `/Users/sac/chatman-ecosystem/` | Control-plane repo these tickets live in |
-| ggen | `/Users/sac/ggen/` | Manufacturing system being layered |
-| ggen-marketplace (content) | `~/ggen-marketplace/` | 147+ packs, PaaS/SaaS buildpack catalog |
+| IaaS / manufacturing capacity | implemented evidence | real configured ggen binary is invoked by `platform-console/services/ggen/app.py`; no simulated success path |
+| PaaS / managed provision | `PARTIAL_ALIVE` | `POST /provision`, tenant namespace/workspace resolution, attempt logging, and signed receipt return exist; repo-level `ggen` rail remains `PARTIAL_ALIVE` |
+| Marketplace/catalog | implemented metadata bridge | platform registry bridges 149 content packs plus the original resolver records, yielding 151 observed pack records; generic bridge does not expose every pack's full domain ontology |
+| SaaS / commercial capability | incomplete | no complete purchase, entitlement, billing/metering, or fulfillment lifecycle |
+| Cross-cutting BRCE | partial | provisioning is bounded and receipted, but the full product lifecycle is not yet a single admitted commerce→manufacture→fulfillment receipt chain |
+
+## What changed since the proposal was written
+
+### IaaS
+
+`platform-console/services/ggen/app.py` now exposes a real `POST /provision` route that runs an
+actual configured `ggen` binary through its initialization/install/sync/receipt path. Failure to
+configure the real binary fails closed rather than manufacturing a synthetic success.
+
+### PaaS
+
+Provisioning now resolves a tenant/project namespace and places work under a bounded tenant
+workspace. Attempts are recorded and responses carry provisioning origin metadata. The
+`ggen-status` service was rebuilt and redeployed during the v26.8.18 work sequence, closing the
+original "status stub only" description in this index.
+
+This does **not** establish a dedicated compute capsule per tenant, durable receipt custody
+across every pod restart, or globally `ALIVE` standing.
+
+### Marketplace
+
+The platform's marketplace service moved from a health-only stub to `GET /packs` and
+`POST /query`, then bridged the content marketplace into the resolver format. The observed
+registry reached 151 pack records. This is real catalog/service behavior, but it remains a
+metadata projection: full per-pack domain triples are not automatically queryable through the
+generic bridge.
+
+### SaaS
+
+The original SaaS ticket remains materially open. A tenant-facing catalog plus provisioning
+is not equivalent to a product commerce system. The following still need executable semantics
+and receipts:
+
+- capability purchase/order;
+- entitlement and revocation;
+- metering tied to the admitted capability;
+- billing/settlement integration;
+- fulfillment identity binding buyer, entitlement, manufacture, consequence, and receipt;
+- replay/refund/remediation semantics where applicable.
 
 ## Tickets
 
-1. [01-GGEN-AS-IAAS](01-GGEN-AS-IAAS.md) — the bottom layer: manufacturing capacity plus
-   receipt custody as the real substrate a tenant needs to run `ggen sync run` lawfully,
-   with no packs, ontology semantics, or product surface yet in scope.
-2. [02-GGEN-AS-PAAS](02-GGEN-AS-PAAS.md) — the managed, API-driven sync pipeline layer,
-   grounded in the real `run_pack_query` CLI+MCP shared-implementation precedent and
-   `ggen-mcp`'s Bounded Unattended-Write Dispatcher as the model for BRCE-compliant
-   auto-provisioning.
-3. [03-GGEN-AS-SAAS](03-GGEN-AS-SAAS.md) — the tenant-facing capability-catalog layer,
-   where the BLAKE3 receipt chain stops being developer plumbing and becomes the product a
-   buyer is paying proof of having received.
-4. [04-GGEN-BRCE-CROSS-CUTTING](04-GGEN-BRCE-CROSS-CUTTING.md) — argues the three layers are
-   not three products but three different actuation-authority boundaries around one
-   invariant, `CONSTITUTION.md`'s "Zero unreceipted actuation," and proposes per-layer rail
-   registration (`ggen_iaas`/`ggen_paas`/`ggen_saas`) in `catalog/rails.toml` with the
-   concrete evidence bar each would need to move from `CANDIDATE` to `ALIVE`.
+1. [01-GGEN-AS-IAAS](01-GGEN-AS-IAAS.md) — now partly realized; read as the design contract and
+   remaining IaaS closure criteria, not as a statement that no implementation exists.
+2. [02-GGEN-AS-PAAS](02-GGEN-AS-PAAS.md) — now partly realized and represented by the canonical
+   repo-level `ggen` rail in `catalog/rails.toml`; current standing is `PARTIAL_ALIVE`.
+3. [03-GGEN-AS-SAAS](03-GGEN-AS-SAAS.md) — remains the principal open product layer. Discovery
+   and provision are prerequisites, not proof of commerce/entitlement closure.
+4. [04-GGEN-BRCE-CROSS-CUTTING](04-GGEN-BRCE-CROSS-CUTTING.md) — remains the authority contract
+   that prevents the three layers from becoming three ambient mutation paths.
 
-## Definition of done for the set
+## Definition of done for v26.8.18 documentation
 
-- All four proposal tickets ground every claim in a real, cited file path from either repo,
-  or explicitly flag an item as illustrative/greenfield rather than implying it exists.
-- No ticket proposes bypassing `CONSTITUTION.md`'s zero-unreceipted-actuation invariant; every
-  proposed auto-provisioning or auto-deploy path is modeled on the existing Bounded
-  Unattended-Write Dispatcher precedent, not a new unreviewed dispatch mechanism.
-- Cross-links between all five files in this directory resolve to real filenames.
-- No code changes are implied as already done by this ticket set — it is a direction, not a
-  landed feature.
+- Statements distinguish observed implementation from proposed next work.
+- No layer inherits `ALIVE` from a neighboring layer.
+- `/provision` is not described as SaaS purchase/entitlement.
+- Marketplace record count is described as the observed bridge state, not full ontology/class
+  closure.
+- Zero-unreceipted-actuation remains invariant across every future fulfillment path.
+- Generated status documents are not hand-edited to make the release appear healthier.
 
-## See Also
+## Next standing-changing receipts
 
-- `/Users/sac/chatman-ecosystem/CONSTITUTION.md` — the zero-unreceipted-actuation invariant
-  every ticket in this set is checked against
-- `/Users/sac/chatman-ecosystem/SONY-READINESS-GAP-CLOSURE.md` — the existing IaaS/PaaS/SaaS
-  layering this set applies to ggen specifically for the first time
-- `/Users/sac/chatman-ecosystem/docs/40-ggen-semantic-manufacturing-system.md` — the formal
-  `ggen:(O*,Q,G_r,V_a,P)->(T,R_d)` signature these three layers each expose differently
-- `/Users/sac/ggen/docs/jira/v26.8.16/00-OVERVIEW.md` — a defect-ticket set for contrast; this
-  set is a design proposal, not a WIP-closure sweep
+### IaaS/PaaS
+
+- durable receipt/attempt custody under an explicitly verified storage policy;
+- signed origin/tenant binding in the receipt payload itself where required by the owning
+  receipt schema;
+- stronger tenant execution isolation if the desired claim is capsule-per-tenant rather than
+  process/workspace isolation;
+- exact-head replay of provision success and refusal fixtures.
+
+### SaaS
+
+A minimum complete proof must show:
+
+```text
+select capability
+→ establish entitlement
+→ authorize purchase/fulfillment
+→ manufacture exact subject
+→ verify consequence
+→ meter/bind commercial event
+→ emit receipt
+→ replay/reconcile
+```
+
+with typed refusal for missing/expired entitlement, tampered request, duplicate fulfillment,
+insufficient authority, failed manufacture, and receipt mismatch.
+
+## See also
+
+- [`../../../CONSTITUTION.md`](../../../CONSTITUTION.md)
+- [`../../v26.8.18-release.md`](../../v26.8.18-release.md)
+- [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md)
+- [`../../OPERATIONS.md`](../../OPERATIONS.md)
+- [`../../../catalog/rails.toml`](../../../catalog/rails.toml)
+- [`../../../platform-console/docs/SCOPE-AND-LIMITATIONS.md`](../../../platform-console/docs/SCOPE-AND-LIMITATIONS.md)

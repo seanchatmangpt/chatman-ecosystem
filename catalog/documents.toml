@@ -17,6 +17,84 @@ path = "docs/OPERATIONS.md"
 canonical = true
 
 [[document]]
+id = "document:documentation-inventory"
+title = "Documentation Inventory"
+path = "docs/DOCUMENTATION-INVENTORY.md"
+canonical = true
+
+[[document]]
+id = "document:versioning"
+title = "Versioning and Documentation Currentness"
+path = "docs/VERSIONING.md"
+canonical = false
+
+[[document]]
+id = "document:api-surfaces"
+title = "API and Capability Surfaces"
+path = "docs/API-SURFACES.md"
+canonical = false
+
+[[document]]
+id = "document:observability"
+title = "Observability"
+path = "docs/OBSERVABILITY.md"
+canonical = false
+
+[[document]]
+id = "document:ocel-process-evidence"
+title = "OCEL Process Evidence"
+path = "docs/OCEL-PROCESS-EVIDENCE.md"
+canonical = false
+
+[[document]]
+id = "document:ggen-service"
+title = "ggen Service Contract"
+path = "docs/GGEN-SERVICE.md"
+canonical = false
+
+[[document]]
+id = "document:security-model"
+title = "Security Model"
+path = "docs/SECURITY-MODEL.md"
+canonical = false
+
+[[document]]
+id = "document:reliability-dr"
+title = "Reliability and Disaster Recovery"
+path = "docs/RELIABILITY-AND-DR.md"
+canonical = false
+
+[[document]]
+id = "document:troubleshooting"
+title = "Troubleshooting"
+path = "docs/TROUBLESHOOTING.md"
+canonical = false
+
+[[document]]
+id = "document:release-process"
+title = "Release Process"
+path = "docs/RELEASE-PROCESS.md"
+canonical = false
+
+[[document]]
+id = "document:development"
+title = "Development and Verification Guide"
+path = "docs/DEVELOPMENT.md"
+canonical = false
+
+[[document]]
+id = "document:docs-maintenance"
+title = "Documentation Maintenance"
+path = "docs/DOCS-MAINTENANCE.md"
+canonical = false
+
+[[document]]
+id = "document:v26-8-18-release"
+title = "Chatman Ecosystem v26.8.18 Release Snapshot"
+path = "docs/v26.8.18-release.md"
+canonical = false
+
+[[document]]
 id = "document:readme"
 title = "Repository Guide"
 path = "README.md"
@@ -56,4 +134,10 @@ canonical = false
 id = "document:platform-engineers-handbook-capability-roadmap"
 title = "The Platform Engineer's Handbook — Capability Roadmap"
 path = "docs/platform-engineers-handbook-capability-roadmap.md"
+canonical = false
+
+[[document]]
+id = "document:hyperdimensional-information-encryption"
+title = "Hyperdimensional Information Encryption and the Construct-Only Standing Runtime"
+path = "docs/architecture/hyperdimensional-information-encryption.md"
 canonical = false

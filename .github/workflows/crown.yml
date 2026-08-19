@@ -60,7 +60,13 @@ jobs:
         with:
           tool: cargo-machete
       - run: cargo deny check
-      - run: cargo machete
+      - name: Run cargo machete on admitted workspace members
+        run: |
+          cargo machete \
+            apps/ecosystem-cli \
+            crates/ecosystem-core \
+            crates/ecosystem-runtime \
+            crates/gall
 
   test:
     name: Full behavior and negative fixtures
