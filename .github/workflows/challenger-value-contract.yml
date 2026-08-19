@@ -6,6 +6,7 @@ on:
     paths:
       - "contracts/challenger-value.yaml"
       - "tests/test_challenger_value_contract.py"
+      - "chatman-ecosystem-LINKEDIN-REVOPS-STRATEGY.md"
       - ".github/workflows/challenger-value-contract.yml"
   workflow_dispatch:
 

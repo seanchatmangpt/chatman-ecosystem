@@ -4,6 +4,7 @@ import unittest
 
 
 CONTRACT = Path("contracts/challenger-value.yaml")
+STRATEGY = Path("chatman-ecosystem-LINKEDIN-REVOPS-STRATEGY.md")
 EXPECTED_SUBJECTS = {
     "ggen-marketplace": "547a1ba3d88c039d1bdc90ebde64ee19d79b9c40",
     "tcps": "18977d274ff05a7c8b96f9f64c25120835c94e52",
@@ -15,6 +16,7 @@ class ChallengerValueContractTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.text = CONTRACT.read_text(encoding="utf-8")
+        cls.strategy = STRATEGY.read_text(encoding="utf-8")
 
     def test_claim_standing_cannot_be_upgraded_by_presentation(self) -> None:
         for law in (
@@ -49,11 +51,13 @@ class ChallengerValueContractTest(unittest.TestCase):
         self.assertIn("proof_evidence_kind: VERIFIED", self.text)
         self.assertIn("take_control_is_diagnostic_intent_only: true", self.text)
 
-    def test_strategy_doctrine_is_exact_subject_bound(self) -> None:
+    def test_strategy_doctrine_is_exact_subject_bound_and_present(self) -> None:
         self.assertRegex(STRATEGY_SUBJECT, r"^[0-9a-f]{40}$")
         self.assertIn(f"commit: {STRATEGY_SUBJECT}", self.text)
         self.assertIn(f"strategy_subject: {STRATEGY_SUBJECT}", self.text)
         self.assertIn("document: chatman-ecosystem-LINKEDIN-REVOPS-STRATEGY.md", self.text)
+        self.assertIn("Teach -> Tailor -> TakeControl -> Diagnose -> Quantify -> Prove", self.strategy)
+        self.assertIn("10,000 commits alone proves enterprise value", self.strategy)
 
     def test_dfcm_preserves_frontier_and_zero_irreversible_selection(self) -> None:
         self.assertIn("enumerate_bounded_narrative_candidates: true", self.text)
