@@ -1,0 +1,25 @@
+{
+  "schema": "https://chatmangpt.com/ecosystem/dd-ui/federation/v1",
+  "grammarVersion": "dd-ui/2",
+  "engine": {
+    "repo": "seanchatmangpt/wasm4pm",
+    "sha": "8d48e784a4215857c8428c09bb09a91c05a8be97",
+    "path": "prototypes/dd-ui/dd-ui.mjs"
+  },
+  "components": [
+    {"id": "ggen", "repo": "seanchatmangpt/ggen", "sha": "35a28f6c44a06ea713b14a63549c17fdd2db7d6c", "world": "dd-ui/world.json"},
+    {"id": "ggen-marketplace", "repo": "seanchatmangpt/ggen-marketplace", "sha": "9dfb50946750667f7e3371f5d17ef0301f36427e", "world": "dd-ui/world.json"},
+    {"id": "gymact", "repo": "seanchatmangpt/gymact", "sha": "ee54ea27f0003227cb75bc46fc800b414f7e1182", "world": "dd-ui/world.json"},
+    {"id": "autofde", "repo": "seanchatmangpt/autofde", "sha": "59fb025308ef2f0afd70ee9e273c0f97e1168d72", "world": "dd-ui/world.json"},
+    {"id": "castle", "repo": "seanchatmangpt/castle", "sha": "569e7762f5ec3f55a7f65a7c85ba012085f461e9", "world": "dd-ui/world.json"}
+  ],
+  "avatars": ["CEO", "CFO", "CTO", "ENGINEER", "AUDITOR"],
+  "contexts": ["normal", "incident", "board", "audit"],
+  "authority": [],
+  "laws": {
+    "runtimeAiRenderAuthority": false,
+    "renderActuationAuthority": false,
+    "irreversibleUiSelections": 0,
+    "doBoundary": "BRCE"
+  }
+}
