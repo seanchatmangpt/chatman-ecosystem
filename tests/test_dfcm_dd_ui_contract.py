@@ -6,8 +6,8 @@ import unittest
 CONTRACT = Path("contracts/dfcm-dd-ui.yaml")
 EXPECTED_SUBJECTS = {
     "wasm4pm": "8d48e784a4215857c8428c09bb09a91c05a8be97",
-    "ggen-marketplace": "67a47966bc0c391cef06251b0d0f52f65e13c363",
-    "gymact": "09d98f94c7d690f54853369cf680775d9e8f2dc3",
+    "ggen-marketplace": "9cdf9c08968a706b4db03102b1baee7ced2b5612",
+    "gymact": "9055a952d0b6b9a15d791472478a142bb139e6f0",
     "castle": "14d549069019cec78746cd4df41ece4f3dd379e1",
 }
 
