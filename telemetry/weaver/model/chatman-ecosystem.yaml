@@ -38,6 +38,7 @@ entities:
   - type: chatman.ecosystem.subject
     brief: Exact Chatman Ecosystem repository subject under verification.
     stability: development
+    requirement_level: recommended
     identity:
       - ref: chatman.ecosystem.repository
       - ref: chatman.ecosystem.subject.sha
@@ -49,6 +50,7 @@ spans:
     kind: internal
     brief: Execution of an ecosystem verifier against an exact repository subject.
     stability: development
+    requirement_level: recommended
     attributes:
       - ref: chatman.ecosystem.repository
         requirement_level: required
@@ -67,6 +69,7 @@ metrics:
     unit: s
     instrument: histogram
     stability: development
+    requirement_level: recommended
     attributes:
       - ref: chatman.ecosystem.command
         requirement_level: required
@@ -79,6 +82,7 @@ events:
   - name: chatman.ecosystem.verification.completed
     brief: An exact-subject ecosystem verification operation completed.
     stability: development
+    requirement_level: recommended
     attributes:
       - ref: chatman.ecosystem.repository
         requirement_level: required
