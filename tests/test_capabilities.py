@@ -16,15 +16,30 @@ SPEC.loader.exec_module(module)
 class CapabilityCatalogTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        with (ROOT / "catalog" / "capabilities.toml").open("rb") as handle:
-            cls.catalog = tomllib.load(handle)
+        cls.base = module.load(ROOT / "catalog" / "capabilities.toml")
+        cls.extension = module.load(ROOT / "catalog" / "capabilities-decision-graph.toml")
+        cls.catalog = module.combine([cls.base, cls.extension])
+        cls.repositories = module.load(ROOT / "catalog" / "repositories.toml")
 
-    def test_catalog_and_projection_are_exact(self):
+    def test_catalogs_and_projections_are_exact(self):
         items = module.verify(self.catalog)
-        self.assertEqual(len(items), 22)
-        expected = module.render(items)
-        actual = (ROOT / "views" / "generated" / "capabilities.md").read_text()
-        self.assertEqual(actual, expected)
+        module.verify_repository_owners(items, self.repositories)
+        self.assertEqual(len(items), 39)
+
+        base_items = module.verify(self.base)
+        base_expected = module.render(base_items, "catalog/capabilities.toml")
+        base_actual = (ROOT / "views" / "generated" / "capabilities.md").read_text()
+        self.assertEqual(base_actual, base_expected)
+
+        extension_ids = {item["id"] for item in self.extension["capability"]}
+        extension_items = [item for item in items if item["id"] in extension_ids]
+        extension_expected = module.render(
+            extension_items, "catalog/capabilities-decision-graph.toml"
+        )
+        extension_actual = (
+            ROOT / "views" / "generated" / "capabilities-decision-graph.md"
+        ).read_text()
+        self.assertEqual(extension_actual, extension_expected)
 
     def test_do_requires_broker_and_receipt(self):
         candidate = copy.deepcopy(self.catalog)
@@ -58,6 +73,15 @@ class CapabilityCatalogTests(unittest.TestCase):
         candidate["capability"][1]["depends_on"] = [first]
         with self.assertRaisesRegex(module.CapabilityError, "REFUSED:CAPABILITY_CYCLE"):
             module.verify(candidate)
+
+    def test_repository_owner_must_be_declared(self):
+        items = module.verify(self.catalog)
+        candidate = copy.deepcopy(self.repositories)
+        candidate["repository"] = [
+            item for item in candidate["repository"] if item["id"] != "repository:autofde-lab"
+        ]
+        with self.assertRaisesRegex(module.CapabilityError, "REFUSED:UNDECLARED_CAPABILITY_OWNER"):
+            module.verify_repository_owners(items, candidate)
 
 
 if __name__ == "__main__":
