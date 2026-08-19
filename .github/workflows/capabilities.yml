@@ -4,12 +4,16 @@ on:
   pull_request:
     paths:
       - 'catalog/capabilities.toml'
+      - 'catalog/capabilities-decision-graph.toml'
       - 'ontology/capabilities.ttl'
       - 'scripts/verify_capabilities.py'
       - 'scripts/capability_control.py'
       - 'tests/test_capabilities.py'
       - 'tests/test_capability_control.py'
+      - 'apps/ecosystem-cli/src/main.rs'
+      - 'apps/ecosystem-cli/tests/capabilities.rs'
       - 'views/generated/capabilities.md'
+      - 'views/generated/capabilities-decision-graph.md'
       - '.github/workflows/capabilities.yml'
   workflow_dispatch:
 
@@ -32,7 +36,7 @@ jobs:
           actual="$(git rev-parse HEAD)"
           test "$actual" = "$expected"
           echo "EXACT_SUBJECT=$actual"
-      - name: Verify capability catalog and deterministic projection
+      - name: Verify capability catalogs and deterministic projections
         run: python3 scripts/verify_capabilities.py
       - name: Run capability refusal and DfCM courts
         run: python3 -m unittest tests.test_capabilities tests.test_capability_control -v
@@ -49,13 +53,13 @@ jobs:
           import json
           from pathlib import Path
           ids = [item['id'] for item in json.loads(Path('/tmp/capabilities-list.json').read_text())]
-          assert len(ids) == 22 and len(ids) == len(set(ids))
+          assert len(ids) == 39 and len(ids) == len(set(ids))
           for surface in ('cli', 'api', 'mcp', 'a2a'):
               payload = json.loads(Path(f'/tmp/capabilities-{surface}.json').read_text())
               assert payload['consequential_do_claimed'] is False
               assert [item['id'] for item in payload['capabilities']] == ids
               assert all(item['authority_from_surface'] is False for item in payload['capabilities'])
-          print('CAPABILITY_SURFACES_ALIVE count=22 surfaces=4 do=false')
+          print('CAPABILITY_SURFACES_ALIVE count=39 surfaces=4 do=false')
           PY
       - name: Execute DfCM reversible frontier and DO refusal
         shell: bash
@@ -76,6 +80,7 @@ jobs:
           assert payload['consequential_do_performed'] is False
           blocked = {item['id']: item for item in payload['blocked']}
           assert 'REFUSED:DO_NOT_ADMITTED_BY_DFCM' in blocked['capability:merge-exact-head']['reasons']
+          assert 'REFUSED:DO_NOT_ADMITTED_BY_DFCM' in blocked['capability:broker-consequential-do']['reasons']
           print('DFCM_FRONTIER_ALIVE selection=false do=false')
           PY
       - name: Refuse generated projection drift
@@ -83,13 +88,18 @@ jobs:
         run: |
           set -euo pipefail
           cp views/generated/capabilities.md /tmp/capabilities.before
+          cp views/generated/capabilities-decision-graph.md /tmp/decision-capabilities.before
           python3 scripts/verify_capabilities.py --write
           cmp /tmp/capabilities.before views/generated/capabilities.md
+          cmp /tmp/decision-capabilities.before views/generated/capabilities-decision-graph.md
       - name: Authority ceiling
         shell: bash
         run: |
           set -euo pipefail
           grep -q 'required_authority = "merge"' catalog/capabilities.toml
           grep -q 'required_authority = "delete"' catalog/capabilities.toml
-          grep -q 'broker_required = true' catalog/capabilities.toml
+          grep -q 'id = "capability:broker-consequential-do"' catalog/capabilities-decision-graph.toml
+          grep -A8 'id = "capability:broker-consequential-do"' catalog/capabilities-decision-graph.toml | grep -q 'broker_required = true'
+          grep -A8 'id = "capability:broker-consequential-do"' catalog/capabilities-decision-graph.toml | grep -q 'receipt_required = true'
+          grep -q 'standing = "BLOCKED"' catalog/capabilities-decision-graph.toml
           echo 'CAPABILITY_AUTHORITY_CEILING_ADMITTED'
