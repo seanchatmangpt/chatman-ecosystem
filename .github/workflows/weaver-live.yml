@@ -1,0 +1,76 @@
+name: Weaver Exact-Subject Capability Crown
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  WEAVER_VERSION: 0.25.1
+
+jobs:
+  weaver-capability-crown:
+    name: Execute every Weaver capability against exact ecosystem head
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          ref: ${{ env.CANDIDATE_SHA }}
+
+      - name: Assert exact subject identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
+          test "${#CANDIDATE_SHA}" -eq 40
+
+      - name: Install pinned OpenTelemetry Weaver
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --proto '=https' --tlsv1.2 -LsSf \
+            "https://github.com/open-telemetry/weaver/releases/download/v${WEAVER_VERSION}/weaver-installer.sh" \
+            -o /tmp/weaver-installer.sh
+          sh /tmp/weaver-installer.sh
+          echo "${HOME}/.cargo/bin" >> "${GITHUB_PATH}"
+          "${HOME}/.cargo/bin/weaver" --version | grep -F "${WEAVER_VERSION}"
+
+      - name: Execute DfCM Weaver capability matrix
+        shell: bash
+        env:
+          ECOSYSTEM_SUBJECT_SHA: ${{ env.CANDIDATE_SHA }}
+          WEAVER_REGISTRY: telemetry/weaver
+          WEAVER_RECEIPT_DIR: target/weaver-live
+        run: bash scripts/weaver-live-matrix.sh
+
+      - name: Refuse source mutation from Weaver CONSTRUCT/DO
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=no)"
+
+      - name: Preserve Weaver capability receipt
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: weaver-capability-receipt-${{ env.CANDIDATE_SHA }}
+          path: |
+            target/weaver-live/receipt.json
+            target/weaver-live/receipt.sha256
+            target/weaver-live/weaver-version.txt
+            target/weaver-live/logs/
+            target/weaver-live/schemas/
+            target/weaver-live/generated/
+            target/weaver-live/package/
+            target/weaver-live/inferred/
+          if-no-files-found: error

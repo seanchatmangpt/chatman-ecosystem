@@ -1,0 +1,98 @@
+file_format: definition/2
+
+attributes:
+  - key: chatman.ecosystem.repository
+    type: string
+    brief: Canonical owner/repository coordinate of the ecosystem composition root.
+    stability: development
+    examples: ["seanchatmangpt/chatman-ecosystem"]
+  - key: chatman.ecosystem.subject.sha
+    type: string
+    brief: Exact forty-character Git commit SHA of the executed ecosystem subject.
+    stability: development
+    examples: ["2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01"]
+  - key: chatman.ecosystem.command
+    type: string
+    brief: Exact ecosystem verifier command or bounded operation being observed.
+    stability: development
+    examples: ["catalog.validate", "crown.verify"]
+  - key: chatman.ecosystem.result
+    type:
+      members:
+        - id: ok
+          value: ok
+        - id: refused
+          value: refused
+        - id: error
+          value: error
+    brief: Typed result of an ecosystem operation.
+    stability: development
+    examples: ["ok"]
+  - key: chatman.ecosystem.receipt.sha256
+    type: string
+    brief: SHA-256 digest of the receipt or execution evidence when available.
+    stability: development
+    examples: ["0000000000000000000000000000000000000000000000000000000000000000"]
+
+entities:
+  - type: chatman.ecosystem.subject
+    brief: Exact Chatman Ecosystem repository subject under verification.
+    stability: development
+    requirement_level: recommended
+    identity:
+      - ref: chatman.ecosystem.repository
+      - ref: chatman.ecosystem.subject.sha
+
+spans:
+  - type: chatman.ecosystem.verify
+    name:
+      note: "chatman.ecosystem.verify"
+    kind: internal
+    brief: Execution of an ecosystem verifier against an exact repository subject.
+    stability: development
+    requirement_level: recommended
+    attributes:
+      - ref: chatman.ecosystem.repository
+        requirement_level: required
+      - ref: chatman.ecosystem.subject.sha
+        requirement_level: required
+      - ref: chatman.ecosystem.command
+        requirement_level: required
+      - ref: chatman.ecosystem.result
+        requirement_level: required
+    entity_associations:
+      - chatman.ecosystem.subject
+
+metrics:
+  - name: chatman.ecosystem.verification.duration
+    brief: Duration of an exact-subject ecosystem verification operation.
+    unit: s
+    instrument: histogram
+    stability: development
+    requirement_level: recommended
+    attributes:
+      - ref: chatman.ecosystem.command
+        requirement_level: required
+      - ref: chatman.ecosystem.result
+        requirement_level: required
+    entity_associations:
+      - chatman.ecosystem.subject
+
+events:
+  - name: chatman.ecosystem.verification.completed
+    brief: An exact-subject ecosystem verification operation completed.
+    stability: development
+    requirement_level: recommended
+    attributes:
+      - ref: chatman.ecosystem.repository
+        requirement_level: required
+      - ref: chatman.ecosystem.subject.sha
+        requirement_level: required
+      - ref: chatman.ecosystem.command
+        requirement_level: required
+      - ref: chatman.ecosystem.result
+        requirement_level: required
+      - ref: chatman.ecosystem.receipt.sha256
+        requirement_level: recommended
+    entity_associations:
+      - chatman.ecosystem.subject
