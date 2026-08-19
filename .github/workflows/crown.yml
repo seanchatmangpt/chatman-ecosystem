@@ -84,6 +84,10 @@ jobs:
         with:
           save-if: ${{ github.ref == 'refs/heads/main' }}
           shared-key: crown-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+      - name: Execute v2030.1.1 definition-of-done court
+        run: python3 scripts/v2030_definition_of_done.py --self-test
+      - name: Run Python control-plane fixtures
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
       - run: cargo test --locked --workspace --all-features
       - run: RUSTDOCFLAGS='-D warnings' cargo doc --locked --workspace --all-features --no-deps
       - run: cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- storage verify
@@ -186,6 +190,7 @@ jobs:
               "projection",
               "architecture",
               "storage_differential",
+              "v2030_definition_of_done",
               "cold_cache",
               "github_read",
               "artifact_transfer"
