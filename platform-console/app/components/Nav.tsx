@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import NotificationBell from "@/components/NotificationBell";
+import OrgBrandMark from "@/components/OrgBrandMark";
 
 const links = [
   { href: "/", label: "Overview" },
@@ -40,6 +41,8 @@ const links = [
   { href: "/iam", label: "IAM" },
   { href: "/policy", label: "Policy" },
   { href: "/org", label: "Org Roles" },
+  { href: "/org/security", label: "Org Security" },
+  { href: "/org/branding", label: "Org Branding" },
   { href: "/api-keys", label: "API Keys" },
   { href: "/webhooks", label: "Webhooks" },
   { href: "/audit", label: "Audit Log" },
@@ -65,7 +68,7 @@ export default function Nav() {
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="text-sm font-semibold tracking-wide text-foreground">
-            platform console
+            <OrgBrandMark />
           </Link>
           <div className="flex items-center gap-2">
             <NotificationBell />

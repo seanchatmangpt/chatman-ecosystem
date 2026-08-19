@@ -64,6 +64,16 @@ export const WEBHOOKS_CONFIGMAP = "platform-console-webhooks";
  *    same `lib/webhook-poller.ts` 10s tick, fires exactly once per
  *    namespace since enforcement is never auto-reversed (see
  *    lib/quota-enforcement.ts's header comment).
+ *  - "cost.anomaly_detected": fires the moment a real per-namespace
+ *    trailing-15m spend figure (the same lib/invoice-preview.ts
+ *    Prometheus-derived cost-usd number, over lib/cost.ts's shortest real
+ *    trend window) FIRST deviates from that namespace's OWN real
+ *    EWMA-smoothed baseline by more than a configurable percent
+ *    (lib/cost-anomaly.ts) -- a statistical spike-vs-self signal distinct
+ *    from budget.threshold_crossed's fixed operator-set ceiling, detected
+ *    by the same `lib/webhook-poller.ts` 10s tick, deduped by a real
+ *    ConfigMap-persisted baseline/state marker per namespace so it fires
+ *    once per new anomaly, not once per tick.
  */
 export type WebhookEventType =
   | "project.created"
@@ -71,7 +81,8 @@ export type WebhookEventType =
   | "alert.firing"
   | "budget.threshold_crossed"
   | "quota.enforcement_triggered"
-  | "plan_state.enforcement_triggered";
+  | "plan_state.enforcement_triggered"
+  | "cost.anomaly_detected";
 export const WEBHOOK_EVENT_TYPES: WebhookEventType[] = [
   "project.created",
   "backup.completed",
@@ -79,6 +90,7 @@ export const WEBHOOK_EVENT_TYPES: WebhookEventType[] = [
   "budget.threshold_crossed",
   "quota.enforcement_triggered",
   "plan_state.enforcement_triggered",
+  "cost.anomaly_detected",
 ];
 
 export interface WebhookSubscription {

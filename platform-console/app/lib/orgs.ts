@@ -35,12 +35,26 @@ export const ORGS_REGISTRY_NAMESPACE = "platform-console";
 export const ORGS_REGISTRY_CONFIGMAP = "platform-console-orgs";
 export const ORG_ROLES_CONFIGMAP_NAME = "platform-console-org-roles";
 
+// Per-org white-label branding (Vercel/Retool/Auth0-style paid add-on
+// tier): a customer org can override this console's default chrome --
+// product name, sidebar logo, accent color -- for its own end users.
+// Optional and unset by default so every existing org (created before
+// this field existed) round-trips through JSON.parse/stringify below
+// with `branding: undefined`, same as any other optional field added to
+// an already-live JSON-in-ConfigMap-value record in this codebase.
+export interface OrgBranding {
+  productName: string;
+  logoUrl: string;
+  accentColor: string;
+}
+
 export interface Org {
   id: string;
   name: string;
   namespace: string;
   ownerIdentifier: string;
   createdAt: string;
+  branding?: OrgBranding;
 }
 
 interface OrgRegistryEntry {
@@ -48,6 +62,42 @@ interface OrgRegistryEntry {
   namespace: string;
   ownerIdentifier: string;
   createdAt: string;
+  branding?: OrgBranding;
+}
+
+const PRODUCT_NAME_MAX_LENGTH = 60;
+const ACCENT_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
+
+/**
+ * Fail-closed branding validation -- same discipline as
+ * lib/custom-domains.ts's SAN check: reject and return a real, specific
+ * error string (never a fabricated silent default) on anything that
+ * doesn't meet the contract, so a bad value can never reach the
+ * ConfigMap or a rendered page.
+ *
+ *   - logoUrl must be `https://` -- `data:` URIs are rejected (a stored
+ *     XSS vector if ever rendered as-is) and plain `http://` is rejected
+ *     (mixed-content warnings/blocking on an https console).
+ *   - accentColor must be a strict 6-hex-digit `#rrggbb` (rejects named
+ *     colors, 3-digit shorthand, and any CSS injection via `url(...)` /
+ *     `;` etc. -- it can only ever be a hex string this regex accepts).
+ *   - productName is capped at 60 characters (`PRODUCT_NAME_MAX_LENGTH`).
+ */
+export function validateBranding(input: {
+  productName: string;
+  logoUrl: string;
+  accentColor: string;
+}): string | null {
+  if (!input.productName || input.productName.length > PRODUCT_NAME_MAX_LENGTH) {
+    return `productName is required and must be at most ${PRODUCT_NAME_MAX_LENGTH} characters`;
+  }
+  if (!input.logoUrl.startsWith("https://")) {
+    return "logoUrl must be an https:// URL";
+  }
+  if (!ACCENT_COLOR_RE.test(input.accentColor)) {
+    return "accentColor must match /^#[0-9a-fA-F]{6}$/";
+  }
+  return null;
 }
 
 // Same disallowed-character escaping lib/authz.ts's
@@ -189,4 +239,47 @@ export async function createOrg(input: {
       firstProjectError: projectResult.ok ? null : projectResult.error,
     },
   };
+}
+
+/**
+ * Real branding read: backs GET /api/orgs/[id]/branding. Returns
+ * `{ok: true, data: null}` -- not an error -- both when the org doesn't
+ * exist and when it exists but has never set branding, so a caller can
+ * distinguish "use the default platform-console chrome" from a real k8s
+ * failure the same way getConfigMap already distinguishes "not
+ * provisioned" from "API error".
+ */
+export async function getOrgBranding(id: string): Promise<K8sResult<OrgBranding | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  return { ok: true, data: entry?.branding ?? null };
+}
+
+/**
+ * Real branding write: backs PUT /api/orgs/[id]/branding. Merge-patches
+ * only this org's registry entry via the exact same
+ * createOrUpdateConfigMap primitive createOrg already uses to write the
+ * registry -- the entry's own `branding` key is replaced wholesale (this
+ * function's caller has already run it through validateBranding above),
+ * every other registry key (name, namespace, ownerIdentifier, createdAt)
+ * and every other org's entry is left untouched, same one-key-at-a-time
+ * merge-patch discipline as lib/authz.ts's setOrgRole.
+ */
+export async function setOrgBranding(
+  id: string,
+  branding: OrgBranding,
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const updatedEntry: OrgRegistryEntry = { ...entry, branding };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  return { ok: true, data: { id, ...updatedEntry } };
 }

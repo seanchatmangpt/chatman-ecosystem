@@ -5,6 +5,7 @@ import { resolveApiKeyAuth } from "@/lib/api-keys";
 import { checkAndTouchSession } from "@/lib/active-sessions";
 import { clientIpFrom } from "@/lib/request-meta";
 import { apiKeyRateLimiter } from "@/lib/rate-limit";
+import { checkIpAllowed, IP_ALLOWLIST_NAMESPACE } from "@/lib/ip-allowlist";
 
 // Runs on the Node.js middleware runtime (`export const runtime = "nodejs"`
 // below -- Next.js 15's node-middleware support, not the edge runtime this
@@ -211,6 +212,40 @@ export async function middleware(request: NextRequest) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // Real org-level IP allowlist / network access policy (lib/ip-allowlist.ts):
+  // the enterprise-vendor-review checklist item "only our corporate
+  // VPN/office CIDR ranges may reach the admin console". Evaluated here,
+  // after a session has resolved but before any route handler runs -- the
+  // same "fail before doing real work" position every other gate in this
+  // function occupies. Keyed by IP_ALLOWLIST_NAMESPACE, the same fixed
+  // "platform-console" namespace lib/authz.ts's RBAC already operates
+  // against for this deployment's single console tenant (see
+  // lib/orgs.ts's own header comment: this app has no per-session org
+  // namespace claim to key off yet -- a real, disclosed follow-up, not
+  // claimed done here). The caller's IP is resolved via the same
+  // clientIpFrom (x-forwarded-for, falling back to x-real-ip) every other
+  // IP-aware check in this app (lib/active-sessions.ts's registry rows)
+  // already uses.
+  const callerIp = clientIpFrom(request);
+  const ipCheck = await checkIpAllowed(IP_ALLOWLIST_NAMESPACE, callerIp);
+  if (ipCheck.restricted) {
+    writeAuditLogEntry({
+      timestamp: new Date().toISOString(),
+      actor: session.sub,
+      method: request.method,
+      path: pathname,
+      status: 403,
+      requestId,
+    });
+    return NextResponse.json(
+      {
+        error: "access denied by org IP policy",
+        reason: `caller IP${callerIp ? ` (${callerIp})` : ""} does not match any allowed CIDR for this org`,
+      },
+      { status: 403 },
+    );
   }
 
   const response = forwardHeaders

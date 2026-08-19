@@ -268,6 +268,49 @@ export function verifyStripeWebhookSignature(
 }
 
 /**
+ * Real (test-mode-honest, see this file's header) usage-based overage
+ * billing: creates a genuine Stripe InvoiceItem against `customerId`,
+ * attached to `subscriptionId` so it lands on that subscription's next
+ * real invoice rather than floating unattached -- the actual (test-mode)
+ * "metered overage charge" mechanism, called only from
+ * lib/overage-billing.ts's billNamespaceOverage after that module has
+ * already computed a real positive overage amount from real Prometheus
+ * usage. `amountUsd` is converted to integer cents (Stripe's InvoiceItem
+ * `amount` is always in the currency's smallest unit) via `Math.round`,
+ * the same rounding every dollar-to-cents boundary in a real payments
+ * integration needs -- fractional cents are not a real chargeable amount.
+ */
+export async function createOverageInvoiceItem(params: {
+  customerId: string;
+  subscriptionId: string;
+  amountUsd: number;
+  description: string;
+  tenantNamespace: string;
+}): Promise<StripeResult<{ id: string }>> {
+  const stripe = getStripeClient();
+  if (!stripe) return { ok: false, error: "STRIPE_SECRET_KEY not configured" };
+  if (!(params.amountUsd > 0)) {
+    return { ok: false, error: "amountUsd must be a positive real overage amount" };
+  }
+  try {
+    const item = await stripe.invoiceItems.create({
+      customer: params.customerId,
+      currency: "usd",
+      amount: Math.round(params.amountUsd * 100),
+      description: params.description,
+      metadata: {
+        tenant_namespace: params.tenantNamespace,
+        stripe_subscription_id: params.subscriptionId,
+        kind: "usage_overage",
+      },
+    });
+    return { ok: true, data: { id: item.id } };
+  } catch (e) {
+    return { ok: false, error: `Stripe API error: ${(e as Error).message}` };
+  }
+}
+
+/**
  * Applies one verified Stripe event to the stored subscription/plan
  * state. Only `customer.subscription.*` and `invoice.payment_*` events
  * update state (the scope's own wording: "updates a stored

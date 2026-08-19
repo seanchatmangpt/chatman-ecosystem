@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import CostExportButton, { type CostExportRow } from "@/components/CostExportButton";
 import { getCostDashboardRows, getCostTrend, type BudgetStatus } from "@/lib/cost";
+import { listCostAnomalyStatus, type CostAnomalyStatus } from "@/lib/cost-anomaly";
 import { ILLUSTRATIVE_RATES } from "@/lib/invoice-preview";
 import { hasClusterCredentials } from "@/lib/k8s";
 
@@ -59,6 +60,34 @@ function StatusChip({ status }: { status: BudgetStatus }) {
   }
 }
 
+function formatUsdPrecise(amount: number): string {
+  return `$${amount.toFixed(4)}`;
+}
+
+/**
+ * Distinct from StatusChip: a fixed-threshold budget can stay "within
+ * budget" while a namespace's own trailing spend spikes hard relative to
+ * its own baseline (a genuine anomaly signal, real AWS Cost Anomaly
+ * Detection / GCP cost anomaly alerts territory) -- this badge is real
+ * lib/cost-anomaly.ts EWMA-baseline-vs-current-spend state, never derived
+ * from the budget threshold shown in the adjacent column. Renders nothing
+ * when the namespace isn't currently flagged, so it never adds visual
+ * noise to a healthy row.
+ */
+function AnomalyBadge({ anomaly }: { anomaly: CostAnomalyStatus | undefined }) {
+  if (!anomaly || !anomaly.isAnomaly || anomaly.baselineSpend === null || anomaly.currentSpend === null) {
+    return null;
+  }
+  const title = `baseline (EWMA, trailing ${anomaly.lastCheckedAt ? "15m avg" : ""}): ${formatUsdPrecise(
+    anomaly.baselineSpend,
+  )} vs current: ${formatUsdPrecise(anomaly.currentSpend)} (+${anomaly.deviationPct?.toFixed(0)}%, threshold ${anomaly.deviationThresholdPct}%)`;
+  return (
+    <Badge variant="destructive" title={title} className="ml-2">
+      Cost Anomaly
+    </Badge>
+  );
+}
+
 export default async function CostPage() {
   const clusterConfigured = hasClusterCredentials();
 
@@ -66,6 +95,10 @@ export default async function CostPage() {
     ? await getCostDashboardRows(PLATFORM_NAMESPACES, WINDOW_LABEL, WINDOW_HOURS)
     : null;
   const trend = clusterConfigured ? await getCostTrend(PLATFORM_NAMESPACES) : null;
+  const anomalyResult = clusterConfigured ? await listCostAnomalyStatus(PLATFORM_NAMESPACES) : null;
+  const anomalyByNamespace = new Map<string, CostAnomalyStatus>(
+    anomalyResult && anomalyResult.ok ? anomalyResult.data.map((a) => [a.namespace, a]) : [],
+  );
 
   const maxTrendCost = trend ? Math.max(0.000001, ...trend.map((p) => p.totalCost)) : 1;
 
@@ -176,6 +209,7 @@ export default async function CostPage() {
                   <TableRow key={r.namespace}>
                     <TableCell className="text-foreground">
                       <code>{r.namespace}</code>
+                      <AnomalyBadge anomaly={anomalyByNamespace.get(r.namespace)} />
                     </TableCell>
                     <TableCell className="font-medium text-foreground">
                       {formatUsd(cost)}

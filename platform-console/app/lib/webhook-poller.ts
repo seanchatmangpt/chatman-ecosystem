@@ -44,8 +44,10 @@
 import { hasClusterCredentials, listJobs } from "@/lib/k8s";
 import { alertState, queryAlerts } from "@/lib/alertmanager";
 import { checkBudgets } from "@/lib/budget-alerts";
+import { checkCostAnomalies } from "@/lib/cost-anomaly";
 import { checkQuotaEnforcement } from "@/lib/quota-enforcement";
 import { reconcilePlanState } from "@/lib/plan-state";
+import { recomputeAllOverageEstimates } from "@/lib/overage-billing";
 import { deliverWebhookEvent } from "@/lib/webhooks";
 
 const POLL_INTERVAL_MS = 10_000;
@@ -55,6 +57,19 @@ const POLL_INTERVAL_MS = 10_000;
 // createBackupJob/listJobs callers, never a guess.
 const BACKUPS_NAMESPACE = "supabase-demo";
 const BACKUPS_LABEL_SELECTOR = "app=platform-backups";
+
+// Same platform-namespace roster lib/budget-alerts.ts's own /api route and
+// app/cost/page.tsx already use -- the fixed set of namespaces this
+// cluster actually meters, never a namespace list derived from an
+// unvalidated source.
+const COST_ANOMALY_NAMESPACES = [
+  "autofde-lab",
+  "gymact",
+  "ggen",
+  "ggen-marketplace",
+  "supabase-demo",
+  "platform-console",
+];
 
 let started = false;
 let firstBackupsTick = true;
@@ -150,6 +165,34 @@ async function pollBudgetThresholds(): Promise<void> {
 }
 
 /**
+ * checkCostAnomalies() is the only writer of lib/cost-anomaly.ts's
+ * `state.*` EWMA-baseline keys -- calling it here, once per real 10s tick,
+ * is what makes "flag once per genuine new anomaly, not once per tick"
+ * real, mirroring pollBudgetThresholds's exact same reasoning. Distinct
+ * signal from budget-alerts: this fires on a namespace's spend suddenly
+ * deviating from ITS OWN trailing baseline, even while comfortably under
+ * any fixed dollar threshold an operator configured (or configured none at
+ * all).
+ */
+async function pollCostAnomalies(): Promise<void> {
+  const result = await checkCostAnomalies(COST_ANOMALY_NAMESPACES);
+  if (!result.ok) {
+    console.error(`[webhook-poller] checkCostAnomalies failed: ${result.error}`);
+    return;
+  }
+  for (const event of result.data) {
+    await deliverWebhookEvent("cost.anomaly_detected", {
+      namespace: event.namespace,
+      baselineSpend: event.baselineSpend,
+      currentSpend: event.currentSpend,
+      deviationPct: event.deviationPct,
+      deviationThresholdPct: event.deviationThresholdPct,
+      detectedAt: event.detectedAt,
+    });
+  }
+}
+
+/**
  * checkQuotaEnforcement() is the only writer of quota-enforcement.ts's
  * `enforced.*` dedup markers AND the only caller of its real
  * scale-to-0/annotate actions -- calling it here, once per real 10s
@@ -204,14 +247,34 @@ async function pollPlanState(): Promise<void> {
   }
 }
 
+/**
+ * recomputeAllOverageEstimates() (lib/overage-billing.ts) is the estimate
+ * side of usage-based overage billing -- real Prometheus usage x real
+ * TIER_RESOURCE_QUOTAS baseline, persisted into the
+ * `platform-console-stripe-subscriptions` ConfigMap's `overage.*` keys so
+ * /api/billing/overage's GET (and the /billing page's Overage card) never
+ * shows a number staler than 10s. Deliberately never calls Stripe itself
+ * -- see lib/overage-billing.ts's header comment for why committing a
+ * real InvoiceItem is reached only from the owner-gated POST route, not
+ * an unattended poll tick.
+ */
+async function pollOverageEstimates(): Promise<void> {
+  const result = await recomputeAllOverageEstimates();
+  if (!result.ok) {
+    console.error(`[webhook-poller] recomputeAllOverageEstimates failed: ${result.error}`);
+  }
+}
+
 async function tick(): Promise<void> {
   if (!hasClusterCredentials()) return; // local dev / build -- nothing to poll
   await Promise.all([
     pollBackupCompletions(),
     pollAlertFirings(),
     pollBudgetThresholds(),
+    pollCostAnomalies(),
     pollQuotaEnforcement(),
     pollPlanState(),
+    pollOverageEstimates(),
   ]);
 }
 

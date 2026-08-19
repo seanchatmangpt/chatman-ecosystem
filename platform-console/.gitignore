@@ -3,3 +3,4 @@ app/.next/
 services/oidc-idp/node_modules/
 **/__pycache__/
 .env.local
+services/ggen/ggen-src/

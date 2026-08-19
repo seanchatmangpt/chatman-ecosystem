@@ -1,4 +1,6 @@
+import { cookies } from "next/headers";
 import Nav from "@/components/Nav";
+import OverageBillButton from "@/components/OverageBillButton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
 import {
@@ -16,8 +18,13 @@ import {
   isStripeTestMode,
   listStoredSubscriptions,
 } from "@/lib/stripe-billing";
+import { estimateAllNamespaceOverages, OVERAGE_PLATFORM_NAMESPACES } from "@/lib/overage-billing";
+import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
+import { getRoleFor, type Role } from "@/lib/authz";
 
 export const dynamic = "force-dynamic";
+
+const ROLE_RANK: Record<Role, number> = { viewer: 0, member: 1, owner: 2 };
 
 // Same platform-namespace roster as /usage (app/usage/page.tsx) and
 // /registry, /logs -- the 4 project namespaces, supabase-demo, and
@@ -47,6 +54,12 @@ export default async function BillingPage() {
   const clusterConfigured = hasClusterCredentials();
   const stripeConfigured = hasStripeCredentials();
 
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  const session = token ? await verifySessionToken(token) : null;
+  const role: Role = session ? await getRoleFor(session) : "viewer";
+  const canBillOverage = ROLE_RANK[role] >= ROLE_RANK.owner;
+
   const preview = clusterConfigured
     ? await getInvoicePreview(PLATFORM_NAMESPACES, WINDOW_LABEL, WINDOW_HOURS)
     : null;
@@ -55,6 +68,10 @@ export default async function BillingPage() {
     clusterConfigured && stripeConfigured
       ? await listStoredSubscriptions(PLATFORM_NAMESPACES)
       : null;
+
+  const overage = clusterConfigured
+    ? await estimateAllNamespaceOverages(OVERAGE_PLATFORM_NAMESPACES)
+    : null;
 
   return (
     <>
@@ -125,6 +142,91 @@ export default async function BillingPage() {
             <Alert variant="destructive" className="mt-3">
               <AlertDescription>{subscriptions.error}</AlertDescription>
             </Alert>
+          )}
+        </Card>
+
+        <Card className="mb-6 p-4">
+          <h2 className="mb-1 text-sm font-semibold text-foreground">
+            Overage (usage-based, metered Stripe billing)
+          </h2>
+          <p className="mb-3 text-xs text-muted-foreground">
+            Real CPU-core-hours/memory-GiB-hours consumed above each
+            namespace&apos;s <code>TIER_RESOURCE_QUOTAS</code> baseline over
+            the trailing {overage?.estimates[0]?.windowLabel ?? "24h"}, at
+            the same illustrative rate table as the line items below. Will
+            be invoiced on next Stripe cycle once billed -- an owner commits
+            a real Stripe InvoiceItem via the button, no automatic charge
+            fires from a background poll.
+          </p>
+          {overage && overage.errors.length > 0 && (
+            <div className="mb-3 space-y-2">
+              {overage.errors.map((e) => (
+                <Alert key={e.namespace} variant="destructive">
+                  <AlertDescription>
+                    {e.namespace}: {e.error}
+                  </AlertDescription>
+                </Alert>
+              ))}
+            </div>
+          )}
+          {overage && overage.estimates.length > 0 && (
+            <div className="overflow-x-auto">
+              <Table className="min-w-[900px]">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Namespace</TableHead>
+                    <TableHead>Tier</TableHead>
+                    <TableHead>CPU overage (core-hours)</TableHead>
+                    <TableHead>Memory overage (GiB-hours)</TableHead>
+                    <TableHead>Overage this period</TableHead>
+                    <TableHead>Last invoice item</TableHead>
+                    {canBillOverage && <TableHead>Action</TableHead>}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {overage.estimates.map((e) => (
+                    <TableRow key={e.namespace}>
+                      <TableCell className="text-foreground">
+                        <code>{e.namespace}</code>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{e.tier}</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {e.cpuCoreHoursOverage.toFixed(6)}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {e.memoryGiBHoursOverage.toFixed(6)}
+                      </TableCell>
+                      <TableCell className="font-medium text-foreground">
+                        {formatUsd(e.overageCostUsd)}
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">
+                        {e.stored?.lastInvoiceItemId ? (
+                          <code>{e.stored.lastInvoiceItemId}</code>
+                        ) : (
+                          "—"
+                        )}
+                      </TableCell>
+                      {canBillOverage && (
+                        <TableCell>
+                          {e.overageCostUsd > 0 && !stripeConfigured ? (
+                            <span className="text-[11px] text-muted-foreground">
+                              Stripe not configured
+                            </span>
+                          ) : (
+                            <OverageBillButton namespace={e.namespace} />
+                          )}
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+          {!overage && (
+            <p className="text-xs text-muted-foreground">
+              {clusterConfigured ? "No overage data." : "—"}
+            </p>
           )}
         </Card>
 

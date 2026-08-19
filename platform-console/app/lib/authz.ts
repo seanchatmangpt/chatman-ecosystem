@@ -151,6 +151,68 @@ export async function getRoleFor(session: SessionPayload): Promise<Role> {
   return session.authProvider === "local-admin" ? "owner" : "viewer";
 }
 
+/**
+ * Namespace-scoped variant of getRoleFor, for the customer-org
+ * ConfigMaps createOrg (lib/orgs.ts) seeds inside EACH org's own
+ * namespace -- not the platform's own `platform-console` namespace
+ * getRoleFor/getOrgRoleAssignments always read. Same ConfigMap name
+ * (`ORG_ROLES_CONFIGMAP`), same encode/decode and default-role rules,
+ * just parameterized by namespace so a call against org A's namespace
+ * can never see or be satisfied by org B's (or the platform's own)
+ * role assignments.
+ */
+export async function getOrgRoleAssignmentsIn(
+  namespace: string,
+): Promise<K8sResult<OrgRoleAssignment[]>> {
+  const existing = await getConfigMap(namespace, ORG_ROLES_CONFIGMAP);
+  if (!existing.ok) return existing;
+  if (!existing.data) return { ok: true, data: [] };
+  return { ok: true, data: toAssignments(existing.data.data) };
+}
+
+export async function getRoleForIn(session: SessionPayload, namespace: string): Promise<Role> {
+  if (session.authProvider === "api-key") {
+    return session.boundRole;
+  }
+
+  const identifier = roleIdentifierFor(session);
+  const result = await getOrgRoleAssignmentsIn(namespace);
+  if (result.ok) {
+    const found = result.data.find((a) => a.identifier === identifier);
+    if (found) return found.role;
+  }
+  return "viewer";
+}
+
+/**
+ * requireRole's namespace-scoped counterpart -- same fail-closed 403
+ * shape, checked against one specific customer org's own namespace-local
+ * `platform-console-org-roles` ConfigMap instead of the platform's own.
+ * Used by app/api/orgs/[id]/branding/route.ts's PUT, which must gate on
+ * "owner of THIS org", not "owner of the platform console".
+ */
+export async function requireRoleIn(
+  session: SessionPayload,
+  namespace: string,
+  minimumRole: Role,
+): Promise<RoleCheck> {
+  const role = await getRoleForIn(session, namespace);
+  if (ROLE_RANK[role] >= ROLE_RANK[minimumRole]) {
+    return { ok: true, role };
+  }
+  return {
+    ok: false,
+    role,
+    response: NextResponse.json(
+      {
+        error: "forbidden",
+        reason: `role '${role}' does not meet the required minimum role '${minimumRole}' for this org`,
+      },
+      { status: 403 },
+    ),
+  };
+}
+
 export interface RoleCheck {
   ok: boolean;
   role: Role;
