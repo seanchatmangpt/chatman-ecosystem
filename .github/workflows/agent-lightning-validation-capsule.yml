@@ -1,0 +1,44 @@
+name: Agent Lightning Validation Capsule
+
+on:
+  push:
+    branches: [feat/agent-lightning-commercial-runtime]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
+        with:
+          toolchain: 1.97.1
+          components: clippy
+      - name: Check Agent Lightning commercial binary
+        run: cargo check --locked -p ecosystem-runtime --bin agent-lightning-commercial
+      - name: Clippy Agent Lightning commercial binary
+        run: cargo clippy --locked -p ecosystem-runtime --bin agent-lightning-commercial -- -D warnings
+      - name: Test Agent Lightning commercial binary
+        run: cargo test --locked -p ecosystem-runtime --bin agent-lightning-commercial
+      - name: Replay commercial fixtures
+        run: cargo run --locked --quiet -p ecosystem-runtime --bin agent-lightning-commercial -- verify-fixtures | tee /tmp/agent-lightning-commercial-report.json
+      - name: Assert bounded standing and coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('/tmp/agent-lightning-commercial-report.json').read_text())
+          assert report['standing']=='PARTIAL_ALIVE'
+          assert report['sha']=='bd80905120affc576eb383f3b4bcc35cacc0e1d0'
+          assert set(report['providers_verified'])=={'aws','microsoft','google'}
+          assert set(report['modes_verified'])=={'hosted','byoc','private'}
+          assert report['receipts_verified'] >= 15
+          assert report['negative_fixtures_verified'] >= 18
+          assert len(report['blockers']) == 4
+          print(json.dumps({'validated': True, 'receipts': report['receipts_verified'], 'negative_fixtures': report['negative_fixtures_verified']}, sort_keys=True))
+          PY
