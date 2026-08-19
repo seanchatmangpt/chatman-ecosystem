@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Callable
 
 ROOT = Path(__file__).resolve().parents[1]
+CAPABILITY_CATALOG = ROOT / "catalog" / "capabilities.toml"
 CAPABILITY_GRAPH = ROOT / "catalog" / "capabilities-decision-graph.toml"
 TPCS_CONFIG = ROOT / "catalog" / "tpcs.toml"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
@@ -99,8 +100,16 @@ def validate_repository_contract() -> None:
         if not callable(getattr(dfcm, name, None)):
             raise Refusal(f"REFUSED_DFCM_OWNER_MISSING:{name}")
 
-    capabilities = load_toml(CAPABILITY_GRAPH).get("capability", [])
-    by_id = {item.get("id"): item for item in capabilities}
+    capabilities: list[dict] = []
+    for path in (CAPABILITY_CATALOG, CAPABILITY_GRAPH):
+        capabilities.extend(load_toml(path).get("capability", []))
+    by_id: dict[str, dict] = {}
+    for item in capabilities:
+        capability_id = item.get("id")
+        previous = by_id.get(capability_id)
+        if previous is not None and previous != item:
+            raise Refusal(f"REFUSED_CAPABILITY_DEFINITION_CONFLICT:{capability_id}")
+        by_id[capability_id] = item
     for capability_id, capability_class in REQUIRED_CAPABILITIES.items():
         item = by_id.get(capability_id)
         if item is None:
