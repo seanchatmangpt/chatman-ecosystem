@@ -44,6 +44,7 @@
 import { hasClusterCredentials, listJobs } from "@/lib/k8s";
 import { alertState, queryAlerts } from "@/lib/alertmanager";
 import { checkBudgets } from "@/lib/budget-alerts";
+import { checkQuotaEnforcement } from "@/lib/quota-enforcement";
 import { deliverWebhookEvent } from "@/lib/webhooks";
 
 const POLL_INTERVAL_MS = 10_000;
@@ -147,9 +148,43 @@ async function pollBudgetThresholds(): Promise<void> {
   }
 }
 
+/**
+ * checkQuotaEnforcement() is the only writer of quota-enforcement.ts's
+ * `enforced.*` dedup markers AND the only caller of its real
+ * scale-to-0/annotate actions -- calling it here, once per real 10s
+ * tick, is what makes a namespace actually get throttled on its own,
+ * with no human clicking anything, rather than only ever showing a
+ * percentage on a dashboard. A namespace with no threshold configured
+ * costs nothing (checkQuotaEnforcement short-circuits to an empty
+ * actions list); a namespace whose real usage query fails this tick is
+ * skipped, never enforced on stale data.
+ */
+async function pollQuotaEnforcement(): Promise<void> {
+  const result = await checkQuotaEnforcement();
+  if (!result.ok) {
+    console.error(`[webhook-poller] checkQuotaEnforcement failed: ${result.error}`);
+    return;
+  }
+  for (const action of result.data) {
+    await deliverWebhookEvent("quota.enforcement_triggered", {
+      namespace: action.namespace,
+      targetDeployment: action.targetDeployment,
+      cpuPercent: action.cpuPercent,
+      memoryPercent: action.memoryPercent,
+      thresholdPercent: action.thresholdPercent,
+      enforcedAt: action.enforcedAt,
+    });
+  }
+}
+
 async function tick(): Promise<void> {
   if (!hasClusterCredentials()) return; // local dev / build -- nothing to poll
-  await Promise.all([pollBackupCompletions(), pollAlertFirings(), pollBudgetThresholds()]);
+  await Promise.all([
+    pollBackupCompletions(),
+    pollAlertFirings(),
+    pollBudgetThresholds(),
+    pollQuotaEnforcement(),
+  ]);
 }
 
 /**

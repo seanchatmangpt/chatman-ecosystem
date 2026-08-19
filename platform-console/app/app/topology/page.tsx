@@ -2,6 +2,7 @@ import Link from "next/link";
 import Nav from "@/components/Nav";
 import DeckTopology from "@/components/DeckTopology";
 import IsoflowTopology from "@/components/IsoflowTopology";
+import MermaidDiagram from "@/components/MermaidDiagram";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -181,9 +182,7 @@ export default async function TopologyPage() {
                 {mermaidResult === null ? (
                   <p className="p-6 text-sm text-muted-foreground">No namespace clusters to render.</p>
                 ) : mermaidResult.ok ? (
-                  <pre className="overflow-x-auto rounded-md bg-black/30 p-4 text-xs text-foreground">
-                    <code>{mermaidResult.data}</code>
-                  </pre>
+                  <MermaidDiagram source={mermaidResult.data} />
                 ) : (
                   <Alert variant="destructive" className="m-3">
                     <AlertDescription>mmdio render-flowchart: {mermaidResult.error}</AlertDescription>

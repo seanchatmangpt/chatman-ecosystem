@@ -74,10 +74,17 @@ rules:
   - apiGroups: [""]
     resources: ["services"]
     verbs: ["get", "list", "watch", "patch", "create", "delete"]
-  # "Create project" form's target-namespace picker.
+  # "Create project" form's target-namespace picker. `patch` was added
+  # for the Quota Enforcement module (lib/quota-enforcement.ts's
+  # checkQuotaEnforcement/resetQuotaEnforcement via
+  # lib/k8s.ts's patchNamespaceAnnotations): a real RFC 7386 merge patch
+  # touching ONLY `metadata.annotations.platform-console.io/quota-*`,
+  # never spec -- same "PATCH is metadata-only, spec is never touched by
+  # this console" discipline the Resource Tagging module's own comment
+  # above documents for Services.
   - apiGroups: [""]
     resources: ["namespaces"]
-    verbs: ["get", "list"]
+    verbs: ["get", "list", "patch"]
   # GitOps module: read-only Flux Kustomization/HelmRelease status.
   - apiGroups: ["kustomize.toolkit.fluxcd.io"]
     resources: ["kustomizations"]
@@ -112,10 +119,20 @@ rules:
   # per-project Redis Deployment this module provisions/tears down --
   # same resource, same sensitivity class (workload spec, not Secret
   # data) as the existing get/list/watch grant used by the Registry
-  # (image inventory) module above.
+  # (image inventory) module above. Quota Enforcement module
+  # (lib/quota-enforcement.ts's checkQuotaEnforcement/
+  # resetQuotaEnforcement via lib/k8s.ts's patchDeploymentReplicas):
+  # `patch` added for the real breach-triggered `spec.replicas` merge
+  # patch that scales an operator-named target Deployment to 0 (and,
+  # on an explicit operator reset, back to 1) -- cluster-wide like the
+  # rest of this ClusterRole's Deployment grant, since the enforcement
+  # target can be any of this platform's project namespaces, not only
+  # autofde-lab (which already has its own narrower
+  # platform-console-canary-autofde-lab Role's `create`/`delete` for a
+  # different, canary-specific reason -- see that Role's own comment).
   - apiGroups: ["apps"]
     resources: ["deployments"]
-    verbs: ["get", "list", "watch", "create", "delete"]
+    verbs: ["get", "list", "watch", "create", "delete", "patch"]
   # Cost & Usage module: real live per-pod CPU/memory usage
   # (metrics.k8s.io -- the same source `kubectl top pods` reads) and the
   # real per-namespace ResourceQuota object, to compute a plain

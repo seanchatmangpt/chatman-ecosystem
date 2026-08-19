@@ -55,17 +55,28 @@ export const WEBHOOKS_CONFIGMAP = "platform-console-webhooks";
  *    detected by the same `lib/webhook-poller.ts` 10s tick, deduped by a
  *    real ConfigMap-persisted "already alerted" marker per
  *    namespace+metric so it fires once per crossing, not once per tick.
+ *  - "quota.enforcement_triggered": fires the moment a real per-namespace
+ *    ResourceQuota-percentage figure (lib/k8s.ts's `getResourceUsage`,
+ *    the same one `/usage` already shows) FIRST crosses an
+ *    operator-configured enforcement threshold (lib/quota-enforcement.ts)
+ *    AND the real enforcement action (scaling the configured target
+ *    Deployment to 0 replicas) has actually succeeded -- detected by the
+ *    same `lib/webhook-poller.ts` 10s tick, fires exactly once per
+ *    namespace since enforcement is never auto-reversed (see
+ *    lib/quota-enforcement.ts's header comment).
  */
 export type WebhookEventType =
   | "project.created"
   | "backup.completed"
   | "alert.firing"
-  | "budget.threshold_crossed";
+  | "budget.threshold_crossed"
+  | "quota.enforcement_triggered";
 export const WEBHOOK_EVENT_TYPES: WebhookEventType[] = [
   "project.created",
   "backup.completed",
   "alert.firing",
   "budget.threshold_crossed",
+  "quota.enforcement_triggered",
 ];
 
 export interface WebhookSubscription {

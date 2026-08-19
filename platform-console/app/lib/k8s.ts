@@ -2268,6 +2268,58 @@ export async function getResourceUsage(
   };
 }
 
+/**
+ * Real enforcement primitive for lib/quota-enforcement.ts: scales one
+ * `apps/v1` Deployment to an exact replica count via a real RFC 7386
+ * merge patch on `spec.replicas` (`application/merge-patch+json`, the
+ * same convention `createOrUpdateConfigMap`/`applyTag` already use in
+ * this file). Scaling to 0 is a genuine k8s action, not a simulated one:
+ * the Deployment's own ReplicaSet controller reacts to it exactly as it
+ * would to a `kubectl scale --replicas=0`, terminating live Pods and
+ * emitting real `ScalingReplicaSet`/`Killing` Events -- nothing here
+ * fabricates those; they come from the cluster's own control loop once
+ * this patch lands.
+ */
+export async function patchDeploymentReplicas(
+  namespace: string,
+  name: string,
+  replicas: number,
+): Promise<K8sResult<{ name: string; namespace: string; replicas: number }>> {
+  const result = await k8sRequest<{ metadata: { name: string; namespace: string } }>(
+    `/apis/apps/v1/namespaces/${encodeURIComponent(namespace)}/deployments/${encodeURIComponent(name)}`,
+    "PATCH",
+    { spec: { replicas } },
+    "application/merge-patch+json",
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: { name, namespace, replicas } };
+}
+
+/**
+ * Real annotation primitive for lib/quota-enforcement.ts: patches
+ * `metadata.annotations` on one Namespace object via the same RFC 7386
+ * merge-patch convention as `applyTag` above (labels vs. annotations
+ * only -- annotations, not labels, since these values are free-form JSON
+ * strings/timestamps, not the short indexable key=value pairs Resource
+ * Tagging's labels convention is for). Used to record a human-visible,
+ * `kubectl describe namespace`-readable trail of quota-enforcement
+ * actions directly on the affected namespace, independent of this
+ * console's own ConfigMap-backed dedup state.
+ */
+export async function patchNamespaceAnnotations(
+  namespace: string,
+  annotations: Record<string, string | null>,
+): Promise<K8sResult<null>> {
+  const result = await k8sRequest<unknown>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}`,
+    "PATCH",
+    { metadata: { annotations } },
+    "application/merge-patch+json",
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: null };
+}
+
 // -------------------------------------------------------------- Feature Flags
 //
 // Real hyperscaler-PaaS-style Feature Flags primitive (AWS AppConfig /
