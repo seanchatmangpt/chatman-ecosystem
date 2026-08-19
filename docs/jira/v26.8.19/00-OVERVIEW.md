@@ -109,6 +109,26 @@ graph TD
    gymact and autofde-lab can and cannot actuate for this ticket set, checked against their real
    source, not assumed.
 
+## The `ce-*` protocol fragments (DfCM inversion, added 2026-08-19)
+
+A later turn in this session proposed inverting the ecosystem's optimization target from
+"make chatman-ecosystem universal" to "make it unnecessary while preserving every useful
+invariant" — an independently-versioned family of protocol fragments (`ce-receipt/1`,
+`ce-authority/1`, etc.) any implementation could satisfy without depending on this repo. Each
+fragment below was written the same way as tickets 01-05 above: the inversion's claim stated
+first, then checked against this repo's real code, with real evidence for and against, not
+accepted as prose.
+
+6. [06-CE-RECEIPT-1](06-CE-RECEIPT-1.md) — receiptability as an admission precondition.
+7. [07-CE-AUTHORITY-1](07-CE-AUTHORITY-1.md) — authority as a supplied object, not an intrinsic
+   capability property.
+8. [08-CE-CONSEQUENCE-1](08-CE-CONSEQUENCE-1.md) — `DO` exists only when authority admits the
+   exact consequence.
+9. [09-CE-REPLAY-1](09-CE-REPLAY-1.md) — replay from the receipt chain alone.
+10. [10-CE-STANDING-1](10-CE-STANDING-1.md) — a shared, closed evidence-state vocabulary.
+11. [11-CE-CAPABILITY-1](11-CE-CAPABILITY-1.md) — SELECT/CONSTRUCT/DO as a closed algebra.
+12. [12-CE-RECONSTITUTION-1](12-CE-RECONSTITUTION-1.md) — the implementation-extinction test.
+
 ## Definition of done for v26.8.19 documentation
 
 - Every "Backward from finished" section is followed by a "Real state today" section; neither
