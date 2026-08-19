@@ -1,0 +1,16 @@
+[book]
+title = "HDITC: Hyperdimensional Information-Theoretic Cryptography"
+authors = ["Sean Chatman"]
+description = "Post-AGI algebra, geometry, information theory, cryptographic standing, and autonomous DO."
+language = "en"
+src = "src"
+
+[build]
+build-dir = "book"
+create-missing = false
+
+[output.html]
+default-theme = "navy"
+preferred-dark-theme = "navy"
+mathjax-support = true
+no-section-label = true

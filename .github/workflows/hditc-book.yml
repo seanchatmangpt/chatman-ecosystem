@@ -1,0 +1,55 @@
+name: HDITC book manufacture
+
+on:
+  push:
+    branches:
+      - agent/hditc-full-book
+    paths:
+      - scripts/generate_hditc_book.py
+      - books/hditc/SUMMARY.spec.*.md
+      - .github/workflows/hditc-book.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - scripts/generate_hditc_book.py
+      - books/hditc/**
+      - .github/workflows/hditc-book.yml
+
+permissions:
+  contents: write
+
+jobs:
+  manufacture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+
+      - name: Generate and validate HDITC manuscript
+        run: python3 scripts/generate_hditc_book.py
+
+      - name: Verify generated projection
+        shell: bash
+        run: |
+          test -f books/hditc/book.toml
+          test -f books/hditc/src/SUMMARY.md
+          test -f books/hditc/src/do/definition-of-done.md
+          test -f books/hditc/src/cryptography/opacity-is-not-security.md
+          test "$(find books/hditc/src -type f -name '*.md' | wc -l | tr -d ' ')" -eq 468
+
+      - name: Commit generated projection
+        shell: bash
+        run: |
+          if [ -z "$(git status --porcelain -- books/hditc)" ]; then
+            echo "No generated diff"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add books/hditc
+          git commit -m "docs: generate HDITC book"
+          git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
