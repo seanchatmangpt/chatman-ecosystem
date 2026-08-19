@@ -62,7 +62,8 @@ export type ApprovalAction =
   | "castle.verb.schedule"
   | "freeze.override"
   | "environment.promote"
-  | "deployment.quarantine";
+  | "deployment.quarantine"
+  | "sla.credit.apply";
 export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   "org.delete",
   "quota.override",
@@ -145,6 +146,22 @@ export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   // (lib/orgs.ts, default `false`) so this never files uninvited on an
   // existing customer.
   "deployment.quarantine",
+  // SLA credit auto-application to Stripe customer balance
+  // (POST /api/orgs/[id]/sla-credits, lib/stripe-billing.ts's
+  // applySlaCreditToStripeBalance): the single action in this codebase
+  // that moves real money OFF a customer's Stripe balance/next invoice
+  // with no human review of the exact dollar amount first -- the same
+  // "can quietly move money/data on an ongoing or one-shot basis" class
+  // of blast radius `export-subscription.update` and the overage-billing
+  // path already require a second human for. Unlike `deployment
+  // .quarantine`'s per-org opt-in gate, this one has NO opt-out: any
+  // owner filing the request still requires a second, distinct owner to
+  // sign off before Stripe is ever called, same maker-checker bar every
+  // other money-moving or destructive action in this list sets. `targetId`
+  // on the ApprovalRequest itself is the org's own id; see
+  // `requestedSlaCreditMonth` on ApprovalResourcePayload below for the
+  // month a second approver actually reviews before signing off.
+  "sla.credit.apply",
 ];
 
 export type ApprovalStatus = "pending" | "approved" | "rejected";
@@ -235,6 +252,12 @@ export interface ApprovalResourcePayload {
     imageRef: string;
     severity: string;
   };
+  /** sla.credit.apply: the "YYYY-MM" month a real SLA credit is being
+   * requested for, so a second approver can see exactly which month's
+   * computed shortfall they are authorizing Stripe money to move
+   * against -- before this route ever calls
+   * lib/stripe-billing.ts's applySlaCreditToStripeBalance. */
+  requestedSlaCreditMonth?: string;
 }
 
 export interface ApprovalRequest {

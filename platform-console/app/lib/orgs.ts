@@ -80,6 +80,18 @@ export interface Org {
    * round-trip discipline as `branding`/`region` above: this control never
    * fires uninvited on an existing customer. */
   autoRemediateCritical?: boolean;
+  /**
+   * SLA credit auto-application idempotency guard (see
+   * setOrgLastSlaCreditAppliedMonth below and
+   * POST /api/orgs/[id]/sla-credits): the last "YYYY-MM" month this org
+   * had a real SLA credit actually applied to its Stripe customer
+   * balance for. Optional and unset by default, same forward-compatible-
+   * optional-field round-trip discipline as `branding`/`region`/
+   * `autoRemediateCritical` above -- every org registered (or credited)
+   * before this field existed round-trips through JSON.parse/stringify
+   * with `lastSlaCreditAppliedMonth: undefined`.
+   */
+  lastSlaCreditAppliedMonth?: string;
 }
 
 interface OrgRegistryEntry {
@@ -121,6 +133,11 @@ interface OrgRegistryEntry {
   // `autoRemediateCritical: undefined`, treated identically to `false` by
   // every reader (setOrgAutoRemediateCritical below is the only writer).
   autoRemediateCritical?: boolean;
+  // SLA credit auto-application idempotency guard -- see the identically-
+  // named field on `Org` above for the full rationale. Optional and unset
+  // by default, same forward-compatible-optional-field round-trip
+  // discipline as every other optional registry field above.
+  lastSlaCreditAppliedMonth?: string;
 }
 
 const PRODUCT_NAME_MAX_LENGTH = 60;
@@ -558,6 +575,35 @@ export async function setOrgAutoRemediateCritical(
     [id]: JSON.stringify(updatedEntry),
   });
   if (!patchResult.ok) return patchResult;
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
+ * Real SLA-credit-applied write: backs the actual-application half of
+ * POST /api/orgs/[id]/sla-credits, called ONLY after a real Stripe
+ * customer-balance transaction has actually been created
+ * (lib/stripe-billing.ts's applySlaCreditToStripeBalance). Records
+ * `month` as the last month this org had a credit applied for -- the
+ * route reads this back BEFORE calling Stripe to refuse a second
+ * application for the same month (no single actor, retry, or duplicate
+ * approval can double-credit a customer's balance). Same one-key-at-a-
+ * time merge-patch discipline as every other setter in this module.
+ */
+export async function setOrgLastSlaCreditAppliedMonth(
+  id: string,
+  month: string,
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const updatedEntry: OrgRegistryEntry = { ...entry, lastSlaCreditAppliedMonth: month };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
 
   return { ok: true, data: { id, ...updatedEntry } };
 }

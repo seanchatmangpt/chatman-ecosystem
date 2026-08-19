@@ -1,0 +1,111 @@
+# Chart-wrapped copy of k8s/hpa.yaml, static (not yet .Values-parameterized).
+# See chart/platform-console/values.yaml's header for the known EnvoyFilter
+# alpha-API limitation and the disclosed parameterization gap.
+---
+# HorizontalPodAutoscaler objects, real autoscaling-as-a-service on top of
+# metrics-server (installed via the upstream components.yaml, patched with
+# --kubelet-insecure-tls for this kind cluster's self-signed kubelet certs).
+#
+# Replica bounds and target CPU were checked against each namespace's
+# ResourceQuota (k8s/resource-quotas.yaml) before being set here -- see the
+# quota file's header comment for the exact per-pod (app container + Istio
+# sidecar) headroom math for the max replica count of each Deployment below.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: platform-console-gateway-hpa
+  namespace: platform-console
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: platform-console-gateway
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: autofde-lab-status-hpa
+  namespace: autofde-lab
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: autofde-lab-status
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ggen-status-hpa
+  namespace: ggen
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ggen-status
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ggen-marketplace-status-hpa
+  namespace: ggen-marketplace
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ggen-marketplace-status
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: gymact-status-hpa
+  namespace: gymact
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gymact-status
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70

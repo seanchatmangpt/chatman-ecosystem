@@ -1,0 +1,122 @@
+# Chart-wrapped copy of k8s/gateway.yaml, static (not yet .Values-parameterized).
+# See chart/platform-console/values.yaml's header for the known EnvoyFilter
+# alpha-API limitation and the disclosed parameterization gap.
+---
+# Istio Gateway + VirtualService in platform-console, routing platform.local
+# through the existing istio-ingressgateway (already installed and Ready --
+# kubectl get svc -n istio-system istio-ingressgateway confirmed ports
+# 80:31553/TCP and 443:31443/TCP as NodePorts, since kind/colima has no
+# cloud LoadBalancer).
+#
+# Local access: add an /etc/hosts entry pointing platform.local at the
+# ingress gateway's reachable address, then browse http://platform.local/
+# (or https://platform.local/ once the TLS secret below exists). For a
+# `kind` cluster on colima the gateway is reached through the docker/colima
+# VM's forwarded port, e.g.:
+#   echo "127.0.0.1 platform.local" | sudo tee -a /etc/hosts
+#   curl http://platform.local:31553/          # HTTP server on the NodePort
+# (or via `kubectl port-forward -n istio-system svc/istio-ingressgateway
+# 8080:80` and hitting http://platform.local:8080/ if the NodePort isn't
+# directly reachable from this host -- confirm which applies once deployed).
+#
+# HTTPS is defined for parity with the existing platform-gateway object in
+# the "application" namespace (kubectl get gateway -n application
+# platform-gateway -o yaml) but is NOT yet functional out of the box: it
+# references a TLS secret, platform-console-tls, that this file does not
+# create (no cert material belongs in checked-in YAML). Before HTTPS will
+# work, create it once, e.g. with a self-signed cert for local dev:
+#   openssl req -x509 -newkey rsa:2048 -nodes -days 365 \
+#     -keyout /tmp/platform-console.key -out /tmp/platform-console.crt \
+#     -subj "/CN=platform.local"
+#   kubectl create secret tls platform-console-tls \
+#     -n istio-system \
+#     --cert=/tmp/platform-console.crt --key=/tmp/platform-console.key
+# Until that secret exists, the HTTPS:443 server below will not admit
+# traffic -- HTTP:80 is what actually works immediately after deploy.
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: platform-console-gateway
+  namespace: platform-console
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        name: http
+        number: 80
+        protocol: HTTP
+      hosts:
+        - platform.local
+    - port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      hosts:
+        - platform.local
+      tls:
+        mode: SIMPLE
+        credentialName: platform-console-tls
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: platform-console-ingress
+  namespace: platform-console
+spec:
+  hosts:
+    - platform.local
+  gateways:
+    - platform-console-gateway
+  http:
+    # NOTE on Private Connectivity (k8s/mtls-gateway.yaml): an EARLIER
+    # version of this file made the mutual-TLS gateway on
+    # https://backups.platform.local:8444 the ONLY way to reach
+    # /api/projects/*/backups, via a direct-421 rule here. That broke the
+    # console's own already-shipped, already-verified browser UI
+    # (RunBackupButton/RestoreBackupButton -- see the "Backup Restore"
+    # commit's real delete-then-restore proof) for every normal
+    # session, since a browser cannot present a client certificate through
+    # the standard page flow. Reverted before that ever shipped: the plain
+    # route below still proxies these paths normally (session-auth-gated,
+    # as before), and the mTLS gateway remains a real, additional private
+    # access path for programmatic/operator use -- matching how AWS
+    # PrivateLink/GCP Private Service Connect actually work in practice
+    # (an additional private path alongside the public one, not an
+    # exclusive replacement for it).
+    # Split out so k8s/ratelimit.yaml's EnvoyFilter can target ONLY the
+    # login endpoint by Envoy route name, not the whole console. An
+    # earlier version of this file named the single catch-all "/" rule
+    # below "platform-console-root" and pointed the rate limit at that --
+    # live E2E verification (Playwright suite against this same cluster)
+    # showed that a single normal authenticated session (one dashboard
+    # load's JS chunks + data-fetch API calls, then a couple of page
+    # navigations) burns through the 20-requests/minute bucket almost
+    # immediately, since the bucket was shared across EVERY request to
+    # the entire app (all static assets, all pages, all authenticated
+    # API calls) rather than just the thing worth throttling
+    # (credential-stuffing against /api/login). That is a real denial of
+    # service to legitimate logged-in users, not a security control --
+    # reverted to this narrower shape instead. /api/login gets its own
+    # named prefix route, matched BEFORE the catch-all (Istio evaluates
+    # `http` rules in order; a later broader match would never be
+    # reached), and only THAT route carries the rate-limit override in
+    # k8s/ratelimit.yaml. Every other path (pages, static assets, every
+    # other API route) is unaffected -- exactly the failed-login-flood
+    # protection the token bucket was meant to provide, without limiting
+    # normal browsing.
+    - name: platform-console-login
+      match:
+        - uri:
+            prefix: /api/login
+      route:
+        - destination:
+            host: platform-console-gateway.platform-console.svc.cluster.local
+            port:
+              number: 8080
+    - name: platform-console-root
+      route:
+        - destination:
+            host: platform-console-gateway.platform-console.svc.cluster.local
+            port:
+              number: 8080

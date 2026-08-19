@@ -38,7 +38,7 @@ export interface AllowedCommand {
  * `buildContainerCommand`'s switch below is statically checked exhaustive
  * by the compiler: adding a new id to this union without adding a case
  * there is a real compile error, not a silent `undefined` command. */
-export type AllowedCommandId = "echo-timestamp" | "curl-status";
+export type AllowedCommandId = "echo-timestamp" | "curl-status" | "cost-report-snapshot";
 
 /**
  * The fixed, small allowlist. Every entry maps to one hardcoded container
@@ -61,6 +61,13 @@ export const ALLOWED_COMMANDS: Record<AllowedCommandId, AllowedCommand> = {
     label: "Curl the namespace's status service",
     description:
       "curl's this namespace's own <namespace>-status Service at /status (cluster-internal only, 10s timeout) and logs the real HTTP response to the Job's own pod log.",
+    image: "curlimages/curl:8.10.1",
+  },
+  "cost-report-snapshot": {
+    id: "cost-report-snapshot",
+    label: "Capture a cost & usage report snapshot",
+    description:
+      "POSTs this console's own internal /api/internal/cost-report-snapshot route (cluster-internal only, shared-secret authenticated), which re-runs the same real, metered-from-Prometheus usage computation lib/invoice-preview.ts already exposes on demand for this CronJob's own namespace and appends one record to that namespace's cost-report history -- the FinOps-trend capability this command exists to schedule.",
     image: "curlimages/curl:8.10.1",
   },
 };
@@ -96,6 +103,22 @@ function buildContainerCommand(commandId: AllowedCommandId, namespace: string): 
         "sh",
         "-c",
         `curl -sS -m 10 "http://${namespace}-status.${namespace}.svc.cluster.local/status" && echo`,
+      ];
+    case "cost-report-snapshot":
+      // Same cluster-internal, shared-secret-authenticated curl shape as
+      // buildComplianceReportCommand/buildRetentionPurgeCronCommand below
+      // -- POSTs this console's own Service DNS name, never a raw user
+      // command. `namespace` (this CronJob's own namespace, always one of
+      // SCHEDULABLE_NAMESPACES) travels as a request header, the same way
+      // buildComplianceReportCommand threads `orgId` into its target
+      // path -- the internal route (never this module) is the one place
+      // that header is validated before being used as a k8s namespace.
+      return [
+        "sh",
+        "-c",
+        `curl -sS -m 30 -X POST -H "x-cost-report-cron-secret: $COST_REPORT_CRON_SECRET" ` +
+          `-H "x-cost-report-namespace: ${namespace}" ` +
+          `"http://platform-console.platform-console.svc.cluster.local/api/internal/cost-report-snapshot" && echo`,
       ];
   }
 }
@@ -226,6 +249,19 @@ export async function listCronJobs(
   return { ok: true, data: (result.data.items ?? []).map(toScheduledJob) };
 }
 
+// Real shared-secret env var the "cost-report-snapshot" command's curl
+// call authenticates with -- same one-time-operator-provisioning
+// convention as COMPLIANCE_CRON_SECRET_NAME below (`kubectl create secret
+// generic platform-cost-report-cron-secret --from-literal=secret=...` in
+// the `platform-console` namespace, then setting a matching
+// `COST_REPORT_CRON_SECRET` env on the console's own Deployment so
+// POST /api/internal/cost-report-snapshot can compare against it). Only
+// this one command id's CronJob Pod gets this env injected (see
+// createCronJob below) -- every other ALLOWED_COMMANDS entry is
+// unaffected.
+export const COST_REPORT_CRON_SECRET_NAME = "platform-cost-report-cron-secret";
+export const COST_REPORT_CRON_SECRET_KEY = "secret";
+
 export interface CreateCronJobInput {
   namespace: SchedulableNamespace;
   name: string;
@@ -279,6 +315,29 @@ export async function createCronJob(
                   image: command.image,
                   imagePullPolicy: "IfNotPresent",
                   command: buildContainerCommand(input.commandId, input.namespace),
+                  // Only the "cost-report-snapshot" command's curl call
+                  // needs to authenticate itself against this console's
+                  // own internal route -- every other ALLOWED_COMMANDS
+                  // entry curls either nothing external
+                  // (echo-timestamp) or an unauthenticated in-namespace
+                  // status Service (curl-status), so this stays absent
+                  // (undefined, meaning "no env" per this manifest's own
+                  // JSON.stringify -> k8s POST path) for those.
+                  ...(input.commandId === "cost-report-snapshot"
+                    ? {
+                        env: [
+                          {
+                            name: "COST_REPORT_CRON_SECRET",
+                            valueFrom: {
+                              secretKeyRef: {
+                                name: COST_REPORT_CRON_SECRET_NAME,
+                                key: COST_REPORT_CRON_SECRET_KEY,
+                              },
+                            },
+                          },
+                        ],
+                      }
+                    : {}),
                   // Real, live-discovered requirement, not a stylistic
                   // choice: 4 of this platform's 5 schedulable namespaces
                   // carry a ResourceQuota with hard `limits.cpu`/
