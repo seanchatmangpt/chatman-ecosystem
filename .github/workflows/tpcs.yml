@@ -1,4 +1,4 @@
-name: Toyota Code Production System
+name: TCPS Federation Court
 
 on:
   pull_request:
@@ -7,6 +7,7 @@ on:
       - 'ontology/tpcs.ttl'
       - 'scripts/tpcs_pipeline.py'
       - 'tests/test_tpcs_pipeline.py'
+      - 'receipts/tcps/**'
       - '.github/workflows/tpcs.yml'
   workflow_dispatch:
 
@@ -14,10 +15,10 @@ permissions:
   contents: read
 
 jobs:
-  tpcs-court:
+  federation:
     runs-on: ubuntu-latest
     steps:
-      - name: Resolve exact subject
+      - name: Resolve exact ecosystem subject
         id: subject
         shell: bash
         run: |
@@ -28,12 +29,12 @@ jobs:
             echo "sha=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
           ref: ${{ steps.subject.outputs.sha }}
           persist-credentials: false
 
-      - name: Admit exact head
+      - name: Admit exact ecosystem head
         env:
           SUBJECT_SHA: ${{ steps.subject.outputs.sha }}
         run: |
@@ -41,126 +42,52 @@ jobs:
           test "$(git rev-parse HEAD)" = "${SUBJECT_SHA}"
           test "${#SUBJECT_SHA}" -eq 40
 
-      - name: Verify production law and falsifiers
+      - name: Verify federation law and falsifiers
         run: |
           set -euo pipefail
           python3 -m py_compile scripts/tpcs_pipeline.py
           python3 scripts/tpcs_pipeline.py --self-test
           python3 -m unittest tests.test_tpcs_pipeline -v
 
-      - name: Execute deterministic DfCM production plan
-        env:
-          SUBJECT_SHA: ${{ steps.subject.outputs.sha }}
+      - name: Manufacture evidence-bounded federation report
         run: |
           set -euo pipefail
           mkdir -p receipts/tpcs-ci
-          cat > /tmp/tpcs-work.json <<JSON
-          {
-            "work_items": [
-              {
-                "subject": "${SUBJECT_SHA}",
-                "acceptance": "python3 -m unittest tests.test_tpcs_pipeline -v",
-                "authority": "CONSTRUCT",
-                "work_id": "runtime",
-                "value_stream": "runtime",
-                "class_of_service": "standard",
-                "value": 10,
-                "urgency": 4,
-                "evidence": 3,
-                "risk": 1,
-                "cost": 3,
-                "cycle_time": 3
-              },
-              {
-                "subject": "${SUBJECT_SHA}",
-                "acceptance": "python3 -m unittest tests.test_tpcs_pipeline -v",
-                "authority": "CONSTRUCT",
-                "work_id": "evidence",
-                "value_stream": "evidence",
-                "class_of_service": "standard",
-                "value": 3,
-                "urgency": 4,
-                "evidence": 10,
-                "risk": 1,
-                "cost": 3,
-                "cycle_time": 3
-              },
-              {
-                "subject": "${SUBJECT_SHA}",
-                "acceptance": "python3 -m unittest tests.test_tpcs_pipeline -v",
-                "authority": "CONSTRUCT",
-                "work_id": "dominated",
-                "value_stream": "runtime",
-                "class_of_service": "standard",
-                "value": 1,
-                "urgency": 1,
-                "evidence": 1,
-                "risk": 9,
-                "cost": 9,
-                "cycle_time": 9
-              }
-            ]
-          }
-          JSON
-          python3 scripts/tpcs_pipeline.py \
-            --plan-file /tmp/tpcs-work.json \
-            --plan-receipt receipts/tpcs-ci/plan.json > /tmp/plan-one.json
-          python3 scripts/tpcs_pipeline.py \
-            --plan-file /tmp/tpcs-work.json > /tmp/plan-two.json
-          cmp /tmp/plan-one.json /tmp/plan-two.json
-          python3 scripts/tpcs_pipeline.py \
-            --metrics 480 12 0.05 10 > receipts/tpcs-ci/flow.json
-          python3 - <<'PY'
+          runtime=0
+          projection=0
+          [[ -f receipts/tcps/runtime.json ]] && runtime=1
+          [[ -f receipts/tcps/projection.json ]] && projection=1
+          test "${runtime}" -eq "${projection}"
+          if [[ "${runtime}" -eq 1 ]]; then
+            python3 scripts/tpcs_pipeline.py \
+              --runtime-receipt receipts/tcps/runtime.json \
+              --projection-receipt receipts/tcps/projection.json \
+              --out receipts/tpcs-ci/federation.json
+            python3 - <<'PY'
           import json
           from pathlib import Path
-          p = json.loads(Path('receipts/tpcs-ci/plan.json').read_text())
-          assert p['candidate_count'] == 3
-          assert len(p['inputs']) == 3
-          assert len(p['input_digest']) == 64
-          assert len(p['subjects']) == 1
-          assert set(p['frontier']) == {'runtime', 'evidence'}
-          assert p['selected'] in p['frontier']
-          assert p['selection_reversible'] is True
-          assert p['irreversible_selections'] == 0
-          assert p['planner_authority'] == 'SELECT'
-          assert p['actuation'] is False
+          report = json.loads(Path('receipts/tpcs-ci/federation.json').read_text())
+          assert report['state'] == 'ALIVE'
+          assert report['runtime_receipt_bound'] is True
+          assert report['projection_receipt_bound'] is True
+          assert report['implementation_authority'] is False
+          assert report['actuation_authority'] is False
           PY
-
-      - name: Manufacture chained exact-subject receipt after acceptance
-        env:
-          SUBJECT_SHA: ${{ steps.subject.outputs.sha }}
-        run: |
-          set -euo pipefail
-          python3 scripts/tpcs_pipeline.py \
-            --subject "${SUBJECT_SHA}" \
-            --work-id tpcs-exact-head-court \
-            --acceptance "python3 -m unittest tests.test_tpcs_pipeline -v" \
-            --authority CONSTRUCT \
-            --acceptance-passed \
-            --from-plan-receipt receipts/tpcs-ci/plan.json \
-            --receipt receipts/tpcs-ci/receipt.json
-          python3 - <<'PY'
+          else
+            python3 scripts/tpcs_pipeline.py --out receipts/tpcs-ci/federation.json
+            python3 - <<'PY'
           import json
           from pathlib import Path
-          plan = json.loads(Path('receipts/tpcs-ci/plan.json').read_text())
-          receipt = json.loads(Path('receipts/tpcs-ci/receipt.json').read_text())
-          flow = json.loads(Path('receipts/tpcs-ci/flow.json').read_text())
-          assert receipt['standing'] == 'ALIVE'
-          assert receipt['acceptance_passed'] is True
-          assert receipt['receipt_verified'] is True
-          assert receipt['replay_match'] is True
-          assert receipt['zero_unreceipted_actuation'] is True
-          assert receipt['previous_receipt'] == plan['sha256']
-          assert receipt['plan_digest'] == plan['sha256']
-          assert receipt['plan_input_digest'] == plan['input_digest']
-          assert receipt['frontier_digest'] == plan['frontier_digest']
-          assert receipt['schedule_digest'] == plan['schedule_digest']
-          assert flow['little_law_reconstructed_wip'] == flow['wip_items']
+          report = json.loads(Path('receipts/tpcs-ci/federation.json').read_text())
+          assert report['state'] == 'PARTIAL_ALIVE'
+          assert report['runtime_receipt_bound'] is False
+          assert report['projection_receipt_bound'] is False
           PY
+          fi
 
-      - name: Preserve production receipt DAG
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+      - name: Preserve federation report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: tpcs-receipts-${{ steps.subject.outputs.sha }}
-          path: receipts/tpcs-ci/
+          name: tpcs-federation-${{ steps.subject.outputs.sha }}
+          path: receipts/tpcs-ci/federation.json
           if-no-files-found: error
