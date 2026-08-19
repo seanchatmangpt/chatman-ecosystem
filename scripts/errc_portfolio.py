@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse, hashlib, json, math, sys, tomllib
+from itertools import combinations
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Mapping
@@ -80,24 +81,38 @@ def closure(rev: Mapping[str,set[str]], start: str) -> set[str]:
     return seen
 
 def focus(manifest: Mapping[str,Any], policy: Mapping[str,Any]) -> dict[str,Any]:
-    p=admit(policy); by,deps,rev=graph(manifest); unresolved={n for n,r in by.items() if r.get("standing") != "ALIVE"}
+    p=admit(policy); by,deps,_=graph(manifest); unresolved={n for n,r in by.items() if r.get("standing") != "ALIVE"}
     budget=max(1, math.ceil(len(by)*p["fraction"]))
     if not unresolved: return {"required":len(by),"unresolved":0,"budget":budget,"selected":[],"coverage":1.0,"covered":[],"uncovered":[],"target_met":True}
     ready={n for n in unresolved if all(by[d].get("standing") == "ALIVE" for d in deps[n])}
     if not ready: raise ERRCError("no dependency-ready unresolved component")
-    selected=[]; covered:set[str]=set()
-    while ready and len(selected)<budget:
+    memo:dict[str,set[str]]={}
+    def blockers(n:str)->set[str]:
+        if n in memo: return memo[n]
+        if n in ready: result={n}
+        else:
+            result=set()
+            for d in deps[n]:
+                if d in unresolved: result |= blockers(d)
+        memo[n]=result; return result
+    blocker_sets={n:blockers(n) for n in unresolved}
+    roots=sorted(ready); max_k=min(budget,len(roots)); best:tuple[str,...]=(); best_covered:set[str]=set()
+    for k in range(1,max_k+1):
+        for candidate in combinations(roots,k):
+            chosen=set(candidate); covered={n for n,b in blocker_sets.items() if b <= chosen}
+            score=(len(covered), -len(candidate), tuple(candidate))
+            best_score=(len(best_covered), -len(best), tuple(best))
+            if score > best_score: best=candidate; best_covered=covered
+    ordered=[]; chosen:set[str]=set(); previous:set[str]=set(); remaining=set(best)
+    while remaining:
         ranked=[]
-        for n in ready:
-            c=closure(rev,n)&unresolved; marginal=c-covered
-            ranked.append((len(marginal),len(c),n,c))
-        ranked.sort(key=lambda x:(-x[0],-x[1],x[2])); _,total,n,c=ranked[0]; ready.remove(n)
-        marginal=c-covered
-        if not marginal: continue
-        covered|=c; r=by[n]
-        selected.append({"component":n,"repository":r.get("repository"),"role":r.get("role"),"standing":r.get("standing","UNKNOWN"),"potential_relief":total,"marginal_relief":len(marginal),"marginal_components":sorted(marginal)})
-    coverage=len(covered)/len(unresolved)
-    return {"required":len(by),"unresolved":len(unresolved),"budget":budget,"selected":selected,"coverage":round(coverage,6),"covered":sorted(covered),"uncovered":sorted(unresolved-covered),"target_met":coverage>=p["target"]}
+        for root in remaining:
+            c=chosen|{root}; now={n for n,b in blocker_sets.items() if b <= c}; marginal=now-previous
+            ranked.append((len(marginal),root,now,marginal))
+        ranked.sort(key=lambda x:(-x[0],x[1])); _,root,now,marginal=ranked[0]; remaining.remove(root); chosen.add(root); previous=now
+        r=by[root]; ordered.append({"component":root,"repository":r.get("repository"),"role":r.get("role"),"standing":r.get("standing","UNKNOWN"),"potential_relief":len({n for n,b in blocker_sets.items() if root in b}),"marginal_relief":len(marginal),"marginal_components":sorted(marginal)})
+    coverage=len(best_covered)/len(unresolved)
+    return {"required":len(by),"unresolved":len(unresolved),"budget":budget,"selected":ordered,"coverage":round(coverage,6),"covered":sorted(best_covered),"uncovered":sorted(unresolved-best_covered),"target_met":coverage>=p["target"],"selection":"EXHAUSTIVE_READY_ROOT_COMBINATIONS"}
 
 def starts(title: str, prefixes: list[str]) -> bool:
     t=title.casefold().strip(); return any(t.startswith(p) for p in prefixes)
