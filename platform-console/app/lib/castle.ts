@@ -38,6 +38,7 @@
 import { k8sRequest, getConfigMap, createOrUpdateConfigMap, getPodLogs, type K8sResult } from "@/lib/k8s";
 import { checkFreezeGuard, type FreezeWindow } from "@/lib/freeze-windows";
 import type { ApprovalRequest } from "@/lib/approval-workflow";
+import { defaultAuthorityObject } from "@/lib/authority-object";
 
 export const CASTLE_NAMESPACE = "castle";
 export const CASTLE_DEPLOYMENT_CONFIGMAP = "platform-castle-deployment";
@@ -281,6 +282,36 @@ export async function runCastleVerb(
         ...(guard.data.overrideRequest ? { overrideRequest: guard.data.overrideRequest } : {}),
       };
     }
+  }
+
+  // Authority admission: capability admission (this verb existing in
+  // ALLOWED_CASTLE_VERBS, already checked by the caller via
+  // resolveCastleVerb) is NOT the same question as whether this actor is
+  // authorized to run it right now. AuthorityObject.admits (see
+  // lib/authority-object.ts) is the uniform seam for that second
+  // question, composing the same checkFreezeGuard this function already
+  // called above with lib/approval-workflow.ts's requireApproval (a
+  // real no-op here today: `"castle.verb.run"` is not itself one of the
+  // platform's closed ACTIONS_REQUIRING_APPROVAL set -- only
+  // `"castle.verb.schedule"`, the deferred-scheduling path in
+  // lib/scheduled-verbs.ts, is). `targetId` is `orgId` when the caller
+  // supplied one, else `""`, matching the same "no org context, no
+  // freeze check possible" convention this function's freeze check
+  // above already documents -- this call is a second, deliberately
+  // redundant consult of the same freeze state through the uniform
+  // object, not a replacement for the structured CastleRunFrozenError
+  // path above (which callers depend on for the real FreezeWindow/
+  // overrideRequest payload); it is what makes Castle verb execution
+  // consult the same AuthorityObject shape every other future DO call
+  // site will consult, rather than each call site hand-rolling its own
+  // gate composition.
+  const authority = await defaultAuthorityObject.admits({
+    kind: "castle.verb.run",
+    targetId: orgId ?? "",
+    actor,
+  });
+  if (!authority.admitted) {
+    return { ok: false, error: authority.reason ?? "not authorized to run this castle verb" };
   }
 
   const deployment = await getCastleDeployment();

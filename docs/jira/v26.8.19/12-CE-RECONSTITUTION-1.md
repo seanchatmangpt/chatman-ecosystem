@@ -49,13 +49,28 @@ found evidence of an actual reconstitution *benchmark*, not only a checklist.
 
 ## Real, scoped gap
 
-The checklist and the benchmark scripts exist; whether any real subject in this repository has
-ever been run through the full 16-item checklist to completion, with an original implementation
-actually deleted afterward, was not checked in this pass — that would require reading
-`33-reconstitution.md` in full and finding a concrete completed instance, not inferring one from
-the checklist's existence. This is the honest state: the *mechanism* for `ce-reconstitution/1`
-is unusually well-built already; a *completed example* of it running end-to-end was not
-confirmed here.
+**Update (2026-08-19): checked for real, and the answer is no completed instance exists — this
+fragment remains unshipped.** `33-reconstitution.md` was read in full (51 lines): it is prose
+theory ending in an unperformed "operational exercise" prompt, not a record of a completed run.
+`benchmarks/platform-reconstitution/v1/benchmark.toml:6` declares `standing = "UNKNOWN"`.
+Running `scripts/verify_platform_reconstitution.py` directly confirms this live: the default run
+prints `PLATFORM_RECONSTITUTION=UNKNOWN` (exit 0), and `--require-alive` returns
+`REFUSED:BENCHMARK_NOT_ALIVE:UNKNOWN` (exit 2). `pytest tests/test_platform_reconstitution.py
+-v` passes 17/17, but every passing test validates refusal/structural logic against synthetic
+evidence dicts constructed in-test (`alive_evidence()`) — none of it is committed real evidence,
+and `test_candidate_contract_is_structurally_admitted` explicitly asserts the real file's standing
+is `UNKNOWN`. No original implementation has ever been deleted per any committed record.
+
+No files were changed for this fragment in this pass — the checklist, benchmark, and verify
+script were already real and already existed; this pass only confirmed, by actually running them
+rather than inferring from their existence, that none of the four completion conditions below
+are met. This is a verification-only update, not a build.
+
+If a completed reconstitution instance is ever produced, it would need: (1) `benchmark.toml`
+standing flipped to `ALIVE`, (2) a populated evidence table with real shas/digests/receipts
+satisfying `verify_platform_reconstitution.py`'s `ALIVE` branch (lines 284-366), (3)
+`--require-alive` passing, and (4) a documented deletion of the original implementation
+referenced by `original_subject_id`. None of this exists yet.
 
 ## Explicit non-claims
 

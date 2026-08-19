@@ -41,13 +41,39 @@ the *process* the receipted events were steps of — the difference between "thi
 
 ## Real, scoped gap
 
-`verifyAuditChain()` has only ever been run by `platform-console`'s own code, against its own
-database, in this session — real, but not yet the cross-party case `ce-replay/1` is ultimately
-for. No test exists (checked: no dedicated replay-fixture file found under
-`platform-console/app` or `castle/tests`) exporting a receipt chain + OCEL trace pair as a
-standalone artifact an unrelated process could independently verify without any shared code.
-That artifact — a real exported fixture plus a minimal, dependency-free verifier — is the
-concrete next step this fragment names but does not build.
+**Update (2026-08-19): the standalone-artifact gap named below is now closed; cross-party live
+export is not.** Two new scripts exist:
+`platform-console/scripts/export-replay-fixture.ts`, which issues a real query against
+`platform_console.audit_log` via `lib/audit-db.ts`'s `getAuditDbPool()` and exports the most
+recent N rows chain-ordered to JSON, failing closed (nonzero exit, no file written) if no
+database is reachable rather than fabricating rows; and
+`platform-console/scripts/verify-replay-fixture.ts`, a genuinely dependency-free verifier
+(confirmed by grep: only `node:crypto`/`node:fs` imports, zero imports from `audit-db.ts` or any
+app code) that independently re-derives the sha256 row-hash chain from the fixture's own
+self-documented algorithm spec.
+
+No live cluster/database was reachable in this environment, so `export-replay-fixture.ts` has
+only been exercised on its fail-closed path (confirmed: exit 1, no file written, no in-cluster
+credentials found). The committed fixture at `platform-console/scripts/fixtures/replay-fixture-sample.json`
+is therefore **hand-constructed, not a live export** — its 20 rows' actor/path/timestamp content
+is synthetic — but its hash chain is real, computed with a standalone re-implementation of
+`audit-db.ts`'s exact `computeRowHash` algorithm, and the fixture's own `source.note` field
+documents this rather than implying a live export. Running the verifier against it produced real
+output: `VALID: 20 row(s) verified, hash chain intact from genesis through row 20`, exit 0.
+Adversarially tampering one row's `actor` field in a copy and re-running produced `INVALID: row
+11: recomputed row_hash (...) does not match the stored row_hash (...)`, exit 1 — confirming the
+verifier actually detects tampering, not just echoes success.
+
+This closes conformance requirement 1's *artifact* gap (a standalone fixture + dependency-free
+verifier now exist) but does not close the cross-party case itself: no unrelated process/party
+has actually run the verifier independent of this session, and `export-replay-fixture.ts`'s live
+(non-fail-closed) path remains untested against a real cluster. The fixture also only carries the
+subset of chain-committed fields `verifyAuditChain` reads
+(`request_id/ts/actor/method/path/status/castle_receipt_digest/impersonated_by/impersonation_session_id`)
+— rows chain-committing `org_id/key_id/duration_ms/sla_credit_*` would not reverify from this
+narrower fixture format alone, documented in the fixture's own `hashAlgorithm.material` field.
+Requirement 2 (OCEL trace pairing per `castle`'s mandatory-field discipline) remains entirely
+unaddressed — the new fixture carries only the receipt-chain half, no OCEL trace.
 
 ## Explicit non-claims
 

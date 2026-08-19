@@ -42,14 +42,29 @@ than a coincidence.
 
 ## Real, scoped gap
 
-The two vocabularies above have never been formally reconciled into one shared, versioned term
-list — they independently converged, which is evidence *for* the fragment's plausibility, but
-convergence-by-accident is not the same as a ratified shared spec. `ce-standing/1`'s real next
-step is a literal side-by-side reconciliation table (`castle`'s seven terms against this
-session's seven terms) producing one canonical `ce-standing/1` vocabulary, plus a note on where
-the two lineages genuinely diverge (`BuildBroken` vs. `MOCKED` do not mean quite the same thing
-— `BuildBroken` names a compile/runtime failure, `MOCKED` names a test-double substitution;
-collapsing them would lose real distinguishing information).
+**Update (2026-08-19): the reconciliation step named below is now done, in code and in doc, not
+just as a proposal.** `docs/jira/v26.8.19/CE-STANDING-RECONCILED.md` is a new, real
+term-by-term reconciliation table built from both real sources (castle's `ReleaseStanding` enum
+at `~/castle/src/v26_8_18/topology.rs:38-46`, and this session's
+`no-overclaiming-rust.md` vocabulary). The honest reconciliation needed **8** terms, not 7:
+`UNVERIFIED, ALIVE, PARTIAL, BLOCKED, BUILD_BROKEN, MOCKED, UNSUPPORTED, REFUSED` —
+`BUILD_BROKEN` has no session-vocabulary equivalent and `MOCKED` has no castle equivalent; both
+are kept as first-class, non-collapsed terms, preserving the divergence this fragment's earlier
+draft already flagged rather than papering over it.
+
+This vocabulary is now also a real TypeScript artifact, not only prose:
+`platform-console/app/lib/ce-standing.ts` exports the closed 8-member `CeStanding` union type, a
+`CE_STANDING_DEFINITIONS` record (precise per-term definition plus each term's castle-equivalent
+or `null`), a `CE_STANDING_VALUES` array, and an `isCeStanding` type guard. `npx tsc --noEmit`
+from `platform-console/app` is clean against it.
+
+What remains open: castle's Rust enum itself was left completely unchanged (correctly — it is
+one of the two source vocabularies being reconciled, not the reconciliation's target) so the two
+lineages still exist as two separate artifacts (a Rust enum, a TypeScript union) rather than one
+shared cross-language definition any implementation could import directly; a genuinely shared
+protocol vocabulary would need either a single source of truth both languages consume or a
+generator, neither of which exists yet. No external party has reviewed or ratified
+`CE-STANDING-RECONCILED.md` or `ce-standing.ts`.
 
 ## Explicit non-claims
 
