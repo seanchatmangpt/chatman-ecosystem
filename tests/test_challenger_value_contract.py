@@ -8,6 +8,7 @@ EXPECTED_SUBJECTS = {
     "ggen-marketplace": "547a1ba3d88c039d1bdc90ebde64ee19d79b9c40",
     "tcps": "18977d274ff05a7c8b96f9f64c25120835c94e52",
 }
+STRATEGY_SUBJECT = "3676b63f1f8c686dfdb4e6846d8fd956bc94e5cc"
 
 
 class ChallengerValueContractTest(unittest.TestCase):
@@ -25,16 +26,34 @@ class ChallengerValueContractTest(unittest.TestCase):
             "metric_requires_source: true",
             "alive_requires_standing_evidence: true",
             "proof_requires_exact_subject: true",
+            "message_arc_does_not_satisfy_revenue_process: true",
         ):
             self.assertIn(law, self.text)
 
-    def test_challenger_sequence_is_complete(self) -> None:
+    def test_message_arc_and_revenue_process_are_separate(self) -> None:
         self.assertIn(
             "phases: [TEACH, REFRAME, RATIONAL_IMPACT, NEW_WAY, PROOF, TAKE_CONTROL]",
             self.text,
         )
+        self.assertIn(
+            "phases: [TEACH, TAILOR, TAKE_CONTROL, DIAGNOSE, QUANTIFY, PROVE]",
+            self.text,
+        )
+        self.assertIn("scope: pre-engagement-evidence-presentation", self.text)
+        self.assertIn("scope: engagement-to-customer-value", self.text)
+        self.assertIn("PROOF: exact evidence used to support a commercial message", self.text)
+        self.assertIn(
+            "PROVE: customer-specific falsifiable enterprise proof after diagnosis and quantification",
+            self.text,
+        )
         self.assertIn("proof_evidence_kind: VERIFIED", self.text)
         self.assertIn("take_control_is_diagnostic_intent_only: true", self.text)
+
+    def test_strategy_doctrine_is_exact_subject_bound(self) -> None:
+        self.assertRegex(STRATEGY_SUBJECT, r"^[0-9a-f]{40}$")
+        self.assertIn(f"commit: {STRATEGY_SUBJECT}", self.text)
+        self.assertIn(f"strategy_subject: {STRATEGY_SUBJECT}", self.text)
+        self.assertIn("document: chatman-ecosystem-LINKEDIN-REVOPS-STRATEGY.md", self.text)
 
     def test_dfcm_preserves_frontier_and_zero_irreversible_selection(self) -> None:
         self.assertIn("enumerate_bounded_narrative_candidates: true", self.text)

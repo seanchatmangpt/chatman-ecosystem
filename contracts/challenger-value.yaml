@@ -9,8 +9,20 @@ commercial_invariant:
   metric_requires_source: true
   alive_requires_standing_evidence: true
   proof_requires_exact_subject: true
+  message_arc_does_not_satisfy_revenue_process: true
 challenger:
-  phases: [TEACH, REFRAME, RATIONAL_IMPACT, NEW_WAY, PROOF, TAKE_CONTROL]
+  message_arc:
+    phases: [TEACH, REFRAME, RATIONAL_IMPACT, NEW_WAY, PROOF, TAKE_CONTROL]
+    scope: pre-engagement-evidence-presentation
+  revenue_process:
+    phases: [TEACH, TAILOR, TAKE_CONTROL, DIAGNOSE, QUANTIFY, PROVE]
+    scope: engagement-to-customer-value
+    strategy_subject: 3676b63f1f8c686dfdb4e6846d8fd956bc94e5cc
+  semantic_distinction:
+    PROOF: exact evidence used to support a commercial message
+    PROVE: customer-specific falsifiable enterprise proof after diagnosis and quantification
+    message_TAKE_CONTROL: diagnostic intent that begins a bounded next step
+    revenue_TAKE_CONTROL: transition from interest into an admitted assessment or proof process
   proof_evidence_kind: VERIFIED
   take_control_is_diagnostic_intent_only: true
 dfcm:
@@ -46,6 +58,11 @@ receipts:
   canonical_json_digest: sha256
   binds: [protocol, audience, candidate_frontier, recommendation, brief, authority]
   deterministic_replay_required: true
+strategy_subject:
+  repo: seanchatmangpt/chatman-ecosystem
+  commit: 3676b63f1f8c686dfdb4e6846d8fd956bc94e5cc
+  document: chatman-ecosystem-LINKEDIN-REVOPS-STRATEGY.md
+  role: revenue-process-doctrine
 integration_subjects:
   ggen-marketplace:
     pr: 85
@@ -60,6 +77,6 @@ integration_subjects:
     role: bounded-dfcm-value-compiler
     owning_court: pytest-challenger
 integration_owners:
-  ggen-marketplace: manufacture-and-distribute-contract
-  tcps: expand-prune-and-render-reversible-brief
-  chatman-ecosystem: bind-cross-repo-subjects-and-commercial-authority
+  ggen-marketplace: manufacture-and-distribute-message-arc-contract
+  tcps: expand-prune-and-render-reversible-message-brief
+  chatman-ecosystem: bind-message-arc-revenue-process-subjects-and-commercial-authority
