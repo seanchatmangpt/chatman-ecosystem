@@ -9,10 +9,12 @@ on:
       - 'ontology/capabilities.ttl'
       - 'scripts/verify_capabilities.py'
       - 'scripts/verify_capability_ontology.py'
+      - 'scripts/render_capability_rdf.py'
       - 'scripts/capability_control.py'
       - 'tests/test_capabilities.py'
       - 'tests/test_capability_control.py'
       - 'tests/test_capability_ontology.py'
+      - 'tests/test_capability_rdf.py'
       - 'apps/ecosystem-cli/src/main.rs'
       - 'apps/ecosystem-cli/tests/capabilities.rs'
       - 'views/generated/capabilities.md'
@@ -27,7 +29,7 @@ permissions:
 jobs:
   capability-contract:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,8 +46,16 @@ jobs:
         run: python3 scripts/verify_capabilities.py
       - name: Verify public/custom ontology boundary
         run: python3 scripts/verify_capability_ontology.py
-      - name: Run capability, ontology and DfCM refusal courts
-        run: python3 -m unittest tests.test_capabilities tests.test_capability_control tests.test_capability_ontology -v
+      - name: Run capability, ontology, RDF and DfCM refusal courts
+        run: python3 -m unittest tests.test_capabilities tests.test_capability_control tests.test_capability_ontology tests.test_capability_rdf -v
+      - name: Execute SHACL admission over generated capability RDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check 'pyshacl==0.40.1'
+          python3 scripts/render_capability_rdf.py /tmp/capabilities.ttl
+          pyshacl -s ontology/capabilities.ttl /tmp/capabilities.ttl
+          echo 'CAPABILITY_SHACL_ALIVE engine=pyshacl@0.40.1 instances=39'
       - name: Execute all interface projections
         shell: bash
         run: |
