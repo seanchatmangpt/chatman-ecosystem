@@ -2,6 +2,7 @@
 set -euo pipefail
 
 REGISTRY="${WEAVER_REGISTRY:-telemetry/weaver}"
+TEMPLATES="${WEAVER_TEMPLATES:-telemetry/weaver-templates}"
 OUT="${WEAVER_RECEIPT_DIR:-target/weaver-live}"
 SUBJECT_SHA="${ECOSYSTEM_SUBJECT_SHA:-$(git rev-parse HEAD)}"
 REPO="${GITHUB_REPOSITORY:-seanchatmangpt/chatman-ecosystem}"
@@ -48,7 +49,7 @@ run_required "check.git_exact_sha" "SELECT" weaver registry check \
   -r "https://github.com/${REPO}.git@${SUBJECT_SHA}[telemetry/weaver]" --v2
 
 run_required "generate" "CONSTRUCT" weaver registry generate ecosystem "${OUT}/generated" \
-  -r "${REGISTRY}" --v2 -t "${REGISTRY}/templates"
+  -r "${REGISTRY}" --v2 -t "${TEMPLATES}"
 test -s "${OUT}/generated/CHATMAN_ECOSYSTEM_WEAVER.md"
 run_required "resolve.deprecated" "CONSTRUCT" weaver registry resolve \
   -r "${REGISTRY}" --v2 --format json -o "${OUT}/resolved.json"
@@ -72,7 +73,7 @@ mkdir -p "${OUT}/markdown"
 cp README.md "${OUT}/markdown/README.md"
 before="$(sha256sum README.md | awk '{print $1}')"
 run_required "update-markdown" "CONSTRUCT" weaver registry update-markdown "${OUT}/markdown" \
-  -r "${REGISTRY}" --v2 -t "${REGISTRY}/templates" --target ecosystem
+  -r "${REGISTRY}" --v2 -t "${TEMPLATES}" --target ecosystem
 test "$(sha256sum README.md | awk '{print $1}')" = "${before}"
 
 for schema in resolved-registry semconv-group semconv-definition-v2 resolved-registry-v2 materialized-registry-v2 diff diff-v2 publication-manifest-v2 definition-manifest-v2 policy-finding weaver-config; do
