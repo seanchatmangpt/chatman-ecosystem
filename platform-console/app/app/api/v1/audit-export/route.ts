@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
       : DEFAULT_LIMIT;
 
   const [queryResult, chainResult] = await Promise.all([
-    queryAuditLogSince(since, limit),
+    queryAuditLogSince(since, limit, resolved.orgId),
     verifyAuditChain(),
   ]);
 
@@ -99,6 +99,7 @@ export async function GET(request: NextRequest) {
     path: "/api/v1/audit-export",
     status: queryResult.ok ? 200 : 502,
     requestId,
+    orgId: resolved.orgId,
   });
 
   if (!queryResult.ok) {

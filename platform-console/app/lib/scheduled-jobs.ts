@@ -700,3 +700,119 @@ export async function deleteCronJob(
   if (!result.ok) return result;
   return { ok: true, data: null };
 }
+
+// -------------------------------------------------------- Retention Purge
+//
+// Real, scheduled enforcement CronJob for lib/retention.ts's
+// purgeExpiredAuditRows -- the distinct, sellable compliance control this
+// capability's own rationale names: proof that stale
+// platform_console.audit_log rows are purged automatically on a
+// schedule, with a receipt, not retained forever or purged only by hand.
+//
+// Same shared-secret authentication pattern as COMPLIANCE_CRON_SECRET/
+// EXPORT_SUBSCRIPTION_CRON_SECRET above (see createComplianceReportCronJob's
+// header comment for the one-time operator provisioning step): the secret
+// is injected via a real k8s `secretKeyRef` against a
+// `platform-retention-purge-cron-secret` Secret this module never creates
+// itself.
+//
+// One platform-wide CronJob, same shape as createExportSubscriptionCronJob
+// -- platform_console.audit_log has no per-row org scoping (see
+// lib/retention.ts's header comment), so there is no per-org CronJob to
+// create; POST /api/cron/retention-purge purges the whole table against
+// one retentionDays window every time it fires.
+export const RETENTION_PURGE_CRON_SECRET_NAME = "platform-retention-purge-cron-secret";
+export const RETENTION_PURGE_CRON_SECRET_KEY = "secret";
+export const RETENTION_PURGE_CRON_JOB_NAME = "platform-retention-purge";
+export const RETENTION_PURGE_CRON_JOB_LABEL = "retention-purge-cronjob";
+// Fires once daily, off-peak -- a purge is a bulk DELETE across
+// potentially many rows; running it once a day is ample for any
+// day-granularity retentionDays window (the shortest configured tier
+// default, `starter`'s 7 days, still has a full day of slack before a
+// one-day-late firing could let a row live even one day past its window).
+export const RETENTION_PURGE_CRON_SCHEDULE = "17 3 * * *";
+
+function buildRetentionPurgeCronCommand(): string[] {
+  return [
+    "sh",
+    "-c",
+    `curl -sS -m 60 -X POST -H "x-retention-purge-cron-secret: $RETENTION_PURGE_CRON_SECRET" ` +
+      `"http://platform-console.platform-console.svc.cluster.local/api/cron/retention-purge" && echo`,
+  ];
+}
+
+/**
+ * Creates the real, one-per-deployment recurring retention-purge CronJob
+ * in the `platform-console` namespace. Idempotent from the caller's
+ * perspective the same way createExportSubscriptionCronJob's own callers
+ * are expected to be -- a second POST for the same fixed name 409s,
+ * surfaced as a real `K8sResult` error, never silently swallowed.
+ */
+export async function createRetentionPurgeCronJob(): Promise<K8sResult<ScheduledJob>> {
+  const manifest = {
+    apiVersion: "batch/v1",
+    kind: "CronJob",
+    metadata: {
+      name: RETENTION_PURGE_CRON_JOB_NAME,
+      namespace: "platform-console",
+      labels: {
+        [MANAGED_BY_LABEL]: MANAGED_BY_VALUE,
+        [COMMAND_LABEL]: RETENTION_PURGE_CRON_JOB_LABEL,
+      },
+    },
+    spec: {
+      schedule: RETENTION_PURGE_CRON_SCHEDULE,
+      concurrencyPolicy: "Forbid",
+      successfulJobsHistoryLimit: 3,
+      failedJobsHistoryLimit: 3,
+      jobTemplate: {
+        spec: {
+          backoffLimit: 0,
+          activeDeadlineSeconds: 120,
+          template: {
+            metadata: {
+              labels: {
+                [MANAGED_BY_LABEL]: MANAGED_BY_VALUE,
+                "cronjob-name": RETENTION_PURGE_CRON_JOB_NAME,
+              },
+            },
+            spec: {
+              restartPolicy: "Never",
+              containers: [
+                {
+                  name: "retention-purge",
+                  image: "curlimages/curl:8.10.1",
+                  imagePullPolicy: "IfNotPresent",
+                  command: buildRetentionPurgeCronCommand(),
+                  env: [
+                    {
+                      name: "RETENTION_PURGE_CRON_SECRET",
+                      valueFrom: {
+                        secretKeyRef: {
+                          name: RETENTION_PURGE_CRON_SECRET_NAME,
+                          key: RETENTION_PURGE_CRON_SECRET_KEY,
+                        },
+                      },
+                    },
+                  ],
+                  resources: {
+                    requests: { cpu: "10m", memory: "16Mi" },
+                    limits: { cpu: "50m", memory: "32Mi" },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const result = await k8sRequest<CronJobItem>(
+    `/apis/batch/v1/namespaces/platform-console/cronjobs`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toScheduledJob(result.data) };
+}

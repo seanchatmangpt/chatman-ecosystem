@@ -100,6 +100,23 @@ export const runtime = "nodejs";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const requestId = newRequestId();
+  // Real wall-clock timing for the customer-facing API key usage
+  // analytics rollup (lib/audit-db.ts's queryApiKeyUsage): measured from
+  // the start of THIS middleware invocation (as early as possible in the
+  // request's lifecycle inside this app) to the point each
+  // writeAuditLogEntry call below fires -- never a fabricated/estimated
+  // value. Attached as AuditLogEntry.durationMs on every audit row this
+  // function writes, not just the Bearer-key-authenticated path, so a
+  // session-cookie-authenticated request's rows get the same real
+  // latency figure (queryApiKeyUsage simply never reads them, since it
+  // filters by key_id).
+  const requestStartMs = Date.now();
+  // Bound key for the request, when this request authenticated via
+  // `Authorization: Bearer pk_live_...` -- set below, read at every
+  // writeAuditLogEntry call site so each row this function writes for a
+  // Bearer-key-authenticated request carries the real join key
+  // queryApiKeyUsage needs (AuditLogEntry.keyId's doc comment).
+  let authenticatedKeyId: string | undefined;
 
   if (isPublicPath(pathname)) {
     return NextResponse.next();
@@ -180,6 +197,7 @@ export async function middleware(request: NextRequest) {
         forwardHeaders = new Headers(request.headers);
         forwardHeaders.set("cookie", `${SESSION_COOKIE_NAME}=${apiKeyToken}`);
         session = await verifySessionToken(apiKeyToken);
+        authenticatedKeyId = resolved.keyId;
       }
     }
   }
@@ -258,6 +276,12 @@ export async function middleware(request: NextRequest) {
       path: pathname,
       status: 403,
       requestId,
+      durationMs: Date.now() - requestStartMs,
+      ...(authenticatedKeyId ? { keyId: authenticatedKeyId } : {}),
+      ...((): { orgId?: string } => {
+        const scoped = orgIdFromRequestPath(pathname);
+        return scoped ? { orgId: scoped } : {};
+      })(),
     });
     return NextResponse.json(
       {
@@ -321,8 +345,11 @@ export async function middleware(request: NextRequest) {
     path: pathname,
     status: 200,
     requestId,
+    durationMs: Date.now() - requestStartMs,
+    ...(authenticatedKeyId ? { keyId: authenticatedKeyId } : {}),
     ...(impersonatedBy ? { impersonatedBy } : {}),
     ...(impersonationSessionId ? { impersonationSessionId } : {}),
+    ...(scopedOrgId ? { orgId: scopedOrgId } : {}),
   });
 
   return response;

@@ -50,6 +50,36 @@ export interface AuditLogEntry {
    * every request gated purely by the built-in rank.
    */
   requiredPermission?: string;
+  /**
+   * Per-org tenant scope (SIEM export org-scoping): the org this action was
+   * performed against, when the request resolved to one (most routes have
+   * it via getProject/getOrg/session context). Absent for genuinely
+   * unscoped/platform-wide actions (e.g. a route with no single-org
+   * subject). Nullable at the storage layer for backward compatibility
+   * with rows written before this field existed -- see audit-db.ts's
+   * ensureAuditLogChainColumns and computeRowHash.
+   */
+  orgId?: string;
+  /**
+   * Customer-facing API key usage analytics (queryApiKeyUsage in
+   * lib/audit-db.ts): the real join key from an audit row back to the
+   * specific `pk_live_...` key that authenticated it (lib/api-keys.ts's
+   * ResolvedApiKeyAuth.keyId). Set by middleware.ts only on requests
+   * authenticated via `Authorization: Bearer pk_live_...` -- absent for
+   * every session-cookie-authenticated request, since a browser session
+   * isn't bound to any one key. `actor` alone can't disambiguate between
+   * two keys minted for the same bound identity; `keyId` can.
+   */
+  keyId?: string;
+  /**
+   * Customer-facing API key usage analytics: wall-clock request latency
+   * in whole milliseconds, measured by middleware.ts from the start of
+   * this request's own middleware invocation to the point the response
+   * was ready to forward. Optional and absent for any row written before
+   * this field existed -- queryApiKeyUsage's p50/p95 latency aggregation
+   * skips NULLs rather than treating them as zero.
+   */
+  durationMs?: number;
 }
 
 export function writeAuditLogEntry(entry: AuditLogEntry): void {

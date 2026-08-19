@@ -161,6 +161,23 @@ function computeRowHash(prevHash: string, entry: AuditLogEntry): string {
   // exactly like tampering with actor or status would.
   if (entry.impersonatedBy) parts.push(entry.impersonatedBy);
   if (entry.impersonationSessionId) parts.push(entry.impersonationSessionId);
+  // Same backward-compatible "appended last, only when present" rule as
+  // the fields above -- every row written before per-org tenant scoping
+  // existed recomputes to its original row_hash unchanged. Committing
+  // org_id into the chain means tampering with it after the fact (e.g.
+  // relabeling a row into a different org's export scope) breaks the
+  // chain exactly like tampering with actor or status would.
+  if (entry.orgId) parts.push(entry.orgId);
+  // Same backward-compatible "appended last, only when present" rule as
+  // the fields above -- every row written before per-key usage analytics
+  // existed recomputes to its original row_hash unchanged. Committing
+  // keyId/durationMs into the chain means tampering with either after the
+  // fact (e.g. relabeling which key drove a spike of errors, or shaving a
+  // latency figure) breaks the chain exactly like tampering with actor or
+  // status would. durationMs is a number, not a string, so it's coerced
+  // explicitly rather than relying on Array.join's implicit toString.
+  if (entry.keyId) parts.push(entry.keyId);
+  if (entry.durationMs !== undefined) parts.push(String(entry.durationMs));
   const material = parts.join(" ");
   return createHash("sha256").update(material, "utf8").digest("hex");
 }
@@ -201,6 +218,37 @@ async function ensureAuditLogChainColumns(pool: Pool): Promise<void> {
        ON platform_console.audit_log (impersonation_session_id)
        WHERE impersonation_session_id IS NOT NULL`,
   );
+  // Per-org tenant column (closes the SIEM export org-scoping gap): the
+  // org this row's action was performed against. Nullable for backward
+  // compat with every row written before this column existed (and with
+  // any genuinely unscoped platform-wide action going forward) -- a NULL
+  // row is never included in an org-scoped query (queryAuditLog/
+  // queryAuditLogSince's orgId filter), only in an explicit unscoped
+  // platform-admin view. Same idempotent ADD COLUMN IF NOT EXISTS
+  // self-bootstrap convention as every other column above.
+  await pool.query(`ALTER TABLE platform_console.audit_log ADD COLUMN IF NOT EXISTS org_id text`);
+  await pool.query(
+    `CREATE INDEX IF NOT EXISTS audit_log_org_id_idx
+       ON platform_console.audit_log (org_id)
+       WHERE org_id IS NOT NULL`,
+  );
+  // Customer-facing API key usage analytics columns (queryApiKeyUsage
+  // below): key_id is the real join key from a row back to the specific
+  // pk_live_ key that authenticated it (see AuditLogEntry.keyId's doc
+  // comment); duration_ms is per-request wall-clock latency, populated
+  // from middleware.ts's own request timing. Both nullable -- absent for
+  // every row written before this column existed, and for any row this
+  // app writes today that isn't a Bearer-key-authenticated request (no
+  // key_id) or wasn't measured (no duration_ms, though every writer as of
+  // this pass sets it). Same idempotent ADD COLUMN IF NOT EXISTS
+  // self-bootstrap convention as every other column above.
+  await pool.query(`ALTER TABLE platform_console.audit_log ADD COLUMN IF NOT EXISTS key_id text`);
+  await pool.query(`ALTER TABLE platform_console.audit_log ADD COLUMN IF NOT EXISTS duration_ms integer`);
+  await pool.query(
+    `CREATE INDEX IF NOT EXISTS audit_log_key_id_idx
+       ON platform_console.audit_log (key_id, ts)
+       WHERE key_id IS NOT NULL`,
+  );
 }
 
 /**
@@ -228,8 +276,11 @@ async function backfillAuditLogChain(pool: Pool): Promise<void> {
       path: string;
       status: number;
       castle_receipt_digest: string | null;
+      org_id: string | null;
+      key_id: string | null;
+      duration_ms: number | null;
     }>(
-      `SELECT id, request_id, ts, actor, method, path, status, castle_receipt_digest
+      `SELECT id, request_id, ts, actor, method, path, status, castle_receipt_digest, org_id, key_id, duration_ms
        FROM platform_console.audit_log
        WHERE row_hash IS NULL
        ORDER BY id ASC`,
@@ -248,6 +299,9 @@ async function backfillAuditLogChain(pool: Pool): Promise<void> {
           path: r.path,
           status: Number(r.status),
           ...(r.castle_receipt_digest ? { castleReceiptDigest: r.castle_receipt_digest } : {}),
+          ...(r.org_id ? { orgId: r.org_id } : {}),
+          ...(r.key_id ? { keyId: r.key_id } : {}),
+          ...(r.duration_ms !== null ? { durationMs: r.duration_ms } : {}),
         };
         const rowHash = computeRowHash(prevHash, entry);
         await client.query(
@@ -309,8 +363,8 @@ async function persistAuditLogEntry(entry: AuditLogEntry): Promise<void> {
     const rowHash = computeRowHash(prevHash, entry);
     await client.query(
       `INSERT INTO platform_console.audit_log
-         (request_id, ts, actor, method, path, status, prev_hash, row_hash, castle_receipt_digest, impersonated_by, impersonation_session_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+         (request_id, ts, actor, method, path, status, prev_hash, row_hash, castle_receipt_digest, impersonated_by, impersonation_session_id, org_id, key_id, duration_ms)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
       [
         entry.requestId,
         entry.timestamp,
@@ -323,6 +377,9 @@ async function persistAuditLogEntry(entry: AuditLogEntry): Promise<void> {
         entry.castleReceiptDigest ?? null,
         entry.impersonatedBy ?? null,
         entry.impersonationSessionId ?? null,
+        entry.orgId ?? null,
+        entry.keyId ?? null,
+        entry.durationMs ?? null,
       ],
     );
     await client.query("COMMIT");
@@ -609,6 +666,8 @@ export interface AuditLogRow {
   /** See AuditLogEntry.impersonatedBy/impersonationSessionId -- both absent for non-impersonated rows. */
   impersonatedBy?: string;
   impersonationSessionId?: string;
+  /** See AuditLogEntry.orgId -- absent for rows written before per-org scoping existed, or genuinely unscoped rows. */
+  orgId?: string;
 }
 
 export interface AuditLogQueryParams {
@@ -618,6 +677,15 @@ export interface AuditLogQueryParams {
   to?: string; // RFC3339 upper bound (inclusive), matched against `ts`
   limit: number;
   offset: number;
+  /**
+   * Per-org tenant scope: when set, restricts results to rows with this
+   * exact org_id (never a NULL/unscoped row -- a caller that wants those
+   * too must go through an explicit platform-admin unscoped view, never
+   * this same filtered path). Omitted entirely by an unscoped internal
+   * caller (e.g. a future platform-admin view); every tenant-facing caller
+   * (GET /api/v1/audit-export) MUST always pass it.
+   */
+  orgId?: string;
 }
 
 export interface AuditLogQueryResult {
@@ -665,6 +733,10 @@ export async function queryAuditLog(params: AuditLogQueryParams): Promise<AuditL
     values.push(params.to);
     conditions.push(`ts <= $${values.length}`);
   }
+  if (params.orgId) {
+    values.push(params.orgId);
+    conditions.push(`org_id = $${values.length}`);
+  }
   const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
   try {
@@ -676,7 +748,7 @@ export async function queryAuditLog(params: AuditLogQueryParams): Promise<AuditL
 
     const rowsResult = await pool.query(
       `SELECT id, request_id, ts, actor, method, path, status, inserted_at, castle_receipt_digest,
-              impersonated_by, impersonation_session_id
+              impersonated_by, impersonation_session_id, org_id
        FROM platform_console.audit_log
        ${where}
        ORDER BY ts DESC, id DESC
@@ -713,6 +785,7 @@ export interface AuditLogSinceResult {
 export async function queryAuditLogSince(
   since: string | undefined,
   limit: number,
+  orgId?: string,
 ): Promise<{ ok: true; data: AuditLogSinceResult } | { ok: false; error: string }> {
   const pool = await resolvePool();
   if (!pool) {
@@ -749,13 +822,17 @@ export async function queryAuditLogSince(
     values.push(cursorTs);
     conditions.push(`ts > $${values.length}`);
   }
+  if (orgId) {
+    values.push(orgId);
+    conditions.push(`org_id = $${values.length}`);
+  }
   const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
   try {
     values.push(limit);
     const result = await pool.query(
       `SELECT id, request_id, ts, actor, method, path, status, inserted_at, castle_receipt_digest,
-              impersonated_by, impersonation_session_id
+              impersonated_by, impersonation_session_id, org_id
        FROM platform_console.audit_log
        ${where}
        ORDER BY ts ASC, id ASC
@@ -788,6 +865,7 @@ function toAuditLogRow(r: Record<string, unknown>): AuditLogRow {
     ...(r.impersonation_session_id
       ? { impersonationSessionId: r.impersonation_session_id as string }
       : {}),
+    ...(r.org_id ? { orgId: r.org_id as string } : {}),
   };
 }
 
@@ -815,7 +893,7 @@ export async function queryAuditLogForImpersonationSession(
   try {
     const rowsResult = await pool.query(
       `SELECT id, request_id, ts, actor, method, path, status, inserted_at, castle_receipt_digest,
-              impersonated_by, impersonation_session_id
+              impersonated_by, impersonation_session_id, org_id
        FROM platform_console.audit_log
        WHERE impersonation_session_id = $1
        ORDER BY ts ASC, id ASC`,
@@ -881,7 +959,16 @@ export async function verifyAuditChain(): Promise<AuditChainVerifyOutcome> {
        ORDER BY id ASC`,
     );
 
-    let expectedPrevHash = GENESIS_HASH;
+    // A first surviving row whose stored prev_hash carries the retention-
+    // purge tombstone prefix (see purgeAuditLogRowsOlderThan) is not
+    // chain-broken -- it's the real, expected anchor left behind by a
+    // deliberate purge. Anchor the walk there instead of requiring
+    // GENESIS_HASH, so a purged chain still verifies as intact from the
+    // tombstone forward.
+    let expectedPrevHash =
+      result.rows[0]?.prev_hash?.startsWith(PURGED_TOMBSTONE_PREFIX)
+        ? result.rows[0].prev_hash
+        : GENESIS_HASH;
     for (const r of result.rows) {
       const entry: AuditLogEntry = {
         requestId: r.request_id,
@@ -923,6 +1010,323 @@ export async function verifyAuditChain(): Promise<AuditChainVerifyOutcome> {
     }
 
     return { ok: true, data: { valid: true, rowsChecked: result.rows.length } };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+// ------------------------------------------------------- Retention purge
+//
+// The gap lib/retention.ts's own header comment names: DSAR erasure
+// (lib/dsar.ts) and backup-tier retention (lib/backup-retention.ts) are
+// both real, but neither one ever DELETEs a row of THIS table --
+// platform_console.audit_log grows forever, which fails the SOC2/GDPR
+// data-minimization requirement a Fortune-5 compliance team actually
+// audits for ("prove old audit rows are purged on a schedule", not
+// "prove they could be purged by hand"). lib/retention.ts is the policy
+// layer (which retentionDays window, writing the receipt row); this is
+// the mechanical primitive that actually knows the hash-chain internals
+// (GENESIS_HASH, CHAIN_LOCK_KEY, computeRowHash) needed to delete rows
+// out of an append-only hash chain WITHOUT breaking verifyAuditChain for
+// every surviving row.
+//
+// Distinguishable at a glance from a real sha256 digest (lowercase hex),
+// same convention as GENESIS_HASH's "GENESIS-" prefix above -- a reviewer
+// scanning prev_hash values can immediately tell "this chain was
+// deliberately truncated by a purge, not tampered with" from the prefix
+// alone, before even running verifyAuditChain.
+export const PURGED_TOMBSTONE_PREFIX = "PURGED-TOMBSTONE-";
+
+export interface AuditLogPurgeResult {
+  deletedCount: number;
+  cutoff: string; // RFC3339 -- rows with ts < cutoff were deleted
+  tombstone: string | null; // the new prev_hash written for the first surviving row; null when deletedCount is 0 (nothing to re-chain)
+}
+
+export type AuditLogPurgeOutcome =
+  | { ok: true; data: AuditLogPurgeResult }
+  | { ok: false; error: string };
+
+/**
+ * Real `DELETE` of every platform_console.audit_log row with `ts` older
+ * than `cutoff`, then a real forward re-chain of every surviving row so
+ * `verifyAuditChain` still validates afterward. Runs inside ONE
+ * transaction holding the same `CHAIN_LOCK_KEY` advisory lock every other
+ * chain-mutating operation in this module takes first, so a purge can
+ * never race a concurrent `persistAuditLogEntry`/backfill and mint two
+ * conflicting views of the chain tail.
+ *
+ * Re-chaining works exactly like `backfillAuditLogChain`'s forward walk,
+ * except the walk starts from a synthetic tombstone `prev_hash`
+ * (`PURGED_TOMBSTONE_PREFIX` + sha256 committing to the cutoff, the
+ * number of rows deleted, and the row_hash of the last row actually
+ * deleted -- so the tombstone is cryptographically bound to exactly the
+ * history it replaces, not an arbitrary marker) instead of GENESIS_HASH.
+ * `verifyAuditChain` recognizes that prefix on the first row of the
+ * surviving chain and anchors its own walk there instead of requiring
+ * GENESIS_HASH, so the chain is provably intact FROM THE TOMBSTONE
+ * FORWARD -- exactly the guarantee a purge can make (the purged rows are
+ * gone, not verifiable; every row after them is exactly as tamper-evident
+ * as before the purge).
+ */
+export async function purgeAuditLogRowsOlderThan(cutoff: Date): Promise<AuditLogPurgeOutcome> {
+  const pool = await resolveChainReadyPool();
+  if (!pool) {
+    return { ok: false, error: "audit log database not configured or unreachable" };
+  }
+  const cutoffIso = cutoff.toISOString();
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query("SELECT pg_advisory_xact_lock($1)", [CHAIN_LOCK_KEY.toString()]);
+
+    // Captured BEFORE the delete so the tombstone can cryptographically
+    // commit to the real tail of the history being removed.
+    const lastDeleted = await client.query<{ row_hash: string | null }>(
+      `SELECT row_hash FROM platform_console.audit_log WHERE ts < $1 ORDER BY id DESC LIMIT 1`,
+      [cutoffIso],
+    );
+    const lastDeletedRowHash = lastDeleted.rows[0]?.row_hash ?? GENESIS_HASH;
+
+    const deleted = await client.query<{ id: string }>(
+      `DELETE FROM platform_console.audit_log WHERE ts < $1 RETURNING id`,
+      [cutoffIso],
+    );
+    const deletedCount = deleted.rows.length;
+
+    if (deletedCount === 0) {
+      await client.query("COMMIT");
+      return { ok: true, data: { deletedCount: 0, cutoff: cutoffIso, tombstone: null } };
+    }
+
+    const tombstone =
+      PURGED_TOMBSTONE_PREFIX +
+      createHash("sha256")
+        .update(`${lastDeletedRowHash}|${cutoffIso}|${deletedCount}`, "utf8")
+        .digest("hex");
+
+    const surviving = await client.query<{
+      id: string;
+      request_id: string;
+      ts: string;
+      actor: string;
+      method: string;
+      path: string;
+      status: number;
+      castle_receipt_digest: string | null;
+      impersonated_by: string | null;
+      impersonation_session_id: string | null;
+    }>(
+      `SELECT id, request_id, ts, actor, method, path, status, castle_receipt_digest,
+              impersonated_by, impersonation_session_id
+       FROM platform_console.audit_log
+       ORDER BY id ASC`,
+    );
+
+    let prevHash = tombstone;
+    for (const r of surviving.rows) {
+      const entry: AuditLogEntry = {
+        requestId: r.request_id,
+        timestamp: new Date(r.ts).toISOString(),
+        actor: r.actor,
+        method: r.method,
+        path: r.path,
+        status: Number(r.status),
+        ...(r.castle_receipt_digest ? { castleReceiptDigest: r.castle_receipt_digest } : {}),
+        ...(r.impersonated_by ? { impersonatedBy: r.impersonated_by } : {}),
+        ...(r.impersonation_session_id
+          ? { impersonationSessionId: r.impersonation_session_id }
+          : {}),
+      };
+      const rowHash = computeRowHash(prevHash, entry);
+      await client.query(
+        `UPDATE platform_console.audit_log SET prev_hash = $1, row_hash = $2 WHERE id = $3`,
+        [prevHash, rowHash, r.id],
+      );
+      prevHash = rowHash;
+    }
+
+    await client.query("COMMIT");
+    return { ok: true, data: { deletedCount, cutoff: cutoffIso, tombstone } };
+  } catch (err) {
+    await client.query("ROLLBACK").catch(() => {});
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  } finally {
+    client.release();
+  }
+}
+
+// ------------------------------------- Customer-facing API key usage (rollup)
+//
+// Closes the gap: lib/api-keys.ts already tracks pk_live_ keys, and
+// middleware.ts already writes one audit_log row per authenticated
+// request with that key's real keyId (see AuditLogEntry.keyId's doc
+// comment) and org_id -- but until this pass, nothing rolled those rows
+// up into the per-key calls/latency/error-rate view a paying API consumer
+// actually wants to see (the same shape Stripe/Twilio/Datadog's own
+// per-key usage dashboards surface, and the natural lead-in to this
+// console's already-built rate-limit-tier upsell: a customer has to SEE
+// they're near a ceiling before they'll pay to raise it).
+
+/** Supported lookback windows for GET /api/orgs/[id]/api-keys/[keyId]/usage. */
+export type ApiKeyUsageWindow = "1h" | "24h" | "7d" | "30d";
+
+export function isApiKeyUsageWindow(value: unknown): value is ApiKeyUsageWindow {
+  return value === "1h" || value === "24h" || value === "7d" || value === "30d";
+}
+
+const API_KEY_USAGE_WINDOW_HOURS: Record<ApiKeyUsageWindow, number> = {
+  "1h": 1,
+  "24h": 24,
+  "7d": 24 * 7,
+  "30d": 24 * 30,
+};
+
+/** One hourly bucket in the calls-per-hour time series. */
+export interface ApiKeyUsageBucket {
+  hour: string; // RFC3339, truncated to the hour (UTC)
+  calls: number;
+  status2xx: number;
+  status4xx: number;
+  status5xx: number;
+}
+
+export interface ApiKeyUsageResult {
+  keyId: string;
+  orgId: string;
+  window: ApiKeyUsageWindow;
+  windowHours: number;
+  totalCalls: number;
+  status2xx: number;
+  status4xx: number;
+  status5xx: number;
+  /** (status4xx + status5xx) / totalCalls * 100, rounded to 2 decimal places; 0 when totalCalls is 0. */
+  errorRatePct: number;
+  /** Null when no row in the window carries a duration_ms value (e.g. every row predates that column, or the window has zero calls). */
+  p50LatencyMs: number | null;
+  p95LatencyMs: number | null;
+  /** Ascending by hour, one entry per hour that had at least one call -- hours with zero calls are omitted, not zero-filled. */
+  hourlyBuckets: ApiKeyUsageBucket[];
+}
+
+export type ApiKeyUsageOutcome =
+  | { ok: true; data: ApiKeyUsageResult }
+  | { ok: false; error: string };
+
+/**
+ * Aggregates platform_console.audit_log into the per-API-key usage rollup
+ * GET /api/orgs/[id]/api-keys/[keyId]/usage returns. Scoped by BOTH org_id
+ * and key_id (never key_id alone) -- the real tenant-isolation boundary:
+ * an org's own dashboard must never be able to read another org's key's
+ * traffic merely by guessing its keyId, since keyId (a 12-hex-char
+ * lib/api-keys.ts id) carries no secrecy of its own the way the full
+ * pk_live_ plaintext does. The route handler is additionally responsible
+ * for confirming the caller holds at least `viewer` on `orgId`
+ * (lib/authz.ts's requireRoleIn) before ever calling this -- this
+ * function itself trusts both ids as already-authorized.
+ *
+ * Four real aggregates in one round trip against the live Postgres this
+ * module already pools:
+ *   1. Status-bucket totals (2xx/4xx/5xx) + total call count -- a single
+ *      SELECT with FILTER-clause conditional counts, not three separate
+ *      queries.
+ *   2. p50/p95 latency via PERCENTILE_CONT (Postgres's real interpolated-
+ *      percentile aggregate), over rows where duration_ms IS NOT NULL --
+ *      never coerces a NULL (unmeasured, pre-this-pass row) into 0, which
+ *      would silently drag every percentile toward zero.
+ *   3. Hourly calls-per-hour + per-hour status buckets via
+ *      date_trunc('hour', ts), for the time-series chart.
+ */
+export async function queryApiKeyUsage(
+  orgId: string,
+  keyId: string,
+  window: ApiKeyUsageWindow,
+): Promise<ApiKeyUsageOutcome> {
+  const pool = await resolvePool();
+  if (!pool) {
+    return {
+      ok: false,
+      error:
+        "audit log database not configured or unreachable -- see the stdout log (kubectl logs) for this environment's real-time record",
+    };
+  }
+
+  const windowHours = API_KEY_USAGE_WINDOW_HOURS[window];
+
+  try {
+    const totalsResult = await pool.query<{
+      total_calls: string;
+      status_2xx: string;
+      status_4xx: string;
+      status_5xx: string;
+      p50_latency_ms: number | null;
+      p95_latency_ms: number | null;
+    }>(
+      `SELECT
+         count(*)::bigint AS total_calls,
+         count(*) FILTER (WHERE status >= 200 AND status < 300)::bigint AS status_2xx,
+         count(*) FILTER (WHERE status >= 400 AND status < 500)::bigint AS status_4xx,
+         count(*) FILTER (WHERE status >= 500 AND status < 600)::bigint AS status_5xx,
+         percentile_cont(0.5) WITHIN GROUP (ORDER BY duration_ms) FILTER (WHERE duration_ms IS NOT NULL) AS p50_latency_ms,
+         percentile_cont(0.95) WITHIN GROUP (ORDER BY duration_ms) FILTER (WHERE duration_ms IS NOT NULL) AS p95_latency_ms
+       FROM platform_console.audit_log
+       WHERE org_id = $1 AND key_id = $2 AND ts >= now() - ($3 || ' hours')::interval`,
+      [orgId, keyId, windowHours],
+    );
+
+    const bucketsResult = await pool.query<{
+      hour: string;
+      calls: string;
+      status_2xx: string;
+      status_4xx: string;
+      status_5xx: string;
+    }>(
+      `SELECT
+         date_trunc('hour', ts) AS hour,
+         count(*)::bigint AS calls,
+         count(*) FILTER (WHERE status >= 200 AND status < 300)::bigint AS status_2xx,
+         count(*) FILTER (WHERE status >= 400 AND status < 500)::bigint AS status_4xx,
+         count(*) FILTER (WHERE status >= 500 AND status < 600)::bigint AS status_5xx
+       FROM platform_console.audit_log
+       WHERE org_id = $1 AND key_id = $2 AND ts >= now() - ($3 || ' hours')::interval
+       GROUP BY 1
+       ORDER BY 1 ASC`,
+      [orgId, keyId, windowHours],
+    );
+
+    const totalsRow = totalsResult.rows[0];
+    const totalCalls = Number(totalsRow?.total_calls ?? "0");
+    const status2xx = Number(totalsRow?.status_2xx ?? "0");
+    const status4xx = Number(totalsRow?.status_4xx ?? "0");
+    const status5xx = Number(totalsRow?.status_5xx ?? "0");
+    const errorRatePct =
+      totalCalls > 0 ? Math.round(((status4xx + status5xx) / totalCalls) * 10000) / 100 : 0;
+
+    const hourlyBuckets: ApiKeyUsageBucket[] = bucketsResult.rows.map((r) => ({
+      hour: new Date(r.hour).toISOString(),
+      calls: Number(r.calls),
+      status2xx: Number(r.status_2xx),
+      status4xx: Number(r.status_4xx),
+      status5xx: Number(r.status_5xx),
+    }));
+
+    return {
+      ok: true,
+      data: {
+        keyId,
+        orgId,
+        window,
+        windowHours,
+        totalCalls,
+        status2xx,
+        status4xx,
+        status5xx,
+        errorRatePct,
+        p50LatencyMs: totalsRow?.p50_latency_ms != null ? Math.round(totalsRow.p50_latency_ms) : null,
+        p95LatencyMs: totalsRow?.p95_latency_ms != null ? Math.round(totalsRow.p95_latency_ms) : null,
+        hourlyBuckets,
+      },
+    };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }

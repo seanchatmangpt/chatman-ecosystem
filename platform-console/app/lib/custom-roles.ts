@@ -49,9 +49,19 @@ function isPermission(value: unknown): value is Permission {
   return typeof value === "string" && (PERMISSIONS as readonly string[]).includes(value);
 }
 
+/**
+ * Multi-org selector: a role's scope is a SET of orgIds, not one. A
+ * Fortune-5 buyer running dozens/hundreds of subsidiary orgs under one
+ * enterprise agreement needs to define a role once ("Regional SRE -
+ * EMEA") and assign it across a named set of orgs, rather than
+ * re-creating the same role definition per org (the AWS Organizations
+ * SCP / Azure Management Group pattern). `orgIds` always has at least
+ * one element for a live (non-tombstoned) role -- enforced at every
+ * write site below, never left empty by a partial update.
+ */
 export interface CustomRole {
   id: string;
-  orgId: string;
+  orgIds: string[];
   name: string;
   permissions: Permission[];
 }
@@ -91,24 +101,61 @@ function identifierFromGrantKey(key: string): string {
   return decodeKeyPart(key.slice(GRANT_KEY_PREFIX.length));
 }
 
+// Legacy on-disk shape from before the multi-org selector: a single
+// `orgId: string` column. Any record already persisted in the
+// `platform-console-custom-roles` ConfigMap before this migration is
+// still exactly this shape, so parseCustomRole below must keep reading
+// it -- backward compatibility, not a one-time migration script, since
+// this ConfigMap has no versioned-migration mechanism (see the module
+// doc comment: it's a flat get-then-patch k8s resource, read fresh on
+// every request).
+interface LegacyCustomRole {
+  id: string;
+  orgId: string;
+  name: string;
+  permissions: Permission[];
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((v) => typeof v === "string");
+}
+
 function parseCustomRole(raw: string): CustomRole | null {
   try {
-    const parsed = JSON.parse(raw) as Partial<CustomRole>;
+    const parsed = JSON.parse(raw) as Partial<CustomRole> & Partial<LegacyCustomRole>;
     if (
-      typeof parsed.id === "string" &&
-      typeof parsed.orgId === "string" &&
-      typeof parsed.name === "string" &&
-      Array.isArray(parsed.permissions) &&
-      parsed.permissions.every(isPermission)
+      typeof parsed.id !== "string" ||
+      typeof parsed.name !== "string" ||
+      !Array.isArray(parsed.permissions) ||
+      !parsed.permissions.every(isPermission)
     ) {
-      return {
-        id: parsed.id,
-        orgId: parsed.orgId,
-        name: parsed.name,
-        permissions: parsed.permissions,
-      };
+      return null;
     }
-    return null;
+
+    // Multi-org shape (orgIds: string[]) takes priority; fall back to
+    // the legacy single-org shape (orgId: string), migrating it in
+    // memory to a one-element assignment set -- the exact backward-
+    // compatibility contract this capability requires. A tombstoned
+    // role (see deleteCustomRole) has an empty permissions array and
+    // therefore never reaches this branch with a real orgIds need, but
+    // may still carry an empty orgIds -- allowed only for tombstones,
+    // enforced by listCustomRoles/getCustomRole callers filtering on
+    // permissions.length, same as before this change.
+    let orgIds: string[];
+    if (isStringArray(parsed.orgIds)) {
+      orgIds = parsed.orgIds;
+    } else if (typeof parsed.orgId === "string") {
+      orgIds = [parsed.orgId];
+    } else {
+      return null;
+    }
+
+    return {
+      id: parsed.id,
+      orgIds,
+      name: parsed.name,
+      permissions: parsed.permissions,
+    };
   } catch {
     // A hand-edited or corrupt role record is skipped, not fatal -- same
     // "don't let one bad row break the whole list" discipline
@@ -144,7 +191,7 @@ export async function listCustomRoles(orgId: string): Promise<K8sResult<CustomRo
   for (const [key, raw] of Object.entries(existing.data.data)) {
     if (!isRoleKey(key)) continue;
     const role = parseCustomRole(raw);
-    if (role && role.orgId === orgId) roles.push(role);
+    if (role && role.orgIds.includes(orgId)) roles.push(role);
   }
   return { ok: true, data: roles.sort((a, b) => a.name.localeCompare(b.name)) };
 }
@@ -170,6 +217,60 @@ export async function upsertCustomRole(role: CustomRole): Promise<K8sResult<Cust
   });
   if (!result.ok) return result;
   return { ok: true, data: role };
+}
+
+/**
+ * Adds one orgId to an existing role's assignment set (idempotent --
+ * already-assigned orgIds are a no-op, not an error), preserving every
+ * other field of the role definition. This is the real building block
+ * behind the /api/roles/[roleId]/assignments POST route: "assign this
+ * already-defined role to another subsidiary org" without re-entering
+ * the role's name/permissions.
+ */
+export async function addOrgToRole(
+  roleId: string,
+  orgId: string,
+): Promise<K8sResult<CustomRole | null>> {
+  const existing = await getCustomRole(roleId);
+  if (!existing.ok) return existing;
+  if (!existing.data) return { ok: true, data: null };
+
+  if (existing.data.orgIds.includes(orgId)) {
+    return { ok: true, data: existing.data };
+  }
+  const updated: CustomRole = { ...existing.data, orgIds: [...existing.data.orgIds, orgId] };
+  return upsertCustomRole(updated);
+}
+
+/**
+ * Removes one orgId from an existing role's assignment set. Refuses to
+ * drop the LAST orgId (returns a real, specific error rather than
+ * silently producing an orgIds: [] role that would then match every org
+ * nowhere and no orgId everywhere) -- callers that actually want to
+ * retire a role entirely should use deleteCustomRole's tombstone path
+ * instead, which is the existing, audited "revoke, don't delete"
+ * mechanism for that.
+ */
+export async function removeOrgFromRole(
+  roleId: string,
+  orgId: string,
+): Promise<K8sResult<CustomRole | null>> {
+  const existing = await getCustomRole(roleId);
+  if (!existing.ok) return existing;
+  if (!existing.data) return { ok: true, data: null };
+
+  if (!existing.data.orgIds.includes(orgId)) {
+    return { ok: true, data: existing.data };
+  }
+  const remaining = existing.data.orgIds.filter((id) => id !== orgId);
+  if (remaining.length === 0) {
+    return {
+      ok: false,
+      error: `cannot remove the last assigned org ('${orgId}') from role '${roleId}' -- delete the role instead`,
+    };
+  }
+  const updated: CustomRole = { ...existing.data, orgIds: remaining };
+  return upsertCustomRole(updated);
 }
 
 /**
@@ -273,6 +374,9 @@ export async function identifierHasCustomPermission(
 
   const grantedRoleIds = new Set(grantsResult.data);
   return rolesResult.data.some(
-    (role) => grantedRoleIds.has(role.id) && role.permissions.includes(permission),
+    (role) =>
+      grantedRoleIds.has(role.id) &&
+      role.orgIds.includes(orgId) &&
+      role.permissions.includes(permission),
   );
 }

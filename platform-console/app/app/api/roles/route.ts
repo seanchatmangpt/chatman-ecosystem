@@ -84,7 +84,14 @@ export async function GET(request: NextRequest) {
 }
 
 type RolesPostBody =
-  | { action: "upsert-role"; id?: string; orgId?: string; name: string; permissions: unknown }
+  | {
+      action: "upsert-role";
+      id?: string;
+      orgId?: string;
+      orgIds?: unknown;
+      name: string;
+      permissions: unknown;
+    }
   | { action: "delete-role"; id: string }
   | { action: "set-grants"; identifier: string; roleIds: unknown };
 
@@ -129,16 +136,34 @@ export async function POST(request: NextRequest) {
 
   if (body.action === "upsert-role") {
     const name = typeof body.name === "string" ? body.name.trim() : "";
-    const orgId = typeof body.orgId === "string" && body.orgId.trim() ? body.orgId.trim() : DEFAULT_ORG_ID;
     const permissions = body.permissions;
-    if (!name || !isPermissionArray(permissions)) {
+
+    // Multi-org selector: accepts `orgIds` (an array -- the current
+    // shape) or falls back to the legacy single `orgId` string for any
+    // caller not yet updated. Neither present defaults to a one-element
+    // set of DEFAULT_ORG_ID, matching the previous single-org default.
+    let orgIds: string[];
+    if (
+      Array.isArray(body.orgIds) &&
+      body.orgIds.every((v): v is string => typeof v === "string")
+    ) {
+      orgIds = Array.from(new Set(body.orgIds.map((v) => v.trim()).filter(Boolean)));
+    } else if (typeof body.orgId === "string" && body.orgId.trim()) {
+      orgIds = [body.orgId.trim()];
+    } else {
+      orgIds = [DEFAULT_ORG_ID];
+    }
+
+    if (!name || orgIds.length === 0 || !isPermissionArray(permissions)) {
       return NextResponse.json(
-        { error: `name is required and permissions must be a subset of: ${PERMISSIONS.join(", ")}` },
+        {
+          error: `name is required, orgIds must be a non-empty array of strings, and permissions must be a subset of: ${PERMISSIONS.join(", ")}`,
+        },
         { status: 400 },
       );
     }
     const id = typeof body.id === "string" && body.id.trim() ? body.id.trim() : globalThis.crypto.randomUUID();
-    const role: CustomRole = { id, orgId, name, permissions };
+    const role: CustomRole = { id, orgIds, name, permissions };
     const upserted = await upsertCustomRole(role);
     result = upserted.ok ? { ok: true, data: upserted.data } : { ok: false, error: upserted.error };
   } else if (body.action === "delete-role") {

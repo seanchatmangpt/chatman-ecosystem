@@ -48,6 +48,7 @@ export async function GET(request: NextRequest) {
   const pathFilter = params.get("path")?.trim() || undefined;
   const from = params.get("from")?.trim() || undefined;
   const to = params.get("to")?.trim() || undefined;
+  const orgIdFilter = params.get("orgId")?.trim() || undefined;
 
   const limitParam = Number(params.get("limit"));
   const limit =
@@ -59,7 +60,15 @@ export async function GET(request: NextRequest) {
   const page = Number.isFinite(pageParam) && pageParam > 0 ? Math.floor(pageParam) : 1;
   const offset = (page - 1) * limit;
 
-  const result = await queryAuditLog({ actor: actorFilter, path: pathFilter, from, to, limit, offset });
+  const result = await queryAuditLog({
+    actor: actorFilter,
+    path: pathFilter,
+    from,
+    to,
+    limit,
+    offset,
+    orgId: orgIdFilter,
+  });
 
   // Deliberately NOT logging this GET itself into the audit trail it just
   // read -- avoids every page load of /audit inflating its own result set

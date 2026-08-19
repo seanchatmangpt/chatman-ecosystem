@@ -209,6 +209,22 @@ export async function listApiKeys(): Promise<K8sResult<ApiKeySummary[]>> {
   return { ok: true, data: records.map(toSummary) };
 }
 
+/**
+ * Single-key lookup by id -- backs GET /api/orgs/[id]/api-keys/[keyId]/usage
+ * (the route needs to confirm the keyId in the URL actually names a real,
+ * live key -- returning `data: null` on a real-but-unresolved id, distinct
+ * from the `ok: false` transport/Secret-read failure path -- before ever
+ * calling lib/audit-db.ts's queryApiKeyUsage). Same read-then-parse shape
+ * as revokeApiKey/updateApiKeyTier, just without the write.
+ */
+export async function getApiKeyById(id: string): Promise<K8sResult<ApiKeySummary | null>> {
+  const result = await getSecretData(API_KEYS_NAMESPACE, API_KEYS_SECRET);
+  if (!result.ok) return result;
+  const raw = result.data?.[secretDataKeyFor(id)];
+  const record = raw ? parseRecord(raw) : null;
+  return { ok: true, data: record ? toSummary(record) : null };
+}
+
 export async function revokeApiKey(id: string): Promise<K8sResult<ApiKeySummary>> {
   const result = await getSecretData(API_KEYS_NAMESPACE, API_KEYS_SECRET);
   if (!result.ok) return result;

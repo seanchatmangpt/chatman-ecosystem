@@ -53,6 +53,7 @@ export async function GET(
       path: `/api/orgs/${id}/impersonation-log`,
       status: 403,
       requestId,
+      orgId: id,
     });
     return access.response!;
   }
@@ -74,6 +75,7 @@ export async function GET(
         path: `/api/orgs/${id}/impersonation-log`,
         status: 502,
         requestId,
+        orgId: id,
       });
       return NextResponse.json({ error: sessionsResult.error }, { status: 502 });
     }
@@ -86,6 +88,7 @@ export async function GET(
         path: `/api/orgs/${id}/impersonation-log`,
         status: 404,
         requestId,
+        orgId: id,
       });
       return NextResponse.json(
         { error: "impersonation session not found for this org" },
@@ -101,6 +104,7 @@ export async function GET(
       path: `/api/orgs/${id}/impersonation-log`,
       status: actionsResult.ok ? 200 : 502,
       requestId,
+      orgId: id,
     });
     if (!actionsResult.ok) {
       return NextResponse.json({ error: actionsResult.error }, { status: 502 });
@@ -116,6 +120,7 @@ export async function GET(
     path: `/api/orgs/${id}/impersonation-log`,
     status: result.ok ? 200 : 502,
     requestId,
+    orgId: id,
   });
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 502 });
