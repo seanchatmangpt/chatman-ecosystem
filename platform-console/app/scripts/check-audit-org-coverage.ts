@@ -57,6 +57,7 @@ const ALLOWLIST: Record<string, string> = {
   "secrets/route.ts": "platform-namespace secrets, no per-org scope",
   "feature-flags/route.ts": "platform-wide flag state, no per-org scope",
   "admin/referrals/route.ts": "platform-admin listing across all referrals",
+  "contract-renewals/route.ts": "platform-admin listing across all orgs' renewal records",
   "certificates/route.ts": "platform-namespace certificates, no per-org scope",
   "api-keys/route.ts": "platform-namespace API keys, no per-org scope",
   "api-keys/[id]/rate-limit/route.ts": "platform-namespace API key, no per-org scope",

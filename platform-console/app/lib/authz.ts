@@ -222,6 +222,39 @@ export async function setOrgRoleIn(
   return { ok: true, data: toAssignments(result.data.data) };
 }
 
+/**
+ * Real removal of one identifier's role assignment via an RFC 7386
+ * merge-patch null (same delete-by-null convention lib/dsar.ts's
+ * redactSubjectMembership and lib/orgs.ts's deleteOrg already use) --
+ * never a full-map rewrite. Used by lib/access-reviews.ts's completeAccessReview
+ * to apply the revocations an owner/admin makes as part of a periodic
+ * access review, in the org's own namespace-local
+ * `platform-console-org-roles` ConfigMap (namespace-scoped counterpart to
+ * setOrgRoleIn above). Returns whether the identifier actually had an
+ * assignment removed (never fabricated true when there was nothing to
+ * revoke).
+ */
+export async function removeOrgRoleIn(
+  namespace: string,
+  identifier: string,
+): Promise<K8sResult<boolean>> {
+  const existing = await getOrgRoleAssignmentsIn(namespace);
+  if (!existing.ok) return existing;
+  const had = existing.data.some((a) => a.identifier === identifier);
+  if (!had) return { ok: true, data: false };
+
+  const patch: Record<string, string | null> = {
+    [encodeIdentifierKey(identifier)]: null,
+  };
+  const result = await createOrUpdateConfigMap(
+    namespace,
+    ORG_ROLES_CONFIGMAP,
+    patch as unknown as Record<string, string>,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: true };
+}
+
 export async function getRoleForIn(session: SessionPayload, namespace: string): Promise<Role> {
   if (session.authProvider === "api-key") {
     return session.boundRole;

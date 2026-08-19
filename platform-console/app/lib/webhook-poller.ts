@@ -52,6 +52,7 @@ import { deliverWebhookEvent, redeliverStoredEvent, type WebhookEventType } from
 import { listDueRetries } from "@/lib/webhook-deliveries";
 import { redeliverStatusSubscriptionEvent } from "@/lib/status-subscriptions";
 import { checkSupportTicketBreaches } from "@/lib/support-tickets";
+import { scanContractRenewalReminders } from "@/lib/contract-renewals";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 
 const POLL_INTERVAL_MS = 10_000;
@@ -314,6 +315,40 @@ async function pollSupportTicketBreaches(): Promise<void> {
 }
 
 /**
+ * Real daily contract-renewal reminder scan (lib/contract-renewals.ts):
+ * calls scanContractRenewalReminders(), which is itself the ONLY writer
+ * of `lastReminderSentAt` and already enforces the real
+ * once-per-REMINDER_RECHECK_HOURS staleness gate that gives this
+ * 10s-tick poller genuine once-per-day semantics for any org still
+ * inside its notice window -- this function just turns each freshly
+ * marked reminder into one real, durable audit-db.ts event
+ * (`contract.renewal_reminder_sent`), matching this repo's own
+ * audit-log-not-external-email convention (see pollSupportTicketBreaches
+ * above for the SLA-breach precedent this follows). No webhook delivery
+ * here on purpose -- the spec for this capability is explicit that a
+ * reminder is an auditable record an admin dashboard surfaces, not an
+ * external notification this app cannot honestly claim to have sent.
+ */
+async function pollContractRenewals(): Promise<void> {
+  const result = await scanContractRenewalReminders();
+  if (!result.ok) {
+    console.error(`[webhook-poller] scanContractRenewalReminders failed: ${result.error}`);
+    return;
+  }
+  for (const reminder of result.data) {
+    writeAuditLogEntry({
+      orgId: reminder.orgId,
+      timestamp: new Date().toISOString(),
+      actor: "system:contract-renewal-poller",
+      method: "SYSTEM",
+      path: `/api/contract-renewals/${reminder.orgId}`,
+      status: 200,
+      requestId: newRequestId(),
+    });
+  }
+}
+
+/**
  * Real retry-with-backoff tick: picks up every delivery
  * lib/webhook-deliveries.ts's own backoff schedule marked `pending_retry`
  * with a `next_attempt_at` that has now passed, and redelivers the exact
@@ -371,6 +406,7 @@ async function tick(): Promise<void> {
     pollOverageEstimates(),
     pollWebhookRetries(),
     pollSupportTicketBreaches(),
+    pollContractRenewals(),
   ]);
 }
 

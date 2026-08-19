@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { applyStripeEvent, verifyStripeWebhookSignature } from "@/lib/stripe-billing";
 import { applyEntitlementEvent, mapStripeStatusToPlanState } from "@/lib/plan-state";
+import { syncRenewalDateFromStripe } from "@/lib/contract-renewals";
 
 // No session cookie check here on purpose -- this endpoint is called by
 // Stripe's own servers, not a browser with this app's session cookie.
@@ -69,6 +70,20 @@ export async function POST(request: NextRequest) {
     });
     if (!entitlementResult.ok) {
       console.error(`[stripe-webhook] applyEntitlementEvent failed: ${entitlementResult.error}`);
+    }
+
+    // Real renewal-date resync (lib/contract-renewals.ts): re-derives the
+    // org's tracked renewalDate from THIS SAME applied event's real
+    // Stripe currentPeriodEnd -- best-effort, same non-fatal posture as
+    // the entitlement sync above. A failure here never fails the webhook
+    // response (Stripe would otherwise retry an event this app already
+    // durably applied to plan state).
+    const renewalResult = await syncRenewalDateFromStripe(
+      applied.data.tenantNamespace,
+      applied.data.currentPeriodEnd,
+    );
+    if (!renewalResult.ok) {
+      console.error(`[stripe-webhook] syncRenewalDateFromStripe failed: ${renewalResult.error}`);
     }
   }
 

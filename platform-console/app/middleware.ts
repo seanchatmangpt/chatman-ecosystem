@@ -57,6 +57,18 @@ const PUBLIC_PATHS = [
   // no secrets, no internal hostnames -- see lib/trust-page.ts).
   "/trust",
   "/api/trust",
+  // Public, machine-readable API deprecation-notice feed (GET) -- same
+  // unauthenticated posture as /api/trust and /api/status above, for
+  // external API clients / status-page widgets with no console session.
+  // POST on this same path is still admin-only: middleware's PUBLIC_PATHS
+  // check is path-scoped not method-scoped, so app/app/api/
+  // api-deprecations/route.ts's POST handler performs its own real
+  // session + requirePlatformAdmin check directly off the request cookie
+  // (see that route's own header comment) -- exactly the same
+  // self-enforced boundary GET vs. POST already needs regardless of
+  // middleware, since middleware only ever adds a session-cookie
+  // convenience check on top of what each route already verifies.
+  "/api/api-deprecations",
 ];
 
 // Real bearer-style signed-URL download route (control:
