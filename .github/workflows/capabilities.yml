@@ -1,0 +1,51 @@
+name: Capability Catalog
+
+on:
+  pull_request:
+    paths:
+      - 'catalog/capabilities.toml'
+      - 'ontology/capabilities.ttl'
+      - 'scripts/verify_capabilities.py'
+      - 'tests/test_capabilities.py'
+      - 'views/generated/capabilities.md'
+      - '.github/workflows/capabilities.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  capability-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Assert exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected='${{ github.event.pull_request.head.sha || github.sha }}'
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$expected"
+          echo "EXACT_SUBJECT=$actual"
+      - name: Verify capability catalog and deterministic projection
+        run: python3 scripts/verify_capabilities.py
+      - name: Run capability refusal courts
+        run: python3 -m unittest tests.test_capabilities -v
+      - name: Refuse generated projection drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp views/generated/capabilities.md /tmp/capabilities.before
+          python3 scripts/verify_capabilities.py --write
+          cmp /tmp/capabilities.before views/generated/capabilities.md
+      - name: Authority ceiling
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'required_authority = "merge"' catalog/capabilities.toml
+          grep -q 'required_authority = "delete"' catalog/capabilities.toml
+          grep -q 'broker_required = true' catalog/capabilities.toml
+          echo 'CAPABILITY_AUTHORITY_CEILING_ADMITTED'
