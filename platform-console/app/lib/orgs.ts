@@ -92,6 +92,23 @@ export interface Org {
    * with `lastSlaCreditAppliedMonth: undefined`.
    */
   lastSlaCreditAppliedMonth?: string;
+  /**
+   * Per-org custom domain self-service (the standard AWS Amplify/Vercel/
+   * Retool "custom domain" enterprise-tier upsell, sitting directly on top
+   * of the white-label branding above -- branding changes the CHROME,
+   * this changes the URL it's served on). `customDomain` is the hostname
+   * the org's owner has requested (e.g. `console.customer.com`);
+   * `customDomainStatus` mirrors the real, live state of the
+   * `cert-manager.io/v1` Certificate CR lib/k8s.ts's createOrgCertificate
+   * creates for it (`pending` until cert-manager's own controller flips
+   * the Certificate's `status.conditions[type=Ready]` to `True`, `issued`
+   * once it has, `failed` if cert-manager reports a terminal failure) --
+   * never a value this module invents client-side. Optional and unset by
+   * default, same forward-compatible-optional-field round-trip discipline
+   * as `branding`/`region` above.
+   */
+  customDomain?: string;
+  customDomainStatus?: "pending" | "issued" | "failed";
 }
 
 interface OrgRegistryEntry {
@@ -138,6 +155,12 @@ interface OrgRegistryEntry {
   // by default, same forward-compatible-optional-field round-trip
   // discipline as every other optional registry field above.
   lastSlaCreditAppliedMonth?: string;
+  // Custom-domain binding -- see the identically-named fields on `Org`
+  // above for the full rationale. Optional and unset by default, same
+  // forward-compatible-optional-field round-trip discipline as every
+  // other optional registry field above.
+  customDomain?: string;
+  customDomainStatus?: "pending" | "issued" | "failed";
 }
 
 const PRODUCT_NAME_MAX_LENGTH = 60;
@@ -484,6 +507,106 @@ export async function setOrgRegion(id: string, region: string): Promise<K8sResul
   }
 
   const updatedEntry: OrgRegistryEntry = { ...entry, region };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
+ * Real cross-org uniqueness check: backs POST /api/orgs/[id]/custom-domain.
+ * Scans every existing org's registry entry (the same registry `listOrgs`
+ * itself reads -- no separate hostname index to drift out of sync) and
+ * returns the id of whichever OTHER org already has `hostname` bound, or
+ * `null` if it's free. Comparison is case-insensitive (DNS hostnames are
+ * not case-sensitive) and excludes `excludeOrgId` so an org re-submitting
+ * its OWN already-bound hostname is never rejected as "claimed".
+ */
+export async function findOrgByCustomDomain(
+  hostname: string,
+  excludeOrgId?: string,
+): Promise<K8sResult<string | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const needle = hostname.toLowerCase();
+  for (const [id, entry] of Object.entries(registry.data)) {
+    if (id === excludeOrgId) continue;
+    if (entry.customDomain?.toLowerCase() === needle) {
+      return { ok: true, data: id };
+    }
+  }
+  return { ok: true, data: null };
+}
+
+/**
+ * Real custom-domain read: backs GET /api/orgs/[id]/custom-domain. Same
+ * "`{ok: true, data: null}` is not an error" convention as
+ * getOrgBranding/getOrgRegion -- distinguishes "org exists but has never
+ * requested a custom domain" from a real registry-read failure.
+ */
+export async function getOrgCustomDomain(
+  id: string,
+): Promise<K8sResult<{ customDomain: string; customDomainStatus: "pending" | "issued" | "failed" } | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry?.customDomain) return { ok: true, data: null };
+  return {
+    ok: true,
+    data: { customDomain: entry.customDomain, customDomainStatus: entry.customDomainStatus ?? "pending" },
+  };
+}
+
+/**
+ * Real custom-domain write: backs POST /api/orgs/[id]/custom-domain, called
+ * ONLY after the route has already (a) validated the hostname shape
+ * (lib/custom-domains.ts's isValidCustomDomainHostname) and (b) confirmed
+ * via findOrgByCustomDomain above that no OTHER org already claims it --
+ * this function itself does not re-check either, same "route validates,
+ * module persists" division of labor setOrgRegion's route/module split
+ * already uses for its own tier/region checks. Merge-patches only this
+ * org's registry entry's `customDomain`/`customDomainStatus` keys, same
+ * one-key-at-a-time discipline as setOrgBranding/setOrgRegion.
+ */
+export async function setOrgCustomDomain(
+  id: string,
+  hostname: string,
+  status: "pending" | "issued" | "failed",
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const updatedEntry: OrgRegistryEntry = { ...entry, customDomain: hostname, customDomainStatus: status };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
+ * Updates just this org's `customDomainStatus` (never the hostname itself)
+ * -- backs GET /api/orgs/[id]/custom-domain's live-poll re-sync, when a
+ * fresh read of the Certificate CR's own status (lib/k8s.ts's
+ * getCertificateStatus) disagrees with whatever status was last persisted
+ * here. A no-op (returns the org unchanged) if this org has no
+ * `customDomain` bound at all, so a stale/racing poll can never invent one.
+ */
+export async function setOrgCustomDomainStatus(
+  id: string,
+  status: "pending" | "issued" | "failed",
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry?.customDomain) return { ok: true, data: entry ? { id, ...entry } : null };
+
+  const updatedEntry: OrgRegistryEntry = { ...entry, customDomainStatus: status };
   const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
     [id]: JSON.stringify(updatedEntry),
   });

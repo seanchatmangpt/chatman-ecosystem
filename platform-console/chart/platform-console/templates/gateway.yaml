@@ -33,6 +33,7 @@
 #     --cert=/tmp/platform-console.crt --key=/tmp/platform-console.key
 # Until that secret exists, the HTTPS:443 server below will not admit
 # traffic -- HTTP:80 is what actually works immediately after deploy.
+{{- if .Values.ingress.enabled }}
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
@@ -47,13 +48,13 @@ spec:
         number: 80
         protocol: HTTP
       hosts:
-        - platform.local
+        - {{ .Values.ingress.host }}
     - port:
         name: https
         number: 443
         protocol: HTTPS
       hosts:
-        - platform.local
+        - {{ .Values.ingress.host }}
       tls:
         mode: SIMPLE
         credentialName: platform-console-tls
@@ -65,7 +66,7 @@ metadata:
   namespace: platform-console
 spec:
   hosts:
-    - platform.local
+    - {{ .Values.ingress.host }}
   gateways:
     - platform-console-gateway
   http:
@@ -113,10 +114,11 @@ spec:
         - destination:
             host: platform-console-gateway.platform-console.svc.cluster.local
             port:
-              number: 8080
+              number: {{ .Values.service.port }}
     - name: platform-console-root
       route:
         - destination:
             host: platform-console-gateway.platform-console.svc.cluster.local
             port:
-              number: 8080
+              number: {{ .Values.service.port }}
+{{- end }}

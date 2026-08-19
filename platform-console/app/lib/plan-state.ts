@@ -272,6 +272,68 @@ export async function setPlanState(
   return { ok: true, data: record };
 }
 
+/** Provenance discriminator for `applyEntitlementEvent` -- distinguishes
+ * a real Stripe webhook delivery, a human admin acting through
+ * app/api/plan-state/route.ts's existing override POST, and a new
+ * non-Stripe billing path (an ops-applied manual-invoice/PO reconciliation
+ * for an enterprise account billed outside self-service Stripe checkout)
+ * in the audit trail, without branching the enforcement path itself. */
+export type EntitlementEventSource = "stripe" | "admin" | "manual-invoice";
+
+const VALID_ENTITLEMENT_SOURCES: readonly EntitlementEventSource[] = ["stripe", "admin", "manual-invoice"];
+
+export function isEntitlementEventSource(value: string): value is EntitlementEventSource {
+  return (VALID_ENTITLEMENT_SOURCES as readonly string[]).includes(value);
+}
+
+export interface EntitlementEvent {
+  namespace: string;
+  state: PlanStateRecord["planState"];
+  reason: string;
+}
+
+/**
+ * Generic entrypoint for driving this module's plan-state ConfigMap from
+ * ANY billing/entitlement source, real Stripe webhook delivery or not.
+ * `setPlanState` already does the one real write (the `state.<namespace>`
+ * ConfigMap key, via `createOrUpdateConfigMap`) that both the Stripe
+ * webhook path and the admin-override API route end up needing --
+ * `applyEntitlementEvent` is that same write, fronted by one shared
+ * shape/namespace/state validation and a `source`-tagged provenance
+ * string (`"stripe:<reason>"` / `"admin:<reason>"` /
+ * `"manual-invoice:<reason>"`) written into the SAME
+ * `PlanStateRecord.source` field `reconcilePlanState`'s own audit trail
+ * already reads -- so ops (or a future invoice-based or marketplace-
+ * metered billing integration) can drive the exact same enforcement path
+ * Stripe already drives (reconcilePlanState -> patchResourceQuotaHard)
+ * for a Fortune-5-scale account billed on a negotiated annual PO/invoice
+ * rather than self-service Stripe checkout, without a second enforcement
+ * code path and without touching reconcilePlanState at all.
+ */
+export async function applyEntitlementEvent(
+  source: EntitlementEventSource,
+  event: EntitlementEvent,
+): Promise<K8sResult<PlanStateRecord>> {
+  const namespace = event.namespace.trim();
+  if (!namespace) {
+    return { ok: false, error: "applyEntitlementEvent: namespace is required" };
+  }
+  if (!isPlanState(event.state)) {
+    return { ok: false, error: "applyEntitlementEvent: state must be one of: active, past_due, suspended" };
+  }
+  if (!isEntitlementEventSource(source)) {
+    return { ok: false, error: "applyEntitlementEvent: source must be one of: stripe, admin, manual-invoice" };
+  }
+  const reason = event.reason.trim() || "(no reason given)";
+  const result = await setPlanState(namespace, event.state, `${source}:${reason}`);
+  if (result.ok) {
+    console.log(
+      `[plan-state] applyEntitlementEvent: ${namespace} -> ${event.state} (source=${source}, reason=${reason})`,
+    );
+  }
+  return result;
+}
+
 export interface PlanStateEnforcementAction {
   namespace: string;
   action: "suspended" | "restored";

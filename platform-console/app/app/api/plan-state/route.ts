@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken, type SessionPayload } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { requireRole } from "@/lib/authz";
-import { isPlanState, listPlanStates, setPlanState } from "@/lib/plan-state";
+import { applyEntitlementEvent, isPlanState, listPlanStates } from "@/lib/plan-state";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -114,7 +114,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const result = await setPlanState(namespace, planState, `admin:${actor}`);
+  const result = await applyEntitlementEvent("admin", {
+    namespace,
+    state: planState,
+    reason: actor,
+  });
 
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),

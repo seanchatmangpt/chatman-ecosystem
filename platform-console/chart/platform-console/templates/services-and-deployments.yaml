@@ -690,7 +690,7 @@ metadata:
     cost-center: platform-eng
     compliance-level: internal
 spec:
-  replicas: 2
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: platform-console-gateway
@@ -726,8 +726,8 @@ spec:
           type: RuntimeDefault
       containers:
         - name: console
-          image: platform-console/console:latest
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
@@ -839,7 +839,7 @@ spec:
     app: platform-console-gateway
   ports:
     - name: http
-      port: 8080
+      port: {{ .Values.service.port }}
       targetPort: 3000
 
 # ------------------------------------------------------- oidc-idp (third auth path)
