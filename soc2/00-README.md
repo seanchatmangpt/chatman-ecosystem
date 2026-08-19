@@ -10,8 +10,8 @@ rendered auditor opinion.
 
 ## Readiness at a glance
 
-- **Control coverage:** 20 / 28 criteria addressed, 4 tested, 10 open exceptions.
-- **Engagement progress:** 0 / 10 phases have a recorded status.
+- **Control coverage:** 21 / 28 criteria addressed, 5 tested, 10 open exceptions.
+- **Engagement progress:** 3 / 10 phases have a recorded status.
 
 
 These numbers are computed from this binder's own real facts via SPARQL —

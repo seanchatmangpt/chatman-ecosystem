@@ -2,4 +2,4 @@
 
 [packs.soc2-readiness-pack]
 source = "path:/Users/sac/ggen-marketplace/packs/soc2-readiness-pack"
-content_hash = "blake3:5a4b936ae0d15d627cddeb3151016f3dae036654d4ced52ff091c152c419da0b"
+content_hash = "blake3:0d415bd6a8ab0e8387fce681b66c287a1643d10e81650259af18f121f790af88"

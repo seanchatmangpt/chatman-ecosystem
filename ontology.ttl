@@ -366,3 +366,86 @@
     dcterms:type "SUBSERVICE-ORG" ;
     dcterms:coverage "Supplies the base images pulled at build time; no image-signature/provenance verification (cosign, sigstore) found in this repo's Dockerfiles or CI" ;
     dcterms:requires "Inferred from FROM directives; absence of a signing-verification step checked by semantic_search with no hits" .
+
+# --- Appended fact block: SOC2 readiness findings + exception remediation (2026-08-18) ---
+
+# New criterion findings
+
+[] a prov:Entity ;
+    rdfs:label "Real DataClassification enum + policy-as-code enforcement (autofde-lab-mcp cache governance)" ;
+    dcterms:subject "C1-1" ;
+    dcterms:type "IMPLEMENTED" ;
+    dcterms:contributor "platform-team" ;
+    dcterms:source "platform-console/services/autofde-lab-mcp/src/autofde_lab/_cache/governance.py" ;
+    dcterms:description "DataClassification enum (PUBLIC/INTERNAL/CONFIDENTIAL/RESTRICTED, lines 35-41) is load-bearing: EnterpriseContext.classification tags every cache request, NamespaceRule.matches() gates access per classification, _DEFAULT_TTL enforces classification-dependent TTL ceilings, GovernancePolicy.__post_init__ fails closed without a TTL limit per tier, and PolicyEngine branches on RESTRICTED. Real, fail-closed policy-as-code confidentiality tiering, scoped to one service's cache-governance module (not an org-wide classification standard). No test file found for this module, so IMPLEMENTED not TESTED." .
+
+[] a prov:Entity ;
+    rdfs:label "P8: Monitoring and enforcement -- real audit logging (tamper-evident hash chain + SIEM/ECS export), live Alertmanager-backed alerting, and Prometheus-derived budget-threshold enforcement" ;
+    dcterms:subject "P8" ;
+    dcterms:type "IMPLEMENTED" ;
+    dcterms:contributor "platform-team" ;
+    dcterms:source "platform-console/app/lib/audit-db.ts; platform-console/app/lib/audit-export.ts; platform-console/app/lib/budget-alerts.ts; platform-console/app/app/api/alerts/route.ts; platform-console/app/app/api/audit/verify/route.ts; platform-console/app/app/api/budget-alerts/route.ts" ;
+    dcterms:description "Postgres-backed audit log with tamper-evident hash chain (row_hash/prev_hash) re-verified live by GET /api/audit/verify; ECS-8.11.0-conformant NDJSON export via keyset-paginated batches (SIEM-ingestible); Prometheus-derived per-namespace usage drives HMAC-signed budget.threshold_crossed webhooks, deduped via ConfigMap marker; GET /api/alerts queries live Alertmanager for real firing/resolved state. Role/session checks and self-audit-trail writes present. No dedicated unit/e2e test file found covering audit-db.ts, audit-export.ts, or budget-alerts.ts, so IMPLEMENTED not TESTED." .
+
+[] a prov:Activity ;
+    dcterms:subject "AUDIT-COLLECTION-INIT" ;
+    skos:notation "PHASE-STATUS" ;
+    skos:prefLabel "not started" ;
+    dcterms:description "All 10 engagement-timeline phases (AUDIT-SCOPING through AUDIT-REPORT-HANDOFF) render NOT STARTED by construction where no prov:Activity PHASE-STATUS fact exists -- soc2/06-ENGAGEMENT-TIMELINE.md lines 8-19, generated build 975c7db/96301d6. Confirming the zero-recorded-status finding for the phases not otherwise marked below; this fact intentionally documents that absence rather than closing it." .
+
+# Exception remediation updates
+
+# A1-1: in-progress (control-plane HA remediation not landed; real adjacent cold-standby DR progress exists)
+[] a prov:Entity ;
+    rdfs:label "Single control-plane node, no HA/failover -- partial DR progress via second cold-standby cluster" ;
+    dcterms:subject "A1-1" ;
+    dcterms:type "EXCEPTION" ;
+    dcterms:relation "MEDIUM" ;
+    dcterms:description "kind-config.yaml still declares exactly one control-plane node, no workers; not HA. Real partial progress: platform-console/docs/DR-SECOND-CLUSTER.md documents a second, independent kind-platform-eng-colima-dr cluster plus scripts/dr-export-apply.sh, verified live 2026-08-18 (clean apply, primary cluster untouched) -- cold-standby DR for one namespace's manifests, explicitly not HA, not multi-region, no customer SLA change, same physical machine." ;
+    dcterms:isReplacedBy "Real multi-node/multi-AZ control plane with automated failover" ;
+    dcterms:hasVersion "in progress" .
+
+# CC3: in-progress (etcd secret-encryption key still co-located with ciphertext; ConfigMaps still plaintext)
+[] a prov:Entity ;
+    rdfs:label "etcd secret-encryption key stored on same node disk as ciphertext -- aescbc envelope provider now enforces Secrets encryption-at-rest" ;
+    dcterms:subject "CC3" ;
+    dcterms:type "EXCEPTION" ;
+    dcterms:relation "MEDIUM" ;
+    dcterms:description "enable-etcd-encryption.sh / verify-etcd-encryption.sh implement Kubernetes aescbc envelope encryption on the live control-plane node, re-encrypting all 23 pre-existing Secrets; raw etcd dump confirmed envelope prefix k8s:enc:aescbc:v1:key1: with no plaintext leakage (control-evidence-bundle.json, observed_at 2026-08-18T17:04:00Z). Gap remains open and is explicitly disclosed: the AES key still lives on the same single node's disk as etcd's data directory (no remote KMS integration), and ConfigMaps are still plaintext (scoped to Secrets only)." ;
+    dcterms:isReplacedBy "Move key to remote KMS-backed envelope provider (AWS KMS/GCP Cloud KMS/Vault); extend coverage to ConfigMaps" ;
+    dcterms:hasVersion "in progress" .
+
+# CC6: resolved -- historical exception fact preserved untouched elsewhere; new resolved control-status fact added
+[] a prov:Entity ;
+    rdfs:label "Certificate Lifecycle Management -- RBAC patch verb added, zero-downtime rotation verified" ;
+    dcterms:subject "CC6" ;
+    dcterms:type "TESTED" ;
+    dcterms:contributor "platform-team" ;
+    dcterms:source "platform-console/k8s/paas-rbac.yaml; platform-console/app/lib/cert-lifecycle.ts; platform-console/evidence/control-evidence-bundle.json" ;
+    dcterms:description "Commit 92d38aee3bda7d9ccdc31551ab79b747482aa7bc added the patch verb to the platform-console-custom-domains-tls Role (verbs now get,list,create,delete,patch), resolving the RBAC 403 rotateCertificate previously hit. Live-verified zero-downtime proof: a real custom domain registered, 1req/sec HTTPS loop through the live Istio ingress gateway during in-place cert rotation, 90/90 requests returned 200, and openssl s_client confirmed the certificate serial changed (0DE084F4... -> 20A6E04D...). control-evidence-bundle.json gained certificate-rotation-zero-downtime-verified per this commit. This is a new, additional control-status fact; the original CC6 EXCEPTION fact is preserved unmodified as the historical record." .
+
+# CC9-1: in-progress (multi-node etcd HA remediation not landed; same cold-standby DR progress as A1-1)
+[] a prov:Entity ;
+    rdfs:label "No multi-node/managed control plane with etcd HA -- partial DR progress via second cold-standby cluster" ;
+    dcterms:subject "CC9-1" ;
+    dcterms:type "EXCEPTION" ;
+    dcterms:relation "MEDIUM" ;
+    dcterms:description "kind-config.yaml still defines a single control-plane node with no workers; one etcd, one API server, one kubelet, one machine (prior unrecoverable etcd bbolt corruption, commit 191b3ca5, was the reason the cluster was recreated). Real partial progress: DR-SECOND-CLUSTER.md documents a second independent kind cluster on the same physical machine, populated by a manually-run export/apply script, verified working 2026-08-18; explicitly not HA, not multi-region, no customer SLA change -- SONY-READINESS-GAP-CLOSURE.md 'Still Open' repeats the same single-control-plane-node gap." ;
+    dcterms:isReplacedBy "Stand up a multi-node control plane / managed control plane with etcd HA" ;
+    dcterms:hasVersion "in progress" .
+
+# Engagement phase status -- real progress this pass and the original composition pass
+
+[] a prov:Activity ;
+    dcterms:subject "AUDIT-SCOPING" ;
+    skos:notation "PHASE-STATUS" ;
+    skos:prefLabel "complete" ;
+    prov:startedAtTime "2026-08-18"^^xsd:date ;
+    dcterms:description "System description and system-boundary facts composed and generated into soc2/01-SYSTEM-DESCRIPTION.md (build 975c7db, regenerated 96301d6); scope of the SOC2 readiness binder's subject system established." .
+
+[] a prov:Activity ;
+    dcterms:subject "AUDIT-READINESS" ;
+    skos:notation "PHASE-STATUS" ;
+    skos:prefLabel "in progress" ;
+    prov:startedAtTime "2026-08-18"^^xsd:date ;
+    dcterms:description "Gap-analysis pass against real platform-console/autofde-lab-mcp source: new criterion findings confirmed for C1-1 and P8, exception remediation status re-verified for A1-1, CC3, CC6 (resolved), and CC9-1 against live evidence and git history." .
