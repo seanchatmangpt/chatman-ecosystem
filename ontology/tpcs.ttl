@@ -11,7 +11,7 @@
     tpcsf:canonicalRepo "seanchatmangpt/tcps" ;
     tpcsf:canonicalPullRequest "1" ;
     tpcsf:canonicalRef "agent/tcps-v1979-reconstitution" ;
-    tpcsf:canonicalHead "b5ef58787487f03903a7f2ff4bbd345632d69247" ;
+    tpcsf:canonicalHead "a649ac686466e47463f13707e7abc8c549179eb3" ;
     tpcsf:canonicalVersion "1979.1.1" ;
     tpcsf:owningCourt "tcps-ci" ;
     tpcsf:implementationAuthority false ;
@@ -30,9 +30,9 @@
 <urn:chatman-ecosystem:tcps-runtime-evidence>
     a prov:Entity ;
     skos:prefLabel "Exact-head TCPS runtime verifier receipt"@en ;
-    tpcsf:expectedArtifact "tcps-runtime-b5ef58787487f03903a7f2ff4bbd345632d69247" .
+    tpcsf:expectedArtifact "tcps-runtime-a649ac686466e47463f13707e7abc8c549179eb3" .
 
 <urn:chatman-ecosystem:tcps-projection-evidence>
     a prov:Entity ;
     skos:prefLabel "Exact-head TCPS ggen projection receipt"@en ;
-    tpcsf:expectedArtifact "tcps-projection-b5ef58787487f03903a7f2ff4bbd345632d69247" .
+    tpcsf:expectedArtifact "tcps-projection-a649ac686466e47463f13707e7abc8c549179eb3" .
