@@ -1,0 +1,45 @@
+id = "receipt:dyson-sphere-book"
+subject = "manuscript-sha256:90511084ba08edd34d133945728cd9f12d7697c59caaa12d989126c8ba076a4c"
+actor = "github-actions"
+authority = "persist_control_plane"
+intention = "manufacture and persist the complete How to Build a Dyson Sphere with the Chatman Ecosystem mdBook manuscript"
+observed = [
+    "repository doctrine and exact base commit 91d8ddc26da04448dbd0c4e11d70c504c6b6dd9e",
+    "existing nested-book convention under docs",
+    "admitted 27-part, 104-chapter outline",
+    "initial generated head contained Python escape corruption in LaTeX and was treated as BUILD_BROKEN",
+    "canonical receipt schema requires typed authority, legal standing transitions, and BLAKE3 sealing",
+]
+executed = [
+    "repaired the canonical generator to preserve LaTeX backslashes",
+    "regenerated the complete nested Markdown source tree",
+    "integrated the nested summary into docs/SUMMARY.md",
+    "registered the book in catalog/documents.toml",
+]
+changed = [
+    "docs/how-to-build-a-dyson-sphere/**",
+    "docs/SUMMARY.md",
+    "catalog/documents.toml",
+    "scripts/generate_dyson_sphere_book.py",
+]
+verified = [
+    "104 numbered chapters",
+    "839 Markdown files",
+    "838 nested SUMMARY links",
+    "zero missing nested SUMMARY targets",
+    "zero unexpected C0 control characters",
+    "literal LaTeX fraction, text, and arrow sequences preserved",
+    "root SUMMARY integration marker unique",
+    "catalog registration parses as TOML",
+    "342147 manuscript words",
+]
+excluded = [
+    "Dyson-sphere physical feasibility is not promoted to ALIVE by prose",
+    "root release Crown is not asserted by this documentation change",
+    "hosted exact-head execution evidence is evaluated independently of this source receipt",
+]
+replay = ["python3 scripts/generate_dyson_sphere_book.py"]
+standing_before = "CANDIDATE"
+standing_after = "PARTIAL_ALIVE"
+timestamp = "2026-08-19T19:51:46.089511+00:00"
+digest = "blake3:c222087fed624ce4be845cf19dfbbf02b9b281e0654e50b056114187b1320666"
