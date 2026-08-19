@@ -185,6 +185,51 @@ class ToyotaCodeProductionSystemTest(unittest.TestCase):
         tampered["subject"] = "b" * 40
         self.assertFalse(mod.verify_receipt(tampered, self.cfg))
 
+    def test_plan_receipt_binds_full_candidate_input_and_replays(self) -> None:
+        rows = [
+            item("runtime", "a", stream="runtime", value=10, evidence=3, risk=1),
+            item("evidence", "a", stream="evidence", value=3, evidence=10, risk=1),
+        ]
+        record = mod.plan(rows, self.cfg)
+        self.assertTrue(mod.verify_plan(record, self.cfg))
+        self.assertRegex(record["input_digest"], r"^[0-9a-f]{64}$")
+        self.assertRegex(record["frontier_digest"], r"^[0-9a-f]{64}$")
+        self.assertRegex(record["schedule_digest"], r"^[0-9a-f]{64}$")
+
+        changed = mod.plan(
+            [
+                item("runtime", "a", stream="runtime", value=11, evidence=3, risk=1),
+                item("evidence", "a", stream="evidence", value=3, evidence=10, risk=1),
+            ],
+            self.cfg,
+        )
+        self.assertNotEqual(record["input_digest"], changed["input_digest"])
+        self.assertNotEqual(record["sha256"], changed["sha256"])
+
+        tampered = dict(record)
+        tampered["selected"] = "forged"
+        self.assertFalse(mod.verify_plan(tampered, self.cfg))
+
+    def test_final_receipt_validates_and_directly_binds_plan(self) -> None:
+        rows = [
+            item("runtime", "a", stream="runtime", value=10, evidence=3, risk=1),
+            item("evidence", "a", stream="evidence", value=3, evidence=10, risk=1),
+        ]
+        plan_record = mod.plan(rows, self.cfg)
+        work = item("court", "a", acceptance_passed=True)
+        record = mod.run(work, self.cfg, plan_record=plan_record)
+        self.assertEqual(record["previous_receipt"], plan_record["sha256"])
+        self.assertEqual(record["plan_digest"], plan_record["sha256"])
+        self.assertEqual(record["plan_input_digest"], plan_record["input_digest"])
+        self.assertEqual(record["frontier_digest"], plan_record["frontier_digest"])
+        self.assertEqual(record["schedule_digest"], plan_record["schedule_digest"])
+
+        forged = dict(plan_record)
+        forged["selected"] = "forged"
+        with self.assertRaises(mod.Refusal) as ctx:
+            mod.run(work, self.cfg, plan_record=forged)
+        self.assertEqual(str(ctx.exception), "REFUSED_INVALID_PLAN_RECEIPT")
+
     def test_acceptance_mutation_unreceipted_do_and_replay_mismatch_refuse(self) -> None:
         cases = [
             (mod.WorkItem("a" * 40, "x", "CONSTRUCT", acceptance_mutated=True), "REFUSED_ACCEPTANCE_MUTATION"),
