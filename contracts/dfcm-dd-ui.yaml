@@ -34,7 +34,7 @@ integration_subjects:
     owning_court: deterministic-dynamic-ui
   ggen-marketplace:
     pr: 69
-    head: 9cdf9c08968a706b4db03102b1baee7ced2b5612
+    head: a9c76785d97c01ea15aa61907794479c15af40cb
     authority: CONSTRUCT
     owning_court: marketplace-qualification
   gymact:
