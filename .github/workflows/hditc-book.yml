@@ -8,6 +8,13 @@ on:
       - scripts/generate_hditc_book.py
       - books/hditc/SUMMARY.spec.*.md
       - .github/workflows/hditc-book.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - scripts/generate_hditc_book.py
+      - books/hditc/**
+      - .github/workflows/hditc-book.yml
 
 permissions:
   contents: write
@@ -16,9 +23,10 @@ jobs:
   manufacture:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout exact pushed subject
+      - name: Checkout exact source branch
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 0
 
       - name: Generate and validate HDITC manuscript
@@ -44,4 +52,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add books/hditc
           git commit -m "docs: generate HDITC book"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
