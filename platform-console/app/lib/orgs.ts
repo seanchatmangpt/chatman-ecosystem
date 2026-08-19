@@ -329,6 +329,23 @@ export async function getOrg(id: string): Promise<K8sResult<Org | null>> {
   return { ok: true, data: entry ? { id, ...entry } : null };
 }
 
+/**
+ * Reverse lookup: which org (if any) owns a given k8s namespace.
+ * lib/budget-alerts.ts and lib/cost-anomaly.ts are namespace-scoped (they
+ * predate multi-tenant orgs and cover this console's own fixed platform-
+ * namespace roster), so lib/webhook-poller.ts's per-namespace crossings/
+ * anomaly events need this to additively route through
+ * lib/alert-routing.ts's org-keyed rules. Returns `null` (not an error)
+ * for a namespace with no matching org entry -- e.g. platform-console's
+ * own namespace, or a namespace never provisioned via `createOrg`.
+ */
+export async function getOrgIdForNamespace(namespace: string): Promise<K8sResult<string | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const found = Object.entries(registry.data).find(([, entry]) => entry.namespace === namespace);
+  return { ok: true, data: found ? found[0] : null };
+}
+
 export interface CreateOrgResult {
   org: Org;
   firstProjectName: string | null;

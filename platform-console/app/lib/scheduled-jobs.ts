@@ -42,7 +42,9 @@ export type AllowedCommandId =
   | "echo-timestamp"
   | "curl-status"
   | "cost-report-snapshot"
-  | "latency-benchmark-snapshot";
+  | "latency-benchmark-snapshot"
+  | "seat-utilization-snapshot"
+  | "fault-scan-snapshot";
 
 /**
  * The fixed, small allowlist. Every entry maps to one hardcoded container
@@ -79,6 +81,20 @@ export const ALLOWED_COMMANDS: Record<AllowedCommandId, AllowedCommand> = {
     label: "Capture a scheduled multi-node latency benchmark",
     description:
       "POSTs this console's own internal /api/internal/latency-benchmark-snapshot route (cluster-internal only, shared-secret authenticated), which re-runs lib/load-test.ts's runScheduledLatencyBenchmark -- a real, short, low-concurrency load test against every entry in the fixed LOAD_TEST_TARGETS allowlist -- and appends one p50/p95/p99 record per target to this namespace's latency-benchmark history, the SLA-evidence trend line this command exists to schedule.",
+    image: "curlimages/curl:8.10.1",
+  },
+  "seat-utilization-snapshot": {
+    id: "seat-utilization-snapshot",
+    label: "Capture a seat/license utilization snapshot",
+    description:
+      "POSTs this console's own /api/seat-utilization route (cluster-internal only, shared-secret authenticated), which re-runs lib/seat-utilization-report.ts's generateSeatUtilizationSnapshot for this CronJob's own namespace -- purchased-vs-active seat counts, invited-unaccepted seats, 60-day-stale seats, and their illustrative wasted cost -- and appends one record to that org's seat-utilization history, the Procurement quarterly-true-up evidence this command exists to schedule (monthly cadence).",
+    image: "curlimages/curl:8.10.1",
+  },
+  "fault-scan-snapshot": {
+    id: "fault-scan-snapshot",
+    label: "Capture a scheduled K8s fault-scan snapshot",
+    description:
+      "POSTs this console's own internal /api/internal/fault-scan-snapshot route (cluster-internal only, shared-secret authenticated), which re-runs lib/k8s-fault-scan.ts's existing diagnose-only structural-anomaly scanner for this namespace's own org (when Org.enableFaultScan is set) and appends one findings snapshot to that org's fault-scan history -- the continuous-posture-monitoring trend line this command exists to schedule. Diagnose-only: this command never remediates or actuates anything, same scope boundary the on-demand scan already keeps.",
     image: "curlimages/curl:8.10.1",
   },
 };
@@ -145,6 +161,39 @@ function buildContainerCommand(commandId: AllowedCommandId, namespace: string): 
         `curl -sS -m 60 -X POST -H "x-latency-benchmark-cron-secret: $LATENCY_BENCHMARK_CRON_SECRET" ` +
           `-H "x-latency-benchmark-org: ${namespace}" ` +
           `"http://platform-console.platform-console.svc.cluster.local/api/internal/latency-benchmark-snapshot" && echo`,
+      ];
+    case "seat-utilization-snapshot":
+      // Same cluster-internal, shared-secret-authenticated curl shape as
+      // the "cost-report-snapshot" case above, except it POSTs the one
+      // public route this capability's own spec asks for
+      // (/api/seat-utilization, not a separate /api/internal/* route) --
+      // that route itself distinguishes this cron-secret-authenticated
+      // call from an interactive owner-session on-demand POST. `namespace`
+      // (this CronJob's own namespace, always one of
+      // SCHEDULABLE_NAMESPACES) travels as a header the same way, and the
+      // route (never this module) is the one place that header is
+      // validated before being used as the persisted snapshot's orgId.
+      return [
+        "sh",
+        "-c",
+        `curl -sS -m 30 -X POST -H "x-seat-utilization-cron-secret: $SEAT_UTILIZATION_CRON_SECRET" ` +
+          `-H "x-seat-utilization-namespace: ${namespace}" ` +
+          `"http://platform-console.platform-console.svc.cluster.local/api/seat-utilization" && echo`,
+      ];
+    case "fault-scan-snapshot":
+      // Same cluster-internal, shared-secret-authenticated curl shape as
+      // the "latency-benchmark-snapshot" case above -- POSTs this
+      // console's own Service DNS name, `namespace` (this CronJob's own
+      // namespace, always one of SCHEDULABLE_NAMESPACES) travels as a
+      // request header the same way, and the route (never this module)
+      // is the one place that header is validated before being used as
+      // the persisted snapshot's orgId.
+      return [
+        "sh",
+        "-c",
+        `curl -sS -m 60 -X POST -H "x-fault-scan-cron-secret: $FAULT_SCAN_CRON_SECRET" ` +
+          `-H "x-fault-scan-org: ${namespace}" ` +
+          `"http://platform-console.platform-console.svc.cluster.local/api/internal/fault-scan-snapshot" && echo`,
       ];
   }
 }
@@ -298,6 +347,16 @@ export const COST_REPORT_CRON_SECRET_KEY = "secret";
 export const LATENCY_BENCHMARK_CRON_SECRET_NAME = "platform-latency-benchmark-cron-secret";
 export const LATENCY_BENCHMARK_CRON_SECRET_KEY = "secret";
 
+// Same one-time-operator-provisioning convention as
+// LATENCY_BENCHMARK_CRON_SECRET_NAME above, for the "fault-scan-snapshot"
+// command's curl call (`kubectl create secret generic
+// platform-fault-scan-cron-secret --from-literal=secret=...` in the
+// `platform-console` namespace, then setting the matching
+// `FAULT_SCAN_CRON_SECRET` env on the console's own Deployment so
+// POST /api/internal/fault-scan-snapshot can compare against it).
+export const FAULT_SCAN_CRON_SECRET_NAME = "platform-fault-scan-cron-secret";
+export const FAULT_SCAN_CRON_SECRET_KEY = "secret";
+
 export interface CreateCronJobInput {
   namespace: SchedulableNamespace;
   name: string;
@@ -387,7 +446,21 @@ export async function createCronJob(
                             },
                           ],
                         }
-                      : {}),
+                      : input.commandId === "fault-scan-snapshot"
+                        ? {
+                            env: [
+                              {
+                                name: "FAULT_SCAN_CRON_SECRET",
+                                valueFrom: {
+                                  secretKeyRef: {
+                                    name: FAULT_SCAN_CRON_SECRET_NAME,
+                                    key: FAULT_SCAN_CRON_SECRET_KEY,
+                                  },
+                                },
+                              },
+                            ],
+                          }
+                        : {}),
                   // Real, live-discovered requirement, not a stylistic
                   // choice: 4 of this platform's 5 schedulable namespaces
                   // carry a ResourceQuota with hard `limits.cpu`/

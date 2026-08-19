@@ -55,6 +55,8 @@ import { checkSupportTicketBreaches } from "@/lib/support-tickets";
 import { scanContractRenewalReminders } from "@/lib/contract-renewals";
 import { scanQbrGeneration } from "@/lib/qbr";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
+import { dispatchToRoutedTargets } from "@/lib/alert-routing";
+import { getOrgIdForNamespace } from "@/lib/orgs";
 
 const POLL_INTERVAL_MS = 10_000;
 
@@ -167,6 +169,25 @@ async function pollBudgetThresholds(): Promise<void> {
       currentValue: crossing.currentValue,
       crossedAt: crossing.crossedAt,
     });
+
+    // Additive: per-org Alert-Routing (lib/alert-routing.ts) -- resolves
+    // this namespace back to its owning org (getOrgIdForNamespace) and,
+    // if one exists, delivers a "budget" event to whatever channel(s)
+    // that org has configured, alongside the org-wide webhook delivery
+    // above. A namespace with no matching org (e.g. platform-console's
+    // own) simply has nothing to route to.
+    const orgIdResult = await getOrgIdForNamespace(crossing.namespace);
+    if (orgIdResult.ok && orgIdResult.data) {
+      dispatchToRoutedTargets(orgIdResult.data, "budget", {
+        namespace: crossing.namespace,
+        metric: crossing.metric,
+        threshold: crossing.threshold,
+        currentValue: crossing.currentValue,
+        crossedAt: crossing.crossedAt,
+      }).catch((err) => {
+        console.error(`[webhook-poller] alert-routing dispatch failed for budget crossing:`, err);
+      });
+    }
   }
 }
 
@@ -195,6 +216,25 @@ async function pollCostAnomalies(): Promise<void> {
       deviationThresholdPct: event.deviationThresholdPct,
       detectedAt: event.detectedAt,
     });
+
+    // Additive: per-org Alert-Routing -- a cost anomaly is a finance-
+    // relevant signal (a namespace's spend suddenly deviating from its
+    // own baseline), routed under the "billing" category so an org that
+    // has set up "billing events go to finance email" sees this too, not
+    // just an operator polling the org-wide webhook subscription list.
+    const orgIdResult = await getOrgIdForNamespace(event.namespace);
+    if (orgIdResult.ok && orgIdResult.data) {
+      dispatchToRoutedTargets(orgIdResult.data, "billing", {
+        namespace: event.namespace,
+        baselineSpend: event.baselineSpend,
+        currentSpend: event.currentSpend,
+        deviationPct: event.deviationPct,
+        deviationThresholdPct: event.deviationThresholdPct,
+        detectedAt: event.detectedAt,
+      }).catch((err) => {
+        console.error(`[webhook-poller] alert-routing dispatch failed for cost anomaly:`, err);
+      });
+    }
   }
 }
 

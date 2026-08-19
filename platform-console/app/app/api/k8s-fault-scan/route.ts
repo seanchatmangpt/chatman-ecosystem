@@ -10,6 +10,8 @@ import {
   type K8sFaultFinding,
 } from "@/lib/k8s-fault-scan";
 import { requireApproval, type ApprovalRequest } from "@/lib/approval-workflow";
+import { dispatchToRoutedTargets } from "@/lib/alert-routing";
+import { appendFaultScanSnapshot, buildFaultScanSnapshot } from "@/lib/k8s-fault-scan-history";
 
 // K8s Fault Diagnosis -- wraps autofde-lab's real structural-anomaly
 // scanner (lib/k8s-fault-scan.ts's own header comment has the full
@@ -178,6 +180,34 @@ export async function POST(request: NextRequest) {
     // themselves are still returned below regardless.
   }
 
+  // Additive: per-org Alert-Routing (lib/alert-routing.ts) delivers a
+  // "k8s-fault" event to whatever channel(s) this org has configured
+  // (ops webhook, Slack, email), alongside the maker-checker approval
+  // filings above -- never a replacement for them, and never blocking
+  // the scan response on a slow/dead routing target.
+  if (findings.length > 0) {
+    dispatchToRoutedTargets(orgId, "k8s-fault", {
+      orgId,
+      namespace: org.namespace,
+      findingCount: findings.length,
+      findings,
+    }).catch((err) => {
+      console.error(`[k8s-fault-scan] alert-routing dispatch failed for org ${orgId}:`, err);
+    });
+  }
+
+  // Persists this real, already-computed scan result to the same
+  // fault-scan history the scheduled "fault-scan-snapshot" CronJob
+  // command appends to (lib/k8s-fault-scan-history.ts) -- so an
+  // on-demand scan a human triggers by hand also contributes a real
+  // point to the continuous-posture trend line, rather than only the
+  // scheduled poller. A history-append failure (a real k8s write error
+  // against the history ConfigMap) is logged but never fails this
+  // response -- the real findings themselves are still the primary,
+  // authoritative result of this route.
+  const snapshot = buildFaultScanSnapshot(orgId, findings);
+  const historyResult = await appendFaultScanSnapshot(snapshot);
+
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),
     actor,
@@ -187,6 +217,9 @@ export async function POST(request: NextRequest) {
     status: 200,
     requestId,
   });
+  if (!historyResult.ok) {
+    console.error(`[k8s-fault-scan] history append failed for org ${orgId}:`, historyResult.error);
+  }
 
   const response: K8sFaultScanResponse = {
     orgId,

@@ -8,6 +8,7 @@ import {
 } from "@/lib/incidents";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
+import { dispatchToRoutedTargets } from "@/lib/alert-routing";
 
 // Real SLA incident tracker endpoint -- see lib/incidents.ts's own header
 // comment for the gap this closes. Incidents are DERIVED from real
@@ -190,5 +191,25 @@ export async function POST(request: NextRequest) {
   if (!result.data) {
     return NextResponse.json({ error: "incident not found" }, { status: 404 });
   }
+
+  // Additive: per-org Alert-Routing -- only fireable once an incident is
+  // actually annotated with an orgId (an incident's `org_id` starts
+  // `null` at reconcile time -- see lib/incidents.ts's header comment --
+  // so this route's own POST is the first point an incident is ever
+  // attributable to a real org), alongside whatever org-wide webhook
+  // subscriptions already exist.
+  if (result.data.orgId) {
+    dispatchToRoutedTargets(result.data.orgId, "incident", {
+      incidentId: result.data.id,
+      componentId: result.data.componentId,
+      severity: result.data.severity,
+      status: result.data.status,
+      startedAt: result.data.startedAt,
+      resolvedAt: result.data.resolvedAt,
+    }).catch((err) => {
+      console.error(`[api/incidents] alert-routing dispatch failed for incident ${result.data!.id}:`, err);
+    });
+  }
+
   return NextResponse.json({ incident: result.data });
 }
