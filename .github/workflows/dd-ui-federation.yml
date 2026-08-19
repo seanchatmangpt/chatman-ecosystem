@@ -1,0 +1,152 @@
+name: DDUI ecosystem federation
+on:
+  pull_request:
+    paths:
+      - "dd-ui/**"
+      - ".github/workflows/dd-ui-federation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "dd-ui/**"
+      - ".github/workflows/dd-ui-federation.yml"
+permissions:
+  contents: read
+jobs:
+  verify-federation:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact composition subject
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Admit exact composition subject
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+
+      - name: Checkout exact DDUI engine
+        uses: actions/checkout@v4
+        with:
+          repository: seanchatmangpt/wasm4pm
+          ref: 8d48e784a4215857c8428c09bb09a91c05a8be97
+          path: .dd-ui-engine
+          persist-credentials: false
+      - name: Checkout exact ggen profile
+        uses: actions/checkout@v4
+        with:
+          repository: seanchatmangpt/ggen
+          ref: 35a28f6c44a06ea713b14a63549c17fdd2db7d6c
+          path: .dd-ui-sources/ggen
+          persist-credentials: false
+      - name: Checkout exact marketplace profile
+        uses: actions/checkout@v4
+        with:
+          repository: seanchatmangpt/ggen-marketplace
+          ref: 9f28054d808672254fa71eb77e1b9589cb19f044
+          path: .dd-ui-sources/ggen-marketplace
+          persist-credentials: false
+      - name: Checkout exact GymAct profile
+        uses: actions/checkout@v4
+        with:
+          repository: seanchatmangpt/gymact
+          ref: ee54ea27f0003227cb75bc46fc800b414f7e1182
+          path: .dd-ui-sources/gymact
+          persist-credentials: false
+      - name: Checkout exact AutoFDE profile
+        uses: actions/checkout@v4
+        with:
+          repository: seanchatmangpt/autofde
+          ref: 59fb025308ef2f0afd70ee9e273c0f97e1168d72
+          path: .dd-ui-sources/autofde
+          persist-credentials: false
+      - name: Checkout exact CASTLE profile
+        uses: actions/checkout@v4
+        with:
+          repository: seanchatmangpt/castle
+          ref: 569e7762f5ec3f55a7f65a7c85ba012085f461e9
+          path: .dd-ui-sources/castle
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify federation identities and replay 20 projections
+        shell: bash
+        env:
+          SUBJECT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import fs from "node:fs";
+          import { execFileSync } from "node:child_process";
+          import { manufactureUiReceipt, replayUi } from "./.dd-ui-engine/prototypes/dd-ui/dd-ui.mjs";
+
+          const federation = JSON.parse(fs.readFileSync("dd-ui/federation.json", "utf8"));
+          if (federation.engine.sha !== "8d48e784a4215857c8428c09bb09a91c05a8be97") throw new Error("engine identity drift");
+          const engineHead = execFileSync("git", ["-C", ".dd-ui-engine", "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+          if (engineHead !== federation.engine.sha) throw new Error(`engine checkout mismatch ${engineHead}`);
+
+          const local = JSON.parse(fs.readFileSync("dd-ui/world.json", "utf8"));
+          const events = [...local.events];
+          const subjects = [];
+          for (const component of federation.components) {
+            const root = `.dd-ui-sources/${component.id}`;
+            const head = execFileSync("git", ["-C", root, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+            if (head !== component.sha) throw new Error(`${component.id} subject mismatch: ${head}`);
+            const world = JSON.parse(fs.readFileSync(`${root}/${component.world}`, "utf8"));
+            if (world.grammarVersion !== federation.grammarVersion) throw new Error(`${component.id} grammar drift`);
+            events.push(...world.events);
+            subjects.push({ id: component.id, repo: component.repo, sha: head });
+          }
+
+          const ids = new Set();
+          for (const event of events) {
+            if (ids.has(event.id)) throw new Error(`duplicate federated event id: ${event.id}`);
+            ids.add(event.id);
+          }
+
+          const receipts = [];
+          const domains = new Set();
+          for (const avatar of federation.avatars) for (const context of federation.contexts) {
+            const bundle = await manufactureUiReceipt({
+              grammarVersion: federation.grammarVersion,
+              avatar,
+              context,
+              authority: federation.authority,
+              asOf: "2026-08-18T22:06:00-07:00",
+              events,
+            });
+            const replay = await replayUi(bundle);
+            if (!replay.match) throw new Error(`replay mismatch ${avatar}/${context}: ${replay.mismatches.join(",")}`);
+            if (bundle.screen.runtimeAiRenderAuthority !== federation.laws.runtimeAiRenderAuthority) throw new Error("runtime AI render authority drift");
+            if (bundle.screen.directActuation !== federation.laws.renderActuationAuthority) throw new Error("render actuation authority drift");
+            if (bundle.screen.dfcm.irreversibleSelections !== federation.laws.irreversibleUiSelections) throw new Error("irreversible presentation selection drift");
+            for (const component of bundle.screen.components) {
+              domains.add(component.domain);
+              for (const action of component.actions) if (action.selected !== false || action.intentOnly !== true) throw new Error(`action authority drift: ${component.id}/${action.id}`);
+            }
+            receipts.push({ avatar, context, worldDigest: bundle.receipt.worldDigest, frontierDigest: bundle.receipt.frontierDigest, screenDigest: bundle.receipt.screenDigest });
+          }
+
+          if (receipts.length !== federation.avatars.length * federation.contexts.length) throw new Error("projection matrix incomplete");
+          for (const required of ["GGEN", "PAAS", "PROCESS", "GOVERNANCE"]) if (!domains.has(required)) throw new Error(`missing observed domain ${required}`);
+
+          console.log(JSON.stringify({
+            schema: "https://chatmangpt.com/ecosystem/dd-ui/federation-receipt/v1",
+            subject: process.env.SUBJECT_SHA,
+            engine: federation.engine.sha,
+            subjects,
+            eventCount: events.length,
+            domains: [...domains].sort(),
+            projections: receipts.length,
+            irreversibleUiSelections: 0,
+            runtimeAiRenderAuthority: false,
+            directActuation: false,
+            receipts,
+          }, null, 2));
+          NODE

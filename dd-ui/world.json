@@ -1,0 +1,56 @@
+{
+  "grammarVersion": "dd-ui/2",
+  "avatar": "CEO",
+  "context": "normal",
+  "authority": [],
+  "asOf": "2026-08-18T22:06:00-07:00",
+  "events": [
+    {
+      "id": "ecosystem-e1",
+      "at": "2026-08-18T22:06:00-07:00",
+      "type": "claim.observed",
+      "claim": {
+        "id": "ecosystem-composition-control-plane",
+        "title": "Cross-product composition control plane",
+        "domain": "GOVERNANCE",
+        "standing": "OBSERVED",
+        "systemStanding": "UNKNOWN",
+        "kind": "ExecutiveSummary",
+        "materiality": 100,
+        "owner": "chatman-ecosystem",
+        "businessImpact": "The ecosystem composes independently owned repository identities, relationships, policy, evidence, and standing into one executive world without becoming an implementation monolith.",
+        "evidence": [
+          "repo:seanchatmangpt/chatman-ecosystem@c971738235221510c797c137967df4d92688f2ad",
+          "path:CONSTITUTION.md",
+          "path:AGENTS.md"
+        ],
+        "metrics": [],
+        "actions": [
+          {"id": "inspect-federation", "label": "Inspect federation evidence", "consequence": "SELECT"}
+        ]
+      }
+    },
+    {
+      "id": "ecosystem-e2",
+      "at": "2026-08-18T22:06:01-07:00",
+      "type": "claim.observed",
+      "claim": {
+        "id": "broker-only-do",
+        "title": "Executive UI does not own consequential DO",
+        "domain": "GOVERNANCE",
+        "standing": "OBSERVED",
+        "systemStanding": "UNKNOWN",
+        "kind": "Risk",
+        "materiality": 100,
+        "owner": "chatman-ecosystem",
+        "businessImpact": "Capability visibility, repository ownership, credentials, and rendered controls do not confer authority; consequential mutation remains behind the owning broker or BRCE boundary.",
+        "evidence": [
+          "path:CONSTITUTION.md#non-negotiable-laws",
+          "path:AGENTS.md"
+        ],
+        "metrics": [],
+        "actions": []
+      }
+    }
+  ]
+}

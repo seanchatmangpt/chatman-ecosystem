@@ -1,0 +1,43 @@
+flowchart TB
+  subgraph OWNERS[Owning repositories]
+    GGEN[ggen\nmanufacture world]
+    MARKET[ggen-marketplace\nreusable DDUI grammar pack]
+    GYMACT[GymAct\nbounded world / episode semantics]
+    AUTOFDE[AutoFDE\ngoverned delivery world]
+    CASTLE[CASTLE\nauthority / security world]
+  end
+
+  GGEN --> FED[Federated admitted world]
+  MARKET --> FED
+  GYMACT --> FED
+  AUTOFDE --> FED
+  CASTLE --> FED
+
+  ENGINE[wasm4pm DDUI v2\nexact projection engine] --> P[Deterministic projection P]
+  FED --> P
+  AVATAR[Avatar alpha] --> P
+  CONTEXT[Context kappa] --> P
+  AUTH[Authority rho] --> P
+  GRAMMAR[Bounded grammar Gamma] --> P
+
+  P --> FRONTIER[DfCM reversible presentation frontier]
+  FRONTIER --> SCREEN[Screen IR]
+
+  SCREEN --> CEO[CEO projection]
+  SCREEN --> CFO[CFO projection]
+  SCREEN --> CTO[CTO projection]
+  SCREEN --> ENG[Engineer projection]
+  SCREEN --> AUD[Auditor projection]
+
+  SCREEN --> INTENT[Unselected intent]
+  INTENT --> SELECT[SELECT]
+  INTENT --> CONSTRUCT[CONSTRUCT]
+  INTENT --> BROKER[Owning broker / BRCE]
+  BROKER --> DO[DO]
+  SCREEN -. no direct actuation .-> DO
+  LLM[LLM / AGI] -. no runtime render authority .-> P
+
+  SCREEN --> RECEIPT[Screen receipt]
+  RECEIPT --> REPLAY[Exact replay]
+
+  FED -. preserves scoped standing .-> STANDING[Per-repository standing\nUNKNOWN / PARTIAL_ALIVE / ALIVE / BLOCKED / BUILD_BROKEN / UNSUPPORTED]
