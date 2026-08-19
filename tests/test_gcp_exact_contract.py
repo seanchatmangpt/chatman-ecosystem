@@ -5,6 +5,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import tomllib
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,7 +70,9 @@ class GcpExactContractTests(unittest.TestCase):
 
     def test_non_exact_subject_sha_is_refused(self) -> None:
         text = CATALOG.read_text(encoding="utf-8")
-        exact_sha = 'sha = "2476aa978e54fa7cfa3f07167e0e95fc71209bd3"'
+        parsed = tomllib.loads(text)
+        gymact = next(subject for subject in parsed["subjects"] if subject["id"] == "gymact-gcp-runtime")
+        exact_sha = f'sha = "{gymact["sha"]}"'
         self.assertIn(exact_sha, text)
         text = text.replace(exact_sha, 'sha = "main"', 1)
         with tempfile.TemporaryDirectory() as directory:
