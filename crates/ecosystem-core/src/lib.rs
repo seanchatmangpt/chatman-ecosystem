@@ -949,11 +949,10 @@ mod tests {
         });
         assert!(required_rails_alive(&rails));
 
-        rails
-            .iter_mut()
-            .find(|rail| rail.id == REQUIRED_RAILS[0])
-            .expect("required rail exists")
-            .standing = Standing::PartialAlive;
+        assert!(!rails.is_empty());
+        if let Some(first) = rails.first_mut() {
+            first.standing = Standing::PartialAlive;
+        }
         assert!(!required_rails_alive(&rails));
     }
 
