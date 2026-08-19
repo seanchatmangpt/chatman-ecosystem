@@ -19,13 +19,13 @@ unreceipted_alive_units = 0
 id = "gymact-gcp-runtime"
 repository = "seanchatmangpt/gymact"
 ref = "agent/gcp-exact-conformance"
-sha = "4c8761273654aded3dc2e000e6246240671c794e"
+sha = "2476aa978e54fa7cfa3f07167e0e95fc71209bd3"
 role = "runtime-differential-conformance"
-standing = "PARTIAL_ALIVE"
+standing = "UNKNOWN"
 required = true
 depends_on = []
-evidence = ["github-actions:32219443076"]
-exclusions = ["generic-world-crown-does-not-prove-gcp-exactness"]
+evidence = []
+exclusions = ["prior-head-workflow-evidence-does-not-transfer", "generic-world-crown-does-not-prove-gcp-exactness"]
 
 [[subjects]]
 id = "gcp-exact-conformance-pack"
