@@ -50,6 +50,8 @@ import { reconcilePlanState } from "@/lib/plan-state";
 import { recomputeAllOverageEstimates } from "@/lib/overage-billing";
 import { deliverWebhookEvent, redeliverStoredEvent, type WebhookEventType } from "@/lib/webhooks";
 import { listDueRetries } from "@/lib/webhook-deliveries";
+import { checkSupportTicketBreaches } from "@/lib/support-tickets";
+import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 
 const POLL_INTERVAL_MS = 10_000;
 
@@ -267,6 +269,50 @@ async function pollOverageEstimates(): Promise<void> {
 }
 
 /**
+ * checkSupportTicketBreaches() (lib/support-tickets.ts) is the only writer
+ * of a ticket's `breached` status -- calling it here, once per real 10s
+ * tick, is what makes the `enterprise-247` SLA tier's paid 1-hour
+ * response commitment an actually-measured, actually-escalated clock
+ * rather than a static label on the org record. Same "belongs to the
+ * poller only" discipline pollQuotaEnforcement's own header comment
+ * documents: a page view never flips a ticket to `breached`, only this
+ * tick does, so two concurrent readers can never race the same
+ * transition. Every newly-breached ticket gets one real audit-log entry
+ * (writeAuditLogEntry, the same durable hash-chained
+ * platform_console.audit_log table every other mutation in this repo
+ * writes through) AND one `support.sla_breached` webhook delivery, reusing
+ * lib/webhooks.ts's existing event-type registry so downstream paging
+ * tools (PagerDuty/Opsgenie via a registered webhook URL) react without
+ * this module knowing anything about how they're wired.
+ */
+async function pollSupportTicketBreaches(): Promise<void> {
+  const result = await checkSupportTicketBreaches();
+  if (!result.ok) {
+    console.error(`[webhook-poller] checkSupportTicketBreaches failed: ${result.error}`);
+    return;
+  }
+  for (const { ticket } of result.data) {
+    writeAuditLogEntry({
+      timestamp: new Date().toISOString(),
+      actor: "system:support-ticket-poller",
+      method: "SYSTEM",
+      path: `/api/orgs/${ticket.orgId}/tickets/${ticket.id}`,
+      status: 200,
+      requestId: newRequestId(),
+    });
+    await deliverWebhookEvent("support.sla_breached", {
+      ticketId: ticket.id,
+      orgId: ticket.orgId,
+      subject: ticket.subject,
+      priority: ticket.priority,
+      createdAt: ticket.createdAt,
+      firstResponseDueAt: ticket.firstResponseDueAt,
+      breachedAt: new Date().toISOString(),
+    });
+  }
+}
+
+/**
  * Real retry-with-backoff tick: picks up every delivery
  * lib/webhook-deliveries.ts's own backoff schedule marked `pending_retry`
  * with a `next_attempt_at` that has now passed, and redelivers the exact
@@ -307,6 +353,7 @@ async function tick(): Promise<void> {
     pollPlanState(),
     pollOverageEstimates(),
     pollWebhookRetries(),
+    pollSupportTicketBreaches(),
   ]);
 }
 

@@ -135,7 +135,7 @@ async function resolvePool(): Promise<Pool | null> {
 // here isn't a shortcut, it's the correct algorithm for a fundamentally
 // different job (a growing, append-only chain vs. one static document),
 // and node:crypto ships in the runtime already (no new dependency).
-import { createHash } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 
 // Genesis value the first real row's prev_hash commits to -- distinguishable
 // at a glance from any real sha256 digest (which is lowercase hex).
@@ -359,6 +359,240 @@ export async function getAuditDbPool(): Promise<Pool | null> {
   return resolvePool();
 }
 
+// ---------------------------------------------- Audit export tokens (SIEM)
+//
+// A narrowly-scoped bearer credential distinct from both the session
+// cookie (lib/session.ts) and the general-purpose lib/api-keys.ts
+// `pk_live_...` key: a Fortune-5 security team's Splunk/Datadog/Sentinel
+// forwarder needs to poll GET /api/v1/audit-export on an unattended
+// schedule, forever, with a credential that can be handed to that
+// forwarder and revoked independently of any human's own API key or
+// session -- never a credential that also happens to carry that human's
+// full role (viewer/member/owner) over the rest of this console. Scope is
+// therefore fixed at mint time to the single literal `"audit:read"`
+// string (no other scope exists yet; the column is a real, checked value
+// rather than an assumed one so a future second scope doesn't silently
+// widen every already-issued token). Stored HASHED (SHA-256, one-way),
+// same convention as lib/api-keys.ts's ApiKeyRecord.hash -- the plaintext
+// token is shown exactly once, in the mint response, and never persisted.
+//
+// Table lives in the SAME `platform_console` schema/Postgres this module
+// already owns (not a new k8s Secret) because the export flow this token
+// gates -- queryAuditLog / verifyAuditChain -- already lives here, and a
+// SIEM forwarder's credential lookup is a hot path (every scheduled poll)
+// best served by a single indexed SELECT against a table already backed
+// by a live connection pool, not a k8s Secret GET per request.
+export type AuditExportScope = "audit:read";
+
+export interface AuditExportTokenRecord {
+  id: number;
+  orgId: string;
+  prefix: string; // shown in listings -- e.g. "aet_AbCd1234..." -- never the full token
+  scope: AuditExportScope;
+  createdBy: string;
+  createdAt: string; // RFC3339
+  revokedAt: string | null;
+}
+
+const AUDIT_EXPORT_TOKEN_PREFIX = "aet_live_";
+
+async function ensureAuditExportTokensTable(pool: Pool): Promise<void> {
+  await pool.query(`CREATE SCHEMA IF NOT EXISTS platform_console`);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS platform_console.audit_export_tokens (
+      id          bigserial PRIMARY KEY,
+      org_id      text NOT NULL,
+      token_hash  text NOT NULL UNIQUE,
+      prefix      text NOT NULL,
+      scope       text NOT NULL,
+      created_by  text NOT NULL,
+      created_at  timestamptz NOT NULL DEFAULT now(),
+      revoked_at  timestamptz
+    )
+  `);
+  await pool.query(
+    `CREATE INDEX IF NOT EXISTS audit_export_tokens_org_id_idx
+       ON platform_console.audit_export_tokens (org_id)`,
+  );
+}
+
+let auditExportTokensTableReady: Promise<void> | null = null;
+
+async function resolveAuditExportTokensPool(): Promise<Pool | null> {
+  const pool = await resolvePool();
+  if (!pool) return null;
+  if (!auditExportTokensTableReady) {
+    auditExportTokensTableReady = ensureAuditExportTokensTable(pool);
+  }
+  await auditExportTokensTableReady;
+  return pool;
+}
+
+function toAuditExportTokenRecord(r: {
+  id: string | number;
+  org_id: string;
+  prefix: string;
+  scope: string;
+  created_by: string;
+  created_at: string;
+  revoked_at: string | null;
+}): AuditExportTokenRecord {
+  return {
+    id: Number(r.id),
+    orgId: r.org_id,
+    prefix: r.prefix,
+    scope: r.scope as AuditExportScope,
+    createdBy: r.created_by,
+    createdAt: new Date(r.created_at).toISOString(),
+    revokedAt: r.revoked_at ? new Date(r.revoked_at).toISOString() : null,
+  };
+}
+
+export interface CreateAuditExportTokenResult {
+  plaintext: string;
+  record: AuditExportTokenRecord;
+}
+
+/**
+ * Mints one new, owner-issued audit-export token for `orgId`. Real
+ * cryptographically random material (`crypto.randomBytes(32)`,
+ * base64url-encoded, 256 bits of entropy), same generation discipline as
+ * lib/api-keys.ts's generateKeyMaterial -- only the prefix differs
+ * (`aet_live_`, distinguishing this credential class from `pk_live_`
+ * session-equivalent API keys at a glance in any log line that leaks a
+ * prefix). Scope is always `"audit:read"` -- there is no broader scope to
+ * request yet.
+ */
+export async function createAuditExportToken(input: {
+  orgId: string;
+  createdBy: string;
+}): Promise<{ ok: true; data: CreateAuditExportTokenResult } | { ok: false; error: string }> {
+  const pool = await resolveAuditExportTokensPool();
+  if (!pool) {
+    return { ok: false, error: "audit log database not configured or unreachable" };
+  }
+  const plaintext = `${AUDIT_EXPORT_TOKEN_PREFIX}${randomBytes(32).toString("base64url")}`;
+  const hash = createHash("sha256").update(plaintext, "utf8").digest("hex");
+  const prefix = `${plaintext.slice(0, AUDIT_EXPORT_TOKEN_PREFIX.length + 8)}...`;
+  try {
+    const result = await pool.query<{
+      id: string;
+      org_id: string;
+      prefix: string;
+      scope: string;
+      created_by: string;
+      created_at: string;
+      revoked_at: string | null;
+    }>(
+      `INSERT INTO platform_console.audit_export_tokens
+         (org_id, token_hash, prefix, scope, created_by)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, org_id, prefix, scope, created_by, created_at, revoked_at`,
+      [input.orgId, hash, prefix, "audit:read", input.createdBy],
+    );
+    return {
+      ok: true,
+      data: { plaintext, record: toAuditExportTokenRecord(result.rows[0]) },
+    };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+export async function listAuditExportTokens(
+  orgId: string,
+): Promise<{ ok: true; data: AuditExportTokenRecord[] } | { ok: false; error: string }> {
+  const pool = await resolveAuditExportTokensPool();
+  if (!pool) {
+    return { ok: false, error: "audit log database not configured or unreachable" };
+  }
+  try {
+    const result = await pool.query(
+      `SELECT id, org_id, prefix, scope, created_by, created_at, revoked_at
+       FROM platform_console.audit_export_tokens
+       WHERE org_id = $1
+       ORDER BY created_at DESC`,
+      [orgId],
+    );
+    return { ok: true, data: result.rows.map(toAuditExportTokenRecord) };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+export async function revokeAuditExportToken(
+  orgId: string,
+  id: number,
+): Promise<{ ok: true; data: AuditExportTokenRecord } | { ok: false; error: string }> {
+  const pool = await resolveAuditExportTokensPool();
+  if (!pool) {
+    return { ok: false, error: "audit log database not configured or unreachable" };
+  }
+  try {
+    const result = await pool.query(
+      `UPDATE platform_console.audit_export_tokens
+       SET revoked_at = now()
+       WHERE id = $1 AND org_id = $2 AND revoked_at IS NULL
+       RETURNING id, org_id, prefix, scope, created_by, created_at, revoked_at`,
+      [id, orgId],
+    );
+    if (result.rows.length === 0) {
+      const existing = await pool.query(
+        `SELECT id, org_id, prefix, scope, created_by, created_at, revoked_at
+         FROM platform_console.audit_export_tokens WHERE id = $1 AND org_id = $2`,
+        [id, orgId],
+      );
+      if (existing.rows.length === 0) {
+        return { ok: false, error: `no audit export token found with id '${id}' for org '${orgId}'` };
+      }
+      return { ok: true, data: toAuditExportTokenRecord(existing.rows[0]) };
+    }
+    return { ok: true, data: toAuditExportTokenRecord(result.rows[0]) };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+export interface ResolvedAuditExportAuth {
+  orgId: string;
+  scope: AuditExportScope;
+  tokenId: number;
+}
+
+/**
+ * Resolves a presented `Authorization: Bearer aet_live_...` token into the
+ * org+scope it authenticates as -- `null` on wrong prefix, no matching
+ * hash, or a revoked token. Hash comparison uses `crypto.timingSafeEqual`
+ * (via safeEqualHexDigests below), same timing-attack discipline as
+ * lib/api-keys.ts's resolveApiKeyAuth.
+ */
+export async function resolveAuditExportToken(
+  presentedToken: string,
+): Promise<ResolvedAuditExportAuth | null> {
+  if (!presentedToken.startsWith(AUDIT_EXPORT_TOKEN_PREFIX)) return null;
+  const pool = await resolveAuditExportTokensPool();
+  if (!pool) return null;
+  const hash = createHash("sha256").update(presentedToken, "utf8").digest("hex");
+  try {
+    const result = await pool.query<{
+      id: string;
+      org_id: string;
+      scope: string;
+      revoked_at: string | null;
+    }>(
+      `SELECT id, org_id, scope, revoked_at
+       FROM platform_console.audit_export_tokens
+       WHERE token_hash = $1`,
+      [hash],
+    );
+    const row = result.rows[0];
+    if (!row || row.revoked_at) return null;
+    return { orgId: row.org_id, scope: row.scope as AuditExportScope, tokenId: Number(row.id) };
+  } catch {
+    return null;
+  }
+}
+
 // --------------------------------------------------------- Querying (/audit)
 
 export interface AuditLogRow {
@@ -453,6 +687,87 @@ export async function queryAuditLog(params: AuditLogQueryParams): Promise<AuditL
     const rows: AuditLogRow[] = rowsResult.rows.map(toAuditLogRow);
 
     return { ok: true, data: { rows, total } };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+export interface AuditLogSinceResult {
+  rows: AuditLogRow[];
+  /** RFC3339 `ts` + row id of the last row returned, encoded as `<ts>|<id>` -- pass straight back as `since` on the next call. `undefined` when the batch was empty. */
+  nextCursor?: string;
+}
+
+/**
+ * Real keyset-paginated read for GET /api/v1/audit-export: every row with
+ * `(ts, id) > since` (or every row, when `since` is omitted -- a fresh
+ * SIEM forwarder's very first poll), oldest first, capped at `limit`.
+ * Ordered ascending (unlike queryAuditLog's DESC, which serves the
+ * human-facing /audit browser's "most recent first" page) because a SIEM
+ * forwarder ingests a bounded window and must resume from exactly where
+ * it left off -- ASC + `(ts, id) > cursor` is the same keyset-pagination
+ * shape lib/audit-export.ts's fetchBatch already uses for its NDJNSON
+ * export, applied here to the JSON/cursor contract this route needs
+ * instead of that module's streaming NDJSON one.
+ */
+export async function queryAuditLogSince(
+  since: string | undefined,
+  limit: number,
+): Promise<{ ok: true; data: AuditLogSinceResult } | { ok: false; error: string }> {
+  const pool = await resolvePool();
+  if (!pool) {
+    return {
+      ok: false,
+      error:
+        "audit log database not configured or unreachable -- see the stdout log (kubectl logs) for this environment's real-time record",
+    };
+  }
+
+  let cursorTs: string | null = null;
+  let cursorId: number | null = null;
+  if (since) {
+    const sepIdx = since.lastIndexOf("|");
+    if (sepIdx > 0) {
+      cursorTs = since.slice(0, sepIdx);
+      cursorId = Number(since.slice(sepIdx + 1));
+    } else {
+      // Bare RFC3339 timestamp with no encoded row id -- treat as "every
+      // row with ts > since", id unconstrained. Accepted so a caller can
+      // hand-construct a `since` value from a wall-clock time, not only
+      // from a previously-returned next_cursor.
+      cursorTs = since;
+      cursorId = null;
+    }
+  }
+
+  const conditions: string[] = [];
+  const values: unknown[] = [];
+  if (cursorTs !== null && cursorId !== null && Number.isFinite(cursorId)) {
+    values.push(cursorTs, cursorId);
+    conditions.push(`(ts, id) > ($${values.length - 1}, $${values.length})`);
+  } else if (cursorTs !== null) {
+    values.push(cursorTs);
+    conditions.push(`ts > $${values.length}`);
+  }
+  const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
+  try {
+    values.push(limit);
+    const result = await pool.query(
+      `SELECT id, request_id, ts, actor, method, path, status, inserted_at, castle_receipt_digest,
+              impersonated_by, impersonation_session_id
+       FROM platform_console.audit_log
+       ${where}
+       ORDER BY ts ASC, id ASC
+       LIMIT $${values.length}`,
+      values,
+    );
+    const rows: AuditLogRow[] = result.rows.map(toAuditLogRow);
+    const last = rows[rows.length - 1];
+    return {
+      ok: true,
+      data: { rows, nextCursor: last ? `${last.ts}|${last.id}` : undefined },
+    };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }

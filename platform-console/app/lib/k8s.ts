@@ -21,6 +21,7 @@ import {
   resourceQuotaHardFor,
   type ProjectTier,
 } from "./tiers";
+import { DEFAULT_ENVIRONMENT, ENVIRONMENT_LABEL, isEnvironment, type Environment } from "./environments";
 
 const SA_DIR = "/var/run/secrets/kubernetes.io/serviceaccount";
 const REQUEST_TIMEOUT_MS = 5000;
@@ -184,6 +185,12 @@ export interface SupabaseProject {
    * created before this label existed, or with a malformed value --
    * never silently `undefined`. */
   tier: ProjectTier;
+  /** Real promotion-pipeline environment read back from this Project's own
+   * `ENVIRONMENT_LABEL` (lib/environments.ts). Defaults to
+   * `DEFAULT_ENVIRONMENT` for a Project created before this label existed,
+   * or with a malformed value -- never silently `undefined`, same
+   * fail-to-a-known-default discipline the `tier` field above uses. */
+  environment: Environment;
 }
 
 interface K8sListMeta {
@@ -224,6 +231,10 @@ function toSupabaseProject(item: NonNullable<K8sListMeta["items"]>[number]): Sup
     tier: (() => {
       const raw = item.metadata.labels?.[TIER_LABEL];
       return raw && isProjectTier(raw) ? raw : DEFAULT_PROJECT_TIER;
+    })(),
+    environment: (() => {
+      const raw = item.metadata.labels?.[ENVIRONMENT_LABEL];
+      return raw && isEnvironment(raw) ? raw : DEFAULT_ENVIRONMENT;
     })(),
   };
 }
@@ -285,6 +296,32 @@ export async function setProjectTier(
   return { ok: true, data: toSupabaseProject(result.data) };
 }
 
+/**
+ * Updates an existing Project's promotion-pipeline environment via a real
+ * RFC 7386 merge patch touching only `metadata.labels.<ENVIRONMENT_LABEL>`
+ * -- same merge-patch primitive/convention setProjectTier above already
+ * establishes for TIER_LABEL. Called only after the promotion route's
+ * caller-side validation (lib/environments.ts's validatePromotion), the
+ * freeze guard, and a fresh approved `environment.promote` row all already
+ * passed -- this function itself performs no additional business-rule
+ * check, it is the one real k8s write the promotion route makes once every
+ * gate has cleared.
+ */
+export async function setProjectEnvironment(
+  name: string,
+  namespace: string,
+  environment: Environment,
+): Promise<K8sResult<SupabaseProject>> {
+  const result = await k8sRequest<NonNullable<K8sListMeta["items"]>[number]>(
+    `/apis/core.supabase.io/v1alpha1/namespaces/${encodeURIComponent(namespace)}/projects/${encodeURIComponent(name)}`,
+    "PATCH",
+    { metadata: { labels: { [ENVIRONMENT_LABEL]: environment } } },
+    "application/merge-patch+json",
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toSupabaseProject(result.data) };
+}
+
 export interface CreateProjectInput {
   name: string;
   namespace: string;
@@ -309,6 +346,13 @@ export interface CreateProjectInput {
    * entirely (not even `nodeSelector: {}`) when unset, so an unpinned
    * project's scheduling is completely unaffected. */
   region?: string;
+  /** Environment-promotion pipeline stage (lib/environments.ts) -- set as
+   * a real `ENVIRONMENT_LABEL` label on the Project CR at provisioning
+   * time. Defaults to `DEFAULT_ENVIRONMENT` ("dev") when omitted, so a
+   * freshly-created Project always starts at the bottom of the pipeline
+   * and must be explicitly promoted (POST /api/projects/[name]/promote)
+   * to move to `staging`/`prod`, never created already at a later stage. */
+  environment?: Environment;
 }
 
 interface SingleDatabaseItem {
@@ -410,7 +454,10 @@ export function buildProjectManifest(input: CreateProjectInput) {
     metadata: {
       name: input.name,
       namespace: input.namespace,
-      labels: { [TIER_LABEL]: input.tier ?? DEFAULT_PROJECT_TIER },
+      labels: {
+        [TIER_LABEL]: input.tier ?? DEFAULT_PROJECT_TIER,
+        [ENVIRONMENT_LABEL]: input.environment ?? DEFAULT_ENVIRONMENT,
+      },
     },
     spec: {
       databaseRef: { kind: "SingleDatabase", name: input.databaseRefName },

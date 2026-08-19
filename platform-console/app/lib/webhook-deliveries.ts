@@ -17,15 +17,23 @@
  * closed, never throws past a caller" convention as every other
  * audit-db.ts reader.
  *
- * One row per LOGICAL delivery (one event to one subscription), not one
- * row per attempt -- the row is mutated in place as attempts happen
- * (attempt_number increments, http_status/error/duration_ms reflect the
- * most recent attempt), with `next_attempt_at` as the retry queue's own
- * due-time column. This is what makes GET .../deliveries a real, bounded
- * "current state of every delivery" history rather than an
- * ever-multiplying attempt log, while `attempt_number` and `status`
- * still let a viewer see exactly how many times a delivery was tried and
- * whether it is still in flight, delivered, or dead-lettered.
+ * The record of truth is `platform_console.webhook_delivery_attempts`:
+ * one IMMUTABLE row per attempt, pure INSERT, never UPDATE, never
+ * overwritten -- attempt 1's http_status/error/duration_ms survives
+ * forever even after attempt 2, 3, ... run. This is what a SOC2 CC7 /
+ * PCI DSS logging review actually asks for: a full, tamper-evident,
+ * attempt-by-attempt forensic trail for every outbound webhook, not just
+ * whatever the most recent attempt happened to be.
+ *
+ * `platform_console.webhook_deliveries` remains, but is now explicitly a
+ * DERIVED / SUMMARY PROJECTION of that attempt log, not the record of
+ * truth -- one row per LOGICAL delivery (one event to one subscription),
+ * upserted in place purely as a cheap "current status" read (used by the
+ * retry poller's due-queue and the subscription-level delivery list).
+ * Every field on it is reconstructible at any time by
+ * `SELECT ... FROM webhook_delivery_attempts WHERE delivery_id = $1
+ * ORDER BY attempt_number DESC LIMIT 1` -- it is a materialized
+ * convenience, never the source GET .../attempts reads from.
  */
 import { Pool } from "pg";
 import { getAuditDbPool } from "@/lib/audit-db";
@@ -66,8 +74,49 @@ export interface WebhookDeliveryRecord extends WebhookDeliveryRow {
   body: string;
 }
 
+/** One immutable row per delivery attempt -- the actual record of
+ * truth. `attempt_id` is a plain serial surrogate key (no natural
+ * uniqueness requirement is asserted across the pair, since a caller
+ * could in principle log the same attempt_number twice under retry
+ * races; the forensic trail should keep both rather than silently drop
+ * one), with `(delivery_id, attempt_number)` indexed for ordered
+ * per-delivery reads. There is deliberately no `ON CONFLICT` clause
+ * anywhere this table is written -- every write is a pure INSERT. */
+export interface WebhookDeliveryAttemptRow {
+  attemptId: number;
+  deliveryId: string;
+  subscriptionId: string;
+  eventType: string;
+  url: string;
+  status: WebhookDeliveryStatus;
+  httpStatus: number | null;
+  error: string | null;
+  durationMs: number | null;
+  attemptNumber: number;
+  createdAt: string; // RFC3339
+}
+
 async function ensureWebhookDeliveriesTable(pool: Pool): Promise<void> {
   await pool.query(`CREATE SCHEMA IF NOT EXISTS platform_console`);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS platform_console.webhook_delivery_attempts (
+      attempt_id       bigserial PRIMARY KEY,
+      delivery_id      text NOT NULL,
+      subscription_id  text NOT NULL,
+      event_type       text NOT NULL,
+      url              text NOT NULL,
+      status           text NOT NULL,
+      http_status      integer,
+      error            text,
+      duration_ms      integer,
+      attempt_number   integer NOT NULL,
+      created_at       timestamptz NOT NULL DEFAULT now()
+    )
+  `);
+  await pool.query(
+    `CREATE INDEX IF NOT EXISTS webhook_delivery_attempts_delivery_idx
+       ON platform_console.webhook_delivery_attempts (delivery_id, attempt_number)`,
+  );
   await pool.query(`
     CREATE TABLE IF NOT EXISTS platform_console.webhook_deliveries (
       id               bigserial PRIMARY KEY,
@@ -136,6 +185,23 @@ function toRecord(r: Record<string, unknown>): WebhookDeliveryRecord {
   return { ...toRow(r), body: r.body as string };
 }
 
+function toAttemptRow(r: Record<string, unknown>): WebhookDeliveryAttemptRow {
+  return {
+    attemptId: Number(r.attempt_id),
+    deliveryId: r.delivery_id as string,
+    subscriptionId: r.subscription_id as string,
+    eventType: r.event_type as string,
+    url: r.url as string,
+    status: r.status as WebhookDeliveryStatus,
+    httpStatus: r.http_status === null || r.http_status === undefined ? null : Number(r.http_status),
+    error: (r.error as string | null) ?? null,
+    durationMs:
+      r.duration_ms === null || r.duration_ms === undefined ? null : Number(r.duration_ms),
+    attemptNumber: Number(r.attempt_number),
+    createdAt: new Date(r.created_at as string).toISOString(),
+  };
+}
+
 /** Given the attempt number that just FAILED, returns the next status +
  * retry time: `pending_retry` with a real `nextAttemptAt` while under
  * MAX_DELIVERY_ATTEMPTS, `dead_letter` (no further retry) once the
@@ -164,43 +230,66 @@ export interface AttemptOutcome {
 }
 
 /**
- * Inserts a fresh delivery row for attempt 1 (first-ever attempt for a
- * deliveryId), or updates the existing row in place for attempt 2+
- * (retries/replays). Never throws past the caller -- a failed persist is
- * logged to stderr and swallowed, same fail-open convention
- * lib/audit-db.ts's writeAuditLogEntry uses, so a DB hiccup never blocks
- * or fails the actual webhook delivery this describes.
+ * Records one delivery attempt. Two writes happen, in order:
+ *
+ *  1. A pure INSERT (no ON CONFLICT, ever) into
+ *     `webhook_delivery_attempts` -- the immutable forensic row for
+ *     THIS attempt. Attempt 1's http_status/error/duration_ms is never
+ *     touched again once attempt 2 is recorded; both rows persist side
+ *     by side forever.
+ *  2. An upsert of `webhook_deliveries`, the derived "current status"
+ *     projection -- purely a cheap-read cache of the latest attempt, kept
+ *     for the existing due-retry poller query and the per-subscription
+ *     delivery list. If this row were dropped entirely, it could be
+ *     rebuilt in full from `webhook_delivery_attempts` via
+ *     `DISTINCT ON (delivery_id) ... ORDER BY delivery_id, attempt_number DESC`.
+ *
+ * Never throws past the caller -- a failed persist is logged to stderr
+ * and swallowed, same fail-open convention lib/audit-db.ts's
+ * writeAuditLogEntry uses, so a DB hiccup never blocks or fails the
+ * actual webhook delivery this describes.
  */
 export async function recordDeliveryAttempt(outcome: AttemptOutcome): Promise<void> {
   const pool = await resolveReadyPool();
   if (!pool) return; // not configured / cluster DB unreachable -- console log is still the real record for this environment
-  try {
-    if (outcome.ok) {
-      await pool.query(
-        `INSERT INTO platform_console.webhook_deliveries
-           (delivery_id, subscription_id, event_type, url, body, status, http_status, error,
-            duration_ms, attempt_number, max_attempts, next_attempt_at, updated_at)
-         VALUES ($1, $2, $3, $4, $5, 'delivered', $6, NULL, $7, $8, $9, NULL, now())
-         ON CONFLICT (delivery_id) DO UPDATE SET
-           status = 'delivered', http_status = EXCLUDED.http_status, error = NULL,
-           duration_ms = EXCLUDED.duration_ms, attempt_number = EXCLUDED.attempt_number,
-           next_attempt_at = NULL, updated_at = now()`,
-        [
-          outcome.deliveryId,
-          outcome.subscriptionId,
-          outcome.eventType,
-          outcome.url,
-          outcome.body,
-          outcome.httpStatus,
-          outcome.durationMs,
-          outcome.attemptNumber,
-          MAX_DELIVERY_ATTEMPTS,
-        ],
-      );
-      return;
-    }
 
-    const { status, nextAttemptAt } = nextStateAfterFailure(outcome.attemptNumber);
+  const status: WebhookDeliveryStatus = outcome.ok
+    ? "delivered"
+    : nextStateAfterFailure(outcome.attemptNumber).status;
+  const nextAttemptAt = outcome.ok ? null : nextStateAfterFailure(outcome.attemptNumber).nextAttemptAt;
+  const error = outcome.ok ? null : outcome.error;
+
+  try {
+    // (1) Immutable attempt log -- pure INSERT, never UPDATE.
+    await pool.query(
+      `INSERT INTO platform_console.webhook_delivery_attempts
+         (delivery_id, subscription_id, event_type, url, status, http_status, error,
+          duration_ms, attempt_number)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      [
+        outcome.deliveryId,
+        outcome.subscriptionId,
+        outcome.eventType,
+        outcome.url,
+        status,
+        outcome.httpStatus,
+        error,
+        outcome.durationMs,
+        outcome.attemptNumber,
+      ],
+    );
+  } catch (err) {
+    console.error(
+      JSON.stringify({
+        webhookDeliveryAttemptPersistError: err instanceof Error ? err.message : String(err),
+        deliveryId: outcome.deliveryId,
+      }),
+    );
+  }
+
+  try {
+    // (2) Derived current-status projection -- upsert is fine here, this
+    // is explicitly documented as NOT the record of truth.
     await pool.query(
       `INSERT INTO platform_console.webhook_deliveries
          (delivery_id, subscription_id, event_type, url, body, status, http_status, error,
@@ -218,7 +307,7 @@ export async function recordDeliveryAttempt(outcome: AttemptOutcome): Promise<vo
         outcome.body,
         status,
         outcome.httpStatus,
-        outcome.error,
+        error,
         outcome.durationMs,
         outcome.attemptNumber,
         MAX_DELIVERY_ATTEMPTS,
@@ -319,6 +408,40 @@ export async function getDeliveryRecord(deliveryId: string): Promise<WebhookDeli
       [deliveryId],
     );
     return { ok: true, data: result.rows[0] ? toRecord(result.rows[0]) : null };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+/** Full, ordered, never-overwritten attempt history for one delivery --
+ * the actual forensic record a SOC2/PCI logging reviewer wants, backing
+ * GET /api/webhooks/deliveries/[deliveryId]/attempts. Reads directly
+ * from `webhook_delivery_attempts`, oldest attempt first, so a viewer
+ * can see exactly how the delivery evolved attempt by attempt (including
+ * every earlier failure's http_status/error/duration_ms, which the
+ * `webhook_deliveries` projection alone can no longer show once a later
+ * attempt has overwritten its own row). */
+export type WebhookDeliveryAttemptsOutcome =
+  | { ok: true; data: WebhookDeliveryAttemptRow[] }
+  | { ok: false; error: string };
+
+export async function listAttemptsForDelivery(
+  deliveryId: string,
+): Promise<WebhookDeliveryAttemptsOutcome> {
+  const pool = await resolveReadyPool();
+  if (!pool) {
+    return { ok: false, error: "webhook delivery log database not configured or unreachable" };
+  }
+  try {
+    const result = await pool.query(
+      `SELECT attempt_id, delivery_id, subscription_id, event_type, url, status, http_status,
+              error, duration_ms, attempt_number, created_at
+       FROM platform_console.webhook_delivery_attempts
+       WHERE delivery_id = $1
+       ORDER BY attempt_number ASC, attempt_id ASC`,
+      [deliveryId],
+    );
+    return { ok: true, data: result.rows.map(toAttemptRow) };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }

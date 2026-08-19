@@ -83,7 +83,8 @@ export type WebhookEventType =
   | "budget.threshold_crossed"
   | "quota.enforcement_triggered"
   | "plan_state.enforcement_triggered"
-  | "cost.anomaly_detected";
+  | "cost.anomaly_detected"
+  | "support.sla_breached";
 export const WEBHOOK_EVENT_TYPES: WebhookEventType[] = [
   "project.created",
   "backup.completed",
@@ -92,6 +93,7 @@ export const WEBHOOK_EVENT_TYPES: WebhookEventType[] = [
   "quota.enforcement_triggered",
   "plan_state.enforcement_triggered",
   "cost.anomaly_detected",
+  "support.sla_breached",
 ];
 
 export interface WebhookSubscription {

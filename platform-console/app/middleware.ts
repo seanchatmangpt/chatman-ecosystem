@@ -70,11 +70,24 @@ const PUBLIC_PATHS = [
 // request reach that handler instead of dying here on a missing cookie.
 const STORAGE_SIGNED_DOWNLOAD_PATTERN = /^\/api\/projects\/[^/]+\/storage\/download$/;
 
+// Second deliberately-public API route, same shape as the signed-download
+// exemption above: GET /api/v1/audit-export authenticates an unattended
+// SIEM forwarder (Splunk/Datadog/Sentinel) via its own narrowly-scoped
+// `Authorization: Bearer aet_live_...` export token
+// (lib/audit-db.ts's resolveAuditExportToken), never a session cookie or
+// a general-purpose pk_live_ API key -- gating it behind THIS middleware's
+// cookie-or-pk_live_ check would make a scheduled, unattended poll
+// impossible. The route handler performs its own real 401-on-invalid-or-
+// revoked-token check; this exemption only lets the request reach that
+// handler instead of dying here on a missing session cookie.
+const AUDIT_EXPORT_PATTERN = /^\/api\/v1\/audit-export$/;
+
 function isPublicPath(pathname: string): boolean {
   if (PUBLIC_PATHS.includes(pathname)) return true;
   if (pathname.startsWith("/_next/")) return true;
   if (pathname === "/favicon.ico") return true;
   if (STORAGE_SIGNED_DOWNLOAD_PATTERN.test(pathname)) return true;
+  if (AUDIT_EXPORT_PATTERN.test(pathname)) return true;
   return false;
 }
 

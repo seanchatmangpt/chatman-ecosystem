@@ -39,6 +39,7 @@
  */
 import { createOrUpdateConfigMap, getConfigMap, type K8sResult } from "@/lib/k8s";
 import type { ProjectTier } from "@/lib/tiers";
+import type { Environment } from "@/lib/environments";
 
 export const APPROVALS_NAMESPACE = "platform-console";
 export const APPROVALS_CONFIGMAP = "platform-console-approvals";
@@ -59,7 +60,8 @@ export type ApprovalAction =
   | "dr.failover"
   | "dsar.erasure"
   | "castle.verb.schedule"
-  | "freeze.override";
+  | "freeze.override"
+  | "environment.promote";
 export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   "org.delete",
   "quota.override",
@@ -115,6 +117,15 @@ export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   // never reaches this at all -- checkFreezeGuard refuses to create an
   // override request for it, it is a hard block.
   "freeze.override",
+  // Environment-promotion pipeline (dev -> staging -> prod, SOC2 CC8
+  // change-management control -- the same family as the freeze windows
+  // just above): moving a Project's ENVIRONMENT_LABEL forward a stage is
+  // exactly the "deploy artifact X from staging to prod" moment a
+  // regulated buyer's procurement checklist requires a second, distinct
+  // approver for -- the requester's own judgment that a promotion is
+  // ready is not sufficient by itself, same maker-checker bar every other
+  // action in this list sets. See app/api/projects/[name]/promote/route.ts.
+  "environment.promote",
 ];
 
 export type ApprovalStatus = "pending" | "approved" | "rejected";
@@ -184,6 +195,13 @@ export interface ApprovalResourcePayload {
     verbId: string;
     requestedFor: string;
   };
+  /** environment.promote: the non-secret shape of the requested promotion
+   * -- which environment the Project is moving FROM and TO -- so a second
+   * approver can see exactly which stage transition they are authorizing
+   * before signing off. `targetId` on the ApprovalRequest itself is the
+   * Project's own name (lib/k8s.ts's SupabaseProject.name). */
+  fromEnvironment?: Environment;
+  targetEnvironment?: Environment;
 }
 
 export interface ApprovalRequest {

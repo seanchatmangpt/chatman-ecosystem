@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { WebhookDeliveryRow } from "@/lib/webhook-deliveries";
+import type { WebhookDeliveryAttemptRow, WebhookDeliveryRow } from "@/lib/webhook-deliveries";
 
 // `WebhookDeliveryRow` is imported as a type-only import (erased at
 // compile time) -- same convention components/WebhooksPanel.tsx already
@@ -29,6 +29,16 @@ export default function WebhookDeliveryLog({ subscriptionId }: { subscriptionId:
   const [error, setError] = useState<string | null>(null);
   const [replayingId, setReplayingId] = useState<string | null>(null);
 
+  // Per-delivery immutable attempt timeline (GET
+  // /api/webhooks/deliveries/[deliveryId]/attempts), lazily fetched only
+  // once a row is expanded -- `expandedId` tracks which single delivery
+  // is expanded at a time, `attemptsById` caches results so re-expanding
+  // the same row doesn't refetch.
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [attemptsById, setAttemptsById] = useState<Record<string, WebhookDeliveryAttemptRow[]>>({});
+  const [attemptsLoadingId, setAttemptsLoadingId] = useState<string | null>(null);
+  const [attemptsError, setAttemptsError] = useState<string | null>(null);
+
   async function load() {
     setLoading(true);
     setError(null);
@@ -51,6 +61,30 @@ export default function WebhookDeliveryLog({ subscriptionId }: { subscriptionId:
     void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptionId]);
+
+  async function onToggleAttempts(deliveryId: string) {
+    if (expandedId === deliveryId) {
+      setExpandedId(null);
+      return;
+    }
+    setExpandedId(deliveryId);
+    setAttemptsError(null);
+    if (attemptsById[deliveryId]) return; // already cached
+    setAttemptsLoadingId(deliveryId);
+    try {
+      const res = await fetch(`/api/webhooks/deliveries/${encodeURIComponent(deliveryId)}/attempts`);
+      const body = await res.json();
+      if (!res.ok) {
+        setAttemptsError(body.error ?? `HTTP ${res.status}`);
+        return;
+      }
+      setAttemptsById((prev) => ({ ...prev, [deliveryId]: body.attempts as WebhookDeliveryAttemptRow[] }));
+    } catch (err) {
+      setAttemptsError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setAttemptsLoadingId(null);
+    }
+  }
 
   async function onReplay(deliveryId: string) {
     setReplayingId(deliveryId);
@@ -98,38 +132,84 @@ export default function WebhookDeliveryLog({ subscriptionId }: { subscriptionId:
       {deliveries !== null && deliveries.length > 0 && (
         <div className="space-y-1.5">
           {deliveries.map((d) => (
-            <div
-              key={d.deliveryId}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border/60 px-2 py-1.5"
-            >
-              <div className="min-w-0 text-xs">
-                <span
-                  className={`mr-2 inline-block rounded border px-1.5 py-0.5 font-medium ${STATUS_STYLES[d.status]}`}
-                >
-                  {d.status}
-                </span>
-                <span className="text-gray-400">
-                  attempt {d.attemptNumber}/{d.maxAttempts}
-                  {d.httpStatus !== null ? ` · HTTP ${d.httpStatus}` : ""}
-                  {d.error ? ` · ${d.error}` : ""}
-                  {d.durationMs !== null ? ` · ${d.durationMs}ms` : ""}
-                </span>
-                <span className="ml-2 text-gray-600">{new Date(d.updatedAt).toLocaleString()}</span>
-                {d.status === "pending_retry" && d.nextAttemptAt && (
-                  <span className="ml-2 text-amber-400/80">
-                    next retry {new Date(d.nextAttemptAt).toLocaleString()}
+            <div key={d.deliveryId} className="rounded-md border border-border/60 px-2 py-1.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="min-w-0 text-xs">
+                  <span
+                    className={`mr-2 inline-block rounded border px-1.5 py-0.5 font-medium ${STATUS_STYLES[d.status]}`}
+                  >
+                    {d.status}
                   </span>
-                )}
+                  <span className="text-gray-400">
+                    attempt {d.attemptNumber}/{d.maxAttempts}
+                    {d.httpStatus !== null ? ` · HTTP ${d.httpStatus}` : ""}
+                    {d.error ? ` · ${d.error}` : ""}
+                    {d.durationMs !== null ? ` · ${d.durationMs}ms` : ""}
+                  </span>
+                  <span className="ml-2 text-gray-600">{new Date(d.updatedAt).toLocaleString()}</span>
+                  {d.status === "pending_retry" && d.nextAttemptAt && (
+                    <span className="ml-2 text-amber-400/80">
+                      next retry {new Date(d.nextAttemptAt).toLocaleString()}
+                    </span>
+                  )}
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => void onToggleAttempts(d.deliveryId)}
+                    className="rounded-md border border-border/60 px-2 py-1 text-xs text-gray-400 hover:text-gray-200"
+                  >
+                    {expandedId === d.deliveryId ? "Hide attempts" : "Attempt history"}
+                  </button>
+                  {d.status === "dead_letter" && (
+                    <button
+                      type="button"
+                      onClick={() => onReplay(d.deliveryId)}
+                      disabled={replayingId === d.deliveryId}
+                      className="rounded-md border border-accent/60 px-2 py-1 text-xs text-accent hover:bg-accent/10 disabled:opacity-50"
+                    >
+                      {replayingId === d.deliveryId ? "Replaying..." : "Replay"}
+                    </button>
+                  )}
+                </div>
               </div>
-              {d.status === "dead_letter" && (
-                <button
-                  type="button"
-                  onClick={() => onReplay(d.deliveryId)}
-                  disabled={replayingId === d.deliveryId}
-                  className="shrink-0 rounded-md border border-accent/60 px-2 py-1 text-xs text-accent hover:bg-accent/10 disabled:opacity-50"
-                >
-                  {replayingId === d.deliveryId ? "Replaying..." : "Replay"}
-                </button>
+
+              {expandedId === d.deliveryId && (
+                <div className="mt-2 border-t border-border/40 pt-2">
+                  {attemptsLoadingId === d.deliveryId && (
+                    <p className="text-xs text-gray-600">Loading attempt history...</p>
+                  )}
+                  {attemptsError && attemptsLoadingId !== d.deliveryId && (
+                    <p className="mb-1 break-all text-xs text-red-300">{attemptsError}</p>
+                  )}
+                  {attemptsById[d.deliveryId] && attemptsById[d.deliveryId].length === 0 && (
+                    <p className="text-xs text-gray-600">No attempts recorded.</p>
+                  )}
+                  {attemptsById[d.deliveryId] && attemptsById[d.deliveryId].length > 0 && (
+                    <ul className="space-y-1">
+                      {attemptsById[d.deliveryId].map((a) => (
+                        <li
+                          key={a.attemptId}
+                          className="flex flex-wrap items-center gap-2 rounded border border-border/40 bg-black/20 px-2 py-1 text-[11px]"
+                        >
+                          <span
+                            className={`inline-block rounded border px-1 py-0.5 font-medium ${STATUS_STYLES[a.status]}`}
+                          >
+                            #{a.attemptNumber} {a.status}
+                          </span>
+                          <span className="text-gray-400">
+                            {a.httpStatus !== null ? `HTTP ${a.httpStatus}` : "no response"}
+                            {a.error ? ` · ${a.error}` : ""}
+                            {a.durationMs !== null ? ` · ${a.durationMs}ms` : ""}
+                          </span>
+                          <span className="ml-auto text-gray-600">
+                            {new Date(a.createdAt).toLocaleString()}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               )}
             </div>
           ))}
