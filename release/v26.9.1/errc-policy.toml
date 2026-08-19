@@ -1,0 +1,16 @@
+[errc]
+schema = "chatman.errc.80-20.v1"
+focus_fraction = 0.20
+minimum_relief_coverage = 0.80
+max_active_prs_per_repository = 1
+do_authority = false
+
+# ELIMINATE means remove from active release WIP, never erase history.
+freeze_dispositions = ["OUT_OF_RELEASE"]
+
+# REDUCE means pull only when a required dependency names the need.
+reduce_dispositions = ["ADAPTER", "BENCH_GYM", "SOURCE_ARCHAEOLOGY"]
+
+# Title rules classify observed PR topology; they do not close PRs.
+eliminate_pr_title_prefixes = ["merge: consolidate", "merge: consolidate current"]
+reduce_pr_title_prefixes = ["docs: align"]
