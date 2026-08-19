@@ -31,7 +31,7 @@ export async function GET(
   const { name } = await params;
   const token = request.nextUrl.searchParams.get("token") ?? "";
 
-  const verified = verifyStorageDownloadToken(token);
+  const verified = verifyStorageDownloadToken(token, name);
   if (!verified.ok) {
     writeAuditLogEntry({
       timestamp: new Date().toISOString(),

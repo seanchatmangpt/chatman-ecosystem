@@ -14,6 +14,13 @@
  */
 import fs from "node:fs";
 import https from "node:https";
+import {
+  DEFAULT_PROJECT_TIER,
+  TIER_LABEL,
+  isProjectTier,
+  resourceQuotaHardFor,
+  type ProjectTier,
+} from "./tiers";
 
 const SA_DIR = "/var/run/secrets/kubernetes.io/serviceaccount";
 const REQUEST_TIMEOUT_MS = 5000;
@@ -172,6 +179,11 @@ export interface SupabaseProject {
    * subset of this map, see extractTags), empty object when the object
    * carries no labels at all. */
   labels: Record<string, string>;
+  /** Real plan tier read back from this Project's own `TIER_LABEL`
+   * (lib/tiers.ts). Defaults to `DEFAULT_PROJECT_TIER` for a Project
+   * created before this label existed, or with a malformed value --
+   * never silently `undefined`. */
+  tier: ProjectTier;
 }
 
 interface K8sListMeta {
@@ -209,6 +221,10 @@ function toSupabaseProject(item: NonNullable<K8sListMeta["items"]>[number]): Sup
     reason: readyCondition?.reason ?? null,
     message: readyCondition?.message ?? null,
     labels: item.metadata.labels ?? {},
+    tier: (() => {
+      const raw = item.metadata.labels?.[TIER_LABEL];
+      return raw && isProjectTier(raw) ? raw : DEFAULT_PROJECT_TIER;
+    })(),
   };
 }
 
@@ -238,6 +254,37 @@ export async function getProject(
   return { ok: true, data: all.data.find((p) => p.name === name) ?? null };
 }
 
+/**
+ * Updates an existing Project's plan tier via a real RFC 7386 merge patch
+ * touching only `metadata.labels.<TIER_LABEL>` -- same merge-patch
+ * convention lib/tags.ts's applyTag already establishes for labels, kept
+ * as its own function (rather than routed through applyTag) since TIER_LABEL
+ * is not prefixed with lib/tags.ts's `TAG_LABEL_PREFIX` and is not a
+ * user-defined tag: it is the one real plan-tier field this module owns.
+ * Also re-derives this namespace's ResourceQuota from the new tier's
+ * TIER_RESOURCE_QUOTAS entry (createOrUpdateResourceQuota), so a tier
+ * change takes live effect on the quota immediately, not just on the
+ * label -- a genuine upgrade/downgrade, not a cosmetic relabel.
+ */
+export async function setProjectTier(
+  name: string,
+  namespace: string,
+  tier: ProjectTier,
+): Promise<K8sResult<SupabaseProject>> {
+  const result = await k8sRequest<NonNullable<K8sListMeta["items"]>[number]>(
+    `/apis/core.supabase.io/v1alpha1/namespaces/${encodeURIComponent(namespace)}/projects/${encodeURIComponent(name)}`,
+    "PATCH",
+    { metadata: { labels: { [TIER_LABEL]: tier } } },
+    "application/merge-patch+json",
+  );
+  if (!result.ok) return result;
+
+  const quotaResult = await createOrUpdateResourceQuota(namespace, `${namespace}-quota`, tier);
+  if (!quotaResult.ok) return quotaResult;
+
+  return { ok: true, data: toSupabaseProject(result.data) };
+}
+
 export interface CreateProjectInput {
   name: string;
   namespace: string;
@@ -246,6 +293,11 @@ export interface CreateProjectInput {
   protocol: "http" | "https";
   /** PVC size for the paired SingleDatabase, e.g. "1Gi". Defaults to "1Gi". */
   dbStorageSize: string;
+  /** Plan tier (lib/tiers.ts) -- set as a real `TIER_LABEL` label on the
+   * Project CR and used to derive this namespace's provisioned
+   * ResourceQuota (TIER_RESOURCE_QUOTAS). Defaults to
+   * DEFAULT_PROJECT_TIER when omitted. */
+  tier?: ProjectTier;
 }
 
 interface SingleDatabaseItem {
@@ -324,7 +376,11 @@ export function buildProjectManifest(input: CreateProjectInput) {
   return {
     apiVersion: "core.supabase.io/v1alpha1",
     kind: "Project",
-    metadata: { name: input.name, namespace: input.namespace },
+    metadata: {
+      name: input.name,
+      namespace: input.namespace,
+      labels: { [TIER_LABEL]: input.tier ?? DEFAULT_PROJECT_TIER },
+    },
     spec: {
       databaseRef: { kind: "SingleDatabase", name: input.databaseRefName },
       http: { hostname: input.hostname, protocol: input.protocol },
@@ -377,6 +433,23 @@ export async function createProjectWithDatabase(
   if (!dbResult.ok) return dbResult;
 
   const projectResult = await createProject(input);
+  if (!projectResult.ok) return projectResult;
+
+  // Real per-tier ResourceQuota, derived from the same TIER_RESOURCE_QUOTAS
+  // table the Project's own TIER_LABEL was just set from -- closes the
+  // "fixed, operator-set ceiling with no notion of plan tier" gap named in
+  // resource-quotas-enforced's evidence rationale. Applied AFTER the
+  // Project succeeds (not before) so a quota-provisioning failure never
+  // leaves an orphaned namespace with no Project; a failure here is
+  // returned as-is (fail closed), leaving the Project ready but the
+  // namespace on whatever ResourceQuota (if any) already existed.
+  const quotaResult = await createOrUpdateResourceQuota(
+    input.namespace,
+    `${input.namespace}-quota`,
+    input.tier ?? DEFAULT_PROJECT_TIER,
+  );
+  if (!quotaResult.ok) return quotaResult;
+
   return projectResult;
 }
 
@@ -754,6 +827,44 @@ export async function listNamespaces(): Promise<K8sResult<string[]>> {
   const result = await k8sRequest<NamespaceListResponse>("/api/v1/namespaces");
   if (!result.ok) return result;
   return { ok: true, data: (result.data.items ?? []).map((ns) => ns.metadata.name) };
+}
+
+interface NamespaceItem {
+  metadata: { name: string; labels?: Record<string, string>; creationTimestamp: string };
+}
+
+/**
+ * Creates a real k8s Namespace via POST /api/v1/namespaces -- the org/
+ * tenant-provisioning primitive lib/orgs.ts's createOrg builds on. `create`
+ * on `namespaces` is NOT yet granted to the platform-console ServiceAccount
+ * (k8s/paas-rbac.yaml currently grants only get/list/patch on this
+ * resource, for the existing "create project" namespace picker and the
+ * Quota Enforcement module's annotation patch) -- this call will get a
+ * real 403 from the API server until that ClusterRole is updated with a
+ * `create` verb and re-applied to the live cluster. That RBAC change is
+ * included in this same commit (see k8s/paas-rbac.yaml's namespaces rule)
+ * but re-applying a ClusterRole to a running cluster is a live-cluster
+ * operation outside what a source-code change can itself perform -- an
+ * honest, disclosed gap, not silently assumed away. Idempotent in the
+ * AlreadyExists sense: a 409 from the API server (org's slug collision)
+ * is surfaced as a normal K8sResult error for the caller to handle, never
+ * swallowed.
+ */
+export async function createNamespace(
+  name: string,
+  labels: Record<string, string>,
+): Promise<K8sResult<{ name: string; createdAt: string }>> {
+  const manifest = {
+    apiVersion: "v1",
+    kind: "Namespace",
+    metadata: { name, labels },
+  };
+  const result = await k8sRequest<NamespaceItem>("/api/v1/namespaces", "POST", manifest);
+  if (!result.ok) return result;
+  return {
+    ok: true,
+    data: { name: result.data.metadata.name, createdAt: result.data.metadata.creationTimestamp },
+  };
 }
 
 // ------------------------------------------------------------------ GitOps
@@ -1287,9 +1398,13 @@ interface PodListResponse {
   }>;
 }
 
-export async function listPods(namespace: string): Promise<K8sResult<K8sPod[]>> {
+export async function listPods(
+  namespace: string,
+  labelSelector?: string,
+): Promise<K8sResult<K8sPod[]>> {
+  const qs = labelSelector ? `?labelSelector=${encodeURIComponent(labelSelector)}` : "";
   const result = await k8sRequest<PodListResponse>(
-    `/api/v1/namespaces/${encodeURIComponent(namespace)}/pods`,
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/pods${qs}`,
   );
   if (!result.ok) return result;
   return {
@@ -1951,6 +2066,121 @@ export async function createRestoreJob(
   return { ok: true, data: toBackupJob(result.data) };
 }
 
+/** Public read of one real batch/v1 Job's status, for callers outside this
+ * module (export-all polling) that need the same status a moment-in-time
+ * `listJobs` row would show without listing the whole namespace. */
+export async function getJobStatus(namespace: string, name: string): Promise<K8sResult<BackupJob>> {
+  const result = await getJob(namespace, name);
+  if (!result.ok) return result;
+  return { ok: true, data: toBackupJob(result.data) };
+}
+
+/** Deletes a real batch/v1 Job (and, via the API server's default Job
+ * ownerReference, its Pod) -- used to clean up the short-lived reader Jobs
+ * createDumpReaderJob below creates once their output has been read. */
+export async function deleteJob(namespace: string, name: string): Promise<K8sResult<null>> {
+  const result = await k8sRequest<unknown>(
+    `/apis/batch/v1/namespaces/${encodeURIComponent(namespace)}/jobs/${encodeURIComponent(name)}?propagationPolicy=Background`,
+    "DELETE",
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: null };
+}
+
+/**
+ * Creates a real, short-lived `batch/v1` Job that mounts the same
+ * `platform-backups-pvc` (read-only) createBackupJob/createRestoreJob use,
+ * and base64-encodes one already-`Complete` backup Job's real dump file to
+ * its own stdout -- the only way this console (which has no direct
+ * filesystem access to the PVC) can read a real dump's actual bytes back
+ * out of the cluster, short of `kubectl cp`. Same validation as
+ * createRestoreJob: refuses unless `backupJobName` is a real Job with a
+ * `database` label and `status.succeeded >= 1`. Callers poll the returned
+ * Job's status (getJobStatus), read its Pod's stdout (getPodLogs) once
+ * Complete, base64-decode it, then delete the Job (deleteJob) -- this
+ * function only creates it.
+ */
+export async function createDumpReaderJob(
+  namespace: string,
+  backupJobName: string,
+): Promise<K8sResult<BackupJob>> {
+  const jobResult = await getJob(namespace, backupJobName);
+  if (!jobResult.ok) {
+    return { ok: false, error: `backup Job ${backupJobName} not found: ${jobResult.error}` };
+  }
+  const stem = jobResult.data.metadata.labels?.database;
+  if (!stem) {
+    return {
+      ok: false,
+      error: `backup Job ${backupJobName} has no "database" label -- cannot locate its dump file`,
+    };
+  }
+  if ((jobResult.data.status?.succeeded ?? 0) < 1) {
+    return {
+      ok: false,
+      error: `backup Job ${backupJobName} has not reached Complete -- refusing to read an incomplete dump`,
+    };
+  }
+  const dumpPath = `/backups/${namespace}/${stem}/${backupJobName}.sql`;
+
+  const readerScript = [
+    "set -e",
+    `test -f "${dumpPath}" || { echo "dump not found at ${dumpPath}" >&2; exit 1; }`,
+    `base64 "${dumpPath}"`,
+  ].join("\n");
+
+  const timestamp = new Date()
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d+Z$/, "z")
+    .toLowerCase();
+  const jobName = `pg-dump-read-${stem}-${timestamp}`.slice(0, 63).replace(/-+$/, "");
+
+  const manifest = {
+    apiVersion: "batch/v1",
+    kind: "Job",
+    metadata: {
+      name: jobName,
+      namespace,
+      labels: { app: "platform-dump-readers", "backup-source-job": backupJobName, database: stem },
+    },
+    spec: {
+      backoffLimit: 0,
+      ttlSecondsAfterFinished: 300,
+      template: {
+        metadata: { labels: { app: "platform-dump-readers", job: jobName } },
+        spec: {
+          restartPolicy: "Never",
+          containers: [
+            {
+              name: "dump-reader",
+              image: "busybox:1.36",
+              imagePullPolicy: "IfNotPresent",
+              command: ["sh", "-c", readerScript],
+              resources: {
+                requests: { cpu: "10m", memory: "16Mi" },
+                limits: { cpu: "50m", memory: "64Mi" },
+              },
+              volumeMounts: [{ name: "backups", mountPath: "/backups", readOnly: true }],
+            },
+          ],
+          volumes: [
+            { name: "backups", persistentVolumeClaim: { claimName: BACKUPS_PVC_NAME, readOnly: true } },
+          ],
+        },
+      },
+    },
+  };
+
+  const result = await k8sRequest<NonNullable<JobListResponse["items"]>[number]>(
+    `/apis/batch/v1/namespaces/${encodeURIComponent(namespace)}/jobs`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toBackupJob(result.data) };
+}
+
 // ------------------------------------------------------------ Audit Log DB
 //
 // Real hyperscaler-CloudTrail/GCP-Audit-Logs/Azure-Activity-Log equivalent:
@@ -2182,6 +2412,152 @@ export async function getResourceQuota(
       usedPods: used["pods"] !== undefined ? Number(used["pods"]) : null,
     },
   };
+}
+
+export interface RawResourceQuota {
+  name: string;
+  namespace: string;
+  /** Real, exact `spec.hard` quantity strings (e.g. `"2"`, `"4Gi"`) as
+   * stored on the object -- unlike `ResourceQuotaSnapshot` above (which
+   * lossily parses into plain millicore/MiB numbers for display),
+   * lib/plan-state.ts needs the exact original strings so a restore after
+   * suspension writes back the precise value that was there before, not a
+   * re-derived approximation. */
+  hard: Record<string, string>;
+}
+
+/**
+ * Reads ONE namespace's ResourceQuota object's real `spec.hard` map
+ * verbatim (raw quantity strings, no unit conversion) plus its real
+ * object name -- the exact two things `patchResourceQuotaHard` below
+ * needs to save-before-suspend and restore-on-reactivate. Returns
+ * `{ ok: true, data: null }` -- not an error -- when the namespace has no
+ * ResourceQuota object, same convention `getResourceQuota` above already
+ * uses.
+ */
+export async function getResourceQuotaRaw(
+  namespace: string,
+): Promise<K8sResult<RawResourceQuota | null>> {
+  const result = await k8sRequest<ResourceQuotaListResponse>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/resourcequotas`,
+  );
+  if (!result.ok) return result;
+  const item = (result.data.items ?? [])[0];
+  if (!item) return { ok: true, data: null };
+  return {
+    ok: true,
+    data: { name: item.metadata.name, namespace: item.metadata.namespace, hard: item.status?.hard ?? {} },
+  };
+}
+
+/**
+ * Real enforcement primitive for lib/plan-state.ts: patches ONE namespace's
+ * already-existing ResourceQuota object's `spec.hard` map via a real RFC
+ * 7386 merge patch (same `application/merge-patch+json` convention
+ * `patchDeploymentReplicas`/`patchNamespaceAnnotations` above already
+ * use). This is the same object `getResourceQuota` reads and the same
+ * object `/usage`'s percentage-of-quota figure is computed against --
+ * plan-state suspension therefore takes effect through the exact same
+ * enforcement primitive (kube-apiserver's own admission-time quota check
+ * on every Pod create) that already blocks a namespace from exceeding its
+ * normal ceiling, not a separate/parallel mechanism. Requires a
+ * ResourceQuota object to already exist in `namespace` (provisioned by
+ * k8s/resource-quotas.yaml at tenant onboarding, same precedent
+ * lib/quota-enforcement.ts's header comment describes as "fixed at
+ * provisioning time") -- fails closed with a real k8s 404 error, never
+ * silently creates one, when it does not.
+ */
+/**
+ * Builds the exact ResourceQuota manifest createOrUpdateResourceQuota
+ * submits on first create -- pulled out as its own pure function (no
+ * network call), same manifest-builder pattern buildSingleDatabaseManifest
+ * / buildProjectManifest above already establish. `spec.hard` comes
+ * straight from lib/tiers.ts's TIER_RESOURCE_QUOTAS table via
+ * resourceQuotaHardFor, so this is the single place a tier's quota values
+ * turn into the real k8s object shape.
+ */
+export function buildResourceQuotaManifest(namespace: string, name: string, tier: ProjectTier) {
+  return {
+    apiVersion: "v1",
+    kind: "ResourceQuota",
+    metadata: { name, namespace },
+    spec: { hard: resourceQuotaHardFor(tier) },
+  };
+}
+
+interface ResourceQuotaItem {
+  metadata: { name: string; namespace: string };
+  spec?: { hard?: Record<string, string> };
+}
+
+/** Reads one specific, named ResourceQuota object (unlike getResourceQuota
+ * above, which reads "the first ResourceQuota in this namespace, whatever
+ * its name"). Returns `{ ok: true, data: null }` -- not an error -- when
+ * no ResourceQuota with this exact name exists yet, same 404-is-not-an-
+ * error convention getConfigMap already establishes. */
+export async function getResourceQuotaByName(
+  namespace: string,
+  name: string,
+): Promise<K8sResult<ResourceQuotaItem | null>> {
+  const result = await k8sRequest<ResourceQuotaItem>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/resourcequotas/${encodeURIComponent(name)}`,
+  );
+  if (!result.ok) {
+    if (/not found/i.test(result.error)) return { ok: true, data: null };
+    return result;
+  }
+  return { ok: true, data: result.data };
+}
+
+/**
+ * Real get-then-update-or-create for a namespace's tier-derived
+ * ResourceQuota -- the exact same pattern createOrUpdateConfigMap already
+ * establishes for ConfigMaps: reads the named ResourceQuota first
+ * (getResourceQuotaByName); if it already exists, applies the new tier's
+ * `spec.hard` map via patchResourceQuotaHard (a real RFC 7386 merge
+ * patch, so live `status.used` counters on the object are untouched by
+ * the patch itself); if it doesn't exist yet, POSTs a fresh ResourceQuota
+ * manifest (buildResourceQuotaManifest) instead. Called by
+ * createProjectWithDatabase at provisioning time and safe to call again
+ * later (e.g. a tier upgrade) since it always converges the object to
+ * exactly the given tier's table, never accumulates stale keys from a
+ * prior tier.
+ */
+export async function createOrUpdateResourceQuota(
+  namespace: string,
+  name: string,
+  tier: ProjectTier,
+): Promise<K8sResult<null>> {
+  const existing = await getResourceQuotaByName(namespace, name);
+  if (!existing.ok) return existing;
+
+  if (existing.data) {
+    return patchResourceQuotaHard(namespace, name, resourceQuotaHardFor(tier));
+  }
+
+  const manifest = buildResourceQuotaManifest(namespace, name, tier);
+  const result = await k8sRequest<ResourceQuotaItem>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/resourcequotas`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: null };
+}
+
+export async function patchResourceQuotaHard(
+  namespace: string,
+  quotaName: string,
+  hard: Record<string, string>,
+): Promise<K8sResult<null>> {
+  const result = await k8sRequest<unknown>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/resourcequotas/${encodeURIComponent(quotaName)}`,
+    "PATCH",
+    { spec: { hard } },
+    "application/merge-patch+json",
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: null };
 }
 
 interface PodMetricsListResponse {

@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken, type SessionPayload } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { requireRole } from "@/lib/authz";
-import { ALLOWED_CASTLE_VERBS, resolveCastleVerb, runCastleVerb } from "@/lib/castle";
+import {
+  ALLOWED_CASTLE_VERBS,
+  getCastleJobOutput,
+  parseCastleReceiptDigest,
+  resolveCastleVerb,
+  runCastleVerb,
+} from "@/lib/castle";
 
 async function requireSession(request: NextRequest): Promise<SessionPayload | null> {
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
@@ -53,6 +59,23 @@ export async function POST(request: NextRequest) {
 
   const result = await runCastleVerb(verb.id, actor);
 
+  // Best-effort cross-reference to castle's own BLAKE3 receipt chain: the
+  // Job the line above just created is almost always still Pending/
+  // ContainerCreating at this instant (RUN returns as soon as the k8s API
+  // accepts the Job, it does not wait for completion), and today's
+  // allowlisted verbs never produce a ReceiptedOcelLog at all (see
+  // lib/castle.ts's parseCastleReceiptDigest doc comment) -- so this
+  // resolves to `null` on every real run right now, which is exactly what
+  // gets recorded: no field, not a fabricated one. Never blocks or fails
+  // the response either way.
+  let castleReceiptDigest: string | undefined;
+  if (result.ok) {
+    const output = await getCastleJobOutput(result.data.name);
+    if (output.ok) {
+      castleReceiptDigest = parseCastleReceiptDigest(output.data) ?? undefined;
+    }
+  }
+
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),
     actor,
@@ -60,6 +83,7 @@ export async function POST(request: NextRequest) {
     path: "/api/castle/run",
     status: result.ok ? 201 : 502,
     requestId,
+    ...(castleReceiptDigest ? { castleReceiptDigest } : {}),
   });
 
   if (!result.ok) {

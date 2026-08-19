@@ -70,13 +70,15 @@ export type WebhookEventType =
   | "backup.completed"
   | "alert.firing"
   | "budget.threshold_crossed"
-  | "quota.enforcement_triggered";
+  | "quota.enforcement_triggered"
+  | "plan_state.enforcement_triggered";
 export const WEBHOOK_EVENT_TYPES: WebhookEventType[] = [
   "project.created",
   "backup.completed",
   "alert.firing",
   "budget.threshold_crossed",
   "quota.enforcement_triggered",
+  "plan_state.enforcement_triggered",
 ];
 
 export interface WebhookSubscription {

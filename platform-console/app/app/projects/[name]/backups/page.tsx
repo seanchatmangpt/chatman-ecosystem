@@ -2,6 +2,7 @@ import Nav from "@/components/Nav";
 import ProjectSubNav from "@/components/ProjectSubNav";
 import RunBackupButton from "@/components/RunBackupButton";
 import RestoreBackupButton from "@/components/RestoreBackupButton";
+import ExportAllButton from "@/components/ExportAllButton";
 import {
   getProject,
   getProjectDatabasePod,
@@ -319,6 +320,21 @@ export default async function ProjectBackupsPage({
           appear in the table above on refresh.
         </p>
         <RunBackupButton projectName={project.name} />
+      </div>
+
+      <div className="mt-6 card p-6">
+        <h2 className="mb-3 text-base font-medium text-white">
+          Export everything (offboarding)
+        </h2>
+        <p className="mb-4 max-w-2xl text-xs text-gray-500">
+          The real &quot;if we leave, how do we get our data out&quot; bundle -- unlike the IaC export
+          (which only re-exports the Project/SingleDatabase Kubernetes manifest shape, never row
+          data), this triggers a real <code>pg_dump</code> backup, downloads every real object
+          across every real storage bucket, and pulls the real durable audit-log NDJSON export,
+          then zips all three into one archive and hands back one signed, time-boxed download
+          link -- owner-only, and every access to the link is written to the audit trail.
+        </p>
+        <ExportAllButton projectName={project.name} />
       </div>
     </>,
   );

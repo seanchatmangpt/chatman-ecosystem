@@ -131,7 +131,7 @@ export async function POST(
   }
 
   const identifier = roleIdentifierFor(session);
-  const signed = signStorageDownloadToken(bucket, objectPath, identifier, ttlSecondsRaw);
+  const signed = signStorageDownloadToken(name, bucket, objectPath, identifier, ttlSecondsRaw);
   const downloadUrl = `/api/projects/${encodeURIComponent(name)}/storage/download?token=${encodeURIComponent(signed.token)}`;
 
   writeAuditLogEntry({

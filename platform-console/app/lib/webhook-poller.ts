@@ -45,6 +45,7 @@ import { hasClusterCredentials, listJobs } from "@/lib/k8s";
 import { alertState, queryAlerts } from "@/lib/alertmanager";
 import { checkBudgets } from "@/lib/budget-alerts";
 import { checkQuotaEnforcement } from "@/lib/quota-enforcement";
+import { reconcilePlanState } from "@/lib/plan-state";
 import { deliverWebhookEvent } from "@/lib/webhooks";
 
 const POLL_INTERVAL_MS = 10_000;
@@ -177,6 +178,32 @@ async function pollQuotaEnforcement(): Promise<void> {
   }
 }
 
+/**
+ * reconcilePlanState() (lib/plan-state.ts) is the only writer of that
+ * module's `enforced.*`/`saved-hard.*` markers AND the only caller of its
+ * real ResourceQuota-patch actions -- calling it here, once per real 10s
+ * tick, is what makes a namespace whose plan state has gone `past_due`/
+ * `suspended` actually get its ResourceQuota suspended on its own (and
+ * restored on its own once plan state returns to `active`), with no
+ * human clicking anything. A namespace with no plan state recorded costs
+ * nothing (reconcilePlanState short-circuits to an empty actions list).
+ */
+async function pollPlanState(): Promise<void> {
+  const result = await reconcilePlanState();
+  if (!result.ok) {
+    console.error(`[webhook-poller] reconcilePlanState failed: ${result.error}`);
+    return;
+  }
+  for (const action of result.data) {
+    await deliverWebhookEvent("plan_state.enforcement_triggered", {
+      namespace: action.namespace,
+      action: action.action,
+      planState: action.planState,
+      at: action.at,
+    });
+  }
+}
+
 async function tick(): Promise<void> {
   if (!hasClusterCredentials()) return; // local dev / build -- nothing to poll
   await Promise.all([
@@ -184,6 +211,7 @@ async function tick(): Promise<void> {
     pollAlertFirings(),
     pollBudgetThresholds(),
     pollQuotaEnforcement(),
+    pollPlanState(),
   ]);
 }
 

@@ -53,6 +53,86 @@ export async function fetchStorageBuckets(
   }
 }
 
+export type StorageObjectListResult =
+  | { ok: true; objects: Array<{ name: string; id: string | null; updatedAt: string | null }> }
+  | { ok: false; notConfigured: true }
+  | { ok: false; notConfigured: false; error: string };
+
+/**
+ * Server-side, read-only proxy to one real bucket's object listing (POST
+ * /object/list/{bucket} -- the real Supabase Storage API's list endpoint;
+ * unlike fetchStorageBuckets's GET /bucket, listing objects within a
+ * bucket is a POST with a JSON body on this API). Recurses one prefix at a
+ * time using the API's own `prefix`/`limit`/`offset` pagination so a
+ * bucket with more objects than a single page returns them all -- no
+ * client-side truncation of a tenant's own inventory.
+ */
+export async function fetchStorageObjects(
+  dns: string,
+  port: number,
+  bucket: string,
+): Promise<StorageObjectListResult> {
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceRoleKey) {
+    return { ok: false, notConfigured: true };
+  }
+
+  const PAGE_SIZE = 100;
+  const objects: Array<{ name: string; id: string | null; updatedAt: string | null }> = [];
+  let offset = 0;
+
+  for (;;) {
+    const url = `http://${dns}:${port}/object/list/${encodeURIComponent(bucket)}`;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        method: "POST",
+        signal: controller.signal,
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${serviceRoleKey}`,
+          apikey: serviceRoleKey,
+          "content-type": "application/json",
+          accept: "application/json",
+        },
+        body: JSON.stringify({
+          prefix: "",
+          limit: PAGE_SIZE,
+          offset,
+          sortBy: { column: "name", order: "asc" },
+        }),
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return { ok: false, notConfigured: false, error: `unreachable: ${message}` };
+    } finally {
+      clearTimeout(timeout);
+    }
+    if (!res.ok) {
+      return { ok: false, notConfigured: false, error: `HTTP ${res.status} from ${url}` };
+    }
+    const page = (await res.json()) as Array<{
+      name: string;
+      id?: string | null;
+      updated_at?: string | null;
+    }>;
+    // The list endpoint returns folders as entries with a null `id` --
+    // real leaf objects always carry a real storage id, so only those are
+    // included in the export; a folder marker has nothing to download.
+    for (const entry of page) {
+      if (entry.id) {
+        objects.push({ name: entry.name, id: entry.id, updatedAt: entry.updated_at ?? null });
+      }
+    }
+    if (page.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
+  }
+
+  return { ok: true, objects };
+}
+
 export type StorageObjectResult =
   | { ok: true; body: ArrayBuffer; contentType: string }
   | { ok: false; notConfigured: true }

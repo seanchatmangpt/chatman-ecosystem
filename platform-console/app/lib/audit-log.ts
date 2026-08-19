@@ -11,6 +11,19 @@ export interface AuditLogEntry {
   path: string;
   status: number;
   requestId: string;
+  /**
+   * Cross-reference to castle's own independent chain: the BLAKE3
+   * `receipt_digest` (castle.rs's `Receipt.receipt_digest`, castle.rs:513-522)
+   * of a `ReceiptedOcelLog` (castle.rs:683-687) produced by a GymAct-invoking
+   * castle run, when one was found in that run's Job output. Optional and
+   * absent for every non-GymAct verb (today, every verb in
+   * `ALLOWED_CASTLE_VERBS` -- see lib/castle.ts) and for every non-castle
+   * audit entry. Recording this field never merges the two chains: castle's
+   * BLAKE3 receipt chain and this table's own sha256 row-hash chain remain
+   * independently verifiable end to end; this field only lets a reviewer
+   * walk from one to the other.
+   */
+  castleReceiptDigest?: string;
 }
 
 export function writeAuditLogEntry(entry: AuditLogEntry): void {

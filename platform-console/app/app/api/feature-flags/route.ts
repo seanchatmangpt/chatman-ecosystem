@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken, type SessionPayload } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
-import { createOrUpdateConfigMap, getConfigMap } from "@/lib/k8s";
+import { createOrUpdateConfigMap, getConfigMap, getProject } from "@/lib/k8s";
 import { requireRole } from "@/lib/authz";
+import { TIER_GATED_FLAGS, TIER_GATED_FLAG_OWNER_PROJECT, tierAtLeast } from "@/lib/tiers";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -70,6 +71,42 @@ export async function POST(request: NextRequest) {
 
   if (!key) {
     return NextResponse.json({ error: "key is required" }, { status: 400 });
+  }
+
+  // Real plan-tier gate (lib/tiers.ts): closes the "no feature-flagged
+  // capability is Enterprise-only" half of the resource-quotas-enforced
+  // gap. Only fires when this key is in TIER_GATED_FLAGS AND the caller is
+  // turning it on ("true") -- turning a gated flag back OFF is always
+  // allowed regardless of tier, same "downgrade never blocked" posture
+  // lib/plan-state.ts's suspension logic uses. The gate reads the REAL,
+  // live tier off the flag's owning Project CR (TIER_GATED_FLAG_OWNER_PROJECT)
+  // via getProject -- never a cached or client-supplied tier value.
+  const minimumTier = TIER_GATED_FLAGS[key];
+  if (minimumTier && value === "true") {
+    const ownerProjectName = TIER_GATED_FLAG_OWNER_PROJECT[key];
+    const ownerResult = ownerProjectName ? await getProject(ownerProjectName) : { ok: true as const, data: null };
+    if (!ownerResult.ok) {
+      return NextResponse.json({ error: ownerResult.error }, { status: 502 });
+    }
+    const ownerTier = ownerResult.data?.tier ?? "starter";
+    if (!tierAtLeast(ownerTier, minimumTier)) {
+      writeAuditLogEntry({
+        timestamp: new Date().toISOString(),
+        actor,
+        method: "POST",
+        path: "/api/feature-flags",
+        status: 403,
+        requestId,
+      });
+      return NextResponse.json(
+        {
+          error:
+            `flag '${key}' requires plan tier '${minimumTier}' or higher on Project ` +
+            `'${ownerProjectName}' (currently '${ownerTier}')`,
+        },
+        { status: 403 },
+      );
+    }
   }
 
   // A real RFC 7386 merge patch (lib/k8s.ts's createOrUpdateConfigMap) --

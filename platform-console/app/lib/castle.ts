@@ -338,6 +338,52 @@ export async function getCastleJobOutput(jobName: string): Promise<K8sResult<str
   return { ok: true, data: logs.data };
 }
 
+// ------------------------------------------------------ Receipt cross-ref
+//
+// Best-effort extraction of castle's OWN independent receipt chain identity
+// out of a Run's captured Job output, for the audit log to cross-reference
+// (lib/audit-db.ts's `castle_receipt_digest` column) -- never a merge of
+// the two chains, just a pointer from one to the other. A `ReceiptedOcelLog`
+// (castle.rs:683-687) is produced only by `execute_powl_with_gym_act`
+// (castle.rs:1005-1122), and NO verb in `ALLOWED_CASTLE_VERBS` above calls
+// that path -- castle's CLI has no `construct`/`gymact` verb yet (see this
+// file's header comment, castle's own VISION.md gap #3). So on every real
+// castle run this console can trigger today, this returns `null`, and the
+// audit entry simply omits the field -- exactly the same "absent, not
+// fabricated" convention `getCastleDeployment` already uses for "not
+// deployed yet". This function is wired ahead of that verb shipping so the
+// cross-reference requires no further plumbing once it does.
+//
+// `Receipt` (castle.rs:513-522) has no `to_json`/Serialize impl today --
+// there is no committed JSON schema for a future gymact verb's output to
+// conform to -- so this looks for the one field name the real struct
+// actually carries (`receipt_digest`), at top level or nested under a
+// `receipt` key, rather than assuming a shape castle hasn't shipped.
+export function parseCastleReceiptDigest(output: string | null): string | null {
+  if (!output) return null;
+  for (const line of output.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith("{")) continue;
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(trimmed);
+    } catch {
+      continue;
+    }
+    if (typeof parsed !== "object" || parsed === null) continue;
+    const obj = parsed as Record<string, unknown>;
+    if (typeof obj.receipt_digest === "string" && obj.receipt_digest.length > 0) {
+      return obj.receipt_digest;
+    }
+    const nested = obj.receipt;
+    if (nested && typeof nested === "object") {
+      const digest = (nested as Record<string, unknown>).receipt_digest;
+      if (typeof digest === "string" && digest.length > 0) return digest;
+    }
+  }
+  return null;
+}
+
 // --------------------------------------------------------------- Sunset
 export interface CastleSunsetResult {
   deploymentWasPresent: boolean;

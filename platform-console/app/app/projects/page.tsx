@@ -91,6 +91,9 @@ export default async function ProjectsPage() {
                     namespace <code>{p.namespace}</code>
                     {p.hostname && <> &middot; {p.hostname}</>}
                   </p>
+                  <Badge variant="outline" className="mt-1 gap-1.5 border-sky-900 bg-sky-950/40 text-sky-300">
+                    {p.tier}
+                  </Badge>
                   {p.message && (
                     <p className="mt-1 max-w-xl break-all text-xs text-muted-foreground">{p.message}</p>
                   )}

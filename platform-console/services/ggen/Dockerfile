@@ -8,6 +8,14 @@ FROM rustlang/rust:nightly-slim AS builder
 # a recent nightly and `cargo build` resolves via the checked-in Cargo.lock, so this stays
 # a real build of the real source, not a simulated one.
 WORKDIR /src
+# ggen-cli-lib's build uses include_str! against sibling packs/ content
+# (e.g. packs/ggen-self-pack/templates/*, packs/fortune5-deployment-blocks-pack/
+# catalog/*.json) -- these live inside the same ggen-src/ snapshot (packs/ is a
+# real subdirectory of the source repo, not a separate sibling checkout), so a
+# single COPY of the whole snapshot is sufficient; this comment documents why
+# `packs/` must be present in that snapshot (a prior build failed with real
+# "No such file or directory" errors when ggen-src/ was stale and missing it --
+# see services/ggen/prep.sh's sibling re-sync step).
 COPY ggen-src/ /src/
 RUN apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev clang && rm -rf /var/lib/apt/lists/*
 RUN cargo build --release -p ggen-cli-lib --locked \

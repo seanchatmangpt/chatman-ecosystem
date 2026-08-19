@@ -8,6 +8,36 @@ Endpoints:
                         verifiable BLAKE3-chained signed receipt (`praxis-core::receipt_record`
                         shape, produced by `ggen-engine::sync`).
 
+Application-layer credential on /provision (Bearer API key)
+-------------------------------------------------------------
+Until this pass, `/provision` had no application-layer credential at all -- only
+NetworkPolicy stood between an in-cluster caller and a real `ggen sync run` +
+namespace-provisioning side effect. That gap is closed here by reusing, byte-for-byte,
+the exact same key format/hashing/lookup contract `app/lib/api-keys.ts` already
+established for the Next.js API routes -- one key-issuance system (the `pk_live_...`
+keys minted via that module's `createApiKey`, stored SHA-256-hashed in the same real
+k8s Secret `platform-console-api-keys`/`platform-console` namespace) now gates both
+surfaces, not two divergent auth schemes. `resolve_api_key_auth` below is a direct
+Python port of `api-keys.ts`'s `resolveApiKeyAuth`: same `pk_live_` prefix check, same
+`hashlib.sha256(presented).hexdigest()` over the exact plaintext bytes, same linear scan
+of every stored record via `hmac.compare_digest` (Python's timing-safe hex-string
+comparison -- the same intent as that module's own `crypto.timingSafeEqual`), same
+"revoked key resolves to no auth" rule. Secret data is read via this service's own
+`k8s_request` (already a port of `k8sRequest`), so no new k8s access pattern is
+introduced -- just the read half of what `lib/k8s.ts::getSecretData` already exposes to
+the TS side, ported here.
+
+A request to `/provision` with no `Authorization: Bearer pk_live_...` header, an
+unparseable one, or one that resolves to no live (non-revoked) key gets a real 401 --
+fail-closed, matching this service's existing discipline for every other
+can't-actually-do-this-safely case (503 on missing ggen binary, 502 on unreachable
+marketplace/namespace resolution, etc.). No role/identity gating beyond "the key is
+live" is applied here -- `/provision` has no notion of Org RBAC roles the way the
+Next.js routes do; the presence of a valid, unrevoked key is the credential this
+endpoint requires, matching the ticket's ask ("no application-layer credential" ->
+"a real Bearer-API-key gate"), not a reimplementation of `lib/authz.ts`'s full role
+model inside this Python service.
+
 Why subprocess, not an in-process Python binding
 --------------------------------------------------
 There is no Python binding for `ggen-engine`/`praxis-core` -- confirmed by the prior
@@ -62,6 +92,25 @@ request's `packs` list, this service really runs that subcommand inside the run 
 before `sync run` and reports each real per-pack result (`installed`/`declared`/error)
 rather than silently accepting or dropping the list.
 
+Pack-id resolution against the ggen-marketplace registry, before install
+--------------------------------------------------------------------------
+`ggen packs install --pack-id <id>`'s own leniency (above) means a caller-supplied typo or
+a pack id from the wrong registry silently records `status: declared` here with no error --
+the failure mode this pass closes. `services/ggen-marketplace/app.py` already runs a real
+`GET /packs` endpoint (`list_packs`, backed by the real `ggen pack list` CLI over the real
+pack registry -- the same registry `ggen pack query`/`run_pack_query` reads) that returns
+exactly the id set this service needs to validate against
+(`{"packs": [{"id": ..., ...}, ...], "total": N}`). `resolve_registered_pack_ids` below makes
+a real HTTP call to that endpoint (`GGEN_MARKETPLACE_URL`, default the in-cluster
+`ggen-marketplace-status.ggen-marketplace.svc.cluster.local` Service DNS name -- both
+services are plain in-cluster HTTP, no auth token needed, matching every other
+Service-to-Service call already in this repo's k8s manifests) before any pack is installed.
+Every requested pack id is checked against that real registry response; an id absent from it
+is refused with a real 422 naming the unresolved id(s) and the real registered set, and
+`ggen packs install` is never invoked for it. If the marketplace service itself is
+unreachable or returns something other than a real pack list, that is reported as a real 502
+-- fails closed, never silently falls back to the old unvalidated-install behavior.
+
 Tenant-namespaced target (04-GGEN-BRCE-CROSS-CUTTING.md's PaaS evidence bar)
 -----------------------------------------------------------------------------
 The prior version of this endpoint landed every write inside this pod's own ephemeral
@@ -103,6 +152,9 @@ a BRCE origin and appends every attempt -- success or failure -- to a durable JS
     (default `/app/state/ggen-paas-provision-log.jsonl`), the same "log every attempt,
     success or failure" discipline as `.ggen/unattended-dispatch-log.jsonl`.
 """
+import base64
+import hashlib
+import hmac
 import json
 import os
 import secrets
@@ -129,6 +181,18 @@ PROVISION_LOG_PATH = Path(
 
 SA_DIR = Path("/var/run/secrets/kubernetes.io/serviceaccount")
 K8S_REQUEST_TIMEOUT_S = 5
+
+MARKETPLACE_URL = os.environ.get(
+    "GGEN_MARKETPLACE_URL",
+    "http://ggen-marketplace-status.ggen-marketplace.svc.cluster.local",
+)
+MARKETPLACE_TIMEOUT_S = int(os.environ.get("GGEN_MARKETPLACE_TIMEOUT_S", "5"))
+
+# Same k8s Secret app/lib/api-keys.ts already writes to -- one key-issuance system for
+# both the Next.js API routes and this Python service.
+API_KEYS_NAMESPACE = os.environ.get("API_KEYS_NAMESPACE", "platform-console")
+API_KEYS_SECRET = os.environ.get("API_KEYS_SECRET", "platform-console-api-keys")
+API_KEY_PREFIX = "pk_live_"
 
 with open(FACTS_PATH, "r", encoding="utf-8") as f:
     FACTS = json.load(f)
@@ -191,6 +255,105 @@ def k8s_request(path: str, method: str = "GET", body: dict | None = None) -> tup
         return False, f"HTTP {e.code} {method} {path}: {message or e.reason}"
     except (urllib.error.URLError, TimeoutError, OSError) as e:
         return False, f"{method} {path} failed: {e}"
+
+
+def get_secret_data(namespace: str, name: str) -> tuple[bool, object]:
+    """Direct Python port of `lib/k8s.ts`'s `getSecretData`: reads and base64-decodes
+    every key of one real Secret via `k8s_request`, same `(True, None)`-on-404
+    convention (lets `resolve_api_key_auth` distinguish "no keys provisioned yet" from
+    a real API failure) so a caller can never mistake a k8s outage for "no valid key
+    exists"."""
+    ok, data = k8s_request(
+        f"/api/v1/namespaces/{urllib.parse.quote(namespace, safe='')}"
+        f"/secrets/{urllib.parse.quote(name, safe='')}"
+    )
+    if not ok:
+        if isinstance(data, str) and "not found" in data.lower():
+            return True, None
+        return False, data
+    if not isinstance(data, dict):
+        return False, "secret response was not a JSON object"
+    raw_data = data.get("data") if isinstance(data.get("data"), dict) else {}
+    decoded: dict[str, str] = {}
+    for key, value in raw_data.items():
+        try:
+            decoded[key] = base64.b64decode(value).decode("utf-8")
+        except (ValueError, UnicodeDecodeError):
+            continue
+    return True, decoded
+
+
+def resolve_api_key_auth(presented_key: str) -> dict | None:
+    """Direct Python port of `app/lib/api-keys.ts`'s `resolveApiKeyAuth`: `None` on any
+    of wrong prefix, no matching hash, a revoked key, or the Secret being unreadable --
+    every one of those must fail closed to "no auth", never fall through to "allowed".
+    Same SHA-256-over-plaintext hash, same timing-safe hex comparison (`hmac.compare_digest`
+    here, `crypto.timingSafeEqual` there), same linear scan of every stored
+    `ApiKeyRecord`-shaped JSON value in the one Secret."""
+    if not presented_key.startswith(API_KEY_PREFIX):
+        return None
+    presented_hash = hashlib.sha256(presented_key.encode("utf-8")).hexdigest()
+
+    ok, secret_data = get_secret_data(API_KEYS_NAMESPACE, API_KEYS_SECRET)
+    if not ok or not isinstance(secret_data, dict):
+        return None
+
+    for raw in secret_data.values():
+        try:
+            record = json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(record, dict):
+            continue
+        record_hash = record.get("hash")
+        if not isinstance(record_hash, str) or len(record_hash) != len(presented_hash):
+            continue
+        if hmac.compare_digest(record_hash, presented_hash):
+            if record.get("revoked"):
+                return None
+            return {
+                "identifier": record.get("identifier"),
+                "role": record.get("role"),
+                "keyId": record.get("id"),
+            }
+    return None
+
+
+def resolve_registered_pack_ids() -> tuple[bool, object]:
+    """Real HTTP call to ggen-marketplace's already-shipped `GET /packs`
+    (`services/ggen-marketplace/app.py::list_packs`, itself backed by the real
+    `ggen pack list` CLI over the real pack registry) -- the same registry
+    `ggen packs install --pack-id <id>` would otherwise silently accept an
+    unresolved id against (recording `status: declared`, per that CLI's own
+    leniency). Returns `(ok, ids_or_error_detail)`: `ok=True` with the real set of
+    registered pack ids on success, `ok=False` with a string detail on any HTTP
+    failure, non-2xx, non-JSON body, or a JSON body missing the expected `packs`
+    list shape -- every one of those is "cannot validate", never silently
+    downgraded to "every id is valid"."""
+    url = f"{MARKETPLACE_URL}/packs"
+    req = urllib.request.Request(url, method="GET")
+    req.add_header("Accept", "application/json")
+    try:
+        with urllib.request.urlopen(req, timeout=MARKETPLACE_TIMEOUT_S) as resp:
+            raw = resp.read()
+    except urllib.error.HTTPError as e:
+        detail = e.read()
+        return False, f"HTTP {e.code} GET {url}: {detail.decode('utf-8', 'replace')[:500]}"
+    except (urllib.error.URLError, TimeoutError, OSError) as e:
+        return False, f"GET {url} failed: {e}"
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError as e:
+        return False, f"GET {url} returned non-JSON body: {e}"
+    packs = payload.get("packs") if isinstance(payload, dict) else None
+    if not isinstance(packs, list):
+        return False, f"GET {url} returned no 'packs' list: {payload!r}"
+    ids = {
+        p.get("id")
+        for p in packs
+        if isinstance(p, dict) and isinstance(p.get("id"), str)
+    }
+    return True, ids
 
 
 def build_namespace_manifest(name: str) -> dict:
@@ -380,6 +543,36 @@ def _provision_inner(
             }
         namespace = ns_result
 
+    if packs:
+        # Resolve every requested pack id against the real ggen-marketplace registry
+        # BEFORE creating the run directory or touching `ggen packs install` --
+        # closes the silent status: declared gap named in this module's docstring.
+        # Fails closed (real 422/502) rather than falling through to the old
+        # unvalidated-install behavior.
+        reg_ok, reg_result = resolve_registered_pack_ids()
+        if not reg_ok:
+            return 502, {
+                "error": "could not validate pack ids against ggen-marketplace",
+                "run_id": run_id,
+                "tenant_id": tenant_id,
+                "namespace": namespace,
+                "detail": reg_result,
+                "marketplace_url": MARKETPLACE_URL,
+            }
+        assert isinstance(reg_result, set), "reg_ok=True must carry a real set of ids"
+        registered_ids: set[str] = reg_result
+        unresolved = [p for p in packs if p not in registered_ids]
+        if unresolved:
+            return 422, {
+                "error": "unresolved pack id(s) against ggen-marketplace registry",
+                "run_id": run_id,
+                "tenant_id": tenant_id,
+                "namespace": namespace,
+                "unresolved_pack_ids": unresolved,
+                "registered_pack_ids": sorted(registered_ids),
+                "marketplace_url": MARKETPLACE_URL,
+            }
+
     run_id_for_dir = run_id
     # Tenant isolation at the filesystem level: once a real tenant namespace is
     # resolved, the run directory is nested under WORKSPACE_ROOT/<namespace>/run-<uuid>
@@ -502,6 +695,18 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:
         if self.path != "/provision":
             self._json(404, {"error": "not found", "path": self.path})
+            return
+
+        auth_header = self.headers.get("Authorization", "")
+        presented_key = None
+        if auth_header.startswith("Bearer "):
+            presented_key = auth_header[len("Bearer "):].strip()
+        if not presented_key:
+            self._json(401, {"error": "missing Authorization: Bearer <api-key> header"})
+            return
+        auth = resolve_api_key_auth(presented_key)
+        if auth is None:
+            self._json(401, {"error": "invalid, revoked, or unresolvable API key"})
             return
 
         length = int(self.headers.get("Content-Length", "0"))

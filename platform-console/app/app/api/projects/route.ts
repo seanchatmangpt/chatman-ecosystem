@@ -4,6 +4,7 @@ import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { createProjectWithDatabase, listProjects } from "@/lib/k8s";
 import { requireRole } from "@/lib/authz";
 import { deliverWebhookEvent } from "@/lib/webhooks";
+import { DEFAULT_PROJECT_TIER, isProjectTier } from "@/lib/tiers";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -80,10 +81,18 @@ export async function POST(request: NextRequest) {
     typeof body?.dbStorageSize === "string" && body.dbStorageSize.trim()
       ? body.dbStorageSize.trim()
       : "1Gi";
+  const tierRaw = typeof body?.tier === "string" ? body.tier.trim() : "";
+  const tier = tierRaw && isProjectTier(tierRaw) ? tierRaw : DEFAULT_PROJECT_TIER;
 
   if (!name || !namespace) {
     return NextResponse.json(
       { error: "name and namespace are required" },
+      { status: 400 },
+    );
+  }
+  if (tierRaw && !isProjectTier(tierRaw)) {
+    return NextResponse.json(
+      { error: `invalid tier '${tierRaw}' -- must be starter, pro, or enterprise` },
       { status: 400 },
     );
   }
@@ -95,6 +104,7 @@ export async function POST(request: NextRequest) {
     hostname,
     protocol,
     dbStorageSize,
+    tier,
   });
 
   writeAuditLogEntry({

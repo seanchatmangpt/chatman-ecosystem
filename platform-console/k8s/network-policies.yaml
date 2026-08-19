@@ -364,6 +364,30 @@ spec:
           port: 15012
         - protocol: TCP
           port: 15017
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  # services/ggen/app.py's /provision handler now makes a real, direct HTTP call to
+  # ggen-marketplace's GET /packs (resolve_registered_pack_ids) to validate pack ids
+  # before installing them -- a real in-cluster Service-to-Service call, not routed
+  # through platform-console. ggen-default-deny above denies all egress by default, so
+  # that call needs an explicit egress allow, mirroring the ggen-marketplace-allow-
+  # from-platform-console ingress rule's own port/scope discipline.
+  name: ggen-allow-egress-to-ggen-marketplace
+  namespace: ggen
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ggen-marketplace
+      ports:
+        - protocol: TCP
+          port: 8080
 
 # ----------------------------------------------------------- ggen-marketplace
 ---
@@ -392,6 +416,29 @@ spec:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: platform-console
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  # Counterpart to ggen-allow-egress-to-ggen-marketplace above: ggen-status's
+  # /provision handler now calls this namespace's real GET /packs directly (pack-id
+  # resolution before install), so ggen-marketplace-default-deny's ingress default
+  # needs an explicit allow from the ggen namespace, same port-8080-only scope as
+  # the platform-console rule above.
+  name: ggen-marketplace-allow-from-ggen
+  namespace: ggen-marketplace
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ggen
       ports:
         - protocol: TCP
           port: 8080

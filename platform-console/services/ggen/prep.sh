@@ -23,6 +23,24 @@ else
   echo "WARNING: no ggen binary on PATH; services/ggen/ggen-bin will not be updated." >&2
 fi
 
+# Re-sync the full source snapshot the Dockerfile's builder stage compiles from.
+# ggen-cli-lib's build uses include_str! against sibling packs/ content (e.g.
+# packs/ggen-self-pack/templates/*, packs/fortune5-deployment-blocks-pack/
+# catalog/*.json) -- a real "No such file or directory" build failure happens
+# if ggen-src/ is a stale manual snapshot missing packs/. Re-syncing on every
+# prep.sh run keeps this from silently going stale again.
+if [ -d "$REPO/.git" ]; then
+  # .cargo/config.toml is excluded deliberately -- it sets rustc-wrapper =
+  # "sccache" for this HOST's dev environment; sccache isn't installed in the
+  # build container, and a leaked host cargo config broke a real build this
+  # session ("could not execute process `sccache ...`: No such file or
+  # directory"). The container gets cargo's real built-in defaults instead.
+  rsync -a --delete \
+    --exclude='.git/' --exclude='target/' --exclude='node_modules/' --exclude='.cargo/' \
+    "$REPO/" "$SELF_DIR/ggen-src/"
+  echo "re-synced $REPO -> $SELF_DIR/ggen-src (packs/: $(ls "$SELF_DIR/ggen-src/packs" 2>/dev/null | wc -l | tr -d ' ') entries)"
+fi
+
 if [ ! -d "$REPO/.git" ]; then
   echo "ERROR: $REPO is not a git checkout on this host" >&2
   exit 1

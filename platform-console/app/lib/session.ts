@@ -273,6 +273,69 @@ export async function verifyOidcTransactionToken(
 
 export const OIDC_TXN_COOKIE_NAME = "platform_console_oidc_txn";
 
+const ORG_INVITE_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
+
+export interface OrgInvitePayload extends JWTPayload {
+  /** Suggested org display name -- the invitee can still change it on the
+   * /signup form, this is only a pre-fill. */
+  orgName: string;
+  /** Role the invitee is seeded with in the new org's own roles
+   * ConfigMap once lib/orgs.ts's createOrg consumes this token. */
+  role: "member" | "owner";
+  /** Identifier (email, or "admin") of the platform operator who minted
+   * this invite -- carried through to the audit log entry the consuming
+   * POST /api/orgs call writes, same "who did this" discipline every
+   * other mutating route in this app already follows. */
+  issuedBy: string;
+}
+
+/**
+ * Signed, time-boxed org-invite token -- same HS256/jose primitive and
+ * signing key (AUTH_SECRET) as every other token this module issues
+ * (createOidcTransactionToken is the closest sibling: a short-lived,
+ * purpose-scoped JWT that is never stored server-side, only verified on
+ * presentation). This is the real gate the task requires: a customer
+ * cannot create a new org via POST /api/orgs merely by knowing the
+ * endpoint exists -- either they self-serve (no token, org owner =
+ * themselves) or an existing owner must have minted this token first via
+ * POST /api/org-invites (owner-gated by requireRole there).
+ */
+export async function createOrgInviteToken(payload: {
+  orgName: string;
+  role: "member" | "owner";
+  issuedBy: string;
+}): Promise<string> {
+  const key = getSecretKey();
+  return await new SignJWT({ ...payload })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(`${ORG_INVITE_TTL_SECONDS}s`)
+    .sign(key);
+}
+
+/**
+ * Verifies an org-invite token's signature and expiry -- jose's own
+ * jwtVerify already rejects an expired `exp` claim, so an invite past its
+ * 7-day window fails closed here with `null`, same convention as
+ * verifyOidcTransactionToken.
+ */
+export async function verifyOrgInviteToken(token: string): Promise<OrgInvitePayload | null> {
+  try {
+    const key = getSecretKey();
+    const { payload } = await jwtVerify(token, key, { algorithms: ["HS256"] });
+    if (
+      typeof payload.orgName !== "string" ||
+      (payload.role !== "member" && payload.role !== "owner") ||
+      typeof payload.issuedBy !== "string"
+    ) {
+      return null;
+    }
+    return payload as OrgInvitePayload;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * New: mints this app's own session for a real, already-resolved API key
  * (lib/api-keys.ts's resolveApiKeyAuth -- called only after a real

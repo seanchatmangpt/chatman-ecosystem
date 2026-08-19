@@ -48,6 +48,7 @@
 import crypto from "node:crypto";
 import { createOrUpdateSecret, getSecretData, type K8sResult } from "@/lib/k8s";
 import { ROLES, type Role } from "@/lib/authz";
+import { DEFAULT_API_KEY_TIER, isApiKeyTier, type ApiKeyTier } from "@/lib/rate-limit";
 
 export const API_KEYS_NAMESPACE = "platform-console";
 export const API_KEYS_SECRET = "platform-console-api-keys";
@@ -65,6 +66,12 @@ export interface ApiKeyRecord {
   name: string;
   revoked: boolean;
   revokedAt: string | null;
+  // Rate-limit plan tier bound to this key (lib/rate-limit.ts,
+  // middleware.ts's per-key token bucket) -- "standard" for every key
+  // minted before this field existed (see parseRecord's default below),
+  // so a pre-existing key's effective ceiling is unchanged by this
+  // addition, not silently widened or narrowed.
+  tier: ApiKeyTier;
 }
 
 export type ApiKeySummary = Omit<ApiKeyRecord, "hash">;
@@ -108,6 +115,11 @@ function parseRecord(raw: string): ApiKeyRecord | null {
       name: typeof parsed.name === "string" ? parsed.name : "",
       revoked: parsed.revoked,
       revokedAt: typeof parsed.revokedAt === "string" ? parsed.revokedAt : null,
+      // Backward compatible: a record written before this field existed
+      // has no `tier` key at all -- defaults to "standard", the same
+      // ceiling every key effectively had (via the flat Envoy filter)
+      // before per-tier limits existed.
+      tier: isApiKeyTier(parsed.tier) ? parsed.tier : DEFAULT_API_KEY_TIER,
     };
   } catch {
     return null;
@@ -150,6 +162,13 @@ export interface CreateApiKeyInput {
   createdBy: string;
   requestedRole?: Role;
   name?: string;
+  // Plan tier this key should be rate-limited under (lib/rate-limit.ts).
+  // Unlike `requestedRole`, tier is never clamped against the creator's
+  // own role -- a key's tier reflects the *customer's paid plan*, an
+  // orthogonal axis from the app-level RBAC role bound to the key, so
+  // any owner may mint a key at any tier for their own identity. Defaults
+  // to "standard" when omitted or invalid.
+  tier?: ApiKeyTier;
 }
 
 export async function createApiKey(
@@ -168,6 +187,7 @@ export async function createApiKey(
     name: input.name?.trim() || "",
     revoked: false,
     revokedAt: null,
+    tier: isApiKeyTier(input.tier) ? input.tier : DEFAULT_API_KEY_TIER,
   };
 
   const result = await createOrUpdateSecret(API_KEYS_NAMESPACE, API_KEYS_SECRET, {
@@ -211,6 +231,7 @@ export interface ResolvedApiKeyAuth {
   identifier: string;
   role: Role;
   keyId: string;
+  tier: ApiKeyTier;
 }
 
 /**
@@ -235,7 +256,7 @@ export async function resolveApiKeyAuth(
     const record = parseRecord(raw);
     if (record && safeEqualHex(record.hash, hash)) {
       if (record.revoked) return null;
-      return { identifier: record.identifier, role: record.role, keyId: record.id };
+      return { identifier: record.identifier, role: record.role, keyId: record.id, tier: record.tier };
     }
   }
   return null;

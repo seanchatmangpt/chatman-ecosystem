@@ -17,7 +17,12 @@ import { hasClusterCredentials } from "@/lib/k8s";
 
 export const dynamic = "force-dynamic";
 
-// Same platform-namespace roster as /usage, /billing, /budget-alerts.
+// Same platform-namespace roster as /usage, /billing, /budget-alerts, plus
+// istio-system -- where ocel-accumulator and the OTel Collector actually run
+// (see lib/ocel-log.ts, k8s/otel-collector.yaml, k8s/ocel-accumulator.yaml).
+// Without this entry those two real workloads' CPU/memory never appeared in
+// the cost dashboard even though getCostDashboardRows/getCostTrend already
+// resolve any namespace given to them via real Prometheus queries.
 const PLATFORM_NAMESPACES = [
   "autofde-lab",
   "gymact",
@@ -25,6 +30,7 @@ const PLATFORM_NAMESPACES = [
   "ggen-marketplace",
   "supabase-demo",
   "platform-console",
+  "istio-system",
 ];
 
 const WINDOW_LABEL = "1h";

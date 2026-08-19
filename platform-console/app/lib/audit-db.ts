@@ -141,9 +141,17 @@ import { createHash } from "node:crypto";
 const GENESIS_HASH = "GENESIS-" + "0".repeat(56);
 
 function computeRowHash(prevHash: string, entry: AuditLogEntry): string {
-  const material = [prevHash, entry.requestId, entry.timestamp, entry.actor, entry.method, entry.path, String(entry.status)].join(
-    " ",
-  );
+  const parts = [prevHash, entry.requestId, entry.timestamp, entry.actor, entry.method, entry.path, String(entry.status)];
+  // Appended LAST, and only when present, so every row written before this
+  // field existed recomputes to the exact same row_hash it always had --
+  // backward-compatible with the chain already persisted. When present, it
+  // is committed into this row's row_hash (and therefore into every row
+  // hash after it), which is what makes it "cryptographically
+  // cross-referenced": tampering with the recorded castle receipt digest
+  // after the fact breaks this chain the same way tampering with actor or
+  // status would.
+  if (entry.castleReceiptDigest) parts.push(entry.castleReceiptDigest);
+  const material = parts.join(" ");
   return createHash("sha256").update(material, "utf8").digest("hex");
 }
 
@@ -167,6 +175,9 @@ async function ensureAuditLogChainColumns(pool: Pool): Promise<void> {
   `);
   await pool.query(`ALTER TABLE platform_console.audit_log ADD COLUMN IF NOT EXISTS prev_hash text`);
   await pool.query(`ALTER TABLE platform_console.audit_log ADD COLUMN IF NOT EXISTS row_hash text`);
+  // Nullable, absent for every row that isn't a castle GymAct run -- see
+  // AuditLogEntry.castleReceiptDigest's doc comment in lib/audit-log.ts.
+  await pool.query(`ALTER TABLE platform_console.audit_log ADD COLUMN IF NOT EXISTS castle_receipt_digest text`);
 }
 
 /**
@@ -193,8 +204,9 @@ async function backfillAuditLogChain(pool: Pool): Promise<void> {
       method: string;
       path: string;
       status: number;
+      castle_receipt_digest: string | null;
     }>(
-      `SELECT id, request_id, ts, actor, method, path, status
+      `SELECT id, request_id, ts, actor, method, path, status, castle_receipt_digest
        FROM platform_console.audit_log
        WHERE row_hash IS NULL
        ORDER BY id ASC`,
@@ -212,6 +224,7 @@ async function backfillAuditLogChain(pool: Pool): Promise<void> {
           method: r.method,
           path: r.path,
           status: Number(r.status),
+          ...(r.castle_receipt_digest ? { castleReceiptDigest: r.castle_receipt_digest } : {}),
         };
         const rowHash = computeRowHash(prevHash, entry);
         await client.query(
@@ -272,9 +285,19 @@ async function persistAuditLogEntry(entry: AuditLogEntry): Promise<void> {
     const prevHash = tail.rows[0]?.row_hash ?? GENESIS_HASH;
     const rowHash = computeRowHash(prevHash, entry);
     await client.query(
-      `INSERT INTO platform_console.audit_log (request_id, ts, actor, method, path, status, prev_hash, row_hash)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [entry.requestId, entry.timestamp, entry.actor, entry.method, entry.path, entry.status, prevHash, rowHash],
+      `INSERT INTO platform_console.audit_log (request_id, ts, actor, method, path, status, prev_hash, row_hash, castle_receipt_digest)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      [
+        entry.requestId,
+        entry.timestamp,
+        entry.actor,
+        entry.method,
+        entry.path,
+        entry.status,
+        prevHash,
+        rowHash,
+        entry.castleReceiptDigest ?? null,
+      ],
     );
     await client.query("COMMIT");
   } catch (err) {
@@ -321,6 +344,8 @@ export interface AuditLogRow {
   path: string;
   status: number;
   insertedAt: string; // RFC3339
+  /** See AuditLogEntry.castleReceiptDigest -- absent for non-castle-GymAct rows. */
+  castleReceiptDigest?: string;
 }
 
 export interface AuditLogQueryParams {
@@ -387,7 +412,7 @@ export async function queryAuditLog(params: AuditLogQueryParams): Promise<AuditL
     const total = Number(countResult.rows[0]?.count ?? "0");
 
     const rowsResult = await pool.query(
-      `SELECT id, request_id, ts, actor, method, path, status, inserted_at
+      `SELECT id, request_id, ts, actor, method, path, status, inserted_at, castle_receipt_digest
        FROM platform_console.audit_log
        ${where}
        ORDER BY ts DESC, id DESC
@@ -404,6 +429,7 @@ export async function queryAuditLog(params: AuditLogQueryParams): Promise<AuditL
       path: r.path as string,
       status: Number(r.status),
       insertedAt: new Date(r.inserted_at as string).toISOString(),
+      ...(r.castle_receipt_digest ? { castleReceiptDigest: r.castle_receipt_digest as string } : {}),
     }));
 
     return { ok: true, data: { rows, total } };
@@ -455,8 +481,9 @@ export async function verifyAuditChain(): Promise<AuditChainVerifyOutcome> {
       status: number;
       prev_hash: string | null;
       row_hash: string | null;
+      castle_receipt_digest: string | null;
     }>(
-      `SELECT id, request_id, ts, actor, method, path, status, prev_hash, row_hash
+      `SELECT id, request_id, ts, actor, method, path, status, prev_hash, row_hash, castle_receipt_digest
        FROM platform_console.audit_log
        ORDER BY id ASC`,
     );
@@ -470,6 +497,7 @@ export async function verifyAuditChain(): Promise<AuditChainVerifyOutcome> {
         method: r.method,
         path: r.path,
         status: Number(r.status),
+        ...(r.castle_receipt_digest ? { castleReceiptDigest: r.castle_receipt_digest } : {}),
       };
       if (r.prev_hash !== expectedPrevHash) {
         return {

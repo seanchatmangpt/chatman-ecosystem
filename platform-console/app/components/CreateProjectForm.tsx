@@ -14,6 +14,7 @@ export default function CreateProjectForm({ namespaces }: { namespaces: string[]
   const [name, setName] = useState("");
   const [namespace, setNamespace] = useState(namespaces[0] ?? "");
   const [dbStorageSize, setDbStorageSize] = useState("1Gi");
+  const [tier, setTier] = useState<"starter" | "pro" | "enterprise">("starter");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -27,7 +28,7 @@ export default function CreateProjectForm({ namespaces }: { namespaces: string[]
       const res = await fetch("/api/projects", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, namespace, dbStorageSize }),
+        body: JSON.stringify({ name, namespace, dbStorageSize, tier }),
       });
       const body = await res.json();
       if (!res.ok) {
@@ -98,7 +99,24 @@ export default function CreateProjectForm({ namespaces }: { namespaces: string[]
             placeholder="1Gi"
           />
         </label>
+        <label className="block text-sm">
+          <span className="mb-1 block text-gray-400">Plan tier</span>
+          <select
+            value={tier}
+            onChange={(e) => setTier(e.target.value as "starter" | "pro" | "enterprise")}
+            className="w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-white"
+          >
+            <option value="starter">Starter</option>
+            <option value="pro">Pro</option>
+            <option value="enterprise">Enterprise</option>
+          </select>
+        </label>
       </div>
+      <p className="text-xs text-gray-500">
+        Sets a real <code>platform-console.io/tier</code> label on the Project CR and
+        provisions this namespace&apos;s <code>ResourceQuota</code> from that tier&apos;s
+        table (lib/tiers.ts) -- Pro is 2x and Enterprise is 3x the Starter ceiling.
+      </p>
       <button
         type="submit"
         disabled={submitting}

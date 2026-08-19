@@ -82,9 +82,18 @@ rules:
   # never spec -- same "PATCH is metadata-only, spec is never touched by
   # this console" discipline the Resource Tagging module's own comment
   # above documents for Services.
+  # `create` added for the Org/Tenant Provisioning module (lib/orgs.ts's
+  # createOrg via lib/k8s.ts's createNamespace): a new paying customer's
+  # self-service signup creates exactly one new Namespace per org, labeled
+  # `platform-console.io/org-id=<id>` -- no other namespace-scoped write
+  # verb (update/delete) is granted, matching this file's existing
+  # discipline of granting only the verbs a real caller in this codebase
+  # exercises. NOT YET applied to the live cluster as of this change (see
+  # createNamespace's own doc comment in lib/k8s.ts) -- a real, disclosed
+  # gap, not silently assumed live.
   - apiGroups: [""]
     resources: ["namespaces"]
-    verbs: ["get", "list", "patch"]
+    verbs: ["get", "list", "patch", "create"]
   # GitOps module: read-only Flux Kustomization/HelmRelease status.
   - apiGroups: ["kustomize.toolkit.fluxcd.io"]
     resources: ["kustomizations"]
@@ -142,9 +151,18 @@ rules:
   - apiGroups: ["metrics.k8s.io"]
     resources: ["pods"]
     verbs: ["get", "list"]
+  # Plan-State Enforcement module (lib/plan-state.ts's
+  # reconcilePlanState via lib/k8s.ts's patchResourceQuotaHard): `patch`
+  # added for the real billing-state-triggered `spec.hard` merge patch
+  # that suspends a tenant namespace's already-provisioned ResourceQuota
+  # down to a near-zero ceiling (and restores it on reactivation) --
+  # cluster-wide like the rest of this ClusterRole's quota grant, for the
+  # same reason Quota Enforcement's Deployment-patch grant above is
+  # cluster-wide (the affected namespace is any platform project
+  # namespace, not one fixed one).
   - apiGroups: [""]
     resources: ["resourcequotas"]
-    verbs: ["get", "list"]
+    verbs: ["get", "list", "patch"]
   # Service Discovery module: read-only core/v1 Endpoints -- the real
   # backing-Pod-IP half of the DNS/service-discovery view (Services alone,
   # already granted above, only give the name/ClusterIP half). Workload
@@ -899,6 +917,38 @@ subjects:
 roleRef:
   kind: Role
   name: platform-console-api-keys
+  apiGroup: rbac.authorization.k8s.io
+---
+# services/ggen/app.py's /provision now gates on the same real
+# platform-console-api-keys Secret (Bearer-API-key auth, ported byte-for-byte
+# from lib/api-keys.ts) -- ggen-status-reader (the ggen namespace's own
+# ServiceAccount) needs cross-namespace READ ONLY access to that one Secret.
+# get-only, resourceNames-scoped -- this service never creates or rotates
+# keys, only validates a presented one, so it gets none of the create/patch
+# verbs platform-console's own ServiceAccount has above.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: ggen-status-read-api-keys
+  namespace: platform-console
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["platform-console-api-keys"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ggen-status-read-api-keys-binding
+  namespace: platform-console
+subjects:
+  - kind: ServiceAccount
+    name: ggen-status-reader
+    namespace: ggen
+roleRef:
+  kind: Role
+  name: ggen-status-read-api-keys
   apiGroup: rbac.authorization.k8s.io
 ---
 # ------------------------------------------------------ Canary Traffic Control

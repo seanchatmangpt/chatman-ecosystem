@@ -4,6 +4,7 @@ import { newRequestId, writeAuditLogEntry } from "@/lib/audit-log";
 import { resolveApiKeyAuth } from "@/lib/api-keys";
 import { checkAndTouchSession } from "@/lib/active-sessions";
 import { clientIpFrom } from "@/lib/request-meta";
+import { apiKeyRateLimiter } from "@/lib/rate-limit";
 
 // Runs on the Node.js middleware runtime (`export const runtime = "nodejs"`
 // below -- Next.js 15's node-middleware support, not the edge runtime this
@@ -25,6 +26,15 @@ const PUBLIC_PATHS = [
   "/api/login",
   "/api/auth/gotrue-login",
   "/api/auth/gotrue-signup",
+  // New-customer self-service signup UI and the admin-invite landing
+  // page it accepts a token from (see app/signup/page.tsx,
+  // app/org/invite/page.tsx). Neither page itself performs a privileged
+  // action -- /signup's client-side flow calls the already-public
+  // /api/auth/gotrue-signup first, then the now-authenticated POST
+  // /api/orgs (NOT in this allowlist -- it requires the session cookie
+  // /api/auth/gotrue-signup just set).
+  "/signup",
+  "/org/invite",
   // Third, distinct real auth path -- external OIDC federation. Both legs
   // must stay reachable without an existing session: /oidc-login issues
   // the redirect to the real external provider, /oidc-callback is where
@@ -95,6 +105,32 @@ export async function middleware(request: NextRequest) {
       const presentedKey = authHeader.slice("Bearer ".length).trim();
       const resolved = await resolveApiKeyAuth(presentedKey);
       if (resolved) {
+        // Real per-key, per-tier rate limit (lib/rate-limit.ts) --
+        // distinct from, and layered underneath, the flat 20/min Envoy
+        // filter every caller (including this one) still also passes
+        // through at the gateway (k8s/ratelimit.yaml, control
+        // rate-limiting-enforced). This is the tenant-aware ceiling that
+        // filter cannot express: keyed by the resolved key's own bound
+        // tier (`resolved.tier`), never a header a caller could forge,
+        // since it is read straight from the just-verified Secret record.
+        // Checked before a session token is even minted for this
+        // request -- a throttled caller never reaches route-level
+        // authorization at all, same "fail before doing real work" shape
+        // as every other gate in this function.
+        const limitResult = apiKeyRateLimiter.consume(resolved.keyId, resolved.tier);
+        if (!limitResult.allowed) {
+          const response = NextResponse.json(
+            { error: "rate_limited", tier: resolved.tier, limit: limitResult.limit },
+            { status: 429 },
+          );
+          response.headers.set("x-ratelimit-limit", String(limitResult.limit));
+          response.headers.set("x-ratelimit-remaining", "0");
+          response.headers.set(
+            "retry-after",
+            String(Math.ceil(limitResult.retryAfterMs / 1000)),
+          );
+          return response;
+        }
         // Mints a REAL session token of the exact same JWT shape every
         // other session already is (lib/session.ts's
         // createApiKeySessionToken), then forwards it as this request's

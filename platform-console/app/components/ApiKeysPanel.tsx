@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { ApiKeySummary } from "@/lib/api-keys";
+import { API_KEY_TIERS, TIER_LIMITS, type ApiKeyTier } from "@/lib/rate-limit";
 
 const ROLE_OPTIONS = ["viewer", "member", "owner"] as const;
 
@@ -27,6 +28,7 @@ export default function ApiKeysPanel({
   const router = useRouter();
   const [name, setName] = useState("");
   const [role, setRole] = useState<string>(creatorRole);
+  const [tier, setTier] = useState<ApiKeyTier>("standard");
   const [creating, setCreating] = useState(false);
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +44,7 @@ export default function ApiKeysPanel({
       const res = await fetch("/api/api-keys", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, role }),
+        body: JSON.stringify({ name, role, tier }),
       });
       const body = await res.json();
       if (!res.ok) {
@@ -123,8 +125,10 @@ export default function ApiKeysPanel({
                     {k.name && <span className="ml-2 text-gray-400">{k.name}</span>}
                   </p>
                   <p className="text-xs text-gray-500">
-                    identifier: <code>{k.identifier}</code> · role: <code>{k.role}</code> ·
-                    created by <code>{k.createdBy}</code> at{" "}
+                    identifier: <code>{k.identifier}</code> · role: <code>{k.role}</code> · tier:{" "}
+                    <code>{k.tier}</code> ({TIER_LIMITS[k.tier].maxTokens} req/
+                    {TIER_LIMITS[k.tier].fillIntervalMs / 1000}s) · created by{" "}
+                    <code>{k.createdBy}</code> at{" "}
                     {new Date(k.createdAt).toLocaleString()}
                     {k.revoked && (
                       <>
@@ -183,6 +187,20 @@ export default function ApiKeysPanel({
               {ROLE_OPTIONS.map((r) => (
                 <option key={r} value={r}>
                   {r}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-gray-400">Plan tier (rate limit)</span>
+            <select
+              value={tier}
+              onChange={(e) => setTier(e.target.value as ApiKeyTier)}
+              className="w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-white"
+            >
+              {API_KEY_TIERS.map((t) => (
+                <option key={t} value={t}>
+                  {t} ({TIER_LIMITS[t].maxTokens} req/{TIER_LIMITS[t].fillIntervalMs / 1000}s)
                 </option>
               ))}
             </select>

@@ -738,6 +738,44 @@ real token-bucket refill. Full evidence: `rate-limiting-enforced` in
 `evidence/control-evidence-bundle.json`. Live documentation: `/api-gateway` on the console
 itself.
 
+### Per-key, per-plan-tier limits (application layer)
+
+The Envoy-layer control above enforces one flat, global 20/min ceiling for every caller on
+the route -- correct for anonymous/unauthenticated traffic, but not tenant-aware: a
+Bearer-authenticated API caller (`lib/api-keys.ts`) already carries a real, bound identity and
+role, and now also a real, bound plan **tier** a limit can key off of. `lib/rate-limit.ts`
+adds a second, per-key token bucket enforced in `middleware.ts` itself -- the same file that
+already resolves the `Authorization: Bearer pk_live_...` header into a session -- so a
+throttled caller never even reaches route-level authorization.
+
+`ApiKeyRecord.tier` (`lib/api-keys.ts`) is one of `standard` (20 req/min -- matches the
+Envoy-layer default), `pro` (100 req/min), or `enterprise` (500 req/min), set at key-creation
+time via the API Keys page or `POST /api/api-keys {"tier": "..."}`, defaulting to `standard`
+for both new and pre-existing keys (a key minted before this field existed parses with
+`tier: "standard"`, never a silently widened or narrowed ceiling). A throttled Bearer request
+gets a real `429 {"error":"rate_limited","tier":...,"limit":...}` with `x-ratelimit-limit`,
+`x-ratelimit-remaining: 0`, and `retry-after` headers -- before any session token is minted for
+that request.
+
+Disclosed simplification: the bucket is a real in-process `Map`, one instance per running
+Node.js worker (module-level singleton, `apiKeyRateLimiter`), not a shared store across
+replicas (no Redis in this stack, same reasoning the Envoy-layer control's own module doc
+gives for staying local rather than standing up a global-ratelimit service). With N running
+replicas of `platform-console-gateway`, the *effective* ceiling across the whole deployment is
+`tierLimit * N`, not one cluster-wide bucket -- disclosed in `lib/rate-limit.ts`'s own module
+doc, not hidden.
+
+**Verification (real, not simulated)**: `app/scripts/verify-rate-limit-tiers.ts` exercises the
+real, production `TokenBucketLimiter` class directly (Chicago style -- real state transitions,
+a real injectable clock standing in for wall-clock time so the 60s window doesn't require an
+actual 60-second sleep, assertions on real returned `allowed`/`remaining`/`retryAfterMs`
+state, never on "was consume() called"): a `standard`-tier key is throttled at exactly its
+20th request while a *different*, `pro`-tier key in the same instant is allowed 60 consecutive
+requests, then the throttled key's bucket is confirmed to refill after the simulated window
+elapses. Full evidence, including the live end-to-end HTTP run against two real deployed API
+keys on two real tiers: `rate-limiting-per-key-tier-enforced` in
+`evidence/control-evidence-bundle.json`.
+
 ## Private Connectivity
 
 Real transport-layer access control for the platform's genuinely sensitive surface -- the AWS
