@@ -40,9 +40,16 @@ Version: `0.1.0`
 
 | Document | Path | Canonical |
 |---|---|---|
+| `document:api-surfaces` | `docs/API-SURFACES.md` | false |
 | `document:architecture` | `docs/ARCHITECTURE.md` | true |
 | `document:constitution` | `CONSTITUTION.md` | true |
+| `document:development` | `docs/DEVELOPMENT.md` | false |
+| `document:docs-maintenance` | `docs/DOCS-MAINTENANCE.md` | false |
+| `document:documentation-inventory` | `docs/DOCUMENTATION-INVENTORY.md` | true |
+| `document:ggen-service` | `docs/GGEN-SERVICE.md` | false |
 | `document:hyperdimensional-information-encryption` | `docs/architecture/hyperdimensional-information-encryption.md` | false |
+| `document:observability` | `docs/OBSERVABILITY.md` | false |
+| `document:ocel-process-evidence` | `docs/OCEL-PROCESS-EVIDENCE.md` | false |
 | `document:operations` | `docs/OPERATIONS.md` | true |
 | `document:platform-engineers-handbook-backport` | `docs/platform-engineers-handbook-backport.md` | false |
 | `document:platform-engineers-handbook-backward-chain` | `docs/platform-engineers-handbook-backward-chain.md` | false |
@@ -51,3 +58,9 @@ Version: `0.1.0`
 | `document:platform-engineers-handbook-ggen-packs` | `docs/platform-engineers-handbook-ggen-packs.md` | false |
 | `document:post-agi-platform-handbook` | `docs/post-agi-platform-handbook/README.md` | false |
 | `document:readme` | `README.md` | false |
+| `document:release-process` | `docs/RELEASE-PROCESS.md` | false |
+| `document:reliability-dr` | `docs/RELIABILITY-AND-DR.md` | false |
+| `document:security-model` | `docs/SECURITY-MODEL.md` | false |
+| `document:troubleshooting` | `docs/TROUBLESHOOTING.md` | false |
+| `document:v26-8-18-release` | `docs/v26.8.18-release.md` | false |
+| `document:versioning` | `docs/VERSIONING.md` | false |
