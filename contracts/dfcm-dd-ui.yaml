@@ -1,0 +1,31 @@
+version: dfcm-dd-ui/2
+canonical_reference:
+  repo: seanchatmangpt/wasm4pm
+  pr: 606
+composition:
+  equation: UI_t = P(G_t, avatar, context, authority, grammar)
+  canonical_object: admitted_projection_space
+  generated_artifacts_are_projections: true
+  runtime_ai_render_authority: false
+  rendering_actuation_authority: false
+dfcm:
+  enumerate_grammar_valid_candidates: true
+  pareto_dimensions: [semantic, avatar, context, evidence, materiality, grammar]
+  irreversible_ui_selections: 0
+authority:
+  SELECT: reversible-presentation
+  CONSTRUCT: explicit-admission
+  DO: BRCE-only
+receipts:
+  screen_binds: [grammar, world, input, presentation_frontier, screen]
+  intent_binds: [screen, claim, action]
+  intent_actuation: false
+replay:
+  reject_digest_mismatch: true
+  reject_grammar_version_mismatch: true
+  reject_unprojected_action: true
+integration_owners:
+  ggen-marketplace: manufacture-and-distribute-contract
+  gymact: falsify-world-and-projection-invariants
+  castle: enforce-authority-ceiling
+  wasm4pm: executable-reference-projection
