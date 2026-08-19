@@ -55,11 +55,29 @@ export const API_KEYS_SECRET = "platform-console-api-keys";
 
 const KEY_PREFIX = "pk_live_";
 
+// Sentinel orgId for keys that predate the orgId field and could not be
+// confidently inferred by scripts/backfill-api-key-org.ts (identifier not
+// resolvable to any known org's role assignments). Surfaced in the UI
+// (ApiKeysPanel) as needing manual reassignment -- never silently treated
+// as a real org.
+export const UNASSIGNED_ORG_ID = "unassigned";
+
 export interface ApiKeyRecord {
   id: string;
   prefix: string; // shown in listings -- e.g. "pk_live_AbCd1234..." -- never the full key
   hash: string; // sha256(plaintext), hex -- the only thing this app ever persists
   identifier: string; // bound org-roles identity (roleIdentifierFor-shaped)
+  // Formal ownership: which org (lib/orgs.ts's Org.id) this key belongs to
+  // -- required, non-null, distinct from `identifier` (a roles-identity
+  // that is not itself an org id). Lets "list every key belonging to org
+  // X" be answered directly (listApiKeysForOrg below) instead of inferred
+  // from audit rows, which are only partially orgId-populated. Every key
+  // minted before this field existed has no `orgId` at all in its stored
+  // JSON -- parseRecord below falls back to the "unassigned" sentinel
+  // (UNASSIGNED_ORG_ID) for those rather than rejecting the record, and
+  // scripts/backfill-api-key-org.ts one-time-migrates them to a real org
+  // id where one can be inferred.
+  orgId: string;
   role: Role;
   createdBy: string; // identifier of the owner who created this key
   createdAt: string;
@@ -109,6 +127,11 @@ function parseRecord(raw: string): ApiKeyRecord | null {
       prefix: parsed.prefix,
       hash: parsed.hash,
       identifier: parsed.identifier,
+      // Backward compatible, same discipline as `tier` below: a record
+      // written before this field existed has no `orgId` key at all --
+      // defaults to the sentinel until scripts/backfill-api-key-org.ts
+      // (or a fresh write through createApiKey) assigns a real one.
+      orgId: typeof parsed.orgId === "string" && parsed.orgId ? parsed.orgId : UNASSIGNED_ORG_ID,
       role: parsed.role,
       createdBy: parsed.createdBy,
       createdAt: parsed.createdAt,
@@ -158,6 +181,11 @@ export function clampRoleToCreator(requested: Role | undefined, creatorRole: Rol
 
 export interface CreateApiKeyInput {
   identifier: string;
+  // Formal org ownership -- required, non-null (see ApiKeyRecord.orgId
+  // above). Never inferred here: every caller (the global /api/api-keys
+  // route and the org-scoped /api/orgs/[id]/api-keys route) must resolve
+  // and pass a real org id before calling this.
+  orgId: string;
   creatorRole: Role;
   createdBy: string;
   requestedRole?: Role;
@@ -174,6 +202,9 @@ export interface CreateApiKeyInput {
 export async function createApiKey(
   input: CreateApiKeyInput,
 ): Promise<K8sResult<{ plaintext: string; key: ApiKeySummary }>> {
+  if (!input.orgId || !input.orgId.trim()) {
+    return { ok: false, error: "orgId is required to create an API key" };
+  }
   const role = clampRoleToCreator(input.requestedRole, input.creatorRole);
   const { plaintext, hash, prefix } = generateKeyMaterial();
   const record: ApiKeyRecord = {
@@ -181,6 +212,7 @@ export async function createApiKey(
     prefix,
     hash,
     identifier: input.identifier,
+    orgId: input.orgId,
     role,
     createdBy: input.createdBy,
     createdAt: new Date().toISOString(),
@@ -207,6 +239,20 @@ export async function listApiKeys(): Promise<K8sResult<ApiKeySummary[]>> {
   }
   records.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   return { ok: true, data: records.map(toSummary) };
+}
+
+/**
+ * Org-scoped listing -- backs GET /api/orgs/[id]/api-keys. Filters the
+ * same full listApiKeys() result down to the requested org id rather than
+ * reading a separate index: this Secret has one data key per key already,
+ * so a client-side filter over the (small, per-console) full list is the
+ * same "no separate index to keep in sync" discipline getOrgProjectTier
+ * (lib/orgs.ts) uses over listProjects.
+ */
+export async function listApiKeysForOrg(orgId: string): Promise<K8sResult<ApiKeySummary[]>> {
+  const result = await listApiKeys();
+  if (!result.ok) return result;
+  return { ok: true, data: result.data.filter((k) => k.orgId === orgId) };
 }
 
 /**

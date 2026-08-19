@@ -53,6 +53,7 @@ export async function GET(
   const access = await requireRoleIn(session, namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -66,6 +67,7 @@ export async function GET(
   const result = await getComplianceReport(id, reportId);
   if (!result.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -77,6 +79,7 @@ export async function GET(
   }
   if (!result.data) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -92,6 +95,7 @@ export async function GET(
 
   if (format === "csv") {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -110,6 +114,7 @@ export async function GET(
 
   if (format === "ndjson") {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -147,6 +152,7 @@ export async function GET(
   }
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",

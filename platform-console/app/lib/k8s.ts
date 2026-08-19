@@ -2753,6 +2753,42 @@ export async function patchDeploymentReplicas(
 }
 
 /**
+ * Real quarantine primitive for the vulnerability-scan-triggered
+ * auto-remediation workflow
+ * (app/api/security-scan/auto-remediate/route.ts): scales the named
+ * Deployment to 0 replicas (via the same real `patchDeploymentReplicas`
+ * merge-patch above -- a genuine k8s action, not simulated) AND stamps a
+ * `platform-console.io/quarantined=true` label on the Deployment's own
+ * metadata via a second real RFC 7386 merge patch, so the quarantine is
+ * durably visible on the object itself (`kubectl get deploy -l
+ * platform-console.io/quarantined=true`) independent of this console's own
+ * approval-request record, and so a namespace-scoped deny-all
+ * NetworkPolicy selecting on that same label blocks any traffic to pods
+ * still terminating. Only ever called after a fresh, distinct-approver
+ * `deployment.quarantine` approval (lib/approval-workflow.ts) exists --
+ * this function itself performs no approval check, same "the guarded
+ * route checks, the primitive just acts" split as patchDeploymentReplicas
+ * and patchResourceQuotaHard.
+ */
+export async function quarantineDeployment(
+  namespace: string,
+  name: string,
+): Promise<K8sResult<{ name: string; namespace: string; replicas: 0 }>> {
+  const scaled = await patchDeploymentReplicas(namespace, name, 0);
+  if (!scaled.ok) return scaled;
+
+  const labelResult = await k8sRequest<unknown>(
+    `/apis/apps/v1/namespaces/${encodeURIComponent(namespace)}/deployments/${encodeURIComponent(name)}`,
+    "PATCH",
+    { metadata: { labels: { "platform-console.io/quarantined": "true" } } },
+    "application/merge-patch+json",
+  );
+  if (!labelResult.ok) return labelResult;
+
+  return { ok: true, data: { name, namespace, replicas: 0 } };
+}
+
+/**
  * Real annotation primitive for lib/quota-enforcement.ts: patches
  * `metadata.annotations` on one Namespace object via the same RFC 7386
  * merge-patch convention as `applyTag` above (labels vs. annotations

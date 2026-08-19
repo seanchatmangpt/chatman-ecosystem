@@ -42,6 +42,7 @@ export async function PATCH(
   const access = await requireRoleIn(session, orgResult.data.namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PATCH",
@@ -56,6 +57,7 @@ export async function PATCH(
   const status = requestBody?.status;
   if (status !== "responded" && status !== "resolved") {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PATCH",
@@ -75,6 +77,7 @@ export async function PATCH(
   }
   if (!existing.data) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PATCH",
@@ -87,6 +90,7 @@ export async function PATCH(
 
   const result = await updateSupportTicketStatus({ orgId: id, ticketId, status });
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "PATCH",

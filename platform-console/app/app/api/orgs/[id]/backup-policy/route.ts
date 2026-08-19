@@ -69,6 +69,7 @@ export async function GET(
   const access = await requireRoleIn(session, org.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -85,6 +86,7 @@ export async function GET(
   ]);
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -138,6 +140,7 @@ export async function PUT(
   const access = await requireRoleIn(session, org.namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -164,6 +167,7 @@ export async function PUT(
 
   if (!Number.isInteger(retentionDays) || retentionDays < range.minDays || retentionDays > range.maxDays) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -188,6 +192,7 @@ export async function PUT(
 
   if ("error" in approval) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -200,6 +205,7 @@ export async function PUT(
 
   if (!approval.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -234,6 +240,7 @@ export async function PUT(
   });
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "PUT",

@@ -44,6 +44,7 @@ export async function GET(
   const access = await requireRoleIn(session, orgResult.data.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -56,6 +57,7 @@ export async function GET(
 
   const result = await listReferralCreditsForOrg(id);
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",

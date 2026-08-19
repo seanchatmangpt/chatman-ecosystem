@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
   const access = await requireRoleIn(session, orgResult.data.namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: orgId,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -86,6 +87,7 @@ export async function POST(request: NextRequest) {
 
   if ("error" in approval) {
     writeAuditLogEntry({
+      orgId: orgId,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -98,6 +100,7 @@ export async function POST(request: NextRequest) {
 
   if (!approval.ok) {
     writeAuditLogEntry({
+      orgId: orgId,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -126,6 +129,7 @@ export async function POST(request: NextRequest) {
   });
   if (!created.ok) {
     writeAuditLogEntry({
+      orgId: orgId,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -138,6 +142,7 @@ export async function POST(request: NextRequest) {
 
   const result = await runDsarErasure(created.data.requestId);
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",

@@ -55,6 +55,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   const result = await getIpAllowlist(namespace);
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -90,6 +91,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   const access = await requireRole(session, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -122,6 +124,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
   const result = await setIpAllowlist(namespace, cidrs);
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "PUT",

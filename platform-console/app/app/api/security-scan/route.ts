@@ -10,6 +10,7 @@ import {
   newVulnScanJobName,
   syncVulnDenylist,
 } from "@/lib/vuln-scan";
+import { autoRemediateCriticalFindings, type AutoRemediationResult } from "@/lib/security-scan-auto-remediate";
 
 // Owner-only, both verbs -- Container Vulnerability Scanning creates a real
 // k8s Job with a hostPath mount onto the node's own containerd socket, the
@@ -41,6 +42,7 @@ export async function POST(request: NextRequest) {
 
   const access = await requireRole(session, "owner");
   if (!access.ok) {
+    // org-agnostic: platform-/session-scoped action with no per-tenant org boundary in this route's current data model -- see scripts/check-audit-org-coverage.ts allowlist
     writeAuditLogEntry({
       timestamp: new Date().toISOString(),
       actor,
@@ -103,6 +105,7 @@ export async function GET(request: NextRequest) {
   // silently claiming the gate updated when it didn't.
   let denylist: { pattern: string; blockedRefs: string[] } | null = null;
   let denylistSyncError: string | null = null;
+  let autoRemediation: AutoRemediationResult | null = null;
   if (result.data.complete) {
     const sync = await syncVulnDenylist(result.data);
     if (sync.ok) {
@@ -110,9 +113,22 @@ export async function GET(request: NextRequest) {
     } else {
       denylistSyncError = sync.error;
     }
+
+    // Natural next step after syncVulnDenylist: syncVulnDenylist closes
+    // the admission-time gap (blocks the NEXT deploy of a CRITICAL-CVE
+    // image); this closes the "already running" gap for any org that has
+    // opted in (Org.autoRemediateCritical, lib/orgs.ts, default `false`)
+    // by filing a real deployment.quarantine maker-checker approval
+    // request per affected live Deployment -- never actuates anything by
+    // itself. Always attempted regardless of whether the denylist sync
+    // itself succeeded: the two are independent consumers of the same
+    // real scan result, and a denylist ConfigMap write failing must not
+    // silently skip filing a real quarantine request for an org that is
+    // relying on it.
+    autoRemediation = await autoRemediateCriticalFindings(result.data);
   }
 
-  return NextResponse.json({ run: result.data, denylist, denylistSyncError });
+  return NextResponse.json({ run: result.data, denylist, denylistSyncError, autoRemediation });
 }
 
 export async function DELETE(request: NextRequest) {

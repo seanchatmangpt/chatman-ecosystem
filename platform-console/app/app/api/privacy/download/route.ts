@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
 
   const verified = verifyExportToken(token);
   if (!verified.ok) {
+    // org-agnostic: platform-/session-scoped action with no per-tenant org boundary in this route's current data model -- see scripts/check-audit-org-coverage.ts allowlist
     writeAuditLogEntry({
       timestamp: new Date().toISOString(),
       actor: "signed-url (unverified)",

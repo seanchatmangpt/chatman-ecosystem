@@ -45,6 +45,7 @@ export async function GET(
   const access = await requireRoleIn(session, org.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -58,6 +59,7 @@ export async function GET(
   const invoicesResult = await listInvoicesForOrg(org.namespace);
   if (!invoicesResult.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -69,6 +71,7 @@ export async function GET(
   }
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",

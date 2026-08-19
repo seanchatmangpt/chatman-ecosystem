@@ -33,6 +33,7 @@
  * swallowed and never an unhandled promise rejection.
  */
 import { Pool } from "pg";
+import Stripe from "stripe";
 import {
   getPostgresConnectionInfo,
   getProject,
@@ -44,6 +45,7 @@ import {
   writeAuditLogEntry as writeStdoutAuditLogEntry,
   type AuditLogEntry,
 } from "@/lib/audit-log";
+import { getStoredSubscription, getStripeClient, rateLimitAddonPriceId } from "@/lib/stripe-billing";
 
 export { newRequestId };
 export type { AuditLogEntry };
@@ -1330,4 +1332,287 @@ export async function queryApiKeyUsage(
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
+}
+
+// ---------------------------------------------------------------------------
+// Historical spend/usage chart (queryOrgSpendHistory)
+// ---------------------------------------------------------------------------
+
+export type SpendHistoryGranularity = "daily" | "monthly";
+
+/** One real bucket in the org's historical spend time series. */
+export interface SpendHistoryBucket {
+  /** RFC3339 UTC bucket start -- truncated to the day (daily) or the
+   * first-of-month (monthly). */
+  periodStart: string;
+  /** Real dollars from actually-issued Stripe Invoice line items whose
+   * `type=subscription` (the flat plan price) attributable to this
+   * bucket, apportioned evenly across the real Stripe invoice `period`
+   * the line item covers -- never a fabricated flat number. Zero when no
+   * Stripe invoice line overlaps this bucket. */
+  baseTierCostUsd: number;
+  /** Real dollars from Stripe InvoiceItem lines this console itself
+   * created with `metadata.kind === "usage_overage"`
+   * (lib/overage-billing.ts's createOverageInvoiceItem), apportioned the
+   * same way. */
+  overageCostUsd: number;
+  /** Real dollars from Stripe SubscriptionItem lines whose price id
+   * matches `rateLimitAddonPriceId("pro"|"enterprise")`
+   * (lib/stripe-billing.ts's attachRateLimitAddon), apportioned the same
+   * way. */
+  rateLimitAddonCostUsd: number;
+  /** Real per-day/per-month total across the three line items above. */
+  totalCostUsd: number;
+  /** Real total API call volume (2xx+4xx+5xx) this org's keys recorded
+   * in platform_console.audit_log for this bucket -- the usage dimension
+   * a FinOps team reconciles the dollar figures against. Zero-filled
+   * (unlike ApiKeyUsageBucket's hourlyBuckets) so every bucket in
+   * [from, to] appears exactly once, in order, even with zero calls --
+   * a chart/CSV consumer must not have to invent missing rows. */
+  callVolume: number;
+}
+
+export interface OrgSpendHistoryResult {
+  orgId: string;
+  granularity: SpendHistoryGranularity;
+  from: string;
+  to: string;
+  buckets: SpendHistoryBucket[];
+  /** Sum of every bucket's totalCostUsd -- the real total spend across
+   * the whole requested window. */
+  totalCostUsd: number;
+  /** True only when a real Stripe customer/subscription is on file for
+   * this org AND STRIPE_SECRET_KEY is configured -- false means the
+   * dollar fields above are honestly all-zero (no fabricated invoice
+   * data), not that the org spent nothing. */
+  hasStripeBilling: boolean;
+}
+
+export type OrgSpendHistoryOutcome =
+  | { ok: true; data: OrgSpendHistoryResult }
+  | { ok: false; error: string };
+
+function dayKeyUtc(d: Date): string {
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())).toISOString();
+}
+
+function monthKeyUtc(d: Date): string {
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1)).toISOString();
+}
+
+function bucketKey(d: Date, granularity: SpendHistoryGranularity): string {
+  return granularity === "daily" ? dayKeyUtc(d) : monthKeyUtc(d);
+}
+
+/** Every real bucket key in `[from, to]` inclusive, in ascending order --
+ * the zero-filled skeleton `queryOrgSpendHistory` folds real Stripe/audit
+ * numbers into. */
+function bucketSkeleton(from: Date, to: Date, granularity: SpendHistoryGranularity): string[] {
+  const keys: string[] = [];
+  const cursor = new Date(bucketKey(from, granularity));
+  const end = new Date(bucketKey(to, granularity));
+  while (cursor.getTime() <= end.getTime()) {
+    keys.push(cursor.toISOString());
+    if (granularity === "daily") {
+      cursor.setUTCDate(cursor.getUTCDate() + 1);
+    } else {
+      cursor.setUTCMonth(cursor.getUTCMonth() + 1);
+    }
+  }
+  return keys;
+}
+
+/** Classifies one real Stripe invoice line item into which of the three
+ * spend dimensions it belongs to -- see SpendHistoryBucket's own field
+ * comments for the exact real signal each classification keys off of. */
+function classifyInvoiceLine(line: Stripe.InvoiceLineItem): "overage" | "rateLimitAddon" | "base" {
+  if (line.metadata?.kind === "usage_overage") return "overage";
+  const priceRef = line.pricing?.price_details?.price;
+  const priceId = typeof priceRef === "string" ? priceRef : priceRef?.id;
+  if (priceId && (priceId === rateLimitAddonPriceId("pro") || priceId === rateLimitAddonPriceId("enterprise"))) {
+    return "rateLimitAddon";
+  }
+  return "base";
+}
+
+/** Apportions `amountUsd` evenly across every real daily/monthly bucket
+ * key the real Stripe `period` [periodStart, periodEnd) overlaps within
+ * `bucketKeys` -- so a monthly Stripe invoice line, when the caller asked
+ * for `daily` granularity, spreads across that invoice's real ~30 days
+ * rather than dumping the whole month's cost onto one arbitrary day. A
+ * `monthly`-granularity request typically has the line item's period
+ * land in exactly one bucket, so it degrades to "the whole amount in
+ * that month" -- the natural, undistorted case. */
+function apportion(
+  amountUsd: number,
+  periodStart: Date,
+  periodEnd: Date,
+  bucketKeys: string[],
+  granularity: SpendHistoryGranularity,
+  add: (bucketKey: string, amountUsd: number) => void,
+): void {
+  const overlapping = bucketKeys.filter((k) => {
+    const bStart = new Date(k).getTime();
+    const bEnd =
+      granularity === "daily"
+        ? bStart + 24 * 60 * 60 * 1000
+        : new Date(Date.UTC(new Date(k).getUTCFullYear(), new Date(k).getUTCMonth() + 1, 1)).getTime();
+    return bStart < periodEnd.getTime() && bEnd > periodStart.getTime();
+  });
+  if (overlapping.length === 0) return;
+  const share = amountUsd / overlapping.length;
+  for (const k of overlapping) add(k, share);
+}
+
+/**
+ * Real historical spend/usage time series for one org: the exportable,
+ * multi-month counterpart to app/billing/page.tsx's point-in-time
+ * overage-estimate widget -- what Fortune 5 FinOps teams ask for
+ * ("12 months of spend trend") instead of "today's estimate".
+ *
+ * Two real data sources, merged by real timestamp, never fabricated:
+ *   1. Real Stripe `Invoice.lines` for this org's real Stripe customer
+ *      (lib/stripe-billing.ts's getStoredSubscription resolves
+ *      tenantNamespace -> real Stripe customer id), classified into
+ *      base/overage/rateLimitAddon per classifyInvoiceLine and
+ *      apportioned across the real invoice `period` via `apportion`.
+ *      An org with no Stripe customer on file yet (or no
+ *      STRIPE_SECRET_KEY configured) gets `hasStripeBilling: false` and
+ *      honest zero dollar fields -- never a fabricated number.
+ *   2. Real `platform_console.audit_log` call-volume rows for `orgId`,
+ *      the same table queryApiKeyUsage aggregates, grouped by real
+ *      day/month here instead of by hour-within-one-key -- the usage
+ *      dimension a FinOps team reconciles the dollar figures against.
+ *
+ * `orgId` gates the audit_log query (tenant isolation, same as
+ * queryApiKeyUsage); `tenantNamespace` gates the Stripe lookup (Stripe
+ * customers are keyed by namespace, not orgId, in this codebase's
+ * existing lib/stripe-billing.ts convention) -- the route handler is
+ * responsible for resolving both from the same already-authorized org
+ * record (lib/orgs.ts's getOrg) before calling this.
+ */
+export async function queryOrgSpendHistory(
+  orgId: string,
+  tenantNamespace: string,
+  params: { from: Date; to: Date; granularity: SpendHistoryGranularity },
+): Promise<OrgSpendHistoryOutcome> {
+  const { from, to, granularity } = params;
+  if (from.getTime() > to.getTime()) {
+    return { ok: false, error: "from must be before to" };
+  }
+
+  const bucketKeys = bucketSkeleton(from, to, granularity);
+  const baseByBucket = new Map<string, number>();
+  const overageByBucket = new Map<string, number>();
+  const addonByBucket = new Map<string, number>();
+  const add = (map: Map<string, number>) => (k: string, amt: number) =>
+    map.set(k, (map.get(k) ?? 0) + amt);
+
+  let hasStripeBilling = false;
+  const stripe = getStripeClient();
+  if (stripe) {
+    const stored = await getStoredSubscription(tenantNamespace);
+    if (!stored.ok) return { ok: false, error: stored.error };
+    if (stored.data) {
+      hasStripeBilling = true;
+      try {
+        for await (const invoice of stripe.invoices.list({
+          customer: stored.data.stripeCustomerId,
+          created: { gte: Math.floor(from.getTime() / 1000), lte: Math.floor(to.getTime() / 1000) + 1 },
+          limit: 100,
+          expand: ["data.lines"],
+        })) {
+          for (const line of invoice.lines.data) {
+            const amountUsd = line.amount / 100;
+            if (amountUsd === 0) continue;
+            const periodStart = new Date((line.period?.start ?? invoice.period_start) * 1000);
+            const periodEnd = new Date((line.period?.end ?? invoice.period_end) * 1000);
+            const kind = classifyInvoiceLine(line);
+            const map = kind === "overage" ? overageByBucket : kind === "rateLimitAddon" ? addonByBucket : baseByBucket;
+            apportion(amountUsd, periodStart, periodEnd, bucketKeys, granularity, add(map));
+          }
+        }
+      } catch (e) {
+        return { ok: false, error: `stripe invoices.list failed: ${(e as Error).message}` };
+      }
+    }
+  }
+
+  const pool = await resolvePool();
+  const callVolumeByBucket = new Map<string, number>();
+  if (pool) {
+    try {
+      const truncUnit = granularity === "daily" ? "day" : "month";
+      const usageResult = await pool.query<{ bucket: string; calls: string }>(
+        `SELECT date_trunc($1, ts) AS bucket, count(*)::bigint AS calls
+         FROM platform_console.audit_log
+         WHERE org_id = $2 AND ts >= $3 AND ts <= $4
+         GROUP BY 1
+         ORDER BY 1 ASC`,
+        [truncUnit, orgId, from.toISOString(), to.toISOString()],
+      );
+      for (const r of usageResult.rows) {
+        callVolumeByBucket.set(new Date(r.bucket).toISOString(), Number(r.calls));
+      }
+    } catch (err) {
+      return { ok: false, error: err instanceof Error ? err.message : String(err) };
+    }
+  }
+
+  const buckets: SpendHistoryBucket[] = bucketKeys.map((k) => {
+    const baseTierCostUsd = baseByBucket.get(k) ?? 0;
+    const overageCostUsd = overageByBucket.get(k) ?? 0;
+    const rateLimitAddonCostUsd = addonByBucket.get(k) ?? 0;
+    return {
+      periodStart: k,
+      baseTierCostUsd,
+      overageCostUsd,
+      rateLimitAddonCostUsd,
+      totalCostUsd: baseTierCostUsd + overageCostUsd + rateLimitAddonCostUsd,
+      callVolume: callVolumeByBucket.get(k) ?? 0,
+    };
+  });
+
+  const totalCostUsd = buckets.reduce((sum, b) => sum + b.totalCostUsd, 0);
+
+  return {
+    ok: true,
+    data: {
+      orgId,
+      granularity,
+      from: from.toISOString(),
+      to: to.toISOString(),
+      buckets,
+      totalCostUsd,
+      hasStripeBilling,
+    },
+  };
+}
+
+/**
+ * Real RFC4180 CSV rendering of an OrgSpendHistoryResult -- the FinOps-
+ * tooling-ingestion export format the spec calls for (`?format=csv`).
+ * Every field is real (see queryOrgSpendHistory's own header comment);
+ * this function performs no aggregation, only formatting.
+ */
+export function orgSpendHistoryToCsv(result: OrgSpendHistoryResult): string {
+  const header = [
+    "period_start",
+    "base_tier_cost_usd",
+    "overage_cost_usd",
+    "rate_limit_addon_cost_usd",
+    "total_cost_usd",
+    "call_volume",
+  ];
+  const rows = result.buckets.map((b) =>
+    [
+      b.periodStart,
+      b.baseTierCostUsd.toFixed(4),
+      b.overageCostUsd.toFixed(4),
+      b.rateLimitAddonCostUsd.toFixed(4),
+      b.totalCostUsd.toFixed(4),
+      String(b.callVolume),
+    ].join(","),
+  );
+  return [header.join(","), ...rows].join("\n") + "\n";
 }

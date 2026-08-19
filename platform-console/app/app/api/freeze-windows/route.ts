@@ -54,6 +54,7 @@ export async function GET(request: NextRequest) {
   const access = await requireRoleIn(session, orgResult.data.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: orgId,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -66,6 +67,7 @@ export async function GET(request: NextRequest) {
 
   const result = await listFreezeWindows(orgId);
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -106,6 +108,7 @@ export async function POST(request: NextRequest) {
   const access = await requireRoleIn(session, orgResult.data.namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: orgId,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -124,6 +127,7 @@ export async function POST(request: NextRequest) {
   const validationError = validateFreezeWindowInput({ startsAt, endsAt, reason });
   if (validationError) {
     writeAuditLogEntry({
+      orgId: orgId,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -143,6 +147,7 @@ export async function POST(request: NextRequest) {
     allowEmergencyOverride,
   });
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",
@@ -184,6 +189,7 @@ export async function DELETE(request: NextRequest) {
   const access = await requireRoleIn(session, orgResult.data.namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: orgId,
       timestamp: new Date().toISOString(),
       actor,
       method: "DELETE",
@@ -197,6 +203,7 @@ export async function DELETE(request: NextRequest) {
   const result = await deleteFreezeWindow(orgId, id);
   const status = !result.ok ? ("error" in result && result.error === "not_found" ? 404 : 502) : 200;
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "DELETE",

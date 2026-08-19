@@ -121,6 +121,7 @@ export async function GET(
   const access = await requireRoleIn(session, namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -138,6 +139,7 @@ export async function GET(
 
   const status = subscriptionResult.ok && runsResult.ok ? 200 : 502;
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -171,6 +173,7 @@ export async function POST(
     }
     const result = await runDueExportSubscriptions();
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor: "export-subscription-cronjob",
       method: "POST",
@@ -200,6 +203,7 @@ export async function POST(
   const access = await requireRoleIn(session, namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -219,6 +223,7 @@ export async function POST(
   if (body.action === "run") {
     const runResult = await runExportSubscription(id);
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -258,6 +263,7 @@ export async function POST(
 
   if ("error" in approval) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -276,6 +282,7 @@ export async function POST(
     // comment). 202 Accepted, matching DELETE /api/orgs/[id]'s own
     // "accepted, not completed" convention.
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -310,6 +317,7 @@ export async function POST(
   });
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",

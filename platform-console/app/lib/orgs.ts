@@ -70,6 +70,16 @@ export interface Org {
   slaTier?: SlaTier;
   slaResponseTimeHours?: number;
   slaUptimeTargetPct?: number;
+  /** Per-org opt-in (SOC2 CC7.1 vulnerability-management auto-remediation
+   * SLA): when `true`, POST /api/security-scan/auto-remediate is allowed
+   * to file a `deployment.quarantine` maker-checker approval request
+   * (lib/approval-workflow.ts) against this org's own Deployments the
+   * moment a scan finds a CRITICAL CVE tied to one of them -- it still
+   * never actuates without a second, distinct approver. Optional and
+   * unset/`false` by default, same forward-compatible-optional-field
+   * round-trip discipline as `branding`/`region` above: this control never
+   * fires uninvited on an existing customer. */
+  autoRemediateCritical?: boolean;
 }
 
 interface OrgRegistryEntry {
@@ -104,6 +114,13 @@ interface OrgRegistryEntry {
   // (lib/k8s.ts's listNodeRegions) -- never a fabricated/free-text
   // region string.
   region?: string;
+  // Vulnerability-scan-triggered auto-remediation opt-in (see the
+  // `autoRemediateCritical` field on `Org` above for the full rationale).
+  // Optional and unset/`false` by default -- every org registered before
+  // this field existed round-trips through JSON.parse/stringify with
+  // `autoRemediateCritical: undefined`, treated identically to `false` by
+  // every reader (setOrgAutoRemediateCritical below is the only writer).
+  autoRemediateCritical?: boolean;
 }
 
 const PRODUCT_NAME_MAX_LENGTH = 60;
@@ -516,6 +533,31 @@ export async function setOrgSla(id: string, slaTier: SlaTier): Promise<K8sResult
     [id]: JSON.stringify(updatedEntry),
   });
   if (!result.ok) return result;
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
+ * Real per-org auto-remediation opt-in write: backs
+ * PUT /api/orgs/[id]/auto-remediate-critical (and any admin UI toggle).
+ * Same one-key-at-a-time merge-patch discipline as setOrgBranding/
+ * setOrgRegion/setOrgSla -- flips exactly `autoRemediateCritical`, never
+ * touches any other registry field.
+ */
+export async function setOrgAutoRemediateCritical(
+  id: string,
+  enabled: boolean,
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const updatedEntry: OrgRegistryEntry = { ...entry, autoRemediateCritical: enabled };
+  const patchResult = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!patchResult.ok) return patchResult;
 
   return { ok: true, data: { id, ...updatedEntry } };
 }

@@ -60,6 +60,7 @@ export async function GET(
   const access = await requireRoleIn(session, orgResult.data.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -74,6 +75,7 @@ export async function GET(
   const month = searchParams.get("month") ?? currentMonth();
   if (!MONTH_RE.test(month)) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -87,6 +89,7 @@ export async function GET(
   const slaResult = await getOrgSla(id);
   if (!slaResult.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -98,6 +101,7 @@ export async function GET(
   }
   if (!slaResult.data) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -110,6 +114,7 @@ export async function GET(
 
   const reportResult = await computeMonthlyUptime(id, month, slaResult.data.slaTier);
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",

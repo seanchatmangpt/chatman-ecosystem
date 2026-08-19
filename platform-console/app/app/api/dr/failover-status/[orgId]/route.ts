@@ -45,6 +45,7 @@ export async function GET(
   const access = await requireRoleIn(session, orgResult.data.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: orgId,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -66,6 +67,7 @@ export async function GET(
 
   const status = statusResult.ok && incidentResult.ok ? 200 : 502;
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",

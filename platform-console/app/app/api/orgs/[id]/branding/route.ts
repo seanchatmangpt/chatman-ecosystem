@@ -53,6 +53,7 @@ export async function GET(
   const access = await requireRoleIn(session, orgResult.data.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -65,6 +66,7 @@ export async function GET(
 
   const result = await getOrgBranding(id);
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -101,6 +103,7 @@ export async function PUT(
   const access = await requireRoleIn(session, orgResult.data.namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -119,6 +122,7 @@ export async function PUT(
   const validationError = validateBranding({ productName, logoUrl, accentColor });
   if (validationError) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -131,6 +135,7 @@ export async function PUT(
 
   const result = await setOrgBranding(id, { productName, logoUrl, accentColor });
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "PUT",

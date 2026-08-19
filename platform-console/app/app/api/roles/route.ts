@@ -49,6 +49,7 @@ export async function GET(request: NextRequest) {
   const access = await requireRole(session, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      // org-agnostic: this 403 branch fires before ?orgId= is parsed below
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -65,6 +66,7 @@ export async function GET(request: NextRequest) {
 
   const ok = rolesResult.ok && grantsResult.ok;
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -114,6 +116,7 @@ export async function POST(request: NextRequest) {
   const access = await requireRole(session, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      // org-agnostic: this action can target multiple orgIds (see orgIds below) and the body hasn't been parsed yet at this point anyway
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -203,6 +206,7 @@ export async function POST(request: NextRequest) {
   }
 
   writeAuditLogEntry({
+    // org-agnostic: an upsert-role action can target multiple orgIds (orgIds above), and delete-role/set-grants act by id/identifier, not a single orgId
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",

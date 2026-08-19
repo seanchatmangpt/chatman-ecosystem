@@ -35,6 +35,7 @@ export async function GET(
     detectDrift(name),
   ]);
 
+  // org-agnostic: platform-/session-scoped action with no per-tenant org boundary in this route's current data model -- see scripts/check-audit-org-coverage.ts allowlist
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),
     actor,

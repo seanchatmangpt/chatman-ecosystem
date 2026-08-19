@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, verifySessionToken, type SessionPayload } from "@/lib/session";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { requireRole, ROLES, roleIdentifierFor, type Role } from "@/lib/authz";
-import { createApiKey, listApiKeys, revokeApiKey } from "@/lib/api-keys";
+import { createApiKey, listApiKeys, listApiKeysForOrg, revokeApiKey } from "@/lib/api-keys";
 import { isApiKeyTier } from "@/lib/rate-limit";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
 
   const access = await requireRole(session, "owner");
   if (!access.ok) {
+    // org-agnostic: platform-/session-scoped action with no per-tenant org boundary in this route's current data model -- see scripts/check-audit-org-coverage.ts allowlist
     writeAuditLogEntry({
       timestamp: new Date().toISOString(),
       actor,
@@ -45,7 +46,8 @@ export async function GET(request: NextRequest) {
     return access.response!;
   }
 
-  const result = await listApiKeys();
+  const orgIdFilter = request.nextUrl.searchParams.get("orgId");
+  const result = orgIdFilter ? await listApiKeysForOrg(orgIdFilter) : await listApiKeys();
 
   writeAuditLogEntry({
     timestamp: new Date().toISOString(),
@@ -89,6 +91,18 @@ export async function POST(request: NextRequest) {
       ? (body.role as Role)
       : undefined;
   const name = typeof body?.name === "string" ? body.name : "";
+  const orgId = typeof body?.orgId === "string" ? body.orgId.trim() : "";
+  if (!orgId) {
+    writeAuditLogEntry({
+      timestamp: new Date().toISOString(),
+      actor,
+      method: "POST",
+      path: "/api/api-keys",
+      status: 400,
+      requestId,
+    });
+    return NextResponse.json({ error: "orgId is required" }, { status: 400 });
+  }
   // Plan tier this key is rate-limited under (lib/rate-limit.ts) --
   // unlike `requestedRole` this is never clamped against the creator's
   // own role; it reflects the customer's paid plan, an orthogonal axis
@@ -107,6 +121,7 @@ export async function POST(request: NextRequest) {
 
   const result = await createApiKey({
     identifier,
+    orgId,
     creatorRole,
     createdBy: identifier,
     requestedRole,

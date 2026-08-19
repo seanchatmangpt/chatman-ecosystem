@@ -59,6 +59,7 @@ export async function GET(
   const access = await requireRoleIn(session, orgResult.data.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -71,6 +72,7 @@ export async function GET(
 
   const slaResult = await getOrgSla(id);
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -127,6 +129,7 @@ export async function PUT(
   const access = await requireRoleIn(session, orgResult.data.namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -141,6 +144,7 @@ export async function PUT(
   const slaTierRaw = typeof body?.slaTier === "string" ? body.slaTier.trim() : "";
   if (!slaTierRaw || !isSlaTier(slaTierRaw)) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -156,6 +160,7 @@ export async function PUT(
 
   const result = await setOrgSla(id, slaTierRaw);
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "PUT",

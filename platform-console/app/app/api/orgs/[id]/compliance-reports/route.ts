@@ -83,6 +83,7 @@ export async function GET(
   const access = await requireRoleIn(session, namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -99,6 +100,7 @@ export async function GET(
   ]);
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -164,6 +166,7 @@ export async function POST(
     const access = await requireRoleIn(session, namespace, "member");
     if (!access.ok) {
       writeAuditLogEntry({
+        orgId: id,
         timestamp: new Date().toISOString(),
         actor,
         method: "POST",
@@ -216,6 +219,7 @@ export async function POST(
   });
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",
@@ -250,6 +254,7 @@ export async function PUT(
   const access = await requireRoleIn(session, namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -268,6 +273,7 @@ export async function PUT(
 
   const result = await setComplianceCadence(id, interval, actor);
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "PUT",

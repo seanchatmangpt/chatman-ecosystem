@@ -33,6 +33,7 @@ export async function GET(request: NextRequest) {
   const access = await requireRole(session, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      // org-agnostic: this 403 branch fires before ?orgId= is parsed below
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",

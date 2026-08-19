@@ -52,6 +52,7 @@ export async function GET(
   const access = await requireRoleIn(session, orgResult.data.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -64,6 +65,7 @@ export async function GET(
 
   const ticketsResult = await listSupportTickets(id);
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -100,6 +102,7 @@ export async function POST(
   const access = await requireRoleIn(session, orgResult.data.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -115,6 +118,7 @@ export async function POST(
   const body = typeof requestBody?.body === "string" ? requestBody.body.trim() : "";
   if (!subject || !body) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -127,6 +131,7 @@ export async function POST(
 
   const result = await createSupportTicket({ orgId: id, subject, body });
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",

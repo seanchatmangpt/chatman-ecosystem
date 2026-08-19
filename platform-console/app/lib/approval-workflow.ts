@@ -61,7 +61,8 @@ export type ApprovalAction =
   | "dsar.erasure"
   | "castle.verb.schedule"
   | "freeze.override"
-  | "environment.promote";
+  | "environment.promote"
+  | "deployment.quarantine";
 export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   "org.delete",
   "quota.override",
@@ -126,6 +127,24 @@ export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   // ready is not sufficient by itself, same maker-checker bar every other
   // action in this list sets. See app/api/projects/[name]/promote/route.ts.
   "environment.promote",
+  // Vulnerability-scan-triggered auto-remediation
+  // (app/api/security-scan/auto-remediate/route.ts): a CRITICAL-severity
+  // Trivy finding (lib/vuln-scan.ts) tied to a live `apps/v1` Deployment
+  // in a customer org's namespace can request that Deployment be
+  // quarantined -- scaled to 0 replicas via lib/k8s.ts's
+  // quarantineDeployment, the same real, cluster-observable action
+  // quota-enforcement's scale-to-zero already performs. This is exactly
+  // the "can take a live customer workload down, automatically, off a
+  // scanner's own verdict" class of blast radius org.delete and
+  // dr.failover's own header comments set the bar for -- an automated
+  // scan result is never sufficient by itself to actuate; a second,
+  // distinct owner-role approver must sign off before the Deployment is
+  // ever actually scaled down, same maker-checker bar every other action
+  // in this list sets. Auto-filing the REQUEST (never the action itself)
+  // is additionally gated per-org behind `Org.autoRemediateCritical`
+  // (lib/orgs.ts, default `false`) so this never files uninvited on an
+  // existing customer.
+  "deployment.quarantine",
 ];
 
 export type ApprovalStatus = "pending" | "approved" | "rejected";
@@ -202,6 +221,20 @@ export interface ApprovalResourcePayload {
    * Project's own name (lib/k8s.ts's SupabaseProject.name). */
   fromEnvironment?: Environment;
   targetEnvironment?: Environment;
+  /** deployment.quarantine: the non-secret shape of the requested
+   * quarantine -- which namespace/Deployment, which CVE triggered it, and
+   * the scanned image ref -- so a second approver can see exactly what
+   * they're authorizing before signing off on scaling a live customer
+   * workload to 0. `targetId` on the ApprovalRequest itself is
+   * `<namespace>/<deploymentName>`, matching lib/k8s.ts's
+   * quarantineDeployment argument shape. */
+  requestedQuarantine?: {
+    namespace: string;
+    deploymentName: string;
+    cveId: string;
+    imageRef: string;
+    severity: string;
+  };
 }
 
 export interface ApprovalRequest {

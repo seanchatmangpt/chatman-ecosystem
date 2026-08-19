@@ -44,6 +44,7 @@ export async function POST(
   const result = await acceptOrgInviteIn(namespace, inviteId, actor);
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",

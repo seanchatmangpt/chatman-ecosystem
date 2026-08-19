@@ -51,6 +51,7 @@ export async function GET(request: NextRequest) {
     const access = await requireRoleIn(session, orgResult.data.namespace, "owner");
     if (!access.ok) {
       writeAuditLogEntry({
+        orgId: result.data.orgId,
         timestamp: new Date().toISOString(),
         actor,
         method: "GET",
@@ -78,6 +79,7 @@ export async function GET(request: NextRequest) {
   const access = await requireRoleIn(session, orgResult.data.namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: orgIdParam,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",

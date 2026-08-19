@@ -5,6 +5,7 @@ import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
 import { requireRole } from "@/lib/authz";
 import { hasClusterCredentials } from "@/lib/k8s";
 import { listApiKeys } from "@/lib/api-keys";
+import { listOrgs } from "@/lib/orgs";
 
 export const dynamic = "force-dynamic";
 
@@ -80,7 +81,7 @@ export default async function ApiKeysPage() {
 }
 
 async function ApiKeysPanelServerBoundary({ creatorRole }: { creatorRole: string }) {
-  const result = await listApiKeys();
+  const [result, orgsResult] = await Promise.all([listApiKeys(), listOrgs()]);
   if (!result.ok) {
     return (
       <p className="rounded-md border border-red-900 bg-red-950/40 px-4 py-2 text-sm text-red-300">
@@ -88,5 +89,6 @@ async function ApiKeysPanelServerBoundary({ creatorRole }: { creatorRole: string
       </p>
     );
   }
-  return <ApiKeysPanel keys={result.data} creatorRole={creatorRole} />;
+  const orgs = orgsResult.ok ? orgsResult.data.map((o) => ({ id: o.id, name: o.name })) : [];
+  return <ApiKeysPanel keys={result.data} creatorRole={creatorRole} orgs={orgs} />;
 }

@@ -60,6 +60,7 @@ export async function GET(
   const access = await requireRoleIn(session, orgResult.data.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -78,6 +79,7 @@ export async function GET(
 
   const status = regionResult.ok && availableResult.ok && tierResult.ok ? 200 : 502;
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -121,6 +123,7 @@ export async function PUT(
   const access = await requireRoleIn(session, orgResult.data.namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -135,6 +138,7 @@ export async function PUT(
   const region = typeof body?.region === "string" ? body.region.trim() : "";
   if (!region) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -154,6 +158,7 @@ export async function PUT(
   }
   if (!tierAtLeast(tierResult.data, "enterprise")) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -173,6 +178,7 @@ export async function PUT(
   }
   if (!regionsResult.data.includes(region)) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "PUT",
@@ -190,6 +196,7 @@ export async function PUT(
 
   const result = await setOrgRegion(id, region);
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "PUT",

@@ -68,6 +68,7 @@ export async function GET(
   const access = await requireRoleIn(session, org.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -92,6 +93,7 @@ export async function GET(
   ]);
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -157,6 +159,7 @@ export async function POST(
   const access = await requireRoleIn(session, org.namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -204,6 +207,7 @@ export async function POST(
   });
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",

@@ -62,6 +62,7 @@ export async function GET(
   const access = await requireRoleIn(session, namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -83,6 +84,7 @@ export async function GET(
   if (!seatsResult.ok) return NextResponse.json({ error: seatsResult.error }, { status: 502 });
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -127,6 +129,7 @@ export async function POST(
   const access = await requireRoleIn(session, namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -158,6 +161,7 @@ export async function POST(
   const used = seatsResult.data.used;
   if (used >= limit) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -178,6 +182,7 @@ export async function POST(
   const result = await createOrgInviteIn(namespace, { email, role, invitedBy: actor });
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",

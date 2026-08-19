@@ -39,6 +39,7 @@ export async function DELETE(
   const access = await requireRoleIn(session, namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "DELETE",
@@ -52,6 +53,7 @@ export async function DELETE(
   const result = await revokeOrgInviteIn(namespace, inviteId);
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "DELETE",

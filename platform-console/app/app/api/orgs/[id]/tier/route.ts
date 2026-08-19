@@ -71,6 +71,7 @@ export async function POST(
   const access = await requireRoleIn(session, org.namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -92,6 +93,7 @@ export async function POST(
   }
   if (freezeGuard.data.blocked) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -148,6 +150,7 @@ export async function POST(
       const result = await setProjectTier(project.name, org.namespace, requestedTier);
       if (!result.ok) {
         writeAuditLogEntry({
+          orgId: id,
           timestamp: new Date().toISOString(),
           actor,
           method: "POST",
@@ -159,6 +162,7 @@ export async function POST(
       }
     }
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -183,6 +187,7 @@ export async function POST(
 
   if ("error" in approval) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -195,6 +200,7 @@ export async function POST(
 
   if (!approval.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -235,6 +241,7 @@ export async function POST(
     const result = await setProjectTier(project.name, org.namespace, approvedTier);
     if (!result.ok) {
       writeAuditLogEntry({
+        orgId: id,
         timestamp: new Date().toISOString(),
         actor,
         method: "POST",
@@ -248,6 +255,7 @@ export async function POST(
   }
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",

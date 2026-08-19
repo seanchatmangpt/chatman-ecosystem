@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
   const access = await requireRole(session, "member");
   if (!access.ok) {
     writeAuditLogEntry({
+      // org-agnostic: this 403 branch fires before the optional body.orgId is parsed below
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -66,6 +67,7 @@ export async function POST(request: NextRequest) {
 
   if (isCastleRunFrozenError(result)) {
     writeAuditLogEntry({
+      orgId: orgId,
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -110,6 +112,7 @@ export async function POST(request: NextRequest) {
   }
 
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",

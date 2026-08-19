@@ -66,6 +66,7 @@ export async function GET(
   const access = await requireRoleIn(session, org.namespace, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -80,6 +81,7 @@ export async function GET(
   const forecastResult = await getNamespaceUsageForecast(org.namespace, windowDays);
 
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",

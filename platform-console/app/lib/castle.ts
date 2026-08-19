@@ -92,6 +92,18 @@ export const ALLOWED_CASTLE_VERBS: Record<AllowedCastleVerbId, AllowedCastleVerb
   },
 };
 
+// NOTE ON THE "deployment.quarantine" MAKER-CHECKER VERB: this module's
+// own `ALLOWED_CASTLE_VERBS` is exclusively castle-CLI-invocation verbs
+// (a Job running the real castle binary), which is a different closed set
+// from the platform's maker-checker approval VERBS
+// (lib/approval-workflow.ts's `ApprovalAction`, e.g. `quota.override`,
+// `tier.downgrade`) this file's own header comment cross-references.
+// `deployment.quarantine` -- the vulnerability-scan-triggered
+// auto-remediation action (app/api/security-scan/auto-remediate/route.ts)
+// -- is declared there, alongside `quota.override`/`tier.downgrade`, not
+// here: it scales a live `apps/v1` Deployment via lib/k8s.ts's
+// `quarantineDeployment`, not a castle CLI Job, so it does not belong in
+// `ALLOWED_CASTLE_VERBS`.
 function isAllowedCastleVerbId(value: string): value is AllowedCastleVerbId {
   return Object.prototype.hasOwnProperty.call(ALLOWED_CASTLE_VERBS, value as AllowedCastleVerbId);
 }

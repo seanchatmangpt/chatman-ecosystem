@@ -45,6 +45,7 @@ export async function POST(
   const access = await requireRole(session, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      // org-agnostic: this 403 branch fires before body.orgId is parsed below
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -72,6 +73,7 @@ export async function POST(
   const result = await addOrgToRole(roleId, orgId);
 
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",
@@ -110,6 +112,7 @@ export async function DELETE(
   const access = await requireRole(session, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      // org-agnostic: this 403 branch fires before ?orgId= is parsed below
       timestamp: new Date().toISOString(),
       actor,
       method: "DELETE",
@@ -137,6 +140,7 @@ export async function DELETE(
 
   const status = result.ok ? 200 : 400;
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "DELETE",

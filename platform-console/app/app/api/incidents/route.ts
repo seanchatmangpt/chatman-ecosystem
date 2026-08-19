@@ -50,6 +50,7 @@ export async function GET(request: NextRequest) {
   const access = await requireRole(session, "viewer");
   if (!access.ok) {
     writeAuditLogEntry({
+      // org-agnostic: this 403 branch fires before ?orgId= is parsed below
       timestamp: new Date().toISOString(),
       actor,
       method: "GET",
@@ -86,6 +87,7 @@ export async function GET(request: NextRequest) {
     const reconcileResult = await reconcileIncidents(start, end);
     if (!reconcileResult.ok) {
       writeAuditLogEntry({
+        orgId: orgId,
         timestamp: new Date().toISOString(),
         actor,
         method: "GET",
@@ -99,6 +101,7 @@ export async function GET(request: NextRequest) {
 
   const result = await listIncidents({ orgId, componentId, from, to, limit, offset });
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -123,6 +126,7 @@ export async function POST(request: NextRequest) {
   const access = await requireRole(session, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      // org-agnostic: this 403 branch fires before body.orgId is parsed below
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -137,6 +141,7 @@ export async function POST(request: NextRequest) {
   const id = typeof body?.id === "string" ? body.id.trim() : "";
   if (!id) {
     writeAuditLogEntry({
+      // org-agnostic: body.orgId hasn't been parsed yet at this point
       timestamp: new Date().toISOString(),
       actor,
       method: "POST",
@@ -153,6 +158,7 @@ export async function POST(request: NextRequest) {
   if (body?.severity !== undefined) {
     if (typeof body.severity !== "string" || !SEVERITIES.includes(body.severity as IncidentSeverity)) {
       writeAuditLogEntry({
+        orgId: orgId,
         timestamp: new Date().toISOString(),
         actor,
         method: "POST",
@@ -170,6 +176,7 @@ export async function POST(request: NextRequest) {
 
   const result = await annotateIncident({ id, rootCause, severity, orgId });
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",

@@ -21,14 +21,24 @@ const ROLE_OPTIONS = ["viewer", "member", "owner"] as const;
 export default function ApiKeysPanel({
   keys,
   creatorRole,
+  orgs,
 }: {
   keys: ApiKeySummary[];
   creatorRole: string;
+  // Orgs this identity may mint a key for (owner-role, per requireRoleIn
+  // on /api/orgs/[id]/api-keys). A key's `orgId` is formal, required
+  // ownership (lib/api-keys.ts) -- creation requires picking one, never
+  // defaults silently. "unassigned" is not offered as a creatable option;
+  // it only ever appears on pre-existing keys the backfill script
+  // (scripts/backfill-api-key-org.ts) could not confidently resolve.
+  orgs: { id: string; name: string }[];
 }) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [role, setRole] = useState<string>(creatorRole);
   const [tier, setTier] = useState<ApiKeyTier>("standard");
+  const [orgId, setOrgId] = useState<string>(orgs[0]?.id ?? "");
+  const [orgFilter, setOrgFilter] = useState<string>("all");
   const [creating, setCreating] = useState(false);
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -75,10 +85,14 @@ export default function ApiKeysPanel({
 
   async function onCreate(e: React.FormEvent) {
     e.preventDefault();
+    if (!orgId) {
+      setError("an org must be selected to create a key");
+      return;
+    }
     setCreating(true);
     setError(null);
     try {
-      const res = await fetch("/api/api-keys", {
+      const res = await fetch(`/api/orgs/${encodeURIComponent(orgId)}/api-keys`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ name, role, tier }),
@@ -121,7 +135,10 @@ export default function ApiKeysPanel({
     }
   }
 
-  const sorted = [...keys].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const orgNameById = new Map(orgs.map((o) => [o.id, o.name]));
+  const sorted = [...keys]
+    .filter((k) => orgFilter === "all" || k.orgId === orgFilter)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 
   return (
     <div className="space-y-6">
@@ -148,7 +165,25 @@ export default function ApiKeysPanel({
       )}
 
       <div className="card p-6">
-        <h2 className="mb-4 text-base font-medium text-white">Keys</h2>
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <h2 className="text-base font-medium text-white">Keys</h2>
+          <label className="flex items-center gap-2 text-xs text-gray-400">
+            Org
+            <select
+              value={orgFilter}
+              onChange={(e) => setOrgFilter(e.target.value)}
+              className="rounded-md border border-border bg-bg px-2 py-1.5 text-xs text-white"
+            >
+              <option value="all">all orgs</option>
+              {orgs.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.name}
+                </option>
+              ))}
+              <option value="unassigned">unassigned (needs reassignment)</option>
+            </select>
+          </label>
+        </div>
         {sorted.length === 0 && (
           <p className="text-sm text-gray-500">No API keys yet -- create one below.</p>
         )}
@@ -162,7 +197,14 @@ export default function ApiKeysPanel({
                     {k.name && <span className="ml-2 text-gray-400">{k.name}</span>}
                   </p>
                   <p className="text-xs text-gray-500">
-                    identifier: <code>{k.identifier}</code> · role: <code>{k.role}</code> · tier:{" "}
+                    org:{" "}
+                    <code className={k.orgId === "unassigned" ? "text-amber-400" : undefined}>
+                      {orgNameById.get(k.orgId) ?? k.orgId}
+                    </code>
+                    {k.orgId === "unassigned" && (
+                      <span className="ml-1 text-amber-400">(needs reassignment)</span>
+                    )}{" "}
+                    · identifier: <code>{k.identifier}</code> · role: <code>{k.role}</code> · tier:{" "}
                     <code>{k.tier}</code> ({TIER_LIMITS[k.tier].maxTokens} req/
                     {TIER_LIMITS[k.tier].fillIntervalMs / 1000}s) · created by{" "}
                     <code>{k.createdBy}</code> at{" "}
@@ -238,6 +280,24 @@ export default function ApiKeysPanel({
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block text-sm">
+            <span className="mb-1 block text-gray-400">Org (required)</span>
+            <select
+              value={orgId}
+              onChange={(e) => setOrgId(e.target.value)}
+              required
+              className="w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-white"
+            >
+              <option value="" disabled>
+                select an org...
+              </option>
+              {orgs.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm">
             <span className="mb-1 block text-gray-400">Name (optional)</span>
             <input
               value={name}
@@ -277,7 +337,7 @@ export default function ApiKeysPanel({
         </div>
         <button
           type="submit"
-          disabled={creating}
+          disabled={creating || !orgId}
           className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
           {creating ? "Creating..." : "Create key"}

@@ -55,6 +55,7 @@ export async function DELETE(
   const access = await requireRoleIn(session, orgResult.data.namespace, "owner");
   if (!access.ok) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "DELETE",
@@ -73,6 +74,7 @@ export async function DELETE(
 
   if ("error" in approval) {
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "DELETE",
@@ -89,6 +91,7 @@ export async function DELETE(
     // run. 202 Accepted, not 200/201: the request was accepted, not
     // completed.
     writeAuditLogEntry({
+      orgId: id,
       timestamp: new Date().toISOString(),
       actor,
       method: "DELETE",
@@ -111,6 +114,7 @@ export async function DELETE(
 
   const result = await deleteOrg(id);
   writeAuditLogEntry({
+    orgId: id,
     timestamp: new Date().toISOString(),
     actor,
     method: "DELETE",

@@ -75,6 +75,7 @@ export async function GET(
   const result = await listAuditExportTokens(orgId);
 
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "GET",
@@ -105,6 +106,7 @@ export async function POST(
   });
 
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "POST",
@@ -143,6 +145,7 @@ export async function DELETE(
   const result = await revokeAuditExportToken(orgId, idParam);
 
   writeAuditLogEntry({
+    orgId: orgId,
     timestamp: new Date().toISOString(),
     actor,
     method: "DELETE",
