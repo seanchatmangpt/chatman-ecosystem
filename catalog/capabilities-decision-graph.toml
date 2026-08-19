@@ -1,0 +1,292 @@
+schema = "chatman.capability-catalog.v1"
+version = "26.9.1"
+subject = "SELF"
+
+[[capability]]
+id = "capability:admit-planner-policy-role-separation"
+title = "Admit Planner, Policy, Role, Agent and Authority separation"
+class = "SELECT"
+owner = "repository:autofde-lab"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["planner identity", "policy parameters", "role", "agent identity", "authority grant"]
+outputs = ["typed separation verdict", "refusal on conflation"]
+depends_on = ["capability:admit-public-custom-ontology"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["autofde-lab"]
+refusals = ["REFUSED:PLANNER_AS_POLICY", "REFUSED:ROLE_AS_AUTHORITY", "REFUSED:AGENT_AS_AUTHORITY"]
+
+[[capability]]
+id = "capability:plan-decision-frontier"
+title = "Construct the reversible decision frontier"
+class = "SELECT"
+owner = "repository:autofde-lab"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["O*", "capability graph", "objectives", "constraints", "authority ceiling"]
+outputs = ["dependency-closed reversible candidate frontier"]
+depends_on = ["capability:admit-planner-policy-role-separation", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["autofde-lab"]
+refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:UNBOUNDED_OPTION_GRAPH", "REFUSED:AUTHORITY_AS_PLANNER_OUTPUT"]
+
+[[capability]]
+id = "capability:falsify-candidate-plan"
+title = "Falsify a candidate plan before admission"
+class = "SELECT"
+owner = "repository:autofde-lab"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["candidate plan", "negative fixtures", "counterfactuals", "authority ceiling"]
+outputs = ["surviving candidate or typed falsifier"]
+depends_on = ["capability:plan-decision-frontier"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["autofde-lab"]
+refusals = ["REFUSED:FALSIFIER_IGNORED", "REFUSED:CHECKPOINT_AS_CROWN"]
+
+[[capability]]
+id = "capability:admit-capability-plan"
+title = "Admit a bounded capability plan"
+class = "SELECT"
+owner = "repository:autofde-lab"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["falsifier-surviving candidate", "O*", "capability constraints"]
+outputs = ["admitted plan with no ambient DO"]
+depends_on = ["capability:falsify-candidate-plan"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["autofde-lab"]
+refusals = ["REFUSED:PLAN_WITH_UNADMITTED_OBSERVATION", "REFUSED:PLAN_GRANTS_DO"]
+
+[[capability]]
+id = "capability:compile-bounded-oracle"
+title = "Compile an optional bounded dsrust oracle"
+class = "CONSTRUCT"
+owner = "repository:dsrust"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted source/model", "bounded compiler contract"]
+outputs = ["compiler/oracle artifact", "receipt"]
+depends_on = ["capability:admit-public-custom-ontology"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["dsrust"]
+refusals = ["REFUSED:ORACLE_AS_AUTHORITY", "REFUSED:COMPILER_OUTPUT_AS_PROOF"]
+
+[[capability]]
+id = "capability:compute-bounded-cmca"
+title = "Compute bounded CMCA"
+class = "CONSTRUCT"
+owner = "repository:bcinr"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted plan", "bounded CMCA inputs", "fixed-shape invariants"]
+outputs = ["deterministic CMCA result", "producer evidence"]
+depends_on = ["capability:admit-capability-plan"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["bcinr"]
+refusals = ["REFUSED:CMCA_OUTSIDE_BOUND", "REFUSED:NONDETERMINISTIC_CMCA"]
+
+[[capability]]
+id = "capability:orchestrate-manufacturing-work"
+title = "Orchestrate decision-manufacturing work"
+class = "CONSTRUCT"
+owner = "repository:mfw"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted plan", "bounded CMCA evidence", "manufacturer/world contracts"]
+outputs = ["ordered construction intents", "dependency receipts"]
+depends_on = ["capability:compute-bounded-cmca", "capability:admit-capability-plan"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["mfw", "bcinr"]
+refusals = ["REFUSED:ORCHESTRATOR_AS_AUTHORITY", "REFUSED:IMPLICIT_DEPENDENCY"]
+
+[[capability]]
+id = "capability:manufacture-with-ggen"
+title = "Manufacture admitted artifacts with ggen"
+class = "CONSTRUCT"
+owner = "repository:ggen"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted O*", "ggen project", "templates/queries", "manufacturer identity"]
+outputs = ["generated artifacts", "native manufacture receipt"]
+depends_on = ["capability:admit-capability-plan", "capability:admit-public-custom-ontology"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen"]
+refusals = ["REFUSED:GENERATED_SOURCE_AUTHORITY", "REFUSED:MANUFACTURE_WITHOUT_O_STAR"]
+
+[[capability]]
+id = "capability:distribute-ggen-pack"
+title = "Distribute qualified executable knowledge through the marketplace"
+class = "CONSTRUCT"
+owner = "repository:ggen-marketplace"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["qualified pack source", "ontology", "gates", "exact manufacturer"]
+outputs = ["marketplace catalog entry", "qualification receipts"]
+depends_on = ["capability:manufacture-with-ggen", "capability:replay-manufacture"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen-marketplace", "ggen"]
+refusals = ["REFUSED:UNQUALIFIED_PACK", "REFUSED:MARKETPLACE_AS_RUNTIME_AUTHORITY"]
+
+[[capability]]
+id = "capability:execute-gym-world"
+title = "Execute an admitted GymAct world"
+class = "CONSTRUCT"
+owner = "repository:gymact"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["world", "roles", "policies", "information partitions", "bounded action projection"]
+outputs = ["episode evidence", "world receipt", "replay fixture"]
+depends_on = ["capability:orchestrate-manufacturing-work", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["gymact"]
+refusals = ["REFUSED:WORLD_EXECUTION_AS_PRODUCTION_DO", "REFUSED:ROLE_AS_AGENT_AUTHORITY"]
+
+[[capability]]
+id = "capability:execute-bounded-domain-gym"
+title = "Execute a bounded domain gym"
+class = "CONSTRUCT"
+owner = "repository:gymact"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["domain ontology", "GymAct world contract", "bounded scenario corpus"]
+outputs = ["domain evaluation episodes", "receipts", "counterexamples"]
+depends_on = ["capability:execute-gym-world"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["rrgym", "LifeGym", "WW3Gym", "biblegym", "gymact"]
+refusals = ["REFUSED:GYM_AS_REAL_WORLD_AUTHORITY", "REFUSED:SIMULATION_AS_PRODUCTION_EVIDENCE"]
+
+[[capability]]
+id = "capability:bound-ww3gym-simulation"
+title = "Fence WW3Gym to simulation and evaluation"
+class = "SELECT"
+owner = "repository:ww3gym"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["WW3Gym scenario", "requested consequence class"]
+outputs = ["simulation admission or real-world authority refusal"]
+depends_on = ["capability:execute-bounded-domain-gym"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["WW3Gym", "gymact"]
+refusals = ["REFUSED:WW3GYM_REAL_WORLD_AUTHORITY", "REFUSED:SIMULATION_BOUNDARY_ESCAPE"]
+
+[[capability]]
+id = "capability:persist-autofde-runtime"
+title = "Persist admitted AutoFDE runtime state"
+class = "CONSTRUCT"
+owner = "repository:autofde"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted plan", "runtime state", "idempotency identity", "standing evidence"]
+outputs = ["persistent bounded runtime state", "resume/replay identity"]
+depends_on = ["capability:admit-capability-plan", "capability:orchestrate-manufacturing-work"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["autofde"]
+refusals = ["REFUSED:PERSISTENCE_AS_DO_AUTHORITY", "REFUSED:STALE_RUNTIME_STATE"]
+
+[[capability]]
+id = "capability:attest-affidavit-standing"
+title = "Attest evidence standing through Affidavit BCRE"
+class = "CONSTRUCT"
+owner = "repository:affidavit"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["exact evidence identities", "receipts", "standing claim"]
+outputs = ["evidence/standing attestation"]
+depends_on = ["capability:replay-manufacture", "capability:observe-exact-github-subject"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["Affidavit"]
+refusals = ["REFUSED:AFFIDAVIT_AS_DO_AUTHORITY", "REFUSED:ATTESTATION_WITHOUT_EXACT_SUBJECT"]
+
+[[capability]]
+id = "capability:broker-consequential-do"
+title = "Broker the exclusive consequential DO transition"
+class = "DO"
+owner = "repository:autofde"
+required_authority = "modify_external_object"
+broker_required = true
+receipt_required = true
+reversible = false
+standing = "CANDIDATE"
+inputs = ["admitted intent", "exact authority", "preconditions", "idempotency key", "expected postcondition"]
+outputs = ["consequence", "BRCE receipt", "independent postcondition verification"]
+depends_on = ["capability:persist-autofde-runtime", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["autofde", "gymact"]
+refusals = ["REFUSED:AMBIENT_DO", "REFUSED:UNRECEIPTED_ACTUATION", "REFUSED:AUTHORITY_MISMATCH"]
+
+[[capability]]
+id = "capability:enforce-live-azure-authority"
+title = "Enforce the live Azure authority fence"
+class = "SELECT"
+owner = "repository:chatman-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "BLOCKED"
+inputs = ["requested Azure transition", "named authority grant", "allowlist"]
+outputs = ["BLOCKED:LIVE_AZURE_AUTHORITY or exact admitted authority"]
+depends_on = ["capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["autofde", "autofde-lab", "gymact"]
+refusals = ["BLOCKED:LIVE_AZURE_AUTHORITY", "REFUSED:UNNAMED_CLOUD_AUTHORITY"]
+
+[[capability]]
+id = "capability:reconstitute-project-protocol-suite"
+title = "Reconstitute project ontology and protocol surfaces with ggen-legacy"
+class = "CONSTRUCT"
+owner = "repository:ggen-legacy"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["exact project subject", "public ontology mappings", "custom ontology remainder", "observable CLI/API/MCP/A2A contracts"]
+outputs = ["O", "O*", "reconstituted capability graph", "surface projections", "equivalence receipts"]
+depends_on = ["capability:reconstitute-with-ggen-legacy", "capability:project-interface-surfaces", "capability:admit-public-custom-ontology"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen-legacy", "ggen", "ggen-marketplace", "autofde-lab", "gymact", "autofde", "dsrust", "bcinr", "mfw", "Affidavit", "rrgym", "LifeGym", "WW3Gym"]
+refusals = ["REFUSED:PROJECT_WITHOUT_PUBLIC_ONTOLOGY_BOUNDARY", "REFUSED:SURFACE_WITHOUT_SEMANTIC_IDENTITY", "REFUSED:RECONSTITUTION_WITHOUT_REPLAY"]
