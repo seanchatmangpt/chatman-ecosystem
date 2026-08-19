@@ -170,6 +170,26 @@ export async function getOrgRoleAssignmentsIn(
   return { ok: true, data: toAssignments(existing.data.data) };
 }
 
+/**
+ * Namespace-scoped counterpart to setOrgRole, for the same
+ * `platform-console-org-roles` ConfigMap seeded per customer org
+ * (lib/orgs.ts's createOrg). Used by acceptOrgInviteIn below to promote
+ * an accepted invite into a real role entry inside THAT org's own
+ * namespace -- never the platform's own `platform-console` namespace
+ * setOrgRole writes to.
+ */
+export async function setOrgRoleIn(
+  namespace: string,
+  identifier: string,
+  role: Role,
+): Promise<K8sResult<OrgRoleAssignment[]>> {
+  const result = await createOrUpdateConfigMap(namespace, ORG_ROLES_CONFIGMAP, {
+    [encodeIdentifierKey(identifier)]: role,
+  });
+  if (!result.ok) return result;
+  return { ok: true, data: toAssignments(result.data.data) };
+}
+
 export async function getRoleForIn(session: SessionPayload, namespace: string): Promise<Role> {
   if (session.authProvider === "api-key") {
     return session.boundRole;
@@ -252,4 +272,226 @@ export async function requireRole(
       { status: 403 },
     ),
   };
+}
+
+// ---------------------------------------------------------------------
+// Seat-based invites: per-org pending/accepted invite records, reusing
+// the exact same `platform-console-org-roles` ConfigMap and
+// get-then-create-or-patch primitive as the role assignments above --
+// no new k8s kind. A role assignment entry's `data` value is a bare
+// Role string ("viewer"/"member"/"owner"); an invite entry's value is a
+// JSON-encoded OrgInvite. Both live in the same ConfigMap `data` map,
+// disambiguated by key prefix (`invite-<token>` vs. a bare identifier
+// key) and by toAssignments' own isRole filter (a JSON invite value is
+// never a valid Role string, so it's already excluded from
+// getOrgRoleAssignmentsIn's results without any extra filtering there).
+// ---------------------------------------------------------------------
+
+export type InviteStatus = "pending" | "accepted" | "revoked";
+
+export interface OrgInvite {
+  token: string;
+  email: string;
+  role: Role;
+  invitedBy: string;
+  invitedAt: string;
+  expiresAt: string;
+  status: InviteStatus;
+}
+
+const INVITE_KEY_PREFIX = "invite-";
+const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days, same as most SaaS invite links
+
+function inviteKey(token: string): string {
+  return `${INVITE_KEY_PREFIX}${token}`;
+}
+
+function isInviteKey(key: string): boolean {
+  return key.startsWith(INVITE_KEY_PREFIX);
+}
+
+function isInviteStatus(value: unknown): value is InviteStatus {
+  return value === "pending" || value === "accepted" || value === "revoked";
+}
+
+function parseInvite(raw: string): OrgInvite | null {
+  try {
+    const parsed = JSON.parse(raw) as Partial<OrgInvite>;
+    if (
+      typeof parsed.token === "string" &&
+      typeof parsed.email === "string" &&
+      typeof parsed.role === "string" &&
+      isRole(parsed.role) &&
+      typeof parsed.invitedBy === "string" &&
+      typeof parsed.invitedAt === "string" &&
+      typeof parsed.expiresAt === "string" &&
+      isInviteStatus(parsed.status)
+    ) {
+      return parsed as OrgInvite;
+    }
+    return null;
+  } catch {
+    // A hand-edited or corrupt invite record is skipped, not fatal --
+    // same "don't let one bad row break the whole list" discipline
+    // toAssignments already applies to role entries.
+    return null;
+  }
+}
+
+/**
+ * Real read of every invite record (pending, accepted, and revoked) in
+ * one org's own namespace-local `platform-console-org-roles` ConfigMap.
+ * Same `{ok:true, data:[]}`-on-not-provisioned convention as
+ * getOrgRoleAssignmentsIn.
+ */
+export async function listOrgInvitesIn(namespace: string): Promise<K8sResult<OrgInvite[]>> {
+  const existing = await getConfigMap(namespace, ORG_ROLES_CONFIGMAP);
+  if (!existing.ok) return existing;
+  if (!existing.data) return { ok: true, data: [] };
+
+  const invites: OrgInvite[] = [];
+  for (const [key, raw] of Object.entries(existing.data.data)) {
+    if (!isInviteKey(key)) continue;
+    const invite = parseInvite(raw);
+    if (invite) invites.push(invite);
+  }
+  return { ok: true, data: invites.sort((a, b) => b.invitedAt.localeCompare(a.invitedAt)) };
+}
+
+export async function getOrgInviteIn(
+  namespace: string,
+  token: string,
+): Promise<K8sResult<OrgInvite | null>> {
+  const existing = await getConfigMap(namespace, ORG_ROLES_CONFIGMAP);
+  if (!existing.ok) return existing;
+  if (!existing.data) return { ok: true, data: null };
+  const raw = existing.data.data[inviteKey(token)];
+  if (!raw) return { ok: true, data: null };
+  return { ok: true, data: parseInvite(raw) };
+}
+
+/**
+ * Real seat count for one org: accepted role assignments PLUS still-open
+ * (non-expired) pending invites. Both a real member and a real
+ * outstanding invite occupy a seat -- an owner who sends 25 invites on a
+ * 25-seat Pro plan and none of them have been accepted yet has still
+ * used every seat, exactly like Vercel/Retool/Auth0 count a pending seat
+ * against the quota so a customer can't oversell invites past their
+ * subscription.
+ */
+export async function countUsedSeatsIn(
+  namespace: string,
+): Promise<K8sResult<{ accepted: number; pending: number; used: number }>> {
+  const [rolesResult, invitesResult] = await Promise.all([
+    getOrgRoleAssignmentsIn(namespace),
+    listOrgInvitesIn(namespace),
+  ]);
+  if (!rolesResult.ok) return rolesResult;
+  if (!invitesResult.ok) return invitesResult;
+
+  const now = Date.now();
+  const accepted = rolesResult.data.length;
+  const pending = invitesResult.data.filter(
+    (invite) => invite.status === "pending" && new Date(invite.expiresAt).getTime() > now,
+  ).length;
+  return { ok: true, data: { accepted, pending, used: accepted + pending } };
+}
+
+/**
+ * Creates a real pending invite -- caller (the API route) is responsible
+ * for the seat-limit 403 check against SEAT_LIMITS BEFORE calling this,
+ * since that check needs the org's ProjectTier (lib/tiers.ts), which
+ * this module has no dependency on. A fresh, unguessable token is minted
+ * via crypto.randomUUID() (already used the same way by lib/orgs.ts's
+ * org-id and namespace-suffix generation) -- its charset ([0-9a-f-]) is
+ * already a legal k8s ConfigMap key byte, so no escaping is needed here,
+ * unlike encodeIdentifierKey for arbitrary email identifiers.
+ */
+export async function createOrgInviteIn(
+  namespace: string,
+  input: { email: string; role: Role; invitedBy: string },
+): Promise<K8sResult<OrgInvite>> {
+  const now = new Date();
+  const invite: OrgInvite = {
+    token: globalThis.crypto.randomUUID(),
+    email: input.email,
+    role: input.role,
+    invitedBy: input.invitedBy,
+    invitedAt: now.toISOString(),
+    expiresAt: new Date(now.getTime() + INVITE_TTL_MS).toISOString(),
+    status: "pending",
+  };
+  const result = await createOrUpdateConfigMap(namespace, ORG_ROLES_CONFIGMAP, {
+    [inviteKey(invite.token)]: JSON.stringify(invite),
+  });
+  if (!result.ok) return result;
+  return { ok: true, data: invite };
+}
+
+/**
+ * Promotes a pending invite into a real role entry (via setOrgRoleIn)
+ * and marks the invite record `status: "accepted"` -- two writes to the
+ * same ConfigMap, same merge-patch-per-key discipline as every other
+ * mutation in this file. Fails closed: an already-accepted/revoked
+ * invite, an expired invite, or an accepting identity that doesn't match
+ * the invited email is rejected with a real, specific error string
+ * rather than silently promoting the wrong identity or double-granting a
+ * role.
+ */
+export async function acceptOrgInviteIn(
+  namespace: string,
+  token: string,
+  acceptingIdentifier: string,
+): Promise<K8sResult<OrgInvite>> {
+  const existing = await getOrgInviteIn(namespace, token);
+  if (!existing.ok) return existing;
+  if (!existing.data) return { ok: false, error: "invite not found" };
+  if (existing.data.status !== "pending") {
+    return { ok: false, error: `invite is already ${existing.data.status}` };
+  }
+  if (new Date(existing.data.expiresAt).getTime() <= Date.now()) {
+    return { ok: false, error: "invite has expired" };
+  }
+  if (existing.data.email.toLowerCase() !== acceptingIdentifier.toLowerCase()) {
+    return { ok: false, error: "invite email does not match the authenticated identity" };
+  }
+
+  const roleResult = await setOrgRoleIn(namespace, acceptingIdentifier, existing.data.role);
+  if (!roleResult.ok) return roleResult;
+
+  const accepted: OrgInvite = { ...existing.data, status: "accepted" };
+  const result = await createOrUpdateConfigMap(namespace, ORG_ROLES_CONFIGMAP, {
+    [inviteKey(token)]: JSON.stringify(accepted),
+  });
+  if (!result.ok) return result;
+  return { ok: true, data: accepted };
+}
+
+/**
+ * Revokes a pending invite -- implemented as a merge-patch of that
+ * invite's own JSON value to `status: "revoked"`, not a k8s key
+ * deletion: lib/k8s.ts exposes no "remove one ConfigMap data key"
+ * primitive (createOrUpdateConfigMap only ever adds/overwrites keys), so
+ * revocation reuses that exact same primitive rather than introducing a
+ * new one -- and a revoked-not-deleted record is arguably better audit
+ * history anyway (an owner can see WHO revoked WHAT, not just that a
+ * token silently vanished).
+ */
+export async function revokeOrgInviteIn(
+  namespace: string,
+  token: string,
+): Promise<K8sResult<OrgInvite>> {
+  const existing = await getOrgInviteIn(namespace, token);
+  if (!existing.ok) return existing;
+  if (!existing.data) return { ok: false, error: "invite not found" };
+  if (existing.data.status !== "pending") {
+    return { ok: false, error: `invite is already ${existing.data.status}` };
+  }
+
+  const revoked: OrgInvite = { ...existing.data, status: "revoked" };
+  const result = await createOrUpdateConfigMap(namespace, ORG_ROLES_CONFIGMAP, {
+    [inviteKey(token)]: JSON.stringify(revoked),
+  });
+  if (!result.ok) return result;
+  return { ok: true, data: revoked };
 }

@@ -28,8 +28,12 @@ import {
   createOrUpdateConfigMap,
   createProjectWithDatabase,
   getConfigMap,
+  k8sRequest,
+  listNodeRegions,
+  listProjects,
   type K8sResult,
 } from "@/lib/k8s";
+import { tierAtLeast, DEFAULT_PROJECT_TIER, type ProjectTier } from "@/lib/tiers";
 
 export const ORGS_REGISTRY_NAMESPACE = "platform-console";
 export const ORGS_REGISTRY_CONFIGMAP = "platform-console-orgs";
@@ -55,6 +59,7 @@ export interface Org {
   ownerIdentifier: string;
   createdAt: string;
   branding?: OrgBranding;
+  region?: string;
 }
 
 interface OrgRegistryEntry {
@@ -63,6 +68,18 @@ interface OrgRegistryEntry {
   ownerIdentifier: string;
   createdAt: string;
   branding?: OrgBranding;
+  // Data residency / region pinning (AWS/GCP/Azure enterprise-tier
+  // console line item; GDPR data-localization / US financial
+  // data-residency requirement for regulated buyers). Optional and
+  // unset by default, same forward-compatible-optional-field round-trip
+  // discipline as `branding` above -- every org registered before this
+  // field existed round-trips through JSON.parse/stringify with
+  // `region: undefined`. Gated to enterprise-tier orgs at write time
+  // (setOrgRegion below); a value ONLY ever lands here already
+  // validated against the cluster's real, live node region labels
+  // (lib/k8s.ts's listNodeRegions) -- never a fabricated/free-text
+  // region string.
+  region?: string;
 }
 
 const PRODUCT_NAME_MAX_LENGTH = 60;
@@ -276,6 +293,139 @@ export async function setOrgBranding(
   if (!entry) return { ok: true, data: null };
 
   const updatedEntry: OrgRegistryEntry = { ...entry, branding };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
+ * Real, irreversible tenant teardown -- backs the maker-checker-gated
+ * DELETE /api/orgs/[id] (see lib/approval-workflow.ts). Deletes the real
+ * k8s Namespace this org's createOrg provisioned (cascading every
+ * Project/SingleDatabase/Secret/ConfigMap k8s already owns inside it,
+ * same "namespace delete cascades" semantics every k8s cluster
+ * guarantees), then removes the org's own row from the central
+ * `platform-console-orgs` registry via the same RFC 7386
+ * null-value-removes-the-key merge-patch discipline
+ * lib/budget-alerts.ts's deleteBudgetThreshold already established --
+ * createOrUpdateConfigMap's `Record<string, string>` signature can't
+ * express a key removal directly, so the patch is built with an explicit
+ * `null` and cast the same way deleteBudgetThreshold does.
+ *
+ * Namespace deletion is attempted first: if it fails for a reason other
+ * than "already gone" (e.g. a real k8s API error), the registry entry is
+ * deliberately left in place -- a visible, retriable "org still exists"
+ * state, never a registry row silently pointing at a namespace no one
+ * can find, and never a customer's data wiped while the platform still
+ * thinks the org exists.
+ */
+export async function deleteOrg(id: string): Promise<K8sResult<null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const nsResult = await k8sRequest<unknown>(
+    `/api/v1/namespaces/${encodeURIComponent(entry.namespace)}`,
+    "DELETE",
+  );
+  if (!nsResult.ok && !/not found/i.test(nsResult.error)) {
+    return nsResult;
+  }
+
+  const patch: Record<string, string | null> = { [id]: null };
+  const result = await createOrUpdateConfigMap(
+    ORGS_REGISTRY_NAMESPACE,
+    ORGS_REGISTRY_CONFIGMAP,
+    patch as unknown as Record<string, string>,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: null };
+}
+
+/**
+ * Real "this org's Project tier" read, backing the enterprise-tier gate
+ * on region pinning below. Mirrors setProjectTier/TIER_GATED_FLAGS'
+ * existing "read the real tier label back off the cluster, never trust
+ * a cached/client-supplied value" discipline: lists every real Project
+ * CR in this org's own namespace (lib/k8s.ts's listProjects, client-
+ * filtered by namespace the same way getProjectDatabasePod's callers
+ * already scope a cluster-wide list to one namespace) and returns the
+ * HIGHEST tier among them via tierAtLeast's starter < pro < enterprise
+ * ordering -- an org with even one enterprise-tier Project is treated
+ * as an enterprise org for this gate, so upgrading any one Project's
+ * tier (existing setProjectTier) is enough to unlock region pinning,
+ * with no separate "org tier" field to duplicate/drift from the real
+ * per-Project label. An org with no Projects yet reads as
+ * DEFAULT_PROJECT_TIER (starter) -- fail closed, never enterprise by
+ * default.
+ */
+export async function getOrgProjectTier(namespace: string): Promise<K8sResult<ProjectTier>> {
+  const result = await listProjects();
+  if (!result.ok) return result;
+  const inNamespace = result.data.filter((p) => p.namespace === namespace);
+  let highest: ProjectTier = DEFAULT_PROJECT_TIER;
+  for (const project of inNamespace) {
+    if (tierAtLeast(project.tier, highest)) highest = project.tier;
+  }
+  return { ok: true, data: highest };
+}
+
+/**
+ * Real region-pinning read: backs GET /api/orgs/[id]/region. Same
+ * "`{ok: true, data: null}` is not an error" convention as
+ * getOrgBranding -- distinguishes "org exists but has never pinned a
+ * region" from a real k8s registry-read failure.
+ */
+export async function getOrgRegion(id: string): Promise<K8sResult<string | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  return { ok: true, data: entry?.region ?? null };
+}
+
+/**
+ * Real region-pinning write: backs PUT /api/orgs/[id]/region. Enforces
+ * BOTH real gates server-side (never trusts the caller to have already
+ * checked either):
+ *   1. Enterprise tier: this org's real Project tier (getOrgProjectTier
+ *      above) must be at least "enterprise" -- mirrors TIER_GATED_FLAGS'
+ *      existing tierAtLeast pattern for gating a capability behind a
+ *      minimum Project tier.
+ *   2. Live region: `region` must be one `listNodeRegions` (lib/k8s.ts)
+ *      actually reports for this cluster's real nodes right now -- never
+ *      a fabricated/free-text value that could never be satisfied by the
+ *      k8s scheduler.
+ * Returns a specific string error (never silently coerced/defaulted) for
+ * either failure, same fail-closed discipline as validateBranding.
+ * Merge-patches only this org's registry entry's `region` key, same
+ * one-key-at-a-time discipline as setOrgBranding.
+ */
+export async function setOrgRegion(id: string, region: string): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const tierResult = await getOrgProjectTier(entry.namespace);
+  if (!tierResult.ok) return tierResult;
+  if (!tierAtLeast(tierResult.data, "enterprise")) {
+    return { ok: false, error: "region pinning requires this org's Project tier to be enterprise" };
+  }
+
+  const regionsResult = await listNodeRegions();
+  if (!regionsResult.ok) return regionsResult;
+  if (!regionsResult.data.includes(region)) {
+    return {
+      ok: false,
+      error: `region must be one of the cluster's live node regions: ${regionsResult.data.join(", ") || "(none detected)"}`,
+    };
+  }
+
+  const updatedEntry: OrgRegistryEntry = { ...entry, region };
   const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
     [id]: JSON.stringify(updatedEntry),
   });

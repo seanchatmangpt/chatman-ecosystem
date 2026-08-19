@@ -110,6 +110,23 @@ export function resourceQuotaHardFor(tier: ProjectTier): Record<string, string> 
 }
 
 /**
+ * Real per-tier seat cap for the seat-based user management control
+ * (Vercel/Retool/Auth0 "N seats included, then upsell" pattern): the
+ * single lever that makes "the 26th employee" a real, enforced upsell
+ * trigger instead of an unbounded free-for-all. `enterprise` is modeled
+ * as effectively unlimited (9999) rather than `Infinity` so it survives
+ * `JSON.stringify` round-trips through the same ConfigMap-value-as-JSON
+ * convention every other per-org record in this codebase already uses,
+ * and so seat-usage arithmetic (`used`/`limit`) never has to special-case
+ * a non-finite number.
+ */
+export const SEAT_LIMITS: Record<ProjectTier, number> = {
+  starter: 5,
+  pro: 25,
+  enterprise: 9999,
+};
+
+/**
  * Existing `platform-feature-flags` ConfigMap keys (see
  * app/api/feature-flags/route.ts, `feature-flag-live-toggle-verified` in
  * evidence/control-evidence-bundle.json) gated by a minimum Project tier

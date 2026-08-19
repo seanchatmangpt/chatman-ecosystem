@@ -1,0 +1,251 @@
+/**
+ * Real role-based multi-party (maker-checker) approval workflow for
+ * high-risk provisioning actions -- the specific human-in-the-loop
+ * control SOC2/ISO27001 auditors and enterprise security review
+ * checklists ask for by name that this repo did not previously provide.
+ * lib/authz.ts gates by a single actor's OWN role rank (an owner can act
+ * entirely alone); lib/policy.ts is read-only; lib/quota-enforcement.ts
+ * enforces automatically. None of the three ever requires a SECOND,
+ * DISTINCT human identity to sign off before a destructive or
+ * money-moving action executes. This module adds exactly that, as a real
+ * gate a guarded route handler calls BEFORE performing the action -- not
+ * a UI-only affordance.
+ *
+ * Storage: one real k8s ConfigMap (`platform-console-approvals`,
+ * `platform-console` namespace), reusing the exact
+ * getConfigMap/createOrUpdateConfigMap get-then-create-or-patch primitive
+ * every other ConfigMap-backed module in this repo (lib/authz.ts,
+ * lib/budget-alerts.ts, lib/orgs.ts) already uses -- no new k8s resource
+ * kind, no new RBAC verb: the same `platform-console-feature-flags` Role
+ * already grants get/list/create/update/patch on `configmaps` in this
+ * namespace with no `resourceNames` restriction.
+ *
+ * Key shape: one key per approval request, `requestId` (a
+ * `crypto.randomUUID()`) -> JSON ApprovalRequest. A k8s ConfigMap `data`
+ * key must match `[-._a-zA-Z0-9]+` -- a UUID already satisfies that, so
+ * no escaping step like lib/authz.ts's encodeIdentifierKey is ever
+ * needed here.
+ *
+ * Two-person integrity is enforced at TWO points, neither of which trusts
+ * the client:
+ *   1. recordApprovalDecision refuses (403, enforced by the caller) a
+ *      decision from the same identifier that created the request --
+ *      approver !== requester is checked against the REQUEST'S OWN
+ *      stored `requestedBy`, never a client-supplied claim.
+ *   2. findApprovedRequest only matches rows with status "approved" AND
+ *      approvedAt within the last APPROVAL_TTL_HOURS hours -- a stale
+ *      approval (or one for a different target) can never silently
+ *      satisfy a new attempt at the guarded action.
+ */
+import { createOrUpdateConfigMap, getConfigMap, type K8sResult } from "@/lib/k8s";
+
+export const APPROVALS_NAMESPACE = "platform-console";
+export const APPROVALS_CONFIGMAP = "platform-console-approvals";
+
+// Freshness window an approval remains valid for after being granted --
+// same "trailing window" discipline lib/budget-alerts.ts's
+// BUDGET_WINDOW_HOURS documents: a 24h-old "approved" no longer proves
+// the second approver would still say yes to retrying the SAME action
+// today, so it must not silently authorize it.
+export const APPROVAL_TTL_HOURS = 24;
+
+export type ApprovalAction = "org.delete" | "quota.override" | "tier.downgrade";
+export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
+  "org.delete",
+  "quota.override",
+  "tier.downgrade",
+];
+
+export type ApprovalStatus = "pending" | "approved" | "rejected";
+
+export interface ApprovalRequest {
+  requestId: string;
+  action: ApprovalAction;
+  targetId: string;
+  requestedBy: string;
+  requestedAt: string;
+  status: ApprovalStatus;
+  approvedBy?: string;
+  approvedAt?: string;
+  reason?: string;
+}
+
+function isApprovalAction(value: string): value is ApprovalAction {
+  return (ACTIONS_REQUIRING_APPROVAL as string[]).includes(value);
+}
+
+function isApprovalStatus(value: string): value is ApprovalStatus {
+  return value === "pending" || value === "approved" || value === "rejected";
+}
+
+function isApprovalRequest(value: unknown): value is ApprovalRequest {
+  if (!value || typeof value !== "object") return false;
+  const v = value as Record<string, unknown>;
+  return (
+    typeof v.requestId === "string" &&
+    typeof v.action === "string" &&
+    isApprovalAction(v.action) &&
+    typeof v.targetId === "string" &&
+    typeof v.requestedBy === "string" &&
+    typeof v.requestedAt === "string" &&
+    typeof v.status === "string" &&
+    isApprovalStatus(v.status)
+  );
+}
+
+async function getAll(): Promise<K8sResult<Record<string, ApprovalRequest>>> {
+  const existing = await getConfigMap(APPROVALS_NAMESPACE, APPROVALS_CONFIGMAP);
+  if (!existing.ok) return existing;
+  if (!existing.data) return { ok: true, data: {} };
+
+  const parsed: Record<string, ApprovalRequest> = {};
+  for (const [key, raw] of Object.entries(existing.data.data)) {
+    try {
+      const row = JSON.parse(raw) as unknown;
+      if (isApprovalRequest(row)) parsed[key] = row;
+      // A hand-edited or corrupt row is skipped, not fatal -- same
+      // "don't let one bad row break the whole list" discipline
+      // lib/orgs.ts's getRegistry and lib/authz.ts's toAssignments use.
+    } catch {
+      // ignore -- malformed JSON for this key, same skip discipline.
+    }
+  }
+  return { ok: true, data: parsed };
+}
+
+export async function listApprovals(): Promise<K8sResult<ApprovalRequest[]>> {
+  const all = await getAll();
+  if (!all.ok) return all;
+  return {
+    ok: true,
+    data: Object.values(all.data).sort((a, b) => b.requestedAt.localeCompare(a.requestedAt)),
+  };
+}
+
+export async function getApproval(requestId: string): Promise<K8sResult<ApprovalRequest | null>> {
+  const all = await getAll();
+  if (!all.ok) return all;
+  return { ok: true, data: all.data[requestId] ?? null };
+}
+
+/**
+ * Creates one real pending approval request. Called internally by every
+ * guarded route (e.g. DELETE /api/orgs/[id]) the moment it detects no
+ * fresh approved row exists for the target, and directly by POST
+ * /api/approvals for the same purpose.
+ */
+export async function createApprovalRequest(input: {
+  action: ApprovalAction;
+  targetId: string;
+  requestedBy: string;
+}): Promise<K8sResult<ApprovalRequest>> {
+  const requestId = globalThis.crypto.randomUUID();
+  const request: ApprovalRequest = {
+    requestId,
+    action: input.action,
+    targetId: input.targetId,
+    requestedBy: input.requestedBy,
+    requestedAt: new Date().toISOString(),
+    status: "pending",
+  };
+  const result = await createOrUpdateConfigMap(APPROVALS_NAMESPACE, APPROVALS_CONFIGMAP, {
+    [requestId]: JSON.stringify(request),
+  });
+  if (!result.ok) return result;
+  return { ok: true, data: request };
+}
+
+export type RecordDecisionError = "not_found" | "already_decided" | "self_approval";
+
+/**
+ * Records a real approve/reject decision via the same one-key-at-a-time
+ * merge-patch every other ConfigMap writer in this repo uses. Enforces
+ * real two-person integrity server-side: an approver identifier equal to
+ * the request's OWN stored `requestedBy` is refused with
+ * "self_approval" -- the caller (POST /api/approvals/[id]) turns that
+ * into the real 403 the spec requires, never a client-trusted check.
+ * Also refuses a decision on a request that is no longer "pending" --
+ * a decision is recorded exactly once, never silently overwritten.
+ */
+export async function recordApprovalDecision(input: {
+  requestId: string;
+  decision: "approved" | "rejected";
+  approvedBy: string;
+  reason?: string;
+}): Promise<K8sResult<ApprovalRequest> | { ok: false; error: RecordDecisionError }> {
+  const existing = await getApproval(input.requestId);
+  if (!existing.ok) return existing;
+  if (!existing.data) return { ok: false, error: "not_found" };
+  if (existing.data.status !== "pending") return { ok: false, error: "already_decided" };
+  if (existing.data.requestedBy === input.approvedBy) return { ok: false, error: "self_approval" };
+
+  const updated: ApprovalRequest = {
+    ...existing.data,
+    status: input.decision,
+    approvedBy: input.approvedBy,
+    approvedAt: new Date().toISOString(),
+    reason: input.reason,
+  };
+  const result = await createOrUpdateConfigMap(APPROVALS_NAMESPACE, APPROVALS_CONFIGMAP, {
+    [input.requestId]: JSON.stringify(updated),
+  });
+  if (!result.ok) return result;
+  return { ok: true, data: updated };
+}
+
+/**
+ * The real enforcement primitive a guarded route calls: is there a
+ * status:"approved" row for this exact (action, targetId) pair, approved
+ * within the last APPROVAL_TTL_HOURS hours? Returns the matching request
+ * (most recently approved first) or null -- never a boolean alone, so the
+ * caller can echo the approving identity/timestamp back if it wants to.
+ */
+export async function findApprovedRequest(
+  action: ApprovalAction,
+  targetId: string,
+): Promise<K8sResult<ApprovalRequest | null>> {
+  const all = await listApprovals();
+  if (!all.ok) return all;
+
+  const cutoff = Date.now() - APPROVAL_TTL_HOURS * 60 * 60 * 1000;
+  const match = all.data
+    .filter(
+      (r) =>
+        r.action === action &&
+        r.targetId === targetId &&
+        r.status === "approved" &&
+        r.approvedAt !== undefined &&
+        Date.parse(r.approvedAt) >= cutoff,
+    )
+    .sort((a, b) => (b.approvedAt ?? "").localeCompare(a.approvedAt ?? ""))[0];
+
+  return { ok: true, data: match ?? null };
+}
+
+/**
+ * requireApproval: the one call a guarded route handler makes. If a
+ * fresh approved row already exists for this (action, targetId), returns
+ * `{ok: true}` and the route proceeds with the real action. Otherwise it
+ * creates a new pending request (idempotent-ish -- a second call while
+ * one is already pending just creates a second row visible in the
+ * approvals list; it does not synthesize a fake "approved") and returns
+ * `{ok: false, request}` so the route can return the real 202 the spec
+ * requires instead of performing the action.
+ */
+export async function requireApproval(input: {
+  action: ApprovalAction;
+  targetId: string;
+  requestedBy: string;
+}): Promise<
+  | { ok: true; approval: ApprovalRequest }
+  | { ok: false; request: ApprovalRequest }
+  | { ok: false; error: string }
+> {
+  const approved = await findApprovedRequest(input.action, input.targetId);
+  if (!approved.ok) return { ok: false, error: approved.error };
+  if (approved.data) return { ok: true, approval: approved.data };
+
+  const created = await createApprovalRequest(input);
+  if (!created.ok) return { ok: false, error: created.error };
+  return { ok: false, request: created.data };
+}

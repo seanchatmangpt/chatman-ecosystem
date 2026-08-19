@@ -165,6 +165,51 @@ async function fetchBatch(
  * route can pipe this straight into a ReadableStream for an export
  * covering an arbitrarily large date range.
  */
+interface CountRow {
+  count: string;
+}
+
+/**
+ * Real `COUNT(*)` of `platform_console.audit_log` rows in `[from, to]`,
+ * inclusive on both ends -- the exact same `WHERE` clause shape
+ * `fetchBatch` above builds for the streaming export, so this count is
+ * provably the number of rows a full export over the same range would
+ * yield, not a separately-derived estimate. Used by
+ * lib/compliance-report.ts's `sections.auditEventCount`; never fabricated
+ * when the DB is unreachable -- callers get a thrown error the same way
+ * `streamAuditLogAsEcsNdjson` throws on `pool === null`, so a compliance
+ * report generation fails loudly rather than silently reporting 0 events.
+ */
+export async function countAuditEventsInRange(params: AuditExportParams): Promise<number> {
+  const pool = await getAuditDbPool();
+  if (!pool) {
+    throw new Error(
+      "audit log database not configured or unreachable -- see the stdout log (kubectl logs) for this environment's real-time record",
+    );
+  }
+  const client = await pool.connect();
+  try {
+    const conditions: string[] = [];
+    const values: unknown[] = [];
+    if (params.from) {
+      values.push(params.from);
+      conditions.push(`ts >= $${values.length}`);
+    }
+    if (params.to) {
+      values.push(params.to);
+      conditions.push(`ts <= $${values.length}`);
+    }
+    const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+    const result = await client.query<CountRow>(
+      `SELECT COUNT(*)::text AS count FROM platform_console.audit_log ${where}`,
+      values,
+    );
+    return Number(result.rows[0]?.count ?? "0");
+  } finally {
+    client.release();
+  }
+}
+
 export async function* streamAuditLogAsEcsNdjson(
   params: AuditExportParams,
 ): AsyncGenerator<string, void, unknown> {

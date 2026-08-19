@@ -315,6 +315,142 @@ export async function createCronJob(
   return { ok: true, data: toScheduledJob(result.data) };
 }
 
+// ---------------------------------------------------- Compliance Reports
+//
+// Real per-org recurring compliance-report CronJob (lib/compliance-
+// report.ts's own capability): unlike the `ALLOWED_COMMANDS` CronJobs
+// above -- deliberately restricted to `SCHEDULABLE_NAMESPACES`, this
+// platform's own 5 fixed operational namespaces -- a compliance report is
+// scheduled inside a CUSTOMER ORG's own namespace (lib/orgs.ts's
+// dynamically-provisioned `org-<slug>-<suffix>`, or this deployment's one
+// single-tenant `platform-console` namespace fallback -- see
+// lib/orgs.ts's `getOrg` and every `/api/orgs/[id]/*` route's identical
+// "id resolves via the registry, or id IS the namespace" convention),
+// which is why this is its own function rather than a 6th
+// `SCHEDULABLE_NAMESPACES` entry: an org namespace is not a fixed,
+// enumerable list.
+//
+// Same "no free-form shell text reaches a container command" invariant
+// as `buildContainerCommand` above: the only two values interpolated
+// into the fixed curl template are `namespace` and `orgId`, both already
+// validated identifiers by the time this is called (a real k8s namespace
+// name / a real registry id or namespace string), never raw request
+// text. The internal secret the curl call authenticates with
+// (`COMPLIANCE_CRON_SECRET`, checked by
+// POST /api/orgs/[id]/compliance-reports against its own
+// `process.env.COMPLIANCE_CRON_SECRET`) is injected via a real k8s
+// `secretKeyRef` against a `platform-compliance-cron-secret` Secret this
+// module never creates itself -- provisioning that Secret (`kubectl
+// create secret generic platform-compliance-cron-secret
+// --from-literal=secret=...` in the `platform-console` namespace, then
+// setting the matching `COMPLIANCE_CRON_SECRET` env on the console's own
+// Deployment) is a one-time operator/manifest step, same "documented, not
+// silently claimed done" disclosure this file's header already uses for
+// the RBAC grants a new schedulable namespace needs. On-demand generation
+// (an owner clicking "Generate now" in app/org/compliance/page.tsx) does
+// NOT need this secret at all -- it authenticates with the owner's own
+// session/API key, the same as every other mutating route in this app.
+export const COMPLIANCE_CRON_SECRET_NAME = "platform-compliance-cron-secret";
+export const COMPLIANCE_CRON_SECRET_KEY = "secret";
+export const COMPLIANCE_CRON_JOB_LABEL = "compliance-report-cronjob";
+
+/**
+ * The real, fixed curl command a compliance-report CronJob's Pod runs --
+ * cluster-internal only (same trust boundary `curl-status` above already
+ * documents), POSTing to this console's own in-cluster Service DNS name
+ * (`platform-console.platform-console.svc.cluster.local`, the same
+ * `<name>.<namespace>.svc.cluster.local` convention `buildContainerCommand`
+ * already uses for `curl-status`'s target). `orgId` and `namespace` are
+ * both plain path/URL-safe strings (a UUID or a k8s namespace name) by the
+ * time this is called; neither is ever raw, un-validated request text.
+ */
+function buildComplianceReportCommand(orgId: string): string[] {
+  return [
+    "sh",
+    "-c",
+    `curl -sS -m 30 -X POST -H "x-compliance-cron-secret: $COMPLIANCE_CRON_SECRET" ` +
+      `"http://platform-console.platform-console.svc.cluster.local/api/orgs/${orgId}/compliance-reports" && echo`,
+  ];
+}
+
+/**
+ * Creates the real, per-org recurring compliance-report CronJob. `name`
+ * must already pass `isValidJobName` and `schedule` must already pass
+ * `isValidCronSchedule` -- same caller-validates-before-calling contract
+ * `createCronJob` above uses; this function does not itself re-validate,
+ * consistent with the rest of this module.
+ */
+export async function createComplianceReportCronJob(input: {
+  namespace: string;
+  orgId: string;
+  name: string;
+  schedule: string;
+}): Promise<K8sResult<ScheduledJob>> {
+  const manifest = {
+    apiVersion: "batch/v1",
+    kind: "CronJob",
+    metadata: {
+      name: input.name,
+      namespace: input.namespace,
+      labels: {
+        [MANAGED_BY_LABEL]: MANAGED_BY_VALUE,
+        [COMMAND_LABEL]: COMPLIANCE_CRON_JOB_LABEL,
+      },
+    },
+    spec: {
+      schedule: input.schedule,
+      concurrencyPolicy: "Forbid",
+      successfulJobsHistoryLimit: 3,
+      failedJobsHistoryLimit: 3,
+      jobTemplate: {
+        spec: {
+          backoffLimit: 0,
+          activeDeadlineSeconds: 60,
+          template: {
+            metadata: {
+              labels: { [MANAGED_BY_LABEL]: MANAGED_BY_VALUE, "cronjob-name": input.name },
+            },
+            spec: {
+              restartPolicy: "Never",
+              containers: [
+                {
+                  name: "compliance-report",
+                  image: "curlimages/curl:8.10.1",
+                  imagePullPolicy: "IfNotPresent",
+                  command: buildComplianceReportCommand(input.orgId),
+                  env: [
+                    {
+                      name: "COMPLIANCE_CRON_SECRET",
+                      valueFrom: {
+                        secretKeyRef: {
+                          name: COMPLIANCE_CRON_SECRET_NAME,
+                          key: COMPLIANCE_CRON_SECRET_KEY,
+                        },
+                      },
+                    },
+                  ],
+                  resources: {
+                    requests: { cpu: "10m", memory: "16Mi" },
+                    limits: { cpu: "50m", memory: "32Mi" },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const result = await k8sRequest<CronJobItem>(
+    `/apis/batch/v1/namespaces/${encodeURIComponent(input.namespace)}/cronjobs`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toScheduledJob(result.data) };
+}
+
 export async function deleteCronJob(
   namespace: string,
   name: string,

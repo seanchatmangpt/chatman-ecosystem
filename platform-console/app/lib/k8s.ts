@@ -298,6 +298,17 @@ export interface CreateProjectInput {
    * ResourceQuota (TIER_RESOURCE_QUOTAS). Defaults to
    * DEFAULT_PROJECT_TIER when omitted. */
   tier?: ProjectTier;
+  /** Real, enterprise-tier-gated data-residency pin (lib/orgs.ts's
+   * `getOrgRegion`/`setOrgRegion`, restricted to a value
+   * `listNodeRegions` actually reports for this cluster). When set,
+   * `buildProjectManifest`/`buildSingleDatabaseManifest` inject a real
+   * `nodeSelector: {topology.kubernetes.io/region: <region>}` into every
+   * component PodSpec they submit -- a genuine, k8s-scheduler-enforced
+   * constraint (a Pod that cannot be scheduled in the pinned region
+   * stays honestly Pending), not a label-only decoration. Omitted
+   * entirely (not even `nodeSelector: {}`) when unset, so an unpinned
+   * project's scheduling is completely unaffected. */
+  region?: string;
 }
 
 interface SingleDatabaseItem {
@@ -315,6 +326,13 @@ export function buildSingleDatabaseManifest(input: {
   name: string;
   namespace: string;
   storageSize: string;
+  /** Real data-residency pin (see CreateProjectInput.region above).
+   * SingleDatabase's CRD schema (confirmed against the real
+   * `singledatabases.core.supabase.io` CRD: `kubectl get crd
+   * singledatabases.core.supabase.io -o yaml`) exposes `spec.nodeSelector`
+   * directly at the top level -- unlike Project, which nests it per
+   * component -- so this is set once, not per-block. */
+  region?: string;
 }) {
   return {
     apiVersion: "core.supabase.io/v1alpha1",
@@ -322,6 +340,7 @@ export function buildSingleDatabaseManifest(input: {
     metadata: { name: input.name, namespace: input.namespace },
     spec: {
       storage: { accessModes: ["ReadWriteOnce"], size: input.storageSize },
+      ...(input.region ? { nodeSelector: { [REGION_NODE_LABEL]: input.region } } : {}),
     },
   };
 }
@@ -337,6 +356,7 @@ export async function createSingleDatabase(input: {
   name: string;
   namespace: string;
   storageSize: string;
+  region?: string;
 }): Promise<K8sResult<SingleDatabaseItem>> {
   const manifest = buildSingleDatabaseManifest(input);
   return k8sRequest<SingleDatabaseItem>(
@@ -373,6 +393,17 @@ export async function createSingleDatabase(input: {
  * defaults here.
  */
 export function buildProjectManifest(input: CreateProjectInput) {
+  // Real data-residency pin (see CreateProjectInput.region above).
+  // Unlike SingleDatabase, the real `projects.core.supabase.io` CRD
+  // schema nests `nodeSelector` INSIDE each individual component block
+  // (spec.auth.nodeSelector, spec.rest.nodeSelector, ... -- confirmed
+  // against `kubectl get crd projects.core.supabase.io -o yaml`, one
+  // per component the operator reconciles into its own Deployment), so
+  // the constraint has to be spread into every component block below,
+  // not set once at spec-level. Omitted entirely when no region is
+  // pinned, so an unpinned project's manifest is byte-for-byte what it
+  // was before this field existed.
+  const nodeSelector = input.region ? { nodeSelector: { [REGION_NODE_LABEL]: input.region } } : {};
   return {
     apiVersion: "core.supabase.io/v1alpha1",
     kind: "Project",
@@ -384,17 +415,19 @@ export function buildProjectManifest(input: CreateProjectInput) {
     spec: {
       databaseRef: { kind: "SingleDatabase", name: input.databaseRefName },
       http: { hostname: input.hostname, protocol: input.protocol },
-      auth: { siteUrl: `${input.protocol}://${input.hostname}` },
-      rest: {},
-      realtime: {},
-      functions: { verifyJwt: true },
+      auth: { siteUrl: `${input.protocol}://${input.hostname}`, ...nodeSelector },
+      rest: { ...nodeSelector },
+      realtime: { ...nodeSelector },
+      functions: { verifyJwt: true, ...nodeSelector },
       storage: {
         storage: { accessModes: ["ReadWriteOnce"], size: input.dbStorageSize },
+        ...nodeSelector,
       },
       studio: {
         orgName: `${input.name}-org`,
         projName: input.name,
         storage: { accessModes: ["ReadWriteOnce"], size: input.dbStorageSize },
+        ...nodeSelector,
       },
     },
   };
@@ -429,6 +462,7 @@ export async function createProjectWithDatabase(
     name: input.databaseRefName,
     namespace: input.namespace,
     storageSize: input.dbStorageSize,
+    region: input.region,
   });
   if (!dbResult.ok) return dbResult;
 
@@ -2893,7 +2927,7 @@ export async function listPodIPs(namespace: string): Promise<K8sResult<string[]>
 
 interface NodeListResponse {
   items?: Array<{
-    metadata: { name: string };
+    metadata: { name: string; labels?: Record<string, string> };
     spec?: { podCIDR?: string; podCIDRs?: string[] };
   }>;
 }
@@ -2911,6 +2945,39 @@ export async function listNodes(): Promise<K8sResult<K8sNodePodCidr[]>> {
       podCIDRs: item.spec?.podCIDRs ?? (item.spec?.podCIDR ? [item.spec.podCIDR] : []),
     })),
   };
+}
+
+/** Real, well-known k8s node label every major managed cluster (EKS/GKE/
+ * AKS/kubeadm with cloud-controller-manager, and this cluster's own
+ * nodes) sets to the node's real cloud/topology region --
+ * https://kubernetes.io/docs/reference/labels-annotations-taints/#topologykubernetesioregion.
+ * Used both to build a live, honest `ALLOWED_REGIONS`-equivalent
+ * (listNodeRegions below -- never a fabricated static list) and as the
+ * real `nodeSelector` key `buildProjectManifest`/`buildSingleDatabaseManifest`
+ * inject when an org has a pinned region. */
+export const REGION_NODE_LABEL = "topology.kubernetes.io/region";
+
+/**
+ * Real, live-discovered set of regions actually present among this
+ * cluster's nodes -- the Data residency / region pinning module's
+ * `ALLOWED_REGIONS` equivalent. Derived from `Node.metadata.labels`
+ * (same `/api/v1/nodes` call listNodes already makes) rather than a
+ * fabricated static list, so a region is only ever offered/accepted if
+ * a real node in this cluster is actually labeled with it -- a region
+ * pin that could never be satisfied is never presented as an option.
+ * Nodes without the label are skipped (not every cluster/node runs a
+ * cloud-controller-manager that sets it); result is sorted for a stable
+ * UI/API ordering.
+ */
+export async function listNodeRegions(): Promise<K8sResult<string[]>> {
+  const result = await k8sRequest<NodeListResponse>("/api/v1/nodes");
+  if (!result.ok) return result;
+  const regions = new Set<string>();
+  for (const item of result.data.items ?? []) {
+    const region = item.metadata.labels?.[REGION_NODE_LABEL];
+    if (region) regions.add(region);
+  }
+  return { ok: true, data: Array.from(regions).sort() };
 }
 
 /** Real cluster-wide Services list (every namespace in one call) --
