@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'catalog/tpcs.toml'
+      - 'ontology/tpcs.ttl'
       - 'scripts/tpcs_pipeline.py'
       - 'tests/test_tpcs_pipeline.py'
       - '.github/workflows/tpcs.yml'
@@ -40,37 +41,120 @@ jobs:
           test "$(git rev-parse HEAD)" = "${SUBJECT_SHA}"
           test "${#SUBJECT_SHA}" -eq 40
 
-      - name: Verify pipeline law and falsifiers
+      - name: Verify production law and falsifiers
         run: |
           set -euo pipefail
+          python3 -m py_compile scripts/tpcs_pipeline.py
           python3 scripts/tpcs_pipeline.py --self-test
           python3 -m unittest tests.test_tpcs_pipeline -v
 
-      - name: Manufacture exact-subject receipt after acceptance
+      - name: Execute deterministic DfCM production plan
         env:
           SUBJECT_SHA: ${{ steps.subject.outputs.sha }}
         run: |
           set -euo pipefail
           mkdir -p receipts/tpcs-ci
+          cat > /tmp/tpcs-work.json <<JSON
+          {
+            "work_items": [
+              {
+                "subject": "${SUBJECT_SHA}",
+                "acceptance": "python3 -m unittest tests.test_tpcs_pipeline -v",
+                "authority": "CONSTRUCT",
+                "work_id": "runtime",
+                "value_stream": "runtime",
+                "class_of_service": "standard",
+                "value": 10,
+                "urgency": 4,
+                "evidence": 3,
+                "risk": 1,
+                "cost": 3,
+                "cycle_time": 3
+              },
+              {
+                "subject": "${SUBJECT_SHA}",
+                "acceptance": "python3 -m unittest tests.test_tpcs_pipeline -v",
+                "authority": "CONSTRUCT",
+                "work_id": "evidence",
+                "value_stream": "evidence",
+                "class_of_service": "standard",
+                "value": 3,
+                "urgency": 4,
+                "evidence": 10,
+                "risk": 1,
+                "cost": 3,
+                "cycle_time": 3
+              },
+              {
+                "subject": "${SUBJECT_SHA}",
+                "acceptance": "python3 -m unittest tests.test_tpcs_pipeline -v",
+                "authority": "CONSTRUCT",
+                "work_id": "dominated",
+                "value_stream": "runtime",
+                "class_of_service": "standard",
+                "value": 1,
+                "urgency": 1,
+                "evidence": 1,
+                "risk": 9,
+                "cost": 9,
+                "cycle_time": 9
+              }
+            ]
+          }
+          JSON
+          python3 scripts/tpcs_pipeline.py \
+            --plan-file /tmp/tpcs-work.json \
+            --plan-receipt receipts/tpcs-ci/plan.json > /tmp/plan-one.json
+          python3 scripts/tpcs_pipeline.py \
+            --plan-file /tmp/tpcs-work.json > /tmp/plan-two.json
+          cmp /tmp/plan-one.json /tmp/plan-two.json
+          python3 scripts/tpcs_pipeline.py \
+            --metrics 480 12 0.05 10 > receipts/tpcs-ci/flow.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path('receipts/tpcs-ci/plan.json').read_text())
+          assert p['candidate_count'] == 3
+          assert set(p['frontier']) == {'runtime', 'evidence'}
+          assert p['selected'] in p['frontier']
+          assert p['selection_reversible'] is True
+          assert p['irreversible_selections'] == 0
+          assert p['planner_authority'] == 'SELECT'
+          assert p['actuation'] is False
+          PY
+
+      - name: Manufacture chained exact-subject receipt after acceptance
+        env:
+          SUBJECT_SHA: ${{ steps.subject.outputs.sha }}
+        run: |
+          set -euo pipefail
+          PLAN_SHA="$(python3 -c 'import json; print(json.load(open("receipts/tpcs-ci/plan.json"))["sha256"])')"
           python3 scripts/tpcs_pipeline.py \
             --subject "${SUBJECT_SHA}" \
+            --work-id tpcs-exact-head-court \
             --acceptance "python3 -m unittest tests.test_tpcs_pipeline -v" \
             --authority CONSTRUCT \
             --acceptance-passed \
+            --previous-receipt "${PLAN_SHA}" \
             --receipt receipts/tpcs-ci/receipt.json
           python3 - <<'PY'
           import json
           from pathlib import Path
-          r = json.loads(Path('receipts/tpcs-ci/receipt.json').read_text())
-          assert r['standing'] == 'ALIVE'
-          assert r['acceptance_passed'] is True
-          assert r['replay_match'] is True
-          assert r['zero_unreceipted_actuation'] is True
+          plan = json.loads(Path('receipts/tpcs-ci/plan.json').read_text())
+          receipt = json.loads(Path('receipts/tpcs-ci/receipt.json').read_text())
+          flow = json.loads(Path('receipts/tpcs-ci/flow.json').read_text())
+          assert receipt['standing'] == 'ALIVE'
+          assert receipt['acceptance_passed'] is True
+          assert receipt['receipt_verified'] is True
+          assert receipt['replay_match'] is True
+          assert receipt['zero_unreceipted_actuation'] is True
+          assert receipt['previous_receipt'] == plan['sha256']
+          assert flow['little_law_reconstructed_wip'] == flow['wip_items']
           PY
 
-      - name: Preserve court receipt
+      - name: Preserve production receipt DAG
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
         with:
-          name: tpcs-receipt-${{ steps.subject.outputs.sha }}
-          path: receipts/tpcs-ci/receipt.json
+          name: tpcs-receipts-${{ steps.subject.outputs.sha }}
+          path: receipts/tpcs-ci/
           if-no-files-found: error
