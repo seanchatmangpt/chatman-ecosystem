@@ -275,7 +275,10 @@ fn crown_requires_exact_admission_evidence() -> Result<(), Box<dyn std::error::E
         String::from_utf8_lossy(&admitted.stderr)
     );
     let report: serde_json::Value = serde_json::from_slice(&admitted.stdout)?;
-    assert_eq!(report.get("subject").and_then(serde_json::Value::as_str), Some(exact_subject.as_str()));
+    assert_eq!(
+        report.get("subject").and_then(serde_json::Value::as_str),
+        Some(exact_subject.as_str())
+    );
     fs::remove_file(path)?;
     Ok(())
 }
