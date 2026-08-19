@@ -95,7 +95,7 @@ spec:
         context: GATEWAY
         routeConfiguration:
           vhost:
-            name: "platform.local:80"
+            name: "{{ .Values.ingress.host }}:80"
             route:
               name: "platform-console-login"
       patch:

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { applyStripeEvent, verifyStripeWebhookSignature } from "@/lib/stripe-billing";
+import { applyEntitlementEvent, mapStripeStatusToPlanState } from "@/lib/plan-state";
 
 // No session cookie check here on purpose -- this endpoint is called by
 // Stripe's own servers, not a browser with this app's session cookie.
@@ -50,6 +51,25 @@ export async function POST(request: NextRequest) {
       requestId,
     });
     return NextResponse.json({ error: applied.error }, { status: 500 });
+  }
+
+  // Proactively drive lib/plan-state.ts's plan-state ConfigMap through
+  // the SAME generic entrypoint applyEntitlementEvent('stripe', ...)
+  // that a non-Stripe billing path (e.g. the manual-invoice admin route)
+  // uses too, rather than only via reconcilePlanState's own
+  // listStoredSubscriptions() read on its next 10s poller tick. This is
+  // a best-effort immediacy improvement, not a new source of truth --
+  // reconcilePlanState still re-derives from live Stripe subscription
+  // data every tick, so a failure here does not desync enforcement.
+  if (applied.data) {
+    const entitlementResult = await applyEntitlementEvent("stripe", {
+      namespace: applied.data.tenantNamespace,
+      state: mapStripeStatusToPlanState(applied.data.status),
+      reason: `${verified.data.type} (event ${verified.data.id})`,
+    });
+    if (!entitlementResult.ok) {
+      console.error(`[stripe-webhook] applyEntitlementEvent failed: ${entitlementResult.error}`);
+    }
   }
 
   writeAuditLogEntry({

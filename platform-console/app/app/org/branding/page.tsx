@@ -12,6 +12,8 @@ interface OrgBranding {
 
 const DEFAULT_ACCENT = "#4f46e5";
 
+type CustomDomainStatus = "pending" | "issued" | "failed" | null;
+
 // Real per-org white-label branding settings page. This app has no
 // existing per-request "current org" concept in the session (see
 // lib/session.ts -- SessionPayload has no orgId; the platform's own
@@ -32,6 +34,60 @@ export default function OrgBrandingPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+
+  const [domainInput, setDomainInput] = useState("");
+  const [customDomain, setCustomDomain] = useState<string | null>(null);
+  const [customDomainStatus, setCustomDomainStatus] = useState<CustomDomainStatus>(null);
+  const [domainError, setDomainError] = useState<string | null>(null);
+  const [domainSaving, setDomainSaving] = useState(false);
+
+  async function loadCustomDomain(currentOrgId: string) {
+    try {
+      const res = await fetch(`/api/orgs/${encodeURIComponent(currentOrgId)}/custom-domain`);
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error ?? `request failed (${res.status})`);
+      setCustomDomain(body.customDomain ?? null);
+      setCustomDomainStatus(body.customDomainStatus ?? null);
+      if (body.customDomain) setDomainInput(body.customDomain);
+    } catch (err) {
+      setDomainError(err instanceof Error ? err.message : String(err));
+    }
+  }
+
+  useEffect(() => {
+    if (!orgId) return;
+    loadCustomDomain(orgId);
+    // Poll every 5s while a certificate is being issued -- cert-manager's
+    // controller reconciles asynchronously, so "pending" only ever
+    // resolves via a fresh GET, never client-side.
+    const interval = setInterval(() => {
+      if (customDomainStatus === "pending") loadCustomDomain(orgId);
+    }, 5000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgId, customDomainStatus]);
+
+  async function handleSaveDomain(event: React.FormEvent) {
+    event.preventDefault();
+    if (!orgId) return;
+    setDomainSaving(true);
+    setDomainError(null);
+    try {
+      const res = await fetch(`/api/orgs/${encodeURIComponent(orgId)}/custom-domain`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ hostname: domainInput.trim() }),
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error ?? `request failed (${res.status})`);
+      setCustomDomain(body.customDomain ?? null);
+      setCustomDomainStatus(body.customDomainStatus ?? null);
+    } catch (err) {
+      setDomainError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setDomainSaving(false);
+    }
+  }
 
   useEffect(() => {
     if (!orgId) return;
@@ -196,6 +252,71 @@ export default function OrgBrandingPage() {
               {saving ? "Saving..." : "Save branding"}
             </button>
           </form>
+        )}
+
+        {orgId && (
+          <section className="mt-12 border-t border-gray-800 pt-10">
+            <h2 className="mb-2 text-xl font-semibold text-white">Custom domain</h2>
+            <p className="mb-6 max-w-2xl text-sm text-gray-400">
+              Serve this console on your own domain (e.g. <code>console.customer.com</code>)
+              instead of the platform&apos;s default host. Point a CNAME at this cluster&apos;s
+              ingress yourself (no DNS automation here) -- saving below binds the hostname to
+              this org and requests a real TLS certificate via a{" "}
+              <code>cert-manager.io/v1</code> Certificate against this cluster&apos;s configured
+              ClusterIssuer. Owner-only, enforced server-side by{" "}
+              <code>POST /api/orgs/[id]/custom-domain</code>.
+            </p>
+
+            <form onSubmit={handleSaveDomain} className="space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-300">Hostname</label>
+                <input
+                  type="text"
+                  value={domainInput}
+                  onChange={(e) => setDomainInput(e.target.value)}
+                  placeholder="console.customer.com"
+                  className="w-full rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-white"
+                />
+              </div>
+
+              {customDomain && (
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-gray-400">Current:</span>
+                  <code className="text-gray-200">{customDomain}</code>
+                  <span
+                    className={
+                      "rounded-full px-2 py-0.5 text-xs font-medium " +
+                      (customDomainStatus === "issued"
+                        ? "bg-emerald-950/60 text-emerald-300"
+                        : customDomainStatus === "failed"
+                          ? "bg-red-950/60 text-red-300"
+                          : "bg-amber-950/60 text-amber-300")
+                    }
+                  >
+                    {customDomainStatus === "issued"
+                      ? "Certificate issued"
+                      : customDomainStatus === "failed"
+                        ? "Certificate failed"
+                        : "Pending certificate issuance..."}
+                  </span>
+                </div>
+              )}
+
+              {domainError && (
+                <p className="rounded-md border border-red-900 bg-red-950/40 px-4 py-2 text-sm text-red-300">
+                  {domainError}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={domainSaving || !domainInput.trim()}
+                className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50"
+              >
+                {domainSaving ? "Saving..." : "Save custom domain"}
+              </button>
+            </form>
+          </section>
         )}
       </main>
     </>

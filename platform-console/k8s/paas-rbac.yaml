@@ -1663,6 +1663,47 @@ roleRef:
   name: platform-console-custom-domains-tls
   apiGroup: rbac.authorization.k8s.io
 ---
+# ------------------------------------------- Org Custom Domains (cert-manager)
+#
+# Real per-org custom domain + TLS self-service (lib/orgs.ts's
+# customDomain/customDomainStatus fields, lib/k8s.ts's
+# createOrgCertificate/getCertificateStatus, POST/GET
+# /api/orgs/[id]/custom-domain) -- the enterprise-tier "custom domain"
+# upsell every B2B SaaS console offers, layered on top of the white-label
+# branding feature above. Grants get/list/watch/create/delete on
+# `cert-manager.io/v1` Certificate objects, platform-console namespace
+# only (the same namespace k8s/gateway.yaml's own Gateway objects and the
+# Custom Domains feature's own Gateway/VirtualService pairs above already
+# live in) -- never delete/create on the ClusterIssuer itself, which is
+# real cluster infrastructure this feature reads by name only
+# (lib/k8s.ts's DEFAULT_CLUSTER_ISSUER_NAME), never provisions. No
+# update/patch: createOrgCertificate deletes and recreates the Certificate
+# CR whole on re-submission (cert-manager treats dnsNames/secretName as
+# effectively immutable in practice), never edits one in place.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-console-org-custom-domains
+  namespace: platform-console
+rules:
+  - apiGroups: ["cert-manager.io"]
+    resources: ["certificates"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: platform-console-org-custom-domains-binding
+  namespace: platform-console
+subjects:
+  - kind: ServiceAccount
+    name: platform-console
+    namespace: platform-console
+roleRef:
+  kind: Role
+  name: platform-console-org-custom-domains
+  apiGroup: rbac.authorization.k8s.io
+---
 # ------------------------------------------------- Vulnerability Scanning
 #
 # Real Container Vulnerability Scanning (AWS ECR image scanning / GCP

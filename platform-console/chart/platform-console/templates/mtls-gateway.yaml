@@ -91,4 +91,4 @@ spec:
         - destination:
             host: platform-console-gateway.platform-console.svc.cluster.local
             port:
-              number: 8080
+              number: {{ .Values.service.port }}

@@ -82,12 +82,21 @@ const STORAGE_SIGNED_DOWNLOAD_PATTERN = /^\/api\/projects\/[^/]+\/storage\/downl
 // handler instead of dying here on a missing session cookie.
 const AUDIT_EXPORT_PATTERN = /^\/api\/v1\/audit-export$/;
 
+// Provider-authenticated marketplace lifecycle ingress. These endpoints
+// deliberately bypass the human session/API-key gate because AWS SNS,
+// Microsoft Marketplace and Google Pub/Sub authenticate with their own
+// signed provider identities. The route handler verifies that provider
+// evidence before admitting any entitlement transition; register/usage
+// endpoints remain behind the normal session/API-key authorization path.
+const MARKETPLACE_WEBHOOK_PATTERN = /^\/api\/marketplace\/(aws|azure|gcp)\/webhook$/;
+
 function isPublicPath(pathname: string): boolean {
   if (PUBLIC_PATHS.includes(pathname)) return true;
   if (pathname.startsWith("/_next/")) return true;
   if (pathname === "/favicon.ico") return true;
   if (STORAGE_SIGNED_DOWNLOAD_PATTERN.test(pathname)) return true;
   if (AUDIT_EXPORT_PATTERN.test(pathname)) return true;
+  if (MARKETPLACE_WEBHOOK_PATTERN.test(pathname)) return true;
   return false;
 }
 

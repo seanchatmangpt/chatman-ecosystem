@@ -3140,3 +3140,156 @@ export async function listPeerAuthentications(): Promise<K8sResult<IamPeerAuthen
     }),
   };
 }
+
+// --------------------------------------------------------- Org Custom Domains (cert-manager)
+
+/**
+ * Per-org custom-domain TLS: creates a real `cert-manager.io/v1`
+ * Certificate custom resource requesting a cert for one org's own
+ * hostname (console.customer.com), in the `platform-console` namespace --
+ * the same namespace k8s/gateway.yaml's Gateway objects and
+ * lib/custom-domains.ts's Gateway/VirtualService pairs already live in.
+ *
+ * Unlike lib/custom-domains.ts's `generateSelfSignedCertificate` (a
+ * same-process `openssl req -x509` self-signed leaf, used for the
+ * platform's OWN service-routing custom domains), this feature is scoped
+ * to org-level white-label domains and deliberately issues through
+ * cert-manager's own controller + whatever ClusterIssuer this cluster
+ * already runs, exactly like AWS ACM/GCP-managed-certs do for their own
+ * "custom domain" tier -- cert-manager watches the Certificate object this
+ * function creates and does the real ACME/CA handshake itself; this
+ * function's job ends at "the Certificate CR exists", the same "one real
+ * apply, no client-side cert material" division of labor every other
+ * typed-apply helper in this file already follows (createSingleDatabase,
+ * createNamespace, etc.).
+ *
+ * DISCLOSED GAP: no `k8s/*.yaml` manifest in this repo defines a
+ * ClusterIssuer today (confirmed by a repo-wide grep for
+ * "cert-manager"/"ClusterIssuer" turning up nothing outside this custom-
+ * domains feature) -- lib/custom-domains.ts's own self-signed path is what
+ * this cluster actually runs for TLS today, not cert-manager. This
+ * function therefore targets `DEFAULT_CLUSTER_ISSUER_NAME` below, cert-
+ * manager's own most common ClusterIssuer name convention -- the real,
+ * standard name an operator installing cert-manager + a ClusterIssuer
+ * into THIS cluster would reuse, overridable via
+ * `CERT_MANAGER_CLUSTER_ISSUER_NAME` if this cluster's issuer is actually
+ * named something else. The apply call itself is real (a genuine
+ * `cert-manager.io/v1` Certificate POST, immediately readable back via
+ * `getCertificateStatus`); it simply has no controller to reconcile it
+ * against until cert-manager + that ClusterIssuer are actually installed,
+ * the same "not configured" fail-closed shape `k8sRequest` already returns
+ * for every other call made off-cluster.
+ */
+export const DEFAULT_CLUSTER_ISSUER_NAME =
+  process.env.CERT_MANAGER_CLUSTER_ISSUER_NAME ?? "letsencrypt-prod";
+export const ORG_CERTIFICATE_NAMESPACE = "platform-console";
+export const ORG_CERTIFICATE_LABEL = "platform-console.io/org-custom-domain";
+
+function orgCertificateName(orgId: string): string {
+  // Deterministic from the org id alone (not the hostname) -- an org
+  // re-submitting a different hostname re-uses/updates the SAME
+  // Certificate object rather than accumulating an orphaned one per
+  // previous attempt, same "one real object per owning entity" discipline
+  // lib/authz.ts's ConfigMap-per-namespace convention already follows.
+  return `org-custom-domain-${orgId}`.toLowerCase().replace(/[^a-z0-9-]/g, "-").slice(0, 253);
+}
+
+export function orgCertificateSecretName(orgId: string): string {
+  return `${orgCertificateName(orgId)}-tls`;
+}
+
+interface CertificateItem {
+  metadata: { name: string; namespace: string };
+  spec?: { dnsNames?: string[]; secretName?: string; issuerRef?: { name?: string; kind?: string } };
+  status?: {
+    conditions?: Array<{ type?: string; status?: string; reason?: string; message?: string }>;
+    notAfter?: string;
+  };
+}
+
+/**
+ * Creates (or, on re-submission, replaces) the Certificate CR for one org's
+ * custom domain -- a get-then-delete-then-create, since cert-manager
+ * treats `spec.dnsNames`/`secretName` as effectively immutable in practice
+ * (changing the requested hostname is a new certificate request, not an
+ * in-place edit), the same "delete and recreate whole, never edit in
+ * place" discipline lib/custom-domains.ts's own Gateway/VirtualService
+ * registration comment already documents for this exact reason.
+ */
+export async function createOrgCertificate(
+  orgId: string,
+  hostname: string,
+): Promise<K8sResult<CertificateItem>> {
+  const name = orgCertificateName(orgId);
+  const path = `/apis/cert-manager.io/v1/namespaces/${ORG_CERTIFICATE_NAMESPACE}/certificates`;
+
+  const existing = await k8sRequest<CertificateItem>(`${path}/${encodeURIComponent(name)}`);
+  if (existing.ok) {
+    const del = await k8sRequest<unknown>(`${path}/${encodeURIComponent(name)}`, "DELETE");
+    if (!del.ok && !/not found/i.test(del.error)) return del;
+  } else if (!/not found/i.test(existing.error)) {
+    return existing;
+  }
+
+  const manifest = {
+    apiVersion: "cert-manager.io/v1",
+    kind: "Certificate",
+    metadata: {
+      name,
+      namespace: ORG_CERTIFICATE_NAMESPACE,
+      labels: { [ORG_CERTIFICATE_LABEL]: "true" },
+      annotations: { "platform-console.io/org-id": orgId, "platform-console.io/hostname": hostname },
+    },
+    spec: {
+      secretName: orgCertificateSecretName(orgId),
+      dnsNames: [hostname],
+      issuerRef: { name: DEFAULT_CLUSTER_ISSUER_NAME, kind: "ClusterIssuer" },
+    },
+  };
+  return k8sRequest<CertificateItem>(path, "POST", manifest);
+}
+
+export type OrgCertificateStatus = "pending" | "issued" | "failed";
+
+export interface OrgCertificateState {
+  status: OrgCertificateStatus;
+  reason: string | null;
+  message: string | null;
+}
+
+/**
+ * Real, live re-read of one org's Certificate CR `status.conditions`
+ * (cert-manager's own controller writes these -- this function never
+ * infers status any other way): the `Ready` condition drives everything --
+ * `status: "True"` -> `issued`, `status: "False"` with a terminal-looking
+ * reason (cert-manager sets `reason: "Failed"` on unrecoverable ACME/CA
+ * errors) -> `failed`, anything else (no conditions yet, or `Ready` still
+ * `False`/`Unknown` mid-issuance) -> `pending`. A missing Certificate CR
+ * (never submitted, or cert-manager/RBAC not yet configured on this
+ * cluster) is reported as an honest `K8sResult` failure, never silently
+ * coerced into one of the three statuses above.
+ */
+export async function getCertificateStatus(orgId: string): Promise<K8sResult<OrgCertificateState>> {
+  const name = orgCertificateName(orgId);
+  const result = await k8sRequest<CertificateItem>(
+    `/apis/cert-manager.io/v1/namespaces/${ORG_CERTIFICATE_NAMESPACE}/certificates/${encodeURIComponent(name)}`,
+  );
+  if (!result.ok) return result;
+
+  const conditions = result.data.status?.conditions ?? [];
+  const ready = conditions.find((c) => c.type === "Ready");
+
+  let status: OrgCertificateStatus;
+  if (ready?.status === "True") {
+    status = "issued";
+  } else if (ready?.status === "False" && /fail/i.test(ready.reason ?? "")) {
+    status = "failed";
+  } else {
+    status = "pending";
+  }
+
+  return {
+    ok: true,
+    data: { status, reason: ready?.reason ?? null, message: ready?.message ?? null },
+  };
+}
