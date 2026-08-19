@@ -25,6 +25,7 @@ class WorkItem:
     authority: str
     reversible: bool = True
     acceptance_mutated: bool = False
+    acceptance_passed: bool = False
     actuation_receipted: bool = True
     replay_match: bool = True
 
@@ -36,10 +37,9 @@ def load_config(path: Path = CONFIG) -> dict:
 
 def validate_config(cfg: dict) -> None:
     stages = cfg.get("stage", [])
-    ids = [stage["id"] for stage in stages]
     required = ["observe", "admit", "construct", "verify", "receipt", "replay", "standing"]
-    if ids != required:
-        raise ValueError(f"invalid stage order: {ids}")
+    if [s["id"] for s in stages] != required:
+        raise ValueError("invalid stage order")
     if cfg.get("mode") != "pull":
         raise ValueError("TPS requires pull flow")
     if not cfg.get("zero_unreceipted_actuation"):
@@ -52,9 +52,9 @@ def validate_config(cfg: dict) -> None:
 
 
 def admit(item: WorkItem, cfg: dict) -> None:
-    refusals = cfg["refusals"]
+    r = cfg["refusals"]
     if not SHA40.fullmatch(item.subject):
-        raise Refusal(refusals["invalid_subject"])
+        raise Refusal(r["invalid_subject"])
     if not item.acceptance.strip():
         raise Refusal("REFUSED_MISSING_ACCEPTANCE")
     if item.authority not in {"SELECT", "CONSTRUCT", "DO"}:
@@ -62,11 +62,11 @@ def admit(item: WorkItem, cfg: dict) -> None:
     if not item.reversible:
         raise Refusal("REFUSED_IRREVERSIBLE_PLAN")
     if item.acceptance_mutated:
-        raise Refusal(refusals["acceptance_mutation"])
+        raise Refusal(r["acceptance_mutation"])
     if item.authority == "DO" and not item.actuation_receipted:
-        raise Refusal(refusals["unreceipted_actuation"])
+        raise Refusal(r["unreceipted_actuation"])
     if not item.replay_match:
-        raise Refusal(refusals["replay_mismatch"])
+        raise Refusal(r["replay_mismatch"])
 
 
 def enforce_wip(stage: dict, count: int, cfg: dict) -> None:
@@ -76,11 +76,9 @@ def enforce_wip(stage: dict, count: int, cfg: dict) -> None:
 
 def receipt(item: WorkItem, cfg: dict) -> dict:
     payload = {
-        "version": cfg["version"],
-        "subject": item.subject,
-        "acceptance": item.acceptance,
-        "authority": item.authority,
-        "reversible": item.reversible,
+        "version": cfg["version"], "subject": item.subject,
+        "acceptance": item.acceptance, "acceptance_passed": item.acceptance_passed,
+        "authority": item.authority, "reversible": item.reversible,
         "acceptance_mutated": item.acceptance_mutated,
         "actuation_receipted": item.actuation_receipted,
         "replay_match": item.replay_match,
@@ -96,15 +94,15 @@ def run(item: WorkItem, cfg: dict) -> dict:
     for stage in cfg["stage"]:
         enforce_wip(stage, 1, cfg)
     out = receipt(item, cfg)
-    out["standing"] = "ALIVE"
-    out["stages"] = [stage["id"] for stage in cfg["stage"]]
+    out["standing"] = "ALIVE" if item.acceptance_passed else "PARTIAL_ALIVE"
+    out["stages"] = [s["id"] for s in cfg["stage"]]
     return out
 
 
 def self_test(cfg: dict) -> None:
-    good = WorkItem("0" * 40, "python3 -m unittest tests.test_tpcs_pipeline -v", "CONSTRUCT")
-    result = run(good, cfg)
-    assert result["standing"] == "ALIVE"
+    good = WorkItem("0" * 40, "python3 -m unittest tests.test_tpcs_pipeline -v", "CONSTRUCT", acceptance_passed=True)
+    assert run(good, cfg)["standing"] == "ALIVE"
+    assert run(WorkItem("0" * 40, "x", "SELECT"), cfg)["standing"] == "PARTIAL_ALIVE"
     cases = [
         (WorkItem("not-a-sha", "x", "SELECT"), "REFUSED_INVALID_SUBJECT"),
         (WorkItem("0" * 40, "x", "CONSTRUCT", acceptance_mutated=True), "REFUSED_ACCEPTANCE_MUTATION"),
@@ -115,30 +113,29 @@ def self_test(cfg: dict) -> None:
         try:
             run(item, cfg)
         except Refusal as exc:
-            assert str(exc) == expected, (str(exc), expected)
+            assert str(exc) == expected
         else:
             raise AssertionError(f"expected {expected}")
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Toyota Code Production System admission/verifier")
-    parser.add_argument("--self-test", action="store_true")
-    parser.add_argument("--subject")
-    parser.add_argument("--acceptance")
-    parser.add_argument("--authority", choices=["SELECT", "CONSTRUCT", "DO"])
-    parser.add_argument("--receipt")
-    args = parser.parse_args()
+    p = argparse.ArgumentParser(description="Toyota Code Production System admission/verifier")
+    p.add_argument("--self-test", action="store_true")
+    p.add_argument("--subject")
+    p.add_argument("--acceptance")
+    p.add_argument("--authority", choices=["SELECT", "CONSTRUCT", "DO"])
+    p.add_argument("--acceptance-passed", action="store_true")
+    p.add_argument("--receipt")
+    a = p.parse_args()
     cfg = load_config()
-    if args.self_test:
-        self_test(cfg)
-        print("TPCS_SELF_TEST_ALIVE")
-        return 0
-    if not all([args.subject, args.acceptance, args.authority]):
-        parser.error("--subject, --acceptance and --authority are required without --self-test")
-    result = run(WorkItem(args.subject, args.acceptance, args.authority), cfg)
+    if a.self_test:
+        self_test(cfg); print("TPCS_SELF_TEST_ALIVE"); return 0
+    if not all([a.subject, a.acceptance, a.authority]):
+        p.error("--subject, --acceptance and --authority are required")
+    result = run(WorkItem(a.subject, a.acceptance, a.authority, acceptance_passed=a.acceptance_passed), cfg)
     encoded = json.dumps(result, indent=2, sort_keys=True) + "\n"
-    if args.receipt:
-        Path(args.receipt).write_text(encoded, encoding="utf-8")
+    if a.receipt:
+        Path(a.receipt).write_text(encoded, encoding="utf-8")
     print(encoded, end="")
     return 0
 
