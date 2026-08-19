@@ -9,6 +9,7 @@ import {
   type SpendHistoryGranularity,
 } from "@/lib/audit-db";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
+import { recordExportCustody } from "@/lib/export-custody";
 
 // Real historical spend/usage time series -- the exportable, multi-month
 // counterpart to app/billing/page.tsx's point-in-time overage-estimate
@@ -108,7 +109,30 @@ export async function GET(
   }
 
   if (format === "csv") {
-    return new NextResponse(orgSpendHistoryToCsv(result.data), {
+    const csv = orgSpendHistoryToCsv(result.data);
+    // Real chain-of-custody certificate for this admin's manual bulk CSV
+    // pull -- distinct code path from lib/dsar.ts's per-subject export
+    // (see lib/export-custody.ts's header comment). Every buckets row in
+    // this CSV is one real spend-history record; recordCount is the
+    // actual number of data rows (total lines minus the header row), not
+    // an estimate. Best-effort: a custody-write failure never blocks the
+    // admin's already-generated CSV from downloading.
+    const dataRowCount = Math.max(0, csv.split("\n").filter((line) => line.length > 0).length - 1);
+    recordExportCustody({
+      orgId: id,
+      exportedBy: actor,
+      recordCount: dataRowCount,
+      payload: csv,
+      destination: "admin-csv-download",
+    }).then((custodyResult) => {
+      if (!custodyResult.ok) {
+        console.error(
+          JSON.stringify({ exportCustodyWriteError: custodyResult.error, orgId: id }),
+        );
+      }
+    });
+
+    return new NextResponse(csv, {
       status: 200,
       headers: {
         "Content-Type": "text/csv; charset=utf-8",

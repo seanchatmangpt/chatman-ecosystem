@@ -442,6 +442,26 @@ export function writeAuditLogEntry(entry: AuditLogEntry): void {
 }
 
 /**
+ * Awaited counterpart to `writeAuditLogEntry` above -- every other caller
+ * in this repo fires-and-forgets the DB write (the stdout line is the
+ * real-time record; the DB row is a best-effort durable copy that must
+ * never block or fail the request it describes). lib/export-custody.ts's
+ * `recordExportCustody` is a deliberate, narrow exception: a
+ * chain-of-custody certificate's whole point is to point at a specific,
+ * already-committed `row_hash`-chained audit_log row (via
+ * `getAuditLogChainSegmentByRequestId` below), so the row must actually
+ * exist in Postgres before the certificate is minted -- a fire-and-forget
+ * write could still be in flight (or fail) at the moment the certificate
+ * is stored, leaving `auditLogEntryId` pointing at nothing. Still never
+ * throws past the caller in a way that silently drops the stdout line:
+ * the stdout write above always happens first, unconditionally.
+ */
+export async function writeAuditLogEntryAwaited(entry: AuditLogEntry): Promise<void> {
+  writeStdoutAuditLogEntry(entry);
+  await persistAuditLogEntry(entry);
+}
+
+/**
  * Exposes the same single-flight, self-healing pool every reader/writer in
  * this module already shares -- for lib/audit-export.ts's streaming NDJSON
  * export, which needs a raw `PoolClient` (to run several keyset-paginated
@@ -1048,6 +1068,115 @@ export async function verifyAuditChain(): Promise<AuditChainVerifyOutcome> {
     }
 
     return { ok: true, data: { valid: true, rowsChecked: result.rows.length } };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+// --------------------------------------- Chain-of-custody single-row lookup
+//
+// A narrower sibling of `verifyAuditChain` above: that function re-derives
+// the ENTIRE chain (the platform-admin integrity control). A
+// chain-of-custody certificate (lib/export-custody.ts) only needs to prove
+// that ONE specific row -- the one recorded when the export happened --
+// still recomputes to its own stored `row_hash` given its OWN stored
+// `prev_hash` (the same `computeRowHash` primitive, just anchored one row
+// earlier instead of at GENESIS_HASH). This is real tamper-evidence for
+// that row (any edit to request_id/ts/actor/method/path/status changes the
+// recomputed hash), not a full-chain walk -- a full-chain walk is exactly
+// what GET /api/audit/verify already exposes for an operator who wants
+// that broader guarantee.
+export interface AuditLogChainSegmentRow {
+  id: number;
+  requestId: string;
+  timestamp: string; // RFC3339, matches AuditLogEntry.timestamp
+  actor: string;
+  method: string;
+  path: string;
+  status: number;
+  orgId?: string;
+  castleReceiptDigest?: string;
+  impersonatedBy?: string;
+  impersonationSessionId?: string;
+  /** The row's own stored prev_hash -- what its row_hash must recompute against. */
+  prevHash: string;
+  /** The row's own stored row_hash -- compared against a fresh `computeRowHash` call by the caller. */
+  rowHash: string;
+}
+
+export type AuditLogChainSegmentOutcome =
+  | { ok: true; data: AuditLogChainSegmentRow | null }
+  | { ok: false; error: string };
+
+/**
+ * Looks up the exact audit_log row a `requestId` (the join key
+ * lib/export-custody.ts's `CustodyRecord.auditLogEntryId` stores) resolved
+ * to, with everything needed to recompute that one row's `row_hash`.
+ * `request_id` is not a DB-unique key across this whole table (every
+ * request writes exactly one row in practice, but nothing enforces that at
+ * the schema level) -- `ORDER BY id ASC LIMIT 1` picks the first, which is
+ * always the one this module itself wrote at custody-record-creation time.
+ * Returns `data: null` (not an error) when the row genuinely doesn't
+ * exist -- e.g. a retention purge (`purgeAuditLogRowsOlderThan`) removed
+ * it, which is itself a real, reportable "no longer verifiable" outcome
+ * for the caller to surface, not a `502`.
+ */
+export async function getAuditLogChainSegmentByRequestId(
+  requestId: string,
+): Promise<AuditLogChainSegmentOutcome> {
+  const pool = await resolveChainReadyPool();
+  if (!pool) {
+    return { ok: false, error: "audit log database not configured or unreachable" };
+  }
+  try {
+    const result = await pool.query<{
+      id: string;
+      request_id: string;
+      ts: string;
+      actor: string;
+      method: string;
+      path: string;
+      status: number;
+      org_id: string | null;
+      castle_receipt_digest: string | null;
+      impersonated_by: string | null;
+      impersonation_session_id: string | null;
+      prev_hash: string | null;
+      row_hash: string | null;
+    }>(
+      `SELECT id, request_id, ts, actor, method, path, status, org_id, castle_receipt_digest,
+              impersonated_by, impersonation_session_id, prev_hash, row_hash
+       FROM platform_console.audit_log
+       WHERE request_id = $1
+       ORDER BY id ASC
+       LIMIT 1`,
+      [requestId],
+    );
+    const r = result.rows[0];
+    if (!r || r.prev_hash === null || r.row_hash === null) {
+      // No row, or a pre-chain-column row (backfillAuditLogChain should
+      // have caught the latter, but fail closed -- "not verifiable"
+      // rather than crash on a null hash comparison).
+      return { ok: true, data: null };
+    }
+    return {
+      ok: true,
+      data: {
+        id: Number(r.id),
+        requestId: r.request_id,
+        timestamp: new Date(r.ts).toISOString(),
+        actor: r.actor,
+        method: r.method,
+        path: r.path,
+        status: Number(r.status),
+        ...(r.org_id ? { orgId: r.org_id } : {}),
+        ...(r.castle_receipt_digest ? { castleReceiptDigest: r.castle_receipt_digest } : {}),
+        ...(r.impersonated_by ? { impersonatedBy: r.impersonated_by } : {}),
+        ...(r.impersonation_session_id ? { impersonationSessionId: r.impersonation_session_id } : {}),
+        prevHash: r.prev_hash,
+        rowHash: r.row_hash,
+      },
+    };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }

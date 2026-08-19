@@ -51,6 +51,7 @@ import { createCipheriv, createDecipheriv, randomBytes, timingSafeEqual } from "
 import { createOrUpdateConfigMap, getConfigMap, type K8sResult } from "@/lib/k8s";
 import { exportProjectBundle } from "@/lib/export-all";
 import { streamAuditLogAsEcsNdjson } from "@/lib/audit-export";
+import { recordExportCustody } from "@/lib/export-custody";
 
 export const EXPORT_SUBSCRIPTIONS_NAMESPACE = "platform-console";
 export const EXPORT_SUBSCRIPTIONS_CONFIGMAP = "platform-console-export-subscriptions";
@@ -435,7 +436,10 @@ async function recordRunHistory(orgId: string, run: ExportSubscriptionRun): Prom
 async function buildPayload(
   orgId: string,
   scope: ExportScope,
-): Promise<{ ok: true; data: { body: Buffer; filename: string } } | { ok: false; error: string }> {
+): Promise<
+  | { ok: true; data: { body: Buffer; filename: string; recordCount: number } }
+  | { ok: false; error: string }
+> {
   if (scope === "audit-log") {
     try {
       const lines: string[] = [];
@@ -445,7 +449,14 @@ async function buildPayload(
       const stamp = new Date().toISOString().replace(/[:.]/g, "-");
       return {
         ok: true,
-        data: { body: Buffer.from(lines.join("")), filename: `audit-log-${orgId}-${stamp}.ndjson` },
+        data: {
+          body: Buffer.from(lines.join("")),
+          filename: `audit-log-${orgId}-${stamp}.ndjson`,
+          // One NDJSON line == one real audit_log row -- the export's own
+          // record count for the chain-of-custody certificate (see
+          // recordExportCustody below), not an estimate.
+          recordCount: lines.length,
+        },
       };
     } catch (err) {
       return { ok: false, error: err instanceof Error ? err.message : String(err) };
@@ -454,7 +465,19 @@ async function buildPayload(
 
   const bundleResult = await exportProjectBundle(orgId);
   if (!bundleResult.ok) return bundleResult;
-  return { ok: true, data: { body: bundleResult.data.archive, filename: bundleResult.data.filename } };
+  return {
+    ok: true,
+    data: {
+      body: bundleResult.data.archive,
+      filename: bundleResult.data.filename,
+      // A "full-export" bundle is one archive spanning many resource
+      // kinds (see lib/export-all.ts), not a flat row set -- there is no
+      // single real "record count" to report below the archive itself,
+      // so the certificate honestly reports the one real, countable unit
+      // this scope actually produces: the single bundle archive.
+      recordCount: 1,
+    },
+  };
 }
 
 function buildObjectKey(prefix: string, filename: string): string {
@@ -561,6 +584,37 @@ export async function runExportSubscription(
     patchLastRun(orgId, subscription, run.status, ranAt),
     recordRunHistory(orgId, run),
   ]);
+
+  // Real chain-of-custody certificate for this run -- ONLY on an actual
+  // successful PUT to the customer's bucket (an "error" run exported
+  // nothing anywhere; there is nothing to attest custody of). Distinct
+  // code path from lib/dsar.ts's per-subject export -- see
+  // lib/export-custody.ts's header comment. A custody-record write
+  // failure (e.g. the ConfigMap RBAC/API is briefly unreachable) is
+  // logged but never turns an otherwise-successful bucket delivery into
+  // a reported "error" run -- the export itself already reached the
+  // customer's bucket; the certificate is best-effort compliance
+  // evidence layered on top, same fail-open-on-continuity posture this
+  // module's own header comment documents elsewhere.
+  if (putResult.ok) {
+    const custodyResult = await recordExportCustody({
+      orgId,
+      exportedBy: "system:s3-export-subscription",
+      recordCount: payloadResult.data.recordCount,
+      payload: payloadResult.data.body,
+      destination: `s3://${subscription.bucketName}/${objectKey}`,
+    });
+    if (!custodyResult.ok) {
+      console.error(
+        JSON.stringify({
+          exportCustodyWriteError: custodyResult.error,
+          orgId,
+          runId,
+        }),
+      );
+    }
+  }
+
   return { ok: true, data: run };
 }
 

@@ -94,6 +94,22 @@ export interface AuditLogEntry {
   slaCreditStripeTransactionId?: string;
   slaCreditAmountCents?: number;
   slaCreditMonth?: string;
+  /**
+   * Incident postmortem / RCA document (lib/postmortems.ts,
+   * POST/PATCH /api/incidents/[id]/postmortem): `postmortemIncidentId`
+   * cross-references the exact incident this compliance artifact was
+   * generated for or finalized for, and `postmortemAction` distinguishes
+   * the two auditable events -- `"postmortem_generated"` (the automatic
+   * timeline/duration/severity/credit draft was produced or refreshed)
+   * vs. `"postmortem_finalized"` (a human-authored rootCause/remediation
+   * was recorded and the document was marked customer-deliverable),
+   * logged as separate audit rows the same way this repo already
+   * separates "credit computed" (GET) from "credit applied" (POST) on
+   * the SLA-credit route above. Both absent for every non-postmortem
+   * audit row.
+   */
+  postmortemIncidentId?: string;
+  postmortemAction?: "postmortem_generated" | "postmortem_finalized";
 }
 
 export function writeAuditLogEntry(entry: AuditLogEntry): void {

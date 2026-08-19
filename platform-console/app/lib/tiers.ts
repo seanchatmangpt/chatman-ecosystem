@@ -155,6 +155,24 @@ export const TIER_GATED_FLAG_OWNER_PROJECT: Record<string, string> = {
 };
 
 /**
+ * Real self-service entitlement check for a customer-facing feature-flag
+ * toggle (PUT /api/feature-flags/[flag]) -- the exact `tierAtLeast`
+ * comparison app/api/feature-flags/route.ts's POST already performs
+ * inline against TIER_GATED_FLAGS, pulled out into a single named
+ * predicate so BOTH the self-service PUT route (which must 403 with a
+ * structured upgrade_required payload) and the GET route's per-flag
+ * `entitled` metadata (so the console UI can render a locked padlock
+ * without a second round trip) share one source of truth for "is this
+ * tier allowed to enable this flag" instead of two copies of the same
+ * comparison drifting apart. A flag with no TIER_GATED_FLAGS entry
+ * defaults to "starter" -- i.e. every tier is entitled to it, matching
+ * this module's existing "ungated flags are always settable" behavior.
+ */
+export function isFlagEntitled(tier: ProjectTier, flag: string): boolean {
+  return tierAtLeast(tier, TIER_GATED_FLAGS[flag] ?? "starter");
+}
+
+/**
  * Real per-org contractual SLA / support-priority tier (AWS Enterprise
  * Support / GCP Premium Support-style paid line item): closes the gap
  * that this console's Project tier (starter/pro/enterprise, above) sets

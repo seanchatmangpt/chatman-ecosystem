@@ -3,7 +3,13 @@ import { SESSION_COOKIE_NAME, verifySessionToken, type SessionPayload } from "@/
 import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
 import { createOrUpdateConfigMap, getConfigMap, getProject } from "@/lib/k8s";
 import { requireRole } from "@/lib/authz";
-import { TIER_GATED_FLAGS, TIER_GATED_FLAG_OWNER_PROJECT, tierAtLeast } from "@/lib/tiers";
+import {
+  isFlagEntitled,
+  TIER_GATED_FLAGS,
+  TIER_GATED_FLAG_OWNER_PROJECT,
+  tierAtLeast,
+  type ProjectTier,
+} from "@/lib/tiers";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -40,7 +46,46 @@ export async function GET(request: NextRequest) {
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 502 });
   }
-  return NextResponse.json({ flags: result.data?.data ?? {} });
+
+  const rawFlags = result.data?.data ?? {};
+
+  // Real per-flag entitlement metadata (isFlagEntitled, lib/tiers.ts):
+  // the console UI's whole "render a locked padlock with an upgrade
+  // prompt vs. a live toggle" decision, computed server-side so the UI
+  // never has to make a second round trip (or reimplement the tier
+  // comparison) just to know whether a flag is actually settable by
+  // this org. Every distinct owner Project (TIER_GATED_FLAG_OWNER_PROJECT)
+  // referenced by ANY gated flag is looked up at most once, not once per
+  // flag -- same batching discipline as everywhere else in this route.
+  const ownerProjectNames = Array.from(
+    new Set(Object.values(TIER_GATED_FLAG_OWNER_PROJECT)),
+  );
+  const ownerTierByProject = new Map<string, ProjectTier>();
+  for (const ownerProjectName of ownerProjectNames) {
+    const ownerResult = await getProject(ownerProjectName);
+    ownerTierByProject.set(
+      ownerProjectName,
+      ownerResult.ok ? ownerResult.data?.tier ?? "starter" : "starter",
+    );
+  }
+
+  const flagKeys = new Set<string>([...Object.keys(rawFlags), ...Object.keys(TIER_GATED_FLAGS)]);
+  const flags: Record<
+    string,
+    { enabled: boolean; requiredTier: ProjectTier; entitled: boolean }
+  > = {};
+  for (const key of flagKeys) {
+    const requiredTier = TIER_GATED_FLAGS[key] ?? "starter";
+    const ownerProjectName = TIER_GATED_FLAG_OWNER_PROJECT[key];
+    const ownerTier = ownerProjectName ? ownerTierByProject.get(ownerProjectName) ?? "starter" : "starter";
+    flags[key] = {
+      enabled: rawFlags[key] === "true",
+      requiredTier,
+      entitled: isFlagEntitled(ownerTier, key),
+    };
+  }
+
+  return NextResponse.json({ flags });
 }
 
 export async function POST(request: NextRequest) {

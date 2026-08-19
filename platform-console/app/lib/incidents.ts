@@ -282,6 +282,23 @@ export async function annotateIncident(
   return { ok: true, data: row ? toIncident(row) : null };
 }
 
+/**
+ * Real single-row fetch by primary key -- backs lib/postmortems.ts's
+ * generatePostmortem (a postmortem is generated FROM one specific
+ * incident's real record, never a filtered list re-scan) and any other
+ * caller that already has an incident id (e.g. GET /api/incidents/[id]).
+ * Returns `{ ok: true, data: null }` for a real "not found", same
+ * discipline as listIncidents/annotateIncident, never a thrown error for
+ * an ordinary missing-row case.
+ */
+export async function getIncident(id: string): Promise<IncidentOutcome<Incident | null>> {
+  const pool = await resolveReadyPool();
+  if (!pool) return { ok: false, error: "incidents store not configured or unreachable" };
+  const result = await pool.query(`SELECT * FROM platform_console.incidents WHERE id = $1`, [id]);
+  const row = result.rows[0];
+  return { ok: true, data: row ? toIncident(row) : null };
+}
+
 export interface ListIncidentsParams {
   orgId?: string;
   componentId?: string;
