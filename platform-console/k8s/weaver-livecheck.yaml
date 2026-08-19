@@ -1,0 +1,75 @@
+# Attempted real integration between weaver's OTel semconv live-check
+# (~/chicago-tdd-tools, registry/model) and platform-console's live Istio/Jaeger
+# tracing pipeline (k8s/jaeger-tracing.yaml).
+#
+# RESULT: connection established, RPCs failed. Documented here, not applied
+# as a permanent fixture -- see the session report for full detail. Left here
+# for reproduction/review; NOT wired into the live Telemetry resource (that
+# was reverted back to jaeger-only, its original working state).
+#
+# Real path built and verified this session:
+#   - Host (this Mac) is reachable from the kind cluster's pod network at
+#     192.168.5.2 (colima VM's default-route gateway back to the host),
+#     confirmed via `kubectl run ... curl 192.168.5.2:4317` from a real pod
+#     (connection attempted, not simulated).
+#   - This Service + Endpoints exposes that host address as
+#     weaver-livecheck.istio-system.svc.cluster.local:4317 inside the mesh.
+#   - A "weaver" extensionProvider (opentelemetry, port 4317, this service)
+#     was added to the istio configmap's extensionProviders list, alongside
+#     the pre-existing "jaeger" entry.
+#   - Istio's Telemetry API on this cluster version REJECTS multiple tracing
+#     providers on one TracingConfig: patching
+#     mesh-default-tracing's spec.tracing[0].providers to
+#     [{name: jaeger}, {name: weaver}] is accepted but the admission webhook
+#     returns the warning "multiple providers is not currently supported",
+#     and no traffic reaches the second provider. Verified: after that patch,
+#     `pilot-agent request GET clusters` on istio-ingressgateway showed 0
+#     stats for the weaver cluster; Jaeger continued receiving spans as
+#     before (5 real traces queried back via Jaeger's HTTP API).
+#   - To get a real (not fabricated) live-check reading, mesh-default-tracing
+#     was swapped to weaver-only for one pass: real GET /login traffic was
+#     sent through the live ingress gateway (curl -H "Host: platform.local"),
+#     and Envoy's own cluster stats for
+#     outbound|4317||weaver-livecheck.istio-system.svc.cluster.local showed
+#     cx_total=4, rq_total=4, rq_success=0, rq_error=4 -- i.e. Envoy's
+#     OpenTelemetry gRPC exporter connected to weaver's OTLP receiver at the
+#     TCP level but every export RPC errored. weaver's own live-check log
+#     recorded zero received entities/samples for all four attempts, and
+#     logged no error on its side either -- so the failure is at the
+#     gRPC/HTTP2 layer between Envoy's OTel tracer and weaver's tonic OTLP
+#     server (exact cause not isolated further this session: candidates are
+#     an ALPN/h2 negotiation mismatch or an authority/TLS expectation on one
+#     side that the other doesn't satisfy).
+#   - mesh-default-tracing was then reverted to jaeger-only, restoring the
+#     cluster's original working tracing state.
+#
+# Net: the weaver <-> platform-console data path is real and reachable
+# (TCP/service-discovery level), but no real span has ever been successfully
+# parsed by weaver's live-check from platform-console/Istio traffic. The
+# integration is BLOCKED at the OTLP gRPC export layer, not merely
+# unattempted.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weaver-livecheck
+  namespace: istio-system
+spec:
+  ports:
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: weaver-livecheck
+  namespace: istio-system
+subsets:
+  - addresses:
+      - ip: 192.168.5.2 # colima VM's route back to the host machine running weaver
+    ports:
+      - name: otlp-grpc
+        port: 4317
+        protocol: TCP
