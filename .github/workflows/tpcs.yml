@@ -115,6 +115,9 @@ jobs:
           from pathlib import Path
           p = json.loads(Path('receipts/tpcs-ci/plan.json').read_text())
           assert p['candidate_count'] == 3
+          assert len(p['inputs']) == 3
+          assert len(p['input_digest']) == 64
+          assert len(p['subjects']) == 1
           assert set(p['frontier']) == {'runtime', 'evidence'}
           assert p['selected'] in p['frontier']
           assert p['selection_reversible'] is True
@@ -128,14 +131,13 @@ jobs:
           SUBJECT_SHA: ${{ steps.subject.outputs.sha }}
         run: |
           set -euo pipefail
-          PLAN_SHA="$(python3 -c 'import json; print(json.load(open("receipts/tpcs-ci/plan.json"))["sha256"])')"
           python3 scripts/tpcs_pipeline.py \
             --subject "${SUBJECT_SHA}" \
             --work-id tpcs-exact-head-court \
             --acceptance "python3 -m unittest tests.test_tpcs_pipeline -v" \
             --authority CONSTRUCT \
             --acceptance-passed \
-            --previous-receipt "${PLAN_SHA}" \
+            --from-plan-receipt receipts/tpcs-ci/plan.json \
             --receipt receipts/tpcs-ci/receipt.json
           python3 - <<'PY'
           import json
@@ -149,6 +151,10 @@ jobs:
           assert receipt['replay_match'] is True
           assert receipt['zero_unreceipted_actuation'] is True
           assert receipt['previous_receipt'] == plan['sha256']
+          assert receipt['plan_digest'] == plan['sha256']
+          assert receipt['plan_input_digest'] == plan['input_digest']
+          assert receipt['frontier_digest'] == plan['frontier_digest']
+          assert receipt['schedule_digest'] == plan['schedule_digest']
           assert flow['little_law_reconstructed_wip'] == flow['wip_items']
           PY
 
