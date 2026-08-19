@@ -69,11 +69,9 @@ class GcpExactContractTests(unittest.TestCase):
 
     def test_non_exact_subject_sha_is_refused(self) -> None:
         text = CATALOG.read_text(encoding="utf-8")
-        text = text.replace(
-            'sha = "4c8761273654aded3dc2e000e6246240671c794e"',
-            'sha = "main"',
-            1,
-        )
+        exact_sha = 'sha = "2476aa978e54fa7cfa3f07167e0e95fc71209bd3"'
+        self.assertIn(exact_sha, text)
+        text = text.replace(exact_sha, 'sha = "main"', 1)
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "invalid.toml"
             path.write_text(text, encoding="utf-8")
