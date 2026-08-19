@@ -29,3 +29,7 @@ __pycache__/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 book/
+
+# ggen local run artifacts -- signing keys must never be committed
+.ggen/
+.ggen-v2/
