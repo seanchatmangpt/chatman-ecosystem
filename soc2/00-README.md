@@ -10,7 +10,7 @@ rendered auditor opinion.
 
 ## Readiness at a glance
 
-- **Control coverage:** 20 / 28 criteria addressed, 0 tested, 0 open exceptions.
+- **Control coverage:** 20 / 28 criteria addressed, 4 tested, 10 open exceptions.
 - **Engagement progress:** 0 / 10 phases have a recorded status.
 
 
