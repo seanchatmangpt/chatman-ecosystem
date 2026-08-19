@@ -1,14 +1,13 @@
 id = "receipt:dyson-sphere-book"
 subject = "manuscript-sha256:90511084ba08edd34d133945728cd9f12d7697c59caaa12d989126c8ba076a4c"
-base_commit = "91d8ddc26da04448dbd0c4e11d70c504c6b6dd9e"
 actor = "github-actions"
-authority = "explicit_user_request:write all md files for the book and commit the pr"
-intention = "manufacture the complete How to Build a Dyson Sphere with the Chatman Ecosystem mdBook manuscript"
+authority = "persist_control_plane"
+intention = "manufacture and persist the complete How to Build a Dyson Sphere with the Chatman Ecosystem mdBook manuscript"
 observed = [
-    "repository doctrine and exact base commit",
+    "repository doctrine and exact base commit 91d8ddc26da04448dbd0c4e11d70c504c6b6dd9e",
     "existing nested-book convention under docs",
     "admitted 27-part, 104-chapter outline",
-    "initial generated head contained Python escape corruption in LaTeX",
+    "initial generated head contained Python escape corruption in LaTeX and was treated as BUILD_BROKEN",
 ]
 executed = [
     "repaired the canonical generator to preserve LaTeX backslashes",
@@ -36,12 +35,12 @@ verified = [
 excluded = [
     "Dyson-sphere physical feasibility is not promoted to ALIVE by prose",
     "root release Crown is not asserted by this documentation change",
-    "mdBook executable build remains a separate repository-toolchain gate",
+    "hosted exact-head execution evidence is evaluated independently of this source receipt",
 ]
 replay = [
     "python3 scripts/generate_dyson_sphere_book.py",
 ]
-standing_before = "BUILD_BROKEN"
+standing_before = "CANDIDATE"
 standing_after = "PARTIAL_ALIVE"
 timestamp = "2026-08-19T19:51:46.089511+00:00"
-digest = "sha256:90511084ba08edd34d133945728cd9f12d7697c59caaa12d989126c8ba076a4c"
+digest = ""
