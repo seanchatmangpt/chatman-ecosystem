@@ -1,98 +1,38 @@
-@prefix tpcs: <https://chatman.ai/ontology/tpcs#> .
+@prefix tpcsf: <https://chatman.ai/ontology/tpcs-federation#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-tpcs:WorkItem a prov:Entity ;
-  skos:prefLabel "TPCS work item" .
+<urn:chatman-ecosystem:tcps-federation>
+    a prov:Entity ;
+    dcterms:title "TCPS canonical factory federation" ;
+    dcterms:description "Composition-only binding from the Chatman Ecosystem to the canonical Toyota Code Production System factory. This graph confers no implementation or actuation authority." ;
+    tpcsf:canonicalRepo "seanchatmangpt/tcps" ;
+    tpcsf:canonicalPullRequest "1" ;
+    tpcsf:canonicalRef "agent/tcps-v1979-reconstitution" ;
+    tpcsf:canonicalHead "b5ef58787487f03903a7f2ff4bbd345632d69247" ;
+    tpcsf:canonicalVersion "1979.1.1" ;
+    tpcsf:owningCourt "tcps-ci" ;
+    tpcsf:implementationAuthority false ;
+    tpcsf:actuationAuthority false ;
+    tpcsf:acceptanceMutationAuthority false ;
+    tpcsf:wipMutationAuthority false ;
+    tpcsf:zeroUnreceiptedActuation true ;
+    tpcsf:requiresRuntimeReceipt true ;
+    tpcsf:requiresProjectionReceipt true .
 
-tpcs:ProductionCandidate a prov:Entity ;
-  skos:prefLabel "Reversible production candidate" .
+<urn:chatman-ecosystem:tcps-authority-ceiling>
+    a odrl:Policy ;
+    dcterms:title "TCPS federation authority ceiling" ;
+    dcterms:description "The ecosystem composition root may observe, bind, verify, and report canonical TCPS evidence. It may not implement the factory, mutate its acceptance or WIP law, or actuate production on its behalf." .
 
-tpcs:ParetoFrontier a prov:Entity ;
-  skos:prefLabel "DfCM lawful production frontier" .
+<urn:chatman-ecosystem:tcps-runtime-evidence>
+    a prov:Entity ;
+    skos:prefLabel "Exact-head TCPS runtime verifier receipt"@en ;
+    tpcsf:expectedArtifact "tcps-runtime-b5ef58787487f03903a7f2ff4bbd345632d69247" .
 
-tpcs:KanbanToken a prov:Entity ;
-  skos:prefLabel "Pull authorization token" .
-
-tpcs:AndonSignal a prov:Entity ;
-  skos:prefLabel "Stop-the-line signal" .
-
-tpcs:KaizenProposal a prov:Entity ;
-  skos:prefLabel "Reversible improvement proposal" .
-
-tpcs:ProductionReceipt a prov:Entity ;
-  skos:prefLabel "Replay-bound production receipt" .
-
-tpcs:ProductionControlPlane a prov:SoftwareAgent ;
-  tpcs:mode "pull" ;
-  tpcs:zeroUnreceiptedActuation true ;
-  tpcs:plannerActuationAuthority false ;
-  tpcs:acceptanceMutationAuthority false ;
-  tpcs:generatedProjectionAuthority false ;
-  tpcs:irreversibleSelections 0 .
-
-tpcs:SELECT a odrl:Action ;
-  tpcs:authorityCeiling "reversible-selection" .
-
-tpcs:CONSTRUCT a odrl:Action ;
-  tpcs:requiresAdmission true .
-
-tpcs:DO a odrl:Action ;
-  tpcs:requiresReceipt true .
-
-tpcs:subjectDigest
-  a sh:PropertyShape ;
-  sh:datatype xsd:string ;
-  sh:minCount 1 ;
-  sh:maxCount 1 .
-
-tpcs:configDigest
-  a sh:PropertyShape ;
-  sh:datatype xsd:string ;
-  sh:minCount 1 ;
-  sh:maxCount 1 .
-
-tpcs:workDigest
-  a sh:PropertyShape ;
-  sh:datatype xsd:string ;
-  sh:minCount 1 ;
-  sh:maxCount 1 .
-
-tpcs:inputDigest
-  a sh:PropertyShape ;
-  sh:datatype xsd:string ;
-  sh:minCount 1 ;
-  sh:maxCount 1 .
-
-tpcs:planDigest
-  a sh:PropertyShape ;
-  sh:datatype xsd:string ;
-  sh:minCount 1 ;
-  sh:maxCount 1 .
-
-tpcs:frontierDigest
-  a sh:PropertyShape ;
-  sh:datatype xsd:string ;
-  sh:minCount 1 ;
-  sh:maxCount 1 .
-
-tpcs:scheduleDigest
-  a sh:PropertyShape ;
-  sh:datatype xsd:string ;
-  sh:minCount 1 ;
-  sh:maxCount 1 .
-
-tpcs:ProductionReceiptShape
-  a sh:NodeShape ;
-  sh:targetClass tpcs:ProductionReceipt ;
-  sh:property
-    tpcs:subjectDigest,
-    tpcs:configDigest,
-    tpcs:workDigest,
-    tpcs:inputDigest,
-    tpcs:planDigest,
-    tpcs:frontierDigest,
-    tpcs:scheduleDigest .
+<urn:chatman-ecosystem:tcps-projection-evidence>
+    a prov:Entity ;
+    skos:prefLabel "Exact-head TCPS ggen projection receipt"@en ;
+    tpcsf:expectedArtifact "tcps-projection-b5ef58787487f03903a7f2ff4bbd345632d69247" .
