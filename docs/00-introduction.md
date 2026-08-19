@@ -1,9 +1,12 @@
 # The Chatman Ecosystem
 
+> **Current operational snapshot:** `v26.8.18` — `PARTIAL_ALIVE`  
 > **Constitutional specification:** `FROZEN`  
-> **v26.9.1 release standing:** `PARTIAL_ALIVE` until the required exact-subject crown receipts exist.
+> **Next composition crown:** `v26.9.1` — remains `PARTIAL_ALIVE` until required exact-subject crown receipts exist.
 
 The Chatman Ecosystem is a constitutional engineering system for turning observations into admitted meaning, admitted meaning into lawful candidates, lawful candidates into receipted consequences, and solved instances into reusable classes.
+
+The current operational review is [`v26.8.18-release.md`](v26.8.18-release.md). The long-form release theorem remains intentionally scoped to `v26.9.1`; these are different admitted subjects rather than competing version labels.
 
 Its shortest governing equation is:
 
@@ -65,6 +68,14 @@ flowchart LR
     OBS --> O2["O' — next observation"]
 ```
 
+## v26.8.18 operational realization
+
+The constitutional calculus is no longer documented only as a Rust control-plane abstraction. The reviewed 2026-08-18 tree also contains a live-tested local Kubernetes platform surface with admission policy, identity/RBAC, mTLS/network segmentation, managed service shapes, observability, ggen manufacture, bounded Castle execution, evidence-led compliance readiness, and disaster-recovery materialization.
+
+That operational realization does not change the constitution. It gives the constitution additional executed subjects against which it can be falsified.
+
+The correct standing remains `PARTIAL_ALIVE` at ecosystem scope because component evidence is not uniform and the repo-level ggen rail is explicitly `PARTIAL_ALIVE`.
+
 ## What the ecosystem is trying to remove
 
 The target is not merely labor cost or task latency. The target is **manufactured complexity**: work that exists because representations drift, authority must be rediscovered, evidence must be reconstructed, coordination creates queues, solved problems are repeatedly rediscovered, or systems manufacture compensatory work around their own defects.
@@ -104,17 +115,25 @@ The book develops four independent closure obligations:
 
 The last condition is critical. Replaying the original instance proves reproduction. Solving a distinct member of the same class without rediscovery proves transfer. Only that stronger result establishes class closure.
 
-## The release question
+## Release subjects
 
-This book deliberately distinguishes architecture from execution. Documentation, generated code, a theorem, a configured workflow, and a green-looking repository are not interchangeable forms of evidence.
+Documentation must name which release subject it is discussing.
 
-For v26.9.1 the decisive question is:
+### v26.8.18
+
+`v26.8.18` is the current operational/documentation snapshot. It records what is implemented and what remains bounded on the reviewed 2026-08-18 repository subject. Its decisive question is whether each claimed mechanism has exact observed evidence and an honest ceiling.
+
+### v26.9.1
+
+`v26.9.1` is the next dependency-closed ecosystem composition crown. Its manifest and long-form theorem remain future-scoped and are not renamed to match the current date.
+
+For that crown the decisive question remains:
 
 \[
 \boxed{\textbf{Where is the receipt?}}
 \]
 
-The release is `ALIVE` only when every required crown leaf terminates in independently replayable evidence against the exact admitted subject. Until then, the correct standing remains `PARTIAL_ALIVE`.
+The release is `ALIVE` only when every required crown leaf terminates in independently replayable evidence against the exact admitted subject. Until then, the correct standing remains below `ALIVE`.
 
 ## Substrate independence
 

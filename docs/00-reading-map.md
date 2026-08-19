@@ -1,20 +1,85 @@
-# How to Read This Book
+# How to Read This Documentation
 
-The Chatman Ecosystem is easiest to understand as a sequence of type boundaries rather than as a list of repositories. The book therefore moves from constitutional primitives, through semantic manufacture and evidentiary closure, into complexity removal, authority, process, concrete realizations, and finally substrate-independent synthesis.
+The repository contains **three different kinds of reading** that should not be collapsed:
+
+1. current v26.8.18 operational documentation;
+2. long-form constitutional/research doctrine;
+3. future v26.9.1 release/proof doctrine.
+
+Start with [`DOCUMENTATION-INVENTORY.md`](DOCUMENTATION-INVENTORY.md) when you need to know which file owns a fact and whether it may be rewritten.
 
 ## One map
 
 ```mermaid
 flowchart TB
+    CUR["v26.8.18 current operations"] --> A["Architecture / Operations"]
+    A --> API["API / Observability / OCEL / ggen / Security / DR"]
+    API --> RUN["Troubleshooting / Development / Release"]
+
     P1["I — Constitution"] --> P2["II — Semantic Manufacture"]
     P2 --> P3["III — Closure & Evidence"]
     P3 --> P4["IV — Manufactured Complexity"]
     P4 --> P5["V — Construction, Authority & Process"]
     P5 --> P6["VI — Ecosystem Realizations"]
-    P6 --> P7["VII — Substrate Independence"]
-    P3 --> REL["v26.9.1 Release Crown"]
-    P7 --> CIV["Civilization-Scale Synthesis"]
+    P6 --> P7["VII+ — Factory / Research / Post-AGI"]
+    P3 --> REL["v26.9.1 Future Crown"]
+
+    CUR -. evidence informs but does not rewrite .-> REL
 ```
+
+## Fastest current-operator path
+
+Read, in order:
+
+1. [`v26.8.18-release.md`](v26.8.18-release.md)
+2. [`ARCHITECTURE.md`](ARCHITECTURE.md)
+3. [`OPERATIONS.md`](OPERATIONS.md)
+4. [`API-SURFACES.md`](API-SURFACES.md)
+5. the subsystem you operate:
+   - [`OBSERVABILITY.md`](OBSERVABILITY.md)
+   - [`OCEL-PROCESS-EVIDENCE.md`](OCEL-PROCESS-EVIDENCE.md)
+   - [`GGEN-SERVICE.md`](GGEN-SERVICE.md)
+   - [`SECURITY-MODEL.md`](SECURITY-MODEL.md)
+   - [`RELIABILITY-AND-DR.md`](RELIABILITY-AND-DR.md)
+6. [`TROUBLESHOOTING.md`](TROUBLESHOOTING.md)
+
+## Implementer path
+
+Read:
+
+- [`DEVELOPMENT.md`](DEVELOPMENT.md)
+- [`DOCS-MAINTENANCE.md`](DOCS-MAINTENANCE.md) when docs/projections change
+- numbered chapters **3–17** for admission/manufacture/receipt mechanics
+- numbered chapters **35–43** for DfCM, authority, security, process and concrete repository roles
+
+## Release-verification path
+
+Read:
+
+1. [`RELEASE-PROCESS.md`](RELEASE-PROCESS.md)
+2. chapters **18–28**
+3. [`v26.9.1/00_CANONICAL_INDEX.md`](v26.9.1/00_CANONICAL_INDEX.md)
+
+This is the shortest route to the receipt DAG, standing algebra, Definition of Done, and future Crown obligations.
+
+## Semantic-manufacturing path
+
+Read chapters **12–16**, then **40–42**, then [`GGEN-SERVICE.md`](GGEN-SERVICE.md). This connects the general semantic-manufacturing calculus to the currently deployed ggen bridge without treating implementation as the definition of the calculus.
+
+## Process-intelligence path
+
+Read:
+
+1. chapter **39** (`Process Is State`);
+2. [`OBSERVABILITY.md`](OBSERVABILITY.md);
+3. [`OCEL-PROCESS-EVIDENCE.md`](OCEL-PROCESS-EVIDENCE.md);
+4. handbook chapter 31 (`OCEL as Executable Memory`).
+
+This makes the current OTel -> OCEL path concrete while preserving the distinction between process evidence and actuation receipts.
+
+## Post-AGI handbook path
+
+The 65-chapter nested handbook has its own exhaustive reading order at [`post-agi-platform-handbook/SUMMARY.md`](post-agi-platform-handbook/SUMMARY.md). Treat it as a complete sub-book, not a replacement for the current operator docs.
 
 ## The notation that must not collapse
 
@@ -22,105 +87,51 @@ flowchart TB
 |---|---|---|
 | \(O\) | observed candidate reality | admitted truth |
 | \(O^*\) | admitted semantic state | raw observation |
-| \(\Gamma\) | admitted execution context | observation alone |
 | \(A_c\) | constructed candidate | consequential action |
 | \(E\) | evidence | authority/admission |
 | \(A_c^*\) | admitted candidate for consequence | consequence itself |
 | \(A\) | consequential artifact/action/state | candidate manufacture |
 | \(R_d\) | derivation receipt | actuation receipt |
-| \(R_a\) | actuation receipt | proof or log alone |
-| \(S_{[x]}\) | reusable solution structure for a solved class | one replayed instance |
+| \(R_a\) | actuation receipt | proof/log alone |
+| \(S_{[x]}\) | reusable solution structure | one replayed instance |
 
-The central non-collapse sequence is:
+```text
+Observed != Admitted != Executed != Verified != Inferred
+Proof != Authority
+CONSTRUCT != DO
+Derivation receipt != Actuation receipt
+```
 
-\[
-\boxed{
-O\not\equiv O^*\not\equiv A_c\not\equiv A_c^*\not\equiv A\not\equiv R_a
-}
-\]
+## Evidence ladder
 
-Two orthogonal distinctions recur throughout the book:
+A repository may contain a workflow without that workflow executing. A workflow may execute without satisfying acceptance. A generated artifact may exist without class closure.
 
-\[
-\boxed{E\neq Admission}
-\qquad
-\boxed{R_d\neq R_a}
-\]
+```text
+Executed < Verified < InstanceClosed < ClassClosed
+```
 
-## Evidence vocabulary
-
-The book uses evidence terms literally:
-
-\[
-\boxed{
-Observed\neq Admitted\neq Executed\neq Verified\neq Inferred
-}
-\]
-
-A repository may contain a workflow without that workflow having executed. A workflow may execute without satisfying its acceptance relation. A proof may verify a proposition without granting authority. A generated artifact may exist without its semantic class being closed. A successful original replay does not establish transfer to a distinct lawful instance.
-
-The evidentiary ladder is:
-
-\[
-\boxed{Executed<Verified<InstanceClosed<ClassClosed}
-\]
-
-## Five useful reading paths
-
-### 1. First pass
-
-Read chapters **1, 2, 5, 9, 12, 18, 24, 29, 33, 43, 44, and 50**. This gives the constitutional calculus, non-collapse law, BRCE, semantic manufacture, closure model, evidence semantics, manufactured-complexity thesis, Little's Law decomposition, repository ontology, substrate continuity, and final synthesis.
-
-### 2. Implementer path
-
-Read **3–17**, then **35–43**. The first range defines observation/admission/manufacture/receipt mechanics. The second range maps those mechanics into reversible construction, authority, security, process, ggen, marketplace reuse, legacy admission, and repository roles.
-
-### 3. Release-verification path
-
-Read **18–28** and the compact [`v26.9.1 canonical index`](v26.9.1/00_CANONICAL_INDEX.md). This is the shortest path to the crown receipt DAG, standing algebra, Definition of Done, and anti-WIP execution discipline.
-
-### 4. Semantic-manufacturing path
-
-Read **12–16**, then **40–42**. This path develops one admitted semantic source into heterogeneous lawful projections while preserving the rule that representations cannot canonize themselves.
-
-### 5. Complexity and civilization path
-
-Read **29–34**, then **44–50**. This connects manufactured complexity, constitutional compression, arrival-space engineering, information theory, historical substrate continuity, post-AGI execution, class memory, and civilization-scale accumulation.
+Use the tagged standing states literally: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, and typed `REFUSED`.
 
 ## Repositories are coordinates, not the constitution
 
-The ecosystem may be realized by ggen, ggen-legacy, DfCM, GymAct, AutoFDE, POWL/wasm4pm, mfact, gdmcp, RDF stores, OCEL, receipts, and marketplace packs. Those names are useful implementation coordinates. They are not the mathematical primitives.
+Implementations such as ggen, ggen-legacy, DfCM, GymAct, AutoFDE, wasm4pm, mfact, OCEL stores and marketplace packs are replaceable role implementations. For any component ask:
 
-For any component, ask:
+> Which object, morphism, admission boundary, verifier, projection, receipt, replay function, or closure obligation does it implement?
 
-> **Which object, morphism, boundary, verifier, projection, receipt, replay function, or closure obligation does it implement?**
+## Specification versus current state
 
-If that question has no precise answer, the component may still be useful, but it is not a reason to mutate the constitutional calculus.
+The v26.9.1 architecture/mathematics can be frozen while the v26.8.18 implementation remains `PARTIAL_ALIVE`.
 
-## Specification versus release standing
+```text
+SpecificationFrozen != ReleaseALIVE
+```
 
-The architecture and mathematics described by the v26.9.1 book are frozen. That does not promote the implementation release.
+Do not rewrite the frozen proof corpus merely because a current implementation edge changes. Conversely, do not use the future proof corpus as evidence that a current runtime edge executed.
 
-\[
-\boxed{SpecificationFrozen\neq ReleaseALIVE}
-\]
+## Recurring test
 
-The execution loop after specification freeze is:
+At every layer ask:
 
-\[
-\boxed{
-Inspect\rightarrow LocateReceipt\rightarrow ExecuteMissingBoundary\rightarrow Repair\rightarrow Replay\rightarrow ClassClose
-}
-\]
+> **Where is the exact receipt?**
 
-Architectural ideation reopens only when execution finds a constitutional falsifier. Everything else is evidence acquisition, missing implementation, implementation repair, or an external block.
-
-## The recurring test
-
-At every layer, return to one question:
-
-\[
-\boxed{\textbf{Where is the receipt?}}
-\]
-
-That question prevents a diagram, generated file, proof, configured workflow, branch, or assertion from silently acquiring execution standing.
+Then ask whether that receipt is derivation or actuation, whether it binds the exact subject, and whether replay/postcondition evidence exists for the claim being made.

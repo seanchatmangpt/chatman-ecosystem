@@ -1,12 +1,26 @@
 # Summary
 
 [The Chatman Ecosystem](00-introduction.md)
-[How to Read This Book](00-reading-map.md)
+[How to Read This Documentation](00-reading-map.md)
+[Documentation Index](README.md)
 
-# Constitutional Root
+# Current v26.8.18 Operations
 
+- [v26.8.18 Release Snapshot](v26.8.18-release.md)
+- [Documentation Inventory](DOCUMENTATION-INVENTORY.md)
+- [Versioning and Currentness](VERSIONING.md)
 - [Architecture](ARCHITECTURE.md)
 - [Operations and Admission](OPERATIONS.md)
+- [API and Capability Surfaces](API-SURFACES.md)
+- [Observability](OBSERVABILITY.md)
+- [OCEL Process Evidence](OCEL-PROCESS-EVIDENCE.md)
+- [ggen Service Contract](GGEN-SERVICE.md)
+- [Security Model](SECURITY-MODEL.md)
+- [Reliability and Disaster Recovery](RELIABILITY-AND-DR.md)
+- [Troubleshooting](TROUBLESHOOTING.md)
+- [Development and Verification](DEVELOPMENT.md)
+- [Release Process](RELEASE-PROCESS.md)
+- [Documentation Maintenance](DOCS-MAINTENANCE.md)
 
 # Part I — Constitution and Type Boundaries
 
@@ -167,51 +181,61 @@
 - [23. Actuating Computational Worlds](post-agi-platform-handbook/part-06-operational-closure/23-actuation.md)
 - [24. Air-Gapped Construction](post-agi-platform-handbook/part-06-operational-closure/24-air-gapped-construction.md)
 
-## Evidentiary and Replay Closure
+## Evidentiary Closure
 - [25. Receipt(A)](post-agi-platform-handbook/part-07-evidentiary-closure/25-receipts.md)
 - [26. BLAKE3 and Content Identity](post-agi-platform-handbook/part-07-evidentiary-closure/26-blake3.md)
 - [27. Post-Quantum Receipt Chains](post-agi-platform-handbook/part-07-evidentiary-closure/27-pqc.md)
 - [28. ALIVE Is an Epistemic Type](post-agi-platform-handbook/part-07-evidentiary-closure/28-alive.md)
 - [29. Receipt DAGs and Evidence Graphs](post-agi-platform-handbook/part-07-evidentiary-closure/29-receipt-dags.md)
+
+## Replay Closure
 - [30. Replay as a Constitutional Primitive](post-agi-platform-handbook/part-08-replay-closure/30-replay.md)
 - [31. OCEL as Executable Memory](post-agi-platform-handbook/part-08-replay-closure/31-ocel-memory.md)
 - [32. Capsule ALIVE](post-agi-platform-handbook/part-08-replay-closure/32-capsule-alive.md)
 - [33. Reconstitution from Evidence](post-agi-platform-handbook/part-08-replay-closure/33-reconstitution.md)
 
-## Interface and Infrastructure Closure
+## Interface Closure
 - [34. One Capability, Many Projections](post-agi-platform-handbook/part-09-interface-closure/34-many-projections.md)
 - [35. MCP as a Capability Surface](post-agi-platform-handbook/part-09-interface-closure/35-mcp.md)
 - [36. A2A and Inter-Intelligence Delegation](post-agi-platform-handbook/part-09-interface-closure/36-a2a.md)
 - [37. Developer Portals After Developers](post-agi-platform-handbook/part-09-interface-closure/37-portals.md)
+
+## Infrastructure Closure
 - [38. Cloud as Construction Geometry](post-agi-platform-handbook/part-10-infrastructure-closure/38-cloud-geometry.md)
 - [39. Kubernetes Is a Target](post-agi-platform-handbook/part-10-infrastructure-closure/39-kubernetes.md)
 - [40. Terraform Is a Target](post-agi-platform-handbook/part-10-infrastructure-closure/40-terraform.md)
 - [41. Beyond Cloud](post-agi-platform-handbook/part-10-infrastructure-closure/41-beyond-cloud.md)
 
-## Software and Economic Closure
+## Software Closure
 - [42. Source Code as a Projection](post-agi-platform-handbook/part-11-software-closure/42-source-projection.md)
 - [43. CI/CD as Derived Execution](post-agi-platform-handbook/part-11-software-closure/43-ci-cd.md)
 - [44. GitOps to GraphOps](post-agi-platform-handbook/part-11-software-closure/44-graphops.md)
 - [45. WIP as a Topological Defect](post-agi-platform-handbook/part-11-software-closure/45-wip.md)
+
+## Economic Closure
 - [46. FinOps as a Manufacturing Constraint](post-agi-platform-handbook/part-12-economic-closure/46-finops.md)
 - [47. Capability Markets](post-agi-platform-handbook/part-12-economic-closure/47-capability-markets.md)
 - [48. Post-Labor Software Economics](post-agi-platform-handbook/part-12-economic-closure/48-post-labor-economics.md)
 
-## Security and Class Closure
+## Security Closure
 - [49. Security Is Not a Chapter](post-agi-platform-handbook/part-13-security-closure/49-security-everywhere.md)
 - [50. Goal-First Cyber Defense](post-agi-platform-handbook/part-13-security-closure/50-goal-first-defense.md)
 - [51. CONSTRUCT for Adversarial Isolation](post-agi-platform-handbook/part-13-security-closure/51-construct-isolation.md)
+
+## Class Closure
 - [52. From Instance Solution to Class Solution](post-agi-platform-handbook/part-14-class-closure/52-class-solution.md)
 - [53. Civilization Memory](post-agi-platform-handbook/part-14-class-closure/53-civilization-memory.md)
 - [54. The Marketplace as Executable Knowledge](post-agi-platform-handbook/part-14-class-closure/54-marketplace.md)
 - [55. The End of Repeated Engineering](post-agi-platform-handbook/part-14-class-closure/55-end-of-repeated-engineering.md)
 
-## Civilization Closure and Complete Calculus
+## Civilization Closure
 - [56. Intelligence as a Manufacturing Civilization](post-agi-platform-handbook/part-15-civilization-closure/56-manufacturing-civilization.md)
 - [57. Human Organizations as Legacy Execution Engines](post-agi-platform-handbook/part-15-civilization-closure/57-human-organizations.md)
 - [58. Post-AGI Governance](post-agi-platform-handbook/part-15-civilization-closure/58-governance.md)
 - [59. The Self-Reconstituting Civilization](post-agi-platform-handbook/part-15-civilization-closure/59-self-reconstituting-civilization.md)
 - [60. The End of Software Engineering](post-agi-platform-handbook/part-15-civilization-closure/60-end-of-software-engineering.md)
+
+## Complete Calculus
 - [61. The Post-AGI Execution Equation](post-agi-platform-handbook/part-16-complete-calculus/61-execution-equation.md)
 - [62. The Canonical Correspondence](post-agi-platform-handbook/part-16-complete-calculus/62-correspondence.md)
 - [63. The State Algebra](post-agi-platform-handbook/part-16-complete-calculus/63-state-algebra.md)
@@ -219,72 +243,20 @@
 - [65. Reality as the Runtime](post-agi-platform-handbook/part-16-complete-calculus/65-reality-runtime.md)
 
 ## Handbook Appendices
-- [A. Formal Notation](post-agi-platform-handbook/appendices/a-formal-notation.md)
-- [B. Public Ontology Registry](post-agi-platform-handbook/appendices/b-public-ontology-registry.md)
-- [C. ggen Pack Anatomy](post-agi-platform-handbook/appendices/c-ggen-pack-anatomy.md)
-- [D. O*.toml Reference](post-agi-platform-handbook/appendices/d-o-star-reference.md)
-- [E. BRCE Receipt Schema](post-agi-platform-handbook/appendices/e-brce-receipt-schema.md)
-- [F. OCEL 2.0 Process-State Patterns](post-agi-platform-handbook/appendices/f-ocel-patterns.md)
-- [G. GymAct World Specification](post-agi-platform-handbook/appendices/g-gymact-world-specification.md)
-- [H. AutoFDE Reality Acquisition Protocol](post-agi-platform-handbook/appendices/h-autofde-protocol.md)
-- [I. Lean Admission Patterns](post-agi-platform-handbook/appendices/i-lean-admission-patterns.md)
-- [J. mfact Certification Patterns](post-agi-platform-handbook/appendices/j-mfact-certification-patterns.md)
-- [K. CLI/API/MCP/A2A Projection Matrix](post-agi-platform-handbook/appendices/k-interface-projection-matrix.md)
-- [L. Exact-Head GitHub Publication Protocol](post-agi-platform-handbook/appendices/l-github-publication-protocol.md)
-- [M. Capsule ALIVE Specification](post-agi-platform-handbook/appendices/m-capsule-alive.md)
-- [N. Typed Refusal Taxonomy](post-agi-platform-handbook/appendices/n-refusal-taxonomy.md)
-- [O. Reconstitution Checklist](post-agi-platform-handbook/appendices/o-reconstitution-checklist.md)
-- [P. Civilization Memory Algebra](post-agi-platform-handbook/appendices/p-civilization-memory-algebra.md)
-- [Epilogue: Nothing Should Have to Be Invented Twice](post-agi-platform-handbook/epilogue.md)
-
-# Appendix — v26.9.1 Formal Corpus
-
-- [01. Constitutional Thesis](v26.9.1/01_CONSTITUTIONAL_THESIS.md)
-- [02. Primitive Types and Non-Collapse](v26.9.1/02_PRIMITIVE_TYPES_AND_NON_COLLAPSE.md)
-- [03. Epistemic Admission](v26.9.1/03_EPISTEMIC_ADMISSION.md)
-- [04. Context Fiber Γ/Ξ](v26.9.1/04_CONTEXT_FIBER_GAMMA_XI.md)
-- [05. Candidate Manufacture](v26.9.1/05_CANDIDATE_MANUFACTURE.md)
-- [06. Evidence, Proof, and Admission](v26.9.1/06_EVIDENCE_PROOF_AND_ADMISSION.md)
-- [07. Operational Admission](v26.9.1/07_OPERATIONAL_ADMISSION.md)
-- [08. BRCE](v26.9.1/08_BRCE.md)
-- [09. Total Constitutional Manufacture](v26.9.1/09_TOTAL_CONSTITUTIONAL_MANUFACTURE.md)
-- [10. Receipt Bifurcation](v26.9.1/10_RECEIPT_BIFURCATION.md)
-- [11. Recursive Observation](v26.9.1/11_RECURSIVE_OBSERVATION.md)
-- [12. Mandatory Lawful Factorization](v26.9.1/12_MANDATORY_LAWFUL_FACTORIZATION.md)
-- [13. Constitutional Category](v26.9.1/13_CONSTITUTIONAL_CATEGORY.md)
-- [14. Semantic State](v26.9.1/14_SEMANTIC_STATE.md)
-- [15. Semantic Projection Calculus](v26.9.1/15_SEMANTIC_PROJECTION_CALCULUS.md)
-- [16. Semantic Manufacturing](v26.9.1/16_SEMANTIC_MANUFACTURING.md)
-- [17. Semantic CI](v26.9.1/17_SEMANTIC_CI.md)
-- [18. Reverse Semantic Mutation](v26.9.1/18_REVERSE_SEMANTIC_MUTATION.md)
-- [19. Representational WIP](v26.9.1/19_REPRESENTATIONAL_WIP.md)
-- [20. Four Closure Obligations](v26.9.1/20_FOUR_CLOSURE_OBLIGATIONS.md)
-- [21. Epistemic Closure Crown](v26.9.1/21_EPISTEMIC_CLOSURE_CROWN.md)
-- [22. Representational Closure Crown](v26.9.1/22_REPRESENTATIONAL_CLOSURE_CROWN.md)
-- [23. Operational Closure Crown](v26.9.1/23_OPERATIONAL_CLOSURE_CROWN.md)
-- [24. Class Closure Crown](v26.9.1/24_CLASS_CLOSURE_CROWN.md)
-- [25. Class Quotient and Equivalence](v26.9.1/25_CLASS_QUOTIENT_AND_EQUIVALENCE.md)
-- [26. Reproduction Transfer and Class Closure](v26.9.1/26_REPRODUCTION_TRANSFER_CLASS_CLOSURE.md)
-- [27. Civilization Accumulator](v26.9.1/27_CIVILIZATION_ACCUMULATOR.md)
-- [28. Knowledge Applicability Authority](v26.9.1/28_KNOWLEDGE_APPLICABILITY_AUTHORITY.md)
-- [29. Contextual Standing](v26.9.1/29_CONTEXTUAL_STANDING.md)
-- [30. Standing Algebra](v26.9.1/30_STANDING_ALGEBRA.md)
-- [31. Definition of Done Lattice](v26.9.1/31_DEFINITION_OF_DONE_LATTICE.md)
-- [32. Release Theorem](v26.9.1/32_RELEASE_THEOREM.md)
-- [33. Crown Receipt Manifest](v26.9.1/33_CROWN_RECEIPT_MANIFEST.md)
-- [34. Epistemic Crown Execution Protocol](v26.9.1/34_EPISTEMIC_CROWN_EXECUTION_PROTOCOL.md)
-- [35. Representational Crown Execution Protocol](v26.9.1/35_REPRESENTATIONAL_CROWN_EXECUTION_PROTOCOL.md)
-- [36. Operational Crown Execution Protocol](v26.9.1/36_OPERATIONAL_CROWN_EXECUTION_PROTOCOL.md)
-- [37. Class Transfer Crown Execution Protocol](v26.9.1/37_CLASS_TRANSFER_CROWN_EXECUTION_PROTOCOL.md)
-- [38. Little's Law Work Generation](v26.9.1/38_LITTLES_LAW_WORK_GENERATION.md)
-- [39. Work Arrival Measure](v26.9.1/39_WORK_ARRIVAL_MEASURE.md)
-- [40. Information-Theoretic Post-AGI](v26.9.1/40_INFORMATION_THEORETIC_POST_AGI.md)
-- [41. Constitutional Compression](v26.9.1/41_CONSTITUTIONAL_COMPRESSION.md)
-- [42. DfCM Combinatorial Maximalism](v26.9.1/42_DFCM_COMBINATORIAL_MAXIMALISM.md)
-- [43. Work Necessity Test](v26.9.1/43_WORK_NECESSITY_TEST.md)
-- [44. Repository Governance and Anti-Sprawl](v26.9.1/44_REPOSITORY_GOVERNANCE_ANTI_SPRAWL.md)
-- [45. Component Role Calculus](v26.9.1/45_COMPONENT_ROLE_CALCULUS.md)
-- [46. Substrate Invariance](v26.9.1/46_SUBSTRATE_INVARIANCE.md)
-- [47. Falsification and Adversarial Research](v26.9.1/47_FALSIFICATION_ADVERSARIAL_RESEARCH.md)
-- [48. Post-AGI Swarm Execution Protocol](v26.9.1/48_POST_AGI_SWARM_EXECUTION_PROTOCOL.md)
-- [49. Maximum Compression Immutable Kernel](v26.9.1/49_MAXIMUM_COMPRESSION_IMMUTABLE_KERNEL.md)
+- [Appendix A — Formal Notation](post-agi-platform-handbook/appendices/a-formal-notation.md)
+- [Appendix B — Public Ontology Registry](post-agi-platform-handbook/appendices/b-public-ontology-registry.md)
+- [Appendix C — ggen Pack Anatomy](post-agi-platform-handbook/appendices/c-ggen-pack-anatomy.md)
+- [Appendix D — O*.toml Reference](post-agi-platform-handbook/appendices/d-o-star-reference.md)
+- [Appendix E — BRCE Receipt Schema](post-agi-platform-handbook/appendices/e-brce-receipt-schema.md)
+- [Appendix F — OCEL 2.0 Process-State Patterns](post-agi-platform-handbook/appendices/f-ocel-patterns.md)
+- [Appendix G — GymAct World Specification](post-agi-platform-handbook/appendices/g-gymact-world-specification.md)
+- [Appendix H — AutoFDE Reality Acquisition Protocol](post-agi-platform-handbook/appendices/h-autofde-protocol.md)
+- [Appendix I — Lean Admission Patterns](post-agi-platform-handbook/appendices/i-lean-admission-patterns.md)
+- [Appendix J — mfact Certification Patterns](post-agi-platform-handbook/appendices/j-mfact-certification-patterns.md)
+- [Appendix K — CLI/API/MCP/A2A Projection Matrix](post-agi-platform-handbook/appendices/k-interface-projection-matrix.md)
+- [Appendix L — Exact-Head GitHub Publication Protocol](post-agi-platform-handbook/appendices/l-github-publication-protocol.md)
+- [Appendix M — Capsule ALIVE Specification](post-agi-platform-handbook/appendices/m-capsule-alive.md)
+- [Appendix N — Typed Refusal Taxonomy](post-agi-platform-handbook/appendices/n-refusal-taxonomy.md)
+- [Appendix O — Reconstitution Checklist](post-agi-platform-handbook/appendices/o-reconstitution-checklist.md)
+- [Appendix P — Civilization Memory Algebra](post-agi-platform-handbook/appendices/p-civilization-memory-algebra.md)
+- [Epilogue — Nothing Should Have to Be Invented Twice](post-agi-platform-handbook/epilogue.md)
