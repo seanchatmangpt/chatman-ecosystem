@@ -107,6 +107,12 @@ path = "docs/post-agi-platform-handbook/README.md"
 canonical = false
 
 [[document]]
+id = "document:post-agi-marketplace-handbook"
+title = "The Post-AGI Marketplace Engineer's Handbook"
+path = "docs/post-agi-marketplace-handbook/README.md"
+canonical = false
+
+[[document]]
 id = "document:platform-engineers-handbook-ggen-packs"
 title = "The Platform Engineer's Handbook — ggen Pack"
 path = "docs/platform-engineers-handbook-ggen-packs.md"
