@@ -46,11 +46,38 @@ fn subject(root: &Path) -> String {
 }
 
 fn usage() -> &'static str {
-    "Chatman Ecosystem control plane\n\nUSAGE:\n  ecosystem catalog validate\n  ecosystem standing calculate\n  ecosystem receipt seal\n  ecosystem receipt verify-all\n  ecosystem projection render\n  ecosystem projection check\n  ecosystem architecture check\n  ecosystem storage verify\n  ecosystem mcp handle\n  ecosystem crown [--json|--verify]\n"
+    "Chatman Ecosystem control plane\n\nUSAGE:\n  ecosystem catalog validate\n  ecosystem capability <list|show|graph|surface|dfcm> ...\n  ecosystem standing calculate\n  ecosystem receipt seal\n  ecosystem receipt verify-all\n  ecosystem projection render\n  ecosystem projection check\n  ecosystem architecture check\n  ecosystem storage verify\n  ecosystem mcp handle\n  ecosystem crown [--json|--verify]\n"
+}
+
+fn capability_control(root: &Path, arguments: &[String]) -> Result<String, String> {
+    if arguments.is_empty() {
+        return Err("REFUSED:CAPABILITY_COMMAND_REQUIRED".to_owned());
+    }
+    let script = root.join("scripts/capability_control.py");
+    let output = Command::new("python3")
+        .arg(script)
+        .args(arguments)
+        .output()
+        .map_err(|error| format!("CAPABILITY_CONTROL_UNAVAILABLE:{error}"))?;
+    if output.status.success() {
+        String::from_utf8(output.stdout)
+            .map(|value| value.trim_end().to_owned())
+            .map_err(|error| error.to_string())
+    } else {
+        let stderr = String::from_utf8_lossy(&output.stderr).trim().to_owned();
+        Err(if stderr.is_empty() {
+            "REFUSED:CAPABILITY_CONTROL_FAILED".to_owned()
+        } else {
+            stderr
+        })
+    }
 }
 
 async fn execute(arguments: &[String]) -> Result<String, String> {
     let root = root()?;
+    if arguments.first().is_some_and(|area| area == "capability") {
+        return capability_control(&root, &arguments[1..]);
+    }
     match arguments {
         [command] if command == "--help" || command == "-h" => Ok(usage().to_owned()),
         [command] if command == "--version" || command == "-V" => {
