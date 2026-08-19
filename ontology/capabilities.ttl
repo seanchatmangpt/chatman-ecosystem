@@ -30,9 +30,30 @@ ce:API a ce:Interface ; skos:prefLabel "API" .
 ce:MCP a ce:Interface ; skos:prefLabel "MCP" .
 ce:A2A a ce:Interface ; skos:prefLabel "A2A" .
 
+# Decision-manufacturing identities are intentionally distinct. A planner can
+# manufacture a candidate policy; a role can constrain an agent; none implies an
+# authority grant.
+ce:Planner a owl:Class ; skos:definition "A mechanism that constructs candidate plans." .
+ce:Policy a owl:Class ; rdfs:subClassOf odrl:Policy ; skos:definition "A bounded decision rule/parameterization, not an authority grant." .
+ce:Role a owl:Class ; skos:definition "A semantic participation role, distinct from agent identity and authority." .
+ce:Agent a owl:Class ; rdfs:subClassOf prov:Agent ; skos:definition "An acting identity; existence does not imply authority." .
+ce:AuthorityGrant a owl:Class ; skos:definition "An exact scoped grant admitted independently from capability, planner, policy, role or agent identity." .
+
+ce:BrokeredConsequentialExecution a owl:Class ;
+    rdfs:subClassOf prov:Activity ;
+    skos:definition "The exclusive consequential DO transition: exact authority, broker admission, receipt and independent postcondition verification are required." .
+
+ce:CapabilityOwnership a owl:Class ;
+    skos:definition "Repository ownership of capability semantics; orchestration never transfers ownership implicitly." .
+
+ce:LiveAzureAuthorityFence a owl:Class ;
+    skos:definition "A fail-closed fence that remains BLOCKED until a named allowlisted live-Azure authority is explicitly admitted." .
+
 ce:capabilityClass a owl:ObjectProperty ; rdfs:domain ce:Capability ; rdfs:range ce:CapabilityClass .
 ce:interface a owl:ObjectProperty ; rdfs:domain ce:Capability ; rdfs:range ce:Interface .
 ce:dependsOn a owl:ObjectProperty ; rdfs:domain ce:Capability ; rdfs:range ce:Capability .
+ce:executionOwner a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:string .
+ce:sourceRepository a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:string .
 ce:requiredAuthority a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:string .
 ce:brokerRequired a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:boolean .
 ce:receiptRequired a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:boolean .
@@ -49,6 +70,7 @@ ce:AuthorityPolicy a odrl:Policy ;
 ce:CapabilityShape a sh:NodeShape ;
     sh:targetClass ce:Capability ;
     sh:property [ sh:path ce:capabilityClass ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path ce:executionOwner ; sh:minCount 1 ; sh:maxCount 1 ] ;
     sh:property [ sh:path ce:requiredAuthority ; sh:minCount 1 ; sh:maxCount 1 ] ;
     sh:property [ sh:path ce:interface ; sh:minCount 4 ] ;
     sh:property [ sh:path ce:standing ; sh:minCount 1 ; sh:maxCount 1 ] .
@@ -56,3 +78,6 @@ ce:CapabilityShape a sh:NodeShape ;
 ce:DoShape a sh:NodeShape ;
     sh:targetObjectsOf ce:capabilityClass ;
     dcterms:description "The executable catalog verifier supplies the conditional DO => brokerRequired && receiptRequired constraint; this ontology does not pretend SHACL alone has executed that admission." .
+
+ce:DecisionIdentityShape a sh:NodeShape ;
+    dcterms:description "Planner != Policy != Role != Agent != Authority is enforced by executable catalog/refusal courts; this shape records the public/custom semantic boundary without manufacturing equality or authority." .
