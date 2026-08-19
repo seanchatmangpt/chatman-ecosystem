@@ -1,7 +1,7 @@
-#[path = "../commerce.rs"]
-mod commerce;
 #[path = "../agent_lightning_service.rs"]
 mod agent_lightning_service;
+#[path = "../commerce.rs"]
+mod commerce;
 
 use agent_lightning_service::{Policy, REPOSITORY, SHA, verify_fixtures};
 use std::env;
