@@ -1,73 +1,199 @@
-# Operations and Admission
+# Operations and Admission — v26.8.18
 
-## Local Crown sequence
+> Reviewed subject: `seanchatmangpt/chatman-ecosystem@1ed4972318467c5bfb5d283505893a361536d37a`
 
-`./scripts/crown.sh` requires `cargo-deny` and `cargo-machete`, then performs:
+## Operating law
 
-1. Formatting check
-2. Clippy across all targets and features with warnings denied
-3. Locked workspace tests
-4. Locked Rustdoc with warnings denied
-5. Dependency, license, and source policy
-6. Unused-dependency detection
-7. Catalog validation
-8. Receipt sealing and verification
-9. Projection drift check
-10. Architecture check
-11. Memory/SQLx differential storage verification
-12. Exact-subject Crown verification
+Every operation must preserve the sequence:
 
-GitHub Actions repeats these gates from a clean checkout. The remote Crown job is the release-admission authority for a candidate commit.
+```text
+parse
+→ route
+→ admit or REFUSED
+→ diagnose / repair
+→ construct
+→ verify
+→ authority admission
+→ actuate
+→ observe consequence
+→ receipt
+→ replay
+→ standing
+```
+
+Inspection, configuration, compilation, workflow existence, and HTTP success are not interchangeable with successful execution against the exact admitted subject.
+
+## Composition-root Crown
+
+The local Crown remains the narrowest complete verifier for the Rust composition root:
+
+```bash
+./scripts/crown.sh
+```
+
+The script requires the repository's declared Rust tooling plus `cargo-deny` and `cargo-machete` and checks formatting, Clippy, locked tests, Rustdoc, dependency/license/source policy, unused dependencies, catalog validity, receipts, projections, architecture, storage differential behavior, and exact-subject Crown standing.
+
+Useful narrower commands:
+
+```bash
+cargo run --locked -p ecosystem-cli --bin ecosystem -- catalog validate
+cargo run --locked -p ecosystem-cli --bin ecosystem -- receipt verify-all
+cargo run --locked -p ecosystem-cli --bin ecosystem -- projection check
+cargo run --locked -p ecosystem-cli --bin ecosystem -- architecture check
+cargo run --locked -p ecosystem-cli --bin ecosystem -- storage verify
+cargo run --locked -p ecosystem-cli --bin ecosystem -- crown --verify
+```
+
+## v26.8.18 platform evidence
+
+Platform-console uses per-control evidence rather than one blanket readiness label. The canonical evidence bundle is:
+
+`platform-console/evidence/control-evidence-bundle.json`
+
+At the reviewed base it records live-tested controls and points to `platform-console/docs/SCOPE-AND-LIMITATIONS.md` for cross-cutting topology limits. Replaying one control does not automatically replay every other control.
+
+Operational evidence in the 2026-08-18 implementation sequence includes real tests of:
+
+- project provisioning and Kubernetes readiness;
+- quota rejection and quota-triggered scale-to-zero/reset;
+- RBAC positive/negative paths;
+- mTLS and NetworkPolicy reachability;
+- OIDC authorization-code/PKCE flow and negative controls;
+- vulnerability detection with real Trivy findings;
+- CEL admission rejection of non-conforming workloads;
+- Redis connectivity/isolation and teardown;
+- NATS pub/sub, JetStream persistence, isolation, and teardown;
+- topology data consistency across visual projections;
+- Jaeger trace ingestion and query;
+- Loki log ingestion and query;
+- storage edge-cache MISS/HIT/backend-bypass behavior;
+- OTel Collector span acceptance and fan-out to the standing-weaver path;
+- cold-standby cluster materialization without destroying the primary cluster.
+
+These observations are persisted evidence from the reviewed tree/history. A future head must not inherit them automatically after subject drift.
 
 ## Governor model
 
-Governors move through:
+Governors move through explicit execution states such as:
 
 `Planned → Admitted → Running → Succeeded`
 
-Alternative states are `AwaitingInput`, `AwaitingAuthority`, `Failed`, `Ambiguous`, `Refused`, and `Superseded`.
+Alternative execution states include `AwaitingInput`, `AwaitingAuthority`, `Failed`, `Ambiguous`, `Refused`, and `Superseded`.
 
-Timeout is `Ambiguous`, not automatically retryable. Duplicate idempotency keys replay the prior result without re-executing the operation.
+A timeout is ambiguous, not an automatic permission to retry. Duplicate idempotency keys replay the prior outcome rather than silently repeating the effect.
 
-## Cache policy
+## ggen provisioning
 
-- Pull requests may restore trusted default-branch caches.
-- Pull requests do not save shared caches.
-- Default-branch runs are the only shared cache writers.
-- Keys derive from the runner platform and committed `Cargo.lock`.
-- A cold-cache job deletes `target/` and proves correctness without cache.
-- Cache contents are acceleration and never contribute standing.
+The v26.8.18 service path uses a real configured ggen binary for provisioning. Operationally:
 
-## Artifact transfer
+1. resolve tenant/project identity;
+2. construct a bounded workspace/request;
+3. invoke the ggen pipeline;
+4. verify returned receipt material;
+5. append an attempt record;
+6. return applied or refused/error state.
 
-The test job builds one release binary for the exact candidate SHA and stages:
+Current limitations remain material:
 
-- The binary
-- A build manifest
-- The sealed receipt set
+- the repo-level ggen rail is `PARTIAL_ALIVE`;
+- tenant isolation is process/namespace/workspace scoped, not a separate dedicated compute capsule per tenant;
+- receipt/attempt durability is bounded by the deployed storage configuration;
+- SaaS purchase/entitlement/billing is not implied by successful provisioning.
 
-The manifest records source SHA, toolchain, target, lockfile digest, and binary digest. The final Crown job downloads the artifact, verifies the candidate SHA, lockfile digest, binary digest, and receipt presence, then calculates Crown standing.
+## Observability operations
 
-## Release
+Current local topology:
 
-The v0.1 release-admission rail creates and verifies a release-candidate workflow artifact. It does not publish a GitHub Release, package, container, or deployment. Publication remains a separate explicitly authorized operation.
+```text
+Istio / workload tracing
+      -> OTel Collector
+           -> Jaeger
+           -> standing weaver live-check
 
-## GitHub connector
+container logs -> Promtail -> Loki
+metrics        -> Prometheus
+```
 
-CI performs a live, read-only GitHub API smoke test using the repository-scoped token. It confirms repository identity and the exact candidate commit. No comments, labels, merges, branch mutations, releases, or other remote mutations occur.
+When validating this stack, verify both producer and consumer consequences. A healthy Deployment or open TCP connection is insufficient.
 
-## Document connector
+For example, a tracing replay should show the request being generated, the Collector accepting spans, and downstream observation in the intended sink. The reviewed implementation fixed real transport/compression/network-policy failures before recording success.
 
-The v0.1 document connector admits deterministic normalization of stable document identity, revision, canonical path, and BLAKE3 digest. Remote Google Drive reads and writes are outside this version's declared contract.
+The remaining unattended-traffic limitation must stay explicit until a generator can sustain the observation path without a human-driven request source in the admitted topology.
 
-## MCP boundary
+## Security operations
 
-The v0.1 MCP rail is a bounded JSON-RPC surface for `initialize`, `tools/list`, and `tools/call`. Read-only Crown inspection is admitted. Direct mutation is refused and must be brokered under exact authority. This is not a claim of complete MCP protocol conformance.
+Security changes require both positive and negative evidence where applicable:
 
-## Gall checkpoints
+- admission policies: one compliant object admitted and one non-compliant object refused;
+- NetworkPolicy: one allowed path and one denied path;
+- RBAC: one authorized verb and one unauthorized verb;
+- auth: valid session plus mismatch/tamper/revocation cases;
+- vulnerability scanning: a real scanner plus a positive-control image with detectable findings;
+- storage/signing: verify identity/digest and postcondition, not only command exit.
 
-The scheduled Gall workflow resolves and receipts the current default-branch SHA for each registered external candidate. `GALL_CHECKPOINTS = ALIVE` means the exact-subject observation mechanism works. It does not confer behavioral standing on any external repository.
+An evidence bundle with zero `gaps[]` entries does not erase declared system limitations such as single-node topology or absent independent audit.
 
-## Schemas
+## Cache and artifact policy
 
-Rust's typed TOML deserialization and explicit catalog validation are the executable v0.1 manifest checks. `schemas/receipt.schema.json` is the published interchange contract; it does not replace the Rust verifier or independently confer standing.
+Caches accelerate execution; they do not confer standing.
+
+For the Rust Crown:
+
+- PRs may restore trusted default-branch caches;
+- PRs do not write shared caches;
+- default-branch runs are shared-cache writers;
+- cache keys derive from committed toolchain/lock state;
+- cold-cache execution remains a required falsifier against accidental cache dependence.
+
+Exact-SHA workflow artifacts may transfer one candidate, but the receiver must verify source SHA, lockfile/toolchain identity, artifact digest, and required receipts before using the artifact as evidence.
+
+## Generated projections
+
+Do not hand-edit:
+
+- `views/generated/*`;
+- generated SOC 2 binder outputs when their ontology/ggen source is the canonical input;
+- `status/README.md` or `status/repos/*.md` when `status/snapshot.json` is their generator input.
+
+If a projection is stale, repair/regenerate from the canonical source. Documentation may explicitly mark the projection as stale, but must not overwrite its facts manually.
+
+## SOC 2 boundary
+
+`soc2/` is an evidence/readiness binder. It may support scoping and a later audit engagement. It may not claim `compliant`, `certified`, `attested`, or equivalent audit standing without the required independent auditor process.
+
+## Disaster recovery boundary
+
+The second kind cluster is a real cold-standby target. Operations must describe it as:
+
+`DR materialization / cold standby`
+
+and not as:
+
+`HA`, `active-active`, `multi-region`, `zero-RPO`, or `automatic failover`.
+
+Those stronger claims require different infrastructure and receipts.
+
+## Future v26.9.1 release graph
+
+The next composition crown is verified separately:
+
+```bash
+python3 scripts/verify_release.py --check-refs
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+python3 scripts/verify_release.py --check-refs --require-alive
+```
+
+The strict command is expected to refuse advancement while any required component lacks exact `ALIVE` evidence.
+
+## Publication discipline
+
+A documentation update may describe observed implementation and may open a draft pull request. It does not itself grant authority to:
+
+- merge;
+- deploy to production;
+- publish a package/release;
+- spend;
+- communicate externally as an authorized representative;
+- declare a compliance result.
+
+Those are separate consequential actions and require their own exact authority and receipts.

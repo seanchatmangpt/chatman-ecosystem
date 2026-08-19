@@ -17,6 +17,12 @@ path = "docs/OPERATIONS.md"
 canonical = true
 
 [[document]]
+id = "document:v26-8-18-release"
+title = "Chatman Ecosystem v26.8.18 Release Snapshot"
+path = "docs/v26.8.18-release.md"
+canonical = false
+
+[[document]]
 id = "document:readme"
 title = "Repository Guide"
 path = "README.md"

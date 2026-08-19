@@ -1,6 +1,8 @@
-# Architecture
+# Architecture — v26.8.18
 
-## Dependency direction
+> Reviewed subject: `seanchatmangpt/chatman-ecosystem@1ed4972318467c5bfb5d283505893a361536d37a`
+
+## Constitutional dependency direction
 
 ```text
 ecosystem-core
@@ -10,51 +12,179 @@ ecosystem-runtime
 ecosystem-cli
 ```
 
-`ecosystem-core` is intentionally free of Tokio, SQLx, Axum, Tower, Reqwest, and MCP framework dependencies. The architecture gate reads Cargo manifests and rejects those dependencies in the constitutional crate.
+`ecosystem-core` owns constitutional types and remains intentionally independent of application/runtime frameworks. Runtime and CLI layers may depend inward; the constitutional layer must not acquire ambient framework authority.
 
-## Constitutional core
+## System layers
 
-The core owns:
+v26.8.18 has four distinct layers. They must not be collapsed into one maturity claim.
 
-- Stable typed identities
-- Exact subjects
-- Standing transitions
-- Exact authority classes
-- Canonical catalog loading and validation
-- BLAKE3 receipt sealing and verification
-- Deterministic Markdown projections
-- Crown evaluation
+### 1. Constitutional control plane
 
-## Runtime adapters
+Owns:
 
-The runtime crate owns replaceable implementations:
+- stable typed identities and exact subjects;
+- admission and standing transitions;
+- authority classes;
+- canonical catalog loading and validation;
+- BLAKE3 receipt sealing/verification;
+- deterministic projections;
+- Crown evaluation and refusal semantics.
 
-- Deterministic in-memory state storage
-- SQLx-backed SQLite state storage
-- Differential adapter verification
-- Bounded governor execution with idempotency and timeout ambiguity
-- MCP JSON-RPC boundary with broker refusal for direct mutation
-- GitHub observation normalization
-- Document revision normalization
+### 2. Runtime and interface adapters
 
-## Authority boundary
+Owns replaceable implementations for:
 
-Authority is exact, not ordinal. `Release` does not imply `Merge`; `Merge` does not imply `Communicate`; repository administration does not imply any control-plane authority.
+- memory and SQLx/SQLite state;
+- bounded governor execution, idempotency, and timeout ambiguity;
+- MCP JSON-RPC handling;
+- GitHub/document normalization;
+- CLI/operator interaction.
+
+Adapters construct observations and intentions. They do not manufacture constitutional authority.
+
+### 3. Deployable platform surface
+
+`platform-console/` is the current local deployable control surface. At the reviewed subject it includes evidence-backed mechanisms for:
+
+- Kubernetes project provisioning and resource quotas;
+- per-project Postgres, Redis, and NATS/JetStream service shapes;
+- local-admin/GoTrue/OIDC session paths and role enforcement;
+- Istio STRICT mTLS and NetworkPolicy segmentation;
+- CEL ValidatingAdmissionPolicy rules and vulnerability-scan admission controls;
+- GitOps read-only visibility;
+- signed storage access, edge caching, backup/restore, dashboards, cost visibility, and quota enforcement;
+- topology views using shared service-discovery data;
+- Prometheus metrics, Jaeger tracing, Loki/Promtail log aggregation, and OTel Collector fan-out;
+- ggen and ggen-marketplace service bridges;
+- bounded Castle execution and AutoFDE-lab planner integration;
+- cold-standby disaster-recovery materialization.
+
+This layer is **not** the constitutional core. A live Kubernetes behavior does not rewrite standing law, and a constitutional theorem does not prove a live Kubernetes behavior.
+
+### 4. Ecosystem composition graph
+
+The repo binds independently owned component repositories into release subjects. A component edge must preserve:
+
+```text
+repository + ref + exact SHA + role + dependencies + standing + evidence
+```
+
+`release/v26.9.1/manifest.toml` is a future composition subject. It is deliberately separate from the v26.8.18 operational snapshot.
+
+## Authority geometry
+
+Authority is exact, not ordinal.
+
+```text
+SELECT != CONSTRUCT != DO
+```
+
+Examples:
+
+- a planner may select a candidate without authorization to execute it;
+- ggen may manufacture an artifact without conferring deployment standing;
+- an MCP handler may expose a capability without receiving permission to mutate;
+- repository administration does not imply release, merge, communication, spend, or production authority.
+
+All consequential actuation must factor through the brokered authority boundary:
+
+```text
+candidate intent
+  -> admission
+     -> REFUSED
+     -> admitted action
+        -> BRCE
+        -> consequence + receipt
+```
 
 ## Receipt boundary
 
-A receipt distinguishes observations, commands executed, artifacts changed, verifications performed, and exclusions. Source receipts are sealed once by `ecosystem receipt seal`; verification refuses a blank digest, because a signature recomputed at verification time authenticates nothing. Each verified receipt is republished to `target/crown/receipts` before Crown calculation.
+Receipts distinguish at least:
 
-## MCP boundary
+- subject identity;
+- observation/admission context;
+- executed command/action;
+- authority used;
+- changed artifacts/state;
+- verification and observed consequence;
+- exclusions/failures;
+- predecessor/replay identity.
 
-The admitted v0.1 MCP surface is a bounded JSON-RPC server subset:
+A digest recomputed during verification is not evidence that a receipt was sealed at actuation time. Verification must bind the originally emitted receipt and exact subject.
 
-- `initialize`
-- `tools/list`
-- `tools/call`
+## ggen boundary
 
-Read-only Crown inspection is admitted. Mutations are refused at the MCP handler and must be submitted through the authority broker.
+The v26.8.18 ggen service exposes real manufacture through `POST /provision`, invoking a configured ggen binary rather than simulating generation. The reviewed implementation also resolves per-tenant namespace/workspace identity and returns signed receipt material.
 
-## Connectors
+The canonical rail remains `PARTIAL_ALIVE`. The current boundary is therefore:
 
-The v0.1 connector rail admits deterministic normalization and refusal contracts. GitHub live-read admission is performed by CI against the exact workflow SHA. External mutation remains outside the v0.1 authority grant.
+```text
+ggen IaaS manufacture        -> implemented evidence
+ggen PaaS managed provision  -> implemented evidence, bounded
+marketplace registry         -> bridged metadata catalog
+ggen SaaS commerce           -> incomplete
+```
+
+Purchase, entitlement, external billing/metering, and full product-lifecycle semantics are not inferred from `/provision` or `/packs`.
+
+## Observability boundary
+
+v26.8.18 extends the platform from metrics-only observation to a multi-signal local stack:
+
+```text
+workload / Envoy spans
+      -> OTel Collector
+          -> Jaeger
+          -> standing weaver live-check
+
+container logs
+      -> Promtail
+      -> Loki
+
+metrics
+      -> Prometheus
+```
+
+The OTel Collector is the single mesh tracing provider at the reviewed head and fans out to both downstream consumers. This topology was chosen after direct Envoy-to-weaver and dual-Istio-provider paths failed in live testing. The remaining boundary is explicit: the local cluster does not yet provide self-sustaining unattended traffic generation for the standing pipeline.
+
+## Security boundary
+
+The local platform has real tested controls, including restricted PodSecurity, mTLS, NetworkPolicy isolation, admission policies, vulnerability scanning, RBAC, envelope-encryption work, and tamper-evident audit evidence. These mechanisms establish only their tested local properties.
+
+They do not imply:
+
+- multi-region blast-radius isolation;
+- independent key custody equivalent to a managed KMS/HSM;
+- external certification;
+- a complete adversary model for every ecosystem repository.
+
+## Deployment topology ceiling
+
+The primary live environment described by the evidence is a single-node kind cluster on one physical machine. A second kind cluster exists as cold standby. Therefore:
+
+```text
+real mechanism != hyperscaler topology
+cold standby != HA
+second cluster != multi-region
+measured uptime != SLA
+readiness evidence != certification
+```
+
+The detailed boundary is maintained in `platform-console/docs/SCOPE-AND-LIMITATIONS.md`.
+
+## Standing boundary
+
+A Git SHA is identity evidence only. `ALIVE` requires observed execution against the exact admitted subject under the owning verifier with receipt/replay evidence.
+
+Use the release standing states distinctly:
+
+`UNKNOWN | PARTIAL_ALIVE | ALIVE | BLOCKED | BUILD_BROKEN | UNSUPPORTED`
+
+Typed `REFUSED` outcomes are behavior, not a substitute for one of those standing states.
+
+## Version boundary
+
+- `v26.8.18`: current operational/documentation snapshot.
+- `v26.9.1`: next dependency-closed ecosystem composition crown.
+
+Do not mass-rewrite the v26.9.1 theorem/manifests to v26.8.18. They describe a different admitted subject.
