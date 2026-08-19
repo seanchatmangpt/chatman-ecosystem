@@ -19,9 +19,7 @@ A = \mu(O^*)
 where `O*` is admitted observation, `μ` is lawful manufacture, and `A` is an artifact or actuation whose standing is bounded by evidence. Consequential execution is further separated into three authority classes:
 
 \[
-	ext{SELECT} 
-eq 	ext{CONSTRUCT} 
-eq 	ext{DO}
+\text{SELECT} \neq \text{CONSTRUCT} \neq \text{DO}
 \]
 
 A model may SELECT among orbital architectures. ggen may CONSTRUCT a candidate collector design, simulation world, policy bundle, or control interface. Neither receives DO authority simply because the output exists. Physical consequence is routed through BRCE: **zero unreceipted actuation**.
@@ -33,19 +31,19 @@ No part of this book treats ontology or software as a substitute for physics. Or
 The stable analytical backbone is simple enough to state and severe enough to govern the entire program. Stellar irradiance falls with the inverse square of distance:
 
 \[
-F(r)=rac{L}{4\pi r^2}
+F(r)=\frac{L}{4\pi r^2}
 \]
 
 Radiative cooling scales with the fourth power of temperature:
 
 \[
-P_{rad}=arepsilon\sigma A T^4
+P_{rad}=\varepsilon\sigma A T^4
 \]
 
 and Keplerian orbital period in the two-body approximation scales with semimajor axis as:
 
 \[
-T^2=rac{4\pi^2 a^3}{\mu}
+T^2=\frac{4\pi^2 a^3}{\mu}
 \]
 
 These equations are not the complete design, but they demonstrate the book's operating stance: the candidate space is large, while admission is constrained.

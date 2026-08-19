@@ -7,7 +7,7 @@ A collector is mined from a body whose composition was imperfectly observed. Its
 That means the durable artifact is not the collector. It is the correspondence that allows a civilization to move from observation to standing without losing meaning:
 
 \[
-O ightarrow O^* ightarrow \mu ightarrow A ightarrow R ightarrow O'
+O \rightarrow O^* \rightarrow \mu \rightarrow A \rightarrow R \rightarrow O'
 \]
 
 A civilization that preserves that correspondence can replace implementations while retaining accumulated knowledge. It can abandon a bad orbit without declaring the whole graph a failure. It can discover that a material assumption was false and trace which candidate classes depended on it. It can refuse an unauthorized actuator even when a model is confident. It can replay an accident. It can lift a successful collector into a capability class without pretending that one success proves every future instance.

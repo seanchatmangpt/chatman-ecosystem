@@ -1,1 +1,47 @@
-id = "receipt:dyson-sphere-book"\nsubject = "manuscript-sha256:4bb33cfc6f084268d3d774e75eed1921c385c24272127bdc0f13117dd7325c27"\nbase_commit = "91d8ddc26da04448dbd0c4e11d70c504c6b6dd9e"\nactor = "github-actions"\nauthority = "explicit_user_request:write all md files for the book and commit the pr"\nintention = "manufacture the complete How to Build a Dyson Sphere with the Chatman Ecosystem mdBook manuscript"\nobserved = [\n    "repository doctrine and exact base commit",\n    "existing nested-book convention under docs",\n    "admitted 27-part, 104-chapter outline",\n]\nexecuted = [\n    "generated the complete nested Markdown source tree",\n    "integrated the nested summary into docs/SUMMARY.md",\n    "registered the book in catalog/documents.toml",\n]\nchanged = [\n    "docs/how-to-build-a-dyson-sphere/**",\n    "docs/SUMMARY.md",\n    "catalog/documents.toml",\n    "scripts/generate_dyson_sphere_book.py",\n]\nverified = [\n    "104 numbered chapters",\n    "839 Markdown files",\n    "838 nested SUMMARY links",\n    "zero missing nested SUMMARY targets",\n    "342147 manuscript words",\n]\nexcluded = [\n    "Dyson-sphere physical feasibility is not promoted to ALIVE by prose",\n    "root release Crown is not asserted by this documentation change",\n    "mdBook executable build is left to repository CI/toolchain when available",\n]\nreplay = [\n    "python3 scripts/generate_dyson_sphere_book.py",\n]\nstanding_before = "UNKNOWN"\nstanding_after = "PARTIAL_ALIVE"\ntimestamp = "2026-08-19T19:49:04.428949+00:00"\ndigest = "sha256:4bb33cfc6f084268d3d774e75eed1921c385c24272127bdc0f13117dd7325c27"\n
+id = "receipt:dyson-sphere-book"
+subject = "manuscript-sha256:90511084ba08edd34d133945728cd9f12d7697c59caaa12d989126c8ba076a4c"
+base_commit = "91d8ddc26da04448dbd0c4e11d70c504c6b6dd9e"
+actor = "github-actions"
+authority = "explicit_user_request:write all md files for the book and commit the pr"
+intention = "manufacture the complete How to Build a Dyson Sphere with the Chatman Ecosystem mdBook manuscript"
+observed = [
+    "repository doctrine and exact base commit",
+    "existing nested-book convention under docs",
+    "admitted 27-part, 104-chapter outline",
+    "initial generated head contained Python escape corruption in LaTeX",
+]
+executed = [
+    "repaired the canonical generator to preserve LaTeX backslashes",
+    "regenerated the complete nested Markdown source tree",
+    "integrated the nested summary into docs/SUMMARY.md",
+    "registered the book in catalog/documents.toml",
+]
+changed = [
+    "docs/how-to-build-a-dyson-sphere/**",
+    "docs/SUMMARY.md",
+    "catalog/documents.toml",
+    "scripts/generate_dyson_sphere_book.py",
+]
+verified = [
+    "104 numbered chapters",
+    "839 Markdown files",
+    "838 nested SUMMARY links",
+    "zero missing nested SUMMARY targets",
+    "zero unexpected C0 control characters",
+    "literal LaTeX fraction, text, and arrow sequences preserved",
+    "root SUMMARY integration marker unique",
+    "catalog registration parses as TOML",
+    "342147 manuscript words",
+]
+excluded = [
+    "Dyson-sphere physical feasibility is not promoted to ALIVE by prose",
+    "root release Crown is not asserted by this documentation change",
+    "mdBook executable build remains a separate repository-toolchain gate",
+]
+replay = [
+    "python3 scripts/generate_dyson_sphere_book.py",
+]
+standing_before = "BUILD_BROKEN"
+standing_after = "PARTIAL_ALIVE"
+timestamp = "2026-08-19T19:51:46.089511+00:00"
+digest = "sha256:90511084ba08edd34d133945728cd9f12d7697c59caaa12d989126c8ba076a4c"

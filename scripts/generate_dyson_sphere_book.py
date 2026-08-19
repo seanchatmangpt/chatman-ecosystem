@@ -317,7 +317,7 @@ def write(rel, content):
 
 
 def intro():
-    return f"""# How to Build a Dyson Sphere with the Chatman Ecosystem
+    return rf"""# How to Build a Dyson Sphere with the Chatman Ecosystem
 
 ## From speculative megastructure to evidence-bounded civilization manufacture
 
@@ -544,7 +544,7 @@ for letter, title, subs in appendices:
 summary.extend(['-----------','', '[Afterword — You Were Never Building the Sphere](afterword.md)','', '[Contributors](misc/contributors.md)','', '[Index](misc/index.md)',''])
 write('SUMMARY.md','\n'.join(summary))
 
-write('afterword.md', f"""# Afterword — You Were Never Building the Sphere
+write('afterword.md', rf"""# Afterword — You Were Never Building the Sphere
 
 The visual metaphor of a Dyson sphere suggests an object. The engineering reality is a civilization of transitions.
 
