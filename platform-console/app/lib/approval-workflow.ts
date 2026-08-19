@@ -64,12 +64,25 @@ export type ApprovalAction =
   | "environment.promote"
   | "deployment.quarantine"
   | "sla.credit.apply"
-  | "patch-sla.credit.apply";
+  | "patch-sla.credit.apply"
+  | "k8s-fault.remediate-suggest";
 export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   "org.delete",
   "quota.override",
   "tier.downgrade",
   "backup.retention.change",
+  // A K8s Fault Diagnosis finding (lib/k8s-fault-scan.ts, wrapping
+  // autofde-lab's real structural-anomaly scanner) that plausibly
+  // warrants an actuated fix (e.g. a `declared_vs_observed` replica-count
+  // anomaly on a live Deployment) files THIS action -- never a
+  // remediation itself. The underlying scanner diagnoses only; no code
+  // path anywhere produces a remediation plan, so this is deliberately
+  // named "remediate-suggest", not "remediate" -- a second human still
+  // has to approve it, and approving it here authorizes nothing beyond
+  // "a human agreed the suggestion is worth acting on manually," same
+  // "auto-FILE, human approves" pattern `deployment.quarantine` already
+  // establishes for vuln-scan findings.
+  "k8s-fault.remediate-suggest",
   // A scheduled export subscription is a real, standing data-
   // exfiltration control: once saved, it recurringly ships this org's
   // audit log or full export bundle to a bucket a THIRD PARTY (the
@@ -267,6 +280,25 @@ export interface ApprovalResourcePayload {
    * against -- before this route ever calls
    * lib/stripe-billing.ts's applySlaCreditToStripeBalance. */
   requestedSlaCreditMonth?: string;
+  /** k8s-fault.remediate-suggest: the non-secret shape of the requested
+   * fault-diagnosis-triggered suggestion -- which namespace/kind/object
+   * the anomaly was found on, its relation class, the real SREGym
+   * taxonomy label (or `UNCLASSIFIED`), and the scanner's own `detail`
+   * string -- so a second approver can see exactly what was diagnosed
+   * before agreeing a manual fix is warranted. `targetId` on the
+   * ApprovalRequest itself is `<namespace>/<kind>/<objectName>/<field>`,
+   * matching one anomaly key. Never a remediation plan: no field here
+   * describes an actuated fix, because lib/k8s-fault-scan.ts's
+   * underlying scanner produces none. */
+  requestedFaultSuggestion?: {
+    namespace: string;
+    kind: string;
+    objectName: string;
+    field: string;
+    relationClass: string;
+    taxonomy: string;
+    detail: string;
+  };
 }
 
 export interface ApprovalRequest {

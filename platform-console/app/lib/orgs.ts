@@ -82,6 +82,15 @@ export interface Org {
    * round-trip discipline as `branding`/`region` above: this control never
    * fires uninvited on an existing customer. */
   autoRemediateCritical?: boolean;
+  /** Per-org opt-in for K8s Fault Diagnosis
+   * (lib/k8s-fault-scan.ts, wrapping autofde-lab's real structural-
+   * anomaly scanner): when `true`, POST /api/k8s-fault-scan is allowed
+   * to collect this org's own namespace's live cluster state and run the
+   * real scanner against it. Same "never runs against an org that hasn't
+   * turned it on" discipline `autoRemediateCritical` above already
+   * establishes -- optional and unset/`false` by default, so this
+   * control never fires uninvited on an existing customer. */
+  enableFaultScan?: boolean;
   /**
    * SLA credit auto-application idempotency guard (see
    * setOrgLastSlaCreditAppliedMonth below and
@@ -197,6 +206,10 @@ interface OrgRegistryEntry {
   // `autoRemediateCritical: undefined`, treated identically to `false` by
   // every reader (setOrgAutoRemediateCritical below is the only writer).
   autoRemediateCritical?: boolean;
+  // K8s Fault Diagnosis opt-in -- see the identically-named field on
+  // `Org` above for the full rationale. Optional and unset/`false` by
+  // default, same round-trip discipline as `autoRemediateCritical`.
+  enableFaultScan?: boolean;
   // SLA credit auto-application idempotency guard -- see the identically-
   // named field on `Org` above for the full rationale. Optional and unset
   // by default, same forward-compatible-optional-field round-trip
