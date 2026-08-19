@@ -6,7 +6,7 @@ import unittest
 CONTRACT = Path("contracts/challenger-value.yaml")
 STRATEGY = Path("chatman-ecosystem-LINKEDIN-REVOPS-STRATEGY.md")
 EXPECTED_SUBJECTS = {
-    "ggen-marketplace": "31ea7baa1df381d5745fc9de82d709182c045f88",
+    "ggen-marketplace": "b54ef5ad0d2eebf4c9bca05efcb77b05884cc29e",
     "tcps": "18977d274ff05a7c8b96f9f64c25120835c94e52",
 }
 STRATEGY_SUBJECT = "3676b63f1f8c686dfdb4e6846d8fd956bc94e5cc"
