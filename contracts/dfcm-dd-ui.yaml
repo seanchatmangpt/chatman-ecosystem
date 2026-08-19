@@ -34,12 +34,12 @@ integration_subjects:
     owning_court: deterministic-dynamic-ui
   ggen-marketplace:
     pr: 69
-    head: 67a47966bc0c391cef06251b0d0f52f65e13c363
+    head: 9cdf9c08968a706b4db03102b1baee7ced2b5612
     authority: CONSTRUCT
     owning_court: marketplace-qualification
   gymact:
     pr: 50
-    head: 09d98f94c7d690f54853369cf680775d9e8f2dc3
+    head: 9055a952d0b6b9a15d791472478a142bb139e6f0
     authority: SELECT
     owning_court: world-execution-crown
   castle:
