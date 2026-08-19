@@ -51,7 +51,7 @@ jobs:
           ECOSYSTEM_SUBJECT_SHA: ${{ env.CANDIDATE_SHA }}
           WEAVER_REGISTRY: telemetry/weaver
           WEAVER_RECEIPT_DIR: target/weaver-live
-        run: ./scripts/weaver-live-matrix.sh
+        run: bash scripts/weaver-live-matrix.sh
 
       - name: Refuse source mutation from Weaver CONSTRUCT/DO
         shell: bash
