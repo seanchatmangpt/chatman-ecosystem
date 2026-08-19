@@ -44,7 +44,7 @@ jobs:
       - name: Commit generated projection
         shell: bash
         run: |
-          if git diff --quiet -- books/hditc; then
+          if [ -z "$(git status --porcelain -- books/hditc)" ]; then
             echo "No generated diff"
             exit 0
           fi
