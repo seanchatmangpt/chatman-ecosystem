@@ -24,6 +24,7 @@ MUTATING_AUTHORITIES = {
 }
 DEFAULT_BASE = pathlib.Path("catalog/capabilities.toml")
 DEFAULT_EXTENSION = pathlib.Path("catalog/capabilities-decision-graph.toml")
+DEFAULT_REPOSITORIES = pathlib.Path("catalog/repositories.toml")
 DEFAULT_BASE_PROJECTION = pathlib.Path("views/generated/capabilities.md")
 DEFAULT_EXTENSION_PROJECTION = pathlib.Path("views/generated/capabilities-decision-graph.md")
 
@@ -49,16 +50,14 @@ def combine(catalogs: list[dict]) -> dict:
         "schema": first.get("schema"),
         "version": first.get("version"),
         "subject": first.get("subject"),
-        "capability": [
-            item
-            for catalog in catalogs
-            for item in catalog.get("capability", [])
-        ],
+        "capability": [item for catalog in catalogs for item in catalog.get("capability", [])],
     }
 
 
 def load_default(root: pathlib.Path, base: pathlib.Path | None = None) -> dict:
     base_path = base or root / DEFAULT_BASE
+    if not base_path.is_absolute():
+        base_path = root / base_path
     catalogs = [load(base_path)]
     extension = root / DEFAULT_EXTENSION
     if extension.exists() and extension.resolve() != base_path.resolve():
@@ -99,9 +98,7 @@ def verify(catalog: dict) -> list[dict]:
         authority = item.get("required_authority")
         if authority not in ALLOWED_AUTHORITY:
             raise CapabilityError(f"REFUSED:CAPABILITY_AUTHORITY:{cid}")
-
-        interfaces = set(item.get("interfaces", []))
-        if interfaces != ALLOWED_INTERFACES:
+        if set(item.get("interfaces", [])) != ALLOWED_INTERFACES:
             raise CapabilityError(f"REFUSED:SURFACE_CLOSURE:{cid}")
         if not item.get("inputs") or not item.get("outputs") or not item.get("refusals"):
             raise CapabilityError(f"REFUSED:CAPABILITY_CONTRACT_INCOMPLETE:{cid}")
@@ -125,7 +122,6 @@ def verify(catalog: dict) -> list[dict]:
 
     visiting: set[str] = set()
     visited: set[str] = set()
-
     def visit(cid: str) -> None:
         if cid in visiting:
             raise CapabilityError(f"REFUSED:CAPABILITY_CYCLE:{cid}")
@@ -136,19 +132,24 @@ def verify(catalog: dict) -> list[dict]:
             visit(dep)
         visiting.remove(cid)
         visited.add(cid)
-
     for cid in sorted(by_id):
         visit(cid)
-
     return [by_id[cid] for cid in sorted(by_id)]
+
+
+def verify_repository_owners(items: list[dict], repositories: dict) -> None:
+    declared = {item.get("id") for item in repositories.get("repository", [])}
+    for item in items:
+        if item["owner"] not in declared:
+            raise CapabilityError(
+                f"REFUSED:UNDECLARED_CAPABILITY_OWNER:{item['id']}:{item['owner']}"
+            )
 
 
 def render(items: list[dict], source: str = "catalog/capabilities.toml") -> str:
     out = [
-        "# Chatman Ecosystem Capabilities",
-        "",
-        f"> Generated from `{source}`. Do not edit manually.",
-        "",
+        "# Chatman Ecosystem Capabilities", "",
+        f"> Generated from `{source}`. Do not edit manually.", "",
         "| Capability | Class | Authority | Broker | Receipt | Standing | Interfaces |",
         "|---|---|---|---|---|---|---|",
     ]
@@ -170,12 +171,9 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--catalog", type=pathlib.Path, default=DEFAULT_BASE)
     parser.add_argument("--extension", type=pathlib.Path, default=DEFAULT_EXTENSION)
+    parser.add_argument("--repositories", type=pathlib.Path, default=DEFAULT_REPOSITORIES)
     parser.add_argument("--projection", type=pathlib.Path, default=DEFAULT_BASE_PROJECTION)
-    parser.add_argument(
-        "--extension-projection",
-        type=pathlib.Path,
-        default=DEFAULT_EXTENSION_PROJECTION,
-    )
+    parser.add_argument("--extension-projection", type=pathlib.Path, default=DEFAULT_EXTENSION_PROJECTION)
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
 
@@ -185,8 +183,8 @@ def main() -> int:
     if args.extension.exists() and args.extension.resolve() != args.catalog.resolve():
         extension = load(args.extension)
         catalogs.append(extension)
-
     items = verify(combine(catalogs))
+    verify_repository_owners(items, load(args.repositories))
     base_items = verify(base)
     base_expected = render(base_items, args.catalog.as_posix())
 
@@ -203,10 +201,7 @@ def main() -> int:
         if extension_expected is not None:
             args.extension_projection.parent.mkdir(parents=True, exist_ok=True)
             args.extension_projection.write_text(extension_expected, encoding="utf-8")
-        print(
-            f"CAPABILITIES_RENDERED count={len(items)} "
-            f"base={len(base_items)} extension={len(extension_items)}"
-        )
+        print(f"CAPABILITIES_RENDERED count={len(items)} base={len(base_items)} extension={len(extension_items)}")
         return 0
 
     if args.projection.read_text(encoding="utf-8") != base_expected:
@@ -216,10 +211,7 @@ def main() -> int:
             raise CapabilityError("REFUSED:CAPABILITY_EXTENSION_PROJECTION_MISSING")
         if args.extension_projection.read_text(encoding="utf-8") != extension_expected:
             raise CapabilityError("REFUSED:CAPABILITY_EXTENSION_PROJECTION_DRIFT")
-    print(
-        f"CAPABILITIES_ALIVE count={len(items)} "
-        f"base={len(base_items)} extension={len(extension_items)}"
-    )
+    print(f"CAPABILITIES_ALIVE count={len(items)} base={len(base_items)} extension={len(extension_items)}")
     return 0
 
 
