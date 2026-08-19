@@ -49,7 +49,7 @@ receipts:
 integration_subjects:
   ggen-marketplace:
     pr: 85
-    head: 046ea13ac2830dd039e128b07ee2d2796a1db183
+    head: 547a1ba3d88c039d1bdc90ebde64ee19d79b9c40
     authority: CONSTRUCT
     role: canonical-ontology-and-conformance-pack
     owning_court: Challenger Value Court

@@ -5,7 +5,7 @@ import unittest
 
 CONTRACT = Path("contracts/challenger-value.yaml")
 EXPECTED_SUBJECTS = {
-    "ggen-marketplace": "046ea13ac2830dd039e128b07ee2d2796a1db183",
+    "ggen-marketplace": "547a1ba3d88c039d1bdc90ebde64ee19d79b9c40",
     "tcps": "18977d274ff05a7c8b96f9f64c25120835c94e52",
 }
 
