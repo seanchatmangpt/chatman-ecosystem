@@ -1,0 +1,84 @@
+@prefix tpcs: <https://chatman.ai/ontology/tpcs#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+tpcs:WorkItem a prov:Entity ;
+  skos:prefLabel "TPCS work item" .
+
+tpcs:ProductionCandidate a prov:Entity ;
+  skos:prefLabel "Reversible production candidate" .
+
+tpcs:ParetoFrontier a prov:Entity ;
+  skos:prefLabel "DfCM lawful production frontier" .
+
+tpcs:KanbanToken a prov:Entity ;
+  skos:prefLabel "Pull authorization token" .
+
+tpcs:AndonSignal a prov:Entity ;
+  skos:prefLabel "Stop-the-line signal" .
+
+tpcs:KaizenProposal a prov:Entity ;
+  skos:prefLabel "Reversible improvement proposal" .
+
+tpcs:ProductionReceipt a prov:Entity ;
+  skos:prefLabel "Replay-bound production receipt" .
+
+tpcs:ProductionControlPlane a prov:SoftwareAgent ;
+  tpcs:mode "pull" ;
+  tpcs:zeroUnreceiptedActuation true ;
+  tpcs:plannerActuationAuthority false ;
+  tpcs:acceptanceMutationAuthority false ;
+  tpcs:generatedProjectionAuthority false ;
+  tpcs:irreversibleSelections 0 .
+
+tpcs:SELECT a odrl:Action ;
+  tpcs:authorityCeiling "reversible-selection" .
+
+tpcs:CONSTRUCT a odrl:Action ;
+  tpcs:requiresAdmission true .
+
+tpcs:DO a odrl:Action ;
+  tpcs:requiresReceipt true .
+
+tpcs:subjectDigest
+  a sh:PropertyShape ;
+  sh:datatype xsd:string ;
+  sh:minCount 1 ;
+  sh:maxCount 1 .
+
+tpcs:configDigest
+  a sh:PropertyShape ;
+  sh:datatype xsd:string ;
+  sh:minCount 1 ;
+  sh:maxCount 1 .
+
+tpcs:workDigest
+  a sh:PropertyShape ;
+  sh:datatype xsd:string ;
+  sh:minCount 1 ;
+  sh:maxCount 1 .
+
+tpcs:frontierDigest
+  a sh:PropertyShape ;
+  sh:datatype xsd:string ;
+  sh:minCount 1 ;
+  sh:maxCount 1 .
+
+tpcs:scheduleDigest
+  a sh:PropertyShape ;
+  sh:datatype xsd:string ;
+  sh:minCount 1 ;
+  sh:maxCount 1 .
+
+tpcs:ProductionReceiptShape
+  a sh:NodeShape ;
+  sh:targetClass tpcs:ProductionReceipt ;
+  sh:property
+    tpcs:subjectDigest,
+    tpcs:configDigest,
+    tpcs:workDigest,
+    tpcs:frontierDigest,
+    tpcs:scheduleDigest .
