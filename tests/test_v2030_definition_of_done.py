@@ -150,6 +150,23 @@ class V2030DefinitionOfDoneTest(unittest.TestCase):
         self.assertEqual(first["receipt"], second["receipt"])
         self.assertEqual(world.actuation_count, count)
 
+    def test_replay_cannot_relabel_sealed_authority(self) -> None:
+        prepared = mod.prepare(mod.reference_request())
+        original = mod.reference_grant(prepared)
+        world = mod.MemoryWorld("planned")
+        store = mod.ReceiptStore()
+        first = mod.execute(prepared, original, store, world.actuate, world.observe)
+        replacement = mod.AuthorityGrant(
+            authority_id="authority:replacement",
+            subject_sha=prepared.request.subject,
+            intent_digest=prepared.intent["intent_digest"],
+            consequence=prepared.selected.consequence,
+        )
+        second = mod.execute(prepared, replacement, store, world.actuate, world.observe)
+        self.assertEqual(first["authority_id"], "authority:reference-do")
+        self.assertEqual(second["authority_id"], "authority:reference-do")
+        self.assertEqual(world.actuation_count, 1)
+
     def test_receipt_tampering_is_refused_by_canonical_replay(self) -> None:
         prepared = mod.prepare(mod.reference_request())
         grant = mod.reference_grant(prepared)
