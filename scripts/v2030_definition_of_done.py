@@ -379,7 +379,7 @@ def execute(
     prior = store.receipts.get(request.idempotency_key)
     if prior is not None:
         replay_status = store.verify(prior)
-        return _result(prepared, grant, prior, replay_status)
+        return _result(prepared, prior, replay_status)
 
     before = observer()
     if before != request.expected_precondition:
@@ -416,10 +416,10 @@ def execute(
     }
     stored = store.commit(request.idempotency_key, event)
     replay_status = store.verify(stored)
-    return _result(prepared, grant, stored, replay_status)
+    return _result(prepared, stored, replay_status)
 
 
-def _result(prepared: PreparedExecution, grant: AuthorityGrant, stored: dict, replay_status: str) -> dict:
+def _result(prepared: PreparedExecution, stored: dict, replay_status: str) -> dict:
     event = stored["envelope"]["event"]
     standing = "ALIVE" if event["outcome"] == "succeeded" and replay_status.startswith("ALIVE:REPLAY:") else "BLOCKED"
     return {
@@ -432,7 +432,7 @@ def _result(prepared: PreparedExecution, grant: AuthorityGrant, stored: dict, re
         "selected": prepared.selected.id,
         "artifact": prepared.artifact["digest"],
         "verification": prepared.verification["digest"],
-        "authority_id": grant.authority_id,
+        "authority_id": event["broker_admission"]["authority_id"],
         "intent_digest": prepared.intent["intent_digest"],
         "receipt": stored["envelope"]["receipt_digest"],
         "replay": replay_status,
