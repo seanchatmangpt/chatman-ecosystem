@@ -6,10 +6,30 @@
  * { ok: false }, never a fabricated event count.
  *
  * Step C is now real and deployed (Deployment/Service `ocel-accumulator` in
- * `istio-system`, port 4900 -- confirmed live, real growing eventCount).
- * `/discovery` is being added to the accumulator itself (a real subprocess
- * bridge to wasm4pm-cli, castle's pattern) -- until it lands, this proxy
- * correctly fails closed on that one call rather than fabricating a result.
+ * `istio-system`, port 4900 -- confirmed live). NOTE (2026-08-19): eventCount
+ * is not currently growing in steady state -- this is real idleness, not a
+ * bug: the Collector has received zero spans since its last restart (no
+ * `otelcol_receiver_accepted_spans`/`otelcol_exporter_sent_spans` series at
+ * all on its own /metrics), so the on-disk log's 14 events are a one-time
+ * seed/manual-test batch, not continuous traffic. See
+ * `k8s/weaver-livecheck.yaml` for the disclosed, still-open, out-of-scope
+ * limitation (no istio-cni for the gateway/prober) this traces back to.
+ * `/discovery` is now live and confirmed working (returns a real mined
+ * OC-DFG from the accumulator's stored events) -- this proxy relays it
+ * as-is, still failing closed on any HTTP/parse error rather than
+ * fabricating a result.
+ *
+ * KNOWN GAP (2026-08-19): the accumulator's `/status` always serializes
+ * `lastUpdated: null`, even though real events exist with a real on-disk
+ * write time. This is a real bug in the accumulator binary's status
+ * handler, but its cited source --
+ * `ggen-marketplace/packs/otel-weaver-ocel-pack/generated/src/bin/
+ * ocel_accumulator.rs` -- does not exist anywhere in this checkout (nor
+ * does the `otel_span_to_ocel_evidence` transformer it's supposed to call);
+ * only the compiled binary is running in the live pod. Fixing this in
+ * source requires first recovering or fully re-authoring that pack, which
+ * is out of scope for this pass -- tracked here as a named, confirmed gap,
+ * not silently patched around.
  */
 
 export type OcelLogResult<T> =
