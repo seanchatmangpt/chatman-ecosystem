@@ -7,9 +7,11 @@ on:
       - 'catalog/capabilities-decision-graph.toml'
       - 'ontology/capabilities.ttl'
       - 'scripts/verify_capabilities.py'
+      - 'scripts/verify_capability_ontology.py'
       - 'scripts/capability_control.py'
       - 'tests/test_capabilities.py'
       - 'tests/test_capability_control.py'
+      - 'tests/test_capability_ontology.py'
       - 'apps/ecosystem-cli/src/main.rs'
       - 'apps/ecosystem-cli/tests/capabilities.rs'
       - 'views/generated/capabilities.md'
@@ -38,8 +40,10 @@ jobs:
           echo "EXACT_SUBJECT=$actual"
       - name: Verify capability catalogs and deterministic projections
         run: python3 scripts/verify_capabilities.py
-      - name: Run capability refusal and DfCM courts
-        run: python3 -m unittest tests.test_capabilities tests.test_capability_control -v
+      - name: Verify public/custom ontology boundary
+        run: python3 scripts/verify_capability_ontology.py
+      - name: Run capability, ontology and DfCM refusal courts
+        run: python3 -m unittest tests.test_capabilities tests.test_capability_control tests.test_capability_ontology -v
       - name: Execute all interface projections
         shell: bash
         run: |
