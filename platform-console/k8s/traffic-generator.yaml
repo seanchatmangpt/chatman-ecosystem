@@ -1,0 +1,83 @@
+# Continuous real traffic generator for platform-console-gateway, so Jaeger
+# (k8s/jaeger-tracing.yaml, 100% sampling) has something to actually trace.
+#
+# Deliberately a Deployment, not a CronJob -- CronJob's 1-minute scheduling
+# floor is too coarse for "continuous" traffic; a tiny Deployment looping
+# curl + sleep 10s is simpler and gives real continuous (not batched)
+# traffic.
+#
+# Deliberately DOES carry the Istio sidecar (default injection -- no
+# `sidecar.istio.io/inject: "false"` annotation here), unlike
+# platform-console-gateway and platform-prober (k8s/services-and-deployments.yaml,
+# k8s/status-page.yaml), which both disable injection due to a real
+# istio-init/PodSecurity-restricted incompatibility. gymact-status and
+# ggen-marketplace-status already prove sidecar-bearing pods run fine under
+# this cluster's `restricted` PodSecurity, so this is the low-risk way to
+# get a mesh-traced path without touching the gateway/prober's own
+# injection setting.
+#
+# Hits platform-console-gateway's real internal Service DNS
+# (k8s/services-and-deployments.yaml: Service `platform-console-gateway`,
+# namespace platform-console, port 8080 -> targetPort 3000, path /login
+# already proven live by that Deployment's own readiness/liveness probes).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traffic-generator
+  namespace: platform-console
+  labels:
+    app: traffic-generator
+    team: platform-team
+    owner: platform-console-team
+    cost-center: platform-eng
+    compliance-level: internal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traffic-generator
+  template:
+    metadata:
+      labels:
+        app: traffic-generator
+      # No sidecar.istio.io/inject annotation -- injection stays at its
+      # cluster default (enabled), unlike the gateway/prober.
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: traffic-generator
+          image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - |
+              while true; do
+                curl -s -o /dev/null -w '%{http_code}\n' \
+                  http://platform-console-gateway.platform-console.svc.cluster.local:8080/login || true
+                sleep 10
+              done
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            # curlimages/curl's image USER is UID 65532 (nonroot) --
+            # spelled out numerically here for the same reason as the
+            # gateway/prober Deployments: the kubelet's runAsNonRoot check
+            # needs an explicit numeric UID, not a name resolved at
+            # container-start time.
+            runAsUser: 65532
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "16Mi"
+            limits:
+              cpu: "50m"
+              memory: "32Mi"

@@ -312,8 +312,24 @@ spec:
     metadata:
       labels:
         app: gymact-status
+      annotations:
+        # This cluster has no istio-cni DaemonSet, so any injected sidecar's
+        # istio-init container requests NET_ADMIN/NET_RAW and runAsUser:0 for
+        # iptables setup -- which PodSecurity `restricted` unconditionally
+        # forbids, taking the pod down on any re-admission (deploy, node
+        # move, scale event). Live-patched after a real incident this
+        # session (a traffic-generator PodSecurity test on a different
+        # Deployment triggered a re-admission of this pod and it could not
+        # come back up until this was applied) -- same documented pattern
+        # already used by autofde-lab-status.
+        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: gymact-status-reader
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: gymact-status
           image: platform-console/gymact-status:latest
@@ -323,6 +339,15 @@ spec:
           env:
             - name: PORT
               value: "8080"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 65534
+            seccompProfile:
+              type: RuntimeDefault
           resources:
             requests:
               cpu: "50m"

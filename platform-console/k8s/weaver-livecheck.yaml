@@ -48,6 +48,35 @@
 # parsed by weaver's live-check from platform-console/Istio traffic. The
 # integration is BLOCKED at the OTLP gRPC export layer, not merely
 # unattempted.
+#
+# ---------------------------------------------------------------------------
+# SECURITY (ciso review, closed here): the static `Endpoints` object this
+# file previously shipped pointed every mesh pod's traffic on
+# weaver-livecheck.istio-system.svc.cluster.local:4317 straight at
+# 192.168.5.2:4317 -- the colima VM's route back to the HOST MACHINE running
+# weaver, with no authentication and no NetworkPolicy gating who inside the
+# mesh could reach it. That is a real, live-tested mesh-to-host-escape path
+# (see the reproduction log above: Envoy's OTel exporter connected to it at
+# the TCP level from real ingress traffic). It has been REMOVED, not merely
+# commented out, because:
+#   1. it is not wired into the live Telemetry resource (reverted to
+#      jaeger-only, per the log above) -- nothing in the applied cluster
+#      state depends on it existing;
+#   2. `Service` objects without a selector (as this one is) do not get an
+#      Endpoints object auto-managed by the endpoint controller, so leaving
+#      the bare Service behind is inert -- re-adding a host-pointing
+#      Endpoints object requires a deliberate, reviewable diff, not an
+#      accidental `kubectl apply -f k8s/` of a file already in the repo.
+# Re-enabling this path for local dev-only reproduction requires BOTH:
+#   (a) manually re-adding a static Endpoints object here (never do so
+#       without also re-adding a namespace-scoped source label requirement --
+#       see the new `weaver-livecheck-restrict-otlp-ingress` NetworkPolicy in
+#       k8s/network-policies.yaml, which already exists so that even a
+#       reintroduced Endpoints object cannot be reached except by pods
+#       explicitly labeled `otlp-livecheck-client: "true"`), and
+#   (b) a comment here naming the dev machine and the session/ticket that
+#       needed it, mirroring this file's own existing disclosure style.
+# ---------------------------------------------------------------------------
 ---
 apiVersion: v1
 kind: Service
@@ -60,16 +89,8 @@ spec:
       port: 4317
       targetPort: 4317
       protocol: TCP
----
-apiVersion: v1
-kind: Endpoints
-metadata:
-  name: weaver-livecheck
-  namespace: istio-system
-subsets:
-  - addresses:
-      - ip: 192.168.5.2 # colima VM's route back to the host machine running weaver
-    ports:
-      - name: otlp-grpc
-        port: 4317
-        protocol: TCP
+  # No `selector` and (as of this fix) no matching Endpoints object below:
+  # this Service currently resolves to nothing. It is left in place only so
+  # the DNS name weaver-livecheck.istio-system.svc.cluster.local stays
+  # reserved for the documented reproduction above; it does not route
+  # traffic anywhere today.

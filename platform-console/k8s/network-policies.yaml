@@ -490,3 +490,45 @@ spec:
 # traffic). No NetworkPolicy object is added for platform-console; its
 # istio-proxy sidecar (enabled below) is expected to reach DNS/istiod
 # exactly as freely as the rest of its already-unrestricted egress.
+
+# --------------------------------------------------------------- istio-system
+#
+# ciso review closure (see k8s/weaver-livecheck.yaml's header for the full
+# finding): that file previously shipped a static Endpoints object routing
+# any mesh pod's traffic on weaver-livecheck.istio-system.svc.cluster.local
+# :4317 straight to the host machine (192.168.5.2:4317), unauthenticated and
+# ungated by any NetworkPolicy -- a live-tested mesh-to-host-escape path
+# (Envoy's OTel exporter reached it at the TCP level from real ingress
+# traffic; see that file's reproduction log). The Endpoints object itself
+# has been removed there. This policy is the second, independent layer: it
+# ensures that even if a weaver-livecheck-labeled Deployment/Endpoints is
+# ever reintroduced in istio-system (dev-only, per that file's own gate),
+# nothing in the mesh can reach its OTLP port except a pod that opts in with
+# an explicit label -- default-deny is NOT applied namespace-wide here
+# (istio-system also hosts istiod and istio-ingressgateway, whose many
+# required ports this task is explicitly scoped to leave untouched), only
+# scoped to pods carrying `app: weaver-livecheck` on port 4317, mirroring
+# the "podSelector + explicit ingress allow" shape of the
+# *-allow-from-platform-console rules above rather than their namespace-wide
+# *-default-deny shape (which is not appropriate for a shared system
+# namespace this task does not own).
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: weaver-livecheck-restrict-otlp-ingress
+  namespace: istio-system
+spec:
+  podSelector:
+    matchLabels:
+      app: weaver-livecheck
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              otlp-livecheck-client: "true"
+      ports:
+        - protocol: TCP
+          port: 4317

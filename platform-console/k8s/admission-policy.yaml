@@ -59,18 +59,20 @@ spec:
     - key: enforced-by
       valueExpression: "'platform-deployments-require-resources'"
 ---
-# Binding: scopes the policy above to ONLY the platform's 5 project
+# Binding: scopes the policy above to the platform's 5 project
 # namespaces (autofde-lab, gymact, ggen, ggen-marketplace,
 # platform-console -- the exact same 5 namespaces k8s/namespaces.yaml
 # creates and k8s/resource-quotas.yaml already puts a ResourceQuota in,
-# confirmed live via `kubectl get resourcequota -A`). Matched by the
-# well-known, immutable, auto-applied `kubernetes.io/metadata.name` label
-# every namespace carries (the same selector shape
-# k8s/network-policies.yaml's own `*-allow-from-platform-console` rules
-# already use) -- never a wildcard, never kube-system/istio-system/
-# flux-system/kube-public/kube-node-lease/local-path-storage/monitoring/
-# supabase-system/supabase-demo/default, all of which are deliberately
-# left OUT of this list.
+# confirmed live via `kubectl get resourcequota -A`) plus istio-system --
+# real platform Deployments (weaver, collector, etc.) land there too, and
+# CISO review flagged that this policy previously did not cover them
+# (source: ciso). Matched by the well-known, immutable, auto-applied
+# `kubernetes.io/metadata.name` label every namespace carries (the same
+# selector shape k8s/network-policies.yaml's own
+# `*-allow-from-platform-console` rules already use) -- never a wildcard,
+# never kube-system/flux-system/kube-public/kube-node-lease/
+# local-path-storage/monitoring/supabase-system/supabase-demo/default,
+# all of which are deliberately left OUT of this list.
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding
 metadata:
@@ -89,6 +91,7 @@ spec:
             - ggen
             - ggen-marketplace
             - platform-console
+            - istio-system
 ---
 # ------------------------------------------ Vulnerability admission gate
 #
@@ -164,8 +167,9 @@ spec:
 ---
 # Binding: same 5 platform namespaces as the resources policy above (not
 # a copy-paste coincidence -- these are the platform's own project
-# namespaces, the only ones this console ever deploys real Deployments
-# into). `paramRef` points at the real, single, namespace-scoped
+# namespaces, plus istio-system (real platform Deployments like weaver
+# and collector land there too -- CISO review flagged this gap, source:
+# ciso). `paramRef` points at the real, single, namespace-scoped
 # ConfigMap syncVulnDenylist writes to
 # (`platform-console-vuln-denylist`, `platform-console` namespace --
 # never a selector-based paramRef, since there is exactly one gate
@@ -207,3 +211,4 @@ spec:
             - ggen
             - ggen-marketplace
             - platform-console
+            - istio-system
