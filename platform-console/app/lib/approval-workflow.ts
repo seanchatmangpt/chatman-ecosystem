@@ -55,7 +55,9 @@ export type ApprovalAction =
   | "quota.override"
   | "tier.downgrade"
   | "backup.retention.change"
-  | "export-subscription.update";
+  | "export-subscription.update"
+  | "dr.failover"
+  | "dsar.erasure";
 export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   "org.delete",
   "quota.override",
@@ -72,6 +74,21 @@ export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   // distinct owner-role approver must sign off before bucket
   // credentials + schedule are ever accepted.
   "export-subscription.update",
+  // Multi-region DR failover: re-pins an org's real data-residency region
+  // AND triggers a real destructive restore Job that overwrites the
+  // target database Pod's live table data (lib/k8s.ts's createRestoreJob
+  // header comment) -- the same "destructive, high-blast-radius,
+  // requires a second distinct human" bar org.delete already sets. See
+  // lib/dr-failover.ts.
+  "dr.failover",
+  // GDPR Art.17 / CCPA erasure: redacts a real data subject's identity
+  // out of the durable audit trail and their per-org membership record.
+  // Irreversible (a redacted actor value cannot be un-redacted -- the
+  // original email is gone, by design) and, unlike a plain access
+  // export, changes durable state -- the same "irreversible,
+  // destructive, one owner acting alone is not enough" bar org.delete
+  // and dr.failover already set. See lib/dsar.ts.
+  "dsar.erasure",
 ];
 
 export type ApprovalStatus = "pending" | "approved" | "rejected";
@@ -114,6 +131,15 @@ export interface ApprovalResourcePayload {
     cadence: string;
     scope: string;
     enabled: boolean;
+  };
+  /** dr.failover: the non-secret shape of the requested failover -- which
+   * region this org would move FROM/TO and the human-supplied reason --
+   * so a second approver can see exactly what they're authorizing before
+   * signing off on a destructive, live-data-overwriting restore. */
+  requestedFailover?: {
+    fromRegion: string;
+    toRegion: string;
+    reason: string;
   };
 }
 

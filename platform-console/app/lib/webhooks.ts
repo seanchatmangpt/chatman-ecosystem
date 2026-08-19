@@ -29,6 +29,7 @@
  */
 import crypto from "node:crypto";
 import { createOrUpdateConfigMap, getConfigMap, type K8sResult } from "@/lib/k8s";
+import { recordDeliveryAttempt, MAX_DELIVERY_ATTEMPTS } from "@/lib/webhook-deliveries";
 
 export const WEBHOOKS_NAMESPACE = "platform-console";
 export const WEBHOOKS_CONFIGMAP = "platform-console-webhooks";
@@ -156,6 +157,20 @@ async function getWebhookSubscriptionsForEvent(
   return { ok: true, data: all.data.filter((s) => s.eventType === eventType) };
 }
 
+/** Real single-subscription lookup, used by the retry poller and the
+ * manual replay route -- neither has the subscription object in hand
+ * already (a retry/replay only carries a persisted deliveryId), and both
+ * need the subscription's CURRENT secret + URL (which may have changed,
+ * or the subscription may have been deleted, since the original
+ * attempt). */
+export async function getWebhookSubscriptionById(
+  id: string,
+): Promise<K8sResult<WebhookSubscription | null>> {
+  const all = await listWebhookSubscriptions();
+  if (!all.ok) return all;
+  return { ok: true, data: all.data.find((s) => s.id === id) ?? null };
+}
+
 // ConfigMap data keys must match [-._a-zA-Z0-9]+ -- this alphabet
 // (lowercase hex + hyphen) is a subset of that, so no encoding step is
 // ever needed the way lib/authz.ts's identifier keys require.
@@ -226,16 +241,77 @@ export interface WebhookDeliveryResult {
 const DELIVERY_TIMEOUT_MS = 5000;
 
 /**
+ * Real, single HTTP POST attempt -- pure network I/O, no persistence.
+ * Signs `body` (the EXACT bytes sent) with the subscription's current
+ * secret using the same `sha256=<hex>` convention GitHub's
+ * `X-Hub-Signature-256` uses, so any receiver can independently
+ * recompute `HMAC-SHA256(secret, rawBody)` and compare, byte for byte.
+ * Never throws -- a network error or timeout is captured into the
+ * returned result exactly like a non-2xx HTTP response is, so every
+ * caller (first attempt, scheduled retry, manual replay) handles both
+ * the same way.
+ */
+async function performHttpDelivery(
+  url: string,
+  body: string,
+  secret: string,
+  eventType: WebhookEventType,
+  deliveryId: string,
+): Promise<{ ok: boolean; status: number | null; error: string | null; durationMs: number; signature: string }> {
+  const signature = crypto.createHmac("sha256", secret).update(body).digest("hex");
+  const started = Date.now();
+  const controller = new AbortController();
+  const timeoutHandle = setTimeout(() => controller.abort(), DELIVERY_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "content-type": "application/json",
+        "x-platform-webhook-event": eventType,
+        "x-platform-webhook-delivery": deliveryId,
+        "x-platform-webhook-signature-256": `sha256=${signature}`,
+      },
+      body,
+    });
+    return {
+      ok: res.ok,
+      status: res.status,
+      error: res.ok ? null : `HTTP ${res.status}`,
+      durationMs: Date.now() - started,
+      signature,
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      status: null,
+      error: err instanceof Error ? err.message : String(err),
+      durationMs: Date.now() - started,
+      signature,
+    };
+  } finally {
+    clearTimeout(timeoutHandle);
+  }
+}
+
+/**
  * Real delivery: POSTs a real JSON payload
  * (`{ id, type, timestamp, data }`) to every subscriber URL registered
- * for `eventType`, with a real HMAC-SHA256 signature computed over the
- * EXACT serialized body bytes -- the same `sha256=<hex>` convention
- * GitHub's `X-Hub-Signature-256` uses, so any receiver can independently
- * recompute `HMAC-SHA256(secret, rawBody)` and compare, byte for byte.
- * Never throws past this function and never blocks the caller on a slow
- * or dead subscriber: every attempt is isolated in its own try/catch
- * with a real 5s timeout, and one subscriber's failure never affects
- * another's delivery or the triggering action itself.
+ * for `eventType`. Never throws past this function and never blocks the
+ * caller on a slow or dead subscriber: every attempt is isolated in its
+ * own try/catch (inside performHttpDelivery) with a real 5s timeout, and
+ * one subscriber's failure never affects another's delivery or the
+ * triggering action itself.
+ *
+ * Every attempt -- success or failure -- is persisted as attempt 1 of a
+ * real delivery row (lib/webhook-deliveries.ts, on the same Postgres
+ * lib/audit-db.ts already establishes). A failed attempt is NOT retried
+ * inline here: it is left `pending_retry` with a real `nextAttemptAt`
+ * (1m/5m/30m/2h exponential backoff, capped at 5 total attempts) for
+ * lib/webhook-poller.ts's existing 10s tick to pick up, so a slow or
+ * backoff-waiting subscriber never makes this function -- or the real
+ * platform action that triggered it -- block longer than one real HTTP
+ * attempt per subscriber.
  */
 export async function deliverWebhookEvent(
   eventType: WebhookEventType,
@@ -252,47 +328,39 @@ export async function deliverWebhookEvent(
     subscriptionsResult.data.map(async (subscription): Promise<WebhookDeliveryResult> => {
       const deliveryId = crypto.randomUUID();
       const body = JSON.stringify({ id: deliveryId, type: eventType, timestamp, data });
-      const signature = crypto.createHmac("sha256", subscription.secret).update(body).digest("hex");
-      const started = Date.now();
-      const controller = new AbortController();
-      const timeoutHandle = setTimeout(() => controller.abort(), DELIVERY_TIMEOUT_MS);
-      try {
-        const res = await fetch(subscription.url, {
-          method: "POST",
-          signal: controller.signal,
-          headers: {
-            "content-type": "application/json",
-            "x-platform-webhook-event": eventType,
-            "x-platform-webhook-delivery": deliveryId,
-            "x-platform-webhook-signature-256": `sha256=${signature}`,
-          },
-          body,
-        });
-        return {
-          subscriptionId: subscription.id,
-          url: subscription.url,
-          ok: res.ok,
-          status: res.status,
-          error: res.ok ? null : `HTTP ${res.status}`,
-          durationMs: Date.now() - started,
-          signature,
-          deliveryId,
-        };
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        return {
-          subscriptionId: subscription.id,
-          url: subscription.url,
-          ok: false,
-          status: null,
-          error: message,
-          durationMs: Date.now() - started,
-          signature,
-          deliveryId,
-        };
-      } finally {
-        clearTimeout(timeoutHandle);
-      }
+      const attempt = await performHttpDelivery(
+        subscription.url,
+        body,
+        subscription.secret,
+        eventType,
+        deliveryId,
+      );
+
+      recordDeliveryAttempt({
+        deliveryId,
+        subscriptionId: subscription.id,
+        eventType,
+        url: subscription.url,
+        body,
+        ok: attempt.ok,
+        httpStatus: attempt.status,
+        error: attempt.error,
+        durationMs: attempt.durationMs,
+        attemptNumber: 1,
+      }).catch((err) => {
+        console.error(`[webhooks] failed to persist delivery attempt ${deliveryId}:`, err);
+      });
+
+      return {
+        subscriptionId: subscription.id,
+        url: subscription.url,
+        ok: attempt.ok,
+        status: attempt.status,
+        error: attempt.error,
+        durationMs: attempt.durationMs,
+        signature: attempt.signature,
+        deliveryId,
+      };
     }),
   );
 
@@ -302,9 +370,81 @@ export async function deliverWebhookEvent(
         `[webhooks] delivered ${eventType} -> ${result.url} (HTTP ${result.status}, ${result.durationMs}ms, delivery=${result.deliveryId})`,
       );
     } else {
-      console.error(`[webhooks] delivery FAILED: ${eventType} -> ${result.url}: ${result.error}`);
+      console.error(
+        `[webhooks] delivery attempt 1 FAILED (will retry with backoff): ${eventType} -> ${result.url}: ${result.error}`,
+      );
     }
   }
 
   return results;
+}
+
+/**
+ * Redelivers ONE already-persisted event -- reused by both
+ * lib/webhook-poller.ts's automatic-retry tick and
+ * POST /api/webhooks/deliveries/[deliveryId]/replay's manual replay.
+ * Looks up the subscription's CURRENT secret/URL fresh (never the
+ * stored ones, since either may have changed or the subscription may
+ * have been deleted since the original attempt) and resends the EXACT
+ * persisted `body` bytes, so a receiver verifying the HMAC signature
+ * sees the same signed content it would have on the original attempt.
+ * Returns `null` (and dead-letters the row, since there is no longer a
+ * valid destination) if the subscription no longer exists.
+ */
+export async function redeliverStoredEvent(params: {
+  deliveryId: string;
+  subscriptionId: string;
+  eventType: WebhookEventType;
+  body: string;
+  attemptNumber: number;
+}): Promise<WebhookDeliveryResult | null> {
+  const subscriptionResult = await getWebhookSubscriptionById(params.subscriptionId);
+  if (!subscriptionResult.ok || !subscriptionResult.data) {
+    await recordDeliveryAttempt({
+      deliveryId: params.deliveryId,
+      subscriptionId: params.subscriptionId,
+      eventType: params.eventType,
+      url: "",
+      body: params.body,
+      ok: false,
+      httpStatus: null,
+      error: "subscription no longer exists",
+      durationMs: 0,
+      attemptNumber: MAX_DELIVERY_ATTEMPTS,
+    }).catch((err) => console.error(`[webhooks] failed to persist dead-letter for ${params.deliveryId}:`, err));
+    return null;
+  }
+  const subscription = subscriptionResult.data;
+
+  const attempt = await performHttpDelivery(
+    subscription.url,
+    params.body,
+    subscription.secret,
+    params.eventType,
+    params.deliveryId,
+  );
+
+  await recordDeliveryAttempt({
+    deliveryId: params.deliveryId,
+    subscriptionId: params.subscriptionId,
+    eventType: params.eventType,
+    url: subscription.url,
+    body: params.body,
+    ok: attempt.ok,
+    httpStatus: attempt.status,
+    error: attempt.error,
+    durationMs: attempt.durationMs,
+    attemptNumber: params.attemptNumber,
+  }).catch((err) => console.error(`[webhooks] failed to persist delivery attempt ${params.deliveryId}:`, err));
+
+  return {
+    subscriptionId: subscription.id,
+    url: subscription.url,
+    ok: attempt.ok,
+    status: attempt.status,
+    error: attempt.error,
+    durationMs: attempt.durationMs,
+    signature: attempt.signature,
+    deliveryId: params.deliveryId,
+  };
 }

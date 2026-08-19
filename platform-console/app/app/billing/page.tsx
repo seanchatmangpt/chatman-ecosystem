@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import Nav from "@/components/Nav";
+import ChangePlanButton from "@/components/ChangePlanButton";
 import OverageBillButton from "@/components/OverageBillButton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
@@ -109,11 +110,14 @@ export default async function BillingPage() {
                     <TableHead>Stripe subscription</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Last event</TableHead>
+                    {canBillOverage && <TableHead>Action</TableHead>}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {PLATFORM_NAMESPACES.map((ns) => {
                     const sub = subscriptions.data[ns];
+                    const hasLiveSubscription =
+                      sub?.status === "active" || sub?.status === "trialing" || sub?.status === "past_due";
                     return (
                       <TableRow key={ns}>
                         <TableCell className="text-foreground">
@@ -131,6 +135,16 @@ export default async function BillingPage() {
                         <TableCell className="text-xs text-muted-foreground">
                           {sub?.lastEventType ?? "—"}
                         </TableCell>
+                        {canBillOverage && (
+                          <TableCell>
+                            <ChangePlanButton namespace={ns} />
+                            {!hasLiveSubscription && (
+                              <p className="mt-1 max-w-[10rem] text-[10px] text-muted-foreground">
+                                No live subscription -- this will start one via Checkout.
+                              </p>
+                            )}
+                          </TableCell>
+                        )}
                       </TableRow>
                     );
                   })}

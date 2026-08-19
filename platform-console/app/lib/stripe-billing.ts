@@ -245,6 +245,126 @@ export async function createCheckoutSession(params: {
 }
 
 /**
+ * Real Stripe subscription PLAN CHANGE (upgrade/downgrade) -- the actual
+ * `stripe.subscriptions.update` mid-cycle swap, with Stripe computing real
+ * proration, as distinct from `ensureCustomerAndSubscription` above, which
+ * only ever CREATES a subscription. Calling `ensureCustomerAndSubscription`
+ * again for an org that already has a live subscription would call
+ * `stripe.subscriptions.create` a second time against the same customer --
+ * a real second, independently-billed Stripe Subscription object, i.e. a
+ * genuine double-charge bug, not a hypothetical one. This function is the
+ * fix: when a stored subscription already exists for `tenantNamespace` and
+ * its status is one Stripe still actively bills against (`active`,
+ * `trialing`, `past_due` -- a `past_due` org is still on a live
+ * subscription object, just failing invoices; changing its plan does not
+ * require it to first become fully current), swap that EXACT subscription's
+ * existing line item to the new price via `items: [{ id, price }]` --
+ * Stripe's own documented in-place-swap shape (not `items: [{ price }]`,
+ * which would ADD a second item onto the subscription rather than
+ * replacing the existing one) -- with `proration_behavior:
+ * "create_prorations"`, Stripe's real mid-cycle credit/charge computation
+ * (a real negative or positive proration InvoiceItem lands on the
+ * customer's next invoice; this function does not compute or fabricate
+ * that amount itself, it only requests the real Stripe behavior that
+ * computes it).
+ *
+ * Only when no stored subscription exists at all (a brand-new org, never
+ * checked out before) does this fall back to
+ * `ensureCustomerAndSubscription` + `createCheckoutSession` -- correctly
+ * CREATING the first subscription, the one case that operation is actually
+ * for.
+ */
+export async function changeSubscriptionPlan(params: {
+  tenantNamespace: string;
+  email: string;
+  newPriceId: string;
+  successUrl: string;
+  cancelUrl: string;
+}): Promise<
+  StripeResult<
+    | { mode: "swapped"; subscription: StoredSubscription; oldPriceId: string | null }
+    | { mode: "checkout"; checkoutUrl: string; stripeCustomerId: string; stripeSubscriptionId: string | null }
+  >
+> {
+  const stripe = getStripeClient();
+  if (!stripe) return { ok: false, error: "STRIPE_SECRET_KEY not configured" };
+
+  const existing = await getStoredSubscription(params.tenantNamespace);
+  if (!existing.ok) return { ok: false, error: existing.error };
+
+  const stored = existing.data;
+  const swappableStatus =
+    stored?.status === "active" || stored?.status === "trialing" || stored?.status === "past_due";
+
+  if (stored && stored.stripeSubscriptionId && swappableStatus) {
+    try {
+      const oldPriceId = stored.priceId;
+      const current = await stripe.subscriptions.retrieve(stored.stripeSubscriptionId);
+      const existingItemId = current.items.data[0]?.id;
+      if (!existingItemId) {
+        return {
+          ok: false,
+          error: `stored subscription ${stored.stripeSubscriptionId} has no subscription item to swap`,
+        };
+      }
+
+      const updated = await stripe.subscriptions.update(stored.stripeSubscriptionId, {
+        items: [{ id: existingItemId, price: params.newPriceId }],
+        proration_behavior: "create_prorations",
+      });
+
+      const record: StoredSubscription = {
+        tenantNamespace: params.tenantNamespace,
+        stripeCustomerId: stored.stripeCustomerId,
+        stripeSubscriptionId: updated.id,
+        status: updated.status,
+        priceId: updated.items.data[0]?.price?.id ?? params.newPriceId,
+        currentPeriodEnd: updated.items.data[0]?.current_period_end
+          ? new Date(updated.items.data[0].current_period_end * 1000).toISOString()
+          : null,
+        updatedAt: new Date().toISOString(),
+        lastEventId: null,
+        lastEventType: "subscription.updated.via_change_plan",
+      };
+      const put = await putStoredSubscription(record);
+      if (!put.ok) return { ok: false, error: put.error };
+      return { ok: true, data: { mode: "swapped", subscription: record, oldPriceId } };
+    } catch (e) {
+      return { ok: false, error: `Stripe API error: ${(e as Error).message}` };
+    }
+  }
+
+  // No live subscription on file -- fall back to the real
+  // create-customer(-if-needed) + create-subscription + Checkout Session
+  // path, which is correct for a first-ever subscription.
+  const ensured = await ensureCustomerAndSubscription({
+    tenantNamespace: params.tenantNamespace,
+    email: params.email,
+    priceId: params.newPriceId,
+  });
+  if (!ensured.ok) return { ok: false, error: ensured.error };
+
+  const checkout = await createCheckoutSession({
+    tenantNamespace: params.tenantNamespace,
+    customerId: ensured.data.stripeCustomerId,
+    priceId: params.newPriceId,
+    successUrl: params.successUrl,
+    cancelUrl: params.cancelUrl,
+  });
+  if (!checkout.ok) return { ok: false, error: checkout.error };
+
+  return {
+    ok: true,
+    data: {
+      mode: "checkout",
+      checkoutUrl: checkout.data.url,
+      stripeCustomerId: ensured.data.stripeCustomerId,
+      stripeSubscriptionId: ensured.data.stripeSubscriptionId,
+    },
+  };
+}
+
+/**
  * Real webhook signature verification -- Stripe's own HMAC-SHA256
  * `Stripe-Signature` header scheme, the same convention family
  * lib/webhooks.ts documents for this app's outbound webhooks (there:

@@ -48,7 +48,8 @@ import { checkCostAnomalies } from "@/lib/cost-anomaly";
 import { checkQuotaEnforcement } from "@/lib/quota-enforcement";
 import { reconcilePlanState } from "@/lib/plan-state";
 import { recomputeAllOverageEstimates } from "@/lib/overage-billing";
-import { deliverWebhookEvent } from "@/lib/webhooks";
+import { deliverWebhookEvent, redeliverStoredEvent, type WebhookEventType } from "@/lib/webhooks";
+import { listDueRetries } from "@/lib/webhook-deliveries";
 
 const POLL_INTERVAL_MS = 10_000;
 
@@ -265,6 +266,36 @@ async function pollOverageEstimates(): Promise<void> {
   }
 }
 
+/**
+ * Real retry-with-backoff tick: picks up every delivery
+ * lib/webhook-deliveries.ts's own backoff schedule marked `pending_retry`
+ * with a `next_attempt_at` that has now passed, and redelivers the exact
+ * persisted bytes via lib/webhooks.ts's redeliverStoredEvent -- the same
+ * function POST /api/webhooks/deliveries/[deliveryId]/replay uses for a
+ * manual replay, so an automatic retry and a manual replay share one
+ * real delivery code path, never two divergent implementations of "send
+ * this again." A subscriber's continued failure is left for the NEXT
+ * scheduled retry (or eventual dead-letter) by redeliverStoredEvent's own
+ * recordDeliveryAttempt call -- this loop never blocks on one slow
+ * subscriber affecting another's due retry.
+ */
+async function pollWebhookRetries(): Promise<void> {
+  const result = await listDueRetries();
+  if (!result.ok) {
+    console.error(`[webhook-poller] listDueRetries failed: ${result.error}`);
+    return;
+  }
+  for (const delivery of result.data) {
+    await redeliverStoredEvent({
+      deliveryId: delivery.deliveryId,
+      subscriptionId: delivery.subscriptionId,
+      eventType: delivery.eventType as WebhookEventType,
+      body: delivery.body,
+      attemptNumber: delivery.attemptNumber + 1,
+    });
+  }
+}
+
 async function tick(): Promise<void> {
   if (!hasClusterCredentials()) return; // local dev / build -- nothing to poll
   await Promise.all([
@@ -275,6 +306,7 @@ async function tick(): Promise<void> {
     pollQuotaEnforcement(),
     pollPlanState(),
     pollOverageEstimates(),
+    pollWebhookRetries(),
   ]);
 }
 

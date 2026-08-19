@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { WebhookEventType, WebhookSubscription } from "@/lib/webhooks";
+import WebhookDeliveryLog from "@/components/WebhookDeliveryLog";
 
 // `WEBHOOK_EVENT_TYPES` is re-declared here (rather than a runtime
 // import from @/lib/webhooks) deliberately: lib/webhooks.ts pulls in
@@ -33,6 +34,7 @@ export default function WebhooksPanel({ subscriptions }: { subscriptions: Webhoo
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [justCreated, setJustCreated] = useState<WebhookSubscription | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   async function onCreate(e: React.FormEvent) {
     e.preventDefault();
@@ -102,24 +104,36 @@ export default function WebhooksPanel({ subscriptions }: { subscriptions: Webhoo
         {subscriptions.length > 0 && (
           <div className="divide-y divide-border">
             {subscriptions.map((s) => (
-              <div key={s.id} className="flex items-center justify-between gap-4 py-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-white">
-                    <code>{s.eventType}</code>
-                  </p>
-                  <p className="truncate text-xs text-gray-500">{s.url}</p>
-                  <p className="text-xs text-gray-600">
-                    created {new Date(s.createdAt).toLocaleString()} by {s.createdBy}
-                  </p>
+              <div key={s.id} className="py-3">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-white">
+                      <code>{s.eventType}</code>
+                    </p>
+                    <p className="truncate text-xs text-gray-500">{s.url}</p>
+                    <p className="text-xs text-gray-600">
+                      created {new Date(s.createdAt).toLocaleString()} by {s.createdBy}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedId(expandedId === s.id ? null : s.id)}
+                      className="rounded-md border border-border px-3 py-1.5 text-xs text-gray-300 hover:bg-white/5"
+                    >
+                      {expandedId === s.id ? "Hide deliveries" : "View deliveries"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onDelete(s.id)}
+                      disabled={deletingId === s.id}
+                      className="rounded-md border border-red-900 px-3 py-1.5 text-xs text-red-300 hover:bg-red-950/40 disabled:opacity-50"
+                    >
+                      {deletingId === s.id ? "Deleting..." : "Delete"}
+                    </button>
+                  </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => onDelete(s.id)}
-                  disabled={deletingId === s.id}
-                  className="shrink-0 rounded-md border border-red-900 px-3 py-1.5 text-xs text-red-300 hover:bg-red-950/40 disabled:opacity-50"
-                >
-                  {deletingId === s.id ? "Deleting..." : "Delete"}
-                </button>
+                {expandedId === s.id && <WebhookDeliveryLog subscriptionId={s.id} />}
               </div>
             ))}
           </div>

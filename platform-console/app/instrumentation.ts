@@ -11,5 +11,7 @@ export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
     const { startWebhookPoller } = await import("@/lib/webhook-poller");
     startWebhookPoller();
+    const { startDsarPoller } = await import("@/lib/dsar");
+    startDsarPoller();
   }
 }
