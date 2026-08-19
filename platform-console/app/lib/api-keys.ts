@@ -227,6 +227,37 @@ export async function revokeApiKey(id: string): Promise<K8sResult<ApiKeySummary>
   return { ok: true, data: toSummary(record) };
 }
 
+/**
+ * Real tier upgrade/downgrade on an EXISTING key -- distinct from
+ * `CreateApiKeyInput.tier` (set once at mint time): this is the mutation
+ * the "rate-limit tier as a paid add-on" capability needs, called from
+ * PUT /api/api-keys/[id]/rate-limit after that route has already gated on
+ * `owner` and (for an actual upgrade) attached the real Stripe add-on
+ * price via lib/stripe-billing.ts's `attachRateLimitAddonPrice`. Read-
+ * modify-write against the same Secret key every other mutation here
+ * uses -- no separate storage for the tier field.
+ */
+export async function updateApiKeyTier(
+  id: string,
+  tier: ApiKeyTier,
+): Promise<K8sResult<ApiKeySummary>> {
+  const result = await getSecretData(API_KEYS_NAMESPACE, API_KEYS_SECRET);
+  if (!result.ok) return result;
+  const raw = result.data?.[secretDataKeyFor(id)];
+  const record = raw ? parseRecord(raw) : null;
+  if (!record) return { ok: false, error: `no api key found with id '${id}'` };
+  if (record.revoked) return { ok: false, error: `api key '${id}' is revoked` };
+
+  if (record.tier !== tier) {
+    record.tier = tier;
+    const patched = await createOrUpdateSecret(API_KEYS_NAMESPACE, API_KEYS_SECRET, {
+      [secretDataKeyFor(id)]: JSON.stringify(record),
+    });
+    if (!patched.ok) return patched;
+  }
+  return { ok: true, data: toSummary(record) };
+}
+
 export interface ResolvedApiKeyAuth {
   identifier: string;
   role: Role;

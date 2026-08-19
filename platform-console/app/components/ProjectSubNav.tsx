@@ -8,6 +8,7 @@ const tabs = [
   { segment: "backups", label: "Backups" },
   { segment: "migrations", label: "Migrations" },
   { segment: "iac", label: "IaC" },
+  { segment: "settings", label: "Settings" },
 ];
 
 export default function ProjectSubNav({

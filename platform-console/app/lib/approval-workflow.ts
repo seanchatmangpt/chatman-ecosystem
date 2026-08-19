@@ -38,6 +38,7 @@
  *      satisfy a new attempt at the guarded action.
  */
 import { createOrUpdateConfigMap, getConfigMap, type K8sResult } from "@/lib/k8s";
+import type { ProjectTier } from "@/lib/tiers";
 
 export const APPROVALS_NAMESPACE = "platform-console";
 export const APPROVALS_CONFIGMAP = "platform-console-approvals";
@@ -58,6 +59,26 @@ export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
 
 export type ApprovalStatus = "pending" | "approved" | "rejected";
 
+/**
+ * Real, action-specific detail carried alongside the generic
+ * requester/target/status fields every ApprovalRequest already had --
+ * lets an approver see WHAT they're signing off on (the exact new quota
+ * ceiling, or the exact tier the org would move to) instead of just an
+ * opaque targetId. Optional and additive: `org.delete` (the original
+ * guarded action) sets neither field and round-trips through
+ * JSON.parse/stringify unchanged, same forward-compatible-optional-field
+ * discipline lib/orgs.ts's OrgBranding/region fields already establish.
+ */
+export interface ApprovalResourcePayload {
+  /** quota.override: the requested `ResourceQuota.spec.hard` map --
+   * same key shape (`pods`, `requests.cpu`, `limits.memory`, ...)
+   * lib/tiers.ts's resourceQuotaHardFor/lib/k8s.ts's patchResourceQuotaHard
+   * already use. */
+  requestedHard?: Record<string, string>;
+  /** tier.downgrade: the tier the Project would move to once approved. */
+  requestedTier?: ProjectTier;
+}
+
 export interface ApprovalRequest {
   requestId: string;
   action: ApprovalAction;
@@ -68,6 +89,7 @@ export interface ApprovalRequest {
   approvedBy?: string;
   approvedAt?: string;
   reason?: string;
+  resourcePayload?: ApprovalResourcePayload;
 }
 
 function isApprovalAction(value: string): value is ApprovalAction {
@@ -138,6 +160,7 @@ export async function createApprovalRequest(input: {
   action: ApprovalAction;
   targetId: string;
   requestedBy: string;
+  resourcePayload?: ApprovalResourcePayload;
 }): Promise<K8sResult<ApprovalRequest>> {
   const requestId = globalThis.crypto.randomUUID();
   const request: ApprovalRequest = {
@@ -147,6 +170,7 @@ export async function createApprovalRequest(input: {
     requestedBy: input.requestedBy,
     requestedAt: new Date().toISOString(),
     status: "pending",
+    ...(input.resourcePayload ? { resourcePayload: input.resourcePayload } : {}),
   };
   const result = await createOrUpdateConfigMap(APPROVALS_NAMESPACE, APPROVALS_CONFIGMAP, {
     [requestId]: JSON.stringify(request),
@@ -236,6 +260,7 @@ export async function requireApproval(input: {
   action: ApprovalAction;
   targetId: string;
   requestedBy: string;
+  resourcePayload?: ApprovalResourcePayload;
 }): Promise<
   | { ok: true; approval: ApprovalRequest }
   | { ok: false; request: ApprovalRequest }

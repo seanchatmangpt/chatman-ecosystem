@@ -153,3 +153,47 @@ export const TIER_GATED_FLAGS: Record<string, ProjectTier> = {
 export const TIER_GATED_FLAG_OWNER_PROJECT: Record<string, string> = {
   "verbose-status": "autofde-lab",
 };
+
+/**
+ * Real per-org contractual SLA / support-priority tier (AWS Enterprise
+ * Support / GCP Premium Support-style paid line item): closes the gap
+ * that this console's Project tier (starter/pro/enterprise, above) sets
+ * a compute/quota ceiling but names no contractual uptime commitment or
+ * support response-time SLA -- the specific line item enterprise
+ * procurement will not sign without (e.g. "99.9% uptime, 4hr response"
+ * vs. "99.99% uptime, 1hr response, 24/7"). Deliberately a SEPARATE axis
+ * from ProjectTier (an org can be on the `enterprise` Project tier for
+ * compute/quota purposes while still contracted at the `standard` SLA
+ * tier, or vice versa if Sales prices SLA as its own add-on) -- so it is
+ * its own `SlaTier` union, not reused from `ProjectTier`.
+ */
+export type SlaTier = "standard" | "priority" | "enterprise-247";
+
+export const SLA_TIERS: readonly SlaTier[] = ["standard", "priority", "enterprise-247"];
+
+export const DEFAULT_SLA_TIER: SlaTier = "standard";
+
+export function isSlaTier(value: string): value is SlaTier {
+  return value === "standard" || value === "priority" || value === "enterprise-247";
+}
+
+export interface SlaTierDefault {
+  slaResponseTimeHours: number;
+  slaUptimeTargetPct: number;
+}
+
+/**
+ * Real, fixed per-SLA-tier lookup table -- the single source of truth
+ * `PUT /api/orgs/[id]/sla` recomputes `slaResponseTimeHours` and
+ * `slaUptimeTargetPct` from whenever `slaTier` changes, same
+ * "table keyed by tier, never a free-text/client-supplied number"
+ * discipline `TIER_RESOURCE_QUOTAS` above already established for
+ * ResourceQuota ceilings. `standard` matches the uptime this console's
+ * infra can actually support without a dedicated on-call rotation;
+ * `priority` and `enterprise-247` are the paid escalation tiers.
+ */
+export const SLA_TIER_DEFAULTS: Record<SlaTier, SlaTierDefault> = {
+  standard: { slaResponseTimeHours: 24, slaUptimeTargetPct: 99.9 },
+  priority: { slaResponseTimeHours: 4, slaUptimeTargetPct: 99.95 },
+  "enterprise-247": { slaResponseTimeHours: 1, slaUptimeTargetPct: 99.99 },
+};

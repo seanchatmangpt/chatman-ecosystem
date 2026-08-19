@@ -63,6 +63,7 @@ import {
   type K8sResult,
   type NamespaceResourceUsage,
 } from "@/lib/k8s";
+import { listCostAnomalyStatus } from "@/lib/cost-anomaly";
 
 export const QUOTA_ENFORCEMENT_NAMESPACE = "platform-console";
 export const QUOTA_ENFORCEMENT_CONFIGMAP = "platform-quota-enforcement";
@@ -113,6 +114,9 @@ function thresholdKey(namespace: string): string {
 function enforcedKey(namespace: string): string {
   return `enforced.${namespace}`;
 }
+function budgetKey(namespace: string): string {
+  return `budget.${namespace}`;
+}
 
 function parseConfig(namespace: string, raw: string): QuotaEnforcementConfig | null {
   try {
@@ -130,6 +134,66 @@ function parseConfig(namespace: string, raw: string): QuotaEnforcementConfig | n
         namespace,
         thresholdPercent: p.thresholdPercent,
         targetDeployment: p.targetDeployment,
+        setBy: p.setBy,
+        setAt: p.setAt,
+      };
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Per-project (per-namespace, same key granularity as `threshold.*`
+ * above) FinOps hard-cap config -- the real block-not-just-alert
+ * counterpart to lib/cost-anomaly.ts's alert-only EWMA detector and
+ * lib/overage-billing.ts's bill-for-overage-but-never-block path.
+ * `monthlyBudgetUsd` is the operator-set ceiling; `hardStop` decides
+ * whether crossing it actually blocks new resource creation (checkBudget
+ * below) or is purely informational (visible on the status/UI, enforces
+ * nothing) -- mirrors QuotaEnforcementConfig's own
+ * configured-but-not-yet-crossed vs. actually-enforced distinction.
+ */
+export interface ProjectBudgetConfig {
+  namespace: string;
+  monthlyBudgetUsd: number;
+  hardStop: boolean;
+  setBy: string;
+  setAt: string;
+}
+
+export interface ProjectBudgetStatus {
+  namespace: string;
+  config: ProjectBudgetConfig | null;
+  /** Real current spend, read from the exact same real EWMA-detector
+   * current-spend figure lib/cost-anomaly.ts's listCostAnomalyStatus
+   * already computes for /cost-anomaly -- no second cost calculation.
+   * `null` only when that underlying Prometheus query failed this call,
+   * never a fabricated zero. */
+  currentSpendUsd: number | null;
+  spendError: string | null;
+  /** true only when a config exists, hardStop is true, and
+   * currentSpendUsd is a real (non-null) number >= monthlyBudgetUsd --
+   * the exact predicate checkBudget below gates resource creation on. */
+  overBudget: boolean;
+}
+
+function parseBudgetConfig(namespace: string, raw: string): ProjectBudgetConfig | null {
+  try {
+    const p = JSON.parse(raw) as Partial<ProjectBudgetConfig>;
+    if (
+      typeof p.monthlyBudgetUsd === "number" &&
+      Number.isFinite(p.monthlyBudgetUsd) &&
+      p.monthlyBudgetUsd > 0 &&
+      typeof p.hardStop === "boolean" &&
+      typeof p.setBy === "string" &&
+      typeof p.setAt === "string"
+    ) {
+      return {
+        namespace,
+        monthlyBudgetUsd: p.monthlyBudgetUsd,
+        hardStop: p.hardStop,
         setBy: p.setBy,
         setAt: p.setAt,
       };
@@ -166,6 +230,8 @@ interface RawEnforcementConfigMap {
   configs: QuotaEnforcementConfig[];
   /** Keyed by namespace. */
   enforced: Map<string, QuotaEnforcementRecord>;
+  /** Keyed by namespace -- the `budget.<namespace>` key family. */
+  budgets: Map<string, ProjectBudgetConfig>;
 }
 
 async function readRawConfigMap(): Promise<K8sResult<RawEnforcementConfigMap>> {
@@ -175,6 +241,7 @@ async function readRawConfigMap(): Promise<K8sResult<RawEnforcementConfigMap>> {
 
   const configs: QuotaEnforcementConfig[] = [];
   const enforced = new Map<string, QuotaEnforcementRecord>();
+  const budgets = new Map<string, ProjectBudgetConfig>();
   for (const [key, raw] of Object.entries(data)) {
     if (key.startsWith("threshold.")) {
       const namespace = key.slice("threshold.".length);
@@ -184,10 +251,14 @@ async function readRawConfigMap(): Promise<K8sResult<RawEnforcementConfigMap>> {
       const namespace = key.slice("enforced.".length);
       const parsed = namespace ? parseRecord(raw) : null;
       if (parsed) enforced.set(namespace, parsed);
+    } else if (key.startsWith("budget.")) {
+      const namespace = key.slice("budget.".length);
+      const parsed = namespace ? parseBudgetConfig(namespace, raw) : null;
+      if (parsed) budgets.set(namespace, parsed);
     }
   }
   configs.sort((a, b) => a.namespace.localeCompare(b.namespace));
-  return { ok: true, data: { configs, enforced } };
+  return { ok: true, data: { configs, enforced, budgets } };
 }
 
 /** Real list of every configured enforcement threshold, sorted by namespace. */
@@ -300,6 +371,103 @@ export async function listQuotaEnforcementStatus(): Promise<K8sResult<QuotaEnfor
     }),
   );
   return { ok: true, data: statuses };
+}
+
+/**
+ * Sets (creates or replaces) one namespace's monthly budget config via a
+ * real RFC 7386 merge patch -- same one-key-at-a-time convention as
+ * setQuotaEnforcementConfig above and lib/budget-alerts.ts's
+ * setBudgetThreshold. Backs PUT /api/projects/[name]/budget.
+ */
+export async function setProjectBudget(
+  namespace: string,
+  monthlyBudgetUsd: number,
+  hardStop: boolean,
+  setBy: string,
+): Promise<K8sResult<ProjectBudgetConfig>> {
+  const record: ProjectBudgetConfig = {
+    namespace,
+    monthlyBudgetUsd,
+    hardStop,
+    setBy,
+    setAt: new Date().toISOString(),
+  };
+  const result = await createOrUpdateConfigMap(QUOTA_ENFORCEMENT_NAMESPACE, QUOTA_ENFORCEMENT_CONFIGMAP, {
+    [budgetKey(namespace)]: JSON.stringify(record),
+  });
+  if (!result.ok) return result;
+  return { ok: true, data: record };
+}
+
+/**
+ * Real, read-only per-namespace budget status: the configured ceiling
+ * (if any) next to a FRESH real current-spend read via
+ * lib/cost-anomaly.ts's listCostAnomalyStatus -- the exact same real
+ * EWMA-detector current-spend figure /cost-anomaly already reports, never
+ * a second cost calculation. Backs GET /api/projects/[name]/budget and
+ * checkBudget below; never writes anything.
+ */
+export async function getProjectBudgetStatus(namespace: string): Promise<K8sResult<ProjectBudgetStatus>> {
+  const raw = await readRawConfigMap();
+  if (!raw.ok) return raw;
+  const config = raw.data.budgets.get(namespace) ?? null;
+
+  const spendResult = await listCostAnomalyStatus([namespace]);
+  if (!spendResult.ok) return spendResult;
+  const spend = spendResult.data[0] ?? null;
+  const currentSpendUsd = spend?.currentSpend ?? null;
+  const spendError = spend?.error ?? null;
+
+  const overBudget =
+    config !== null &&
+    config.hardStop &&
+    currentSpendUsd !== null &&
+    currentSpendUsd >= config.monthlyBudgetUsd;
+
+  return {
+    ok: true,
+    data: { namespace, config, currentSpendUsd, spendError, overBudget },
+  };
+}
+
+export interface BudgetCheckResult {
+  allowed: boolean;
+  reason: string | null;
+}
+
+/**
+ * The real FinOps hard-stop enforcement hook: additive to, never a
+ * replacement for, the ResourceQuota-percent ceiling rejection this
+ * module's own resource-provisioning callers already apply -- mirrors
+ * that exact "fail closed only when a config genuinely says so" shape.
+ * Called from POST /api/projects (and any other resource-creation path
+ * for this namespace) BEFORE the real k8s create call, never after.
+ *
+ * No budget configured for `namespace`, or a configured budget with
+ * `hardStop: false` (alert-only, matching lib/cost-anomaly.ts's own
+ * alert-without-block guarantee), or a real current-spend query failure
+ * (fail-open on a measurement error -- a broken Prometheus query must
+ * never itself become an outage for legitimate provisioning, same
+ * fail-closed-on-action/fail-open-on-observation-failure split
+ * checkQuotaEnforcement's own header comment documents) all return
+ * `allowed: true`. Only `hardStop: true` AND a real, successfully
+ * measured `currentSpendUsd >= monthlyBudgetUsd` returns `allowed: false`
+ * with a human-readable `reason`.
+ */
+export async function checkBudget(namespace: string): Promise<K8sResult<BudgetCheckResult>> {
+  const statusResult = await getProjectBudgetStatus(namespace);
+  if (!statusResult.ok) return statusResult;
+  const status = statusResult.data;
+
+  if (!status.overBudget) {
+    return { ok: true, data: { allowed: true, reason: null } };
+  }
+
+  const reason =
+    `monthly budget exceeded for namespace '${namespace}': ` +
+    `current spend $${status.currentSpendUsd!.toFixed(2)} >= ` +
+    `budget $${status.config!.monthlyBudgetUsd.toFixed(2)} (hard stop enabled)`;
+  return { ok: true, data: { allowed: false, reason } };
 }
 
 export interface QuotaEnforcementAction {

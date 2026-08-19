@@ -35,6 +35,43 @@ export default function ApiKeysPanel({
   const [justCreated, setJustCreated] = useState<{ plaintext: string; prefix: string } | null>(
     null,
   );
+  // Per-key pending selection for the rate-limit tier upgrade/downgrade
+  // control -- keyed by key id so each row's <select> is independent.
+  const [pendingTier, setPendingTier] = useState<Record<string, ApiKeyTier>>({});
+  const [upgradingId, setUpgradingId] = useState<string | null>(null);
+
+  async function onUpgrade(id: string, currentTier: ApiKeyTier) {
+    const nextTier = pendingTier[id] ?? currentTier;
+    if (nextTier === currentTier) return;
+    const tenantNamespace =
+      nextTier === "pro" || nextTier === "enterprise"
+        ? window.prompt(
+            `Upgrading to '${nextTier}' attaches a real Stripe rate-limit add-on price to your org's subscription. Which tenant namespace's subscription should be billed?`,
+            "platform-console",
+          )
+        : null;
+    if ((nextTier === "pro" || nextTier === "enterprise") && !tenantNamespace) return;
+
+    setUpgradingId(id);
+    setError(null);
+    try {
+      const res = await fetch(`/api/api-keys/${encodeURIComponent(id)}/rate-limit`, {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ tier: nextTier, tenantNamespace: tenantNamespace ?? undefined }),
+      });
+      const body = await res.json();
+      if (!res.ok) {
+        setError(body.error ?? `HTTP ${res.status}`);
+        return;
+      }
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setUpgradingId(null);
+    }
+  }
 
   async function onCreate(e: React.FormEvent) {
     e.preventDefault();
@@ -141,20 +178,52 @@ export default function ApiKeysPanel({
                     )}
                   </p>
                 </div>
-                {!k.revoked ? (
-                  <button
-                    type="button"
-                    onClick={() => onRevoke(k.id)}
-                    disabled={revokingId === k.id}
-                    className="rounded-md border border-red-900 px-3 py-1.5 text-xs text-red-300 hover:bg-red-950/40 disabled:opacity-50"
-                  >
-                    {revokingId === k.id ? "Revoking..." : "Revoke"}
-                  </button>
-                ) : (
-                  <span className="rounded-md border border-border px-3 py-1.5 text-xs text-gray-500">
-                    revoked
-                  </span>
-                )}
+                <div className="flex items-center gap-2">
+                  {!k.revoked && (
+                    <>
+                      <select
+                        value={pendingTier[k.id] ?? k.tier}
+                        onChange={(e) =>
+                          setPendingTier((prev) => ({
+                            ...prev,
+                            [k.id]: e.target.value as ApiKeyTier,
+                          }))
+                        }
+                        className="rounded-md border border-border bg-bg px-2 py-1.5 text-xs text-white"
+                      >
+                        {API_KEY_TIERS.map((t) => (
+                          <option key={t} value={t}>
+                            {t} ({TIER_LIMITS[t].maxTokens} req/{TIER_LIMITS[t].fillIntervalMs / 1000}s)
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => onUpgrade(k.id, k.tier)}
+                        disabled={
+                          upgradingId === k.id || (pendingTier[k.id] ?? k.tier) === k.tier
+                        }
+                        className="rounded-md border border-accent px-3 py-1.5 text-xs text-accent hover:bg-accent/10 disabled:opacity-50"
+                      >
+                        {upgradingId === k.id ? "Updating..." : "Update tier"}
+                      </button>
+                    </>
+                  )}
+                  {!k.revoked ? (
+                    <button
+                      type="button"
+                      onClick={() => onRevoke(k.id)}
+                      disabled={revokingId === k.id}
+                      className="rounded-md border border-red-900 px-3 py-1.5 text-xs text-red-300 hover:bg-red-950/40 disabled:opacity-50"
+                    >
+                      {revokingId === k.id ? "Revoking..." : "Revoke"}
+                    </button>
+                  ) : (
+                    <span className="rounded-md border border-border px-3 py-1.5 text-xs text-gray-500">
+                      revoked
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>

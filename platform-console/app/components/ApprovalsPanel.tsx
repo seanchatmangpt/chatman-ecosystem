@@ -17,6 +17,47 @@ function statusBadgeClass(status: ApprovalRequest["status"]): string {
 }
 
 /**
+ * Real per-action payload rendering: `quota.override` and
+ * `tier.downgrade` both now carry a real `resourcePayload` (see
+ * lib/approval-workflow.ts's ApprovalResourcePayload) an approver needs
+ * to actually see before signing off -- the exact requested
+ * `spec.hard` map, or the exact tier the org would move to -- instead of
+ * the generic "confirm this action" `org.delete` gets by default (no
+ * payload at all: its risk is fully described by action + targetId
+ * alone).
+ */
+function PayloadDetail({ approval }: { approval: ApprovalRequest }) {
+  const payload = approval.resourcePayload;
+  if (!payload) return null;
+
+  if (approval.action === "quota.override" && payload.requestedHard) {
+    const entries = Object.entries(payload.requestedHard);
+    return (
+      <table className="mt-1 w-full max-w-xs text-xs text-gray-400">
+        <tbody>
+          {entries.map(([key, value]) => (
+            <tr key={key}>
+              <td className="pr-3 font-mono text-gray-500">{key}</td>
+              <td className="font-mono text-gray-200">{value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  }
+
+  if (approval.action === "tier.downgrade" && payload.requestedTier) {
+    return (
+      <p className="mt-1 text-xs text-gray-400">
+        requested tier: <span className="font-mono text-gray-200">{payload.requestedTier}</span>
+      </p>
+    );
+  }
+
+  return null;
+}
+
+/**
  * Real maker-checker approvals UI: lists every pending/recent
  * ApprovalRequest from GET /api/approvals and lets an owner-role identity
  * approve or reject a pending one via POST /api/approvals/[id]. No
@@ -97,7 +138,10 @@ export default function ApprovalsPanel({
               const isSelfRequest = a.requestedBy === currentIdentifier;
               return (
                 <tr key={a.requestId}>
-                  <td className="px-4 py-2 font-mono text-gray-200">{a.action}</td>
+                  <td className="px-4 py-2 font-mono text-gray-200">
+                    {a.action}
+                    <PayloadDetail approval={a} />
+                  </td>
                   <td className="px-4 py-2 font-mono text-gray-400">{a.targetId}</td>
                   <td className="px-4 py-2 text-gray-300">{a.requestedBy}</td>
                   <td className="px-4 py-2 text-gray-500">

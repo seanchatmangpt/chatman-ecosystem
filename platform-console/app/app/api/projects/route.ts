@@ -5,6 +5,7 @@ import { createProjectWithDatabase, listProjects } from "@/lib/k8s";
 import { requireRole } from "@/lib/authz";
 import { deliverWebhookEvent } from "@/lib/webhooks";
 import { DEFAULT_PROJECT_TIER, isProjectTier } from "@/lib/tiers";
+import { checkBudget } from "@/lib/quota-enforcement";
 
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // reads the ServiceAccount token/CA from disk, which the edge runtime
@@ -95,6 +96,29 @@ export async function POST(request: NextRequest) {
       { error: `invalid tier '${tierRaw}' -- must be starter, pro, or enterprise` },
       { status: 400 },
     );
+  }
+
+  // Real FinOps hard-stop (lib/quota-enforcement.ts's checkBudget):
+  // additive to the ResourceQuota-percent enforcement that module already
+  // applies, never a replacement for it. A namespace with `hardStop: true`
+  // and real measured spend already at or above its monthly budget is
+  // rejected here BEFORE the real k8s create call -- distinct from
+  // lib/cost-anomaly.ts (alerts, never blocks) and lib/overage-billing.ts
+  // (bills for the overage, never blocks).
+  const budgetCheck = await checkBudget(namespace);
+  if (!budgetCheck.ok) {
+    return NextResponse.json({ error: budgetCheck.error }, { status: 502 });
+  }
+  if (!budgetCheck.data.allowed) {
+    writeAuditLogEntry({
+      timestamp: new Date().toISOString(),
+      actor,
+      method: "POST",
+      path: "/api/projects",
+      status: 402,
+      requestId,
+    });
+    return NextResponse.json({ error: budgetCheck.data.reason }, { status: 402 });
   }
 
   const result = await createProjectWithDatabase({

@@ -33,7 +33,14 @@ import {
   listProjects,
   type K8sResult,
 } from "@/lib/k8s";
-import { tierAtLeast, DEFAULT_PROJECT_TIER, type ProjectTier } from "@/lib/tiers";
+import {
+  tierAtLeast,
+  DEFAULT_PROJECT_TIER,
+  SLA_TIER_DEFAULTS,
+  DEFAULT_SLA_TIER,
+  type ProjectTier,
+  type SlaTier,
+} from "@/lib/tiers";
 
 export const ORGS_REGISTRY_NAMESPACE = "platform-console";
 export const ORGS_REGISTRY_CONFIGMAP = "platform-console-orgs";
@@ -60,6 +67,9 @@ export interface Org {
   createdAt: string;
   branding?: OrgBranding;
   region?: string;
+  slaTier?: SlaTier;
+  slaResponseTimeHours?: number;
+  slaUptimeTargetPct?: number;
 }
 
 interface OrgRegistryEntry {
@@ -68,6 +78,20 @@ interface OrgRegistryEntry {
   ownerIdentifier: string;
   createdAt: string;
   branding?: OrgBranding;
+  // Per-org contractual SLA / support-priority tier (AWS Enterprise
+  // Support / GCP Premium Support-style paid line item Sales can price
+  // separately from compute tier): which of SLA_TIER_DEFAULTS
+  // (lib/tiers.ts) this org is contracted at, plus the two concrete
+  // numbers procurement actually signs -- response-time commitment (in
+  // hours) and uptime target (percent) -- copied from that table at
+  // write time so a later change to the table's defaults never silently
+  // rewrites an already-signed contract's numbers out from under an
+  // existing org. Optional and unset by default, same forward-
+  // compatible-optional-field round-trip discipline as `branding`/
+  // `region` above.
+  slaTier?: SlaTier;
+  slaResponseTimeHours?: number;
+  slaUptimeTargetPct?: number;
   // Data residency / region pinning (AWS/GCP/Azure enterprise-tier
   // console line item; GDPR data-localization / US financial
   // data-residency requirement for regulated buyers). Optional and
@@ -426,6 +450,68 @@ export async function setOrgRegion(id: string, region: string): Promise<K8sResul
   }
 
   const updatedEntry: OrgRegistryEntry = { ...entry, region };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+export interface OrgSla {
+  slaTier: SlaTier;
+  slaResponseTimeHours: number;
+  slaUptimeTargetPct: number;
+}
+
+/**
+ * Real SLA-config read: backs GET /api/orgs/[id]/sla. Same
+ * "`{ok: true, data: null}` is not an error" convention as
+ * getOrgBranding/getOrgRegion -- distinguishes "org exists but has never
+ * had an SLA tier assigned" (defaults to DEFAULT_SLA_TIER's numbers,
+ * applied by the route, not fabricated here) from a real registry-read
+ * failure. Returns the raw stored fields only; the route layers the
+ * "currently meeting SLA" computation on top since that check depends on
+ * incident/uptime data this module has no reason to own.
+ */
+export async function getOrgSla(id: string): Promise<K8sResult<OrgSla | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+  return {
+    ok: true,
+    data: {
+      slaTier: entry.slaTier ?? DEFAULT_SLA_TIER,
+      slaResponseTimeHours: entry.slaResponseTimeHours ?? SLA_TIER_DEFAULTS[DEFAULT_SLA_TIER].slaResponseTimeHours,
+      slaUptimeTargetPct: entry.slaUptimeTargetPct ?? SLA_TIER_DEFAULTS[DEFAULT_SLA_TIER].slaUptimeTargetPct,
+    },
+  };
+}
+
+/**
+ * Real SLA-tier write: backs PUT /api/orgs/[id]/sla. `slaResponseTimeHours`
+ * and `slaUptimeTargetPct` are NEVER accepted from the caller -- they are
+ * always recomputed here from SLA_TIER_DEFAULTS (lib/tiers.ts) keyed by
+ * the new `slaTier`, the same "fixed lookup table, never a free-text/
+ * client-supplied number" discipline `resourceQuotaHardFor` already
+ * established for ResourceQuota ceilings. Merge-patches only this org's
+ * registry entry's three `sla*` keys, same one-key(-group)-at-a-time
+ * discipline as setOrgBranding/setOrgRegion.
+ */
+export async function setOrgSla(id: string, slaTier: SlaTier): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const defaults = SLA_TIER_DEFAULTS[slaTier];
+  const updatedEntry: OrgRegistryEntry = {
+    ...entry,
+    slaTier,
+    slaResponseTimeHours: defaults.slaResponseTimeHours,
+    slaUptimeTargetPct: defaults.slaUptimeTargetPct,
+  };
   const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
     [id]: JSON.stringify(updatedEntry),
   });

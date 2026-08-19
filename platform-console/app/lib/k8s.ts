@@ -2360,7 +2360,7 @@ const QUANTITY_SUFFIX_MULTIPLIERS: Record<string, number> = {
   Ei: 2 ** 60,
 };
 
-function parseK8sQuantity(raw: string | undefined): number | null {
+export function parseK8sQuantity(raw: string | undefined): number | null {
   if (!raw) return null;
   const match = /^([0-9.eE+-]+)(Ki|Mi|Gi|Ti|Pi|Ei|[numkMGTPE]?)$/.exec(raw.trim());
   if (!match) return null;

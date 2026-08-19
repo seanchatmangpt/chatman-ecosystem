@@ -311,6 +311,77 @@ export async function createOverageInvoiceItem(params: {
 }
 
 /**
+ * Real Stripe Price id for the "rate-limit tier" add-on SKU -- a
+ * contractually-separate, sellable line item from the org's own tier
+ * subscription price (`ensureCustomerAndSubscription`'s `priceId`),
+ * configured per real Stripe Price the operator created for each
+ * non-default `lib/rate-limit.ts` `ApiKeyTier` (`pro`, `enterprise`).
+ * `standard` has no add-on price -- it is the plan every subscription
+ * already includes, nothing to attach.
+ */
+const RATE_LIMIT_ADDON_PRICE_ENV: Record<"pro" | "enterprise", string> = {
+  pro: "STRIPE_RATE_LIMIT_ADDON_PRICE_ID_PRO",
+  enterprise: "STRIPE_RATE_LIMIT_ADDON_PRICE_ID_ENTERPRISE",
+};
+
+/**
+ * Real Stripe Price id for a given rate-limit add-on tier, from whichever
+ * env var `RATE_LIMIT_ADDON_PRICE_ENV` names for it -- `null` (not a
+ * fabricated placeholder) when the operator has not configured a real
+ * Price for that tier yet.
+ */
+export function rateLimitAddonPriceId(tier: "pro" | "enterprise"): string | null {
+  const value = process.env[RATE_LIMIT_ADDON_PRICE_ENV[tier]];
+  return typeof value === "string" && value.length > 0 ? value : null;
+}
+
+/**
+ * Real (test-mode-honest, see this file's header) "higher rate limit"
+ * add-on attach -- the Stripe/Twilio-style SKU this capability sells:
+ * adds a real `SubscriptionItem` carrying `priceId` to the org's
+ * EXISTING subscription (`subscriptionId`, from `ensureCustomerAndSubscription`
+ * / `getStoredSubscription`) rather than creating a second, separate
+ * subscription object. Uses `stripe.subscriptionItems.create` -- the same
+ * "attach a metered/one-time price to a live subscription" primitive
+ * `createOverageInvoiceItem` uses for usage overage, applied here to a
+ * genuine recurring add-on price instead of a one-off InvoiceItem, since
+ * a rate-limit tier is a standing entitlement, not a one-time charge.
+ * Idempotent per subscription+price: if an item for this exact price
+ * already exists on the subscription (a caller re-upgrading to the same
+ * tier, or retrying after a partial failure), reuses it rather than
+ * creating a duplicate line item.
+ */
+export async function attachRateLimitAddonPrice(params: {
+  subscriptionId: string;
+  priceId: string;
+  apiKeyId: string;
+  rateLimitTier: string;
+}): Promise<StripeResult<{ id: string; created: boolean }>> {
+  const stripe = getStripeClient();
+  if (!stripe) return { ok: false, error: "STRIPE_SECRET_KEY not configured" };
+  try {
+    const subscription = await stripe.subscriptions.retrieve(params.subscriptionId);
+    const existingItem = subscription.items.data.find((item) => item.price.id === params.priceId);
+    if (existingItem) {
+      return { ok: true, data: { id: existingItem.id, created: false } };
+    }
+    const item = await stripe.subscriptionItems.create({
+      subscription: params.subscriptionId,
+      price: params.priceId,
+      quantity: 1,
+      metadata: {
+        kind: "rate-limit-addon",
+        api_key_id: params.apiKeyId,
+        rate_limit_tier: params.rateLimitTier,
+      },
+    });
+    return { ok: true, data: { id: item.id, created: true } };
+  } catch (e) {
+    return { ok: false, error: `Stripe API error: ${(e as Error).message}` };
+  }
+}
+
+/**
  * Applies one verified Stripe event to the stored subscription/plan
  * state. Only `customer.subscription.*` and `invoice.payment_*` events
  * update state (the scope's own wording: "updates a stored
