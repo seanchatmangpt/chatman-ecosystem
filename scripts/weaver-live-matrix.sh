@@ -38,13 +38,36 @@ run_required() {
   fi
 }
 
+# Weaver 0.25.1 supports definition/2 but still classifies that file format as
+# alpha/unstable. Its --future mode intentionally promotes that warning to a
+# fatal diagnostic. Preserve the v2 registry and execute the future edge as an
+# explicit typed negative control instead of weakening the registry to v1 or
+# misclassifying an upstream stability fence as BUILD_BROKEN.
+test "$(grep -c '^    requirement_level: recommended$' telemetry/weaver/model/chatman-ecosystem.yaml)" -eq 4
+set +e
+weaver --future registry check -r "${REGISTRY}" --v2 >"${OUT}/logs/check.future-v2-alpha-fence.log" 2>&1
+future_rc=$?
+set -e
+if [[ $future_rc -eq 0 ]]; then
+  record "check.future-v2-alpha-fence" "SELECT" "ALIVE" 0 "upstream now admits definition/2 under future validation"
+else
+  grep -q 'File format `definition/2` is not yet stable' "${OUT}/logs/check.future-v2-alpha-fence.log"
+  test "$(grep -c '×' "${OUT}/logs/check.future-v2-alpha-fence.log" || true)" -eq 1
+  if grep -q 'does not set `requirement_level`' "${OUT}/logs/check.future-v2-alpha-fence.log"; then
+    cat "${OUT}/logs/check.future-v2-alpha-fence.log" >&2
+    exit 1
+  fi
+  record "check.future-v2-alpha-fence" "SELECT" "UNSUPPORTED" "$future_rc" \
+    "Weaver 0.25.1 rejects alpha definition/2 only under --future; v2 signal requirement levels are present"
+fi
+
 run_required "ecosystem.check_refs" "SELECT" python3 scripts/verify_release.py --check-refs
 run_required "cli.help" "SELECT" weaver --help
 run_required "registry.help" "SELECT" weaver registry --help
 for fmt in ansi json gh_workflow_command; do
   run_required "check.${fmt}" "SELECT" weaver registry check -r "${REGISTRY}" --v2 --diagnostic-format "${fmt}"
 done
-run_required "check.local" "SELECT" weaver --future registry check -r "${REGISTRY}" --v2
+run_required "check.local" "SELECT" weaver registry check -r "${REGISTRY}" --v2
 run_required "check.git_exact_sha" "SELECT" weaver registry check \
   -r "https://github.com/${REPO}.git@${SUBJECT_SHA}[telemetry/weaver]" --v2
 
@@ -162,7 +185,7 @@ fi
 jq -s --arg subject "git:${SUBJECT_SHA}" --arg weaver "$(cat "${OUT}/weaver-version.txt")" \
   '{schema:"https://chatmangpt.com/receipts/weaver-capability/v1",subject:$subject,weaver:$weaver,capabilities:.}' \
   "${OUT}/receipt.jsonl" > "${OUT}/receipt.json"
-required=(cli.help registry.help check.local check.git_exact_sha generate resolve.deprecated stats.json update-markdown \
+required=(check.future-v2-alpha-fence cli.help registry.help check.local check.git_exact_sha generate resolve.deprecated stats.json update-markdown \
   json-schema.semconv-definition-v2 diff.json package diagnostic.init completion.bash live-check.ecosystem \
   live-check.otlp emit.loopback infer mcp serve.experimental)
 for cap in "${required[@]}"; do
