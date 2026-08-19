@@ -61,6 +61,18 @@ tpcs:workDigest
   sh:minCount 1 ;
   sh:maxCount 1 .
 
+tpcs:inputDigest
+  a sh:PropertyShape ;
+  sh:datatype xsd:string ;
+  sh:minCount 1 ;
+  sh:maxCount 1 .
+
+tpcs:planDigest
+  a sh:PropertyShape ;
+  sh:datatype xsd:string ;
+  sh:minCount 1 ;
+  sh:maxCount 1 .
+
 tpcs:frontierDigest
   a sh:PropertyShape ;
   sh:datatype xsd:string ;
@@ -80,5 +92,7 @@ tpcs:ProductionReceiptShape
     tpcs:subjectDigest,
     tpcs:configDigest,
     tpcs:workDigest,
+    tpcs:inputDigest,
+    tpcs:planDigest,
     tpcs:frontierDigest,
     tpcs:scheduleDigest .
