@@ -8,87 +8,51 @@ on:
       - "crates/hditc/**"
       - "docs/HDITC-DFCM-RUNTIME.md"
       - ".github/workflows/hditc-dfcm.yml"
-  push:
-    branches:
-      - "agent/dfcm-do-runtime"
-    paths:
-      - "Cargo.toml"
-      - "Cargo.lock"
-      - "crates/hditc/**"
-      - "docs/HDITC-DFCM-RUNTIME.md"
-      - ".github/workflows/hditc-dfcm.yml"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: hditc-dfcm-${{ github.ref }}
+  group: hditc-dfcm-pr-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout exact source branch
+      - name: Checkout exact PR head
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+
+      - name: Exact subject identity
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          git rev-parse HEAD
 
       - name: Toolchain identity
         run: |
           rustc --version
           cargo --version
 
-      - name: Admit workspace lock projection
-        run: cargo metadata --format-version 1 >/dev/null
+      - name: Admit locked workspace
+        run: cargo metadata --locked --format-version 1 >/dev/null
 
-      - name: Apply admitted Clippy repairs
-        if: github.event_name == 'push'
+      - name: Verify clean source before execution
         shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path("crates/hditc/src/lib.rs")
-          s = p.read_text()
-          s = s.replace("//! HDITC / DfCM execution kernel.", "//! HDITC / `DfCM` execution kernel.", 1)
-          s = s.replace(
-              "pub expected_postconditions: impl AsRef<[Constraint]>,",
-              "pub expected_postconditions: Vec<Constraint>,",
-              1,
-          )
-          old = """        grant: AuthorityGrant,\n        expected_postconditions: Vec<Constraint>,\n    ) -> Result<Self, Error> {"""
-          new = """        grant: AuthorityGrant,\n        expected_postconditions: impl AsRef<[Constraint]>,\n    ) -> Result<Self, Error> {"""
-          if old in s:
-              s = s.replace(old, new, 1)
-          s = s.replace(
-              "let expected_postconditions = normalize_constraints(&expected_postconditions);",
-              "let expected_postconditions = normalize_constraints(expected_postconditions.as_ref());",
-              1,
-          )
-          p.write_text(s)
-          PY
-
-      - name: Canonicalize HDITC Rust formatting
-        run: cargo fmt --package hditc
-
-      - name: Persist mechanical projections on branch pushes
-        if: github.event_name == 'push'
-        shell: bash
-        run: |
-          if [ -n "$(git status --porcelain -- Cargo.lock crates/hditc)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add -- Cargo.lock crates/hditc
-            git commit -m "fix: repair HDITC Clippy parameter admission"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
+        run: test -z "$(git status --porcelain -- Cargo.lock crates/hditc)"
 
       - name: Verify HDITC formatting
         run: cargo fmt --package hditc -- --check
 
-      - name: Compile and execute HDITC tests
+      - name: Compile and execute HDITC falsifiers
         run: cargo test -p hditc --all-targets --locked
 
       - name: Clippy HDITC crate
         run: cargo clippy -p hditc --all-targets --locked -- -D warnings
+
+      - name: Verify execution did not mutate admitted source
+        shell: bash
+        run: test -z "$(git status --porcelain -- Cargo.lock crates/hditc)"
