@@ -1,6 +1,7 @@
 version = "tpcs-federation/1"
 name = "Toyota Code Production System federation"
 role = "composition-and-standing"
+mode = "pull"
 canonical_repo = "seanchatmangpt/tcps"
 canonical_pr = 1
 canonical_ref = "agent/tcps-v1979-reconstitution"
