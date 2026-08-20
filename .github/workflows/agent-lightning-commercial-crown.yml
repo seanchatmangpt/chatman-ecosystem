@@ -6,9 +6,11 @@ on:
     paths:
       - "catalog/repositories.toml"
       - "crates/ecosystem-runtime/src/lib.rs"
+      - "crates/ecosystem-runtime/src/commerce.rs"
       - "crates/ecosystem-runtime/src/agent_lightning_service.rs"
       - "crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs"
       - "crates/ecosystem-runtime/src/bin/agent-lightning-commercial.rs"
+      - "crates/ecosystem-runtime/tests/agent_lightning_commercial_integration.rs"
       - ".github/workflows/agent-lightning-commercial-crown.yml"
   workflow_dispatch:
 
@@ -37,7 +39,8 @@ jobs:
         run: |
           rustfmt --edition 2024 --check \
             crates/ecosystem-runtime/src/agent_lightning_service.rs \
-            crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs
+            crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs \
+            crates/ecosystem-runtime/tests/agent_lightning_commercial_integration.rs
           rustfmt --edition 2024 --config skip_children=true --check \
             crates/ecosystem-runtime/src/lib.rs \
             crates/ecosystem-runtime/src/bin/agent-lightning-commercial.rs
@@ -47,6 +50,8 @@ jobs:
         run: cargo clippy --locked -p ecosystem-runtime --bin agent-lightning-commercial -- -D warnings
       - name: Execute Agent Lightning library tests
         run: cargo test --locked -p ecosystem-runtime --lib agent_lightning
+      - name: Execute public commercial integration court
+        run: cargo test --locked -p ecosystem-runtime --test agent_lightning_commercial_integration
       - name: Execute receipt and persistence replay
         run: |
           cargo run --locked --quiet -p ecosystem-runtime --bin agent-lightning-commercial -- verify-fixtures \
