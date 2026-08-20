@@ -1,0 +1,22 @@
+---
+to: ".agp-receipts/{{ moduleName }}-{{ mixTask }}.txt"
+skip_empty: false
+unless_exists: true
+for_each: results
+sparql:
+  results: |
+    PREFIX agp: <https://ggen.io/ontology/ash-igniter-gen-pipeline#>
+    SELECT ?moduleName ?domainModule ?mixTask ?mixArgs WHERE {
+      ?t a agp:CodegenTarget ;
+         agp:moduleName ?moduleName ;
+         agp:domainModule ?domainModule ;
+         agp:mixTask ?mixTask .
+      OPTIONAL { ?t agp:mixArgs ?mixArgs . }
+    }
+sh_after: "mix {{ mixTask }} {{ domainModule }}.{{ moduleName }} {{ mixArgs | default(value=\"\") }} 2>&1 | tee -a .agp-receipts/{{ moduleName }}-{{ mixTask }}.mix.log"
+---
+real, generalized Igniter-backed codegen invocation.
+target: {{ domainModule }}.{{ moduleName }}
+mix task: {{ mixTask }}
+mix args: {{ mixArgs | default(value="(none)") }}
+command: mix {{ mixTask }} {{ domainModule }}.{{ moduleName }} {{ mixArgs | default(value="") }}

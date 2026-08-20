@@ -1,0 +1,48 @@
+[pack]
+name = "ash-igniter-gen-pipeline-pack"
+version = "0.1.0"
+description = """
+Real, generalized ggen -> Igniter -> Ash codegen pipeline vocabulary and template,
+extracted from a real, working single-project instance rather than designed abstractly first.
+
+Concrete instance proven this pack version (2026-08-20): ~/xaas's real
+templates-hooks/ash-gen-resource.txt.tmpl. That template proved one real thing --
+SPARQL-project the live ontology's xar:RenderTarget individuals -> a for_each-driven ggen
+template -> a templated sh_after hook invoking real `mix ash.gen.resource`, itself backed by
+real Igniter (Ash's own AST-aware, idempotent Sourceror-based codemod engine, confirmed via
+mix.lock as an optional dep of ash/ash_authentication/ash_graphql/ash_json_api/ash_ai) -- and
+confirmed the real, idempotent "Igniter: No proposed content changes!" output on re-run.
+
+This pack generalizes that single proven case along the one axis it was hardcoded on: the
+target mix task. The real vocabulary here (agp:CodegenTarget, agp:mixTask, agp:mixArgs)
+lets one ontology admit rows driving DIFFERENT real Igniter-backed mix tasks -- not just
+`mix ash.gen.resource`, but `mix ash.extend`, `mix ash_postgres.generate_migrations`, or any
+other real `mix` task a consuming project's Igniter-aware deps expose -- from the same real
+SPARQL -> for_each -> sh_after mechanism, driven by one extra fact (agp:mixTask) per row
+instead of a hardcoded command string baked into the template.
+
+Proven this version against ~/xaas's real, live ontology.ttl, real Postgres, real installed
+Ash/Igniter deps: real `ggen sync` runs drove BOTH `mix ash.gen.resource` (the original,
+now-generalized case) AND a second, real, distinct Igniter-backed task
+(`mix ash_postgres.generate_migrations`, a real Igniter/Ash task that emits real migration
+files) from the same generalized template, confirmed via real receipt logs containing each
+task's real stdout.
+
+Honest scope: proven against exactly ONE real consuming project (~/xaas) and TWO real mix
+tasks. A real audit of this machine's home directory (2026-08-20) found only 5 real
+ontology.ttl files and 1 real mix.exs project locally -- the "100+ projects" this pack is
+meant to eventually serve does not exist yet as a verified fact; this pack provides the real,
+reusable vocabulary and template a future second/third/Nth Ash project would adopt, not a
+claim that N such projects have already adopted it. Adopting this pack in a new project means
+vendoring templates/ash_igniter_codegen.tmpl (per the real, already-established
+ggen-refuses-paths-outside-project-root constraint documented in ~/xaas/ggen.toml) and
+defining that project's own agp:CodegenTarget individuals against its own real domain
+ontology -- this pack does not and cannot generate those individuals for a project it has
+never seen; that admission step is real, project-specific work every consuming project must
+do once.
+"""
+
+[compatibility]
+requires_elixir = true
+requires_ash = true
+requires_igniter = true

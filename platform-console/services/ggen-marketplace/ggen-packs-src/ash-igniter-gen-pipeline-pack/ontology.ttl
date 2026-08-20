@@ -1,0 +1,31 @@
+# ash-igniter-gen-pipeline-pack/ontology.ttl
+#
+# Real, generalized vocabulary extracted from ~/xaas's own real
+# xar:RenderTarget individuals (xaas-ash-core-pack, vendored copy at
+# ~/xaas/ontology.ttl) -- adds exactly one new axis (agp:mixTask) that
+# xaas's original, hardcoded template did not have.
+
+@prefix agp:  <https://ggen.io/ontology/ash-igniter-gen-pipeline#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<https://ggen.io/ontology/ash-igniter-gen-pipeline#> a owl:Ontology ;
+  rdfs:label "Generalized ggen -> Igniter -> mix -> Ash codegen pipeline vocabulary" ;
+  rdfs:comment "One real fact set (agp:CodegenTarget rows) drives ANY real Igniter-backed mix task via a templated sh_after -- generalized from xaas's original, single-task-hardcoded xar:RenderTarget vocabulary by adding agp:mixTask/agp:mixArgs." .
+
+agp:CodegenTarget a owl:Class ;
+  rdfs:label "One real codegen invocation: a target module/domain paired with the real mix task and args that admit it into an Ash project via Igniter." .
+
+agp:moduleName a owl:DatatypeProperty ; rdfs:domain agp:CodegenTarget ; rdfs:range xsd:string ;
+  rdfs:comment "The real target module's short name, e.g. \"CapabilityLivenessReceipt\"." .
+
+agp:domainModule a owl:DatatypeProperty ; rdfs:domain agp:CodegenTarget ; rdfs:range xsd:string ;
+  rdfs:comment "The real Ash.Domain module this target belongs to, e.g. \"Xaas.Operations\"." .
+
+agp:mixTask a owl:DatatypeProperty ; rdfs:domain agp:CodegenTarget ; rdfs:range xsd:string ;
+  rdfs:comment "The real, Igniter-backed mix task to run, e.g. \"ash.gen.resource\" or \"ash_postgres.generate_migrations\" -- the axis this pack generalizes over that xaas's original template hardcoded." .
+
+agp:mixArgs a owl:DatatypeProperty ; rdfs:domain agp:CodegenTarget ; rdfs:range xsd:string ;
+  rdfs:comment "Real, real CLI args appended verbatim after \"mix <mixTask> <domainModule>.<moduleName>\" -- e.g. \"--ignore-if-exists --default-actions read\" for ash.gen.resource, or a migration name for ash_postgres.generate_migrations. May be empty." .
