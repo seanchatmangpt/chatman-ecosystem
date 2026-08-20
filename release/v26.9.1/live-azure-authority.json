@@ -1,0 +1,12 @@
+{
+  "schema": "chatman-ecosystem.live-azure-authority/1",
+  "standing": "BLOCKED",
+  "blocker": "LIVE_AZURE_AUTHORITY",
+  "gymact_subject": {
+    "repository": "seanchatmangpt/gymact",
+    "sha": "ac436398003630907530331a1eca2d71c3fd50dc",
+    "provider": "platform-console-ontology",
+    "provider_blob_sha": "efd02f211809c8e8aabd75967b443203f1fcf027"
+  },
+  "authority": null
+}
