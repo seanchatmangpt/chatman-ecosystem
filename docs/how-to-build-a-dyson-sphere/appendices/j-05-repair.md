@@ -1,9 +1,93 @@
-# Appendix J.5 — Repair
+# Repair
 
 **Parent:** [Appendix J — Civilization-Scale SLOs](j-civilization-scale-slos.md)
 
-AutoFDE is the reality-acquisition and repair loop. It discovers an environment, distinguishes observed capability from assumed capability, constructs candidate repairs, seeks admission, actuates only through the brokered path, and verifies the postcondition against the exact subject. At fleet scale, this loop must remain local-first because communication delay and partition are normal conditions.
+> **Subject identity:** `dyson:repair:49ea7761ee14`
+> **Domain:** `general`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Standing rule
+## Why this page exists
 
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
+**Repair** exists because it changes a concrete decision inside **Appendix J — Civilization-Scale SLOs**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
+
+For **Repair**, the primary state variables include **subject**, **constraint**, and **candidate**; the control or consequence variables include **evidence**, **failure mode**, and **verification**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
+
+The boundary is operational, not literary. Inputs to **Repair** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
+
+## Engineering model
+
+**Repair** is modeled by interfaces rather than by its name. `dyson:repair:49ea7761ee14` identifies consumed observations, produced artifact or decision, hard constraints, reversible candidate space, authority class, expected postcondition, and failure surface. The page is meaningful only when a counterexample can change the resulting decision.
+
+## Operational contract
+
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:repair:49ea7761ee14` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | subject, constraint, candidate with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | evidence, failure mode or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Repair**, Construct a positive case and a counterexample. If both lead to the same decision, the page has not yet defined a meaningful constraint.
+
+## Questions the design must answer
+
+1. For **Repair**: What exact subject does this page constrain?
+2. For **Repair**: What reversible candidate space should be preserved?
+3. For **Repair**: What evidence falsifies the working claim?
+
+## Executable representation
+
+```yaml
+subject: dyson:repair:49ea7761ee14
+topic: "Repair"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- The page names a concept but does not change a model, constraint, candidate, verifier, or refusal decision.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Repair**.
+- **Hidden assumption:** subject or constraint is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Repair**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:repair:49ea7761ee14`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Repair** subject/revision is named.
+- [ ] Required subject, constraint, and candidate observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Repair** is admitted, downstream systems may consume its subject, constraint, and candidate claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Repair** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

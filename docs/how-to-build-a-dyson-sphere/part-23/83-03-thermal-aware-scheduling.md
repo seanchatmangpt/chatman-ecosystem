@@ -1,42 +1,102 @@
-# 83.3 Thermal-Aware Scheduling
+# Thermal-Aware Scheduling
 
-**Parent:** [83. The Matrioshka Graph](83-the-matrioshka-graph.md)
+**Parent:** [The Matrioshka Graph](83-the-matrioshka-graph.md)
 
-## Claim
+> **Subject identity:** `dyson:thermal-aware-scheduling:ecc234f47b48`
+> **Domain:** `thermal`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Thermal-Aware Scheduling` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger the matrioshka graph system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-A physically credible Dyson program begins with a swarm, not a rigid shell. Independent orbiting collectors can be added incrementally, placed on families of stable trajectories, repaired or retired locally, and diversified by function. A rigid shell around a star has no known passive structural mechanism that keeps it centered; even before material strength is considered, it creates a global stability problem that a swarm avoids.
+**Thermal-Aware Scheduling** exists because it changes a concrete decision inside **The Matrioshka Graph**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Every useful energy conversion ends as heat. A collector that absorbs stellar power must either radiate comparable power, export energy, store it temporarily, or fail thermally. Radiative disposal scales as P=εσAT⁴, making radiator area and operating temperature architectural variables. The T⁴ dependence rewards hotter radiators with compact area, but material limits, conversion efficiency, computation density, and component lifetime constrain that choice.
+For **Thermal-Aware Scheduling**, the primary state variables include **radiative flux**, **emissivity**, and **temperature**; the control or consequence variables include **waste heat**, **radiator area**, and **thermal margin**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-The semantic layer exists to prevent identical reality from fragmenting into incompatible local names. Public vocabularies are preferred where they already express provenance, units, sensors, organizations, policy, preservation, and events. Custom terms are admitted only for genuinely new stellar-industrial meaning. Generated APIs, documents, schemas, simulations, and dashboards are projections over that graph rather than rival semantic authorities.
+The boundary is operational, not literary. Inputs to **Thermal-Aware Scheduling** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Model
+## Engineering model
 
-\[P_{rad}=\varepsilon\sigma A T^4\]
+For **Thermal-Aware Scheduling**, close the heat ledger before optimizing performance:
 
-Any numeric use of this relation is admitted only after units, parameter source, uncertainty, epoch, and approximation regime are recorded. Model validity is part of the subject, not metadata that may be discarded after calculation.
+\[
+P_{absorbed}+P_{internal}=P_{export}+P_{stored}+P_{radiated},\qquad
+P_{radiated}=\varepsilon\sigma A(T^4-T_{bg}^4).
+\] For **Thermal-Aware Scheduling**, this reusable domain rule is evaluated against `dyson:thermal-aware-scheduling:ecc234f47b48`; its observations, validity interval, constraints, and downstream consumer remain specific to this page even when the underlying law is shared.
 
-## Operationalization
+The fourth-power temperature term makes hotter radiators smaller in an ideal model, but material limits, electronics lifetime, view factor, degradation, pointing, and local hot spots constrain that option. `dyson:thermal-aware-scheduling:ecc234f47b48` is meaningful only when degraded heat rejection is modeled as well as nominal balance.
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+## Operational contract
 
-A practical record for this topic should contain:
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:thermal-aware-scheduling:ecc234f47b48` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | radiative flux, emissivity, temperature with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | waste heat, radiator area or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+## Worked reasoning
 
-## Evidence boundary
+For **Thermal-Aware Scheduling**, Solve both nominal and degraded heat rejection. Loss of radiator area or emissivity should produce a quantitative derating rule rather than an undefined `overheat` state.
 
-For `Thermal-Aware Scheduling`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+## Questions the design must answer
 
-## Falsifier
+1. For **Thermal-Aware Scheduling**: Where does every watt ultimately leave the system?
+2. For **Thermal-Aware Scheduling**: Which local component temperature is limiting?
+3. For **Thermal-Aware Scheduling**: How much heat-rejection margin survives degradation and partial shadowing?
 
-The working claim for `Thermal-Aware Scheduling` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+## Executable representation
+
+```yaml
+subject: dyson:thermal-aware-scheduling:ecc234f47b48
+topic: "Thermal-Aware Scheduling"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
+```
+
+## Failure modes and counterexamples
+
+- Fleet-average heat balance closes while a local component exceeds its temperature limit.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Thermal-Aware Scheduling**.
+- **Hidden assumption:** radiative flux or emissivity is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Thermal-Aware Scheduling**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:thermal-aware-scheduling:ecc234f47b48`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Thermal-Aware Scheduling** subject/revision is named.
+- [ ] Required radiative flux, emissivity, and temperature observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Thermal-Aware Scheduling** is admitted, downstream systems may consume its radiative flux, emissivity, and temperature claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Thermal-Aware Scheduling** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

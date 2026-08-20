@@ -1,36 +1,101 @@
-# 77.2 Reconstruction
+# Reconstruction
 
-**Parent:** [77. Replay the Accident](77-replay-the-accident.md)
+**Parent:** [Replay the Accident](77-replay-the-accident.md)
 
-## Claim
+> **Subject identity:** `dyson:reconstruction:11bd7e8d0167`
+> **Domain:** `authority`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Reconstruction` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger replay the accident system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-SELECT, CONSTRUCT, and DO are separate authority classes. A planner may rank candidates; a constructor may render them; only a brokered authority path may cause consequence. BRCE enforces zero unreceipted actuation by binding intent, subject, authority, preconditions, execution result, postconditions, and replay metadata into a receipt.
+**Reconstruction** exists because it changes a concrete decision inside **Replay the Accident**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Standing belongs to an exact subject. Inspection is not execution, execution is not verification, and a named receipt file is not evidence that the intended transition occurred. A useful receipt binds identity, authority, consequence, verifier result, and replay instructions so a later observer can reconstruct why the standing claim was made.
+For **Reconstruction**, the primary state variables include **SELECT**, **CONSTRUCT**, and **DO**; the control or consequence variables include **scope**, **expiry**, and **BRCE**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-Failure is modeled as topology rather than surprise. The design objective is to keep a local defect from becoming a global loss: isolate failure domains, preserve safe trajectories, maintain independent shutdown, keep repair paths, and record enough event history for reconstruction. A failed collector should reduce capacity, not invalidate the entire swarm.
+The boundary is operational, not literary. Inputs to **Reconstruction** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Operationalization
+## Engineering model
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+**Reconstruction** is modeled as bounded reachability. A consequential grant binds
 
-A practical record for this topic should contain:
+```text
+(actor, exact_subject, intent_digest, capability, scope,
+ not_before, expires_at, policy_version, required_postcondition)
+```
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+Possession of a credential or network path is never enough. `dyson:reconstruction:11bd7e8d0167` also needs revocation state, content/software identity where relevant, and evidence that expired, premature, wrong-subject, wrong-intent, and over-scoped grants fail closed. `SELECT`, `CONSTRUCT`, and `DO` remain distinct authority classes.
 
-## Evidence boundary
+## Operational contract
 
-For `Reconstruction`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:reconstruction:11bd7e8d0167` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | SELECT, CONSTRUCT, DO with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | scope, expiry or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-## Falsifier
+## Worked reasoning
 
-The working claim for `Reconstruction` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+For **Reconstruction**, Test correct, expired, premature, wrong-subject, wrong-intent, and over-scoped grants. The broker is useful because invalid variants are refused before consequence.
+
+## Questions the design must answer
+
+1. For **Reconstruction**: Is the operation SELECT, CONSTRUCT, or DO?
+2. For **Reconstruction**: Which subject, scope, actor, validity window, and postcondition bind the authority?
+3. For **Reconstruction**: How are expired or revoked grants made unreachable?
+
+## Executable representation
+
+```json
+{
+  "subject": "dyson:reconstruction:11bd7e8d0167",
+  "intent": "Reconstruction",
+  "actor": "explicit",
+  "authority_scope": "explicit",
+  "validity_window": "required for DO",
+  "revocation": "checked",
+  "appeal_or_refusal_path": "explicit",
+  "postcondition": "named before execution"
+}
+```
+
+## Failure modes and counterexamples
+
+- A valid-looking grant is accepted for the wrong subject, intent, scope, or validity window.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Reconstruction**.
+- **Hidden assumption:** SELECT or CONSTRUCT is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Reconstruction**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:reconstruction:11bd7e8d0167`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Reconstruction** subject/revision is named.
+- [ ] Required SELECT, CONSTRUCT, and DO observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Reconstruction** is admitted, downstream systems may consume its SELECT, CONSTRUCT, and DO claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Reconstruction** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

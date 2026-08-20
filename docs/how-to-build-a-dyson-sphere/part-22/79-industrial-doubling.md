@@ -1,39 +1,100 @@
-# 79. Industrial Doubling
+# Industrial Doubling
 
-> **Part 22: Scaling Laws.** This part studies the transition from prototypes to astronomical-scale industry. Bottlenecks, queueing, nonlinear interactions, and autonomous local control determine whether scaling laws remain valid.
+> **Subject identity:** `dyson:industrial-doubling:1f53434b0ab3`
+> **Domain:** `replication`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Thesis
+## Why this page exists
 
-Industrial Doubling is treated here as a systems problem rather than an isolated component. At Dyson-swarm scale, a locally sensible decision can become globally unsafe when it hides mass, heat, latency, authority, or evidence. The chapter therefore asks what the object is, what observations are required to reason about it, what constraints delimit its lawful construction space, and what evidence would justify advancing its standing.
+**Industrial Doubling** exists because it changes a concrete decision inside **Part XXII — Scaling Laws**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-SELECT, CONSTRUCT, and DO are separate authority classes. A planner may rank candidates; a constructor may render them; only a brokered authority path may cause consequence. BRCE enforces zero unreceipted actuation by binding intent, subject, authority, preconditions, execution result, postconditions, and replay metadata into a receipt.
+For **Industrial Doubling**, the primary state variables include **replication cycle**, **generation limit**, and **mass budget**; the control or consequence variables include **energy budget**, **shutdown**, and **lineage**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-Scaling is governed by bottlenecks and feedback, not by extrapolating one prototype linearly. Little's Law, L=λW, connects work-in-process, throughput, and cycle time; at industrial scale it becomes a way to detect hidden queues in mining, refining, fabrication, transport, verification, and repair. Exponential capacity growth is possible only while each replication cycle closes its scarce inputs and does not saturate another constraint.
+The boundary is operational, not literary. Inputs to **Industrial Doubling** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Chatman-Ecosystem realization
-
-The operational path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. Observation and construction remain maximally expressive above the authority boundary; DO remains narrow. The canonical object is represented in a graph, ggen may render projections, GymAct may execute counterfactuals, Lean/mfact may discharge formal or evidentiary obligations where applicable, and BRCE is the only path permitted to cause a consequential transition.
-
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
-
-## Chapter map
+## Decomposition
 
 - [Replication Rate](79-01-replication-rate.md)
 - [Bottleneck Analysis](79-02-bottleneck-analysis.md)
 - [Little's Law](79-03-littles-law.md)
 - [Constraint Theory](79-04-constraint-theory.md)
 - [Learning Curves](79-05-learning-curves.md)
-- [Compounding Capacity](79-06-compounding-capacity.md)
+- [Compounding Capacity](79-06-compounding-capacity.md) For **Industrial Doubling**, this reusable domain rule is evaluated against `dyson:industrial-doubling:1f53434b0ab3`; its observations, validity interval, constraints, and downstream consumer remain specific to this page even when the underlying law is shared.
 
-## Acceptance boundary
+## Engineering model
 
-This chapter is complete only when its claims can be tied to a bounded subject. A reader should be able to name the observation sources, uncertainty, canonical semantic identity, constraints, reversible candidate space, authority required for consequence, expected postcondition, verifier, and replay path. If any of those are absent, the appropriate state is `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED`—not narrative completion.
+**Industrial Doubling** is a bounded population process. An unconstrained toy model can write `C_n=C_0(1+r)^n`, but real growth is limited by feedstock, energy, tooling, transport, verification, repair, and explicit generation limits. `dyson:industrial-doubling:1f53434b0ab3` records lineage, parent receipt, resource budget, allowed generation, orbital/geographic fence, shutdown semantics, and reproduction-specific authority.
 
-## Falsifiers
+## Operational contract
 
-- A required physical ledger does not close.
-- The subject identity is ambiguous or stale.
-- A simulation result is presented as physical execution evidence.
-- A proof is about a model that was never admitted as the operational subject.
-- An actuator can be reached outside the brokered receipt path.
-- Replay cannot reconstruct the transition that supposedly established standing.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:industrial-doubling:1f53434b0ab3` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | replication cycle, generation limit, mass budget with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | energy budget, shutdown or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Industrial Doubling**, Compute one full generation through feedstock, tooling wear, energy, verification, spares, and waste. Only surplus after restoring consumed productive capital is available for growth.
+
+## Questions the design must answer
+
+1. For **Industrial Doubling**: Which scarce input bounds one complete generation?
+2. For **Industrial Doubling**: Which generation/orbital/authority limits prevent open-ended reproduction?
+3. For **Industrial Doubling**: What lineage makes defective descendants traceable?
+
+## Executable representation
+
+```yaml
+subject: dyson:industrial-doubling:1f53434b0ab3
+topic: "Industrial Doubling"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- A descendant depends on hidden imported tooling, so apparent self-replication is actually an external dependency.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Industrial Doubling**.
+- **Hidden assumption:** replication cycle or generation limit is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Industrial Doubling**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:industrial-doubling:1f53434b0ab3`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Industrial Doubling** subject/revision is named.
+- [ ] Required replication cycle, generation limit, and mass budget observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Industrial Doubling** is admitted, downstream systems may consume its replication cycle, generation limit, and mass budget claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Industrial Doubling** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

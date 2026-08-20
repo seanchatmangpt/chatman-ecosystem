@@ -1,11 +1,101 @@
-# Appendix A.4 — Mass Scaling
+# Mass Scaling
 
 **Parent:** [Appendix A — Mathematical Foundations](a-mathematical-foundations.md)
 
-Matter is the hard budget that prevents a Dyson program from collapsing into pure software metaphor. Each design must close a mass ledger from feedstock through extraction, refining, fabrication, deployment, maintenance, recycling, and unrecoverable loss. Composition uncertainty is therefore an admitted observation problem before it is a manufacturing problem.
+> **Subject identity:** `dyson:mass-scaling:a6c9d9f025ab`
+> **Domain:** `materials`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-Scaling is governed by bottlenecks and feedback, not by extrapolating one prototype linearly. Little's Law, L=λW, connects work-in-process, throughput, and cycle time; at industrial scale it becomes a way to detect hidden queues in mining, refining, fabrication, transport, verification, and repair. Exponential capacity growth is possible only while each replication cycle closes its scarce inputs and does not saturate another constraint.
+## Why this page exists
 
-## Standing rule
+**Mass Scaling** exists because it changes a concrete decision inside **Appendix A — Mathematical Foundations**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
+For **Mass Scaling**, the primary state variables include **mass balance**, **feedstock**, and **yield**; the control or consequence variables include **composition**, **recycling**, and **loss**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
+
+The boundary is operational, not literary. Inputs to **Mass Scaling** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
+
+## Engineering model
+
+For **Mass Scaling**, conservation is the first refusal boundary:
+
+\[
+m_{feed}=m_{product}+m_{recycle}+m_{inventory}+m_{waste}+m_{loss}.
+\]
+
+Gross mass is not qualified material. Composition, phase, impurity, process yield, tooling wear, recyclable fraction, and batch genealogy determine whether feedstock can become the intended artifact. `dyson:mass-scaling:a6c9d9f025ab` keeps unexplained residual mass visible rather than normalizing it away.
+
+## Operational contract
+
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:mass-scaling:a6c9d9f025ab` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | mass balance, feedstock, yield with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | composition, recycling or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Mass Scaling**, Run the mass ledger on one representative batch and force every residual into qualified product, recoverable material, inventory, known waste, or investigated loss. Scaling unexplained residuals scales uncertainty too.
+
+## Questions the design must answer
+
+1. For **Mass Scaling**: Does mass close from characterized feedstock to product, recycle, inventory, waste, and loss?
+2. For **Mass Scaling**: Which impurity controls yield or lifetime?
+3. For **Mass Scaling**: Which imported tool prevents false local closure?
+
+## Executable representation
+
+```yaml
+subject: dyson:mass-scaling:a6c9d9f025ab
+topic: "Mass Scaling"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
+```
+
+## Failure modes and counterexamples
+
+- Gross feedstock mass is mistaken for qualified material while impurity, yield, tooling, or recycling losses are omitted.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Mass Scaling**.
+- **Hidden assumption:** mass balance or feedstock is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Mass Scaling**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:mass-scaling:a6c9d9f025ab`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Mass Scaling** subject/revision is named.
+- [ ] Required mass balance, feedstock, and yield observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Mass Scaling** is admitted, downstream systems may consume its mass balance, feedstock, and yield claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Mass Scaling** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

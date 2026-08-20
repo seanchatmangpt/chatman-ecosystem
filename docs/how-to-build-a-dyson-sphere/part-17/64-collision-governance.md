@@ -1,38 +1,106 @@
-# 64. Collision Governance
+# Collision Governance
 
-> **Part 17: Planetary Protection and Safety.** This part treats planetary protection and existential safety as hard constraints on industrial optimization. Earth and inhabited environments are excluded from naïve resource-maximization objectives.
+> **Subject identity:** `dyson:collision-governance:e6241ec54616`
+> **Domain:** `safety`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Thesis
+## Why this page exists
 
-Collision Governance is treated here as a systems problem rather than an isolated component. At Dyson-swarm scale, a locally sensible decision can become globally unsafe when it hides mass, heat, latency, authority, or evidence. The chapter therefore asks what the object is, what observations are required to reason about it, what constraints delimit its lawful construction space, and what evidence would justify advancing its standing.
+**Collision Governance** exists because it changes a concrete decision inside **Part XVII — Planetary Protection and Safety**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Failure is modeled as topology rather than surprise. The design objective is to keep a local defect from becoming a global loss: isolate failure domains, preserve safe trajectories, maintain independent shutdown, keep repair paths, and record enough event history for reconstruction. A failed collector should reduce capacity, not invalidate the entire swarm.
+For **Collision Governance**, the primary state variables include **hazard**, **safe state**, and **interlock**; the control or consequence variables include **containment**, **trip condition**, and **recovery**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-Governance is treated as executable constraint, not ornamental prose. Rights, duties, jurisdictions, delegation, amendment, and appeals must be represented so that machines can determine what authority exists without manufacturing policy from ambiguity. Polycentric governance is favored because solar-system latency and heterogeneous communities make one synchronous sovereign control loop both brittle and unnecessary.
+The boundary is operational, not literary. Inputs to **Collision Governance** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Chatman-Ecosystem realization
-
-The operational path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. Observation and construction remain maximally expressive above the authority boundary; DO remains narrow. The canonical object is represented in a graph, ggen may render projections, GymAct may execute counterfactuals, Lean/mfact may discharge formal or evidentiary obligations where applicable, and BRCE is the only path permitted to cause a consequential transition.
-
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
-
-## Chapter map
+## Decomposition
 
 - [Ephemeris Publication](64-01-ephemeris-publication.md)
 - [Reservation of Orbital Regions](64-02-reservation-of-orbital-regions.md)
 - [Conjunction Assessment](64-03-conjunction-assessment.md)
 - [Autonomous Avoidance](64-04-autonomous-avoidance.md)
-- [Post-Incident Replay](64-05-post-incident-replay.md)
+- [Post-Incident Replay](64-05-post-incident-replay.md) For **Collision Governance**, this reusable domain rule is evaluated against `dyson:collision-governance:e6241ec54616`; its observations, validity interval, constraints, and downstream consumer remain specific to this page even when the underlying law is shared.
 
-## Acceptance boundary
+## Engineering model
 
-This chapter is complete only when its claims can be tied to a bounded subject. A reader should be able to name the observation sources, uncertainty, canonical semantic identity, constraints, reversible candidate space, authority required for consequence, expected postcondition, verifier, and replay path. If any of those are absent, the appropriate state is `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED`—not narrative completion.
+**Collision Governance** is represented as a hazard-control argument:
 
-## Falsifiers
+```text
+hazard -> initiating condition -> propagation path -> independent guard
+       -> safe state -> recovery criteria -> replayable incident evidence
+```
 
-- A required physical ledger does not close.
-- The subject identity is ambiguous or stale.
-- A simulation result is presented as physical execution evidence.
-- A proof is about a model that was never admitted as the operational subject.
-- An actuator can be reached outside the brokered receipt path.
-- Replay cannot reconstruct the transition that supposedly established standing.
+The guard must not share the initiating failure. `dyson:collision-governance:e6241ec54616` names a trip observation, bounded safe state, independently reachable shutdown/avoidance path, and the evidence required before normal operation may resume.
+
+## Operational contract
+
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:collision-governance:e6241ec54616` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | hazard, safe state, interlock with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | containment, trip condition or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Collision Governance**, Inject the initiating fault while the normal controller is unavailable. If the independent guard cannot still reach the safe state, the protection has a shared failure mode.
+
+## Questions the design must answer
+
+1. For **Collision Governance**: What hazard is prevented and what is the independently reachable safe state?
+2. For **Collision Governance**: Which single failure must not become existential?
+3. For **Collision Governance**: What observation trips the interlock?
+
+## Executable representation
+
+```yaml
+subject: dyson:collision-governance:e6241ec54616
+topic: "Collision Governance"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- The shutdown path shares power, software, sensor, or authority dependencies with the initiating fault.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Collision Governance**.
+- **Hidden assumption:** hazard or safe state is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Collision Governance**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:collision-governance:e6241ec54616`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Collision Governance** subject/revision is named.
+- [ ] Required hazard, safe state, and interlock observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Collision Governance** is admitted, downstream systems may consume its hazard, safe state, and interlock claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Collision Governance** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

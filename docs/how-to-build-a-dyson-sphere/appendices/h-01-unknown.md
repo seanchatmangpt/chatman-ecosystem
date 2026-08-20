@@ -1,13 +1,107 @@
-# Appendix H.1 — UNKNOWN
+# UNKNOWN
 
 **Parent:** [Appendix H — Status and Refusal Taxonomy](h-status-and-refusal-taxonomy.md)
 
-Observation becomes operational only after it is bounded. O* records exact subject identity, source provenance, units, uncertainty, validity interval, contradictions, and exclusions. UNKNOWN is preserved as a value rather than coerced into a guess. This makes later manufacture falsifiable: a design can be traced back to the measurements and assumptions it actually consumed.
+> **Subject identity:** `dyson:unknown:b435b3172da4`
+> **Domain:** `observation`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-Standing belongs to an exact subject. Inspection is not execution, execution is not verification, and a named receipt file is not evidence that the intended transition occurred. A useful receipt binds identity, authority, consequence, verifier result, and replay instructions so a later observer can reconstruct why the standing claim was made.
+## Why this page exists
 
-Governance is treated as executable constraint, not ornamental prose. Rights, duties, jurisdictions, delegation, amendment, and appeals must be represented so that machines can determine what authority exists without manufacturing policy from ambiguity. Polycentric governance is favored because solar-system latency and heterogeneous communities make one synchronous sovereign control loop both brittle and unnecessary.
+**UNKNOWN** exists because it changes a concrete decision inside **Appendix H — Status and Refusal Taxonomy**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-## Standing rule
+For **UNKNOWN**, the primary state variables include **subject identity**, **source**, and **unit**; the control or consequence variables include **uncertainty**, **epoch**, and **validity interval**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
+The boundary is operational, not literary. Inputs to **UNKNOWN** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
+
+## Engineering model
+
+**UNKNOWN** becomes `O*` only after it can answer *what, who, how, when, in what unit, with what uncertainty, and for how long*. A deliberately incomplete carrier shows the admission surface:
+
+```toml
+subject = "dyson:unknown:b435b3172da4"
+quantity = "unknown"
+value_state = "OBSERVED"
+unit = "REQUIRED"
+uncertainty = "REQUIRED"
+observed_at = "REQUIRED"
+valid_until = "REQUIRED"
+provenance = "REQUIRED"
+```
+
+`REQUIRED` is not a placeholder to be guessed. Until real evidence binds those fields, downstream manufacture preserves `UNKNOWN`.
+
+## Operational contract
+
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:unknown:b435b3172da4` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | subject identity, source, unit with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | uncertainty, epoch or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **UNKNOWN**, If asteroid composition is not measured well enough to bound a refining design, substituting a fleet-average composition creates fictitious certainty. Correct downstream behavior branches: acquire observation, choose a design robust to the admitted range, or refuse manufacture. `UNKNOWN` is a valid operational state.
+
+## Questions the design must answer
+
+1. For **UNKNOWN**: Who observed what exact subject, how, when, in what unit, and with what uncertainty?
+2. For **UNKNOWN**: When does the observation expire?
+3. For **UNKNOWN**: Which contradiction must remain UNKNOWN?
+
+## Executable representation
+
+```json
+{
+  "subject": "dyson:unknown:b435b3172da4",
+  "topic": "UNKNOWN",
+  "state": "OBSERVED_OR_PROPOSED",
+  "provenance": "required",
+  "unit_or_schema": "required",
+  "uncertainty_or_quality": "required",
+  "validity": "bounded",
+  "consumer": "named downstream admission rule"
+}
+```
+
+## Failure modes and counterexamples
+
+- A stale or synthetic value is normalized into the same standing as current physical observation.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **UNKNOWN**.
+- **Hidden assumption:** subject identity or source is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **UNKNOWN**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:unknown:b435b3172da4`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **UNKNOWN** subject/revision is named.
+- [ ] Required subject identity, source, and unit observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **UNKNOWN** is admitted, downstream systems may consume its subject identity, source, and unit claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **UNKNOWN** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

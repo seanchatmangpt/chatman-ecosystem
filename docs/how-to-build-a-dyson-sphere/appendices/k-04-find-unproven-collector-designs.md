@@ -1,23 +1,93 @@
-# Appendix K.4 — Find Unproven Collector Designs
+# Find Unproven Collector Designs
 
 **Parent:** [Appendix K — Example SPARQL Queries](k-example-sparql-queries.md)
 
-A physically credible Dyson program begins with a swarm, not a rigid shell. Independent orbiting collectors can be added incrementally, placed on families of stable trajectories, repaired or retired locally, and diversified by function. A rigid shell around a star has no known passive structural mechanism that keeps it centered; even before material strength is considered, it creates a global stability problem that a swarm avoids.
+> **Subject identity:** `dyson:find-unproven-collector-designs:b723004c80ca`
+> **Domain:** `general`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-The semantic layer exists to prevent identical reality from fragmenting into incompatible local names. Public vocabularies are preferred where they already express provenance, units, sensors, organizations, policy, preservation, and events. Custom terms are admitted only for genuinely new stellar-industrial meaning. Generated APIs, documents, schemas, simulations, and dashboards are projections over that graph rather than rival semantic authorities.
+## Why this page exists
 
-## Query pattern
+**Find Unproven Collector Designs** exists because it changes a concrete decision inside **Appendix K — Example SPARQL Queries**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-```sparql
-SELECT ?subject ?evidence
-WHERE {
-  ?subject ?predicate ?evidence .
-  FILTER(BOUND(?evidence))
-}
+For **Find Unproven Collector Designs**, the primary state variables include **subject**, **constraint**, and **candidate**; the control or consequence variables include **evidence**, **failure mode**, and **verification**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
+
+The boundary is operational, not literary. Inputs to **Find Unproven Collector Designs** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
+
+## Engineering model
+
+**Find Unproven Collector Designs** is modeled by interfaces rather than by its name. `dyson:find-unproven-collector-designs:b723004c80ca` identifies consumed observations, produced artifact or decision, hard constraints, reversible candidate space, authority class, expected postcondition, and failure surface. The page is meaningful only when a counterexample can change the resulting decision.
+
+## Operational contract
+
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:find-unproven-collector-designs:b723004c80ca` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | subject, constraint, candidate with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | evidence, failure mode or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Find Unproven Collector Designs**, Construct a positive case and a counterexample. If both lead to the same decision, the page has not yet defined a meaningful constraint.
+
+## Questions the design must answer
+
+1. For **Find Unproven Collector Designs**: What exact subject does this page constrain?
+2. For **Find Unproven Collector Designs**: What reversible candidate space should be preserved?
+3. For **Find Unproven Collector Designs**: What evidence falsifies the working claim?
+
+## Executable representation
+
+```yaml
+subject: dyson:find-unproven-collector-designs:b723004c80ca
+topic: "Find Unproven Collector Designs"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
 ```
 
-The concrete ontology IRIs and predicates must come from the admitted graph. This generic pattern is illustrative and must not be mistaken for a canonical query against an unspecified schema.
+## Failure modes and counterexamples
 
-## Standing rule
+- The page names a concept but does not change a model, constraint, candidate, verifier, or refusal decision.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Find Unproven Collector Designs**.
+- **Hidden assumption:** subject or constraint is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
 
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
+## DfCM decision rule
+
+For **Find Unproven Collector Designs**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:find-unproven-collector-designs:b723004c80ca`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Find Unproven Collector Designs** subject/revision is named.
+- [ ] Required subject, constraint, and candidate observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Find Unproven Collector Designs** is admitted, downstream systems may consume its subject, constraint, and candidate claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Find Unproven Collector Designs** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

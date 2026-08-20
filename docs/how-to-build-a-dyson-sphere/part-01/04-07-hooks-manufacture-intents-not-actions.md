@@ -1,36 +1,100 @@
-# 4.7 Hooks Manufacture Intents, Not Actions
+# Hooks Manufacture Intents, Not Actions
 
-**Parent:** [4. SELECT, CONSTRUCT, DO](04-select-construct-do.md)
+**Parent:** [SELECT, CONSTRUCT, DO](04-select-construct-do.md)
 
-## Claim
+> **Subject identity:** `dyson:hooks-manufacture-intents-not-actions:15905b9e80b6`
+> **Domain:** `manufacturing`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Hooks Manufacture Intents, Not Actions` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger select, construct, do system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-A physically credible Dyson program begins with a swarm, not a rigid shell. Independent orbiting collectors can be added incrementally, placed on families of stable trajectories, repaired or retired locally, and diversified by function. A rigid shell around a star has no known passive structural mechanism that keeps it centered; even before material strength is considered, it creates a global stability problem that a swarm avoids.
+**Hooks Manufacture Intents, Not Actions** exists because it changes a concrete decision inside **SELECT, CONSTRUCT, DO**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Factory design is a closure problem: feedstock, energy, tooling, calibration, control, spares, maintenance, waste, and output quality must all be represented. Self-replication is especially dangerous to leave implicit. Reproduction therefore consumes explicit material and energy budgets, generation limits, geographic or orbital fences, shutdown semantics, and receipts for each authorized replication transition.
+For **Hooks Manufacture Intents, Not Actions**, the primary state variables include **bill of materials**, **process step**, and **yield**; the control or consequence variables include **throughput**, **tooling**, and **quality**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-SELECT, CONSTRUCT, and DO are separate authority classes. A planner may rank candidates; a constructor may render them; only a brokered authority path may cause consequence. BRCE enforces zero unreceipted actuation by binding intent, subject, authority, preconditions, execution result, postconditions, and replay metadata into a receipt.
+The boundary is operational, not literary. Inputs to **Hooks Manufacture Intents, Not Actions** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Operationalization
+## Engineering model
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+For **Hooks Manufacture Intents, Not Actions**, factory closure is a measured transformation:
 
-A practical record for this topic should contain:
+```text
+(feedstock, energy, tooling, robotics)
+ -> (qualified product, rework, waste, wear)
+```
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+Yield is measured after inspection and rework, not inferred from nominal cycle rate. `dyson:hooks-manufacture-intents-not-actions:15905b9e80b6` tracks process capability, calibration, critical tooling, spare consumption, batch genealogy, inspection result, and the downstream acceptance criterion that makes output usable.
 
-## Evidence boundary
+## Operational contract
 
-For `Hooks Manufacture Intents, Not Actions`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:hooks-manufacture-intents-not-actions:15905b9e80b6` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | bill of materials, process step, yield with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | throughput, tooling or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-## Falsifier
+## Worked reasoning
 
-The working claim for `Hooks Manufacture Intents, Not Actions` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+For **Hooks Manufacture Intents, Not Actions**, Distinguish nominal cycle time from qualified-output cycle time. A fast process with poor first-pass yield can have lower effective throughput once inspection and rework are included.
+
+## Questions the design must answer
+
+1. For **Hooks Manufacture Intents, Not Actions**: Which process step is the bottleneck after yield and rework?
+2. For **Hooks Manufacture Intents, Not Actions**: Which tooling or calibration dependency prevents false factory closure?
+3. For **Hooks Manufacture Intents, Not Actions**: Which quality attribute admits output to the next process?
+
+## Executable representation
+
+```yaml
+subject: dyson:hooks-manufacture-intents-not-actions:15905b9e80b6
+topic: "Hooks Manufacture Intents, Not Actions"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- Throughput is reported before inspection/rework and scaling amplifies poor yield.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Hooks Manufacture Intents, Not Actions**.
+- **Hidden assumption:** bill of materials or process step is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Hooks Manufacture Intents, Not Actions**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:hooks-manufacture-intents-not-actions:15905b9e80b6`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Hooks Manufacture Intents, Not Actions** subject/revision is named.
+- [ ] Required bill of materials, process step, and yield observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Hooks Manufacture Intents, Not Actions** is admitted, downstream systems may consume its bill of materials, process step, and yield claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Hooks Manufacture Intents, Not Actions** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

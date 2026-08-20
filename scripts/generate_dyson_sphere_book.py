@@ -1,5 +1,5 @@
 from pathlib import Path
-import os, re, json, textwrap, math
+import os, re, json, textwrap, math, subprocess, sys
 
 REPO_ROOT = Path(os.environ.get('CHATMAN_REPO_ROOT', '.')).resolve()
 ROOT = Path(os.environ.get('DYSON_BOOK_ROOT', str(REPO_ROOT / 'docs' / 'how-to-build-a-dyson-sphere'))).resolve()
@@ -653,3 +653,14 @@ canonical = false
 if missing or len(chapter_records) != 104 or len(links) != 838 or len(all_md) != 839:
     raise SystemExit(f'validation failed: {json.dumps(report, sort_keys=True)}')
 print(json.dumps(report, indent=2))
+
+# DYSON_HYPER_MEANINGFUL_ENRICHMENT_V1
+# Raw generation is followed by the domain-aware non-vacuity pass so regeneration
+# cannot silently restore the old label-only boilerplate.
+if os.environ.get("DYSON_SKIP_ENRICH") != "1":
+    subprocess.run(
+        [sys.executable, str(REPO_ROOT / "scripts" / "enrich_dyson_sphere_book.py"),
+         "--root", str(ROOT), "--repo-root", str(REPO_ROOT)],
+        check=True,
+        cwd=REPO_ROOT,
+    )

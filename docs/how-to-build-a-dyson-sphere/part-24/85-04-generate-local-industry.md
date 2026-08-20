@@ -1,36 +1,93 @@
-# 85.4 Generate Local Industry
+# Generate Local Industry
 
-**Parent:** [85. Reconstituting the Ecosystem Around Another Star](85-reconstituting-the-ecosystem-around-another-star.md)
+**Parent:** [Reconstituting the Ecosystem Around Another Star](85-reconstituting-the-ecosystem-around-another-star.md)
 
-## Claim
+> **Subject identity:** `dyson:generate-local-industry:e898e3307007`
+> **Domain:** `interstellar`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Generate Local Industry` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger reconstituting the ecosystem around another star system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-Stellar power is the dominant external input. For an approximately isotropic star of luminosity L, irradiance at radius r is F=L/(4πr²). This inverse-square relation turns orbital radius into an energy-density and thermal-design parameter. For the Sun, total luminosity is about 3.8×10^26 W; a civilization need not capture all of it for the industrial consequences to be enormous.
+**Generate Local Industry** exists because it changes a concrete decision inside **Reconstituting the Ecosystem Around Another Star**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-ggen is treated as a semantic manufacturing compiler: graph and query select meaning, templates render projections, validators reject malformed output, and receipts bind the generated artifact to the admitted subject. Generation is not evidence of correctness. The value of the generator is reproducibility and class closure—once a construction pattern is admitted, it can be regenerated for new subjects without rediscovering the pattern manually.
+For **Generate Local Industry**, the primary state variables include **light-time**, **seed capability**, and **local observation**; the control or consequence variables include **portable semantics**, **reconstitution**, and **standing**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-Interstellar expansion breaks any assumption of a universal live control plane. A seed system must reacquire local reality, build a local O*, admit local physics and resources, reconstruct manufacturing capability, and produce local receipts. Portable semantics can survive the journey; configuration and standing cannot simply be copied because the subject has changed.
+The boundary is operational, not literary. Inputs to **Generate Local Industry** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Operationalization
+## Engineering model
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+For **Generate Local Industry**, **knowledge may be portable while standing is local**. A seed can carry ontology, generators, proofs, process recipes, and tests, but `dyson:generate-local-industry:e898e3307007` must reacquire stellar state, local resources, hazards, institutions, and authority before consequence. At interstellar light-time this local reconstitution is not optional resilience; it is the only causally coherent control architecture.
 
-A practical record for this topic should contain:
+## Operational contract
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:generate-local-industry:e898e3307007` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | light-time, seed capability, local observation with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | portable semantics, reconstitution or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-## Evidence boundary
+## Worked reasoning
 
-For `Generate Local Industry`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+For **Generate Local Industry**, Start a seed with ontology and generators but no local standing. It must observe and admit its star, resources, tooling, hazards, and authority before constructing its first locally valid industrial artifact.
 
-## Falsifier
+## Questions the design must answer
 
-The working claim for `Generate Local Industry` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+1. For **Generate Local Industry**: Which knowledge is portable and which standing must be reacquired?
+2. For **Generate Local Industry**: What seed capability closes measurement, energy, tooling, and repair?
+3. For **Generate Local Industry**: How does governance remain local when round-trip coordination is irrelevant?
+
+## Executable representation
+
+```yaml
+subject: dyson:generate-local-industry:e898e3307007
+topic: "Generate Local Industry"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- Standing is copied from the origin star instead of reacquiring local reality and authority.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Generate Local Industry**.
+- **Hidden assumption:** light-time or seed capability is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Generate Local Industry**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:generate-local-industry:e898e3307007`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Generate Local Industry** subject/revision is named.
+- [ ] Required light-time, seed capability, and local observation observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Generate Local Industry** is admitted, downstream systems may consume its light-time, seed capability, and local observation claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Generate Local Industry** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

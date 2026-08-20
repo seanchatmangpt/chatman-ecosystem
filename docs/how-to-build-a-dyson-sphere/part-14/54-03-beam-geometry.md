@@ -1,32 +1,101 @@
-# 54.3 Beam Geometry
+# Beam Geometry
 
-**Parent:** [54. Beamed Power](54-beamed-power.md)
+**Parent:** [Beamed Power](54-beamed-power.md)
 
-## Claim
+> **Subject identity:** `dyson:beam-geometry:667a165b85b8`
+> **Domain:** `energy`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Beam Geometry` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger beamed power system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-Energy architecture must distinguish generation, conversion, storage, transmission, dispatch, and final dissipation. Counting nameplate collection without conversion losses and thermal rejection is a category error. In the Chatman frame, each transfer is a typed morphism with measured efficiency, uncertainty, authority boundary, and receiptable consequence.
+**Beam Geometry** exists because it changes a concrete decision inside **Beamed Power**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-## Operationalization
+For **Beam Geometry**, the primary state variables include **power balance**, **efficiency**, and **storage**; the control or consequence variables include **transmission**, **dispatch**, and **load**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+The boundary is operational, not literary. Inputs to **Beam Geometry** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-A practical record for this topic should contain:
+## Engineering model
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+**Beam Geometry** must name the power boundary being measured. For a serial chain,
 
-## Evidence boundary
+\[
+P_{delivered}=P_{incident}\prod_i\eta_i,\qquad P_{loss}=P_{incident}-P_{delivered}.
+\]
 
-For `Beam Geometry`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+Loss must reappear as heat, reflected/radiated power, stored energy, curtailment, or another explicit channel. `dyson:beam-geometry:667a165b85b8` distinguishes incident, converted, routed, stored, delivered, curtailed, and dissipated energy so a nameplate figure cannot masquerade as useful capacity.
 
-## Falsifier
+## Operational contract
 
-The working claim for `Beam Geometry` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:beam-geometry:667a165b85b8` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | power balance, efficiency, storage with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | transmission, dispatch or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Beam Geometry**, An illustrative chain with conversion 0.40, transmission 0.92, and storage round-trip 0.90 delivers `0.40×0.92×0.90 = 0.3312` of incident energy through all three stages. The remaining 66.88% must appear in explicit loss or bypass channels.
+
+## Questions the design must answer
+
+1. For **Beam Geometry**: Is the ledger reporting collected, converted, delivered, or useful power?
+2. For **Beam Geometry**: Which stage dominates total loss?
+3. For **Beam Geometry**: What reserve and load-shedding policy contains local failure?
+
+## Executable representation
+
+```yaml
+subject: dyson:beam-geometry:667a165b85b8
+topic: "Beam Geometry"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
+```
+
+## Failure modes and counterexamples
+
+- Nameplate collection is counted as useful delivered energy and conversion/transmission/storage losses vanish from the ledger.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Beam Geometry**.
+- **Hidden assumption:** power balance or efficiency is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Beam Geometry**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:beam-geometry:667a165b85b8`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Beam Geometry** subject/revision is named.
+- [ ] Required power balance, efficiency, and storage observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Beam Geometry** is admitted, downstream systems may consume its power balance, efficiency, and storage claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Beam Geometry** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

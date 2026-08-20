@@ -1,40 +1,101 @@
-# 5.6 Solar Wind
+# Solar Wind
 
-**Parent:** [5. Stellar Observation](05-stellar-observation.md)
+**Parent:** [Stellar Observation](05-stellar-observation.md)
 
-## Claim
+> **Subject identity:** `dyson:solar-wind:d3a1bab38280`
+> **Domain:** `stellar`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Solar Wind` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger stellar observation system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-Stellar power is the dominant external input. For an approximately isotropic star of luminosity L, irradiance at radius r is F=L/(4πr²). This inverse-square relation turns orbital radius into an energy-density and thermal-design parameter. For the Sun, total luminosity is about 3.8×10^26 W; a civilization need not capture all of it for the industrial consequences to be enormous.
+**Solar Wind** exists because it changes a concrete decision inside **Stellar Observation**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Observation becomes operational only after it is bounded. O* records exact subject identity, source provenance, units, uncertainty, validity interval, contradictions, and exclusions. UNKNOWN is preserved as a value rather than coerced into a guess. This makes later manufacture falsifiable: a design can be traced back to the measurements and assumptions it actually consumed.
+For **Solar Wind**, the primary state variables include **luminosity**, **irradiance**, and **spectrum**; the control or consequence variables include **activity**, **uncertainty**, and **epoch**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-## Model
+The boundary is operational, not literary. Inputs to **Solar Wind** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-\[F(r)=\frac{L}{4\pi r^2}\]
+## Engineering model
 
-Any numeric use of this relation is admitted only after units, parameter source, uncertainty, epoch, and approximation regime are recorded. Model validity is part of the subject, not metadata that may be discarded after calculation.
+**Solar Wind** belongs in a versioned stellar state, not a timeless constant. Ideal irradiance is bounded by
 
-## Operationalization
+\[
+F(r)=\frac{L}{4\pi r^2},
+\]
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+but collector decisions also depend on spectral distribution, activity, variability, geometry, and observation epoch. `dyson:solar-wind:d3a1bab38280` must propagate measurement uncertainty into sizing or safety margins instead of substituting a point estimate wherever a range is operationally relevant.
 
-A practical record for this topic should contain:
+## Operational contract
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:solar-wind:d3a1bab38280` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | luminosity, irradiance, spectrum with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | activity, uncertainty or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-## Evidence boundary
+## Worked reasoning
 
-For `Solar Wind`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+For **Solar Wind**, Propagate the admitted measurement interval into a downstream sizing or safe-mode choice. If the choice does not change across the range, the design is robust; if it does, more observation has measurable value.
 
-## Falsifier
+## Questions the design must answer
 
-The working claim for `Solar Wind` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+1. For **Solar Wind**: Which measured stellar quantities drive the decision, and at what epoch?
+2. For **Solar Wind**: How does uncertainty propagate into collector sizing or safe orbit families?
+3. For **Solar Wind**: Which transient event forces derating or model invalidation?
+
+## Executable representation
+
+```yaml
+subject: dyson:solar-wind:d3a1bab38280
+topic: "Solar Wind"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
+```
+
+## Failure modes and counterexamples
+
+- A long-lived design treats a stellar estimate as immutable beyond its admitted observation/model horizon.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Solar Wind**.
+- **Hidden assumption:** luminosity or irradiance is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Solar Wind**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:solar-wind:d3a1bab38280`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Solar Wind** subject/revision is named.
+- [ ] Required luminosity, irradiance, and spectrum observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Solar Wind** is admitted, downstream systems may consume its luminosity, irradiance, and spectrum claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Solar Wind** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

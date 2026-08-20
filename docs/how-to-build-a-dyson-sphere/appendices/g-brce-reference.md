@@ -1,14 +1,108 @@
 # Appendix G — BRCE Reference
 
-This appendix is a reusable reference surface for the manuscript. It is intentionally explicit about scope and evidence: examples illustrate representation and reasoning; they do not claim that a physical Dyson system has been built, tested, or admitted.
+> **Subject identity:** `dyson:appendix-g-brce-reference:24fde5a7032f`
+> **Domain:** `authority`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-SELECT, CONSTRUCT, and DO are separate authority classes. A planner may rank candidates; a constructor may render them; only a brokered authority path may cause consequence. BRCE enforces zero unreceipted actuation by binding intent, subject, authority, preconditions, execution result, postconditions, and replay metadata into a receipt.
+## Why this page exists
 
-## Sections
+**Appendix G — BRCE Reference** exists because it changes a concrete decision inside **Appendices**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
+
+For **Appendix G — BRCE Reference**, the primary state variables include **SELECT**, **CONSTRUCT**, and **DO**; the control or consequence variables include **scope**, **expiry**, and **BRCE**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
+
+The boundary is operational, not literary. Inputs to **Appendix G — BRCE Reference** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
+
+## Decomposition
 
 - [Admission](g-01-admission.md)
 - [Authority](g-02-authority.md)
 - [Actuation](g-03-actuation.md)
 - [Receipt](g-04-receipt.md)
 - [Replay](g-05-replay.md)
-- [Refusal](g-06-refusal.md)
+- [Refusal](g-06-refusal.md) For **Appendix G — BRCE Reference**, this reusable domain rule is evaluated against `dyson:appendix-g-brce-reference:24fde5a7032f`; its observations, validity interval, constraints, and downstream consumer remain specific to this page even when the underlying law is shared.
+
+## Engineering model
+
+**Appendix G — BRCE Reference** is modeled as bounded reachability. A consequential grant binds
+
+```text
+(actor, exact_subject, intent_digest, capability, scope,
+ not_before, expires_at, policy_version, required_postcondition)
+```
+
+Possession of a credential or network path is never enough. `dyson:appendix-g-brce-reference:24fde5a7032f` also needs revocation state, content/software identity where relevant, and evidence that expired, premature, wrong-subject, wrong-intent, and over-scoped grants fail closed. `SELECT`, `CONSTRUCT`, and `DO` remain distinct authority classes.
+
+## Operational contract
+
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:appendix-g-brce-reference:24fde5a7032f` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | SELECT, CONSTRUCT, DO with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | scope, expiry or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Appendix G — BRCE Reference**, Test correct, expired, premature, wrong-subject, wrong-intent, and over-scoped grants. The broker is useful because invalid variants are refused before consequence.
+
+## Questions the design must answer
+
+1. For **Appendix G — BRCE Reference**: Is the operation SELECT, CONSTRUCT, or DO?
+2. For **Appendix G — BRCE Reference**: Which subject, scope, actor, validity window, and postcondition bind the authority?
+3. For **Appendix G — BRCE Reference**: How are expired or revoked grants made unreachable?
+
+## Executable representation
+
+```json
+{
+  "subject": "dyson:appendix-g-brce-reference:24fde5a7032f",
+  "intent": "Appendix G \u2014 BRCE Reference",
+  "actor": "explicit",
+  "authority_scope": "explicit",
+  "validity_window": "required for DO",
+  "revocation": "checked",
+  "appeal_or_refusal_path": "explicit",
+  "postcondition": "named before execution"
+}
+```
+
+## Failure modes and counterexamples
+
+- A valid-looking grant is accepted for the wrong subject, intent, scope, or validity window.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Appendix G — BRCE Reference**.
+- **Hidden assumption:** SELECT or CONSTRUCT is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Appendix G — BRCE Reference**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:appendix-g-brce-reference:24fde5a7032f`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Appendix G — BRCE Reference** subject/revision is named.
+- [ ] Required SELECT, CONSTRUCT, and DO observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Appendix G — BRCE Reference** is admitted, downstream systems may consume its SELECT, CONSTRUCT, and DO claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Appendix G — BRCE Reference** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

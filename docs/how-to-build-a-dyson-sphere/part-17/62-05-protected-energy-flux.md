@@ -1,40 +1,100 @@
-# 62.5 Protected Energy Flux
+# Protected Energy Flux
 
-**Parent:** [62. Earth Is Not Raw Material](62-earth-is-not-raw-material.md)
+**Parent:** [Earth Is Not Raw Material](62-earth-is-not-raw-material.md)
 
-## Claim
+> **Subject identity:** `dyson:protected-energy-flux:093469c97ed5`
+> **Domain:** `safety`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Protected Energy Flux` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger earth is not raw material system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-Energy architecture must distinguish generation, conversion, storage, transmission, dispatch, and final dissipation. Counting nameplate collection without conversion losses and thermal rejection is a category error. In the Chatman frame, each transfer is a typed morphism with measured efficiency, uncertainty, authority boundary, and receiptable consequence.
+**Protected Energy Flux** exists because it changes a concrete decision inside **Earth Is Not Raw Material**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Matter is the hard budget that prevents a Dyson program from collapsing into pure software metaphor. Each design must close a mass ledger from feedstock through extraction, refining, fabrication, deployment, maintenance, recycling, and unrecoverable loss. Composition uncertainty is therefore an admitted observation problem before it is a manufacturing problem.
+For **Protected Energy Flux**, the primary state variables include **hazard**, **safe state**, and **interlock**; the control or consequence variables include **containment**, **trip condition**, and **recovery**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-## Model
+The boundary is operational, not literary. Inputs to **Protected Energy Flux** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-\[\eta_{end}=\prod_i \eta_i\]
+## Engineering model
 
-Any numeric use of this relation is admitted only after units, parameter source, uncertainty, epoch, and approximation regime are recorded. Model validity is part of the subject, not metadata that may be discarded after calculation.
+**Protected Energy Flux** is represented as a hazard-control argument:
 
-## Operationalization
+```text
+hazard -> initiating condition -> propagation path -> independent guard
+       -> safe state -> recovery criteria -> replayable incident evidence
+```
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+The guard must not share the initiating failure. `dyson:protected-energy-flux:093469c97ed5` names a trip observation, bounded safe state, independently reachable shutdown/avoidance path, and the evidence required before normal operation may resume.
 
-A practical record for this topic should contain:
+## Operational contract
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:protected-energy-flux:093469c97ed5` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | hazard, safe state, interlock with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | containment, trip condition or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-## Evidence boundary
+## Worked reasoning
 
-For `Protected Energy Flux`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+For **Protected Energy Flux**, Inject the initiating fault while the normal controller is unavailable. If the independent guard cannot still reach the safe state, the protection has a shared failure mode.
 
-## Falsifier
+## Questions the design must answer
 
-The working claim for `Protected Energy Flux` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+1. For **Protected Energy Flux**: What hazard is prevented and what is the independently reachable safe state?
+2. For **Protected Energy Flux**: Which single failure must not become existential?
+3. For **Protected Energy Flux**: What observation trips the interlock?
+
+## Executable representation
+
+```yaml
+subject: dyson:protected-energy-flux:093469c97ed5
+topic: "Protected Energy Flux"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- The shutdown path shares power, software, sensor, or authority dependencies with the initiating fault.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Protected Energy Flux**.
+- **Hidden assumption:** hazard or safe state is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Protected Energy Flux**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:protected-energy-flux:093469c97ed5`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Protected Energy Flux** subject/revision is named.
+- [ ] Required hazard, safe state, and interlock observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Protected Energy Flux** is admitted, downstream systems may consume its hazard, safe state, and interlock claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Protected Energy Flux** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

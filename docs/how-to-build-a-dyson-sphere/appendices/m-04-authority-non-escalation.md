@@ -1,15 +1,101 @@
-# Appendix M.4 — Authority Non-Escalation
+# Authority Non-Escalation
 
 **Parent:** [Appendix M — Example Lean Properties](m-example-lean-properties.md)
 
-Formal admission is used only where a machine-checkable invariant can be stated precisely. The critical separation is that rendering, proving, and certifying are different operations: ggen can render a candidate, Lean can discharge a theorem obligation, and mfact can bind evidence to a subject. None of those steps grants DO authority by itself.
+> **Subject identity:** `dyson:authority-non-escalation:ce624596726e`
+> **Domain:** `authority`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-SELECT, CONSTRUCT, and DO are separate authority classes. A planner may rank candidates; a constructor may render them; only a brokered authority path may cause consequence. BRCE enforces zero unreceipted actuation by binding intent, subject, authority, preconditions, execution result, postconditions, and replay metadata into a receipt.
+## Why this page exists
 
-## Formalization boundary
+**Authority Non-Escalation** exists because it changes a concrete decision inside **Appendix M — Example Lean Properties**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-The theorem statement must be written over the exact model used by construction. Proving a simplified invariant is useful only if the projection from the operational subject into the theorem model is itself admitted and reviewable.
+For **Authority Non-Escalation**, the primary state variables include **SELECT**, **CONSTRUCT**, and **DO**; the control or consequence variables include **scope**, **expiry**, and **BRCE**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-## Standing rule
+The boundary is operational, not literary. Inputs to **Authority Non-Escalation** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
+## Engineering model
+
+**Authority Non-Escalation** is modeled as bounded reachability. A consequential grant binds
+
+```text
+(actor, exact_subject, intent_digest, capability, scope,
+ not_before, expires_at, policy_version, required_postcondition)
+```
+
+Possession of a credential or network path is never enough. `dyson:authority-non-escalation:ce624596726e` also needs revocation state, content/software identity where relevant, and evidence that expired, premature, wrong-subject, wrong-intent, and over-scoped grants fail closed. `SELECT`, `CONSTRUCT`, and `DO` remain distinct authority classes.
+
+## Operational contract
+
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:authority-non-escalation:ce624596726e` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | SELECT, CONSTRUCT, DO with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | scope, expiry or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Authority Non-Escalation**, Test correct, expired, premature, wrong-subject, wrong-intent, and over-scoped grants. The broker is useful because invalid variants are refused before consequence.
+
+## Questions the design must answer
+
+1. For **Authority Non-Escalation**: Is the operation SELECT, CONSTRUCT, or DO?
+2. For **Authority Non-Escalation**: Which subject, scope, actor, validity window, and postcondition bind the authority?
+3. For **Authority Non-Escalation**: How are expired or revoked grants made unreachable?
+
+## Executable representation
+
+```json
+{
+  "subject": "dyson:authority-non-escalation:ce624596726e",
+  "intent": "Authority Non-Escalation",
+  "actor": "explicit",
+  "authority_scope": "explicit",
+  "validity_window": "required for DO",
+  "revocation": "checked",
+  "appeal_or_refusal_path": "explicit",
+  "postcondition": "named before execution"
+}
+```
+
+## Failure modes and counterexamples
+
+- A valid-looking grant is accepted for the wrong subject, intent, scope, or validity window.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Authority Non-Escalation**.
+- **Hidden assumption:** SELECT or CONSTRUCT is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Authority Non-Escalation**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:authority-non-escalation:ce624596726e`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Authority Non-Escalation** subject/revision is named.
+- [ ] Required SELECT, CONSTRUCT, and DO observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Authority Non-Escalation** is admitted, downstream systems may consume its SELECT, CONSTRUCT, and DO claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Authority Non-Escalation** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

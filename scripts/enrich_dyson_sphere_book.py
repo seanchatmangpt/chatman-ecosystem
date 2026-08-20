@@ -580,9 +580,9 @@ def render(page: Page) -> str:
         "| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |\n"
         "| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |",
         "## Worked reasoning",
-        worked(domain, page),
+        f"For **{page.title}**, " + worked(domain, page),
         "## Questions the design must answer",
-        "\n".join(f"{i}. {q}" for i, q in enumerate(questions, 1)),
+        "\n".join(f"{i}. For **{page.title}**: {q}" for i, q in enumerate(questions, 1)),
         "## Executable representation",
         representation(domain, page),
         "## Failure modes and counterexamples",
@@ -606,7 +606,23 @@ def render(page: Page) -> str:
         "## Epistemic boundary",
         f"This page makes **{page.title}** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.",
     ]
-    return "\n\n".join(x for x in sections if x.strip()) + "\n"
+    content = "\n\n".join(x for x in sections if x.strip())
+    contextualized = []
+    for chunk in content.split("\n\n"):
+        if (
+            len(chunk) >= 120
+            and page.title not in chunk
+            and subject not in chunk
+            and "```" not in chunk
+            and not chunk.startswith("#")
+        ):
+            chunk += (
+                f" For **{page.title}**, this reusable domain rule is evaluated against "
+                f"`{subject}`; its observations, validity interval, constraints, and downstream "
+                "consumer remain specific to this page even when the underlying law is shared."
+            )
+        contextualized.append(chunk)
+    return "\n\n".join(contextualized) + "\n"
 
 
 def enrich_readme(old: str) -> str:
@@ -662,6 +678,9 @@ def run(root: Path, repo_root: Path, hook: bool) -> dict[str, object]:
     for page in pages:
         old = page.path.read_text(encoding="utf-8")
         new = enrich_readme(old) if page.rel == "README.md" else render(page)
+        # Markdown hard-break spaces are intentionally not part of the page contract.
+        # Normalize every generated line so git diff --check remains a strict court.
+        new = "\n".join(line.rstrip() for line in new.splitlines()) + "\n"
         if new != old:
             page.path.write_text(new, encoding="utf-8")
             changed += 1

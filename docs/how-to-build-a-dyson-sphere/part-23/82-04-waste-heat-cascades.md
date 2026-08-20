@@ -1,42 +1,95 @@
-# 82.4 Waste-Heat Cascades
+# Waste-Heat Cascades
 
-**Parent:** [82. Nested Thermal Layers](82-nested-thermal-layers.md)
+**Parent:** [Nested Thermal Layers](82-nested-thermal-layers.md)
 
-## Claim
+> **Subject identity:** `dyson:waste-heat-cascades:f04f2e5e48aa`
+> **Domain:** `matrioshka`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Waste-Heat Cascades` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger nested thermal layers system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-A physically credible Dyson program begins with a swarm, not a rigid shell. Independent orbiting collectors can be added incrementally, placed on families of stable trajectories, repaired or retired locally, and diversified by function. A rigid shell around a star has no known passive structural mechanism that keeps it centered; even before material strength is considered, it creates a global stability problem that a swarm avoids.
+**Waste-Heat Cascades** exists because it changes a concrete decision inside **Nested Thermal Layers**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Every useful energy conversion ends as heat. A collector that absorbs stellar power must either radiate comparable power, export energy, store it temporarily, or fail thermally. Radiative disposal scales as P=εσAT⁴, making radiator area and operating temperature architectural variables. The T⁴ dependence rewards hotter radiators with compact area, but material limits, conversion efficiency, computation density, and component lifetime constrain that choice.
+For **Waste-Heat Cascades**, the primary state variables include **exergy**, **temperature layer**, and **waste heat**; the control or consequence variables include **workload**, **latency**, and **radiator**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-A Matrioshka-brain architecture extends the Dyson idea by using successive thermal layers. Inner computation or industry consumes high-exergy input and radiates lower-temperature waste heat that can be intercepted again farther out. The idea is thermodynamically suggestive rather than a finished engineering design; workload placement must therefore be driven by temperature, latency, reliability, and communication cost rather than a single abstract compute metric.
+The boundary is operational, not literary. Inputs to **Waste-Heat Cascades** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Model
+## Engineering model
 
-\[P_{rad}=\varepsilon\sigma A T^4\]
+For **Waste-Heat Cascades**, nested layers are constrained by exergy and heat rejection, not an illustration of shells. A hotter inner workload exports lower-grade radiation; an outer layer can use part of that flux only if its own conversion and radiator ledger closes. `dyson:waste-heat-cascades:f04f2e5e48aa` schedules jointly over temperature tolerance, latency, reliability, power, and downstream waste-heat coupling.
 
-Any numeric use of this relation is admitted only after units, parameter source, uncertainty, epoch, and approximation regime are recorded. Model validity is part of the subject, not metadata that may be discarded after calculation.
+## Operational contract
 
-## Operationalization
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:waste-heat-cascades:f04f2e5e48aa` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | exergy, temperature layer, waste heat with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | workload, latency or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+## Worked reasoning
 
-A practical record for this topic should contain:
+For **Waste-Heat Cascades**, Move one workload to a colder outer layer and account for lower cooling temperature against added communication latency and reduced flux. Optimal placement is workload-specific.
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+## Questions the design must answer
 
-## Evidence boundary
+1. For **Waste-Heat Cascades**: Which layer can use remaining exergy rather than merely intercept heat?
+2. For **Waste-Heat Cascades**: How do latency and heat rejection trade?
+3. For **Waste-Heat Cascades**: Which thermal coupling makes local optimization globally harmful?
 
-For `Waste-Heat Cascades`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+## Executable representation
 
-## Falsifier
+```yaml
+subject: dyson:waste-heat-cascades:f04f2e5e48aa
+topic: "Waste-Heat Cascades"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
+```
 
-The working claim for `Waste-Heat Cascades` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+## Failure modes and counterexamples
+
+- An outer layer is credited with useful energy without closing conversion, communication, and heat rejection.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Waste-Heat Cascades**.
+- **Hidden assumption:** exergy or temperature layer is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Waste-Heat Cascades**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:waste-heat-cascades:f04f2e5e48aa`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Waste-Heat Cascades** subject/revision is named.
+- [ ] Required exergy, temperature layer, and waste heat observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Waste-Heat Cascades** is admitted, downstream systems may consume its exergy, temperature layer, and waste heat claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Waste-Heat Cascades** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

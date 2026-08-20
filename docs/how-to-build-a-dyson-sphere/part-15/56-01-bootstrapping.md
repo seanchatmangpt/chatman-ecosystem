@@ -1,34 +1,99 @@
-# 56.1 Bootstrapping
+# Bootstrapping
 
-**Parent:** [56. The Capital Problem](56-the-capital-problem.md)
+**Parent:** [The Capital Problem](56-the-capital-problem.md)
 
-## Claim
+> **Subject identity:** `dyson:bootstrapping:ef9b0538ad01`
+> **Domain:** `economics`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Bootstrapping` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger the capital problem system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-A physically credible Dyson program begins with a swarm, not a rigid shell. Independent orbiting collectors can be added incrementally, placed on families of stable trajectories, repaired or retired locally, and diversified by function. A rigid shell around a star has no known passive structural mechanism that keeps it centered; even before material strength is considered, it creates a global stability problem that a swarm avoids.
+**Bootstrapping** exists because it changes a concrete decision inside **The Capital Problem**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-The relevant economic quantity is not merely monetary cost but the opportunity cost of scarce mass, energy, launch delta-v, time, compute, and risk. Every scaling argument must show how industrial capacity compounds without hiding bottlenecks in a downstream ledger. Energy return, material yield, repair burden, and replication cycle time are more fundamental than a single currency price.
+For **Bootstrapping**, the primary state variables include **scarcity**, **ledger**, and **opportunity cost**; the control or consequence variables include **allocation**, **settlement**, and **reserve**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-## Operationalization
+The boundary is operational, not literary. Inputs to **Bootstrapping** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+## Engineering model
 
-A practical record for this topic should contain:
+For **Bootstrapping**, cost is a vector before it is a currency scalar:
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+\[
+C=(m,E,t,\Delta v,compute,risk,authority,opportunity).
+\]
 
-## Evidence boundary
+`dyson:bootstrapping:ef9b0538ad01` separates reservation, commitment, consumption, verified delivery, waste, and settlement. This exposes designs that appear cheap only because they externalize scarce radiator area, launch capacity, repair burden, ecological risk, or future optionality into another ledger.
 
-For `Bootstrapping`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+## Operational contract
 
-## Falsifier
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:bootstrapping:ef9b0538ad01` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | scarcity, ledger, opportunity cost with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | allocation, settlement or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-The working claim for `Bootstrapping` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+## Worked reasoning
+
+For **Bootstrapping**, Compare candidates on mass, energy, time, risk, and reversibility before compressing them into one score. The uncompressed vector exposes which trade a scalar objective hides.
+
+## Questions the design must answer
+
+1. For **Bootstrapping**: Which scarce resource is actually allocated?
+2. For **Bootstrapping**: Does settlement distinguish reservation, consumption, and verified delivery?
+3. For **Bootstrapping**: Which opportunity cost is hidden by the headline metric?
+
+## Executable representation
+
+```yaml
+subject: dyson:bootstrapping:ef9b0538ad01
+topic: "Bootstrapping"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- A scalar price hides a binding non-monetary constraint such as launch capacity, radiator area, risk, or authority.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Bootstrapping**.
+- **Hidden assumption:** scarcity or ledger is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Bootstrapping**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:bootstrapping:ef9b0538ad01`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Bootstrapping** subject/revision is named.
+- [ ] Required scarcity, ledger, and opportunity cost observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Bootstrapping** is admitted, downstream systems may consume its scarcity, ledger, and opportunity cost claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Bootstrapping** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

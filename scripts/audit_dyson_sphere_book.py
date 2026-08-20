@@ -32,7 +32,7 @@ REQUIRED = (
     "## Downstream consequence",
     "## Epistemic boundary",
 )
-PLACEHOLDER = re.compile(r"\b(?:TODO|TBD|TKTK|lorem ipsum|insert (?:text|content)|placeholder)\b", re.I)
+PLACEHOLDER = re.compile(r"\b(?:TODO|TBD|TKTK|lorem ipsum|insert (?:text|content)|replace me|coming soon)\b", re.I)
 WORD = re.compile(r"[A-Za-z0-9][A-Za-z0-9_+*'-]*")
 CODE_FENCE = re.compile(r"```.*?```", re.S)
 LINK = re.compile(r"\[[^\]]+\]\(([^)#]+\.md)(?:#[^)]+)?\)")

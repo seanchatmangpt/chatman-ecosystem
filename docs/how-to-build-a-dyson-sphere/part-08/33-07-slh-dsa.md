@@ -1,36 +1,101 @@
-# 33.7 SLH-DSA
+# SLH-DSA
 
-**Parent:** [33. Cryptographic Receipts](33-cryptographic-receipts.md)
+**Parent:** [Cryptographic Receipts](33-cryptographic-receipts.md)
 
-## Claim
+> **Subject identity:** `dyson:slh-dsa:6b05286b99ae`
+> **Domain:** `security`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`SLH-DSA` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger cryptographic receipts system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-Stellar power is the dominant external input. For an approximately isotropic star of luminosity L, irradiance at radius r is F=L/(4πr²). This inverse-square relation turns orbital radius into an energy-density and thermal-design parameter. For the Sun, total luminosity is about 3.8×10^26 W; a civilization need not capture all of it for the industrial consequences to be enormous.
+**SLH-DSA** exists because it changes a concrete decision inside **Cryptographic Receipts**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-The semantic layer exists to prevent identical reality from fragmenting into incompatible local names. Public vocabularies are preferred where they already express provenance, units, sensors, organizations, policy, preservation, and events. Custom terms are admitted only for genuinely new stellar-industrial meaning. Generated APIs, documents, schemas, simulations, and dashboards are projections over that graph rather than rival semantic authorities.
+For **SLH-DSA**, the primary state variables include **principal**, **credential**, and **attestation**; the control or consequence variables include **scope**, **revocation**, and **tamper evidence**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-Stellar scale eliminates the plausibility of a trusted interior. Identity, software provenance, key state, policy, and telemetry can all be stale or compromised. CASTLE therefore treats authority as explicit reachability under least privilege, uses content identity and signed evidence where appropriate, partitions failure domains, and never infers permission from network position or possession of a credential.
+The boundary is operational, not literary. Inputs to **SLH-DSA** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Operationalization
+## Engineering model
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+**SLH-DSA** is modeled as bounded reachability. A consequential grant binds
 
-A practical record for this topic should contain:
+```text
+(actor, exact_subject, intent_digest, capability, scope,
+ not_before, expires_at, policy_version, required_postcondition)
+```
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+Possession of a credential or network path is never enough. `dyson:slh-dsa:6b05286b99ae` also needs revocation state, content/software identity where relevant, and evidence that expired, premature, wrong-subject, wrong-intent, and over-scoped grants fail closed. `SELECT`, `CONSTRUCT`, and `DO` remain distinct authority classes.
 
-## Evidence boundary
+## Operational contract
 
-For `SLH-DSA`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:slh-dsa:6b05286b99ae` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | principal, credential, attestation with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | scope, revocation or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-## Falsifier
+## Worked reasoning
 
-The working claim for `SLH-DSA` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+For **SLH-DSA**, Test valid, expired, wrong-subject, and replayed requests. The authorization system is meaningful only if the negative cases fail closed.
+
+## Questions the design must answer
+
+1. For **SLH-DSA**: Which principal can reach this capability under what scope?
+2. For **SLH-DSA**: What compromised component is assumed?
+3. For **SLH-DSA**: How are expiry and revocation made unreachable rather than advisory?
+
+## Executable representation
+
+```json
+{
+  "subject": "dyson:slh-dsa:6b05286b99ae",
+  "intent": "SLH-DSA",
+  "actor": "explicit",
+  "authority_scope": "explicit",
+  "validity_window": "required for DO",
+  "revocation": "checked",
+  "appeal_or_refusal_path": "explicit",
+  "postcondition": "named before execution"
+}
+```
+
+## Failure modes and counterexamples
+
+- Credential possession is treated as authority after scope expiry, revocation, or subject drift.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **SLH-DSA**.
+- **Hidden assumption:** principal or credential is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **SLH-DSA**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:slh-dsa:6b05286b99ae`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **SLH-DSA** subject/revision is named.
+- [ ] Required principal, credential, and attestation observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **SLH-DSA** is admitted, downstream systems may consume its principal, credential, and attestation claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **SLH-DSA** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

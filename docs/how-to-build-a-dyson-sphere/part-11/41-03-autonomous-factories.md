@@ -1,32 +1,100 @@
-# 41.3 Autonomous Factories
+# Autonomous Factories
 
-**Parent:** [41. Phase Zero: Earth](41-phase-zero-earth.md)
+**Parent:** [Phase Zero: Earth](41-phase-zero-earth.md)
 
-## Claim
+> **Subject identity:** `dyson:autonomous-factories:6c27ad0f2ef2`
+> **Domain:** `autonomy`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Autonomous Factories` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger phase zero: earth system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-The subject is treated as a bounded object in the larger stellar-manufacturing graph. Its inputs, outputs, constraints, failure modes, and evidence obligations must be explicit before the system may generalize from a local success to a reusable class.
+**Autonomous Factories** exists because it changes a concrete decision inside **Phase Zero: Earth**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-## Operationalization
+For **Autonomous Factories**, the primary state variables include **observe**, **classify**, and **localize**; the control or consequence variables include **construct**, **admit**, and **verify**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+The boundary is operational, not literary. Inputs to **Autonomous Factories** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-A practical record for this topic should contain:
+## Engineering model
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+For **Autonomous Factories**, autonomy is staged rather than ambient:
 
-## Evidence boundary
+```text
+OBSERVE -> CLASSIFY -> LOCALIZE -> PRESERVE -> CONSTRUCT
+        -> ADMIT -> external DO -> VERIFY -> PERMANENT GUARD
+```
 
-For `Autonomous Factories`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+Each arrow changes evidence type. `dyson:autonomous-factories:6c27ad0f2ef2` may discover and rank repairs autonomously, but mutation still needs admitted authority. The loop closes only when the postcondition is observed against the same subject and a durable guard prevents silent recurrence of the defect class.
 
-## Falsifier
+## Operational contract
 
-The working claim for `Autonomous Factories` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:autonomous-factories:6c27ad0f2ef2` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | observe, classify, localize with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | construct, admit or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Autonomous Factories**, Record the preserved repair frontier before selection. If the preferred repair becomes inadmissible, another lawful candidate remains available without rediscovering the state space.
+
+## Questions the design must answer
+
+1. For **Autonomous Factories**: What observation triggers the loop?
+2. For **Autonomous Factories**: Which candidate repair maximizes reversible relief?
+3. For **Autonomous Factories**: What measured postcondition closes the repair?
+
+## Executable representation
+
+```yaml
+subject: dyson:autonomous-factories:6c27ad0f2ef2
+topic: "Autonomous Factories"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- The planner's diagnostic capability is allowed to imply mutation authority.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Autonomous Factories**.
+- **Hidden assumption:** observe or classify is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Autonomous Factories**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:autonomous-factories:6c27ad0f2ef2`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Autonomous Factories** subject/revision is named.
+- [ ] Required observe, classify, and localize observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Autonomous Factories** is admitted, downstream systems may consume its observe, classify, and localize claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Autonomous Factories** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

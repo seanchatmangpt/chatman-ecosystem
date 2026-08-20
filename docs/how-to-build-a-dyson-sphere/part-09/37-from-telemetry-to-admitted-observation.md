@@ -1,39 +1,109 @@
-# 37. From Telemetry to Admitted Observation
+# From Telemetry to Admitted Observation
 
-> **Part 9: Weaver: Observe Everything.** This part constructs the observation fabric. Raw signals become useful only after normalization, provenance, subject binding, and admission.
+> **Subject identity:** `dyson:from-telemetry-to-admitted-observation:0c27eaf33b64`
+> **Domain:** `telemetry`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Thesis
+## Why this page exists
 
-From Telemetry to Admitted Observation is treated here as a systems problem rather than an isolated component. At Dyson-swarm scale, a locally sensible decision can become globally unsafe when it hides mass, heat, latency, authority, or evidence. The chapter therefore asks what the object is, what observations are required to reason about it, what constraints delimit its lawful construction space, and what evidence would justify advancing its standing.
+**From Telemetry to Admitted Observation** exists because it changes a concrete decision inside **Part IX — Weaver: Observe Everything**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Observation becomes operational only after it is bounded. O* records exact subject identity, source provenance, units, uncertainty, validity interval, contradictions, and exclusions. UNKNOWN is preserved as a value rather than coerced into a guess. This makes later manufacture falsifiable: a design can be traced back to the measurements and assumptions it actually consumed.
+For **From Telemetry to Admitted Observation**, the primary state variables include **resource identity**, **signal**, and **attribute**; the control or consequence variables include **event**, **trace**, and **provenance**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-Telemetry is raw observation, not standing. Weaver normalizes signals into semantic conventions, attaches resource identity and provenance, and forwards only bounded observations into admission. This avoids a common observability error: turning a successful scrape, log line, or span into a claim that the physical subject behaved correctly.
+The boundary is operational, not literary. Inputs to **From Telemetry to Admitted Observation** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Chatman-Ecosystem realization
-
-The operational path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. Observation and construction remain maximally expressive above the authority boundary; DO remains narrow. The canonical object is represented in a graph, ggen may render projections, GymAct may execute counterfactuals, Lean/mfact may discharge formal or evidentiary obligations where applicable, and BRCE is the only path permitted to cause a consequential transition.
-
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
-
-## Chapter map
+## Decomposition
 
 - [Raw Signal](37-01-raw-signal.md)
 - [Normalization](37-02-normalization.md)
 - [Provenance](37-03-provenance.md)
 - [Admission](37-04-admission.md)
 - [O*](37-05-ostar.md)
-- [Replanning](37-06-replanning.md)
+- [Replanning](37-06-replanning.md) For **From Telemetry to Admitted Observation**, this reusable domain rule is evaluated against `dyson:from-telemetry-to-admitted-observation:0c27eaf33b64`; its observations, validity interval, constraints, and downstream consumer remain specific to this page even when the underlying law is shared.
 
-## Acceptance boundary
+## Engineering model
 
-This chapter is complete only when its claims can be tied to a bounded subject. A reader should be able to name the observation sources, uncertainty, canonical semantic identity, constraints, reversible candidate space, authority required for consequence, expected postcondition, verifier, and replay path. If any of those are absent, the appropriate state is `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED`—not narrative completion.
+For **From Telemetry to Admitted Observation**, raw signal is only the first event. The observation path for `dyson:from-telemetry-to-admitted-observation:0c27eaf33b64` is
 
-## Falsifiers
+```text
+raw signal -> normalize unit/schema -> bind resource identity
+           -> preserve quality/uncertainty -> admit or refuse
+           -> derive operational state
+```
 
-- A required physical ledger does not close.
-- The subject identity is ambiguous or stale.
-- A simulation result is presented as physical execution evidence.
-- A proof is about a model that was never admitted as the operational subject.
-- An actuator can be reached outside the brokered receipt path.
-- Replay cannot reconstruct the transition that supposedly established standing.
+A successful scrape demonstrates transport, not subject health. Missing, stale, duplicated, and out-of-order signals retain those qualities instead of being collapsed into a healthy latest-value projection. For **From Telemetry to Admitted Observation**, this reusable domain rule is evaluated against `dyson:from-telemetry-to-admitted-observation:0c27eaf33b64`; its observations, validity interval, constraints, and downstream consumer remain specific to this page even when the underlying law is shared.
+
+## Operational contract
+
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:from-telemetry-to-admitted-observation:0c27eaf33b64` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | resource identity, signal, attribute with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | event, trace or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **From Telemetry to Admitted Observation**, Inject missing, stale, duplicated, and out-of-order signals. Preserve quality and causal metadata rather than normalizing all four into a healthy latest-value gauge.
+
+## Questions the design must answer
+
+1. For **From Telemetry to Admitted Observation**: Which resource identity binds the signal to reality?
+2. For **From Telemetry to Admitted Observation**: What normalization preserves provenance and quality?
+3. For **From Telemetry to Admitted Observation**: Which missing signal remains UNKNOWN rather than healthy?
+
+## Executable representation
+
+```json
+{
+  "subject": "dyson:from-telemetry-to-admitted-observation:0c27eaf33b64",
+  "topic": "From Telemetry to Admitted Observation",
+  "state": "OBSERVED_OR_PROPOSED",
+  "provenance": "required",
+  "unit_or_schema": "required",
+  "uncertainty_or_quality": "required",
+  "validity": "bounded",
+  "consumer": "named downstream admission rule"
+}
+```
+
+## Failure modes and counterexamples
+
+- Missing data becomes a healthy default, suppressing uncertainty that should trigger investigation.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **From Telemetry to Admitted Observation**.
+- **Hidden assumption:** resource identity or signal is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **From Telemetry to Admitted Observation**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:from-telemetry-to-admitted-observation:0c27eaf33b64`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **From Telemetry to Admitted Observation** subject/revision is named.
+- [ ] Required resource identity, signal, and attribute observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **From Telemetry to Admitted Observation** is admitted, downstream systems may consume its resource identity, signal, and attribute claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **From Telemetry to Admitted Observation** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.
