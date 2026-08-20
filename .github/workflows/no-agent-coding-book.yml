@@ -1,0 +1,128 @@
+name: No Agent Coding book manufacture
+
+on:
+  push:
+    branches:
+      - agent/no-agent-coding-hbr-book
+    paths:
+      - books/.no-agent-coding-bootstrap/**
+      - books/no-agent-coding/**
+      - .github/workflows/no-agent-coding-book.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - books/no-agent-coding/**
+      - .github/workflows/no-agent-coding-book.yml
+      - catalog/documents.toml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  manufacture:
+    runs-on: ubuntu-latest
+    env:
+      EXACT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      ARCHIVE_SHA256: 4dfce03e530d28ac65b5364a50407d8ea666d6ec5dde4545b9f47eff0aa925a1
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ env.EXACT_SHA }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify exact checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_SHA"
+          printf 'exact_subject=%s\n' "$EXACT_SHA"
+
+      - name: Expand content-addressed manuscript when present
+        id: expand
+        shell: bash
+        run: |
+          set -euo pipefail
+          bootstrap="books/.no-agent-coding-bootstrap"
+          if [[ ! -d "$bootstrap" ]]; then
+            echo "expanded=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          cat "$bootstrap"/part-* | base64 --decode > /tmp/no-agent-coding.tar.xz
+          echo "$ARCHIVE_SHA256  /tmp/no-agent-coding.tar.xz" | sha256sum --check -
+
+          python3 - <<'PY'
+          from pathlib import PurePosixPath
+          import tarfile
+          archive = "/tmp/no-agent-coding.tar.xz"
+          with tarfile.open(archive, "r:xz") as tf:
+              members = tf.getmembers()
+              if not members:
+                  raise SystemExit("REFUSED:EMPTY_BOOK_ARCHIVE")
+              for member in members:
+                  path = PurePosixPath(member.name)
+                  if path.is_absolute() or ".." in path.parts:
+                      raise SystemExit(f"REFUSED:UNSAFE_ARCHIVE_PATH:{member.name}")
+                  if len(path.parts) < 2 or path.parts[:2] != ("books", "no-agent-coding"):
+                      raise SystemExit(f"REFUSED:OUT_OF_SCOPE_ARCHIVE_PATH:{member.name}")
+                  if member.issym() or member.islnk():
+                      raise SystemExit(f"REFUSED:ARCHIVE_LINK:{member.name}")
+          PY
+
+          rm -rf books/no-agent-coding
+          tar -xJf /tmp/no-agent-coding.tar.xz
+          rm -rf "$bootstrap"
+          echo "expanded=true" >> "$GITHUB_OUTPUT"
+
+      - name: Verify manuscript contract
+        run: python3 books/no-agent-coding/scripts/verify.py
+
+      - name: Install verified mdBook 0.5.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="0.5.4"
+          archive="mdbook-v${version}-x86_64-unknown-linux-gnu.tar.gz"
+          curl --fail --location --silent --show-error \
+            "https://github.com/rust-lang/mdBook/releases/download/v${version}/${archive}" \
+            --output "${archive}"
+          echo "3f28de05dafca9d0f2eab99c662116b0e37b89b1d96a08f8f430b9eeae958cd7  ${archive}" | sha256sum --check -
+          tar -xzf "${archive}"
+          install -d "$HOME/.local/bin"
+          install -m 0755 mdbook "$HOME/.local/bin/mdbook"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/mdbook" --version
+
+      - name: Build and inspect mdBook
+        shell: bash
+        run: |
+          set -euo pipefail
+          mdbook build books/no-agent-coding
+          root="books/no-agent-coding/book"
+          test -s "$root/index.html"
+          test -s "$root/chapters/04-no-agent-coding.html"
+          test -s "$root/chapters/05-rice-boundary.html"
+          test -s "$root/chapters/17-deterministic-projection.html"
+          test -s "$root/chapters/34-no-agent-enterprise.html"
+          test -s "$root/appendices/executive-diagnostic.html"
+          find "$root" -type f -name 'searchindex*.js' -size +0c -print -quit | grep -q .
+          grep -q "No Agent Coding" "$root/index.html"
+          grep -q "deterministic manufacture" "$root/chapters/04-no-agent-coding.html"
+
+      - name: Publish expanded Markdown source to purpose branch
+        if: steps.expand.outputs.expanded == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf books/no-agent-coding/book
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- books/no-agent-coding books/.no-agent-coding-bootstrap
+          test -n "$(git diff --cached --name-only)"
+          git commit -m "docs: materialize No Agent Coding book"
+          published="$(git rev-parse HEAD)"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          printf 'published_subject=%s\n' "$published"
