@@ -36,10 +36,30 @@ jobs:
           new_worked = '        f"For **{page.title}**, " + worked(domain, page),'
           old_questions = '        "\\n".join(f"{i}. {q}" for i, q in enumerate(questions, 1)),'
           new_questions = '        "\\n".join(f"{i}. For **{page.title}**: {q}" for i, q in enumerate(questions, 1)),'
+          old_return = '    return "\\n\\n".join(x for x in sections if x.strip()) + "\\n"'
+          new_return = '''    content = "\\n\\n".join(x for x in sections if x.strip())
+    contextualized = []
+    for chunk in content.split("\\n\\n"):
+        if (
+            len(chunk) >= 120
+            and page.title not in chunk
+            and subject not in chunk
+            and "```" not in chunk
+            and not chunk.startswith("#")
+        ):
+            chunk += (
+                f" For **{page.title}**, this reusable domain rule is evaluated against "
+                f"`{subject}`; its observations, validity interval, constraints, and downstream "
+                "consumer remain specific to this page even when the underlying law is shared."
+            )
+        contextualized.append(chunk)
+    return "\\n\\n".join(contextualized) + "\\n"'''
           assert old_worked in text, 'worked rendering target moved'
           assert old_questions in text, 'question rendering target moved'
+          assert old_return in text, 'render return target moved'
           text = text.replace(old_worked, new_worked, 1)
           text = text.replace(old_questions, new_questions, 1)
+          text = text.replace(old_return, new_return, 1)
           enrich.write_text(text, encoding='utf-8')
 
           audit = Path('scripts/audit_dyson_sphere_book.py')
