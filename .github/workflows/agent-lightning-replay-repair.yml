@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs"
+      - "crates/ecosystem-runtime/src/commerce.rs"
       - "crates/ecosystem-runtime/tests/agent_lightning_commercial_integration.rs"
       - ".github/workflows/agent-lightning-replay-repair.yml"
 
@@ -23,15 +24,30 @@ jobs:
         with:
           toolchain: 1.97.1
           components: rustfmt,clippy
-      - name: Repair replay-before-budget ordering
+      - name: Repair replay and public API obligations
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
 
-          path = Path('crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs')
-          text = path.read_text()
+          plane_path = Path('crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs')
+          text = plane_path.read_text()
 
+          # Public values that are meaningful only when consumed are explicit must-use contracts.
+          text = text.replace(
+              'impl MarketplaceBinding {\n    pub fn context(&self) -> CommerceContext {',
+              'impl MarketplaceBinding {\n    #[must_use]\n    pub fn context(&self) -> CommerceContext {',
+              1,
+          )
+          text = text.replace(
+              '    pub fn observation(\n        &self,',
+              '    #[must_use]\n    pub fn observation(\n        &self,',
+              1,
+          )
+
+          # Replay is not a new reservation. Recognize the admitted idempotency edge before
+          # checking remaining period budget, while still asking the service kernel to revalidate
+          # the request fingerprint.
           old_state = '''struct ChargeState {
               organization: String,
               reserved: ChargeQuote,
@@ -41,9 +57,8 @@ jobs:
               idempotency_key: String,
               reserved: ChargeQuote,
           '''.replace('          ', '')
-          if old_state not in text:
-              raise SystemExit('charge state shape changed')
-          text = text.replace(old_state, new_state, 1)
+          if old_state in text:
+              text = text.replace(old_state, new_state, 1)
 
           old_order = '''        let quote = self.rate_card.quote(&request.requested)?;
                   self.budget
@@ -77,9 +92,8 @@ jobs:
                   let reservation = self.service.admit_job(&principal, request, authority)?;
                   if let Some(existing) = self.charges.get(&reservation.id) {
           '''.replace('          ', '')
-          if old_order not in text:
-              raise SystemExit('admit_run ordering changed')
-          text = text.replace(old_order, new_order, 1)
+          if old_order in text:
+              text = text.replace(old_order, new_order, 1)
 
           old_insert = '''            ChargeState {
                       organization: organization.into(),
@@ -90,20 +104,359 @@ jobs:
                       idempotency_key: request.idempotency_key.clone(),
                       reserved: quote.clone(),
           '''.replace('          ', '')
-          if old_insert not in text:
-              raise SystemExit('charge insertion shape changed')
-          text = text.replace(old_insert, new_insert, 1)
-          path.write_text(text)
+          if old_insert in text:
+              text = text.replace(old_insert, new_insert, 1)
+
+          # Decompose the verifier: identity persistence, run admission/actuation, and settlement
+          # are separate boundaries. This preserves falsifier locality instead of suppressing the
+          # repository's too-many-lines lint.
+          start = text.index('async fn verify_provider(')
+          end = text.index('\npub async fn verify_full_fixtures', start)
+          replacement = r'''struct IdentityFixture {
+              plane: CommercialControlPlane,
+              organization: String,
+              subject: String,
+              active_fingerprint: String,
+              negatives: usize,
+          }
+
+          struct RunFixture {
+              mode: Mode,
+              permit: ActuationPermit,
+              intent: MeteringIntent,
+              negatives: usize,
+          }
+
+          struct ProviderVerification {
+              provider: String,
+              mode: String,
+              commerce_receipts: usize,
+              control_receipts: usize,
+              negatives: usize,
+          }
+
+          async fn verify_identity_fixture(
+              provider: Provider,
+              binding: &MarketplaceBinding,
+              fulfillment: &CommercialReceipt,
+          ) -> Result<IdentityFixture, PlaneError> {
+              let organization = format!("organization:{}-customer", provider.as_str());
+              let subject = format!("service-account:{}", provider.as_str());
+              let old_fingerprint = format!("blake3:{}", "1".repeat(64));
+              let active_fingerprint = format!("blake3:{}", "2".repeat(64));
+              let mut plane = CommercialControlPlane::new(
+                  Policy::agent_lightning(),
+                  DeploymentPolicy::enterprise_default(),
+                  verification_rate_card()?,
+                  verification_budget(),
+                  binding.clone(),
+                  "2026-08-19T00:00:00Z",
+              )?;
+              plane.bind_entitlement(
+                  fixture_grant(&organization),
+                  fulfillment,
+                  Authority::PersistControlPlane,
+              )?;
+              plane.register_key(
+                  &organization,
+                  &subject,
+                  "key-1",
+                  &old_fingerprint,
+                  Authority::PersistControlPlane,
+              )?;
+              let path = std::env::temp_dir().join(format!(
+                  "chatman-agent-lightning-{}-{}.sqlite",
+                  provider.as_str(),
+                  std::process::id()
+              ));
+              let _ = std::fs::remove_file(&path);
+              let store = IdentityStore::open(&path).await?;
+              let tenant_key = format!("{organization}:{subject}");
+              let version_one = plane
+                  .persist_identity_snapshot(&store, &tenant_key, None, Authority::PersistControlPlane)
+                  .await?;
+              plane.rotate_key(
+                  &organization,
+                  &subject,
+                  "key-2",
+                  &active_fingerprint,
+                  Authority::PersistControlPlane,
+              )?;
+              let version_two = plane
+                  .persist_identity_snapshot(
+                      &store,
+                      &tenant_key,
+                      Some(version_one),
+                      Authority::PersistControlPlane,
+                  )
+                  .await?;
+              let mut negatives = negative(
+                  plane.authenticate(&organization, &subject, &old_fingerprint).is_err(),
+              );
+              negatives += negative(
+                  plane
+                      .persist_identity_snapshot(
+                          &store,
+                          &tenant_key,
+                          Some(version_one),
+                          Authority::PersistControlPlane,
+                      )
+                      .await
+                      .is_err(),
+              );
+              store.close().await;
+              drop(store);
+              let reopened = IdentityStore::open(&path).await?;
+              let (snapshot, restored_version) = reopened
+                  .load(&tenant_key)
+                  .await?
+                  .ok_or_else(|| PlaneError::Storage("IDENTITY_SNAPSHOT_MISSING_AFTER_REOPEN".into()))?;
+              if restored_version != version_two {
+                  return Err(PlaneError::Storage("IDENTITY_VERSION_DIVERGED_AFTER_REOPEN".into()));
+              }
+              let restored = snapshot.verify()?;
+              restored.authenticate(&organization, &subject, &active_fingerprint)?;
+              negatives += negative(
+                  restored.authenticate(&organization, &subject, &old_fingerprint).is_err(),
+              );
+              reopened.close().await;
+              drop(reopened);
+              let _ = std::fs::remove_file(&path);
+              Ok(IdentityFixture {
+                  plane,
+                  organization,
+                  subject,
+                  active_fingerprint,
+                  negatives,
+              })
+          }
+
+          fn verify_run_fixture(
+              index: usize,
+              provider: Provider,
+              identity: &mut IdentityFixture,
+          ) -> Result<RunFixture, PlaneError> {
+              let mode = [Mode::Hosted, Mode::Byoc, Mode::Private][index];
+              let request = fixture_request(&identity.organization, mode, provider.as_str());
+              let target = fixture_target(provider, mode);
+              let admission = identity.plane.admit_run(
+                  &identity.organization,
+                  &identity.subject,
+                  &identity.active_fingerprint,
+                  &request,
+                  &target,
+                  Authority::PersistControlPlane,
+              )?;
+              let replay = identity.plane.admit_run(
+                  &identity.organization,
+                  &identity.subject,
+                  &identity.active_fingerprint,
+                  &request,
+                  &target,
+                  Authority::PersistControlPlane,
+              )?;
+              if replay.reservation.id != admission.reservation.id
+                  || replay.receipt_digest != admission.receipt_digest
+              {
+                  return Err(PlaneError::Receipt("RUN_IDEMPOTENCY_DIVERGED".into()));
+              }
+              let mut negatives = 0;
+              let mut weak_target = target.clone();
+              weak_target.zones = 1;
+              negatives += negative(
+                  identity
+                      .plane
+                      .admit_run(
+                          &identity.organization,
+                          &identity.subject,
+                          &identity.active_fingerprint,
+                          &fixture_request(&identity.organization, mode, "weak-target"),
+                          &weak_target,
+                          Authority::PersistControlPlane,
+                      )
+                      .is_err(),
+              );
+              let mut expensive = fixture_request(&identity.organization, mode, "cost-fence");
+              expensive.requested.insert(Meter::GpuSeconds, 11_000);
+              negatives += negative(
+                  identity
+                      .plane
+                      .admit_run(
+                          &identity.organization,
+                          &identity.subject,
+                          &identity.active_fingerprint,
+                          &expensive,
+                          &target,
+                          Authority::PersistControlPlane,
+                      )
+                      .is_err(),
+              );
+              negatives += negative(
+                  identity
+                      .plane
+                      .authorize_run(
+                          &admission.reservation.id,
+                          &identity.organization,
+                          &identity.subject,
+                          &identity.active_fingerprint,
+                          Authority::Observe,
+                      )
+                      .is_err(),
+              );
+              let permit = identity.plane.authorize_run(
+                  &admission.reservation.id,
+                  &identity.organization,
+                  &identity.subject,
+                  &identity.active_fingerprint,
+                  Authority::ModifyExternalObject,
+              )?;
+              let actual_usage = BTreeMap::from([
+                  (Meter::GpuSeconds, 3_000),
+                  (Meter::InputTokens, 90_000),
+                  (Meter::OutputTokens, 15_000),
+                  (Meter::Rollouts, 1),
+              ]);
+              let intent = identity.plane.reconcile_and_construct_metering(
+                  &permit,
+                  actual_usage.clone(),
+                  Authority::PersistControlPlane,
+              )?;
+              if identity.plane.reconcile_and_construct_metering(
+                  &permit,
+                  actual_usage,
+                  Authority::PersistControlPlane,
+              )? != intent
+              {
+                  return Err(PlaneError::Receipt("USAGE_REPLAY_DIVERGED".into()));
+              }
+              Ok(RunFixture {
+                  mode,
+                  permit,
+                  intent,
+                  negatives,
+              })
+          }
+
+          fn verify_settlement_fixture(
+              binding: &MarketplaceBinding,
+              commerce: &mut CommerceLedger,
+              plane: &mut CommercialControlPlane,
+              run: &RunFixture,
+          ) -> Result<usize, PlaneError> {
+              let artifact_digest = format!("blake3:{}", "a".repeat(64));
+              commerce.bind_manufacture(&run.permit.receipt_digest)?;
+              commerce.bind_delivery(&artifact_digest)?;
+              commerce.verify_delivery(&artifact_digest)?;
+              commerce.derive_usage(&run.intent.source_usage_receipt, run.intent.billable_units)?;
+              let meter = commerce.observe(&binding.observation(
+                  ProviderEventKind::MeterAccepted,
+                  "meter-event",
+                  run.intent.billable_units,
+                  0,
+              ))?;
+              let mut wrong_settlement = binding.observation(
+                  ProviderEventKind::Settlement,
+                  "wrong-settlement",
+                  run.intent.billable_units,
+                  run.intent.amount_micros.saturating_add(1),
+              );
+              wrong_settlement.currency.clone_from(&run.intent.currency);
+              let negatives = negative(commerce.observe(&wrong_settlement).is_err());
+              let settlement = commerce.observe(&binding.observation(
+                  ProviderEventKind::Settlement,
+                  "settlement-event",
+                  run.intent.billable_units,
+                  run.intent.amount_micros,
+              ))?;
+              plane.accept_settlement(
+                  &run.intent,
+                  &meter,
+                  &settlement,
+                  Authority::PersistControlPlane,
+              )?;
+              Ok(negatives)
+          }
+
+          async fn verify_provider(
+              index: usize,
+              provider: Provider,
+          ) -> Result<ProviderVerification, PlaneError> {
+              let binding = fixture_binding(provider);
+              let (mut commerce, fulfillment) = fixture_commerce(&binding)?;
+              let mut identity = verify_identity_fixture(provider, &binding, &fulfillment).await?;
+              let run = verify_run_fixture(index, provider, &mut identity)?;
+              let settlement_negatives = verify_settlement_fixture(
+                  &binding,
+                  &mut commerce,
+                  &mut identity.plane,
+                  &run,
+              )?;
+              Ok(ProviderVerification {
+                  provider: provider.as_str().into(),
+                  mode: format!("{:?}", run.mode).to_ascii_lowercase(),
+                  commerce_receipts: commerce.replay_verify()?,
+                  control_receipts: identity.plane.replay_verify()?,
+                  negatives: identity
+                      .negatives
+                      .saturating_add(run.negatives)
+                      .saturating_add(settlement_negatives),
+              })
+          }
+          '''
+          replacement = '\n'.join(
+              line[10:] if line.startswith('          ') else line
+              for line in replacement.splitlines()
+          )
+          text = text[:start] + replacement + text[end:]
+
+          # Full verifier now consumes the typed provider result instead of a positional tuple.
+          old_loop = '''        let (provider_name, mode, commerce_count, control_count, provider_negatives) =
+                      verify_provider(index, provider).await?;
+                  providers.push(provider_name);
+                  modes.insert(mode);
+                  commerce_receipts = commerce_receipts.saturating_add(commerce_count);
+                  control_receipts = control_receipts.saturating_add(control_count);
+                  negatives = negatives.saturating_add(provider_negatives);
+          '''.replace('          ', '')
+          new_loop = '''        let verification = verify_provider(index, provider).await?;
+                  providers.push(verification.provider);
+                  modes.insert(verification.mode);
+                  commerce_receipts = commerce_receipts.saturating_add(verification.commerce_receipts);
+                  control_receipts = control_receipts.saturating_add(verification.control_receipts);
+                  negatives = negatives.saturating_add(verification.negatives);
+          '''.replace('          ', '')
+          if old_loop not in text:
+              raise SystemExit('full verifier aggregation shape changed')
+          text = text.replace(old_loop, new_loop, 1)
+          plane_path.write_text(text)
+
+          # These existing commerce functions became part of a public reusable module in this PR;
+          # preserve the existing implementation and add only semantic return-value contracts.
+          commerce_path = Path('crates/ecosystem-runtime/src/commerce.rs')
+          commerce = commerce_path.read_text()
+          commerce = commerce.replace(
+              '    pub const fn as_str(self) -> &\'static str {',
+              '    #[must_use]\n    pub const fn as_str(self) -> &\'static str {',
+              1,
+          )
+          commerce = commerce.replace(
+              '    pub const fn authority(self) -> Authority {',
+              '    #[must_use]\n    pub const fn authority(self) -> Authority {',
+              1,
+          )
+          commerce_path.write_text(commerce)
           PY
           rustfmt --edition 2024 crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs
           rustfmt --edition 2024 crates/ecosystem-runtime/tests/agent_lightning_commercial_integration.rs
           git diff --check -- \
             crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs \
+            crates/ecosystem-runtime/src/commerce.rs \
             crates/ecosystem-runtime/tests/agent_lightning_commercial_integration.rs
-      - name: Verify replay boundary before publication
+      - name: Verify repaired boundaries before publication
         run: |
           cargo check --locked -p ecosystem-runtime --bin agent-lightning-commercial
           cargo clippy --locked -p ecosystem-runtime --bin agent-lightning-commercial -- -D warnings
+          cargo test --locked -p ecosystem-runtime --lib agent_lightning
           cargo test --locked -p ecosystem-runtime --test agent_lightning_commercial_integration
       - name: Commit verified repair
         run: |
@@ -112,9 +465,10 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add \
             crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs \
+            crates/ecosystem-runtime/src/commerce.rs \
             crates/ecosystem-runtime/tests/agent_lightning_commercial_integration.rs
           if git diff --cached --quiet; then
             exit 0
           fi
-          git commit -m 'fix: preserve idempotent replay at budget boundary'
+          git commit -m 'fix: preserve receipted replay and public contracts'
           git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
