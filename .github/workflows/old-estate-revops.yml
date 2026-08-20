@@ -102,8 +102,8 @@ jobs:
           receipt = json.load(open('/tmp/receipt.json'))
           assert receipt['subject'].endswith('${{ env.CANDIDATE_SHA }}'), receipt
           assert receipt['authority'] == 'draft', receipt
-          assert receipt['standing_before'] == 'observed', receipt
-          assert receipt['standing_after'] == 'candidate', receipt
+          assert receipt['standing_before'] == 'OBSERVED', receipt
+          assert receipt['standing_after'] == 'CANDIDATE', receipt
           assert receipt['digest'].startswith('blake3:'), receipt
           assert any('DO not executed' in item for item in receipt['executed']), receipt
           PY
