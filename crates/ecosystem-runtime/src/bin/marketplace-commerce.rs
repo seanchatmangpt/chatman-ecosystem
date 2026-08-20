@@ -46,7 +46,8 @@ fn execute(arguments: &[String]) -> Result<String, String> {
             io::stdin()
                 .read_to_string(&mut input)
                 .map_err(|error| error.to_string())?;
-            let observation = normalize(provider, kind, &input).map_err(|error| error.to_string())?;
+            let observation =
+                normalize(provider, kind, &input).map_err(|error| error.to_string())?;
             serde_json::to_string_pretty(&observation).map_err(|error| error.to_string())
         }
         [command] if command == "--help" || command == "-h" => Ok(usage().into()),
