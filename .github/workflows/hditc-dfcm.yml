@@ -43,6 +43,28 @@ jobs:
       - name: Admit workspace lock projection
         run: cargo metadata --format-version 1 >/dev/null
 
+      - name: Apply admitted Clippy repairs
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("crates/hditc/src/lib.rs")
+          s = p.read_text()
+          s = s.replace("//! HDITC / DfCM execution kernel.", "//! HDITC / `DfCM` execution kernel.", 1)
+          s = s.replace(
+              "expected_postconditions: Vec<Constraint>,",
+              "expected_postconditions: impl AsRef<[Constraint]>,",
+              1,
+          )
+          s = s.replace(
+              "let expected_postconditions = normalize_constraints(&expected_postconditions);",
+              "let expected_postconditions = normalize_constraints(expected_postconditions.as_ref());",
+              1,
+          )
+          p.write_text(s)
+          PY
+
       - name: Canonicalize HDITC Rust formatting
         run: cargo fmt --package hditc
 
@@ -54,7 +76,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -- Cargo.lock crates/hditc
-            git commit -m "build: canonicalize HDITC runtime"
+            git commit -m "fix: satisfy HDITC Clippy admission"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
 
