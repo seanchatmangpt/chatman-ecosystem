@@ -1,0 +1,49 @@
+name: Documentation Vacuity
+
+on:
+  pull_request:
+    paths:
+      - "docs/**"
+      - "books/**"
+      - "scripts/audit_doc_vacuity.py"
+      - ".github/workflows/docs-vacuity.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-vacuity-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    env:
+      EXACT_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ env.EXACT_SHA }}
+          fetch-depth: 0
+
+      - name: Verify exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_SHA"
+          printf 'exact_subject=%s\n' "$EXACT_SHA"
+
+      - name: Observe complete documentation corpus
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/audit_doc_vacuity.py --report-only --json /tmp/doc-vacuity.json
+
+      - name: Preserve machine-readable observation
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation-vacuity-observation
+          path: /tmp/doc-vacuity.json
+          if-no-files-found: error
+          retention-days: 7
