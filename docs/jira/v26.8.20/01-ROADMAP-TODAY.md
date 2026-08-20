@@ -84,4 +84,7 @@ None of these has an owning ticket yet. Picking one up starts with a decision, n
   the other v26.8.20 ticket, payments-licensing backward-chain
 - [`docs/jira/v26.8.20/02-ERLANG-RUST-LANGUAGE-SPLIT.md`](02-ERLANG-RUST-LANGUAGE-SPLIT.md) —
   candidate pure Erlang/OTP 27-28 (PaaS+SaaS) vs. Rust (IaaS) language split, not started
+- [`docs/jira/v26.8.20/03-XAAS-ASH-ECOSYSTEM-MAP.md`](03-XAAS-ASH-ECOSYSTEM-MAP.md) — "XaaS"
+  named against the real capability-ontology/planner/compliance layers, mapped to the Ash
+  ecosystem; flags a real tension with doc 02's pure-Erlang premise, not started
 - `ontology/platform-console-capabilities.ttl` — capability individuals, queryable source of truth
