@@ -1,4 +1,4 @@
-//! HDITC / DfCM execution kernel.
+//! HDITC / `DfCM` execution kernel.
 //!
 //! This crate turns the book-level algebra into executable invariants:
 //! reversible candidate preservation, exact-subject admission, explicit
@@ -497,7 +497,7 @@ impl ReceiptReservation {
 pub struct PreparedDo {
     pub candidate: Candidate,
     pub grant: AuthorityGrant,
-    pub expected_postconditions: Vec<Constraint>,
+    pub expected_postconditions: impl AsRef<[Constraint]>,
     pub projected_dimensions: Dimensions,
     pub reservation: ReceiptReservation,
 }
@@ -519,7 +519,7 @@ impl PreparedDo {
     ) -> Result<Self, Error> {
         let projected_dimensions = candidate.project(world)?;
         grant.verify_for(&candidate)?;
-        let expected_postconditions = normalize_constraints(&expected_postconditions);
+        let expected_postconditions = normalize_constraints(expected_postconditions.as_ref());
         if expected_postconditions.is_empty() {
             return Err(refused(
                 RefusalCode::MissingPostcondition,
