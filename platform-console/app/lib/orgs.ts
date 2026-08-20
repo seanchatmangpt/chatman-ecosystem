@@ -43,6 +43,8 @@ import {
   type PatchSlaTier,
 } from "@/lib/tiers";
 import type { SamlConfig } from "@/lib/saml-config";
+import type { SsoGroupRoleMapping } from "@/lib/sso-role-mapping";
+import { writeAuditLogEntryAwaited, newRequestId } from "@/lib/audit-db";
 
 export const ORGS_REGISTRY_NAMESPACE = "platform-console";
 export const ORGS_REGISTRY_CONFIGMAP = "platform-console-orgs";
@@ -165,6 +167,72 @@ export interface Org {
    * trip discipline as every other optional field on this type.
    */
   samlConfig?: SamlConfig;
+  /**
+   * SSO/SCIM group -> app role mapping (lib/sso-role-mapping.ts): the
+   * org's own declared intent -- "SSO group X should confer role Y" --
+   * that GET /api/orgs/[id]/sso-role-drift diffs against the real,
+   * live `platform-console-org-roles` ConfigMap assignments in this
+   * org's own namespace to surface drift (over-privileged/orphaned
+   * accounts, or a mapping nobody currently uses). Config-only, same
+   * fail-closed posture as `samlConfig` immediately above: this field
+   * is never read by lib/session.ts or any auth callback route to
+   * actually grant a role from a real IdP group claim -- see
+   * lib/sso-role-mapping.ts's module doc for the full, honest scope
+   * boundary. Optional and unset by default, same forward-compatible-
+   * optional-field round-trip discipline as every other optional field
+   * on this type.
+   */
+  ssoGroupMappings?: SsoGroupRoleMapping[];
+  /**
+   * Per-org negotiated pricing/discount-schedule override (Fortune 5
+   * procurement multi-year custom contract price, never the public
+   * tiers.ts list price): see `OrgPricingOverride` below for the full
+   * rationale. Optional and unset by default -- an org with no override
+   * is billed at the standard TIER_RESOURCE_QUOTAS/ILLUSTRATIVE_RATES
+   * list price exactly as before this field existed, same forward-
+   * compatible-optional-field round-trip discipline as every other
+   * optional field on this type.
+   */
+  pricingOverride?: OrgPricingOverride;
+  /**
+   * Secret & Certificate Rotation Compliance Enforcement
+   * (lib/rotation-compliance.ts): `true` once a `compliance.rotation-block`
+   * maker-checker approval was actually granted and applied for this org
+   * -- a second, distinct owner-role approver signed off that this org's
+   * live k8s Secrets or TLS certificates have exceeded
+   * `ROTATION_SLA_DAYS` without being rotated, the exact SOC2 CC6.1 /
+   * PCI-DSS 3.6.4 rotation-cadence control a Fortune-5 buyer's security
+   * review asks for evidence of. `rotationComplianceBlockedAt` records
+   * when. Optional and unset/`false` by default, same forward-compatible-
+   * optional-field round-trip discipline as `autoRemediateCritical`
+   * above -- this control never fires uninvited on an existing customer
+   * and never blocks anything until a second approver actually agrees.
+   */
+  rotationComplianceBlocked?: boolean;
+  rotationComplianceBlockedAt?: string;
+  /**
+   * Customer-Managed Encryption Key (CMEK/BYOK) binding record -- see
+   * `CmekKeyBinding` below for the full rationale. Optional and unset by
+   * default: an org with no binding is understood to have its Secrets/PVCs
+   * encrypted under the platform's own default at-rest encryption, never
+   * a customer key, same forward-compatible-optional-field round-trip
+   * discipline as `pricingOverride`/`rotationComplianceBlocked` above.
+   */
+  cmekBinding?: CmekKeyBinding;
+  /**
+   * Real AWS Marketplace linkage (app/lib/entitlement-adapters/aws.ts):
+   * the `customer-identifier` AWS Marketplace assigns this org's buyer at
+   * subscribe time (via the SaaS registration redirect's `x-amzn-marketplace-token`
+   * resolve-customer exchange -- the customer's own AWS account onboarding
+   * flow, not something this console invents). Set once, by whatever route
+   * handles that redirect, and read back by AwsMarketplaceAdapter's
+   * applyEntitlementEvent to resolve an inbound SNS entitlement event back
+   * to the org whose Project tier it should drive. Optional and unset by
+   * default, same forward-compatible-optional-field round-trip discipline
+   * as every other optional field on this type -- an org with no AWS
+   * Marketplace subscription simply never gets one.
+   */
+  awsMarketplaceCustomerId?: string;
 }
 
 interface OrgRegistryEntry {
@@ -236,6 +304,35 @@ interface OrgRegistryEntry {
   // same forward-compatible-optional-field round-trip discipline as
   // every other optional registry field above.
   samlConfig?: SamlConfig;
+  // SSO/SCIM group -> app role mapping -- see the identically-named
+  // field on `Org` above for the full rationale. Optional and unset by
+  // default, same forward-compatible-optional-field round-trip
+  // discipline as every other optional registry field above.
+  ssoGroupMappings?: SsoGroupRoleMapping[];
+  // Per-org negotiated pricing/discount-schedule override -- see the
+  // identically-named field on `Org` above for the full rationale.
+  // Optional and unset by default, same forward-compatible-optional-
+  // field round-trip discipline as every other optional registry field
+  // above.
+  pricingOverride?: OrgPricingOverride;
+  // Secret & Certificate Rotation Compliance block state -- see the
+  // identically-named fields on `Org` above for the full rationale.
+  // Optional and unset/`false` by default, same forward-compatible-
+  // optional-field round-trip discipline as every other optional
+  // registry field above.
+  rotationComplianceBlocked?: boolean;
+  rotationComplianceBlockedAt?: string;
+  // Customer-Managed Encryption Key (CMEK/BYOK) binding -- see the
+  // identically-named field on `Org` above for the full rationale.
+  // Optional and unset by default, same forward-compatible-optional-
+  // field round-trip discipline as every other optional registry field
+  // above.
+  cmekBinding?: CmekKeyBinding;
+  // AWS Marketplace customer linkage -- see the identically-named field
+  // on `Org` above for the full rationale. Optional and unset by
+  // default, same forward-compatible-optional-field round-trip
+  // discipline as every other optional registry field above.
+  awsMarketplaceCustomerId?: string;
 }
 
 const PRODUCT_NAME_MAX_LENGTH = 60;
@@ -518,6 +615,50 @@ export async function setOrgSamlConfig(
     updatedAt: new Date().toISOString(),
   };
   const updatedEntry: OrgRegistryEntry = { ...entry, samlConfig };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
+ * Real SSO group -> role mapping read: backs GET
+ * /api/orgs/[id]/sso-role-mapping and the drift computation in
+ * GET /api/orgs/[id]/sso-role-drift. Same "`{ok: true, data: []}` is
+ * not an error" convention as getOrgSamlConfig -- distinguishes "org
+ * exists but has never configured a mapping" from a real registry-read
+ * failure.
+ */
+export async function getOrgSsoGroupMappings(id: string): Promise<K8sResult<SsoGroupRoleMapping[]>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  return { ok: true, data: entry?.ssoGroupMappings ?? [] };
+}
+
+/**
+ * Real SSO group -> role mapping write: backs the security-review-gated
+ * PUT /api/orgs/[id]/sso-role-mapping, called only after that route's
+ * maker-checker approval (lib/approval-workflow.ts's
+ * `sso.role-mapping.update`) has actually been granted. Callers must
+ * run `validateSsoGroupMappings` (lib/sso-role-mapping.ts) first --
+ * same "route validates, lib function merge-patches already-valid
+ * input" split as setOrgSamlConfig -- then this merge-patches only this
+ * org's registry entry's `ssoGroupMappings` key, same one-key-at-a-time
+ * discipline as every other setOrg* writer in this module.
+ */
+export async function setOrgSsoGroupMappings(
+  id: string,
+  mappings: SsoGroupRoleMapping[],
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const updatedEntry: OrgRegistryEntry = { ...entry, ssoGroupMappings: mappings };
   const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
     [id]: JSON.stringify(updatedEntry),
   });
@@ -858,6 +999,179 @@ export async function setOrgPatchSla(
 }
 
 /**
+ * Real per-org negotiated pricing/discount-schedule override (AWS/GCP/
+ * Azure Enterprise Agreement custom-price-sheet line item): closes the
+ * gap that lib/tiers.ts's TIER_RESOURCE_QUOTAS/RESERVATION_DISCOUNT_TABLE
+ * and lib/stripe-billing.ts/lib/overage-billing.ts only ever know the
+ * public list-price tier -- every Fortune 5 procurement negotiates a
+ * custom multi-year contract price that never matches that sheet, and
+ * today that gap is handled manually outside the console (a spreadsheet
+ * finance tracks by hand). Storing this here, on the SAME
+ * `platform-console-orgs` registry ConfigMap entry setOrgSla/setOrgRegion
+ * already write (no new k8s resource kind), lets
+ * lib/overage-billing.ts's rate computation and QBR/invoice generation
+ * read the real, signed contract rate as the system of record instead.
+ *
+ * Exactly one of `discountPercent` (applied against the standard
+ * ILLUSTRATIVE_RATES per-unit price -- a percentage OFF list) or
+ * `fixedUnitPrice` (a flat replacement RateTable-shaped per-unit price,
+ * negotiated as an absolute number rather than a discount off a moving
+ * list price) is ever set -- never both, enforced by
+ * `validatePricingOverride` below, same "reject and return a real,
+ * specific error string" fail-closed discipline `validateBranding`
+ * above already establishes. `effectiveFrom`/`effectiveUntil` are RFC3339
+ * timestamps bounding exactly when the override is live -- a negotiated
+ * contract has a real start and end date, and overage-billing must never
+ * apply an expired or not-yet-started rate. `contractRef` and
+ * `approvedBy` are the audit trail a QBR or an external auditor actually
+ * asks for: which signed contract this rate traces to, and which
+ * (internal, finance/deal-desk) identity attested it -- never a
+ * free-text price an API caller can simply assert without a second,
+ * distinct approver signing off (see setOrgPricingOverride below, gated
+ * behind the same maker-checker `requireApproval` primitive
+ * dr-failover.ts/tier.downgrade already use).
+ */
+export interface OrgPricingOverride {
+  discountPercent?: number;
+  fixedUnitPrice?: { cpuPerCoreHour: number; memoryPerGiBHour: number };
+  effectiveFrom: string;
+  effectiveUntil: string;
+  contractRef: string;
+  approvedBy: string;
+}
+
+/**
+ * Fail-closed validation -- same discipline as `validateBranding` above:
+ * reject and return a real, specific error string (never a fabricated
+ * silent default/clamp) on anything that doesn't meet the contract, so a
+ * bad negotiated-rate row can never reach the ConfigMap.
+ *
+ *   - Exactly one of `discountPercent`/`fixedUnitPrice` must be set.
+ *   - `discountPercent` must be a finite number in (0, 100] -- 0 or
+ *     negative is not a discount at all, and > 100 would mean the vendor
+ *     pays the customer.
+ *   - `fixedUnitPrice`'s two rates must be finite and >= 0.
+ *   - `effectiveFrom`/`effectiveUntil` must both parse as real dates and
+ *     `effectiveFrom` must be strictly before `effectiveUntil` -- an
+ *     inverted or degenerate window can never be stored.
+ *   - `contractRef`/`approvedBy` must be non-empty -- this override is
+ *     never provable at audit time without both.
+ */
+export function validatePricingOverride(input: {
+  discountPercent?: number;
+  fixedUnitPrice?: { cpuPerCoreHour: number; memoryPerGiBHour: number };
+  effectiveFrom: string;
+  effectiveUntil: string;
+  contractRef: string;
+  approvedBy: string;
+}): string | null {
+  const hasDiscount = input.discountPercent !== undefined;
+  const hasFixed = input.fixedUnitPrice !== undefined;
+  if (hasDiscount === hasFixed) {
+    return "exactly one of discountPercent or fixedUnitPrice is required";
+  }
+  if (hasDiscount) {
+    if (!Number.isFinite(input.discountPercent) || input.discountPercent! <= 0 || input.discountPercent! > 100) {
+      return "discountPercent must be a number in (0, 100]";
+    }
+  }
+  if (hasFixed) {
+    const { cpuPerCoreHour, memoryPerGiBHour } = input.fixedUnitPrice!;
+    if (
+      !Number.isFinite(cpuPerCoreHour) ||
+      cpuPerCoreHour < 0 ||
+      !Number.isFinite(memoryPerGiBHour) ||
+      memoryPerGiBHour < 0
+    ) {
+      return "fixedUnitPrice.cpuPerCoreHour and memoryPerGiBHour must both be numbers >= 0";
+    }
+  }
+  const fromMs = Date.parse(input.effectiveFrom);
+  const untilMs = Date.parse(input.effectiveUntil);
+  if (Number.isNaN(fromMs) || Number.isNaN(untilMs)) {
+    return "effectiveFrom and effectiveUntil must both be valid RFC3339 timestamps";
+  }
+  if (fromMs >= untilMs) {
+    return "effectiveFrom must be strictly before effectiveUntil";
+  }
+  if (!input.contractRef.trim()) {
+    return "contractRef is required";
+  }
+  if (!input.approvedBy.trim()) {
+    return "approvedBy is required";
+  }
+  return null;
+}
+
+/**
+ * Real negotiated-pricing-override read: backs
+ * GET /api/orgs/[id]/pricing-override. Same "`{ok: true, data: null}` is
+ * not an error" convention as getOrgSla/getOrgBranding -- distinguishes
+ * "org exists but has never had a negotiated rate bound" (billed at the
+ * standard list price, computed by the caller, never fabricated here)
+ * from a real registry-read failure.
+ */
+export async function getOrgPricingOverride(id: string): Promise<K8sResult<OrgPricingOverride | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+  return { ok: true, data: entry.pricingOverride ?? null };
+}
+
+/**
+ * Real negotiated-pricing-override write: backs
+ * PUT /api/orgs/[id]/pricing-override. Callers (the route handler) MUST
+ * gate this behind a fresh `pricing.override` approval
+ * (lib/approval-workflow.ts's requireApproval, same maker-checker
+ * primitive dr-failover.ts/tier.downgrade already use) before ever
+ * calling this -- this function itself performs no approval check, same
+ * "module exposes the setter, the route decides who may call it"
+ * division of labor as every other setter in this file (see
+ * setOrgSla/setOrgPatchSla above), but because this one action moves
+ * real negotiated revenue it additionally writes a real, awaited
+ * audit_log row (writeAuditLogEntryAwaited -- awaited, not
+ * fire-and-forget, so the negotiated rate is durably provable at audit
+ * time before this call returns) on every set, distinct from the
+ * route's own per-request access-log entry. Passing `override: null`
+ * clears/expires the override (an org reverts to standard list pricing)
+ * and is logged the same way with `pricingOverrideAction: "expire"`.
+ * Merge-patches only this org's registry entry's `pricingOverride` key,
+ * same one-key-at-a-time discipline as every other setter in this
+ * module.
+ */
+export async function setOrgPricingOverride(
+  id: string,
+  override: OrgPricingOverride | null,
+  actor: string,
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const updatedEntry: OrgRegistryEntry = { ...entry, pricingOverride: override ?? undefined };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  await writeAuditLogEntryAwaited({
+    orgId: id,
+    timestamp: new Date().toISOString(),
+    actor,
+    method: "PUT",
+    path: `/api/orgs/${id}/pricing-override`,
+    status: 200,
+    requestId: newRequestId(),
+    pricingOverrideAction: override ? "set" : "expire",
+    pricingOverrideContractRef: override?.contractRef ?? entry.pricingOverride?.contractRef,
+  });
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
  * Real per-org auto-remediation opt-in write: backs
  * PUT /api/orgs/[id]/auto-remediate-critical (and any admin UI toggle).
  * Same one-key-at-a-time merge-patch discipline as setOrgBranding/
@@ -933,6 +1247,278 @@ export async function setOrgManagingPartnerId(
     ...entry,
     managingPartnerId: partnerId ?? undefined,
   };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
+ * Real Secret & Certificate Rotation Compliance block write: backs POST
+ * (block) and DELETE (unblock) /api/compliance/rotation. Callers (the
+ * route handler, via lib/rotation-compliance.ts's
+ * applyRotationComplianceBlock/clearRotationComplianceBlock) MUST gate
+ * this behind a fresh `compliance.rotation-block` approval
+ * (lib/approval-workflow.ts's requireApproval, same maker-checker
+ * primitive `pricing.override`/`tier.downgrade` already use) before ever
+ * calling this -- this function itself performs no approval check, same
+ * "module exposes the setter, the route decides who may call it"
+ * division of labor as every other setter in this file (see
+ * setOrgPricingOverride above). Because this action is the durable
+ * SOC2/PCI compliance-violation record a security team points auditors
+ * at, it writes a real, AWAITED audit_log row
+ * (writeAuditLogEntryAwaited -- awaited, not fire-and-forget, so the
+ * block/unblock decision is durably provable at audit time before this
+ * call returns), distinct from the route's own per-request access-log
+ * entry, same discipline setOrgPricingOverride already establishes for
+ * its own revenue-moving write. Merge-patches only this org's registry
+ * entry's `rotationComplianceBlocked`/`rotationComplianceBlockedAt` keys,
+ * same one-key-at-a-time discipline as every other setter in this
+ * module.
+ */
+export async function setOrgRotationComplianceBlock(
+  id: string,
+  blocked: boolean,
+  actor: string,
+  violationCount: number,
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const blockedAt = new Date().toISOString();
+  const updatedEntry: OrgRegistryEntry = {
+    ...entry,
+    rotationComplianceBlocked: blocked,
+    rotationComplianceBlockedAt: blocked ? blockedAt : undefined,
+  };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  await writeAuditLogEntryAwaited({
+    orgId: id,
+    timestamp: blockedAt,
+    actor,
+    method: blocked ? "POST" : "DELETE",
+    path: `/api/compliance/rotation?orgId=${encodeURIComponent(id)}&blocked=${blocked}&violationCount=${violationCount}`,
+    status: 200,
+    requestId: newRequestId(),
+  });
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
+ * Real per-org Customer-Managed Encryption Key (CMEK/BYOK) binding record
+ * -- the specific control a Fortune 5 security review asks for before
+ * this platform is trusted to store any regulated customer data: proof
+ * that this org's own Secrets/PVCs are encrypted under a key reference
+ * the CUSTOMER supplied and controls (their own AWS KMS/GCP Cloud KMS/
+ * Azure Key Vault/HashiCorp Vault key), not the platform's shared default
+ * encryption key -- so the customer, not the vendor, holds the ability to
+ * revoke access to their own data at rest. Mirrors `OrgPricingOverride`'s
+ * own "non-secret, auditable shape, bound only after a second approver
+ * signs off" discipline field-for-field: no key MATERIAL is ever stored
+ * here, only the external key's own reference id -- the actual envelope
+ * encryption/decryption is always performed by the customer's own KMS,
+ * never by this console.
+ */
+export type CmekProvider = "aws-kms" | "gcp-kms" | "azure-keyvault" | "vault";
+
+export interface CmekKeyBinding {
+  provider: CmekProvider;
+  /** The customer's own external key reference -- e.g. a full AWS KMS key
+   * ARN, a GCP Cloud KMS resource name, an Azure Key Vault key identifier
+   * URI, or a Vault transit key name. Never key material; always a
+   * reference this console hands to the CSI/Secrets-encryption layer, the
+   * same "reference, not the secret itself" discipline
+   * `requestedExportSubscription` already applies to bucket credentials. */
+  keyRef: string;
+  boundAt: string;
+  boundBy: string;
+  /** The key reference this binding replaced, when this binding is a
+   * rotation rather than an org's first-ever binding -- `undefined` for a
+   * first binding. Preserved so GET can show a real rotation history
+   * entry, never fabricated. */
+  previousKeyRef?: string;
+  /** Non-empty human-supplied justification the approver actually reviewed
+   * (e.g. "Fortune 5 security review SR-4821 BYOK requirement"), same
+   * "an approver reviews a specific written reason, not a bare toggle"
+   * discipline `requestedFreezeReason`/`contractRef` already establish. */
+  reason: string;
+}
+
+/**
+ * Fail-closed validation -- same discipline as `validatePricingOverride`
+ * above: reject and return a real, specific error string (never a
+ * fabricated silent default) on anything that doesn't meet the contract,
+ * so a malformed CMEK binding can never reach the ConfigMap.
+ *
+ *   - `provider` must be one of the four supported real KMS providers.
+ *   - `keyRef` must be non-empty and at least plausibly shaped for its
+ *     provider (an AWS KMS ARN starts `arn:aws:kms:`, a GCP Cloud KMS
+ *     resource name starts `projects/`, an Azure Key Vault key identifier
+ *     is an `https://` URI, a Vault transit key name is any non-empty
+ *     string -- Vault has no single canonical reference shape). This is a
+ *     structural sanity check only; it never calls out to the real KMS to
+ *     confirm the key exists or is reachable, the same "the console
+ *     records the reference an operator asserts, it does not itself hold
+ *     KMS credentials to verify it" boundary `requestedExportSubscription`
+ *     already draws for bucket endpoints.
+ *   - `reason`/`boundBy` must be non-empty -- this binding is never
+ *     provable at audit time without both.
+ */
+export function validateCmekKeyBinding(input: {
+  provider: CmekProvider;
+  keyRef: string;
+  boundBy: string;
+  reason: string;
+}): string | null {
+  const validProviders: CmekProvider[] = ["aws-kms", "gcp-kms", "azure-keyvault", "vault"];
+  if (!validProviders.includes(input.provider)) {
+    return `provider must be one of: ${validProviders.join(", ")}`;
+  }
+  const keyRef = input.keyRef.trim();
+  if (!keyRef) {
+    return "keyRef is required";
+  }
+  if (input.provider === "aws-kms" && !keyRef.startsWith("arn:aws:kms:")) {
+    return "keyRef for provider aws-kms must be a full KMS key ARN (arn:aws:kms:...)";
+  }
+  if (input.provider === "gcp-kms" && !keyRef.startsWith("projects/")) {
+    return "keyRef for provider gcp-kms must be a full Cloud KMS resource name (projects/...)";
+  }
+  if (input.provider === "azure-keyvault" && !keyRef.startsWith("https://")) {
+    return "keyRef for provider azure-keyvault must be a full Key Vault key identifier URI (https://...)";
+  }
+  if (!input.boundBy.trim()) {
+    return "boundBy is required";
+  }
+  if (!input.reason.trim()) {
+    return "reason is required";
+  }
+  return null;
+}
+
+/**
+ * Real CMEK binding read: backs GET /api/orgs/[id]/cmek. Same
+ * "`{ok: true, data: null}` is not an error" convention as
+ * getOrgPricingOverride -- distinguishes "org exists but has never had a
+ * customer key bound" (its Secrets/PVCs are encrypted under the
+ * platform's own default, computed by the caller, never fabricated here)
+ * from a real registry-read failure.
+ */
+export async function getOrgCmekBinding(id: string): Promise<K8sResult<CmekKeyBinding | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+  return { ok: true, data: entry.cmekBinding ?? null };
+}
+
+/**
+ * Real CMEK binding write: backs PUT/DELETE /api/orgs/[id]/cmek. Callers
+ * (the route handler) MUST gate this behind a fresh `cmek.key-binding`
+ * approval (lib/approval-workflow.ts's requireApproval, same maker-checker
+ * primitive `pricing.override`/`tier.downgrade` already use) before ever
+ * calling this -- this function itself performs no approval check, same
+ * "module exposes the setter, the route decides who may call it" division
+ * of labor as every other setter in this file (see setOrgPricingOverride
+ * above). Because this action binds or rotates the exact key reference a
+ * Fortune 5 security reviewer will ask to see proof of, it additionally
+ * writes a real, AWAITED audit_log row (writeAuditLogEntryAwaited --
+ * awaited, not fire-and-forget, so the binding/rotation is durably
+ * provable at audit time before this call returns), distinct from the
+ * route's own per-request access-log entry, same discipline
+ * setOrgPricingOverride/setOrgRotationComplianceBlock already establish.
+ * Passing `binding: null` clears the binding (an org reverts to the
+ * platform default encryption key) and is logged the same way with
+ * `cmekAction: "unbind"`. Merge-patches only this org's registry entry's
+ * `cmekBinding` key, same one-key-at-a-time discipline as every other
+ * setter in this module.
+ */
+export async function setOrgCmekBinding(
+  id: string,
+  binding: CmekKeyBinding | null,
+  actor: string,
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const updatedEntry: OrgRegistryEntry = { ...entry, cmekBinding: binding ?? undefined };
+  const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
+    [id]: JSON.stringify(updatedEntry),
+  });
+  if (!result.ok) return result;
+
+  await writeAuditLogEntryAwaited({
+    orgId: id,
+    timestamp: new Date().toISOString(),
+    actor,
+    method: binding ? "PUT" : "DELETE",
+    path: `/api/orgs/${id}/cmek`,
+    status: 200,
+    requestId: newRequestId(),
+    cmekAction: binding ? (entry.cmekBinding ? "rotate" : "bind") : "unbind",
+    cmekProvider: binding?.provider ?? entry.cmekBinding?.provider,
+    cmekKeyRef: binding?.keyRef ?? entry.cmekBinding?.keyRef,
+  });
+
+  return { ok: true, data: { id, ...updatedEntry } };
+}
+
+/**
+ * Real cross-org uniqueness lookup for `awsMarketplaceCustomerId` -- same
+ * "scan the registry `listOrgs` already reads, no separate index to drift
+ * out of sync" discipline as `findOrgByCustomDomain` above. AWS assigns
+ * one `customer-identifier` per (AWS account, product) pair, so it is
+ * effectively unique per listing; this both backs the resolve-customer
+ * linking route's own uniqueness guard and is the reverse lookup
+ * `AwsMarketplaceAdapter.applyEntitlementEvent` (app/lib/entitlement-
+ * adapters/aws.ts) calls to turn an inbound SNS entitlement event's
+ * `customer-identifier` back into the org whose Project tier it should
+ * drive. Returns `null` (not an error) when no org has linked that AWS
+ * customer id yet.
+ */
+export async function findOrgByAwsMarketplaceCustomerId(
+  customerId: string,
+): Promise<K8sResult<string | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  for (const [id, entry] of Object.entries(registry.data)) {
+    if (entry.awsMarketplaceCustomerId === customerId) {
+      return { ok: true, data: id };
+    }
+  }
+  return { ok: true, data: null };
+}
+
+/**
+ * Real AWS Marketplace linkage write -- backs whatever route completes
+ * the AWS SaaS registration redirect's resolve-customer exchange. Same
+ * one-key-at-a-time merge-patch discipline as `setOrgCustomDomain` above;
+ * callers are responsible for having already confirmed via
+ * `findOrgByAwsMarketplaceCustomerId` that no OTHER org already claims
+ * this AWS customer id, same "route validates, module persists" split
+ * `setOrgCustomDomain`'s own header documents.
+ */
+export async function setOrgAwsMarketplaceCustomerId(
+  id: string,
+  awsMarketplaceCustomerId: string,
+): Promise<K8sResult<Org | null>> {
+  const registry = await getRegistry();
+  if (!registry.ok) return registry;
+  const entry = registry.data[id];
+  if (!entry) return { ok: true, data: null };
+
+  const updatedEntry: OrgRegistryEntry = { ...entry, awsMarketplaceCustomerId };
   const result = await createOrUpdateConfigMap(ORGS_REGISTRY_NAMESPACE, ORGS_REGISTRY_CONFIGMAP, {
     [id]: JSON.stringify(updatedEntry),
   });

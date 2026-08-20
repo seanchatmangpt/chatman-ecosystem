@@ -10,6 +10,7 @@ import {
   listComplianceReports,
   CADENCE_CRON_SCHEDULE,
 } from "@/lib/compliance-report";
+import { listEngagementFindings, listOrgEngagements } from "@/lib/pentest-attestation";
 
 export const dynamic = "force-dynamic";
 
@@ -100,9 +101,10 @@ async function CompliancePanelServerBoundary({
   namespace: string;
   actorRole: "viewer" | "member" | "owner";
 }) {
-  const [reportsResult, cadenceResult] = await Promise.all([
+  const [reportsResult, cadenceResult, engagementsResult] = await Promise.all([
     listComplianceReports(orgId),
     getComplianceCadence(orgId),
+    listOrgEngagements(orgId),
   ]);
 
   if (!reportsResult.ok) {
@@ -119,6 +121,39 @@ async function CompliancePanelServerBoundary({
       </p>
     );
   }
+
+  // Additive, best-effort: a Postgres-unreachable pentest store never
+  // takes down the rest of this page (reports/cadence already render
+  // fine without it) -- same "one control's own failure never blocks
+  // the whole page" discipline this file already extends to
+  // personnelAttestation below.
+  const pentestEngagements = engagementsResult.ok
+    ? await Promise.all(
+        engagementsResult.data.map(async (e) => {
+          const findingsResult = await listEngagementFindings(e.id);
+          return {
+            id: e.id,
+            testerFirm: e.testerFirm,
+            scope: e.scope,
+            engagementType: e.engagementType,
+            startedAt: e.startedAt,
+            completedAt: e.completedAt,
+            nextDueDate: e.nextDueDate,
+            overdue: Date.parse(e.nextDueDate) < Date.now(),
+            findings: findingsResult.ok
+              ? findingsResult.data.map((f) => ({
+                  id: f.id,
+                  severity: f.severity,
+                  title: f.title,
+                  status: f.status,
+                  filedAt: f.filedAt,
+                  resolvedAt: f.resolvedAt,
+                }))
+              : [],
+          };
+        }),
+      )
+    : [];
 
   const reports = reportsResult.data.map((r) => ({
     reportId: r.reportId,
@@ -141,6 +176,8 @@ async function CompliancePanelServerBoundary({
       reports={reports}
       canManageCadence={actorRole === "owner"}
       canGenerate={actorRole === "member" || actorRole === "owner"}
+      pentestEngagements={pentestEngagements}
+      canFilePentest={actorRole === "member" || actorRole === "owner"}
     />
   );
 }

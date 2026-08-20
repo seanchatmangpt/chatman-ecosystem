@@ -60,18 +60,20 @@
  * rather than a separately-tracked "failover record" that could drift
  * from what actually happened.
  */
-import { getOrg, setOrgRegion, type Org } from "@/lib/orgs";
+import { getOrg, getOrgProjectTier, setOrgRegion, type Org } from "@/lib/orgs";
 import { listIncidents, type Incident } from "@/lib/incidents";
 import {
   createRestoreJob,
   getProject,
   getProjectDatabasePod,
   listJobs,
+  listNodeRegions,
   listProjects,
   type BackupJob,
   type K8sResult,
 } from "@/lib/k8s";
-import { writeAuditLogEntry, newRequestId } from "@/lib/audit-db";
+import { tierAtLeast } from "@/lib/tiers";
+import { writeAuditLogEntry, writeAuditLogEntryAwaited, newRequestId } from "@/lib/audit-db";
 
 export type DrFailoverOutcome<T> = { ok: true; data: T } | { ok: false; error: string };
 
@@ -384,3 +386,176 @@ export async function getFailoverStatus(
 // name is not 1:1 stored anywhere) -- re-exported so route handlers that
 // want a direct-by-name lookup don't need a second import path.
 export { getProject };
+
+// ------------------------------------------------------- DR Game Day Drill
+//
+// The missing SOC2/DR-audit artifact `initiateFailover` above cannot
+// itself produce: proof the failover runbook actually WORKS, exercised on
+// a schedule, WITHOUT waiting for a real incident and WITHOUT running the
+// two destructive real writes (`setOrgRegion`'s re-pin, `createRestoreJob`'s
+// real `batch/v1` restore Job that overwrites the target database Pod's
+// live data -- see this file's header comment). A "game day" walks the
+// exact same real precondition/discovery logic `initiateFailover` runs --
+// same `findBlockingIncident` call, same `getOrgProjectTier` +
+// `listNodeRegions` live validation `setOrgRegion` itself enforces, same
+// `listJobs`-backed "latest COMPLETE backup Job" discovery -- and reports
+// what it found, real and unfabricated, but returns before either
+// destructive call. Nothing here writes to k8s or the orgs registry; the
+// only durable side effect is the audit_log row the caller (the route)
+// persists with this function's own DrDrillResult as evidence.
+export const DR_GAME_DAY_ACTION = "dr.game_day" as const;
+export const DR_GAME_DAY_SYSTEM_ACTOR = "dr-game-day-cronjob" as const;
+
+export interface DrDrillResult {
+  orgId: string;
+  fromRegion: string;
+  toRegion: string;
+  /**
+   * One boolean per real precondition check, in this fixed, documented
+   * order, so a rendered drill report and a machine reading this JSON
+   * agree on what each slot means without a separate legend:
+   *   [0] fromRegion and toRegion are distinct
+   *   [1] org exists and (when already pinned) is pinned to fromRegion --
+   *       the same guard initiateFailover enforces before step 1
+   *   [2] org's Project tier is enterprise-or-above (the same
+   *       getOrgProjectTier + tierAtLeast gate setOrgRegion enforces
+   *       fail-closed at write time)
+   *   [3] toRegion is one of the cluster's real, live node regions right
+   *       now (listNodeRegions -- the same live label read setOrgRegion
+   *       validates against)
+   *   [4] a COMPLETE backup Job was found to restore from (listJobs,
+   *       filtered "app=platform-backups", same query
+   *       initiateFailover's own step 3 runs)
+   * An open-incident precondition is deliberately NOT included in this
+   * array -- unlike a real failover, a drill's entire point is proving the
+   * runbook would succeed BEFORE an incident exists, so requiring one
+   * here would defeat the drill. Whether an incident currently blocks (or
+   * would enable) a real failover is still surfaced, informationally, via
+   * `openIncidentPresent` below.
+   */
+  preconditionsPassed: boolean[];
+  openIncidentPresent: boolean;
+  backupJobFound: { name: string; completedAt: string | null } | null;
+  targetRegionHasCapacity: boolean;
+  wouldSucceed: boolean;
+  timestamp: string;
+}
+
+/**
+ * The real, non-destructive drill. Reuses `getOrg`, `findBlockingIncident`,
+ * `getOrgProjectTier`/`tierAtLeast`, `listNodeRegions`, and `listJobs` --
+ * every real precondition/discovery primitive `initiateFailover` above
+ * calls -- but never calls `setOrgRegion` or `createRestoreJob`, so this
+ * function's own execution can never re-pin an org's region or launch a
+ * real restore Job, no matter what it finds. `DrFailoverOutcome` is used
+ * only for the "could this drill even run" class of failure (a k8s/DB
+ * read genuinely failing); a precondition simply not being met is not an
+ * error, it's exactly the negative finding the drill exists to surface --
+ * reported as `wouldSucceed: false` inside a real `{ok: true}` result.
+ */
+export async function runDrGameDay(
+  orgId: string,
+  fromRegion: string,
+  toRegion: string,
+): Promise<DrFailoverOutcome<DrDrillResult>> {
+  const timestamp = new Date().toISOString();
+  const preconditionsPassed: boolean[] = [false, false, false, false, false];
+
+  preconditionsPassed[0] = fromRegion !== toRegion;
+
+  const orgResult = await getOrg(orgId);
+  if (!orgResult.ok) return orgResult;
+  const org = orgResult.data;
+  preconditionsPassed[1] = org !== null && (!org.region || org.region === fromRegion);
+
+  let openIncidentPresent = false;
+  const incidentResult = await findBlockingIncident(orgId, fromRegion);
+  if (incidentResult.ok) {
+    openIncidentPresent = incidentResult.data !== null;
+  }
+
+  let targetRegionHasCapacity = false;
+  if (org) {
+    const tierResult = await getOrgProjectTier(org.namespace);
+    const regionsResult = await listNodeRegions();
+    const tierOk = tierResult.ok && tierAtLeast(tierResult.data, "enterprise");
+    const regionLive = regionsResult.ok && regionsResult.data.includes(toRegion);
+    preconditionsPassed[2] = tierOk;
+    preconditionsPassed[3] = regionLive;
+    targetRegionHasCapacity = tierOk && regionLive;
+  }
+
+  let backupJobFound: { name: string; completedAt: string | null } | null = null;
+  if (org) {
+    const jobsResult = await listJobs(org.namespace, "app=platform-backups");
+    if (jobsResult.ok) {
+      const latestComplete = jobsResult.data
+        .filter((j) => j.status === "Complete")
+        .sort((a, b) => (b.completionTime ?? "").localeCompare(a.completionTime ?? ""))[0];
+      if (latestComplete) {
+        backupJobFound = {
+          name: latestComplete.name,
+          completedAt: latestComplete.completionTime ?? null,
+        };
+      }
+    }
+  }
+  preconditionsPassed[4] = backupJobFound !== null;
+
+  const wouldSucceed =
+    preconditionsPassed[0] &&
+    preconditionsPassed[1] &&
+    preconditionsPassed[2] &&
+    preconditionsPassed[3] &&
+    preconditionsPassed[4];
+
+  return {
+    ok: true,
+    data: {
+      orgId,
+      fromRegion,
+      toRegion,
+      preconditionsPassed,
+      openIncidentPresent,
+      backupJobFound,
+      targetRegionHasCapacity,
+      wouldSucceed,
+      timestamp,
+    },
+  };
+}
+
+/**
+ * Persists one drill run as a real, hash-chained `audit_log` entry --
+ * this IS the auditor-facing evidence artifact this module exists to
+ * produce: a periodically-exercised, non-destructive DR test whose
+ * history is provably tamper-evident (the same sha256 chain
+ * `writeAuditLogEntry`/`writeAuditLogEntryAwaited` every other real audit
+ * row in this repo already rides on), not a narrative claim. The full
+ * `DrDrillResult` travels as a JSON-encoded `detail` query param on the
+ * synthetic audit path, the exact same "structured detail via path query
+ * string" convention `auditStep` above already uses (this table has no
+ * separate free-form detail column -- see this file's header comment on
+ * why every step here is a `writeAuditLogEntry` call, never a new table).
+ * Awaited (never fire-and-forget) so a caller that immediately re-queries
+ * this drill's history (GET .../game-day) is guaranteed to see the row
+ * it just wrote -- the same reasoning `recordExportCustody` in
+ * lib/audit-db.ts documents for its own awaited write.
+ */
+export async function recordDrGameDayResult(
+  actor: string,
+  requestId: string,
+  result: DrDrillResult,
+): Promise<void> {
+  await writeAuditLogEntryAwaited({
+    timestamp: result.timestamp,
+    actor,
+    method: "DR_GAME_DAY",
+    path: `/dr/game-day/${result.orgId}/${result.fromRegion}->${result.toRegion}?detail=${encodeURIComponent(
+      JSON.stringify(result),
+    )}`,
+    status: result.wouldSucceed ? 200 : 412,
+    requestId,
+    orgId: result.orgId,
+  });
+}

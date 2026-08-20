@@ -1,0 +1,13 @@
+# Known, deliberately-deferred TTL coverage gaps for
+# platform-console-capabilities.ttl.
+#
+# Format: one capability name per line, followed by " -- " and a one-line
+# reason. Blank lines and lines starting with # are ignored.
+#
+# Any capability name listed here is EXCLUDED from the hard-fail check in
+# tests/fabric/test_platform_console_capability_ttl_coverage_gate_chicago.py.
+# It still shows up in that test's real coverage-percentage output, so the
+# gap stays visible even though it doesn't fail the build.
+#
+# Remove a line once the capability has been given a real ce:Capability
+# individual in platform-console-capabilities.ttl.

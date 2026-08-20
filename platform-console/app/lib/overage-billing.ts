@@ -71,6 +71,7 @@ import {
   TIER_RESOURCE_QUOTAS,
   type ProjectTier,
 } from "@/lib/tiers";
+import { getOrgIdForNamespace, getOrgPricingOverride, type OrgPricingOverride } from "@/lib/orgs";
 import {
   createOverageInvoiceItem,
   getStoredSubscription,
@@ -287,6 +288,76 @@ export interface NamespaceOverageEstimate {
   memoryGiBHoursOverage: number;
   overageCostUsd: number;
   stored: StoredOverage | null;
+  /** True when a real, currently-active (effectiveFrom <= now <=
+   * effectiveUntil) OrgPricingOverride (lib/orgs.ts) was applied in place
+   * of ILLUSTRATIVE_RATES to compute `overageCostUsd` above -- so a
+   * caller/UI can disclose "this is the negotiated rate, not the public
+   * list price" rather than silently blending the two. */
+  pricingOverrideApplied: boolean;
+  /** The negotiated contract this estimate was actually priced against,
+   * when `pricingOverrideApplied` is true -- absent otherwise. */
+  pricingOverrideContractRef?: string;
+}
+
+/**
+ * Real active-override check: `override` applies to `atIso` iff
+ * `effectiveFrom <= atIso <= effectiveUntil` -- string comparison is
+ * correct here because both the override's own two timestamps and every
+ * caller's `atIso` are RFC3339 with a fixed-width date-time prefix
+ * (validatePricingOverride enforces the former; `new Date().toISOString()`
+ * guarantees the latter), which sorts identically to numeric time.
+ */
+export function isPricingOverrideActive(override: OrgPricingOverride, atIso: string): boolean {
+  return override.effectiveFrom <= atIso && atIso <= override.effectiveUntil;
+}
+
+/**
+ * Real per-namespace effective RateTable: resolves the namespace's owning
+ * org (getOrgIdForNamespace, lib/orgs.ts) and, if that org has a real,
+ * CURRENTLY ACTIVE OrgPricingOverride bound (getOrgPricingOverride),
+ * returns a RateTable with `cpuPerCoreHour`/`memoryPerGiBHour` replaced by
+ * the negotiated rate -- `discountPercent` is applied as a percentage OFF
+ * ILLUSTRATIVE_RATES' own two per-unit prices, `fixedUnitPrice` REPLACES
+ * them outright. `egressPerGb` is never overridden by either shape (this
+ * capability's spec scopes the negotiated override to compute/memory
+ * overage only) and always stays the standard illustrative rate. Falls
+ * back to plain ILLUSTRATIVE_RATES -- unmodified, `pricingOverrideApplied:
+ * false` -- for a namespace with no owning org, an org with no override,
+ * or an override whose effective window does not cover right now (an
+ * expired or not-yet-started contract must never silently apply).
+ */
+export async function effectiveRatesForNamespace(
+  namespace: string,
+): Promise<{ rates: RateTable; pricingOverrideApplied: boolean; pricingOverrideContractRef?: string }> {
+  const orgIdResult = await getOrgIdForNamespace(namespace);
+  if (!orgIdResult.ok || !orgIdResult.data) {
+    return { rates: ILLUSTRATIVE_RATES, pricingOverrideApplied: false };
+  }
+
+  const overrideResult = await getOrgPricingOverride(orgIdResult.data);
+  if (!overrideResult.ok || !overrideResult.data) {
+    return { rates: ILLUSTRATIVE_RATES, pricingOverrideApplied: false };
+  }
+
+  const override = overrideResult.data;
+  const now = new Date().toISOString();
+  if (!isPricingOverrideActive(override, now)) {
+    return { rates: ILLUSTRATIVE_RATES, pricingOverrideApplied: false };
+  }
+
+  const rates: RateTable = (override.fixedUnitPrice
+    ? {
+        ...ILLUSTRATIVE_RATES,
+        cpuPerCoreHour: override.fixedUnitPrice.cpuPerCoreHour,
+        memoryPerGiBHour: override.fixedUnitPrice.memoryPerGiBHour,
+      }
+    : {
+        ...ILLUSTRATIVE_RATES,
+        cpuPerCoreHour: ILLUSTRATIVE_RATES.cpuPerCoreHour * (1 - (override.discountPercent ?? 0) / 100),
+        memoryPerGiBHour: ILLUSTRATIVE_RATES.memoryPerGiBHour * (1 - (override.discountPercent ?? 0) / 100),
+      }) as RateTable;
+
+  return { rates, pricingOverrideApplied: true, pricingOverrideContractRef: override.contractRef };
 }
 
 export type OverageEstimateResult =
@@ -326,17 +397,23 @@ export function computeOverageAmount(
  * alongside the freshly recomputed estimate.
  */
 export async function estimateNamespaceOverage(namespace: string): Promise<OverageEstimateResult> {
-  const [usageResult, tierResult, storedResult] = await Promise.all([
+  const [usageResult, tierResult, storedResult, effectiveRates] = await Promise.all([
     getNamespaceUsageMetrics(namespace, OVERAGE_WINDOW_LABEL, OVERAGE_WINDOW_HOURS),
     tierForNamespace(namespace),
     getStoredOverage(namespace),
+    effectiveRatesForNamespace(namespace),
   ]);
   if (!usageResult.ok) return { ok: false, namespace, error: usageResult.error };
   if (!tierResult.ok) return { ok: false, namespace, error: tierResult.error };
   if (!storedResult.ok) return { ok: false, namespace, error: storedResult.error };
 
   const baseline = quotaBaselineForTier(tierResult.data, OVERAGE_WINDOW_HOURS);
-  const overage = computeOverageAmount(usageResult.data, baseline.cpuCoreHours, baseline.memoryGiBHours);
+  const overage = computeOverageAmount(
+    usageResult.data,
+    baseline.cpuCoreHours,
+    baseline.memoryGiBHours,
+    effectiveRates.rates,
+  );
 
   return {
     ok: true,
@@ -352,6 +429,10 @@ export async function estimateNamespaceOverage(namespace: string): Promise<Overa
       memoryGiBHoursOverage: overage.memoryGiBHoursOverage,
       overageCostUsd: overage.overageCostUsd,
       stored: storedResult.data,
+      pricingOverrideApplied: effectiveRates.pricingOverrideApplied,
+      ...(effectiveRates.pricingOverrideContractRef
+        ? { pricingOverrideContractRef: effectiveRates.pricingOverrideContractRef }
+        : {}),
     },
   };
 }
@@ -485,7 +566,10 @@ export async function billNamespaceOverage(namespace: string): Promise<BillOvera
   const description =
     `Overage: ${estimate.data.cpuCoreHoursOverage.toFixed(4)} CPU-core-hours + ` +
     `${estimate.data.memoryGiBHoursOverage.toFixed(4)} GiB-hours above the ${estimate.data.tier} ` +
-    `tier's included quota, trailing ${estimate.data.windowLabel} window ending ${new Date().toISOString()}`;
+    `tier's included quota, trailing ${estimate.data.windowLabel} window ending ${new Date().toISOString()}` +
+    (estimate.data.pricingOverrideApplied
+      ? ` -- billed at negotiated contract rate ${estimate.data.pricingOverrideContractRef}`
+      : "");
 
   const invoiceItem = await createOverageInvoiceItem({
     customerId: subscription.stripeCustomerId,
@@ -493,6 +577,7 @@ export async function billNamespaceOverage(namespace: string): Promise<BillOvera
     amountUsd: estimate.data.overageCostUsd,
     description,
     tenantNamespace: namespace,
+    pricingOverrideContractRef: estimate.data.pricingOverrideContractRef,
   });
   if (!invoiceItem.ok) return { ok: false, error: invoiceItem.error };
 

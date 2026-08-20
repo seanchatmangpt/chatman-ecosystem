@@ -192,6 +192,27 @@ rules:
   - apiGroups: [""]
     resources: ["nodes"]
     verbs: ["get", "list"]
+  # Data Residency & Region-Pinning Attestation module
+  # (lib/data-residency-attestation.ts's storage-residency check,
+  # lib/k8s.ts's listNamespacePvcs/getPersistentVolumeRegion): a real
+  # attestation that an org's data actually STAYED on volumes provisioned
+  # in its pinned region needs to read every PVC an org namespace holds
+  # (cluster-wide GET/LIST, same reasoning as the Deployments/Services/
+  # Roles grants above: orgs live in arbitrary namespaces, not just
+  # platform-console's own) and, for each one's bound volume, the real
+  # cluster-scoped PersistentVolume object to resolve its actual
+  # `topology.kubernetes.io/region` -- same "cluster-scoped resource, this
+  # rule cannot be namespace-narrowed" reasoning the Nodes rule above
+  # documents. Get/list only: this module never creates, patches, or
+  # deletes a PVC or PV (unlike the Backups module's namespace-scoped
+  # PVC `create`, which stays in its own per-namespace Role below,
+  # untouched by this cluster-wide grant).
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list"]
   # Network Topology module, mTLS boundary half: read-only Istio
   # PeerAuthentication objects cluster-wide -- the real enforced-mTLS-mode
   # source (`STRICT`/`PERMISSIVE`/unset) the IAM module's RBAC/

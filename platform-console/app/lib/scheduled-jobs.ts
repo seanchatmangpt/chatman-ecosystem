@@ -749,6 +749,107 @@ export async function createExportSubscriptionCronJob(): Promise<K8sResult<Sched
   return { ok: true, data: toScheduledJob(result.data) };
 }
 
+// ------------------------------------------------------------ DR Game Day
+//
+// Real, one-per-deployment recurring DR-drill CronJob
+// (lib/dr-failover.ts's runDrGameDay): same platform-wide, fan-out-inside-
+// the-route shape as EXPORT_SUBSCRIPTION_CRON_JOB_NAME/
+// createExportSubscriptionCronJob above -- the eligible set (enterprise-
+// tier orgs with a region pinned) is data, not a fixed list of namespaces,
+// so app/api/cron/dr-game-day/route.ts itself walks listOrgs on every
+// firing rather than this module provisioning one CronJob per org.
+export const DR_GAME_DAY_CRON_SECRET_NAME = "platform-dr-game-day-cron-secret";
+export const DR_GAME_DAY_CRON_SECRET_KEY = "secret";
+export const DR_GAME_DAY_CRON_JOB_NAME = "platform-dr-game-day";
+export const DR_GAME_DAY_CRON_JOB_LABEL = "dr-game-day-cronjob";
+// Monthly, on the 1st at 04:17 UTC (off-the-hour, low-traffic) -- the
+// "periodically exercised" cadence SOC2/DR auditors ask for by name; a
+// drill this cheap and non-destructive could safely run far more often,
+// but monthly is the documented, auditable commitment this control makes.
+export const DR_GAME_DAY_CRON_SCHEDULE = "17 4 1 * *";
+
+function buildDrGameDayCronCommand(): string[] {
+  return [
+    "sh",
+    "-c",
+    `curl -sS -m 120 -X POST -H "x-dr-game-day-cron-secret: $DR_GAME_DAY_CRON_SECRET" ` +
+      `"http://platform-console.platform-console.svc.cluster.local/api/cron/dr-game-day" && echo`,
+  ];
+}
+
+/**
+ * Creates the real, one-per-deployment recurring DR game-day CronJob in
+ * the `platform-console` namespace. Idempotent from the caller's
+ * perspective the same way createExportSubscriptionCronJob's own callers
+ * are expected to be -- a second POST for the same fixed name 409s at the
+ * k8s API, surfaced as a real `K8sResult` error, never silently swallowed.
+ */
+export async function createDrGameDayCronJob(): Promise<K8sResult<ScheduledJob>> {
+  const manifest = {
+    apiVersion: "batch/v1",
+    kind: "CronJob",
+    metadata: {
+      name: DR_GAME_DAY_CRON_JOB_NAME,
+      namespace: "platform-console",
+      labels: {
+        [MANAGED_BY_LABEL]: MANAGED_BY_VALUE,
+        [COMMAND_LABEL]: DR_GAME_DAY_CRON_JOB_LABEL,
+      },
+    },
+    spec: {
+      schedule: DR_GAME_DAY_CRON_SCHEDULE,
+      concurrencyPolicy: "Forbid",
+      successfulJobsHistoryLimit: 3,
+      failedJobsHistoryLimit: 3,
+      jobTemplate: {
+        spec: {
+          backoffLimit: 0,
+          activeDeadlineSeconds: 180,
+          template: {
+            metadata: {
+              labels: { [MANAGED_BY_LABEL]: MANAGED_BY_VALUE, "cronjob-name": DR_GAME_DAY_CRON_JOB_NAME },
+            },
+            spec: {
+              restartPolicy: "Never",
+              containers: [
+                {
+                  name: "dr-game-day",
+                  image: "curlimages/curl:8.10.1",
+                  imagePullPolicy: "IfNotPresent",
+                  command: buildDrGameDayCronCommand(),
+                  env: [
+                    {
+                      name: "DR_GAME_DAY_CRON_SECRET",
+                      valueFrom: {
+                        secretKeyRef: {
+                          name: DR_GAME_DAY_CRON_SECRET_NAME,
+                          key: DR_GAME_DAY_CRON_SECRET_KEY,
+                        },
+                      },
+                    },
+                  ],
+                  resources: {
+                    requests: { cpu: "10m", memory: "16Mi" },
+                    limits: { cpu: "50m", memory: "32Mi" },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const result = await k8sRequest<CronJobItem>(
+    `/apis/batch/v1/namespaces/platform-console/cronjobs`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toScheduledJob(result.data) };
+}
+
 // ------------------------------------------------------ Backup Retention
 //
 // Real per-org recurring backup CronJob (lib/backup-retention.ts's own
@@ -973,6 +1074,123 @@ export async function createRetentionPurgeCronJob(): Promise<K8sResult<Scheduled
                         secretKeyRef: {
                           name: RETENTION_PURGE_CRON_SECRET_NAME,
                           key: RETENTION_PURGE_CRON_SECRET_KEY,
+                        },
+                      },
+                    },
+                  ],
+                  resources: {
+                    requests: { cpu: "10m", memory: "16Mi" },
+                    limits: { cpu: "50m", memory: "32Mi" },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const result = await k8sRequest<CronJobItem>(
+    `/apis/batch/v1/namespaces/platform-console/cronjobs`,
+    "POST",
+    manifest,
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: toScheduledJob(result.data) };
+}
+
+// ---------------------------------------- Audit activity digest (compliance)
+//
+// Provisions the real, one-per-deployment recurring CronJob that fires
+// POST /api/cron/audit-activity-digest -- the customer-facing weekly
+// team-activity audit digest capability (see that route's own header
+// comment for what the run actually does: per-org summarization via
+// lib/audit-db.ts's queryOrgActivityDigest, persisted via
+// lib/audit-digest-history.ts, additively pushed through
+// lib/alert-routing.ts's existing security-event channel matrix).
+//
+// Same shared-secret authentication pattern as RETENTION_PURGE_CRON_SECRET
+// above (see createComplianceReportCronJob's header comment for the
+// one-time operator provisioning step): the secret is injected via a real
+// k8s `secretKeyRef` against a
+// `platform-audit-activity-digest-cron-secret` Secret this module never
+// creates itself.
+//
+// One platform-wide CronJob, same shape as createRetentionPurgeCronJob
+// and app/api/cron/dr-game-day/route.ts's own CronJob: the route itself
+// fans out across every org via listOrgs on each firing, so there is no
+// per-org CronJob object to create or re-provision as orgs come and go.
+export const AUDIT_ACTIVITY_DIGEST_CRON_SECRET_NAME = "platform-audit-activity-digest-cron-secret";
+export const AUDIT_ACTIVITY_DIGEST_CRON_SECRET_KEY = "secret";
+export const AUDIT_ACTIVITY_DIGEST_CRON_JOB_NAME = "platform-audit-activity-digest";
+export const AUDIT_ACTIVITY_DIGEST_CRON_JOB_LABEL = "audit-activity-digest-cronjob";
+// Fires once weekly, off-peak -- "weekly team-activity audit digest" is
+// the capability's own name; Monday 04:10 UTC gives a compliance officer
+// a fresh digest at the start of their work week, after the (also
+// off-peak) retention-purge and cost-report-snapshot jobs have had their
+// own window.
+export const AUDIT_ACTIVITY_DIGEST_CRON_SCHEDULE = "10 4 * * 1";
+
+function buildAuditActivityDigestCronCommand(): string[] {
+  return [
+    "sh",
+    "-c",
+    `curl -sS -m 120 -X POST -H "x-audit-activity-digest-cron-secret: $AUDIT_ACTIVITY_DIGEST_CRON_SECRET" ` +
+      `"http://platform-console.platform-console.svc.cluster.local/api/cron/audit-activity-digest" && echo`,
+  ];
+}
+
+/**
+ * Creates the real, one-per-deployment recurring audit-activity-digest
+ * CronJob in the `platform-console` namespace. Idempotent from the
+ * caller's perspective the same way createRetentionPurgeCronJob's own
+ * callers are expected to be -- a second POST for the same fixed name
+ * 409s, surfaced as a real `K8sResult` error, never silently swallowed.
+ */
+export async function createAuditActivityDigestCronJob(): Promise<K8sResult<ScheduledJob>> {
+  const manifest = {
+    apiVersion: "batch/v1",
+    kind: "CronJob",
+    metadata: {
+      name: AUDIT_ACTIVITY_DIGEST_CRON_JOB_NAME,
+      namespace: "platform-console",
+      labels: {
+        [MANAGED_BY_LABEL]: MANAGED_BY_VALUE,
+        [COMMAND_LABEL]: AUDIT_ACTIVITY_DIGEST_CRON_JOB_LABEL,
+      },
+    },
+    spec: {
+      schedule: AUDIT_ACTIVITY_DIGEST_CRON_SCHEDULE,
+      concurrencyPolicy: "Forbid",
+      successfulJobsHistoryLimit: 3,
+      failedJobsHistoryLimit: 3,
+      jobTemplate: {
+        spec: {
+          backoffLimit: 0,
+          activeDeadlineSeconds: 300,
+          template: {
+            metadata: {
+              labels: {
+                [MANAGED_BY_LABEL]: MANAGED_BY_VALUE,
+                "cronjob-name": AUDIT_ACTIVITY_DIGEST_CRON_JOB_NAME,
+              },
+            },
+            spec: {
+              restartPolicy: "Never",
+              containers: [
+                {
+                  name: "audit-activity-digest",
+                  image: "curlimages/curl:8.10.1",
+                  imagePullPolicy: "IfNotPresent",
+                  command: buildAuditActivityDigestCronCommand(),
+                  env: [
+                    {
+                      name: "AUDIT_ACTIVITY_DIGEST_CRON_SECRET",
+                      valueFrom: {
+                        secretKeyRef: {
+                          name: AUDIT_ACTIVITY_DIGEST_CRON_SECRET_NAME,
+                          key: AUDIT_ACTIVITY_DIGEST_CRON_SECRET_KEY,
                         },
                       },
                     },

@@ -964,6 +964,195 @@ export async function queryAuditLogForImpersonationSession(
   }
 }
 
+// ------------------------------------------------------ Activity digest (compliance)
+
+/**
+ * The action-category taxonomy the weekly activity digest groups on --
+ * deliberately coarser than the raw `method`/`path` pair every audit_log
+ * row already carries: a compliance officer filing weekly evidence wants
+ * "who logged in, who changed config, who deployed, who approved
+ * something, who deleted something," not a per-endpoint breakdown. Every
+ * category below is derived purely from `method`/`path`, the two columns
+ * every row already has -- no new column, no new write path.
+ */
+export type ActivityDigestCategory =
+  | "logins"
+  | "configChanges"
+  | "deployments"
+  | "approvals"
+  | "deletions"
+  | "other";
+
+/**
+ * Classifies one already-persisted audit_log row into exactly one
+ * ActivityDigestCategory. Order matters -- checked most-specific first so
+ * e.g. `DELETE /api/deployments/x` lands in `deployments` (the more
+ * actionable category for a deploy-cadence reviewer) rather than the
+ * generic `deletions` bucket, and a read (`GET`) never inflates any
+ * mutating-action bucket.
+ */
+export function categorizeActivityDigestRow(row: Pick<AuditLogRow, "method" | "path">): ActivityDigestCategory {
+  const path = row.path.toLowerCase();
+  const method = row.method.toUpperCase();
+  if (path.includes("/login") || path.includes("/logout") || path.includes("/sessions")) {
+    return "logins";
+  }
+  if (path.includes("/deployments") || path.includes("/deploy")) {
+    return "deployments";
+  }
+  if (path.includes("/approvals") || path.includes("/approve") || path.includes("/access-reviews")) {
+    return "approvals";
+  }
+  if (method === "GET" || method === "HEAD") {
+    return "other"; // reads never count as an activity a compliance reviewer needs to see approved/changed
+  }
+  if (method === "DELETE") {
+    return "deletions";
+  }
+  // Every other mutating verb (POST/PUT/PATCH) against every other path is
+  // a configuration change in the broad sense a compliance reviewer cares
+  // about -- creating an API key, editing budget alerts, rotating a
+  // secret, updating org branding, etc. are all "someone changed
+  // something," which is exactly what this bucket exists to surface.
+  return "configChanges";
+}
+
+export interface ActivityDigestActorSummary {
+  actor: string;
+  totalActions: number;
+  logins: number;
+  configChanges: number;
+  deployments: number;
+  approvals: number;
+  deletions: number;
+  /** Reads and anything else not in the five named categories above -- tracked, never hidden, but not a named compliance bucket. */
+  other: number;
+  /** RFC3339 timestamp of this actor's earliest action in the window. */
+  firstActionAt: string;
+  /** RFC3339 timestamp of this actor's most recent action in the window. */
+  lastActionAt: string;
+}
+
+export interface OrgActivityDigestResult {
+  orgId: string;
+  /** RFC3339 lower bound of the window this digest covers (inclusive). */
+  sinceDate: string;
+  /** RFC3339 timestamp this digest was computed at -- the window's upper bound. */
+  generatedAt: string;
+  /** Real count of every audit_log row scanned for this org in the window (across all actors, all categories). */
+  totalEvents: number;
+  /** One entry per distinct actor who took at least one action in the window, most-active first. */
+  actors: ActivityDigestActorSummary[];
+}
+
+const ACTIVITY_DIGEST_PAGE_SIZE = 2000;
+// Bounds a single digest computation to 100k rows (50 pages * 2000) --
+// generous for any real org's one-week volume (the SIEM export path
+// itself defaults to the same 2000-row page size for the exact same
+// "bounded, keyset-paginated batch" reason -- see queryAuditLogSince's
+// own doc comment) while guaranteeing this loop always terminates even
+// against a pathologically chatty org, rather than paging forever.
+const ACTIVITY_DIGEST_MAX_PAGES = 50;
+
+/**
+ * Real, server-side summarization query for the customer-facing weekly
+ * activity digest (GET /api/audit/activity-digest, the
+ * "audit-activity-digest" weekly CronJob): calls queryAuditLogSince,
+ * scoped to `orgId`, paginating with its own keyset cursor exactly the
+ * way the SIEM export route already does, then GROUPS every row it reads
+ * by actor and ActivityDigestCategory in-memory -- never a new table,
+ * never a new SQL aggregate query, purely a summarization pass over the
+ * same real rows `queryAuditLog`/`queryAuditLogSince` already expose. The
+ * distinct, smaller deliverable this closes: a compliance officer filing
+ * weekly evidence gets "who did what this week," not a page of
+ * hash-chained raw rows to read themselves.
+ */
+export async function queryOrgActivityDigest(
+  orgId: string,
+  sinceDate: string,
+): Promise<{ ok: true; data: OrgActivityDigestResult } | { ok: false; error: string }> {
+  const perActor = new Map<string, ActivityDigestActorSummary>();
+  let totalEvents = 0;
+  let cursor: string | undefined = sinceDate;
+
+  for (let page = 0; page < ACTIVITY_DIGEST_MAX_PAGES; page++) {
+    const batch = await queryAuditLogSince(cursor, ACTIVITY_DIGEST_PAGE_SIZE, orgId);
+    if (!batch.ok) return batch;
+    const { rows, nextCursor } = batch.data;
+
+    for (const row of rows) {
+      totalEvents++;
+      const category = categorizeActivityDigestRow(row);
+      let summary = perActor.get(row.actor);
+      if (!summary) {
+        summary = {
+          actor: row.actor,
+          totalActions: 0,
+          logins: 0,
+          configChanges: 0,
+          deployments: 0,
+          approvals: 0,
+          deletions: 0,
+          other: 0,
+          firstActionAt: row.ts,
+          lastActionAt: row.ts,
+        };
+        perActor.set(row.actor, summary);
+      }
+      summary.totalActions++;
+      summary[category]++;
+      if (row.ts < summary.firstActionAt) summary.firstActionAt = row.ts;
+      if (row.ts > summary.lastActionAt) summary.lastActionAt = row.ts;
+    }
+
+    if (!nextCursor || rows.length < ACTIVITY_DIGEST_PAGE_SIZE) break;
+    cursor = nextCursor;
+  }
+
+  const actors = Array.from(perActor.values()).sort((a, b) => b.totalActions - a.totalActions);
+
+  return {
+    ok: true,
+    data: {
+      orgId,
+      sinceDate,
+      generatedAt: new Date().toISOString(),
+      totalEvents,
+      actors,
+    },
+  };
+}
+
+/**
+ * Plain-text/Markdown rendering of an already-computed digest -- the
+ * "file as evidence without SIEM tooling" artifact itself: a compliance
+ * officer pastes this straight into a review ticket or a weekly evidence
+ * packet, never has to open the /audit raw-row browser or write their own
+ * SIEM query. Deterministic (no locale-dependent date formatting) so two
+ * renders of the same OrgActivityDigestResult are byte-identical.
+ */
+export function renderOrgActivityDigestMarkdown(digest: OrgActivityDigestResult): string {
+  const lines: string[] = [];
+  lines.push(`# Weekly activity digest -- org ${digest.orgId}`);
+  lines.push("");
+  lines.push(`Window: ${digest.sinceDate} -> ${digest.generatedAt}`);
+  lines.push(`Total events: ${digest.totalEvents}`);
+  lines.push(`Distinct actors: ${digest.actors.length}`);
+  lines.push("");
+  if (digest.actors.length === 0) {
+    lines.push("No activity recorded for this org in the window.");
+    return lines.join("\n");
+  }
+  lines.push("| Actor | Total | Logins | Config changes | Deployments | Approvals | Deletions | Last seen |");
+  lines.push("| --- | --- | --- | --- | --- | --- | --- | --- |");
+  for (const a of digest.actors) {
+    lines.push(
+      `| ${a.actor} | ${a.totalActions} | ${a.logins} | ${a.configChanges} | ${a.deployments} | ${a.approvals} | ${a.deletions} | ${a.lastActionAt} |`,
+    );
+  }
+  return lines.join("\n");
+}
+
 // ------------------------------------------------- Chain verification (control)
 
 export interface AuditChainVerification {

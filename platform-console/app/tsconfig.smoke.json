@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "outDir": "./.smoke-out",
+    "rootDir": ".",
+    "jsx": "react-jsx",
+    "isolatedModules": false
+  },
+  "include": ["lib/entitlement-adapters/gcp.test.ts"],
+  "exclude": ["node_modules"]
+}

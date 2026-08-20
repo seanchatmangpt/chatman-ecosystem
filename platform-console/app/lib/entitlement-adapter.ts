@@ -25,8 +25,14 @@ export interface EntitlementRecord {
 }
 
 export interface EntitlementAdapter {
-  /** Verify the inbound entitlement/subscription webhook actually came from this cloud's marketplace, not a forged caller. */
-  verifyWebhookSignature(rawBody: string, headers: Record<string, string>): boolean;
+  /**
+   * Verify the inbound entitlement/subscription webhook actually came from this cloud's
+   * marketplace, not a forged caller. Async because every real cloud verification scheme
+   * (AWS SNS cert fetch + RSA verify, Azure AAD JWKS fetch + JWT verify, GCP Pub/Sub OIDC
+   * JWKS fetch + JWT verify) requires a network round trip to fetch the current signing
+   * key(s) -- none of them can be checked synchronously against a fixed local secret.
+   */
+  verifyWebhookSignature(rawBody: string, headers: Record<string, string>): Promise<boolean>;
   /** Parse the cloud-specific webhook payload into the shared EntitlementEvent shape. */
   parseEntitlementEvent(rawBody: string): EntitlementEvent;
   /** Poll/fetch the current entitlement record for a customer directly from the cloud SDK (needed where the cloud does not push webhooks reliably). */
