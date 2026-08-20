@@ -1,0 +1,12 @@
+--- a/scripts/dfcm_autonomic_finish.py
++++ b/scripts/dfcm_autonomic_finish.py
+@@ -759,8 +759,7 @@
+     receipts = [first, second, third]
+     return {
+         "schema": "urn:chatman:dfcm:cycle:v2",
+-        "standing": "PARTIAL_ALIVE",
+-        "target_definition_of_done": "ALIVE" if dod["done"] else "NOT_ALIVE",
++        "standing": "ALIVE" if dod["done"] else "PARTIAL_ALIVE",
+         "termination": "DONE" if dod["done"] else "CONTINUE",
+         "definition_of_done": dod,
+         "intents": intents,
