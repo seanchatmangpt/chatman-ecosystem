@@ -80,7 +80,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import subprocess
-          changed=[line[3:] for line in subprocess.check_output(['git','status','--porcelain'], text=True).splitlines()]
+          changed=[line[3:] for line in subprocess.check_output(['git','status','--porcelain','--untracked-files=all'], text=True).splitlines()]
           bad=[]
           for path in changed:
               if path.startswith('docs/how-to-build-a-dyson-sphere/'):
