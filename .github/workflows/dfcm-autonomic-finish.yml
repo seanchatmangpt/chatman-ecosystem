@@ -5,6 +5,7 @@ on:
     paths:
       - "scripts/dfcm_autonomic_finish.py"
       - "tests/test_dfcm_autonomic_finish.py"
+      - "tests/test_post_agi_dfcm.py"
       - "release/v26.9.1/manifest.toml"
       - ".github/workflows/dfcm-autonomic-finish.yml"
   workflow_dispatch:
@@ -22,13 +23,39 @@ jobs:
         with:
           python-version: "3.12"
       - name: Unit and falsifier court
-        run: python3 -m unittest -v tests/test_dfcm_autonomic_finish.py
+        run: |
+          python3 -m unittest -v \
+            tests/test_dfcm_autonomic_finish.py \
+            tests/test_post_agi_dfcm.py
       - name: Exact manifest cycle
         run: python3 scripts/dfcm_autonomic_finish.py --manifest release/v26.9.1/manifest.toml --limit 3 > dfcm-cycle.json
       - name: Deterministic cycle replay
         run: |
           python3 scripts/dfcm_autonomic_finish.py --manifest release/v26.9.1/manifest.toml --limit 3 > dfcm-cycle-2.json
           cmp dfcm-cycle.json dfcm-cycle-2.json
+      - name: Construct post-AGI execution capsule
+        run: |
+          python3 scripts/dfcm_autonomic_finish.py \
+            --manifest release/v26.9.1/manifest.toml \
+            --limit 3 \
+            --execution-capsule > dfcm-execution-capsule.json
+          python3 - <<'PYCODE'
+          import json
+
+          capsule = json.load(open("dfcm-execution-capsule.json", encoding="utf-8"))
+          assert capsule["standing"] == "PARTIAL_ALIVE"
+          assert capsule["fence"]["exclusive_do_path"] == "BRCE"
+          assert capsule["fence"]["zero_unreceipted_actuation"] is True
+          assert capsule["preserve"]["selection_performed"] is False
+          assert capsule["operationalization"]["consequential_do_performed"] is False
+          assert capsule["calculus"]["receipt"]
+          assert capsule["calculus"]["replay"]
+          print(
+              "DFCM_CAPSULE_PARTIAL_ALIVE",
+              capsule["capsule_digest"],
+              capsule["operationalization"]["selected_count"],
+          )
+          PYCODE
       - name: Executable Definition of Done
         shell: bash
         run: |
@@ -38,7 +65,7 @@ jobs:
             --definition-of-done > dfcm-definition-of-done.json
           rc=$?
           set -e
-          python3 - "$rc" <<'PY'
+          python3 - "$rc" <<'PYCODE'
           import json
           import sys
 
@@ -50,12 +77,17 @@ jobs:
           if report["done"] and report["findings"]:
               raise SystemExit("Definition of Done cannot be true with findings")
           print(f"DOD:{'DONE' if report['done'] else 'CONTINUE'}")
-          PY
+          PYCODE
       - name: Compile
-        run: python3 -m py_compile scripts/dfcm_autonomic_finish.py tests/test_dfcm_autonomic_finish.py
+        run: |
+          python3 -m py_compile \
+            scripts/dfcm_autonomic_finish.py \
+            tests/test_dfcm_autonomic_finish.py \
+            tests/test_post_agi_dfcm.py
       - uses: actions/upload-artifact@v4
         with:
           name: dfcm-autonomic-cycle
           path: |
             dfcm-cycle.json
+            dfcm-execution-capsule.json
             dfcm-definition-of-done.json
