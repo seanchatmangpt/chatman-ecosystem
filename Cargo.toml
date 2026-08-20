@@ -3,6 +3,7 @@ members = [
   "crates/ecosystem-core",
   "crates/ecosystem-runtime",
   "crates/gall",
+  "crates/hditc",
   "apps/ecosystem-cli",
 ]
 exclude = [
