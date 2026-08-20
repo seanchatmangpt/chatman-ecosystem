@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Temporary branch transport: apply the two renderer fixes discovered by the vacuity court."""
+"""Temporary branch transport: apply falsifier-driven Dyson renderer repairs."""
 from pathlib import Path
 
 
@@ -40,6 +40,21 @@ def main() -> int:
         if old not in text:
             raise SystemExit(f"REFUSED:{label}:target-moved")
         text = text.replace(old, new, 1)
+
+    old_write = '''        old = page.path.read_text(encoding="utf-8")
+        new = enrich_readme(old) if page.rel == "README.md" else render(page)
+        if new != old:'''
+    new_write = '''        old = page.path.read_text(encoding="utf-8")
+        new = enrich_readme(old) if page.rel == "README.md" else render(page)
+        # Markdown hard-break spaces are intentionally not part of the page contract.
+        # Normalize every generated line so git diff --check remains a strict court.
+        new = "\\n".join(line.rstrip() for line in new.splitlines()) + "\\n"
+        if new != old:'''
+    if new_write not in text:
+        if old_write not in text:
+            raise SystemExit("REFUSED:trailing-whitespace-normalizer:target-moved")
+        text = text.replace(old_write, new_write, 1)
+
     enrich.write_text(text, encoding="utf-8")
 
     audit = Path("scripts/audit_dyson_sphere_book.py")
