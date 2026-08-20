@@ -1425,7 +1425,24 @@ export type AuditLogPurgeOutcome =
  * gone, not verifiable; every row after them is exactly as tamper-evident
  * as before the purge).
  */
-export async function purgeAuditLogRowsOlderThan(cutoff: Date): Promise<AuditLogPurgeOutcome> {
+export async function purgeAuditLogRowsOlderThan(
+  cutoff: Date,
+  /**
+   * Legal Hold org-scoped narrowing (lib/legal-hold.ts's
+   * `computeLegalHoldPurgeGuard`): every `org_id`-tagged row belonging to
+   * one of these orgs is excluded from BOTH the tombstone-anchor read and
+   * the DELETE itself, regardless of age -- an org under an active
+   * `scope: "org"` legal hold must never have its own tagged rows purged
+   * by this platform-wide schedule. Rows with a `NULL` org_id (untagged --
+   * the overwhelming majority of historical rows; see this function's own
+   * header comment) are never excluded by this parameter -- a hold can
+   * only protect rows this platform actually tagged with the held org's
+   * id. Absent/empty means no org-scoped narrowing (the pre-existing,
+   * unconditional-by-age behavior every caller before Legal Hold relied
+   * on).
+   */
+  excludeOrgIds: string[] = [],
+): Promise<AuditLogPurgeOutcome> {
   const pool = await resolveChainReadyPool();
   if (!pool) {
     return { ok: false, error: "audit log database not configured or unreachable" };
@@ -1439,14 +1456,18 @@ export async function purgeAuditLogRowsOlderThan(cutoff: Date): Promise<AuditLog
     // Captured BEFORE the delete so the tombstone can cryptographically
     // commit to the real tail of the history being removed.
     const lastDeleted = await client.query<{ row_hash: string | null }>(
-      `SELECT row_hash FROM platform_console.audit_log WHERE ts < $1 ORDER BY id DESC LIMIT 1`,
-      [cutoffIso],
+      `SELECT row_hash FROM platform_console.audit_log
+       WHERE ts < $1 AND (org_id IS NULL OR NOT (org_id = ANY($2)))
+       ORDER BY id DESC LIMIT 1`,
+      [cutoffIso, excludeOrgIds],
     );
     const lastDeletedRowHash = lastDeleted.rows[0]?.row_hash ?? GENESIS_HASH;
 
     const deleted = await client.query<{ id: string }>(
-      `DELETE FROM platform_console.audit_log WHERE ts < $1 RETURNING id`,
-      [cutoffIso],
+      `DELETE FROM platform_console.audit_log
+       WHERE ts < $1 AND (org_id IS NULL OR NOT (org_id = ANY($2)))
+       RETURNING id`,
+      [cutoffIso, excludeOrgIds],
     );
     const deletedCount = deleted.rows.length;
 

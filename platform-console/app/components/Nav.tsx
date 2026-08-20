@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -69,11 +70,15 @@ export default function Nav() {
 
   return (
     <nav className="border-b border-border bg-panel">
-      <FreezeBanner />
+      <Suspense fallback={null}>
+        <FreezeBanner />
+      </Suspense>
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="text-sm font-semibold tracking-wide text-foreground">
-            <OrgBrandMark />
+            <Suspense fallback={null}>
+              <OrgBrandMark />
+            </Suspense>
           </Link>
           <div className="flex items-center gap-2">
             <NotificationBell />

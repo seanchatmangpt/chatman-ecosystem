@@ -49,12 +49,13 @@
  */
 import { createHash } from "node:crypto";
 import { getAuditDbPool, type AuditLogRow } from "@/lib/audit-db";
-import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
+import { newRequestId, writeAuditLogEntry, writeAuditLogEntryAwaited } from "@/lib/audit-db";
 import { getOrg, type Org } from "@/lib/orgs";
 import { getOrgRoleAssignmentsIn, type OrgRoleAssignment } from "@/lib/authz";
 import { listApiKeys, type ApiKeySummary } from "@/lib/api-keys";
 import { createOrUpdateConfigMap, getConfigMap, type K8sResult } from "@/lib/k8s";
 import { storeExportArchive } from "@/lib/export-download-cache";
+import { isErasureBlockedByLegalHold } from "@/lib/legal-hold";
 
 export const DSAR_NAMESPACE = "platform-console";
 export const DSAR_CONFIGMAP = "platform-console-dsar-requests";
@@ -151,6 +152,15 @@ export async function getDsarRequest(requestId: string): Promise<K8sResult<DsarR
  * reading one's own data back is Art.15 access, not a destructive
  * action) and POST /api/privacy/request-erasure (only once a fresh
  * maker-checker approval for "dsar.erasure" already exists).
+ *
+ * A `kind: "erasure"` request additionally checks
+ * lib/legal-hold.ts's `isErasureBlockedByLegalHold` -- an org (or the
+ * whole platform) under an active legal hold refuses even the ATTEMPT
+ * to file an erasure request, and that refusal is itself a durable
+ * audit row (`legalHoldAction: "erasure_blocked"`) proving nothing was
+ * destroyed while the hold was in force. `kind: "export"` is never
+ * checked -- read access to one's own data is not restricted by a hold
+ * that only ever restricts destruction.
  */
 export async function createDsarRequest(input: {
   orgId: string;
@@ -158,6 +168,32 @@ export async function createDsarRequest(input: {
   kind: DsarKind;
   requestedBy: string;
 }): Promise<K8sResult<DsarRequest>> {
+  if (input.kind === "erasure") {
+    const blocked = await isErasureBlockedByLegalHold(input.orgId);
+    if (!blocked.ok) return blocked;
+    if (blocked.data) {
+      await writeAuditLogEntryAwaited({
+        orgId: input.orgId,
+        timestamp: new Date().toISOString(),
+        actor: input.requestedBy,
+        method: "DSAR",
+        path: `/api/privacy/request-erasure (org=${input.orgId}, blocked by hold=${blocked.data.holdId})`,
+        status: 409,
+        requestId: newRequestId(),
+        legalHoldAction: "erasure_blocked",
+        legalHoldId: blocked.data.holdId,
+        legalHoldScope: blocked.data.scope,
+        ...(blocked.data.orgId ? { legalHoldOrgId: blocked.data.orgId } : {}),
+      });
+      return {
+        ok: false,
+        error:
+          `erasure refused: legal hold "${blocked.data.name}" (${blocked.data.holdId}) is active ` +
+          "for this org -- nothing was destroyed",
+      };
+    }
+  }
+
   const request: DsarRequest = {
     requestId: globalThis.crypto.randomUUID(),
     orgId: input.orgId,
@@ -402,6 +438,37 @@ export async function runDsarErasure(requestId: string): Promise<K8sResult<DsarR
   }
   const request = existing.data;
   if (request.status === "complete") return { ok: true, data: request }; // idempotent: already done
+
+  // Defensive, second real check -- createDsarRequest already refused to
+  // create this row while a hold was active, but a hold can be placed
+  // AFTER a request row was created and BEFORE this synchronous run
+  // executes (the approval round-trip is not instantaneous). Never trust
+  // only the earlier check.
+  const blocked = await isErasureBlockedByLegalHold(request.orgId);
+  if (!blocked.ok) return blocked;
+  if (blocked.data) {
+    const failed: DsarRequest = {
+      ...request,
+      status: "failed",
+      error: `erasure refused: legal hold "${blocked.data.name}" (${blocked.data.holdId}) is active for this org`,
+      completedAt: new Date().toISOString(),
+    };
+    await putRequest(failed);
+    await writeAuditLogEntryAwaited({
+      orgId: request.orgId,
+      timestamp: new Date().toISOString(),
+      actor: request.requestedBy,
+      method: "DSAR",
+      path: `/api/privacy/request-erasure (org=${request.orgId}, blocked by hold=${blocked.data.holdId})`,
+      status: 409,
+      requestId: newRequestId(),
+      legalHoldAction: "erasure_blocked",
+      legalHoldId: blocked.data.holdId,
+      legalHoldScope: blocked.data.scope,
+      ...(blocked.data.orgId ? { legalHoldOrgId: blocked.data.orgId } : {}),
+    });
+    return { ok: true, data: failed };
+  }
 
   await putRequest({ ...request, status: "processing" });
 

@@ -83,7 +83,10 @@ export type ApprovalAction =
   | "insurance.policy.update"
   | "personnel.attestation.record"
   | "source-escrow.snapshot"
-  | "pentest.finding.resolve";
+  | "pentest.finding.resolve"
+  | "vendor-offboarding.attestation.issue"
+  | "legal-hold.release"
+  | "geofence.exception.grant";
 export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   "org.delete",
   "quota.override",
@@ -428,6 +431,43 @@ export const ACTIONS_REQUIRING_APPROVAL: ApprovalAction[] = [
   // loop is. No opt-out. `targetId` on the ApprovalRequest itself is the
   // finding's own id (`PentestFinding.id`).
   "pentest.finding.resolve",
+  // Vendor Offboarding Data-Return/Destruction Attestation: the signed,
+  // timestamped document handed to a Fortune-5 customer's procurement/
+  // legal team at contract termination, attesting every piece of their
+  // data was either exported back to them or destroyed within the
+  // contractual SLA. Same "durable compliance artifact a counterparty
+  // relies on" bar `data-destruction.certificate.issue`/
+  // `insurance.policy.update` already set -- one platform owner's own
+  // say-so is never sufficient by itself to hand a customer a signed
+  // attestation closing their offboarding checklist. No opt-out.
+  // `targetId` on the ApprovalRequest itself is the org's own id.
+  "vendor-offboarding.attestation.issue",
+  // Legal Hold RELEASE (lib/legal-hold.ts): lifting a hold is what
+  // RESUMES eligibility for the scheduled retention purge and DSAR
+  // erasure to actually destroy data in the released scope -- the exact
+  // "resumes an irreversible, destructive automated action" moment
+  // `dsar.erasure`/`dr.failover` already earn this bar for. Deliberately
+  // asymmetric with PLACING a hold, which is never gated (see
+  // lib/legal-hold.ts's header comment) -- a legal team member acting
+  // alone must always be able to stop destruction immediately; only
+  // resuming it requires a second, distinct owner-role approver. No
+  // opt-out. `targetId` on the ApprovalRequest itself is the hold's own
+  // id (`LegalHold.holdId`).
+  "legal-hold.release",
+  // Geofenced Data-Residency Access Enforcement exception
+  // (lib/geofence-enforcement.ts's applyGeofenceException, POST
+  // /api/owner/geofence-policy): a bounded-TTL carve-out letting one
+  // named identifier or IP CIDR bypass an org's own contracted-region
+  // geofence policy -- exactly the "one person's own say-so quietly
+  // widens a live customer org's own security/compliance posture" class
+  // of risk `cmek.key-binding`/`compliance.rotation-block` already earn
+  // this bar for: the requester's own judgment that an exception is
+  // warranted (e.g. a support engineer traveling outside the contracted
+  // region) is never sufficient by itself; a second, distinct owner-role
+  // approver must sign off before the exception is ever recorded and
+  // starts bypassing enforcement. No opt-out. `targetId` on the
+  // ApprovalRequest itself is the org's own id.
+  "geofence.exception.grant",
 ];
 
 export type ApprovalStatus = "pending" | "approved" | "rejected";
@@ -768,6 +808,55 @@ export interface ApprovalResourcePayload {
     title: string;
     resolution: "resolved" | "accepted_risk";
     resolutionNotes: string;
+  };
+  /** vendor-offboarding.attestation.issue: the non-secret shape of the
+   * data-return/destruction evidence a second approver reviews before
+   * signing off -- the contractual SLA deadline, whether any qualifying
+   * post-termination export exists, and the most recent data-destruction
+   * certificate's own all-clear/tamper-verified state -- the exact
+   * fields lib/vendor-offboarding-attestation.ts's
+   * `computeVendorOffboardingEvidence` computed moments before this
+   * request was filed. Mirrors `VendorOffboardingEvidence` field-for-
+   * field (minus its own `reasons`, which is derived, not new
+   * information). `targetId` on the ApprovalRequest itself is the org's
+   * own id. */
+  requestedVendorOffboardingEvidence?: {
+    terminationDate: string;
+    contractualSlaDays: number;
+    slaDeadline: string;
+    qualifyingExportRecordIds: string[];
+    destructionCertificateId: string | null;
+    destructionCertificateAllClear: boolean;
+    destructionCertificateVerified: boolean;
+    dataAccountedFor: boolean;
+    withinSla: boolean;
+  };
+  /** legal-hold.release: the non-secret shape of the hold being lifted
+   * -- its scope (platform-wide vs. one org), which org (absent for a
+   * platform-wide hold), and the human-supplied reason litigation
+   * concluded/no longer requires this hold -- so a second approver can
+   * see exactly what destruction eligibility they are authorizing to
+   * resume before it is ever released. `targetId` on the
+   * ApprovalRequest itself is the hold's own id (`LegalHold.holdId`,
+   * lib/legal-hold.ts). */
+  requestedLegalHoldRelease?: {
+    holdId: string;
+    scope: "platform" | "org";
+    orgId: string | null;
+    releaseReason: string;
+  };
+  /** geofence.exception.grant: the non-secret shape of the requested
+   * geofence bypass -- the exact identifier or CIDR being granted, the
+   * requester's own justification, and the bounded TTL (in hours) the
+   * exception would be valid for -- so a second approver can see exactly
+   * what they are authorizing to bypass an org's own contracted-region
+   * policy before it is ever recorded. `targetId` on the ApprovalRequest
+   * itself is the org's own id (`GeofencePolicy.orgId`,
+   * lib/geofence-enforcement.ts). */
+  requestedGeofenceException?: {
+    identifierOrCidr: string;
+    reason: string;
+    ttlHours: number;
   };
 }
 

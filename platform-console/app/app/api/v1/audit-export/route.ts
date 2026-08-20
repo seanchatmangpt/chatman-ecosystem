@@ -43,7 +43,7 @@ import {
 // Runs on the Node.js runtime (default for route handlers) -- lib/k8s.ts
 // and the `pg` driver lib/audit-db.ts uses both need it.
 
-export const SCHEMA_VERSION = "1" as const;
+const SCHEMA_VERSION = "1" as const;
 
 const DEFAULT_LIMIT = 500;
 const MAX_LIMIT = 2000;

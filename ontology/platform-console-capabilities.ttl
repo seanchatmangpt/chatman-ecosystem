@@ -541,3 +541,42 @@ pcc:ApprovalCmekKeyBinding a ce:Capability ;
     ce:reversible true ;
     ce:standing "active" ;
     ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalVendorOffboardingAttestationIssue a ce:Capability ;
+    dcterms:title "vendor-offboarding.attestation.issue" ;
+    dcterms:description "Maker-checker approval-workflow action gating issuance of a vendor-offboarding data-return/destruction attestation (lib/vendor-offboarding-attestation.ts's computeVendorOffboardingEvidence), evidencing the contractual SLA deadline, any qualifying post-termination export, and the most recent data-destruction certificate's own all-clear/tamper-verified state before a second approver signs off on the attestation record." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(vendor-offboarding.attestation.issue)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalLegalHoldRelease a ce:Capability ;
+    dcterms:title "legal-hold.release" ;
+    dcterms:description "Maker-checker approval-workflow action gating release of a legal hold (lib/legal-hold.ts): lifting a hold resumes eligibility for the scheduled retention purge and DSAR erasure to actually destroy data in the released scope. Deliberately asymmetric with placing a hold, which is never gated -- a legal team member acting alone must always be able to stop destruction immediately; only resuming it requires a second, distinct owner-role approver." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(legal-hold.release)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible false ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalGeofenceExceptionGrant a ce:Capability ;
+    dcterms:title "geofence.exception.grant" ;
+    dcterms:description "Maker-checker approval-workflow action gating a bounded-TTL geofenced data-residency exception (lib/geofence-enforcement.ts's applyGeofenceException, POST /api/owner/geofence-policy), letting one named identifier or IP CIDR bypass an org's own contracted-region geofence policy -- the requester's own judgment is never sufficient by itself; a second, distinct owner-role approver must sign off before the exception is recorded and starts bypassing enforcement." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(geofence.exception.grant)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .

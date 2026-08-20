@@ -305,6 +305,74 @@ export interface AuditLogEntry {
   pentestFindingId?: string;
   pentestFindingSeverity?: string;
   pentestTesterFirm?: string;
+  /**
+   * Vendor Offboarding Data-Return/Destruction Attestation
+   * (lib/vendor-offboarding-attestation.ts, POST
+   * /api/owner/vendor-offboarding): the one real, maker-checker-approved
+   * mutation this capability performs (`"attestation_issued"` -- a
+   * second, distinct owner-role approver signed off, same maker-checker
+   * bar `data-destruction.certificate.issue`/`insurance.policy.update`
+   * already set), fail-closed against real
+   * lib/export-custody.ts/lib/data-destruction-certificate.ts evidence.
+   * `vendorOffboardingAttestationId` cross-references the exact issued
+   * attestation -- so this platform's own durable audit trail is what
+   * proves, at audit time, exactly which data-return/destruction claim
+   * was made to a terminating customer's procurement/legal team and
+   * when, rather than a manual doc no one can account for. Both absent
+   * for every non-vendor-offboarding audit row.
+   */
+  vendorOffboardingAction?: "attestation_issued";
+  vendorOffboardingAttestationId?: string;
+  /**
+   * Legal Hold on audit/retention purge (lib/legal-hold.ts,
+   * POST /api/owner/legal-hold): `legalHoldAction` records the four real,
+   * durably-logged events in this control's lifecycle -- `"placed"` (a
+   * new hold started restricting destruction, never approval-gated --
+   * see lib/legal-hold.ts's header comment), `"released"` (a second,
+   * distinct owner-role approver signed off on lifting it, same
+   * maker-checker bar `dsar.erasure`/`dr.failover` already set), and
+   * `"purge_blocked"` / `"erasure_blocked"` (a scheduled retention purge
+   * or a DSAR erasure request was actually refused because an active
+   * hold covered its scope) -- this last pair is the specific evidence
+   * "nothing was destroyed while under hold" that opposing counsel and
+   * outside litigation holds require. `legalHoldId` cross-references the
+   * exact hold row, `legalHoldScope` distinguishes a platform-wide hold
+   * from one scoped to a single org, and `legalHoldOrgId` is that org's
+   * id (absent for a platform-wide hold). All four absent for every
+   * non-legal-hold audit row.
+   */
+  legalHoldAction?: "placed" | "released" | "purge_blocked" | "erasure_blocked";
+  legalHoldId?: string;
+  legalHoldScope?: "platform" | "org";
+  legalHoldOrgId?: string;
+  /**
+   * Geofenced Data-Residency Access Enforcement
+   * (lib/geofence-enforcement.ts, PUT/POST /api/owner/geofence-policy):
+   * `geofenceAction` distinguishes the real, durably-logged events in
+   * this control's lifecycle -- `"policy_set"` (an org's contracted
+   * regions / CIDR-region map / enforcement mode were declared or
+   * changed, never itself maker-checker-gated), `"exception_granted"`
+   * (a second, distinct owner-role approver signed off on a bounded-TTL
+   * bypass, same maker-checker bar `cmek.key-binding`/
+   * `compliance.rotation-block` already set), and `"access_flagged"` /
+   * `"access_rejected"` (a real request from outside the org's
+   * contracted region was observed and either let through with a
+   * durable flag, or actually refused, depending on the policy's own
+   * `enforcementMode`) -- the exact evidence that turns the paper
+   * residency attestation (lib/data-residency-attestation.ts) into an
+   * enforced control. `geofenceResolvedRegion` is the region this
+   * request's own caller IP resolved to against the org's admin-
+   * maintained CIDR map (absent when it could not be resolved at all),
+   * and `geofenceContractedRegions` is a snapshot of the policy's own
+   * allowed-region list at the moment of the check, so a reviewer never
+   * has to reconstruct what the policy said at the time from its
+   * current, possibly since-changed state. `orgId` above (not a new
+   * field here) carries which org's policy this row is about. All three
+   * fields absent for every non-geofence audit row.
+   */
+  geofenceAction?: "policy_set" | "exception_granted" | "access_flagged" | "access_rejected";
+  geofenceResolvedRegion?: string;
+  geofenceContractedRegions?: string[];
 }
 
 export function writeAuditLogEntry(entry: AuditLogEntry): void {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Nav from "@/components/Nav";
 
@@ -18,7 +18,7 @@ interface RegionState {
 // match the server-side gate PUT /api/orgs/[id]/region enforces --
 // the UI gate is cosmetic (disabled control, explanatory copy), the API
 // gate is the real one.
-export default function OrgRegionPage() {
+function OrgRegionPageInner() {
   const searchParams = useSearchParams();
   const orgId = searchParams.get("orgId") ?? "";
 
@@ -174,5 +174,13 @@ export default function OrgRegionPage() {
         )}
       </main>
     </>
+  );
+}
+
+export default function OrgRegionPage() {
+  return (
+    <Suspense fallback={null}>
+      <OrgRegionPageInner />
+    </Suspense>
   );
 }
