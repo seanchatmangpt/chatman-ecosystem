@@ -46,6 +46,31 @@ pass — the real file path needs re-locating), CoCoOn (cloud computing ontology
 found, no stable OWL download URL), NML/INDL/OMN (infrastructure-topology/federation ontologies,
 not yet searched for stable URLs this pass).
 
+## The pack, finished
+
+`packs/xaas-public-ontology-profile/` is built and committed (`ggen-marketplace` commit
+`f4d6d51`): `profile.ttl` declares `xaas:Profile` as a real `prof:Profile` composing 11 public
+ontologies via `prof:isProfileOf` — verified this session with the real `ggen graph validate`
+binary (17 quads, parses clean). 16 `locks/*.lock.toml` record provenance for every composed
+ontology. Two real SPARQL gates: one refuses any `xaas:`-prefixed term before the
+competency-question check exists; the other refuses any `owl:equivalentClass`/`equivalentProperty`
+assertion until proven. `queries/competency/COMPETENCY-QUESTIONS.md` states the 20 XaaS competency
+questions (CQ01–CQ20), all `UNCHECKED` — plus a recorded addendum (CQ21–CQ28) for a further reframe
+(below). `mappings/` and `shapes/` are disclosed, empty reserved slots, not silently omitted.
+
+## Addendum: businesses as emergent value-loops, not templates
+
+A further reframe was recorded mid-session, not yet acted on: rather than "automate every
+business," the target is businesses **emerging** as lawful, receipted actuations over a
+sufficiently rich public ontology — `B = (C, R, A, E, V, P)` (capabilities, resources, authorities,
+exchanges, value, policies) closing through actuation, `BusinessType = Query(O*)` instead of a
+hard-coded template hierarchy. This expands the XaaS ontology program from infrastructure into
+commerce/economic-agency domains (demand, offering/price/order, contract, accounting, jurisdiction,
+risk, economic authority, unit economics) — recorded as `CQ21`–`CQ28` in the competency-questions
+doc above, explicitly unmerged into the main CQ numbering and unrun. `REA` (Resource-Event-Agent)
+and re-checking `FIBO` (already vendored, unchecked) are the next real targets for that thread, not
+substituted here by anything invented.
+
 ## What has not been done yet
 
 No qualification: no logical-consistency check, no SHACL conformance check, no namespace-collision
