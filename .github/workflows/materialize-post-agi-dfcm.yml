@@ -26,6 +26,7 @@ jobs:
           set -euo pipefail
           cat .dfcm-payload/part* | base64 -d > /tmp/dfcm-final.tar.gz
           tar -xzf /tmp/dfcm-final.tar.gz -C .
+          git apply .dfcm-payload/fix.patch
           python3 -m py_compile \
             scripts/dfcm_autonomic_finish.py \
             tests/test_dfcm_autonomic_finish.py \
