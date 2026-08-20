@@ -1,0 +1,8 @@
+[project]
+name = "ash-subproject-pack-generator"
+
+[ontology]
+source = "ontology.ttl"
+
+[templates]
+dir = "templates"
