@@ -497,7 +497,7 @@ impl ReceiptReservation {
 pub struct PreparedDo {
     pub candidate: Candidate,
     pub grant: AuthorityGrant,
-    pub expected_postconditions: impl AsRef<[Constraint]>,
+    pub expected_postconditions: Vec<Constraint>,
     pub projected_dimensions: Dimensions,
     pub reservation: ReceiptReservation,
 }
@@ -515,7 +515,7 @@ impl PreparedDo {
         world: &World,
         candidate: Candidate,
         grant: AuthorityGrant,
-        expected_postconditions: Vec<Constraint>,
+        expected_postconditions: impl AsRef<[Constraint]>,
     ) -> Result<Self, Error> {
         let projected_dimensions = candidate.project(world)?;
         grant.verify_for(&candidate)?;
