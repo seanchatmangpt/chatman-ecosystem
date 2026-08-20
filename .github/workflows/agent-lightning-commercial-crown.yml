@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "catalog/repositories.toml"
+      - "crates/ecosystem-runtime/src/lib.rs"
       - "crates/ecosystem-runtime/src/agent_lightning_service.rs"
       - "crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs"
       - "crates/ecosystem-runtime/src/bin/agent-lightning-commercial.rs"
@@ -38,13 +39,14 @@ jobs:
             crates/ecosystem-runtime/src/agent_lightning_service.rs \
             crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs
           rustfmt --edition 2024 --config skip_children=true --check \
+            crates/ecosystem-runtime/src/lib.rs \
             crates/ecosystem-runtime/src/bin/agent-lightning-commercial.rs
       - name: Compile exact commercial subject
         run: cargo check --locked -p ecosystem-runtime --bin agent-lightning-commercial
       - name: Clippy exact commercial subject
         run: cargo clippy --locked -p ecosystem-runtime --bin agent-lightning-commercial -- -D warnings
-      - name: Execute positive and refusal fixtures
-        run: cargo test --locked -p ecosystem-runtime --bin agent-lightning-commercial
+      - name: Execute Agent Lightning library tests
+        run: cargo test --locked -p ecosystem-runtime --lib agent_lightning
       - name: Execute receipt and persistence replay
         run: |
           cargo run --locked --quiet -p ecosystem-runtime --bin agent-lightning-commercial -- verify-fixtures \
