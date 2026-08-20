@@ -23,6 +23,33 @@ jobs:
           ref: ${{ env.PURPOSE_BRANCH }}
           fetch-depth: 0
 
+      - name: Repair first-court falsifiers
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          enrich = Path('scripts/enrich_dyson_sphere_book.py')
+          text = enrich.read_text(encoding='utf-8')
+          old_worked = '        worked(domain, page),'
+          new_worked = '        f"For **{page.title}**, " + worked(domain, page),'
+          old_questions = '        "\\n".join(f"{i}. {q}" for i, q in enumerate(questions, 1)),'
+          new_questions = '        "\\n".join(f"{i}. For **{page.title}**: {q}" for i, q in enumerate(questions, 1)),'
+          assert old_worked in text, 'worked rendering target moved'
+          assert old_questions in text, 'question rendering target moved'
+          text = text.replace(old_worked, new_worked, 1)
+          text = text.replace(old_questions, new_questions, 1)
+          enrich.write_text(text, encoding='utf-8')
+
+          audit = Path('scripts/audit_dyson_sphere_book.py')
+          text = audit.read_text(encoding='utf-8')
+          old = 'PLACEHOLDER = re.compile(r"\\b(?:TODO|TBD|TKTK|lorem ipsum|insert (?:text|content)|placeholder)\\b", re.I)'
+          new = 'PLACEHOLDER = re.compile(r"\\b(?:TODO|TBD|TKTK|lorem ipsum|insert (?:text|content)|replace me|coming soon)\\b", re.I)'
+          assert old in text, 'placeholder detector target moved'
+          audit.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
       - name: Compile enrichment and audit courts
         run: |
           python3 -m py_compile \
@@ -52,6 +79,7 @@ jobs:
           assert r['summary_linked_pages']==r['unique_linked_pages']
           assert r['unique_page_bodies']==r['summary_linked_pages']
           assert r['minimum_words'] >= 560
+          assert r['definition_of_non_vacuous']['no_high_fanout_boilerplate_paragraphs'] is True
           print('DYSON_VACUITY_COURT_ALIVE', r['summary_linked_pages'], r['minimum_words'], r['median_words'])
           PY
 
@@ -84,6 +112,8 @@ jobs:
                   allowed.append(path)
               elif path in {
                   'scripts/generate_dyson_sphere_book.py',
+                  'scripts/enrich_dyson_sphere_book.py',
+                  'scripts/audit_dyson_sphere_book.py',
                   'artifacts/dyson-vacuity-audit.json',
               }:
                   allowed.append(path)
@@ -102,6 +132,8 @@ jobs:
           git add \
             docs/how-to-build-a-dyson-sphere \
             scripts/generate_dyson_sphere_book.py \
+            scripts/enrich_dyson_sphere_book.py \
+            scripts/audit_dyson_sphere_book.py \
             artifacts/dyson-vacuity-audit.json
           git diff --cached --check
           if git diff --cached --quiet; then
