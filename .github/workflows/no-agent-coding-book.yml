@@ -124,5 +124,6 @@ jobs:
           test -n "$(git diff --cached --name-only)"
           git commit -m "docs: materialize No Agent Coding book"
           published="$(git rev-parse HEAD)"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          target_ref="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          git push origin "HEAD:${target_ref}"
           printf 'published_subject=%s\n' "$published"
