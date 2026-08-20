@@ -83,5 +83,5 @@ None of these has an owning ticket yet. Picking one up starts with a decision, n
 - [`docs/jira/v26.8.20/00-BECOMING-A-LICENSED-PROCESSOR.md`](00-BECOMING-A-LICENSED-PROCESSOR.md) —
   the other v26.8.20 ticket, payments-licensing backward-chain
 - [`docs/jira/v26.8.20/02-ERLANG-RUST-LANGUAGE-SPLIT.md`](02-ERLANG-RUST-LANGUAGE-SPLIT.md) —
-  candidate Erlang/OTP (PaaS+SaaS) vs. Rust (IaaS) language split, not started
+  candidate pure Erlang/OTP 27-28 (PaaS+SaaS) vs. Rust (IaaS) language split, not started
 - `ontology/platform-console-capabilities.ttl` — capability individuals, queryable source of truth
