@@ -1,0 +1,6 @@
+[submodule "platform-console/services/gymact"]
+	path = platform-console/services/gymact
+	url = https://github.com/seanchatmangpt/gymact.git
+[submodule "platform-console/services/autofde-lab"]
+	path = platform-console/services/autofde-lab
+	url = https://github.com/seanchatmangpt/autofde-lab.git
