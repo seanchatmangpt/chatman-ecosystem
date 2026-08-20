@@ -30,89 +30,111 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          plane_path = Path('crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs')
-          text = plane_path.read_text()
+          path = Path('crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs')
+          text = path.read_text()
 
-          # Public values that are meaningful only when consumed are explicit must-use contracts.
-          text = text.replace(
-              'impl MarketplaceBinding {\n    pub fn context(&self) -> CommerceContext {',
-              'impl MarketplaceBinding {\n    #[must_use]\n    pub fn context(&self) -> CommerceContext {',
-              1,
-          )
-          text = text.replace(
-              '    pub fn observation(\n        &self,',
-              '    #[must_use]\n    pub fn observation(\n        &self,',
-              1,
-          )
+          if '#[must_use]\n    pub fn context(&self) -> CommerceContext {' not in text:
+              text = text.replace(
+                  'impl MarketplaceBinding {\n    pub fn context(&self) -> CommerceContext {',
+                  'impl MarketplaceBinding {\n    #[must_use]\n    pub fn context(&self) -> CommerceContext {',
+                  1,
+              )
+          if '#[must_use]\n    pub fn observation(' not in text:
+              text = text.replace(
+                  '    pub fn observation(\n        &self,',
+                  '    #[must_use]\n    pub fn observation(\n        &self,',
+                  1,
+              )
 
-          # Replay is not a new reservation. Recognize the admitted idempotency edge before
-          # checking remaining period budget, while still asking the service kernel to revalidate
-          # the request fingerprint.
-          old_state = '''struct ChargeState {
-              organization: String,
-              reserved: ChargeQuote,
-          '''.replace('          ', '')
-          new_state = '''struct ChargeState {
-              organization: String,
-              idempotency_key: String,
-              reserved: ChargeQuote,
-          '''.replace('          ', '')
-          if old_state in text:
-              text = text.replace(old_state, new_state, 1)
+          if 'idempotency_key: String,' not in text[text.index('struct ChargeState'):text.index('struct ChargeState') + 300]:
+              text = text.replace(
+                  'struct ChargeState {\n    organization: String,\n',
+                  'struct ChargeState {\n    organization: String,\n    idempotency_key: String,\n',
+                  1,
+              )
 
-          old_order = '''        let quote = self.rate_card.quote(&request.requested)?;
-                  self.budget
-                      .admit(quote.total_micros, self.exposure_micros())?;
+          admit_start = text.index('    pub fn admit_run(')
+          admit_end = text.index('\n    pub fn authorize_run(', admit_start)
+          admit_run = r'''    pub fn admit_run(
+              &mut self,
+              organization: &str,
+              subject: &str,
+              fingerprint: &str,
+              request: &JobRequest,
+              target: &DeploymentTarget,
+              authority: Authority,
+          ) -> Result<RunAdmission, PlaneError> {
+              require_control_authority(authority)?;
+              let principal = self.authenticate(organization, subject, fingerprint)?;
+              self.deployment.admit(request, target)?;
+              if target.provider != self.binding.provider {
+                  return Err(PlaneError::Refused(
+                      "MARKETPLACE_PROVIDER_TARGET_MISMATCH".into(),
+                  ));
+              }
+              let quote = self.rate_card.quote(&request.requested)?;
+              if let Some((reservation_id, existing)) = self
+                  .charges
+                  .iter()
+                  .find(|(_, charge)| charge.idempotency_key == request.idempotency_key)
+              {
                   let reservation = self.service.admit_job(&principal, request, authority)?;
-                  if let Some(existing) = self.charges.get(&reservation.id) {
-          '''.replace('          ', '')
-          new_order = '''        let quote = self.rate_card.quote(&request.requested)?;
-                  if let Some((reservation_id, existing)) = self
-                      .charges
-                      .iter()
-                      .find(|(_, charge)| charge.idempotency_key == request.idempotency_key)
+                  if &reservation.id != reservation_id
+                      || existing.organization != organization
+                      || existing.reserved != quote
+                      || existing.target != *target
                   {
-                      let reservation = self.service.admit_job(&principal, request, authority)?;
-                      if &reservation.id != reservation_id
-                          || existing.organization != organization
-                          || existing.reserved != quote
-                          || existing.target != *target
-                      {
-                          return Err(PlaneError::Refused("IDEMPOTENT_RUN_CONFLICT".into()));
-                      }
-                      return Ok(RunAdmission {
-                          reservation,
-                          quote: existing.reserved.clone(),
-                          target: existing.target.clone(),
-                          receipt_digest: existing.admission_receipt.clone(),
-                      });
+                      return Err(PlaneError::Refused("IDEMPOTENT_RUN_CONFLICT".into()));
                   }
-                  self.budget
-                      .admit(quote.total_micros, self.exposure_micros())?;
-                  let reservation = self.service.admit_job(&principal, request, authority)?;
-                  if let Some(existing) = self.charges.get(&reservation.id) {
-          '''.replace('          ', '')
-          if old_order in text:
-              text = text.replace(old_order, new_order, 1)
-
-          old_insert = '''            ChargeState {
-                      organization: organization.into(),
-                      reserved: quote.clone(),
-          '''.replace('          ', '')
-          new_insert = '''            ChargeState {
+                  return Ok(RunAdmission {
+                      reservation,
+                      quote: existing.reserved.clone(),
+                      target: existing.target.clone(),
+                      receipt_digest: existing.admission_receipt.clone(),
+                  });
+              }
+              self.budget
+                  .admit(quote.total_micros, self.exposure_micros())?;
+              let reservation = self.service.admit_job(&principal, request, authority)?;
+              if let Some(existing) = self.charges.get(&reservation.id) {
+                  return Err(PlaneError::Refused(format!(
+                      "RESERVATION_ID_COLLISION:{}:{}",
+                      reservation.id, existing.organization
+                  )));
+              }
+              let receipt = self.manufacture_receipt(
+                  PlaneKind::RunAdmitted,
+                  &reservation.id,
+                  &format!("reserved:{}", quote.total_micros),
+                  authority,
+              )?;
+              self.charges.insert(
+                  reservation.id.clone(),
+                  ChargeState {
                       organization: organization.into(),
                       idempotency_key: request.idempotency_key.clone(),
                       reserved: quote.clone(),
-          '''.replace('          ', '')
-          if old_insert in text:
-              text = text.replace(old_insert, new_insert, 1)
+                      target: target.clone(),
+                      admission_receipt: receipt.core.digest.clone(),
+                      intent: None,
+                      settlement_receipt: String::new(),
+                  },
+              );
+              self.receipts.push(receipt.clone());
+              Ok(RunAdmission {
+                  reservation,
+                  quote,
+                  target: target.clone(),
+                  receipt_digest: receipt.core.digest,
+              })
+          }
+          '''
+          admit_run = '\n'.join(line[10:] if line.startswith('          ') else line for line in admit_run.splitlines())
+          text = text[:admit_start] + admit_run + text[admit_end:]
 
-          # Decompose the verifier: identity persistence, run admission/actuation, and settlement
-          # are separate boundaries. This preserves falsifier locality instead of suppressing the
-          # repository's too-many-lines lint.
-          start = text.index('async fn verify_provider(')
-          end = text.index('\npub async fn verify_full_fixtures', start)
-          replacement = r'''struct IdentityFixture {
+          verify_start = text.index('async fn verify_provider(')
+          verify_end = text.index('\npub async fn verify_full_fixtures', verify_start)
+          verifier = r'''struct IdentityFixture {
               plane: CommercialControlPlane,
               organization: String,
               subject: String,
@@ -205,7 +227,6 @@ jobs:
                       .is_err(),
               );
               store.close().await;
-              drop(store);
               let reopened = IdentityStore::open(&path).await?;
               let (snapshot, restored_version) = reopened
                   .load(&tenant_key)
@@ -220,15 +241,47 @@ jobs:
                   restored.authenticate(&organization, &subject, &old_fingerprint).is_err(),
               );
               reopened.close().await;
-              drop(reopened);
               let _ = std::fs::remove_file(&path);
-              Ok(IdentityFixture {
-                  plane,
-                  organization,
-                  subject,
-                  active_fingerprint,
-                  negatives,
-              })
+              Ok(IdentityFixture { plane, organization, subject, active_fingerprint, negatives })
+          }
+
+          fn verify_run_refusals(
+              provider: Provider,
+              identity: &mut IdentityFixture,
+              mode: Mode,
+              target: &DeploymentTarget,
+              reservation_id: &str,
+          ) -> usize {
+              let mut negatives = 0;
+              let mut weak_target = target.clone();
+              weak_target.zones = 1;
+              negatives += negative(identity.plane.admit_run(
+                  &identity.organization,
+                  &identity.subject,
+                  &identity.active_fingerprint,
+                  &fixture_request(&identity.organization, mode, "weak-target"),
+                  &weak_target,
+                  Authority::PersistControlPlane,
+              ).is_err());
+              let mut expensive = fixture_request(&identity.organization, mode, "cost-fence");
+              expensive.requested.insert(Meter::GpuSeconds, 11_000);
+              negatives += negative(identity.plane.admit_run(
+                  &identity.organization,
+                  &identity.subject,
+                  &identity.active_fingerprint,
+                  &expensive,
+                  target,
+                  Authority::PersistControlPlane,
+              ).is_err());
+              negatives += negative(identity.plane.authorize_run(
+                  reservation_id,
+                  &identity.organization,
+                  &identity.subject,
+                  &identity.active_fingerprint,
+                  Authority::Observe,
+              ).is_err());
+              let _ = provider;
+              negatives
           }
 
           fn verify_run_fixture(
@@ -260,48 +313,12 @@ jobs:
               {
                   return Err(PlaneError::Receipt("RUN_IDEMPOTENCY_DIVERGED".into()));
               }
-              let mut negatives = 0;
-              let mut weak_target = target.clone();
-              weak_target.zones = 1;
-              negatives += negative(
-                  identity
-                      .plane
-                      .admit_run(
-                          &identity.organization,
-                          &identity.subject,
-                          &identity.active_fingerprint,
-                          &fixture_request(&identity.organization, mode, "weak-target"),
-                          &weak_target,
-                          Authority::PersistControlPlane,
-                      )
-                      .is_err(),
-              );
-              let mut expensive = fixture_request(&identity.organization, mode, "cost-fence");
-              expensive.requested.insert(Meter::GpuSeconds, 11_000);
-              negatives += negative(
-                  identity
-                      .plane
-                      .admit_run(
-                          &identity.organization,
-                          &identity.subject,
-                          &identity.active_fingerprint,
-                          &expensive,
-                          &target,
-                          Authority::PersistControlPlane,
-                      )
-                      .is_err(),
-              );
-              negatives += negative(
-                  identity
-                      .plane
-                      .authorize_run(
-                          &admission.reservation.id,
-                          &identity.organization,
-                          &identity.subject,
-                          &identity.active_fingerprint,
-                          Authority::Observe,
-                      )
-                      .is_err(),
+              let negatives = verify_run_refusals(
+                  provider,
+                  identity,
+                  mode,
+                  &target,
+                  &admission.reservation.id,
               );
               let permit = identity.plane.authorize_run(
                   &admission.reservation.id,
@@ -329,12 +346,7 @@ jobs:
               {
                   return Err(PlaneError::Receipt("USAGE_REPLAY_DIVERGED".into()));
               }
-              Ok(RunFixture {
-                  mode,
-                  permit,
-                  intent,
-                  negatives,
-              })
+              Ok(RunFixture { mode, permit, intent, negatives })
           }
 
           fn verify_settlement_fixture(
@@ -349,10 +361,7 @@ jobs:
               commerce.verify_delivery(&artifact_digest)?;
               commerce.derive_usage(&run.intent.source_usage_receipt, run.intent.billable_units)?;
               let meter = commerce.observe(&binding.observation(
-                  ProviderEventKind::MeterAccepted,
-                  "meter-event",
-                  run.intent.billable_units,
-                  0,
+                  ProviderEventKind::MeterAccepted, "meter-event", run.intent.billable_units, 0,
               ))?;
               let mut wrong_settlement = binding.observation(
                   ProviderEventKind::Settlement,
@@ -368,12 +377,7 @@ jobs:
                   run.intent.billable_units,
                   run.intent.amount_micros,
               ))?;
-              plane.accept_settlement(
-                  &run.intent,
-                  &meter,
-                  &settlement,
-                  Authority::PersistControlPlane,
-              )?;
+              plane.accept_settlement(&run.intent, &meter, &settlement, Authority::PersistControlPlane)?;
               Ok(negatives)
           }
 
@@ -386,64 +390,49 @@ jobs:
               let mut identity = verify_identity_fixture(provider, &binding, &fulfillment).await?;
               let run = verify_run_fixture(index, provider, &mut identity)?;
               let settlement_negatives = verify_settlement_fixture(
-                  &binding,
-                  &mut commerce,
-                  &mut identity.plane,
-                  &run,
+                  &binding, &mut commerce, &mut identity.plane, &run,
               )?;
               Ok(ProviderVerification {
                   provider: provider.as_str().into(),
                   mode: format!("{:?}", run.mode).to_ascii_lowercase(),
                   commerce_receipts: commerce.replay_verify()?,
                   control_receipts: identity.plane.replay_verify()?,
-                  negatives: identity
-                      .negatives
+                  negatives: identity.negatives
                       .saturating_add(run.negatives)
                       .saturating_add(settlement_negatives),
               })
           }
           '''
-          replacement = '\n'.join(
-              line[10:] if line.startswith('          ') else line
-              for line in replacement.splitlines()
-          )
-          text = text[:start] + replacement + text[end:]
+          verifier = '\n'.join(line[10:] if line.startswith('          ') else line for line in verifier.splitlines())
+          text = text[:verify_start] + verifier + text[verify_end:]
 
-          # Full verifier now consumes the typed provider result instead of a positional tuple.
-          old_loop = '''        let (provider_name, mode, commerce_count, control_count, provider_negatives) =
-                      verify_provider(index, provider).await?;
-                  providers.push(provider_name);
-                  modes.insert(mode);
-                  commerce_receipts = commerce_receipts.saturating_add(commerce_count);
-                  control_receipts = control_receipts.saturating_add(control_count);
-                  negatives = negatives.saturating_add(provider_negatives);
-          '''.replace('          ', '')
-          new_loop = '''        let verification = verify_provider(index, provider).await?;
+          full_start = text.index('pub async fn verify_full_fixtures')
+          loop_start = text.index('        let (provider_name, mode, commerce_count, control_count, provider_negatives) =', full_start)
+          durable_line = text.index('        durable_reopens = durable_reopens.saturating_add(1);', loop_start)
+          new_aggregation = '''        let verification = verify_provider(index, provider).await?;
                   providers.push(verification.provider);
                   modes.insert(verification.mode);
                   commerce_receipts = commerce_receipts.saturating_add(verification.commerce_receipts);
                   control_receipts = control_receipts.saturating_add(verification.control_receipts);
                   negatives = negatives.saturating_add(verification.negatives);
           '''.replace('          ', '')
-          if old_loop not in text:
-              raise SystemExit('full verifier aggregation shape changed')
-          text = text.replace(old_loop, new_loop, 1)
-          plane_path.write_text(text)
+          text = text[:loop_start] + new_aggregation + text[durable_line:]
+          path.write_text(text)
 
-          # These existing commerce functions became part of a public reusable module in this PR;
-          # preserve the existing implementation and add only semantic return-value contracts.
           commerce_path = Path('crates/ecosystem-runtime/src/commerce.rs')
           commerce = commerce_path.read_text()
-          commerce = commerce.replace(
-              '    pub const fn as_str(self) -> &\'static str {',
-              '    #[must_use]\n    pub const fn as_str(self) -> &\'static str {',
-              1,
-          )
-          commerce = commerce.replace(
-              '    pub const fn authority(self) -> Authority {',
-              '    #[must_use]\n    pub const fn authority(self) -> Authority {',
-              1,
-          )
+          if '#[must_use]\n    pub const fn as_str(self)' not in commerce:
+              commerce = commerce.replace(
+                  '    pub const fn as_str(self) -> &\'static str {',
+                  '    #[must_use]\n    pub const fn as_str(self) -> &\'static str {',
+                  1,
+              )
+          if '#[must_use]\n    pub const fn authority(self)' not in commerce:
+              commerce = commerce.replace(
+                  '    pub const fn authority(self) -> Authority {',
+                  '    #[must_use]\n    pub const fn authority(self) -> Authority {',
+                  1,
+              )
           commerce_path.write_text(commerce)
           PY
           rustfmt --edition 2024 crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs
