@@ -6,6 +6,8 @@ on:
       - agent/hditc-full-book
     paths:
       - scripts/generate_hditc_book.py
+      - scripts/audit_doc_vacuity.py
+      - scripts/enrich_published_pages.py
       - books/hditc/SUMMARY.spec.*.md
       - .github/workflows/hditc-book.yml
   pull_request:
@@ -13,37 +15,99 @@ on:
       - main
     paths:
       - scripts/generate_hditc_book.py
+      - scripts/audit_doc_vacuity.py
+      - scripts/enrich_published_pages.py
       - books/hditc/**
       - .github/workflows/hditc-book.yml
 
-permissions:
-  contents: write
+concurrency:
+  group: hditc-book-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  manufacture:
+  verify:
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
+    env:
+      EXACT_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
-      - name: Checkout exact source branch
-        uses: actions/checkout@v4
+      - name: Checkout exact PR head
+        uses: actions/checkout@v7
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          ref: ${{ env.EXACT_SHA }}
           fetch-depth: 0
 
-      - name: Generate and validate HDITC manuscript
-        run: python3 scripts/generate_hditc_book.py
-
-      - name: Verify generated projection
+      - name: Verify exact subject
         shell: bash
         run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_SHA"
+          printf 'exact_subject=%s\n' "$EXACT_SHA"
+
+      - name: Regenerate semantic HDITC projection
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/generate_hditc_book.py
+          python3 scripts/enrich_published_pages.py --write --scope books/hditc
+
+      - name: Verify generated projection and idempotence
+        shell: bash
+        run: |
+          set -euo pipefail
           test -f books/hditc/book.toml
           test -f books/hditc/src/SUMMARY.md
           test -f books/hditc/src/do/definition-of-done.md
           test -f books/hditc/src/cryptography/opacity-is-not-security.md
           test "$(find books/hditc/src -type f -name '*.md' | wc -l | tr -d ' ')" -eq 468
+          python3 scripts/audit_doc_vacuity.py --json /tmp/hditc-doc-vacuity.json
+          git diff --exit-code -- books/hditc
+          test -z "$(git status --porcelain -- books/hditc)"
 
-      - name: Commit generated projection
+      - name: Preserve HDITC semantic receipt
+        uses: actions/upload-artifact@v7
+        with:
+          name: hditc-semantic-receipt
+          path: /tmp/hditc-doc-vacuity.json
+          if-no-files-found: error
+          retention-days: 7
+
+  manufacture:
+    if: github.event_name == 'push'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source branch
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Regenerate semantic HDITC projection
         shell: bash
         run: |
+          set -euo pipefail
+          python3 scripts/generate_hditc_book.py
+          python3 scripts/enrich_published_pages.py --write --scope books/hditc
+
+      - name: Verify generated projection
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f books/hditc/book.toml
+          test -f books/hditc/src/SUMMARY.md
+          test -f books/hditc/src/do/definition-of-done.md
+          test -f books/hditc/src/cryptography/opacity-is-not-security.md
+          test "$(find books/hditc/src -type f -name '*.md' | wc -l | tr -d ' ')" -eq 468
+          python3 scripts/audit_doc_vacuity.py --json /tmp/hditc-doc-vacuity.json
+
+      - name: Commit semantic projection on generator branch
+        shell: bash
+        run: |
+          set -euo pipefail
           if [ -z "$(git status --porcelain -- books/hditc)" ]; then
             echo "No generated diff"
             exit 0
@@ -51,5 +115,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add books/hditc
-          git commit -m "docs: generate HDITC book"
-          git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
+          git commit -m "docs: generate semantically complete HDITC book"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
