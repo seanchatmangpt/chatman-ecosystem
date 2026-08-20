@@ -43,19 +43,22 @@ jobs:
       - name: Admit workspace lock projection
         run: cargo metadata --format-version 1 >/dev/null
 
-      - name: Persist lock projection on branch pushes
+      - name: Canonicalize HDITC Rust formatting
+        run: cargo fmt --package hditc
+
+      - name: Persist mechanical projections on branch pushes
         if: github.event_name == 'push'
         shell: bash
         run: |
-          if [ -n "$(git status --porcelain -- Cargo.lock)" ]; then
+          if [ -n "$(git status --porcelain -- Cargo.lock crates/hditc)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add -- Cargo.lock
-            git commit -m "build: lock HDITC runtime"
+            git add -- Cargo.lock crates/hditc
+            git commit -m "build: canonicalize HDITC runtime"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
 
-      - name: Format HDITC crate
+      - name: Verify HDITC formatting
         run: cargo fmt --package hditc -- --check
 
       - name: Compile and execute HDITC tests
