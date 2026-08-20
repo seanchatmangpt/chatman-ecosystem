@@ -53,10 +53,14 @@ jobs:
           s = p.read_text()
           s = s.replace("//! HDITC / DfCM execution kernel.", "//! HDITC / `DfCM` execution kernel.", 1)
           s = s.replace(
-              "expected_postconditions: Vec<Constraint>,",
-              "expected_postconditions: impl AsRef<[Constraint]>,",
+              "pub expected_postconditions: impl AsRef<[Constraint]>,",
+              "pub expected_postconditions: Vec<Constraint>,",
               1,
           )
+          old = """        grant: AuthorityGrant,\n        expected_postconditions: Vec<Constraint>,\n    ) -> Result<Self, Error> {"""
+          new = """        grant: AuthorityGrant,\n        expected_postconditions: impl AsRef<[Constraint]>,\n    ) -> Result<Self, Error> {"""
+          if old in s:
+              s = s.replace(old, new, 1)
           s = s.replace(
               "let expected_postconditions = normalize_constraints(&expected_postconditions);",
               "let expected_postconditions = normalize_constraints(expected_postconditions.as_ref());",
@@ -76,7 +80,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -- Cargo.lock crates/hditc
-            git commit -m "fix: satisfy HDITC Clippy admission"
+            git commit -m "fix: repair HDITC Clippy parameter admission"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
 
