@@ -70,7 +70,9 @@ impl IdentityRecord {
     }
 
     fn validate(&self) -> Result<(), PlaneError> {
-        if self.organization.trim().is_empty() || self.subject.trim().is_empty() || self.keys.is_empty()
+        if self.organization.trim().is_empty()
+            || self.subject.trim().is_empty()
+            || self.keys.is_empty()
         {
             return Err(PlaneError::Refused("INVALID_IDENTITY_RECORD".into()));
         }
@@ -157,9 +159,11 @@ impl IdentityRegistry {
         if record.active_key().is_none() {
             return Err(PlaneError::Refused("IDENTITY_HAS_NO_ACTIVE_KEY".into()));
         }
-        if record.keys.iter().any(|key| {
-            key.key_id == key_id || key.fingerprint.eq_ignore_ascii_case(fingerprint)
-        }) {
+        if record
+            .keys
+            .iter()
+            .any(|key| key.key_id == key_id || key.fingerprint.eq_ignore_ascii_case(fingerprint))
+        {
             return Err(PlaneError::Refused("API_KEY_REUSE_REFUSED".into()));
         }
         Ok(record
@@ -195,11 +199,7 @@ impl IdentityRegistry {
         }
     }
 
-    fn validate_revoke(
-        &self,
-        organization: &str,
-        subject: &str,
-    ) -> Result<(), PlaneError> {
+    fn validate_revoke(&self, organization: &str, subject: &str) -> Result<(), PlaneError> {
         let record = self
             .records
             .get(&Self::identity_key(organization, subject))
@@ -327,7 +327,9 @@ pub struct IdentitySnapshot {
 impl IdentitySnapshot {
     fn verify(&self) -> Result<IdentityRegistry, PlaneError> {
         if self.schema != SNAPSHOT_SCHEMA {
-            return Err(PlaneError::Refused("IDENTITY_SNAPSHOT_SCHEMA_MISMATCH".into()));
+            return Err(PlaneError::Refused(
+                "IDENTITY_SNAPSHOT_SCHEMA_MISMATCH".into(),
+            ));
         }
         replay_plane_receipts(&self.receipts)?;
         IdentityRegistry::from_records(self.identities.clone())
@@ -377,20 +379,21 @@ impl IdentityStore {
             .begin()
             .await
             .map_err(|error| PlaneError::Storage(error.to_string()))?;
-        let row = sqlx::query(
-            "SELECT version FROM agent_lightning_identity_state WHERE tenant_key = ?",
-        )
-        .bind(tenant_key)
-        .fetch_optional(&mut *transaction)
-        .await
-        .map_err(|error| PlaneError::Storage(error.to_string()))?;
+        let row =
+            sqlx::query("SELECT version FROM agent_lightning_identity_state WHERE tenant_key = ?")
+                .bind(tenant_key)
+                .fetch_optional(&mut *transaction)
+                .await
+                .map_err(|error| PlaneError::Storage(error.to_string()))?;
         let version = match row {
             Some(row) => {
                 let current: i64 = row
                     .try_get("version")
                     .map_err(|error| PlaneError::Storage(error.to_string()))?;
                 if expected_version != Some(current) {
-                    return Err(PlaneError::Refused("IDENTITY_STORE_VERSION_CONFLICT".into()));
+                    return Err(PlaneError::Refused(
+                        "IDENTITY_STORE_VERSION_CONFLICT".into(),
+                    ));
                 }
                 let next = current.saturating_add(1);
                 sqlx::query(
@@ -419,7 +422,9 @@ impl IdentityStore {
                 1
             }
             None => {
-                return Err(PlaneError::Refused("IDENTITY_STORE_VERSION_CONFLICT".into()));
+                return Err(PlaneError::Refused(
+                    "IDENTITY_STORE_VERSION_CONFLICT".into(),
+                ));
             }
         };
         transaction
@@ -520,7 +525,9 @@ impl DeploymentPolicy {
 
     fn admit(&self, request: &JobRequest, target: &DeploymentTarget) -> Result<(), PlaneError> {
         if target.mode != request.mode {
-            return Err(PlaneError::Refused("DEPLOYMENT_MODE_REQUEST_MISMATCH".into()));
+            return Err(PlaneError::Refused(
+                "DEPLOYMENT_MODE_REQUEST_MISMATCH".into(),
+            ));
         }
         let allowed = self
             .allowed_regions
@@ -535,14 +542,18 @@ impl DeploymentPolicy {
             || target.rpo_seconds > self.maximum_rpo_seconds
             || target.rto_seconds > self.maximum_rto_seconds
         {
-            return Err(PlaneError::Refused("DEPLOYMENT_RELIABILITY_POLICY_FAILED".into()));
+            return Err(PlaneError::Refused(
+                "DEPLOYMENT_RELIABILITY_POLICY_FAILED".into(),
+            ));
         }
         for feature in [
             DeploymentFeature::PrivateNetwork,
             DeploymentFeature::DurableReceiptSink,
         ] {
             if !target.features.contains(&feature) {
-                return Err(PlaneError::Refused("DEPLOYMENT_REQUIRED_FEATURE_MISSING".into()));
+                return Err(PlaneError::Refused(
+                    "DEPLOYMENT_REQUIRED_FEATURE_MISSING".into(),
+                ));
             }
         }
         if self.customer_managed_key_modes.contains(&target.mode)
@@ -783,7 +794,9 @@ impl CommercialControlPlane {
     ) -> Result<Self, PlaneError> {
         let timestamp = timestamp.into();
         if timestamp.trim().is_empty() || rate_card.currency != binding.currency {
-            return Err(PlaneError::Refused("INVALID_COMMERCIAL_PLANE_POLICY".into()));
+            return Err(PlaneError::Refused(
+                "INVALID_COMMERCIAL_PLANE_POLICY".into(),
+            ));
         }
         Ok(Self {
             service: Service::new(service_policy, timestamp.clone())?,
@@ -821,12 +834,8 @@ impl CommercialControlPlane {
         self.identities
             .validate_register(organization, subject, key_id, fingerprint)?;
         let source = format!("identity:{organization}:{subject}");
-        let receipt = self.manufacture_receipt(
-            PlaneKind::IdentityRegistered,
-            &source,
-            key_id,
-            authority,
-        )?;
+        let receipt =
+            self.manufacture_receipt(PlaneKind::IdentityRegistered, &source, key_id, authority)?;
         self.identities
             .apply_register(organization, subject, key_id, fingerprint);
         self.receipts.push(receipt.clone());
@@ -842,9 +851,9 @@ impl CommercialControlPlane {
         authority: Authority,
     ) -> Result<String, PlaneError> {
         require_control_authority(authority)?;
-        let generation = self
-            .identities
-            .validate_rotate(organization, subject, key_id, fingerprint)?;
+        let generation =
+            self.identities
+                .validate_rotate(organization, subject, key_id, fingerprint)?;
         let source = format!("identity:{organization}:{subject}");
         let receipt = self.manufacture_receipt(
             PlaneKind::IdentityRotated,
@@ -914,7 +923,9 @@ impl CommercialControlPlane {
             .authenticate(organization, subject, fingerprint)
     }
 
-    pub fn restore_identity_snapshot(snapshot: &IdentitySnapshot) -> Result<Vec<IdentityRecord>, PlaneError> {
+    pub fn restore_identity_snapshot(
+        snapshot: &IdentitySnapshot,
+    ) -> Result<Vec<IdentityRecord>, PlaneError> {
         Ok(snapshot.verify()?.records())
     }
 
@@ -931,7 +942,9 @@ impl CommercialControlPlane {
         let principal = self.authenticate(organization, subject, fingerprint)?;
         self.deployment.admit(request, target)?;
         if target.provider != self.binding.provider {
-            return Err(PlaneError::Refused("MARKETPLACE_PROVIDER_TARGET_MISMATCH".into()));
+            return Err(PlaneError::Refused(
+                "MARKETPLACE_PROVIDER_TARGET_MISMATCH".into(),
+            ));
         }
         let quote = self.rate_card.quote(&request.requested)?;
         self.budget
@@ -993,7 +1006,9 @@ impl CommercialControlPlane {
         if charge.organization != organization {
             return Err(PlaneError::Refused("RUN_TENANT_MISMATCH".into()));
         }
-        Ok(self.service.authorize_actuation(reservation_id, authority)?)
+        Ok(self
+            .service
+            .authorize_actuation(reservation_id, authority)?)
     }
 
     pub fn reconcile_and_construct_metering(
@@ -1018,11 +1033,13 @@ impl CommercialControlPlane {
         if actual_quote.total_micros > existing.reserved.total_micros
             || actual_quote.total_micros > self.budget.maximum_job_micros
         {
-            return Err(PlaneError::Refused("ACTUAL_COST_EXCEEDS_RESERVATION".into()));
+            return Err(PlaneError::Refused(
+                "ACTUAL_COST_EXCEEDS_RESERVATION".into(),
+            ));
         }
-        let usage_receipt = self
-            .service
-            .reconcile_usage(permit, actual_usage.clone(), authority)?;
+        let usage_receipt =
+            self.service
+                .reconcile_usage(permit, actual_usage.clone(), authority)?;
         let receipt = self.manufacture_receipt(
             PlaneKind::MeteringConstructed,
             &usage_receipt,
@@ -1065,7 +1082,9 @@ impl CommercialControlPlane {
             || settlement.units != intent.billable_units
             || settlement.amount_micros != intent.amount_micros
         {
-            return Err(PlaneError::Refused("PROVIDER_SETTLEMENT_DOES_NOT_MATCH_INTENT".into()));
+            return Err(PlaneError::Refused(
+                "PROVIDER_SETTLEMENT_DOES_NOT_MATCH_INTENT".into(),
+            ));
         }
         let existing = self
             .charges
@@ -1118,7 +1137,9 @@ impl CommercialControlPlane {
     ) -> Result<PlaneReceipt, PlaneError> {
         require_control_authority(authority)?;
         if source.trim().is_empty() || change.trim().is_empty() {
-            return Err(PlaneError::Refused("PLANE_RECEIPT_EVIDENCE_REQUIRED".into()));
+            return Err(PlaneError::Refused(
+                "PLANE_RECEIPT_EVIDENCE_REQUIRED".into(),
+            ));
         }
         let previous = self
             .receipts
@@ -1137,7 +1158,9 @@ impl CommercialControlPlane {
             observed: vec![source.into()],
             executed: vec![format!("{kind:?}")],
             changed: vec![change.into()],
-            verified: vec!["admission authority identity cost and receipt boundary verified".into()],
+            verified: vec![
+                "admission authority identity cost and receipt boundary verified".into(),
+            ],
             excluded: vec!["direct unreceipted external actuation".into()],
             replay: vec!["agent-lightning-commercial verify-fixtures".into()],
             standing_before: Standing::PartialAlive,
@@ -1298,12 +1321,7 @@ fn fixture_commerce(
 ) -> Result<(CommerceLedger, CommercialReceipt), PlaneError> {
     let context = binding.context();
     let mut ledger = CommerceLedger::new(context)?;
-    ledger.observe(&binding.observation(
-        ProviderEventKind::Agreement,
-        "agreement-event",
-        0,
-        0,
-    ))?;
+    ledger.observe(&binding.observation(ProviderEventKind::Agreement, "agreement-event", 0, 0))?;
     ledger.observe(&binding.observation(
         ProviderEventKind::Entitlement,
         "entitlement-event",
@@ -1358,12 +1376,7 @@ async fn verify_provider(
     let store = IdentityStore::open(&path).await?;
     let tenant_key = format!("{organization}:{subject}");
     let version_one = plane
-        .persist_identity_snapshot(
-            &store,
-            &tenant_key,
-            None,
-            Authority::PersistControlPlane,
-        )
+        .persist_identity_snapshot(&store, &tenant_key, None, Authority::PersistControlPlane)
         .await?;
     plane.rotate_key(
         &organization,
@@ -1406,7 +1419,9 @@ async fn verify_provider(
         .await?
         .ok_or_else(|| PlaneError::Storage("IDENTITY_SNAPSHOT_MISSING_AFTER_REOPEN".into()))?;
     if restored_version != version_two {
-        return Err(PlaneError::Storage("IDENTITY_VERSION_DIVERGED_AFTER_REOPEN".into()));
+        return Err(PlaneError::Storage(
+            "IDENTITY_VERSION_DIVERGED_AFTER_REOPEN".into(),
+        ));
     }
     let restored = snapshot.verify()?;
     restored.authenticate(&organization, &subject, &active_fingerprint)?;
@@ -1535,12 +1550,7 @@ async fn verify_provider(
         intent.billable_units,
         intent.amount_micros,
     ))?;
-    plane.accept_settlement(
-        &intent,
-        &meter,
-        &settlement,
-        Authority::PersistControlPlane,
-    )?;
+    plane.accept_settlement(&intent, &meter, &settlement, Authority::PersistControlPlane)?;
 
     Ok((
         provider.as_str().into(),
@@ -1631,7 +1641,9 @@ mod tests {
         let organization = "organization:test";
         let request = fixture_request(organization, Mode::Byoc, "cmk");
         let mut target = fixture_target(Provider::Aws, Mode::Byoc);
-        target.features.remove(&DeploymentFeature::CustomerManagedKey);
+        target
+            .features
+            .remove(&DeploymentFeature::CustomerManagedKey);
         assert!(policy.admit(&request, &target).is_err());
     }
 
