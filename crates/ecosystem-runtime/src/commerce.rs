@@ -34,6 +34,7 @@ pub enum Provider {
 }
 
 impl Provider {
+    #[must_use]
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::Aws => "aws",
@@ -77,6 +78,7 @@ pub enum ReceiptKind {
 }
 
 impl ReceiptKind {
+    #[must_use]
     pub const fn authority(self) -> Authority {
         match self {
             Self::AgreementObserved

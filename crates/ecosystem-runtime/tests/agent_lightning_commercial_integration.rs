@@ -165,21 +165,19 @@ async fn replay_survives_saturated_budget_and_revocation_fails_closed() -> Resul
     assert_eq!(replay.reservation.id, first.reservation.id);
     assert_eq!(replay.receipt_digest, first.receipt_digest);
 
-    plane.revoke_identity(
-        organization,
-        subject,
-        Authority::PersistControlPlane,
-    )?;
+    plane.revoke_identity(organization, subject, Authority::PersistControlPlane)?;
     assert!(plane.authenticate(organization, subject, &key_two).is_err());
-    assert!(plane
-        .authorize_run(
-            &first.reservation.id,
-            organization,
-            subject,
-            &key_two,
-            Authority::ModifyExternalObject,
-        )
-        .is_err());
+    assert!(
+        plane
+            .authorize_run(
+                &first.reservation.id,
+                organization,
+                subject,
+                &key_two,
+                Authority::ModifyExternalObject,
+            )
+            .is_err()
+    );
     assert!(plane.replay_verify()? >= 4);
     Ok(())
 }

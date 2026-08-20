@@ -689,6 +689,7 @@ pub struct MarketplaceBinding {
 }
 
 impl MarketplaceBinding {
+    #[must_use]
     pub fn context(&self) -> CommerceContext {
         CommerceContext {
             seller: self.seller.clone(),
@@ -713,6 +714,7 @@ impl MarketplaceBinding {
         }
     }
 
+    #[must_use]
     pub fn observation(
         &self,
         kind: ProviderEventKind,
@@ -763,6 +765,7 @@ pub struct RunAdmission {
 #[derive(Debug, Clone)]
 struct ChargeState {
     organization: String,
+    idempotency_key: String,
     reserved: ChargeQuote,
     target: DeploymentTarget,
     admission_receipt: String,
@@ -947,11 +950,14 @@ impl CommercialControlPlane {
             ));
         }
         let quote = self.rate_card.quote(&request.requested)?;
-        self.budget
-            .admit(quote.total_micros, self.exposure_micros())?;
-        let reservation = self.service.admit_job(&principal, request, authority)?;
-        if let Some(existing) = self.charges.get(&reservation.id) {
-            if existing.organization != organization
+        if let Some((reservation_id, existing)) = self
+            .charges
+            .iter()
+            .find(|(_, charge)| charge.idempotency_key == request.idempotency_key)
+        {
+            let reservation = self.service.admit_job(&principal, request, authority)?;
+            if &reservation.id != reservation_id
+                || existing.organization != organization
                 || existing.reserved != quote
                 || existing.target != *target
             {
@@ -964,6 +970,15 @@ impl CommercialControlPlane {
                 receipt_digest: existing.admission_receipt.clone(),
             });
         }
+        self.budget
+            .admit(quote.total_micros, self.exposure_micros())?;
+        let reservation = self.service.admit_job(&principal, request, authority)?;
+        if let Some(existing) = self.charges.get(&reservation.id) {
+            return Err(PlaneError::Refused(format!(
+                "RESERVATION_ID_COLLISION:{}:{}",
+                reservation.id, existing.organization
+            )));
+        }
         let receipt = self.manufacture_receipt(
             PlaneKind::RunAdmitted,
             &reservation.id,
@@ -974,6 +989,7 @@ impl CommercialControlPlane {
             reservation.id.clone(),
             ChargeState {
                 organization: organization.into(),
+                idempotency_key: request.idempotency_key.clone(),
                 reserved: quote.clone(),
                 target: target.clone(),
                 admission_receipt: receipt.core.digest.clone(),
@@ -989,7 +1005,6 @@ impl CommercialControlPlane {
             receipt_digest: receipt.core.digest,
         })
     }
-
     pub fn authorize_run(
         &mut self,
         reservation_id: &str,
@@ -1336,12 +1351,34 @@ fn negative(value: bool) -> usize {
     usize::from(value)
 }
 
-async fn verify_provider(
-    index: usize,
+struct IdentityFixture {
+    plane: CommercialControlPlane,
+    organization: String,
+    subject: String,
+    active_fingerprint: String,
+    negatives: usize,
+}
+
+struct RunFixture {
+    mode: Mode,
+    permit: ActuationPermit,
+    intent: MeteringIntent,
+    negatives: usize,
+}
+
+struct ProviderVerification {
+    provider: String,
+    mode: String,
+    commerce_receipts: usize,
+    control_receipts: usize,
+    negatives: usize,
+}
+
+async fn verify_identity_fixture(
     provider: Provider,
-) -> Result<(String, String, usize, usize, usize), PlaneError> {
-    let binding = fixture_binding(provider);
-    let (mut commerce, fulfillment) = fixture_commerce(&binding)?;
+    binding: &MarketplaceBinding,
+    fulfillment: &CommercialReceipt,
+) -> Result<IdentityFixture, PlaneError> {
     let organization = format!("organization:{}-customer", provider.as_str());
     let subject = format!("service-account:{}", provider.as_str());
     let old_fingerprint = format!("blake3:{}", "1".repeat(64));
@@ -1356,7 +1393,7 @@ async fn verify_provider(
     )?;
     plane.bind_entitlement(
         fixture_grant(&organization),
-        &fulfillment,
+        fulfillment,
         Authority::PersistControlPlane,
     )?;
     plane.register_key(
@@ -1366,7 +1403,6 @@ async fn verify_provider(
         &old_fingerprint,
         Authority::PersistControlPlane,
     )?;
-
     let path = std::env::temp_dir().join(format!(
         "chatman-agent-lightning-{}-{}.sqlite",
         provider.as_str(),
@@ -1393,9 +1429,7 @@ async fn verify_provider(
             Authority::PersistControlPlane,
         )
         .await?;
-
-    let mut negatives = 0;
-    negatives += negative(
+    let mut negatives = negative(
         plane
             .authenticate(&organization, &subject, &old_fingerprint)
             .is_err(),
@@ -1412,7 +1446,6 @@ async fn verify_provider(
             .is_err(),
     );
     store.close().await;
-    drop(store);
     let reopened = IdentityStore::open(&path).await?;
     let (snapshot, restored_version) = reopened
         .load(&tenant_key)
@@ -1431,24 +1464,90 @@ async fn verify_provider(
             .is_err(),
     );
     reopened.close().await;
-    drop(reopened);
     let _ = std::fs::remove_file(&path);
+    Ok(IdentityFixture {
+        plane,
+        organization,
+        subject,
+        active_fingerprint,
+        negatives,
+    })
+}
 
+fn verify_run_refusals(
+    provider: Provider,
+    identity: &mut IdentityFixture,
+    mode: Mode,
+    target: &DeploymentTarget,
+    reservation_id: &str,
+) -> usize {
+    let mut negatives = 0;
+    let mut weak_target = target.clone();
+    weak_target.zones = 1;
+    negatives += negative(
+        identity
+            .plane
+            .admit_run(
+                &identity.organization,
+                &identity.subject,
+                &identity.active_fingerprint,
+                &fixture_request(&identity.organization, mode, "weak-target"),
+                &weak_target,
+                Authority::PersistControlPlane,
+            )
+            .is_err(),
+    );
+    let mut expensive = fixture_request(&identity.organization, mode, "cost-fence");
+    expensive.requested.insert(Meter::GpuSeconds, 11_000);
+    negatives += negative(
+        identity
+            .plane
+            .admit_run(
+                &identity.organization,
+                &identity.subject,
+                &identity.active_fingerprint,
+                &expensive,
+                target,
+                Authority::PersistControlPlane,
+            )
+            .is_err(),
+    );
+    negatives += negative(
+        identity
+            .plane
+            .authorize_run(
+                reservation_id,
+                &identity.organization,
+                &identity.subject,
+                &identity.active_fingerprint,
+                Authority::Observe,
+            )
+            .is_err(),
+    );
+    let _ = provider;
+    negatives
+}
+
+fn verify_run_fixture(
+    index: usize,
+    provider: Provider,
+    identity: &mut IdentityFixture,
+) -> Result<RunFixture, PlaneError> {
     let mode = [Mode::Hosted, Mode::Byoc, Mode::Private][index];
-    let request = fixture_request(&organization, mode, provider.as_str());
+    let request = fixture_request(&identity.organization, mode, provider.as_str());
     let target = fixture_target(provider, mode);
-    let admission = plane.admit_run(
-        &organization,
-        &subject,
-        &active_fingerprint,
+    let admission = identity.plane.admit_run(
+        &identity.organization,
+        &identity.subject,
+        &identity.active_fingerprint,
         &request,
         &target,
         Authority::PersistControlPlane,
     )?;
-    let replay = plane.admit_run(
-        &organization,
-        &subject,
-        &active_fingerprint,
+    let replay = identity.plane.admit_run(
+        &identity.organization,
+        &identity.subject,
+        &identity.active_fingerprint,
         &request,
         &target,
         Authority::PersistControlPlane,
@@ -1458,51 +1557,13 @@ async fn verify_provider(
     {
         return Err(PlaneError::Receipt("RUN_IDEMPOTENCY_DIVERGED".into()));
     }
-
-    let mut weak_target = target.clone();
-    weak_target.zones = 1;
-    negatives += negative(
-        plane
-            .admit_run(
-                &organization,
-                &subject,
-                &active_fingerprint,
-                &fixture_request(&organization, mode, "weak-target"),
-                &weak_target,
-                Authority::PersistControlPlane,
-            )
-            .is_err(),
-    );
-    let mut expensive = fixture_request(&organization, mode, "cost-fence");
-    expensive.requested.insert(Meter::GpuSeconds, 11_000);
-    negatives += negative(
-        plane
-            .admit_run(
-                &organization,
-                &subject,
-                &active_fingerprint,
-                &expensive,
-                &target,
-                Authority::PersistControlPlane,
-            )
-            .is_err(),
-    );
-    negatives += negative(
-        plane
-            .authorize_run(
-                &admission.reservation.id,
-                &organization,
-                &subject,
-                &active_fingerprint,
-                Authority::Observe,
-            )
-            .is_err(),
-    );
-    let permit = plane.authorize_run(
+    let negatives =
+        verify_run_refusals(provider, identity, mode, &target, &admission.reservation.id);
+    let permit = identity.plane.authorize_run(
         &admission.reservation.id,
-        &organization,
-        &subject,
-        &active_fingerprint,
+        &identity.organization,
+        &identity.subject,
+        &identity.active_fingerprint,
         Authority::ModifyExternalObject,
     )?;
     let actual_usage = BTreeMap::from([
@@ -1511,56 +1572,88 @@ async fn verify_provider(
         (Meter::OutputTokens, 15_000),
         (Meter::Rollouts, 1),
     ]);
-    let intent = plane.reconcile_and_construct_metering(
+    let intent = identity.plane.reconcile_and_construct_metering(
         &permit,
         actual_usage.clone(),
         Authority::PersistControlPlane,
     )?;
-    let replayed_intent = plane.reconcile_and_construct_metering(
+    if identity.plane.reconcile_and_construct_metering(
         &permit,
         actual_usage,
         Authority::PersistControlPlane,
-    )?;
-    if replayed_intent != intent {
+    )? != intent
+    {
         return Err(PlaneError::Receipt("USAGE_REPLAY_DIVERGED".into()));
     }
+    Ok(RunFixture {
+        mode,
+        permit,
+        intent,
+        negatives,
+    })
+}
 
+fn verify_settlement_fixture(
+    binding: &MarketplaceBinding,
+    commerce: &mut CommerceLedger,
+    plane: &mut CommercialControlPlane,
+    run: &RunFixture,
+) -> Result<usize, PlaneError> {
     let artifact_digest = format!("blake3:{}", "a".repeat(64));
-    commerce.bind_manufacture(&permit.receipt_digest)?;
+    commerce.bind_manufacture(&run.permit.receipt_digest)?;
     commerce.bind_delivery(&artifact_digest)?;
     commerce.verify_delivery(&artifact_digest)?;
-    commerce.derive_usage(&intent.source_usage_receipt, intent.billable_units)?;
+    commerce.derive_usage(&run.intent.source_usage_receipt, run.intent.billable_units)?;
     let meter = commerce.observe(&binding.observation(
         ProviderEventKind::MeterAccepted,
         "meter-event",
-        intent.billable_units,
+        run.intent.billable_units,
         0,
     ))?;
     let mut wrong_settlement = binding.observation(
         ProviderEventKind::Settlement,
         "wrong-settlement",
-        intent.billable_units,
-        intent.amount_micros.saturating_add(1),
+        run.intent.billable_units,
+        run.intent.amount_micros.saturating_add(1),
     );
-    wrong_settlement.currency.clone_from(&intent.currency);
-    negatives += negative(commerce.observe(&wrong_settlement).is_err());
+    wrong_settlement.currency.clone_from(&run.intent.currency);
+    let negatives = negative(commerce.observe(&wrong_settlement).is_err());
     let settlement = commerce.observe(&binding.observation(
         ProviderEventKind::Settlement,
         "settlement-event",
-        intent.billable_units,
-        intent.amount_micros,
+        run.intent.billable_units,
+        run.intent.amount_micros,
     ))?;
-    plane.accept_settlement(&intent, &meter, &settlement, Authority::PersistControlPlane)?;
-
-    Ok((
-        provider.as_str().into(),
-        format!("{mode:?}").to_ascii_lowercase(),
-        commerce.replay_verify()?,
-        plane.replay_verify()?,
-        negatives,
-    ))
+    plane.accept_settlement(
+        &run.intent,
+        &meter,
+        &settlement,
+        Authority::PersistControlPlane,
+    )?;
+    Ok(negatives)
 }
 
+async fn verify_provider(
+    index: usize,
+    provider: Provider,
+) -> Result<ProviderVerification, PlaneError> {
+    let binding = fixture_binding(provider);
+    let (mut commerce, fulfillment) = fixture_commerce(&binding)?;
+    let mut identity = verify_identity_fixture(provider, &binding, &fulfillment).await?;
+    let run = verify_run_fixture(index, provider, &mut identity)?;
+    let settlement_negatives =
+        verify_settlement_fixture(&binding, &mut commerce, &mut identity.plane, &run)?;
+    Ok(ProviderVerification {
+        provider: provider.as_str().into(),
+        mode: format!("{:?}", run.mode).to_ascii_lowercase(),
+        commerce_receipts: commerce.replay_verify()?,
+        control_receipts: identity.plane.replay_verify()?,
+        negatives: identity
+            .negatives
+            .saturating_add(run.negatives)
+            .saturating_add(settlement_negatives),
+    })
+}
 pub async fn verify_full_fixtures() -> Result<FullVerificationReport, PlaneError> {
     let ServiceVerificationReport {
         receipts_verified: service_receipts_verified,
@@ -1577,13 +1670,12 @@ pub async fn verify_full_fixtures() -> Result<FullVerificationReport, PlaneError
         .into_iter()
         .enumerate()
     {
-        let (provider_name, mode, commerce_count, control_count, provider_negatives) =
-            verify_provider(index, provider).await?;
-        providers.push(provider_name);
-        modes.insert(mode);
-        commerce_receipts = commerce_receipts.saturating_add(commerce_count);
-        control_receipts = control_receipts.saturating_add(control_count);
-        negatives = negatives.saturating_add(provider_negatives);
+        let verification = verify_provider(index, provider).await?;
+        providers.push(verification.provider);
+        modes.insert(verification.mode);
+        commerce_receipts = commerce_receipts.saturating_add(verification.commerce_receipts);
+        control_receipts = control_receipts.saturating_add(verification.control_receipts);
+        negatives = negatives.saturating_add(verification.negatives);
         durable_reopens = durable_reopens.saturating_add(1);
     }
     Ok(FullVerificationReport {
