@@ -56,7 +56,8 @@ fn refused(code: RefusalCode, detail: impl Into<String>) -> Error {
 }
 
 fn canonical_digest<T: Serialize>(value: &T) -> Result<String, Error> {
-    let bytes = serde_json::to_vec(value).map_err(|error| Error::Serialization(error.to_string()))?;
+    let bytes =
+        serde_json::to_vec(value).map_err(|error| Error::Serialization(error.to_string()))?;
     Ok(format!("blake3:{}", blake3::hash(&bytes).to_hex()))
 }
 
@@ -149,12 +150,12 @@ impl Constraint {
         match self {
             Self::Present { dimension } => dimensions.contains_key(dimension),
             Self::Absent { dimension } => !dimensions.contains_key(dimension),
-            Self::Equals { dimension, value } => {
-                dimensions.get(dimension).is_some_and(|actual| actual == value)
-            }
-            Self::NotEquals { dimension, value } => {
-                dimensions.get(dimension).is_some_and(|actual| actual != value)
-            }
+            Self::Equals { dimension, value } => dimensions
+                .get(dimension)
+                .is_some_and(|actual| actual == value),
+            Self::NotEquals { dimension, value } => dimensions
+                .get(dimension)
+                .is_some_and(|actual| actual != value),
         }
     }
 }
@@ -257,7 +258,10 @@ impl Candidate {
         if !self.reversible {
             return Err(refused(
                 RefusalCode::IrreversibleCandidate,
-                format!("candidate `{}` is not admitted during reversible search", self.id),
+                format!(
+                    "candidate `{}` is not admitted during reversible search",
+                    self.id
+                ),
             ));
         }
         if !world.knows(&self.requires_known) {
@@ -321,7 +325,10 @@ impl DfcmFrontier {
 /// The function is SELECT/CONSTRUCT-only. It never actuates. One failed edge is
 /// retained in `excluded`; it does not collapse the remaining graph.
 #[must_use]
-pub fn dfcm_frontier(world: &World, candidates: impl IntoIterator<Item = Candidate>) -> DfcmFrontier {
+pub fn dfcm_frontier(
+    world: &World,
+    candidates: impl IntoIterator<Item = Candidate>,
+) -> DfcmFrontier {
     let mut lawful = Vec::new();
     let mut excluded = Vec::new();
 
@@ -553,12 +560,10 @@ impl PreparedDo {
             &expected_digest,
             &candidate.idempotency_key,
         ))?;
-        let reservation_id = reservation_seed
-            .strip_prefix("blake3:")
-            .map_or_else(
-                || "receipt:invalid".to_owned(),
-                |hex| format!("receipt:{}", &hex[..32]),
-            );
+        let reservation_id = reservation_seed.strip_prefix("blake3:").map_or_else(
+            || "receipt:invalid".to_owned(),
+            |hex| format!("receipt:{}", &hex[..32]),
+        );
         let mut reservation = ReceiptReservation {
             id: reservation_id,
             subject: candidate.subject.clone(),
@@ -604,10 +609,8 @@ impl PreparedDo {
                 "prepared DO bindings drifted",
             ));
         }
-        if !constraints_hold(
-            &self.expected_postconditions,
-            &self.projected_dimensions,
-        ) || !constraints_hold(&self.grant.consequence_bound, &self.projected_dimensions)
+        if !constraints_hold(&self.expected_postconditions, &self.projected_dimensions)
+            || !constraints_hold(&self.grant.consequence_bound, &self.projected_dimensions)
         {
             return Err(refused(
                 RefusalCode::ConstraintClosure,
@@ -714,7 +717,10 @@ impl DoReceipt {
         }
         if self.outcome == DoOutcome::Done
             && (!matches!(self.actuation, ActuationSignal::Acknowledged { .. })
-                || self.observed_digest.as_ref().is_none_or(|digest| !valid_digest(digest))
+                || self
+                    .observed_digest
+                    .as_ref()
+                    .is_none_or(|digest| !valid_digest(digest))
                 || self.verified.is_empty())
         {
             return Err(refused(
@@ -825,11 +831,8 @@ where
             verified.push("post_actuation_observation_failed".to_owned());
         }
 
-        let replay_key = canonical_digest(&(
-            &prepared.reservation.digest,
-            &observed_digest,
-            outcome,
-        ))?;
+        let replay_key =
+            canonical_digest(&(&prepared.reservation.digest, &observed_digest, outcome))?;
         let mut receipt = DoReceipt {
             reservation_id: prepared.reservation.id.clone(),
             reservation_digest: prepared.reservation.digest.clone(),
@@ -1056,7 +1059,10 @@ mod tests {
         assert_eq!(frontier.lawful.len(), 2);
         assert_eq!(frontier.best().map(|item| item.id.as_str()), Some("high"));
         assert_eq!(frontier.excluded.len(), 1);
-        assert_eq!(frontier.excluded[0].reason, RefusalCode::IrreversibleCandidate);
+        assert_eq!(
+            frontier.excluded[0].reason,
+            RefusalCode::IrreversibleCandidate
+        );
         Ok(())
     }
 
