@@ -1,5 +1,9 @@
 //! Runtime and adapter layer for the Chatman Ecosystem.
 
+pub mod agent_lightning_commercial_plane;
+pub mod agent_lightning_service;
+pub mod commerce;
+
 use async_trait::async_trait;
 use ecosystem_core::{Authority, Standing};
 use serde::{Deserialize, Serialize};
