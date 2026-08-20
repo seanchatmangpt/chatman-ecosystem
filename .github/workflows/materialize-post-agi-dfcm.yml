@@ -1,0 +1,127 @@
+name: Materialize Post-AGI DfCM
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.ref == 'agent/post-agi-dfcm-execution-capsule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact purpose branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/post-agi-dfcm-execution-capsule
+          fetch-depth: 0
+
+      - name: Reconstruct admitted candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .dfcm-payload/part* | base64 -d > /tmp/dfcm-final.tar.gz
+          tar -xzf /tmp/dfcm-final.tar.gz -C .
+          python3 -m py_compile \
+            scripts/dfcm_autonomic_finish.py \
+            tests/test_dfcm_autonomic_finish.py \
+            tests/test_post_agi_dfcm.py
+
+      - name: Execute legacy and post-AGI falsifier courts
+        run: |
+          python3 -m unittest -v \
+            tests/test_dfcm_autonomic_finish.py \
+            tests/test_post_agi_dfcm.py
+
+      - name: Execute deterministic real-manifest cycle
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/dfcm_autonomic_finish.py \
+            --manifest release/v26.9.1/manifest.toml \
+            --limit 3 > /tmp/dfcm-cycle-1.json
+          python3 scripts/dfcm_autonomic_finish.py \
+            --manifest release/v26.9.1/manifest.toml \
+            --limit 3 > /tmp/dfcm-cycle-2.json
+          cmp /tmp/dfcm-cycle-1.json /tmp/dfcm-cycle-2.json
+
+      - name: Execute preserved-topology capsule
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/dfcm_autonomic_finish.py \
+            --manifest release/v26.9.1/manifest.toml \
+            --limit 3 \
+            --execution-capsule > /tmp/dfcm-capsule.json
+          python3 - <<'PYCODE'
+          import json
+
+          capsule = json.load(open('/tmp/dfcm-capsule.json', encoding='utf-8'))
+          assert capsule['standing'] == 'PARTIAL_ALIVE'
+          assert capsule['preserve']['selection_performed'] is False
+          assert capsule['fence']['exclusive_do_path'] == 'BRCE'
+          assert capsule['fence']['zero_unreceipted_actuation'] is True
+          assert capsule['operationalization']['consequential_do_performed'] is False
+          assert capsule['operationalization']['selected_count'] >= 1
+          assert capsule['capsule_digest']
+          print('POST_AGI_DFCM_CAPSULE_EXECUTED', capsule['capsule_digest'])
+          PYCODE
+
+      - name: Verify Definition of Done remains fail-closed
+        shell: bash
+        run: |
+          set +e
+          python3 scripts/dfcm_autonomic_finish.py \
+            --manifest release/v26.9.1/manifest.toml \
+            --definition-of-done > /tmp/dfcm-dod.json
+          rc=$?
+          set -e
+          python3 - "$rc" <<'PYCODE'
+          import json
+          import sys
+
+          rc = int(sys.argv[1])
+          report = json.load(open('/tmp/dfcm-dod.json', encoding='utf-8'))
+          expected = 0 if report['done'] else 3
+          assert rc == expected, (rc, expected)
+          assert not (report['done'] and report['findings'])
+          print('DFCM_DOD_EXECUTED', report['done'], len(report['findings']))
+          PYCODE
+
+      - name: Enforce bounded final diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm -r .dfcm-payload
+          git rm .github/workflows/materialize-post-agi-dfcm.yml
+          python3 - <<'PYCODE'
+          import subprocess
+
+          allowed = {
+              'scripts/dfcm_autonomic_finish.py',
+              'tests/test_post_agi_dfcm.py',
+              '.github/workflows/dfcm-autonomic-finish.yml',
+          }
+          lines = subprocess.check_output(['git', 'status', '--porcelain'], text=True).splitlines()
+          changed = {line[3:] for line in lines}
+          payload = {path for path in changed if path.startswith('.dfcm-payload/')}
+          transport = {'.github/workflows/materialize-post-agi-dfcm.yml'} & changed
+          product = changed - payload - transport
+          assert product == allowed, (product, allowed)
+          print('BOUNDED_PRODUCT_DIFF_ALIVE', sorted(product))
+          PYCODE
+
+      - name: Commit verified implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Sean Chatman"
+          git config user.email "136349053+seanchatmangpt@users.noreply.github.com"
+          git add scripts/dfcm_autonomic_finish.py tests/test_post_agi_dfcm.py .github/workflows/dfcm-autonomic-finish.yml
+          git diff --cached --check
+          git commit -m "implement post-AGI DfCM execution capsules"
+          git push origin HEAD:agent/post-agi-dfcm-execution-capsule
