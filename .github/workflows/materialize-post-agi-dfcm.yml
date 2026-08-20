@@ -93,36 +93,32 @@ jobs:
           print('DFCM_DOD_EXECUTED', report['done'], len(report['findings']))
           PYCODE
 
-      - name: Enforce bounded final diff
+      - name: Enforce bounded candidate diff
         shell: bash
         run: |
           set -euo pipefail
-          git rm -r .dfcm-payload
-          git rm .github/workflows/materialize-post-agi-dfcm.yml
           python3 - <<'PYCODE'
           import subprocess
 
-          allowed = {
+          expected = {
               'scripts/dfcm_autonomic_finish.py',
               'tests/test_post_agi_dfcm.py',
               '.github/workflows/dfcm-autonomic-finish.yml',
           }
-          lines = subprocess.check_output(['git', 'status', '--porcelain'], text=True).splitlines()
-          changed = {line[3:] for line in lines}
-          payload = {path for path in changed if path.startswith('.dfcm-payload/')}
-          transport = {'.github/workflows/materialize-post-agi-dfcm.yml'} & changed
-          product = changed - payload - transport
-          assert product == allowed, (product, allowed)
-          print('BOUNDED_PRODUCT_DIFF_ALIVE', sorted(product))
+          changed = set(subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines())
+          untracked = set(subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard'], text=True).splitlines())
+          changed |= untracked
+          assert changed == expected, (changed, expected)
+          print('BOUNDED_CANDIDATE_DIFF_ALIVE', sorted(changed))
           PYCODE
 
-      - name: Commit verified implementation
+      - name: Publish source and falsifier court
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "Sean Chatman"
           git config user.email "136349053+seanchatmangpt@users.noreply.github.com"
-          git add scripts/dfcm_autonomic_finish.py tests/test_post_agi_dfcm.py .github/workflows/dfcm-autonomic-finish.yml
+          git add scripts/dfcm_autonomic_finish.py tests/test_post_agi_dfcm.py
           git diff --cached --check
           git commit -m "implement post-AGI DfCM execution capsules"
           git push origin HEAD:agent/post-agi-dfcm-execution-capsule
