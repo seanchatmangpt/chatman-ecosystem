@@ -86,5 +86,10 @@ None of these has an owning ticket yet. Picking one up starts with a decision, n
   candidate pure Erlang/OTP 27-28 (PaaS+SaaS) vs. Rust (IaaS) language split, not started
 - [`docs/jira/v26.8.20/03-XAAS-ASH-ECOSYSTEM-MAP.md`](03-XAAS-ASH-ECOSYSTEM-MAP.md) — "XaaS"
   named against the real capability-ontology/planner/compliance layers, mapped to the Ash
-  ecosystem; flags a real tension with doc 02's pure-Erlang premise, not started
+  ecosystem (all ~127 hex.pm ash-dependent packages reviewed)
+- [`docs/jira/v26.8.20/04-XAAS-BEAMOPS-2E-MDBOOK-PLAN.md`](04-XAAS-BEAMOPS-2E-MDBOOK-PLAN.md) —
+  mdBook structure plan for "Engineering XaaS Applications" (BEAMOps 2nd ed.), combining BEAMOps
+  + The Platform Engineer's Handbook + Ash Framework + Phoenix, real installation-appendix plan.
+  **Pure Erlang deprioritized** until a proven need exists (supersedes doc 02's framing) — Ash/
+  Elixir is the working substrate going forward. Not started, structure only.
 - `ontology/platform-console-capabilities.ttl` — capability individuals, queryable source of truth
