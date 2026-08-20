@@ -1,12 +1,5 @@
-#[path = "../agent_lightning_commercial_plane.rs"]
-mod agent_lightning_commercial_plane;
-#[path = "../agent_lightning_service.rs"]
-mod agent_lightning_service;
-#[path = "../commerce.rs"]
-mod commerce;
-
-use agent_lightning_commercial_plane::{DeploymentPolicy, verify_full_fixtures};
-use agent_lightning_service::{Policy, REPOSITORY, SHA};
+use ecosystem_runtime::agent_lightning_commercial_plane::{DeploymentPolicy, verify_full_fixtures};
+use ecosystem_runtime::agent_lightning_service::{Policy, REPOSITORY, SHA};
 use std::env;
 use std::process::ExitCode;
 
