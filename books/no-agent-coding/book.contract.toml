@@ -1,0 +1,34 @@
+schema = "chatman.no-agent-coding-book.v1"
+title = "No Agent Coding: Building the Deterministic Enterprise"
+source = "books/no-agent-coding/src"
+chapter_count = 34
+appendix_count = 4
+
+[doctrine]
+equation = "A = μ(O*)"
+frontier_rule = "interpret novelty once; compile the resulting law; execute known instances without renewed interpretation"
+dfcm = "represent broadly; admit narrowly; finish admitted work"
+
+required_concepts = [
+  "No Agent Coding",
+  "Rice",
+  "Chesterton",
+  "Gall",
+  "Little",
+  "Conway",
+  "DfCM",
+  "ggen",
+  "O*",
+  "SELECT",
+  "CONSTRUCT",
+  "DO",
+  "receipt",
+  "replay",
+]
+
+[refusals]
+missing_summary_target = "REFUSED:MISSING_SUMMARY_TARGET"
+duplicate_summary_target = "REFUSED:DUPLICATE_SUMMARY_TARGET"
+orphan_chapter = "REFUSED:ORPHAN_CHAPTER"
+placeholder = "REFUSED:PLACEHOLDER_TEXT"
+count_drift = "REFUSED:BOOK_CONTRACT_DRIFT"
