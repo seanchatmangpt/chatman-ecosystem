@@ -33,7 +33,7 @@ verbatim in the cell and the ordinal column position (1st–5th) is used for pla
 | **Verification Evidence** | **L3** — real `.mix.log`/receipt files on disk with real Igniter output, but `~/xaas/.gitignore` excludes `.agp-receipts/`/`.ash-gen-receipts/`; zero tracked, no test suite. | **L3** — two distinct real task logs prove generalization, but same VCS gap; the committed test suite that exists (`capability_liveness_receipt_test.exs`) tests the *generated resource*, not the pipeline itself. | **L3** — strongest within-level evidence: signed, hash-chained receipt log, 34 written + 34×4 skipped confirmed by direct read; but `.ggen-v2/` is not tracked in git, no automated re-verification. | **L2 (unconfirmed L3)** — template correctly wired to a live ontology row, explicitly non-mutating by design, but a populated, real-output `.terraform-validate-receipts/` log was not confirmed in this pass. |
 | **Documentation Honesty** | **L1** — one line of body text naming the ontology source; no scope statement, no limitation, no evidence citation beyond the surrounding receipt file. | **L5** — evidence-cited proven claim (2 real tasks, real receipt stdout) plus a dated, grounded gap: "only ONE real consuming project ... a real audit (2026-08-20) found only 5 ontology.ttl files and 1 mix.exs project locally." | **L5** — real hex.pm search cited (137 packages, 34 admitted by threshold), plus a named, grounded exclusion: `honeybadger` (2,239,840 downloads) explicitly excluded as a disclosed false positive, not silently dropped. | **L4** — non-mutating design rationale stated honestly (no `apply`, avoiding unpredictable real GitHub resources), explicit named future gap ("no such vocabulary exists in ontology.ttl today"); stops short of L5 because its "proven" claim borrows artifact 1's lineage rather than citing its own dated run count. |
 | **Reusability / Portability** | **L1** — mix command and receipt path are hardcoded strings in the template; moving to a second project means editing the template itself. | **L3** — real multi-axis proof (2 distinct tasks) via `agp:mixTask`/`agp:mixArgs`, but `pack.toml` itself states "proven against exactly ONE real consuming project (~/xaas)" — no second project exists yet. | **L2** — parameterized generation over 34 real hex.pm rows (reuse *within* its own generation loop), but no second consuming project has run this generator against its own data; output still requires per-package domain knowledge a maintainer must add. | **L1** — `terraform -chdir=modules/integrations/github/project_management` is a literal hardcoded path in `sh_after`, not read from a fact; header explicitly names the missing Terraform-resource vocabulary as deferred future scope. |
-| **Performance / Efficiency** | **L1** — unmeasured; single hardcoded task run a handful of times to prove the mechanism, no timing captured. | **L1** — unmeasured; proof was about correctness/generality, not speed — no timing data for either task's run. | **L1** — unmeasured; the two real sync runs (34 written, 34 skipped) are exactly the kind of run that would yield an anecdotal number if wall-clock had been captured, but it wasn't. | **L2** — anecdotal single data point: ~63s sequential over 44 rows (~1.4s/row), a real if single wall-clock measurement; not repeated, no variance measured, batching optimization proposed but not implemented. |
+| **Performance / Efficiency** | **L1** — unmeasured; no real timing was captured against `~/xaas` (out of scope, not touched this run). A structural estimate (~1.4–2.5s/row, extrapolated from terraform-validate's real 1.4s/row) exists but is explicitly not a measurement under the rubric's own L2 bar, so the score does not move. | **L2** — real repeated benchmark (n=10, release build, `sync_e2e-8bf959ebe379a952`) via the closest real proxy (no dedicated `cargo bench` target exists): mean 0.211s, range 0.200–0.230s, variance noted. Capped at L2, not L3, because it benchmarks the shared sync-engine mechanism, not this pack's own `agp:mixTask` subprocess invocations, and records one whole-cycle time rather than a per-task/per-row breakdown. | **L3** — real, repeated, per-stage benchmark: 3 real `ggen sync` runs (1 cold, 2 idempotent) against the actual artifact, `/usr/bin/time -p` wall clock each (0.03s, 0.02s, 0.02s), plus the tool's own `pipeline.*` trace giving a per-stage breakdown (`generate` 5ms, `emit` 9ms→2–3ms, `load`/`validate`/`extract` <1ms) and a per-run file count (34 written / 0 skipped vs. 0 written / 34 skipped) confirming the idempotent-skip path is real. Meets the rubric's L3 bar (deliberate repeatable benchmark, multiple runs, per-task timing, variance noted, defensible baseline) directly against the real artifact, not a proxy. | **L2** — anecdotal single data point: ~63s sequential over 44 rows (~1.4s/row), a real if single wall-clock measurement; not repeated, no variance measured, batching optimization proposed but not implemented. |
 
 ## Overall Assessment
 
@@ -67,3 +67,48 @@ actionable gap affecting all four artifacts uniformly, not a hypothetical one.
 L5 — none has been adopted by a second real consuming project. The most-generalized artifact
 (`ash-igniter-gen-pipeline-pack`) caps at L3 by its own `pack.toml`'s admission of single-project
 scope.
+
+## Performance/Efficiency Measurement Update (real, this run)
+
+Three follow-up reports gathered real timing evidence for the three artifacts in this repo's
+scope (`ash-subproject-pack-generator`, `ash-igniter-gen-pipeline-pack`) plus a structural
+estimate for the one artifact whose real target (`~/xaas`) remains out of scope
+(`ash-gen-resource.txt.tmpl`). Real direct measurements are distinguished from the one estimate
+below; no score is inflated past what its own evidence supports under Table 1's rubric.
+
+**`ash-subproject-pack-generator` — real direct measurement, promoted L1 → L3.**
+Three real `ggen sync` runs (ggen 26.8.18) against the actual pack: run 1 cold
+(`packs-out/` removed first, 0.03s, 34 files written, 0 skipped), runs 2–3 idempotent (0.02s
+each, 0 written, 34 skipped). The tool's own `pipeline.*` trace lines give a real per-stage
+breakdown for run 1 (`generate` 5ms, `emit` 9ms/34 files, `load`/`validate`/`extract` <1ms
+each) and show `emit` dropping to 2–3ms with `pipeline.files_generated=0` on the idempotent
+runs — the skip path is real, not asserted. All 34 pack directories confirmed present after
+all three runs, matching the 34 `asg:AshSubproject` rows in `ontology.ttl`. This is a
+deliberate, repeatable benchmark against the real artifact with per-stage timing and variance
+noted (0.02s vs 0.03s cold), meeting Table 1's L3 bar directly — not a proxy.
+
+**`ash-igniter-gen-pipeline-pack` — real direct measurement (proxy), promoted L1 → L2.**
+No dedicated `cargo bench` target exists for template-rendering/`for_each` (checked
+`Cargo.toml`: 12 `[[bench]]` entries, none render/sync-specific). Used the closest real proxy:
+`crates/ggen-engine/tests/sync_e2e.rs::first_sync_writes_second_sync_skips_unchanged_and_hash_is_stable`,
+a real Chicago-style e2e test (real tempdir, real oxigraph store, real Tera render, real SPARQL
+query, real first-write + second-write-skip cycle) — the same engine machinery `ggen sync` uses,
+without the `mix` subprocess step. Real release-build binary
+(`target/release/deps/sync_e2e-8bf959ebe379a952`), invoked directly 10 times with `--exact`:
+`0.22s 0.23s 0.21s 0.22s 0.22s 0.20s 0.20s 0.20s 0.21s 0.20s` — n=10, mean=0.211s,
+min=0.200s, max=0.230s. Capped at L2 rather than L3: it is a whole-pipeline proxy number (no
+per-phase split of render vs. I/O vs. SPARQL query), and it measures the shared sync-engine
+mechanism rather than this pack's own `agp:mixTask` subprocess invocations directly.
+
+**`ash-gen-resource.txt.tmpl` — estimate only, score unchanged at L1.**
+No real timing was captured; running the template requires `~/xaas`, out of scope for this
+task under the standing instruction not to modify that directory, and was not run or touched.
+A structural estimate was derived instead: both `ash-gen-resource.txt.tmpl` and
+`terraform-validate.txt.tmpl` share the same cost shape (`for_each` over a SPARQL row set,
+one external cold-process subprocess spawn + `tee`-to-log per row), so terraform-validate's
+real, measured 1.4s/row (44 rows, ~63s, per MATURITY-MATRIX line above) was used as a
+structural floor, with headroom added for BEAM VM boot typically costing as much or more than
+a single static Go-binary invocation: **~1.4–2.5s/row (estimate, not a measurement)**. Per
+Table 1's own rubric, L2 requires "one real run's wall-clock time observed" — an analogy to
+another artifact's real number is not that, so this estimate does not promote the score; it
+stays **L1 (unmeasured)**.
