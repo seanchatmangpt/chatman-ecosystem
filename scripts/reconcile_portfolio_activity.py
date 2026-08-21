@@ -251,8 +251,7 @@ class GitHubClient:
         q_parts = [
             f"user:{owner}",
             "is:pr",
-            f"updated:>={since.date().isoformat()}",
-            f"updated:<={until.date().isoformat()}",
+            f"updated:{since.date().isoformat()}..{until.date().isoformat()}",
         ]
         if search_slice is not None:
             q_parts.append(
