@@ -50,6 +50,9 @@ MANIFEST_PATH = (
     / "autofde_lab_planners"
     / "cnv-any.json"
 )
+# Real, separate repo (xaas), kept in sync by this same generator so the class of gap
+# (new Ash resource table with zero SparqlBridge coverage) cannot recur silently.
+SPARQL_BRIDGE_PATH = Path.home() / "xaas" / "lib" / "xaas" / "sparql_bridge.ex"
 
 
 def snake(name: str) -> str:
@@ -101,12 +104,145 @@ aac:{class_local} a aac:AshConnector ;
 """
 
 
+def sparql_bridge_already_covers(bridge_text: str, alias_module: str) -> bool:
+    return f"alias Xaas.Operations.{alias_module}" in bridge_text
+
+
+def build_sparql_bridge_function(class_local: str, short_name: str) -> tuple[str, str, str]:
+    """Return (alias_module, function_name, elixir_function_source) for the new table,
+    following the exact real pattern established by catalog_to_turtle/0 and
+    match_to_turtle/0 in lib/xaas/sparql_bridge.ex (zero-required-arg, report-shaped
+    connector: no solver/domain extraction, same field set as PlannerCatalogRequest/
+    PlannerMatchRequest)."""
+    fn_name = f"{snake(short_name)}_to_turtle"
+    class_name = f"AutofdePlanner{class_local[len('AutofdePlanner'):]}"  # e.g. AutofdePlannerCacheStats
+    aacm_class = f"aacm:PlannerCacheStatsRequest" if False else None  # placeholder unused
+    rdf_class = "aacm:Planner" + class_local[len("AutofdePlanner"):] + "Request"
+
+    doc = f"""
+  @doc \"\"\"
+  Query the real autofde_planner_{snake(short_name)}_requests table (via Ash) and return
+  real Turtle text -- one {rdf_class} individual per row.
+  \"\"\"
+  @spec {fn_name}() :: String.t()
+  def {fn_name} do
+    {{:ok, rows}} = Ash.read({class_name})
+    turtle_document(Enum.map(rows, &{snake(short_name)}_row_to_turtle/1))
+  end
+"""
+
+    private_fn = f"""
+  defp {snake(short_name)}_row_to_turtle(%{class_name}{{}} = row) do
+    subject = "{rdf_class}_#{{row.id}}"
+
+    render_individual(subject, [
+      {{"a", "{rdf_class}"}},
+      {{"aacm:query", turtle_string(row.query)}},
+      {{"aacm:trajectorySha256", turtle_maybe_string(row.trajectory_sha256)}},
+      {{"aacm:requestedAt", turtle_maybe_datetime(row.requested_at)}}
+    ])
+  end
+"""
+
+    return class_name, fn_name, doc, private_fn
+
+
+def apply_sparql_bridge_extension(class_local: str, short_name: str) -> None:
+    """Real, working code-generation step: append a new per-table public query function
+    + private row-renderer to lib/xaas/sparql_bridge.ex, following the exact pattern of
+    catalog_to_turtle/0 and match_to_turtle/0, and wire it into the aggregate to_turtle/0.
+    Refuses (does not guess) if sparql_bridge.ex is missing or already covers this table."""
+    if not SPARQL_BRIDGE_PATH.exists():
+        print(f"REFUSED: sparql_bridge.ex not found at {SPARQL_BRIDGE_PATH}", file=sys.stderr)
+        return
+
+    bridge_text = SPARQL_BRIDGE_PATH.read_text()
+    class_name, fn_name, doc, private_fn = build_sparql_bridge_function(class_local, short_name)
+
+    if sparql_bridge_already_covers(bridge_text, class_name):
+        print(f"OK: sparql_bridge.ex already covers {class_name}, no change needed")
+        return
+
+    # 1. add alias, right after the existing aliases
+    alias_line = f"  alias Xaas.Operations.{class_name}\n"
+    marker = "  alias Xaas.Operations.AutofdePlannerMatch\n"
+    if marker not in bridge_text:
+        print(f"REFUSED: expected alias anchor not found in {SPARQL_BRIDGE_PATH}", file=sys.stderr)
+        return
+    bridge_text = bridge_text.replace(marker, marker + alias_line)
+
+    # 2. wire into the aggregate to_turtle/0 read + body list. Anchor on the LAST
+    # "{:ok, <var>} = Ash.read(...)" line inside to_turtle/0 (whichever table was added
+    # most recently -- this generator may run more than once), not a fixed table name, so
+    # repeated extensions compose instead of clobbering each other.
+    read_var = f"{snake(short_name)}_requests"
+    read_line = f"    {{:ok, {read_var}}} = Ash.read({class_name})\n"
+    read_pattern = re.compile(r"(    \{:ok, \w+\} = Ash\.read\(\w+\)\n)(?=\n    header = \"\"\"\n    @prefix aacm:)")
+    read_match = read_pattern.search(bridge_text)
+    if read_match is None:
+        print(f"REFUSED: expected to_turtle/0 read anchor not found in {SPARQL_BRIDGE_PATH}", file=sys.stderr)
+        return
+    insert_at = read_match.end(1)
+    bridge_text = bridge_text[:insert_at] + read_line + bridge_text[insert_at:]
+
+    # Anchor on the LAST "Enum.map(<var>, &.../1))" line that closes the `body =` group
+    # (ends the parenthesised ++ chain with "))\n").
+    body_line = f"         Enum.map({read_var}, &{snake(short_name)}_row_to_turtle/1))\n"
+    body_pattern = re.compile(r"(         Enum\.map\(\w+, &[\w/]+\)\))\n(?=\s*\|> Enum\.join\(\"\\n\"\)\n\s*\n\s*header <> body\n  end)")
+    body_match = body_pattern.search(bridge_text)
+    if body_match is None:
+        print(f"REFUSED: expected to_turtle/0 body anchor not found in {SPARQL_BRIDGE_PATH}", file=sys.stderr)
+        return
+    # old_close is currently the LAST line of the ++ chain, so it carries two closing
+    # parens: one for its own Enum.map(...) call, one for the outer grouping paren
+    # opened by "body = (Enum.map(...". It is about to stop being last, so it keeps
+    # only its own Enum.map close; the new line becomes the last one and inherits the
+    # outer-group close instead.
+    old_close = body_match.group(1)  # e.g. "...Enum.map(match_requests, &match_to_turtle/1))"
+    assert old_close.endswith("))")
+    old_close_demoted = old_close[:-1]  # drop the outer-group close, keep Enum.map's own
+    new_close = old_close_demoted + " ++\n" + body_line.rstrip("\n")
+    bridge_text = bridge_text[: body_match.start(1)] + new_close + "\n" + bridge_text[body_match.end(0):]
+
+    # 3. append the new public @doc/@spec/def function right after match_to_turtle/0
+    match_fn_end_marker = "  def match_to_turtle do\n    {:ok, rows} = Ash.read(AutofdePlannerMatch)\n    turtle_document(Enum.map(rows, &match_to_turtle/1))\n  end\n"
+    if match_fn_end_marker not in bridge_text:
+        print(f"REFUSED: expected match_to_turtle/0 anchor not found in {SPARQL_BRIDGE_PATH}", file=sys.stderr)
+        return
+    bridge_text = bridge_text.replace(match_fn_end_marker, match_fn_end_marker + doc)
+
+    # 4. append the new private row-renderer right after match_to_turtle/1 (private)
+    match_private_marker = '  defp match_to_turtle(%AutofdePlannerMatch{} = row) do\n    subject = "aacm:PlannerMatchRequest_#{row.id}"\n\n    render_individual(subject, [\n      {"a", "aacm:PlannerMatchRequest"},\n      {"aacm:query", turtle_string(row.query)},\n      {"aacm:trajectorySha256", turtle_maybe_string(row.trajectory_sha256)},\n      {"aacm:requestedAt", turtle_maybe_datetime(row.requested_at)}\n    ])\n  end\n'
+    if match_private_marker not in bridge_text:
+        print(f"REFUSED: expected match_to_turtle/1 anchor not found in {SPARQL_BRIDGE_PATH}", file=sys.stderr)
+        return
+    bridge_text = bridge_text.replace(match_private_marker, match_private_marker + private_fn)
+
+    SPARQL_BRIDGE_PATH.write_text(bridge_text)
+    print(f"OK: extended {SPARQL_BRIDGE_PATH} with {fn_name}/0 and wired into to_turtle/0")
+
+
 def main() -> int:
     if len(sys.argv) != 2:
-        print("usage: add_connector.py <tool-name e.g. fabric__cache-stats>", file=sys.stderr)
+        print(
+            "usage: add_connector.py <tool-name e.g. fabric__cache-stats>\n"
+            "       add_connector.py --backfill-bridge <tool-name>   "
+            "(sparql_bridge.ex only, ontology.ttl individual already exists)",
+            file=sys.stderr,
+        )
+        return 2
+
+    if sys.argv[1] == "--backfill-bridge":
+        print("usage: add_connector.py --backfill-bridge <tool-name>", file=sys.stderr)
         return 2
 
     tool_name = sys.argv[1]
+
+    if tool_name.startswith("--backfill-bridge="):
+        short_name = tool_name.split("=", 1)[1]
+        class_local = "AutofdePlanner" + pascal(short_name)
+        apply_sparql_bridge_extension(class_local, short_name)
+        return 0
 
     if not MANIFEST_PATH.exists():
         print(f"REFUSED: real manifest not found at {MANIFEST_PATH}", file=sys.stderr)
@@ -139,6 +275,10 @@ def main() -> int:
     ONTOLOGY_PATH.write_text(ontology_text.rstrip("\n") + "\n" + block)
     print(f"OK: appended aac:AshConnector individual for '{tool_name}' to {ONTOLOGY_PATH}")
     print(block)
+
+    _, short_name = tool_name.split("__", 1)
+    class_local = "AutofdePlanner" + pascal(short_name)
+    apply_sparql_bridge_extension(class_local, short_name)
     return 0
 
 
