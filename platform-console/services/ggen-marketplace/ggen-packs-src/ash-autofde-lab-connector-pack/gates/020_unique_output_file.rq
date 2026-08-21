@@ -1,0 +1,11 @@
+# MESSAGE: no two aac:AshConnector individuals may share the same aac:outputFile --
+# ggen's file-emission step writes each connector to disk by outputFile, so a collision
+# means one generated connector silently overwrites another with no error. Any row
+# returned here is a violation: it names the shared path and the two colliding subjects.
+PREFIX aac: <https://ggen.dev/ontology/ash-autofde-lab-connector#>
+SELECT ?outputFile ?s1 ?s2 WHERE {
+  ?s1 a aac:AshConnector ; aac:outputFile ?outputFile .
+  ?s2 a aac:AshConnector ; aac:outputFile ?outputFile .
+  FILTER (?s1 != ?s2 && STR(?s1) < STR(?s2))
+}
+ORDER BY ?outputFile ?s1 ?s2

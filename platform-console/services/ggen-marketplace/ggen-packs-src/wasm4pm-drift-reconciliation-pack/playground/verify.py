@@ -5,11 +5,12 @@ Never writes to any file it checks -- reports matches/contradicts per claim only
 Usage: python3 verify.py [--repo /path/to/wasm4pm] [--ontology /path/to/ontology.ttl]
 """
 import argparse
-import subprocess
 import sys
 from pathlib import Path
 
 import rdflib
+
+from shell_capture import run_shell_capture
 
 QUERY = """
 PREFIX drc: <https://ggen.dev/ontology/wasm4pm-drift-reconciliation#>
@@ -39,10 +40,7 @@ def check_grep_pattern(repo: Path, target: str) -> bool:
 
 
 def check_command_output_matches(repo: Path, target: str, expected: str) -> bool:
-    result = subprocess.run(
-        target, shell=True, cwd=repo, capture_output=True, text=True, timeout=180
-    )
-    combined = result.stdout + result.stderr
+    _exit_code, combined = run_shell_capture(target, cwd=repo, timeout=180)
     return expected in combined
 
 
