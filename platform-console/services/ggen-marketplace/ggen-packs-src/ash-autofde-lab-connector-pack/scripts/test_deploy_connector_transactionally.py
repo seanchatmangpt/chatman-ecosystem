@@ -14,7 +14,6 @@ from pathlib import Path
 
 REAL_SCRIPTS_DIR = Path(__file__).resolve().parent
 TOOL_NAME = "fabric__transaction-test"
-SHORT_NAME = "transaction-test"
 OUTPUT_REL = Path("lib/xaas/operations/autofde_planner_transaction_test.ex")
 GENERATED_BYTES = b"defmodule Xaas.Operations.AutofdePlannerTransactionTest do\nend\n"
 PREEXISTING_BYTES = b"# operator-owned preexisting bytes\n"
@@ -161,6 +160,24 @@ def test_bridge_refusal_removes_destination_created_by_failed_deploy(tmp_path):
     assert result.returncode == 1, (result.stdout, result.stderr)
     assert ontology.read_bytes() == ontology_before
     assert not destination.exists(), "failed transaction left an orphaned XaaS module"
+
+
+def test_copy_io_exception_rolls_back_ontology_and_bridge(tmp_path):
+    pack_dir, manifest, xaas_root = _make_fixture(tmp_path, SUCCESS_BRIDGE)
+    ontology = pack_dir / "ontology.ttl"
+    bridge = xaas_root / "lib" / "xaas" / "sparql_bridge.ex"
+    operations_path = xaas_root / "lib" / "xaas" / "operations"
+    operations_path.write_bytes(b"not-a-directory")
+    ontology_before = ontology.read_bytes()
+    bridge_before = bridge.read_bytes()
+
+    result = _run(pack_dir, manifest, xaas_root)
+
+    assert result.returncode != 0, (result.stdout, result.stderr)
+    assert "ROLLED BACK" in result.stderr
+    assert ontology.read_bytes() == ontology_before
+    assert bridge.read_bytes() == bridge_before
+    assert operations_path.read_bytes() == b"not-a-directory"
 
 
 def test_success_commits_generated_resource_and_connector_state(tmp_path):
