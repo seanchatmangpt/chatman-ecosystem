@@ -44,14 +44,20 @@ from pathlib import Path
 
 PACK_DIR = Path(__file__).resolve().parent.parent
 ONTOLOGY_PATH = PACK_DIR / "ontology.ttl"
-MANIFEST_PATH = (
-    Path.home()
-    / "clap-noun-verb"
-    / "clap-noun-verb-any"
-    / "examples"
-    / "autofde_lab_planners"
-    / "cnv-any.json"
-)
+# Overridable via CNV_ANY_MANIFEST_PATH, mirroring the existing XAAS_ROOT override below,
+# so a real regression test can point this script at a real temp fixture manifest instead
+# of the real ~/clap-noun-verb checkout (FMEA RPN=252 fix test).
+MANIFEST_PATH = Path(os.environ.get(
+    "CNV_ANY_MANIFEST_PATH",
+    str(
+        Path.home()
+        / "clap-noun-verb"
+        / "clap-noun-verb-any"
+        / "examples"
+        / "autofde_lab_planners"
+        / "cnv-any.json"
+    ),
+))
 # Real, separate repo (xaas). Overridable via XAAS_ROOT so a real regression test can
 # point this script at a real temp directory tree instead of the real ~/xaas checkout
 # (Chicago-style: a real subprocess against real files on disk, never a mocked path).
@@ -62,10 +68,17 @@ XAAS_ROOT = Path(os.environ.get("XAAS_ROOT", str(Path.home() / "xaas")))
 SPARQL_BRIDGE_PATH = XAAS_ROOT / "lib" / "xaas" / "sparql_bridge.ex"
 
 # Real ggen-cli-lib invocation, confirmed this session (DIFFERENTIAL-REGEN-PROOF.md).
-GGEN_MANIFEST_PATH = (
-    Path.home() / "chatman-ecosystem" / "platform-console" / "services" / "ggen"
-    / "ggen-src" / "Cargo.toml"
-)
+# Overridable via GGEN_MANIFEST_PATH so a real regression test can force a real, fast,
+# deterministic `cargo run --manifest-path <bogus>` failure (cargo exits 101 immediately
+# on a nonexistent manifest path -- no mocking, no waiting on a real build) to exercise
+# the partial-failure-after-ontology-write path (FMEA RPN=252 fix test).
+GGEN_MANIFEST_PATH = Path(os.environ.get(
+    "GGEN_MANIFEST_PATH",
+    str(
+        Path.home() / "chatman-ecosystem" / "platform-console" / "services" / "ggen"
+        / "ggen-src" / "Cargo.toml"
+    ),
+))
 # Real destination repo. Confirmed tilde-expansion bug: ggen sync run, run from this
 # pack's own directory, writes relative to the pack dir (this pack's own scratch
 # lib/xaas/operations/*.ex), never to ~/xaas, no matter what outputFile says in
@@ -406,12 +419,35 @@ def main() -> int:
         return 0
 
     output_file = f"lib/xaas/operations/autofde_planner_{snake(short_name)}.ex"
+
+    def rollback_ontology_write(reason: str) -> None:
+        """FMEA RPN=252 fix: ontology.ttl was written unconditionally and
+        irreversibly BEFORE these --deploy steps ran; if any of them failed, the
+        orphaned aac:AshConnector individual stayed in ontology.ttl forever (no
+        try/except/finally/rollback existed anywhere in this file), and
+        already_exists() then REFUSED any retry of the same tool_name with
+        "already has an individual" -- even though the deploy never completed. The
+        operator's only way out was a hand-edit of ontology.ttl, exactly the manual
+        step this generator exists to eliminate. Restoring the exact pre-write text
+        here undoes the individual and re-opens the already_exists() guard so a
+        retry of the same tool_name is possible again."""
+        ONTOLOGY_PATH.write_text(ontology_text)
+        print(
+            f"ROLLED BACK: {reason} -- restored {ONTOLOGY_PATH} to its pre-write "
+            f"state (FMEA RPN=252) so '{tool_name}' can be retried instead of "
+            f"requiring a hand-edit.",
+            file=sys.stderr,
+        )
+
     if not run_ggen_sync():
+        rollback_ontology_write("ggen sync run failed")
         return 1
     if not copy_generated_file_to_xaas(output_file):
+        rollback_ontology_write("copy to xaas failed")
         return 1
 
     if not apply_sparql_bridge_extension(class_local, short_name):
+        rollback_ontology_write("sparql_bridge.ex wiring failed")
         return 1
 
     print(f"OK: --deploy pipeline complete for '{tool_name}' "
