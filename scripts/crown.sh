@@ -14,6 +14,7 @@ test "${#candidate_sha}" -eq 40
 python3 scripts/verify_release.py --check-refs
 python3 scripts/verify_standing_evidence.py
 python3 scripts/verify_crown_edges.py
+python3 scripts/verify_live_azure_authority.py
 python3 scripts/v2030_definition_of_done.py --self-test
 python3 -m unittest discover -s tests -p 'test_*.py' -v
 
@@ -69,6 +70,7 @@ cat > target/crown/admission.json <<JSON
     "release_graph",
     "standing_evidence",
     "mandatory_crown_edges",
+    "live_azure_authority_admission",
     "v2030_definition_of_done",
     "format",
     "clippy",

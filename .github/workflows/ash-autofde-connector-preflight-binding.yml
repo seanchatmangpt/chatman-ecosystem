@@ -1,0 +1,64 @@
+name: Ash AutoFDE connector preflight binding
+
+on:
+  pull_request:
+    branches:
+      - feat/define-connector-preflight-admission
+    paths:
+      - "platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack/scripts/deploy_connector_with_provenance.py"
+      - "platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack/scripts/test_deploy_connector_preflight.py"
+      - "platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack/scripts/test_deploy_connector_preflight_binding.py"
+      - ".github/workflows/ash-autofde-connector-preflight-binding.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bind:
+    name: Exact-head SELECT-to-CONSTRUCT state-binding court
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Assert exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$expected"
+          printf 'subject=%s\n' "$actual"
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.13"
+
+      - name: Install verifier dependency
+        run: python -m pip install 'pytest==8.3.5'
+
+      - name: Compile bounded implementation
+        run: >-
+          python -m py_compile
+          platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack/scripts/deploy_connector_with_provenance.py
+          platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack/scripts/test_deploy_connector_preflight.py
+          platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack/scripts/test_deploy_connector_preflight_binding.py
+
+      - name: Execute exact-state binding court
+        working-directory: platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack
+        run: python -m pytest -vv scripts/test_deploy_connector_preflight_binding.py
+
+      - name: Replay SELECT-only and predecessor connector guards
+        working-directory: platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack
+        run: >-
+          python -m pytest -vv
+          scripts/test_deploy_connector_preflight.py
+          scripts/test_deploy_connector_with_provenance.py
+          scripts/test_deploy_connector_transactionally.py
+          scripts/test_add_connector_deploy_rollback.py
+          scripts/test_add_connector_stale_copy_refusal.py
+          scripts/test_add_connector_bridge_guard.py
