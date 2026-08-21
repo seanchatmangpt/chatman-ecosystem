@@ -162,14 +162,14 @@ defmodule AshProjectMeasure.GitHubActions do
     timeout = Keyword.get(opts, :timeout, 30_000)
 
     headers = [
-      {'accept', 'application/vnd.github+json'},
-      {'user-agent', 'ash-project-measure/1'},
-      {'x-github-api-version', '2022-11-28'}
+      {~c"accept", ~c"application/vnd.github+json"},
+      {~c"user-agent", ~c"ash-project-measure/1"},
+      {~c"x-github-api-version", ~c"2022-11-28"}
     ]
 
     headers =
       if is_binary(token) and token != "",
-        do: [{'authorization', String.to_charlist("Bearer " <> token)} | headers],
+        do: [{~c"authorization", String.to_charlist("Bearer " <> token)} | headers],
         else: headers
 
     case :httpc.request(
@@ -242,7 +242,9 @@ defmodule AshProjectMeasure.Census do
     end
   end
 
-  def build(activity, config, opts \\ []) when is_map(activity) and is_map(config) do
+  def build(activity, config, opts \\ [])
+
+  def build(activity, config, opts) when is_map(activity) and is_map(config) do
     client = Keyword.get(opts, :client, &GitHubActions.list_workflow_runs/4)
     client_opts = Keyword.get(opts, :client_opts, [])
 
@@ -446,7 +448,7 @@ end
 
 defmodule ChatmanEcosystem.MeasurementDomain do
   @moduledoc false
-  use Ash.Domain, extensions: [AshProjectMeasure]
+  use Ash.Domain, extensions: [AshProjectMeasure], validate_config_inclusion?: false
 
   project_measure do
     github_actions do
