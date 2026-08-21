@@ -1,0 +1,55 @@
+name: Portfolio activity census
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/reconcile_portfolio_activity.py'
+      - 'tests/test_reconcile_portfolio_activity.py'
+      - '.github/workflows/portfolio-activity-census.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  census:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+
+      - name: Assert exact subject identity
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+
+      - name: Run census falsifier court
+        run: |
+          python3 -m py_compile scripts/reconcile_portfolio_activity.py tests/test_reconcile_portfolio_activity.py
+          python3 -m unittest -v tests.test_reconcile_portfolio_activity
+
+      - name: Observe dual-sensor trailing-seven-day activity
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/reconcile_portfolio_activity.py \
+            --owner seanchatmangpt \
+            --days 7 \
+            --token-env GITHUB_TOKEN \
+            --output .artifacts/activity-census/census.json
+          python3 scripts/reconcile_portfolio_activity.py \
+            --replay .artifacts/activity-census/census.json
+
+      - name: Upload census receipt
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: activity-census-${{ github.run_id }}
+          path: .artifacts/activity-census/census.json
+          if-no-files-found: error
+          retention-days: 30
