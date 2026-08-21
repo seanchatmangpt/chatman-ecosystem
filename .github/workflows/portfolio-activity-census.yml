@@ -55,18 +55,6 @@ jobs:
             tests.test_reconcile_portfolio_activity \
             tests.test_verify_ci_subject
 
-      - name: Observe dual-sensor trailing-seven-day activity
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          python3 scripts/reconcile_portfolio_activity.py \
-            --owner seanchatmangpt \
-            --days 7 \
-            --token-env GITHUB_TOKEN \
-            --output .artifacts/activity-census/census.json
-          python3 scripts/reconcile_portfolio_activity.py \
-            --replay .artifacts/activity-census/census.json
-
       - name: Set up exact BEAM toolchain
         uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
         with:
@@ -82,7 +70,20 @@ jobs:
           mix deps.get
           mix compile --warnings-as-errors
           mix test
-          mix format --check-formatted
+          mix format
+          git diff --exit-code -- .
+
+      - name: Observe dual-sensor trailing-seven-day activity
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/reconcile_portfolio_activity.py \
+            --owner seanchatmangpt \
+            --days 7 \
+            --token-env GITHUB_TOKEN \
+            --output .artifacts/activity-census/census.json
+          python3 scripts/reconcile_portfolio_activity.py \
+            --replay .artifacts/activity-census/census.json
 
       - name: Reconcile GitHub Actions outcomes through Ash extension
         working-directory: extensions/ash_project_measure
