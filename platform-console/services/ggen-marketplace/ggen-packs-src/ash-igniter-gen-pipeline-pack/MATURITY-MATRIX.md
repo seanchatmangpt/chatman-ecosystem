@@ -112,3 +112,65 @@ a single static Go-binary invocation: **~1.4–2.5s/row (estimate, not a measure
 Table 1's own rubric, L2 requires "one real run's wall-clock time observed" — an analogy to
 another artifact's real number is not that, so this estimate does not promote the score; it
 stays **L1 (unmeasured)**.
+
+## Generalization Update — ordered task-graph fan-out (real, 2026-08-20)
+
+`ash-igniter-gen-pipeline-pack` extended with `agp:rank` (asserted topological position) and
+`ORDER BY ?rank` in the template's SPARQL query. Validated in two stages:
+
+**`playground/` (fixture-only, no real Ash project):** real `ggen sync` against
+`examples/02-full-chain.ttl` (domain rank 0, resource rank 1, extend rank 2, migration
+rank 3). The four `sh_after mix ...` invocations' real stdout stream (all four failed with
+`Mix task could not be found`, expected — `playground/` has no real `mix.exs`) appeared in
+exact ascending-rank order: `ash.gen.domain` → `ash.gen.resource` → `ash.extend` →
+`ash_postgres.generate_migrations`. Confirms `for_each` executes `sh_after` in
+`ORDER BY`-determined row order, not incidental store order — the core assumption this
+extension depends on.
+
+**`~/xaas` (real project, real run, 2026-08-20):** added a real rank-ordered chain
+targeting the already-proven `CapabilityLivenessReceipt` / `Xaas.Operations` target: a new
+`agp:rank 0` domain row (`ash.gen.domain`) and a new `agp:rank 3` migration row
+(`ash_postgres.generate_migrations`), alongside the existing `agp:rank 1`/`agp:rank 2`
+resource/extend rows. Real `ggen sync` run wrote 2 new receipts
+(`.agp-receipts/Operations-ash.gen.domain.txt`,
+`.agp-receipts/CapabilityLivenessReceipt-ash_postgres.generate_migrations.txt`) and skipped
+the 2 pre-existing ones (`unless_exists`). A second real `ggen sync` run confirmed all 4 rows
+skip (100% idempotent re-run under the new `ORDER BY`-augmented query).
+
+Two real, disclosed gotchas from this run, not smoothed over:
+- `ash.gen.domain` against an already-existing domain does **not** report Igniter's usual
+  `Igniter: No proposed content changes!` no-op message — it reports
+  `Issues: * lib/xaas/operations.ex: File already exists` instead. Functionally idempotent
+  (no file was overwritten, `unless_exists` at the receipt level still prevents a
+  second real invocation), but a different real message shape than `ash.gen.resource`'s.
+- `ash_postgres.generate_migrations` is **not scoped to the target module** — it inspects the
+  whole project's real schema drift. This run's real invocation picked up unrelated,
+  pre-existing drift already present in `~/xaas`'s dirty working tree (a real interactive
+  prompt: `Are you renaming tokens.extra_data to tokens.encrypted_extra_data? [Yn]`) and
+  printed intent to create a migration file covering that drift, not just
+  `CapabilityLivenessReceipt` — **but the file was never actually written.** Verified by
+  direct filesystem check after the run: neither
+  `priv/repo/migrations/20260821021533_add_capability_liveness_receipt.exs` nor its paired
+  resource-snapshot JSON exist on disk, despite the log's `* creating ...` line. The real
+  explanation: under `sh -c`-piped non-interactive execution, the `[Yn]` prompt received no
+  real stdin, and Igniter printed its *intended* action before that prompt resolved rather
+  than after — so `sh_after`'s captured log is not a reliable record of what actually
+  happened for a task with an interactive confirmation step. The `.agp-receipts/` guard file
+  was still written (marking the row "done" for future `unless_exists` skips), which is
+  itself a real correctness gap: this task's receipt can indicate success when the
+  underlying mix task silently produced nothing. Anyone driving `ash_postgres.generate_migrations`
+  (or any Igniter task with a real interactive confirmation path) via unattended `sh_after`
+  should either run it against a target/state guaranteed to hit no interactive prompt, or
+  treat its receipt as unverified until a human confirms the real output file exists.
+
+**Score:** Generalization moves from **L2 → L3** for `ash-igniter-gen-pipeline-pack` — real
+ordered fan-out across 4 distinct `agp:mixTask` values (domain/resource/extend/migration),
+confirmed ascending-rank execution order (both in `playground/` and against real `~/xaas`),
+and a confirmed idempotent re-run of the receipt-guard mechanism. Qualified: 3 of the 4 task
+categories (domain, resource, extend) verifiably completed their real work; the 4th
+(migration) verifiably *ran* but did not verifiably *complete* — see the interactive-prompt
+gotcha above — so this proves the mechanism dispatches 4 distinct real mix invocations in the
+right order, not that all 4 reliably reach real output unattended. Does not reach L4 (would
+require proof across genuinely distinct target *categories*, not just task types against one
+target) or cross-project reuse (still 0/N second projects, per the pack's existing
+Reusability L3 cap).

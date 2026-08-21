@@ -155,6 +155,38 @@ Safety/Authorization, Verification Evidence, Documentation Honesty, Reusability/
 Performance/Efficiency. A pack that can't honestly clear at least L2-L3 on Idempotency and
 Verification Evidence isn't ready to drive real codegen unattended.
 
+## Ordered task-graph fan-out (`agp:rank`) — real, 2026-08-20
+
+The template's SPARQL query now includes `agp:rank` (real, asserted `xsd:integer`, gate-required
+alongside `moduleName`/`domainModule`/`mixTask`) and `ORDER BY ?rank`, so `sh_after` invocations
+run in ascending-rank order instead of incidental SPARQL result order. Real convention used in
+this session's proof rows: domain generation = rank 0, resource generation = rank 1, extension =
+rank 2, migration = rank 3 — matching Ash's own real dependency order (a resource needs its
+domain to exist first; a migration reflects a resource's already-generated schema).
+
+Verified this session, both in `playground/` (fixture-only, confirms ordering without a real Ash
+project) and against `~/xaas` (real project, real 4-row chain, real 2x idempotent re-run) — see
+`MATURITY-MATRIX.md`'s "Generalization Update" section for the full real evidence.
+
+**Real gotcha, `ash.gen.domain` against an already-existing domain:** does not print Igniter's
+usual `Igniter: No proposed content changes!` line — prints `Issues: * <path>: File already
+exists` instead. Different message shape, same practical outcome (no file overwritten).
+
+**Real gotcha, `ash_postgres.generate_migrations` is project-wide, not target-scoped, and its
+log can lie about completion:** it inspects the whole project's schema state, not just the one
+resource named in the row. Running it against a dirty working tree with other in-progress
+schema changes can surface an unrelated real interactive prompt (a rename confirmation was hit
+this session). Worse: under `sh -c`-piped, non-interactive execution, that prompt receives no
+real stdin — and Igniter prints its `* creating <path>` line *before* the prompt resolves, not
+after. This session's real run printed `* creating priv/repo/migrations/....exs` and a
+destructive-operation warning, but a direct filesystem check afterward confirmed **no such
+file was ever written**. The `.agp-receipts/` guard file was still created, marking the row
+"done" for future `unless_exists` skips, even though the underlying task produced nothing —
+a real correctness gap specific to this task. Never drive `ash_postgres.generate_migrations`
+(or any Igniter task with a real interactive confirmation path) via unattended `sh_after`
+against a possibly-dirty working tree without a human confirming the real output file exists
+afterward; the receipt alone is not proof of completion for this task.
+
 ## See Also
 
 - `MATURITY-MATRIX.md` — the real 5x7 evidence-scored rubric these tasks are judged against.
