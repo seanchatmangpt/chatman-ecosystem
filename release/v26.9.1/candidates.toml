@@ -15,6 +15,7 @@ scope = "Fortune-5 capstone plus 5x7 maturity evidence and pinned CI supply chai
 scope_standing = "PARTIAL_ALIVE"
 release_standing = "UNKNOWN"
 exact_head_ci = "SUCCESS"
+reobservation_note = "Re-observed 2026-08-21T12:10:00Z: PR #3 confirmed real MERGED via `gh pr view 3 --repo seanchatmangpt/fdegym` (mergedAt 2026-08-14T19:07:48Z, state MERGED). The real merge commit (`gh pr view --json mergeCommit` -> 2d7c5acb3cbb8df1608cf9b81be53a74e39a1946) exactly matches admitted_sha above, so admitted_sha/candidate_sha/exact_head_ci remain accurate as the verified merged state and are left unchanged. Separately, the same source branch agent/v26.9.1-capstone-maturity has since moved to a real, different head (b95419fae9a479a653cd0107986f1bdc08eab37e, confirmed via the real GitHub branches API, 7 real commits ahead of the old candidate_sha per a real compare call) that carries NO real CI evidence (`gh api .../commits/<sha>/status` -> state=pending, total_count=0, not merely still-running) -- named here as a real, open observation, never folded into candidate_sha/exact_head_ci without real CI evidence to back it."
 
 [[candidates]]
 component = "ggen"
