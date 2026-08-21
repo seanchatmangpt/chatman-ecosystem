@@ -1,0 +1,8 @@
+[project]
+name = "ash-autofde-lab-connector-pack"
+
+[ontology]
+source = "ontology.ttl"
+
+[templates]
+dir = "templates"

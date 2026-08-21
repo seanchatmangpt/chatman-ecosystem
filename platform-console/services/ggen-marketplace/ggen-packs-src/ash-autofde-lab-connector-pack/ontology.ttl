@@ -1,0 +1,22 @@
+@prefix aac: <https://ggen.dev/ontology/ash-autofde-lab-connector#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+aac:AshConnector a rdfs:Class ;
+  rdfs:label "Ash-side connector resource to a clap-noun-verb-deploy-served planner tool" .
+
+aac:resourceModule a rdf:Property ; rdfs:domain aac:AshConnector ; rdfs:range xsd:string .
+aac:domainModule a rdf:Property ; rdfs:domain aac:AshConnector ; rdfs:range xsd:string .
+aac:invokeTool a rdf:Property ; rdfs:domain aac:AshConnector ; rdfs:range xsd:string .
+aac:actionName a rdf:Property ; rdfs:domain aac:AshConnector ; rdfs:range xsd:string .
+aac:cnvDeployBaseUrlEnv a rdf:Property ; rdfs:domain aac:AshConnector ; rdfs:range xsd:string .
+
+aac:AutofdePlannerCandidate a aac:AshConnector ;
+  dcterms:description "Real connector: xaas Ash resource -> cnv-deploy POST /invoke tool fabric__solve (wraps autofde-lab's real fabric CLI, confirmed clap-noun-verb-any/examples/autofde_lab_planners/)" ;
+  aac:resourceModule "Xaas.Operations.AutofdePlannerCandidate" ;
+  aac:domainModule "Xaas.Operations" ;
+  aac:invokeTool "fabric__solve" ;
+  aac:actionName "request_candidate" ;
+  aac:cnvDeployBaseUrlEnv "cnv_deploy_base_url" .
