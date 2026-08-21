@@ -38,9 +38,11 @@ aac:AshConnector a rdfs:Class .
 """
 
 SUCCESS_BRIDGE = """defmodule Xaas.SparqlBridge do
+  alias Xaas.Operations.AutofdePlannerCandidate
   alias Xaas.Operations.AutofdePlannerMatch
 
   def to_turtle do
+    {:ok, candidates} = Ash.read(AutofdePlannerCandidate)
     {:ok, match_requests} = Ash.read(AutofdePlannerMatch)
 
     header = \"\"\"
@@ -48,7 +50,8 @@ SUCCESS_BRIDGE = """defmodule Xaas.SparqlBridge do
     \"\"\"
 
     body =
-      (Enum.map(match_requests, &match_to_turtle/1))
+      (Enum.map(candidates, &candidate_to_turtle/1) ++
+         Enum.map(match_requests, &match_to_turtle/1))
       |> Enum.join(\"\\n\")
 
     header <> body
