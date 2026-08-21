@@ -113,11 +113,11 @@ observed_at = "2026-08-20T22:44:41-07:00"
 [[candidates]]
 component = "autofde-lab"
 repository = "seanchatmangpt/autofde-lab"
-admitted_sha = "2cfab1453ffded217c7a85b35e0946a216906f17"
-scope = "local checkout HEAD re-observed at /Users/sac/autofde-lab (config-audit skill found real drift 2026-08-21: prior admitted_sha 4adf529483a3c914625841e6862c8aea1daa6118 had been superseded by real, session-committed work, commit 2cfab145 -- reasoning: add TRIZ contradiction-resolution candidate generator); local HEAD differs from manifest-pinned sha 87d719f441ded3af123a73b95825d5f2847f9c66"
+admitted_sha = "c6efab6599025252b3cd50d662711f2d26ecc194"
+scope = "local checkout HEAD re-observed at /Users/sac/autofde-lab (real drift since the prior 2026-08-21T06:21:14Z observation: prior admitted_sha 2cfab1453ffded217c7a85b35e0946a216906f17 had been superseded by 16 further real, session-committed Explore-phase integration commits -- exploration_payoff_bridge/exploration_psro_loop/world_admission/exploration_gymact_falsification/dflss_planner_solve/dflss_solve_payoff_bridge/process_informed_exploration/process_informed_psro_pipeline/cross_play_world_schedule/generic_domain_solve/cross_play_schedule_payoff/cross_play_schedule_psro/psro_trajectory/psro_informed_exploration_round, each independently re-verified with a real pytest run this session, most recent commit c6efab65 -- reasoning: feed a converged PSRO trajectory's dominant response forward); local HEAD differs from manifest-pinned sha 87d719f441ded3af123a73b95825d5f2847f9c66"
 scope_standing = "UNKNOWN"
 release_standing = "UNKNOWN"
-observed_at = "2026-08-21T06:21:14Z"
+observed_at = "2026-08-21T11:52:00Z"
 
 [[candidates]]
 component = "wasm4pm"
