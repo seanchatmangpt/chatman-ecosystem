@@ -114,11 +114,11 @@ observed_at = "2026-08-20T22:44:41-07:00"
 [[candidates]]
 component = "autofde-lab"
 repository = "seanchatmangpt/autofde-lab"
-admitted_sha = "c6efab6599025252b3cd50d662711f2d26ecc194"
-scope = "local checkout HEAD re-observed at /Users/sac/autofde-lab (real drift since the prior 2026-08-21T06:21:14Z observation: prior admitted_sha 2cfab1453ffded217c7a85b35e0946a216906f17 had been superseded by 16 further real, session-committed Explore-phase integration commits -- exploration_payoff_bridge/exploration_psro_loop/world_admission/exploration_gymact_falsification/dflss_planner_solve/dflss_solve_payoff_bridge/process_informed_exploration/process_informed_psro_pipeline/cross_play_world_schedule/generic_domain_solve/cross_play_schedule_payoff/cross_play_schedule_psro/psro_trajectory/psro_informed_exploration_round, each independently re-verified with a real pytest run this session, most recent commit c6efab65 -- reasoning: feed a converged PSRO trajectory's dominant response forward); local HEAD differs from manifest-pinned sha 87d719f441ded3af123a73b95825d5f2847f9c66"
+admitted_sha = "11653ae35bac4f3bb06adeba7ee06ac72b247da3"
+scope = "local checkout HEAD re-observed at /Users/sac/autofde-lab (real drift since the prior 2026-08-21T11:52:00Z observation: prior admitted_sha c6efab6599025252b3cd50d662711f2d26ecc194 was superseded by 1 real commit, 11653ae3 -- \"fabric: expose admit_dflss_solve_payoff as a real CLI subcommand\", committed 2026-08-21T07:36:57-07:00. This commit is OUTSIDE the src/autofde_lab/reasoning/ + src/autofde_lab/planner_league/ Explore-phase path this session's own ultracode loop tracks -- confirmed via `git log --oneline -25 -- src/autofde_lab/reasoning/ src/autofde_lab/planner_league/` still showing c6efab65 as the most recent path-filtered commit even after this observation -- so it is real drift from a different, concurrent real contributor building on this session's own dflss_solve_payoff_bridge.admit_dflss_solve_payoff, not this session's own work); working tree dirty (pyproject.toml modified, integrations/openclaw/dist/index.js deleted -- both pre-existing dirty state carried across many prior observations, not new); branch master ahead of origin/master by 32; local HEAD still differs from manifest-pinned sha 87d719f441ded3af123a73b95825d5f2847f9c66 (unchanged)"
 scope_standing = "UNKNOWN"
 release_standing = "UNKNOWN"
-observed_at = "2026-08-21T11:52:00Z"
+observed_at = "2026-08-21T12:52:00Z"
 
 [[candidates]]
 component = "wasm4pm"
