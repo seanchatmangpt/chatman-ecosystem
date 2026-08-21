@@ -225,3 +225,32 @@ negative result, not an unexplored gap: worth revisiting if/when a second pack a
 `/invoke` call is the closest candidate architecturally, per this session's earlier `agp:`/`aac:`
 vocabulary-unification discussion, but it currently dispatches via a template-embedded HTTP call
 in the generated Elixir code, not via `sh_after`, so it doesn't share this specific shape either).
+
+## Reusability L3 → L4: real second consuming project (2026-08-21)
+
+`~/dev/ash_cms` — a real, pre-existing, genuinely distinct Elixir/Ash/Igniter project on this
+machine (real `mix deps.get` + `mix compile` both run for real, clean compile confirmed) —
+adopted `ash-igniter-gen-pipeline-pack`'s unmodified template by adding only its own
+`ggen.toml`/`ontology.ttl` facts (`agp:TicketGenResource`, targeting the real, pre-existing
+`AshCms.Support.Ticket` resource), closing the pack's own stated Reusability L3 cap ("proven
+against exactly ONE real consuming project (~/xaas)").
+
+Real, useful cross-project finding, not glossed over: `ash_cms`'s real `ash.gen.resource` task
+does **not** support the `--ignore-if-exists` flag `~/xaas`'s invocations use (`mix
+ash.gen.resource --ignore-if-exists` → real error: `"--ignore-if-exists : Unknown option"`) —
+a real version/config skew between the two real projects' Igniter task surfaces. Adapted
+`agp:mixArgs` to `--yes --default-actions read` (both confirmed-supported flags for this
+project) and re-ran for real:
+- First real run: `written`, real mix log: `Issues during code generation: lib/ash_cms/support/
+  ticket.ex: File already exists` — a third distinct real idempotency-signal shape (differs
+  from both `ash.gen.resource`'s usual `Igniter: No proposed content changes!` and
+  `ash.gen.domain`'s `Issues: * <path>: File already exists` found earlier this session against
+  `~/xaas`) — worth noting the shape varies by task/project, not assuming one canonical message.
+- Second real run: `skipped: unless_exists: .../Ticket-ash.gen.resource.txt already exists` —
+  real, confirmed idempotent re-run.
+
+**Score: Reusability/Portability moves L3 → L4** — a second, genuinely distinct real consuming
+project adopted the unmodified template by adding only its own ontology facts, with real run
+receipts as evidence, matching Table 1's L4 bar exactly. Does not reach L5 (would require a
+third project, or the same second project independently regenerating and confirming
+byte-identical output).
