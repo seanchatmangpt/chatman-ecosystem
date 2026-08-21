@@ -254,3 +254,17 @@ project adopted the unmodified template by adding only its own ontology facts, w
 receipts as evidence, matching Table 1's L4 bar exactly. Does not reach L5 (would require a
 third project, or the same second project independently regenerating and confirming
 byte-identical output).
+
+## Folded finding (ERRC pass, 2026-08-21): `agp:`/`aac:` crossover proof
+
+A separate pack, `unified-fanout-vocabulary-pack`, was built and verified this session to prove
+`agp:CodegenTarget` (this pack's vocabulary) and `aac:AshConnector`
+(`ash-autofde-lab-connector-pack`'s) can share one rank-ordered fan-out via RDF multi-typing —
+`cmx:rank`/`cmx:dispatchVia` applied to fixture individuals, one `UNION`+`ORDER BY ?rank`
+SPARQL query, real `rdflib` run confirmed `mix`/`mix`/`cnv_invoke`/`mix` rows interleave
+correctly by rank (0,1,2,3), not grouped by source vocabulary. That pack has since been
+eliminated (nothing in this pack or `ash-autofde-lab-connector-pack` referenced it — an
+orphaned 3-file proof) and its one real finding folded in here: **`agp:` and `aac:` are proven
+compatible at the RDF/query level**, though no real `sh_after` template yet mixes local
+mix-task execution and cnv-deploy HTTP invocation in one actual pass — that reconciliation
+remains real, separate follow-up work.
