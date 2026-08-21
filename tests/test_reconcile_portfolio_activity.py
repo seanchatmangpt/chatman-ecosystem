@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import copy
 import unittest
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from scripts.reconcile_portfolio_activity import (
     CensusError,
+    SearchSlice,
     Window,
     build_census,
+    collect_partitioned_pr_search,
     verify_receipt,
 )
 
@@ -126,8 +128,110 @@ class CensusTests(unittest.TestCase):
         )
         result = build_census(client, owner="seanchatmangpt", window=self.window)
         self.assertEqual(result["reconciliation"]["union_repository_count"], 0)
-        self.assertGreater(result["sensors"]["public_owner_repository_push"]["malformed_rows"], 0)
+        self.assertGreater(
+            result["sensors"]["public_owner_repository_push"]["malformed_rows"], 0
+        )
         self.assertGreater(result["sensors"]["updated_pull_request"]["malformed_rows"], 0)
+
+
+class PartitionedSearchTests(unittest.TestCase):
+    def test_under_cap_preserves_previous_single_query_path(self):
+        rows = [{"id": 1}, {"id": 2}]
+
+        def fetch(search_slice):
+            self.assertIsNone(search_slice)
+            return copy.deepcopy(rows), 2, False
+
+        result, evidence = collect_partitioned_pr_search(
+            fetch,
+            created_floor=date(2008, 1, 1),
+            created_ceiling=date(2026, 8, 22),
+        )
+        self.assertEqual(result, rows)
+        self.assertFalse(evidence["cap_triggered"])
+        self.assertEqual(evidence["partition_strategy"], "none")
+
+    def test_cap_uses_disjoint_creation_date_partitions_and_recovers_all_rows(self):
+        calls = []
+
+        def fetch(search_slice):
+            calls.append(search_slice)
+            if search_slice is None:
+                return [{"id": 999}], 1200, False
+            is_root = (
+                search_slice.created_since == date(2008, 1, 1)
+                and search_slice.created_until == date(2026, 1, 1)
+            )
+            if is_root:
+                return [{"id": 999}], 1200, False
+            if search_slice.created_until.year <= 2017:
+                return [{"id": i} for i in range(1, 701)], 700, False
+            return [{"id": i} for i in range(701, 1201)], 500, False
+
+        rows, evidence = collect_partitioned_pr_search(
+            fetch,
+            created_floor=date(2008, 1, 1),
+            created_ceiling=date(2026, 1, 1),
+        )
+        self.assertEqual(len(rows), 1200)
+        self.assertTrue(evidence["cap_triggered"])
+        self.assertEqual(evidence["partition_strategy"], "created_date_recursive")
+        self.assertEqual(evidence["leaf_partition_count"], 2)
+        self.assertEqual(evidence["duplicate_count"], 0)
+        self.assertEqual(len(calls), 4)
+
+    def test_single_day_over_cap_refuses_instead_of_sampling(self):
+        def fetch(search_slice):
+            if search_slice is None:
+                return [], 1500, False
+            return [], 1500, False
+
+        with self.assertRaisesRegex(
+            CensusError, r"REFUSED\[PR_SEARCH_UNSPLITTABLE_DAY_CAP\]"
+        ):
+            collect_partitioned_pr_search(
+                fetch,
+                created_floor=date(2026, 8, 22),
+                created_ceiling=date(2026, 8, 22),
+            )
+
+    def test_partition_incomplete_results_refuses(self):
+        def fetch(search_slice):
+            if search_slice is None:
+                return [], 1100, False
+            return [], 10, True
+
+        with self.assertRaisesRegex(CensusError, r"REFUSED\[PR_SEARCH_INCOMPLETE_RESULTS\]"):
+            collect_partitioned_pr_search(
+                fetch,
+                created_floor=date(2008, 1, 1),
+                created_ceiling=date(2026, 8, 22),
+            )
+
+    def test_missing_exact_pr_identity_refuses_deduplication(self):
+        def fetch(search_slice):
+            if search_slice is None:
+                return [], 1100, False
+            is_root = (
+                search_slice.created_since == date(2008, 1, 1)
+                and search_slice.created_until == date(2026, 1, 1)
+            )
+            if is_root:
+                return [], 1100, False
+            if search_slice.created_until.year <= 2017:
+                return [{"id": i} for i in range(600)], 600, False
+            return [{"repository_url": "https://api.github.com/repos/seanchatmangpt/x"}], 1, False
+
+        with self.assertRaisesRegex(CensusError, r"REFUSED\[PR_SEARCH_RESULT_IDENTITY_MISSING\]"):
+            collect_partitioned_pr_search(
+                fetch,
+                created_floor=date(2008, 1, 1),
+                created_ceiling=date(2026, 1, 1),
+            )
+
+    def test_search_slice_is_disjoint_at_midpoint(self):
+        left, right = SearchSlice(date(2026, 1, 1), date(2026, 1, 10)).split()
+        self.assertEqual(left.created_until + timedelta(days=1), right.created_since)
 
 
 if __name__ == "__main__":
