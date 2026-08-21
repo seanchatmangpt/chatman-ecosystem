@@ -113,11 +113,11 @@ observed_at = "2026-08-20T22:44:41-07:00"
 [[candidates]]
 component = "autofde-lab"
 repository = "seanchatmangpt/autofde-lab"
-admitted_sha = "4adf529483a3c914625841e6862c8aea1daa6118"
-scope = "local checkout HEAD observed at /Users/sac/autofde-lab; working tree dirty; local HEAD differs from manifest-pinned sha 87d719f441ded3af123a73b95825d5f2847f9c66"
+admitted_sha = "2cfab1453ffded217c7a85b35e0946a216906f17"
+scope = "local checkout HEAD re-observed at /Users/sac/autofde-lab (config-audit skill found real drift 2026-08-21: prior admitted_sha 4adf529483a3c914625841e6862c8aea1daa6118 had been superseded by real, session-committed work, commit 2cfab145 -- reasoning: add TRIZ contradiction-resolution candidate generator); local HEAD differs from manifest-pinned sha 87d719f441ded3af123a73b95825d5f2847f9c66"
 scope_standing = "UNKNOWN"
 release_standing = "UNKNOWN"
-observed_at = "2026-08-20T22:44:41-07:00"
+observed_at = "2026-08-21T06:21:14Z"
 
 [[candidates]]
 component = "wasm4pm"
