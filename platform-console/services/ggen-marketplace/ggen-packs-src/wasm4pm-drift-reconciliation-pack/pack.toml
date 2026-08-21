@@ -1,0 +1,25 @@
+[pack]
+name = "wasm4pm-drift-reconciliation-pack"
+version = "0.1.0"
+description = """
+Real, CMD-reviewed (Design for Combinatorial Maximalism) vocabulary and read-only verifier
+for "doc claims X, real source contradicts X" drift, generalized from the 5 concrete instances
+found in a real 5-agent exploration of ~/wasm4pm (2026-08-20) and 2 more found in a bounded
+follow-up pass (2026-08-21) -- 7 real, cited instances total so far, all fixed by hand this
+session (not via this pack, which came after most of the fixes).
+
+Two shapes, per agp:rank/aac:'s established pattern of generalizing N hardcoded instances into
+one axis: SourceContradictionClaim (a doc asserts a system property; a real command/grep check
+confirms or contradicts it) and FilesystemFactClaim (a doc asserts a path exists/doesn't;
+directly checkable with test -e). This pack's verifier is READ-ONLY -- it reports
+matches/contradicts per claim; it never edits a doc. Actuation (the actual doc correction) stays
+a separate, explicitly authorized step per CMD's candidate/verified/authorized/actuated line,
+matching how every one of this session's real drift fixes was actually done: found, verified,
+then hand-corrected with cited evidence, never auto-applied.
+
+Honest scope: this pack was built AFTER most of the 7 known drift instances were already fixed
+by hand (session history, not this pack). Its real, demonstrated value is the verifier/playground
+mechanism working correctly against the 7 already-known claims (encoded here as fixtures, now
+describing FIXED state) -- proving the shape-generic approach for FUTURE drift, not retroactively
+proving it found these particular 7.
+"""

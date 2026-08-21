@@ -1,0 +1,73 @@
+@prefix drc: <https://ggen.dev/ontology/wasm4pm-drift-reconciliation#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://ggen.dev/ontology/wasm4pm-drift-reconciliation#> a rdfs:Class ;
+  rdfs:comment "DriftClaim vocabulary: doc-vs-source drift shapes, CMD-reviewed (candidate/verified/authorized/actuated) -- this pack's verifier only ever reads, it never edits a doc." .
+
+drc:DriftClaim a rdfs:Class .
+drc:SourceContradictionClaim rdfs:subClassOf drc:DriftClaim ;
+  rdfs:comment "A doc asserts a system property that a real command/grep check confirms or contradicts." .
+drc:FilesystemFactClaim rdfs:subClassOf drc:DriftClaim ;
+  rdfs:comment "A doc asserts a repo-relative path exists/doesn't exist; directly checkable with test -e." .
+
+drc:sourceDoc a rdf:Property ; rdfs:domain drc:DriftClaim ; rdfs:range xsd:string .
+drc:claimText a rdf:Property ; rdfs:domain drc:DriftClaim ; rdfs:range xsd:string .
+drc:checkKind a rdf:Property ; rdfs:domain drc:DriftClaim ; rdfs:range xsd:string ;
+  rdfs:comment "One of: file_exists | file_absent | grep_pattern | command_output_matches." .
+drc:checkTarget a rdf:Property ; rdfs:domain drc:DriftClaim ; rdfs:range xsd:string .
+drc:expectedResult a rdf:Property ; rdfs:domain drc:DriftClaim ; rdfs:range xsd:string .
+
+# --- The 7 real, cited instances found and fixed this session (2026-08-20/21), encoded here
+# describing their now-FIXED state as fixtures proving the verifier mechanism works, per this
+# pack's own honest scope note in pack.toml. Real wasm4pm repo-relative paths. ---
+
+drc:StreamingDfgDeterminism a drc:SourceContradictionClaim ;
+  drc:sourceDoc "DETERMINISM_AUDIT_SUMMARY.txt" ;
+  drc:claimText "streaming_dfg.rs is fixed and re-verified deterministic (FxHashMap)" ;
+  drc:checkKind "grep_pattern" ;
+  drc:checkTarget "wasm4pm/src/streaming/streaming_dfg.rs:FxHashMap" ;
+  drc:expectedResult "match" .
+
+drc:PlayoutDeterminism a drc:SourceContradictionClaim ;
+  drc:sourceDoc "wasm4pm/tests/algorithm_determinism_template.rs" ;
+  drc:claimText "playout.rs::play_out_dfg_core is deterministic under DETERMINISTIC_SEED" ;
+  drc:checkKind "command_output_matches" ;
+  drc:checkTarget "cargo test --test algorithm_determinism_template test_playout_dfg_core_is_deterministic" ;
+  drc:expectedResult "1 passed; 0 failed" .
+
+drc:ProofPackExists a drc:FilesystemFactClaim ;
+  drc:sourceDoc "docs/falsifiers.md" ;
+  drc:claimText "proof-pack/ directory exists at repo root" ;
+  drc:checkKind "file_exists" ;
+  drc:checkTarget "proof-pack/verifier-report.json" ;
+  drc:expectedResult "exists" .
+
+drc:Prolog8MultiStepChaining a drc:SourceContradictionClaim ;
+  drc:sourceDoc "crates/prolog8/README.md" ;
+  drc:claimText "prolog8 supports multi-step recursive rule chaining, not just depth-1" ;
+  drc:checkKind "command_output_matches" ;
+  drc:checkTarget "cargo test -p prolog8 depth_2_chain_works_in_single_query" ;
+  drc:expectedResult "1 passed; 0 failed" .
+
+drc:TsCliRegistryIsNounVerb a drc:SourceContradictionClaim ;
+  drc:sourceDoc "apps/wasm4pm/README.md" ;
+  drc:claimText "the shipped wpm CLI is noun-verb (ALL_NOUNS in src/cli.ts), not flat legacy commands" ;
+  drc:checkKind "grep_pattern" ;
+  drc:checkTarget "apps/wasm4pm/src/cli.ts:ALL_NOUNS" ;
+  drc:expectedResult "match" .
+
+drc:AcademicCoverageCountsMatch a drc:SourceContradictionClaim ;
+  drc:sourceDoc "docs/ACADEMIC_COVERAGE.md" ;
+  drc:claimText "the 18/16/23/3 coverage_kind table matches docs/academic_coverage.toml's 60 algorithm-scoped entries" ;
+  drc:checkKind "grep_pattern" ;
+  drc:checkTarget "docs/ACADEMIC_COVERAGE.md:Re-verified 2026-08-21" ;
+  drc:expectedResult "match" .
+
+drc:BreedReachabilityGapClosed a drc:SourceContradictionClaim ;
+  drc:sourceDoc "docs/thesis/v26.6.10-thesis.md" ;
+  drc:claimText "morphological, triz, ocpm_route_discoverer are no longer UNSUPPORTED/REGISTERED" ;
+  drc:checkKind "command_output_matches" ;
+  drc:checkTarget "cargo test --test paper_grounded -- morphological_paper_grounded triz_paper_grounded ocpm_route_discoverer_paper_grounded" ;
+  drc:expectedResult "3 passed; 0 failed" .

@@ -1,0 +1,20 @@
+# MESSAGE: every drc:SourceContradictionClaim/drc:FilesystemFactClaim must have
+# sourceDoc/claimText/checkKind/checkTarget/expectedResult bound. A row missing any of
+# these can't drive a real check.
+#
+# Real gotcha found and fixed 2026-08-21: matching on the abstract parent class
+# (?s a drc:DriftClaim) returns ZERO rows even for real instances, because plain SPARQL
+# (rdflib, and most stores without an explicit RDFS-reasoning mode enabled) does NOT
+# infer rdf:type through rdfs:subClassOf automatically -- individuals are typed as the
+# concrete subclasses, not the abstract parent. Match on the two concrete subclasses
+# directly instead.
+PREFIX drc: <https://ggen.dev/ontology/wasm4pm-drift-reconciliation#>
+SELECT ?s ?missing WHERE {
+  { ?s a ?type . FILTER(?type = drc:SourceContradictionClaim || ?type = drc:FilesystemFactClaim) BIND(drc:sourceDoc AS ?missing) }
+  UNION { ?s a ?type . FILTER(?type = drc:SourceContradictionClaim || ?type = drc:FilesystemFactClaim) BIND(drc:claimText AS ?missing) }
+  UNION { ?s a ?type . FILTER(?type = drc:SourceContradictionClaim || ?type = drc:FilesystemFactClaim) BIND(drc:checkKind AS ?missing) }
+  UNION { ?s a ?type . FILTER(?type = drc:SourceContradictionClaim || ?type = drc:FilesystemFactClaim) BIND(drc:checkTarget AS ?missing) }
+  UNION { ?s a ?type . FILTER(?type = drc:SourceContradictionClaim || ?type = drc:FilesystemFactClaim) BIND(drc:expectedResult AS ?missing) }
+  FILTER NOT EXISTS { ?s ?missing ?any }
+}
+ORDER BY ?s ?missing
