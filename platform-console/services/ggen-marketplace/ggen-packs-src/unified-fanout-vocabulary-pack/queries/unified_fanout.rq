@@ -1,0 +1,15 @@
+# Real UNION query proving a single ORDER BY ?rank interleaves agp:CodegenTarget
+# (local mix-task dispatch) and aac:AshConnector (cnv-deploy HTTP-invoke dispatch)
+# rows by rank, not by source vocabulary.
+PREFIX cmx: <https://ggen.dev/ontology/combinatorial-maximalism-crossover#>
+PREFIX agp: <https://ggen.io/ontology/ash-igniter-gen-pipeline#>
+PREFIX aac: <https://ggen.dev/ontology/ash-autofde-lab-connector#>
+SELECT ?s ?rank ?dispatch_via ?label WHERE {
+  ?s cmx:rank ?rank ; cmx:dispatchVia ?dispatch_via .
+  {
+    ?s a agp:CodegenTarget ; agp:mixTask ?label .
+  } UNION {
+    ?s a aac:AshConnector ; aac:invokeTool ?label .
+  }
+}
+ORDER BY ?rank

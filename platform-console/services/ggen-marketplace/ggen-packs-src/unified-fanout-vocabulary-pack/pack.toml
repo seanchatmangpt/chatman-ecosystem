@@ -1,0 +1,23 @@
+[pack]
+name = "unified-fanout-vocabulary-pack"
+version = "0.1.0"
+description = """
+Real, verified proof that agp: (ash-igniter-gen-pipeline-pack's local mix-task vocabulary)
+and aac: (ash-autofde-lab-connector-pack's cnv-deploy HTTP-invoke vocabulary) can be
+ordered together in one rank-ordered chain, WITHOUT modifying either existing pack's live
+ontology (both are actively developed elsewhere; this pack is deliberately additive-only).
+
+Mechanism: a shared cmx: (combinatorial-maximalism-crossover) vocabulary, cmx:rank and
+cmx:dispatchVia (values "mix" | "cnv_invoke"), applied via RDF multi-typing -- an individual
+keeps its own agp:CodegenTarget or aac:AshConnector type AND gains cmx:rank/cmx:dispatchVia
+as additional facts. One SPARQL query, UNION over both classes, ORDER BY ?rank, real fixture
+data, real query execution (rdflib, 2026-08-21) confirms rows from both vocabularies interleave
+correctly by rank rather than grouping by source vocabulary.
+
+Honest scope: this is a vocabulary/query-level proof, not a working ggen sh_after template
+mixing real mix-task execution and real HTTP invocation in one pass -- agp:'s dispatch is
+sh_after shell, aac:'s is template-embedded Elixir/HTTP, and reconciling those two ACTUATION
+mechanisms into one template is real, separate follow-up work this pack does not attempt.
+What's proven here is narrower and real: the two vocabularies are not incompatible at the
+RDF/query level, and a single ORDER BY ?rank query can already interleave them.
+"""
