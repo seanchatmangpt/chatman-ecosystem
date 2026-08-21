@@ -29,3 +29,6 @@ agp:mixTask a owl:DatatypeProperty ; rdfs:domain agp:CodegenTarget ; rdfs:range 
 
 agp:mixArgs a owl:DatatypeProperty ; rdfs:domain agp:CodegenTarget ; rdfs:range xsd:string ;
   rdfs:comment "Real, real CLI args appended verbatim after \"mix <mixTask> <domainModule>.<moduleName>\" -- e.g. \"--ignore-if-exists --default-actions read\" for ash.gen.resource, or a migration name for ash_postgres.generate_migrations. May be empty." .
+
+agp:rank a owl:DatatypeProperty ; rdfs:domain agp:CodegenTarget ; rdfs:range xsd:integer ;
+  rdfs:comment "Real, asserted topological position for ordered sh_after execution -- e.g. 0 for a domain, 1 for a resource depending on it, 2 for an extend, 3 for a migration. Asserted by whoever writes the ontology facts; this pack does not compute or infer it." .
