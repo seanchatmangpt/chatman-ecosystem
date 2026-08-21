@@ -12,6 +12,8 @@ aac:domainModule a rdf:Property ; rdfs:domain aac:AshConnector ; rdfs:range xsd:
 aac:invokeTool a rdf:Property ; rdfs:domain aac:AshConnector ; rdfs:range xsd:string .
 aac:actionName a rdf:Property ; rdfs:domain aac:AshConnector ; rdfs:range xsd:string .
 aac:cnvDeployBaseUrlEnv a rdf:Property ; rdfs:domain aac:AshConnector ; rdfs:range xsd:string .
+aac:outputFile a rdf:Property ; rdfs:domain aac:AshConnector ; rdfs:range xsd:string .
+aac:tableName a rdf:Property ; rdfs:domain aac:AshConnector ; rdfs:range xsd:string .
 
 aac:AutofdePlannerCandidate a aac:AshConnector ;
   dcterms:description "Real connector: xaas Ash resource -> cnv-deploy POST /invoke tool fabric__solve (wraps autofde-lab's real fabric CLI, confirmed clap-noun-verb-any/examples/autofde_lab_planners/)" ;
@@ -19,4 +21,16 @@ aac:AutofdePlannerCandidate a aac:AshConnector ;
   aac:domainModule "Xaas.Operations" ;
   aac:invokeTool "fabric__solve" ;
   aac:actionName "request_candidate" ;
-  aac:cnvDeployBaseUrlEnv "cnv_deploy_base_url" .
+  aac:cnvDeployBaseUrlEnv "cnv_deploy_base_url" ;
+  aac:outputFile "lib/xaas/operations/autofde_planner_candidate.ex" ;
+  aac:tableName "autofde_planner_candidates" .
+
+aac:AutofdePlannerCatalog a aac:AshConnector ;
+  dcterms:description "Real connector: xaas Ash resource -> cnv-deploy POST /invoke tool fabric__catalog (lists registered domains/solvers, zero required arguments, confirmed clap-noun-verb-any/examples/autofde_lab_planners/cnv-any.json)" ;
+  aac:resourceModule "Xaas.Operations.AutofdePlannerCatalog" ;
+  aac:domainModule "Xaas.Operations" ;
+  aac:invokeTool "fabric__catalog" ;
+  aac:actionName "request_catalog" ;
+  aac:cnvDeployBaseUrlEnv "cnv_deploy_base_url" ;
+  aac:outputFile "lib/xaas/operations/autofde_planner_catalog.ex" ;
+  aac:tableName "autofde_planner_catalog_requests" .

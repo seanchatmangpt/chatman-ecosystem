@@ -1,18 +1,20 @@
 ---
-to: "lib/xaas/operations/autofde_planner_candidate.ex"
+to: "{{ output_file }}"
 skip_empty: false
 unless_exists: true
 for_each: results
 sparql:
   results: |
     PREFIX aac: <https://ggen.dev/ontology/ash-autofde-lab-connector#>
-    SELECT ?resource_module ?domain_module ?action_name ?cnv_tool ?base_url_env WHERE {
+    SELECT ?resource_module ?domain_module ?action_name ?cnv_tool ?base_url_env ?output_file ?table_name WHERE {
       ?s a aac:AshConnector ;
          aac:resourceModule ?resource_module ;
          aac:domainModule ?domain_module ;
          aac:actionName ?action_name ;
          aac:invokeTool ?cnv_tool ;
-         aac:cnvDeployBaseUrlEnv ?base_url_env .
+         aac:cnvDeployBaseUrlEnv ?base_url_env ;
+         aac:outputFile ?output_file ;
+         aac:tableName ?table_name .
     }
     ORDER BY ?resource_module
 ---
@@ -30,10 +32,11 @@ defmodule {{ resource_module }} do
   """
   use Ash.Resource,
     domain: {{ domain_module }},
-    data_layer: AshPostgres.DataLayer
+    data_layer: AshPostgres.DataLayer,
+    authorizers: [Ash.Policy.Authorizer]
 
   postgres do
-    table "autofde_planner_candidates"
+    table "{{ table_name }}"
     repo Xaas.Repo
   end
 
@@ -58,11 +61,16 @@ defmodule {{ resource_module }} do
 
         body = %{
           tool: "{{ cnv_tool }}",
-          arguments: %{
-            domain: "PDDLDomain",
-            solver: "Astar",
-            "domain-arguments": query
-          }
+          arguments:
+{% if cnv_tool == "fabric__solve" %}
+            %{
+              domain: "PDDLDomain",
+              solver: "Astar",
+              "domain-arguments": query
+            }
+{% else %}
+            %{}
+{% endif %}
         }
 
         case Req.post(base_url <> "/invoke", json: body) do
@@ -94,6 +102,7 @@ defmodule {{ resource_module }} do
   # line instead.
   defp apply_record(changeset, %{"execution" => %{"stdout" => stdout, "exit_code" => 0}}) do
     case last_json_object(stdout) do
+{% if cnv_tool == "fabric__solve" %}
       {:ok, %{"trajectory_sha256" => sha}} when is_binary(sha) ->
         changeset
         |> Ash.Changeset.force_change_attribute(:cnv_response, %{"stdout" => stdout})
@@ -105,13 +114,27 @@ defmodule {{ resource_module }} do
           field: :query,
           message: "cnv-deploy /invoke succeeded but stdout had no trajectory_sha256 JSON payload"
         )
+{% else %}
+      {:ok, decoded} ->
+        # {{ cnv_tool }} does not emit a trajectory_sha256 (it is not a solve call), so
+        # trajectory_sha256 stays nil here -- no digest is invented for a non-solve tool.
+        changeset
+        |> Ash.Changeset.force_change_attribute(:cnv_response, decoded)
+        |> Ash.Changeset.force_change_attribute(:requested_at, DateTime.utc_now())
+
+      :error ->
+        Ash.Changeset.add_error(changeset,
+          field: :query,
+          message: "cnv-deploy /invoke succeeded but stdout had no parseable JSON payload"
+        )
+{% endif %}
     end
   end
 
   defp apply_record(changeset, %{"execution" => %{"exit_code" => exit_code, "stderr" => stderr}}) do
     Ash.Changeset.add_error(changeset,
       field: :query,
-      message: "fabric__solve exited #{exit_code}: #{stderr}"
+      message: "{{ cnv_tool }} exited #{exit_code}: #{stderr}"
     )
   end
 

@@ -9,6 +9,8 @@ SELECT ?s ?missing WHERE {
   UNION { ?s a aac:AshConnector . BIND(aac:invokeTool AS ?missing) }
   UNION { ?s a aac:AshConnector . BIND(aac:actionName AS ?missing) }
   UNION { ?s a aac:AshConnector . BIND(aac:cnvDeployBaseUrlEnv AS ?missing) }
+  UNION { ?s a aac:AshConnector . BIND(aac:outputFile AS ?missing) }
+  UNION { ?s a aac:AshConnector . BIND(aac:tableName AS ?missing) }
   FILTER NOT EXISTS { ?s ?missing ?any }
 }
 ORDER BY ?s ?missing
