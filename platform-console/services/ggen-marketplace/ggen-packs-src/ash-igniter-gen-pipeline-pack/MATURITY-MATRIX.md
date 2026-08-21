@@ -203,3 +203,25 @@ byte-identical receipt file contents (md5 before/after match exactly) — the *r
 mechanism's* idempotency (same guard fires the same way every time) is solid; it is
 specifically the *migration task's correctness* (receipt not implying real completed work)
 that remains a known, now twice-confirmed gap, not a one-off fluke from the original run.
+
+## Marketplace-wide `agp:rank`-style fan-out adoption catalog (real, 2026-08-21)
+
+Scanned every `*.tmpl` file under both `~/ggen-marketplace/packs/` and `~/chatman-ecosystem/
+platform-console/services/ggen-marketplace/ggen-packs-src/` (~200 packs total) for the
+`for_each` SPARQL + `sh_after`/`sh_before` external-command-dispatch shape this pack's
+`agp:rank` ordering applies to.
+
+**Real result: this pack is currently the only one with that shape.** Neither
+`ash-autofde-lab-connector-pack` nor `ash-subproject-pack-generator` (its closest siblings,
+both also `for_each`-driven) use `sh_after`/`sh_before` — both generate files directly via
+`to:` output paths, with no external command dispatch to order. Every other `for_each` match
+across the ~200-pack sweep (mostly `shadcn`/UI component-scaffolding packs) is unrelated
+file-fan-out with no command-ordering concern at all.
+
+**Migration list: empty, honestly.** There is no other pack to migrate to `agp:rank`-style
+ordering today — the shape hasn't spread beyond its origin pack yet. This is a real, checked
+negative result, not an unexplored gap: worth revisiting if/when a second pack adopts the
+`sh_after` external-command-dispatch pattern (the `ash-autofde-lab-connector-pack`'s `cnv-deploy`
+`/invoke` call is the closest candidate architecturally, per this session's earlier `agp:`/`aac:`
+vocabulary-unification discussion, but it currently dispatches via a template-embedded HTTP call
+in the generated Elixir code, not via `sh_after`, so it doesn't share this specific shape either).
