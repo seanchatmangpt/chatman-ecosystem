@@ -1,0 +1,18 @@
+[pack]
+name = "ash-autofde-lab-connector-pack"
+version = "0.1.0"
+description = """
+Generates the real Ash-side connector resource for the AutoFDE-Lab receipt/broker loop.
+Produces Xaas.Operations.AutofdePlannerCandidate, an Ash resource whose one real action
+calls the already-built clap-noun-verb-deploy HTTP surface (POST /invoke, tool
+"fabric__solve") wrapping autofde-lab's real fabric CLI (46+ registered solvers, per
+pyproject.toml's [project.entry-points."autofde_lab.solvers"] table), and persists the
+real trajectory_sha256 receipt that CLI already emits -- no invented digest scheme.
+Carries the deny-by-default policy floor confirmed in
+lib/xaas/operations/capability_liveness_receipt.ex. This is the Ash-side half of
+autofde-lab's real Broker/Actuator/PostconditionVerifier split
+(src/autofde_lab/receipts/broker.py) -- the loop identified as connectable but not yet
+closed. Grounded in 6 real Explore-agent research passes plus direct reads of
+clap-noun-verb-any's real example/test and clap-noun-verb-deploy's real http.rs
+(2026-08-20); no fabricated endpoints or example output.
+"""

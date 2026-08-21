@@ -13,17 +13,32 @@
  * volume, IP allowlist, cost anomalies, and admission-policy bindings --
  * never region-specific placement drift).
  *
- * DETECTION: `runResidencyAttestationScanForOrg` fabricates nothing --
- * for one org with a real pinned `region` (lib/orgs.ts), it lists that
- * org's real live Pods (lib/k8s.ts's `listPods`, each carrying its real,
- * scheduler-assigned `spec.nodeName`) and this cluster's real live Node
- * `topology.kubernetes.io/region` labels (`getNodeRegionLabels`, the same
- * well-known label `setOrgRegion`'s own live validation and
- * `buildProjectManifest`'s `nodeSelector` injection already trust), then
- * flags every Pod whose ACTUAL node's region label does not equal the
- * org's pinned region as a drift event. A Pod not yet scheduled
- * (`nodeName: null`) or scheduled onto an unlabeled node is ALSO drift --
- * absence of evidence is never treated as evidence of compliance.
+ * DETECTION covers both compute AND storage placement, fabricating
+ * nothing in either dimension:
+ *   - COMPUTE: `runResidencyAttestationScanForOrg` lists this org's real
+ *     live Pods (lib/k8s.ts's `listPods`, each carrying its real,
+ *     scheduler-assigned `spec.nodeName`) and this cluster's real live
+ *     Node `topology.kubernetes.io/region` labels (`getNodeRegionLabels`,
+ *     the same well-known label `setOrgRegion`'s own live validation and
+ *     `buildProjectManifest`'s `nodeSelector` injection already trust),
+ *     then flags every Pod whose ACTUAL node's region label does not
+ *     equal the org's pinned region as a drift event. A Pod not yet
+ *     scheduled (`nodeName: null`) or scheduled onto an unlabeled node is
+ *     ALSO drift -- absence of evidence is never treated as evidence of
+ *     compliance.
+ *   - STORAGE: `computeOrgStorageDrift` lists this org's real live PVCs
+ *     (lib/k8s.ts's `listNamespacePvcs`) and, for each one k8s has
+ *     actually bound to a volume, resolves that volume's REAL topology
+ *     region straight off the live PersistentVolume object
+ *     (`getPersistentVolumeRegion` -- checks the PV's own region label,
+ *     falling back to its CSI `nodeAffinity` topology requirement) rather
+ *     than trusting the PVC's requested StorageClass name, which is a
+ *     provisioning-time REQUEST, not proof of where a CSI driver actually
+ *     placed the underlying disk. A PVC not yet bound is ALSO storage
+ *     drift, same absence-of-evidence discipline as an unscheduled Pod.
+ *     This is the concrete "which nodes/PVCs did this org's data actually
+ *     land on" claim procurement's sovereignty clauses ask for by name --
+ *     not just "which nodes ran the workload."
  *
  * PERSISTENCE: one real `platform_console.residency_attestations`
  * Postgres row PER SCAN, appended (never UPSERTed, never UPDATEd) --
@@ -46,7 +61,12 @@
  */
 import type { Pool } from "pg";
 import { getAuditDbPool } from "@/lib/audit-db";
-import { listPods, getNodeRegionLabels } from "@/lib/k8s";
+import {
+  listPods,
+  getNodeRegionLabels,
+  listNamespacePvcs,
+  getPersistentVolumeRegion,
+} from "@/lib/k8s";
 import { listOrgs, getOrg, type Org } from "@/lib/orgs";
 
 export type ResidencyAttestationOutcome<T> =
@@ -65,6 +85,21 @@ export interface ResidencyDriftEvent {
   expectedRegion: string;
 }
 
+/** One real PVC whose actual bound-volume placement did not match the
+ * org's pinned region at scan time -- the storage-residency counterpart
+ * to `ResidencyDriftEvent` above. `volumeName: null` covers a PVC not yet
+ * bound (`Pending`); `actualRegion: null` covers both that case and a
+ * bound PV whose real topology could not be resolved to a region
+ * (`getPersistentVolumeRegion` above) -- both are honest "cannot prove
+ * this volume's data stayed in-region" states, never coerced into
+ * "assume compliant". */
+export interface StorageDriftEvent {
+  pvcName: string;
+  volumeName: string | null;
+  actualRegion: string | null;
+  expectedRegion: string;
+}
+
 /** One real, immutable attestation row -- the unit `platform_console.
  * residency_attestations` persists, one per (org, scan). */
 export interface ResidencyAttestation {
@@ -78,6 +113,14 @@ export interface ResidencyAttestation {
   workloadsChecked: number;
   driftCount: number;
   driftEvents: ResidencyDriftEvent[];
+  /** Real PVCs checked this scan -- the storage-residency counterpart to
+   * `workloadsChecked`. `0` for a scan taken before the storage-residency
+   * column existed (see `ALTER TABLE ... ADD COLUMN` below), which is
+   * itself honest: no storage check was ever run for that historical row,
+   * never backfilled with a fabricated count. */
+  volumesChecked: number;
+  storageDriftCount: number;
+  storageDriftEvents: StorageDriftEvent[];
   attestedAt: string;
 }
 
@@ -105,6 +148,25 @@ async function ensureResidencyAttestationsTable(pool: Pool): Promise<void> {
     `CREATE INDEX IF NOT EXISTS residency_attestations_org_idx
        ON platform_console.residency_attestations (org_id, period DESC)`,
   );
+  // Storage-residency (PVC/PV) columns, added after the table's initial
+  // Pod-only shape shipped -- same idempotent ADD COLUMN IF NOT EXISTS
+  // self-bootstrap convention lib/audit-db.ts's ensureAuditTable already
+  // establishes for evolving this same append-only-row table shape
+  // in place. Defaulted to 0/'[]' so every already-persisted historical
+  // row round-trips with an honest "no storage check was run for this
+  // scan" reading, never a fabricated backfilled count.
+  await pool.query(
+    `ALTER TABLE platform_console.residency_attestations
+       ADD COLUMN IF NOT EXISTS volumes_checked integer NOT NULL DEFAULT 0`,
+  );
+  await pool.query(
+    `ALTER TABLE platform_console.residency_attestations
+       ADD COLUMN IF NOT EXISTS storage_drift_count integer NOT NULL DEFAULT 0`,
+  );
+  await pool.query(
+    `ALTER TABLE platform_console.residency_attestations
+       ADD COLUMN IF NOT EXISTS storage_drift_events jsonb NOT NULL DEFAULT '[]'::jsonb`,
+  );
 }
 
 let tableReady: Promise<void> | null = null;
@@ -129,6 +191,9 @@ function toAttestation(r: Record<string, unknown>): ResidencyAttestation {
     workloadsChecked: r.workloads_checked as number,
     driftCount: r.drift_count as number,
     driftEvents: (r.drift_events ?? []) as ResidencyDriftEvent[],
+    volumesChecked: (r.volumes_checked as number) ?? 0,
+    storageDriftCount: (r.storage_drift_count as number) ?? 0,
+    storageDriftEvents: (r.storage_drift_events ?? []) as StorageDriftEvent[],
     attestedAt: new Date(r.attested_at as string).toISOString(),
   };
 }
@@ -163,15 +228,66 @@ async function computeOrgDrift(
   return { workloadsChecked: podsResult.data.length, driftEvents, error: null };
 }
 
+/**
+ * Real, read-only storage-drift computation for one org already known to
+ * have a pinned `region` -- the PVC/PV counterpart to `computeOrgDrift`
+ * above. Lists every real PVC this org's namespace actually holds
+ * (lib/k8s.ts's `listNamespacePvcs`) and, for each one that k8s has
+ * actually bound to a volume, resolves that volume's REAL topology
+ * region (`getPersistentVolumeRegion`) rather than trusting the PVC's own
+ * StorageClass name (a StorageClass name is a provisioning-time REQUEST,
+ * not proof of where the CSI driver actually placed the underlying disk).
+ * A PVC not yet bound (`volumeName: null`) is drift, same "absence of
+ * evidence is not evidence of compliance" discipline `computeOrgDrift`
+ * already applies to unscheduled Pods.
+ */
+async function computeOrgStorageDrift(
+  org: Org,
+): Promise<{ volumesChecked: number; storageDriftEvents: StorageDriftEvent[]; error: string | null }> {
+  const pvcsResult = await listNamespacePvcs(org.namespace);
+  if (!pvcsResult.ok) {
+    return { volumesChecked: 0, storageDriftEvents: [], error: pvcsResult.error };
+  }
+  const region = org.region as string;
+  const storageDriftEvents: StorageDriftEvent[] = [];
+  for (const pvc of pvcsResult.data) {
+    if (!pvc.volumeName) {
+      storageDriftEvents.push({
+        pvcName: pvc.name,
+        volumeName: null,
+        actualRegion: null,
+        expectedRegion: region,
+      });
+      continue;
+    }
+    const pvRegionResult = await getPersistentVolumeRegion(pvc.volumeName);
+    if (!pvRegionResult.ok) {
+      return { volumesChecked: 0, storageDriftEvents: [], error: pvRegionResult.error };
+    }
+    const actualRegion = pvRegionResult.data ?? null;
+    if (actualRegion !== region) {
+      storageDriftEvents.push({
+        pvcName: pvc.name,
+        volumeName: pvc.volumeName,
+        actualRegion,
+        expectedRegion: region,
+      });
+    }
+  }
+  return { volumesChecked: pvcsResult.data.length, storageDriftEvents, error: null };
+}
+
 async function persistAttestation(
   pool: Pool,
   org: Org,
   scan: { workloadsChecked: number; driftEvents: ResidencyDriftEvent[] },
+  storageScan: { volumesChecked: number; storageDriftEvents: StorageDriftEvent[] },
 ): Promise<ResidencyAttestation> {
   const result = await pool.query(
     `INSERT INTO platform_console.residency_attestations
-       (org_id, namespace, region, period, workloads_checked, drift_count, drift_events)
-     VALUES ($1, $2, $3, now(), $4, $5, $6::jsonb)
+       (org_id, namespace, region, period, workloads_checked, drift_count, drift_events,
+        volumes_checked, storage_drift_count, storage_drift_events)
+     VALUES ($1, $2, $3, now(), $4, $5, $6::jsonb, $7, $8, $9::jsonb)
      RETURNING *`,
     [
       org.id,
@@ -180,6 +296,9 @@ async function persistAttestation(
       scan.workloadsChecked,
       scan.driftEvents.length,
       JSON.stringify(scan.driftEvents),
+      storageScan.volumesChecked,
+      storageScan.storageDriftEvents.length,
+      JSON.stringify(storageScan.storageDriftEvents),
     ],
   );
   return toAttestation(result.rows[0] as Record<string, unknown>);
@@ -215,7 +334,10 @@ export async function runResidencyAttestationScanForOrg(
   const scan = await computeOrgDrift(org, nodeRegionsResult.data);
   if (scan.error) return { ok: false, error: scan.error };
 
-  const attestation = await persistAttestation(pool, org, scan);
+  const storageScan = await computeOrgStorageDrift(org);
+  if (storageScan.error) return { ok: false, error: storageScan.error };
+
+  const attestation = await persistAttestation(pool, org, scan, storageScan);
   return { ok: true, data: attestation };
 }
 
@@ -228,6 +350,8 @@ export interface ResidencyAttestationScanReport {
     region: string | null;
     workloadsChecked: number;
     driftCount: number;
+    volumesChecked: number;
+    storageDriftCount: number;
     error: string | null;
   }>;
 }
@@ -267,6 +391,8 @@ export async function runResidencyAttestationScan(): Promise<
         region: org.region,
         workloadsChecked: 0,
         driftCount: 0,
+        volumesChecked: 0,
+        storageDriftCount: 0,
         error: scanResult.error,
       });
       continue;
@@ -276,6 +402,8 @@ export async function runResidencyAttestationScan(): Promise<
       region: scanResult.data.region,
       workloadsChecked: scanResult.data.workloadsChecked,
       driftCount: scanResult.data.driftCount,
+      volumesChecked: scanResult.data.volumesChecked,
+      storageDriftCount: scanResult.data.storageDriftCount,
       error: null,
     });
   }

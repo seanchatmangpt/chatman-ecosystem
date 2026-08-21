@@ -1,0 +1,29 @@
+@prefix agp: <https://ggen.io/ontology/ash-igniter-gen-pipeline#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+agp:ChainDomain a agp:CodegenTarget ;
+  agp:moduleName "Operations" ;
+  agp:domainModule "Example" ;
+  agp:mixTask "ash.gen.domain" ;
+  agp:rank 0 .
+
+agp:ChainWidgetResource a agp:CodegenTarget ;
+  agp:moduleName "Widget" ;
+  agp:domainModule "Example.Operations" ;
+  agp:mixTask "ash.gen.resource" ;
+  agp:mixArgs "--ignore-if-exists --default-actions read" ;
+  agp:rank 1 .
+
+agp:ChainWidgetExtend a agp:CodegenTarget ;
+  agp:moduleName "Widget" ;
+  agp:domainModule "Example.Operations" ;
+  agp:mixTask "ash.extend" ;
+  agp:mixArgs "AshGraphql.Resource --yes" ;
+  agp:rank 2 .
+
+agp:ChainWidgetMigration a agp:CodegenTarget ;
+  agp:moduleName "Widget" ;
+  agp:domainModule "Example.Operations" ;
+  agp:mixTask "ash_postgres.generate_migrations" ;
+  agp:mixArgs "--name add_widget" ;
+  agp:rank 3 .

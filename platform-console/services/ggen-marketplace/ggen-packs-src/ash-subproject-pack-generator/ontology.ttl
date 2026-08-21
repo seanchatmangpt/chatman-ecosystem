@@ -1,0 +1,69 @@
+# ash-subproject-pack-generator/ontology.ttl
+#
+# Real data, copied verbatim from a real hex.pm search
+# (https://hex.pm/packages?search=depends%3Ahexpm%3Aash&sort=total_downloads,
+# fetched 2026-08-20; 137 real total packages depend on `ash`). Admitted
+# here: the 34 real packages with total_downloads >= 20,000, the real,
+# disclosed proxy this pack version uses for "actively developed" (see
+# pack.toml for why -- not verified git-commit recency).
+
+@prefix asg:  <https://ggen.io/ontology/ash-subproject-generator#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<https://ggen.io/ontology/ash-subproject-generator#> a owl:Ontology ;
+  rdfs:label "Real, hex.pm-sourced Ash-ecosystem subproject facts, for pack-skeleton generation" .
+
+asg:AshSubproject a owl:Class ;
+  rdfs:label "One real hex.pm package that depends on ash, admitted by a real, disclosed download threshold." .
+
+asg:packageName a owl:DatatypeProperty ; rdfs:domain asg:AshSubproject ; rdfs:range xsd:string .
+asg:totalDownloads a owl:DatatypeProperty ; rdfs:domain asg:AshSubproject ; rdfs:range xsd:integer ;
+  rdfs:comment "Real total_downloads figure from hex.pm at fetch time (2026-08-20) -- a real point-in-time snapshot, not live-synced." .
+asg:hexUrl a owl:DatatypeProperty ; rdfs:domain asg:AshSubproject ; rdfs:range xsd:string .
+
+# Real, deliberate exclusion, disclosed: "honeybadger" (2,239,840
+# downloads) was the #1 real result on the hex.pm search's first page,
+# ahead of every real ash_* package -- excluded here as a real search
+# false-positive (an error-tracking SaaS client, not an Ash-ecosystem
+# library; hex.pm's dependency search appears to match some other real
+# relationship, not a genuine `ash` dependency). Not admitted.
+
+# --- 34 real packages, total_downloads >= 20,000, sorted descending ---
+
+asg:ash_postgres a asg:AshSubproject ; asg:packageName "ash_postgres" ; asg:totalDownloads 1362679 ; asg:hexUrl "https://hex.pm/packages/ash_postgres" .
+asg:ash_phoenix a asg:AshSubproject ; asg:packageName "ash_phoenix" ; asg:totalDownloads 1139819 ; asg:hexUrl "https://hex.pm/packages/ash_phoenix" .
+asg:ash_sql a asg:AshSubproject ; asg:packageName "ash_sql" ; asg:totalDownloads 1053351 ; asg:hexUrl "https://hex.pm/packages/ash_sql" .
+asg:ash_authentication a asg:AshSubproject ; asg:packageName "ash_authentication" ; asg:totalDownloads 822929 ; asg:hexUrl "https://hex.pm/packages/ash_authentication" .
+asg:ash_authentication_phoenix a asg:AshSubproject ; asg:packageName "ash_authentication_phoenix" ; asg:totalDownloads 723365 ; asg:hexUrl "https://hex.pm/packages/ash_authentication_phoenix" .
+asg:ash_json_api a asg:AshSubproject ; asg:packageName "ash_json_api" ; asg:totalDownloads 618817 ; asg:hexUrl "https://hex.pm/packages/ash_json_api" .
+asg:ash_admin a asg:AshSubproject ; asg:packageName "ash_admin" ; asg:totalDownloads 465975 ; asg:hexUrl "https://hex.pm/packages/ash_admin" .
+asg:ash_oban a asg:AshSubproject ; asg:packageName "ash_oban" ; asg:totalDownloads 437985 ; asg:hexUrl "https://hex.pm/packages/ash_oban" .
+asg:ash_graphql a asg:AshSubproject ; asg:packageName "ash_graphql" ; asg:totalDownloads 429580 ; asg:hexUrl "https://hex.pm/packages/ash_graphql" .
+asg:ash_archival a asg:AshSubproject ; asg:packageName "ash_archival" ; asg:totalDownloads 359327 ; asg:hexUrl "https://hex.pm/packages/ash_archival" .
+asg:ash_state_machine a asg:AshSubproject ; asg:packageName "ash_state_machine" ; asg:totalDownloads 306849 ; asg:hexUrl "https://hex.pm/packages/ash_state_machine" .
+asg:ash_paper_trail a asg:AshSubproject ; asg:packageName "ash_paper_trail" ; asg:totalDownloads 267179 ; asg:hexUrl "https://hex.pm/packages/ash_paper_trail" .
+asg:ash_ai a asg:AshSubproject ; asg:packageName "ash_ai" ; asg:totalDownloads 205961 ; asg:hexUrl "https://hex.pm/packages/ash_ai" .
+asg:cinder a asg:AshSubproject ; asg:packageName "cinder" ; asg:totalDownloads 191708 ; asg:hexUrl "https://hex.pm/packages/cinder" .
+asg:ash_cloak a asg:AshSubproject ; asg:packageName "ash_cloak" ; asg:totalDownloads 186150 ; asg:hexUrl "https://hex.pm/packages/ash_cloak" .
+asg:ash_money a asg:AshSubproject ; asg:packageName "ash_money" ; asg:totalDownloads 139839 ; asg:hexUrl "https://hex.pm/packages/ash_money" .
+asg:ash_appsignal a asg:AshSubproject ; asg:packageName "ash_appsignal" ; asg:totalDownloads 92189 ; asg:hexUrl "https://hex.pm/packages/ash_appsignal" .
+asg:opentelemetry_ash a asg:AshSubproject ; asg:packageName "opentelemetry_ash" ; asg:totalDownloads 90399 ; asg:hexUrl "https://hex.pm/packages/opentelemetry_ash" .
+asg:ash_rate_limiter a asg:AshSubproject ; asg:packageName "ash_rate_limiter" ; asg:totalDownloads 83698 ; asg:hexUrl "https://hex.pm/packages/ash_rate_limiter" .
+asg:ash_typescript a asg:AshSubproject ; asg:packageName "ash_typescript" ; asg:totalDownloads 74513 ; asg:hexUrl "https://hex.pm/packages/ash_typescript" .
+asg:ash_geo a asg:AshSubproject ; asg:packageName "ash_geo" ; asg:totalDownloads 66821 ; asg:hexUrl "https://hex.pm/packages/ash_geo" .
+asg:ash_double_entry a asg:AshSubproject ; asg:packageName "ash_double_entry" ; asg:totalDownloads 65103 ; asg:hexUrl "https://hex.pm/packages/ash_double_entry" .
+asg:ash_jason a asg:AshSubproject ; asg:packageName "ash_jason" ; asg:totalDownloads 58432 ; asg:hexUrl "https://hex.pm/packages/ash_jason" .
+asg:aepf_opensearch a asg:AshSubproject ; asg:packageName "aepf_opensearch" ; asg:totalDownloads 50332 ; asg:hexUrl "https://hex.pm/packages/aepf_opensearch" .
+asg:ash_events a asg:AshSubproject ; asg:packageName "ash_events" ; asg:totalDownloads 48568 ; asg:hexUrl "https://hex.pm/packages/ash_events" .
+asg:smokestack a asg:AshSubproject ; asg:packageName "smokestack" ; asg:totalDownloads 40730 ; asg:hexUrl "https://hex.pm/packages/smokestack" .
+asg:ash_sqlite a asg:AshSubproject ; asg:packageName "ash_sqlite" ; asg:totalDownloads 34286 ; asg:hexUrl "https://hex.pm/packages/ash_sqlite" .
+asg:ash_flow a asg:AshSubproject ; asg:packageName "ash_flow" ; asg:totalDownloads 34221 ; asg:hexUrl "https://hex.pm/packages/ash_flow" .
+asg:ash_csv a asg:AshSubproject ; asg:packageName "ash_csv" ; asg:totalDownloads 31985 ; asg:hexUrl "https://hex.pm/packages/ash_csv" .
+asg:ash_diagram a asg:AshSubproject ; asg:packageName "ash_diagram" ; asg:totalDownloads 29406 ; asg:hexUrl "https://hex.pm/packages/ash_diagram" .
+asg:ash_uuid a asg:AshSubproject ; asg:packageName "ash_uuid" ; asg:totalDownloads 26912 ; asg:hexUrl "https://hex.pm/packages/ash_uuid" .
+asg:ash_policy_authorizer a asg:AshSubproject ; asg:packageName "ash_policy_authorizer" ; asg:totalDownloads 24824 ; asg:hexUrl "https://hex.pm/packages/ash_policy_authorizer" .
+asg:ash_slug a asg:AshSubproject ; asg:packageName "ash_slug" ; asg:totalDownloads 22686 ; asg:hexUrl "https://hex.pm/packages/ash_slug" .
+asg:ash_pagify a asg:AshSubproject ; asg:packageName "ash_pagify" ; asg:totalDownloads 21989 ; asg:hexUrl "https://hex.pm/packages/ash_pagify" .

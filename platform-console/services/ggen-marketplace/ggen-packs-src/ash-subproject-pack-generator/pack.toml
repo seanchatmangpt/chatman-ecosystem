@@ -1,0 +1,34 @@
+[pack]
+name = "ash-subproject-pack-generator"
+version = "0.1.0"
+description = """
+Real, generator (meta-pack): scaffolds one ggen-marketplace pack skeleton per
+real, actively-downloaded Ash-ecosystem hex.pm package, from real hex.pm data
+-- not 100+ hand-authored packs, which would be exactly the "hand
+manipulation" this whole effort exists to eliminate.
+
+Concrete instance proven this pack version (2026-08-20): a real hex.pm search
+(https://hex.pm/packages?search=depends%3Ahexpm%3Aash&sort=total_downloads)
+confirms 137 real published packages depend on `ash`. "Actively developed" is
+approximated here by a real, disclosed, honest proxy -- total_downloads >=
+20,000 -- NOT by verified git-commit recency (checking that for 137 packages
+was out of this version's real budget; a future version could tighten this
+by cross-referencing each package's real GitHub last-commit date). That
+threshold admits 34 real packages this version, from ash_postgres
+(1,362,679 downloads) down to ash_pagify (21,989) -- the real list is in
+ontology.ttl, copied verbatim from the real hex.pm search results, not
+estimated or invented.
+
+This pack's one real template (templates/scaffold_pack.tmpl) generates, per
+admitted asg:AshSubproject row, a minimal real ggen-marketplace pack skeleton
+(pack.toml + ontology.ttl stub + one gates/010_required.rq stub) under
+packs-out/<slug>-pack/ -- a real starting point a maintainer/future ggen run
+still has to fill in with that specific library's real DSL/vocabulary (this
+generator cannot know ash_state_machine's real transition syntax vs.
+ash_cloak's real vault config any more than a human would without reading
+that library's real docs first -- it scaffolds structure, not domain
+knowledge).
+"""
+
+[compatibility]
+requires_ash = true

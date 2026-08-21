@@ -1,0 +1,15 @@
+# MESSAGE: every asg:AshSubproject must have a non-empty asg:packageName,
+# asg:totalDownloads, and asg:hexUrl -- scaffold_pack.tmpl interpolates
+# all three. Any row = a subject missing its required property.
+PREFIX asg: <https://ggen.io/ontology/ash-subproject-generator#>
+SELECT ?s ?missing WHERE {
+  {
+    ?s a asg:AshSubproject . BIND(asg:packageName AS ?missing)
+  } UNION {
+    ?s a asg:AshSubproject . BIND(asg:totalDownloads AS ?missing)
+  } UNION {
+    ?s a asg:AshSubproject . BIND(asg:hexUrl AS ?missing)
+  }
+  FILTER NOT EXISTS { ?s ?missing ?any }
+}
+ORDER BY ?s ?missing

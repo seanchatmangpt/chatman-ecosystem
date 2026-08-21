@@ -5,6 +5,8 @@ target_date = "2026-09-01"
 observed_at = "2026-08-15T22:26:00-07:00"
 root_repository = "seanchatmangpt/chatman-ecosystem"
 standing = "UNKNOWN"
+execution_receipts_reverified_at = "2026-08-21T12:35:00Z"
+execution_receipts_reverified_note = "Independently re-verified all 5 real execution_receipt-bearing components below via `gh run view <id> --repo <repository> --json status,conclusion,headSha,createdAt` -- every headSha/conclusion pair matches this manifest's own sha/standing claim exactly, confirming these are real, non-fabricated GitHub Actions runs, not merely asserted text: autofde-lab (31909415315, failure @ 87d719f4, matches BUILD_BROKEN), star-toml (30680591983, failure @ 8395515c, matches BUILD_BROKEN), ggen-marketplace (31923773826, success @ ceb2b69a, matches ALIVE), affidavit (31674647112, success @ 5dc78f11, matches ALIVE), autofde (31775830421, success @ c3f8abc2, matches ALIVE). The other 11 components carry no execution_receipt field (standing UNKNOWN or a named blocker only) and were not part of this check. Each receipt's headSha is a deliberately pinned historical subject per this gate's own release rule (\"only the immutable post-merge/tag subject may receive ecosystem release standing\") -- a component's local checkout having since moved past its pinned sha (see candidates.toml's own re-observations) does not itself make this manifest's pinned-subject claim stale; re-pinning to a newer subject is a separate, explicit admission decision this note does not make."
 
 required_roles = [
   "public-ontology",

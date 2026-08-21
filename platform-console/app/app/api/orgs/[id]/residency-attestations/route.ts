@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireRoleIn, roleIdentifierFor } from "@/lib/authz";
 import { getOrg } from "@/lib/orgs";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
-import { newRequestId, writeAuditLogEntry } from "@/lib/audit-db";
+import { newRequestId, writeAuditLogEntry, writeAuditLogEntryAwaited } from "@/lib/audit-db";
 import {
   listResidencyAttestations,
   runResidencyAttestationScanForOrg,
@@ -96,6 +96,7 @@ export async function GET(
       namespace,
       region: null,
       currentDriftCount: null,
+      currentStorageDriftCount: null,
       cleanHistory: null,
       history: [],
       message: `org '${id}' has no pinned region -- no residency attestation applies`,
@@ -121,10 +122,14 @@ export async function GET(
     namespace,
     region: orgResult.data.region,
     currentDriftCount: mostRecent ? mostRecent.driftCount : null,
+    currentStorageDriftCount: mostRecent ? mostRecent.storageDriftCount : null,
     // Provable straight from this org's own real, append-only row
     // history -- true only when every single past attestation, not just
-    // the most recent one, observed zero drift.
-    cleanHistory: historyResult.data.length > 0 && historyResult.data.every((a) => a.driftCount === 0),
+    // the most recent one, observed zero drift in EITHER dimension
+    // (compute placement AND storage/PVC placement).
+    cleanHistory:
+      historyResult.data.length > 0 &&
+      historyResult.data.every((a) => a.driftCount === 0 && a.storageDriftCount === 0),
     history: historyResult.data,
   });
 }
@@ -173,7 +178,14 @@ export async function POST(
 
   const result = await runResidencyAttestationScanForOrg(id);
 
-  writeAuditLogEntry({
+  // Durable, awaited audit write: this POST persists a real, immutable
+  // sovereignty-attestation row (compute AND storage placement) that an
+  // external auditor may be handed -- same "the record that the attestation
+  // was RUN survives even if the response never reaches the caller" bar
+  // as this repo's other maker-checker/security-relevant mutations
+  // (tier.downgrade, pricing.override, freeze.override), so this call is
+  // awaited rather than fire-and-forget like the read-only GET path above.
+  await writeAuditLogEntryAwaited({
     orgId: id,
     timestamp: new Date().toISOString(),
     actor,

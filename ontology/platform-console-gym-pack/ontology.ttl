@@ -1,0 +1,43 @@
+@prefix pcc: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/platform-console-capabilities#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# GymAct ontology-driven-provider pack for platform-console's 3 in-scope
+# capabilities (eager-forging-sparrow plan, Phase 4). Reuses the exact same
+# individual IRIs as ../platform-console-capabilities.ttl's `ce:Capability`
+# ABox (pcc:CastleVerbInventoryComponents, pcc:CastleVerbInventoryGoals,
+# pcc:ApprovalFreezeOverride) so a capability is one identity across both
+# graphs, never re-minted -- this file adds exactly the `sosa:Procedure`/
+# `dct:identifier`/`dct:type` triples `gymact.gyms.ontology_gym.load_procedures`
+# needs to compile a live EnvironmentProvider, per that module's own real,
+# already-working `protocol-gym-pack` precedent (bare sosa:Procedure, no
+# pplan:Plan wrapper, no dct:subject artifact model -- confirmed against
+# ontology_gym.py's `load_procedures` docstring before writing this file,
+# not assumed).
+#
+# `dct:type` names two real families, matched to this pack's real authority
+# shape (from platform-console-capabilities.ttl's ce:requiredAuthority
+# values): "read" for the two castle verbs (gated by
+# `AuthorityObject.admits(castle.verb.run)`, a standard broker admission),
+# "approval" for freeze-override (gated by
+# `approval-workflow.requireApproval`, the maker-checker path) -- the
+# "approval" family is configured as the one elevated family by
+# `gymact.gyms.platform_console_ontology_provider.build_platform_console_provider`.
+
+pcc:PlatformConsoleGymPackOntology a owl:Ontology ;
+    dcterms:title "Platform Console GymAct Pack (sosa:Procedure bridge)" ;
+    dcterms:description "sosa:Procedure/dct:identifier/dct:type triples bridging platform-console-capabilities.ttl's ce:Capability individuals into gymact's OntologyDrivenProvider compiler." .
+
+pcc:CastleVerbInventoryComponents a sosa:Procedure ;
+    dct:identifier "castle.verb.inventory-components" ;
+    dct:type pcc:family-read .
+
+pcc:CastleVerbInventoryGoals a sosa:Procedure ;
+    dct:identifier "castle.verb.inventory-goals" ;
+    dct:type pcc:family-read .
+
+pcc:ApprovalFreezeOverride a sosa:Procedure ;
+    dct:identifier "approval.freeze-override" ;
+    dct:type pcc:family-approval .

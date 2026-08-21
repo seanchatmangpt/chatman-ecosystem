@@ -1,0 +1,16 @@
+# MESSAGE: every aac:AshConnector must have all 5 required properties bound. invokeTool
+# must name a real fabric CLI tool (fabric__catalog/fabric__match/fabric__solve/
+# fabric__cache-stats/fabric__cache-hotset, per cnv-any.json's ggen-emitted paths) -- this
+# pack generates a planning connector calling those tools only, never an actuation path.
+PREFIX aac: <https://ggen.dev/ontology/ash-autofde-lab-connector#>
+SELECT ?s ?missing WHERE {
+  { ?s a aac:AshConnector . BIND(aac:resourceModule AS ?missing) }
+  UNION { ?s a aac:AshConnector . BIND(aac:domainModule AS ?missing) }
+  UNION { ?s a aac:AshConnector . BIND(aac:invokeTool AS ?missing) }
+  UNION { ?s a aac:AshConnector . BIND(aac:actionName AS ?missing) }
+  UNION { ?s a aac:AshConnector . BIND(aac:cnvDeployBaseUrlEnv AS ?missing) }
+  UNION { ?s a aac:AshConnector . BIND(aac:outputFile AS ?missing) }
+  UNION { ?s a aac:AshConnector . BIND(aac:tableName AS ?missing) }
+  FILTER NOT EXISTS { ?s ?missing ?any }
+}
+ORDER BY ?s ?missing

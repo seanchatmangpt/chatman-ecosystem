@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Nav from "@/components/Nav";
 
@@ -23,7 +23,7 @@ type CustomDomainStatus = "pending" | "issued" | "failed" | null;
 // dynamic-segment page pretending session-wide org context already
 // exists elsewhere in this codebase -- a real, disclosed interim, not
 // silently claimed as full multi-tenant UI routing.
-export default function OrgBrandingPage() {
+function OrgBrandingPageInner() {
   const searchParams = useSearchParams();
   const orgId = searchParams.get("orgId") ?? "";
 
@@ -320,5 +320,13 @@ export default function OrgBrandingPage() {
         )}
       </main>
     </>
+  );
+}
+
+export default function OrgBrandingPage() {
+  return (
+    <Suspense fallback={null}>
+      <OrgBrandingPageInner />
+    </Suspense>
   );
 }

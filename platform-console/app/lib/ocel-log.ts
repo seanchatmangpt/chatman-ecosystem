@@ -99,3 +99,119 @@ export async function getOcelDiscoveryResult(): Promise<
 > {
   return accumulatorFetch<OcelDiscoveryResult>("/discovery");
 }
+
+// ---------------------------------------------------------------------------
+// Local OC-DFG discovery via a real wasm4pm-cli subprocess (`wpm`)
+// ---------------------------------------------------------------------------
+//
+// Deliberately separate from `getOcelDiscoveryResult` above and from
+// `accumulatorFetch`: this does not call the deployed `ocel-accumulator`
+// Service at all. It shells out, server-side, to a real `wasm4pm-cli`
+// binary (`wpm mining discover --algo ocdfg -o <file>`, real subcommand
+// confirmed live at crates/wasm4pm-cli/src/commands/mining.rs and
+// crates/wasm4pm-cli/src/commands/ocdfg_bridge.rs in the wasm4pm repo,
+// which wraps `wasm4pm::advanced::ocdfg::OCDFG::discover`) against an
+// `OcelLog` supplied directly by the caller, and parses the real OCDFG
+// JSON the CLI writes back out.
+//
+// This is a second, independently-comparable discovery path -- it exists
+// so platform-console has one real, in-repo wasm4pm consumer, distinct
+// from (and not a replacement for) the accumulator proxy above. It follows
+// the same subprocess convention as `lib/custom-domains.ts`'s
+// `generateSelfSignedCertificate` (execFileSync against a real CLI, a
+// mkdtemp scratch dir, explicit input/output file paths, a bounded
+// timeout, fail-closed on any error) -- not a second, driftable pattern.
+//
+// `wpm mining discover` only reads a `.json` FILE PATH (no stdin support,
+// confirmed by reading crates/wasm4pm-cli/src/commands/mining.rs's
+// `load_ocel`), so the input log is written to a temp file rather than
+// piped. The CLI's `ocdfg` branch had no `-o`/JSON output path before this
+// integration (it only printed a colored terminal table); JSON output
+// support was added to it (crates/wasm4pm-cli/src/commands/mining.rs) as
+// a real, additive part of this change so it can be consumed
+// programmatically here.
+
+import { execFileSync } from "node:child_process";
+import * as fs from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
+
+/** Minimal OCEL 2.0 log shape accepted by wasm4pm's tolerant OCEL parser. */
+export interface OcelLog {
+  eventTypes: string[];
+  objectTypes: string[];
+  events: Array<{
+    id: string;
+    type: string;
+    time: string;
+    attributes: Record<string, unknown>;
+    relationships: Array<{ objectId: string; qualifier: string }>;
+  }>;
+  objects: Array<{
+    id: string;
+    type: string;
+    attributes: Record<string, unknown>;
+  }>;
+}
+
+export interface OcDfgEdge {
+  from: string;
+  to: string;
+  frequency: number;
+}
+
+export interface OcDfgNode {
+  id: string;
+  label: string;
+  frequency: number;
+}
+
+export interface DFG {
+  nodes: OcDfgNode[];
+  edges: OcDfgEdge[];
+  start_activities: Record<string, number>;
+  end_activities: Record<string, number>;
+}
+
+/** The real `wasm4pm::advanced::ocdfg::OCDFG` struct, one DFG per object type. */
+export interface OCDFG {
+  dfgs: Record<string, DFG>;
+}
+
+const WPM_TIMEOUT_MS = 15_000;
+
+function wpmBinaryPath(): string {
+  return process.env.WPM_BIN_PATH ?? "wpm";
+}
+
+/**
+ * Discover an Object-Centric Directly-Follows Graph from `log` by shelling
+ * out, server-side, to a real `wasm4pm-cli` (`wpm`) subprocess. Returns the
+ * real parsed `OCDFG` on success; throws on any subprocess/parse failure
+ * (fail-closed, same convention as `accumulatorFetch` above -- callers
+ * decide how to surface the error, this function never fabricates a
+ * result).
+ */
+export function discoverOcDfgLocal(log: OcelLog): OCDFG {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ocdfg-discover-"));
+  try {
+    const inputPath = path.join(dir, "input.json");
+    const outputPath = path.join(dir, "output.json");
+    fs.writeFileSync(inputPath, JSON.stringify(log));
+
+    execFileSync(
+      wpmBinaryPath(),
+      ["mining", "discover", inputPath, "--algo", "ocdfg", "-o", outputPath],
+      { stdio: ["ignore", "pipe", "pipe"], timeout: WPM_TIMEOUT_MS },
+    );
+
+    const raw = fs.readFileSync(outputPath, "utf8");
+    const parsed = JSON.parse(raw) as OCDFG;
+    if (!parsed || typeof parsed.dfgs !== "object") {
+      throw new Error("wpm mining discover --algo ocdfg produced no dfgs field");
+    }
+    return parsed;
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+}

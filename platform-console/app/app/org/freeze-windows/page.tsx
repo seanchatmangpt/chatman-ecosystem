@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Nav from "@/components/Nav";
 
@@ -23,7 +23,7 @@ interface FreezeWindow {
 // the server-side gate POST/DELETE /api/freeze-windows enforces -- the UI
 // gate is cosmetic, the API gate is the real one; a non-owner can still
 // GET (view) but a failed POST/DELETE surfaces the real 403 error text.
-export default function OrgFreezeWindowsPage() {
+function OrgFreezeWindowsPageInner() {
   const searchParams = useSearchParams();
   const orgId = searchParams.get("orgId") ?? "";
 
@@ -217,6 +217,14 @@ export default function OrgFreezeWindowsPage() {
         )}
       </main>
     </>
+  );
+}
+
+export default function OrgFreezeWindowsPage() {
+  return (
+    <Suspense fallback={null}>
+      <OrgFreezeWindowsPageInner />
+    </Suspense>
   );
 }
 

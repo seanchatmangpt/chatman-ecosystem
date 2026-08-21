@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Nav from "@/components/Nav";
 
@@ -33,7 +33,7 @@ const ROLES: Role[] = ["viewer", "member", "owner"];
 // enforcement boundary). Shows the seat-usage meter (used/limit from
 // SEAT_LIMITS, lib/tiers.ts), an invite form, and a pending/accepted/
 // revoked table backed by POST/GET/DELETE /api/orgs/[id]/invites(/[id]).
-export default function OrgSeatsPage() {
+function OrgSeatsPageInner() {
   const searchParams = useSearchParams();
   const orgId = searchParams.get("orgId") ?? "";
 
@@ -271,5 +271,13 @@ export default function OrgSeatsPage() {
         )}
       </main>
     </>
+  );
+}
+
+export default function OrgSeatsPage() {
+  return (
+    <Suspense fallback={null}>
+      <OrgSeatsPageInner />
+    </Suspense>
   );
 }

@@ -15,6 +15,7 @@ scope = "Fortune-5 capstone plus 5x7 maturity evidence and pinned CI supply chai
 scope_standing = "PARTIAL_ALIVE"
 release_standing = "UNKNOWN"
 exact_head_ci = "SUCCESS"
+reobservation_note = "Re-observed 2026-08-21T12:10:00Z: PR #3 confirmed real MERGED via `gh pr view 3 --repo seanchatmangpt/fdegym` (mergedAt 2026-08-14T19:07:48Z, state MERGED). The real merge commit (`gh pr view --json mergeCommit` -> 2d7c5acb3cbb8df1608cf9b81be53a74e39a1946) exactly matches admitted_sha above, so admitted_sha/candidate_sha/exact_head_ci remain accurate as the verified merged state and are left unchanged. Separately, the same source branch agent/v26.9.1-capstone-maturity has since moved to a real, different head (b95419fae9a479a653cd0107986f1bdc08eab37e, confirmed via the real GitHub branches API, 7 real commits ahead of the old candidate_sha per a real compare call) that carries NO real CI evidence (`gh api .../commits/<sha>/status` -> state=pending, total_count=0, not merely still-running) -- named here as a real, open observation, never folded into candidate_sha/exact_head_ci without real CI evidence to back it."
 
 [[candidates]]
 component = "ggen"
@@ -28,3 +29,120 @@ scope = "single current integration surface; CI, DDUI ecosystem profile, and Fed
 scope_standing = "ALIVE"
 release_standing = "UNKNOWN"
 exact_head_ci = "SUCCESS"
+
+[[candidates]]
+component = "open-ontologies"
+repository = "seanchatmangpt/open-ontologies"
+admitted_sha = "91f6ab30aae4e2c022b7d6d3f039f2bae8a1a950"
+scope = "local checkout HEAD observed at /Users/sac/open-ontologies; working tree dirty; local HEAD differs from manifest-pinned sha 16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-20T22:44:41-07:00"
+
+[[candidates]]
+component = "process-intelligence"
+repository = "seanchatmangpt/process-intelligence"
+admitted_sha = "de94fbd758fdfd05f337645e1a6f3479851288ba"
+scope = "local checkout HEAD observed at /Users/sac/process-intelligence; working tree dirty; local HEAD differs from manifest-pinned sha 4492a9f92cd85d518b76a9cbd9c74418cf3ad44a"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-20T22:44:41-07:00"
+
+[[candidates]]
+component = "wasm4pm-compat"
+repository = "seanchatmangpt/wasm4pm-compat"
+admitted_sha = "60310877bdf2b0082e232b67b7ef6b85e1ba55d5"
+scope = "local checkout HEAD observed at /Users/sac/wasm4pm-compat; working tree dirty; local HEAD differs from manifest-pinned sha 577e2d1d8bdfe27d96f61c63f3ea120994e8bfda"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-20T22:44:41-07:00"
+
+[[candidates]]
+component = "star-toml"
+repository = "seanchatmangpt/star-toml"
+admitted_sha = "94d8a1b6406316e6d3c8fed4a56848ed498be9a1"
+scope = "local checkout HEAD observed at /Users/sac/star-toml; working tree dirty; local HEAD differs from manifest-pinned sha 8395515cf8e68bfdc9edff49fb358c4f1da7c795"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-20T22:44:41-07:00"
+
+[[candidates]]
+component = "ggen-marketplace"
+repository = "seanchatmangpt/ggen-marketplace"
+admitted_sha = "5b33e4864a0a9113f5cf42d63e0ffbee91c5f8cb"
+scope = "local checkout HEAD observed at /Users/sac/ggen-marketplace; working tree dirty; local HEAD differs from manifest-pinned sha ceb2b69ad1dc1bf0906a1979a9e18c53245181f3"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-20T22:44:41-07:00"
+
+[[candidates]]
+component = "mfact"
+repository = "seanchatmangpt/mfact"
+admitted_sha = "a8b7b8d3c0b7c81eb88303a3fd23b30ee94b3c8c"
+scope = "local checkout HEAD observed at /Users/sac/mfact; working tree dirty; local HEAD differs from manifest-pinned sha 308384002a15b9946acbcd6f560c5819723d79dc"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-20T22:44:41-07:00"
+
+[[candidates]]
+component = "bcinr"
+repository = "seanchatmangpt/bcinr"
+admitted_sha = "771b9b52b732c166b3ba99d950e3298e8f6a5014"
+scope = "local checkout HEAD observed at /Users/sac/bcinr; working tree dirty; local HEAD differs from manifest-pinned sha d6fefefdb95df5dbbb520afe7b5a4df53aa6e27f"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-20T22:44:41-07:00"
+
+[[candidates]]
+component = "mfw"
+repository = "seanchatmangpt/mfw"
+admitted_sha = "e20988ba7305b78ae21a98eb950a6dd49794805e"
+scope = "local checkout HEAD observed at /Users/sac/mfw on branch agent/finish-cmca-mfw; working tree dirty; local HEAD differs from manifest-pinned sha 2ecde02f9d7eaea50cfb4ea7876340c6463ac3a1"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-20T22:44:41-07:00"
+
+[[candidates]]
+component = "gymact"
+repository = "seanchatmangpt/gymact"
+admitted_sha = "b3115e2032de1d47cf30057bce3640a3826e462e"
+scope = "local checkout HEAD observed at /Users/sac/gymact on branch feat/llmless-ggen-agents-fortune5-mna; working tree dirty; local HEAD differs from manifest-pinned sha cf9a36fcc5b0738269809b83e3ffcad7dae0a5c4"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-20T22:44:41-07:00"
+
+[[candidates]]
+component = "autofde-lab"
+repository = "seanchatmangpt/autofde-lab"
+admitted_sha = "11653ae35bac4f3bb06adeba7ee06ac72b247da3"
+scope = "local checkout HEAD re-observed at /Users/sac/autofde-lab (real drift since the prior 2026-08-21T11:52:00Z observation: prior admitted_sha c6efab6599025252b3cd50d662711f2d26ecc194 was superseded by 1 real commit, 11653ae3 -- \"fabric: expose admit_dflss_solve_payoff as a real CLI subcommand\", committed 2026-08-21T07:36:57-07:00. This commit is OUTSIDE the src/autofde_lab/reasoning/ + src/autofde_lab/planner_league/ Explore-phase path this session's own ultracode loop tracks -- confirmed via `git log --oneline -25 -- src/autofde_lab/reasoning/ src/autofde_lab/planner_league/` still showing c6efab65 as the most recent path-filtered commit even after this observation -- so it is real drift from a different, concurrent real contributor building on this session's own dflss_solve_payoff_bridge.admit_dflss_solve_payoff, not this session's own work); working tree dirty (pyproject.toml modified, integrations/openclaw/dist/index.js deleted -- both pre-existing dirty state carried across many prior observations, not new); branch master ahead of origin/master by 32; local HEAD still differs from manifest-pinned sha 87d719f441ded3af123a73b95825d5f2847f9c66 (unchanged)"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-21T12:52:00Z"
+
+[[candidates]]
+component = "wasm4pm"
+repository = "seanchatmangpt/wasm4pm"
+admitted_sha = "cd5fd37e0d36c2816a887c1e6766f74211c3bfdc"
+scope = "local checkout HEAD observed at /Users/sac/wasm4pm; working tree dirty; local HEAD differs from manifest-pinned sha b7ebccb53b1249d45d2472f7754c997982b2f1b7"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-20T22:44:41-07:00"
+
+[[candidates]]
+component = "affidavit"
+repository = "seanchatmangpt/affidavit"
+admitted_sha = "7f1caf6488842bc332c118bf3d3eaf8e9c72da8a"
+scope = "local checkout HEAD observed at /Users/sac/affidavit on branch feat/ecosystem-standing-receipts-20260812; working tree dirty; local HEAD differs from manifest-pinned sha 5dc78f113e60ba95a4b4594a6da3511334e86024"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-20T22:44:41-07:00"
+
+[[candidates]]
+component = "praxis"
+repository = "seanchatmangpt/praxis"
+admitted_sha = "cd6bd52e784bd968f0329570b8d75456439b5fec"
+scope = "local checkout HEAD re-observed at /Users/sac/praxis (real drift since the prior 2026-08-20T22:44:41-07:00 observation: prior admitted_sha 8d6e3e21e6a465826a4a4154b71710e1291a4f56 was superseded by 1 real local commit, cd6bd52e -- \"feat(cng): wire real Datalog role-inference into the live plan-admit path\", committed 2026-08-20T23:36:25-07:00); working tree clean, branch main ahead of origin/main by 1; local HEAD still differs from manifest-pinned sha bc6b842e0b86e718b098ff3abdc47ef2ad83ee4b (unchanged)"
+scope_standing = "UNKNOWN"
+release_standing = "UNKNOWN"
+observed_at = "2026-08-21T11:58:00Z"

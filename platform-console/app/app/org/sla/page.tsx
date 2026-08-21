@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Nav from "@/components/Nav";
 
@@ -26,7 +26,7 @@ const SLA_TIERS: { value: SlaTier; label: string }[] = [
 // Same query-param-scoped `?orgId=` interim as app/org/branding/page.tsx
 // and app/org/region/page.tsx -- this app has no session-wide "current
 // org" concept yet (see those pages' own comments for why).
-export default function OrgSlaPage() {
+function OrgSlaPageInner() {
   const searchParams = useSearchParams();
   const orgId = searchParams.get("orgId") ?? "";
 
@@ -191,5 +191,13 @@ export default function OrgSlaPage() {
         )}
       </main>
     </>
+  );
+}
+
+export default function OrgSlaPage() {
+  return (
+    <Suspense fallback={null}>
+      <OrgSlaPageInner />
+    </Suspense>
   );
 }

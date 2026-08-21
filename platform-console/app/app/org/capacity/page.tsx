@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Nav from "@/components/Nav";
 
@@ -35,7 +35,7 @@ const TERM_OPTIONS = [6, 12, 24, 36];
 // Same query-param-scoped `?orgId=` interim as app/org/sla/page.tsx and
 // app/org/branding/page.tsx -- this app has no session-wide "current
 // org" concept yet (see those pages' own comments for why).
-export default function CapacityReservationsPage() {
+function CapacityReservationsPageInner() {
   const searchParams = useSearchParams();
   const orgId = searchParams.get("orgId") ?? "";
 
@@ -279,5 +279,13 @@ export default function CapacityReservationsPage() {
         )}
       </main>
     </>
+  );
+}
+
+export default function CapacityReservationsPage() {
+  return (
+    <Suspense fallback={null}>
+      <CapacityReservationsPageInner />
+    </Suspense>
   );
 }

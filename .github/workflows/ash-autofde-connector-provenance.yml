@@ -1,0 +1,60 @@
+name: Ash AutoFDE connector provenance fence
+
+on:
+  pull_request:
+    branches:
+      - feat/define-transactional-connector-deploy
+    paths:
+      - "platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack/scripts/deploy_connector_with_provenance.py"
+      - "platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack/scripts/test_deploy_connector_with_provenance.py"
+      - ".github/workflows/ash-autofde-connector-provenance.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  provenance:
+    name: Exact-head source-authority refusal court
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Assert exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$expected"
+          printf 'subject=%s\n' "$actual"
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.13"
+
+      - name: Install verifier dependency
+        run: python -m pip install 'pytest==8.3.5'
+
+      - name: Compile bounded implementation
+        run: >-
+          python -m py_compile
+          platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack/scripts/deploy_connector_with_provenance.py
+          platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack/scripts/test_deploy_connector_with_provenance.py
+
+      - name: Execute provenance refusal court
+        working-directory: platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack
+        run: python -m pytest -vv scripts/test_deploy_connector_with_provenance.py
+
+      - name: Replay predecessor transaction and connector guards
+        working-directory: platform-console/services/ggen-marketplace/ggen-packs-src/ash-autofde-lab-connector-pack
+        run: >-
+          python -m pytest -vv
+          scripts/test_deploy_connector_transactionally.py
+          scripts/test_add_connector_deploy_rollback.py
+          scripts/test_add_connector_stale_copy_refusal.py
+          scripts/test_add_connector_bridge_guard.py

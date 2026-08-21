@@ -14,6 +14,8 @@ ecosystem-core = { version = "0.1.0", path = "../../crates/ecosystem-core" }
 ecosystem-runtime = { version = "0.1.0", path = "../../crates/ecosystem-runtime" }
 serde_json.workspace = true
 tokio.workspace = true
+clap = { version = ">=4.5, <4.6" }
+clap-noun-verb-deploy = { path = "../../../clap-noun-verb/clap-noun-verb-deploy", version = "26.8.19", features = ["mcp", "http", "kubernetes", "container"] }
 
 [lints]
 workspace = true

@@ -1,0 +1,15 @@
+# Disposable playground project root for ash-igniter-gen-pipeline-pack.
+# ontology.ttl is NOT committed -- copy an examples/*.ttl fixture into
+# place before running `ggen sync` (see README.md). templates/ and
+# gates/ here are vendored copies of the pack's own files (ggen refuses
+# ontology/template paths outside the project root, so this project
+# root cannot reference ../templates or ../examples directly).
+
+[project]
+name = "ash-igniter-gen-pipeline-playground"
+
+[ontology]
+source = "ontology.ttl"
+
+[templates]
+dir = "templates"

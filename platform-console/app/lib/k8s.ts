@@ -1142,11 +1142,21 @@ export interface SecretSummary {
   namespace: string;
   createdAt: string;
   keys: string[]; // key NAMES only -- values are never read back out of the cluster
+  /** Real, live `metadata.annotations` off this Secret -- e.g. the CMEK/
+   * BYOK key-reference annotation lib/cmek.ts's enforcement check reads
+   * (`CMEK_KEY_REF_ANNOTATION`). `{}` when the object carries none, never
+   * fabricated. */
+  annotations: Record<string, string>;
 }
 
 interface SecretListResponse {
   items?: Array<{
-    metadata: { name: string; namespace: string; creationTimestamp: string };
+    metadata: {
+      name: string;
+      namespace: string;
+      creationTimestamp: string;
+      annotations?: Record<string, string>;
+    };
     type?: string;
     data?: Record<string, string>; // base64 values -- deliberately never read past Object.keys()
   }>;
@@ -1163,6 +1173,7 @@ function toSecretSummary(item: NonNullable<SecretListResponse["items"]>[number])
     namespace: item.metadata.namespace,
     createdAt: item.metadata.creationTimestamp,
     keys: Object.keys(item.data ?? {}),
+    annotations: item.metadata.annotations ?? {},
   };
 }
 
@@ -2904,6 +2915,56 @@ export async function patchNamespaceAnnotations(
   return { ok: true, data: null };
 }
 
+/**
+ * Real annotation primitive for lib/cmek.ts: patches `metadata.annotations`
+ * on one live Secret object, same RFC 7386 merge-patch convention as
+ * `patchNamespaceAnnotations` above. This is the actual write a CMEK/BYOK
+ * key binding or rotation performs against every Secret in an org's
+ * namespace -- the annotation this function sets is the same one
+ * `listSecrets`'s `SecretSummary.annotations` reads back for enforcement,
+ * so a binding recorded here is provable by re-reading the live object,
+ * never only by a separate ConfigMap's own say-so. A `null` value for a
+ * key removes that annotation (standard k8s merge-patch semantics),
+ * mirroring `patchNamespaceAnnotations`'s own `Record<string, string |
+ * null>` shape.
+ */
+export async function patchSecretAnnotations(
+  namespace: string,
+  name: string,
+  annotations: Record<string, string | null>,
+): Promise<K8sResult<null>> {
+  const result = await k8sRequest<unknown>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/secrets/${encodeURIComponent(name)}`,
+    "PATCH",
+    { metadata: { annotations } },
+    "application/merge-patch+json",
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: null };
+}
+
+/**
+ * Real annotation primitive for lib/cmek.ts: patches `metadata.annotations`
+ * on one live PersistentVolumeClaim object -- the storage-residency
+ * counterpart to `patchSecretAnnotations` above, same RFC 7386 merge-patch
+ * convention and same "the write and the enforcement read use the exact
+ * same annotation key" discipline.
+ */
+export async function patchPvcAnnotations(
+  namespace: string,
+  name: string,
+  annotations: Record<string, string | null>,
+): Promise<K8sResult<null>> {
+  const result = await k8sRequest<unknown>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/persistentvolumeclaims/${encodeURIComponent(name)}`,
+    "PATCH",
+    { metadata: { annotations } },
+    "application/merge-patch+json",
+  );
+  if (!result.ok) return result;
+  return { ok: true, data: null };
+}
+
 // -------------------------------------------------------------- Feature Flags
 //
 // Real hyperscaler-PaaS-style Feature Flags primitive (AWS AppConfig /
@@ -3175,6 +3236,105 @@ export async function getNodeRegionLabels(): Promise<K8sResult<Record<string, st
   return { ok: true, data: map };
 }
 
+/** One real PVC's bound-volume identity -- the piece
+ * lib/data-residency-attestation.ts's storage-residency check needs to
+ * go from "a PVC this org's namespace owns" to "the real PersistentVolume
+ * that PVC is actually bound to" (`spec.volumeName`, only ever populated
+ * once k8s has actually bound it -- `null` while `Pending`, which is
+ * itself honest "cannot yet prove storage residency" state, never
+ * fabricated). */
+export interface NamespacePvc {
+  name: string;
+  namespace: string;
+  phase: string | null;
+  volumeName: string | null;
+  /** Real, live `metadata.annotations` off this PVC -- the storage-
+   * residency counterpart to `SecretSummary.annotations`, e.g. the CMEK/
+   * BYOK key-reference annotation lib/cmek.ts's enforcement check reads
+   * (`CMEK_KEY_REF_ANNOTATION`). `{}` when the object carries none, never
+   * fabricated. */
+  annotations: Record<string, string>;
+}
+
+interface PvcListResponse {
+  items?: Array<{
+    metadata: { name: string; namespace: string; annotations?: Record<string, string> };
+    spec?: { volumeName?: string };
+    status?: { phase?: string };
+  }>;
+}
+
+/**
+ * Lists every real PVC in one namespace -- the storage-residency
+ * counterpart to `listPods`. Distinct from `getBackupsPvc` above (which
+ * reads exactly one PVC by name, the backups volume); this lists every
+ * PVC an org's own workloads (Postgres data volumes, Storage-API buckets,
+ * anything else provisioned into the namespace) actually hold, so a
+ * residency attestation can check ALL of an org's real persisted data,
+ * not just its backups.
+ */
+export async function listNamespacePvcs(namespace: string): Promise<K8sResult<NamespacePvc[]>> {
+  const result = await k8sRequest<PvcListResponse>(
+    `/api/v1/namespaces/${encodeURIComponent(namespace)}/persistentvolumeclaims`,
+  );
+  if (!result.ok) return result;
+  return {
+    ok: true,
+    data: (result.data.items ?? []).map((item) => ({
+      name: item.metadata.name,
+      namespace: item.metadata.namespace,
+      phase: item.status?.phase ?? null,
+      volumeName: item.spec?.volumeName ?? null,
+      annotations: item.metadata.annotations ?? {},
+    })),
+  };
+}
+
+interface PvItem {
+  metadata: { name: string; labels?: Record<string, string> };
+  spec?: {
+    nodeAffinity?: {
+      required?: {
+        nodeSelectorTerms?: Array<{
+          matchExpressions?: Array<{ key: string; operator: string; values?: string[] }>;
+        }>;
+      };
+    };
+  };
+}
+
+/**
+ * Real per-PersistentVolume `topology.kubernetes.io/region` resolution --
+ * the storage-residency counterpart to `getNodeRegionLabels`. A CSI-
+ * provisioned PV carries its real topology two possible ways depending on
+ * the driver: (a) the same well-known `REGION_NODE_LABEL` directly on the
+ * PV's own `metadata.labels` (most in-tree/CSI provisioners set this), or
+ * (b) only inside `spec.nodeAffinity.required.nodeSelectorTerms[].
+ * matchExpressions[]` naming that label key (the CSI topology-aware
+ * scheduling contract -- https://kubernetes.io/docs/concepts/storage/
+ * volumes/#persistentvolumeclaim). Checked in that order, label first;
+ * a PV satisfying neither reports `undefined` -- honest "cannot prove
+ * this volume's real region" state, never coerced into "assume
+ * compliant". One real cluster-scoped `GET .../persistentvolumes/<name>`
+ * call per PV (no namespace segment: PersistentVolume, unlike its Claim,
+ * is cluster-scoped).
+ */
+export async function getPersistentVolumeRegion(name: string): Promise<K8sResult<string | undefined>> {
+  const result = await k8sRequest<PvItem>(`/api/v1/persistentvolumes/${encodeURIComponent(name)}`);
+  if (!result.ok) return result;
+  const direct = result.data.metadata.labels?.[REGION_NODE_LABEL];
+  if (direct) return { ok: true, data: direct };
+  const terms = result.data.spec?.nodeAffinity?.required?.nodeSelectorTerms ?? [];
+  for (const term of terms) {
+    for (const expr of term.matchExpressions ?? []) {
+      if (expr.key === REGION_NODE_LABEL && expr.values?.[0]) {
+        return { ok: true, data: expr.values[0] };
+      }
+    }
+  }
+  return { ok: true, data: undefined };
+}
+
 /** Real cluster-wide Services list (every namespace in one call) --
  * distinct from `listNamespaceServices` above, which is scoped to one
  * namespace. Uses the exact same cluster-wide `services` get/list/watch
@@ -3403,5 +3563,179 @@ export async function getCertificateStatus(orgId: string): Promise<K8sResult<Org
   return {
     ok: true,
     data: { status, reason: ready?.reason ?? null, message: ready?.message ?? null },
+  };
+}
+
+// --------------------------------------------------- Deployment scorecard
+//
+// DORA-style Change Failure Rate / MTTR, aggregated purely on read from
+// data this module and lib/incidents.ts already emit -- no new
+// persistence, no fabricated deployment-event table. Fortune-5 platform-
+// engineering leadership reports this exact pair of numbers
+// (changeFailureRate, MTTR) up to their own executives; the
+// environment-promotion pipeline (app/api/projects/[name]/promote) and
+// change-freeze windows (lib/freeze-windows.ts) already gate and log
+// individual changes, but neither aggregates outcomes over a rolling
+// window.
+//
+// Real deploy-event source: this project's own real `batch/v1` Jobs
+// (listJobs above) in its namespace -- the same Job listing the Backups/
+// Batch Compute/Scheduled Jobs modules already treat as the authoritative,
+// non-fabricated record of "a change ran here" (see listJobs's own header
+// comment: "This listing IS the ... record"). A Job's own real
+// `status.succeeded`/`status.failed` counters (toBackupJob's `status`
+// field) are believed outright for a direct failure -- never re-derived.
+// On top of that direct signal, a Job that reported success is STILL
+// counted as a rollback if a real Incident (lib/incidents.ts, itself
+// derived from real Prometheus `up` spans, never hand-entered) opened on
+// one of this project's own mapped components within
+// DEPLOY_INCIDENT_CORRELATION_MS of that Job's completion -- the
+// "shipped green, broke production minutes later" case a raw Job-status
+// read alone would miss. Component-to-project mapping reuses
+// lib/status-page.ts's own COMPONENT_ROSTER `namespace` field (the same
+// mapping the public status page itself renders by), loaded via a dynamic
+// import to avoid a static import cycle (status-page.ts and
+// lib/incidents.ts both already import FROM this module) -- the identical
+// cycle-avoidance lib/incidents.ts's own `orgComponentIds()` already uses
+// for the same reason.
+
+/** A deploy "broke" if a real incident opens on one of this project's own
+ * components within 30 minutes of that Job completing -- long enough to
+ * cover the real end-to-end propagation lag this cluster's own Prometheus
+ * scrape interval + alerting introduces, short enough that an unrelated
+ * incident hours later is never misattributed to that change. */
+const DEPLOY_INCIDENT_CORRELATION_MS = 30 * 60 * 1000;
+
+export interface DeploymentScorecard {
+  projectName: string;
+  namespace: string;
+  windowDays: number;
+  windowStart: string; // RFC3339
+  windowEnd: string; // RFC3339
+  totalDeploys: number;
+  failedDeploys: number;
+  /** `failedDeploys / totalDeploys`, `null` when totalDeploys is 0 (no
+   * real deploy Jobs ran in-window -- never a fabricated 0). */
+  changeFailureRate: number | null;
+  /** Mean of real (resolvedAt - startedAt) minutes over this project's own
+   * resolved incidents in-window; `null` when zero resolved incidents
+   * exist in-window -- never a fabricated 0. */
+  mttrMinutes: number | null;
+  resolvedIncidentCount: number;
+}
+
+/**
+ * Real, computed-on-read DORA change-failure-rate + MTTR scorecard for one
+ * Project over a trailing `windowDays` window. See this section's header
+ * comment above for the exact real data sources and the deploy/rollback
+ * classification rule. Fails closed (a real `K8sResult` error) exactly
+ * like every other export in this module when off-cluster or when the
+ * incidents store is unreachable -- never a fabricated all-zero
+ * scorecard.
+ */
+export async function getDeploymentScorecard(
+  projectName: string,
+  windowDays: number,
+): Promise<K8sResult<DeploymentScorecard>> {
+  const projectResult = await getProject(projectName);
+  if (!projectResult.ok) return projectResult;
+  if (!projectResult.data) {
+    return { ok: false, error: `project '${projectName}' not found` };
+  }
+  const project = projectResult.data;
+
+  const windowEnd = new Date();
+  const windowStart = new Date(windowEnd.getTime() - windowDays * 24 * 60 * 60 * 1000);
+
+  // This project's own real Jobs in-window -- the real deploy-event
+  // stream (see header comment). Unfiltered by label: every real Job this
+  // project's namespace runs (backups, restores, batch, scheduled) is a
+  // real change to that namespace's running state.
+  const jobsResult = await listJobs(project.namespace);
+  if (!jobsResult.ok) return jobsResult;
+  const deploysInWindow = jobsResult.data.filter((job) => {
+    const at = job.completionTime ?? job.startTime ?? job.createdAt;
+    const t = new Date(at).getTime();
+    return Number.isFinite(t) && t >= windowStart.getTime() && t <= windowEnd.getTime();
+  });
+
+  // Real component->project mapping, dynamically imported to avoid the
+  // static import cycle noted above.
+  const { getStatusPageData } = await import("@/lib/status-page");
+  const { listIncidents } = await import("@/lib/incidents");
+
+  const statusPageResult = await getStatusPageData();
+  const projectComponentIds = statusPageResult.components
+    .filter((c) => c.namespace === project.namespace)
+    .map((c) => c.id);
+
+  // Real resolved incidents for this project's own components in-window
+  // -- one real DB round trip per mapped component (there are at most a
+  // handful per namespace on this roster), each returning real paired
+  // open/close timestamps.
+  const incidentLists = await Promise.all(
+    projectComponentIds.map((componentId) =>
+      listIncidents({
+        componentId,
+        from: windowStart.toISOString(),
+        to: windowEnd.toISOString(),
+        limit: 1000,
+        offset: 0,
+      }),
+    ),
+  );
+  const incidentErrors = incidentLists.filter(
+    (r): r is { ok: false; error: string } => !r.ok,
+  );
+  if (incidentErrors.length > 0) {
+    return { ok: false, error: incidentErrors[0].error };
+  }
+  const incidents = incidentLists
+    .filter((r): r is { ok: true; data: { rows: import("./incidents").Incident[]; total: number } } => r.ok)
+    .flatMap((r) => r.data.rows);
+
+  const resolvedIncidents = incidents.filter((i) => i.status === "resolved" && i.resolvedAt);
+
+  let failedDeploys = 0;
+  for (const job of deploysInWindow) {
+    if (job.status === "Failed") {
+      failedDeploys += 1;
+      continue;
+    }
+    const completedAt = job.completionTime ?? job.startTime;
+    if (!completedAt) continue;
+    const completedMs = new Date(completedAt).getTime();
+    const correlatesWithIncident = resolvedIncidents.some((incident) => {
+      const openedMs = new Date(incident.startedAt).getTime();
+      return openedMs >= completedMs && openedMs - completedMs <= DEPLOY_INCIDENT_CORRELATION_MS;
+    });
+    if (correlatesWithIncident) failedDeploys += 1;
+  }
+
+  const totalDeploys = deploysInWindow.length;
+  const changeFailureRate = totalDeploys > 0 ? failedDeploys / totalDeploys : null;
+
+  const restoreMinutesList = resolvedIncidents.map(
+    (i) => (new Date(i.resolvedAt as string).getTime() - new Date(i.startedAt).getTime()) / 60_000,
+  );
+  const mttrMinutes =
+    restoreMinutesList.length > 0
+      ? restoreMinutesList.reduce((sum, m) => sum + m, 0) / restoreMinutesList.length
+      : null;
+
+  return {
+    ok: true,
+    data: {
+      projectName: project.name,
+      namespace: project.namespace,
+      windowDays,
+      windowStart: windowStart.toISOString(),
+      windowEnd: windowEnd.toISOString(),
+      totalDeploys,
+      failedDeploys,
+      changeFailureRate,
+      mttrMinutes,
+      resolvedIncidentCount: resolvedIncidents.length,
+    },
   };
 }

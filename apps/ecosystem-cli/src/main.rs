@@ -3,6 +3,7 @@ use ecosystem_core::{
     verify_all_receipts, write_projections,
 };
 use ecosystem_runtime::{McpBoundary, differential_store_check};
+mod deploy;
 use std::env;
 use std::io::{self, Read};
 use std::path::{Path, PathBuf};
@@ -46,7 +47,7 @@ fn subject(root: &Path) -> String {
 }
 
 fn usage() -> &'static str {
-    "Chatman Ecosystem control plane\n\nUSAGE:\n  ecosystem catalog validate\n  ecosystem capability <list|show|graph|surface|dfcm> ...\n  ecosystem standing calculate\n  ecosystem receipt seal\n  ecosystem receipt verify-all\n  ecosystem projection render\n  ecosystem projection check\n  ecosystem architecture check\n  ecosystem storage verify\n  ecosystem mcp handle\n  ecosystem crown [--json|--verify]\n"
+    "Chatman Ecosystem control plane\n\nUSAGE:\n  ecosystem catalog validate\n  ecosystem capability <list|show|graph|surface|dfcm> ...\n  ecosystem standing calculate\n  ecosystem receipt seal\n  ecosystem receipt verify-all\n  ecosystem projection render\n  ecosystem projection check\n  ecosystem architecture check\n  ecosystem storage verify\n  ecosystem mcp handle\n  ecosystem crown [--json|--verify]\n  ecosystem deploy <schema|mcp|http|k8s|container>\n"
 }
 
 fn capability_control(root: &Path, arguments: &[String]) -> Result<String, String> {
@@ -74,6 +75,9 @@ fn capability_control(root: &Path, arguments: &[String]) -> Result<String, Strin
 }
 
 async fn execute(arguments: &[String]) -> Result<String, String> {
+    if arguments.first().is_some_and(|area| area == "deploy") {
+        return deploy::run_deploy(arguments);
+    }
     let root = root()?;
     if arguments.first().is_some_and(|area| area == "capability") {
         return capability_control(&root, &arguments[1..]);

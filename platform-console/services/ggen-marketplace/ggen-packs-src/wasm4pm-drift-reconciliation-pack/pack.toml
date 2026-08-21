@@ -1,0 +1,17 @@
+[pack]
+name = "wasm4pm-drift-reconciliation-pack"
+version = "0.2.0"
+description = """
+Real, read-only vocabulary + tooling for "doc claims X, real source contradicts X" drift in
+~/wasm4pm, per Design for Combinatorial Maximalism's candidate/verified/authorized/actuated
+line: this pack only ever detects, it never edits a doc. Two DriftClaim shapes
+(SourceContradictionClaim, FilesystemFactClaim), one shape-generic verifier
+(playground/verify.py, checks known claims against real source) and one gap detector
+(playground/find_untracked_fixes.py, scans git log for fix commits touching doc files not yet
+tracked as a drc:sourceDoc row -- keeps the ontology from silently going stale as new fixes land).
+
+Reduced (2026-08-21, real): trimmed from a 4-paragraph retrospective description to this scope
+statement. The 7 original drift instances' history lives in ~/wasm4pm's own commit log
+(cd5fd37e0, 3d6e2cd6b, a9249bb60, 1f84ed071, 6ca0fc653, cddce94bc, 95db85c9a, c7ab06fe6), not
+restated here.
+"""

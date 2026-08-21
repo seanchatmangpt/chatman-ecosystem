@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Nav from "@/components/Nav";
 
@@ -55,7 +55,7 @@ const SEVERITY_COLOR: Record<IncidentSeverity, string> = {
 // ledger, itself derived from real Prometheus down spans) that give an
 // enterprise buyer's procurement/legal review a real, auditable number
 // instead of an always-compliant placeholder.
-export default function OrgIncidentsPage() {
+function OrgIncidentsPageInner() {
   const searchParams = useSearchParams();
   const orgId = searchParams.get("orgId") ?? "";
 
@@ -220,5 +220,13 @@ export default function OrgIncidentsPage() {
         )}
       </main>
     </>
+  );
+}
+
+export default function OrgIncidentsPage() {
+  return (
+    <Suspense fallback={null}>
+      <OrgIncidentsPageInner />
+    </Suspense>
   );
 }

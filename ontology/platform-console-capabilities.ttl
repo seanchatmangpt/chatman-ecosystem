@@ -1,0 +1,582 @@
+@prefix ce: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/capabilities#> .
+@prefix pcc: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/platform-console-capabilities#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+pcc:PlatformConsoleCapabilityOntology a owl:Ontology ;
+    dcterms:title "Platform Console Capability Individuals (Phase 1 slice)" ;
+    dcterms:description "Real ce:Capability ABox individuals for the 3 in-scope platform-console DO actions named in the eager-forging-sparrow plan: inventory-components, inventory-goals, freeze.override. Imports ontology/capabilities.ttl for the TBox/SHACL shape it validates against." ;
+    owl:imports <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/capabilities> .
+
+pcc:CastleVerbInventoryComponents a ce:Capability ;
+    dcterms:title "inventory-components" ;
+    dcterms:description "Read-only castle inventory-components verb, actuated via POST /api/castle/run; the only side effect is a self-cleaning k8s Job." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "AuthorityObject.admits(castle.verb.run)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:CastleVerbInventoryGoals a ce:Capability ;
+    dcterms:title "inventory-goals" ;
+    dcterms:description "Read-only castle inventory-goals verb, actuated via POST /api/castle/run; the only side effect is a self-cleaning k8s Job. Second data point proving the castle-verb pattern generalizes beyond inventory-components." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "AuthorityObject.admits(castle.verb.run)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalFreezeOverride a ce:Capability ;
+    dcterms:title "freeze.override" ;
+    dcterms:description "Maker-checker approval-workflow action gating a freeze-window override; a pure gate with no direct k8s side effect of its own, exercising the approval path castle.verb.run does not." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:DataDestructionCertificateIssue a ce:Capability ;
+    dcterms:title "data-destruction.certificate.issue" ;
+    dcterms:description "Mints a signed, timestamped Certificate of Data Destruction via POST /api/owner/data-destruction (lib/data-destruction-certificate.ts's issueDataDestructionCertificate). Fail-closed: refuses (not_all_clear) unless a freshly-computed verifyDataDestruction read reports every real check clear -- no live PVC and no undeleted backup record for the org. Gated by approval-workflow.ts's data-destruction.certificate.issue maker-checker action: the requester's own live verification read is never sufficient by itself to issue the certificate; a second, distinct owner-role approver must sign off first. Fourth data point for the model: the first genuinely irreversible capability, distinct from the 3 existing reversible ones." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(data-destruction.certificate.issue)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible false ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalOrgDelete a ce:Capability ;
+    dcterms:title "org.delete" ;
+    dcterms:description "Maker-checker approval-workflow action gating full org deletion, the header-comment reference case for this codebase's 'destructive, high-blast-radius, one owner acting alone is not sufficient' bar. Irreversible." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(org.delete)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible false ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalQuotaOverride a ce:Capability ;
+    dcterms:title "quota.override" ;
+    dcterms:description "Maker-checker approval-workflow action gating a manual override of an org's enforced resource quota above lib/quota-enforcement.ts's automatic limits." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(quota.override)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalTierDowngrade a ce:Capability ;
+    dcterms:title "tier.downgrade" ;
+    dcterms:description "Maker-checker approval-workflow action gating an org's project tier downgrade (lib/tiers.ts's ProjectTier), a revenue-impacting change requiring a second, distinct owner-role sign-off." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(tier.downgrade)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalBackupRetentionChange a ce:Capability ;
+    dcterms:title "backup.retention.change" ;
+    dcterms:description "Maker-checker approval-workflow action gating a change to an org's backup retention window, which controls how long recoverable data is kept before it is purged." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(backup.retention.change)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalDrFailover a ce:Capability ;
+    dcterms:title "dr.failover" ;
+    dcterms:description "Maker-checker approval-workflow action gating multi-region DR failover (lib/dr-failover.ts): re-pins an org's data-residency region AND triggers a real destructive restore Job (lib/k8s.ts's createRestoreJob) that overwrites the target database Pod's live table data. Same destructive, high-blast-radius bar org.delete sets." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(dr.failover)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible false ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalDsarErasure a ce:Capability ;
+    dcterms:title "dsar.erasure" ;
+    dcterms:description "Maker-checker approval-workflow action gating GDPR Art.17 / CCPA erasure (lib/dsar.ts): redacts a real data subject's identity out of the durable audit trail and their per-org membership record. Irreversible -- a redacted actor value cannot be un-redacted." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(dsar.erasure)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible false ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalSlaCreditApply a ce:Capability ;
+    dcterms:title "sla.credit.apply" ;
+    dcterms:description "Maker-checker approval-workflow action gating SLA credit auto-application to a customer's Stripe balance (POST /api/orgs/[id]/sla-credits, lib/stripe-billing.ts's applySlaCreditToStripeBalance) -- moves real money off a customer's Stripe balance with no opt-out." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(sla.credit.apply)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalPricingOverride a ce:Capability ;
+    dcterms:title "pricing.override" ;
+    dcterms:description "Maker-checker approval-workflow action gating a per-org negotiated pricing/discount-schedule override (PUT /api/orgs/[id]/pricing-override, lib/orgs.ts's setOrgPricingOverride), which binds a real negotiated rate in place of the standard tiers.ts list price until it expires." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(pricing.override)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalSsoRoleMappingUpdate a ce:Capability ;
+    dcterms:title "sso.role-mapping.update" ;
+    dcterms:description "Maker-checker approval-workflow action gating SSO/SCIM role-mapping update (PUT /api/orgs/[id]/sso-role-mapping, lib/orgs.ts's setOrgSsoGroupMappings), which binds the org's declared SSO group -> app role intent." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(sso.role-mapping.update)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalExportSubscriptionUpdate a ce:Capability ;
+    dcterms:title "export-subscription.update" ;
+    dcterms:description "Maker-checker approval-workflow action gating a scheduled export-subscription save (lib/s3-export-subscription.ts): once bound, recurringly ships an org's audit log or full export bundle, unattended, to a third-party-controlled bucket. Reversible -- the subscription can be disabled or its schedule/target changed by a subsequent approved update." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(export-subscription.update)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalCastleVerbSchedule a ce:Capability ;
+    dcterms:title "castle.verb.schedule" ;
+    dcterms:description "Maker-checker approval-workflow action gating maintenance-window-gated scheduling of a castle actuation verb (lib/scheduled-verbs.ts's scheduleCastleVerb) to run unattended, later, with no human present at fire time. Reversible -- a scheduled entry can be cancelled before the poller runs it." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(castle.verb.schedule)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalEnvironmentPromote a ce:Capability ;
+    dcterms:title "environment.promote" ;
+    dcterms:description "Maker-checker approval-workflow action gating an environment-promotion pipeline stage move (app/api/projects/[name]/promote/route.ts), advancing a Project's ENVIRONMENT_LABEL forward one stage (dev -> staging -> prod). Reversible -- a subsequent approved change can move the label back or forward again." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(environment.promote)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalDeploymentQuarantine a ce:Capability ;
+    dcterms:title "deployment.quarantine" ;
+    dcterms:description "Maker-checker approval-workflow action gating vulnerability-scan-triggered quarantine of a live Deployment (app/api/security-scan/auto-remediate/route.ts, lib/k8s.ts's quarantineDeployment) -- scales a CRITICAL-severity-Trivy-flagged Deployment to 0 replicas. Reversible -- the Deployment can be scaled back up once the finding is resolved." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(deployment.quarantine)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalPatchSlaCreditApply a ce:Capability ;
+    dcterms:title "patch-sla.credit.apply" ;
+    dcterms:description "Maker-checker approval-workflow action gating contractual patch-timeliness (CVE remediation) SLA credit auto-application to a customer's Stripe balance (lib/patch-sla.ts, reusing lib/stripe-billing.ts's applySlaCreditToStripeBalance) -- moves real money off a customer's Stripe balance with no opt-out, same bar sla.credit.apply sets." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(patch-sla.credit.apply)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalK8sFaultRemediateSuggest a ce:Capability ;
+    dcterms:title "k8s-fault.remediate-suggest" ;
+    dcterms:description "Maker-checker approval-workflow action gating a K8s Fault Diagnosis remediation suggestion (lib/k8s-fault-scan.ts's structural-anomaly scanner, wrapping autofde-lab's real scanner) -- files a suggestion only, never a remediation itself; a second human still has to approve it before acting on it manually. Reversible -- filing and reviewing the suggestion has no direct k8s side effect." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(k8s-fault.remediate-suggest)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalInvoiceReconciliationApprove a ce:Capability ;
+    dcterms:title "invoice.reconciliation.approve" ;
+    dcterms:description "Maker-checker approval-workflow action gating invoice/purchase-order reconciliation approval (POST /api/orgs/[id]/invoice-reconciliation, lib/invoice-reconciliation.ts) -- the signal finance/procurement uses to release payment against a real Stripe-derived overage invoice; marks the record 'approved_for_payment'. Reversible -- the record's approval status is a ledger entry, not an executed payment transfer itself." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(invoice.reconciliation.approve)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalComplianceRotationBlock a ce:Capability ;
+    dcterms:title "compliance.rotation-block" ;
+    dcterms:description "Maker-checker approval-workflow action gating secret/certificate rotation-SLA-violation blocking (POST/DELETE /api/compliance/rotation, lib/rotation-compliance.ts's setOrgRotationComplianceBlock) -- flags and blocks an org whose live k8s Secrets/certificates exceeded ROTATION_SLA_DAYS without rotation. Reversible -- `requestedRotationBlock: null` requests clearing an existing block once secrets/certs are rotated." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(compliance.rotation-block)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalBreakGlassJustificationReview a ce:Capability ;
+    dcterms:title "break-glass.justification-review" ;
+    dcterms:description "Maker-checker approval-workflow action gating post-hoc countersignature of a break-glass emergency-access grant's mandatory justification (lib/break-glass.ts's fileBreakGlassJustification, POST /api/orgs/[id]/break-glass/[grantId]/justify) -- the compensating control run AFTER an ungated emergency grant ends. Reversible -- the countersignature itself has no direct k8s or data side effect." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(break-glass.justification-review)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalSubprocessorRegistryUpdate a ce:Capability ;
+    dcterms:title "subprocessor.registry.update" ;
+    dcterms:description "Maker-checker approval-workflow action gating a change to the platform's sub-processor registry (POST/PUT/DELETE /api/subprocessors[/[id]], lib/subprocessors.ts) -- the declared list of who processes every customer's personal data; every affected org is auto-notified once applied, per GDPR Art. 28(2). Reversible -- the registry entry can be updated again in a subsequent approved change." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(subprocessor.registry.update)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalLeRequestRespond a ce:Capability ;
+    dcterms:title "le-request.respond" ;
+    dcterms:description "Maker-checker approval-workflow action gating recorded response to a law-enforcement/government data request (PUT /api/owner/le-requests, lib/le-requests.ts's recordLeRequestResponse) -- attests that customer data was actually disclosed, narrowed, objected to, or rejected. Irreversible -- a recorded disclosure of customer data to a third party cannot be undone once it has occurred." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(le-request.respond)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible false ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalDeniedPartyOverride a ce:Capability ;
+    dcterms:title "denied-party.override" ;
+    dcterms:description "Maker-checker approval-workflow action gating a denied-party/export-control screening register override (PUT /api/owner/[orgId]/denied-party-screening, lib/denied-party-screening.ts's recordScreeningOverride) -- clears or confirms a potential_match against the platform's own denied-party list. Reversible -- the decision is a durable ledger row that a subsequent approved override can revisit." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(denied-party.override)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalChangeOfControlNotify a ce:Capability ;
+    dcterms:title "change-of-control.notify" ;
+    dcterms:description "Maker-checker approval-workflow action gating a change-of-control/M&A notification ledger entry (PUT /api/owner/change-of-control, lib/change-of-control-notifications.ts's recordOrgNotification) -- the durable compliance record MSA-holding customers rely on to prove contractual notice was honored. Reversible -- the ledger row can be corrected by a subsequent approved entry." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(change-of-control.notify)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalInsurancePolicyUpdate a ce:Capability ;
+    dcterms:title "insurance.policy.update" ;
+    dcterms:description "Maker-checker approval-workflow action gating Certificate-of-Insurance policy metadata update (PUT /api/owner/insurance-attestation, lib/insurance-attestation.ts's recordInsurancePolicyVersion) -- the carrier/policy-number/coverage-limit/expiry facts this platform attests to a counterparty in a generated COI PDF. Reversible -- the policy metadata record can be updated again in a subsequent approved change." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(insurance.policy.update)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:CastleVerbFortune5Requirements a ce:Capability ;
+    dcterms:title "fortune5-requirements" ;
+    dcterms:description "Read-only castle fortune5-requirements verb, actuated via POST /api/castle/run; lists the real 40 generated Fortune-5 readiness controls castle ships (README.md), no arguments beyond output format. Same allowlisted, read-only actuation pattern as inventory-components/inventory-goals -- the only side effect is a self-cleaning k8s Job." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "AuthorityObject.admits(castle.verb.run)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:RouteCastleDeploy a ce:Capability ;
+    dcterms:title "route.castle.deploy" ;
+    dcterms:description "POST /api/castle/deploy (owner-only, lib/castle.ts's deployCastle) -- records an already-built, already kind-loaded castle image as this namespace's deployed workload and creates the real k8s Deployment/ConfigMap deploy-state record. Does not build or load the image itself (no Docker socket access from the pod). Reversible: a later POST /api/castle/deploy or POST /api/castle/sunset supersedes/removes the recorded state." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "requireRole(owner)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:RouteCastleRun a ce:Capability ;
+    dcterms:title "route.castle.run" ;
+    dcterms:description "POST /api/castle/run (member+, lib/castle.ts's runCastleVerb) -- the generic castle-verb actuation route: resolves a caller-supplied verbId against the fixed ALLOWED_CASTLE_VERBS allowlist (fortune5-requirements, inventory-components, inventory-goals) and creates a real, self-cleaning k8s Job to run it. Blocked by an active change-freeze window unless a freeze.override approval is on file. Reversible: every allowlisted verb today is read-only, and the Job it creates self-cleans." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "requireRole(member)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:RouteCastleSchedule a ce:Capability ;
+    dcterms:title "route.castle.schedule" ;
+    dcterms:description "POST/DELETE /api/castle/schedule (member+, lib/scheduled-verbs.ts's scheduleCastleVerb/cancelScheduledVerb) -- files (or cancels) a pending ScheduledVerb row for a future castle-verb run. POST never runs anything itself; it opens a distinct castle.verb.schedule maker-checker approval (already modeled as pcc:ApprovalCastleVerbSchedule) that a second, distinct owner-role approver must sign before lib/batch-jobs.ts's CronJob will actually fire it. This individual models the route-level filing/cancellation action itself, distinct from the approval gate it opens. Reversible: DELETE cancels a still-pending row." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "requireRole(member)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:RouteCastleSunset a ce:Capability ;
+    dcterms:title "route.castle.sunset" ;
+    dcterms:description "POST /api/castle/sunset (owner-only, lib/castle.ts's sunsetCastle) -- deletes every real k8s Job this module created plus the deploy-state ConfigMap; the response IS the real teardown record. Irreversible as a direct action: the deleted Jobs/ConfigMap are gone and cannot be restored, only recreated from scratch via a fresh POST /api/castle/deploy (which is a new deployment, not an undo)." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "requireRole(owner)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible false ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:RouteFeatureFlags a ce:Capability ;
+    dcterms:title "route.feature-flags" ;
+    dcterms:description "POST /api/feature-flags and /api/feature-flags/[flag] (member+, lib/k8s.ts's createOrUpdateConfigMap) -- toggles a platform feature flag via a real RFC 7386 merge patch to the platform-feature-flags ConfigMap, gated by a live plan-tier entitlement check (lib/tiers.ts) read off the flag's owning Project CR when turning a gated flag on. Reversible: any flag can be toggled back off (never tier-gated), and the merge patch only ever touches the one changed key." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "requireRole(member)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:RouteOrgsCustomDomain a ce:Capability ;
+    dcterms:title "route.orgs.custom-domain" ;
+    dcterms:description "POST /api/orgs/[id]/custom-domain (owner-of-that-org, lib/k8s.ts's createOrgCertificate) -- claims a hostname exclusively for this org (checked live against every other org's registry entry via findOrgByCustomDomain), persists the binding, and creates a real cert-manager.io/v1 Certificate CR requesting a TLS cert for that hostname against this cluster's ClusterIssuer. Reversible: the binding and Certificate CR can be replaced by a later POST for the same org." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "requireRoleIn(org, owner)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:RouteProjects a ce:Capability ;
+    dcterms:title "route.projects" ;
+    dcterms:description "POST /api/projects (owner-only, lib/k8s.ts's createProjectWithDatabase) and DELETE /api/projects/[name] (owner-only, lib/k8s.ts's deleteProjectWithDatabase) -- both collapse to this one route-capability-surface name once the [name] path segment is dropped. Creates or tears down a real Project + SingleDatabase CR pair and its namespace-scoped RBAC. Create is reversible via a subsequent DELETE; DELETE itself is irreversible -- the underlying database and its data are gone, not merely marked deleted." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "requireRole(owner)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible false ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:RouteProjectsBackups a ce:Capability ;
+    dcterms:title "route.projects.backups" ;
+    dcterms:description "POST /api/projects/[name]/backups (authenticated actor, lib/k8s.ts's createBackupJob/createRestoreJob) -- action:'backup' (default) creates a real backup Job against the project's live-resolved database Pod; action:'restore' requires the caller to type the exact backupJobName as a confirm string and verifies (via the database=<stem> label) that the named backup actually belongs to this project before restoring into its Pod. Both are additive/reversible in effect: backup creates a new artifact, restore overwrites data with an existing prior backup rather than destroying anything new." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "session.authenticated" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:RouteSecrets a ce:Capability ;
+    dcterms:title "route.secrets" ;
+    dcterms:description "POST /api/secrets (member+, lib/k8s.ts's createSecret) and DELETE /api/secrets (member+, lib/k8s.ts's deleteSecret) -- both collapse to this one route-capability-surface name. POST writes a real k8s Secret from caller-supplied key/value pairs (values never logged, only method/path/status recorded); DELETE removes a real Secret by namespace+name. Irreversible: a deleted Secret's values are gone -- recreating a Secret of the same name does not restore the original values unless the caller still has them." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "requireRole(member)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible false ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalPersonnelAttestationRecord a ce:Capability ;
+    dcterms:title "personnel.attestation.record" ;
+    dcterms:description "Maker-checker approval-workflow action gating the security-posture personnel attestation record (lib/personnel-attestation.ts) -- the full proposed roster overrides a Fortune-5 counterparty relies on. No opt-out." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(personnel.attestation.record)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalSourceEscrowSnapshot a ce:Capability ;
+    dcterms:title "source-escrow.snapshot" ;
+    dcterms:description "Maker-checker approval-workflow action gating POST /api/compliance/source-escrow (lib/source-escrow-attestation.ts's requestSourceEscrowSnapshot) -- mints a signed, durable in-toto-style statement over the exact deployed git commit SHA, manifest set, and image digests, the business-continuity/vendor-lock-in escrow artifact a Fortune-5 MSA clause points to. No opt-out." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(source-escrow.snapshot)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalPentestFindingResolve a ce:Capability ;
+    dcterms:title "pentest.finding.resolve" ;
+    dcterms:description "Maker-checker approval-workflow action gating PUT /api/compliance/pentest/[findingId] (lib/pentest-attestation.ts's resolveFinding) -- marking a filed pentest finding resolved/accepted_risk, the register a Fortune-5 security reviewer later cites as remediation evidence. Filing a NEW engagement or finding is not gated; only closing the loop is. No opt-out." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(pentest.finding.resolve)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalCmekKeyBinding a ce:Capability ;
+    dcterms:title "cmek.key-binding" ;
+    dcterms:description "Maker-checker approval-workflow action gating binding of a customer-managed encryption key (CmekProvider, lib/orgs.ts) to an org, controlling which key encrypts that org's durable data going forward." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(cmek.key-binding)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalVendorOffboardingAttestationIssue a ce:Capability ;
+    dcterms:title "vendor-offboarding.attestation.issue" ;
+    dcterms:description "Maker-checker approval-workflow action gating issuance of a vendor-offboarding data-return/destruction attestation (lib/vendor-offboarding-attestation.ts's computeVendorOffboardingEvidence), evidencing the contractual SLA deadline, any qualifying post-termination export, and the most recent data-destruction certificate's own all-clear/tamper-verified state before a second approver signs off on the attestation record." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(vendor-offboarding.attestation.issue)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalLegalHoldRelease a ce:Capability ;
+    dcterms:title "legal-hold.release" ;
+    dcterms:description "Maker-checker approval-workflow action gating release of a legal hold (lib/legal-hold.ts): lifting a hold resumes eligibility for the scheduled retention purge and DSAR erasure to actually destroy data in the released scope. Deliberately asymmetric with placing a hold, which is never gated -- a legal team member acting alone must always be able to stop destruction immediately; only resuming it requires a second, distinct owner-role approver." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(legal-hold.release)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible false ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:ApprovalGeofenceExceptionGrant a ce:Capability ;
+    dcterms:title "geofence.exception.grant" ;
+    dcterms:description "Maker-checker approval-workflow action gating a bounded-TTL geofenced data-residency exception (lib/geofence-enforcement.ts's applyGeofenceException, POST /api/owner/geofence-policy), letting one named identifier or IP CIDR bypass an org's own contracted-region geofence policy -- the requester's own judgment is never sufficient by itself; a second, distinct owner-role approver must sign off before the exception is recorded and starts bypassing enforcement." ;
+    ce:capabilityClass ce:Do ;
+    ce:executionOwner "platform-console" ;
+    ce:sourceRepository "platform-console" ;
+    ce:requiredAuthority "approval-workflow.requireApproval(geofence.exception.grant)" ;
+    ce:brokerRequired true ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "active" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .

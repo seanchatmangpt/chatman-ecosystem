@@ -322,7 +322,7 @@ async function googleAccessToken():Promise<string>{
   if(!response.ok||!payload.access_token) throw new Error(`BLOCKED:GCP_ACCESS_TOKEN:${response.status}`); return payload.access_token;
 }
 
-async function googleEntitlement(providerId:string,entitlementId:string):Promise<Record<string,unknown>>{
+export async function googleEntitlement(providerId:string,entitlementId:string):Promise<Record<string,unknown>>{
   const response=await fetch(`https://cloudcommerceprocurement.googleapis.com/v1/providers/${encodeURIComponent(providerId)}/entitlements/${encodeURIComponent(entitlementId)}`,
     {headers:{authorization:`Bearer ${await googleAccessToken()}`},cache:"no-store"});
   if(!response.ok) throw new Error(`BLOCKED:GCP_GET_ENTITLEMENT:${response.status}`); return await response.json() as Record<string,unknown>;
@@ -338,7 +338,7 @@ async function verifyGooglePush(rawBody:string,headers:Headers):Promise<Record<s
   if(!event.eventId&&wrapper.message.messageId) event.eventId=wrapper.message.messageId; if(!event.publishTime&&wrapper.message.publishTime) event.publishTime=wrapper.message.publishTime; return event;
 }
 
-function gcpAction(eventType:string):MarketplaceAction{
+export function gcpAction(eventType:string):MarketplaceAction{
   const map:Record<string,MarketplaceAction>={ENTITLEMENT_CREATION_REQUESTED:"subscribe",ENTITLEMENT_ACTIVE:"subscribe",ENTITLEMENT_OFFER_ACCEPTED:"subscribe",
     ENTITLEMENT_PLAN_CHANGE_REQUESTED:"plan_change",ENTITLEMENT_PLAN_CHANGED:"plan_change",ENTITLEMENT_PENDING_CANCELLATION:"suspend",ENTITLEMENT_CANCELLED:"unsubscribe"};
   const found=map[eventType]; if(!found) throw new Error(`REFUSED:GCP_EVENT_TYPE:${eventType}`); return found;

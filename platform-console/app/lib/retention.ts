@@ -30,11 +30,14 @@
 import type { Pool } from "pg";
 import {
   getAuditDbPool,
+  newRequestId,
   purgeAuditLogRowsOlderThan,
+  writeAuditLogEntryAwaited,
   type AuditLogPurgeResult,
 } from "@/lib/audit-db";
 import { RETENTION_DEFAULT_DAYS } from "@/lib/backup-retention";
 import type { ProjectTier } from "@/lib/tiers";
+import { computeLegalHoldPurgeGuard } from "@/lib/legal-hold";
 
 // The actor string every automated purge receipt is stamped with --
 // distinguishable at a glance from a real human/service identifier
@@ -162,13 +165,55 @@ export async function purgeExpiredAuditRows(
     return { ok: false, error: "audit log database not configured or unreachable" };
   }
 
+  // Legal Hold check -- BEFORE any DELETE is ever issued (see
+  // lib/legal-hold.ts's header comment). A platform-wide hold refuses
+  // this purge entirely; an org-scoped hold narrows it to exclude that
+  // org's own tagged rows. Never advisory.
+  const guard = await computeLegalHoldPurgeGuard();
+  if (!guard.ok) {
+    return { ok: false, error: guard.error };
+  }
+
+  if (guard.data.blockedEntirely) {
+    const blockingHold = guard.data.activeHolds.find((h) => h.scope === "platform");
+    await writeAuditLogEntryAwaited({
+      timestamp: new Date().toISOString(),
+      actor,
+      method: "POST",
+      path: "/api/cron/retention-purge (blocked by legal hold)",
+      status: 200,
+      requestId: newRequestId(),
+      legalHoldAction: "purge_blocked",
+      ...(blockingHold ? { legalHoldId: blockingHold.holdId, legalHoldScope: blockingHold.scope } : {}),
+    });
+    return {
+      ok: false,
+      error:
+        `retention purge refused: an active platform-wide legal hold (${blockingHold?.holdId ?? "unknown"}` +
+        `, "${blockingHold?.name ?? "unnamed"}") is in force -- nothing was destroyed`,
+    };
+  }
+
   const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
 
-  const purgeResult = await purgeAuditLogRowsOlderThan(cutoff);
+  const purgeResult = await purgeAuditLogRowsOlderThan(cutoff, guard.data.excludeOrgIds);
   if (!purgeResult.ok) {
     return { ok: false, error: purgeResult.error };
   }
   const { deletedCount, cutoff: cutoffIso, tombstone }: AuditLogPurgeResult = purgeResult.data;
+
+  if (guard.data.excludeOrgIds.length > 0) {
+    await writeAuditLogEntryAwaited({
+      timestamp: new Date().toISOString(),
+      actor,
+      method: "POST",
+      path: `/api/cron/retention-purge (legal-hold-excluded orgs=${guard.data.excludeOrgIds.join(",")})`,
+      status: 200,
+      requestId: newRequestId(),
+      legalHoldAction: "purge_blocked",
+      legalHoldScope: "org",
+    });
+  }
 
   try {
     const inserted = await pool.query<{

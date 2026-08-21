@@ -33,6 +33,7 @@ import { getStatusPageData, type StatusPageData } from "@/lib/status-page";
 import { getLatestVulnScanRun, type Severity, type VulnScanRun } from "@/lib/vuln-scan";
 import { listManagedCertificates, EXPIRY_WARNING_DAYS } from "@/lib/cert-lifecycle";
 import { getEgressIpAllowlist, type EgressIpAllowlist } from "@/lib/egress-ips";
+import { summarizeLeRequestsForTrustPage, type LeTransparencyReport } from "@/lib/le-requests";
 
 export interface VulnPostureSummary {
   reachable: boolean;
@@ -81,6 +82,13 @@ export interface TrustPageData {
    * whitelist these CIDRs in their own inbound firewall to receive this
    * platform's webhook deliveries. */
   egressIpPosture: EgressIpPostureSummary | null;
+  /** Law-Enforcement / Government Data Request register transparency
+   * report -- aggregate counts by request type and real response status
+   * ONLY (lib/le-requests.ts's own summarizeLeRequestsForTrustPage),
+   * never any per-request field (requesting authority, jurisdiction,
+   * org, summary) -- same aggregate-only public-surface discipline this
+   * module's header comment already documents for vuln/cert posture. */
+  leRequestTransparency: LeTransparencyReport | null;
 }
 
 function emptySeverityCounts(): Record<Severity, number> {
@@ -181,12 +189,14 @@ async function getEgressIpPosture(): Promise<EgressIpPostureSummary> {
 }
 
 export async function getTrustPageData(): Promise<TrustPageData> {
-  const [uptimeResult, vulnPosture, certPosture, egressIpPosture] = await Promise.allSettled([
-    getStatusPageData(),
-    getVulnPosture(),
-    getCertPosture(),
-    getEgressIpPosture(),
-  ]);
+  const [uptimeResult, vulnPosture, certPosture, egressIpPosture, leRequestTransparency] =
+    await Promise.allSettled([
+      getStatusPageData(),
+      getVulnPosture(),
+      getCertPosture(),
+      getEgressIpPosture(),
+      summarizeLeRequestsForTrustPage(),
+    ]);
 
   return {
     generatedAt: new Date().toISOString(),
@@ -195,5 +205,7 @@ export async function getTrustPageData(): Promise<TrustPageData> {
     vulnPosture: vulnPosture.status === "fulfilled" ? vulnPosture.value : null,
     certPosture: certPosture.status === "fulfilled" ? certPosture.value : null,
     egressIpPosture: egressIpPosture.status === "fulfilled" ? egressIpPosture.value : null,
+    leRequestTransparency:
+      leRequestTransparency.status === "fulfilled" ? leRequestTransparency.value : null,
   };
 }

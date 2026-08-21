@@ -410,6 +410,14 @@ export async function createOverageInvoiceItem(params: {
   amountUsd: number;
   description: string;
   tenantNamespace: string;
+  /** Real negotiated-contract cross-reference (lib/orgs.ts's
+   * OrgPricingOverride.contractRef, via lib/overage-billing.ts's
+   * effectiveRatesForNamespace) -- present only when this amount was
+   * actually computed against a bound negotiated rate rather than the
+   * standard ILLUSTRATIVE_RATES list price, so the Stripe InvoiceItem's
+   * own metadata is independently provable at audit time against the
+   * signed contract, not just this platform's own audit_log row. */
+  pricingOverrideContractRef?: string;
 }): Promise<StripeResult<{ id: string }>> {
   const stripe = getStripeClient();
   if (!stripe) return { ok: false, error: "STRIPE_SECRET_KEY not configured" };
@@ -426,6 +434,9 @@ export async function createOverageInvoiceItem(params: {
         tenant_namespace: params.tenantNamespace,
         stripe_subscription_id: params.subscriptionId,
         kind: "usage_overage",
+        ...(params.pricingOverrideContractRef
+          ? { pricing_override_contract_ref: params.pricingOverrideContractRef }
+          : {}),
       },
     });
     return { ok: true, data: { id: item.id } };

