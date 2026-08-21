@@ -108,8 +108,8 @@ def sparql_bridge_already_covers(bridge_text: str, alias_module: str) -> bool:
     return f"alias Xaas.Operations.{alias_module}" in bridge_text
 
 
-def build_sparql_bridge_function(class_local: str, short_name: str) -> tuple[str, str, str]:
-    """Return (alias_module, function_name, elixir_function_source) for the new table,
+def build_sparql_bridge_function(class_local: str, short_name: str) -> tuple[str, str, str, str]:
+    """Return (class_name, fn_name, doc, private_fn) for the new table,
     following the exact real pattern established by catalog_to_turtle/0 and
     match_to_turtle/0 in lib/xaas/sparql_bridge.ex (zero-required-arg, report-shaped
     connector: no solver/domain extraction, same field set as PlannerCatalogRequest/
