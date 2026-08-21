@@ -6,6 +6,7 @@ from datetime import date, datetime, timedelta, timezone
 
 from scripts.reconcile_portfolio_activity import (
     CensusError,
+    GitHubClient,
     SearchSlice,
     Window,
     build_census,
@@ -135,6 +136,30 @@ class CensusTests(unittest.TestCase):
 
 
 class PartitionedSearchTests(unittest.TestCase):
+    def test_github_query_uses_one_updated_range_qualifier(self):
+        class CapturingClient(GitHubClient):
+            def __init__(self):
+                super().__init__(token=None)
+                self.paths = []
+
+            def _request(self, path):
+                self.paths.append(path)
+                return {"total_count": 0, "incomplete_results": False, "items": []}
+
+        client = CapturingClient()
+        client._fetch_pr_search_slice(
+            owner="seanchatmangpt",
+            since=datetime(2026, 8, 15, 12, tzinfo=timezone.utc),
+            until=datetime(2026, 8, 22, 12, tzinfo=timezone.utc),
+            search_slice=None,
+        )
+        from urllib.parse import parse_qs, urlparse
+
+        query = parse_qs(urlparse(client.paths[0]).query)["q"][0]
+        self.assertIn("updated:2026-08-15..2026-08-22", query)
+        self.assertNotIn("updated:>=", query)
+        self.assertNotIn("updated:<=", query)
+
     def test_under_cap_preserves_previous_single_query_path(self):
         rows = [{"id": 1}, {"id": 2}]
 
