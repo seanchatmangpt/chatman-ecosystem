@@ -2,7 +2,7 @@ defmodule AshProjectMeasureTest do
   use ExUnit.Case, async: true
 
   defmodule TestDomain do
-    use Ash.Domain, extensions: [AshProjectMeasure]
+    use Ash.Domain, extensions: [AshProjectMeasure], validate_config_inclusion?: false
 
     project_measure do
       github_actions do
