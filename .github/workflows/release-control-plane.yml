@@ -10,12 +10,34 @@ on:
 permissions:
   contents: read
 
+env:
+  CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  SUBJECT_SOURCE: ${{ github.event_name == 'pull_request' && 'pull_request.head.sha' || 'github.sha' }}
+
 jobs:
   manifest:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact subject
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          persist-credentials: false
+      - name: Admit, receipt, and replay exact release subject
+        run: |
+          actual="$(git rev-parse HEAD)"
+          python3 scripts/verify_release_ci_subject.py manufacture \
+            --expected "$CANDIDATE_SHA" \
+            --actual "$actual" \
+            --event "${{ github.event_name }}" \
+            --source "$SUBJECT_SOURCE" \
+            --output /tmp/release-ci-subject.json
+          python3 scripts/verify_release_ci_subject.py replay \
+            --receipt /tmp/release-ci-subject.json
+      - name: Exact-subject refusal and dependency invariant court
+        run: python3 -m unittest -v tests.test_release_ci_subject tests.test_ecosystem_cli_dependency
+      - name: Verify hermetic Rust dependency graph
+        run: cargo metadata --format-version 1 --no-deps > /tmp/chatman-ecosystem-cargo-metadata.json
       - name: Verify manifest and admitted ref evidence
         run: python3 scripts/verify_release.py --check-refs
       - name: Refuse unearned standing promotion
@@ -24,8 +46,6 @@ jobs:
         run: python3 scripts/verify_portfolio.py
       - name: Verify platform reconstitution benchmark contract
         run: python3 scripts/verify_platform_reconstitution.py
-      - name: Verify hermetic Rust dependency graph
-        run: cargo metadata --format-version 1 --no-deps > /tmp/chatman-ecosystem-cargo-metadata.json
       - name: Mutation and invariant tests
         run: python3 -m unittest discover -s tests -p 'test_*.py' -v
       - name: Report crown standing without overclaiming
