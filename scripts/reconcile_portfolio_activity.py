@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Dual-sensor trailing-window repository activity census.
 
-This module is OBSERVE-only. It reconciles:
+OBSERVE-only measurement instrument. It reconciles:
 1. public owner repositories whose ``pushed_at`` falls in the admitted window;
 2. pull requests updated in the same window, grouped by owning repository.
 
-A single sensor is never allowed to imply complete activity recall. Search truncation
-or incomplete results fail closed. The emitted receipt binds the exact normalized
-observation and can be replay-verified without network access.
+The PR sensor recursively partitions timestamp ranges whenever GitHub's search API
+reports more than its 1,000-result accessible window. Each admitted partition is
+fully paginated, the union is deduplicated by stable issue identity, and the exact
+half-open time window is re-applied locally before standing is computed.
 """
 
 from __future__ import annotations
@@ -26,7 +27,9 @@ from pathlib import Path
 from typing import Any, Mapping, Protocol, Sequence
 
 API = "https://api.github.com"
-SCHEMA = "chatman.portfolio-activity-census/1"
+SCHEMA = "chatman.portfolio-activity-census/2"
+SEARCH_CAP = 1000
+PER_PAGE = 100
 
 
 class CensusError(RuntimeError):
@@ -35,6 +38,7 @@ class CensusError(RuntimeError):
 
 class SensorClient(Protocol):
     def list_public_owner_repositories(self, owner: str) -> list[dict[str, Any]]: ...
+
     def search_updated_pull_requests(
         self, owner: str, since: datetime, until: datetime
     ) -> tuple[list[dict[str, Any]], dict[str, Any]]: ...
@@ -58,87 +62,6 @@ class Window:
         return {"since": iso_z(self.since), "until": iso_z(self.until)}
 
 
-class GitHubClient:
-    """Minimal read-only GitHub client. No mutation endpoints are reachable."""
-
-    def __init__(self, token: str | None = None, api_url: str = API, timeout: float = 30.0) -> None:
-        self.token = token
-        self.api_url = api_url.rstrip("/")
-        self.timeout = timeout
-
-    def _request(self, path: str) -> Any:
-        url = path if path.startswith("http") else f"{self.api_url}{path}"
-        headers = {
-            "Accept": "application/vnd.github+json",
-            "User-Agent": "chatman-ecosystem-activity-census/1",
-            "X-GitHub-Api-Version": "2022-11-28",
-        }
-        if self.token:
-            headers["Authorization"] = f"Bearer {self.token}"
-        req = urllib.request.Request(url, headers=headers, method="GET")
-        try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as res:
-                return json.loads(res.read().decode("utf-8"))
-        except urllib.error.HTTPError as exc:
-            body = exc.read().decode("utf-8", errors="replace")
-            raise CensusError(f"GitHub HTTP {exc.code} for {url}: {body[:400]}") from exc
-        except urllib.error.URLError as exc:
-            raise CensusError(f"GitHub transport failed for {url}: {exc.reason}") from exc
-
-    def list_public_owner_repositories(self, owner: str) -> list[dict[str, Any]]:
-        quoted = urllib.parse.quote(owner, safe="")
-        rows: list[dict[str, Any]] = []
-        for page in range(1, 101):
-            payload = self._request(
-                f"/users/{quoted}/repos?type=owner&sort=full_name&direction=asc&per_page=100&page={page}"
-            )
-            if not isinstance(payload, list):
-                raise CensusError("repository sensor returned non-list payload")
-            if not payload:
-                return rows
-            rows.extend(x for x in payload if isinstance(x, dict))
-        raise CensusError("REFUSED[REPOSITORY_PAGINATION_UNBOUNDED]")
-
-    def search_updated_pull_requests(
-        self, owner: str, since: datetime, until: datetime
-    ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-        # Search accepts day precision; exact timestamp filtering is reapplied locally.
-        q = (
-            f"user:{owner} is:pr "
-            f"updated:>={since.date().isoformat()} updated:<={until.date().isoformat()}"
-        )
-        rows: list[dict[str, Any]] = []
-        total_count: int | None = None
-        incomplete = False
-        for page in range(1, 11):
-            params = urllib.parse.urlencode({"q": q, "per_page": 100, "page": page})
-            payload = self._request(f"/search/issues?{params}")
-            if not isinstance(payload, dict) or not isinstance(payload.get("items"), list):
-                raise CensusError("PR sensor returned invalid search payload")
-            if total_count is None:
-                total_count = int(payload.get("total_count", 0))
-            incomplete = incomplete or bool(payload.get("incomplete_results", False))
-            items = [x for x in payload["items"] if isinstance(x, dict)]
-            rows.extend(items)
-            if not items or len(rows) >= min(total_count, 1000):
-                break
-        evidence = {
-            "reported_total_count": total_count or 0,
-            "retrieved_count": len(rows),
-            "search_cap": 1000,
-            "incomplete_results": incomplete,
-        }
-        if incomplete:
-            raise CensusError("REFUSED[PR_SEARCH_INCOMPLETE_RESULTS]")
-        if (total_count or 0) > 1000:
-            raise CensusError(f"REFUSED[PR_SEARCH_CAP] total_count={total_count}")
-        if len(rows) < (total_count or 0):
-            raise CensusError(
-                f"REFUSED[PR_SEARCH_TRUNCATED] total_count={total_count} retrieved={len(rows)}"
-            )
-        return rows, evidence
-
-
 def parse_time(value: str) -> datetime:
     text = value.strip()
     if text.endswith("Z"):
@@ -152,8 +75,29 @@ def parse_time(value: str) -> datetime:
     return result.astimezone(timezone.utc)
 
 
+def floor_second(value: datetime) -> datetime:
+    return value.astimezone(timezone.utc).replace(microsecond=0)
+
+
+def inclusive_search_bounds(since: datetime, until: datetime) -> tuple[datetime, datetime]:
+    """Convert exact [since, until) to a superset of whole-second search bounds."""
+    start = floor_second(since)
+    end_floor = floor_second(until)
+    if until.astimezone(timezone.utc).microsecond:
+        end = end_floor
+    else:
+        end = end_floor - timedelta(seconds=1)
+    if end < start:
+        end = start
+    return start, end
+
+
 def iso_z(value: datetime) -> str:
-    return value.astimezone(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+    return (
+        value.astimezone(timezone.utc)
+        .isoformat(timespec="seconds")
+        .replace("+00:00", "Z")
+    )
 
 
 def repository_from_pr(item: Mapping[str, Any], owner: str) -> str | None:
@@ -167,7 +111,196 @@ def repository_from_pr(item: Mapping[str, Any], owner: str) -> str | None:
 
 
 def canonical_bytes(value: Mapping[str, Any]) -> bytes:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode()
+    return json.dumps(
+        value, sort_keys=True, separators=(",", ":"), ensure_ascii=True
+    ).encode()
+
+
+def stable_pr_key(item: Mapping[str, Any]) -> str:
+    node_id = item.get("node_id")
+    if isinstance(node_id, str) and node_id:
+        return f"node:{node_id}"
+    item_id = item.get("id")
+    if isinstance(item_id, int):
+        return f"id:{item_id}"
+    url = item.get("url")
+    if isinstance(url, str) and url:
+        return f"url:{url}"
+    raise CensusError("REFUSED[PR_ROW_IDENTITY_MISSING]")
+
+
+class GitHubClient:
+    """Minimal read-only GitHub client. No mutation endpoints are reachable."""
+
+    def __init__(
+        self, token: str | None = None, api_url: str = API, timeout: float = 30.0
+    ) -> None:
+        self.token = token
+        self.api_url = api_url.rstrip("/")
+        self.timeout = timeout
+
+    def _request(self, path: str) -> Any:
+        url = path if path.startswith("http") else f"{self.api_url}{path}"
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "chatman-ecosystem-activity-census/2",
+            "X-GitHub-Api-Version": "2022-11-28",
+        }
+        if self.token:
+            headers["Authorization"] = f"Bearer {self.token}"
+        req = urllib.request.Request(url, headers=headers, method="GET")
+        try:
+            with urllib.request.urlopen(req, timeout=self.timeout) as res:
+                return json.loads(res.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            body = exc.read().decode("utf-8", errors="replace")
+            raise CensusError(
+                f"GitHub HTTP {exc.code} for {url}: {body[:400]}"
+            ) from exc
+        except urllib.error.URLError as exc:
+            raise CensusError(
+                f"GitHub transport failed for {url}: {exc.reason}"
+            ) from exc
+
+    def list_public_owner_repositories(self, owner: str) -> list[dict[str, Any]]:
+        quoted = urllib.parse.quote(owner, safe="")
+        rows: list[dict[str, Any]] = []
+        for page in range(1, 101):
+            payload = self._request(
+                f"/users/{quoted}/repos?type=owner&sort=full_name&direction=asc"
+                f"&per_page=100&page={page}"
+            )
+            if not isinstance(payload, list):
+                raise CensusError("repository sensor returned non-list payload")
+            if not payload:
+                return rows
+            rows.extend(x for x in payload if isinstance(x, dict))
+        raise CensusError("REFUSED[REPOSITORY_PAGINATION_UNBOUNDED]")
+
+    @staticmethod
+    def _query(owner: str, start: datetime, end: datetime) -> str:
+        return f"user:{owner} is:pr updated:{iso_z(start)}..{iso_z(end)}"
+
+    def _search_page(
+        self, owner: str, start: datetime, end: datetime, page: int
+    ) -> dict[str, Any]:
+        params = urllib.parse.urlencode(
+            {
+                "q": self._query(owner, start, end),
+                "per_page": PER_PAGE,
+                "page": page,
+                "sort": "updated",
+                "order": "asc",
+            }
+        )
+        payload = self._request(f"/search/issues?{params}")
+        if not isinstance(payload, dict) or not isinstance(payload.get("items"), list):
+            raise CensusError("PR sensor returned invalid search payload")
+        return payload
+
+    def _search_partition(
+        self,
+        owner: str,
+        start: datetime,
+        end: datetime,
+        *,
+        depth: int = 0,
+    ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+        first = self._search_page(owner, start, end, 1)
+        total = int(first.get("total_count", 0))
+        if bool(first.get("incomplete_results", False)):
+            raise CensusError("REFUSED[PR_SEARCH_INCOMPLETE_RESULTS]")
+
+        if total > SEARCH_CAP:
+            if start >= end:
+                raise CensusError(
+                    "REFUSED[PR_SEARCH_PARTITION_CAP] "
+                    f"second={iso_z(start)} total_count={total}"
+                )
+            span_seconds = int((end - start).total_seconds())
+            midpoint = start + timedelta(seconds=span_seconds // 2)
+            right_start = midpoint + timedelta(seconds=1)
+            left_rows, left_segments = self._search_partition(
+                owner, start, midpoint, depth=depth + 1
+            )
+            right_rows, right_segments = self._search_partition(
+                owner, right_start, end, depth=depth + 1
+            )
+            return left_rows + right_rows, left_segments + right_segments
+
+        items = [x for x in first["items"] if isinstance(x, dict)]
+        pages = max(1, (total + PER_PAGE - 1) // PER_PAGE)
+        for page in range(2, pages + 1):
+            payload = self._search_page(owner, start, end, page)
+            if bool(payload.get("incomplete_results", False)):
+                raise CensusError("REFUSED[PR_SEARCH_INCOMPLETE_RESULTS]")
+            if int(payload.get("total_count", 0)) != total:
+                raise CensusError(
+                    "REFUSED[PR_SEARCH_PARTITION_DRIFT] "
+                    f"range={iso_z(start)}..{iso_z(end)}"
+                )
+            items.extend(x for x in payload["items"] if isinstance(x, dict))
+
+        if len(items) != total:
+            raise CensusError(
+                "REFUSED[PR_SEARCH_TRUNCATED] "
+                f"range={iso_z(start)}..{iso_z(end)} "
+                f"total_count={total} retrieved={len(items)}"
+            )
+        segment = {
+            "since_inclusive": iso_z(start),
+            "until_inclusive": iso_z(end),
+            "reported_total_count": total,
+            "retrieved_count": len(items),
+            "depth": depth,
+        }
+        return items, [segment]
+
+    def search_updated_pull_requests(
+        self, owner: str, since: datetime, until: datetime
+    ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        start, end = inclusive_search_bounds(since, until)
+        root = self._search_page(owner, start, end, 1)
+        root_total = int(root.get("total_count", 0))
+        if bool(root.get("incomplete_results", False)):
+            raise CensusError("REFUSED[PR_SEARCH_INCOMPLETE_RESULTS]")
+
+        if root_total <= SEARCH_CAP:
+            rows, segments = self._search_partition(owner, start, end)
+        else:
+            if start >= end:
+                raise CensusError(
+                    "REFUSED[PR_SEARCH_PARTITION_CAP] "
+                    f"second={iso_z(start)} total_count={root_total}"
+                )
+            span_seconds = int((end - start).total_seconds())
+            midpoint = start + timedelta(seconds=span_seconds // 2)
+            rows_left, segments_left = self._search_partition(owner, start, midpoint)
+            rows_right, segments_right = self._search_partition(
+                owner, midpoint + timedelta(seconds=1), end
+            )
+            rows = rows_left + rows_right
+            segments = segments_left + segments_right
+
+        unique: dict[str, dict[str, Any]] = {}
+        for row in rows:
+            unique.setdefault(stable_pr_key(row), row)
+
+        evidence = {
+            "root_reported_total_count": root_total,
+            "retrieved_count": len(rows),
+            "retrieved_unique_count": len(unique),
+            "deduplicated_count": len(rows) - len(unique),
+            "search_cap": SEARCH_CAP,
+            "partition_strategy": "recursive-bisection-by-updated-second",
+            "partition_count": len(segments),
+            "max_partition_total": max(
+                (int(s["reported_total_count"]) for s in segments), default=0
+            ),
+            "incomplete_results": False,
+            "partitions": segments,
+        }
+        return list(unique.values()), evidence
 
 
 def build_census(
@@ -195,7 +328,9 @@ def build_census(
         if window.contains(pushed_time):
             pushed_active.add(full_name)
 
-    prs, pr_evidence = client.search_updated_pull_requests(owner, window.since, window.until)
+    prs, pr_evidence = client.search_updated_pull_requests(
+        owner, window.since, window.until
+    )
     pr_active: set[str] = set()
     pr_updates_in_window = 0
     malformed_pr_rows = 0
@@ -286,7 +421,9 @@ def verify_receipt(census: Mapping[str, Any]) -> bool:
 
 def write_json(path: Path, payload: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -295,14 +432,21 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--days", type=int, default=7)
     parser.add_argument("--until")
     parser.add_argument("--token-env", default="GITHUB_TOKEN")
-    parser.add_argument("--output", type=Path, default=Path(".artifacts/activity-census/census.json"))
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path(".artifacts/activity-census/census.json"),
+    )
     parser.add_argument("--replay", type=Path)
     args = parser.parse_args(argv)
 
     if args.replay:
         payload = json.loads(args.replay.read_text(encoding="utf-8"))
         if verify_receipt(payload):
-            print(f"ALIVE:ACTIVITY_CENSUS_REPLAY digest={payload['receipt']['observation_digest']}")
+            print(
+                "ALIVE:ACTIVITY_CENSUS_REPLAY "
+                f"digest={payload['receipt']['observation_digest']}"
+            )
             return 0
         print("REFUSED[ACTIVITY_CENSUS_REPLAY_MISMATCH]", file=sys.stderr)
         return 2
@@ -315,16 +459,21 @@ def main(argv: Sequence[str] | None = None) -> int:
     window = Window(since=until - timedelta(days=args.days), until=until)
     token = os.getenv(args.token_env) or None
     try:
-        census = build_census(GitHubClient(token=token), owner=args.owner, window=window)
+        census = build_census(
+            GitHubClient(token=token), owner=args.owner, window=window
+        )
     except CensusError as exc:
         print(str(exc), file=sys.stderr)
         return 2
     write_json(args.output, census)
+    sensor = census["sensors"]["updated_pull_request"]
     print(
         "PARTIAL_ALIVE:ACTIVITY_CENSUS "
         f"union={census['reconciliation']['union_repository_count']} "
         f"push_only={census['reconciliation']['push_only_count']} "
         f"pr_only={census['reconciliation']['pr_only_count']} "
+        f"pr_updates={sensor['updates_in_exact_window']} "
+        f"partitions={sensor.get('partition_count', 0)} "
         f"digest={census['receipt']['observation_digest']}"
     )
     return 0
