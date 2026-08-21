@@ -1,0 +1,43 @@
+@prefix agp: <https://ggen.io/ontology/ash-igniter-gen-pipeline#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+agp:FanOutDomain a agp:CodegenTarget ;
+  agp:moduleName "Operations" ;
+  agp:domainModule "Example" ;
+  agp:mixTask "ash.gen.domain" ;
+  agp:rank 0 .
+
+agp:FanOutResourceA a agp:CodegenTarget ;
+  agp:moduleName "Alpha" ;
+  agp:domainModule "Example.Operations" ;
+  agp:mixTask "ash.gen.resource" ;
+  agp:mixArgs "--ignore-if-exists --default-actions read" ;
+  agp:rank 1 .
+
+agp:FanOutResourceB a agp:CodegenTarget ;
+  agp:moduleName "Bravo" ;
+  agp:domainModule "Example.Operations" ;
+  agp:mixTask "ash.gen.resource" ;
+  agp:mixArgs "--ignore-if-exists --default-actions read" ;
+  agp:rank 1 .
+
+agp:FanOutResourceC a agp:CodegenTarget ;
+  agp:moduleName "Charlie" ;
+  agp:domainModule "Example.Operations" ;
+  agp:mixTask "ash.gen.resource" ;
+  agp:mixArgs "--ignore-if-exists --default-actions read" ;
+  agp:rank 1 .
+
+agp:FanOutResourceD a agp:CodegenTarget ;
+  agp:moduleName "Delta" ;
+  agp:domainModule "Example.Operations" ;
+  agp:mixTask "ash.gen.resource" ;
+  agp:mixArgs "--ignore-if-exists --default-actions read" ;
+  agp:rank 1 .
+
+agp:FanOutResourceE a agp:CodegenTarget ;
+  agp:moduleName "Echo" ;
+  agp:domainModule "Example.Operations" ;
+  agp:mixTask "ash.gen.resource" ;
+  agp:mixArgs "--ignore-if-exists --default-actions read" ;
+  agp:rank 1 .

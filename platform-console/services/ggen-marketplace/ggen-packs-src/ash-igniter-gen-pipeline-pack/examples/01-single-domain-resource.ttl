@@ -1,0 +1,15 @@
+@prefix agp: <https://ggen.io/ontology/ash-igniter-gen-pipeline#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+agp:ExampleDomain a agp:CodegenTarget ;
+  agp:moduleName "Operations" ;
+  agp:domainModule "Example" ;
+  agp:mixTask "ash.gen.domain" ;
+  agp:rank 0 .
+
+agp:ExampleWidgetResource a agp:CodegenTarget ;
+  agp:moduleName "Widget" ;
+  agp:domainModule "Example.Operations" ;
+  agp:mixTask "ash.gen.resource" ;
+  agp:mixArgs "--ignore-if-exists --default-actions read" ;
+  agp:rank 1 .
