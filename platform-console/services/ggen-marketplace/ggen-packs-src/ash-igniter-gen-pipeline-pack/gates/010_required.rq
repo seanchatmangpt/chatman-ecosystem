@@ -1,7 +1,8 @@
 # MESSAGE: every agp:CodegenTarget must have a non-empty agp:moduleName,
-# agp:domainModule, and agp:mixTask -- the template interpolates all three
-# unconditionally (mixArgs is real-optional, deliberately not gated). A
-# row missing any of these can't drive a real mix command line. Any row
+# agp:domainModule, agp:mixTask, and agp:rank -- the template interpolates
+# the first three unconditionally and orders execution by the fourth
+# (mixArgs is real-optional, deliberately not gated). A row missing any of
+# these can't drive a real, correctly-ordered mix command line. Any row
 # returned here = a subject missing its required property.
 PREFIX agp: <https://ggen.io/ontology/ash-igniter-gen-pipeline#>
 SELECT ?s ?missing WHERE {
@@ -11,6 +12,8 @@ SELECT ?s ?missing WHERE {
     ?s a agp:CodegenTarget . BIND(agp:domainModule AS ?missing)
   } UNION {
     ?s a agp:CodegenTarget . BIND(agp:mixTask AS ?missing)
+  } UNION {
+    ?s a agp:CodegenTarget . BIND(agp:rank AS ?missing)
   }
   FILTER NOT EXISTS { ?s ?missing ?any }
 }
