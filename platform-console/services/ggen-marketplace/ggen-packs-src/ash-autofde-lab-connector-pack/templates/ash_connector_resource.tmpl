@@ -68,6 +68,10 @@ defmodule {{ resource_module }} do
               solver: "Astar",
               "domain-arguments": query
             }
+{% elif cnv_tool == "fabric__match" %}
+            %{
+              domain: query
+            }
 {% else %}
             %{}
 {% endif %}

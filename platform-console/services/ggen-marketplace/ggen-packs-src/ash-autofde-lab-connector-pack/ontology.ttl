@@ -34,3 +34,13 @@ aac:AutofdePlannerCatalog a aac:AshConnector ;
   aac:cnvDeployBaseUrlEnv "cnv_deploy_base_url" ;
   aac:outputFile "lib/xaas/operations/autofde_planner_catalog.ex" ;
   aac:tableName "autofde_planner_catalog_requests" .
+
+aac:AutofdePlannerMatch a aac:AshConnector ;
+  dcterms:description "Real connector: xaas Ash resource -> cnv-deploy POST /invoke tool fabric__match (matches compatible solvers for a real domain, required positional domain + optional domain-arguments, confirmed clap-noun-verb-any/examples/autofde_lab_planners/cnv-any.json)" ;
+  aac:resourceModule "Xaas.Operations.AutofdePlannerMatch" ;
+  aac:domainModule "Xaas.Operations" ;
+  aac:invokeTool "fabric__match" ;
+  aac:actionName "request_match" ;
+  aac:cnvDeployBaseUrlEnv "cnv_deploy_base_url" ;
+  aac:outputFile "lib/xaas/operations/autofde_planner_match.ex" ;
+  aac:tableName "autofde_planner_match_requests" .
