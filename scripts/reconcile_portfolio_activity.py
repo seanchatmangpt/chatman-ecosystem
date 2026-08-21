@@ -21,12 +21,15 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Mapping, Protocol, Sequence
+from typing import Any, Callable, Mapping, Protocol, Sequence
 
 API = "https://api.github.com"
 SCHEMA = "chatman.portfolio-activity-census/1"
+SEARCH_CAP = 1000
+GITHUB_EPOCH = date(2008, 1, 1)
+MAX_SEARCH_PARTITIONS = 256
 
 
 class CensusError(RuntimeError):
@@ -56,6 +59,142 @@ class Window:
 
     def to_dict(self) -> dict[str, str]:
         return {"since": iso_z(self.since), "until": iso_z(self.until)}
+
+
+@dataclass(frozen=True)
+class SearchSlice:
+    """One disjoint creation-date slice of the same updated-PR population."""
+
+    created_since: date
+    created_until: date
+
+    def __post_init__(self) -> None:
+        if self.created_since > self.created_until:
+            raise CensusError("created search slice is inverted")
+
+    def split(self) -> tuple["SearchSlice", "SearchSlice"]:
+        if self.created_since == self.created_until:
+            raise CensusError(
+                "REFUSED[PR_SEARCH_UNSPLITTABLE_DAY_CAP] "
+                f"created={self.created_since.isoformat()}"
+            )
+        span = (self.created_until - self.created_since).days
+        midpoint = self.created_since + timedelta(days=span // 2)
+        return (
+            SearchSlice(self.created_since, midpoint),
+            SearchSlice(midpoint + timedelta(days=1), self.created_until),
+        )
+
+
+SearchFetcher = Callable[[SearchSlice | None], tuple[list[dict[str, Any]], int, bool]]
+
+
+def _pr_search_identity(item: Mapping[str, Any]) -> str:
+    item_id = item.get("id")
+    if isinstance(item_id, int):
+        return f"id:{item_id}"
+    node_id = item.get("node_id")
+    if isinstance(node_id, str) and node_id:
+        return f"node:{node_id}"
+    url = item.get("url")
+    if isinstance(url, str) and url:
+        return f"url:{url}"
+    raise CensusError("REFUSED[PR_SEARCH_RESULT_IDENTITY_MISSING]")
+
+
+def collect_partitioned_pr_search(
+    fetch: SearchFetcher,
+    *,
+    created_floor: date,
+    created_ceiling: date,
+    search_cap: int = SEARCH_CAP,
+    max_partitions: int = MAX_SEARCH_PARTITIONS,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Collect a capped GitHub PR search without weakening completeness checks.
+
+    The cheap broad query remains the default. Only when its reported population is
+    above GitHub's 1,000-result search cap do we recursively partition by PR creation
+    date. Creation date is orthogonal to the measured ``updated`` window, so every PR
+    in the target population belongs to exactly one slice. A single calendar day that
+    still exceeds the cap is explicitly refused rather than sampled.
+    """
+
+    broad_rows, broad_total, broad_incomplete = fetch(None)
+    if broad_incomplete:
+        raise CensusError("REFUSED[PR_SEARCH_INCOMPLETE_RESULTS]")
+    if broad_total <= search_cap:
+        if len(broad_rows) < broad_total:
+            raise CensusError(
+                "REFUSED[PR_SEARCH_TRUNCATED] "
+                f"total_count={broad_total} retrieved={len(broad_rows)}"
+            )
+        return broad_rows, {
+            "reported_total_count": broad_total,
+            "retrieved_count": len(broad_rows),
+            "search_cap": search_cap,
+            "incomplete_results": False,
+            "cap_triggered": False,
+            "partition_strategy": "none",
+            "partition_count": 1,
+            "duplicate_count": 0,
+            "max_partition_total": broad_total,
+        }
+
+    pending = [SearchSlice(created_floor, created_ceiling)]
+    accepted: list[tuple[SearchSlice, list[dict[str, Any]], int]] = []
+    partition_queries = 0
+    max_partition_total = 0
+    while pending:
+        if partition_queries >= max_partitions:
+            raise CensusError(
+                "REFUSED[PR_SEARCH_PARTITION_LIMIT] "
+                f"limit={max_partitions} pending={len(pending)}"
+            )
+        current = pending.pop()
+        rows, total, incomplete = fetch(current)
+        partition_queries += 1
+        max_partition_total = max(max_partition_total, total)
+        if incomplete:
+            raise CensusError(
+                "REFUSED[PR_SEARCH_INCOMPLETE_RESULTS] "
+                f"created={current.created_since.isoformat()}..{current.created_until.isoformat()}"
+            )
+        if total > search_cap:
+            left, right = current.split()
+            pending.append(right)
+            pending.append(left)
+            continue
+        if len(rows) < total:
+            raise CensusError(
+                "REFUSED[PR_SEARCH_TRUNCATED] "
+                f"created={current.created_since.isoformat()}..{current.created_until.isoformat()} "
+                f"total_count={total} retrieved={len(rows)}"
+            )
+        accepted.append((current, rows, total))
+
+    accepted.sort(key=lambda entry: entry[0].created_since)
+    unique: dict[str, dict[str, Any]] = {}
+    duplicate_count = 0
+    for _, rows, _ in accepted:
+        for row in rows:
+            identity = _pr_search_identity(row)
+            if identity in unique:
+                duplicate_count += 1
+                continue
+            unique[identity] = row
+
+    return list(unique.values()), {
+        "reported_total_count": broad_total,
+        "retrieved_count": len(unique),
+        "search_cap": search_cap,
+        "incomplete_results": False,
+        "cap_triggered": True,
+        "partition_strategy": "created_date_recursive",
+        "partition_count": partition_queries,
+        "leaf_partition_count": len(accepted),
+        "duplicate_count": duplicate_count,
+        "max_partition_total": max_partition_total,
+    }
 
 
 class GitHubClient:
@@ -99,19 +238,35 @@ class GitHubClient:
             rows.extend(x for x in payload if isinstance(x, dict))
         raise CensusError("REFUSED[REPOSITORY_PAGINATION_UNBOUNDED]")
 
-    def search_updated_pull_requests(
-        self, owner: str, since: datetime, until: datetime
-    ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-        # Search accepts day precision; exact timestamp filtering is reapplied locally.
-        q = (
-            f"user:{owner} is:pr "
-            f"updated:>={since.date().isoformat()} updated:<={until.date().isoformat()}"
-        )
+    def _fetch_pr_search_slice(
+        self,
+        *,
+        owner: str,
+        since: datetime,
+        until: datetime,
+        search_slice: SearchSlice | None,
+    ) -> tuple[list[dict[str, Any]], int, bool]:
+        # GitHub issue-search dates are day-granularity. Exact updated timestamps are
+        # reapplied locally after retrieval; creation-date slices are disjoint days.
+        q_parts = [
+            f"user:{owner}",
+            "is:pr",
+            f"updated:>={since.date().isoformat()}",
+            f"updated:<={until.date().isoformat()}",
+        ]
+        if search_slice is not None:
+            q_parts.append(
+                "created:"
+                f"{search_slice.created_since.isoformat()}..{search_slice.created_until.isoformat()}"
+            )
+        q = " ".join(q_parts)
         rows: list[dict[str, Any]] = []
         total_count: int | None = None
         incomplete = False
         for page in range(1, 11):
-            params = urllib.parse.urlencode({"q": q, "per_page": 100, "page": page})
+            params = urllib.parse.urlencode(
+                {"q": q, "per_page": 100, "page": page, "sort": "created", "order": "asc"}
+            )
             payload = self._request(f"/search/issues?{params}")
             if not isinstance(payload, dict) or not isinstance(payload.get("items"), list):
                 raise CensusError("PR sensor returned invalid search payload")
@@ -120,23 +275,23 @@ class GitHubClient:
             incomplete = incomplete or bool(payload.get("incomplete_results", False))
             items = [x for x in payload["items"] if isinstance(x, dict)]
             rows.extend(items)
-            if not items or len(rows) >= min(total_count, 1000):
+            if not items or len(rows) >= min(total_count, SEARCH_CAP):
                 break
-        evidence = {
-            "reported_total_count": total_count or 0,
-            "retrieved_count": len(rows),
-            "search_cap": 1000,
-            "incomplete_results": incomplete,
-        }
-        if incomplete:
-            raise CensusError("REFUSED[PR_SEARCH_INCOMPLETE_RESULTS]")
-        if (total_count or 0) > 1000:
-            raise CensusError(f"REFUSED[PR_SEARCH_CAP] total_count={total_count}")
-        if len(rows) < (total_count or 0):
-            raise CensusError(
-                f"REFUSED[PR_SEARCH_TRUNCATED] total_count={total_count} retrieved={len(rows)}"
-            )
-        return rows, evidence
+        return rows, total_count or 0, incomplete
+
+    def search_updated_pull_requests(
+        self, owner: str, since: datetime, until: datetime
+    ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        return collect_partitioned_pr_search(
+            lambda search_slice: self._fetch_pr_search_slice(
+                owner=owner,
+                since=since,
+                until=until,
+                search_slice=search_slice,
+            ),
+            created_floor=GITHUB_EPOCH,
+            created_ceiling=until.date(),
+        )
 
 
 def parse_time(value: str) -> datetime:
