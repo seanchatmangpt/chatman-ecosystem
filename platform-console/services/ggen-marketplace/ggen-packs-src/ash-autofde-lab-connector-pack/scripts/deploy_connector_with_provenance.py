@@ -9,6 +9,8 @@ the operator explicitly reconciles provenance.
 
 ``--check`` exposes the same admission decision as canonical JSON without
 invoking the transactional child or mutating any governed filesystem surface.
+The emitted admission digest binds that SELECT result to the exact governed
+filesystem bytes/existence so a later CONSTRUCT can fail closed on stale input.
 """
 from __future__ import annotations
 
@@ -23,6 +25,7 @@ from pathlib import Path
 
 SCHEMA = "chatman.ash-connector-provenance/1"
 PREFLIGHT_SCHEMA = "chatman.ash-connector-preflight/1"
+ADMISSION_STATE_SCHEMA = "chatman.ash-connector-admission-state/1"
 PACK_DIR = Path(os.environ.get("CONNECTOR_PACK_DIR", str(Path(__file__).resolve().parent.parent)))
 TRANSACTIONAL_DEPLOY = Path(
     os.environ.get(
@@ -93,6 +96,30 @@ def canonical_receipt(tool_name: str, dest: Path, content: bytes) -> dict[str, s
     }
 
 
+def state_component(label: str, path: Path) -> dict[str, object]:
+    """Describe governed state without embedding machine-specific root paths."""
+    if not path.exists():
+        return {"label": label, "exists": False, "sha256": None}
+    return {"label": label, "exists": True, "sha256": digest_bytes(path.read_bytes())}
+
+
+def admission_state_digest(tool_name: str, dest: Path, sidecar: Path) -> str:
+    """Bind SELECT evidence to exact governed bytes/existence, portably."""
+    subject = {
+        "schema": ADMISSION_STATE_SCHEMA,
+        "tool_name": tool_name,
+        "output_file": str(dest.relative_to(XAAS_ROOT)),
+        "surfaces": [
+            state_component("ontology", ONTOLOGY_PATH),
+            state_component("destination", dest),
+            state_component("sparql_bridge", SPARQL_BRIDGE_PATH),
+            state_component("provenance", sidecar),
+        ],
+    }
+    canonical = json.dumps(subject, sort_keys=True, separators=(",", ":")).encode()
+    return digest_bytes(canonical)
+
+
 def assess_existing_destination(tool_name: str, dest: Path, sidecar: Path) -> Admission:
     if not dest.exists():
         if sidecar.exists():
@@ -125,7 +152,12 @@ def admit_existing_destination(tool_name: str, dest: Path, sidecar: Path) -> boo
     return admission.admitted
 
 
-def preflight_record(tool_name: str, dest: Path, admission: Admission) -> dict[str, object]:
+def preflight_record(
+    tool_name: str,
+    dest: Path,
+    admission: Admission,
+    admission_digest: str,
+) -> dict[str, object]:
     return {
         "schema": PREFLIGHT_SCHEMA,
         "tool_name": tool_name,
@@ -135,6 +167,7 @@ def preflight_record(tool_name: str, dest: Path, admission: Admission) -> dict[s
         "reason": admission.reason,
         "authority": "SELECT_ONLY",
         "child_invoked": False,
+        "admission_digest": admission_digest,
     }
 
 
@@ -159,29 +192,67 @@ def write_receipt_atomic(sidecar: Path, receipt: dict[str, str]) -> None:
     tmp.replace(sidecar)
 
 
-def main(argv: list[str] | None = None) -> int:
-    args = list(sys.argv[1:] if argv is None else argv)
+def parse_args(args: list[str]) -> tuple[bool, str | None, str] | None:
     check_only = False
-    if args[:1] == ["--check"]:
+    required_digest: str | None = None
+    remaining = list(args)
+    if remaining[:1] == ["--check"]:
         check_only = True
-        args = args[1:]
-    if len(args) != 1 or args[0].startswith("-"):
-        print("usage: deploy_connector_with_provenance.py [--check] <tool-name>", file=sys.stderr)
+        remaining = remaining[1:]
+    elif remaining[:1] == ["--admission-digest"]:
+        if len(remaining) < 3:
+            return None
+        required_digest = remaining[1]
+        remaining = remaining[2:]
+    if len(remaining) != 1 or remaining[0].startswith("-"):
+        return None
+    return check_only, required_digest, remaining[0]
+
+
+def main(argv: list[str] | None = None) -> int:
+    parsed = parse_args(list(sys.argv[1:] if argv is None else argv))
+    if parsed is None:
+        print(
+            "usage: deploy_connector_with_provenance.py [--check | --admission-digest <sha256>] <tool-name>",
+            file=sys.stderr,
+        )
         return 2
-    tool_name = args[0]
+    check_only, required_digest, tool_name = parsed
     try:
         dest = output_path_for(tool_name)
     except ValueError as exc:
         print(f"REFUSED: {exc}", file=sys.stderr)
         return 2
     sidecar = provenance_path_for(dest)
-    admission = assess_existing_destination(tool_name, dest, sidecar)
+    current_digest = admission_state_digest(tool_name, dest, sidecar)
+
     if check_only:
-        print(json.dumps(preflight_record(tool_name, dest, admission), sort_keys=True, separators=(",", ":")))
+        admission = assess_existing_destination(tool_name, dest, sidecar)
+        print(
+            json.dumps(
+                preflight_record(tool_name, dest, admission, current_digest),
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+        )
         if not admission.admitted:
             print(f"REFUSED: {admission.reason}", file=sys.stderr)
             return 1
         return 0
+
+    if required_digest is not None:
+        if not SHA256_RE.fullmatch(required_digest):
+            print("REFUSED: admission digest must be exactly 64 lowercase hexadecimal characters", file=sys.stderr)
+            return 1
+        if current_digest != required_digest:
+            print(
+                "REFUSED: stale admission digest; governed filesystem state changed after preflight "
+                f"expected={required_digest} actual={current_digest}",
+                file=sys.stderr,
+            )
+            return 1
+
+    admission = assess_existing_destination(tool_name, dest, sidecar)
     if not admission.admitted:
         print(f"REFUSED: {admission.reason}", file=sys.stderr)
         return 1
