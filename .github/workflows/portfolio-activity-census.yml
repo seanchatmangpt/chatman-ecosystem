@@ -4,13 +4,16 @@ on:
   pull_request:
     paths:
       - 'scripts/reconcile_portfolio_activity.py'
+      - 'scripts/reconcile_ci_outcomes.py'
       - 'scripts/verify_ci_subject.py'
       - 'tests/test_reconcile_portfolio_activity.py'
+      - 'tests/test_reconcile_ci_outcomes.py'
       - 'tests/test_verify_ci_subject.py'
       - '.github/workflows/portfolio-activity-census.yml'
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   issues: read
   pull-requests: read
@@ -46,11 +49,14 @@ jobs:
         run: |
           python3 -m py_compile \
             scripts/reconcile_portfolio_activity.py \
+            scripts/reconcile_ci_outcomes.py \
             scripts/verify_ci_subject.py \
             tests/test_reconcile_portfolio_activity.py \
+            tests/test_reconcile_ci_outcomes.py \
             tests/test_verify_ci_subject.py
           python3 -m unittest -v \
             tests.test_reconcile_portfolio_activity \
+            tests.test_reconcile_ci_outcomes \
             tests.test_verify_ci_subject
 
       - name: Observe dual-sensor trailing-seven-day activity
@@ -64,6 +70,17 @@ jobs:
             --output .artifacts/activity-census/census.json
           python3 scripts/reconcile_portfolio_activity.py \
             --replay .artifacts/activity-census/census.json
+
+      - name: Reconcile GitHub Actions outcomes for admitted repositories
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/reconcile_ci_outcomes.py \
+            --activity-census .artifacts/activity-census/census.json \
+            --token-env GITHUB_TOKEN \
+            --output .artifacts/activity-census/ci-outcomes.json
+          python3 scripts/reconcile_ci_outcomes.py \
+            --replay .artifacts/activity-census/ci-outcomes.json
 
       - name: Upload census and subject receipts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
