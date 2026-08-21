@@ -53,5 +53,5 @@ jobs:
         run: >-
           python -m pytest -vv
           scripts/test_add_connector_deploy_rollback.py
-          scripts/test_add_connector_stale_copy.py
+          scripts/test_add_connector_stale_copy_refusal.py
           scripts/test_add_connector_bridge_guard.py
