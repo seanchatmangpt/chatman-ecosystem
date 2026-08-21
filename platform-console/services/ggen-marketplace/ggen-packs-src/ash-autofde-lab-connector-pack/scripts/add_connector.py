@@ -79,6 +79,13 @@ GGEN_MANIFEST_PATH = Path(os.environ.get(
         / "ggen-src" / "Cargo.toml"
     ),
 ))
+# Test-only escape hatch: a real JSON argv list that, if set, REPLACES the real cargo
+# invocation below wholesale. Lets a real regression test run a real, fast, trivial
+# subprocess (e.g. a one-line python3 -c script) in place of the real ggen binary, to
+# exercise the "exited 0 but did not touch output_file" no-op path deterministically --
+# a real fake ggen, not a mocked subprocess.run (FMEA RPN=144 fix test). Unset in
+# production; the real cargo/ggen invocation is used whenever this is absent.
+GGEN_SYNC_CMD_OVERRIDE = os.environ.get("GGEN_SYNC_CMD_OVERRIDE")
 # Real destination repo. Confirmed tilde-expansion bug: ggen sync run, run from this
 # pack's own directory, writes relative to the pack dir (this pack's own scratch
 # lib/xaas/operations/*.ex), never to ~/xaas, no matter what outputFile says in
@@ -87,19 +94,39 @@ GGEN_MANIFEST_PATH = Path(os.environ.get(
 XAAS_OPERATIONS_DIR = XAAS_ROOT / "lib" / "xaas" / "operations"
 
 
-def run_ggen_sync() -> bool:
+def run_ggen_sync(output_file: str) -> bool:
     """Real `ggen sync run`, via `cargo +nightly-2026-06-22 run --manifest-path
     .../ggen-src/Cargo.toml -p ggen-cli-lib --bin ggen -- sync run`, executed from this
     pack's own directory (PACK_DIR) so relative output paths resolve under the pack,
     matching the real, confirmed invocation used throughout this session. Returns True
-    on success (real subprocess exit code 0), False otherwise -- never fabricates a
-    successful run."""
-    cmd = [
-        "cargo", "+nightly-2026-06-22", "run",
-        "--manifest-path", str(GGEN_MANIFEST_PATH),
-        "-p", "ggen-cli-lib", "--bin", "ggen",
-        "--", "sync", "run",
-    ]
+    on success, False otherwise -- never fabricates a successful run.
+
+    FMEA RPN=144 fix (Severity=6 x Occurrence=3 x Detection=8): a returncode of 0 is
+    NOT proof that `output_file` specifically was (re)written. `ggen sync` is
+    differential and can exit 0 having silently no-op'd on this tool's output path
+    (e.g. it decided nothing upstream changed for this tool). Meanwhile this pack's
+    scratch lib/ dir accumulates every prior connector's generated .ex file across
+    runs and is never cleaned -- so a STALE file from an earlier, unrelated connector
+    run can already be sitting at exactly this path. Old code took returncode==0 as
+    proof of freshness and let copy_generated_file_to_xaas() copy whatever was
+    sitting there, reporting a fresh success while shipping stale bytes to xaas.
+
+    Fix: record `output_file`'s real mtime (or its absence) before invoking ggen; after
+    a 0 exit, require the file to either be newly created or carry a genuinely
+    different mtime than before. Refuses (does not fabricate success) if neither
+    happened, so copy_generated_file_to_xaas() is never reached with stale content."""
+    target = PACK_DIR / output_file
+    before_mtime_ns = target.stat().st_mtime_ns if target.exists() else None
+
+    if GGEN_SYNC_CMD_OVERRIDE:
+        cmd = json.loads(GGEN_SYNC_CMD_OVERRIDE)
+    else:
+        cmd = [
+            "cargo", "+nightly-2026-06-22", "run",
+            "--manifest-path", str(GGEN_MANIFEST_PATH),
+            "-p", "ggen-cli-lib", "--bin", "ggen",
+            "--", "sync", "run",
+        ]
     print(f"RUNNING: {' '.join(cmd)} (cwd={PACK_DIR})")
     result = subprocess.run(cmd, cwd=PACK_DIR, capture_output=True, text=True)
     print(result.stdout)
@@ -108,7 +135,29 @@ def run_ggen_sync() -> bool:
     if result.returncode != 0:
         print(f"REFUSED: ggen sync run exited {result.returncode}", file=sys.stderr)
         return False
-    print("OK: ggen sync run completed")
+
+    after_mtime_ns = target.stat().st_mtime_ns if target.exists() else None
+    if after_mtime_ns is None:
+        print(
+            f"REFUSED: ggen sync run exited 0 but the expected output file for this "
+            f"tool was never written at {target} -- exit code alone is not proof "
+            f"this tool's output was (re)generated (FMEA RPN=144)",
+            file=sys.stderr,
+        )
+        return False
+    if before_mtime_ns is not None and after_mtime_ns == before_mtime_ns:
+        print(
+            f"REFUSED: ggen sync run exited 0 but {target} mtime did not change -- "
+            f"this looks like a differential sync that silently no-op'd on this "
+            f"tool's output_file, leaving a STALE file from a prior, unrelated "
+            f"connector run in place (this pack's scratch lib/ dir accumulates every "
+            f"prior run's output and is never cleaned). Copying it now would report "
+            f"a fresh success while shipping the wrong bytes to xaas (FMEA RPN=144).",
+            file=sys.stderr,
+        )
+        return False
+
+    print(f"OK: ggen sync run completed and verified {target} was freshly (re)written")
     return True
 
 
@@ -116,7 +165,14 @@ def copy_generated_file_to_xaas(output_file: str) -> bool:
     """Real workaround for the disclosed tilde-expansion bug: ggen sync run writes the
     generated .ex file under this pack's own scratch lib/ dir (PACK_DIR / output_file),
     never to the real ~/xaas checkout. Copies the real generated bytes to the real xaas
-    path. Refuses (does not fabricate a copy) if the source file does not exist."""
+    path. Refuses (does not fabricate a copy) if the source file does not exist.
+
+    Freshness (not just existence) is guaranteed by the caller: main() only reaches
+    this function after run_ggen_sync(output_file) has already verified the source
+    file's mtime genuinely changed (or the file newly appeared) -- see run_ggen_sync's
+    FMEA RPN=144 fix. This function intentionally does not re-derive that mtime check
+    itself (it has no "before" baseline of its own to compare against); it trusts the
+    freshness contract run_ggen_sync() already enforced before returning True."""
     src = PACK_DIR / output_file
     if not src.exists():
         print(f"REFUSED: expected generated file not found at {src}", file=sys.stderr)
@@ -439,7 +495,7 @@ def main() -> int:
             file=sys.stderr,
         )
 
-    if not run_ggen_sync():
+    if not run_ggen_sync(output_file):
         rollback_ontology_write("ggen sync run failed")
         return 1
     if not copy_generated_file_to_xaas(output_file):
