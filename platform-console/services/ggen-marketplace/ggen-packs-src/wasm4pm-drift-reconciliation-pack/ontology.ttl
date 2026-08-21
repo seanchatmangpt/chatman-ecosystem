@@ -71,3 +71,10 @@ drc:BreedReachabilityGapClosed a drc:SourceContradictionClaim ;
   drc:checkKind "command_output_matches" ;
   drc:checkTarget "cargo test --test paper_grounded -- morphological_paper_grounded triz_paper_grounded ocpm_route_discoverer_paper_grounded" ;
   drc:expectedResult "3 passed; 0 failed" .
+
+drc:AuditRunnerRepoRootFixed a drc:SourceContradictionClaim ;
+  drc:sourceDoc "benchmarks/adversarial/audit-runner-main.ts" ;
+  drc:claimText "REPO_ROOT resolves from benchmarks/adversarial/ with '../..' (2 levels, matching the repo's actual 2-deep nesting), not '../../..' (3 levels), so the wasm module path stays wasm4pm/pkg/wasm4pm.js and doesn't silently resolve one directory too high" ;
+  drc:checkKind "grep_pattern" ;
+  drc:checkTarget "benchmarks/adversarial/audit-runner-main.ts:path.resolve(__dirname, '../..')" ;
+  drc:expectedResult "match" .
