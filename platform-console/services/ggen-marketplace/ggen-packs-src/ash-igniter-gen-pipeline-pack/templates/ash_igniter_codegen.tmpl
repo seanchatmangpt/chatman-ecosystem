@@ -6,13 +6,15 @@ for_each: results
 sparql:
   results: |
     PREFIX agp: <https://ggen.io/ontology/ash-igniter-gen-pipeline#>
-    SELECT ?moduleName ?domainModule ?mixTask ?mixArgs WHERE {
+    SELECT ?moduleName ?domainModule ?mixTask ?mixArgs ?rank WHERE {
       ?t a agp:CodegenTarget ;
          agp:moduleName ?moduleName ;
          agp:domainModule ?domainModule ;
-         agp:mixTask ?mixTask .
+         agp:mixTask ?mixTask ;
+         agp:rank ?rank .
       OPTIONAL { ?t agp:mixArgs ?mixArgs . }
     }
+    ORDER BY ?rank
 sh_after: "mix {{ mixTask }} {{ domainModule }}.{{ moduleName }} {{ mixArgs | default(value=\"\") }} 2>&1 | tee -a .agp-receipts/{{ moduleName }}-{{ mixTask }}.mix.log"
 ---
 real, generalized Igniter-backed codegen invocation.
