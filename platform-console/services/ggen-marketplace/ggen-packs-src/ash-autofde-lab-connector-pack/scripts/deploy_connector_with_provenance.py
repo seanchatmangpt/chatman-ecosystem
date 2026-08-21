@@ -6,6 +6,9 @@ replace an existing XaaS connector module unless a sidecar receipt proves that
 the bytes currently on disk are exactly the bytes previously manufactured by
 this generator path. A human edit therefore removes overwrite authority until
 the operator explicitly reconciles provenance.
+
+``--check`` exposes the same admission decision as canonical JSON without
+invoking the transactional child or mutating any governed filesystem surface.
 """
 from __future__ import annotations
 
@@ -19,6 +22,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 SCHEMA = "chatman.ash-connector-provenance/1"
+PREFLIGHT_SCHEMA = "chatman.ash-connector-preflight/1"
 PACK_DIR = Path(os.environ.get("CONNECTOR_PACK_DIR", str(Path(__file__).resolve().parent.parent)))
 TRANSACTIONAL_DEPLOY = Path(
     os.environ.get(
@@ -54,6 +58,13 @@ class Snapshot:
             self.path.unlink()
 
 
+@dataclass(frozen=True)
+class Admission:
+    admitted: bool
+    disposition: str
+    reason: str
+
+
 def snake(name: str) -> str:
     return name.replace("-", "_")
 
@@ -82,33 +93,49 @@ def canonical_receipt(tool_name: str, dest: Path, content: bytes) -> dict[str, s
     }
 
 
-def admit_existing_destination(tool_name: str, dest: Path, sidecar: Path) -> bool:
+def assess_existing_destination(tool_name: str, dest: Path, sidecar: Path) -> Admission:
     if not dest.exists():
         if sidecar.exists():
-            print(f"REFUSED: orphan provenance sidecar exists without destination: {sidecar}", file=sys.stderr)
-            return False
-        return True
+            return Admission(False, "refused", f"orphan provenance sidecar exists without destination: {sidecar}")
+        return Admission(True, "first_write", "destination absent and no orphan provenance sidecar exists")
     if not sidecar.exists():
-        print(
-            f"REFUSED: existing destination {dest} has no generator provenance receipt; "
-            "refusing to overwrite potentially hand-authored bytes",
-            file=sys.stderr,
+        return Admission(
+            False,
+            "refused",
+            f"existing destination {dest} has no generator provenance receipt; refusing to overwrite potentially hand-authored bytes",
         )
-        return False
     try:
         receipt = json.loads(sidecar.read_text())
     except (OSError, json.JSONDecodeError) as exc:
-        print(f"REFUSED: invalid provenance receipt {sidecar}: {exc}", file=sys.stderr)
-        return False
+        return Admission(False, "refused", f"invalid provenance receipt {sidecar}: {exc}")
     expected = canonical_receipt(tool_name, dest, dest.read_bytes())
     if receipt != expected or not SHA256_RE.fullmatch(str(receipt.get("sha256", ""))):
-        print(
-            f"REFUSED: provenance mismatch for {dest}; current bytes are not the exact "
-            "previously-manufactured subject (possible hand edit or receipt drift)",
-            file=sys.stderr,
+        return Admission(
+            False,
+            "refused",
+            f"provenance mismatch for {dest}; current bytes are not the exact previously-manufactured subject (possible hand edit or receipt drift)",
         )
-        return False
-    return True
+    return Admission(True, "regenerate", "existing destination matches its exact generator provenance receipt")
+
+
+def admit_existing_destination(tool_name: str, dest: Path, sidecar: Path) -> bool:
+    admission = assess_existing_destination(tool_name, dest, sidecar)
+    if not admission.admitted:
+        print(f"REFUSED: {admission.reason}", file=sys.stderr)
+    return admission.admitted
+
+
+def preflight_record(tool_name: str, dest: Path, admission: Admission) -> dict[str, object]:
+    return {
+        "schema": PREFLIGHT_SCHEMA,
+        "tool_name": tool_name,
+        "output_file": str(dest.relative_to(XAAS_ROOT)),
+        "admitted": admission.admitted,
+        "disposition": admission.disposition,
+        "reason": admission.reason,
+        "authority": "SELECT_ONLY",
+        "child_invoked": False,
+    }
 
 
 def restore_all(snapshots: list[Snapshot], reason: str) -> bool:
@@ -134,8 +161,12 @@ def write_receipt_atomic(sidecar: Path, receipt: dict[str, str]) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
+    check_only = False
+    if args[:1] == ["--check"]:
+        check_only = True
+        args = args[1:]
     if len(args) != 1 or args[0].startswith("-"):
-        print("usage: deploy_connector_with_provenance.py <tool-name>", file=sys.stderr)
+        print("usage: deploy_connector_with_provenance.py [--check] <tool-name>", file=sys.stderr)
         return 2
     tool_name = args[0]
     try:
@@ -144,7 +175,15 @@ def main(argv: list[str] | None = None) -> int:
         print(f"REFUSED: {exc}", file=sys.stderr)
         return 2
     sidecar = provenance_path_for(dest)
-    if not admit_existing_destination(tool_name, dest, sidecar):
+    admission = assess_existing_destination(tool_name, dest, sidecar)
+    if check_only:
+        print(json.dumps(preflight_record(tool_name, dest, admission), sort_keys=True, separators=(",", ":")))
+        if not admission.admitted:
+            print(f"REFUSED: {admission.reason}", file=sys.stderr)
+            return 1
+        return 0
+    if not admission.admitted:
+        print(f"REFUSED: {admission.reason}", file=sys.stderr)
         return 1
 
     snapshots = [
