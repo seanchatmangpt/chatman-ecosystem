@@ -174,3 +174,32 @@ right order, not that all 4 reliably reach real output unattended. Does not reac
 require proof across genuinely distinct target *categories*, not just task types against one
 target) or cross-project reuse (still 0/N second projects, per the pack's existing
 Reusability L3 cap).
+
+## End-to-end receipt audit (real, re-verified, 2026-08-21)
+
+Independent re-audit of all 4 `.agp-receipts/` rows in `~/xaas`, per-row artifact check (not
+just the receipt-guard's own claim):
+
+1. **`Operations-ash.gen.domain`** — receipt claims done; real artifact `lib/xaas/operations.ex`
+   confirmed present. **Verified good.**
+2. **`CapabilityLivenessReceipt-ash.gen.resource`** — receipt claims done; real artifact
+   `lib/xaas/operations/capability_liveness_receipt.ex` confirmed present. **Verified good.**
+3. **`CapabilityLivenessReceipt-ash.extend`** — receipt claims done; real `AshGraphql`
+   reference confirmed present in the resource file. **Verified good.**
+4. **`CapabilityLivenessReceipt-ash_postgres.generate_migrations`** — receipt claims done
+   ("target: ... mix args: --name add_capability_liveness_receipt"); **re-confirmed false
+   positive**, same gap first found 2026-08-20. Fresh evidence this pass: the only migration
+   file matching this resource on disk,
+   `priv/repo/migrations/20260820212909_add_capability_liveness_receipts.exs`, is a real,
+   git-committed file (commit `3b32f74`, authored 2026-08-20 14:29) — timestamped **before**
+   this receipt's own invocation, and named differently (plural `receipts`, not the
+   `add_capability_liveness_receipt` name the receipted command actually requested). It is a
+   pre-existing, unrelated migration from earlier legitimate work, not output of the receipted
+   `ash_postgres.generate_migrations` call. No file matching what that specific invocation
+   claimed to produce exists anywhere in the tree.
+
+Also confirmed this pass: re-running `ggen sync` a further time reproduces 4/4 skip with
+byte-identical receipt file contents (md5 before/after match exactly) — the *receipt
+mechanism's* idempotency (same guard fires the same way every time) is solid; it is
+specifically the *migration task's correctness* (receipt not implying real completed work)
+that remains a known, now twice-confirmed gap, not a one-off fluke from the original run.
