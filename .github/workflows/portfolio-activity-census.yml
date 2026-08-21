@@ -7,10 +7,12 @@ on:
       - 'scripts/verify_ci_subject.py'
       - 'tests/test_reconcile_portfolio_activity.py'
       - 'tests/test_verify_ci_subject.py'
+      - 'extensions/ash_project_measure/**'
       - '.github/workflows/portfolio-activity-census.yml'
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   issues: read
   pull-requests: read
@@ -21,7 +23,7 @@ env:
 jobs:
   census:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout admitted exact subject
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
@@ -42,7 +44,7 @@ jobs:
           python3 scripts/verify_ci_subject.py \
             --replay .artifacts/activity-census/subject.json
 
-      - name: Run census falsifier court
+      - name: Run activity-census falsifier court
         run: |
           python3 -m py_compile \
             scripts/reconcile_portfolio_activity.py \
@@ -64,6 +66,31 @@ jobs:
             --output .artifacts/activity-census/census.json
           python3 scripts/reconcile_portfolio_activity.py \
             --replay .artifacts/activity-census/census.json
+
+      - name: Set up exact BEAM toolchain
+        uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        with:
+          otp-version: '27.3.3'
+          elixir-version: '1.18.3'
+          version-type: strict
+
+      - name: Compile and test Ash project measurement extension
+        working-directory: extensions/ash_project_measure
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get
+          mix compile --warnings-as-errors
+          mix test
+          mix format --check-formatted
+
+      - name: Reconcile GitHub Actions outcomes through Ash extension
+        working-directory: extensions/ash_project_measure
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          mix run -e 'AshProjectMeasure.Census.observe!(ChatmanEcosystem.MeasurementDomain)'
+          mix run -e 'AshProjectMeasure.Census.replay_file!("../../.artifacts/activity-census/ci-outcomes.json")'
 
       - name: Upload census and subject receipts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
