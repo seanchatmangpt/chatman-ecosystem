@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -13,6 +14,7 @@ from pathlib import Path
 SCRIPT = Path(__file__).resolve().parent / "deploy_connector_with_provenance.py"
 TOOL = "fabric__cache-stats"
 REL = Path("lib/xaas/operations/autofde_planner_cache_stats.ex")
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
 def receipt_for(content: bytes) -> dict[str, str]:
@@ -74,6 +76,7 @@ def test_check_admits_first_write_without_mutation_or_child():
         result = run_check(env)
         assert result.returncode == 0, result.stderr
         record = json.loads(result.stdout)
+        assert SHA256_RE.fullmatch(record["admission_digest"])
         assert record == {
             "schema": "chatman.ash-connector-preflight/1",
             "tool_name": TOOL,
@@ -83,6 +86,7 @@ def test_check_admits_first_write_without_mutation_or_child():
             "reason": "destination absent and no orphan provenance sidecar exists",
             "authority": "SELECT_ONLY",
             "child_invoked": False,
+            "admission_digest": record["admission_digest"],
         }
         assert_unchanged(before)
 
@@ -102,6 +106,7 @@ def test_check_admits_exact_generator_owned_regeneration_without_mutation_or_chi
         assert record["disposition"] == "regenerate"
         assert record["authority"] == "SELECT_ONLY"
         assert record["child_invoked"] is False
+        assert SHA256_RE.fullmatch(record["admission_digest"])
         assert_unchanged(before)
 
 
@@ -119,6 +124,7 @@ def test_check_refuses_hand_edit_with_machine_record_and_same_refusal_semantics(
         record = json.loads(result.stdout)
         assert record["admitted"] is False
         assert record["disposition"] == "refused"
+        assert SHA256_RE.fullmatch(record["admission_digest"])
         assert "provenance mismatch" in record["reason"]
         assert "REFUSED: provenance mismatch" in result.stderr
         assert_unchanged(before)
