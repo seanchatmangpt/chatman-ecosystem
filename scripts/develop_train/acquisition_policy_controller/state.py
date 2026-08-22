@@ -8,13 +8,14 @@ import sqlite3
 from threading import RLock
 from typing import Iterable
 
+from .realization import STRATEGIES
 from .receipt import replay
 from .subject import Refusal, Subject
 
 SCHEMA = "chatman.develop-acquisition-policy-state/1"
 _HEX = frozenset("0123456789abcdef")
 _ALLOWED_STANDING = frozenset(
-    {"UNKNOWN", "PARTIAL_ALIVE", "ALIVE", "BLOCKED", "BUILD_BROKEN", "UNSUPPORTED"}
+    {"UNKNOWN", "PARTIAL_ALIVE", "BLOCKED", "BUILD_BROKEN", "UNSUPPORTED"}
 )
 
 
@@ -27,6 +28,14 @@ def _digest(body: dict) -> str:
 
 def _valid_digest(value: str) -> bool:
     return len(value) == 64 and all(ch in _HEX for ch in value)
+
+
+def _valid_subject(value: str) -> bool:
+    try:
+        repo, sha = value.rsplit("@", 1)
+        return Subject(repo, sha).exact == value
+    except (ValueError, Refusal):
+        return False
 
 
 @dataclass(frozen=True, slots=True)
@@ -66,14 +75,17 @@ class PolicyState:
 
     def verify(self) -> "PolicyState":
         if (
-            self.revision < 1
+            not _valid_subject(self.subject)
+            or self.revision < 1
             or self.policy_generation < 0
             or self.standing not in _ALLOWED_STANDING
+            or self.selected_strategy not in (*STRATEGIES, None)
             or not _valid_digest(self.policy_digest)
             or not _valid_digest(self.frontier_digest)
             or not _valid_digest(self.receipt_digest)
             or (self.previous_digest is not None and not _valid_digest(self.previous_digest))
             or tuple(sorted(set(self.blockers))) != self.blockers
+            or any(not isinstance(blocker, str) or not blocker for blocker in self.blockers)
             or not _valid_digest(self.digest)
             or _digest(self.body()) != self.digest
         ):
@@ -134,6 +146,7 @@ def verify_chain(states: Iterable[PolicyState]) -> tuple[PolicyState, ...]:
             state.subject != previous.subject
             or state.revision != previous.revision + 1
             or state.previous_digest != previous.digest
+            or state.policy_generation < previous.policy_generation
         ):
             raise Refusal("REFUSED_BROKEN_STATE_CHAIN")
         previous = state
@@ -166,7 +179,7 @@ class MemoryStateStore:
                 return current
             if actual != expected:
                 raise Refusal("REFUSED_STALE_STATE_TOKEN")
-            _admit_successor(expected, candidate)
+            _admit_successor(expected, candidate, current)
             self._history.setdefault(subject.exact, []).append(candidate)
             self._current[subject.exact] = candidate
             return candidate
@@ -255,7 +268,7 @@ class SQLiteStateStore:
                 return current
             if actual != expected:
                 raise Refusal("REFUSED_STALE_STATE_TOKEN")
-            _admit_successor(expected, candidate)
+            _admit_successor(expected, candidate, current)
             payload = self._encode(candidate)
             connection.execute(
                 "INSERT INTO policy_state_history(subject,revision,digest,payload) "
@@ -285,7 +298,11 @@ class SQLiteStateStore:
         return verify_chain(tuple(self._decode(row[0]) for row in rows))
 
 
-def _admit_successor(expected: StateToken | None, candidate: PolicyState) -> None:
+def _admit_successor(
+    expected: StateToken | None,
+    candidate: PolicyState,
+    current: PolicyState | None,
+) -> None:
     expected_revision = 1 if expected is None else expected.revision + 1
     expected_parent = None if expected is None else expected.digest
     if (
@@ -293,3 +310,5 @@ def _admit_successor(expected: StateToken | None, candidate: PolicyState) -> Non
         or candidate.previous_digest != expected_parent
     ):
         raise Refusal("REFUSED_NON_SUCCESSOR_POLICY_STATE")
+    if current is not None and candidate.policy_generation < current.policy_generation:
+        raise Refusal("REFUSED_POLICY_GENERATION_ROLLBACK")
