@@ -1,0 +1,31 @@
+name: Recovery Transaction Exact Head
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  recovery-transaction:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Assert exact candidate
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile exact recovery transaction surface
+        run: python3 -m compileall -q scripts/release_train/recovery_transaction tests/release_train/recovery_transaction
+      - name: Execute recovery transaction falsifier court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/recovery_transaction -p 'test_*.py' -v
+      - name: Refuse ambient actuation imports
+        shell: bash
+        run: |
+          if grep -R -nE '(^|[[:space:]])(import|from)[[:space:]]+(requests|httpx|boto3|azure|google\.cloud|subprocess|socket)' scripts/release_train/recovery_transaction; then
+            echo 'REFUSED[AMBIENT_ACTUATION_IMPORT]'
+            exit 1
+          fi
