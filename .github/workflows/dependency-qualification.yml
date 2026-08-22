@@ -1,0 +1,31 @@
+name: Dependency Qualification Exact Head
+
+on:
+  pull_request:
+    branches:
+      - scheduled/dmedi-implement-25-commit-release-train
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Assert exact subject
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile dependency qualification capsule
+        run: python3 -m compileall -q scripts/release_train/dependency_qualification tests/release_train/dependency_qualification
+      - name: Execute unit property refusal and e2e courts
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/release_train/dependency_qualification -p 'test_*.py' -v
+      - name: Refuse ambient consequential DO
+        run: |
+          ! grep -R -E 'subprocess|os\.system|requests\.|urllib\.request|socket\.' scripts/release_train/dependency_qualification
