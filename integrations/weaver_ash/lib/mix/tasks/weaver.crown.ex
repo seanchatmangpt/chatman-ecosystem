@@ -48,20 +48,16 @@ defmodule Mix.Tasks.Weaver.Crown do
         System.get_env("WEAVER_DO_AUTHORITY_SCOPE") ||
         Mix.raise("REFUSED_MISSING_BROKER_SCOPE")
 
-    arguments = %{
-      root: root,
-      repository: repository,
-      subject_sha: subject_sha,
-      registry: registry,
-      receipt_dir: receipt_dir,
-      broker_subject: broker_subject,
-      broker_scope: broker_scope
-    }
-
     result =
-      WeaverAsh.Control
-      |> Ash.ActionInput.for_action(:crown, arguments)
-      |> Ash.run_action(domain: WeaverAsh.Domain)
+      WeaverAsh.Domain.crown(
+        root,
+        repository,
+        subject_sha,
+        registry,
+        receipt_dir,
+        broker_subject,
+        broker_scope
+      )
 
     case result do
       {:ok, receipt} ->
