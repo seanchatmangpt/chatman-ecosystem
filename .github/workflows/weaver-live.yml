@@ -94,7 +94,7 @@ jobs:
           jq -e '.capabilities[] | select(.capability == "live-check.otlp" and .execution_plane == "ash-reactor" and .executed == true and .status == "ALIVE")' target/weaver-live/receipt.json >/dev/null
           jq -e '.capabilities[] | select(.capability == "emit.loopback" and .execution_plane == "ash-reactor" and .broker_scope == "weaver.loopback")' target/weaver-live/receipt.json >/dev/null
           test "$(jq -r '.subject' target/weaver-live/receipt.json)" = "git:${CANDIDATE_SHA}"
-          sha256sum -c target/weaver-live/receipt.sha256
+          (cd target/weaver-live && sha256sum -c receipt.sha256)
 
       - name: Refuse source mutation from Weaver CONSTRUCT/DO
         shell: bash
