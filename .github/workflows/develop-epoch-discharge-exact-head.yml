@@ -1,0 +1,28 @@
+name: DEVELOP Epoch Discharge Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/develop_train/epoch_discharge/**'
+      - 'tests/develop_train/epoch_discharge/**'
+      - '.github/workflows/develop-epoch-discharge-exact-head.yml'
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Admit exact head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile
+        run: python3 -m compileall -q scripts/develop_train/epoch_discharge tests/develop_train/epoch_discharge
+      - name: Execute falsifier and e2e court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/develop_train/epoch_discharge -p 'test_*.py' -v
+      - name: Refuse ambient actuation surface
+        run: |
+          ! grep -R -nE 'boto3|azure\.identity|google\.cloud|subprocess\.(run|Popen)|requests\.(post|put|delete)|httpx\.(post|put|delete)' scripts/develop_train/epoch_discharge tests/develop_train/epoch_discharge
