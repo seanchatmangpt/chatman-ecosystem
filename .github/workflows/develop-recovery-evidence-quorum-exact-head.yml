@@ -1,0 +1,42 @@
+name: DEVELOP Recovery Evidence Quorum Exact Head
+
+on:
+  pull_request:
+    paths:
+      - "scripts/develop_train/recovery_evidence_quorum/**"
+      - "tests/develop_train/recovery_evidence_quorum/**"
+      - ".github/workflows/develop-recovery-evidence-quorum-exact-head.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+      - name: Admit exact subject
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile recovery evidence quorum
+        run: python3 -m compileall -q scripts/develop_train/recovery_evidence_quorum tests/develop_train/recovery_evidence_quorum
+      - name: Execute permanent falsifier and e2e court
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/develop_train/recovery_evidence_quorum -p 'test_*.py' -v
+      - name: Refuse ambient actuation surfaces
+        shell: bash
+        run: |
+          if grep -R -E '(^|[[:space:]])(import|from)[[:space:]]+(requests|httpx|boto3|azure|google\.cloud|subprocess|socket)([[:space:].]|$)' scripts/develop_train/recovery_evidence_quorum; then
+            echo 'REFUSED[AMBIENT_ACTUATION_SURFACE]'
+            exit 1
+          fi
