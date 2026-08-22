@@ -1,0 +1,42 @@
+name: Coherent Epoch Promotion Exact Head
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/coherent_epoch_promotion/**'
+      - 'tests/release_train/coherent_epoch_promotion/**'
+      - '.github/workflows/coherent-epoch-promotion-exact-head.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Admit exact PR head
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile exact authored surface
+        run: python3 -m compileall -q scripts/release_train/coherent_epoch_promotion tests/release_train/coherent_epoch_promotion
+      - name: Execute coherent-cut falsifier court
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/release_train/coherent_epoch_promotion -p 'test_*.py' -v
+      - name: Refuse ambient actuation imports
+        shell: bash
+        run: |
+          if grep -R -nE '(^|[[:space:]])(requests|boto3|azure|google\.cloud|subprocess|socket)[[:space:]]' scripts/release_train/coherent_epoch_promotion; then
+            echo 'REFUSED[AMBIENT_ACTUATION_SURFACE]'
+            exit 1
+          fi
