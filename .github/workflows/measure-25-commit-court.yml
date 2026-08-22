@@ -24,6 +24,7 @@ jobs:
           python3 -m py_compile scripts/measure_train/cut_epoch/*.py tests/measure_train/cut_epoch/*.py
           python3 -m py_compile scripts/measure_train/strategy_binding/*.py tests/measure_train/strategy_binding/*.py
           python3 -m py_compile scripts/measure_train/recovery_witness/*.py tests/measure_train/recovery_witness/*.py
+          python3 -m py_compile scripts/measure_train/witness_independence/*.py tests/measure_train/witness_independence/*.py
       - name: Execute baseline falsifier court
         run: python3 -m unittest discover -s tests/measure_train -p 'test_*.py' -v
       - name: Execute requalification epoch falsifier court
@@ -34,6 +35,8 @@ jobs:
         run: python3 -m unittest discover -s tests/measure_train/strategy_binding -p 'test_*.py' -v
       - name: Execute recovery witness currentness court
         run: python3 -m unittest discover -s tests/measure_train/recovery_witness -p 'test_*.py' -v
+      - name: Execute witness independence court
+        run: python3 -m unittest discover -s tests/measure_train/witness_independence -p 'test_*.py' -v
       - name: Refuse ambient actuation surfaces
         run: |
           ! grep -REn 'requests\.(post|put|patch|delete)|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|boto3|azure\.|google\.cloud' scripts/measure_train
