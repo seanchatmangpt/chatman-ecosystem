@@ -1,0 +1,40 @@
+name: Evidence Acquisition Exact Head
+
+on:
+  pull_request:
+    paths:
+      - "scripts/release_train/evidence_acquisition/**"
+      - "tests/release_train/evidence_acquisition/**"
+      - ".github/workflows/evidence-acquisition-exact-head.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Admit exact head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile acquisition runtime
+        run: python3 -m compileall -q scripts/release_train/evidence_acquisition tests/release_train/evidence_acquisition
+      - name: Execute acquisition falsifier court
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/release_train/evidence_acquisition -p 'test_*.py' -v
+      - name: Refuse ambient actuation imports
+        shell: bash
+        run: |
+          if grep -REn '(^|[[:space:]])(import|from)[[:space:]]+(requests|httpx|boto3|azure|google\.cloud|socket|subprocess)|os\.system' scripts/release_train/evidence_acquisition; then
+            echo 'REFUSED[AMBIENT_ACTUATION_SURFACE]'
+            exit 1
+          fi
