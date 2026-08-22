@@ -1,0 +1,27 @@
+name: Acknowledgement Discharge Promotion Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/ack_discharge_promotion/**'
+      - 'tests/release_train/ack_discharge_promotion/**'
+      - '.github/workflows/ack-discharge-promotion-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Assert exact PR head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile exact authored surface
+        run: python3 -m compileall -q scripts/release_train/ack_discharge_promotion tests/release_train/ack_discharge_promotion
+      - name: Run acknowledgement discharge falsifier court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/ack_discharge_promotion -p 'test_*.py' -v
+      - name: Refuse ambient actuation imports
+        shell: bash
+        run: |
+          ! grep -R -n -E '(^|[[:space:]])(import|from)[[:space:]]+(requests|boto3|azure|google\.cloud|paramiko|fabric)' scripts/release_train/ack_discharge_promotion
