@@ -1,0 +1,29 @@
+name: Consumer Promotion Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/consumer_promotion/**'
+      - 'tests/release_train/consumer_promotion/**'
+      - '.github/workflows/consumer-promotion-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Assert exact subject
+        env:
+          EXPECTED: ${{ github.event.pull_request.head.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED"
+      - name: Compile exact authored surface
+        run: python3 -m compileall -q scripts/release_train/consumer_promotion tests/release_train/consumer_promotion
+      - name: Execute consumer promotion falsifier court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/consumer_promotion -p 'test_*.py' -v
+      - name: Refuse ambient actuation surfaces
+        run: |
+          ! grep -R -nE 'requests\.|urllib\.request|subprocess\.|os\.system|boto3|azure\.|google\.cloud' scripts/release_train/consumer_promotion
