@@ -1,0 +1,37 @@
+name: Promotion Intent Lease Exact Head
+
+on:
+  pull_request:
+    branches:
+      - scheduled/dmedi-implement-coherent-epoch-promotion
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Admit exact subject
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile promotion intent lease
+        run: python3 -m compileall -q scripts/release_train/promotion_intent_lease tests/release_train/promotion_intent_lease
+      - name: Execute promotion intent lease falsifier court
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/release_train/promotion_intent_lease -p 'test_*.py' -v
+      - name: Refuse ambient actuation imports
+        shell: bash
+        run: |
+          ! grep -R -nE '(^|[[:space:]])(requests|boto3|azure|google\.cloud|subprocess|socket|paramiko)([[:space:].]|$)' scripts/release_train/promotion_intent_lease
