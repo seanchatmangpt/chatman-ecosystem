@@ -13,10 +13,12 @@ permissions:
 env:
   CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
   WEAVER_VERSION: 0.25.1
+  ELIXIR_VERSION: 1.20.2
+  OTP_VERSION: 28.5.0.5
 
 jobs:
   weaver-capability-crown:
-    name: Execute every Weaver capability against exact ecosystem head
+    name: Execute every Weaver capability through Ash.Reactor
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -34,6 +36,13 @@ jobs:
           test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
           test "${#CANDIDATE_SHA}" -eq 40
 
+      - name: Install pinned BEAM toolchain
+        uses: erlef/setup-beam@v1.24.1
+        with:
+          otp-version: ${{ env.OTP_VERSION }}
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          version-type: strict
+
       - name: Install pinned OpenTelemetry Weaver
         shell: bash
         run: |
@@ -45,13 +54,47 @@ jobs:
           echo "${HOME}/.cargo/bin" >> "${GITHUB_PATH}"
           "${HOME}/.cargo/bin/weaver" --version | grep -F "${WEAVER_VERSION}"
 
-      - name: Execute DfCM Weaver capability matrix
+      - name: Resolve Ash/Reactor dependencies
+        working-directory: integrations/weaver_ash
+        shell: bash
+        run: |
+          set -euo pipefail
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get
+          mix deps.compile
+
+      - name: Verify Ash/Reactor integration
+        working-directory: integrations/weaver_ash
+        shell: bash
+        run: |
+          set -euo pipefail
+          mix format --check-formatted
+          mix compile --warnings-as-errors
+          mix test
+          mix hex.audit
+
+      - name: Execute DfCM Weaver capability matrix through Ash.Reactor
+        working-directory: integrations/weaver_ash
         shell: bash
         env:
           ECOSYSTEM_SUBJECT_SHA: ${{ env.CANDIDATE_SHA }}
           WEAVER_REGISTRY: telemetry/weaver
           WEAVER_RECEIPT_DIR: target/weaver-live
-        run: bash scripts/weaver-live-matrix.sh
+          WEAVER_DO_AUTHORITY_SUBJECT: ${{ env.CANDIDATE_SHA }}
+          WEAVER_DO_AUTHORITY_SCOPE: weaver.loopback
+        run: mix weaver.crown --root "${GITHUB_WORKSPACE}"
+
+      - name: Verify Ash owns canonical live-check receipt edges
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -e '.orchestrator.framework == "Ash.Reactor"' target/weaver-live/receipt.json >/dev/null
+          jq -e '.capabilities[] | select(.capability == "live-check.ecosystem" and .execution_plane == "ash-reactor" and .executed == true and .status == "ALIVE")' target/weaver-live/receipt.json >/dev/null
+          jq -e '.capabilities[] | select(.capability == "live-check.otlp" and .execution_plane == "ash-reactor" and .executed == true and .status == "ALIVE")' target/weaver-live/receipt.json >/dev/null
+          jq -e '.capabilities[] | select(.capability == "emit.loopback" and .execution_plane == "ash-reactor" and .broker_scope == "weaver.loopback")' target/weaver-live/receipt.json >/dev/null
+          test "$(jq -r '.subject' target/weaver-live/receipt.json)" = "git:${CANDIDATE_SHA}"
+          sha256sum -c target/weaver-live/receipt.sha256
 
       - name: Refuse source mutation from Weaver CONSTRUCT/DO
         shell: bash
