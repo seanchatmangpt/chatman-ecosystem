@@ -1,0 +1,33 @@
+name: DEVELOP adaptive evidence acquisition exact-head court
+on:
+  pull_request:
+    paths:
+      - 'scripts/develop_train/evidence_acquisition_runtime/**'
+      - 'tests/develop_train/evidence_acquisition_runtime/**'
+      - '.github/workflows/dmedi-develop-evidence-acquisition.yml'
+permissions:
+  contents: read
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+      - name: Assert exact PR head
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile authored capability
+        run: python3 -m compileall -q scripts/develop_train/evidence_acquisition_runtime tests/develop_train/evidence_acquisition_runtime
+      - name: Run permanent and Chicago courts
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/develop_train/evidence_acquisition_runtime -p 'test_*.py' -v
+      - name: Refuse ambient actuation imports
+        shell: bash
+        run: |
+          if grep -R -nE '(^|[[:space:]])(import|from)[[:space:]]+(requests|httpx|boto3|azure|google\.cloud|socket|subprocess)([[:space:].]|$)' scripts/develop_train/evidence_acquisition_runtime; then
+            echo 'forbidden ambient actuation import detected' >&2
+            exit 1
+          fi
