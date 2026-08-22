@@ -15,7 +15,7 @@ class T(unittest.TestCase):
   subject=Subject("example/repo","1"*40)
   left=EvidenceSource("sensor-a","run-a","artifact-a","family-a")
   right=EvidenceSource("sensor-b","run-b","artifact-b","family-b")
-  models=[CalibrationModel(left.fingerprint,8,7,0,1,0),CalibrationModel(right.fingerprint,8,7,0,1,0)]
+  models=[CalibrationModel(left.fingerprint,8,6,0,2,0),CalibrationModel(right.fingerprint,8,6,0,2,0)]
   witnesses=[RecoveryWitness("attempt",left.fingerprint,"PASS",now-timedelta(seconds=2)),RecoveryWitness("attempt",right.fingerprint,"PASS",now-timedelta(seconds=1))]
   proofs=[IndependenceProof(left.fingerprint,right.fingerprint,True)]
   out=qualify(subject,"attempt",[left,right],witnesses,models,proofs,DependencyGraph({subject.exact:[]}),{},PersistenceNeed(transactional=True),now)
