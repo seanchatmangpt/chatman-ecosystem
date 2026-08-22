@@ -1,0 +1,39 @@
+name: DEVELOP Calibrated Recovery Quorum Exact Head
+
+on:
+  pull_request:
+    paths:
+      - "scripts/develop_train/calibrated_recovery_quorum/**"
+      - "tests/develop_train/calibrated_recovery_quorum/**"
+      - ".github/workflows/develop-calibrated-recovery-quorum-exact-head.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+      - name: Admit exact subject
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile calibrated recovery quorum
+        run: python3 -m compileall -q scripts/develop_train/calibrated_recovery_quorum tests/develop_train/calibrated_recovery_quorum
+      - name: Execute permanent falsifier and e2e court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/develop_train/calibrated_recovery_quorum -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation imports
+        shell: bash
+        run: |
+          if grep -R -nE '(^|[[:space:]])(import|from)[[:space:]]+(requests|httpx|boto3|azure|google\.cloud|subprocess|socket)([[:space:].]|$)' scripts/develop_train/calibrated_recovery_quorum; then
+            echo 'REFUSED[AMBIENT_ACTUATION_IMPORT]'
+            exit 1
+          fi
