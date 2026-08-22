@@ -1,6 +1,6 @@
 [pack]
 name = "ash-igniter-gen-pipeline-pack"
-version = "0.1.0"
+version = "0.2.0"
 description = """
 Real, generalized ggen -> Igniter -> Ash codegen pipeline vocabulary and template,
 extracted from a real, working single-project instance rather than designed abstractly first.
@@ -21,12 +21,21 @@ other real `mix` task a consuming project's Igniter-aware deps expose -- from th
 SPARQL -> for_each -> sh_after mechanism, driven by one extra fact (agp:mixTask) per row
 instead of a hardcoded command string baked into the template.
 
+Version 0.2.0 makes invocation standing fail closed. ggen now renders a non-authoritative
+.agp-pending intent first; scripts/run_receipted_mix.py executes the admitted command without
+a shell pipeline, streams combined stdout/stderr into the stable mix log, propagates the real
+child exit code, and atomically promotes the pending file into .agp-receipts only after exit
+0. Existing receipts are replay guards and skip child execution. Failed or unlaunchable
+commands remove their pending intent and cannot manufacture a success receipt.
+
 Proven this version against ~/xaas's real, live ontology.ttl, real Postgres, real installed
 Ash/Igniter deps: real `ggen sync` runs drove BOTH `mix ash.gen.resource` (the original,
 now-generalized case) AND a second, real, distinct Igniter-backed task
 (`mix ash_postgres.generate_migrations`, a real Igniter/Ash task that emits real migration
 files) from the same generalized template, confirmed via real receipt logs containing each
-task's real stdout.
+task's real stdout. Those historical executions predate the 0.2.0 promotion guard; the guard
+itself is bounded by its executable behavioral tests until a consuming-project regeneration
+runs it end to end.
 
 Honest scope: proven against exactly ONE real consuming project (~/xaas) and TWO real mix
 tasks. A real audit of this machine's home directory (2026-08-20) found only 5 real
@@ -34,12 +43,12 @@ ontology.ttl files and 1 real mix.exs project locally -- the "100+ projects" thi
 meant to eventually serve does not exist yet as a verified fact; this pack provides the real,
 reusable vocabulary and template a future second/third/Nth Ash project would adopt, not a
 claim that N such projects have already adopted it. Adopting this pack in a new project means
-vendoring templates/ash_igniter_codegen.tmpl (per the real, already-established
-ggen-refuses-paths-outside-project-root constraint documented in ~/xaas/ggen.toml) and
-defining that project's own agp:CodegenTarget individuals against its own real domain
-ontology -- this pack does not and cannot generate those individuals for a project it has
-never seen; that admission step is real, project-specific work every consuming project must
-do once.
+vendoring templates/ash_igniter_codegen.tmpl AND scripts/run_receipted_mix.py (per the real,
+already-established ggen-refuses-paths-outside-project-root constraint documented in
+~/xaas/ggen.toml) and defining that project's own agp:CodegenTarget individuals against its
+own real domain ontology -- this pack does not and cannot generate those individuals for a
+project it has never seen; that admission step is real, project-specific work every consuming
+project must do once.
 """
 
 [compatibility]
