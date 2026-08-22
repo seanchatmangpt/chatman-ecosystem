@@ -1,0 +1,31 @@
+name: DEVELOP Selection Currentness Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/develop_train/selection_intent_runtime/**'
+      - 'tests/develop_train/selection_intent_runtime/**'
+      - '.github/workflows/develop-selection-currentness-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Admit exact PR head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile
+        run: python3 -m compileall -q scripts/develop_train/selection_intent_runtime tests/develop_train/selection_intent_runtime
+      - name: Permanent falsifier and e2e court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/develop_train/selection_intent_runtime -p 'test_*.py' -v
+      - name: Refuse ambient actuation surfaces
+        run: |
+          if grep -R -nE '(^|[[:space:]])(import|from)[[:space:]]+(subprocess|requests|httpx|boto3|botocore|azure|google\.cloud)' scripts/develop_train/selection_intent_runtime; then
+            echo 'ambient actuation-capable dependency found'
+            exit 1
+          fi
