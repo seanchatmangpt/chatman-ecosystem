@@ -18,9 +18,13 @@ jobs:
       - name: Admit exact subject
         run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
       - name: Compile measurement subsystem
-        run: python3 -m py_compile scripts/measure_train/*.py tests/measure_train/*.py
-      - name: Execute falsifier court
+        run: |
+          python3 -m py_compile scripts/measure_train/*.py tests/measure_train/*.py
+          python3 -m py_compile scripts/measure_train/requalification_epoch/*.py tests/measure_train/requalification_epoch/*.py
+      - name: Execute baseline falsifier court
         run: python3 -m unittest discover -s tests/measure_train -p 'test_*.py' -v
+      - name: Execute requalification epoch falsifier court
+        run: python3 -m unittest discover -s tests/measure_train/requalification_epoch -p 'test_*.py' -v
       - name: Refuse ambient actuation surfaces
         run: |
           ! grep -REn 'requests\.(post|put|patch|delete)|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|boto3|azure\.|google\.cloud' scripts/measure_train
