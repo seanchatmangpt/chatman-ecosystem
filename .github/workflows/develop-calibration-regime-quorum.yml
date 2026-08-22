@@ -1,0 +1,30 @@
+name: DEVELOP Calibration Regime Quorum Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/develop_train/calibration_regime_quorum/**'
+      - 'tests/develop_train/calibration_regime_quorum/**'
+      - '.github/workflows/develop-calibration-regime-quorum.yml'
+permissions:
+  contents: read
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Admit exact PR head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile
+        run: python3 -m compileall -q scripts/develop_train/calibration_regime_quorum tests/develop_train/calibration_regime_quorum
+      - name: Permanent falsifier and Chicago court
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/develop_train/calibration_regime_quorum -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation imports
+        run: |
+          ! grep -REn '^\s*(from|import)\s+(requests|httpx|boto3|azure|google\.cloud|socket|subprocess)(\.|\s|$)' scripts/develop_train/calibration_regime_quorum

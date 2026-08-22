@@ -1,0 +1,25 @@
+name: DEVELOP Ack Discharge Exact Head
+on:
+  pull_request:
+    paths:
+      - "scripts/develop_train/ack_discharge/**"
+      - "tests/develop_train/ack_discharge/**"
+      - ".github/workflows/develop-ack-discharge-exact-head.yml"
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Exact head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Compile
+        run: python -m compileall -q scripts/develop_train/ack_discharge tests/develop_train/ack_discharge
+      - name: Falsifier court
+        run: python -m unittest discover -s tests/develop_train/ack_discharge -p 'test_*.py' -v
+      - name: No ambient actuation
+        run: '! grep -R -nE "boto3|azure\\.identity|google\\.cloud|kubectl|terraform apply" scripts/develop_train/ack_discharge'
