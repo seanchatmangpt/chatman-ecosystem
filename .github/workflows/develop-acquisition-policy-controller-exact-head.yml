@@ -1,0 +1,28 @@
+name: DEVELOP Acquisition Policy Controller Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/develop_train/acquisition_policy_controller/**'
+      - 'tests/develop_train/acquisition_policy_controller/**'
+      - '.github/workflows/develop-acquisition-policy-controller-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Admit exact PR head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile
+        run: python -m compileall -q scripts/develop_train/acquisition_policy_controller tests/develop_train/acquisition_policy_controller
+      - name: Permanent and Chicago courts
+        run: PYTHONPATH=. python -m unittest discover -s tests/develop_train/acquisition_policy_controller -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|boto3|azure\.|google\.cloud' scripts/develop_train/acquisition_policy_controller
