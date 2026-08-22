@@ -1,0 +1,27 @@
+name: Detector Consensus Recovery Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/detector_consensus_recovery/**'
+      - 'tests/release_train/detector_consensus_recovery/**'
+      - '.github/workflows/detector-consensus-recovery-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile
+        run: python3 -m compileall -q scripts/release_train/detector_consensus_recovery tests/release_train/detector_consensus_recovery
+      - name: Court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/detector_consensus_recovery -p 'test_*.py' -v
+      - name: Refuse ambient actuation imports
+        run: '! grep -R -E "^(from|import) (requests|httpx|boto3|azure|google\.cloud|socket|subprocess)" scripts/release_train/detector_consensus_recovery'
