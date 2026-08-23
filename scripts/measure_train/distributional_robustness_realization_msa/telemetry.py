@@ -1,0 +1,2 @@
+def project(subject,coverage,loss_calibration,witness_calibration,standing_value):
+    return ({"activity":"ambiguity_coverage_measured","repo":subject.repo,"sha":subject.sha,"support":coverage.support,"covered":coverage.covered,"misses":coverage.misses},{"activity":"robust_loss_calibrated","repo":subject.repo,"sha":subject.sha,"support":loss_calibration.support,"false_safe":loss_calibration.false_safe,"witness_support":witness_calibration.support},{"activity":"distributional_robustness_realization_qualified","repo":subject.repo,"sha":subject.sha,"standing":standing_value})
