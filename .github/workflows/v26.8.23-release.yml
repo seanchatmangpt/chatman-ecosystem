@@ -1,0 +1,32 @@
+name: v26.8.23 Release Admission
+
+on:
+  pull_request:
+    paths:
+      - "VERSION"
+      - "release/v26.8.23/**"
+      - "scripts/verify_calendar_release.py"
+      - "tests/test_verify_calendar_release.py"
+      - ".github/workflows/v26.8.23-release.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Admit exact head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Verify version identity
+        run: test "$(cat VERSION)" = "26.8.23"
+      - name: Compile verifier
+        run: python3 -m py_compile scripts/verify_calendar_release.py tests/test_verify_calendar_release.py
+      - name: Verify calendar release contract
+        run: python3 scripts/verify_calendar_release.py --release v26.8.23
+      - name: Run permanent release falsifiers
+        run: python3 -m unittest tests.test_verify_calendar_release -v
