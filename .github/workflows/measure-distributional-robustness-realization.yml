@@ -1,0 +1,31 @@
+name: MEASURE Distributional Robustness Realization MSA
+
+on:
+  pull_request:
+    paths:
+      - scripts/measure_train/distributional_robustness_realization_msa/**
+      - tests/measure_train/distributional_robustness_realization_msa/**
+      - .github/workflows/measure-distributional-robustness-realization.yml
+
+permissions:
+  contents: read
+
+jobs:
+  measure-court:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Admit exact PR subject
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+      - name: Compile distributional robustness realization MSA
+        run: PYTHONPATH=. python3 -m py_compile scripts/measure_train/distributional_robustness_realization_msa/*.py tests/measure_train/distributional_robustness_realization_msa/*.py
+      - name: Run permanent realization and Chicago courts
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/measure_train/distributional_robustness_realization_msa -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: |
+          ! grep -REn '^\s*(import|from)\s+(requests|httpx|boto3|azure|google\.cloud|socket|subprocess)|requests\.(post|put|patch|delete)|subprocess\.|os\.system' scripts/measure_train/distributional_robustness_realization_msa tests/measure_train/distributional_robustness_realization_msa
