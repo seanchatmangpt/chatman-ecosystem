@@ -22,5 +22,5 @@ class DependencyGraph:
         self.validate(); out=set()
         for parent in self.edges.get(node,()):
             if states.get(parent) in {State.BLOCKED,State.BUILD_BROKEN}: out.add(parent)
-            out |= self.blockers(parent,states)
+            out.update(self.blockers(parent,states))
         return tuple(sorted(out))
