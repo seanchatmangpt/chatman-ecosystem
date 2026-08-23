@@ -30,6 +30,7 @@ jobs:
           python3 -m py_compile scripts/measure_train/detector_msa/*.py tests/measure_train/detector_msa/*.py
           python3 -m py_compile scripts/measure_train/evidence_voi/*.py tests/measure_train/evidence_voi/*.py
           python3 -m py_compile scripts/measure_train/acquisition_realization/*.py tests/measure_train/acquisition_realization/*.py
+          python3 -m py_compile scripts/measure_train/policy_state_msa/*.py tests/measure_train/policy_state_msa/*.py
       - name: Execute baseline falsifier court
         run: python3 -m unittest discover -s tests/measure_train -p 'test_*.py' -v
       - name: Execute requalification epoch falsifier court
@@ -52,6 +53,8 @@ jobs:
         run: python3 -m unittest discover -s tests/measure_train/evidence_voi -p 'test_*.py' -v
       - name: Execute acquisition realization MSA court
         run: python3 -m unittest discover -s tests/measure_train/acquisition_realization -p 'test_*.py' -v
+      - name: Execute transactional policy-state MSA court
+        run: python3 -m unittest discover -s tests/measure_train/policy_state_msa -p 'test_*.py' -v
       - name: Refuse ambient actuation surfaces
         run: |
           ! grep -REn 'requests\.(post|put|patch|delete)|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|boto3|azure\.|google\.cloud' scripts/measure_train
