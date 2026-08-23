@@ -3,7 +3,7 @@
 This is the landing page for the Chatman Ecosystem documentation corpus.
 
 > **Current implementation baseline for this review:** `be27c93621ef494ccc342e0dc36c99dab9e391a6`  
-> **Preserved operational release snapshot:** `v26.8.18` at `2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01`  
+> **Current operational snapshot (preserved release subject, not exhaustive current head):** `v26.8.18` at `2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01`  
 > **Repository-wide Crown:** not asserted by this documentation update  
 > **Future proof corpus:** `v26.9.1`
 
