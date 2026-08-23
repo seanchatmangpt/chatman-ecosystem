@@ -23,7 +23,7 @@ jobs:
           CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
         run: test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
 
-      - name: Patch verifier, workflow token binding, and regression court
+      - name: Patch verifier and regression court
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -34,7 +34,7 @@ jobs:
               text = text.replace('import json\n', 'import json\nimport os\n', 1)
           start = text.index('def _github_json(url: str, timeout: float) -> dict[str, Any]:')
           end = text.index('\ndef resolve_ref(', start)
-          replacement_lines = [
+          replacement = '\n'.join([
               'def _github_json(url: str, timeout: float) -> dict[str, Any]:',
               '    headers = {',
               '        "Accept": "application/vnd.github+json",',
@@ -52,14 +52,13 @@ jobs:
               '    return payload',
               '',
               '',
-          ]
-          replacement = '\n'.join(replacement_lines)
+          ])
           verifier.write_text(text[:start] + replacement + text[end + 1:])
 
           tests = Path('tests/test_release_control.py')
           test_text = tests.read_text()
           marker = '    def test_branch_advancement_does_not_invalidate_admitted_sha(self) -> None:\n'
-          addition_lines = [
+          addition = '\n'.join([
               '    def test_github_json_uses_available_read_token(self) -> None:',
               '        captured: dict[str, str | None] = {}',
               '',
@@ -94,26 +93,11 @@ jobs:
               '        self.assertIsNone(captured["authorization"])',
               '',
               '',
-          ]
-          addition = '\n'.join(addition_lines)
+          ])
           if 'def test_github_json_uses_available_read_token' not in test_text:
               if marker not in test_text:
                   raise SystemExit('REFUSED: test insertion marker not found')
               tests.write_text(test_text.replace(marker, addition + marker, 1))
-
-          workflow = Path('.github/workflows/release-control-plane.yml')
-          workflow_text = workflow.read_text()
-          needle = '      - name: Verify manifest and admitted ref evidence\n        run: python3 scripts/verify_release.py --check-refs\n'
-          token_expr = '$' + '{{ github.token }}'
-          replacement_step = (
-              '      - name: Verify manifest and admitted ref evidence\n'
-              '        env:\n'
-              f'          GITHUB_TOKEN: {token_expr}\n'
-              '        run: python3 scripts/verify_release.py --check-refs\n'
-          )
-          if needle not in workflow_text:
-              raise SystemExit('REFUSED: release-control ref-verifier step not found')
-          workflow.write_text(workflow_text.replace(needle, replacement_step, 1))
           PY
 
       - name: Verify focused release-control court
@@ -121,15 +105,12 @@ jobs:
           python3 -m py_compile scripts/verify_release.py tests/test_release_control.py
           python3 -m unittest -v tests.test_release_control
 
-      - name: Remove temporary repair workflow
-        run: rm -f .github/workflows/apply-release-ref-auth-repair.yml
-
-      - name: Commit verifier repair
+      - name: Commit verifier repair only
         env:
           HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/verify_release.py tests/test_release_control.py .github/workflows/release-control-plane.yml .github/workflows/apply-release-ref-auth-repair.yml
+          git add scripts/verify_release.py tests/test_release_control.py
           git commit -m "fix(release): authenticate exact ref observation"
           git push origin "HEAD:${HEAD_BRANCH}"
