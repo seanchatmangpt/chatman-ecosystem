@@ -23,7 +23,7 @@ jobs:
           CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
         run: test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
 
-      - name: Patch verifier and regression court
+      - name: Patch verifier, workflow token binding, and regression court
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -32,22 +32,9 @@ jobs:
           text = verifier.read_text()
           if 'import os\n' not in text:
               text = text.replace('import json\n', 'import json\nimport os\n', 1)
-          old = '''def _github_json(url: str, timeout: float) -> dict[str, Any]:
-              request = urllib.request.Request(
-                  url,
-                  headers={
-                      "Accept": "application/vnd.github+json",
-                      "User-Agent": "chatman-ecosystem-release-verifier/26.9.1",
-                      "X-GitHub-Api-Version": "2022-11-28",
-                  },
-              )
-              with urllib.request.urlopen(request, timeout=timeout) as response:
-                  payload = json.load(response)
-              if not isinstance(payload, dict):
-                  raise ValueError(f"GitHub returned a non-object payload for {url}")
-              return payload
-          '''.replace('    ', '')
-          new = '''def _github_json(url: str, timeout: float) -> dict[str, Any]:
+          start = text.index('def _github_json(url: str, timeout: float) -> dict[str, Any]:')
+          end = text.index('\ndef resolve_ref(', start)
+          replacement = '''def _github_json(url: str, timeout: float) -> dict[str, Any]:
               headers = {
                   "Accept": "application/vnd.github+json",
                   "User-Agent": "chatman-ecosystem-release-verifier/26.9.1",
@@ -62,10 +49,8 @@ jobs:
               if not isinstance(payload, dict):
                   raise ValueError(f"GitHub returned a non-object payload for {url}")
               return payload
-          '''.replace('    ', '')
-          if old not in text:
-              raise SystemExit('REFUSED: expected _github_json block not found')
-          verifier.write_text(text.replace(old, new, 1))
+          '''
+          verifier.write_text(text[:start] + replacement + text[end + 1:])
 
           tests = Path('tests/test_release_control.py')
           test_text = tests.read_text()
@@ -93,7 +78,6 @@ jobs:
                   mock.patch.object(verify_release.urllib.request, "urlopen", side_effect=fake_urlopen),
               ):
                   self.assertEqual({}, verify_release._github_json("https://api.github.com/example", 1.5))
-
               self.assertEqual("Bearer test-read-token", captured["authorization"])
 
               captured.clear()
@@ -109,6 +93,20 @@ jobs:
               if marker not in test_text:
                   raise SystemExit('REFUSED: test insertion marker not found')
               tests.write_text(test_text.replace(marker, addition + marker, 1))
+
+          workflow = Path('.github/workflows/release-control-plane.yml')
+          workflow_text = workflow.read_text()
+          needle = '      - name: Verify manifest and admitted ref evidence\n        run: python3 scripts/verify_release.py --check-refs\n'
+          token_expr = '$' + '{{ github.token }}'
+          replacement_step = (
+              '      - name: Verify manifest and admitted ref evidence\n'
+              '        env:\n'
+              f'          GITHUB_TOKEN: {token_expr}\n'
+              '        run: python3 scripts/verify_release.py --check-refs\n'
+          )
+          if needle not in workflow_text:
+              raise SystemExit('REFUSED: release-control ref-verifier step not found')
+          workflow.write_text(workflow_text.replace(needle, replacement_step, 1))
           PY
 
       - name: Verify focused release-control court
@@ -125,6 +123,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/verify_release.py tests/test_release_control.py .github/workflows/apply-release-ref-auth-repair.yml
+          git add scripts/verify_release.py tests/test_release_control.py .github/workflows/release-control-plane.yml .github/workflows/apply-release-ref-auth-repair.yml
           git commit -m "fix(release): authenticate exact ref observation"
           git push origin "HEAD:${HEAD_BRANCH}"
