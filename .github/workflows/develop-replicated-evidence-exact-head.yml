@@ -1,0 +1,43 @@
+name: DEVELOP Replicated Evidence Exact Head
+
+on:
+  pull_request:
+    paths:
+      - "scripts/develop_train/replicated_evidence_state/**"
+      - "tests/develop_train/replicated_evidence_state/**"
+      - ".github/workflows/develop-replicated-evidence-exact-head.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Admit exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile authored capsule
+        run: python -m compileall -q scripts/develop_train/replicated_evidence_state tests/develop_train/replicated_evidence_state
+
+      - name: Run permanent falsifier court
+        env:
+          PYTHONPATH: .
+        run: python -m unittest discover -s tests/develop_train/replicated_evidence_state -p 'test_*.py' -v
+
+      - name: Refuse ambient consequential actuation imports
+        run: |
+          if grep -R -n -E '^[[:space:]]*(from|import)[[:space:]]+(requests|httpx|boto3|azure|google\.cloud|socket|subprocess)\b' scripts/develop_train/replicated_evidence_state; then
+            echo "Forbidden ambient actuation-capable import detected" >&2
+            exit 1
+          fi
