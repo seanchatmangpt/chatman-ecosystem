@@ -1,0 +1,31 @@
+name: Quorum Sensor Admission Exact Head
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  quorum-sensor-admission:
+    runs-on: ubuntu-24.04
+    env:
+      CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
+      PYTHONPATH: .:tests/release_train/quorum_sensor_admission
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Assert exact candidate identity
+        run: test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
+      - name: Compile quorum sensor admission
+        run: python3 -m compileall -q scripts/release_train/quorum_sensor_admission tests/release_train/quorum_sensor_admission
+      - name: Execute behavioral and falsifier court
+        run: python3 -m unittest discover -s tests/release_train/quorum_sensor_admission -p 'test_qsa_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|boto3|azure\.|google\.cloud|socket\.' scripts/release_train/quorum_sensor_admission
