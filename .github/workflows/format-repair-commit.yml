@@ -1,0 +1,58 @@
+name: Apply Format Repair
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-format-repair:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact candidate branch
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 1
+
+      - name: Assert exact candidate identity
+        env:
+          CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
+        run: test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
+
+      - name: Install pinned Rust
+        uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
+        with:
+          toolchain: 1.97.1
+          components: rustfmt
+
+      - name: Apply and verify canonical formatting
+        run: |
+          cargo fmt
+          cargo fmt --check
+
+      - name: Remove temporary repair workflows
+        run: |
+          rm -f .github/workflows/format-repair-artifact.yml
+          rm -f .github/workflows/format-repair-commit.yml
+
+      - name: Commit exact formatter repair
+        env:
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/ecosystem-cli/src/deploy.rs \
+                  crates/ecosystem-runtime/src/commerce.rs \
+                  crates/ecosystem-runtime/src/bin/marketplace-commerce.rs \
+                  .github/workflows/format-repair-artifact.yml \
+                  .github/workflows/format-repair-commit.yml
+          if git diff --cached --quiet; then
+            echo "No formatter repair required"
+            exit 0
+          fi
+          git commit -m "fix(release): apply pinned rustfmt repair"
+          git push origin "HEAD:${HEAD_BRANCH}"
