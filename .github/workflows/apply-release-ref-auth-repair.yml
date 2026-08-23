@@ -1,0 +1,116 @@
+name: Apply Release Ref Auth Repair
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-release-ref-auth-repair:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact candidate branch
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 1
+
+      - name: Assert exact candidate identity
+        env:
+          CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
+        run: test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
+
+      - name: Patch verifier and regression court
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          verifier = Path('scripts/verify_release.py')
+          text = verifier.read_text()
+          if 'import os\n' not in text:
+              text = text.replace('import json\n', 'import json\nimport os\n', 1)
+          start = text.index('def _github_json(url: str, timeout: float) -> dict[str, Any]:')
+          end = text.index('\ndef resolve_ref(', start)
+          replacement = '\n'.join([
+              'def _github_json(url: str, timeout: float) -> dict[str, Any]:',
+              '    headers = {',
+              '        "Accept": "application/vnd.github+json",',
+              '        "User-Agent": "chatman-ecosystem-release-verifier/26.9.1",',
+              '        "X-GitHub-Api-Version": "2022-11-28",',
+              '    }',
+              '    token = (os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or "").strip()',
+              '    if token:',
+              '        headers["Authorization"] = f"Bearer {token}"',
+              '    request = urllib.request.Request(url, headers=headers)',
+              '    with urllib.request.urlopen(request, timeout=timeout) as response:',
+              '        payload = json.load(response)',
+              '    if not isinstance(payload, dict):',
+              '        raise ValueError(f"GitHub returned a non-object payload for {url}")',
+              '    return payload',
+              '',
+              '',
+          ])
+          verifier.write_text(text[:start] + replacement + text[end + 1:])
+
+          tests = Path('tests/test_release_control.py')
+          test_text = tests.read_text()
+          marker = '    def test_branch_advancement_does_not_invalidate_admitted_sha(self) -> None:\n'
+          addition = '\n'.join([
+              '    def test_github_json_uses_available_read_token(self) -> None:',
+              '        captured: dict[str, str | None] = {}',
+              '',
+              '        class Response:',
+              '            def __enter__(self):',
+              '                return self',
+              '',
+              '            def __exit__(self, exc_type, exc, tb):',
+              '                return False',
+              '',
+              '            def read(self):',
+              '                return b"{}"',
+              '',
+              '        def fake_urlopen(request, timeout):',
+              '            captured["authorization"] = request.get_header("Authorization")',
+              '            self.assertEqual(1.5, timeout)',
+              '            return Response()',
+              '',
+              '        with (',
+              '            mock.patch.dict(verify_release.os.environ, {"GITHUB_TOKEN": "test-read-token"}, clear=True),',
+              '            mock.patch.object(verify_release.urllib.request, "urlopen", side_effect=fake_urlopen),',
+              '        ):',
+              '            self.assertEqual({}, verify_release._github_json("https://api.github.com/example", 1.5))',
+              '        self.assertEqual("Bearer test-read-token", captured["authorization"])',
+              '',
+              '        captured.clear()',
+              '        with (',
+              '            mock.patch.dict(verify_release.os.environ, {}, clear=True),',
+              '            mock.patch.object(verify_release.urllib.request, "urlopen", side_effect=fake_urlopen),',
+              '        ):',
+              '            self.assertEqual({}, verify_release._github_json("https://api.github.com/example", 1.5))',
+              '        self.assertIsNone(captured["authorization"])',
+              '',
+              '',
+          ])
+          if 'def test_github_json_uses_available_read_token' not in test_text:
+              if marker not in test_text:
+                  raise SystemExit('REFUSED: test insertion marker not found')
+              tests.write_text(test_text.replace(marker, addition + marker, 1))
+          PY
+
+      - name: Verify focused release-control court
+        run: |
+          python3 -m py_compile scripts/verify_release.py tests/test_release_control.py
+          python3 -m unittest -v tests.test_release_control
+
+      - name: Commit verifier repair only
+        env:
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/verify_release.py tests/test_release_control.py
+          git commit -m "fix(release): authenticate exact ref observation"
+          git push origin "HEAD:${HEAD_BRANCH}"

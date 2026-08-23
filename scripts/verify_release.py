@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 import tomllib
@@ -225,20 +226,20 @@ def _detect_cycles(by_id: dict[str, dict[str, Any]]) -> list[Finding]:
 
 
 def _github_json(url: str, timeout: float) -> dict[str, Any]:
-    request = urllib.request.Request(
-        url,
-        headers={
-            "Accept": "application/vnd.github+json",
-            "User-Agent": "chatman-ecosystem-release-verifier/26.9.1",
-            "X-GitHub-Api-Version": "2022-11-28",
-        },
-    )
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "chatman-ecosystem-release-verifier/26.9.1",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    token = (os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or "").strip()
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    request = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(request, timeout=timeout) as response:
         payload = json.load(response)
     if not isinstance(payload, dict):
         raise ValueError(f"GitHub returned a non-object payload for {url}")
     return payload
-
 
 def resolve_ref(repository: str, ref: str, timeout: float = 10.0) -> str:
     owner, name = repository.split("/", 1)
