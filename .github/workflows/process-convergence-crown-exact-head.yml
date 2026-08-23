@@ -1,0 +1,27 @@
+name: Process Convergence Crown Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/process_convergence_crown/**'
+      - 'scripts/release_train/process_transition_crown/dependency.py'
+      - 'tests/release_train/process_convergence_crown/**'
+      - '.github/workflows/process-convergence-crown-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  crown:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile
+        run: python3 -m compileall -q scripts/release_train/process_transition_crown scripts/release_train/process_convergence_crown tests/release_train/process_transition_crown tests/release_train/process_convergence_crown
+      - name: Repair regression court
+        run: PYTHONPATH=. python3 -m unittest tests.release_train.process_transition_crown.test_authority_receipt -v
+      - name: Convergence permanent courts
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/process_convergence_crown -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: '! grep -REn "requests\\.(post|put|patch|delete)|httpx|boto3|azure\\.|google\\.cloud|subprocess\\.|os\\.system|socket\\." scripts/release_train/process_convergence_crown'
