@@ -11,9 +11,9 @@
 
 use clap::{Arg, ArgAction, Command};
 use clap_noun_verb_deploy::container::ContainerConfig;
+use clap_noun_verb_deploy::http::HttpServer;
 use clap_noun_verb_deploy::kubernetes::KubernetesConfig;
 use clap_noun_verb_deploy::mcp::McpServer;
-use clap_noun_verb_deploy::http::HttpServer;
 use clap_noun_verb_deploy::{CliSchema, CommandAllowList, ProcessExecutor};
 use std::env;
 use std::io::{stdin, stdout};
@@ -66,7 +66,11 @@ fn executor_and_policy() -> Result<(ProcessExecutor, CommandAllowList, CliSchema
     let current_exe = env::current_exe().map_err(|error| error.to_string())?;
     let executor = ProcessExecutor::new(current_exe);
     let policy = CommandAllowList::new(
-        schema.commands.iter().filter(|command| command.callable).map(|command| command.path.clone()),
+        schema
+            .commands
+            .iter()
+            .filter(|command| command.callable)
+            .map(|command| command.path.clone()),
     );
     Ok((executor, policy, schema))
 }
@@ -78,7 +82,13 @@ fn run_schema() -> Result<String, String> {
 
 fn run_mcp() -> Result<String, String> {
     let (executor, policy, schema) = executor_and_policy()?;
-    let server = McpServer::with_policy("ecosystem", env!("CARGO_PKG_VERSION"), schema, executor, policy);
+    let server = McpServer::with_policy(
+        "ecosystem",
+        env!("CARGO_PKG_VERSION"),
+        schema,
+        executor,
+        policy,
+    );
     server
         .serve_stdio(stdin().lock(), stdout().lock())
         .map_err(|error| error.to_string())?;
@@ -126,7 +136,9 @@ fn run_container() -> Result<String, String> {
     let mut config = ContainerConfig::new("ecosystem-cli", "ecosystem");
     config.args = deploy_binary_args();
     config.port = 8080;
-    config.render_dockerfile().map_err(|error| error.to_string())
+    config
+        .render_dockerfile()
+        .map_err(|error| error.to_string())
 }
 
 /// Dispatch a `deploy` command area. `arguments` is the full argv (including
