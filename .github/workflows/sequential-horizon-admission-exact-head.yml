@@ -1,0 +1,27 @@
+name: Sequential Horizon Admission
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/sequential_horizon_admission/**'
+      - 'tests/release_train/sequential_horizon_admission/**'
+      - '.github/workflows/sequential-horizon-admission-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact PR head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile
+        run: python3 -m compileall -q scripts/release_train/sequential_horizon_admission tests/release_train/sequential_horizon_admission
+      - name: Permanent falsifier and Chicago court
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/release_train/sequential_horizon_admission -p 'test_sha_*.py' -v
+      - name: Refuse ambient consequential actuation surfaces
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|httpx|boto3|azure\.|google\.cloud|subprocess\.|os\.system|socket\.' scripts/release_train/sequential_horizon_admission
