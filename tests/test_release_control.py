@@ -84,6 +84,39 @@ class ReleaseControlTests(unittest.TestCase):
         self.assertEqual("github-actions:31775830421", autofde["execution_receipt"])
         self.assertNotIn("blocker", autofde)
 
+    def test_github_json_uses_available_read_token(self) -> None:
+        captured: dict[str, str | None] = {}
+
+        class Response:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def read(self):
+                return b"{}"
+
+        def fake_urlopen(request, timeout):
+            captured["authorization"] = request.get_header("Authorization")
+            self.assertEqual(1.5, timeout)
+            return Response()
+
+        with (
+            mock.patch.dict(verify_release.os.environ, {"GITHUB_TOKEN": "test-read-token"}, clear=True),
+            mock.patch.object(verify_release.urllib.request, "urlopen", side_effect=fake_urlopen),
+        ):
+            self.assertEqual({}, verify_release._github_json("https://api.github.com/example", 1.5))
+        self.assertEqual("Bearer test-read-token", captured["authorization"])
+
+        captured.clear()
+        with (
+            mock.patch.dict(verify_release.os.environ, {}, clear=True),
+            mock.patch.object(verify_release.urllib.request, "urlopen", side_effect=fake_urlopen),
+        ):
+            self.assertEqual({}, verify_release._github_json("https://api.github.com/example", 1.5))
+        self.assertIsNone(captured["authorization"])
+
     def test_branch_advancement_does_not_invalidate_admitted_sha(self) -> None:
         candidate = {
             "components": [
