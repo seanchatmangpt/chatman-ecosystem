@@ -1,44 +1,58 @@
-# Documentation Inventory — v26.8.18
+# Documentation Inventory — current head and preserved snapshots
 
-> Reviewed implementation baseline: `2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01`  
-> Documentation branch subject: `docs/v26.8.18-repo-review`  
-> Inventory standing: `PARTIAL_ALIVE` until the exact documentation head passes all applicable repository gates.
+> Reviewed repository subject: `seanchatmangpt/chatman-ecosystem@be27c93621ef494ccc342e0dc36c99dab9e391a6`  
+> Preserved release baseline: `v26.8.18@2d149b4091f6b5239ecfbbe054fdb0b2f5eb5f01`  
+> Inventory standing: `PARTIAL_ALIVE` until the documentation change itself passes exact-head repository gates.
 
-This is the repository-wide documentation map for the current operational release. It separates **what may be edited as current truth** from historical evidence, generated projections, and future-release doctrine.
+This inventory is the repository-wide currentness and ownership map. It deliberately separates current capability documentation from historical release evidence, doctrine, generated projections, and future proof targets.
 
 ## Lifecycle classes
 
 | Class | Meaning | Edit rule |
 |---|---|---|
-| `CANONICAL` | constitutional or operational source of truth | edit deliberately; update dependent projections |
-| `CURRENT` | current v26.8.18 operational explanation | keep synchronized with exact observed implementation |
-| `HISTORICAL` | evidence captured at an earlier subject/time | preserve observations; append corrections rather than rewriting history |
+| `CANONICAL` | constitutional/operational source of truth | edit deliberately; update dependent projections |
+| `CURRENT` | current-head capability documentation grounded in executable behavior | change with the owning capability and evidence |
+| `HISTORICAL` | evidence captured for an earlier exact subject/release | preserve observation; add pointers, do not rewrite history |
+| `DOCTRINE` | long-form architecture/research/constitutional explanation | do not use as execution evidence |
 | `GENERATED` | deterministic projection of canonical data | never hand-edit |
-| `FUTURE` | v26.9.1 target/research/proof corpus | do not relabel as current implementation |
-| `LOCAL` | component/package-specific operator or developer documentation | maintain with owning implementation surface |
+| `FUTURE` | target/release-proof corpus not yet established as current runtime | never relabel as current evidence |
+| `LOCAL` | package/component-owned docs | maintain with owning implementation |
 
-## Repository-root documentation
+## Complete relevant documentation census
 
-| Path | Class | Purpose |
+The census inspected the user-facing surfaces that can materially describe behavior, including repository-root Markdown; `docs/`; mdBook navigation (`book.toml`, `docs/SUMMARY.md`); tutorials/how-to/reference/explanation material; architecture, operations, API, observability, OCEL, ggen, security, reliability, troubleshooting, development, release, versioning and docs-maintenance pages; JIRA/release records; audits; nested handbooks/books; platform-console operator docs; generated status/views/SOC2 projections; `catalog/documents.toml`; package source/tests/workflows for replicated evidence; and examples embedded in those executable surfaces.
+
+### Repository-root documentation
+
+| Surface | Class | Currentness rule |
 |---|---|---|
 | `AGENTS.md` | CANONICAL | agent/release operating law |
-| `CONSTITUTION.md` | CANONICAL | constitutional invariants and standing law |
-| `CONTRIBUTING.md` | CURRENT | contribution and verification workflow |
-| `README.md` | CURRENT | repository/release landing page |
-| `ROADMAP.md` | CURRENT | current frontier and next evidence-changing work |
-| `SESSION-FINAL-STATUS.md` | CURRENT | bounded v26.8.18 status receipt |
-| `ECOSYSTEM-INTEGRATION-REVIEW.md` | HISTORICAL | integration review evidence from its observed subject |
-| `SONY-READINESS-GAP-CLOSURE.md` | HISTORICAL | enterprise-readiness gap review/evidence |
-| `SONY-SVP-REVIEW-CLOSURE.md` | HISTORICAL | executive-buyer review/evidence |
+| `CONSTITUTION.md` | CANONICAL | constitutional authority/standing law |
+| `CONTRIBUTING.md` | CURRENT | contribution workflow at its stated commands |
+| `README.md`, `ROADMAP.md` | CURRENT | landing/frontier; claims require exact evidence |
+| `SESSION-FINAL-STATUS.md` | HISTORICAL | v26.8.18 bounded status receipt |
+| `ECOSYSTEM-INTEGRATION-REVIEW.md`, `SONY-READINESS-GAP-CLOSURE.md`, `SONY-SVP-REVIEW-CLOSURE.md` | HISTORICAL | dated review evidence |
 
-## Current operational documentation
+### Current Diátaxis capability documentation
 
-These documents describe the current v26.8.18 subject and should move when the implementation boundary moves:
+The replicated-evidence subsystem is the post-v26.8.18 operator-visible capability that triggered this census. Its documentation ownership is now explicit:
+
+| Path | Role | Class |
+|---|---|---|
+| `docs/diataxis/tutorials/replicated-evidence-state.md` | Tutorial — bounded successful learning path | CURRENT |
+| `docs/diataxis/how-to/qualify-replicated-evidence.md` | How-to — qualification and diagnosis procedures | CURRENT |
+| `docs/diataxis/reference/replicated-evidence-state.md` | Reference — canonical factual contract | CURRENT |
+| `docs/diataxis/explanation/replicated-evidence-currentness.md` | Explanation — standing/authority rationale | CURRENT |
+
+Canonical factual source order for this capability is: executable source/tests at the exact subject → exact-head workflow evidence → Reference page → links from the other Diátaxis roles. Tutorial/how-to/explanation must not become parallel API specifications.
+
+### Preserved v26.8.18 operational snapshot
+
+The following pages describe the v26.8.18 release-era subject. They remain useful but are `HISTORICAL` with respect to capabilities merged later unless an individual page explicitly binds newer evidence:
 
 - `docs/v26.8.18-release.md`
 - `docs/ARCHITECTURE.md`
 - `docs/OPERATIONS.md`
-- `docs/DOCUMENTATION-INVENTORY.md`
 - `docs/VERSIONING.md`
 - `docs/API-SURFACES.md`
 - `docs/OBSERVABILITY.md`
@@ -50,183 +64,84 @@ These documents describe the current v26.8.18 subject and should move when the i
 - `docs/RELEASE-PROCESS.md`
 - `docs/DEVELOPMENT.md`
 - `docs/DOCS-MAINTENANCE.md`
-- `docs/README.md`
-- `docs/SUMMARY.md`
-- `docs/00-introduction.md`
-- `docs/00-reading-map.md`
+- release-era sections of `docs/SUMMARY.md` and `docs/00-introduction.md`
+- `docs/jira/v26.8.18/00-OVERVIEW.md` through `04-GGEN-BRCE-CROSS-CUTTING.md`
 
-## Constitutional, manufacturing, flow, research, and TPS corpus
+`docs/README.md` and `docs/00-reading-map.md` are current routing documents and now state this boundary explicitly.
 
-The numbered mdBook corpus is long-form doctrine/research. These files are authored documents, not generated projections. Version-specific release claims inside them remain subject to the distinction in `docs/VERSIONING.md`.
+### Long-form doctrine/research corpus
 
-### 01–20
+`docs/01-*.md` through `docs/80-*.md` are authored `DOCTRINE` documents spanning constitution/type boundaries, semantic manufacture, closure/evidence, manufactured complexity/flow, authority/security/process, ecosystem realizations, post-AGI substrate independence, operating control, research, and TPS. Their architecture/mathematics may be current doctrine, but they are not evidence that a runtime edge executed.
 
-- `docs/01-constitutional-thesis.md`
-- `docs/02-chatman-equation.md`
-- `docs/03-ontological-stratification.md`
-- `docs/04-contextual-execution.md`
-- `docs/05-non-collapse-algebra.md`
-- `docs/06-candidate-manufacture.md`
-- `docs/07-dual-admission-geometry.md`
-- `docs/08-refusal-as-type.md`
-- `docs/09-brce-no-unreceipted-actuation.md`
-- `docs/10-receipt-bifurcation.md`
-- `docs/11-mandatory-factorization.md`
-- `docs/12-semantic-manufacturing.md`
-- `docs/13-projection-contracts.md`
-- `docs/14-representation-fiber.md`
-- `docs/15-reverse-semantic-morphism.md`
-- `docs/16-semantic-ci.md`
-- `docs/17-recursive-non-self-certification.md`
-- `docs/18-four-closure-obligations.md`
-- `docs/19-epistemic-crown.md`
-- `docs/20-representational-crown.md`
+### Nested handbooks and authored books
 
-### 21–40
+- `docs/post-agi-platform-handbook/**` — DOCTRINE; nested `SUMMARY.md` owns its exhaustive reading order.
+- `docs/post-agi-marketplace-handbook/**` — DOCTRINE unless a page explicitly binds execution evidence.
+- `docs/platform-engineers-handbook-*.md` — DOCTRINE/LOCAL bridge material.
+- `docs/how-to-build-a-dyson-sphere/**` — authored book/speculative systems material; not operational evidence for repository capabilities.
 
-- `docs/21-operational-crown.md`
-- `docs/22-class-closure-crown.md`
-- `docs/23-class-quotient.md`
-- `docs/24-definition-of-done-lattice.md`
-- `docs/25-crown-receipt-manifest.md`
-- `docs/26-release-theorem.md`
-- `docs/27-standing-algebra.md`
-- `docs/28-anti-wip-governance.md`
-- `docs/29-manufactured-complexity.md`
-- `docs/30-constitutional-compression.md`
-- `docs/31-work-necessity-test.md`
-- `docs/32-eliminate-automate-accelerate.md`
-- `docs/33-littles-law-arrivals.md`
-- `docs/34-information-theory.md`
-- `docs/35-dfcm-maximal-reversible.md`
-- `docs/36-authority-as-reachability.md`
-- `docs/37-security-non-reachability.md`
-- `docs/38-organization-semantic-manifold.md`
-- `docs/39-process-is-state.md`
-- `docs/40-ggen-semantic-manufacturing-system.md`
+### Historical audits
 
-### 41–60
+`docs/audits/**` and dated/gap-review evidence are `HISTORICAL`. Preserve the observed subject and append later closure pointers rather than rewriting the original observation.
 
-- `docs/41-ggen-marketplace-civilization-memory.md`
-- `docs/42-ggen-legacy-epistemic-fence.md`
-- `docs/43-repository-ontology.md`
-- `docs/44-clay-substrate-equivalence.md`
-- `docs/45-post-agi-limit.md`
-- `docs/46-post-agi-cjk.md`
-- `docs/47-post-agi-swarm-protocol.md`
-- `docs/48-crown-experiment-protocol.md`
-- `docs/49-working-backwards-release.md`
-- `docs/50-civilization-scale-synthesis.md`
-- `docs/51-ecosystem-map.md`
-- `docs/52-repository-atlas.md`
-- `docs/53-month-in-review.md`
-- `docs/54-current-standing.md`
-- `docs/55-pull-system.md`
-- `docs/56-receipts-replay-evidence.md`
-- `docs/57-operating-control-plane.md`
-- `docs/58-falsifiers-open-work.md`
-- `docs/59-roadmap-autonomous-factory.md`
-- `docs/60-ecosystem-synthesis.md`
+### Future proof corpus
 
-### 61–80
+`docs/v26.9.1/**` is `FUTURE` unless a document explicitly supplies exact current-runtime evidence. `docs/v26.9.1/00_CANONICAL_INDEX.md` owns that frozen corpus. Specification freeze is not release `ALIVE`.
 
-- `docs/61-research-program.md`
-- `docs/62-axiomatic-kernel.md`
-- `docs/63-categorical-semantics.md`
-- `docs/64-epistemic-standing.md`
-- `docs/65-process-calculus.md`
-- `docs/66-dfcm-search-geometry.md`
-- `docs/67-authority-security-theorems.md`
-- `docs/68-flow-economics.md`
-- `docs/69-experimental-method.md`
-- `docs/70-dissertation-synthesis.md`
-- `docs/71-tps-production-constitution.md`
-- `docs/72-machine-scale-throughput.md`
-- `docs/73-latent-poc-reservoir.md`
-- `docs/74-portfolio-pull-control.md`
-- `docs/75-jidoka-andon-pokayoke.md`
-- `docs/76-heijunka-capacity.md`
-- `docs/77-standard-work-ggen.md`
-- `docs/78-kaizen-self-improving-factory.md`
-- `docs/79-factory-metrics.md`
-- `docs/80-post-operator-factory.md`
+### Platform-console local documentation
 
-## Platform Engineer's Handbook bridge documents
+`platform-console/README.md` and `platform-console/docs/**` are `LOCAL` to the deployable console, including data residency, DR/second-cluster, incident communications, scope/limitations, SOC2 mapping, and support/escalation. Cross-cutting docs should link instead of duplicating their contracts.
 
-- `docs/platform-engineers-handbook-ggen-packs.md`
-- `docs/platform-engineers-handbook-colima-runtime.md`
-- `docs/platform-engineers-handbook-backward-chain.md`
-- `docs/platform-engineers-handbook-backport.md`
-- `docs/platform-engineers-handbook-capability-roadmap.md`
+### Generated documentation/projections
 
-## Post-AGI Platform Engineer's Handbook
-
-The handbook is its own complete nested book. Its authoritative nested file list is `docs/post-agi-platform-handbook/SUMMARY.md`. The repository contains:
-
-- root: `README.md`, `SUMMARY.md`, `working-backwards.md`, `preface.md`, `how-to-read.md`, `notation.md`;
-- chapters 1–65 across `part-01-epistemic-closure/` through `part-16-complete-calculus/`;
-- appendices `a-formal-notation.md` through `p-civilization-memory-algebra.md`;
-- `epilogue.md`.
-
-Every nested handbook chapter is included by `docs/SUMMARY.md`; the nested summary is the canonical exhaustive index for that sub-book.
-
-## v26.8.18 ggen work package
-
-These are current design-to-implementation records and are reconciled against v26.8.18 implementation evidence:
-
-- `docs/jira/v26.8.18/00-OVERVIEW.md`
-- `docs/jira/v26.8.18/01-GGEN-AS-IAAS.md`
-- `docs/jira/v26.8.18/02-GGEN-AS-PAAS.md`
-- `docs/jira/v26.8.18/03-GGEN-AS-SAAS.md`
-- `docs/jira/v26.8.18/04-GGEN-BRCE-CROSS-CUTTING.md`
-
-## Historical audits
-
-Preserve these as time-bounded evidence:
-
-- `docs/audits/2026-08-08-stubs-wip.md`
-- `docs/audits/2026-08-15-stubs-wip.md`
-
-## v26.9.1 frozen proof corpus
-
-`docs/v26.9.1/00_CANONICAL_INDEX.md` is the authoritative exhaustive index for the frozen v26.9.1 constitutional corpus and its documents 01–49. That corpus is `FUTURE` relative to the v26.8.18 operational snapshot. Its architecture/mathematics must not be rewritten merely because current implementation differs.
-
-## Platform-console local documentation
-
-These are owned by the deployable platform surface:
-
-- `platform-console/README.md`
-- `platform-console/docs/DATA-RESIDENCY.md`
-- `platform-console/docs/DISASTER-RECOVERY.md`
-- `platform-console/docs/DR-SECOND-CLUSTER.md`
-- `platform-console/docs/INCIDENT-COMMUNICATION-TEMPLATE.md`
-- `platform-console/docs/SCOPE-AND-LIMITATIONS.md`
-- `platform-console/docs/SOC2-CONTROL-MAPPING.md`
-- `platform-console/docs/SUPPORT-AND-ESCALATION.md`
-
-## Generated documentation/projections
-
-The following documentation-like outputs are projections and must not be manually corrected:
+The following are `GENERATED` and must not be manually corrected:
 
 - `views/generated/*.md`
 - `status/README.md`
 - `status/repos/*.md`
 - generated `soc2/*.md`
-- generated status-deck/output artifacts where applicable
+- generated status deck/output artifacts where applicable
 
-Fix their canonical input or generator and regenerate.
+Repair canonical inputs/generators and regenerate.
 
-## Registry rule
+### Publication and registry surfaces
 
-`catalog/documents.toml` is the explicit registry for cross-cutting documents used by the control plane. It is **not** intended to enumerate every chapter or package-local README. Add a registry entry when a document becomes a cross-cutting constitutional, operational, release, or operator contract.
+- `book.toml` defines `docs` as mdBook source; it is authored configuration.
+- `docs/SUMMARY.md` is the authored publication graph. Its release-era `Current v26.8.18 Operations` heading is a historical navigation label, not a claim that no later capability exists. Current routing begins at `docs/README.md`/this inventory.
+- `catalog/documents.toml` is the explicit cross-cutting document registry, not an exhaustive chapter index. Add entries only for documents that become control-plane constitutional/operational/release contracts.
+
+## Replicated-evidence observed capability ledger
+
+Observed in source at `main@be27c936...` and its merged PR #133 lineage:
+
+- exact action admission precedes qualification; `DO` is `REFUSED[BRCE_REQUIRED_FOR_CONSEQUENTIAL_DO]`;
+- lease validity is timezone-aware and half-open; stale admission is refused;
+- empty/mixed subjects are refused; highest-generation disagreement becomes `SPLIT_BRAIN` and engine result `UNKNOWN`;
+- strict majority is `n // 2 + 1`; insufficient quorum remains `UNKNOWN`;
+- positive qualification is capped at `PARTIAL_ALIVE` with a receipt and `actuation_performed=False`;
+- vector clocks preserve `EQUAL|BEFORE|AFTER|CONCURRENT` plus component-wise join;
+- Merkle reduction is deterministic over sorted digests;
+- receipt replay requires no actuation and exact digest equality;
+- exact-head PR workflow compiles the package/tests, runs the permanent unittest court, and rejects common ambient actuation-capable imports.
+
+Exact-head execution evidence: PR #133 head `7ce703f477eeb135f675156d71644a33ac532c1d`, workflow run `32608335688`, `DEVELOP Replicated Evidence Exact Head`, conclusion `success`. The merged repository subject reviewed here is `be27c93621ef494ccc342e0dc36c99dab9e391a6`; this documentation does not infer a new repository-wide Crown from that subsystem court.
+
+## Archive decisions
+
+No files were deleted. The v26.8.18 material has lineage and evidentiary value, so it is preserved in place and reclassified as a bounded historical release snapshot for post-baseline currentness. This avoids erasing evidence while removing its former role as the complete current capability map.
+
+## Generated-document status
+
+No generated documentation is edited by this transition. New/changed docs are authored surfaces. If a later generator claims ownership of any of these paths, canonical ownership must be changed before regeneration.
 
 ## Completeness falsifiers
 
-This inventory is stale if any of the following becomes true:
+This inventory becomes stale if any of the following occurs:
 
-1. a new cross-cutting doc is added without classification;
-2. a current operational doc points at a superseded exact subject without saying so;
-3. a historical audit is rewritten as current evidence;
+1. a new operator-visible capability ships without an owning current Tutorial/How-to/Reference/Explanation mapping or explicit coverage declaration;
+2. a current page points at a superseded exact subject without stating the boundary;
+3. a historical audit/release snapshot is rewritten as current evidence;
 4. generated Markdown is hand-edited instead of regenerated;
-5. v26.9.1 target doctrine is relabeled as v26.8.18 implementation state;
-6. a new operator-visible capability ships with no owning operational documentation or explicit declaration that an existing document covers it.
+5. future doctrine is relabeled as current runtime evidence;
+6. a factual capability contract is duplicated across Diátaxis roles and drifts;
+7. `ALIVE` is asserted from inspection, prose, test names, workflow presence, or stale CI instead of observed exact-subject execution.
