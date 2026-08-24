@@ -1,0 +1,35 @@
+name: Federation Convergence Crown Exact Head
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/federation_convergence_crown/**'
+      - 'tests/release_train/federation_convergence_crown/**'
+      - '.github/workflows/federation-convergence-crown-exact-head.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact PR head
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile crown
+        run: python3 -m compileall -q scripts/release_train/federation_convergence_crown tests/release_train/federation_convergence_crown
+      - name: Run permanent crown courts
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/release_train/federation_convergence_crown -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        shell: bash
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|subprocess\.|os\.system|boto3|azure\.|google\.cloud|socket\.' scripts/release_train/federation_convergence_crown tests/release_train/federation_convergence_crown
