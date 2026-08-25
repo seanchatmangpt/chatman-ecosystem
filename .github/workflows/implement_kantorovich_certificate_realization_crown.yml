@@ -1,0 +1,34 @@
+name: Kantorovich Certificate Realization Crown Exact Head
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/kantorovich_certificate_realization_crown/**'
+      - 'tests/release_train/kantorovich_certificate_realization_crown/**'
+      - '.github/workflows/implement_kantorovich_certificate_realization_crown.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact subject
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile
+        run: python3 -m compileall -q scripts/release_train/kantorovich_certificate_realization_crown tests/release_train/kantorovich_certificate_realization_crown
+      - name: Permanent and Chicago courts
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/release_train/kantorovich_certificate_realization_crown -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        shell: bash
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|subprocess\.|os\.system|boto3|azure\.|google\.cloud' scripts/release_train/kantorovich_certificate_realization_crown tests/release_train/kantorovich_certificate_realization_crown
