@@ -1,0 +1,25 @@
+name: DEVELOP Certificate Federation Observability Exact Head
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/develop_train/certificate_federation_observability/**'
+      - 'tests/develop_train/certificate_federation_observability/**'
+      - '.github/workflows/develop-certificate-federation-observability.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact PR head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile
+        run: python3 -m compileall -q scripts/develop_train/certificate_federation_observability tests/develop_train/certificate_federation_observability
+      - name: Permanent and Chicago courts
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/develop_train/certificate_federation_observability -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: |
+          ! grep -REn '^\s*(import|from)\s+(requests|httpx|boto3|azure|google\.cloud|socket|subprocess)|requests\.(post|put|patch|delete)|subprocess\.|os\.system' scripts/develop_train/certificate_federation_observability tests/develop_train/certificate_federation_observability
