@@ -1,0 +1,39 @@
+name: DEVELOP Evidence Realization Control Exact Head
+
+on:
+  pull_request:
+    paths:
+      - "scripts/develop_train/evidence_realization_control/**"
+      - "tests/develop_train/evidence_realization_control/**"
+      - ".github/workflows/develop-evidence-realization-control-exact-head.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Admit exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile production and courts
+        run: python3 -m compileall -q scripts/develop_train/evidence_realization_control tests/develop_train/evidence_realization_control
+      - name: Execute permanent and Chicago courts
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/develop_train/evidence_realization_control -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: |
+          set -euo pipefail
+          if grep -REn '^\s*(import|from)\s+(requests|httpx|boto3|azure|google\.cloud|socket|subprocess)|requests\.(post|put|patch|delete)|subprocess\.|os\.system' scripts/develop_train/evidence_realization_control tests/develop_train/evidence_realization_control; then
+            echo 'ambient consequential-actuation surface detected' >&2
+            exit 1
+          fi
