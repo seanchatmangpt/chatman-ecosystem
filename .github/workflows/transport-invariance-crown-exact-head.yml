@@ -1,0 +1,27 @@
+name: Transport Invariance Crown Exact Head
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/transport_invariance_crown/**'
+      - 'tests/release_train/transport_invariance_crown/**'
+      - '.github/workflows/transport-invariance-crown-exact-head.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-court:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact PR head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile transport invariance crown
+        run: python3 -m compileall -q scripts/release_train/transport_invariance_crown tests/release_train/transport_invariance_crown
+      - name: Run permanent transport invariance courts
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/transport_invariance_crown -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: '! grep -REn "requests\.(post|put|patch|delete)|subprocess\.|os\.system|boto3|azure\.|google\.cloud" scripts/release_train/transport_invariance_crown'
