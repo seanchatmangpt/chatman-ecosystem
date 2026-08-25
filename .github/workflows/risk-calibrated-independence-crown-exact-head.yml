@@ -1,0 +1,27 @@
+name: Risk-Calibrated Independence Crown Exact Head
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/risk_independence_admission/**'
+      - 'tests/release_train/risk_independence_admission/**'
+      - '.github/workflows/risk-calibrated-independence-crown-exact-head.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile exact authored capsule
+        run: python3 -m compileall -q scripts/release_train/risk_independence_admission tests/release_train/risk_independence_admission
+      - name: Run permanent risk-independence courts
+        run: PYTHONPATH=scripts/release_train python3 -m unittest discover -s tests/release_train/risk_independence_admission -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: "! grep -REn 'requests\\.(post|put|patch|delete)|httpx|boto3|azure\\.|google\\.cloud|socket|subprocess|os\\.system' scripts/release_train/risk_independence_admission"
