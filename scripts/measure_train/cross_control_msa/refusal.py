@@ -1,0 +1,1 @@
+class Refused(ValueError): pass

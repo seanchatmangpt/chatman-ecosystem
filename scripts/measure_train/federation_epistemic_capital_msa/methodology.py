@@ -1,0 +1,6 @@
+from .refusal import Refused
+REQUIRED={"DISCOVERY","CONFORMANCE","SIMULATION","PREDICTION","OPTIMIZATION","INTERVENTION","MONITORING","EVENT_CENTRIC","OBJECT_CENTRIC","DECLARATIVE","PROCEDURAL"}
+def require_complete(kinds):
+    missing=REQUIRED-set(kinds)
+    if missing: raise Refused("REFUSED[INCOMPLETE_METHODOLOGY_COVERAGE]")
+    return True
