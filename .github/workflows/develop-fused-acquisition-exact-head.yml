@@ -1,0 +1,35 @@
+name: DEVELOP Fused Acquisition Exact Head
+
+on:
+  pull_request:
+    paths:
+      - "scripts/develop_train/fused_acquisition/**"
+      - "tests/develop_train/fused_acquisition/**"
+      - ".github/workflows/develop-fused-acquisition-exact-head.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Assert exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile exact capsule
+        run: python3 -m compileall -q scripts/develop_train/fused_acquisition tests/develop_train/fused_acquisition
+      - name: Execute permanent falsifier and Chicago courts
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/develop_train/fused_acquisition -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation imports
+        run: |
+          set -euo pipefail
+          ! grep -REn 'requests\.(post|put|patch|delete)|httpx|boto3|azure\.|google\.cloud|socket|subprocess|os\.system' scripts/develop_train/fused_acquisition

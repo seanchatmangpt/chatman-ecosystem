@@ -1,0 +1,32 @@
+name: DEVELOP Robustness Calibrated Composition Exact Head
+
+on:
+  pull_request:
+    paths:
+      - "scripts/develop_train/robustness_calibrated_policy_control/**"
+      - "tests/develop_train/robustness_calibrated_policy_control/**"
+      - ".github/workflows/develop-robustness-calibrated-composition-exact-head.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Admit exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile capability and courts
+        run: python3 -m compileall -q scripts/develop_train/robustness_calibrated_policy_control tests/develop_train/robustness_calibrated_policy_control
+      - name: Execute permanent and Chicago courts
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/develop_train/robustness_calibrated_policy_control -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation imports
+        run: "! grep -REn 'requests\\.(post|put|patch|delete)|httpx|boto3|azure\\.|google\\.cloud|socket|subprocess|os\\.system' scripts/develop_train/robustness_calibrated_policy_control tests/develop_train/robustness_calibrated_policy_control"
