@@ -1,0 +1,29 @@
+name: DEVELOP Distributional Process Capital Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/develop_train/distributional_process_capital/**'
+      - 'tests/develop_train/distributional_process_capital/**'
+      - '.github/workflows/develop-distributional-process-capital.yml'
+permissions:
+  contents: read
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact PR head
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile
+        run: python3 -m compileall -q scripts/develop_train/distributional_process_capital tests/develop_train/distributional_process_capital
+      - name: Permanent and Chicago courts
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/develop_train/distributional_process_capital -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        shell: bash
+        run: |
+          ! grep -REn '^\s*(import|from)\s+(requests|httpx|boto3|azure|google\.cloud|socket|subprocess)|requests\.(post|put|patch|delete)|subprocess\.|os\.system' scripts/develop_train/distributional_process_capital tests/develop_train/distributional_process_capital
