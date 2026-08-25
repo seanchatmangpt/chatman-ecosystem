@@ -1,0 +1,13 @@
+from enum import Enum
+from .refusals import Refused
+
+class ActionClass(str, Enum):
+    OBSERVE = "OBSERVE"
+    SELECT = "SELECT"
+    CONSTRUCT = "CONSTRUCT"
+    VERIFY = "VERIFY"
+    DO = "DO"
+
+def admit_action(action: ActionClass) -> None:
+    if action is ActionClass.DO:
+        raise Refused("REFUSED_BRCE_REQUIRED_FOR_CONSEQUENTIAL_DO")

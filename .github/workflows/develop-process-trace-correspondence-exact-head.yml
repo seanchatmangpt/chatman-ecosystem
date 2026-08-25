@@ -1,0 +1,31 @@
+name: DEVELOP Process Trace Correspondence Exact Head
+
+on:
+  pull_request:
+    paths:
+      - "scripts/develop_train/process_trace_correspondence/**"
+      - "tests/develop_train/process_trace_correspondence/**"
+      - ".github/workflows/develop-process-trace-correspondence-exact-head.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Admit exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile trace correspondence substrate
+        run: python3 -m compileall -q scripts/develop_train/process_trace_correspondence tests/develop_train/process_trace_correspondence
+      - name: Execute permanent and Chicago courts
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/develop_train/process_trace_correspondence -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation surfaces
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|httpx|boto3|azure\.|google\.cloud|socket|subprocess|os\.system' scripts/develop_train/process_trace_correspondence tests/develop_train/process_trace_correspondence
