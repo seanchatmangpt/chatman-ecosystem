@@ -1,0 +1,31 @@
+name: MEASURE Federation Convergence Kinetics MSA
+
+on:
+  pull_request:
+    paths:
+      - scripts/measure_train/federation_convergence_kinetics_msa/**
+      - tests/measure_train/federation_convergence_kinetics_msa/**
+      - .github/workflows/measure-federation-convergence-kinetics-msa.yml
+
+permissions:
+  contents: read
+
+jobs:
+  kinetics-msa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Admit exact PR subject
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+      - name: Compile kinetics measurement system
+        run: python3 -m py_compile scripts/measure_train/federation_convergence_kinetics_msa/*.py tests/measure_train/federation_convergence_kinetics_msa/*.py
+      - name: Execute permanent kinetics falsifier court
+        run: python3 -m unittest discover -s tests/measure_train/federation_convergence_kinetics_msa -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|boto3|azure\.|google\.cloud' scripts/measure_train/federation_convergence_kinetics_msa tests/measure_train/federation_convergence_kinetics_msa
