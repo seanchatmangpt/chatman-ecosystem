@@ -1,0 +1,25 @@
+name: MEASURE coherence exact-head court
+on:
+  pull_request:
+    paths:
+      - 'scripts/measure_train/coherence/**'
+      - 'tests/measure_train/coherence/**'
+      - '.github/workflows/measure-coherence-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  coherence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile
+        run: python3 -m py_compile scripts/measure_train/coherence/*.py tests/measure_train/coherence/*.py
+      - name: Falsifier and e2e court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/measure_train/coherence -p 'test_*.py' -v
+      - name: Refuse ambient actuation surface
+        run: |
+          ! grep -R -nE '(requests\.|urllib\.request|subprocess\.|os\.system|socket\.|boto3|azure\.|google\.cloud)' scripts/measure_train/coherence

@@ -1,0 +1,26 @@
+name: MEASURE Process Intelligence Closure
+on:
+  pull_request:
+    paths:
+      - 'scripts/measure_train/process_intelligence_closure/**'
+      - 'tests/measure_train/process_intelligence_closure/**'
+      - '.github/workflows/measure-process-intelligence-closure.yml'
+permissions:
+  contents: read
+jobs:
+  court:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Admit exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile process-intelligence closure MSA
+        run: python3 -m py_compile scripts/measure_train/process_intelligence_closure/*.py tests/measure_train/process_intelligence_closure/*.py
+      - name: Execute process-intelligence closure court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/measure_train/process_intelligence_closure -p 'test_*.py' -v
+      - name: Refuse ambient actuation surfaces
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|boto3|azure\.|google\.cloud' scripts/measure_train/process_intelligence_closure

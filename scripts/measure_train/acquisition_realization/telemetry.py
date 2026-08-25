@@ -1,0 +1,20 @@
+def project(subject, plan, outcome, realization, brier, efficiency, regret):
+    return {
+        "activity":"measure_acquisition_realization",
+        "repo":subject.repo,
+        "sha":subject.sha,
+        "plan_id":plan.plan_id,
+        "candidate_id":plan.candidate_id,
+        "strategy":plan.strategy,
+        "policy_generation":plan.policy_generation,
+        "evidence_id":outcome.evidence_id,
+        "outcome":outcome.outcome,
+        "predicted_gain":str(plan.predicted_gain),
+        "realized_gain":realization.realized_gain,
+        "gain_error":realization.gain_error,
+        "brier":str(brier) if brier is not None else None,
+        "gain_per_cost":efficiency.gain_per_cost,
+        "regret":regret,
+        "time":outcome.observed_at.isoformat(),
+        "actuation_performed":False,
+    }

@@ -1,0 +1,78 @@
+name: MEASURE 25-commit exact-head court
+on:
+  pull_request:
+    paths:
+      - 'scripts/measure_train/**'
+      - 'tests/measure_train/**'
+      - '.github/workflows/measure-25-commit-court.yml'
+permissions:
+  contents: read
+jobs:
+  court:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Admit exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile measurement subsystem
+        run: |
+          python3 -m py_compile scripts/measure_train/*.py tests/measure_train/*.py
+          python3 -m py_compile scripts/measure_train/requalification_epoch/*.py tests/measure_train/requalification_epoch/*.py
+          python3 -m py_compile scripts/measure_train/cut_epoch/*.py tests/measure_train/cut_epoch/*.py
+          python3 -m py_compile scripts/measure_train/strategy_binding/*.py tests/measure_train/strategy_binding/*.py
+          python3 -m py_compile scripts/measure_train/recovery_witness/*.py tests/measure_train/recovery_witness/*.py
+          python3 -m py_compile scripts/measure_train/witness_independence/*.py tests/measure_train/witness_independence/*.py
+          python3 -m py_compile scripts/measure_train/evidence_calibration/*.py tests/measure_train/evidence_calibration/*.py
+          python3 -m py_compile scripts/measure_train/calibration_regime/*.py tests/measure_train/calibration_regime/*.py
+          python3 -m py_compile scripts/measure_train/detector_msa/*.py tests/measure_train/detector_msa/*.py
+          python3 -m py_compile scripts/measure_train/evidence_voi/*.py tests/measure_train/evidence_voi/*.py
+          python3 -m py_compile scripts/measure_train/acquisition_realization/*.py tests/measure_train/acquisition_realization/*.py
+          python3 -m py_compile scripts/measure_train/policy_state_msa/*.py tests/measure_train/policy_state_msa/*.py
+          python3 -m py_compile scripts/measure_train/replica_quorum_msa/*.py tests/measure_train/replica_quorum_msa/*.py
+          python3 -m py_compile scripts/measure_train/quorum_fusion_msa/*.py tests/measure_train/quorum_fusion_msa/*.py
+          python3 -m py_compile scripts/measure_train/fusion_realization_msa/*.py tests/measure_train/fusion_realization_msa/*.py
+          python3 -m py_compile scripts/measure_train/sequential_policy_msa/*.py tests/measure_train/sequential_policy_msa/*.py
+          python3 -m py_compile scripts/measure_train/counterfactual_evaluator_msa/*.py tests/measure_train/counterfactual_evaluator_msa/*.py
+          python3 -m py_compile scripts/measure_train/robustness_bound_msa/*.py tests/measure_train/robustness_bound_msa/*.py
+      - name: Execute baseline falsifier court
+        run: python3 -m unittest discover -s tests/measure_train -p 'test_*.py' -v
+      - name: Execute requalification epoch falsifier court
+        run: python3 -m unittest discover -s tests/measure_train/requalification_epoch -p 'test_*.py' -v
+      - name: Execute cut epoch falsifier court
+        run: python3 -m unittest discover -s tests/measure_train/cut_epoch -p 'test_*.py' -v
+      - name: Execute strategy binding falsifier court
+        run: python3 -m unittest discover -s tests/measure_train/strategy_binding -p 'test_*.py' -v
+      - name: Execute recovery witness currentness court
+        run: python3 -m unittest discover -s tests/measure_train/recovery_witness -p 'test_*.py' -v
+      - name: Execute witness independence court
+        run: python3 -m unittest discover -s tests/measure_train/witness_independence -p 'test_*.py' -v
+      - name: Execute evidence calibration court
+        run: python3 -m unittest discover -s tests/measure_train/evidence_calibration -p 'test_*.py' -v
+      - name: Execute calibration regime currentness court
+        run: python3 -m unittest discover -s tests/measure_train/calibration_regime -p 'test_*.py' -v
+      - name: Execute detector MSA court
+        run: python3 -m unittest discover -s tests/measure_train/detector_msa -p 'test_*.py' -v
+      - name: Execute adaptive evidence acquisition court
+        run: python3 -m unittest discover -s tests/measure_train/evidence_voi -p 'test_*.py' -v
+      - name: Execute acquisition realization MSA court
+        run: python3 -m unittest discover -s tests/measure_train/acquisition_realization -p 'test_*.py' -v
+      - name: Execute transactional policy-state MSA court
+        run: python3 -m unittest discover -s tests/measure_train/policy_state_msa -p 'test_*.py' -v
+      - name: Execute replica quorum MSA court
+        run: python3 -m unittest discover -s tests/measure_train/replica_quorum_msa -p 'test_*.py' -v
+      - name: Execute quorum fusion MSA court
+        run: python3 -m unittest discover -s tests/measure_train/quorum_fusion_msa -p 'test_*.py' -v
+      - name: Execute fusion acquisition realization MSA court
+        run: python3 -m unittest discover -s tests/measure_train/fusion_realization_msa -p 'test_*.py' -v
+      - name: Execute sequential policy trajectory MSA court
+        run: python3 -m unittest discover -s tests/measure_train/sequential_policy_msa -p 'test_*.py' -v
+      - name: Execute counterfactual evaluator MSA court
+        run: python3 -m unittest discover -s tests/measure_train/counterfactual_evaluator_msa -p 'test_*.py' -v
+      - name: Execute robustness bound MSA court
+        run: python3 -m unittest discover -s tests/measure_train/robustness_bound_msa -p 'test_*.py' -v
+      - name: Refuse ambient actuation surfaces
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|boto3|azure\.|google\.cloud' scripts/measure_train

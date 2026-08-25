@@ -1,0 +1,33 @@
+name: MEASURE Transport Invariance Realization MSA
+
+on:
+  pull_request:
+    paths:
+      - scripts/measure_train/transport_invariance_realization_msa/**
+      - tests/measure_train/transport_invariance_realization_msa/**
+      - .github/workflows/measure-transport-invariance-realization.yml
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-court:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Admit exact PR subject
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+      - name: Compile measurement capsule
+        run: python3 -m py_compile scripts/measure_train/transport_invariance_realization_msa/*.py tests/measure_train/transport_invariance_realization_msa/*.py
+      - name: Run permanent realization court
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/measure_train/transport_invariance_realization_msa -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|boto3|azure\.|google\.cloud' scripts/measure_train/transport_invariance_realization_msa tests/measure_train/transport_invariance_realization_msa
