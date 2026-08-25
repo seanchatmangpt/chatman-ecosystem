@@ -1,0 +1,28 @@
+name: Process Trace Crown Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/process_trace_crown/**'
+      - 'tests/release_train/process_trace_crown/**'
+      - '.github/workflows/process-trace-crown-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile
+        run: python3 -m compileall -q scripts/release_train/process_trace_crown tests/release_train/process_trace_crown
+      - name: Permanent courts
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/process_trace_crown -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation imports
+        run: |
+          ! grep -REn '^\s*(import|from)\s+(requests|httpx|boto3|azure|google\.cloud|socket|subprocess)' scripts/release_train/process_trace_crown
