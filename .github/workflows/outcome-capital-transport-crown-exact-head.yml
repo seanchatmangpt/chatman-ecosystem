@@ -1,0 +1,26 @@
+name: Outcome Capital Transport Crown Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/outcome_capital_transport/**'
+      - 'tests/release_train/outcome_capital_transport/**'
+      - '.github/workflows/outcome-capital-transport-crown-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact PR head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile
+        run: python3 -m compileall -q scripts/release_train/outcome_capital_transport tests/release_train/outcome_capital_transport
+      - name: Permanent and Chicago courts
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/release_train/outcome_capital_transport -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: '! grep -REn "requests\\.(post|put|patch|delete)|subprocess\\.|os\\.system|boto3|azure\\.|google\\.cloud" scripts/release_train/outcome_capital_transport'
