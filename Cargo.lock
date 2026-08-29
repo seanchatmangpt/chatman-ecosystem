@@ -218,7 +218,7 @@ dependencies = [
 
 [[package]]
 name = "clap-noun-verb"
-version = "26.8.20"
+version = "26.9.1"
 dependencies = [
  "anyhow",
  "chrono",
@@ -227,6 +227,7 @@ dependencies = [
  "jmespath",
  "lazy_static",
  "linkme",
+ "log",
  "notify",
  "once_cell",
  "parking_lot",
@@ -242,7 +243,7 @@ dependencies = [
 
 [[package]]
 name = "clap-noun-verb-deploy"
-version = "26.8.20"
+version = "26.9.1"
 dependencies = [
  "clap-noun-verb",
  "serde",
@@ -252,7 +253,7 @@ dependencies = [
 
 [[package]]
 name = "clap-noun-verb-macros"
-version = "26.8.20"
+version = "26.9.1"
 dependencies = [
  "linkme",
  "proc-macro-error",
