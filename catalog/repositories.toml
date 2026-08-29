@@ -200,3 +200,10 @@ name = "service-daemon-rs"
 url = "https://github.com/loft-games/service-daemon-rs"
 role = "experimental-runtime"
 standing = "CANDIDATE"
+
+[[repository]]
+id = "repository:agent-lightning"
+name = "agent-lightning"
+url = "https://github.com/seanchatmangpt/agent-lightning"
+role = "external-agentic-rl-commercial-workload"
+standing = "OBSERVED"

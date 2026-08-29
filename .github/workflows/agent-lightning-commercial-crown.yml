@@ -1,0 +1,89 @@
+name: Agent Lightning Commercial Crown
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "catalog/repositories.toml"
+      - "crates/ecosystem-runtime/src/lib.rs"
+      - "crates/ecosystem-runtime/src/commerce.rs"
+      - "crates/ecosystem-runtime/src/agent_lightning_service.rs"
+      - "crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs"
+      - "crates/ecosystem-runtime/src/bin/agent-lightning-commercial.rs"
+      - "crates/ecosystem-runtime/tests/agent_lightning_commercial_integration.rs"
+      - ".github/workflows/agent-lightning-commercial-crown.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0
+  CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+
+jobs:
+  commercial-crown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          ref: ${{ env.CANDIDATE_SHA }}
+      - uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
+        with:
+          toolchain: 1.97.1
+          components: rustfmt,clippy
+      - name: Format owned Agent Lightning surfaces
+        run: |
+          rustfmt --edition 2024 --check \
+            crates/ecosystem-runtime/src/agent_lightning_service.rs \
+            crates/ecosystem-runtime/src/agent_lightning_commercial_plane.rs \
+            crates/ecosystem-runtime/tests/agent_lightning_commercial_integration.rs
+          rustfmt --edition 2024 --config skip_children=true --check \
+            crates/ecosystem-runtime/src/lib.rs \
+            crates/ecosystem-runtime/src/bin/agent-lightning-commercial.rs
+      - name: Compile exact commercial subject
+        run: cargo check --locked -p ecosystem-runtime --bin agent-lightning-commercial
+      - name: Clippy exact commercial subject
+        run: cargo clippy --locked -p ecosystem-runtime --bin agent-lightning-commercial -- -D warnings
+      - name: Execute Agent Lightning library tests
+        run: cargo test --locked -p ecosystem-runtime --lib agent_lightning
+      - name: Execute public commercial integration court
+        run: cargo test --locked -p ecosystem-runtime --test agent_lightning_commercial_integration
+      - name: Execute receipt and persistence replay
+        run: |
+          cargo run --locked --quiet -p ecosystem-runtime --bin agent-lightning-commercial -- verify-fixtures \
+            | tee agent-lightning-commercial-report.json
+      - name: Assert bounded standing
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path("agent-lightning-commercial-report.json").read_text())
+          assert report["implementation_standing"] == "ALIVE"
+          assert report["service_standing"] == "PARTIAL_ALIVE"
+          assert report["sha"] == "bd80905120affc576eb383f3b4bcc35cacc0e1d0"
+          assert set(report["providers_verified"]) == {"aws", "microsoft", "google"}
+          assert set(report["modes_verified"]) == {"hosted", "byoc", "private"}
+          assert report["service_receipts_verified"] >= 15
+          assert report["commerce_receipts_verified"] >= 27
+          assert report["control_receipts_verified"] >= 21
+          assert report["negative_fixtures_verified"] >= 39
+          assert report["durable_identity_reopens_verified"] == 3
+          assert len(report["blockers"]) == 4
+          print(json.dumps({
+              "validated": True,
+              "implementation_standing": report["implementation_standing"],
+              "service_standing": report["service_standing"],
+              "negative_fixtures": report["negative_fixtures_verified"],
+              "durable_identity_reopens": report["durable_identity_reopens_verified"],
+          }, sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: agent-lightning-commercial-${{ env.CANDIDATE_SHA }}
+          path: agent-lightning-commercial-report.json
+          if-no-files-found: error
