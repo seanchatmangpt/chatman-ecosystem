@@ -1,0 +1,28 @@
+name: Calibrated Recovery Quorum Exact Head
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Assert exact candidate
+        env:
+          CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
+        run: test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile exact subsystem
+        run: python3 -m compileall -q scripts/release_train/calibrated_recovery_quorum tests/release_train/calibrated_recovery_quorum
+      - name: Run calibrated quorum court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/calibrated_recovery_quorum -p 'test_*.py' -v
+      - name: Refuse ambient actuation imports
+        run: |
+          ! grep -R -nE '(^|[[:space:]])(import|from)[[:space:]]+(requests|httpx|boto3|azure|google\.cloud|socket|subprocess)' scripts/release_train/calibrated_recovery_quorum

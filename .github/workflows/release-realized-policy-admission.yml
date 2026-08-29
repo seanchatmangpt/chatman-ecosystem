@@ -1,0 +1,34 @@
+name: Realized Policy Admission Exact Head
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/realized_policy_admission/**'
+      - 'tests/release_train/realized_policy_admission/**'
+      - '.github/workflows/release-realized-policy-admission.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact subject
+        env:
+          CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
+        run: test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile exact subsystem
+        run: python3 -m compileall -q scripts/release_train/realized_policy_admission tests/release_train/realized_policy_admission
+      - name: Execute exact-head court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/realized_policy_admission -p 'test_*.py' -v
+      - name: Refuse ambient actuation imports
+        run: "! grep -REn 'requests\\.(post|put|patch|delete)|urllib\\.request\\.(Request|urlopen)|subprocess\\.|os\\.system|boto3|azure\\.|google\\.cloud|socket' scripts/release_train/realized_policy_admission"

@@ -1,0 +1,30 @@
+name: Current Frontier Promotion Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/current_frontier/**'
+      - 'tests/release_train/current_frontier/**'
+      - '.github/workflows/current-frontier-promotion-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  current-frontier-promotion:
+    runs-on: ubuntu-24.04
+    env:
+      CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Assert exact candidate identity
+        run: test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
+      - name: Compile current-frontier implementation
+        run: python3 -m compileall -q scripts/release_train/current_frontier tests/release_train/current_frontier
+      - name: Execute focused falsifier integration and replay courts
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/current_frontier -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: |
+          ! grep -R -nE 'subprocess\.(run|Popen)|os\.system|requests\.|urllib\.request|boto3|azure\.|google\.cloud' scripts/release_train/current_frontier

@@ -1,0 +1,25 @@
+name: Promotion Epoch Exact Head
+on:
+  pull_request:
+    paths:
+      - "scripts/release_train/promotion_epoch/**"
+      - "tests/release_train/promotion_epoch/**"
+      - ".github/workflows/promotion-epoch-exact-head.yml"
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Admit exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile
+        run: python3 -m compileall -q scripts/release_train/promotion_epoch tests/release_train/promotion_epoch
+      - name: Focused promotion epoch court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/promotion_epoch -p 'test_*.py' -v
+      - name: Static no-DO surface
+        run: |
+          ! grep -R -nE 'subprocess|requests|urllib|boto3|azure|google\.cloud|kubectl|terraform apply|aws |az |gcloud ' scripts/release_train/promotion_epoch

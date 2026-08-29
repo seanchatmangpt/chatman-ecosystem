@@ -1,0 +1,42 @@
+name: Replicated Policy Admission Exact Head
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/replicated_policy_admission/**'
+      - 'tests/release_train/replicated_policy_admission/**'
+      - '.github/workflows/replicated-policy-admission-exact-head.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Assert exact subject
+        env:
+          CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
+        run: test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile exact source
+        run: python3 -m compileall -q scripts/release_train/replicated_policy_admission tests/release_train/replicated_policy_admission
+      - name: Run replicated policy court
+        env:
+          PYTHONPATH: .:tests/release_train/replicated_policy_admission
+        run: python3 -m unittest discover -s tests/release_train/replicated_policy_admission -p 'test_*.py' -v
+      - name: Refuse ambient actuation surfaces
+        shell: bash
+        run: |
+          if grep -R -nE '^\s*(import|from)\s+(requests|httpx|boto3|azure|google\.cloud|socket|subprocess)(\.|\s|$)' scripts/release_train/replicated_policy_admission; then
+            echo 'ambient actuation surface detected' >&2
+            exit 1
+          fi

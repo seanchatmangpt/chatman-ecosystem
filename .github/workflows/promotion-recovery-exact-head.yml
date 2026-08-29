@@ -1,0 +1,37 @@
+name: Promotion Recovery Exact Head
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/promotion_recovery/**'
+      - 'tests/release_train/promotion_recovery/**'
+      - '.github/workflows/promotion-recovery-exact-head.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+      - name: Assert exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile exact recovery surface
+        run: python3 -m compileall -q scripts/release_train/promotion_recovery tests/release_train/promotion_recovery
+      - name: Execute recovery falsifier and e2e court
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/release_train/promotion_recovery -p 'test_*.py' -v
+      - name: Refuse ambient actuation imports
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -REn '(^| )(subprocess|socket|requests|urllib|boto3|azure|google\.cloud)( |\.|$)' scripts/release_train/promotion_recovery

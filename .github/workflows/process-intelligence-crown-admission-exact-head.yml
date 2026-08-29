@@ -1,0 +1,34 @@
+name: Process Intelligence Crown Admission Exact Head
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/process_intelligence_crown_admission/**'
+      - 'tests/release_train/process_intelligence_crown_admission/**'
+      - '.github/workflows/process-intelligence-crown-admission-exact-head.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-court:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+      - name: Assert exact identity
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Compile process-intelligence crown admission
+        run: python3 -m compileall -q scripts/release_train/process_intelligence_crown_admission tests/release_train/process_intelligence_crown_admission
+      - name: Execute permanent semantic and Chicago courts
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest discover -s tests/release_train/process_intelligence_crown_admission -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation surfaces
+        shell: bash
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|httpx|boto3|azure\.|google\.cloud|subprocess\.|os\.system|socket\.' scripts/release_train/process_intelligence_crown_admission

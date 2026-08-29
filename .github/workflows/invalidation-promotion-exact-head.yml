@@ -1,0 +1,29 @@
+name: Invalidation Promotion Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/invalidation_promotion/**'
+      - 'tests/release_train/invalidation_promotion/**'
+      - '.github/workflows/invalidation-promotion-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Assert exact subject
+        env:
+          EXPECTED: ${{ github.event.pull_request.head.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED"
+      - name: Compile exact authored surface
+        run: python3 -m compileall -q scripts/release_train/invalidation_promotion tests/release_train/invalidation_promotion
+      - name: Execute invalidation promotion falsifier court
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/invalidation_promotion -p 'test_*.py' -v
+      - name: Refuse ambient actuation imports
+        run: |
+          ! grep -R -nE 'requests\.|urllib\.request|boto3|azure\.|google\.cloud|subprocess\.(run|Popen|call)' scripts/release_train/invalidation_promotion

@@ -1,0 +1,29 @@
+name: Counterfactual Robustness Admission Exact Head
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/counterfactual_robustness_admission/**'
+      - 'tests/release_train/counterfactual_robustness_admission/**'
+      - '.github/workflows/counterfactual-robustness-admission-exact-head.yml'
+permissions:
+  contents: read
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+      - name: Assert exact PR head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile bounded subsystem
+        run: python3 -m compileall -q scripts/release_train/counterfactual_robustness_admission tests/release_train/counterfactual_robustness_admission
+      - name: Execute permanent robustness courts
+        run: PYTHONPATH=. python3 -m unittest discover -s tests/release_train/counterfactual_robustness_admission -p 'test_*.py' -v
+      - name: Refuse ambient consequential actuation
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|httpx|boto3|azure\.|google\.cloud|socket|subprocess|os\.system' scripts/release_train/counterfactual_robustness_admission
