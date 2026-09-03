@@ -1,0 +1,39 @@
+[release]
+name = "Chatman Ecosystem"
+version = "26.8.23"
+target_date = "2026-08-23"
+root_repository = "seanchatmangpt/chatman-ecosystem"
+base_sha = "dc8f2370749925cc400a7a57f1dd4545cae72974"
+standing = "PARTIAL_ALIVE"
+authority = ["OBSERVE", "SELECT", "CONSTRUCT", "VERIFY"]
+consequential_do = "BRCE_ONLY"
+
+[[components]]
+id = "control-plane"
+repository = "seanchatmangpt/chatman-ecosystem"
+ref = "main"
+sha = "dc8f2370749925cc400a7a57f1dd4545cae72974"
+role = "constitutional-control-plane"
+standing = "ALIVE"
+required = true
+depends_on = []
+
+[[components]]
+id = "replicated-evidence-state"
+repository = "seanchatmangpt/chatman-ecosystem"
+ref = "scheduled/dmedi-develop-replicated-evidence-state-20260822-1732"
+sha = "7ce703f477eeb135f675156d71644a33ac532c1d"
+role = "replicated-evidence-currentness"
+standing = "ALIVE"
+required = true
+depends_on = ["control-plane"]
+
+[[components]]
+id = "decision-realization-candidate"
+repository = "seanchatmangpt/chatman-ecosystem"
+ref = "scheduled/dmedi-develop-decision-realization-correspondence-20260823-1629"
+sha = "ca6beca88c47e8b1bc0498611f19f6e6464acb41"
+role = "process-intelligence-candidate"
+standing = "PARTIAL_ALIVE"
+required = false
+depends_on = ["replicated-evidence-state"]
