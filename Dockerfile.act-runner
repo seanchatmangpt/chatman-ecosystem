@@ -1,0 +1,52 @@
+# Ecosystem act runner image — extends catthehacker's "full" image with a
+# system-wide Node.js install, for local act parity on ggen-ecosystem and
+# gymact.
+#
+# Why this exists: running these two repos' CI locally via `act` (see
+# ggen-ecosystem/.actrc, ggen-ecosystem/Justfile, gymact/.actrc,
+# gymact/justfile) hits a real, documented act limitation (nektos/act#107-
+# class: act's own per-architecture Node toolcache mount doesn't resolve
+# correctly under QEMU-emulated amd64, which CodeQL's CLI requires since it
+# has no native linux/arm64 build — observed failure: "node: executable file
+# not found in $PATH" when running github/codeql-action's init step under
+# act). A system-wide Node install, independent of act's own toolcache
+# mount, fixes this directly.
+#
+# Why this does NOT also bake in uv, Rust nightly, kind, or terraform
+# (an earlier version of this file did): every real workflow step in both
+# repos already installs these at runtime via proper GitHub Actions
+# (astral-sh/setup-uv, dtolnay/rust-toolchain, hashicorp/setup-terraform,
+# helm/kind-action, actions/setup-python) that re-resolve them into their
+# own expected toolcache layout regardless of what's pre-baked here — baking
+# them in adds build time and image size with no real speed benefit, since
+# those actions don't recognize a uv-managed or rustup-managed install as
+# "already present" in their own hostedtoolcache manifest format. Node is
+# the one exception: CodeQL's init step invokes `node` directly assuming
+# act's own toolcache mount put it on PATH, which is exactly the mount that
+# breaks under emulation — a system-wide install sidesteps that mount
+# entirely.
+#
+# Why this deliberately does NOT bake in an actual clone of ggen-ecosystem
+# or gymact: a baked-in repo clone would be stale the moment either repo's
+# HEAD moves — every real CI run's entire point is to exercise the exact
+# current commit via `actions/checkout`, and act already does this correctly
+# (see each repo's justfile `--bind` flag) by bind-mounting the live working
+# directory into the job container.
+FROM catthehacker/ubuntu:full-24.04
+
+ARG NODE_MAJOR=22
+
+USER root
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_MAJOR}.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/* \
+    && node --version
+
+# Match the base image's own convention (GitHub-hosted-runner-style non-root
+# `runner` user) rather than leaving the image defaulting to root.
+USER runner
+
+LABEL org.opencontainers.image.title="chatman-ecosystem act runner" \
+      org.opencontainers.image.description="catthehacker/ubuntu:full-24.04 + system Node.js for local act parity on ggen-ecosystem and gymact (fixes the CodeQL Node-toolcache/arch-mismatch failure under act)"
