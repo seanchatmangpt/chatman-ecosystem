@@ -45,20 +45,24 @@ Every `projects/*` and `corpus/*` checkout is an ordinary independent Git reposi
 
 ## DfCM group topology
 
-The manifest preserves more possibilities than it materializes by default. `portfolio`, `external`, `rejected`, and `unsupported` are disabled through West's group filter. They remain represented and can be selected explicitly.
+The manifest preserves more possibilities than it materializes by default. West group membership is **OR-based**: a project with multiple groups is active when any one of those groups remains enabled. Therefore an inactive project is sealed only when every group assigned to it is disabled by the default group filter.
+
+The committed filter disables every group occurring on the reversible portfolio/corpus frontier while the 16 admitted release projects remain active through `core` and/or `release-v26-9-1`. This preserves semantic multi-group membership without accidentally hydrating all 322 represented projects.
 
 Examples:
 
 ```bash
 west list
 west list --all
-west config manifest.group-filter +portfolio,-external,-rejected,-unsupported
+west config manifest.group-filter +portfolio
 west update
-west config manifest.group-filter +portfolio,+external,-rejected,-unsupported
+west config manifest.group-filter +external
 west update
 ```
 
-The same project can belong to multiple orthogonal groups such as `core`, `manufacture`, `gym`, `process`, `formal`, or `release-v26-9-1`; directory placement is not the ontology.
+Enabling any group is an explicit projection choice. For example, `+portfolio` activates repositories carrying the portfolio group even if their other groups remain disabled. The same project can belong to multiple orthogonal groups such as `core`, `manufacture`, `gym`, `process`, `formal`, or `release-v26-9-1`; directory placement is not the ontology.
+
+The complete default-disabled set is canonical in `catalog/west.toml` and is checked against `west.yml` by the contract suite. A taxonomy change that introduces a new enabled group on a non-release project must therefore fail verification rather than silently expanding the default workspace.
 
 ## West feature surface
 
@@ -80,7 +84,7 @@ Repository-local `self` imports are deliberately used to preserve a larger rever
 
 ## Public and private portfolio boundary
 
-The public GitHub inventory observed on 2026-09-06 contains 308 public repositories. West preserves that public surface without hydrating it by default. Repositories not already represented as canonical root projects are imported as `portfolio-*` projects under `portfolio/<repo>`.
+The public GitHub inventory observed on 2026-09-06 contains 308 public repositories. West preserves that public surface without hydrating it by default. Repositories not already represented as canonical root projects are imported under the `portfolio/` path prefix.
 
 Private repository discovery is deliberately **not projected into this public repository**. Private composition belongs in a local/private extension manifest and must be admitted under an authority boundary that can publish those names. Observation of a private repository is not authority to disclose it.
 
@@ -148,7 +152,7 @@ Install West and run:
 python3 scripts/verify_west_workspace.py
 ```
 
-The verifier checks:
+The verifier and contract suite check:
 
 - every release component has a corresponding West project;
 - each embedded release SHA agrees with the admitted release manifest;
@@ -157,6 +161,7 @@ The verifier checks:
 - DfCM/West feature policy remains explicit;
 - import, submodule, shallow-clone, and `repo-path` features are actually exercised;
 - all 308 public repositories observed on 2026-09-06 remain represented either as `self`, canonical projects, or inactive portfolio projects;
-- the default active frontier remains release-bounded rather than expanding merely because more possibilities are known.
+- the policy disabled-group set exactly matches the manifest's default negative group filter;
+- West's OR-based activation rule yields exactly the 16 admitted release projects as the default active frontier.
 
 This proves the workspace correspondence boundary only. It does not promote ecosystem Crown standing.
