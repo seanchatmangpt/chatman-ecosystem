@@ -1,0 +1,81 @@
+name: west-workspace
+
+on:
+  pull_request:
+    paths:
+      - west.yml
+      - west/**
+      - west-commands.yml
+      - catalog/west.toml
+      - scripts/west/**
+      - scripts/verify_west_workspace.py
+      - docs/WEST_WORKSPACE.md
+      - .github/workflows/west-workspace.yml
+      - .gitmodules
+      - release/**
+      - catalog/repositories.toml
+  push:
+    branches: [main]
+    paths:
+      - west.yml
+      - west/**
+      - west-commands.yml
+      - catalog/west.toml
+      - scripts/west/**
+      - scripts/verify_west_workspace.py
+      - docs/WEST_WORKSPACE.md
+      - .github/workflows/west-workspace.yml
+      - .gitmodules
+      - release/**
+      - catalog/repositories.toml
+
+permissions:
+  contents: read
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install West
+        run: python -m pip install 'west>=1.4,<2'
+      - name: Verify Chateco-West correspondence
+        run: python3 scripts/verify_west_workspace.py --json
+      - name: Initialize local-manifest workspace
+        shell: bash
+        run: |
+          cd "$GITHUB_WORKSPACE/.."
+          west init -l "$GITHUB_WORKSPACE"
+          west manifest --resolve -o "$GITHUB_WORKSPACE/.artifacts-west-resolved.yml"
+          west list --all -f '{name}|{path}|{revision}|{groups}|{description}'
+      - name: Smoke extension SELECT path
+        shell: bash
+        run: |
+          cd "$GITHUB_WORKSPACE/.."
+          west dfcm-plan --all --json > "$GITHUB_WORKSPACE/.artifacts-west-plan.json"
+          python -m json.tool "$GITHUB_WORKSPACE/.artifacts-west-plan.json" >/dev/null
+      - name: Materialize one real child repository
+        shell: bash
+        run: |
+          cd "$GITHUB_WORKSPACE/.."
+          west update autofde
+          git -C projects/autofde rev-parse HEAD
+          west status autofde
+          west compare autofde
+
+  repository-qualification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install repository test dependencies
+        run: python -m pip install PyYAML
+      - name: Verify admitted release refs
+        run: python3 scripts/verify_release.py --check-refs
+      - name: Run repository unit suite
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v

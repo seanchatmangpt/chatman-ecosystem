@@ -1,0 +1,446 @@
+manifest:
+  version: '1.2'
+  remotes:
+  - name: chatman
+    url-base: https://github.com/seanchatmangpt
+  - name: github
+    url-base: https://github.com
+  defaults:
+    remote: chatman
+    revision: HEAD
+  group-filter:
+  - -portfolio
+  - -external
+  - -rejected
+  - -unsupported
+  projects:
+  - name: autofde
+    path: projects/autofde
+    description: Persistent runtime and brokered consequence boundary
+    groups:
+    - owned
+    - core
+    - product
+    - release-v26-9-1
+    userdata:
+      chateco:
+        repository-id: repository:autofde
+        role: persistent-runtime-and-brce-boundary
+        standing: OBSERVED
+      release:
+        role: product
+        sha: c3f8abc2e83388b5bdb6cc1bbb8cd19a987c19c7
+        standing: ALIVE
+        required: true
+        depends-on:
+        - ggen
+        - gymact
+        - mfact
+        - open-ontologies
+        - star-toml
+  - name: autofde-lab
+    path: projects/autofde-lab
+    description: Planning, reasoning, falsification, and capability admission
+    groups:
+    - owned
+    - core
+    - explore
+    - release-v26-9-1
+    userdata:
+      chateco:
+        repository-id: repository:autofde-lab
+        role: planning-reasoning-falsification-capability-admission
+        standing: OBSERVED
+      release:
+        role: explore
+        sha: 87d719f441ded3af123a73b95825d5f2847f9c66
+        standing: BUILD_BROKEN
+        required: true
+        depends-on:
+        - bcinr
+        - gymact
+  - name: bcinr
+    path: projects/bcinr
+    description: Bounded CMCA kernel
+    groups:
+    - owned
+    - core
+    - formal
+    - release-v26-9-1
+    userdata:
+      chateco:
+        repository-id: repository:bcinr
+        role: bounded-cmca
+        standing: OBSERVED
+      release:
+        role: cmca-kernel
+        sha: d6fefefdb95df5dbbb520afe7b5a4df53aa6e27f
+        standing: UNKNOWN
+        required: true
+        depends-on: []
+  - name: ggen
+    path: projects/ggen
+    description: Deterministic manufacturer
+    groups:
+    - owned
+    - core
+    - manufacture
+    - release-v26-9-1
+    userdata:
+      chateco:
+        repository-id: repository:ggen
+        role: deterministic-manufacturer
+        standing: OBSERVED
+      release:
+        role: manufacture
+        sha: 162e466d8f07d0a75a468b4441b4bc8b1aad369b
+        standing: UNKNOWN
+        required: true
+        depends-on: []
+  - name: ggen-marketplace
+    path: projects/ggen-marketplace
+    description: Executable knowledge distribution
+    groups:
+    - owned
+    - core
+    - marketplace
+    - release-v26-9-1
+    userdata:
+      chateco:
+        repository-id: repository:ggen-marketplace
+        role: executable-knowledge-distribution
+        standing: OBSERVED
+      release:
+        role: pack-marketplace
+        sha: ceb2b69ad1dc1bf0906a1979a9e18c53245181f3
+        standing: ALIVE
+        required: true
+        depends-on:
+        - ggen
+  - name: gymact
+    path: projects/gymact
+    description: Executable world runtime and actuation surface
+    groups:
+    - owned
+    - core
+    - execution
+    - release-v26-9-1
+    userdata:
+      chateco:
+        repository-id: repository:gymact
+        role: executable-world-runtime
+        standing: OBSERVED
+      release:
+        role: actuation
+        sha: cf9a36fcc5b0738269809b83e3ffcad7dae0a5c4
+        standing: BLOCKED
+        required: true
+        depends-on:
+        - ggen
+        - open-ontologies
+  - name: affidavit
+    path: projects/affidavit
+    description: Evidence, standing, and attestation
+    groups:
+    - owned
+    - core
+    - evidence
+    - release-v26-9-1
+    userdata:
+      chateco:
+        repository-id: repository:affidavit
+        role: evidence-standing-attestation
+        standing: OBSERVED
+      release:
+        role: provenance
+        sha: 5dc78f113e60ba95a4b4594a6da3511334e86024
+        standing: ALIVE
+        required: true
+        depends-on: []
+  - name: mfw
+    path: projects/mfw
+    description: Manufacturing work orchestration
+    groups:
+    - owned
+    - core
+    - orchestration
+    - release-v26-9-1
+    userdata:
+      chateco:
+        repository-id: repository:mfw
+        role: manufacturing-work-orchestration
+        standing: OBSERVED
+      release:
+        role: orchestration
+        sha: 2ecde02f9d7eaea50cfb4ea7876340c6463ac3a1
+        standing: BLOCKED
+        required: true
+        depends-on:
+        - bcinr
+  - name: open-ontologies
+    path: projects/open-ontologies
+    description: Public ontology substrate
+    groups:
+    - owned
+    - core
+    - ontology
+    - release-v26-9-1
+    userdata:
+      chateco:
+        source: release/v26.9.1/manifest.toml
+        standing: UNKNOWN
+      release:
+        role: public-ontology
+        sha: 16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99
+        standing: UNKNOWN
+        required: true
+        depends-on: []
+  - name: process-intelligence
+    path: projects/process-intelligence
+    description: Process intelligence research surface
+    groups:
+    - owned
+    - core
+    - process-intelligence
+    - release-v26-9-1
+    userdata:
+      chateco:
+        source: release/v26.9.1/manifest.toml
+        standing: UNKNOWN
+      release:
+        role: research
+        sha: 4492a9f92cd85d518b76a9cbd9c74418cf3ad44a
+        standing: UNKNOWN
+        required: true
+        depends-on: []
+  - name: wasm4pm-compat
+    path: projects/wasm4pm-compat
+    description: Process type-law compatibility surface
+    groups:
+    - owned
+    - core
+    - process
+    - release-v26-9-1
+    userdata:
+      chateco:
+        source: release/v26.9.1/manifest.toml
+        standing: UNKNOWN
+      release:
+        role: process-type-law
+        sha: 577e2d1d8bdfe27d96f61c63f3ea120994e8bfda
+        standing: UNKNOWN
+        required: true
+        depends-on: []
+  - name: star-toml
+    path: projects/star-toml
+    description: Configuration admission
+    groups:
+    - owned
+    - core
+    - config
+    - release-v26-9-1
+    userdata:
+      chateco:
+        source: release/v26.9.1/manifest.toml
+        standing: BUILD_BROKEN
+      release:
+        role: config-admission
+        sha: 8395515cf8e68bfdc9edff49fb358c4f1da7c795
+        standing: BUILD_BROKEN
+        required: true
+        depends-on:
+        - wasm4pm-compat
+  - name: mfact
+    path: projects/mfact
+    description: Formal proof and certification
+    groups:
+    - owned
+    - core
+    - formal
+    - release-v26-9-1
+    userdata:
+      chateco:
+        source: release/v26.9.1/manifest.toml
+        standing: UNKNOWN
+      release:
+        role: formal-proof
+        sha: 308384002a15b9946acbcd6f560c5819723d79dc
+        standing: UNKNOWN
+        required: true
+        depends-on:
+        - ggen
+  - name: wasm4pm
+    path: projects/wasm4pm
+    description: Process execution runtime
+    groups:
+    - owned
+    - core
+    - process
+    - release-v26-9-1
+    userdata:
+      chateco:
+        source: release/v26.9.1/manifest.toml
+        standing: UNKNOWN
+      release:
+        role: process-execution
+        sha: b7ebccb53b1249d45d2472f7754c997982b2f1b7
+        standing: UNKNOWN
+        required: true
+        depends-on:
+        - wasm4pm-compat
+  - name: praxis
+    path: projects/praxis
+    description: Fleet conformance and pattern authority
+    groups:
+    - owned
+    - core
+    - conformance
+    - release-v26-9-1
+    userdata:
+      chateco:
+        source: release/v26.9.1/manifest.toml
+        standing: UNKNOWN
+      release:
+        role: fleet-conformance
+        sha: bc6b842e0b86e718b098ff3abdc47ef2ad83ee4b
+        standing: UNKNOWN
+        required: true
+        depends-on:
+        - ggen
+  - name: fdegym
+    path: projects/fdegym
+    description: Capstone FDE gym
+    groups:
+    - owned
+    - core
+    - gym
+    - release-v26-9-1
+    userdata:
+      chateco:
+        source: release/v26.9.1/manifest.toml
+        standing: UNKNOWN
+      release:
+        role: capstone
+        sha: 2d7c5acb3cbb8df1608cf9b81be53a74e39a1946
+        standing: UNKNOWN
+        required: true
+        depends-on:
+        - affidavit
+        - autofde
+        - autofde-lab
+        - gymact
+        - mfact
+        - mfw
+        - wasm4pm
+  - name: ggen-legacy
+    path: projects/ggen-legacy
+    description: Bounded reconstitution
+    groups:
+    - owned
+    - portfolio
+    - manufacture
+    userdata:
+      chateco:
+        repository-id: repository:ggen-legacy
+        role: bounded-reconstitution
+        standing: OBSERVED
+  - name: dsrust
+    path: projects/dsrust
+    description: Optional bounded compiler oracle
+    groups:
+    - owned
+    - portfolio
+    - compiler
+    userdata:
+      chateco:
+        repository-id: repository:dsrust
+        role: optional-bounded-compiler-oracle
+        standing: OBSERVED
+  - name: rrgym
+    path: projects/rrgym
+    description: Bounded domain gym
+    groups:
+    - owned
+    - portfolio
+    - gym
+    userdata:
+      chateco:
+        repository-id: repository:rrgym
+        role: bounded-domain-gym
+        standing: OBSERVED
+  - name: lifegym
+    path: projects/lifegym
+    description: Bounded life-domain gym
+    groups:
+    - owned
+    - portfolio
+    - gym
+    userdata:
+      chateco:
+        repository-id: repository:lifegym
+        role: bounded-domain-gym
+        standing: OBSERVED
+  - name: ww3gym
+    path: projects/ww3gym
+    description: Simulation and evaluation only gym
+    groups:
+    - owned
+    - portfolio
+    - gym
+    userdata:
+      chateco:
+        repository-id: repository:ww3gym
+        role: simulation-evaluation-only-gym
+        standing: OBSERVED
+  - name: biblegym
+    path: projects/biblegym
+    description: Bounded domain gym
+    groups:
+    - owned
+    - portfolio
+    - gym
+    userdata:
+      chateco:
+        repository-id: repository:biblegym
+        role: bounded-domain-gym
+        standing: OBSERVED
+  - name: agent-lightning
+    path: projects/agent-lightning
+    description: External agentic RL commercial workload fork
+    groups:
+    - owned
+    - portfolio
+    - workload
+    userdata:
+      chateco:
+        repository-id: repository:agent-lightning
+        role: external-agentic-rl-commercial-workload
+        standing: OBSERVED
+  - name: ggen-ecosystem
+    path: projects/ggen-ecosystem
+    description: GGen ecosystem composition root with intrinsic submodules
+    submodules: true
+    groups:
+    - owned
+    - portfolio
+    - composition
+    userdata:
+      chateco:
+        source: catalog/west.toml
+        role: nested-composition-root
+        standing: UNKNOWN
+        submodule-policy: recursive
+  self:
+    path: chatman-ecosystem
+    west-commands: west-commands.yml
+    userdata:
+      chateco:
+        role: constitutional-control-plane
+        authority: no-ambient-do
+        calculus: parse-route-admit-select-construct-verify-brce-receipt-replay-standing
+    import:
+    - file: west/20-public-portfolio.yml
+      path-prefix: portfolio
+    - file: west/21-public-portfolio.yml
+      path-prefix: portfolio
+    - west/30-external-corpus.yml
