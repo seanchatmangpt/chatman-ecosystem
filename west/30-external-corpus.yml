@@ -1,0 +1,231 @@
+manifest:
+  version: '1.2'
+  projects:
+  - name: better-fullstack
+    remote: github-corpus
+    repo-path: Marve10s/Better-Fullstack
+    path: corpus/Marve10s/Better-Fullstack
+    revision: HEAD
+    clone-depth: 1
+    description: Gall checkpoint corpus
+    groups:
+    - external
+    - candidate
+    - corpus
+    userdata:
+      chateco:
+        repository-id: repository:better-fullstack
+        role: gall-checkpoint
+        standing: CANDIDATE
+  - name: ai-agent-boilerplate
+    remote: github-corpus
+    repo-path: christopheduc-me/ai-agent-boilerplate
+    path: corpus/christopheduc-me/ai-agent-boilerplate
+    revision: HEAD
+    clone-depth: 1
+    description: Behavioral fixture corpus
+    groups:
+    - external
+    - candidate
+    - corpus
+    userdata:
+      chateco:
+        repository-id: repository:ai-agent-boilerplate
+        role: behavioral-fixture
+        standing: CANDIDATE
+  - name: systemprompt-template
+    remote: github-corpus
+    repo-path: systempromptio/systemprompt-template
+    path: corpus/systempromptio/systemprompt-template
+    revision: HEAD
+    clone-depth: 1
+    description: Governance benchmark corpus
+    groups:
+    - external
+    - candidate
+    - corpus
+    userdata:
+      chateco:
+        repository-id: repository:systemprompt-template
+        role: governance-benchmark
+        standing: CANDIDATE
+  - name: entity-derive
+    remote: github-corpus
+    repo-path: RAprogramm/entity-derive
+    path: corpus/RAprogramm/entity-derive
+    revision: HEAD
+    clone-depth: 1
+    description: Generated adapter experiment corpus
+    groups:
+    - external
+    - candidate
+    - corpus
+    userdata:
+      chateco:
+        repository-id: repository:entity-derive
+        role: generated-adapter-experiment
+        standing: CANDIDATE
+  - name: agent-scaffold
+    remote: github-corpus
+    repo-path: nothingnesses/agent-scaffold
+    path: corpus/nothingnesses/agent-scaffold
+    revision: HEAD
+    clone-depth: 1
+    description: Doctrine projection tool corpus
+    groups:
+    - external
+    - candidate
+    - corpus
+    userdata:
+      chateco:
+        repository-id: repository:agent-scaffold
+        role: doctrine-projection-tool
+        standing: CANDIDATE
+  - name: rust-react-microservices-boilerplate
+    remote: github-corpus
+    repo-path: mathewaloisio97/rust-react-microservices-boilerplate
+    path: corpus/mathewaloisio97/rust-react-microservices-boilerplate
+    revision: HEAD
+    clone-depth: 1
+    description: Architecture pattern donor
+    groups:
+    - external
+    - corpus
+    - pattern
+    userdata:
+      chateco:
+        repository-id: repository:rust-react-microservices
+        role: pattern-donor
+        standing: OBSERVED
+  - name: mcpkit
+    remote: github-corpus
+    repo-path: praxiomlabs/mcpkit
+    path: corpus/praxiomlabs/mcpkit
+    revision: HEAD
+    clone-depth: 1
+    description: MCP conformance checkpoint
+    groups:
+    - external
+    - candidate
+    - corpus
+    userdata:
+      chateco:
+        repository-id: repository:mcpkit
+        role: mcp-conformance-checkpoint
+        standing: CANDIDATE
+  - name: spacetimedsl
+    remote: github-corpus
+    repo-path: tamaro-skaljic/SpacetimeDSL
+    path: corpus/tamaro-skaljic/SpacetimeDSL
+    revision: HEAD
+    clone-depth: 1
+    description: Generated-law pattern corpus
+    groups:
+    - external
+    - corpus
+    - pattern
+    userdata:
+      chateco:
+        repository-id: repository:spacetimedsl
+        role: generated-law-pattern-corpus
+        standing: OBSERVED
+  - name: hyperlane-broadcast
+    remote: github-corpus
+    repo-path: hyperlane-dev/hyperlane-broadcast
+    path: corpus/hyperlane-dev/hyperlane-broadcast
+    revision: HEAD
+    clone-depth: 1
+    description: Rejected ephemeral broadcast wrapper
+    groups:
+    - external
+    - rejected
+    - corpus
+    userdata:
+      chateco:
+        repository-id: repository:hyperlane-broadcast
+        role: rejected-ephemeral-broadcast-wrapper
+        standing: REJECTED
+  - name: uniplate
+    remote: github-corpus
+    repo-path: conjure-cp/uniplate
+    path: corpus/conjure-cp/uniplate
+    revision: HEAD
+    clone-depth: 1
+    description: Bounded tree rewrite experiment
+    groups:
+    - external
+    - candidate
+    - corpus
+    userdata:
+      chateco:
+        repository-id: repository:uniplate
+        role: bounded-tree-rewrite-experiment
+        standing: CANDIDATE
+  - name: goat-billing-proxy
+    remote: github-corpus
+    repo-path: JerryIdoko/GOAT-Network-Micro-Billing-Proxy
+    path: corpus/JerryIdoko/GOAT-Network-Micro-Billing-Proxy
+    revision: HEAD
+    clone-depth: 1
+    description: Rejected code fixture only
+    groups:
+    - external
+    - rejected
+    - corpus
+    userdata:
+      chateco:
+        repository-id: repository:goat-billing-proxy
+        role: rejected-code-fixture-only
+        standing: REJECTED
+  - name: rust-enterprise-boilerplate
+    remote: github-corpus
+    repo-path: IltonSeixas/rust-enterprise-boilerplate
+    path: corpus/IltonSeixas/rust-enterprise-boilerplate
+    revision: HEAD
+    clone-depth: 1
+    description: Enterprise architecture pattern corpus
+    groups:
+    - external
+    - candidate
+    - corpus
+    - pattern
+    userdata:
+      chateco:
+        repository-id: repository:rust-enterprise-boilerplate
+        role: architecture-pattern
+        standing: CANDIDATE
+  - name: vk-bot-api
+    remote: github-corpus
+    repo-path: bitv1be/vk-bot-api
+    path: corpus/bitv1be/vk-bot-api
+    revision: HEAD
+    clone-depth: 1
+    description: Deferred connector corpus
+    groups:
+    - external
+    - unsupported
+    - corpus
+    userdata:
+      chateco:
+        repository-id: repository:vk-bot-api
+        role: deferred-connector
+        standing: UNSUPPORTED
+  - name: service-daemon-rs
+    remote: github-corpus
+    repo-path: loft-games/service-daemon-rs
+    path: corpus/loft-games/service-daemon-rs
+    revision: HEAD
+    clone-depth: 1
+    description: Experimental runtime corpus
+    groups:
+    - external
+    - candidate
+    - corpus
+    userdata:
+      chateco:
+        repository-id: repository:service-daemon-rs
+        role: experimental-runtime
+        standing: CANDIDATE
+  remotes:
+  - name: github-corpus
+    url-base: https://github.com
