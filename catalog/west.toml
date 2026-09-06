@@ -15,7 +15,7 @@ external_actuation_authority = "none"
 
 [dfcm]
 objective = "maximum-lawful-reversible-feature-coverage"
-default_disabled_groups = ["portfolio", "external", "rejected", "unsupported"]
+default_disabled_groups = ["portfolio", "external", "rejected", "unsupported", "owned", "observed-github", "empty", "manufacture", "compiler", "gym", "workload", "composition", "candidate", "corpus", "pattern"]
 preserve_inactive_projects = true
 failed_edge_is_graph_failure = false
 
