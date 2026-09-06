@@ -34,6 +34,27 @@ class WestContractTests(unittest.TestCase):
         release_projects = [p for p in self.projects if "release-v26-9-1" in p.get("groups", [])]
         self.assertEqual(len(release_projects), 16)
 
+    def test_default_group_filter_matches_policy_and_seals_non_release(self) -> None:
+        filters = self.root["manifest"]["group-filter"]
+        disabled = {item[1:] for item in filters if item.startswith("-")}
+        self.assertEqual(disabled, set(self.policy["dfcm"]["default_disabled_groups"]))
+
+        release_projects = {
+            project["name"]
+            for project in self.projects
+            if "release-v26-9-1" in project.get("groups", [])
+        }
+        active_projects = set()
+        for project in self.projects:
+            groups = set(project.get("groups", []))
+            # West groups are OR-based: a project is active when any group is enabled.
+            is_active = not groups or any(group not in disabled for group in groups)
+            if is_active:
+                active_projects.add(project["name"])
+
+        self.assertEqual(len(active_projects), 16)
+        self.assertEqual(active_projects, release_projects)
+
     def test_feature_surface_is_exercised_not_just_declared(self) -> None:
         self.assertTrue(any(project.get("submodules") is True for project in self.projects))
         self.assertTrue(any(project.get("clone-depth") == 1 for project in self.projects))
