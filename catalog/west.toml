@@ -1,0 +1,57 @@
+[workspace]
+name = "chatman-ecosystem"
+manager = "zephyr-west"
+manifest = "west.yml"
+schema = "1.2"
+mode = "federated-virtual-monorepo"
+
+[boundaries]
+manifest_repository = "seanchatmangpt/chatman-ecosystem"
+repository_identity = "preserved"
+workspace_revision = "floating-head"
+release_revision = "exact-sha"
+release_manifest = "release/v26.9.1/manifest.toml"
+external_actuation_authority = "none"
+
+[dfcm]
+objective = "maximum-lawful-reversible-feature-coverage"
+default_disabled_groups = ["portfolio", "external", "rejected", "unsupported", "owned", "observed-github", "empty", "manufacture", "compiler", "gym", "workload", "composition", "candidate", "corpus", "pattern"]
+preserve_inactive_projects = true
+failed_edge_is_graph_failure = false
+
+[west_features]
+manifest_version = true
+remotes = true
+defaults = true
+group_filter = true
+project_descriptions = true
+repo_path = true
+clone_depth = true
+groups = true
+submodules = true
+imports = true
+import_path_prefix = true
+userdata = true
+self_path = true
+extension_commands = true
+freeze = true
+resolve = true
+forall = true
+grep = true
+compare = true
+diff = true
+status = true
+
+[projection]
+workspace_root = ".."
+owned_projects_path = "projects"
+external_corpus_path = "corpus"
+freeze_output = ".artifacts/west/frozen.yml"
+receipt_output = ".artifacts/west/freeze-receipt.json"
+
+[inventory]
+observed_at = "2026-09-06"
+public_repository_count = 308
+public_portfolio_imports = ["west/20-public-portfolio.yml", "west/21-public-portfolio.yml"]
+external_corpus_import = "west/30-external-corpus.yml"
+private_repository_policy = "local-extension-only-never-publish-by-observation"

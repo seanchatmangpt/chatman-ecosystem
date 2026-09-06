@@ -1,4 +1,4 @@
-.PHONY: verify test survey survey-check crown audit-stubs
+.PHONY: verify test survey survey-check crown audit-stubs west-check west-plan
 
 verify:
 	python3 scripts/verify_release.py --check-refs
@@ -18,3 +18,9 @@ crown:
 
 audit-stubs:
 	python3 scripts/audit_stubs_wip.py --write
+
+west-check:
+	python3 scripts/verify_west_workspace.py --json
+
+west-plan:
+	west dfcm-plan --all --json

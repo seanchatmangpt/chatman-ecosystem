@@ -1,0 +1,9 @@
+west-commands:
+  - file: scripts/west/chateco.py
+    commands:
+      - name: dfcm-plan
+        class: DfcmPlan
+        help: select a reversible workspace frontier without actuation
+      - name: dfcm-freeze
+        class: DfcmFreeze
+        help: construct an exact-SHA frozen manifest and local receipt

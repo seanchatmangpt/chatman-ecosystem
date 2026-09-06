@@ -1,0 +1,727 @@
+manifest:
+  version: '1.2'
+  remotes:
+  - name: chatman-public
+    url-base: https://github.com/seanchatmangpt
+  defaults:
+    remote: chatman-public
+    revision: HEAD
+  projects:
+  - name: dspygen
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: dslmodel
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: rdddy
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: dspy-swe-agent
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ash_ai
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: clnrm
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: frozen-duckdb
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: claude-desktop-context
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: gitvan
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: pyn8n
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: agile-protocol-specification
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: unrdf
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: dspyfun
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ggen-mcp
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ghl-marketplace-app-template
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: clap-noun-verb
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: pydantic-all-in-one
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: dpgjs
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: fgn
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: dtr
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: infinite-agentic-loop
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ash-book-prereqs
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: chatmangpt-extension
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: uvmgr
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: aismt
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: clnrm_prototype
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: qlever
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: anti-llm-cheat-lsp
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: homebrew-ggen
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: chicago-tdd-tools
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: pm4py-mcp
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ggen_igniter
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: helpgen
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: helpdesk
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: citty-test-utils
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: hypergraph_agents_umbrella
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: dapr-python-sdk
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: bkgn
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: pm4py-rs
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: cre
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ggen-create
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: homebrew-clnrm
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: citty
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: proxyable
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ai-self-sustaining-system
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: gitgym
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: castle
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: swrm
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: naut
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: commanded-generator
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: pydantic-ai
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: claude-flow
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ferroplan
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: claude-code-config-lsp
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: spark
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: agent-guides
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: lsp-max
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: arazzo-ai
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: homebrew-tap
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: unjucks
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: java-maven-template
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: zod-to-from
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: mac-artifact-cleaner
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: pydantic_schemaorg
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: signalbot
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: nautilus_trader
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: unrdf-experiments
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+    - empty
+    - unsupported
+  - name: unrdf-kgc
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+    - empty
+    - unsupported
+  - name: swotdash
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: file-organizer-2000
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: LibreChat
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: nuxt-open-fetch
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: openevolve
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: puya
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: simdjson
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: un-test-utils
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: BusinessOS
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: FastUINuxt
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: release-demos
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: knowtro
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: vantageadapt
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: dynamo
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: CodeV
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: aries
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: rig
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: jotp
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: truex
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: intvw
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: pcp
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: claude-code-base-action
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: moduleimporter_python
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: starter
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: nuxt-ui
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: qlever_poc
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: tcps-accept-test-2-sandbox
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+    - empty
+    - unsupported
+  - name: reactor
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ash_commanded
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ai
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: fabric-samples
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ash_archival
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: realworld
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: zen
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: zoeapp
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: mdBook
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: mmdio
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ash_json_api
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: gencli
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: HybridAGI
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: pm4py
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: membrane_demo
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: claudecodegym
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: Arazzo-Specification
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: espec
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ember
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: AgileGen
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ash
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: wkflo
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: erlmcp
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: bc3-api
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: awesome-ai-gyms
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: CtCI-6th-Edition-Python
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ash_paper_trail
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ash_state_machine
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: rename_project
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ash_pplan
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+    - empty
+    - unsupported
+  - name: capability-map
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: lsp-types-max
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: JXA
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: lively
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: private-blockchain
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: hyperdrive
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: clentportal-settings
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: unovis_live_demo
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: diagram-design
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: typescript-lightning-talks
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: chatgptgym
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: tunez
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: ash_oban
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: OSA
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: nuxt-pro-all
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: pro-docs
+    groups:
+    - owned
+    - portfolio
+    - observed-github
+  - name: A2A
+    groups:
+    - owned
+    - portfolio
+    - observed-github
