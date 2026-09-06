@@ -13,6 +13,17 @@ manifest:
   - -external
   - -rejected
   - -unsupported
+  - -owned
+  - -observed-github
+  - -empty
+  - -manufacture
+  - -compiler
+  - -gym
+  - -workload
+  - -composition
+  - -candidate
+  - -corpus
+  - -pattern
   projects:
   - name: autofde
     path: projects/autofde
