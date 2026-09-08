@@ -33,3 +33,8 @@ book/
 # ggen local run artifacts -- signing keys must never be committed
 .ggen/
 .ggen-v2/
+
+# Local act-nightly fork build (source clone + compiled binary) -- see
+# Dockerfile.act-runner's neighboring documentation. Not our source; a
+# rebuildable local tool, not tracked here.
+vendor-forks/
