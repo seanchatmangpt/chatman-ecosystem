@@ -153,3 +153,9 @@ id = "document:how-to-build-a-dyson-sphere"
 title = "How to Build a Dyson Sphere with the Chatman Ecosystem"
 path = "docs/how-to-build-a-dyson-sphere/README.md"
 canonical = false
+
+[[document]]
+id = "document:agi-academy"
+title = "Chatman Ecosystem AGI Academy"
+path = "docs/AGI-ACADEMY.md"
+canonical = false
