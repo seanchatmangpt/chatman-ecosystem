@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -50,6 +51,15 @@ REQUIRED_ROUTES = {
     "actuation": ("repository:autofde", "DO"),
 }
 
+RECEIPT_SCHEMA = "chatman.semantic-traversal-receipt.v1"
+VERIFICATION_SCHEMA = "chatman.semantic-traversal-verification.v1"
+RECEIPT_SCOPE = "canonical-contract-qualification"
+EXCLUSIONS = (
+    "no cross-repository runtime traversal claimed",
+    "no consequential DO performed",
+    "repository Crown unclaimed",
+)
+
 
 def _index_unique(items: list[dict], label: str, findings: list[str]) -> dict[str, dict]:
     indexed: dict[str, dict] = {}
@@ -78,8 +88,7 @@ def verify_document(document: dict) -> list[str]:
         findings.append("REFUSED:CORRESPONDENCE_DRIFT")
 
     metrics = _index_unique(document.get("metric", []), "metric", findings)
-    missing_metrics = REQUIRED_METRICS - metrics.keys()
-    for metric_id in sorted(missing_metrics):
+    for metric_id in sorted(REQUIRED_METRICS - metrics.keys()):
         findings.append(f"REFUSED:MISSING_METRIC:{metric_id}")
 
     derived = _index_unique(document.get("derived_metric", []), "derived_metric", findings)
@@ -127,27 +136,121 @@ def verify_path(path: Path) -> list[str]:
         return verify_document(tomllib.load(handle))
 
 
+def _sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def _canonical_json(value: dict) -> bytes:
+    return json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
+
+
+def manufacture_receipt(path: Path, subject_sha: str) -> dict:
+    findings = verify_path(path)
+    if findings:
+        raise ValueError("REFUSED:UNADMITTED_RECEIPT_SUBJECT")
+    receipt = {
+        "schema": RECEIPT_SCHEMA,
+        "scope": RECEIPT_SCOPE,
+        "subject": {
+            "repository": "seanchatmangpt/chatman-ecosystem",
+            "commit": subject_sha,
+            "path": str(path),
+            "sha256": _sha256_bytes(path.read_bytes()),
+        },
+        "correspondence": {"stages": list(EXPECTED_STAGES), "mode": "contract_admission"},
+        "verification": {
+            "schema": VERIFICATION_SCHEMA,
+            "standing": "PARTIAL_ALIVE",
+            "findings": [],
+            "actuation_performed": False,
+        },
+        "exclusions": list(EXCLUSIONS),
+    }
+    receipt["integrity"] = {"algorithm": "sha256", "digest": _sha256_bytes(_canonical_json(receipt))}
+    return receipt
+
+
+def verify_receipt(receipt: dict, path: Path, subject_sha: str) -> list[str]:
+    findings: list[str] = []
+    if receipt.get("schema") != RECEIPT_SCHEMA:
+        findings.append("REFUSED:RECEIPT_SCHEMA")
+    if receipt.get("scope") != RECEIPT_SCOPE:
+        findings.append("REFUSED:RECEIPT_SCOPE_DRIFT")
+
+    subject = receipt.get("subject", {})
+    if subject.get("repository") != "seanchatmangpt/chatman-ecosystem":
+        findings.append("REFUSED:RECEIPT_REPOSITORY_DRIFT")
+    if subject.get("commit") != subject_sha:
+        findings.append("REFUSED:RECEIPT_EXACT_SUBJECT_DRIFT")
+    if subject.get("path") != str(path):
+        findings.append("REFUSED:RECEIPT_PATH_DRIFT")
+    if subject.get("sha256") != _sha256_bytes(path.read_bytes()):
+        findings.append("REFUSED:RECEIPT_CONTENT_DRIFT")
+
+    correspondence = receipt.get("correspondence", {})
+    if tuple(correspondence.get("stages", [])) != EXPECTED_STAGES:
+        findings.append("REFUSED:RECEIPT_CORRESPONDENCE_DRIFT")
+    if correspondence.get("mode") != "contract_admission":
+        findings.append("REFUSED:RECEIPT_MODE_DRIFT")
+
+    verification = receipt.get("verification", {})
+    if verification.get("schema") != VERIFICATION_SCHEMA:
+        findings.append("REFUSED:RECEIPT_VERIFICATION_SCHEMA")
+    if verification.get("standing") != "PARTIAL_ALIVE":
+        findings.append("REFUSED:RECEIPT_STANDING_DRIFT")
+    if verification.get("findings") != []:
+        findings.append("REFUSED:RECEIPT_FINDINGS_DRIFT")
+    if verification.get("actuation_performed") is not False:
+        findings.append("REFUSED:RECEIPT_ACTUATION_DRIFT")
+    if receipt.get("exclusions") != list(EXCLUSIONS):
+        findings.append("REFUSED:RECEIPT_EXCLUSIONS_DRIFT")
+
+    integrity = receipt.get("integrity", {})
+    unsigned = dict(receipt)
+    unsigned.pop("integrity", None)
+    expected_digest = _sha256_bytes(_canonical_json(unsigned))
+    if integrity.get("algorithm") != "sha256" or integrity.get("digest") != expected_digest:
+        findings.append("REFUSED:RECEIPT_INTEGRITY")
+
+    if verify_path(path):
+        findings.append("REFUSED:RECEIPT_SUBJECT_NOT_ADMITTED")
+    return findings
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "path",
-        nargs="?",
-        type=Path,
-        default=Path("catalog/semantic-traversal.toml"),
-    )
+    parser.add_argument("path", nargs="?", type=Path, default=Path("catalog/semantic-traversal.toml"))
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--subject-sha")
+    parser.add_argument("--receipt-out", type=Path)
+    parser.add_argument("--replay", type=Path)
     args = parser.parse_args(argv)
 
     try:
         findings = verify_path(args.path)
-    except (OSError, tomllib.TOMLDecodeError) as exc:
-        findings = [f"REFUSED:UNREADABLE_CONTRACT:{exc}"]
+        if args.receipt_out:
+            if not args.subject_sha:
+                findings.append("REFUSED:MISSING_EXACT_SUBJECT")
+            elif not findings:
+                receipt = manufacture_receipt(args.path, args.subject_sha)
+                args.receipt_out.write_text(json.dumps(receipt, sort_keys=True, separators=(",", ":")) + "\n")
+        if args.replay:
+            if not args.subject_sha:
+                findings.append("REFUSED:MISSING_EXACT_SUBJECT")
+            else:
+                receipt = json.loads(args.replay.read_text())
+                findings.extend(verify_receipt(receipt, args.path, args.subject_sha))
+    except (OSError, ValueError, json.JSONDecodeError, tomllib.TOMLDecodeError) as exc:
+        findings = [f"REFUSED:UNREADABLE_EVIDENCE:{exc}"]
 
     result = {
-        "schema": "chatman.semantic-traversal-verification.v1",
+        "schema": VERIFICATION_SCHEMA,
         "subject": str(args.path),
+        "subject_sha": args.subject_sha,
         "standing": "PARTIAL_ALIVE" if not findings else "BLOCKED",
         "actuation_performed": False,
+        "receipt_written": str(args.receipt_out) if args.receipt_out and not findings else None,
+        "receipt_replayed": str(args.replay) if args.replay and not findings else None,
         "findings": findings,
     }
 
