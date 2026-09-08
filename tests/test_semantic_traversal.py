@@ -3,7 +3,6 @@ from __future__ import annotations
 import copy
 from pathlib import Path
 import sys
-import tempfile
 import tomllib
 import unittest
 
