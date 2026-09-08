@@ -1,0 +1,106 @@
+schema = "chatman.semantic-traversal.v1"
+version = "26.9.1"
+unit_of_thought = "capability"
+
+[correspondence]
+stages = ["graph", "query", "ggen", "admission", "runtime", "brce", "receipt", "replay"]
+
+[[metric]]
+id = "semantic_fact_count"
+unit = "fact"
+meaning = "Distinct admitted semantic facts referenced by the exact subject."
+
+[[metric]]
+id = "interpretation_count"
+unit = "interpretation"
+meaning = "Independent semantic interpretations performed instead of reusing an admitted fact identity."
+
+[[metric]]
+id = "projection_reuse_count"
+unit = "reuse"
+meaning = "Projection uses that preserve an admitted semantic fact identity without independent reinterpretation."
+
+[[metric]]
+id = "qualification_count"
+unit = "qualification"
+meaning = "Observed qualification executions bound to an admitted semantic fact identity."
+
+[[metric]]
+id = "exact_head_qualified_count"
+unit = "qualification"
+meaning = "Qualification executions observed against the exact admitted repository head."
+
+[[metric]]
+id = "receipt_count"
+unit = "receipt"
+meaning = "Replayable receipts that bind exact subject identity to manufacture or qualification consequence."
+
+[[derived_metric]]
+id = "mean_semantic_traversal"
+formula = "interpretation_count / semantic_fact_count"
+zero_denominator = "UNKNOWN"
+objective = "minimize"
+
+[[derived_metric]]
+id = "projection_reuse_ratio"
+formula = "projection_reuse_count / (projection_reuse_count + interpretation_count)"
+zero_denominator = "UNKNOWN"
+objective = "maximize"
+
+[[derived_metric]]
+id = "exact_head_qualification_ratio"
+formula = "exact_head_qualified_count / qualification_count"
+zero_denominator = "UNKNOWN"
+objective = "maximize"
+
+[[invariant]]
+id = "REPOSITORY_NOT_UNIT_OF_THOUGHT"
+rule = "Repositories remain independently versioned ownership and execution boundaries; capability identity is the semantic unit of thought."
+
+[[invariant]]
+id = "GENERATED_IS_PROJECTION"
+rule = "Generated artifacts are projections and never outrank their canonical graph, query, template, schema, or owning source."
+
+[[invariant]]
+id = "EXACT_SUBJECT_QUALIFICATION"
+rule = "ALIVE requires observed execution against the exact admitted subject; inspection, workflow existence, and stale receipts are insufficient."
+
+[[invariant]]
+id = "NO_AMBIENT_DO"
+rule = "SELECT and CONSTRUCT never grant consequential DO; BRCE remains the exclusive consequential actuation path and requires a receipt."
+
+[[route]]
+id = "canonical-knowledge"
+owner = "repository:chatman-ecosystem"
+class = "SELECT"
+input = "public ontology and admitted ecosystem observations"
+output = "canonical capability identities and semantic facts"
+
+[[route]]
+id = "manufacture"
+owner = "repository:ggen"
+class = "CONSTRUCT"
+input = "admitted semantic fact identities and generation contract"
+output = "projection artifacts and manufacture receipt"
+
+[[route]]
+id = "distribution"
+owner = "repository:ggen-marketplace"
+class = "CONSTRUCT"
+input = "qualified executable knowledge"
+output = "versioned reusable packs"
+
+[[route]]
+id = "qualification"
+owner = "repository:ggen-ecosystem"
+class = "CONSTRUCT"
+input = "exact admitted subjects, projections, and owning verifier contracts"
+output = "qualification evidence and replayable receipt"
+
+[[route]]
+id = "actuation"
+owner = "repository:autofde"
+class = "DO"
+broker_required = true
+input = "admitted intent, exact authority, preconditions, idempotency identity"
+output = "verified consequence and BRCE receipt"
