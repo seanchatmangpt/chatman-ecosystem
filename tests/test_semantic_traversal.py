@@ -3,19 +3,21 @@ from __future__ import annotations
 import copy
 from pathlib import Path
 import sys
+import tempfile
 import tomllib
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from verify_semantic_traversal import verify_document  # noqa: E402
+from verify_semantic_traversal import manufacture_receipt, verify_document, verify_receipt  # noqa: E402
 
 
 class SemanticTraversalContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        with (ROOT / "catalog" / "semantic-traversal.toml").open("rb") as handle:
+        cls.contract_path = ROOT / "catalog" / "semantic-traversal.toml"
+        with cls.contract_path.open("rb") as handle:
             cls.canonical = tomllib.load(handle)
 
     def document(self) -> dict:
@@ -73,6 +75,24 @@ class SemanticTraversalContractTests(unittest.TestCase):
         manufacture = next(route for route in document["route"] if route["id"] == "manufacture")
         manufacture["owner"] = "repository:chatman-ecosystem"
         self.assertIn("REFUSED:ROUTE_OWNER_DRIFT:manufacture", verify_document(document))
+
+    def test_exact_subject_receipt_replays(self) -> None:
+        receipt = manufacture_receipt(self.contract_path, "a" * 40)
+        self.assertEqual([], verify_receipt(receipt, self.contract_path, "a" * 40))
+
+    def test_receipt_exact_subject_drift_refuses(self) -> None:
+        receipt = manufacture_receipt(self.contract_path, "a" * 40)
+        self.assertIn(
+            "REFUSED:RECEIPT_EXACT_SUBJECT_DRIFT",
+            verify_receipt(receipt, self.contract_path, "b" * 40),
+        )
+
+    def test_receipt_tamper_refuses(self) -> None:
+        receipt = manufacture_receipt(self.contract_path, "a" * 40)
+        receipt["exclusions"][0] = "cross-repository runtime traversal claimed"
+        findings = verify_receipt(receipt, self.contract_path, "a" * 40)
+        self.assertIn("REFUSED:RECEIPT_EXCLUSIONS_DRIFT", findings)
+        self.assertIn("REFUSED:RECEIPT_INTEGRITY", findings)
 
 
 if __name__ == "__main__":
