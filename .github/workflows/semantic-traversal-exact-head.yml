@@ -29,8 +29,17 @@ jobs:
       - name: Compile verifier and falsifier court
         run: python3 -m py_compile scripts/verify_semantic_traversal.py tests/test_semantic_traversal.py
 
-      - name: Admit canonical semantic traversal contract
-        run: python3 scripts/verify_semantic_traversal.py --json
+      - name: Admit canonical contract and manufacture receipt
+        run: >-
+          python3 scripts/verify_semantic_traversal.py --json
+          --subject-sha "${{ github.event.pull_request.head.sha }}"
+          --receipt-out semantic-traversal-receipt.json
+
+      - name: Replay exact-subject receipt
+        run: >-
+          python3 scripts/verify_semantic_traversal.py --json
+          --subject-sha "${{ github.event.pull_request.head.sha }}"
+          --replay semantic-traversal-receipt.json
 
       - name: Execute permanent semantic traversal court
         run: python3 -m unittest -v tests/test_semantic_traversal.py
@@ -40,3 +49,11 @@ jobs:
         run: |
           ! grep -REn 'requests\.(post|put|patch|delete)|httpx|boto3|azure\.|google\.cloud|subprocess\.|os\.system|socket\.' \
             scripts/verify_semantic_traversal.py
+
+      - name: Persist exact-subject qualification receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-traversal-receipt-${{ github.event.pull_request.head.sha }}
+          path: semantic-traversal-receipt.json
+          if-no-files-found: error
+          retention-days: 30
