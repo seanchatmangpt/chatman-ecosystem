@@ -159,3 +159,9 @@ id = "document:agi-academy"
 title = "Chatman Ecosystem AGI Academy"
 path = "docs/AGI-ACADEMY.md"
 canonical = false
+
+[[document]]
+id = "document:formal-discovery-factory"
+title = "Formal Discovery Factory"
+path = "docs/FORMAL-DISCOVERY-FACTORY.md"
+canonical = false
