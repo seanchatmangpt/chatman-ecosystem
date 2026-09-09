@@ -48,6 +48,13 @@ role = "bounded-reconstitution"
 standing = "OBSERVED"
 
 [[repository]]
+id = "repository:mfact"
+name = "mfact"
+url = "https://github.com/seanchatmangpt/mfact"
+role = "receipted-formal-mathematics-certification"
+standing = "OBSERVED"
+
+[[repository]]
 id = "repository:dsrust"
 name = "dsrust"
 url = "https://github.com/seanchatmangpt/dsrust"
