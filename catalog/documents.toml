@@ -165,3 +165,9 @@ id = "document:formal-discovery-factory"
 title = "Formal Discovery Factory"
 path = "docs/FORMAL-DISCOVERY-FACTORY.md"
 canonical = false
+
+[[document]]
+id = "document:frontier-release-factory"
+title = "Frontier Release Factory"
+path = "docs/FRONTIER-RELEASE-FACTORY.md"
+canonical = false
