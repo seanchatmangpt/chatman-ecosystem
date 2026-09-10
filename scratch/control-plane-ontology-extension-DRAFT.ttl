@@ -1,0 +1,261 @@
+# =============================================================================
+# DRAFT ONLY -- NOT COMMITTED. For review before adoption anywhere.
+#
+# Purpose: cover the classes named in the 2026-09-02/03 census request
+# (Observation / OpenLoop / Dependency / Intent / AuthorityRequirement /
+# Execution / Verification / Receipt / Standing / SeanDependency / WorldDelta)
+# that do NOT already exist as real RDF/OWL vocabulary anywhere under
+# /Users/sac, reusing prov: (W3C PROV-O) plus the two existing local
+# vocabularies that already cover most of this ground:
+#
+#   eco:  https://ggen.dev/ecosystem#           -- /Users/sac/ggen-ecosystem/ontology/{authority,standing,capabilities}.ttl
+#   upo:  http://affidavit.io/ontology/upo#      -- /Users/sac/ggen/ontology_catalogue/affidavit/ontology/1000x_w3c_provo_spec.ttl (by Sean Chatman, 2026-06-14)
+#
+# See the accompanying census report (returned to the requester, not a file)
+# for the full existing-vs-gap mapping. Summary:
+#
+#   ALREADY REAL RDF, REUSE AS-IS (no new class emitted here):
+#     - eco:Intent, eco:Receipt, eco:Select, eco:Construct, eco:Do, eco:Replay,
+#       eco:BRCE                          (ggen-ecosystem/ontology/authority.ttl)
+#     - eco:StandingScheme + concepts (UNKNOWN/PARTIAL_ALIVE/ALIVE/BLOCKED/
+#       BUILD_BROKEN/UNSUPPORTED/REFUSED) (ggen-ecosystem/ontology/standing.ttl)
+#     - affi:Receipt, affi:OperationEvent, upo:VerificationActivity, upo:Verdict,
+#       upo:Agent/UserAgent/SoftwareAgent/OrgAgent, upo:DelegationChain,
+#       upo:GGenOperation                 (affidavit UPO, full PROV-O mapping)
+#
+#   REAL AS PYTHON/PYDANTIC CODE (gymact, /Users/sac/gymact/src/gymact/), NO RDF
+#   MIRROR YET -- this draft gives each a minimal RDF class so cross-repo
+#   ontology tooling (SHACL, SPARQL admission gates) can refer to them:
+#     - gymact.models.Observation        -> eco:Observation      (below)
+#     - gymact.explore_ack_topology.DependencyGraph
+#                                         -> eco:Dependency       (below)
+#     - gymact.action_contract.AuthorityRequirement
+#                                         -> eco:AuthorityRequirement (below)
+#     - gymact.action_contract.ExecutionGrant / ExecutionAcknowledgement /
+#       PreparedAction / UncertainExecution
+#                                         -> eco:Execution        (below)
+#
+#   GENUINE FULL GAPS -- no code, no RDF, anywhere under /Users/sac for these
+#   exact concepts (grep -rliE across every repo returned zero real hits):
+#     - OpenLoop                          -> eco:OpenLoop         (below)
+#     - SeanDependency                    -> eco:SeanDependency   (below)
+#     - WorldDelta (closest existing thing is gymact.models.Receipt's
+#       world_changed: bool | None field -- a flag, not a delta structure)
+#                                         -> eco:WorldDelta       (below)
+# =============================================================================
+
+@prefix eco:     <https://ggen.dev/ecosystem#> .
+@prefix upo:     <http://affidavit.io/ontology/upo#> .
+@prefix affi:    <http://affidavit.io/cli#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# -----------------------------------------------------------------------------
+# 1. Observation -- evidence about a subject, distinct from the subject itself.
+#    Mirrors gymact.models.Observation (episode_id, state, state_digest) 1:1.
+# -----------------------------------------------------------------------------
+
+eco:Observation a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "Observation"@en ;
+    rdfs:comment "Evidence about an environment/subject at a point in time; never the subject itself. Realized in code as gymact.models.Observation."@en ;
+    dcterms:isReferencedBy "/Users/sac/gymact/src/gymact/models.py:117" .
+
+eco:hasStateDigest a owl:DatatypeProperty ;
+    rdfs:domain eco:Observation ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Content digest of the observed state, matching gymact.models.Observation.state_digest."@en .
+
+eco:observationConfidence a owl:DatatypeProperty ;
+    rdfs:domain eco:Observation ;
+    rdfs:range xsd:string ;
+    rdfs:comment "SELF_REPORTED | SAME_PROVIDER_OBSERVED | INDEPENDENT_CHANNEL | MULTI_ORACLE | PHYSICAL_SENSOR, matching gymact.action_contract.ObservationConfidence."@en .
+
+# -----------------------------------------------------------------------------
+# 2. Dependency -- an edge/requirement one subject holds against another
+#    before it may proceed. Mirrors gymact.explore_ack_topology.DependencyGraph
+#    (a DAG over Subjects) but as an RDF relation rather than a Python graph.
+# -----------------------------------------------------------------------------
+
+eco:Dependency a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "Dependency"@en ;
+    rdfs:comment "A recorded requirement that one subject's progress is blocked on another's completion or decision. Cf. gymact.explore_ack_topology.DependencyGraph (cycle-checked DAG of Subject nodes)."@en ;
+    dcterms:isReferencedBy "/Users/sac/gymact/src/gymact/explore_ack_topology.py:9" .
+
+eco:dependsOn a owl:ObjectProperty ;
+    rdfs:domain eco:Dependency ;
+    rdfs:range prov:Entity ;
+    rdfs:comment "The entity this Dependency is blocked on." .
+
+eco:dependencyHolder a owl:ObjectProperty ;
+    rdfs:domain eco:Dependency ;
+    rdfs:range prov:Agent ;
+    rdfs:comment "The agent whose progress this Dependency blocks." .
+
+# -----------------------------------------------------------------------------
+# 2a. SeanDependency -- GENUINE GAP. A Dependency specifically held on the
+#     human principal Sean Chatman (as opposed to on another agent, system,
+#     or automated resolver). No prior art found anywhere under /Users/sac
+#     for this exact concept; drafted narrowly as a subclass so it composes
+#     with the generic eco:Dependency machinery above rather than duplicating
+#     it.
+# -----------------------------------------------------------------------------
+
+eco:SeanDependency a owl:Class ;
+    rdfs:subClassOf eco:Dependency ;
+    rdfs:label "Sean Dependency"@en ;
+    rdfs:comment "A Dependency whose blocking party is specifically the human principal Sean Chatman (dcterms:creator of the UPO ontology, per 1000x_w3c_provo_spec.ttl) -- e.g. a decision, approval, or credential only he can supply. Distinguishes human-in-the-loop blockers from agent-to-agent or system dependencies for portfolio-level triage."@en .
+
+eco:blockedOnSean a owl:DatatypeProperty ;
+    rdfs:domain eco:SeanDependency ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment "Always true by class membership; present as an explicit triple for SPARQL ergonomics without requiring rdfs:subClassOf inference." .
+
+# -----------------------------------------------------------------------------
+# 3. AuthorityRequirement -- RDF mirror of gymact.action_contract.
+#    AuthorityRequirement (capability_refs, policy_refs,
+#    autonomous_policy_may_be_stricter). Distinct from eco:doPolicy's ODRL
+#    permission/obligation pairing in authority.ttl, which governs the BRCE
+#    boundary generically; this is the per-ActionDefinition declaration of
+#    which capabilities/policies an action needs before Select->Construct->Do.
+# -----------------------------------------------------------------------------
+
+eco:AuthorityRequirement a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "Authority Requirement"@en ;
+    rdfs:comment "The set of capability and policy references an ActionDefinition requires before eco:Do may be granted. Mirrors gymact.action_contract.AuthorityRequirement."@en ;
+    dcterms:isReferencedBy "/Users/sac/gymact/src/gymact/action_contract.py:94" .
+
+eco:requiresCapability a owl:ObjectProperty ;
+    rdfs:domain eco:AuthorityRequirement ;
+    rdfs:range eco:Capability ;
+    rdfs:comment "Links to a required eco:Capability (see ggen-ecosystem/ontology/capabilities.ttl)." .
+
+eco:autonomousPolicyMayBeStricter a owl:DatatypeProperty ;
+    rdfs:domain eco:AuthorityRequirement ;
+    rdfs:range xsd:boolean .
+
+# -----------------------------------------------------------------------------
+# 4. Execution -- RDF mirror of gymact's ExecutionGrant / PreparedAction /
+#    ExecutionAcknowledgement / UncertainExecution family. Subclasses
+#    affi:OperationEvent (itself a prov:Activity) so it composes directly
+#    with the existing UPO chain-hash / sequence-number / signature
+#    machinery instead of inventing a parallel activity type.
+# -----------------------------------------------------------------------------
+
+eco:Execution a owl:Class ;
+    rdfs:subClassOf affi:OperationEvent ;
+    rdfs:label "Execution"@en ;
+    rdfs:comment "A consequential DO performed under an ExecutionGrant. Mirrors gymact.action_contract.ExecutionGrant/PreparedAction/ExecutionAcknowledgement/UncertainExecution; equivalent in spirit to eco:Do (authority.ttl) but carries execution-specific evidence (grant, acknowledgement, idempotency key) rather than being a bare ODRL action."@en ;
+    dcterms:isReferencedBy "/Users/sac/gymact/src/gymact/action_contract.py:174,197,208,214" .
+
+eco:underGrant a owl:ObjectProperty ;
+    rdfs:domain eco:Execution ;
+    rdfs:range eco:AuthorityRequirement ;
+    rdfs:comment "The AuthorityRequirement admitted before this Execution was allowed to proceed." .
+
+eco:acknowledgementStatus a owl:DatatypeProperty ;
+    rdfs:domain eco:Execution ;
+    rdfs:range xsd:string ;
+    rdfs:comment "NOT_ATTEMPTED | ACKNOWLEDGED | REJECTED | LOST | UNKNOWN, matching gymact.action_contract.AcknowledgementStatus." .
+
+eco:idempotencyKey a owl:DatatypeProperty ;
+    rdfs:domain eco:Execution ;
+    rdfs:range xsd:string .
+
+# -----------------------------------------------------------------------------
+# 5. Verification -- NOT a gap. Reuse upo:VerificationActivity / upo:Verdict
+#    directly (affidavit UPO, section 5). eco:aliasVerification is provided
+#    only as a convenience rdfs:subClassOf link so portfolio tooling written
+#    against the eco: namespace can find it without an upo: import.
+# -----------------------------------------------------------------------------
+
+eco:Verification a owl:Class ;
+    rdfs:subClassOf upo:VerificationActivity ;
+    rdfs:label "Verification"@en ;
+    rdfs:comment "Alias into the existing upo:VerificationActivity (affidavit UPO). Do not duplicate upo:verifiesReceipt/upo:generatesVerdict here -- use them directly." .
+
+# -----------------------------------------------------------------------------
+# 6. Standing -- NOT a gap for the scheme itself (eco:StandingScheme already
+#    exists in ggen-ecosystem/ontology/standing.ttl with UNKNOWN/PARTIAL_ALIVE/
+#    ALIVE/BLOCKED/BUILD_BROKEN/UNSUPPORTED/REFUSED). gymact.models.Standing
+#    (Python enum) has MORE values than the RDF scheme: CANDIDATE, STRUCTURAL,
+#    ADOPTED, REQUIRES_CONFIGURATION, UNCERTAIN, STALE. Drafted here as
+#    additive skos:Concept individuals in the SAME existing scheme, not a new
+#    class, so this is a real extension proposal, not a fork.
+# -----------------------------------------------------------------------------
+
+eco:CANDIDATE a skos:Concept ; skos:inScheme eco:StandingScheme ; skos:prefLabel "CANDIDATE" .
+eco:STRUCTURAL a skos:Concept ; skos:inScheme eco:StandingScheme ; skos:prefLabel "STRUCTURAL" .
+eco:ADOPTED a skos:Concept ; skos:inScheme eco:StandingScheme ; skos:prefLabel "ADOPTED" .
+eco:REQUIRES_CONFIGURATION a skos:Concept ; skos:inScheme eco:StandingScheme ; skos:prefLabel "REQUIRES_CONFIGURATION" .
+eco:UNCERTAIN a skos:Concept ; skos:inScheme eco:StandingScheme ; skos:prefLabel "UNCERTAIN" .
+eco:STALE a skos:Concept ; skos:inScheme eco:StandingScheme ; skos:prefLabel "STALE" .
+
+# -----------------------------------------------------------------------------
+# 7. OpenLoop -- GENUINE GAP. No class, dataclass, enum, or ontology term
+#    named OpenLoop (or a clear synonym: PendingQuestion, UnresolvedItem)
+#    was found anywhere under /Users/sac. Drafted as a prov:Entity
+#    representing an outstanding question/decision/task that has not yet
+#    reached a terminal Standing.
+# -----------------------------------------------------------------------------
+
+eco:OpenLoop a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "Open Loop"@en ;
+    rdfs:comment "An outstanding question, decision, or task that has not yet reached a terminal eco:Standing concept (ALIVE/BLOCKED/REFUSED/etc.). No prior art found; net-new." .
+
+eco:openedBy a owl:ObjectProperty ;
+    rdfs:domain eco:OpenLoop ;
+    rdfs:range prov:Agent .
+
+eco:openLoopStanding a owl:ObjectProperty ;
+    rdfs:domain eco:OpenLoop ;
+    rdfs:range skos:Concept ;
+    rdfs:comment "Current eco:StandingScheme concept for this loop; a loop is 'closed' when this reaches a terminal concept." .
+
+eco:raisedDependency a owl:ObjectProperty ;
+    rdfs:domain eco:OpenLoop ;
+    rdfs:range eco:Dependency ;
+    rdfs:comment "Links an OpenLoop to the Dependency (or SeanDependency) blocking its closure, if any." .
+
+# -----------------------------------------------------------------------------
+# 8. WorldDelta -- GENUINE GAP as a structured entity. The closest existing
+#    thing is gymact.models.Receipt's flat fields (pre_state_digest,
+#    post_state_digest, world_changed: bool | None) -- a flag plus two
+#    digests, not a first-class delta object. Drafted here as a prov:Entity
+#    that reifies that relationship for cases where more than a boolean is
+#    needed (e.g. multiple observed deltas per Receipt, or delta provenance
+#    independent of any one receipt).
+# -----------------------------------------------------------------------------
+
+eco:WorldDelta a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "World Delta"@en ;
+    rdfs:comment "A reified pre/post-state change. Generalizes gymact.models.Receipt's (pre_state_digest, post_state_digest, world_changed) fields into a first-class entity so a delta can be referenced/verified independent of the Receipt that first observed it." ;
+    dcterms:isReferencedBy "/Users/sac/gymact/src/gymact/models.py:211-214 (pre_state_digest, post_state_digest, world_changed)" .
+
+eco:preStateDigest a owl:DatatypeProperty ;
+    rdfs:domain eco:WorldDelta ;
+    rdfs:range xsd:string .
+
+eco:postStateDigest a owl:DatatypeProperty ;
+    rdfs:domain eco:WorldDelta ;
+    rdfs:range xsd:string .
+
+eco:worldChanged a owl:DatatypeProperty ;
+    rdfs:domain eco:WorldDelta ;
+    rdfs:range xsd:boolean .
+
+eco:deltaObservedBy a owl:ObjectProperty ;
+    rdfs:domain eco:WorldDelta ;
+    rdfs:range eco:Observation .
+
+eco:deltaCausedBy a owl:ObjectProperty ;
+    rdfs:domain eco:WorldDelta ;
+    rdfs:range eco:Execution .

@@ -16,13 +16,13 @@ class T(unittest.TestCase):
  def test_false_alive_refuses(self):
   td,d=self.copy()
   try:
-   p=d/"release/v26.8.23/manifest.toml";p.write_text(p.read_text().replace('standing="PARTIAL_ALIVE"','standing="ALIVE"',1))
+   p=d/"release/v26.8.23/manifest-daily-closure.toml";p.write_text(p.read_text().replace('standing="PARTIAL_ALIVE"','standing="ALIVE"',1))
    with self.assertRaisesRegex(m.ReleaseRefusal,"FALSE_ALIVE_WITH_OPEN_REQUIREMENTS"):m.verify(d)
   finally:td.cleanup()
  def test_duplicate_requirement_refuses(self):
   td,d=self.copy()
   try:
-   p=d/"release/v26.8.23/requirements.toml";p.write_text(p.read_text()+'\n[[requirements]]\nid="R-001";name="dup";category="x";state="UNKNOWN";acceptance="false";depends_on=[]\n')
+   p=d/"release/v26.8.23/requirements-daily-closure.toml";p.write_text(p.read_text()+'\n[[requirements]]\nid="R-001"\nname="dup"\ncategory="x"\nstate="UNKNOWN"\nacceptance="false"\ndepends_on=[]\n')
    with self.assertRaisesRegex(m.ReleaseRefusal,"DUPLICATE_REQUIREMENT_ID"):m.verify(d)
   finally:td.cleanup()
  def test_future_line_is_preserved(self):

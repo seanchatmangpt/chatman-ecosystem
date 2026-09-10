@@ -23,7 +23,7 @@ def dag(rows):
  for n in sorted(g):visit(n)
  return g
 def verify(root:Path):
- cargo=load(root/"Cargo.toml"); man=load(root/f"release/v{VERSION}/manifest.toml"); rd=load(root/f"release/v{VERSION}/requirements.toml")
+ cargo=load(root/"Cargo.toml"); man=load(root/f"release/v{VERSION}/manifest-daily-closure.toml"); rd=load(root/f"release/v{VERSION}/requirements-daily-closure.toml")
  release=man["release"]; rows=rd.get("requirements",[]); candidates=man.get("candidates",[])
  req(str(cargo["workspace"]["package"]["version"])==VERSION,"WORKSPACE_VERSION_MISMATCH")
  req(str(release.get("version"))==VERSION and str(rd.get("version"))==VERSION,"RELEASE_VERSION_MISMATCH")
