@@ -1,0 +1,76 @@
+schema = "chatman.dfcm-profile.v1"
+version = "26.9.9"
+subject = "Design for Combinatorial Maximalism"
+canonical = true
+
+[objective]
+expression = "maximize lawful reversible possibilities before irreversible selection"
+top_task = "SOLVE(x)"
+stages = ["PRESERVE", "FENCE", "CALCULUS", "EXCLUSIONS", "FALSIFIER", "EXTENSION", "OPERATIONALIZE"]
+
+[bound]
+operator = "intersection"
+dimensions = ["ontology", "capability", "authority", "cost", "evidence", "consequence"]
+
+[standing]
+values = ["UNKNOWN", "PARTIAL_ALIVE", "ALIVE", "BLOCKED", "BUILD_BROKEN", "UNSUPPORTED", "REFUSED"]
+alive_rule = "exact admitted subject plus observed execution plus verification plus replayable receipt"
+
+[authority]
+exclusive_do_path = "BRCE"
+hooks_grant_authority = false
+plan_grants_authority = false
+proof_grants_authority = false
+
+[selection]
+requires_preserved_frontier = true
+requires_bound = true
+requires_falsifier = true
+irreversible_requires_authority = true
+failed_edge_invalidates_graph = false
+
+[extension]
+order = ["reuse", "compose", "extend", "invent"]
+invent_only_after_public_falsifier = true
+
+[public_ontologies]
+prov = "http://www.w3.org/ns/prov#"
+pplan = "http://purl.org/net/p-plan#"
+sh = "http://www.w3.org/ns/shacl#"
+odrl = "http://www.w3.org/ns/odrl/2/"
+org = "http://www.w3.org/ns/org#"
+sosa = "http://www.w3.org/ns/sosa/"
+earl = "http://www.w3.org/ns/earl#"
+skos = "http://www.w3.org/2004/02/skos/core#"
+time = "http://www.w3.org/2006/time#"
+dcat = "http://www.w3.org/ns/dcat#"
+dcterms = "http://purl.org/dc/terms/"
+dqv = "http://www.w3.org/ns/dqv#"
+qudt = "http://qudt.org/schema/qudt/"
+spdx = "http://spdx.org/rdf/terms#"
+
+[custom_remainder]
+classes = ["DecisionPoint", "Option", "Bound", "Selection", "Falsifier", "StandingAssessment"]
+properties = ["hasOption", "preservesOption", "eliminatesOption", "hasBound", "hasFalsifier", "selectsOption", "reversible", "authorityPolicy", "standing"]
+
+[exclusions]
+values = [
+  "UNKNOWN_IS_NOT_ADMITTED",
+  "SHACL_CONFORMANCE_IS_NOT_ALIVE",
+  "PLAN_IS_NOT_EXECUTION",
+  "WORKFLOW_IS_NOT_RUN",
+  "CAPABILITY_IS_NOT_AUTHORITY",
+  "HOOK_IS_NOT_AUTHORITY",
+  "ONE_FAILED_EDGE_IS_NOT_GRAPH_FAILURE",
+  "CHECKPOINT_IS_NOT_CROWN"
+]
+
+[falsifiers]
+values = [
+  "irreversible selection can occur without preserved frontier",
+  "irreversible selection can occur without admitted authority",
+  "an option can be selected without a falsifier",
+  "a failed edge deletes unrelated lawful options",
+  "a public ontology term is locally redefined",
+  "SHACL conformance alone promotes ALIVE"
+]

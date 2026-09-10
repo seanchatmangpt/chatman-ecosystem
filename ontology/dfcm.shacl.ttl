@@ -1,0 +1,44 @@
+@prefix dfcm: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/dfcm#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# Admission membrane only. Conformance != execution != ALIVE.
+dfcm:DecisionPointShape a sh:NodeShape ;
+    sh:targetClass dfcm:DecisionPoint ;
+    sh:property [ sh:path dfcm:hasOption ; sh:minCount 1 ] ;
+    sh:property [ sh:path dfcm:preservesOption ; sh:minCount 1 ] ;
+    sh:property [ sh:path dfcm:hasBound ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path dfcm:hasFalsifier ; sh:minCount 1 ] .
+
+dfcm:OptionShape a sh:NodeShape ;
+    sh:targetClass dfcm:Option ;
+    sh:property [
+        sh:path dfcm:reversible ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:boolean
+    ] .
+
+# Selection must bind the preserved decision point and selected option. An
+# irreversible option additionally requires an exact authority policy and
+# falsifier. This is admission, not authority issuance and not execution proof.
+dfcm:SelectionShape a sh:NodeShape ;
+    sh:targetClass dfcm:Selection ;
+    sh:property [ sh:path prov:used ; sh:minCount 1 ] ;
+    sh:property [ sh:path dfcm:selectsOption ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path dfcm:hasFalsifier ; sh:minCount 1 ] ;
+    sh:or (
+        [ sh:property [ sh:path dfcm:selectsOption ; sh:qualifiedValueShape [ sh:property [ sh:path dfcm:reversible ; sh:hasValue true ] ] ; sh:qualifiedMinCount 1 ] ]
+        [ sh:and (
+            [ sh:property [ sh:path dfcm:selectsOption ; sh:qualifiedValueShape [ sh:property [ sh:path dfcm:reversible ; sh:hasValue false ] ] ; sh:qualifiedMinCount 1 ] ]
+            [ sh:property [ sh:path dfcm:authorityPolicy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class odrl:Policy ] ]
+        ) ]
+    ) .
+
+dfcm:StandingAssessmentShape a sh:NodeShape ;
+    sh:targetClass dfcm:StandingAssessment ;
+    sh:property [ sh:path dfcm:standing ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    dcterms:description "ALIVE requires external exact-subject observed execution, verification, receipt and replay evidence; this shape cannot promote standing." .

@@ -1,0 +1,89 @@
+@prefix dfcm: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/dfcm#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix pplan: <http://purl.org/net/p-plan#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dqv: <http://www.w3.org/ns/dqv#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix spdx: <http://spdx.org/rdf/terms#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+<https://seanchatmangpt.github.io/chatman-ecosystem/ontology/dfcm> a owl:Ontology ;
+    dcterms:title "Design for Combinatorial Maximalism application profile" ;
+    dcterms:description "Thin Chatman remainder over public provenance, planning, policy, organization, observation, verification, standing, time, catalog, quality, quantity and software identity vocabularies." ;
+    dcterms:conformsTo prov: , pplan: , sh: , odrl: , org: , sosa: , earl: , skos: , time: , dcat: , dqv: , qudt: , spdx: .
+
+# DfCM does not replace public planning or provenance semantics. A DecisionPoint
+# is a planned step; Selection is an observed-or-observable activity only when
+# PROV evidence exists. Plan != execution and capability != authority.
+dfcm:DecisionPoint a owl:Class ;
+    rdfs:subClassOf pplan:Step ;
+    skos:definition "A bounded decision boundary at which the lawful reversible option frontier is preserved before selection." .
+
+dfcm:Option a owl:Class ;
+    rdfs:subClassOf prov:Plan ;
+    skos:definition "A candidate possibility retained until it is excluded, falsified, dominated under admitted objectives, or lawfully selected." .
+
+dfcm:Bound a owl:Class ;
+    skos:definition "The admitted intersection of ontology, capability, authority, cost, evidence and consequence constraints." .
+
+dfcm:Selection a owl:Class ;
+    rdfs:subClassOf prov:Activity ;
+    skos:definition "A selection transition over a previously preserved DfCM frontier; irreversible selection requires an exact admitted authority policy." .
+
+dfcm:Falsifier a owl:Class ;
+    rdfs:subClassOf earl:TestCase ;
+    skos:definition "A machine-addressable observation or test condition whose satisfaction defeats a candidate claim or option." .
+
+dfcm:StandingAssessment a owl:Class ;
+    rdfs:subClassOf earl:Assertion ;
+    skos:definition "A contextual evidence-backed assessment; standing is not the ontological type of the assessed artifact." .
+
+dfcm:hasOption a owl:ObjectProperty ; rdfs:domain dfcm:DecisionPoint ; rdfs:range dfcm:Option .
+dfcm:preservesOption a owl:ObjectProperty ; rdfs:domain dfcm:DecisionPoint ; rdfs:range dfcm:Option .
+dfcm:eliminatesOption a owl:ObjectProperty ; rdfs:domain dfcm:Selection ; rdfs:range dfcm:Option .
+dfcm:hasBound a owl:ObjectProperty ; rdfs:domain dfcm:DecisionPoint ; rdfs:range dfcm:Bound .
+dfcm:hasFalsifier a owl:ObjectProperty ; rdfs:range dfcm:Falsifier .
+dfcm:selectsOption a owl:ObjectProperty ; rdfs:domain dfcm:Selection ; rdfs:range dfcm:Option .
+dfcm:authorityPolicy a owl:ObjectProperty ; rdfs:range odrl:Policy .
+dfcm:reversible a owl:DatatypeProperty ; rdfs:domain dfcm:Option ; rdfs:range xsd:boolean .
+dfcm:standing a owl:ObjectProperty ; rdfs:domain dfcm:StandingAssessment ; rdfs:range skos:Concept .
+
+# Bound dimensions remain public-ontology-addressable qualities. The custom
+# class captures only the DfCM intersection semantics.
+dfcm:OntologyDimension a skos:Concept ; skos:prefLabel "ontology" .
+dfcm:CapabilityDimension a skos:Concept ; skos:prefLabel "capability" .
+dfcm:AuthorityDimension a skos:Concept ; skos:prefLabel "authority" .
+dfcm:CostDimension a skos:Concept ; skos:prefLabel "cost" .
+dfcm:EvidenceDimension a skos:Concept ; skos:prefLabel "evidence" .
+dfcm:ConsequenceDimension a skos:Concept ; skos:prefLabel "consequence" .
+
+# Standing is a concept scheme because it is contextual and time-dependent.
+dfcm:StandingScheme a skos:ConceptScheme ; skos:prefLabel "Chatman evidence standing" .
+dfcm:UNKNOWN a skos:Concept ; skos:inScheme dfcm:StandingScheme .
+dfcm:PARTIAL_ALIVE a skos:Concept ; skos:inScheme dfcm:StandingScheme .
+dfcm:ALIVE a skos:Concept ; skos:inScheme dfcm:StandingScheme .
+dfcm:BLOCKED a skos:Concept ; skos:inScheme dfcm:StandingScheme .
+dfcm:BUILD_BROKEN a skos:Concept ; skos:inScheme dfcm:StandingScheme .
+dfcm:UNSUPPORTED a skos:Concept ; skos:inScheme dfcm:StandingScheme .
+dfcm:REFUSED a skos:Concept ; skos:inScheme dfcm:StandingScheme .
+
+# DQV/QUDT carry measured reversibility/cost/evidence quantities; SOSA carries
+# observation; EARL carries verification; PROV carries execution/derivation;
+# ODRL+ORG carry policy/role; OWL-Time carries temporal validity; DCAT/DCTERMS
+# catalog semantic resources; SPDX identifies software subjects. None grants DO.
+dfcm:ReversibilityMetric a dqv:Metric ; skos:prefLabel "reversibility" .
+
+# Constitutional invariants retained as semantic annotations for deterministic
+# admission tooling. BRCE is the exclusive DO path; hooks/plans/proofs are intent.
+dfcm:ProfilePolicy a odrl:Policy ;
+    dcterms:description "Maximize lawful reversible possibilities before irreversible selection. One failed edge is topology, not graph failure. BRCE is the exclusive consequential DO path. SHACL conformance is admission evidence, never ALIVE by itself." .
