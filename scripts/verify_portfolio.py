@@ -132,7 +132,10 @@ def replay_receipt(receipt: dict[str, Any], expected_inputs: dict[str, str] | No
     return receipt
 
 def main(argv: list[str] | None=None) -> int:
-    parser=argparse.ArgumentParser(); parser.add_argument("--fleet",type=Path,default=Path("release/v26.9.1/fleet-policy.toml")); parser.add_argument("--manifest",type=Path,default=Path("release/v26.9.1/manifest.toml")); parser.add_argument("--candidates",type=Path,default=Path("release/v26.9.1/candidates.toml")); parser.add_argument("--receipt",type=Path); parser.add_argument("--replay",type=Path); args=parser.parse_args(argv)
+    parser=argparse.ArgumentParser(); parser.add_argument("--root",type=Path,default=Path(".")); parser.add_argument("--fleet",type=Path,default=Path("release/v26.9.1/fleet-policy.toml")); parser.add_argument("--manifest",type=Path,default=Path("release/v26.9.1/manifest.toml")); parser.add_argument("--candidates",type=Path,default=Path("release/v26.9.1/candidates.toml")); parser.add_argument("--receipt",type=Path); parser.add_argument("--replay",type=Path); args=parser.parse_args(argv)
+    args.fleet=args.root/args.fleet if not args.fleet.is_absolute() else args.fleet
+    args.manifest=args.root/args.manifest if not args.manifest.is_absolute() else args.manifest
+    args.candidates=args.root/args.candidates if not args.candidates.is_absolute() else args.candidates
     try:
         policy,manifest,ledger=load(args.fleet),load(args.manifest),load(args.candidates)
         if args.replay:
