@@ -8,7 +8,7 @@ license.workspace = true
 [dependencies]
 async-trait.workspace = true
 blake3.workspace = true
-ecosystem-core = { version = "0.1.0", path = "../ecosystem-core" }
+ecosystem-core = { version = "26.8.23", path = "../ecosystem-core" }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
