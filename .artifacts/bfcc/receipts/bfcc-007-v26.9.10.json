@@ -1,0 +1,92 @@
+{
+  "subject": "beam4pm+ferroplan+ex4pm+ash_ex4pm+ggen-marketplace+ggen_igniter+koala-planner@v26.9.10-htn-fond-koala-episode",
+  "revision": "beam4pm=a3bd35e;ferroplan=1ac9520;ex4pm=099c34d607474dda48d6b15ad599c2f4bf54e712;ash_ex4pm=7c24a0936393f79b5c9aa338dc7a0c1aa93e14cd;ggen-marketplace=bc3898ba38c197a6f9f732cc5e95d4371472e882;ggen_igniter=25cda72b693c04a4e365446da94f7a8302ec4f12;koala-planner=6623ec2",
+  "system_boundary": "Cross-repo claim that beam4pm/ferroplan/ex4pm/ash_ex4pm/ggen-marketplace/ggen_igniter jointly manufacture HTN+FOND planning capability while eliminating a koala-planner dependency; koala-planner itself examined as the claimed absorbed/discovered artifact.",
+  "canon_sources": [
+    "Fuller, Design Science (bfcc gate catalog projections in catalog/bfcc.toml)",
+    "Phase-1 real per-repo inventory (git log/grep/gh run list evidence, 7 repos)",
+    "Gate-table synthesis (10-gate evaluation against Phase-1 evidence)",
+    "4 real falsifier executions (verify_bfcc.py live run, koala-dependency grep sweep x2, PDDL3-constraints refusal test run, ggen_igniter determinism re-run)",
+    "Quantitative (eta/lambda/sigma) phase over Phase-1 evidence"
+  ],
+  "projection_table": "See catalog/bfcc.toml [[gate]] engineering_projection per letter (C/A/D/S/G/Sigma/E/T/W/I); Gate-table synthesis above maps each projection's falsifier against real Phase-1 evidence per repo.",
+  "inventory_examined": [
+    "/Users/sac/beam4pm (HEAD a3bd35e)",
+    "/Users/sac/ferroplan (HEAD 1ac9520)",
+    "/Users/sac/ex4pm (HEAD 099c34d607474dda48d6b15ad599c2f4bf54e712)",
+    "/Users/sac/ash_ex4pm (HEAD 7c24a0936393f79b5c9aa338dc7a0c1aa93e14cd)",
+    "/Users/sac/ggen-marketplace (HEAD bc3898ba38c197a6f9f732cc5e95d4371472e882)",
+    "/Users/sac/ggen_igniter (HEAD 25cda72b693c04a4e365446da94f7a8302ec4f12)",
+    "/Users/sac/koala-planner (HEAD 6623ec2, fork of github.com/koala-planner/Planner)"
+  ],
+  "gates_evaluated": ["C", "A", "D", "S", "G", "Sigma", "E", "T", "W", "I"],
+  "evidence_per_gate": {
+    "C": {
+      "subject": "beam4pm+ferroplan+ex4pm+ash_ex4pm+ggen-marketplace+ggen_igniter+koala-planner@v26.9.10-htn-fond-koala-episode",
+      "revision": "beam4pm=a3bd35e;ferroplan=1ac9520;ex4pm=099c34d607474dda48d6b15ad599c2f4bf54e712;ash_ex4pm=7c24a0936393f79b5c9aa338dc7a0c1aa93e14cd;ggen-marketplace=bc3898ba38c197a6f9f732cc5e95d4371472e882;ggen_igniter=25cda72b693c04a4e365446da94f7a8302ec4f12;koala-planner=6623ec2",
+      "note": "PARTIAL: Phase 1 traced htn_plan/fond_policy across all 7 repos. Falsifier hit: beam4pm's native/ferroplan/crates/ferroplan-hddl (implements HDDL, commit 0434f2d) vs the separate top-level /Users/sac/ferroplan repo (rejects HDDL by direct decision, b1747fb) -- the naming collision between the crate and the repo was never reconciled by Phase 1."
+    },
+    "A": {
+      "subject": "beam4pm+ferroplan+ex4pm+ash_ex4pm+ggen-marketplace+ggen_igniter+koala-planner@v26.9.10-htn-fond-koala-episode",
+      "revision": "beam4pm=a3bd35e;ferroplan=1ac9520;ex4pm=099c34d607474dda48d6b15ad599c2f4bf54e712;ash_ex4pm=7c24a0936393f79b5c9aa338dc7a0c1aa93e14cd;ggen-marketplace=bc3898ba38c197a6f9f732cc5e95d4371472e882;ggen_igniter=25cda72b693c04a4e365446da94f7a8302ec4f12;koala-planner=6623ec2",
+      "note": "PARTIAL: two real, re-runnable pre-declared falsifiers confirmed -- beam4pm scripts/gate_no_koala_dependency_check.sh (re-run live in this session, PASSED, three grep passes) and ash_ex4pm test/integration/beam4pm_via_ex4pm_test.exs:90-100 (canary refusal test, refute Beam4pm.supports?(:htn_plan, [])). Not present ecosystem-wide: ferroplan/ex4pm/ggen-marketplace/ggen_igniter have no pre-declared falsifier for the planning claim specifically, only commit-message narrative."
+    },
+    "D": {
+      "subject": "beam4pm+ferroplan+ex4pm+ash_ex4pm+ggen-marketplace+ggen_igniter+koala-planner@v26.9.10-htn-fond-koala-episode",
+      "revision": "beam4pm=a3bd35e;ferroplan=1ac9520;ex4pm=099c34d607474dda48d6b15ad599c2f4bf54e712;ash_ex4pm=7c24a0936393f79b5c9aa338dc7a0c1aa93e14cd;ggen-marketplace=bc3898ba38c197a6f9f732cc5e95d4371472e882;ggen_igniter=25cda72b693c04a4e365446da94f7a8302ec4f12;koala-planner=6623ec2",
+      "note": "PARTIAL: real runnable artifacts confirmed in beam4pm (regression test refuses_a_shortcut_action_unreachable_via_any_decomposition, WASM dispatch arms c96cabc), ash_ex4pm (generated automated_planning.ex), ggen-marketplace (real beam4pm_pddl.domain/problem.pddl.tmpl templates, 1ca297a). Falsifier hit: ggen-marketplace's planning-federation-pack (92cbd4c) names HTN only in pack.toml prose with zero matching template/query/ontology implementation. 'ex4pm 13/13' and 'ash_ex4pm 61/0' test-count claims are author-asserted in commit messages, not independently re-run by this investigation."
+    },
+    "S": {
+      "subject": "beam4pm+ferroplan+ex4pm+ash_ex4pm+ggen-marketplace+ggen_igniter+koala-planner@v26.9.10-htn-fond-koala-episode",
+      "revision": "beam4pm=a3bd35e;ferroplan=1ac9520;ex4pm=099c34d607474dda48d6b15ad599c2f4bf54e712;ash_ex4pm=7c24a0936393f79b5c9aa338dc7a0c1aa93e14cd;ggen-marketplace=bc3898ba38c197a6f9f732cc5e95d4371472e882;ggen_igniter=25cda72b693c04a4e365446da94f7a8302ec4f12;koala-planner=6623ec2",
+      "note": "PARTIAL: real re-run commands with pasted output exist -- koala-dependency grep (zero hits, re-executed twice live in this session across manifests/lockfiles/source/subprocess-shellouts, plus the repo's own gate_no_koala_dependency_check.sh PASSED live), ferroplan-repo PDDL3 :constraints refusal test re-run live (cargo test -p ferroplan --test constraints: 2/2 passed), ggen_igniter determinism re-run live (two independent mix ggen_igniter.sync runs, diff -r exit 0), gh run list CI-status pulls per repo, and a live verify_bfcc.py --receipt run against a synthetic missing-inventory fixture (REFUSED:MISSING_INVENTORY, exit 2, matches test_bfcc.py). 'ex4pm 13/13', 'ash_ex4pm 61/0', 'mix compile --warnings-as-errors clean' remain unverified author-claims -- correctly excluded from this gate's supporting evidence, not admitted as fact."
+    },
+    "Sigma": {
+      "subject": "beam4pm+ferroplan+ex4pm+ash_ex4pm+ggen-marketplace+ggen_igniter+koala-planner@v26.9.10-htn-fond-koala-episode",
+      "revision": "beam4pm=a3bd35e;ferroplan=1ac9520;ex4pm=099c34d607474dda48d6b15ad599c2f4bf54e712;ash_ex4pm=7c24a0936393f79b5c9aa338dc7a0c1aa93e14cd;ggen-marketplace=bc3898ba38c197a6f9f732cc5e95d4371472e882;ggen_igniter=25cda72b693c04a4e365446da94f7a8302ec4f12;koala-planner=6623ec2",
+      "note": "FALSIFIER HIT, evidence real: each pairwise link (ontology->generation in ex4pm b21aa28 and beam4pm c96cabc; generation->runtime-exposure within beam4pm and ex4pm alone; runtime-exposure->verification within ex4pm e9ddf01 and ash_ex4pm 7c24a09 alone) is confirmed repo-locally. The full four-stage cross-repo chain is confirmed NOT wired at this revision by ash_ex4pm's own test: refute function_exported?(AshEx4pm.AutomatedPlanning, :htn_plan, 2) and refute Beam4pm.supports?(:htn_plan, []) (7c24a09), with commit 59eb76f stating the admission mechanism projects zero live planning operations upstream. No composed cross-repo integration test invoking beam4pm's htn_plan through ex4pm's admission layer through ash_ex4pm's generated Ash resource exists or was run."
+    },
+    "W": {
+      "subject": "beam4pm+ferroplan+ex4pm+ash_ex4pm+ggen-marketplace+ggen_igniter+koala-planner@v26.9.10-htn-fond-koala-episode",
+      "revision": "beam4pm=a3bd35e;ferroplan=1ac9520;ex4pm=099c34d607474dda48d6b15ad599c2f4bf54e712;ash_ex4pm=7c24a0936393f79b5c9aa338dc7a0c1aa93e14cd;ggen-marketplace=bc3898ba38c197a6f9f732cc5e95d4371472e882;ggen_igniter=25cda72b693c04a4e365446da94f7a8302ec4f12;koala-planner=6623ec2",
+      "note": "UNCONFIRMED, thin: koala-planner is a real pre-existing artifact (ANU-authored, 158 real commits, /Users/sac/koala-planner HEAD 6623ec2) confirmed independently. beam4pm's design doc 692224f (dated 2026-09-09) proposes wiring koala-planner in, one day before beam4pm's own HTN/FOND commits (c0ea01d, 0434f2d) -- suggestive timing only, not a confirmed discovery/inventory act. koala-planner's own history has zero references to beam4pm/ferroplan/ex4pm (grep-confirmed). No repo produced an explicit itemized dependency/cost/resource inventory artifact for this claim. This gate reads UNCONFIRMED, not ALIVE."
+    },
+    "I": {
+      "subject": "beam4pm+ferroplan+ex4pm+ash_ex4pm+ggen-marketplace+ggen_igniter+koala-planner@v26.9.10-htn-fond-koala-episode",
+      "revision": "beam4pm=a3bd35e;ferroplan=1ac9520;ex4pm=099c34d607474dda48d6b15ad599c2f4bf54e712;ash_ex4pm=7c24a0936393f79b5c9aa338dc7a0c1aa93e14cd;ggen-marketplace=bc3898ba38c197a6f9f732cc5e95d4371472e882;ggen_igniter=25cda72b693c04a4e365446da94f7a8302ec4f12;koala-planner=6623ec2",
+      "note": "PARTIAL, real contradiction found: real typed refusal commits exist (beam4pm ast.rs:16-19/parser.rs:754-755,826-827 ParseError::UnsupportedConstruct for :durative-action/:functions, backed by test refuses_durative_action_section_with_typed_error; ferroplan docs/roadmap-0.17.md:15-18 refuses HTN/HDDL/RDDL by direct decision, b1747fb; ash_ex4pm's canary test is itself a refusal-by-design). Direct contradiction within the evidence: beam4pm implements HDDL (ferroplan-hddl crate) while ferroplan refuses HDDL as a permanent non-goal -- a single unqualified ecosystem-level standing on HDDL scope would be self-contradicted. Per-repo narrowly scoped claims are clean; a blanket ecosystem claim is not."
+    }
+  },
+  "falsifier_per_gate": {
+    "C": "Checked whether Phase 1's evidence covered the full downstream dependency/consequence graph, not just local diffs, for the htn_plan/fond_policy concept across all 7 repos; falsifier hit on the beam4pm ferroplan-hddl-crate vs ferroplan-repo naming collision, left unreconciled.",
+    "A": "Checked for a pre-declared, re-runnable falsifier/acceptance command per subject rather than post-hoc narrative; live-re-ran beam4pm's scripts/gate_no_koala_dependency_check.sh in this session (PASSED) and confirmed ash_ex4pm's canary test exists at test/integration/beam4pm_via_ex4pm_test.exs:90-100; four of six other repos have no such pre-declared falsifier for this specific claim.",
+    "D": "Checked whether evidence is a runnable artifact (code+test+receipt) vs. prose-only; live falsifier execution confirmed ferroplan's PDDL3 :constraints refusal test passes for real (cargo test -p ferroplan --test constraints, 2/2 ok); ggen-marketplace's planning-federation-pack HTN claim confirmed prose-only (zero matching template/query/ontology content) -- a direct falsifier hit for that sub-claim.",
+    "S": "Checked whether each claim is backed by real re-run command output vs. a described/assumed result; four falsifiers were executed live in this session (verify_bfcc.py missing-inventory receipt, koala-dependency grep sweep across manifests+source+subprocess-shellouts x2, ferroplan PDDL3-constraints test re-run, ggen_igniter determinism double-run with diff -r exit 0) and all produced real pasted output; several test-count claims (13/13, 61/0) remain unverified author assertions and were excluded from this gate's supporting evidence rather than admitted.",
+    "Sigma": "Checked for a real composed-vs-isolated cross-repo integration test proving the full 4-stage chain (ontology->generation->runtime-exposure->verification) actually runs end-to-end across repos, not just within one repo; falsifier hit -- no such composed test exists, and ash_ex4pm's own test proves the chain not-yet-wired at this revision.",
+    "W": "Checked for an explicit itemized dependency/cost/resource inventory document backing a 'koala-planner discovered and absorbed' claim; none found in any repo -- only a one-day-prior design-doc timing coincidence (beam4pm 692224f) and koala-planner's own history showing zero awareness of the ecosystem. Reads UNCONFIRMED, not a clean pass.",
+    "I": "Checked for a gap between any claimed standing and its backing evidence; found a real, direct contradiction (beam4pm implements HDDL, ferroplan refuses HDDL as a non-goal) that would trip this falsifier if asserted as a single unqualified ecosystem-wide HDDL-scope claim -- per-repo narrow claims remain I-clean."
+  },
+  "contradictions": [
+    "beam4pm's native/ferroplan/crates/ferroplan-hddl crate implements HDDL solving (commit 0434f2d) while the separate top-level /Users/sac/ferroplan repo explicitly rejects HTN/HDDL/RDDL as a permanent non-goal by direct decision (docs/roadmap-0.17.md:15-18, commit b1747fb) -- Phase 1 never reconciled whether the crate is a fork/vendor of that repo or an independently-named artifact.",
+    "ash_ex4pm's own test suite (test/integration/beam4pm_via_ex4pm_test.exs:90-100, and commit 59eb76f's message) asserts the opposite of a working end-to-end HTN/FOND composition: refute Beam4pm.supports?(:htn_plan, []) and refute function_exported?(AshEx4pm.AutomatedPlanning, :htn_plan, 2), i.e. the admission mechanism currently projects zero live planning operations."
+  ],
+  "omitted_gates": ["G", "E", "T"],
+  "resource_vector": {
+    "cpu_seconds": "UNKNOWN",
+    "tokens": "UNKNOWN",
+    "note": "No Phase-1 finding recorded a resource-cost measurement (tokens/compute/human time) for any subject revision; only qualitative commit-count/file-count facts exist, no denominator to compute a ratio against."
+  },
+  "eta_evidence": "UNKNOWN, not estimated. No Phase-1 finding pairs a measured resource cost with a verified capability delta. The closest resource-adjacent fact (beam4pm commit c96cabc regenerating 3 language facades from 1 ontology edit) has no recorded LOC diff, git diff --stat output, or time/token cost, and there is no second comparable episode to ratio against -- eta cannot be computed.",
+  "lambda_evidence": "UNKNOWN as a ratio; one real raw count exists. ex4pm's ontology rename b21aa28 (ferroplan_hierarchical_plan->htn_plan, ferroplan_fond_policy->fond_policy) regenerated 2 named downstream artifacts (lib/ex4pm/engine/beam4pm.ex route table, test/engine_beam4pm_test.exs) per its own commit message -- a real 1-fact-in -> 2-artifacts-out relationship, but Phase 1 never measured the size of the ontology diff itself, so lambda = downstream/delta-canonical cannot be computed as a ratio, only the raw count is stated, and even that is from a commit message, not a re-run diff.",
+  "sigma_evidence": "FALSIFIER HIT (not corroborated as synergy): each pairwise link in the 4-stage chain (ontology->generation, generation->runtime-exposure, runtime-exposure->verification) is confirmed repo-locally in Phase 1, but no composed cross-repo integration test connects them end-to-end, and ash_ex4pm's own canary test (refute Beam4pm.supports?(:htn_plan, []); refute function_exported?(AshEx4pm.AutomatedPlanning, :htn_plan, 2), commit 7c24a09/59eb76f) proves the full chain is explicitly not-yet-wired at this revision. This is real, run evidence against a composed-behavior claim, not an assumed result.",
+  "unresolved_gaps": [
+    "Gate G (Generalized Principles): Phase 1 never examined whether ex4pmb:htn_plan/bpm:opVerificationClass/ex4pmb:AdmittedBeam4pmService duplicate an existing public-ontology (prov:/pplan:/earl:/skos:) term's meaning vs. genuinely new concepts -- no evidence gathered, cannot be scored beyond UNKNOWN.",
+    "Gate E (Ephemeralization): no measured resource-cost/capability-delta ratio recorded anywhere in Phase 1 for any subject.",
+    "Gate T (Trimtab): no leverage quantity (downstream-consequence-count vs. canonical-change-size) recorded anywhere in Phase 1; only a raw, unratioed count exists (see lambda_evidence).",
+    "Gate W: no itemized dependency/cost/resource inventory artifact found for the koala-planner-discovery claim; only suggestive one-day design-doc timing.",
+    "The beam4pm ferroplan-hddl-crate vs. /Users/sac/ferroplan-repo naming/scope collision on HDDL support is unreconciled.",
+    "13/13 (ex4pm e9ddf01) and 61/0 (ash_ex4pm 7c24a09) test-pass counts, and ex4pm's 'mix compile --warnings-as-errors clean' claim, are author-asserted in commit messages and were not independently re-run by this investigation.",
+    "No repo's CI was confirmed green at its exact current HEAD: ggen-marketplace's CI is confirmed FAILING at exact HEAD (bc3898ba3); beam4pm's most recently evaluated commit (one before HEAD) shows 3 failing workflows; ex4pm's most recent main-branch CI run shows failure; ferroplan shows a repeated-failure trend across its last 10 runs; ash_ex4pm has no CI configured at all; exact-HEAD CI status is unconfirmed (no run yet dispatched) for beam4pm, ex4pm, and ggen_igniter."
+  ],
+  "standing": "BFCC-PARTIAL"
+}
