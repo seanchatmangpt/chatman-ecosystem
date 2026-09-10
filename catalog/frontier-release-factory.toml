@@ -1,0 +1,210 @@
+schema = "chatman.frontier-release-factory.v1"
+version = "26.9.9"
+subject = "SELF"
+purpose = "Continuously invert frontier announcements into bounded benchmark opportunities, manufactured systems, exact-subject evidence, and earned releases without granting ambient DO authority"
+
+[standing]
+allowed = ["UNKNOWN", "PARTIAL_ALIVE", "ALIVE", "BLOCKED", "BUILD_BROKEN", "UNSUPPORTED"]
+
+[invariants]
+source_release_is_observation = true
+working_backwards_release_is_candidate = true
+llm_output_is_candidate_only = true
+capability_is_not_authority = true
+select_construct_do_separate = true
+zero_unreceipted_actuation = true
+generated_projection_is_not_canonical = true
+exact_subject_required = true
+earned_claim_requires_alive_evidence = true
+replay_never_reactuates_do = true
+reuse_compose_extend_before_invent = true
+
+terminal_refusals = [
+  "SOURCE_RELEASE_AS_AUTHORITY",
+  "LLM_GRANTED_DO_AUTHORITY",
+  "WORKING_BACKWARDS_AS_EARNED",
+  "UNRECEIPTED_REPOSITORY_CREATION",
+  "UNRECEIPTED_PUBLICATION",
+  "GENERATED_ARTIFACT_EDITED_AS_SOURCE",
+  "EARNED_CLAIM_WITHOUT_ALIVE_EVIDENCE",
+  "REPLAY_REACTUATED_DO",
+  "SILENT_SUBJECT_SUBSTITUTION",
+]
+
+[receipt]
+required_fields = [
+  "source_identity",
+  "source_digest",
+  "opportunity_identity",
+  "target_repository",
+  "implementation_subject",
+  "verifier_identities",
+  "execution_receipts",
+  "replay_references",
+  "claim_standing",
+]
+
+[[repository_role]]
+id = "control-plane"
+repository = "seanchatmangpt/chatman-ecosystem"
+responsibility = "routing, policy, standing, dependency graph, authority ceiling"
+
+[[repository_role]]
+id = "manufacturing-packs"
+repository = "seanchatmangpt/ggen-marketplace"
+responsibility = "canonical reusable frontier-release ontology, gates and projections"
+
+[[repository_role]]
+id = "product-surface"
+repository = "seanchatmangpt/xaas"
+responsibility = "persistent source-release, opportunity and launch-packet operator surface"
+
+[[repository_role]]
+id = "process-runtime"
+repository = "seanchatmangpt/beam4pm"
+responsibility = "generated BEAM process records and runtime representation"
+
+[[repository_role]]
+id = "process-intelligence"
+repository = "seanchatmangpt/ex4pm"
+responsibility = "conformance, evidence intersection and process analytics"
+
+[[repository_role]]
+id = "deterministic-manufacturer"
+repository = "seanchatmangpt/ggen"
+responsibility = "deterministic ontology projection"
+
+[[repository_role]]
+id = "ash-manufacturer"
+repository = "seanchatmangpt/ggen_igniter"
+responsibility = "framework-native Ash/Igniter manufacture"
+
+[[stage]]
+id = "observe"
+ordinal = 1
+class = "OBSERVE"
+broker_required = false
+receipt_required = false
+outputs = ["source identity", "source digest", "publisher", "publication time", "raw observed claims"]
+
+[[stage]]
+id = "extract"
+ordinal = 2
+class = "CONSTRUCT"
+broker_required = false
+receipt_required = false
+outputs = ["normalized claim candidates", "reported metrics", "reported costs", "limitations"]
+
+[[stage]]
+id = "fence"
+ordinal = 3
+class = "SELECT"
+broker_required = false
+receipt_required = false
+outputs = ["system boundary", "prior art", "existing ecosystem equivalents", "UNKNOWN set"]
+
+[[stage]]
+id = "invert"
+ordinal = 4
+class = "SELECT"
+broker_required = false
+receipt_required = false
+outputs = ["reuse/compose/extend/invent disposition", "bounded opportunity"]
+
+[[stage]]
+id = "specify"
+ordinal = 5
+class = "CONSTRUCT"
+broker_required = false
+receipt_required = true
+outputs = ["working-backwards release", "acceptance contract", "falsifiers", "target repository decision"]
+
+[[stage]]
+id = "create-repository"
+ordinal = 6
+class = "DO"
+broker_required = true
+receipt_required = true
+outputs = ["repository identity receipt"]
+
+[[stage]]
+id = "manufacture"
+ordinal = 7
+class = "CONSTRUCT"
+broker_required = false
+receipt_required = true
+outputs = ["generated or bounded handwritten implementation candidate", "source/manufacturer identity"]
+
+[[stage]]
+id = "verify"
+ordinal = 8
+class = "OBSERVE"
+broker_required = false
+receipt_required = true
+outputs = ["exact-subject verifier results", "negative controls", "replay references", "claim standing"]
+
+[[stage]]
+id = "publish"
+ordinal = 9
+class = "DO"
+broker_required = true
+receipt_required = true
+outputs = ["earned release", "publication receipt"]
+
+[[route]]
+problem_class = "feed-observation"
+route = "deterministic RSS/API parser"
+candidate_only = false
+authority = "OBSERVE"
+
+[[route]]
+problem_class = "semantic-unknown"
+route = "LLM"
+candidate_only = true
+authority = "NONE"
+
+[[route]]
+problem_class = "ontology-projection"
+route = "ggen"
+candidate_only = false
+authority = "CONSTRUCT"
+
+[[route]]
+problem_class = "ash-framework-manufacture"
+route = "ggen_igniter"
+candidate_only = false
+authority = "CONSTRUCT"
+
+[[route]]
+problem_class = "process-intelligence"
+route = "ex4pm"
+candidate_only = false
+authority = "OBSERVE"
+
+[[route]]
+problem_class = "beam-process-runtime"
+route = "beam4pm"
+candidate_only = false
+authority = "CONSTRUCT"
+
+[[route]]
+problem_class = "repository-creation"
+route = "gh CLI through BRCE"
+candidate_only = false
+authority = "DO"
+
+[[route]]
+problem_class = "publication"
+route = "release publisher through BRCE"
+candidate_only = false
+authority = "DO"
+
+[release_contract]
+working_backwards_status = "CANDIDATE"
+earned_status_requires = "ALIVE"
+earned_claim_set = "working_backwards_claims INTERSECT alive_evidence_claims"
+
+[benchmark]
+primary_metric = "verified externally relevant capabilities / novel semantic reasoning purchased"
+secondary_metric = "elapsed time from external release observation to replayable earned release"
+falsifier = "for the same bounded opportunity, the factory fails to reduce repeated semantic recomputation or publishes a claim without independently replayable evidence"
