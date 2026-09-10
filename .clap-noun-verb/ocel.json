@@ -1,0 +1,65 @@
+{
+  "objectTypes": [
+    {
+      "name": "command",
+      "attributes": []
+    },
+    {
+      "name": "process",
+      "attributes": []
+    }
+  ],
+  "eventTypes": [
+    {
+      "name": "cli_invocation",
+      "attributes": []
+    }
+  ],
+  "objects": [
+    {
+      "id": "doctor:check",
+      "type": "command",
+      "attributes": []
+    },
+    {
+      "id": "proc-50966-18cdcfbbc956c968",
+      "type": "process",
+      "attributes": []
+    }
+  ],
+  "events": [
+    {
+      "id": "evt-18cdcfbbc956cd50-0",
+      "type": "cli_invocation",
+      "time": "2026-08-21T11:50:32.579714+00:00",
+      "attributes": [
+        {
+          "name": "noun",
+          "value": "doctor"
+        },
+        {
+          "name": "verb",
+          "value": "check"
+        },
+        {
+          "name": "success",
+          "value": true
+        },
+        {
+          "name": "duration_ms",
+          "value": 0
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "doctor:check",
+          "qualifier": "regards"
+        },
+        {
+          "objectId": "proc-50966-18cdcfbbc956c968",
+          "qualifier": "performed_by"
+        }
+      ]
+    }
+  ]
+}

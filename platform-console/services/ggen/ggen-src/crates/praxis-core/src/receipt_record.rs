@@ -463,11 +463,11 @@ mod tests {
     /// puzzling rather than obviously explained -- the leading remaining
     /// hypothesis is that `chain_from_frame`'s `OcelCausalReceipt::genesis`
     /// + single-frame `.chain()` replay does not reproduce whatever
-    /// internal state the *live*, multi-file `ggen sync run` accumulated
-    /// across its real (transitively multi-object) emission path, even
-    /// though both paths agree on the single scalar `prev_chain_hash`.
-    /// Not fixed -- `#[ignore]`d so `cargo test` stays green while this is
-    /// tracked; un-ignore once fixed, this must then pass.
+    ///   internal state the *live*, multi-file `ggen sync run` accumulated
+    ///   across its real (transitively multi-object) emission path, even
+    ///   though both paths agree on the single scalar `prev_chain_hash`.
+    ///   Not fixed -- `#[ignore]`d so `cargo test` stays green while this is
+    ///   tracked; un-ignore once fixed, this must then pass.
     #[test]
     #[ignore = "FM-CHAIN-014, not yet fixed -- see docs/jira/2026-08-11-GGEN-RECEIPT-CHAIN-VERIFY-MISMATCH.md"]
     fn reproduce_the_real_autofde_lab_fm_chain_014_failure() {
