@@ -1,0 +1,233 @@
+@prefix bfcc: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/bfcc#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix pplan: <http://purl.org/net/p-plan#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+# compatibility is Boolean, never an averaged score
+# no standing transfers from a related or stale subject
+<https://seanchatmangpt.github.io/chatman-ecosystem/ontology/bfcc> a owl:Ontology ;
+    dcterms:title "Buckminster Fuller Comprehensive Compatibility (BFCC) vocabulary" ;
+    dcterms:description "Thin Chatman remainder over public provenance, planning, and verification vocabularies for BFCC's ten gates, their canon-to-engineering projection, and conformance receipt shape. compatibility is Boolean, never an averaged score. no standing transfers from a related or stale subject." ;
+    dcterms:conformsTo prov: , pplan: , sh: , earl: , skos: .
+
+# --- Classes -----------------------------------------------------------
+
+bfcc:CanonPrinciple a owl:Class ;
+    skos:definition "A real, cited Fuller-canon source phrase a gate projects from -- the canon side of the projection, distinct from its engineering realization." .
+
+bfcc:EngineeringProjection a owl:Class ;
+    skos:definition "The distinct engineering-practice realization a gate enforces; never identical in wording or scope to the CanonPrinciple it projects from." .
+
+bfcc:FalsifierCriterion a owl:Class ;
+    rdfs:subClassOf earl:TestCase ;
+    skos:definition "A machine-addressable observation or test condition whose satisfaction defeats a gate's compatibility claim for a subject." .
+
+bfcc:Gate a owl:Class ;
+    skos:definition "One of BFCC's ten canon-letter gates (C/A/D/S/G/Sigma/E/T/W/I); a Gate individual without a bfcc:projectsFrom edge to a bfcc:CanonPrinciple is malformed." .
+
+bfcc:ConformanceReceipt a owl:Class ;
+    rdfs:subClassOf earl:Assertion ;
+    skos:definition "A per-subject evidence record of gate-by-gate BFCC evaluation; compatibility is Boolean, never an averaged score, and standing never transfers from a related or stale subject." .
+
+bfcc:ResourceVector a owl:Class ;
+    skos:definition "A measured resource-consumption vector (ephemeralization/trimtab/synergy quantities) attached to a gate evaluation, distinct from the Boolean compatibility verdict itself." .
+
+# --- Properties ----------------------------------------------------------
+
+bfcc:projectsFrom a owl:ObjectProperty ;
+    rdfs:domain bfcc:Gate ;
+    rdfs:range bfcc:CanonPrinciple ;
+    skos:definition "Structural enforcement of 'our engineering practice != Fuller said this': binds a Gate to the CanonPrinciple it derives from without collapsing into it." .
+
+bfcc:hasFalsifier a owl:ObjectProperty ;
+    rdfs:domain bfcc:Gate ;
+    rdfs:range bfcc:FalsifierCriterion ;
+    skos:definition "Binds a Gate to the FalsifierCriterion(s) that can defeat a compatibility claim against it." .
+
+bfcc:hasEngineeringProjection a owl:ObjectProperty ;
+    rdfs:domain bfcc:Gate ;
+    rdfs:range bfcc:EngineeringProjection ;
+    skos:definition "Binds a Gate to its distinct EngineeringProjection, kept separate from bfcc:projectsFrom's CanonPrinciple target." .
+
+bfcc:ephemeralizationRatio a owl:DatatypeProperty ;
+    rdfs:domain bfcc:ResourceVector ;
+    rdfs:range xsd:decimal ;
+    skos:definition "Measured do-more-with-less ratio for a gate evaluation (Ephemeralization gate resource quantity)." .
+
+bfcc:trimtabLeverage a owl:DatatypeProperty ;
+    rdfs:domain bfcc:ResourceVector ;
+    rdfs:range xsd:decimal ;
+    skos:definition "Measured small-input/large-effect leverage quantity for a gate evaluation (Trimtab gate resource quantity)." .
+
+bfcc:synergyGain a owl:DatatypeProperty ;
+    rdfs:domain bfcc:ResourceVector ;
+    rdfs:range xsd:decimal ;
+    skos:definition "Measured whole-exceeds-parts gain quantity for a gate evaluation (Synergy gate resource quantity)." .
+
+bfcc:subject a owl:DatatypeProperty ; rdfs:domain bfcc:ConformanceReceipt ; rdfs:range xsd:string .
+bfcc:revision a owl:DatatypeProperty ; rdfs:domain bfcc:ConformanceReceipt ; rdfs:range xsd:string .
+bfcc:standing a owl:ObjectProperty ; rdfs:domain bfcc:ConformanceReceipt ; rdfs:range skos:Concept .
+bfcc:canonSources a owl:DatatypeProperty ; rdfs:domain bfcc:ConformanceReceipt ; rdfs:range xsd:string .
+bfcc:gatesEvaluated a owl:ObjectProperty ; rdfs:domain bfcc:ConformanceReceipt ; rdfs:range bfcc:Gate .
+bfcc:falsifierPerGate a owl:ObjectProperty ; rdfs:domain bfcc:ConformanceReceipt ; rdfs:range bfcc:FalsifierCriterion .
+
+# --- Standing scheme (closed vocabulary) --------------------------------
+
+bfcc:StandingScheme a skos:ConceptScheme ; skos:prefLabel "BFCC conformance standing" .
+bfcc:BFCC-CANDIDATE a skos:Concept ; skos:inScheme bfcc:StandingScheme .
+bfcc:BFCC-PARTIAL a skos:Concept ; skos:inScheme bfcc:StandingScheme .
+bfcc:BFCC-ALIVE a skos:Concept ; skos:inScheme bfcc:StandingScheme .
+bfcc:BFCC-BLOCKED a skos:Concept ; skos:inScheme bfcc:StandingScheme .
+bfcc:BFCC-UNKNOWN a skos:Concept ; skos:inScheme bfcc:StandingScheme .
+
+# --- CanonPrinciple individuals (one per gate; real Fuller-canon phrase) --
+
+bfcc:ComprehensivePrinciple a bfcc:CanonPrinciple ;
+    rdfs:label "Comprehensive anticipatory design science" ;
+    skos:definition "Fuller: design must account for the total system of consequences, not an isolated part -- 'comprehensive' as opposed to specialized, partial problem-solving." .
+
+bfcc:AnticipatoryPrinciple a bfcc:CanonPrinciple ;
+    rdfs:label "Anticipatory design science" ;
+    skos:definition "Fuller: design science must anticipate needs and consequences before crisis forces reactive, un-designed responses." .
+
+bfcc:DesignSciencePrinciple a bfcc:CanonPrinciple ;
+    rdfs:label "Design science revolution" ;
+    skos:definition "Fuller: solve humanity's problems through design and technology (the 'design science revolution') rather than through political or economic reform alone." .
+
+bfcc:ScientificPrinciple a bfcc:CanonPrinciple ;
+    rdfs:label "Science of generalized principles" ;
+    skos:definition "Fuller: derive practice from generalized, experimentally verifiable principles, not ad hoc convention or special-case rules." .
+
+bfcc:GeneralizedPrinciplesPrinciple a bfcc:CanonPrinciple ;
+    rdfs:label "Generalized principles" ;
+    skos:definition "Fuller: nature operates by a small set of generalized principles (e.g. tensegrity, vector equilibrium) that hold across scales and special cases." .
+
+bfcc:SynergyPrinciple a bfcc:CanonPrinciple ;
+    rdfs:label "Synergy" ;
+    skos:definition "Fuller: the behavior of whole systems is unpredicted by the behavior of their parts taken separately -- synergetics." .
+
+bfcc:EphemeralizationPrinciple a bfcc:CanonPrinciple ;
+    rdfs:label "Ephemeralization" ;
+    skos:definition "Fuller: 'doing more and more with less and less until eventually you can do everything with nothing' -- accelerating resource efficiency." .
+
+bfcc:TrimtabPrinciple a bfcc:CanonPrinciple ;
+    rdfs:label "Trim tab" ;
+    skos:definition "Fuller: a small, well-placed intervention (the trim tab on a ship's rudder) can leverage disproportionate systemic change -- 'call me Trimtab.'" .
+
+bfcc:WorldGamePrinciple a bfcc:CanonPrinciple ;
+    rdfs:label "World Game / inventory of world resources" ;
+    skos:definition "Fuller: make a comprehensive, continuously updated inventory of world resources and needs the basis for allocation decisions (the World Game)." .
+
+bfcc:IntegrityPrinciple a bfcc:CanonPrinciple ;
+    rdfs:label "Integrity" ;
+    skos:definition "Fuller: 'integrity is the essence of everything successful' -- structural and ethical wholeness with no exploitable gap between claim and behavior." .
+
+# --- EngineeringProjection individuals (distinct from the CanonPrinciple) --
+
+bfcc:ComprehensiveProjection a bfcc:EngineeringProjection ;
+    rdfs:label "Comprehensive-scope review gate" ;
+    skos:definition "Engineering practice: a change is reviewed against its full downstream dependency and consequence graph before merge, not just the diff's local scope." .
+
+bfcc:AnticipatoryProjection a bfcc:EngineeringProjection ;
+    rdfs:label "Anticipatory failure-mode gate" ;
+    skos:definition "Engineering practice: failure modes and load conditions are enumerated and tested before production incidence, via falsifiers and pre-declared acceptance commands." .
+
+bfcc:DesignScienceProjection a bfcc:EngineeringProjection ;
+    rdfs:label "Falsifiable-design gate" ;
+    skos:definition "Engineering practice: designs ship as testable, falsifiable artifacts (code + tests + receipts), not as unverified prose proposals." .
+
+bfcc:ScientificProjection a bfcc:EngineeringProjection ;
+    rdfs:label "Reproducible-verification gate" ;
+    skos:definition "Engineering practice: claims are backed by a re-runnable command whose real output is pasted, not a description of expected output." .
+
+bfcc:GeneralizedPrinciplesProjection a bfcc:EngineeringProjection ;
+    rdfs:label "Reusable-vocabulary gate" ;
+    skos:definition "Engineering practice: reuse a public ontology term (earl:/prov:/pplan:/skos:) before minting a new one; a new class exists only for a genuinely new concept." .
+
+bfcc:SynergyProjection a bfcc:EngineeringProjection ;
+    rdfs:label "Cross-component integration gate" ;
+    skos:definition "Engineering practice: integration tests exercise real collaborators together, since correct behavior of parts in isolation does not establish correct system behavior." .
+
+bfcc:EphemeralizationProjection a bfcc:EngineeringProjection ;
+    rdfs:label "Resource-efficiency ratio gate" ;
+    skos:definition "Engineering practice: a bfcc:ephemeralizationRatio is measured and recorded per subject revision, not asserted qualitatively." .
+
+bfcc:TrimtabProjection a bfcc:EngineeringProjection ;
+    rdfs:label "Minimal-leverage-change gate" ;
+    skos:definition "Engineering practice: prefer the smallest change with the largest verified effect; a bfcc:trimtabLeverage quantity is recorded per gate evaluation." .
+
+bfcc:WorldGameProjection a bfcc:EngineeringProjection ;
+    rdfs:label "Resource-inventory gate" ;
+    skos:definition "Engineering practice: dependencies, costs, and consumed resources for a subject are inventoried and cited, not left implicit." .
+
+bfcc:IntegrityProjection a bfcc:EngineeringProjection ;
+    rdfs:label "No-exploitable-gap gate" ;
+    skos:definition "Engineering practice: no gap between a claimed standing and the evidence backing it; a ConformanceReceipt with an unbacked standing claim is malformed." .
+
+# --- Gate individuals (10, one per canon letter) --------------------------
+
+bfcc:GateC a bfcc:Gate ;
+    rdfs:label "C -- Comprehensive" ;
+    skos:definition "The Comprehensive gate: a subject is evaluated against its full consequence and dependency scope, not an isolated fragment." ;
+    bfcc:projectsFrom bfcc:ComprehensivePrinciple ;
+    bfcc:hasEngineeringProjection bfcc:ComprehensiveProjection .
+
+bfcc:GateA a bfcc:Gate ;
+    rdfs:label "A -- Anticipatory" ;
+    skos:definition "The Anticipatory gate: failure modes are enumerated and falsified before they occur in production, not discovered reactively." ;
+    bfcc:projectsFrom bfcc:AnticipatoryPrinciple ;
+    bfcc:hasEngineeringProjection bfcc:AnticipatoryProjection .
+
+bfcc:GateD a bfcc:Gate ;
+    rdfs:label "D -- Design Science" ;
+    skos:definition "The Design Science gate: a subject ships as a falsifiable, testable artifact rather than an unverified proposal." ;
+    bfcc:projectsFrom bfcc:DesignSciencePrinciple ;
+    bfcc:hasEngineeringProjection bfcc:DesignScienceProjection .
+
+bfcc:GateS a bfcc:Gate ;
+    rdfs:label "S -- Science (Generalized Principles)" ;
+    skos:definition "The Science gate: claims are backed by a re-runnable, pasted verification command, not a described or assumed result." ;
+    bfcc:projectsFrom bfcc:ScientificPrinciple ;
+    bfcc:hasEngineeringProjection bfcc:ScientificProjection .
+
+bfcc:GateG a bfcc:Gate ;
+    rdfs:label "G -- Generalized Principles" ;
+    skos:definition "The Generalized Principles gate: a public vocabulary term is reused before a new one is minted; new classes exist only for genuinely new concepts." ;
+    bfcc:projectsFrom bfcc:GeneralizedPrinciplesPrinciple ;
+    bfcc:hasEngineeringProjection bfcc:GeneralizedPrinciplesProjection .
+
+bfcc:GateSigma a bfcc:Gate ;
+    rdfs:label "Sigma -- Synergy" ;
+    skos:definition "The Synergy gate: real cross-component integration is tested, since parts behaving correctly in isolation does not establish whole-system correctness." ;
+    bfcc:projectsFrom bfcc:SynergyPrinciple ;
+    bfcc:hasEngineeringProjection bfcc:SynergyProjection .
+
+bfcc:GateE a bfcc:Gate ;
+    rdfs:label "E -- Ephemeralization" ;
+    skos:definition "The Ephemeralization gate: a measured resource-efficiency ratio is recorded per subject revision, not asserted qualitatively." ;
+    bfcc:projectsFrom bfcc:EphemeralizationPrinciple ;
+    bfcc:hasEngineeringProjection bfcc:EphemeralizationProjection .
+
+bfcc:GateT a bfcc:Gate ;
+    rdfs:label "T -- Trimtab" ;
+    skos:definition "The Trimtab gate: the smallest verified-leverage change is preferred and its leverage quantity recorded." ;
+    bfcc:projectsFrom bfcc:TrimtabPrinciple ;
+    bfcc:hasEngineeringProjection bfcc:TrimtabProjection .
+
+bfcc:GateW a bfcc:Gate ;
+    rdfs:label "W -- World (Inventory)" ;
+    skos:definition "The World/inventory gate: dependencies, costs, and consumed resources are explicitly inventoried and cited, never left implicit." ;
+    bfcc:projectsFrom bfcc:WorldGamePrinciple ;
+    bfcc:hasEngineeringProjection bfcc:WorldGameProjection .
+
+bfcc:GateI a bfcc:Gate ;
+    rdfs:label "I -- Integrity" ;
+    skos:definition "The Integrity gate: no gap between a claimed standing and the evidence backing it; an unbacked standing claim is malformed, not merely weak." ;
+    bfcc:projectsFrom bfcc:IntegrityPrinciple ;
+    bfcc:hasEngineeringProjection bfcc:IntegrityProjection .

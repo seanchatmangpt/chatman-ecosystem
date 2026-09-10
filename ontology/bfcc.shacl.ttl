@@ -1,0 +1,52 @@
+@prefix bfcc: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/bfcc#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+# compatibility is Boolean, never an averaged score
+# no standing transfers from a related or stale subject
+# Admission membrane only. One sh:NodeShape per bfcc.ttl class -- 1:1, no
+# orphan shape, no unshaped class.
+
+bfcc:GateShape a sh:NodeShape ;
+    sh:targetClass bfcc:Gate ;
+    sh:property [ sh:path bfcc:projectsFrom ; sh:minCount 1 ; sh:maxCount 1 ; sh:class bfcc:CanonPrinciple ] ;
+    sh:property [ sh:path skos:definition ; sh:minCount 1 ] .
+
+bfcc:CanonPrincipleShape a sh:NodeShape ;
+    sh:targetClass bfcc:CanonPrinciple ;
+    sh:property [ sh:path skos:definition ; sh:minCount 1 ] .
+
+bfcc:EngineeringProjectionShape a sh:NodeShape ;
+    sh:targetClass bfcc:EngineeringProjection ;
+    sh:property [ sh:path skos:definition ; sh:minCount 1 ] .
+
+bfcc:FalsifierCriterionShape a sh:NodeShape ;
+    sh:targetClass bfcc:FalsifierCriterion ;
+    sh:property [ sh:path skos:definition ; sh:minCount 1 ] .
+
+bfcc:ResourceVectorShape a sh:NodeShape ;
+    sh:targetClass bfcc:ResourceVector ;
+    sh:property [ sh:path bfcc:ephemeralizationRatio ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
+    sh:property [ sh:path bfcc:trimtabLeverage ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
+    sh:property [ sh:path bfcc:synergyGain ; sh:maxCount 1 ; sh:datatype xsd:decimal ] .
+
+# ConformanceReceipt: compatibility is Boolean, never an averaged score; no
+# standing transfers from a related or stale subject -- subject/revision are
+# mandatory so a receipt can never be read as applying to a different or
+# stale subject than the one it was issued for.
+bfcc:ConformanceReceiptShape a sh:NodeShape ;
+    sh:targetClass bfcc:ConformanceReceipt ;
+    dcterms:description "ALIVE-equivalent (BFCC-ALIVE) requires external exact-subject observed evaluation evidence for every gate; this shape cannot promote standing. compatibility is Boolean, never an averaged score." ;
+    sh:property [ sh:path bfcc:subject ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path bfcc:revision ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [
+        sh:path bfcc:standing ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in ( bfcc:BFCC-CANDIDATE bfcc:BFCC-PARTIAL bfcc:BFCC-ALIVE bfcc:BFCC-BLOCKED bfcc:BFCC-UNKNOWN )
+    ] ;
+    sh:property [ sh:path bfcc:canonSources ; sh:minCount 1 ] ;
+    sh:property [ sh:path bfcc:gatesEvaluated ; sh:minCount 1 ; sh:class bfcc:Gate ] ;
+    sh:property [ sh:path bfcc:falsifierPerGate ; sh:minCount 1 ; sh:class bfcc:FalsifierCriterion ] .
