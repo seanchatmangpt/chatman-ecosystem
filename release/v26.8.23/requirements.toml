@@ -1,0 +1,67 @@
+[release_requirements]
+version = "26.8.23"
+required_gates = [
+  "exact_subject",
+  "process_intelligence_methodology",
+  "deterministic_manufacture",
+  "independent_verification",
+  "receipt_replay",
+  "brce_only_do",
+  "failure_dominance",
+]
+
+[[requirements]]
+id = "PI-EXACT-SUBJECT"
+subject = "seanchatmangpt/chatman-ecosystem@dc8f2370749925cc400a7a57f1dd4545cae72974"
+standing = "ALIVE"
+authority = ["OBSERVE", "SELECT", "CONSTRUCT", "VERIFY"]
+falsifier = "short, mutable, or mismatched subject identity is refused"
+
+[[requirements]]
+id = "PI-REPLICATED-EVIDENCE"
+subject = "seanchatmangpt/chatman-ecosystem@7ce703f477eeb135f675156d71644a33ac532c1d"
+standing = "ALIVE"
+authority = ["OBSERVE", "SELECT", "CONSTRUCT", "VERIFY"]
+falsifier = "minority, split-brain, stale generation, lease endpoint, or tampered replay cannot manufacture positive standing"
+
+[[requirements]]
+id = "PI-METHODOLOGY-CLOSURE"
+subject = "seanchatmangpt/chatman-ecosystem@ca6beca88c47e8b1bc0498611f19f6e6464acb41"
+standing = "PARTIAL_ALIVE"
+authority = ["OBSERVE", "SELECT", "CONSTRUCT", "VERIFY"]
+falsifier = "any missing discovery/conformance/simulation/prediction/optimization/intervention/monitoring or event/object/declarative/procedural/POWL/Reactor correspondence remains non-ALIVE"
+
+[[requirements]]
+id = "PI-DETERMINISTIC-MANUFACTURE"
+subject = "seanchatmangpt/chatman-ecosystem@ca6beca88c47e8b1bc0498611f19f6e6464acb41"
+standing = "PARTIAL_ALIVE"
+authority = ["SELECT", "CONSTRUCT", "VERIFY"]
+falsifier = "same admitted semantic subject producing a divergent digest or obligation set is refused"
+
+[[requirements]]
+id = "PI-INDEPENDENT-VERIFICATION"
+subject = "seanchatmangpt/chatman-ecosystem@ca6beca88c47e8b1bc0498611f19f6e6464acb41"
+standing = "PARTIAL_ALIVE"
+authority = ["OBSERVE", "VERIFY"]
+falsifier = "validator aliasing, shared ancestry, correlated evidence, or missing exact-head execution cannot count as independent verification"
+
+[[requirements]]
+id = "PI-RECEIPT-REPLAY"
+subject = "seanchatmangpt/chatman-ecosystem@7ce703f477eeb135f675156d71644a33ac532c1d"
+standing = "ALIVE"
+authority = ["OBSERVE", "VERIFY"]
+falsifier = "body, digest, authority, generation, or actuation mutation makes replay fail closed"
+
+[[requirements]]
+id = "PI-BRCE-AUTHORITY"
+subject = "seanchatmangpt/chatman-ecosystem@7ce703f477eeb135f675156d71644a33ac532c1d"
+standing = "ALIVE"
+authority = ["SELECT", "CONSTRUCT", "VERIFY"]
+falsifier = "direct consequential DO outside BRCE is mechanically refused"
+
+[[requirements]]
+id = "PI-FAILURE-DOMINANCE"
+subject = "seanchatmangpt/chatman-ecosystem@ca6beca88c47e8b1bc0498611f19f6e6464acb41"
+standing = "PARTIAL_ALIVE"
+authority = ["OBSERVE", "VERIFY"]
+falsifier = "BUILD_BROKEN, BLOCKED, stale, or contradictory strata cannot be averaged into ALIVE"
