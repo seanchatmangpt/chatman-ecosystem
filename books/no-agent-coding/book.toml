@@ -1,0 +1,17 @@
+[book]
+title = "No Agent Coding: Building the Deterministic Enterprise"
+authors = ["Sean Chatman"]
+description = "A pragmatic enterprise architecture strategy for moving from probabilistic human and machine coding to admitted, deterministic software manufacture with the Chatman Ecosystem and ggen."
+language = "en"
+src = "src"
+
+[build]
+build-dir = "book"
+create-missing = false
+
+[output.html]
+default-theme = "navy"
+preferred-dark-theme = "navy"
+mathjax-support = true
+no-section-label = true
+smart-punctuation = true

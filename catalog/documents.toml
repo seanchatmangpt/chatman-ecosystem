@@ -171,3 +171,9 @@ id = "document:frontier-release-factory"
 title = "Frontier Release Factory"
 path = "docs/FRONTIER-RELEASE-FACTORY.md"
 canonical = false
+
+[[document]]
+id = "document:no-agent-coding"
+title = "No Agent Coding: Building the Deterministic Enterprise"
+path = "books/no-agent-coding/src/README.md"
+canonical = false
