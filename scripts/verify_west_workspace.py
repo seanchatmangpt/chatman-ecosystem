@@ -237,8 +237,9 @@ def verify(root: Path = ROOT) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--root", type=Path, default=ROOT)
     args = parser.parse_args()
-    result = verify()
+    result = verify(args.root)
     if args.json:
         print(json.dumps(result, indent=2, sort_keys=True))
     else:
