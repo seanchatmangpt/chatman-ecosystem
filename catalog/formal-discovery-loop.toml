@@ -1,0 +1,224 @@
+schema = "chateco.formal-discovery-loop.v1"
+protocol_id = "formal-discovery-factory"
+release = "v26.9.9"
+purpose = "Close mathematical discovery and formal admission into one receipted ontology-to-ontology learning loop"
+standing = "CANDIDATE"
+canonical_state = "ontology"
+feedback_target = "reconstruct-ontology"
+
+[principles]
+ontology_before_search = true
+dfcm_preserves_reversible_options = true
+hdit_preserves_decision_sufficient_information = true
+hddl_decomposes_search = true
+known_classes_route_to_specialized_machinery = true
+ggen_manufactures_projections = true
+llm_is_unknown_frontier_candidate_producer_only = true
+generated_artifacts_are_not_canonical = true
+lean_is_admission_kernel = true
+lake_is_reproducible_build_and_dependency_graph = true
+axiom_footprint_is_receipted = true
+negative_controls_are_required = true
+mfact_certifies_standing = true
+admitted_delta_returns_to_ontology = true
+zero_unreceipted_actuation = true
+
+[standing_vocabulary]
+allowed = ["UNKNOWN", "PARTIAL_ALIVE", "ALIVE", "BLOCKED", "BUILD_BROKEN", "UNSUPPORTED"]
+
+[receipt]
+required_fields = [
+  "exact_subject",
+  "ontology_digest",
+  "search_plan_digest",
+  "candidate_digest",
+  "lean_toolchain",
+  "lake_manifest_digest",
+  "axiom_audit_digest",
+  "negative_control_receipts",
+  "manufacturer_identities",
+  "verifier_identities",
+  "replay_references",
+  "admitted_delta_digest",
+  "standing",
+]
+
+[refusals]
+terminal = [
+  "LLM_GRANTED_DO_AUTHORITY",
+  "GENERATED_ARTIFACT_EDITED_AS_SOURCE",
+  "LEAN_ADMISSION_BYPASSED",
+  "UNAUDITED_AXIOM_PROMOTED",
+  "NEGATIVE_CONTROL_REMOVED",
+  "STALE_TOOLCHAIN_STANDING_TRANSFER",
+  "UNRECEIPTED_ONTOLOGY_MUTATION",
+  "TRANSCRIPT_PROMOTED_TO_CANONICAL_KNOWLEDGE",
+]
+
+[components]
+control_plane = "repository:chatman-ecosystem"
+planner = "repository:autofde-lab"
+manufacturer = "repository:ggen"
+knowledge_distribution = "repository:ggen-marketplace"
+formal_certifier = "repository:mfact"
+
+[[route]]
+problem_class = "ontology-query"
+machine = "RDF/SPARQL/SHACL"
+llm_allowed = false
+
+[[route]]
+problem_class = "algebra"
+machine = "CAS"
+llm_allowed = false
+
+[[route]]
+problem_class = "constraint"
+machine = "SAT/SMT/CP"
+llm_allowed = false
+
+[[route]]
+problem_class = "optimization"
+machine = "OR"
+llm_allowed = false
+
+[[route]]
+problem_class = "hierarchical-planning"
+machine = "HDDL/HTN"
+llm_allowed = false
+
+[[route]]
+problem_class = "formal-proof"
+machine = "Lean4"
+llm_allowed = false
+
+[[route]]
+problem_class = "formal-build-replay"
+machine = "Lake"
+llm_allowed = false
+
+[[route]]
+problem_class = "projection-manufacture"
+machine = "ggen"
+llm_allowed = false
+
+[[route]]
+problem_class = "formal-certification"
+machine = "mfact"
+llm_allowed = false
+
+[[route]]
+problem_class = "semantic-unknown"
+machine = "LLM"
+llm_allowed = true
+candidate_only = true
+
+[[stage]]
+id = "reconstruct-ontology"
+half = "discovery"
+class = "OBSERVE"
+objective = "Reconstruct prior art, mathematical objects, morphisms, constraints, provenance, boundaries, and current standing"
+requires = []
+outputs = ["bounded ontology snapshot", "known/unknown partition"]
+
+[[stage]]
+id = "preserve-option-surface"
+half = "discovery"
+class = "SELECT"
+objective = "Apply DfCM so one failed edge changes topology without collapsing the lawful graph"
+requires = ["reconstruct-ontology"]
+outputs = ["lawful reversible option graph", "typed blocked edges"]
+
+[[stage]]
+id = "decompose-search"
+half = "discovery"
+class = "SELECT"
+objective = "Apply HDDL to decompose the research goal into methods and primitive obligations"
+requires = ["preserve-option-surface"]
+outputs = ["hierarchical research plan"]
+
+[[stage]]
+id = "project-decision-information"
+half = "discovery"
+class = "CONSTRUCT"
+objective = "Apply HDIT so projections preserve information that changes routing, ranking, repair, proof obligations, or provenance"
+requires = ["decompose-search"]
+outputs = ["decision-sufficient search state"]
+
+[[stage]]
+id = "route-known-leaves"
+half = "discovery"
+class = "SELECT"
+objective = "Route known problem classes to deterministic or formal machinery and leave only semantic UNKNOWNs to general intelligence"
+requires = ["project-decision-information"]
+outputs = ["typed machine routes", "semantic unknown frontier"]
+
+[[stage]]
+id = "explore-unknown-frontier"
+half = "discovery"
+class = "CONSTRUCT"
+objective = "Use bounded LLM exploration only for unresolved semantic transitions and emit candidates, never authority or standing"
+requires = ["route-known-leaves"]
+outputs = ["candidate ontology deltas", "candidate proof strategies", "new typed failures"]
+
+[[stage]]
+id = "manufacture-formal-candidates"
+half = "discovery"
+class = "CONSTRUCT"
+objective = "Use ggen to project admitted ontology plus candidate deltas into formal artifacts and verifier fixtures"
+requires = ["explore-unknown-frontier"]
+outputs = ["generated Lean candidates", "generated fixtures", "manufacture receipt"]
+
+[[stage]]
+id = "lean-admission"
+half = "admission"
+class = "SELECT"
+objective = "Kernel-admit or refuse exact generated theorem candidates under the pinned Lean toolchain"
+requires = ["manufacture-formal-candidates"]
+outputs = ["kernel-admitted declarations", "typed proof failures"]
+
+[[stage]]
+id = "lake-build-replay"
+half = "admission"
+class = "OBSERVE"
+objective = "Build the exact dependency graph under Lake and prove reproducibility against the pinned manifest and toolchain"
+requires = ["lean-admission"]
+outputs = ["build receipt", "dependency identity", "replay result"]
+
+[[stage]]
+id = "audit-axioms-and-falsifiers"
+half = "admission"
+class = "OBSERVE"
+objective = "Record axiom footprints, reject sorry/admit leakage, and execute negative controls that prove the gates can fail"
+requires = ["lake-build-replay"]
+outputs = ["axiom audit", "negative-control receipts"]
+
+[[stage]]
+id = "certify-standing"
+half = "admission"
+class = "SELECT"
+objective = "Use mfact to certify the exact mathematical subject without promoting prose, generation, or compilation alone to standing"
+requires = ["audit-axioms-and-falsifiers"]
+outputs = ["formal standing receipt"]
+
+[[stage]]
+id = "close-ontology-loop"
+half = "admission"
+class = "CONSTRUCT"
+objective = "Persist only the admitted mathematical delta, provenance, failed-edge guards, and replay identity back into canonical ontology"
+requires = ["certify-standing"]
+outputs = ["admitted ontology delta", "next-iteration starting state"]
+
+[benchmark]
+subject = "external frontier mathematics"
+claim_ceiling = "CANDIDATE"
+required_measurements = [
+  "novel semantic unknowns evaluated",
+  "known leaves routed without LLM",
+  "failed edges permanently encoded",
+  "LLM tokens consumed",
+  "kernel-admitted declarations",
+  "replay success",
+  "time to independently rebuilt standing receipt",
+]
+falsifier = "The architecture does not earn an efficiency claim unless an exact frontier-mathematics subject reaches independently replayable formal standing with materially less repeated semantic recomputation than the comparison workflow."
