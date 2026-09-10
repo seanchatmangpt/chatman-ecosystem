@@ -1,0 +1,63 @@
+name: BFCC conformance
+
+on:
+  pull_request:
+    paths:
+      - "catalog/bfcc.toml"
+      - "ontology/bfcc.ttl"
+      - "ontology/bfcc.shacl.ttl"
+      - "scripts/verify_bfcc.py"
+      - "scripts/bfcc_benchmark.py"
+      - "tests/test_bfcc.py"
+      - "tests/test_bfcc_benchmark.py"
+      - ".github/workflows/bfcc-conformance.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+
+jobs:
+  conformance:
+    name: BFCC conformance
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          persist-credentials: false
+
+      - name: Assert exact subject identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+
+      - name: Run BFCC tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v tests.test_bfcc tests.test_bfcc_benchmark
+
+      - name: Verify BFCC conformance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/verify_bfcc.py --root . --json | tee bfcc-receipt.json
+
+      - name: Preserve BFCC receipt
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: bfcc-receipt-${{ env.CANDIDATE_SHA }}
+          path: bfcc-receipt.json
+          if-no-files-found: warn
