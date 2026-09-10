@@ -1,0 +1,137 @@
+schema = "chatman.bfcc.v1"
+canonical = true
+
+[standing]
+values = ["BFCC-CANDIDATE", "BFCC-PARTIAL", "BFCC-ALIVE", "BFCC-BLOCKED", "BFCC-UNKNOWN"]
+
+[authority]
+bfcc_grants_do_authority = false
+plan_grants_authority = false
+proof_grants_authority = false
+
+[public_ontologies]
+bfcc = "https://seanchatmangpt.github.io/chatman-ecosystem/ontology/bfcc#"
+earl = "http://www.w3.org/ns/earl#"
+prov = "http://www.w3.org/ns/prov#"
+pplan = "http://purl.org/net/p-plan#"
+skos = "http://www.w3.org/2004/02/skos/core#"
+
+[[gate]]
+id = "bfcc:C"
+letter = "C"
+name = "Comprehensive"
+fuller_principle = "Design must account for the total system of consequences, not an isolated part."
+engineering_projection = "A change is reviewed against its full downstream dependency and consequence graph before merge, not just the diff's local scope."
+falsifier = "A subject is admitted with evidence covering only its local diff while a downstream dependency or consequence is left unexamined."
+mandatory = true
+
+[[gate]]
+id = "bfcc:A"
+letter = "A"
+name = "Anticipatory"
+fuller_principle = "Design science must anticipate needs and consequences before crisis forces reactive, un-designed responses."
+engineering_projection = "Failure modes and load conditions are enumerated and tested before production incidence, via falsifiers and pre-declared acceptance commands."
+falsifier = "A gate is evaluated with no pre-declared falsifier or acceptance command, so failure is discoverable only after the subject reaches production."
+mandatory = true
+
+[[gate]]
+id = "bfcc:D"
+letter = "D"
+name = "Design"
+fuller_principle = "Solve humanity's problems through design and technology rather than through political or economic reform alone."
+engineering_projection = "A subject ships as a testable, falsifiable artifact (code + tests + receipts), not an unverified prose proposal."
+falsifier = "The submitted evidence for a subject consists of prose description or a plan with no runnable test or receipt attached."
+mandatory = true
+
+[[gate]]
+id = "bfcc:S"
+letter = "S"
+name = "Science"
+fuller_principle = "Derive practice from generalized, experimentally verifiable principles, not ad hoc convention or special-case rules."
+engineering_projection = "Claims are backed by a re-runnable command whose real, pasted output is the evidence, not a description of expected output."
+falsifier = "A claim is admitted on a described or assumed result rather than the real captured output of a re-run command."
+mandatory = true
+
+[[gate]]
+id = "bfcc:G"
+letter = "G"
+name = "Generalized Principles"
+fuller_principle = "Nature operates by a small set of generalized principles that hold across scales and special cases."
+engineering_projection = "A public vocabulary term (earl:/prov:/pplan:/skos:) is reused before a new local term is minted; a new class exists only for a genuinely new concept."
+falsifier = "A new local class or property is minted that duplicates an existing public-ontology term's meaning instead of reusing it."
+mandatory = true
+
+[[gate]]
+id = "bfcc:Sigma"
+letter = "Sigma"
+name = "Synergy"
+fuller_principle = "The behavior of whole systems is unpredicted by the behavior of their parts taken separately."
+engineering_projection = "Real cross-component integration is tested together, since parts behaving correctly in isolation does not establish whole-system correctness."
+falsifier = "A synergy or composed-behavior claim is asserted from isolated unit-test results with no composed-vs-isolated comparison actually run."
+mandatory = true
+
+[[gate]]
+id = "bfcc:E"
+letter = "E"
+name = "Ephemeralization"
+fuller_principle = "Doing more and more with less and less -- accelerating resource efficiency."
+engineering_projection = "A bfcc:ephemeralizationRatio is measured and recorded per subject revision, not asserted qualitatively."
+falsifier = "An efficiency or resource-reduction claim is made with no measured ratio recorded for the subject revision."
+mandatory = true
+
+[[gate]]
+id = "bfcc:T"
+letter = "T"
+name = "Trimtab"
+fuller_principle = "A small, well-placed intervention can leverage disproportionate systemic change."
+engineering_projection = "The smallest change with the largest verified effect is preferred; a bfcc:trimtabLeverage quantity is recorded per gate evaluation."
+falsifier = "A large, broad-scope change is selected over an available smaller change with equivalent verified effect, with no leverage quantity recorded."
+mandatory = true
+
+[[gate]]
+id = "bfcc:W"
+letter = "W"
+name = "World"
+fuller_principle = "Make a comprehensive, continuously updated inventory of world resources and needs the basis for allocation decisions."
+engineering_projection = "Dependencies, costs, and consumed resources for a subject are explicitly inventoried and cited, never left implicit."
+falsifier = "A subject's evidence omits an explicit dependency/cost/resource inventory (the W gate is skipped entirely)."
+mandatory = true
+
+[[gate]]
+id = "bfcc:I"
+letter = "I"
+name = "Integrity"
+fuller_principle = "Integrity is the essence of everything successful -- structural and ethical wholeness with no exploitable gap between claim and behavior."
+engineering_projection = "No gap exists between a claimed standing and the evidence backing it; a receipt with an unbacked standing claim is malformed."
+falsifier = "A standing is asserted (e.g. BFCC-ALIVE) with a receipt field missing, empty, or contradicted by its own evidence_per_gate content."
+mandatory = true
+
+[receipt]
+required_fields = [
+  "subject",
+  "revision",
+  "system_boundary",
+  "canon_sources",
+  "projection_table",
+  "inventory_examined",
+  "gates_evaluated",
+  "evidence_per_gate",
+  "falsifier_per_gate",
+  "contradictions",
+  "omitted_gates",
+  "resource_vector",
+  "eta_evidence",
+  "lambda_evidence",
+  "sigma_evidence",
+  "unresolved_gaps",
+  "standing",
+]
+
+[exclusions]
+terminal = [
+  "FULLER_LAUNDERING",
+  "AVERAGED_FAILED_GATE",
+  "UNFALSIFIED_SYNERGY_CLAIM",
+  "MISSING_INVENTORY",
+  "STANDING_TRANSFERRED",
+]
