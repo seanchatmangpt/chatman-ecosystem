@@ -1,27 +1,100 @@
-# Appendix N.3 — Lunar Industrial Zone
+# Lunar Industrial Zone
 
 **Parent:** [Appendix N — Deployment Environments](n-deployment-environments.md)
 
-The subject is treated as a bounded object in the larger stellar-manufacturing graph. Its inputs, outputs, constraints, failure modes, and evidence obligations must be explicit before the system may generalize from a local success to a reusable class.
+> **Subject identity:** `dyson:lunar-industrial-zone:9e79b2abf67a`
+> **Domain:** `manufacturing`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Standing rule
+## Why this page exists
 
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
+**Lunar Industrial Zone** exists because it changes a concrete decision inside **Appendix N — Deployment Environments**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-<!-- semantic-enrichment:v1 -->
+For **Lunar Industrial Zone**, the primary state variables include **bill of materials**, **process step**, and **yield**; the control or consequence variables include **throughput**, **tooling**, and **quality**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-## Operational significance
+The boundary is operational, not literary. Inputs to **Lunar Industrial Zone** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-**Appendix N.3 — Lunar Industrial Zone** is not retained as a label-only reference. This page describes a deployment stage as a change in the evidence available to the program, not merely a geographic destination. Earth development, orbital testbeds, lunar industry, asteroid factories, Mercury-scale networks, and an inner-system swarm each expose different latency, energy, material, thermal, communication, and recovery constraints. A design that is ALIVE in one environment does not inherit that standing in the next.
+## Engineering model
 
-## System contract
+For **Lunar Industrial Zone**, factory closure is a measured transformation:
 
-Every stage needs entry criteria, bounded authority, reversible experiments, exit evidence, and an abort path. Early deployment should maximize information gain per irreversible consequence: instrument first, validate local models, prove repairability, then expand capacity. Replication authority is explicitly bounded by resource budgets, geofenced/orbit-fenced scope, generation limits, and shutdown semantics so successful manufacturing does not imply permission for unbounded reproduction.
+```text
+(feedstock, energy, tooling, robotics)
+ -> (qualified product, rework, waste, wear)
+```
 
-## Failure modes and falsifiers
+Yield is measured after inspection and rework, not inferred from nominal cycle rate. `dyson:lunar-industrial-zone:9e79b2abf67a` tracks process capability, calibration, critical tooling, spare consumption, batch genealogy, inspection result, and the downstream acceptance criterion that makes output usable.
 
-Stage promotion is falsified by evidence that the next environment violates an assumption the previous stage depended on—radiation, thermal load, communications delay, material composition, navigation accuracy, or repair latency. Such evidence narrows the operating envelope and may return the program to simulation or construction; it is not a reason to relabel the new environment as equivalent to the old one.
+## Operational contract
 
-## Evidence before promotion
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:lunar-industrial-zone:9e79b2abf67a` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | bill of materials, process step, yield with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | throughput, tooling or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-For this subject, promotion requires evidence that intersects the claim: exact subject identity, the admitted inputs or assumptions, the verifier or observation boundary, and a reproducible result. Static structure can establish representational closure; simulated execution can establish bounded behavior; neither is silently promoted to real-world consequential standing. A changed subject, stale observation, failed replay, unresolved contradiction, or verifier that no longer intersects the claim revokes the prior standing and requires re-admission.
+## Worked reasoning
+
+For **Lunar Industrial Zone**, Distinguish nominal cycle time from qualified-output cycle time. A fast process with poor first-pass yield can have lower effective throughput once inspection and rework are included.
+
+## Questions the design must answer
+
+1. For **Lunar Industrial Zone**: Which process step is the bottleneck after yield and rework?
+2. For **Lunar Industrial Zone**: Which tooling or calibration dependency prevents false factory closure?
+3. For **Lunar Industrial Zone**: Which quality attribute admits output to the next process?
+
+## Executable representation
+
+```yaml
+subject: dyson:lunar-industrial-zone:9e79b2abf67a
+topic: "Lunar Industrial Zone"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- Throughput is reported before inspection/rework and scaling amplifies poor yield.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Lunar Industrial Zone**.
+- **Hidden assumption:** bill of materials or process step is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Lunar Industrial Zone**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:lunar-industrial-zone:9e79b2abf67a`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Lunar Industrial Zone** subject/revision is named.
+- [ ] Required bill of materials, process step, and yield observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Lunar Industrial Zone** is admitted, downstream systems may consume its bill of materials, process step, and yield claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Lunar Industrial Zone** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

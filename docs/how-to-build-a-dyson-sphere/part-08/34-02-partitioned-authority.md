@@ -1,36 +1,93 @@
-# 34.2 Partitioned Authority
+# Partitioned Authority
 
-**Parent:** [34. Byzantine Failure](34-byzantine-failure.md)
+**Parent:** [Byzantine Failure](34-byzantine-failure.md)
 
-## Claim
+> **Subject identity:** `dyson:partitioned-authority:19ce4380b260`
+> **Domain:** `distributed`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Partitioned Authority` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger byzantine failure system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-Stellar power is the dominant external input. For an approximately isotropic star of luminosity L, irradiance at radius r is F=L/(4πr²). This inverse-square relation turns orbital radius into an energy-density and thermal-design parameter. For the Sun, total luminosity is about 3.8×10^26 W; a civilization need not capture all of it for the industrial consequences to be enormous.
+**Partitioned Authority** exists because it changes a concrete decision inside **Byzantine Failure**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Stellar scale eliminates the plausibility of a trusted interior. Identity, software provenance, key state, policy, and telemetry can all be stale or compromised. CASTLE therefore treats authority as explicit reachability under least privilege, uses content identity and signed evidence where appropriate, partitions failure domains, and never infers permission from network position or possession of a credential.
+For **Partitioned Authority**, the primary state variables include **partition**, **causal order**, and **local state**; the control or consequence variables include **reconciliation**, **delay tolerance**, and **quorum**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-SELECT, CONSTRUCT, and DO are separate authority classes. A planner may rank candidates; a constructor may render them; only a brokered authority path may cause consequence. BRCE enforces zero unreceipted actuation by binding intent, subject, authority, preconditions, execution result, postconditions, and replay metadata into a receipt.
+The boundary is operational, not literary. Inputs to **Partitioned Authority** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Operationalization
+## Engineering model
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+**Partitioned Authority** assumes partition and propagation delay are ordinary. Each consequential event needs unique identity, local causal context, exact subject revision, and an idempotency rule. Reconciliation merges facts; it cannot undo duplicate physical consequence. `dyson:partitioned-authority:19ce4380b260` therefore distinguishes append-only history from derived state, and replay rebuilds projections without reissuing commands.
 
-A practical record for this topic should contain:
+## Operational contract
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:partitioned-authority:19ce4380b260` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | partition, causal order, local state with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | reconciliation, delay tolerance or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-## Evidence boundary
+## Worked reasoning
 
-For `Partitioned Authority`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+For **Partitioned Authority**, Replay the same event twice and partition replicas before reconciliation. Correct behavior requires idempotent consequence and deterministic projection rebuild; duplicate physical actuation is a hard failure.
 
-## Falsifier
+## Questions the design must answer
 
-The working claim for `Partitioned Authority` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+1. For **Partitioned Authority**: Which state must be strongly ordered locally and which can reconcile eventually?
+2. For **Partitioned Authority**: How does safe behavior survive partition and delay?
+3. For **Partitioned Authority**: What event identity prevents duplicate consequence?
+
+## Executable representation
+
+```yaml
+subject: dyson:partitioned-authority:19ce4380b260
+topic: "Partitioned Authority"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- Retry after timeout repeats physical consequence because event identity is not idempotent.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Partitioned Authority**.
+- **Hidden assumption:** partition or causal order is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Partitioned Authority**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:partitioned-authority:19ce4380b260`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Partitioned Authority** subject/revision is named.
+- [ ] Required partition, causal order, and local state observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Partitioned Authority** is admitted, downstream systems may consume its partition, causal order, and local state claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Partitioned Authority** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

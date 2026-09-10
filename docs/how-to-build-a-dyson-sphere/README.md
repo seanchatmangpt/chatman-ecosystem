@@ -85,3 +85,16 @@ The final inversion is therefore the thesis of the entire book:
 > **Do not build a Dyson sphere. Build a system that can lawfully manufacture, verify, repair, govern, and evolve one.**
 
 The sphere is a projection. The graph is the civilization's shared machine-readable memory. The receipt is the boundary between what was proposed and what actually happened.
+
+<!-- HYPER_MEANINGFUL_PAGE_CONTRACT_V1 -->
+## Page-level meaning contract
+
+This edition treats **non-vacuity as an executable property**. Every `SUMMARY.md`-linked page must do more than repeat the constitutional pipeline. A substantive page identifies an engineering/governance subject, introduces domain-specific state or equations/schema, exposes an operational contract, works through concrete reasoning, states counterexamples, names an admission test, and explains what changes downstream.
+
+\[
+\text{meaningful page}=\text{domain model}+\text{operational consequence}+\text{falsifier}+\text{evidence boundary}
+\]
+
+A long page that merely restates `SELECT != CONSTRUCT != DO` is still vacuous. Conversely, a concise reference is useful when it lets another system calculate, validate, reject, generate, or verify something it could not before reading it.
+
+`scripts/audit_dyson_sphere_book.py` enforces the mechanical portion of this contract: missing SUMMARY targets, thin pages, legacy label-only boilerplate, missing engineering sections, duplicate bodies, placeholder language, repeated Part headings, and weak page-level specificity fail the court. The audit cannot prove literary quality; it does make the easiest forms of generated vacuity a build failure.

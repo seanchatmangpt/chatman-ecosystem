@@ -1,32 +1,99 @@
-# 72.4 Simulation
+# Simulation
 
-**Parent:** [72. The Validation Ladder](72-the-validation-ladder.md)
+**Parent:** [The Validation Ladder](72-the-validation-ladder.md)
 
-## Claim
+> **Subject identity:** `dyson:simulation:e285bfb242cc`
+> **Domain:** `simulation`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Simulation` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger the validation ladder system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-GymAct provides counterfactual execution before physical consequence. A world model names its state, roles, policies, observation projections, action projections, authority, and episode boundaries. Simulation can falsify a candidate or expose missing constraints, but it cannot prove the physical world will behave identically; its standing is experimental evidence, not deployment evidence.
+**Simulation** exists because it changes a concrete decision inside **The Validation Ladder**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-## Operationalization
+For **Simulation**, the primary state variables include **world state**, **policy**, and **action space**; the control or consequence variables include **observation space**, **scenario**, and **falsifier**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+The boundary is operational, not literary. Inputs to **Simulation** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-A practical record for this topic should contain:
+## Engineering model
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+**Simulation** is an experiment over an explicit world. Define an episode as
 
-## Evidence boundary
+\[
+E=W\times R\times P\times O\times A\times I\times Auth
+\]
 
-For `Simulation`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+for world state, roles, policies, observation projection, action projection, information partitions, and authority. `dyson:simulation:e285bfb242cc` is informative only when it names the assumption being stressed and a falsifier capable of rejecting the policy. Simulation standing belongs to the simulated subject, not the physical system.
 
-## Falsifier
+## Operational contract
 
-The working claim for `Simulation` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:simulation:e285bfb242cc` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | world state, policy, action space with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | observation space, scenario or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Simulation**, Pair every nominal scenario with an adversarial neighbor that changes one assumption. Outcome differences expose which assumption actually supports the policy.
+
+## Questions the design must answer
+
+1. For **Simulation**: Which world assumptions make the scenario informative?
+2. For **Simulation**: Which policy outcome is a falsifier rather than a tuning opportunity?
+3. For **Simulation**: How is simulation standing prevented from becoming deployment standing?
+
+## Executable representation
+
+```yaml
+subject: dyson:simulation:e285bfb242cc
+topic: "Simulation"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- One passing world is promoted to physical standing without transfer evidence.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Simulation**.
+- **Hidden assumption:** world state or policy is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Simulation**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:simulation:e285bfb242cc`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Simulation** subject/revision is named.
+- [ ] Required world state, policy, and action space observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Simulation** is admitted, downstream systems may consume its world state, policy, and action space claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Simulation** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

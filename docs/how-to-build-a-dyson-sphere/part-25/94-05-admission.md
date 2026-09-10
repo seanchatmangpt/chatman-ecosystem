@@ -1,32 +1,102 @@
-# 94.5 Admission
+# Admission
 
-**Parent:** [94. The Ecosystem Is a Pipeline, Not a Platform](94-the-ecosystem-is-a-pipeline-not-a-platform.md)
+**Parent:** [The Ecosystem Is a Pipeline, Not a Platform](94-the-ecosystem-is-a-pipeline-not-a-platform.md)
 
-## Claim
+> **Subject identity:** `dyson:admission:0834ebef24ab`
+> **Domain:** `formal`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Admission` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger the ecosystem is a pipeline, not a platform system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-Observation becomes operational only after it is bounded. O* records exact subject identity, source provenance, units, uncertainty, validity interval, contradictions, and exclusions. UNKNOWN is preserved as a value rather than coerced into a guess. This makes later manufacture falsifiable: a design can be traced back to the measurements and assumptions it actually consumed.
+**Admission** exists because it changes a concrete decision inside **The Ecosystem Is a Pipeline, Not a Platform**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-## Operationalization
+For **Admission**, the primary state variables include **precondition**, **postcondition**, and **invariant**; the control or consequence variables include **theorem**, **counterexample**, and **exact subject**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+The boundary is operational, not literary. Inputs to **Admission** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-A practical record for this topic should contain:
+## Engineering model
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+For **Admission**, formalization separates assumptions from proposition before proof:
 
-## Evidence boundary
+```text
+Given: exact subject S, admitted observations O*, constraints C
+Construct: candidate x
+Prove: C(S,x) => invariant(S,x)
+Exclude: assumptions not represented by C
+```
 
-For `Admission`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+A theorem about a simplified model can be valid while the physical design remains `UNKNOWN`. `dyson:admission:0834ebef24ab` binds theorem identity, model version, assumptions, result, and the exact artifact whose admission consumes that result.
 
-## Falsifier
+## Operational contract
 
-The working claim for `Admission` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:admission:0834ebef24ab` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | precondition, postcondition, invariant with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | theorem, counterexample or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Admission**, Write the theorem statement before the proof. If subject, assumptions, and invariant cannot be named precisely, formal tooling cannot rescue the ambiguity; the correct state is an unready obligation.
+
+## Questions the design must answer
+
+1. For **Admission**: What proposition is actually proved?
+2. For **Admission**: Does it refer to the exact admitted subject or a model class?
+3. For **Admission**: Which counterexample must fail admission?
+
+## Executable representation
+
+```yaml
+subject: dyson:admission:0834ebef24ab
+topic: "Admission"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- A valid theorem is cited for a physical subject whose theorem assumptions were never admitted.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Admission**.
+- **Hidden assumption:** precondition or postcondition is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Admission**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:admission:0834ebef24ab`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Admission** subject/revision is named.
+- [ ] Required precondition, postcondition, and invariant observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Admission** is admitted, downstream systems may consume its precondition, postcondition, and invariant claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Admission** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

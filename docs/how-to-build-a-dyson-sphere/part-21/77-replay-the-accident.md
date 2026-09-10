@@ -1,38 +1,99 @@
-# 77. Replay the Accident
+# Replay the Accident
 
-> **Part 21: Failure Engineering.** This part engineers for inevitable failure. The system is designed to contain, reconstruct, learn from, and permanently guard against failure modes without collapsing global capacity.
+> **Subject identity:** `dyson:replay-the-accident:537cd3d79488`
+> **Domain:** `failure`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Thesis
+## Why this page exists
 
-Replay the Accident is treated here as a systems problem rather than an isolated component. At Dyson-swarm scale, a locally sensible decision can become globally unsafe when it hides mass, heat, latency, authority, or evidence. The chapter therefore asks what the object is, what observations are required to reason about it, what constraints delimit its lawful construction space, and what evidence would justify advancing its standing.
+**Replay the Accident** exists because it changes a concrete decision inside **Part XXI — Failure Engineering**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Standing belongs to an exact subject. Inspection is not execution, execution is not verification, and a named receipt file is not evidence that the intended transition occurred. A useful receipt binds identity, authority, consequence, verifier result, and replay instructions so a later observer can reconstruct why the standing claim was made.
+For **Replay the Accident**, the primary state variables include **failure mode**, **blast radius**, and **detection**; the control or consequence variables include **isolation**, **recovery**, and **permanent guard**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-Failure is modeled as topology rather than surprise. The design objective is to keep a local defect from becoming a global loss: isolate failure domains, preserve safe trajectories, maintain independent shutdown, keep repair paths, and record enough event history for reconstruction. A failed collector should reduce capacity, not invalidate the entire swarm.
+The boundary is operational, not literary. Inputs to **Replay the Accident** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Chatman-Ecosystem realization
-
-The operational path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. Observation and construction remain maximally expressive above the authority boundary; DO remains narrow. The canonical object is represented in a graph, ggen may render projections, GymAct may execute counterfactuals, Lean/mfact may discharge formal or evidentiary obligations where applicable, and BRCE is the only path permitted to cause a consequential transition.
-
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
-
-## Chapter map
+## Decomposition
 
 - [Immutable Event History](77-01-immutable-event-history.md)
 - [Reconstruction](77-02-reconstruction.md)
 - [Counterfactual Simulation](77-03-counterfactual-simulation.md)
 - [Root Cause](77-04-root-cause.md)
-- [Permanent Guard](77-05-permanent-guard.md)
+- [Permanent Guard](77-05-permanent-guard.md) For **Replay the Accident**, this reusable domain rule is evaluated against `dyson:replay-the-accident:537cd3d79488`; its observations, validity interval, constraints, and downstream consumer remain specific to this page even when the underlying law is shared.
 
-## Acceptance boundary
+## Engineering model
 
-This chapter is complete only when its claims can be tied to a bounded subject. A reader should be able to name the observation sources, uncertainty, canonical semantic identity, constraints, reversible candidate space, authority required for consequence, expected postcondition, verifier, and replay path. If any of those are absent, the appropriate state is `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED`—not narrative completion.
+For **Replay the Accident**, begin with a causal chain rather than a generic robustness statement. `dyson:replay-the-accident:537cd3d79488` records initiating fault, local effect, propagated effect, detection latency, containment boundary, degraded safe behavior, recovery action, and permanent guard. The objective is not zero faults; it is bounded blast radius plus enough event history to reconstruct the fault before changing the guard.
 
-## Falsifiers
+## Operational contract
 
-- A required physical ledger does not close.
-- The subject identity is ambiguous or stale.
-- A simulation result is presented as physical execution evidence.
-- A proof is about a model that was never admitted as the operational subject.
-- An actuator can be reached outside the brokered receipt path.
-- Replay cannot reconstruct the transition that supposedly established standing.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:replay-the-accident:537cd3d79488` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | failure mode, blast radius, detection with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | isolation, recovery or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Replay the Accident**, Inject the fault, measure detection latency and blast radius, verify degraded-safe behavior, and replay history into diagnosis. Recovery without a permanent guard is incident handling, not learning.
+
+## Questions the design must answer
+
+1. For **Replay the Accident**: What is the smallest containing failure domain?
+2. For **Replay the Accident**: How is the fault detected before secondary effects dominate?
+3. For **Replay the Accident**: Which permanent guard converts the incident into a future refusal?
+
+## Executable representation
+
+```yaml
+subject: dyson:replay-the-accident:537cd3d79488
+topic: "Replay the Accident"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- Recovery restores service but leaves no permanent guard, allowing recurrence.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Replay the Accident**.
+- **Hidden assumption:** failure mode or blast radius is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Replay the Accident**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:replay-the-accident:537cd3d79488`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Replay the Accident** subject/revision is named.
+- [ ] Required failure mode, blast radius, and detection observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Replay the Accident** is admitted, downstream systems may consume its failure mode, blast radius, and detection claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Replay the Accident** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

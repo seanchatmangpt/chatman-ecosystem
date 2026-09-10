@@ -1,32 +1,100 @@
-# 22.7 Safety
+# Safety
 
-**Parent:** [22. Benchmarking Civilization-Scale Policies](22-benchmarking-civilization-scale-policies.md)
+**Parent:** [Benchmarking Civilization-Scale Policies](22-benchmarking-civilization-scale-policies.md)
 
-## Claim
+> **Subject identity:** `dyson:safety:3e6a8e54f492`
+> **Domain:** `safety`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Safety` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger benchmarking civilization-scale policies system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-GymAct provides counterfactual execution before physical consequence. A world model names its state, roles, policies, observation projections, action projections, authority, and episode boundaries. Simulation can falsify a candidate or expose missing constraints, but it cannot prove the physical world will behave identically; its standing is experimental evidence, not deployment evidence.
+**Safety** exists because it changes a concrete decision inside **Benchmarking Civilization-Scale Policies**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-## Operationalization
+For **Safety**, the primary state variables include **hazard**, **safe state**, and **interlock**; the control or consequence variables include **containment**, **trip condition**, and **recovery**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+The boundary is operational, not literary. Inputs to **Safety** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-A practical record for this topic should contain:
+## Engineering model
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+**Safety** is represented as a hazard-control argument:
 
-## Evidence boundary
+```text
+hazard -> initiating condition -> propagation path -> independent guard
+       -> safe state -> recovery criteria -> replayable incident evidence
+```
 
-For `Safety`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+The guard must not share the initiating failure. `dyson:safety:3e6a8e54f492` names a trip observation, bounded safe state, independently reachable shutdown/avoidance path, and the evidence required before normal operation may resume.
 
-## Falsifier
+## Operational contract
 
-The working claim for `Safety` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:safety:3e6a8e54f492` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | hazard, safe state, interlock with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | containment, trip condition or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Safety**, Inject the initiating fault while the normal controller is unavailable. If the independent guard cannot still reach the safe state, the protection has a shared failure mode.
+
+## Questions the design must answer
+
+1. For **Safety**: What hazard is prevented and what is the independently reachable safe state?
+2. For **Safety**: Which single failure must not become existential?
+3. For **Safety**: What observation trips the interlock?
+
+## Executable representation
+
+```yaml
+subject: dyson:safety:3e6a8e54f492
+topic: "Safety"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- The shutdown path shares power, software, sensor, or authority dependencies with the initiating fault.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Safety**.
+- **Hidden assumption:** hazard or safe state is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Safety**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:safety:3e6a8e54f492`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Safety** subject/revision is named.
+- [ ] Required hazard, safe state, and interlock observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Safety** is admitted, downstream systems may consume its hazard, safe state, and interlock claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Safety** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

@@ -1,39 +1,101 @@
-# Appendix K.5 — Find Resource Bottlenecks
+# Find Resource Bottlenecks
 
 **Parent:** [Appendix K — Example SPARQL Queries](k-example-sparql-queries.md)
 
-The subject is treated as a bounded object in the larger stellar-manufacturing graph. Its inputs, outputs, constraints, failure modes, and evidence obligations must be explicit before the system may generalize from a local success to a reusable class.
+> **Subject identity:** `dyson:find-resource-bottlenecks:71fc218462b3`
+> **Domain:** `scaling`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Query pattern
+## Why this page exists
 
-```sparql
-SELECT ?subject ?evidence
-WHERE {
-  ?subject ?predicate ?evidence .
-  FILTER(BOUND(?evidence))
-}
+**Find Resource Bottlenecks** exists because it changes a concrete decision inside **Appendix K — Example SPARQL Queries**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
+
+For **Find Resource Bottlenecks**, the primary state variables include **throughput**, **work-in-process**, and **cycle time**; the control or consequence variables include **bottleneck**, **utilization**, and **capacity**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
+
+The boundary is operational, not literary. Inputs to **Find Resource Bottlenecks** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
+
+## Engineering model
+
+For **Find Resource Bottlenecks**, throughput is constrained by queues. Little's Law,
+
+\[
+L=\lambda W,
+\]
+
+connects work-in-process, throughput, and cycle time for a stable process. `dyson:find-resource-bottlenecks:71fc218462b3` uses it to expose hidden queues in mining, refining, transport, verification, and repair. Exponential fleet counts are inadmissible when a required queue is unstable, yield collapses, or coordination becomes the critical path.
+
+## Operational contract
+
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:find-resource-bottlenecks:71fc218462b3` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | throughput, work-in-process, cycle time with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | bottleneck, utilization or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Find Resource Bottlenecks**, Increase offered work until one queue becomes unstable. The first diverging queue is stronger evidence of the true constraint than an architecture diagram labeling every component scalable.
+
+## Questions the design must answer
+
+1. For **Find Resource Bottlenecks**: Which queue grows first as throughput rises?
+2. For **Find Resource Bottlenecks**: Which exponential trend disappears when a downstream constraint saturates?
+3. For **Find Resource Bottlenecks**: What local autonomy removes coordination from the critical path?
+
+## Executable representation
+
+```yaml
+subject: dyson:find-resource-bottlenecks:71fc218462b3
+topic: "Find Resource Bottlenecks"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
 ```
 
-The concrete ontology IRIs and predicates must come from the admitted graph. This generic pattern is illustrative and must not be mistaken for a canonical query against an unspecified schema.
+## Failure modes and counterexamples
 
-## Standing rule
+- Prototype throughput is extrapolated after a downstream queue has become unstable.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Find Resource Bottlenecks**.
+- **Hidden assumption:** throughput or work-in-process is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
 
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
+## DfCM decision rule
 
-<!-- semantic-enrichment:v1 -->
+For **Find Resource Bottlenecks**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
 
-## Operational significance
+## Admission and authority boundary
 
-**Appendix K.5 — Find Resource Bottlenecks** is not retained as a label-only reference. This page carries a specific node in the ecosystem's knowledge graph. Its job is to make the concept operational: identify the exact subject, state the invariant that constrains lawful behavior, show how the concept composes with adjacent stages, and name evidence that would falsify the claim. A page that merely repeats terminology without those edges is documentation-shaped WIP.
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
 
-## System contract
+For `dyson:find-resource-bottlenecks:71fc218462b3`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
 
-The default correspondence is `observe -> admit -> construct -> verify -> actuate when authorized -> receipt -> replay`. Not every concept participates in every stage, but the page should say where its authority begins and ends. In particular, descriptive knowledge must not acquire actuation power merely because it is machine-readable or generated by a capable model.
+## Admission test
 
-## Failure modes and falsifiers
+- [ ] The exact **Find Resource Bottlenecks** subject/revision is named.
+- [ ] Required throughput, work-in-process, and cycle time observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
 
-Meaning is tested by discrimination. A reader or machine should be able to use this page to decide between at least two nearby states—valid versus invalid, supported versus unsupported, authorized versus unauthorized, observed versus inferred, or completed versus merely acknowledged. The named falsifier and evidence requirement make that distinction executable.
+## Downstream consequence
 
-## Evidence before promotion
+When **Find Resource Bottlenecks** is admitted, downstream systems may consume its throughput, work-in-process, and cycle time claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
 
-For this subject, promotion requires evidence that intersects the claim: exact subject identity, the admitted inputs or assumptions, the verifier or observation boundary, and a reproducible result. Static structure can establish representational closure; simulated execution can establish bounded behavior; neither is silently promoted to real-world consequential standing. A changed subject, stale observation, failed replay, unresolved contradiction, or verifier that no longer intersects the claim revokes the prior standing and requires re-admission.
+## Epistemic boundary
+
+This page makes **Find Resource Bottlenecks** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

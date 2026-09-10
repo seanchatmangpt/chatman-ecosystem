@@ -1,32 +1,95 @@
-# 17.3 Latency
+# Latency
 
-**Parent:** [17. Information Physics](17-information-physics.md)
+**Parent:** [Information Physics](17-information-physics.md)
 
-## Claim
+> **Subject identity:** `dyson:latency:8d86f97e09db`
+> **Domain:** `information`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Latency` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger information physics system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-Information processing remains physical. Landauer's principle gives a lower bound kT ln 2 for irreversible bit erasure, while real systems operate far above that limit because memory, communication, control, error correction, and heat removal dominate. At solar-system scale, propagation delay is also constitutional: one astronomical unit is roughly 499 light-seconds, so globally synchronous control loops are structurally inappropriate.
+**Latency** exists because it changes a concrete decision inside **Information Physics**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-## Operationalization
+For **Latency**, the primary state variables include **light-time**, **latency**, and **bandwidth**; the control or consequence variables include **causality**, **clock**, and **consistency**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+The boundary is operational, not literary. Inputs to **Latency** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-A practical record for this topic should contain:
+## Engineering model
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+**Latency** is constrained by causality before software preference. One astronomical unit is roughly 499 light-seconds one way, so an interactive round trip across 1 AU inherits about 998 seconds of propagation before queueing or compute. `dyson:latency:8d86f97e09db` therefore declares freshness tolerance, causal ordering, partition behavior, and the local authority that remains valid while remote coordination is unavailable.
 
-## Evidence boundary
+## Operational contract
 
-For `Latency`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:latency:8d86f97e09db` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | light-time, latency, bandwidth with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | causality, clock or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-## Falsifier
+## Worked reasoning
 
-The working claim for `Latency` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+For **Latency**, Classify every state field by maximum tolerable age. Millisecond-fresh local attitude and hour-old strategic inventory can coexist; imposing one consistency model either wastes bandwidth or endangers control.
+
+## Questions the design must answer
+
+1. For **Latency**: Which decisions require freshness and which tolerate stale but causally ordered state?
+2. For **Latency**: What information must cross the light-time boundary?
+3. For **Latency**: What safe local behavior remains during partition?
+
+## Executable representation
+
+```yaml
+subject: dyson:latency:8d86f97e09db
+topic: "Latency"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
+```
+
+## Failure modes and counterexamples
+
+- A remote coordinator is placed on a safety-critical path whose deadline is shorter than physical light-time permits.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Latency**.
+- **Hidden assumption:** light-time or latency is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Latency**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:latency:8d86f97e09db`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Latency** subject/revision is named.
+- [ ] Required light-time, latency, and bandwidth observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Latency** is admitted, downstream systems may consume its light-time, latency, and bandwidth claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Latency** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

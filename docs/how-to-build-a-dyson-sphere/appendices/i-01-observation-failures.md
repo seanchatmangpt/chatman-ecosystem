@@ -1,31 +1,107 @@
-# Appendix I.1 — Observation Failures
+# Observation Failures
 
 **Parent:** [Appendix I — Failure Catalogue](i-failure-catalogue.md)
 
-Observation becomes operational only after it is bounded. O* records exact subject identity, source provenance, units, uncertainty, validity interval, contradictions, and exclusions. UNKNOWN is preserved as a value rather than coerced into a guess. This makes later manufacture falsifiable: a design can be traced back to the measurements and assumptions it actually consumed.
+> **Subject identity:** `dyson:observation-failures:521ce46394b7`
+> **Domain:** `observation`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-Telemetry is raw observation, not standing. Weaver normalizes signals into semantic conventions, attaches resource identity and provenance, and forwards only bounded observations into admission. This avoids a common observability error: turning a successful scrape, log line, or span into a claim that the physical subject behaved correctly.
+## Why this page exists
 
-Failure is modeled as topology rather than surprise. The design objective is to keep a local defect from becoming a global loss: isolate failure domains, preserve safe trajectories, maintain independent shutdown, keep repair paths, and record enough event history for reconstruction. A failed collector should reduce capacity, not invalidate the entire swarm.
+**Observation Failures** exists because it changes a concrete decision inside **Appendix I — Failure Catalogue**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-## Standing rule
+For **Observation Failures**, the primary state variables include **subject identity**, **source**, and **unit**; the control or consequence variables include **uncertainty**, **epoch**, and **validity interval**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
+The boundary is operational, not literary. Inputs to **Observation Failures** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-<!-- semantic-enrichment:v1 -->
+## Engineering model
 
-## Operational significance
+**Observation Failures** becomes `O*` only after it can answer *what, who, how, when, in what unit, with what uncertainty, and for how long*. A deliberately incomplete carrier shows the admission surface:
 
-**Appendix I.1 — Observation Failures** is not retained as a label-only reference. This page belongs to the observation boundary: it explains how a real subject becomes an admitted, replayable description rather than an unqualified bag of facts. Observation is always partial. The carrier must bind exact subject identity, measurement time, source provenance, units, uncertainty, contradiction state, and the dimensions that remain UNKNOWN. A digest identifies the carrier; it does not make the carrier true.
+```toml
+subject = "dyson:observation-failures:521ce46394b7"
+quantity = "observation_failures"
+value_state = "OBSERVED"
+unit = "REQUIRED"
+uncertainty = "REQUIRED"
+observed_at = "REQUIRED"
+valid_until = "REQUIRED"
+provenance = "REQUIRED"
+```
 
-## System contract
+`REQUIRED` is not a placeholder to be guessed. Until real evidence binds those fields, downstream manufacture preserves `UNKNOWN`. For **Observation Failures**, this reusable domain rule is evaluated against `dyson:observation-failures:521ce46394b7`; its observations, validity interval, constraints, and downstream consumer remain specific to this page even when the underlying law is shared.
 
-The operational sequence is `raw signal -> normalization -> provenance -> contradiction handling -> O* admission`. A value can be syntactically present yet inadmissible because its source is stale, its units are unresolved, or another source contradicts it. The critical rule is that UNKNOWN is preserved as topology. Missing knowledge may remove candidate actions from the lawful frontier, but it cannot be converted into permission merely because a planner prefers progress.
+## Operational contract
 
-## Failure modes and falsifiers
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:observation-failures:521ce46394b7` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | subject identity, source, unit with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | uncertainty, epoch or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-Falsifiers are identity drift, stale observations reused against a changed subject, loss of provenance, contradictory measurements collapsed without a rule, and a regenerated observation whose digest cannot be reproduced from the same admitted inputs. Any of these lowers standing. The recovery path is re-observation and re-admission, not manual assertion that the old world model is still close enough.
+## Worked reasoning
 
-## Evidence before promotion
+For **Observation Failures**, Store raw observation beside normalized value and transformation receipt. A later calibration update can reproduce the derived value without pretending the original sensor reading changed.
 
-For this subject, promotion requires evidence that intersects the claim: exact subject identity, the admitted inputs or assumptions, the verifier or observation boundary, and a reproducible result. Static structure can establish representational closure; simulated execution can establish bounded behavior; neither is silently promoted to real-world consequential standing. A changed subject, stale observation, failed replay, unresolved contradiction, or verifier that no longer intersects the claim revokes the prior standing and requires re-admission.
+## Questions the design must answer
+
+1. For **Observation Failures**: Who observed what exact subject, how, when, in what unit, and with what uncertainty?
+2. For **Observation Failures**: When does the observation expire?
+3. For **Observation Failures**: Which contradiction must remain UNKNOWN?
+
+## Executable representation
+
+```json
+{
+  "subject": "dyson:observation-failures:521ce46394b7",
+  "topic": "Observation Failures",
+  "state": "OBSERVED_OR_PROPOSED",
+  "provenance": "required",
+  "unit_or_schema": "required",
+  "uncertainty_or_quality": "required",
+  "validity": "bounded",
+  "consumer": "named downstream admission rule"
+}
+```
+
+## Failure modes and counterexamples
+
+- A stale or synthetic value is normalized into the same standing as current physical observation.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Observation Failures**.
+- **Hidden assumption:** subject identity or source is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Observation Failures**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:observation-failures:521ce46394b7`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Observation Failures** subject/revision is named.
+- [ ] Required subject identity, source, and unit observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Observation Failures** is admitted, downstream systems may consume its subject identity, source, and unit claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Observation Failures** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

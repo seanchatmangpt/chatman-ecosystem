@@ -1,36 +1,101 @@
-# 64.1 Ephemeris Publication
+# Ephemeris Publication
 
-**Parent:** [64. Collision Governance](64-collision-governance.md)
+**Parent:** [Collision Governance](64-collision-governance.md)
 
-## Claim
+> **Subject identity:** `dyson:ephemeris-publication:429106f36753`
+> **Domain:** `orbital`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Ephemeris Publication` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger collision governance system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-Orbital state is not a location label; it is a dynamical state with uncertainty. In the two-body approximation, orbital period satisfies T²=4π²a³/μ, where a is semimajor axis and μ is the standard gravitational parameter. Operational designs must then add perturbations, multi-body effects, solar radiation pressure, station-keeping budgets, conjunction probability, and covariance growth.
+**Ephemeris Publication** exists because it changes a concrete decision inside **Collision Governance**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Failure is modeled as topology rather than surprise. The design objective is to keep a local defect from becoming a global loss: isolate failure domains, preserve safe trajectories, maintain independent shutdown, keep repair paths, and record enough event history for reconstruction. A failed collector should reduce capacity, not invalidate the entire swarm.
+For **Ephemeris Publication**, the primary state variables include **state vector**, **semimajor axis**, and **eccentricity**; the control or consequence variables include **covariance**, **delta-v**, and **conjunction**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-Governance is treated as executable constraint, not ornamental prose. Rights, duties, jurisdictions, delegation, amendment, and appeals must be represented so that machines can determine what authority exists without manufacturing policy from ambiguity. Polycentric governance is favored because solar-system latency and heterogeneous communities make one synchronous sovereign control loop both brittle and unnecessary.
+The boundary is operational, not literary. Inputs to **Ephemeris Publication** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Operationalization
+## Engineering model
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+For **Ephemeris Publication**, start from a state vector and epoch rather than a prose orbit label. In the two-body core, `r` and `v` evolve under gravitational parameter `μ`; useful derived boundaries include
 
-A practical record for this topic should contain:
+\[
+T=2\pi\sqrt{\frac{a^3}{\mu}},\qquad q=a(1-e),\qquad Q=a(1+e).
+\]
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+A flight-relevant `dyson:ephemeris-publication:429106f36753` record also carries reference frame, covariance, maneuver history, force-model version, and validity horizon. Perturbations, radiation pressure, multi-body effects, navigation error, and conjunction uncertainty are not optional metadata; they determine when the simple model ceases to support a decision.
 
-## Evidence boundary
+## Operational contract
 
-For `Ephemeris Publication`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:ephemeris-publication:429106f36753` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | state vector, semimajor axis, eccentricity with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | covariance, delta-v or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-## Falsifier
+## Worked reasoning
 
-The working claim for `Ephemeris Publication` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+For **Ephemeris Publication**, Compare nominal, degraded-navigation, and no-maneuver-safe trajectories. A design is stronger when all remain inside protected bounds than when one high-precision nominal solution looks optimal.
+
+## Questions the design must answer
+
+1. For **Ephemeris Publication**: Which approximation regime is valid over the decision horizon?
+2. For **Ephemeris Publication**: What state and covariance must be propagated before an orbit-changing command is admissible?
+3. For **Ephemeris Publication**: Which perturbation or conjunction invalidates the current trajectory class?
+
+## Executable representation
+
+```yaml
+subject: dyson:ephemeris-publication:429106f36753
+topic: "Ephemeris Publication"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
+```
+
+## Failure modes and counterexamples
+
+- The nominal trajectory is safe while its propagated uncertainty envelope violates a thermal, conjunction, or protected-region bound.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Ephemeris Publication**.
+- **Hidden assumption:** state vector or semimajor axis is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Ephemeris Publication**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:ephemeris-publication:429106f36753`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Ephemeris Publication** subject/revision is named.
+- [ ] Required state vector, semimajor axis, and eccentricity observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Ephemeris Publication** is admitted, downstream systems may consume its state vector, semimajor axis, and eccentricity claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Ephemeris Publication** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

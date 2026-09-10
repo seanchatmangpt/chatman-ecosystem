@@ -1,36 +1,101 @@
-# 43.4 Refinement
+# Refinement
 
-**Parent:** [43. Phase Two: Asteroid Industry](43-phase-two-asteroid-industry.md)
+**Parent:** [Phase Two: Asteroid Industry](43-phase-two-asteroid-industry.md)
 
-## Claim
+> **Subject identity:** `dyson:refinement:dbb3c524cc2a`
+> **Domain:** `materials`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Refinement` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger phase two: asteroid industry system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-Matter is the hard budget that prevents a Dyson program from collapsing into pure software metaphor. Each design must close a mass ledger from feedstock through extraction, refining, fabrication, deployment, maintenance, recycling, and unrecoverable loss. Composition uncertainty is therefore an admitted observation problem before it is a manufacturing problem.
+**Refinement** exists because it changes a concrete decision inside **Phase Two: Asteroid Industry**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Factory design is a closure problem: feedstock, energy, tooling, calibration, control, spares, maintenance, waste, and output quality must all be represented. Self-replication is especially dangerous to leave implicit. Reproduction therefore consumes explicit material and energy budgets, generation limits, geographic or orbital fences, shutdown semantics, and receipts for each authorized replication transition.
+For **Refinement**, the primary state variables include **mass balance**, **feedstock**, and **yield**; the control or consequence variables include **composition**, **recycling**, and **loss**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-The relevant economic quantity is not merely monetary cost but the opportunity cost of scarce mass, energy, launch delta-v, time, compute, and risk. Every scaling argument must show how industrial capacity compounds without hiding bottlenecks in a downstream ledger. Energy return, material yield, repair burden, and replication cycle time are more fundamental than a single currency price.
+The boundary is operational, not literary. Inputs to **Refinement** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Operationalization
+## Engineering model
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+For **Refinement**, conservation is the first refusal boundary:
 
-A practical record for this topic should contain:
+\[
+m_{feed}=m_{product}+m_{recycle}+m_{inventory}+m_{waste}+m_{loss}.
+\]
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+Gross mass is not qualified material. Composition, phase, impurity, process yield, tooling wear, recyclable fraction, and batch genealogy determine whether feedstock can become the intended artifact. `dyson:refinement:dbb3c524cc2a` keeps unexplained residual mass visible rather than normalizing it away.
 
-## Evidence boundary
+## Operational contract
 
-For `Refinement`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:refinement:dbb3c524cc2a` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | mass balance, feedstock, yield with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | composition, recycling or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-## Falsifier
+## Worked reasoning
 
-The working claim for `Refinement` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+For **Refinement**, Run the mass ledger on one representative batch and force every residual into qualified product, recoverable material, inventory, known waste, or investigated loss. Scaling unexplained residuals scales uncertainty too.
+
+## Questions the design must answer
+
+1. For **Refinement**: Does mass close from characterized feedstock to product, recycle, inventory, waste, and loss?
+2. For **Refinement**: Which impurity controls yield or lifetime?
+3. For **Refinement**: Which imported tool prevents false local closure?
+
+## Executable representation
+
+```yaml
+subject: dyson:refinement:dbb3c524cc2a
+topic: "Refinement"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
+```
+
+## Failure modes and counterexamples
+
+- Gross feedstock mass is mistaken for qualified material while impurity, yield, tooling, or recycling losses are omitted.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Refinement**.
+- **Hidden assumption:** mass balance or feedstock is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Refinement**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:refinement:dbb3c524cc2a`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Refinement** subject/revision is named.
+- [ ] Required mass balance, feedstock, and yield observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Refinement** is admitted, downstream systems may consume its mass balance, feedstock, and yield claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Refinement** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

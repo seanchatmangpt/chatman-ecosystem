@@ -1,27 +1,100 @@
-# Appendix J.4 — Manufacturing
+# Manufacturing
 
 **Parent:** [Appendix J — Civilization-Scale SLOs](j-civilization-scale-slos.md)
 
-Factory design is a closure problem: feedstock, energy, tooling, calibration, control, spares, maintenance, waste, and output quality must all be represented. Self-replication is especially dangerous to leave implicit. Reproduction therefore consumes explicit material and energy budgets, generation limits, geographic or orbital fences, shutdown semantics, and receipts for each authorized replication transition.
+> **Subject identity:** `dyson:manufacturing:e56ab9343048`
+> **Domain:** `manufacturing`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Standing rule
+## Why this page exists
 
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
+**Manufacturing** exists because it changes a concrete decision inside **Appendix J — Civilization-Scale SLOs**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-<!-- semantic-enrichment:v1 -->
+For **Manufacturing**, the primary state variables include **bill of materials**, **process step**, and **yield**; the control or consequence variables include **throughput**, **tooling**, and **quality**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-## Operational significance
+The boundary is operational, not literary. Inputs to **Manufacturing** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-**Appendix J.4 — Manufacturing** is not retained as a label-only reference. This page turns a desirable property into an operational service objective. A useful SLO names the measured subject, numerator, denominator, observation window, sampling method, allowed exclusions, error budget, and consequence of breach. Without those fields a target such as 'safe', 'available', or 'reliable' cannot be falsified and therefore cannot govern an autonomous fleet.
+## Engineering model
 
-## System contract
+For **Manufacturing**, factory closure is a measured transformation:
 
-Civilization-scale objectives must also define locality. A global average can hide catastrophic regional failure, so availability, safety, energy delivery, manufacturing yield, repair latency, observation freshness, and receipt completeness should be measurable per cell/fleet/authority domain and aggregatable upward. Measurement itself is an admitted process with provenance; telemetry loss is not equivalent to perfect performance.
+```text
+(feedstock, energy, tooling, robotics)
+ -> (qualified product, rework, waste, wear)
+```
 
-## Failure modes and falsifiers
+Yield is measured after inspection and rework, not inferred from nominal cycle rate. `dyson:manufacturing:e56ab9343048` tracks process capability, calibration, critical tooling, spare consumption, batch genealogy, inspection result, and the downstream acceptance criterion that makes output usable.
 
-A breach should drive a bounded control response rather than an unbounded optimizer. Exhausted error budget can halt expansion, reduce actuation authority, shift capacity to repair, or force a narrower operating envelope. The falsifier is straightforward: construct a trace that violates the stated objective and verify that the control plane detects the breach and takes the declared response.
+## Operational contract
 
-## Evidence before promotion
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:manufacturing:e56ab9343048` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | bill of materials, process step, yield with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | throughput, tooling or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-For this subject, promotion requires evidence that intersects the claim: exact subject identity, the admitted inputs or assumptions, the verifier or observation boundary, and a reproducible result. Static structure can establish representational closure; simulated execution can establish bounded behavior; neither is silently promoted to real-world consequential standing. A changed subject, stale observation, failed replay, unresolved contradiction, or verifier that no longer intersects the claim revokes the prior standing and requires re-admission.
+## Worked reasoning
+
+For **Manufacturing**, Distinguish nominal cycle time from qualified-output cycle time. A fast process with poor first-pass yield can have lower effective throughput once inspection and rework are included.
+
+## Questions the design must answer
+
+1. For **Manufacturing**: Which process step is the bottleneck after yield and rework?
+2. For **Manufacturing**: Which tooling or calibration dependency prevents false factory closure?
+3. For **Manufacturing**: Which quality attribute admits output to the next process?
+
+## Executable representation
+
+```yaml
+subject: dyson:manufacturing:e56ab9343048
+topic: "Manufacturing"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- Throughput is reported before inspection/rework and scaling amplifies poor yield.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Manufacturing**.
+- **Hidden assumption:** bill of materials or process step is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Manufacturing**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:manufacturing:e56ab9343048`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Manufacturing** subject/revision is named.
+- [ ] Required bill of materials, process step, and yield observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Manufacturing** is admitted, downstream systems may consume its bill of materials, process step, and yield claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Manufacturing** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

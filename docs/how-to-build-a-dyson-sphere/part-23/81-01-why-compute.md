@@ -1,36 +1,95 @@
-# 81.1 Why Compute
+# Why Compute
 
-**Parent:** [81. Computation as the Load](81-computation-as-the-load.md)
+**Parent:** [Computation as the Load](81-computation-as-the-load.md)
 
-## Claim
+> **Subject identity:** `dyson:why-compute:f3eb8fcbac0d`
+> **Domain:** `information`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Why Compute` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger computation as the load system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-A physically credible Dyson program begins with a swarm, not a rigid shell. Independent orbiting collectors can be added incrementally, placed on families of stable trajectories, repaired or retired locally, and diversified by function. A rigid shell around a star has no known passive structural mechanism that keeps it centered; even before material strength is considered, it creates a global stability problem that a swarm avoids.
+**Why Compute** exists because it changes a concrete decision inside **Computation as the Load**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Information processing remains physical. Landauer's principle gives a lower bound kT ln 2 for irreversible bit erasure, while real systems operate far above that limit because memory, communication, control, error correction, and heat removal dominate. At solar-system scale, propagation delay is also constitutional: one astronomical unit is roughly 499 light-seconds, so globally synchronous control loops are structurally inappropriate.
+For **Why Compute**, the primary state variables include **light-time**, **latency**, and **bandwidth**; the control or consequence variables include **causality**, **clock**, and **consistency**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-A Matrioshka-brain architecture extends the Dyson idea by using successive thermal layers. Inner computation or industry consumes high-exergy input and radiates lower-temperature waste heat that can be intercepted again farther out. The idea is thermodynamically suggestive rather than a finished engineering design; workload placement must therefore be driven by temperature, latency, reliability, and communication cost rather than a single abstract compute metric.
+The boundary is operational, not literary. Inputs to **Why Compute** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Operationalization
+## Engineering model
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+**Why Compute** is constrained by causality before software preference. One astronomical unit is roughly 499 light-seconds one way, so an interactive round trip across 1 AU inherits about 998 seconds of propagation before queueing or compute. `dyson:why-compute:f3eb8fcbac0d` therefore declares freshness tolerance, causal ordering, partition behavior, and the local authority that remains valid while remote coordination is unavailable.
 
-A practical record for this topic should contain:
+## Operational contract
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:why-compute:f3eb8fcbac0d` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | light-time, latency, bandwidth with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | causality, clock or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-## Evidence boundary
+## Worked reasoning
 
-For `Why Compute`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+For **Why Compute**, Classify every state field by maximum tolerable age. Millisecond-fresh local attitude and hour-old strategic inventory can coexist; imposing one consistency model either wastes bandwidth or endangers control.
 
-## Falsifier
+## Questions the design must answer
 
-The working claim for `Why Compute` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+1. For **Why Compute**: Which decisions require freshness and which tolerate stale but causally ordered state?
+2. For **Why Compute**: What information must cross the light-time boundary?
+3. For **Why Compute**: What safe local behavior remains during partition?
+
+## Executable representation
+
+```yaml
+subject: dyson:why-compute:f3eb8fcbac0d
+topic: "Why Compute"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
+```
+
+## Failure modes and counterexamples
+
+- A remote coordinator is placed on a safety-critical path whose deadline is shorter than physical light-time permits.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Why Compute**.
+- **Hidden assumption:** light-time or latency is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Why Compute**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:why-compute:f3eb8fcbac0d`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Why Compute** subject/revision is named.
+- [ ] Required light-time, latency, and bandwidth observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Why Compute** is admitted, downstream systems may consume its light-time, latency, and bandwidth claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Why Compute** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

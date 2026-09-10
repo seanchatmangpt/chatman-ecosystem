@@ -1,37 +1,106 @@
-# 86. No Universal Configuration
+# No Universal Configuration
 
-> **Part 24: Interstellar Extension.** This part extends the constitutional method beyond one star. What travels is executable knowledge; local reality must still be reacquired and readmitted.
+> **Subject identity:** `dyson:no-universal-configuration:64da6cc7c1a3`
+> **Domain:** `stellar`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Thesis
+## Why this page exists
 
-No Universal Configuration is treated here as a systems problem rather than an isolated component. At Dyson-swarm scale, a locally sensible decision can become globally unsafe when it hides mass, heat, latency, authority, or evidence. The chapter therefore asks what the object is, what observations are required to reason about it, what constraints delimit its lawful construction space, and what evidence would justify advancing its standing.
+**No Universal Configuration** exists because it changes a concrete decision inside **Part XXIV — Interstellar Extension**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Stellar power is the dominant external input. For an approximately isotropic star of luminosity L, irradiance at radius r is F=L/(4πr²). This inverse-square relation turns orbital radius into an energy-density and thermal-design parameter. For the Sun, total luminosity is about 3.8×10^26 W; a civilization need not capture all of it for the industrial consequences to be enormous.
+For **No Universal Configuration**, the primary state variables include **luminosity**, **irradiance**, and **spectrum**; the control or consequence variables include **activity**, **uncertainty**, and **epoch**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-Interstellar expansion breaks any assumption of a universal live control plane. A seed system must reacquire local reality, build a local O*, admit local physics and resources, reconstruct manufacturing capability, and produce local receipts. Portable semantics can survive the journey; configuration and standing cannot simply be copied because the subject has changed.
+The boundary is operational, not literary. Inputs to **No Universal Configuration** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Chatman-Ecosystem realization
-
-The operational path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. Observation and construction remain maximally expressive above the authority boundary; DO remains narrow. The canonical object is represented in a graph, ggen may render projections, GymAct may execute counterfactuals, Lean/mfact may discharge formal or evidentiary obligations where applicable, and BRCE is the only path permitted to cause a consequential transition.
-
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
-
-## Chapter map
+## Decomposition
 
 - [Every Star Is a New Subject](86-01-every-star-is-a-new-subject.md)
 - [Portable Semantics](86-02-portable-semantics.md)
 - [Local Admission](86-03-local-admission.md)
-- [Federated Civilization](86-04-federated-civilization.md)
+- [Federated Civilization](86-04-federated-civilization.md) For **No Universal Configuration**, this reusable domain rule is evaluated against `dyson:no-universal-configuration:64da6cc7c1a3`; its observations, validity interval, constraints, and downstream consumer remain specific to this page even when the underlying law is shared.
 
-## Acceptance boundary
+## Engineering model
 
-This chapter is complete only when its claims can be tied to a bounded subject. A reader should be able to name the observation sources, uncertainty, canonical semantic identity, constraints, reversible candidate space, authority required for consequence, expected postcondition, verifier, and replay path. If any of those are absent, the appropriate state is `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED`—not narrative completion.
+**No Universal Configuration** belongs in a versioned stellar state, not a timeless constant. Ideal irradiance is bounded by
 
-## Falsifiers
+\[
+F(r)=\frac{L}{4\pi r^2},
+\]
 
-- A required physical ledger does not close.
-- The subject identity is ambiguous or stale.
-- A simulation result is presented as physical execution evidence.
-- A proof is about a model that was never admitted as the operational subject.
-- An actuator can be reached outside the brokered receipt path.
-- Replay cannot reconstruct the transition that supposedly established standing.
+but collector decisions also depend on spectral distribution, activity, variability, geometry, and observation epoch. `dyson:no-universal-configuration:64da6cc7c1a3` must propagate measurement uncertainty into sizing or safety margins instead of substituting a point estimate wherever a range is operationally relevant.
+
+## Operational contract
+
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:no-universal-configuration:64da6cc7c1a3` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | luminosity, irradiance, spectrum with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | activity, uncertainty or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **No Universal Configuration**, Propagate the admitted measurement interval into a downstream sizing or safe-mode choice. If the choice does not change across the range, the design is robust; if it does, more observation has measurable value.
+
+## Questions the design must answer
+
+1. For **No Universal Configuration**: Which measured stellar quantities drive the decision, and at what epoch?
+2. For **No Universal Configuration**: How does uncertainty propagate into collector sizing or safe orbit families?
+3. For **No Universal Configuration**: Which transient event forces derating or model invalidation?
+
+## Executable representation
+
+```yaml
+subject: dyson:no-universal-configuration:64da6cc7c1a3
+topic: "No Universal Configuration"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
+```
+
+## Failure modes and counterexamples
+
+- A long-lived design treats a stellar estimate as immutable beyond its admitted observation/model horizon.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **No Universal Configuration**.
+- **Hidden assumption:** luminosity or irradiance is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **No Universal Configuration**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:no-universal-configuration:64da6cc7c1a3`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **No Universal Configuration** subject/revision is named.
+- [ ] Required luminosity, irradiance, and spectrum observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **No Universal Configuration** is admitted, downstream systems may consume its luminosity, irradiance, and spectrum claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **No Universal Configuration** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

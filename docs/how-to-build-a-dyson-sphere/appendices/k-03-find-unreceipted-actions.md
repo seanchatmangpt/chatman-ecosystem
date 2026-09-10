@@ -1,53 +1,99 @@
-# Appendix K.3 — Find Unreceipted Actions
+# Find Unreceipted Actions
 
 **Parent:** [Appendix K — Example SPARQL Queries](k-example-sparql-queries.md)
 
-Standing belongs to an exact subject. Inspection is not execution, execution is not verification, and a named receipt file is not evidence that the intended transition occurred. A useful receipt binds identity, authority, consequence, verifier result, and replay instructions so a later observer can reconstruct why the standing claim was made.
+> **Subject identity:** `dyson:find-unreceipted-actions:9fd240a2e37b`
+> **Domain:** `verification`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Minimal record
+## Why this page exists
+
+**Find Unreceipted Actions** exists because it changes a concrete decision inside **Appendix K — Example SPARQL Queries**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
+
+For **Find Unreceipted Actions**, the primary state variables include **subject**, **execution**, and **postcondition**; the control or consequence variables include **verifier**, **receipt**, and **replay**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
+
+The boundary is operational, not literary. Inputs to **Find Unreceipted Actions** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
+
+## Engineering model
+
+For **Find Unreceipted Actions**, standing belongs to an exact subject and revision. The evidence chain is
 
 ```text
-subject = <exact identity>
-observed = <bounded inputs>
-admitted = <constraints and uncertainty>
-authority = <SELECT|CONSTRUCT|DO>
-executed = <observed action or NONE>
-verified = <postcondition evidence>
-receipt = <content identity>
-replay = <deterministic reconstruction method>
-standing = <bounded status>
+observed -> admitted -> executed -> changed -> verified -> receipted -> replayable
 ```
 
-## Query pattern
+Those predicates are not interchangeable. `dyson:find-unreceipted-actions:9fd240a2e37b` reaches `ALIVE` only when the owning verifier observes the required postcondition against the admitted subject and replay reconstructs why the claim was made. A different SHA, environment, world model, or verifier is a different subject.
 
-```sparql
-SELECT ?subject ?evidence
-WHERE {
-  ?subject ?predicate ?evidence .
-  FILTER(BOUND(?evidence))
-}
+## Operational contract
+
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:find-unreceipted-actions:9fd240a2e37b` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | subject, execution, postcondition with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | verifier, receipt or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Find Unreceipted Actions**, Change only the subject SHA and rerun receipt lookup. An exact-subject verifier refuses standing inheritance even when the candidate appears behaviorally similar.
+
+## Questions the design must answer
+
+1. For **Find Unreceipted Actions**: What exact subject executed and what changed?
+2. For **Find Unreceipted Actions**: Which evidence would downgrade standing?
+3. For **Find Unreceipted Actions**: Can replay reconstruct the decision without repeating consequence?
+
+## Executable representation
+
+```yaml
+subject: dyson:find-unreceipted-actions:9fd240a2e37b
+topic: "Find Unreceipted Actions"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
 ```
 
-The concrete ontology IRIs and predicates must come from the admitted graph. This generic pattern is illustrative and must not be mistaken for a canonical query against an unspecified schema.
+## Failure modes and counterexamples
 
-## Standing rule
+- A green workflow on another SHA is presented as exact-subject standing.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Find Unreceipted Actions**.
+- **Hidden assumption:** subject or execution is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
 
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
+## DfCM decision rule
 
-<!-- semantic-enrichment:v1 -->
+For **Find Unreceipted Actions**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
 
-## Operational significance
+## Admission and authority boundary
 
-**Appendix K.3 — Find Unreceipted Actions** is not retained as a label-only reference. This page carries a specific node in the ecosystem's knowledge graph. Its job is to make the concept operational: identify the exact subject, state the invariant that constrains lawful behavior, show how the concept composes with adjacent stages, and name evidence that would falsify the claim. A page that merely repeats terminology without those edges is documentation-shaped WIP.
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
 
-## System contract
+For `dyson:find-unreceipted-actions:9fd240a2e37b`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
 
-The default correspondence is `observe -> admit -> construct -> verify -> actuate when authorized -> receipt -> replay`. Not every concept participates in every stage, but the page should say where its authority begins and ends. In particular, descriptive knowledge must not acquire actuation power merely because it is machine-readable or generated by a capable model.
+## Admission test
 
-## Failure modes and falsifiers
+- [ ] The exact **Find Unreceipted Actions** subject/revision is named.
+- [ ] Required subject, execution, and postcondition observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
 
-Meaning is tested by discrimination. A reader or machine should be able to use this page to decide between at least two nearby states—valid versus invalid, supported versus unsupported, authorized versus unauthorized, observed versus inferred, or completed versus merely acknowledged. The named falsifier and evidence requirement make that distinction executable.
+## Downstream consequence
 
-## Evidence before promotion
+When **Find Unreceipted Actions** is admitted, downstream systems may consume its subject, execution, and postcondition claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
 
-For this subject, promotion requires evidence that intersects the claim: exact subject identity, the admitted inputs or assumptions, the verifier or observation boundary, and a reproducible result. Static structure can establish representational closure; simulated execution can establish bounded behavior; neither is silently promoted to real-world consequential standing. A changed subject, stale observation, failed replay, unresolved contradiction, or verifier that no longer intersects the claim revokes the prior standing and requires re-admission.
+## Epistemic boundary
+
+This page makes **Find Unreceipted Actions** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

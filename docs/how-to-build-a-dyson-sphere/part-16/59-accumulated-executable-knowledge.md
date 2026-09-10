@@ -1,39 +1,100 @@
-# 59. Accumulated Executable Knowledge
+# Accumulated Executable Knowledge
 
-> **Part 16: ggen-marketplace for a Solar Economy.** This part turns solved designs into civilization memory. Packs capture the semantic and evidentiary closure of a capability so instances can be manufactured without repeating discovery.
+> **Subject identity:** `dyson:accumulated-executable-knowledge:e2eb28da0759`
+> **Domain:** `ecosystem`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Thesis
+## Why this page exists
 
-Accumulated Executable Knowledge is treated here as a systems problem rather than an isolated component. At Dyson-swarm scale, a locally sensible decision can become globally unsafe when it hides mass, heat, latency, authority, or evidence. The chapter therefore asks what the object is, what observations are required to reason about it, what constraints delimit its lawful construction space, and what evidence would justify advancing its standing.
+**Accumulated Executable Knowledge** exists because it changes a concrete decision inside **Part XVI — ggen-marketplace for a Solar Economy**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-ggen is treated as a semantic manufacturing compiler: graph and query select meaning, templates render projections, validators reject malformed output, and receipts bind the generated artifact to the admitted subject. Generation is not evidence of correctness. The value of the generator is reproducibility and class closure—once a construction pattern is admitted, it can be regenerated for new subjects without rediscovering the pattern manually.
+For **Accumulated Executable Knowledge**, the primary state variables include **graph**, **projection**, and **admission**; the control or consequence variables include **actuation**, **receipt**, and **standing**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-The relevant economic quantity is not merely monetary cost but the opportunity cost of scarce mass, energy, launch delta-v, time, compute, and risk. Every scaling argument must show how industrial capacity compounds without hiding bottlenecks in a downstream ledger. Energy return, material yield, repair burden, and replication cycle time are more fundamental than a single currency price.
+The boundary is operational, not literary. Inputs to **Accumulated Executable Knowledge** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Chatman-Ecosystem realization
-
-The operational path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. Observation and construction remain maximally expressive above the authority boundary; DO remains narrow. The canonical object is represented in a graph, ggen may render projections, GymAct may execute counterfactuals, Lean/mfact may discharge formal or evidentiary obligations where applicable, and BRCE is the only path permitted to cause a consequential transition.
-
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
-
-## Chapter map
+## Decomposition
 
 - [Why Knowledge Must Be Packaged](59-01-why-knowledge-must-be-packaged.md)
 - [Pack Identity](59-02-pack-identity.md)
 - [Dependencies](59-03-dependencies.md)
 - [Capabilities](59-04-capabilities.md)
 - [Proof](59-05-proof.md)
-- [Receipts](59-06-receipts.md)
+- [Receipts](59-06-receipts.md) For **Accumulated Executable Knowledge**, this reusable domain rule is evaluated against `dyson:accumulated-executable-knowledge:e2eb28da0759`; its observations, validity interval, constraints, and downstream consumer remain specific to this page even when the underlying law is shared.
 
-## Acceptance boundary
+## Engineering model
 
-This chapter is complete only when its claims can be tied to a bounded subject. A reader should be able to name the observation sources, uncertainty, canonical semantic identity, constraints, reversible candidate space, authority required for consequence, expected postcondition, verifier, and replay path. If any of those are absent, the appropriate state is `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED`—not narrative completion.
+For **Accumulated Executable Knowledge**, the Chatman Ecosystem is a correspondence between evidence types rather than one runtime. `dyson:accumulated-executable-knowledge:e2eb28da0759` moves through canonical semantic identity, generated projection, validation/simulation, brokered consequence, receipt, and standing. Each component owns a bounded morphism; none may convert “I can describe it” into “I may do it.”
 
-## Falsifiers
+## Operational contract
 
-- A required physical ledger does not close.
-- The subject identity is ambiguous or stale.
-- A simulation result is presented as physical execution evidence.
-- A proof is about a model that was never admitted as the operational subject.
-- An actuator can be reached outside the brokered receipt path.
-- Replay cannot reconstruct the transition that supposedly established standing.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:accumulated-executable-knowledge:e2eb28da0759` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | graph, projection, admission with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | actuation, receipt or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Accumulated Executable Knowledge**, Trace one fact end to end: graph identity -> generated projection -> verifier -> brokered change -> receipt -> standing. If adjacent stages use different subjects, the pipeline has semantic drift.
+
+## Questions the design must answer
+
+1. For **Accumulated Executable Knowledge**: Which component owns this transition?
+2. For **Accumulated Executable Knowledge**: What canonical graph fact drives the projection?
+3. For **Accumulated Executable Knowledge**: Which receipt proves the exact-subject transition?
+
+## Executable representation
+
+```yaml
+subject: dyson:accumulated-executable-knowledge:e2eb28da0759
+topic: "Accumulated Executable Knowledge"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- One component collapses observation, construction, actuation, and standing into an unauditable shortcut.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Accumulated Executable Knowledge**.
+- **Hidden assumption:** graph or projection is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Accumulated Executable Knowledge**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:accumulated-executable-knowledge:e2eb28da0759`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Accumulated Executable Knowledge** subject/revision is named.
+- [ ] Required graph, projection, and admission observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Accumulated Executable Knowledge** is admitted, downstream systems may consume its graph, projection, and admission claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Accumulated Executable Knowledge** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

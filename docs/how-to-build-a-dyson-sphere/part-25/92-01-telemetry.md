@@ -1,32 +1,102 @@
-# 92.1 Telemetry
+# Telemetry
 
-**Parent:** [92. Weaver](92-weaver.md)
+**Parent:** [Weaver](92-weaver.md)
 
-## Claim
+> **Subject identity:** `dyson:telemetry:566ed7c6fa60`
+> **Domain:** `telemetry`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Telemetry` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger weaver system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-Telemetry is raw observation, not standing. Weaver normalizes signals into semantic conventions, attaches resource identity and provenance, and forwards only bounded observations into admission. This avoids a common observability error: turning a successful scrape, log line, or span into a claim that the physical subject behaved correctly.
+**Telemetry** exists because it changes a concrete decision inside **Weaver**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-## Operationalization
+For **Telemetry**, the primary state variables include **resource identity**, **signal**, and **attribute**; the control or consequence variables include **event**, **trace**, and **provenance**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+The boundary is operational, not literary. Inputs to **Telemetry** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-A practical record for this topic should contain:
+## Engineering model
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+For **Telemetry**, raw signal is only the first event. The observation path for `dyson:telemetry:566ed7c6fa60` is
 
-## Evidence boundary
+```text
+raw signal -> normalize unit/schema -> bind resource identity
+           -> preserve quality/uncertainty -> admit or refuse
+           -> derive operational state
+```
 
-For `Telemetry`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+A successful scrape demonstrates transport, not subject health. Missing, stale, duplicated, and out-of-order signals retain those qualities instead of being collapsed into a healthy latest-value projection. For **Telemetry**, this reusable domain rule is evaluated against `dyson:telemetry:566ed7c6fa60`; its observations, validity interval, constraints, and downstream consumer remain specific to this page even when the underlying law is shared.
 
-## Falsifier
+## Operational contract
 
-The working claim for `Telemetry` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:telemetry:566ed7c6fa60` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | resource identity, signal, attribute with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | event, trace or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Telemetry**, Inject missing, stale, duplicated, and out-of-order signals. Preserve quality and causal metadata rather than normalizing all four into a healthy latest-value gauge.
+
+## Questions the design must answer
+
+1. For **Telemetry**: Which resource identity binds the signal to reality?
+2. For **Telemetry**: What normalization preserves provenance and quality?
+3. For **Telemetry**: Which missing signal remains UNKNOWN rather than healthy?
+
+## Executable representation
+
+```json
+{
+  "subject": "dyson:telemetry:566ed7c6fa60",
+  "topic": "Telemetry",
+  "state": "OBSERVED_OR_PROPOSED",
+  "provenance": "required",
+  "unit_or_schema": "required",
+  "uncertainty_or_quality": "required",
+  "validity": "bounded",
+  "consumer": "named downstream admission rule"
+}
+```
+
+## Failure modes and counterexamples
+
+- Missing data becomes a healthy default, suppressing uncertainty that should trigger investigation.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Telemetry**.
+- **Hidden assumption:** resource identity or signal is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Telemetry**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:telemetry:566ed7c6fa60`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Telemetry** subject/revision is named.
+- [ ] Required resource identity, signal, and attribute observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Telemetry** is admitted, downstream systems may consume its resource identity, signal, and attribute claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Telemetry** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

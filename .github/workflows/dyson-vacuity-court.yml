@@ -1,0 +1,112 @@
+name: Dyson Non-Vacuity Court
+
+on:
+  pull_request:
+    paths:
+      - "docs/how-to-build-a-dyson-sphere/**"
+      - "scripts/generate_dyson_sphere_book.py"
+      - "scripts/enrich_dyson_sphere_book.py"
+      - "scripts/audit_dyson_sphere_book.py"
+      - "artifacts/dyson-vacuity-audit.json"
+      - ".github/workflows/dyson-vacuity-court.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  non-vacuity-court:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Assert exact candidate identity
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
+
+      - name: Compile deterministic book machinery
+        run: |
+          python3 -m py_compile \
+            scripts/generate_dyson_sphere_book.py \
+            scripts/enrich_dyson_sphere_book.py \
+            scripts/audit_dyson_sphere_book.py
+
+      - name: Audit every book page
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/audit_dyson_sphere_book.py \
+            --root docs/how-to-build-a-dyson-sphere > /tmp/dyson-audit.json
+          python3 - <<'PY'
+          import json
+          r=json.load(open('/tmp/dyson-audit.json'))
+          assert r['standing']=='ALIVE', r['findings'][:5]
+          assert r['summary_linked_pages']==838
+          assert r['unique_linked_pages']==838
+          assert r['book_markdown_pages_excluding_summary']==838
+          assert r['unique_page_bodies']==838
+          assert r['finding_count']==0
+          assert r['minimum_words'] >= 560
+          assert all(r['definition_of_non_vacuous'].values())
+          print(
+              'DYSON_EXACT_HEAD_NON_VACUITY_ALIVE',
+              r['summary_linked_pages'],
+              r['minimum_words'],
+              r['median_words'],
+              r['maximum_words'],
+          )
+          PY
+
+      - name: Hash admitted book tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          find docs/how-to-build-a-dyson-sphere -type f -name '*.md' -print0 \
+            | sort -z | xargs -0 sha256sum > /tmp/dyson-before.sha256
+
+      - name: Regenerate from canonical generator
+        run: python3 scripts/generate_dyson_sphere_book.py
+
+      - name: Re-audit regenerated book
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/audit_dyson_sphere_book.py \
+            --root docs/how-to-build-a-dyson-sphere > /tmp/dyson-after-audit.json
+          python3 - <<'PY'
+          import json
+          r=json.load(open('/tmp/dyson-after-audit.json'))
+          assert r['standing']=='ALIVE'
+          assert r['finding_count']==0
+          assert all(r['definition_of_non_vacuous'].values())
+          PY
+
+      - name: Prove deterministic regeneration replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          find docs/how-to-build-a-dyson-sphere -type f -name '*.md' -print0 \
+            | sort -z | xargs -0 sha256sum > /tmp/dyson-after.sha256
+          cmp /tmp/dyson-before.sha256 /tmp/dyson-after.sha256
+          echo DYSON_REGENERATION_REPLAY_MATCH
+
+      - name: Prove exact-head worktree remains unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code -- \
+            docs/how-to-build-a-dyson-sphere \
+            scripts/generate_dyson_sphere_book.py \
+            scripts/enrich_dyson_sphere_book.py \
+            scripts/audit_dyson_sphere_book.py \
+            artifacts/dyson-vacuity-audit.json
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo DYSON_EXACT_HEAD_REPLAY_CLEAN

@@ -11,8 +11,6 @@
     - [Why the Swarm Is the Primary Reference Architecture](part-01/01-04-why-the-swarm-is-the-primary-reference-architecture.md)
     - [The Minimum Viable Dyson System](part-01/01-05-the-minimum-viable-dyson-system.md)
 
-# Part I — The Dyson Sphere as a Manufacturing Problem
-
 - [2. The Chatman Equation at Stellar Scale](part-01/02-the-chatman-equation-at-stellar-scale.md)
     - [A = μ(O*)](part-01/02-01-a-eq-mu-ostar.md)
     - [Observation](part-01/02-02-observation.md)
@@ -23,8 +21,6 @@
     - [Why Generated Infrastructure Does Not Yet Exist](part-01/02-07-why-generated-infrastructure-does-not-yet-exist.md)
     - [Receipts as the Boundary of Reality](part-01/02-08-receipts-as-the-boundary-of-reality.md)
 
-# Part I — The Dyson Sphere as a Manufacturing Problem
-
 - [3. Dyson Sphere DfCM](part-01/03-dyson-sphere-dfcm.md)
     - [Design for Combinatorial Maximalism](part-01/03-01-design-for-combinatorial-maximalism.md)
     - [Preserve Before Selecting](part-01/03-02-preserve-before-selecting.md)
@@ -32,8 +28,6 @@
     - [Chesterton's Fence at Astronomical Scale](part-01/03-04-chestertons-fence-at-astronomical-scale.md)
     - [One Failed Orbit Is Not a Failed Civilization](part-01/03-05-one-failed-orbit-is-not-a-failed-civilization.md)
     - [Search Space Before Commitment](part-01/03-06-search-space-before-commitment.md)
-
-# Part I — The Dyson Sphere as a Manufacturing Problem
 
 - [4. SELECT, CONSTRUCT, DO](part-01/04-select-construct-do.md)
     - [Three Different Kinds of Authority](part-01/04-01-three-different-kinds-of-authority.md)
@@ -55,8 +49,6 @@
     - [Solar Wind](part-02/05-06-solar-wind.md)
     - [Long-Horizon Stellar Evolution](part-02/05-07-long-horizon-stellar-evolution.md)
 
-# Part II — Define the Star Before Touching the Star
-
 - [6. The Solar System as an RDF Graph](part-02/06-the-solar-system-as-an-rdf-graph.md)
     - [The Public Ontology First Principle](part-02/06-01-the-public-ontology-first-principle.md)
     - [Astronomical Objects](part-02/06-02-astronomical-objects.md)
@@ -69,8 +61,6 @@
     - [Authority](part-02/06-09-authority.md)
     - [Constraints](part-02/06-10-constraints.md)
 
-# Part II — Define the Star Before Touching the Star
-
 - [7. O*.toml for a Star System](part-02/07-o-star-toml-for-a-star-system.md)
     - [The Admitted Observation Carrier](part-02/07-01-the-admitted-observation-carrier.md)
     - [Identity](part-02/07-02-identity.md)
@@ -80,8 +70,6 @@
     - [Temporal Validity](part-02/07-06-temporal-validity.md)
     - [Contradiction Handling](part-02/07-07-contradiction-handling.md)
     - [UNKNOWN Is Not ADMITTED](part-02/07-08-unknown-is-not-admitted.md)
-
-# Part II — Define the Star Before Touching the Star
 
 - [8. The Stellar Digital Twin](part-02/08-the-stellar-digital-twin.md)
     - [What Must Be Modeled](part-02/08-01-what-must-be-modeled.md)
@@ -107,8 +95,6 @@
     - [Storage Systems](part-03/09-09-storage-systems.md)
     - [Computational Substrates](part-03/09-10-computational-substrates.md)
 
-# Part III — The Dyson Ontology
-
 - [10. Morphisms](part-03/10-morphisms.md)
     - [Observe](part-03/10-01-observe.md)
     - [Extract](part-03/10-02-extract.md)
@@ -122,8 +108,6 @@
     - [Repair](part-03/10-10-repair.md)
     - [Recycle](part-03/10-11-recycle.md)
     - [Decommission](part-03/10-12-decommission.md)
-
-# Part III — The Dyson Ontology
 
 - [11. Public Ontologies](part-03/11-public-ontologies.md)
     - [PROV-O](part-03/11-01-prov-o.md)
@@ -139,8 +123,6 @@
     - [OCEL](part-03/11-11-ocel.md)
     - [PREMIS](part-03/11-12-premis.md)
     - [Extending Without Forking Meaning](part-03/11-13-extending-without-forking-meaning.md)
-
-# Part III — The Dyson Ontology
 
 - [12. Dyson SHACL](part-03/12-dyson-shacl.md)
     - [Shape Constraints](part-03/12-01-shape-constraints.md)
@@ -162,8 +144,6 @@
     - [Station Keeping](part-04/13-06-station-keeping.md)
     - [Collision Probability](part-04/13-07-collision-probability.md)
 
-# Part IV — Physics Is the Type System
-
 - [14. Energy](part-04/14-energy.md)
     - [The Solar Constant as a Function](part-04/14-01-the-solar-constant-as-a-function.md)
     - [Collector Efficiency](part-04/14-02-collector-efficiency.md)
@@ -173,8 +153,6 @@
     - [Dispatch](part-04/14-06-dispatch.md)
     - [Energy Accounting](part-04/14-07-energy-accounting.md)
 
-# Part IV — Physics Is the Type System
-
 - [15. Thermodynamics](part-04/15-thermodynamics.md)
     - [Every Collector Is Also a Radiator](part-04/15-01-every-collector-is-also-a-radiator.md)
     - [Waste Heat](part-04/15-02-waste-heat.md)
@@ -182,8 +160,6 @@
     - [Radiator Area](part-04/15-04-radiator-area.md)
     - [Carnot Limits](part-04/15-05-carnot-limits.md)
     - [Thermal Failure Domains](part-04/15-06-thermal-failure-domains.md)
-
-# Part IV — Physics Is the Type System
 
 - [16. Materials](part-04/16-materials.md)
     - [Mass Is the Primary Budget](part-04/16-01-mass-is-the-primary-budget.md)
@@ -194,8 +170,6 @@
     - [Semiconductors](part-04/16-06-semiconductors.md)
     - [Radiation Damage](part-04/16-07-radiation-damage.md)
     - [Fatigue and Lifetime](part-04/16-08-fatigue-and-lifetime.md)
-
-# Part IV — Physics Is the Type System
 
 - [17. Information Physics](part-04/17-information-physics.md)
     - [Compute Is Physical](part-04/17-01-compute-is-physical.md)
@@ -213,8 +187,6 @@
     - [Bounded Worlds](part-05/18-03-bounded-worlds.md)
     - [Falsifiable Scenarios](part-05/18-04-falsifiable-scenarios.md)
 
-# Part V — gymact: Build the Solar System Before Building in It
-
 - [19. The Dyson Gym](part-05/19-the-dyson-gym.md)
     - [World](part-05/19-01-world.md)
     - [Roles](part-05/19-02-roles.md)
@@ -224,8 +196,6 @@
     - [Action Projections](part-05/19-06-action-projections.md)
     - [Information Partitions](part-05/19-07-information-partitions.md)
     - [Authority](part-05/19-08-authority.md)
-
-# Part V — gymact: Build the Solar System Before Building in It
 
 - [20. Planetary and Asteroid Environments](part-05/20-planetary-and-asteroid-environments.md)
     - [Mercury](part-05/20-01-mercury.md)
@@ -237,8 +207,6 @@
     - [Saturnian System](part-05/20-07-saturnian-system.md)
     - [Outer-System Resources](part-05/20-08-outer-system-resources.md)
 
-# Part V — gymact: Build the Solar System Before Building in It
-
 - [21. Scenario Generation](part-05/21-scenario-generation.md)
     - [Nominal Worlds](part-05/21-01-nominal-worlds.md)
     - [Rare Events](part-05/21-02-rare-events.md)
@@ -248,8 +216,6 @@
     - [Manufacturing Defects](part-05/21-06-manufacturing-defects.md)
     - [Orbital Cascade Events](part-05/21-07-orbital-cascade-events.md)
     - [Solar Storms](part-05/21-08-solar-storms.md)
-
-# Part V — gymact: Build the Solar System Before Building in It
 
 - [22. Benchmarking Civilization-Scale Policies](part-05/22-benchmarking-civilization-scale-policies.md)
     - [Throughput](part-05/22-01-throughput.md)
@@ -274,8 +240,6 @@
     - [Replay](part-06/23-08-replay.md)
     - [Release](part-06/23-09-release.md)
 
-# Part VI — ggen: Manufacturing the Civilization
-
 - [24. Generative Manufacturing](part-06/24-generative-manufacturing.md)
     - [Generators as Projections](part-06/24-01-generators-as-projections.md)
     - [Generated Artifacts Are Not the Source of Truth](part-06/24-02-generated-artifacts-are-not-the-source-of-truth.md)
@@ -283,8 +247,6 @@
     - [Content Addressability](part-06/24-04-content-addressability.md)
     - [Dependency Closure](part-06/24-05-dependency-closure.md)
     - [Regeneration](part-06/24-06-regeneration.md)
-
-# Part VI — ggen: Manufacturing the Civilization
 
 - [25. Factory Templates](part-06/25-factory-templates.md)
     - [Mining Factory](part-06/25-01-mining-factory.md)
@@ -295,8 +257,6 @@
     - [Propulsion Factory](part-06/25-06-propulsion-factory.md)
     - [Habitat Factory](part-06/25-07-habitat-factory.md)
     - [Radiator Factory](part-06/25-08-radiator-factory.md)
-
-# Part VI — ggen: Manufacturing the Civilization
 
 - [26. Self-Replication Without Unbounded Replication](part-06/26-self-replication-without-unbounded-replication.md)
     - [The Replication Problem](part-06/26-01-the-replication-problem.md)
@@ -316,8 +276,6 @@
     - [Machine-Checkable Claims](part-07/27-04-machine-checkable-claims.md)
     - [Certification Receipts](part-07/27-05-certification-receipts.md)
 
-# Part VII — Formal Admission
-
 - [28. Orbital Invariants](part-07/28-orbital-invariants.md)
     - [Safe Separation](part-07/28-01-safe-separation.md)
     - [Periapsis and Apoapsis Bounds](part-07/28-02-periapsis-and-apoapsis-bounds.md)
@@ -326,16 +284,12 @@
     - [Pointing Constraints](part-07/28-05-pointing-constraints.md)
     - [Fail-Safe Trajectories](part-07/28-06-fail-safe-trajectories.md)
 
-# Part VII — Formal Admission
-
 - [29. Resource Invariants](part-07/29-resource-invariants.md)
     - [Mass Conservation](part-07/29-01-mass-conservation.md)
     - [Energy Accounting](part-07/29-02-energy-accounting.md)
     - [Inventory Provenance](part-07/29-03-inventory-provenance.md)
     - [Waste Accounting](part-07/29-04-waste-accounting.md)
     - [Closed-Loop Recovery](part-07/29-05-closed-loop-recovery.md)
-
-# Part VII — Formal Admission
 
 - [30. Authority Invariants](part-07/30-authority-invariants.md)
     - [Who May Observe](part-07/30-01-who-may-observe.md)
@@ -357,8 +311,6 @@
     - [Identity Attacks](part-08/31-06-identity-attacks.md)
     - [Replay Attacks](part-08/31-07-replay-attacks.md)
 
-# Part VIII — CASTLE: Security for a Stellar Civilization
-
 - [32. Zero Trust Across Astronomical Distance](part-08/32-zero-trust-across-astronomical-distance.md)
     - [Identity](part-08/32-01-identity.md)
     - [Authentication](part-08/32-02-authentication.md)
@@ -367,8 +319,6 @@
     - [Policy](part-08/32-05-policy.md)
     - [Least Authority](part-08/32-06-least-authority.md)
     - [Compartmentalization](part-08/32-07-compartmentalization.md)
-
-# Part VIII — CASTLE: Security for a Stellar Civilization
 
 - [33. Cryptographic Receipts](part-08/33-cryptographic-receipts.md)
     - [BLAKE3](part-08/33-01-blake3.md)
@@ -379,8 +329,6 @@
     - [ML-DSA](part-08/33-06-ml-dsa.md)
     - [SLH-DSA](part-08/33-07-slh-dsa.md)
     - [Long-Lived Verification](part-08/33-08-long-lived-verification.md)
-
-# Part VIII — CASTLE: Security for a Stellar Civilization
 
 - [34. Byzantine Failure](part-08/34-byzantine-failure.md)
     - [No Assumption of Universal Honesty](part-08/34-01-no-assumption-of-universal-honesty.md)
@@ -399,8 +347,6 @@
     - [Events](part-09/35-05-events.md)
     - [Resources](part-09/35-06-resources.md)
 
-# Part IX — Weaver: Observe Everything
-
 - [36. Semantic Conventions](part-09/36-semantic-conventions.md)
     - [Spacecraft](part-09/36-01-spacecraft.md)
     - [Factory](part-09/36-02-factory.md)
@@ -410,8 +356,6 @@
     - [Materials](part-09/36-06-materials.md)
     - [Authority](part-09/36-07-authority.md)
     - [Receipts](part-09/36-08-receipts.md)
-
-# Part IX — Weaver: Observe Everything
 
 - [37. From Telemetry to Admitted Observation](part-09/37-from-telemetry-to-admitted-observation.md)
     - [Raw Signal](part-09/37-01-raw-signal.md)
@@ -432,8 +376,6 @@
     - [Execution](part-10/38-06-execution.md)
     - [Verification](part-10/38-07-verification.md)
 
-# Part X — AutoFDE for Autonomous Industry
-
 - [39. The Autonomous Repair Loop](part-10/39-the-autonomous-repair-loop.md)
     - [Observe](part-10/39-01-observe.md)
     - [Classify](part-10/39-02-classify.md)
@@ -443,8 +385,6 @@
     - [Actuate](part-10/39-06-actuate.md)
     - [Verify](part-10/39-07-verify.md)
     - [Encode the Permanent Guard](part-10/39-08-encode-the-permanent-guard.md)
-
-# Part X — AutoFDE for Autonomous Industry
 
 - [40. Fleet Operations](part-10/40-fleet-operations.md)
     - [Thousands of Factories](part-10/40-01-thousands-of-factories.md)
@@ -464,16 +404,12 @@
     - [Orbital Manufacturing](part-11/41-05-orbital-manufacturing.md)
     - [Simulation Infrastructure](part-11/41-06-simulation-infrastructure.md)
 
-# Part XI — The Industrial Bootstrap
-
 - [42. Phase One: Cislunar Industry](part-11/42-phase-one-cislunar-industry.md)
     - [Lunar Mining](part-11/42-01-lunar-mining.md)
     - [Orbital Refineries](part-11/42-02-orbital-refineries.md)
     - [Propellant Production](part-11/42-03-propellant-production.md)
     - [Assembly Yards](part-11/42-04-assembly-yards.md)
     - [Solar Power Demonstrators](part-11/42-05-solar-power-demonstrators.md)
-
-# Part XI — The Industrial Bootstrap
 
 - [43. Phase Two: Asteroid Industry](part-11/43-phase-two-asteroid-industry.md)
     - [Prospecting](part-11/43-01-prospecting.md)
@@ -483,8 +419,6 @@
     - [Mass Drivers](part-11/43-05-mass-drivers.md)
     - [Distributed Manufacturing](part-11/43-06-distributed-manufacturing.md)
 
-# Part XI — The Industrial Bootstrap
-
 - [44. Phase Three: Mercury](part-11/44-phase-three-mercury.md)
     - [Why Mercury](part-11/44-01-why-mercury.md)
     - [Solar Energy Availability](part-11/44-02-solar-energy-availability.md)
@@ -492,8 +426,6 @@
     - [Thermal Challenges](part-11/44-04-thermal-challenges.md)
     - [Planetary Protection](part-11/44-05-planetary-protection.md)
     - [Alternative Resource Strategies](part-11/44-06-alternative-resource-strategies.md)
-
-# Part XI — The Industrial Bootstrap
 
 - [45. Phase Four: The First Swarm](part-11/45-phase-four-the-first-swarm.md)
     - [Collector 00000001](part-11/45-01-collector-00000001.md)
@@ -515,8 +447,6 @@
     - [Navigation](part-12/46-07-navigation.md)
     - [Repair](part-12/46-08-repair.md)
 
-# Part XII — Collector Architecture
-
 - [47. Collector Classes](part-12/47-collector-classes.md)
     - [Minimal Collectors](part-12/47-01-minimal-collectors.md)
     - [Power Satellites](part-12/47-02-power-satellites.md)
@@ -524,8 +454,6 @@
     - [Industrial Collectors](part-12/47-04-industrial-collectors.md)
     - [Habitat Collectors](part-12/47-05-habitat-collectors.md)
     - [Communication Collectors](part-12/47-06-communication-collectors.md)
-
-# Part XII — Collector Architecture
 
 - [48. Modular Design](part-12/48-modular-design.md)
     - [Replaceable Components](part-12/48-01-replaceable-components.md)
@@ -543,8 +471,6 @@
     - [Failure](part-13/49-04-failure.md)
     - [Autonomy](part-13/49-05-autonomy.md)
 
-# Part XIII — The Swarm as a Distributed System
-
 - [50. Stellar Event Sourcing](part-13/50-stellar-event-sourcing.md)
     - [Events as Facts](part-13/50-01-events-as-facts.md)
     - [OCEL](part-13/50-02-ocel.md)
@@ -552,16 +478,12 @@
     - [Replay](part-13/50-04-replay.md)
     - [Derived State](part-13/50-05-derived-state.md)
 
-# Part XIII — The Swarm as a Distributed System
-
 - [51. Local-First Control](part-13/51-local-first-control.md)
     - [Local Observation](part-13/51-01-local-observation.md)
     - [Local Admission](part-13/51-02-local-admission.md)
     - [Local Execution](part-13/51-03-local-execution.md)
     - [Federated Standing](part-13/51-04-federated-standing.md)
     - [System-Wide Reconciliation](part-13/51-05-system-wide-reconciliation.md)
-
-# Part XIII — The Swarm as a Distributed System
 
 - [52. Communication Topology](part-13/52-communication-topology.md)
     - [Optical Links](part-13/52-01-optical-links.md)
@@ -580,8 +502,6 @@
     - [Consumption](part-14/53-04-consumption.md)
     - [Waste Heat](part-14/53-05-waste-heat.md)
 
-# Part XIV — The Energy Internet
-
 - [54. Beamed Power](part-14/54-beamed-power.md)
     - [Microwave Transmission](part-14/54-01-microwave-transmission.md)
     - [Laser Transmission](part-14/54-02-laser-transmission.md)
@@ -590,8 +510,6 @@
     - [Receiving Arrays](part-14/54-05-receiving-arrays.md)
     - [Safety Interlocks](part-14/54-06-safety-interlocks.md)
     - [No Unreceipted Beam Actuation](part-14/54-07-no-unreceipted-beam-actuation.md)
-
-# Part XIV — The Energy Internet
 
 - [55. Energy Markets](part-14/55-energy-markets.md)
     - [Allocation](part-14/55-01-allocation.md)
@@ -610,16 +528,12 @@
     - [Energy Return on Energy Invested](part-15/56-04-energy-return-on-energy-invested.md)
     - [When Growth Becomes Self-Funding](part-15/56-05-when-growth-becomes-self-funding.md)
 
-# Part XV — Economics of a Dyson Civilization
-
 - [57. Resource Accounting](part-15/57-resource-accounting.md)
     - [Mass Ledgers](part-15/57-01-mass-ledgers.md)
     - [Energy Ledgers](part-15/57-02-energy-ledgers.md)
     - [Compute Ledgers](part-15/57-03-compute-ledgers.md)
     - [Entropy Budgets](part-15/57-04-entropy-budgets.md)
     - [Opportunity Cost](part-15/57-05-opportunity-cost.md)
-
-# Part XV — Economics of a Dyson Civilization
 
 - [58. Markets Without Semantic Ambiguity](part-15/58-markets-without-semantic-ambiguity.md)
     - [Products as Graphs](part-15/58-01-products-as-graphs.md)
@@ -639,8 +553,6 @@
     - [Proof](part-16/59-05-proof.md)
     - [Receipts](part-16/59-06-receipts.md)
 
-# Part XVI — ggen-marketplace for a Solar Economy
-
 - [60. The Dyson Pack](part-16/60-the-dyson-pack.md)
     - [Ontology Pack](part-16/60-01-ontology-pack.md)
     - [Simulation Pack](part-16/60-02-simulation-pack.md)
@@ -650,8 +562,6 @@
     - [Security Pack](part-16/60-06-security-pack.md)
     - [Telemetry Pack](part-16/60-07-telemetry-pack.md)
     - [Governance Pack](part-16/60-08-governance-pack.md)
-
-# Part XVI — ggen-marketplace for a Solar Economy
 
 - [61. Instance Closure to Class Closure](part-16/61-instance-closure-to-class-closure.md)
     - [Solve One Collector](part-16/61-01-solve-one-collector.md)
@@ -669,16 +579,12 @@
     - [Protected Orbits](part-17/62-04-protected-orbits.md)
     - [Protected Energy Flux](part-17/62-05-protected-energy-flux.md)
 
-# Part XVII — Planetary Protection and Safety
-
 - [63. No Single Point of Existential Failure](part-17/63-no-single-point-of-existential-failure.md)
     - [Fail-Closed Systems](part-17/63-01-fail-closed-systems.md)
     - [Safe Defaults](part-17/63-02-safe-defaults.md)
     - [Independent Shutdown](part-17/63-03-independent-shutdown.md)
     - [Containment](part-17/63-04-containment.md)
     - [Recovery](part-17/63-05-recovery.md)
-
-# Part XVII — Planetary Protection and Safety
 
 - [64. Collision Governance](part-17/64-collision-governance.md)
     - [Ephemeris Publication](part-17/64-01-ephemeris-publication.md)
@@ -696,8 +602,6 @@
     - [Energy Rights](part-18/65-04-energy-rights.md)
     - [Future Generations](part-18/65-05-future-generations.md)
 
-# Part XVIII — Governance
-
 - [66. Constitutional Infrastructure](part-18/66-constitutional-infrastructure.md)
     - [Ontology Before Policy](part-18/66-01-ontology-before-policy.md)
     - [Policy as Data](part-18/66-02-policy-as-data.md)
@@ -706,16 +610,12 @@
     - [Appeals](part-18/66-05-appeals.md)
     - [Amendment](part-18/66-06-amendment.md)
 
-# Part XVIII — Governance
-
 - [67. Polycentric Governance](part-18/67-polycentric-governance.md)
     - [No Planetary Monolith](part-18/67-01-no-planetary-monolith.md)
     - [Local Jurisdiction](part-18/67-02-local-jurisdiction.md)
     - [Federation](part-18/67-03-federation.md)
     - [Interoperability](part-18/67-04-interoperability.md)
     - [Dispute Resolution](part-18/67-05-dispute-resolution.md)
-
-# Part XVIII — Governance
 
 - [68. Governance Receipts](part-18/68-governance-receipts.md)
     - [Identity](part-18/68-01-identity.md)
@@ -733,16 +633,12 @@
     - [Hallucination as Unadmitted Observation](part-19/69-03-hallucination-as-unadmitted-observation.md)
     - [Bounded Oracle Roles](part-19/69-04-bounded-oracle-roles.md)
 
-# Part XIX — Humans, Machines, and Intelligence
-
 - [70. Post-AGI Infrastructure](part-19/70-post-agi-infrastructure.md)
     - [Intelligence Becomes Abundant](part-19/70-01-intelligence-becomes-abundant.md)
     - [Authority Remains Scarce](part-19/70-02-authority-remains-scarce.md)
     - [Proof Remains Necessary](part-19/70-03-proof-remains-necessary.md)
     - [Physics Remains Authoritative](part-19/70-04-physics-remains-authoritative.md)
     - [Receipts Remain Necessary](part-19/70-05-receipts-remain-necessary.md)
-
-# Part XIX — Humans, Machines, and Intelligence
 
 - [71. Human Standing](part-19/71-human-standing.md)
     - [Human Objectives](part-19/71-01-human-objectives.md)
@@ -763,8 +659,6 @@
     - [Fleet Demonstration](part-20/72-07-fleet-demonstration.md)
     - [Exact-Subject ALIVE](part-20/72-08-exact-subject-alive.md)
 
-# Part XX — Verification at Civilization Scale
-
 - [73. Status Is a Type](part-20/73-status-is-a-type.md)
     - [UNKNOWN](part-20/73-01-unknown.md)
     - [PARTIAL_ALIVE](part-20/73-02-partial-alive.md)
@@ -773,8 +667,6 @@
     - [BUILD_BROKEN](part-20/73-05-build-broken.md)
     - [UNSUPPORTED](part-20/73-06-unsupported.md)
     - [REFUSED](part-20/73-07-refused.md)
-
-# Part XX — Verification at Civilization Scale
 
 - [74. The Exact-Subject Law](part-20/74-the-exact-subject-law.md)
     - [Inspection Is Not Execution](part-20/74-01-inspection-is-not-execution.md)
@@ -792,8 +684,6 @@
     - [Redundancy](part-21/75-04-redundancy.md)
     - [Repairability](part-21/75-05-repairability.md)
 
-# Part XXI — Failure Engineering
-
 - [76. Failure Injection](part-21/76-failure-injection.md)
     - [Collector Loss](part-21/76-01-collector-loss.md)
     - [Factory Loss](part-21/76-02-factory-loss.md)
@@ -802,8 +692,6 @@
     - [Sensor Corruption](part-21/76-05-sensor-corruption.md)
     - [Network Partition](part-21/76-06-network-partition.md)
     - [Authority Corruption](part-21/76-07-authority-corruption.md)
-
-# Part XXI — Failure Engineering
 
 - [77. Replay the Accident](part-21/77-replay-the-accident.md)
     - [Immutable Event History](part-21/77-01-immutable-event-history.md)
@@ -821,8 +709,6 @@
     - [Coordination Cost](part-22/78-04-coordination-cost.md)
     - [Autonomy as a Scaling Requirement](part-22/78-05-autonomy-as-a-scaling-requirement.md)
 
-# Part XXII — Scaling Laws
-
 - [79. Industrial Doubling](part-22/79-industrial-doubling.md)
     - [Replication Rate](part-22/79-01-replication-rate.md)
     - [Bottleneck Analysis](part-22/79-02-bottleneck-analysis.md)
@@ -830,8 +716,6 @@
     - [Constraint Theory](part-22/79-04-constraint-theory.md)
     - [Learning Curves](part-22/79-05-learning-curves.md)
     - [Compounding Capacity](part-22/79-06-compounding-capacity.md)
-
-# Part XXII — Scaling Laws
 
 - [80. When the Swarm Becomes the Economy](part-22/80-when-the-swarm-becomes-the-economy.md)
     - [Energy Abundance](part-22/80-01-energy-abundance.md)
@@ -848,15 +732,11 @@
     - [Thermal Constraints](part-23/81-03-thermal-constraints.md)
     - [Latency Domains](part-23/81-04-latency-domains.md)
 
-# Part XXIII — From Dyson Swarm to Matrioshka Brain
-
 - [82. Nested Thermal Layers](part-23/82-nested-thermal-layers.md)
     - [Hot Inner Compute](part-23/82-01-hot-inner-compute.md)
     - [Intermediate Layers](part-23/82-02-intermediate-layers.md)
     - [Cold Outer Compute](part-23/82-03-cold-outer-compute.md)
     - [Waste-Heat Cascades](part-23/82-04-waste-heat-cascades.md)
-
-# Part XXIII — From Dyson Swarm to Matrioshka Brain
 
 - [83. The Matrioshka Graph](part-23/83-the-matrioshka-graph.md)
     - [Compute as an Ontological Resource](part-23/83-01-compute-as-an-ontological-resource.md)
@@ -873,8 +753,6 @@
     - [Seed Factories](part-24/84-03-seed-factories.md)
     - [Local Ontology Reconstruction](part-24/84-04-local-ontology-reconstruction.md)
 
-# Part XXIV — Interstellar Extension
-
 - [85. Reconstituting the Ecosystem Around Another Star](part-24/85-reconstituting-the-ecosystem-around-another-star.md)
     - [Observe](part-24/85-01-observe.md)
     - [Construct Local O*](part-24/85-02-construct-local-ostar.md)
@@ -882,8 +760,6 @@
     - [Generate Local Industry](part-24/85-04-generate-local-industry.md)
     - [Build Local Receipts](part-24/85-05-build-local-receipts.md)
     - [Establish Local Standing](part-24/85-06-establish-local-standing.md)
-
-# Part XXIV — Interstellar Extension
 
 - [86. No Universal Configuration](part-24/86-no-universal-configuration.md)
     - [Every Star Is a New Subject](part-24/86-01-every-star-is-a-new-subject.md)
@@ -898,49 +774,35 @@
     - [Graph-to-Artifact Compilation](part-25/87-02-graph-to-artifact-compilation.md)
     - [Deterministic Regeneration](part-25/87-03-deterministic-regeneration.md)
 
-# Part XXV — The Full Chatman Ecosystem
-
 - [88. ggen-marketplace](part-25/88-ggen-marketplace.md)
     - [Capability Distribution](part-25/88-01-capability-distribution.md)
     - [Executable Knowledge](part-25/88-02-executable-knowledge.md)
     - [Pack Qualification](part-25/88-03-pack-qualification.md)
-
-# Part XXV — The Full Chatman Ecosystem
 
 - [89. gymact](part-25/89-gymact.md)
     - [World Modeling](part-25/89-01-world-modeling.md)
     - [Policy Evaluation](part-25/89-02-policy-evaluation.md)
     - [Simulation Receipts](part-25/89-03-simulation-receipts.md)
 
-# Part XXV — The Full Chatman Ecosystem
-
 - [90. AutoFDE](part-25/90-autofde.md)
     - [Autonomous Environment Integration](part-25/90-01-autonomous-environment-integration.md)
     - [Diagnosis and Repair](part-25/90-02-diagnosis-and-repair.md)
     - [Operational Closure](part-25/90-03-operational-closure.md)
-
-# Part XXV — The Full Chatman Ecosystem
 
 - [91. CASTLE](part-25/91-castle.md)
     - [Security](part-25/91-01-security.md)
     - [Authority](part-25/91-02-authority.md)
     - [Cryptographic Standing](part-25/91-03-cryptographic-standing.md)
 
-# Part XXV — The Full Chatman Ecosystem
-
 - [92. Weaver](part-25/92-weaver.md)
     - [Telemetry](part-25/92-01-telemetry.md)
     - [Semantic Conventions](part-25/92-02-semantic-conventions.md)
     - [Observation Manufacturing](part-25/92-03-observation-manufacturing.md)
 
-# Part XXV — The Full Chatman Ecosystem
-
 - [93. mfact](part-25/93-mfact.md)
     - [Certification](part-25/93-01-certification.md)
     - [Machine Facts](part-25/93-02-machine-facts.md)
     - [Receipt Binding](part-25/93-03-receipt-binding.md)
-
-# Part XXV — The Full Chatman Ecosystem
 
 - [94. The Ecosystem Is a Pipeline, Not a Platform](part-25/94-the-ecosystem-is-a-pipeline-not-a-platform.md)
     - [Observe](part-25/94-01-observe.md)
@@ -962,16 +824,12 @@
     - [Authority](part-26/95-04-authority.md)
     - [Standing](part-26/95-05-standing.md)
 
-# Part XXVI — The End-to-End Build
-
 - [96. Build the Knowledge Graph](part-26/96-build-the-knowledge-graph.md)
     - [Canonical Entities](part-26/96-01-canonical-entities.md)
     - [Relationships](part-26/96-02-relationships.md)
     - [Constraints](part-26/96-03-constraints.md)
     - [Policies](part-26/96-04-policies.md)
     - [Measurements](part-26/96-05-measurements.md)
-
-# Part XXVI — The End-to-End Build
 
 - [97. Generate the Dyson System](part-26/97-generate-the-dyson-system.md)
     - [Query the Graph](part-26/97-01-query-the-graph.md)
@@ -980,16 +838,12 @@
     - [Admit](part-26/97-04-admit.md)
     - [Package](part-26/97-05-package.md)
 
-# Part XXVI — The End-to-End Build
-
 - [98. Prove It in gymact](part-26/98-prove-it-in-gymact.md)
     - [Nominal Simulation](part-26/98-01-nominal-simulation.md)
     - [Adversarial Simulation](part-26/98-02-adversarial-simulation.md)
     - [Chaos](part-26/98-03-chaos.md)
     - [Stress](part-26/98-04-stress.md)
     - [Long-Horizon Simulation](part-26/98-05-long-horizon-simulation.md)
-
-# Part XXVI — The End-to-End Build
 
 - [99. Actuate Through BRCE](part-26/99-actuate-through-brce.md)
     - [Intent](part-26/99-01-intent.md)
@@ -999,8 +853,6 @@
     - [Receipt](part-26/99-05-receipt.md)
     - [Replay](part-26/99-06-replay.md)
 
-# Part XXVI — The End-to-End Build
-
 - [100. Collector One](part-26/100-collector-one.md)
     - [Exact Identity](part-26/100-01-exact-identity.md)
     - [Exact Materials](part-26/100-02-exact-materials.md)
@@ -1009,8 +861,6 @@
     - [Exact Execution](part-26/100-05-exact-execution.md)
     - [Exact Receipt](part-26/100-06-exact-receipt.md)
     - [SUBJECT_ALIVE](part-26/100-07-subject-alive.md)
-
-# Part XXVI — The End-to-End Build
 
 - [101. From Collector One to Dyson Swarm](part-26/101-from-collector-one-to-dyson-swarm.md)
     - [Replication](part-26/101-01-replication.md)
@@ -1029,8 +879,6 @@
     - [Standing](part-27/102-04-standing.md)
     - [Open-Ended Evolution](part-27/102-05-open-ended-evolution.md)
 
-# Part XXVII — What Does “Done” Mean?
-
 - [103. The ALIVE Criterion](part-27/103-the-alive-criterion.md)
     - [Observed](part-27/103-01-observed.md)
     - [Admitted](part-27/103-02-admitted.md)
@@ -1039,8 +887,6 @@
     - [Verified](part-27/103-05-verified.md)
     - [Receipted](part-27/103-06-receipted.md)
     - [Replayable](part-27/103-07-replayable.md)
-
-# Part XXVII — What Does “Done” Mean?
 
 - [104. The Final Inversion](part-27/104-the-final-inversion.md)
     - [Do Not Build a Dyson Sphere](part-27/104-01-do-not-build-a-dyson-sphere.md)

@@ -1,36 +1,95 @@
-# 83.5 Proof-Aware Scheduling
+# Proof-Aware Scheduling
 
-**Parent:** [83. The Matrioshka Graph](83-the-matrioshka-graph.md)
+**Parent:** [The Matrioshka Graph](83-the-matrioshka-graph.md)
 
-## Claim
+> **Subject identity:** `dyson:proof-aware-scheduling:8fab019f4aff`
+> **Domain:** `matrioshka`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-`Proof-Aware Scheduling` is not accepted as a label-only capability. In this book it denotes a bounded object, relation, constraint, measurement, or control concern whose role must be explicit in the larger the matrioshka graph system. The objective is to preserve useful design freedom while refusing transformations that hide physics, authority, or evidence.
+## Why this page exists
 
-A physically credible Dyson program begins with a swarm, not a rigid shell. Independent orbiting collectors can be added incrementally, placed on families of stable trajectories, repaired or retired locally, and diversified by function. A rigid shell around a star has no known passive structural mechanism that keeps it centered; even before material strength is considered, it creates a global stability problem that a swarm avoids.
+**Proof-Aware Scheduling** exists because it changes a concrete decision inside **The Matrioshka Graph**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-The semantic layer exists to prevent identical reality from fragmenting into incompatible local names. Public vocabularies are preferred where they already express provenance, units, sensors, organizations, policy, preservation, and events. Custom terms are admitted only for genuinely new stellar-industrial meaning. Generated APIs, documents, schemas, simulations, and dashboards are projections over that graph rather than rival semantic authorities.
+For **Proof-Aware Scheduling**, the primary state variables include **exergy**, **temperature layer**, and **waste heat**; the control or consequence variables include **workload**, **latency**, and **radiator**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-Formal admission is used only where a machine-checkable invariant can be stated precisely. The critical separation is that rendering, proving, and certifying are different operations: ggen can render a candidate, Lean can discharge a theorem obligation, and mfact can bind evidence to a subject. None of those steps grants DO authority by itself.
+The boundary is operational, not literary. Inputs to **Proof-Aware Scheduling** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-## Operationalization
+## Engineering model
 
-The implementation path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. The decisive rule is that the semantic or analytical result produced in this subchapter has **no ambient execution authority**. It may change the candidate set, create a proof obligation, generate a simulation, or manufacture an intent. A consequential action still requires explicit subject identity, authority, preconditions, execution, postcondition verification, and a receipt.
+For **Proof-Aware Scheduling**, nested layers are constrained by exergy and heat rejection, not an illustration of shells. A hotter inner workload exports lower-grade radiation; an outer layer can use part of that flux only if its own conversion and radiator ledger closes. `dyson:proof-aware-scheduling:8fab019f4aff` schedules jointly over temperature tolerance, latency, reliability, power, and downstream waste-heat coupling.
 
-A practical record for this topic should contain:
+## Operational contract
 
-- exact subject and revision/epoch;
-- observed inputs with units and provenance;
-- admitted assumptions and explicit UNKNOWNs;
-- candidate construction or policy;
-- constraints and refusal conditions;
-- required authority class: SELECT, CONSTRUCT, or DO;
-- verifier and postcondition;
-- receipt identity and replay method when consequence occurs;
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:proof-aware-scheduling:8fab019f4aff` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | exergy, temperature layer, waste heat with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | workload, latency or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-## Evidence boundary
+## Worked reasoning
 
-For `Proof-Aware Scheduling`, **inspection is not execution** and **simulation is not deployment**. A claim advances only as far as the strongest evidence actually observed. A stale ephemeris, synthetic telemetry stream, generated file, theorem about a simplified model, or successful API response cannot be silently promoted into evidence for the physical subject.
+For **Proof-Aware Scheduling**, Move one workload to a colder outer layer and account for lower cooling temperature against added communication latency and reduced flux. Optimal placement is workload-specific.
 
-## Falsifier
+## Questions the design must answer
 
-The working claim for `Proof-Aware Scheduling` is falsified when the admitted subject violates a required physical invariant, the postcondition cannot be observed, the authority chain cannot be reconstructed, or replay produces a materially different result under the same subject and configuration identity.
+1. For **Proof-Aware Scheduling**: Which layer can use remaining exergy rather than merely intercept heat?
+2. For **Proof-Aware Scheduling**: How do latency and heat rejection trade?
+3. For **Proof-Aware Scheduling**: Which thermal coupling makes local optimization globally harmful?
+
+## Executable representation
+
+```yaml
+subject: dyson:proof-aware-scheduling:8fab019f4aff
+topic: "Proof-Aware Scheduling"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
+```
+
+## Failure modes and counterexamples
+
+- An outer layer is credited with useful energy without closing conversion, communication, and heat rejection.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Proof-Aware Scheduling**.
+- **Hidden assumption:** exergy or temperature layer is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Proof-Aware Scheduling**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:proof-aware-scheduling:8fab019f4aff`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Proof-Aware Scheduling** subject/revision is named.
+- [ ] Required exergy, temperature layer, and waste heat observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Proof-Aware Scheduling** is admitted, downstream systems may consume its exergy, temperature layer, and waste heat claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Proof-Aware Scheduling** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

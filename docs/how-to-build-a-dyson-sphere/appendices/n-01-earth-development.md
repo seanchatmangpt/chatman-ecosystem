@@ -1,27 +1,93 @@
-# Appendix N.1 — Earth Development
+# Earth Development
 
 **Parent:** [Appendix N — Deployment Environments](n-deployment-environments.md)
 
-The subject is treated as a bounded object in the larger stellar-manufacturing graph. Its inputs, outputs, constraints, failure modes, and evidence obligations must be explicit before the system may generalize from a local success to a reusable class.
+> **Subject identity:** `dyson:earth-development:a088175eb31e`
+> **Domain:** `general`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Standing rule
+## Why this page exists
 
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
+**Earth Development** exists because it changes a concrete decision inside **Appendix N — Deployment Environments**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-<!-- semantic-enrichment:v1 -->
+For **Earth Development**, the primary state variables include **subject**, **constraint**, and **candidate**; the control or consequence variables include **evidence**, **failure mode**, and **verification**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-## Operational significance
+The boundary is operational, not literary. Inputs to **Earth Development** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-**Appendix N.1 — Earth Development** is not retained as a label-only reference. This page describes a deployment stage as a change in the evidence available to the program, not merely a geographic destination. Earth development, orbital testbeds, lunar industry, asteroid factories, Mercury-scale networks, and an inner-system swarm each expose different latency, energy, material, thermal, communication, and recovery constraints. A design that is ALIVE in one environment does not inherit that standing in the next.
+## Engineering model
 
-## System contract
+**Earth Development** is modeled by interfaces rather than by its name. `dyson:earth-development:a088175eb31e` identifies consumed observations, produced artifact or decision, hard constraints, reversible candidate space, authority class, expected postcondition, and failure surface. The page is meaningful only when a counterexample can change the resulting decision.
 
-Every stage needs entry criteria, bounded authority, reversible experiments, exit evidence, and an abort path. Early deployment should maximize information gain per irreversible consequence: instrument first, validate local models, prove repairability, then expand capacity. Replication authority is explicitly bounded by resource budgets, geofenced/orbit-fenced scope, generation limits, and shutdown semantics so successful manufacturing does not imply permission for unbounded reproduction.
+## Operational contract
 
-## Failure modes and falsifiers
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:earth-development:a088175eb31e` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | subject, constraint, candidate with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | evidence, failure mode or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
 
-Stage promotion is falsified by evidence that the next environment violates an assumption the previous stage depended on—radiation, thermal load, communications delay, material composition, navigation accuracy, or repair latency. Such evidence narrows the operating envelope and may return the program to simulation or construction; it is not a reason to relabel the new environment as equivalent to the old one.
+## Worked reasoning
 
-## Evidence before promotion
+For **Earth Development**, Construct a positive case and a counterexample. If both lead to the same decision, the page has not yet defined a meaningful constraint.
 
-For this subject, promotion requires evidence that intersects the claim: exact subject identity, the admitted inputs or assumptions, the verifier or observation boundary, and a reproducible result. Static structure can establish representational closure; simulated execution can establish bounded behavior; neither is silently promoted to real-world consequential standing. A changed subject, stale observation, failed replay, unresolved contradiction, or verifier that no longer intersects the claim revokes the prior standing and requires re-admission.
+## Questions the design must answer
+
+1. For **Earth Development**: What exact subject does this page constrain?
+2. For **Earth Development**: What reversible candidate space should be preserved?
+3. For **Earth Development**: What evidence falsifies the working claim?
+
+## Executable representation
+
+```yaml
+subject: dyson:earth-development:a088175eb31e
+topic: "Earth Development"
+preconditions: [observed, admitted]
+candidate: explicit
+constraints: explicit
+consequence_path: BRCE_if_DO
+postconditions: [measurable, exact_subject]
+receipt: required_after_consequence
+replay: non_actuating
+```
+
+## Failure modes and counterexamples
+
+- The page names a concept but does not change a model, constraint, candidate, verifier, or refusal decision.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Earth Development**.
+- **Hidden assumption:** subject or constraint is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Earth Development**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:earth-development:a088175eb31e`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Earth Development** subject/revision is named.
+- [ ] Required subject, constraint, and candidate observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Earth Development** is admitted, downstream systems may consume its subject, constraint, and candidate claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Earth Development** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.

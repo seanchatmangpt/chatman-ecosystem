@@ -1,20 +1,18 @@
-# 54. Beamed Power
+# Beamed Power
 
-> **Part 14: The Energy Internet.** This part models energy as a routed, metered, hazardous resource. Collection is only the beginning; storage, transmission, safety, settlement, and heat complete the system.
+> **Subject identity:** `dyson:beamed-power:c6eba546b7c6`
+> **Domain:** `energy`
+> **Standing of this text:** engineering specification and reasoning surface; **not evidence that a physical Dyson system exists.**
 
-## Thesis
+## Why this page exists
 
-Beamed Power is treated here as a systems problem rather than an isolated component. At Dyson-swarm scale, a locally sensible decision can become globally unsafe when it hides mass, heat, latency, authority, or evidence. The chapter therefore asks what the object is, what observations are required to reason about it, what constraints delimit its lawful construction space, and what evidence would justify advancing its standing.
+**Beamed Power** exists because it changes a concrete decision inside **Part XIV — The Energy Internet**. It must make the subject operational rather than merely name it: identify state that can be observed, a model or transformation that consumes that state, a constraint that can reject a candidate, and evidence that permits downstream reliance.
 
-Energy architecture must distinguish generation, conversion, storage, transmission, dispatch, and final dissipation. Counting nameplate collection without conversion losses and thermal rejection is a category error. In the Chatman frame, each transfer is a typed morphism with measured efficiency, uncertainty, authority boundary, and receiptable consequence.
+For **Beamed Power**, the primary state variables include **power balance**, **efficiency**, and **storage**; the control or consequence variables include **transmission**, **dispatch**, and **load**. Making those variables explicit prevents this page from collapsing into a slogan and gives later simulation, generation, policy, or verification a typed interface.
 
-## Chatman-Ecosystem realization
+The boundary is operational, not literary. Inputs to **Beamed Power** must belong to an exact subject and outputs must be consumable by a downstream calculation, validator, simulation, factory, policy engine, or verifier. An output that cannot change any downstream decision is documentation, not manufactured capability.
 
-The operational path is `parse → route → admit/refuse → diagnose/repair → construct → actuate → receipt → replay → standing`. Observation and construction remain maximally expressive above the authority boundary; DO remains narrow. The canonical object is represented in a graph, ggen may render projections, GymAct may execute counterfactuals, Lean/mfact may discharge formal or evidentiary obligations where applicable, and BRCE is the only path permitted to cause a consequential transition.
-
-The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE`, `ALIVE`, `BLOCKED`, `BUILD_BROKEN`, `UNSUPPORTED`, plus typed refusal where a request is understood but not lawfully admissible. `ALIVE` is reserved for observed execution against the exact admitted subject with verifier and replay evidence.
-
-## Chapter map
+## Decomposition
 
 - [Microwave Transmission](54-01-microwave-transmission.md)
 - [Laser Transmission](54-02-laser-transmission.md)
@@ -22,17 +20,90 @@ The evidentiary vocabulary is deliberately non-binary: `UNKNOWN`, `PARTIAL_ALIVE
 - [Pointing](54-04-pointing.md)
 - [Receiving Arrays](54-05-receiving-arrays.md)
 - [Safety Interlocks](54-06-safety-interlocks.md)
-- [No Unreceipted Beam Actuation](54-07-no-unreceipted-beam-actuation.md)
+- [No Unreceipted Beam Actuation](54-07-no-unreceipted-beam-actuation.md) For **Beamed Power**, this reusable domain rule is evaluated against `dyson:beamed-power:c6eba546b7c6`; its observations, validity interval, constraints, and downstream consumer remain specific to this page even when the underlying law is shared.
 
-## Acceptance boundary
+## Engineering model
 
-This chapter is complete only when its claims can be tied to a bounded subject. A reader should be able to name the observation sources, uncertainty, canonical semantic identity, constraints, reversible candidate space, authority required for consequence, expected postcondition, verifier, and replay path. If any of those are absent, the appropriate state is `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED`—not narrative completion.
+**Beamed Power** must name the power boundary being measured. For a serial chain,
 
-## Falsifiers
+\[
+P_{delivered}=P_{incident}\prod_i\eta_i,\qquad P_{loss}=P_{incident}-P_{delivered}.
+\]
 
-- A required physical ledger does not close.
-- The subject identity is ambiguous or stale.
-- A simulation result is presented as physical execution evidence.
-- A proof is about a model that was never admitted as the operational subject.
-- An actuator can be reached outside the brokered receipt path.
-- Replay cannot reconstruct the transition that supposedly established standing.
+Loss must reappear as heat, reflected/radiated power, stored energy, curtailment, or another explicit channel. `dyson:beamed-power:c6eba546b7c6` distinguishes incident, converted, routed, stored, delivered, curtailed, and dissipated energy so a nameplate figure cannot masquerade as useful capacity.
+
+## Operational contract
+
+| Surface | Required content | Why it matters |
+|---|---|---|
+| Exact subject | `dyson:beamed-power:c6eba546b7c6` plus revision/epoch/environment | prevents standing transfer to a merely similar object |
+| Inputs | power balance, efficiency, storage with unit/schema and provenance | makes reasoning reproducible and uncertainty visible |
+| Outputs | transmission, dispatch or typed refusal | makes prose actionable downstream |
+| Invariants | named physical, semantic, safety, or authority constraints | makes counterexamples executable |
+| Consequence | SELECT, CONSTRUCT, or brokered DO | prevents intelligence from silently becoming authority |
+| Verification | measurable postcondition + owning verifier | separates execution from evidence-backed standing |
+
+## Worked reasoning
+
+For **Beamed Power**, An illustrative chain with conversion 0.40, transmission 0.92, and storage round-trip 0.90 delivers `0.40×0.92×0.90 = 0.3312` of incident energy through all three stages. The remaining 66.88% must appear in explicit loss or bypass channels.
+
+## Questions the design must answer
+
+1. For **Beamed Power**: Is the ledger reporting collected, converted, delivered, or useful power?
+2. For **Beamed Power**: Which stage dominates total loss?
+3. For **Beamed Power**: What reserve and load-shedding policy contains local failure?
+
+## Executable representation
+
+```yaml
+subject: dyson:beamed-power:c6eba546b7c6
+topic: "Beamed Power"
+model:
+  regime: explicit
+  units: required
+  uncertainty: propagated
+  validity_horizon: bounded
+verification:
+  invariant: named
+  tolerance: named
+  counterexample: required
+```
+
+## Failure modes and counterexamples
+
+- Nameplate collection is counted as useful delivered energy and conversion/transmission/storage losses vanish from the ledger.
+- **Identity drift:** evidence about another revision/environment is silently inherited by **Beamed Power**.
+- **Hidden assumption:** power balance or efficiency is treated as constant even though the decision depends on it.
+- **Evidence collapse:** construction or command success is mistaken for verified consequence without observing the required postcondition.
+
+## DfCM decision rule
+
+For **Beamed Power**, preserve all candidates that satisfy current hard constraints even when they are not presently preferred. Rank or select only after recording why alternatives remain lawful, blocked, unsupported, or dominated. Prefer a reversible model change, simulation, or generated artifact before an irreversible physical transition whenever it can answer the same uncertainty. A blocked edge remains topology; it is not deleted to make the plan look complete.
+
+## Admission and authority boundary
+
+```text
+OBSERVED -> ADMITTED -> CONSTRUCTED -> (BRCE authority) -> EXECUTED
+         -> CHANGED -> VERIFIED -> RECEIPTED -> REPLAYABLE -> STANDING
+```
+
+For `dyson:beamed-power:c6eba546b7c6`, none of the following imply DO authority: model recommendation, generated file, theorem, simulation pass, telemetry event, credential, or green workflow. Consequential execution requires exact-subject intent plus bounded authority; replay verifies the evidence chain and **must not re-actuate** the consequence.
+
+## Admission test
+
+- [ ] The exact **Beamed Power** subject/revision is named.
+- [ ] Required power balance, efficiency, and storage observations exist with provenance.
+- [ ] Units/schema are machine-checkable and uncertainty/quality is retained.
+- [ ] At least one falsifier can reject the candidate.
+- [ ] The action class is explicitly SELECT, CONSTRUCT, or DO.
+- [ ] Any DO path is brokered, scoped, bounded, and receipted.
+- [ ] The owning verifier observes the postcondition against the same subject.
+- [ ] Replay reconstructs standing without repeating physical consequence.
+
+## Downstream consequence
+
+When **Beamed Power** is admitted, downstream systems may consume its power balance, efficiency, and storage claims only inside their recorded validity bounds. They do **not** inherit authority or standing. A changed subject, stale epoch, failed invariant, or contradictory observation reopens the decision rather than being hidden by regeneration.
+
+## Epistemic boundary
+
+This page makes **Beamed Power** more precise; it does not make speculative engineering real. Equations are bounded models, numeric examples are illustrative unless bound to admitted data, simulations are evidence about simulation subjects, and generated artifacts remain candidates until verified. Where measurement, material capability, institutional authority, or physical demonstration is absent, the correct state remains `UNKNOWN`, `PARTIAL_ALIVE`, `BLOCKED`, or `UNSUPPORTED` rather than narrative `ALIVE`.
