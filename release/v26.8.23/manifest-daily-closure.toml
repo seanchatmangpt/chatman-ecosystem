@@ -1,0 +1,25 @@
+[release]
+name="Chatman Ecosystem Daily Closure"
+version="26.8.23"
+target_date="2026-08-23"
+root_repository="seanchatmangpt/chatman-ecosystem"
+base_ref="main"
+base_sha="dc8f2370749925cc400a7a57f1dd4545cae72974"
+standing="PARTIAL_ALIVE"
+authority="OBSERVE|VERIFY|SELECT"
+consequential_do="BRCE_ONLY"
+requirements="release/v26.8.23/requirements.toml"
+future_composition_line="release/v26.9.1"
+
+[[candidates]]
+id="measure-transportability"; repository="seanchatmangpt/chatman-ecosystem"; pr=182; ref="scheduled/dmedi-measure-decision-realization-transport-msa-20260823-1709"; sha="837f4437acab4210c9a7f7f5e98e30e0b0455ce6"; role="MEASURE"; standing="ALIVE"
+[[candidates]]
+id="implement-realization-crown"; repository="seanchatmangpt/chatman-ecosystem"; pr=181; ref="scheduled/dmedi-implement-decision-realization-crown-20260823-1637"; sha="57d08c969cdc5a36b1381be93fd6fe9cbab7e699"; role="IMPLEMENT"; standing="PARTIAL_ALIVE"
+[[candidates]]
+id="develop-realization-correspondence"; repository="seanchatmangpt/chatman-ecosystem"; pr=180; ref="scheduled/dmedi-develop-decision-realization-correspondence-20260823-1629"; sha="ca6beca88c47e8b1bc0498611f19f6e6464acb41"; role="DEVELOP"; standing="PARTIAL_ALIVE"
+[[candidates]]
+id="measure-decision-realization"; repository="seanchatmangpt/chatman-ecosystem"; pr=179; ref="scheduled/dmedi-measure-independence-decision-realization-msa-20260823-1613"; sha="c52c50dd70a5704d3b9d2e507e5b3e059d9fdc0e"; role="MEASURE"; standing="ALIVE"
+[[candidates]]
+id="implement-risk-calibrated-independence"; repository="seanchatmangpt/chatman-ecosystem"; pr=178; ref="scheduled/dmedi-implement-risk-calibrated-independence-crown-20260823"; sha="9a1c5d2f1f1683959b80af7bcd949f55d3d0a4d5"; role="IMPLEMENT"; standing="PARTIAL_ALIVE"
+[[candidates]]
+id="develop-independence-decision"; repository="seanchatmangpt/chatman-ecosystem"; pr=177; ref="scheduled/dmedi-develop-independence-decision-control-20260823-1530"; sha="0349d1fc52ff455fc7a3c2a5c1a94855035281d0"; role="DEVELOP"; standing="PARTIAL_ALIVE"

@@ -1,0 +1,35 @@
+name: v26.8.23 exact-head release court
+
+on:
+  pull_request:
+    paths:
+      - Cargo.toml
+      - release/v26.8.23/**
+      - scripts/verify_v26_8_23.py
+      - tests/test_v26_8_23_release.py
+      - .github/workflows/v26-8-23-release.yml
+
+permissions:
+  contents: read
+
+jobs:
+  release-court:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Admit exact PR subject
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+      - name: Compile release verifier
+        run: python3 -m py_compile scripts/verify_v26_8_23.py tests/test_v26_8_23_release.py
+      - name: Run release falsifier court
+        run: python3 -m unittest discover -s tests -p 'test_v26_8_23_release.py' -v
+      - name: Verify v26.8.23 release capsule
+        run: python3 scripts/verify_v26_8_23.py --root . --json
+      - name: Refuse ambient consequential actuation
+        run: |
+          ! grep -REn 'requests\.(post|put|patch|delete)|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|boto3|azure\.|google\.cloud' scripts/verify_v26_8_23.py tests/test_v26_8_23_release.py
