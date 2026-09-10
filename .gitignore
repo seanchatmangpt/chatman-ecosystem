@@ -38,3 +38,8 @@ book/
 # Dockerfile.act-runner's neighboring documentation. Not our source; a
 # rebuildable local tool, not tracked here.
 vendor-forks/
+.ggen-verify-tmp/
+.tmp-jira-plan/
+.ws2work/
+erl_crash.dump
+scratch/
