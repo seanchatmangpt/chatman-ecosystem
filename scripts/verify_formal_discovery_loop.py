@@ -244,9 +244,20 @@ def evaluate_receipt(manifest: dict[str, Any], receipt: dict[str, Any]) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument(
+        "--root",
+        type=Path,
+        default=ROOT,
+        help="Repository root used to resolve --manifest when it is not given explicitly.",
+    )
+    parser.add_argument("--manifest", type=Path, default=None)
     parser.add_argument("--receipt", type=Path)
     args = parser.parse_args(argv)
+
+    manifest_path = args.manifest
+    if manifest_path is None:
+        manifest_path = args.root.resolve() / "catalog" / "formal-discovery-loop.toml"
+    args.manifest = manifest_path
 
     manifest = load_toml(args.manifest)
     errors = validate_manifest(manifest)
