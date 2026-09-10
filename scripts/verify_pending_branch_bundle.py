@@ -149,11 +149,24 @@ def validate(data: dict) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--bundle", type=Path, default=DEFAULT_BUNDLE)
+    parser.add_argument(
+        "--root",
+        type=Path,
+        default=None,
+        help="Repository root to resolve the default bundle path from "
+        "(ignored when --bundle is given explicitly).",
+    )
+    parser.add_argument("--bundle", type=Path, default=None)
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
+    if args.bundle is not None:
+        bundle_path = args.bundle
+    elif args.root is not None:
+        bundle_path = Path(args.root).resolve() / "release" / "v26.9.1" / "pending-branches.toml"
+    else:
+        bundle_path = DEFAULT_BUNDLE
     try:
-        receipt = validate(load_bundle(args.bundle))
+        receipt = validate(load_bundle(bundle_path))
     except (OSError, tomllib.TOMLDecodeError, Refusal) as exc:
         print(str(exc))
         return 2
