@@ -3,8 +3,17 @@
 Ticket Key: BFCC-007
 Owning repo: seanchatmangpt/chatman-ecosystem
 Exact base ref/SHA: main @ 83204ee38a518311d9c9fc128d69c517a99257f4
-Standing: BFCC-CANDIDATE
+Standing: BFCC-PARTIAL
 Depends on: BFCC-001, BFCC-002, BFCC-003, BFCC-004, BFCC-005, BFCC-006
+
+## Result
+
+Real receipt evaluated `BFCC-PARTIAL` (`verify_bfcc.py --json`, exit code 3): mandatory gates
+G/E/T have zero Phase-1 evidence (correctly omitted, not padded); Sigma is a confirmed falsifier
+hit (`ash_ex4pm`'s own canary test proves the cross-repo chain not yet wired); beam4pm and
+ferroplan directly contradict each other on HDDL scope. See
+`.artifacts/bfcc/receipts/bfcc-007-v26.9.10.json` for the full receipt and
+`docs/BFCC-CASE-STUDY-v26.9.10.md` for the per-gate provenance record.
 
 ## Problem
 
