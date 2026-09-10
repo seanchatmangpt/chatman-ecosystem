@@ -1,5 +1,5 @@
 ---
-to: ".agp-receipts/{{ moduleName }}-{{ mixTask }}.txt"
+to: ".agp-pending/{{ moduleName }}-{{ mixTask }}.txt"
 skip_empty: false
 unless_exists: true
 for_each: results
@@ -15,10 +15,11 @@ sparql:
       OPTIONAL { ?t agp:mixArgs ?mixArgs . }
     }
     ORDER BY ?rank
-sh_after: "mix {{ mixTask }} {{ domainModule }}.{{ moduleName }} {{ mixArgs | default(value=\"\") }} 2>&1 | tee -a .agp-receipts/{{ moduleName }}-{{ mixTask }}.mix.log"
+sh_after: "python3 scripts/run_receipted_mix.py --pending .agp-pending/{{ moduleName }}-{{ mixTask }}.txt --receipt .agp-receipts/{{ moduleName }}-{{ mixTask }}.txt --log .agp-receipts/{{ moduleName }}-{{ mixTask }}.mix.log -- mix {{ mixTask }} {{ domainModule }}.{{ moduleName }} {{ mixArgs | default(value=\"\") }}"
 ---
-real, generalized Igniter-backed codegen invocation.
+real, generalized Igniter-backed codegen invocation intent.
 target: {{ domainModule }}.{{ moduleName }}
 mix task: {{ mixTask }}
 mix args: {{ mixArgs | default(value="(none)") }}
 command: mix {{ mixTask }} {{ domainModule }}.{{ moduleName }} {{ mixArgs | default(value="") }}
+standing: pending until scripts/run_receipted_mix.py observes exit 0 and atomically promotes this file

@@ -1,0 +1,26 @@
+name: AGP receipt promotion
+
+on:
+  pull_request:
+    paths:
+      - 'platform-console/services/ggen-marketplace/ggen-packs-src/ash-igniter-gen-pipeline-pack/**'
+      - '.github/workflows/agp-receipt-promotion.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  receipt-promotion:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform-console/services/ggen-marketplace/ggen-packs-src/ash-igniter-gen-pipeline-pack
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile verifier
+        run: python -m py_compile scripts/run_receipted_mix.py tests/test_receipted_mix.py
+      - name: Run receipt promotion falsifiers
+        run: python -m unittest -v tests/test_receipted_mix.py
