@@ -219,6 +219,7 @@ dependencies = [
 [[package]]
 name = "clap-noun-verb"
 version = "26.9.1"
+source = "git+https://github.com/seanchatmangpt/clap-noun-verb.git?rev=a0f9f79b88e454742ec7c17c91ca31837cabc2c8#a0f9f79b88e454742ec7c17c91ca31837cabc2c8"
 dependencies = [
  "anyhow",
  "chrono",
@@ -244,6 +245,7 @@ dependencies = [
 [[package]]
 name = "clap-noun-verb-deploy"
 version = "26.9.1"
+source = "git+https://github.com/seanchatmangpt/clap-noun-verb.git?rev=a0f9f79b88e454742ec7c17c91ca31837cabc2c8#a0f9f79b88e454742ec7c17c91ca31837cabc2c8"
 dependencies = [
  "clap-noun-verb",
  "serde",
@@ -254,6 +256,7 @@ dependencies = [
 [[package]]
 name = "clap-noun-verb-macros"
 version = "26.9.1"
+source = "git+https://github.com/seanchatmangpt/clap-noun-verb.git?rev=a0f9f79b88e454742ec7c17c91ca31837cabc2c8#a0f9f79b88e454742ec7c17c91ca31837cabc2c8"
 dependencies = [
  "linkme",
  "proc-macro-error",
@@ -412,7 +415,7 @@ checksum = "1aaf95b3e5c8f23aa320147307562d361db0ae0d51242340f558153b4eb2439b"
 
 [[package]]
 name = "ecosystem-cli"
-version = "0.1.0"
+version = "26.8.23"
 dependencies = [
  "clap",
  "clap-noun-verb-deploy",
@@ -424,7 +427,7 @@ dependencies = [
 
 [[package]]
 name = "ecosystem-core"
-version = "0.1.0"
+version = "26.8.23"
 dependencies = [
  "blake3",
  "serde",
@@ -435,9 +438,10 @@ dependencies = [
 
 [[package]]
 name = "ecosystem-runtime"
-version = "0.1.0"
+version = "26.8.23"
 dependencies = [
  "async-trait",
+ "blake3",
  "ecosystem-core",
  "serde",
  "serde_json",
@@ -652,14 +656,14 @@ dependencies = [
 
 [[package]]
 name = "hditc"
-version = "0.1.0"
+version = "26.8.23"
 dependencies = [
  "async-trait",
  "blake3",
  "ecosystem-core",
  "serde",
  "serde_json",
- "thiserror",
+ "thiserror 2.0.20",
  "tokio",
 ]
 
