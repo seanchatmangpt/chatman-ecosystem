@@ -173,6 +173,12 @@ path = "docs/FRONTIER-RELEASE-FACTORY.md"
 canonical = false
 
 [[document]]
+id = "document:bfcc"
+title = "BFCC — Buckminster Fuller Canon Compatibility"
+path = "docs/BFCC.md"
+canonical = false
+
+[[document]]
 id = "document:no-agent-coding"
 title = "No Agent Coding: Building the Deterministic Enterprise"
 path = "books/no-agent-coding/src/README.md"
