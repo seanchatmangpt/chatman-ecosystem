@@ -22,6 +22,8 @@ ce:CapabilityClass a owl:Class ;
 ce:Observe a ce:CapabilityClass ; skos:prefLabel "OBSERVE" .
 ce:Select a ce:CapabilityClass ; skos:prefLabel "SELECT" .
 ce:Construct a ce:CapabilityClass ; skos:prefLabel "CONSTRUCT" .
+ce:Data a ce:CapabilityClass ; skos:prefLabel "DATA" ;
+    skos:definition "A durable or read-only information product/projection. DATA does not imply observation authority, selection authority, or consequential DO." .
 ce:Do a ce:CapabilityClass ; skos:prefLabel "DO" .
 
 ce:Interface a owl:Class ; rdfs:subClassOf skos:Concept .
@@ -61,6 +63,15 @@ ce:reversible a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xs
 ce:standing a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:string .
 ce:refusal a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:string .
 
+# ERRC Raise predicates. These are explicit source facts consumed by executable
+# governance courts; absence is not interpreted as false or as permission.
+ce:approvalRequired a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:boolean .
+ce:independentVerifierRequired a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:boolean .
+ce:durableAuditRequired a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:boolean .
+ce:ocelProjectionRequired a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:boolean .
+ce:implementationPattern a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:string .
+ce:proofSurface a owl:DatatypeProperty ; rdfs:domain ce:Capability ; rdfs:range xsd:string .
+
 # Public ontology alignment is normative: provenance is PROV-O, labels/concepts are
 # SKOS, policy/permission vocabulary is ODRL, metadata is DCTERMS, and admission
 # shapes are SHACL. ce:* defines only the ecosystem-specific capability remainder.
@@ -77,7 +88,7 @@ ce:CapabilityShape a sh:NodeShape ;
 
 ce:DoShape a sh:NodeShape ;
     sh:targetObjectsOf ce:capabilityClass ;
-    dcterms:description "The executable catalog verifier supplies the conditional DO => brokerRequired && receiptRequired constraint; this ontology does not pretend SHACL alone has executed that admission." .
+    dcterms:description "The executable catalog verifier supplies the conditional DO => brokerRequired && receiptRequired constraint; irreversible DO additionally requires approval, independent verifier, durable audit and OCEL projection. This ontology does not pretend SHACL alone has executed that admission." .
 
 ce:DecisionIdentityShape a sh:NodeShape ;
     dcterms:description "Planner != Policy != Role != Agent != Authority is enforced by executable catalog/refusal courts; this shape records the public/custom semantic boundary without manufacturing equality or authority." .
