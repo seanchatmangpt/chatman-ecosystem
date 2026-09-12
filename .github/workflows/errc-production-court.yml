@@ -1,0 +1,62 @@
+name: ERRC Production Court
+
+on:
+  pull_request:
+    paths:
+      - "crates/ecosystem-errc/**"
+      - "crates/ecosystem-core/**"
+      - "ontology/capabilities.ttl"
+      - "ontology/platform-console-capabilities.ttl"
+      - "ontology/errc-production-capabilities.ttl"
+      - "packs/platform-console-capability-projection/**"
+      - "ggen.toml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/errc-production-court.yml"
+  push:
+    branches: [main]
+    paths:
+      - "crates/ecosystem-errc/**"
+      - "ontology/**"
+      - "packs/platform-console-capability-projection/**"
+      - "ggen.toml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/errc-production-court.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  errc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Bind exact subject
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"
+          git diff --check
+      - name: Verify committed lock identity
+        run: cargo metadata --locked --format-version 1 >/dev/null
+      - name: Format
+        run: cargo fmt --check -p ecosystem-errc
+      - name: Compile
+        run: cargo check --locked -p ecosystem-errc --all-targets
+      - name: Test ERRC courts
+        run: cargo test --locked -p ecosystem-errc --all-targets
+      - name: Clippy
+        run: cargo clippy --locked -p ecosystem-errc --all-targets -- -D warnings
+      - name: Preserve authority fence
+        run: |
+          set -euo pipefail
+          ! rg -n 'operation\.execute|std::process::Command|tokio::process|reqwest::|kubectl|terraform apply' crates/ecosystem-errc/src
+          rg -n 'CapabilityClass::Do|DoRequiresBroker|MuStar' crates/ecosystem-errc/src

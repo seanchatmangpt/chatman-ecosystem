@@ -1,6 +1,7 @@
 [workspace]
 members = [
   "crates/ecosystem-core",
+  "crates/ecosystem-errc",
   "crates/ecosystem-runtime",
   "crates/gall",
   "crates/hditc",
