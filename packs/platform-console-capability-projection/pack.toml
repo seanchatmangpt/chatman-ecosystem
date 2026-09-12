@@ -1,0 +1,12 @@
+[pack]
+name = "platform-console-capability-projection"
+version = "0.1.0"
+description = "Generated projection of Chatman Ecosystem capability ABox facts into cross-repository implementation-pattern manifests. Canonical capability facts remain in ontology/*.ttl and are unioned through ggen extra_ontologies; this pack owns no duplicated capability individuals and grants no authority."
+category = "architecture"
+author = "ggen"
+license = "MIT"
+production_ready = false
+
+[pack.metadata]
+tags = ["ggen", "capability", "errc", "projection"]
+keywords = ["ttl", "sparql", "capability", "pattern", "projection"]
