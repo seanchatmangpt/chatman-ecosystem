@@ -1,0 +1,13 @@
+[pack]
+name = "scm-sigma-pack"
+version = "0.1.0"
+description = """Canonical Sigma ontology for the Chatman Semantic Coordination Machine (SCM):
+the shared vocabulary of semantic elements (Identity, Principal, Role, Topology, Relation,
+State, Possibility, Observation, Projection, Time, Objective, Authority, Grant, Delegation,
+Handoff, Continuation, Action, Consequence, Receipt, Standing) that every jurisdiction-bound
+repo in the ecosystem composes rather than reinvents. Each class is tagged with the Z-coordinate
+it belongs to (P/Gamma/Omega/B/tau/J/A/R from Z=(P,Gamma,Omega,B,tau,J|A,R)) and the jurisdiction
+(repo role) permitted to emit or consume it. This is PR-1 of the 2026 backwards-chain: ontology
+only. No composition operators, no jurisdiction refusal contracts, no runtime verifier, and no
+end-to-end equivalence proof are established by this pack -- those are separate, later units of
+work (PR-2 through PR-5) per the SCM 2030 press release backwards-chain."""

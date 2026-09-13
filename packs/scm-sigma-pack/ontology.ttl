@@ -1,0 +1,145 @@
+@prefix sigma: <https://chatman.dev/scm/sigma#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Canonical Sigma vocabulary for the Chatman Semantic Coordination Machine (SCM).
+# HAND-AUTHORED SOURCE (PR-1) -- this file, not any downstream projection, is the
+# source of truth. Downstream artifacts (JSON Schema, per-repo types, etc.) MUST be
+# generated from this file, never hand-duplicated.
+#
+# Every sigma:Element is tagged with:
+#   sigma:zCoordinate  -- which coordinate of Z=(P,Gamma,Omega,B,tau,J|A,R) it belongs to
+#   sigma:jurisdiction -- zero or more repo names admitted to emit/consume instances of it
+#
+# Invariant this ontology exists to support (enforced in later PRs, not here):
+#   SELECT != CONSTRUCT != DO
+#   HDDL/FOND subsetOf SELECT
+#   PlannerOutput != Authority
+#   DO => Receipt
+
+sigma:Element a rdfs:Class ;
+  rdfs:comment "Base class for every canonical Sigma semantic element." .
+
+sigma:zCoordinate a rdfs:Property ;
+  rdfs:comment "Which coordinate of Z=(P,Gamma,Omega,B,tau,J|A,R) this element belongs to." ;
+  rdfs:domain sigma:Element .
+
+sigma:jurisdiction a rdfs:Property ;
+  rdfs:comment "Repo name(s) admitted to emit or consume instances of this element. Multiple values allowed." ;
+  rdfs:domain sigma:Element .
+
+# --- P: principals / identities / roles -------------------------------------
+
+sigma:Identity a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "P" ;
+  sigma:jurisdiction "ash_a2a" ;
+  rdfs:comment "A persistent semantic entity underlying all role-relative projections." .
+
+sigma:Principal a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "P" ;
+  sigma:jurisdiction "ash_a2a" ;
+  rdfs:comment "An identity acting with standing in the system; not the same as an Agent or a Capability." .
+
+sigma:Role a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "P" ;
+  sigma:jurisdiction "ash_a2a" ;
+  rdfs:comment "A named projection lens applied to a Principal (role-relative continuation)." .
+
+# --- Gamma: topology / relationships -----------------------------------------
+
+sigma:Topology a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "Gamma" ;
+  sigma:jurisdiction "ash_a2a", "ggen-marketplace" ;
+  rdfs:comment "The communication/dependency/capability graph connecting principals and components." .
+
+sigma:Relation a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "Gamma" ;
+  sigma:jurisdiction "ash_a2a", "ggen-marketplace" ;
+  rdfs:comment "One typed edge within a Topology." .
+
+# --- Omega: possibility space -------------------------------------------------
+
+sigma:State a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "Omega" ;
+  sigma:jurisdiction "beam4pm" ;
+  rdfs:comment "A point in the possibility space reachable by construction, not yet selected." .
+
+sigma:Possibility a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "Omega" ;
+  sigma:jurisdiction "beam4pm" ;
+  rdfs:comment "A candidate branch of Omega produced by HDDL decomposition or FOND policy search. Never itself an Authority token." .
+
+# --- B: observation / belief / projection ------------------------------------
+
+sigma:Observation a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "B" ;
+  sigma:jurisdiction "ash_r2rml", "gitvan" ;
+  rdfs:comment "A read-only fact admitted from an external or internal system. Observation != Reality." .
+
+sigma:Projection a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "B" ;
+  sigma:jurisdiction "ash_r2rml", "ash_a2a" ;
+  rdfs:comment "A role/purpose-specific view derived from canonical state. Projection != CanonicalState." .
+
+# --- tau: temporal / causal state --------------------------------------------
+
+sigma:Time a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "tau" ;
+  sigma:jurisdiction "gitvan" ;
+  rdfs:comment "Temporal frame distinguishing narrative, valid, transaction, observation, and causal order." .
+
+# --- J: objectives -------------------------------------------------------------
+
+sigma:Objective a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "J" ;
+  sigma:jurisdiction "beam4pm", "autofde-lab" ;
+  rdfs:comment "A selection criterion used to rank candidates in Omega." .
+
+# --- A: authority ----------------------------------------------------------------
+
+sigma:Authority a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "A" ;
+  sigma:jurisdiction "mfw", "bcinr" ;
+  rdfs:comment "The narrow admission boundary that alone may convert a constructed candidate into DO. PlannerOutput != Authority." .
+
+sigma:Grant a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "A" ;
+  sigma:jurisdiction "mfw" ;
+  rdfs:comment "An explicit, standing authorization event. Authority_new requires a Grant, Delegation, or Rule." .
+
+sigma:Delegation a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "A" ;
+  sigma:jurisdiction "mfw" ;
+  rdfs:comment "A Grant transferred from one Principal to another under an explicit rule." .
+
+sigma:Handoff a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "A", "P" ;
+  sigma:jurisdiction "mfw", "ash_a2a" ;
+  rdfs:comment "The transition point where responsibility for a construct moves between principals or components." .
+
+sigma:Continuation a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "P", "tau" ;
+  sigma:jurisdiction "ash_a2a" ;
+  rdfs:comment "What a role-relative worldline does next after a Handoff, given prior State and Authority." .
+
+sigma:Action a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "A" ;
+  sigma:jurisdiction "gymact", "mfw" ;
+  rdfs:comment "A bounded, authorized world-changing operation (DO). Never emitted from Possibility directly." .
+
+sigma:Consequence a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "A", "B" ;
+  sigma:jurisdiction "gymact" ;
+  rdfs:comment "The observed real-world effect of an Action, distinct from its intended effect." .
+
+# --- R: receipts / provenance / replay / standing ----------------------------
+
+sigma:Receipt a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "R" ;
+  sigma:jurisdiction "gitvan", "ggen-ecosystem" ;
+  rdfs:comment "Required consequence of every DO. Must carry identity, authority, consequence, replay, and standing. DO => Receipt." .
+
+sigma:Standing a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "R" ;
+  sigma:jurisdiction "ggen-ecosystem" ;
+  rdfs:comment "The accumulated, replayable audit trail of a Principal's admitted history. No component may self-certify its own Standing." .

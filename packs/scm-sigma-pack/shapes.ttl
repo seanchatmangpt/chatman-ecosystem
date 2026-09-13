@@ -1,0 +1,31 @@
+@prefix sigma: <https://chatman.dev/scm/sigma#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+# Every canonical Element must declare which Z-coordinate it belongs to and
+# at least one jurisdiction (repo) admitted to emit/consume it. An element
+# with no jurisdiction is a floating term with no owner -- refused.
+sigma:ElementShape a sh:NodeShape ;
+  sh:targetClass sigma:Element ;
+  sh:property [
+    sh:path sigma:zCoordinate ;
+    sh:minCount 1 ;
+    sh:in ( "P" "Gamma" "Omega" "B" "tau" "J" "A" "R" )
+  ] ;
+  sh:property [
+    sh:path sigma:jurisdiction ;
+    sh:minCount 1
+  ] .
+
+# Receipt is the load-bearing class for R = {identity, authority, consequence,
+# replay, standing}. This shape only checks that Receipt is a well-formed
+# Element for now (identity/authority/consequence/replay/standing become
+# properties of a Receipt *instance* schema in PR-4's end-to-end fixture, not
+# of this class-level ontology in PR-1 -- recorded here as a forward pointer,
+# not implemented as a constraint yet).
+sigma:ReceiptClassShape a sh:NodeShape ;
+  sh:targetNode sigma:Receipt ;
+  sh:property [
+    sh:path sigma:jurisdiction ;
+    sh:minCount 1
+  ] .
