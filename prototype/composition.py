@@ -42,3 +42,22 @@ def project(element, role):
 def admit(element, evidence):
     """Preserves total-ness (never raises); refuses admission (admitted=False) whenever evidence is falsy."""
     return {"type": "Admitted", "subject": element, "evidence": evidence, "admitted": bool(evidence)}
+
+
+def admit_all(elements_with_evidence):
+    """Sequences admit() over [(element, evidence), ...] and stops at the first refusal.
+
+    Pattern ported from praxis-graphlaw's admission8.rs (fn admit_all,
+    crates/praxis-graphlaw/src/chatman/admission8.rs:243, with the stop-at-first-refusal
+    behavior proven by admission8.rs's own test admit_all_stops_at_first_refusal at line 428).
+    Returns (admitted_list, refused_at_index) -- refused_at_index is None if every element
+    admitted, else the index of the first refusal and admitted_list holds every prior
+    Admitted result plus that final refused one (nothing after it is evaluated).
+    """
+    results = []
+    for index, (element, evidence) in enumerate(elements_with_evidence):
+        result = admit(element, evidence)
+        results.append(result)
+        if not result["admitted"]:
+            return results, index
+    return results, None

@@ -6,10 +6,11 @@ on actual return values or raised exceptions.
 
 import pytest
 
+import composition
 import compound
 import jurisdiction
 from jurisdiction import JURISDICTION_TABLE, JurisdictionViolation
-from verifier import ConservationVerifier, ConservationViolation
+from verifier import ConservationVerifier, ConservationViolation, compute_receipt_digest
 
 
 def test_full_hop_chain_end_to_end_produces_valid_receipt():
@@ -19,12 +20,12 @@ def test_full_hop_chain_end_to_end_produces_valid_receipt():
 
     hdld = compound.project_to_hdld(canonical)
     ash = compound.project_to_ash(hdld)
-    a2a = compound.project_to_a2a(ash, granted_by="Grant")
+    a2a = compound.project_to_a2a(ash, granted_by="Grant", permit_ref="permit-2026-001")
 
     verifier_instance = ConservationVerifier()
 
     action = compound.project_to_do_boundary(a2a, verifier_instance)
-    receipt = compound.project_to_receipt(action, verifier_instance)
+    receipt = compound.project_to_receipt(action, verifier_instance, predecessor_receipt_hashes=["prior-hash-1"])
 
     hop_outputs = {
         "hdld": hdld,
@@ -102,3 +103,68 @@ def test_check_planner_output_not_authority_raises_for_possibility_claiming_auth
 
     with pytest.raises(ConservationViolation):
         verifier_instance.check_planner_output_not_authority(candidate)
+
+
+def test_check_permit_required_for_actuation_raises_without_permit_ref():
+    verifier_instance = ConservationVerifier()
+    action = {"type": "Action", "sigmaClass": "Action", "doPrincipal": "alice", "permitRef": None}
+
+    with pytest.raises(ConservationViolation):
+        verifier_instance.check_permit_required_for_actuation(action)
+
+
+def test_check_permit_required_for_actuation_passes_with_permit_ref():
+    verifier_instance = ConservationVerifier()
+    action = {"type": "Action", "sigmaClass": "Action", "doPrincipal": "alice", "permitRef": "permit-1"}
+
+    assert verifier_instance.check_permit_required_for_actuation(action) is True
+
+
+def test_check_receipt_digest_raises_on_mismatch():
+    verifier_instance = ConservationVerifier()
+    receipt = {
+        "identity": "alice", "authority": "Grant", "consequence": "artifact-42",
+        "replay": "2026-09-12T00:00:00Z", "standing": "alice:artifact-42",
+        "receiptDigest": "not-the-real-digest",
+    }
+
+    with pytest.raises(ConservationViolation):
+        verifier_instance.check_receipt_digest(receipt)
+
+
+def test_check_receipt_digest_passes_when_recomputed_and_matches():
+    verifier_instance = ConservationVerifier()
+    receipt = {
+        "identity": "alice", "authority": "Grant", "consequence": "artifact-42",
+        "replay": "2026-09-12T00:00:00Z", "standing": "alice:artifact-42",
+    }
+    receipt["receiptDigest"] = compute_receipt_digest(receipt)
+
+    assert verifier_instance.check_receipt_digest(receipt) is True
+
+
+def test_admit_all_stops_at_first_refusal():
+    element_a = {"type": "Element", "name": "a"}
+    element_b = {"type": "Element", "name": "b"}
+    element_c = {"type": "Element", "name": "c"}
+
+    results, refused_at = composition.admit_all(
+        [(element_a, "real evidence"), (element_b, None), (element_c, "never reached")]
+    )
+
+    assert refused_at == 1
+    assert len(results) == 2
+    assert results[0]["admitted"] is True
+    assert results[1]["admitted"] is False
+
+
+def test_admit_all_admits_every_element_when_all_have_evidence():
+    element_a = {"type": "Element", "name": "a"}
+    element_b = {"type": "Element", "name": "b"}
+
+    results, refused_at = composition.admit_all(
+        [(element_a, "evidence-a"), (element_b, "evidence-b")]
+    )
+
+    assert refused_at is None
+    assert all(result["admitted"] for result in results)

@@ -23,7 +23,7 @@ requires a Receipt, enforced here by ConservationVerifier.
 
 import composition
 import jurisdiction
-from verifier import ConservationVerifier, ConservationViolation
+from verifier import ConservationVerifier, ConservationViolation, compute_receipt_digest
 
 __all__ = [
     "canonical_compound",
@@ -87,13 +87,20 @@ def project_to_ash(hdld):
     return projection
 
 
-def project_to_a2a(ash, granted_by):
+def project_to_a2a(ash, granted_by, permit_ref):
     """First hop where Authority is acquired: an A2A Handoff.
 
     Enforces the jurisdictional boundary (ash_a2a is only permitted to act
     on Z-coordinate "P") before constructing the Handoff. granted_by must be
     one of "Grant", "Delegation", "Rule" for the resulting Authority to
     survive ConservationVerifier.check_authority_grant downstream.
+
+    permit_ref: an explicit permit identifier this Authority is issued
+    under, ported from mfw's Admission/InvocationEnvelope pattern
+    (runtime/mfw-rmcp/src/admission.rs:19-48), where actuation is gated on a
+    signed PermitPayload rather than a bare grantedBy label alone. Must be
+    truthy for the resulting Action to survive
+    ConservationVerifier.check_permit_required_for_actuation downstream.
     """
     jurisdiction.check_jurisdiction("ash_a2a", "P")
     return {
@@ -103,30 +110,46 @@ def project_to_a2a(ash, granted_by):
         "a2aArtifact": ash["ashArtifact"],
         "a2aTime": ash["ashTime"],
         "grantedBy": granted_by,
+        "permitRef": permit_ref,
     }
 
 
 def project_to_do_boundary(a2a, verifier):
     """The DO boundary: an Action. Verifies the incoming Authority actually
-    carries an explicit Grant/Delegation/Rule, and that the a2a candidate
-    does not self-declare as Authority in violation of PlannerOutput-is-not-
-    Authority, before constructing the Action.
+    carries an explicit Grant/Delegation/Rule, that the a2a candidate does
+    not self-declare as Authority in violation of PlannerOutput-is-not-
+    Authority, and that an explicit permitRef is present (mfw Admission
+    pattern) before constructing the Action.
     """
     verifier.check_authority_grant(a2a)
     verifier.check_planner_output_not_authority(a2a)
-    return {
+    action = {
         "type": "Action",
         "sigmaClass": "Action",
         "doPrincipal": a2a["a2aPrincipal"],
         "doArtifact": a2a["a2aArtifact"],
         "doTime": a2a["a2aTime"],
+        "permitRef": a2a.get("permitRef"),
     }
+    verifier.check_permit_required_for_actuation(action)
+    return action
 
 
-def project_to_receipt(action, verifier):
+def project_to_receipt(action, verifier, predecessor_receipt_hashes=None):
     """Terminal hop: an OCEL/Receipt covering the DO Action. DO requires a
     Receipt, enforced here, and the Receipt is checked against
-    no-self-certification before being returned.
+    no-self-certification and against digest recomputation before being
+    returned.
+
+    receiptDigest is COMPUTED from the receipt's own canonical fields, never
+    separately asserted -- ported from praxis-graphlaw's
+    Receipt::from_canonical_nquads discipline
+    (crates/praxis-graphlaw/src/chatman/abi.rs:217-260).
+
+    predecessorReceiptHashes chains this receipt to whatever receipts
+    preceded it, ported from mfw's MeaningReceipt.authorization_receipts /
+    predecessor_receipt_hashes pattern
+    (mfw-meaning/src/receipt.rs:109-128; runtime/mfw-rmcp/src/admission.rs:34-48).
     """
     receipt = {
         "type": "Receipt",
@@ -139,9 +162,12 @@ def project_to_receipt(action, verifier):
         "issuedBy": "chatman-ecosystem",
         "subjectComponent": "chatman-ecosystem",
         "selfCertified": False,
+        "predecessorReceiptHashes": list(predecessor_receipt_hashes or []),
     }
+    receipt["receiptDigest"] = compute_receipt_digest(receipt)
     verifier.check_do_requires_receipt(action, receipt)
     verifier.check_no_self_certification(receipt, "chatman-ecosystem")
+    verifier.check_receipt_digest(receipt)
     return receipt
 
 

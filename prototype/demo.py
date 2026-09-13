@@ -27,12 +27,12 @@ def main():
 
     hdld = compound.project_to_hdld(canonical)
     ash = compound.project_to_ash(hdld)
-    a2a = compound.project_to_a2a(ash, granted_by="Grant")
+    a2a = compound.project_to_a2a(ash, granted_by="Grant", permit_ref="permit-2026-001")
 
     verifier_instance = ConservationVerifier()
 
     action = compound.project_to_do_boundary(a2a, verifier_instance)
-    receipt = compound.project_to_receipt(action, verifier_instance)
+    receipt = compound.project_to_receipt(action, verifier_instance, predecessor_receipt_hashes=[])
 
     hop_outputs = {
         "hdld": hdld,
@@ -49,6 +49,7 @@ def main():
 
     refusal_a_ok = False
     refusal_b_ok = False
+    refusal_c_ok = False
 
     try:
         bad_a2a = dict(a2a)
@@ -66,16 +67,27 @@ def main():
         print(f"REFUSAL OK: {exc}")
         refusal_b_ok = True
 
-    all_properties_preserved = all(preserved.values())
-    both_refusals_ok = refusal_a_ok and refusal_b_ok
+    try:
+        no_permit_action = dict(action)
+        no_permit_action["permitRef"] = None
+        verifier_instance.check_permit_required_for_actuation(no_permit_action)
+        print("REFUSAL FAILED (no exception)")
+    except ConservationViolation as exc:
+        print(f"REFUSAL OK: {exc}")
+        refusal_c_ok = True
 
-    if both_refusals_ok and all_properties_preserved:
+    all_properties_preserved = all(preserved.values())
+    all_refusals_ok = refusal_a_ok and refusal_b_ok and refusal_c_ok
+
+    if all_refusals_ok and all_properties_preserved:
         sys.exit(0)
 
     if not refusal_a_ok:
         print("CHECK FAILED: refusal (a) check_authority_grant did not raise ConservationViolation")
     if not refusal_b_ok:
         print("CHECK FAILED: refusal (b) check_jurisdiction did not raise JurisdictionViolation")
+    if not refusal_c_ok:
+        print("CHECK FAILED: refusal (c) check_permit_required_for_actuation did not raise ConservationViolation")
     if not all_properties_preserved:
         failed = [key for key, ok in preserved.items() if not ok]
         print(f"CHECK FAILED: properties not preserved: {failed}")
