@@ -53,6 +53,27 @@ def load_policy(path: Path) -> Policy:
     target = raw.get("target_verified_unique_semantic_commits_per_hour")
     if not isinstance(target, int) or target <= 0:
         raise AccomplishmentRefused("INVALID_POLICY", "target must be a positive integer")
+
+    counting = raw.get("counting")
+    required_counting = {
+        "dedupe_key": "semantic_fingerprint",
+        "require_exact_subject": True,
+        "require_state": "COMPLETED",
+        "require_verified_consequence": True,
+        "require_verifier_outcome": "PASS",
+        "require_receipt_identity": True,
+        "require_receipt_digest": True,
+        "unverified_counts_toward_target": False,
+    }
+    if not isinstance(counting, dict):
+        raise AccomplishmentRefused("INVALID_POLICY", "counting contract is required")
+    for key, expected in required_counting.items():
+        if counting.get(key) != expected:
+            raise AccomplishmentRefused(
+                "UNSUPPORTED_POLICY_DRIFT",
+                f"counting.{key} must remain {expected!r}",
+            )
+
     timezone = raw.get("timezone")
     if not isinstance(timezone, str):
         raise AccomplishmentRefused("INVALID_POLICY", "timezone is required")
