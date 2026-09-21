@@ -5,6 +5,12 @@ on:
       - 'scripts/measure_train/**'
       - 'tests/measure_train/**'
       - '.github/workflows/measure-25-commit-court.yml'
+      - '.github/workflows/daily-accomplishment-log.yml'
+      - 'catalog/accomplishment-log.toml'
+      - 'evidence/accomplishments/**'
+      - 'docs/72-machine-scale-throughput.md'
+      - 'docs/79-factory-metrics.md'
+      - 'docs/81-verified-accomplishment-log.md'
 permissions:
   contents: read
 jobs:
