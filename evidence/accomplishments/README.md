@@ -1,6 +1,6 @@
 # Accomplishment evidence ingress
 
-Daily accomplishment reports consume JSONL records from `evidence/accomplishments/*.jsonl`. This directory is an evidence ingress, not a standing authority.
+Daily accomplishment reports consume JSONL records from `evidence/accomplishments/*.jsonl`. This directory is an evidence ingress, not a standing authority. Records conform to `schemas/accomplishment-evidence.schema.json` and carry `schema=chatman.accomplishment-evidence/1`.
 
 A record is countable toward the **250 verified unique semantic commits/hour** plant target only when all of these bind to one exact Git subject:
 
@@ -19,7 +19,7 @@ A record is countable toward the **250 verified unique semantic commits/hour** p
 Example:
 
 ```json
-{"semantic_fingerprint":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","repository":"seanchatmangpt/example","source_sha":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","completed_at":"2026-09-20T17:15:00-07:00","summary":"semantic admission edge","state":"COMPLETED","consequence":{"identity":"test:admission-edge","verified":true},"verification":{"verifier":"repo-native:test","outcome":"PASS","receipt_id":"receipt:example","receipt_digest":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"},"blocker":""}
+{"schema":"chatman.accomplishment-evidence/1","semantic_fingerprint":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","repository":"seanchatmangpt/example","source_sha":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","completed_at":"2026-09-20T17:15:00-07:00","summary":"semantic admission edge","state":"COMPLETED","consequence":{"identity":"test:admission-edge","verified":true},"verification":{"verifier":"repo-native:test","outcome":"PASS","receipt_id":"receipt:example","receipt_digest":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"},"blocker":""}
 ```
 
 `OPEN_GAP` and `BLOCKED` records are retained in the daily report but never enter the numerator. A `COMPLETED` record missing any required consequence or receipt evidence is automatically moved into **Open gaps** and marked `UNVERIFIED` in the projection.
