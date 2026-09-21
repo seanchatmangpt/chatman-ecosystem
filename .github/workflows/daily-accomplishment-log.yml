@@ -1,0 +1,54 @@
+name: Daily accomplishment log
+
+on:
+  schedule:
+    # 08:10 UTC is after local midnight in America/Los_Angeles year-round.
+    # The compiler always targets the previous Los Angeles calendar day.
+    - cron: "10 8 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "America/Los_Angeles date (YYYY-MM-DD); blank means previous local day"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify accomplishment compiler
+        run: python3 -m unittest tests/test_compile_accomplishment_log.py -v
+      - name: Resolve target date
+        id: target
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+        run: |
+          if [ -n "$INPUT_DATE" ]; then
+            printf 'date=%s\n' "$INPUT_DATE" >> "$GITHUB_OUTPUT"
+          else
+            python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import datetime
+          from zoneinfo import ZoneInfo
+          today = datetime.datetime.now(datetime.timezone.utc).astimezone(ZoneInfo("America/Los_Angeles")).date()
+          print(f"date={today - datetime.timedelta(days=1)}")
+          PY
+          fi
+      - name: Compile user-review projection
+        run: |
+          python3 scripts/compile_accomplishment_log.py \
+            --date "${{ steps.target.outputs.date }}" \
+            --evidence-dir accomplishments/evidence \
+            --output "dist/accomplishments/${{ steps.target.outputs.date }}.md"
+          cat "dist/accomplishments/${{ steps.target.outputs.date }}.md" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "accomplishment-log-${{ steps.target.outputs.date }}"
+          path: "dist/accomplishments/${{ steps.target.outputs.date }}.md"
+          if-no-files-found: error
