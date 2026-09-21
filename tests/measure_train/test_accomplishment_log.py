@@ -8,7 +8,13 @@ import unittest
 from datetime import date
 from pathlib import Path
 
-from scripts.measure_train.accomplishment_log import Policy, compile_log, render_markdown
+from scripts.measure_train.accomplishment_log import (
+    AccomplishmentRefused,
+    Policy,
+    compile_log,
+    load_policy,
+    render_markdown,
+)
 
 
 def record(
@@ -119,6 +125,19 @@ class AccomplishmentLogCourt(unittest.TestCase):
         for heading in ("## Completed work", "## Receipts / evidence", "## Open gaps", "## Blocked items"):
             self.assertIn(heading, rendered)
         self.assertIn("UNVERIFIED", rendered)
+
+    def test_policy_cannot_relax_verified_consequence_rule(self) -> None:
+        root = Path(__file__).resolve().parents[2]
+        source = (root / "catalog" / "accomplishment-log.toml").read_text(encoding="utf-8")
+        with tempfile.TemporaryDirectory() as tmp:
+            policy_path = Path(tmp) / "policy.toml"
+            policy_path.write_text(
+                source.replace("require_verified_consequence = true", "require_verified_consequence = false"),
+                encoding="utf-8",
+            )
+            with self.assertRaises(AccomplishmentRefused) as ctx:
+                load_policy(policy_path)
+        self.assertEqual("UNSUPPORTED_POLICY_DRIFT", ctx.exception.code)
 
     def test_cli_compiles_jsonl(self) -> None:
         root = Path(__file__).resolve().parents[2]
