@@ -131,3 +131,21 @@ The non-throttling thesis would be weakened if, after eliminating duplicated wor
 That would indicate a genuine human-bound production law rather than an architectural artifact.
 
 Until that falsifier is observed, a fixed daily commit ceiling is not a scientific limit. It is only an operating point.
+
+## 72.9 Verified plant target
+
+The operating target is not raw Git velocity. It is
+
+\[
+T = 250\ \text{verified unique semantic commits/hour}.
+\]
+
+For an exact Git subject \(s=(repository, sha)\), define \(countable(s)=1\) only when one unique semantic fingerprint, one verified consequence, a repository-native verifier with `PASS`, and receipt identity/digest all bind to \(s\). Otherwise \(countable(s)=0\).
+
+The hourly plant numerator is therefore
+
+\[
+V_h = \sum_{s\in h} countable(s)
+\]
+
+after exact-subject and semantic-fingerprint deduplication. Unverified, blocked, duplicate, or conflicting work remains visible in the daily accomplishment log but contributes zero to \(V_h\). This preserves the throughput signal without allowing activity inflation to masquerade as closure.
