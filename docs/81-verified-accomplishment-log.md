@@ -20,6 +20,8 @@ Progress is \(V_h/T\). The daily projection reports the peak hourly value, all o
 
 ## 81.2 Admission to the numerator
 
+Ingress is versioned by `schemas/accomplishment-evidence.schema.json`; records with any other schema identity are refused before counting.
+
 A semantic commit is countable only when the same record binds:
 
 1. exact `owner/repo@sha` subject;
