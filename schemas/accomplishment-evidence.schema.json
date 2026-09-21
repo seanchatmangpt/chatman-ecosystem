@@ -39,30 +39,54 @@
       "minLength": 1
     },
     "state": {
-      "enum": ["COMPLETED", "OPEN_GAP", "BLOCKED"]
+      "enum": [
+        "COMPLETED",
+        "OPEN_GAP",
+        "BLOCKED"
+      ]
     },
     "consequence": {
       "type": "object",
-      "required": ["identity", "verified"],
+      "required": [
+        "identity",
+        "verified"
+      ],
       "properties": {
-        "identity": {"type": "string"},
-        "verified": {"type": "boolean"}
+        "identity": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean"
+        }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Observed consequence claim. Empty identity or verified=false remains representable but is not countable."
     },
     "verification": {
       "type": "object",
-      "required": ["verifier", "outcome", "receipt_id", "receipt_digest"],
       "properties": {
-        "verifier": {"type": "string"},
-        "outcome": {"enum": ["PASS", "FAIL", "PENDING", "UNKNOWN", "UNSUPPORTED"]},
-        "receipt_id": {"type": "string"},
+        "verifier": {
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "PENDING",
+            "UNKNOWN",
+            "UNSUPPORTED"
+          ]
+        },
+        "receipt_id": {
+          "type": "string"
+        },
         "receipt_digest": {
           "type": "string",
           "pattern": "^[0-9a-f]{64}$"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Syntactic evidence envelope. Missing/empty verifier or receipt fields are admitted as observations but fail the verified-consequence counting gate."
     },
     "blocker": {
       "type": "string"
