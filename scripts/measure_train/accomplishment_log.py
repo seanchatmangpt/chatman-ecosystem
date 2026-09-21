@@ -28,6 +28,7 @@ except ModuleNotFoundError:  # direct execution from scripts/measure_train
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 ALLOWED_STATES = {"COMPLETED", "OPEN_GAP", "BLOCKED"}
 PASS = "PASS"
+EVIDENCE_SCHEMA = "chatman.accomplishment-evidence/1"
 
 
 class AccomplishmentRefused(ValueError):
@@ -109,6 +110,8 @@ def _required_string(record: dict[str, Any], key: str) -> str:
 
 
 def normalize_record(record: dict[str, Any]) -> dict[str, Any]:
+    if record.get("schema") != EVIDENCE_SCHEMA:
+        raise AccomplishmentRefused("INVALID_EVIDENCE_SCHEMA", repr(record.get("schema")))
     fingerprint = _required_string(record, "semantic_fingerprint")
     if not HEX64.fullmatch(fingerprint):
         raise AccomplishmentRefused("INVALID_SEMANTIC_FINGERPRINT", fingerprint)
