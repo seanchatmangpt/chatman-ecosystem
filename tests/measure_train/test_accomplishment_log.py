@@ -32,6 +32,7 @@ def record(
 ) -> dict:
     source_sha = sha or fingerprint[-40:]
     return {
+        "schema": "chatman.accomplishment-evidence/1",
         "semantic_fingerprint": fingerprint,
         "repository": repo,
         "source_sha": source_sha,
@@ -53,6 +54,13 @@ class AccomplishmentLogCourt(unittest.TestCase):
     def setUp(self) -> None:
         self.policy = Policy("America/Los_Angeles", 250, "PENDING_USER_REVIEW", "CANDIDATE")
         self.day = date(2026, 9, 20)
+
+    def test_wrong_evidence_schema_is_refused(self) -> None:
+        row = record("a" * 64)
+        row["schema"] = "chatman.accomplishment-evidence/0"
+        with self.assertRaises(AccomplishmentRefused) as ctx:
+            compile_log([row], self.policy, self.day)
+        self.assertEqual("INVALID_EVIDENCE_SCHEMA", ctx.exception.code)
 
     def test_only_verified_consequence_enters_numerator(self) -> None:
         report = compile_log(
