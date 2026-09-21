@@ -7,6 +7,7 @@ on:
       - '.github/workflows/measure-25-commit-court.yml'
       - '.github/workflows/daily-accomplishment-log.yml'
       - 'catalog/accomplishment-log.toml'
+      - 'schemas/accomplishment-evidence.schema.json'
       - 'evidence/accomplishments/**'
       - 'docs/72-machine-scale-throughput.md'
       - 'docs/79-factory-metrics.md'
