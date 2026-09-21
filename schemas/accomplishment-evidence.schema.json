@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chatman.dev/schemas/accomplishment-evidence.schema.json",
+  "title": "Chatman Ecosystem Accomplishment Evidence",
+  "type": "object",
+  "required": [
+    "schema",
+    "semantic_unit_id",
+    "repository",
+    "commit_sha",
+    "summary",
+    "completed_at",
+    "state",
+    "consequence_status",
+    "semantic_commit",
+    "receipt"
+  ],
+  "properties": {
+    "schema": {"const": "chatman.accomplishment-evidence/1"},
+    "semantic_unit_id": {"type": "string", "minLength": 1},
+    "repository": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+    "commit_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "summary": {"type": "string", "minLength": 1},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "state": {"enum": ["COMPLETED", "OPEN_GAP", "BLOCKED"]},
+    "consequence_status": {"enum": ["VERIFIED", "UNVERIFIED", "BLOCKED", "REFUSED", "UNSUPPORTED"]},
+    "semantic_commit": {"type": "boolean"},
+    "receipt": {
+      "type": "object",
+      "required": ["identity", "verifier", "consequence", "evidence"],
+      "properties": {
+        "identity": {"type": "string"},
+        "verifier": {"type": "string"},
+        "consequence": {"type": "string"},
+        "evidence": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "blockers": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
