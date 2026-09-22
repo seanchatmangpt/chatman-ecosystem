@@ -1,3 +1,5 @@
+> SUPERSEDED-BY (2026-09-21): [2026-09-21-fleet-census.md](2026-09-21-fleet-census.md) re-verifies fleet standing; this 2026-09-12 PR-1 census is preserved as history, its jurisdiction rows carried over inspection-only.
+
 # 2026 Jurisdiction Census (RECONSTRUCT step, PR-1)
 
 Real reconnaissance (two Explore agents, this session, read-only) against 14
