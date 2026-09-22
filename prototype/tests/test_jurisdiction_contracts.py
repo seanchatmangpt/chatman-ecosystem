@@ -99,7 +99,7 @@ def _parse_agents_md_jurisdiction_table():
 
 def test_agents_md_table_covers_exactly_the_registry_repos():
     table = _parse_agents_md_jurisdiction_table()
-    assert len(table) == 13
+    assert len(table) == 18
     assert set(table) == set(JURISDICTION_TABLE)
 
 
@@ -152,3 +152,22 @@ def test_guard_enforces_the_forbidden_capability_too():
     with pytest.raises(JurisdictionViolation) as excinfo:
         act_on("B", capability="Production authority")
     assert "REFUSED_JURISDICTION_FORBIDDEN" in str(excinfo.value)
+
+
+def test_check_forbidden_refuses_xaas_minting_authority():
+    """The 2026-09-21 cycle's new contract: xaas coordinates the loop but must
+    never mint Authority or own the canonical human ontology -- planner and
+    orchestrator output has no ambient execution authority, which is xaas's
+    own repo law enforced here in the meta-governance registry."""
+    with pytest.raises(JurisdictionViolation) as excinfo:
+        jurisdiction.check_forbidden("xaas", "minting Authority")
+    assert "REFUSED_JURISDICTION_FORBIDDEN" in str(excinfo.value)
+    assert "xaas" in str(excinfo.value)
+
+
+def test_all_five_loop_participants_are_now_admitted():
+    """The five participants added in the 2026-09-21 cycle must be known
+    components (fail-closed only applies to the genuinely unknown)."""
+    for component in ("xaas", "ggen_igniter", "zcode-cli", "ash_surface", "dfcm-autonomous"):
+        assert jurisdiction.check_forbidden(component, "anything-not-forbidden") is True
+        assert jurisdiction.check_jurisdiction(component, JURISDICTION_TABLE[component][0]) is True

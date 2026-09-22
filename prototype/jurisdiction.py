@@ -36,6 +36,15 @@ JURISDICTION_TABLE = {
     "ash_pplan": ["P", "Omega", "tau"],
     "autofde-lab": ["Omega", "J", "B", "R"],
     "chatman-ecosystem": ["A", "R"],
+    # 2026-09-21 doc-refresh cycle: the five loop participants that had no
+    # admitted contract (they failed closed as REFUSED_JURISDICTION_UNKNOWN
+    # _COMPONENT). Values derived from the observed role each repo plays in
+    # the v26.9.22 cross-repo order, recorded in the receipt for that cycle.
+    "xaas": ["B", "J", "tau", "R"],
+    "ggen_igniter": ["Mu"],
+    "zcode-cli": ["DeltaZ", "R"],
+    "ash_surface": ["P", "R"],
+    "dfcm-autonomous": ["A", "tau", "R"],
 }
 
 # The AGENTS.md jurisdiction table's "Must not own" column, verbatim
@@ -55,6 +64,11 @@ MUST_NOT_OWN = {
     "ash_pplan": ["Duplicate lifecycle/queue/planner/runtime"],
     "autofde-lab": ["Production authority"],
     "chatman-ecosystem": ["Product/runtime implementation"],
+    "xaas": ["Canonical human ontology", "minting Authority"],
+    "ggen_igniter": ["DO", "Runtime standing"],
+    "zcode-cli": ["Planning", "ontology ownership"],
+    "ash_surface": ["Business authority", "DO"],
+    "dfcm-autonomous": ["Product implementation", "ontology ownership"],
 }
 
 

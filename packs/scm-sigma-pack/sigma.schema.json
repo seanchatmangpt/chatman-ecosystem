@@ -37,8 +37,76 @@
       ],
       "type": "object"
     },
+    "Admission": {
+      "description": "The Authority-bound decision that admits a Candidate into execution scope -- step 3 of the SA2A calculus. Admission is the crossing point between Omega and A: without it a Candidate must remain a Possibility, never an Action.",
+      "properties": {
+        "jurisdictions": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "zCoordinates": {
+          "items": {
+            "enum": [
+              "P",
+              "Gamma",
+              "Omega",
+              "B",
+              "tau",
+              "J",
+              "A",
+              "R"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "zCoordinates",
+        "jurisdictions"
+      ],
+      "type": "object"
+    },
     "Authority": {
       "description": "The narrow admission boundary that alone may convert a constructed candidate into DO. PlannerOutput != Authority.",
+      "properties": {
+        "jurisdictions": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "zCoordinates": {
+          "items": {
+            "enum": [
+              "P",
+              "Gamma",
+              "Omega",
+              "B",
+              "tau",
+              "J",
+              "A",
+              "R"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "zCoordinates",
+        "jurisdictions"
+      ],
+      "type": "object"
+    },
+    "Candidate": {
+      "description": "A Possibility that has been constructed and staged for admission review -- step 2 of the SA2A calculus (Observation -> Candidate). A Candidate is still not an Authority token and never actuates.",
       "properties": {
         "jurisdictions": {
           "items": {
@@ -513,6 +581,40 @@
       ],
       "type": "object"
     },
+    "Replay": {
+      "description": "Re-execution of a Receipt outside the session that produced it -- the final step of the SA2A calculus and the only proof a Receipt records an observation rather than an assertion. A Receipt whose Replay never ran is capped below ALIVE.",
+      "properties": {
+        "jurisdictions": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "zCoordinates": {
+          "items": {
+            "enum": [
+              "P",
+              "Gamma",
+              "Omega",
+              "B",
+              "tau",
+              "J",
+              "A",
+              "R"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "zCoordinates",
+        "jurisdictions"
+      ],
+      "type": "object"
+    },
     "Role": {
       "description": "A named projection lens applied to a Principal (role-relative continuation).",
       "properties": {
@@ -686,7 +788,9 @@
   },
   "required": [
     "Action",
+    "Admission",
     "Authority",
+    "Candidate",
     "Consequence",
     "Continuation",
     "Delegation",
@@ -700,6 +804,7 @@
     "Projection",
     "Receipt",
     "Relation",
+    "Replay",
     "Role",
     "Standing",
     "State",

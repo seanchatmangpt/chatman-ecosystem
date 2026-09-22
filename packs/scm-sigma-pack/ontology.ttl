@@ -143,3 +143,29 @@ sigma:Standing a sigma:Element, rdfs:Class ;
   sigma:zCoordinate "R" ;
   sigma:jurisdiction "ggen-ecosystem" ;
   rdfs:comment "The accumulated, replayable audit trail of a Principal's admitted history. No component may self-certify its own Standing." .
+
+# --- SA2A calculus alignment (2026-09-21 doc-refresh cycle) --------------------
+#
+# The SA2A calculus runs Observation -> Candidate -> Admission -> Authority ->
+# Actuation -> Receipt -> Replay. The ontology already carried Observation,
+# Authority, Action (actuation), and Receipt; the three classes below add the
+# missing vocabulary and pin the mappings: a Candidate IS a Possibility that
+# has been constructed for review (Omega), an Admission is the Authority-bound
+# act that lets a Candidate proceed to Action, and a Replay is the R-side
+# re-execution that proves a Receipt was never a session artifact.
+
+sigma:Candidate a sigma:Element, rdfs:Class ;
+  rdfs:subClassOf sigma:Possibility ;
+  sigma:zCoordinate "Omega" ;
+  sigma:jurisdiction "beam4pm", "autofde-lab" ;
+  rdfs:comment "A Possibility that has been constructed and staged for admission review -- step 2 of the SA2A calculus (Observation -> Candidate). A Candidate is still not an Authority token and never actuates." .
+
+sigma:Admission a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "A" ;
+  sigma:jurisdiction "mfw", "bcinr" ;
+  rdfs:comment "The Authority-bound decision that admits a Candidate into execution scope -- step 3 of the SA2A calculus. Admission is the crossing point between Omega and A: without it a Candidate must remain a Possibility, never an Action." .
+
+sigma:Replay a sigma:Element, rdfs:Class ;
+  sigma:zCoordinate "R" ;
+  sigma:jurisdiction "gitvan", "ggen-ecosystem" ;
+  rdfs:comment "Re-execution of a Receipt outside the session that produced it -- the final step of the SA2A calculus and the only proof a Receipt records an observation rather than an assertion. A Receipt whose Replay never ran is capped below ALIVE." .
