@@ -1,0 +1,9 @@
+{
+  "wo": "CHATMAN-ECOSYSTEM-26922-01",
+  "base_sha": "7ac66d8c55ce4aba62cd6416e9f3eecd358700e4",
+  "commit": "ac4edd5",
+  "command": "bash scripts/validate_sigma.sh && python3.13 -m pytest prototype/tests -q && python3.13 prototype/demo.py && test -z \"$(git status --porcelain)\"",
+  "exit": 0,
+  "output_excerpt": "validate_sigma.sh ALL CHECKS PASSED; pytest 30 passed (28 pre-existing + 2 new contract tests); demo.py exit 0 with receipt digest 89e3a2bc... and three REFUSAL OK probes; tree clean after the landing commit. The doc refresh (AGENTS.md law rewrite incl. the Remotes-and-lineage path-collision decision, census supersede pointer, STATUS, fleet census, ecosystem map, standings, READMEs) is the operator cut, committed verbatim plus the stale-count corrections (20 -> 23 classes) so the docs do not contradict the tree they describe. Local commit only: no remote, no push, no tag; namesake not merged.",
+  "standing": "ALIVE"
+}

@@ -1,0 +1,9 @@
+{
+  "wo": "CHATMAN-ECOSYSTEM-26922-02",
+  "base_sha": "7ac66d8c55ce4aba62cd6416e9f3eecd358700e4",
+  "commit": "ac4edd5",
+  "command": "python3.13 -m pytest prototype/tests/test_jurisdiction_contracts.py -q (then the full suite)",
+  "exit": 0,
+  "output_excerpt": "13 -> 18: JURISDICTION_TABLE and MUST_NOT_OWN gain xaas (B,J,tau,R / no Canonical human ontology, no minting Authority), ggen_igniter (Mu / no DO, Runtime standing), zcode-cli (DeltaZ,R / no Planning, ontology ownership), ash_surface (P,R / no Business authority, DO), dfcm-autonomous (A,tau,R / no Product implementation, ontology ownership) -- values derived from each repo's observed role in the v26.9.22 cross-repo order (operator-approved lane content; recorded here and in the AGENTS.md table). New executing case: check_forbidden('xaas','minting Authority') -> REFUSED_JURISDICTION_FORBIDDEN; plus an admission test for all five (check_forbidden/check_jurisdiction return True). AGENTS.md table extended in the same change; test_jurisdiction_contracts.py count assertion 13 -> 18.",
+  "standing": "ALIVE"
+}
