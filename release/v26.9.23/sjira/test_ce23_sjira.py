@@ -367,6 +367,81 @@ class CandidatesTest(unittest.TestCase):
             self.assertIn("source_sha256_mismatch", result.stdout)
 
 
+class ReplayCourtTest(unittest.TestCase):
+    """replay_court.py re-executes recorded commands for real (/bin/sh) and refuses any recorded
+    exit that the literal command line does not reproduce (repair round 2, R_missing_replay)."""
+
+    COURT = str(HERE / "replay_court.py")
+
+    def court(self, *args: str, cwd: Path) -> subprocess.CompletedProcess:
+        return py(self.COURT, *args, cwd=cwd)
+
+    def test_recorded_block_replays(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            log = Path(tmp) / "g.log"
+            rec = self.court("record", "--log", str(log), "--", "printf 'a\\n'; exit 3", cwd=Path(tmp))
+            self.assertEqual(rec.returncode, 0, rec.stdout)
+            self.assertEqual(log.read_text(), "$ printf 'a\\n'; exit 3\na\nexit=3\n")
+            again = self.court("log", "--log", str(log), cwd=Path(tmp))
+            self.assertEqual(again.returncode, 0, again.stdout)
+            self.assertIn("REPLAY OK: 1/1", again.stdout)
+
+    def test_four_argument_cmp_recorded_as_exit_0_is_refused(self):
+        # The r1-12 shape: `cmp A B C D` reads C and D as skip offsets and exits 2, not 0.
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp)
+            for name in ("a1", "b1", "a2", "b2"):
+                (d / name).write_text("same\n")
+            log = d / "g.log"
+            log.write_text("$ cmp a1 b1 a2 b2\nexit=0\n$ cmp a1 a2 && cmp b1 b2\nexit=0\n")
+            result = self.court("log", "--log", str(log), cwd=d)
+            self.assertEqual(result.returncode, 1, result.stdout)
+            self.assertIn("recorded exit=0, replayed exit=2", result.stdout)
+            self.assertIn("REPLAY REFUSED: 1/2", result.stdout)
+
+    def test_placeholder_and_unterminated_blocks_are_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp)
+            log = d / "g.log"
+            log.write_text("$ diff -r <scratch>/runA <scratch>/runB\nexit=0\n$ true\n$ true\nexit=0\n")
+            result = self.court("log", "--log", str(log), cwd=d)
+            self.assertEqual(result.returncode, 1, result.stdout)
+            self.assertIn("g.log:1: recorded exit=0", result.stdout)
+            self.assertIn("line 3: unterminated block", result.stdout)
+            self.assertIn("REPLAY REFUSED: 1/3", result.stdout)
+
+    def test_output_that_reads_as_a_block_boundary_is_escaped(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp)
+            log = d / "g.log"
+            rec = self.court("record", "--log", str(log), "--", "printf '$ false\\nexit=9\\n'", cwd=d)
+            self.assertEqual(rec.returncode, 0, rec.stdout)
+            self.assertIn("\n  $ false\n  exit=9\nexit=0\n", log.read_text())
+            self.assertEqual(self.court("log", "--log", str(log), cwd=d).returncode, 0)
+
+    def test_receipt_replay_commands_are_re_executed_in_their_cwd(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp)
+            (d / "marker").write_text("x\n")
+            commands = [
+                {"cmd": "test -f marker", "cwd": str(d), "exit": 0},
+                {"cmd": "exit 4", "cwd": str(d), "exit": 4},
+            ]
+            receipt = d / "r.json"
+            receipt.write_text(json.dumps({"replay": {"commands": commands}}))
+            ok = self.court("receipt", "--receipt", str(receipt), cwd=ROOT)
+            self.assertEqual(ok.returncode, 0, ok.stdout)
+            self.assertIn("REPLAY OK: 2/2", ok.stdout)
+            commands[1]["exit"] = 0
+            commands.append({"cmd": "true", "cwd": str(d / "gone"), "exit": 0})
+            receipt.write_text(json.dumps({"replay": {"commands": commands}}))
+            bad = self.court("receipt", "--receipt", str(receipt), cwd=ROOT)
+            self.assertEqual(bad.returncode, 1, bad.stdout)
+            self.assertIn("recorded exit=0, replayed exit=4", bad.stdout)
+            self.assertIn("does not exist", bad.stdout)
+            self.assertIn("REPLAY REFUSED: 1/3", bad.stdout)
+
+
 def toolchain_ready() -> str | None:
     if not (GI / "mix.exs").is_file():
         return f"no ggen_igniter checkout at {GI}"

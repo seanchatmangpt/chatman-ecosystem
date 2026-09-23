@@ -36,7 +36,15 @@ sh release/v26.9.23/sjira/compile_check.sh --write OUTROOT  # manufacture into O
 python3 -m unittest discover -s release/v26.9.23/sjira -p 'test_*.py' -v
 cd <ggen_igniter> && MIX_ENV=test mix run <repo>/release/v26.9.23/sjira/stop_witness.exs \
   <repo>/release/v26.9.23/sjira/goal.ttl CE23-0 ...          # oxigraph CHATMAN_STOP witness
+python3 release/v26.9.23/sjira/replay_court.py record --log LOG -- 'CMD'  # record a gate-log block
+python3 release/v26.9.23/sjira/replay_court.py log --log LOG              # re-execute a gate log
+python3 release/v26.9.23/sjira/replay_court.py receipt --receipt R.json   # re-execute replay.commands
 ```
+
+Receipt logs under `receipts/v26.9.23/CE-INTAKE.gate/` from repair round 2 on (`r2-*.log`) are
+written by `replay_court.py record`, which executes exactly the command line it writes; the lane
+receipt's `replay.commands` are the same literal command lines, and `replay_court.py receipt`
+re-executes all of them and refuses any exit that differs from the recorded one.
 
 The CE23-12 standing rule (`chatman-ce23-12-standings.md`): CE23-12 for v26.9.23 is
 BENCHMARK_DESIGN_ALIVE = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan.
