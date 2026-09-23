@@ -1,0 +1,211 @@
+[
+ {
+  "boundary_class": "LastMile",
+  "kind": "Invariant",
+  "quote": "cannot be promoted to ALIVE merely because the benchmark architecture exists.",
+  "required_by": "CE23-12",
+  "statement": "CE23-12 benchmark design may ship in v26.9.23 but does not promote operational non-LLM feature completion to ALIVE."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Evidence",
+  "quote": "actual class-level operational standing must come from executed benchmark receipts.",
+  "required_by": "CE23-12",
+  "statement": "Class-level operational standing comes only from executed benchmark receipts."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "State",
+  "quote": "This can be part of **v26.9.23**.",
+  "required_by": "CE23-12",
+  "statement": "BENCHMARK_DESIGN_ALIVE may be part of v26.9.23."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "claimed KNOWN classes and CTQs defined;",
+  "required_by": "CE23-12",
+  "statement": "D: claimed KNOWN classes and CTQs are defined."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "measurement/receipt/OCEL model defined;",
+  "required_by": "CE23-12",
+  "statement": "M: the measurement, receipt and OCEL model is defined."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "experiment, DOE, corpus, statistics and qualification rules defined.",
+  "required_by": "CE23-12",
+  "statement": "A: experiment, DOE, corpus, statistics and qualification rules are defined."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "benchmark ontology admitted",
+  "required_by": "CE23-12",
+  "statement": "The benchmark ontology is admitted."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "candidate classes enumerated",
+  "required_by": "CE23-12",
+  "statement": "Candidate classes are enumerated."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "membership tests identified",
+  "required_by": "CE23-12",
+  "statement": "Membership tests are identified for every candidate class."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "independent verifiers identified",
+  "required_by": "CE23-12",
+  "statement": "Independent verifiers are identified for every candidate class."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "near-miss/UNKNOWN falsifiers identified",
+  "required_by": "CE23-12",
+  "statement": "Near-miss UNKNOWN falsifiers are identified for every candidate class."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "DOE support matrix generated",
+  "required_by": "CE23-12",
+  "statement": "The DOE support matrix is generated."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "statistical acceptance rules generated",
+  "required_by": "CE23-12",
+  "statement": "The statistical acceptance rules are generated."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "benchmark work orders generated",
+  "required_by": "CE23-12",
+  "statement": "The benchmark work orders are generated."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "all generated artifacts trace to operator prose",
+  "required_by": "CE23-12",
+  "statement": "Every generated artifact traces to operator prose."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Invariant",
+  "quote": "and cannot be established until the generated executor actually runs the test corpus.",
+  "required_by": "CE23-12",
+  "statement": "NON_LLM_OPERATIONAL_ALIVE cannot be established until the generated executor runs the test corpus."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Invariant",
+  "quote": "treating documentation about execution as execution.",
+  "required_by": "CE23-12",
+  "statement": "Documentation about execution is not execution; design standing never implies operational standing."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Metric",
+  "quote": "It means the ontology should encode **confidence and evidence volume**, rather than collapsing everything into ALIVE.",
+  "required_by": "CE23-12",
+  "statement": "Standing is typed by evidence volume and confidence rather than collapsed into ALIVE."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Exclusion",
+  "quote": "Do not synthesize fake cross-platform evidence.",
+  "required_by": "CE23-12",
+  "statement": "No cross-platform evidence is synthesized."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "and the DOE should reduce the design over the supported factors rather than silently treating OS as invariant.",
+  "required_by": "CE23-12",
+  "statement": "The DOE is reduced over the supported factors; OS is not silently treated as invariant."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Evidence",
+  "quote": "The receipt should explicitly say that **cross-OS robustness remains outside the demonstrated evidence ceiling**.",
+  "required_by": "CE23-12",
+  "statement": "The receipt states that cross-OS robustness is outside the demonstrated evidence ceiling."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "Before trusting benchmark results, test the benchmark itself.",
+  "required_by": "CE23-12",
+  "statement": "The measurement system itself is analysed (MSA) before benchmark results are trusted."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Falsifier",
+  "quote": "Does the same artifact always receive the same verdict?",
+  "required_by": "CE23-12",
+  "statement": "The same artifact receiving different verdicts falsifies MSA repeatability."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Falsifier",
+  "quote": "Do independent verifiers agree?",
+  "required_by": "CE23-12",
+  "statement": "Disagreement of independent verifiers falsifies MSA classification agreement."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Falsifier",
+  "quote": "Does an intentionally corrupted output reliably fail?",
+  "required_by": "CE23-12",
+  "statement": "A corrupted output that passes falsifies MSA mutation sensitivity."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Falsifier",
+  "quote": "Does a stale receipt reliably fail?",
+  "required_by": "CE23-12",
+  "statement": "A stale receipt that passes falsifies MSA stale-receipt detection."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Falsifier",
+  "quote": "Can benchmark ordering change the answer?",
+  "required_by": "CE23-12",
+  "statement": "An answer that changes with benchmark ordering falsifies MSA ordering invariance."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Falsifier",
+  "quote": "Does cached state change classification?",
+  "required_by": "CE23-12",
+  "statement": "A classification that changes with cached state falsifies MSA environment reproducibility."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Falsifier",
+  "quote": "Can the membership test confuse a near-miss UNKNOWN with KNOWN?",
+  "required_by": "CE23-12",
+  "statement": "A near-miss admitted KNOWN by the membership test falsifies the admission boundary."
+ },
+ {
+  "boundary_class": "Successor",
+  "kind": "Successor",
+  "quote": "once v26.9.23 lands, the generated benchmark work orders provide the evidence needed",
+  "statement": "After v26.9.23 lands, generated benchmark work orders promote specific KNOWN classes from implemented to operationally qualified."
+ }
+]

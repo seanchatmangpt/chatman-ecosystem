@@ -1,0 +1,613 @@
+@prefix sj: <https://ggen-igniter.dev/ontology/semantic-jira#> .
+@prefix ce: <https://ggen-igniter.dev/sjira/chatman-26.9.23#> .
+@prefix v23: <https://ggen-igniter.dev/sjira/v26.9.23#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# GC-CE-26.9.23: the governing object of the Chatman Ecosystem v26.9.23 root
+# release (CE23; lane CE-INTAKE, wave CE0). Source prose, committed
+# byte-identical beside this file (operator testimony, O* by fiat):
+#   chatman-ce23.md            sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3
+#                              (13366 bytes; CE23-0 .. CE23-11 and the crown equation)
+#   chatman-ce23-12-bench.md   sha256:4146d688c21db6e1af51a2187df8056b1a0f977001c817d64fbde0547029b485
+#                              (13420 bytes; adds CE23-12 as a Chatman CE23 crown gate)
+#   chatman-ce23-12-standings.md
+#                              sha256:80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2
+#                              (7276 bytes; CE23-12 = BenchmarkDesign ∧ MSAContract ∧
+#                              GeneratedQualificationPlan; NON_LLM_OPERATIONAL is never
+#                              implied by design)
+# Product contract: xaas docs/sjira/v26.9.23/prd-ard.md (PRD section 12 GC23-0 ..
+# GC23-12, section 13 STOP; ARD section 5 first mile, section 17 compiler,
+# section 24 M9 no bespoke backlog). Driver: /Users/sac/wt/v26922/v26923/DRIVER.md.
+#
+# Vocabulary: the semantic-jira-pack sj: namespace (ggen_igniter
+# priv/ggen/semantic-jira-pack), the same GoalCheckpoint contract the xaas
+# goal docs/sjira/v26.9.23/goal.ttl uses (read-only model for this graph).
+# Instances: ce: = https://ggen-igniter.dev/sjira/chatman-26.9.23#.
+#
+# Law of this graph:
+# - It holds NO sj:WorkOrder, no sj:Receipt and no sj:receipt. Every CE23
+#   work order is compiler output: ggen_igniter `mix semantic_jira.compile_prose`
+#   over each prose unit, its candidates (candidates/<unit>.ttl, emitted by
+#   xaas scripts/sjira/prose_spans.py from the extraction JSON) and the unit's
+#   goal view (units/<unit>.goal.ttl, projected from this graph by
+#   unit_goal.py) writes compiled/<unit>/{propositions,orders}.ttl.
+#   compile_check.sh recomputes all of them byte for byte.
+# - Unit partition: every GoalCheckpoint under the root carries the
+#   dcterms:source and sj:sourceSha256 of the prose that defines it. A unit
+#   view is rooted at the common parent of the gates its prose defines and
+#   holds exactly those gates, so each compile refuses (uncovered_gate) unless
+#   that prose requires every gate it defines, and the three views partition
+#   the 16 gates (CE23-0 .. CE23-11 from chatman-ce23.md, CE23-12 from the
+#   bench prose, its three conjunct gates from the standings prose).
+# - Standing is observed, never declared: the gate courts are
+#   "sh release/v26.9.23/courts/<gate>.sh" run from the chatman-ecosystem root.
+#   A court whose machinery has not landed prints
+#   "UNKNOWN: <gate> machinery lands in a generated CE23 lane" and exits 75
+#   (machinery absent, standing UNKNOWN), like the GC23 courts before their
+#   lanes. Machinery lanes replace a court's body; this graph stays stable.
+# - CE23-12 standing rule (chatman-ce23-12-standings.md): CE23-12 for v26.9.23
+#   is BENCHMARK_DESIGN_ALIVE = BenchmarkDesign ∧ MSAContract ∧
+#   GeneratedQualificationPlan. NON_LLM_OPERATIONAL_ALIVE(C) needs executed
+#   unseen-member receipts, MSA_ALIVE, statistical qualification, zero LLM and
+#   replay; it is successor work (ce:GC-CE-26.9.24) and is never implied here.
+# - release/v26.9.1 is never modified by any CE23 work.
+# - Discovered work that falsifies no CE23 or GC23 proposition routes to the
+#   successor ce:GC-CE-26.9.24 and cannot hold this checkpoint open.
+
+# -- Root and successor bucket ------------------------------------------------
+
+ce:GC-CE-26.9.23 a sj:GoalCheckpoint ;
+    dcterms:identifier "GC-CE-26.9.23" ;
+    rdfs:label "GC-CE-26.9.23 Chatman Ecosystem v26.9.23 root release stop" ;
+    dcterms:description "CHATMAN_STOP_26.9.23 = Identity ∧ BoundaryCrosswalk ∧ SM_STOP ∧ ExactMainHeads ∧ FleetClosed ∧ KnownPath_LLM=0 ∧ UnreceiptedActuation=0 ∧ Replay ∧ RootReceipt, where SM_STOP = GC23-0 ∧ … ∧ GC23-12 and FleetClosed ⇔ RequiredUnknown = 0 ∧ UnclassifiedRequiredWork = 0 (chatman-ce23.md, Crown equation). Chatman Ecosystem v26.9.23 is a dependency-closed composition release around the Semantic Manufacturing checkpoint, not an all-repositories-green release; CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan joins the root crown as a Chatman CE23 crown gate (chatman-ce23-12-bench.md, chatman-ce23-12-standings.md)." ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:repository "seanchatmangpt/chatman-ecosystem" ;
+    sj:baseSha "a896e16c68af1315be3492e39939c354ce46b10c" ;
+    sj:successorCheckpoint ce:GC-CE-26.9.24 ;
+    sj:authorityCeiling "CONSTRUCT" ;
+    sj:evidenceHorizon "EXECUTED_VERIFIED" ;
+    sj:requiresEvidence sj:receipt-evidence, sj:replay-evidence ;
+    sj:replayIdentity "semantic-jira:chatman-26.9.23:GC-CE-26.9.23" ;
+    sj:exclusion "Not required by v26.9.23 (chatman-ce23.md): making every repository ALIVE.",
+        "Not required by v26.9.23 (chatman-ce23.md): closing ggen-ecosystem, autofde-lab, ash_surface, zcode-cli or other successor work, unless an observation proves one of those repos is actually traversed by a GC23 court.",
+        "Not required by v26.9.23 (chatman-ce23.md): WD FA / V23-W; live WD integration is explicitly excluded from this release.",
+        "Not required by v26.9.23 (chatman-ce23-12-standings.md): NON_LLM_OPERATIONAL_ALIVE for any benchmark class; BENCHMARK_DESIGN_ALIVE does not imply it.",
+        "release/v26.9.1 is never modified (chatman-ce23.md CE23-1: preserve release/v26.9.1 untouched)." ;
+    sj:successorPolicy "Discovered work that falsifies no CE23 or GC23 proposition -> ce:GC-CE-26.9.24; noncritical failures cannot reopen the release without falsifying a GC23 proposition (chatman-ce23.md CE23-6)." ;
+    sj:acceptance ce:GC-CE-26.9.23-acceptance ;
+    sj:falsifier ce:GC-CE-26.9.23-falsifier-crown, ce:GC-CE-26.9.23-falsifier-topology ;
+    rdfs:seeAlso v23:GC-26.9.23 ;
+    sj:stopQuery """# CHATMAN_STOP(GC-CE-26.9.23) = Identity ∧ BoundaryCrosswalk ∧ SM_STOP ∧ ExactMainHeads
+#   ∧ FleetClosed ∧ KnownPath_LLM=0 ∧ UnreceiptedActuation=0 ∧ Replay ∧ RootReceipt
+#   (release/v26.9.23/sjira/chatman-ce23.md, Crown equation), SM_STOP = GC23-0 ∧ … ∧ GC23-12,
+#   FleetClosed ⇔ RequiredUnknown = 0 ∧ UnclassifiedRequiredWork = 0, amended by
+#   CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan
+#   (chatman-ce23-12-bench.md, chatman-ce23-12-standings.md). Crown term -> gates:
+#   Identity -> CE23-0, CE23-1; BoundaryCrosswalk -> CE23-2; SM_STOP -> CE23-3, CE23-4;
+#   ExactMainHeads -> CE23-5; FleetClosed -> CE23-6; KnownPath_LLM=0 and
+#   UnreceiptedActuation=0 -> CE23-8; Replay -> CE23-7, CE23-9; RootReceipt -> CE23-10;
+#   CE23-12 -> CE23-12, CE23-12-BenchmarkDesign, CE23-12-MSAContract,
+#   CE23-12-GeneratedQualificationPlan.
+# True iff (1) every crown gate exists under GC-CE-26.9.23 (sj:checkpointOf+) and has a gate
+# receipt with standing ALIVE (one FILTER EXISTS per gate, no VALUES block: the query stays
+# within what both the stop court's oxigraph engine and rdflib evaluate), and (2) every
+# WorkOrder under GC-CE-26.9.23 outside CE23-11 is typed Successor or has a terminal receipt
+# (ALIVE, BLOCKED, UNSUPPORTED or REFUSED).
+# CE23-11 (the v26.9.23 tag) is the consequence of CHATMAN_STOP, never a term of it: its
+# court runs only after this query is true. Evaluated over goal.ttl, the compiled orders
+# (release/v26.9.23/sjira/compiled/*/orders.ttl) and the receipts the root court projects as
+# sj:Receipt nodes; goal.ttl itself asserts no receipt. No LLM participates.
+PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+ASK {
+  ?root a sj:GoalCheckpoint ;
+        dcterms:identifier "GC-CE-26.9.23" .
+  # Identity
+  FILTER EXISTS {
+    ?gate0 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-0" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt0 .
+    ?receipt0 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # Identity
+  FILTER EXISTS {
+    ?gate1 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-1" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt1 .
+    ?receipt1 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # BoundaryCrosswalk
+  FILTER EXISTS {
+    ?gate2 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-2" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt2 .
+    ?receipt2 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # SM_STOP
+  FILTER EXISTS {
+    ?gate3 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-3" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt3 .
+    ?receipt3 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # SM_STOP
+  FILTER EXISTS {
+    ?gate4 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-4" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt4 .
+    ?receipt4 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # ExactMainHeads
+  FILTER EXISTS {
+    ?gate5 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-5" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt5 .
+    ?receipt5 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # FleetClosed
+  FILTER EXISTS {
+    ?gate6 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-6" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt6 .
+    ?receipt6 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # Replay
+  FILTER EXISTS {
+    ?gate7 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-7" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt7 .
+    ?receipt7 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # KnownPath_LLM=0, UnreceiptedActuation=0
+  FILTER EXISTS {
+    ?gate8 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-8" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt8 .
+    ?receipt8 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # Replay
+  FILTER EXISTS {
+    ?gate9 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-9" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt9 .
+    ?receipt9 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # RootReceipt
+  FILTER EXISTS {
+    ?gate10 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-10" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt10 .
+    ?receipt10 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # CE23-12
+  FILTER EXISTS {
+    ?gate11 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-12" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt11 .
+    ?receipt11 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # CE23-12
+  FILTER EXISTS {
+    ?gate12 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-12-BenchmarkDesign" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt12 .
+    ?receipt12 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # CE23-12
+  FILTER EXISTS {
+    ?gate13 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-12-MSAContract" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt13 .
+    ?receipt13 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  # CE23-12
+  FILTER EXISTS {
+    ?gate14 a sj:GoalCheckpoint ;
+           dcterms:identifier "CE23-12-GeneratedQualificationPlan" ;
+           sj:checkpointOf+ ?root ;
+           sj:receipt ?receipt14 .
+    ?receipt14 a sj:Receipt ;
+              sj:standing "ALIVE" .
+  }
+  FILTER NOT EXISTS {
+    ?order a sj:WorkOrder ;
+           sj:checkpointOf+ ?root .
+    FILTER NOT EXISTS {
+      ?order sj:checkpointOf ?tagGate .
+      ?tagGate dcterms:identifier "CE23-11" .
+    }
+    FILTER NOT EXISTS { ?order sj:boundaryClass sj:Successor . }
+    FILTER NOT EXISTS {
+      ?order sj:receipt ?orderReceipt .
+      ?orderReceipt a sj:Receipt ;
+                    sj:standing ?standing .
+      FILTER(?standing = "ALIVE" || STRSTARTS(?standing, "BLOCKED") || STRSTARTS(?standing, "UNSUPPORTED") || STRSTARTS(?standing, "REFUSED"))
+    }
+  }
+}""" .
+ce:GC-CE-26.9.23-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "GC-CE-26.9.23 acceptance" ;
+    dcterms:description "The root court computes exactly CHATMAN_STOP = Identity ∧ BoundaryCrosswalk ∧ SM_STOP ∧ ExactMainHeads ∧ FleetClosed ∧ KnownPath_LLM=0 ∧ UnreceiptedActuation=0 ∧ Replay ∧ RootReceipt (chatman-ce23.md) and it is true at the exact Chatman, xaas and ggen_igniter SHAs; the v26.9.23 tag (CE23-11) is created only after that, on the crowned subject." .
+ce:GC-CE-26.9.23-falsifier-crown a sj:Falsifier ;
+    rdfs:label "GC-CE-26.9.23 vacuous crown" ;
+    dcterms:description "CHATMAN_STOP is reported true while some crown gate has no ADMITTED gate receipt with standing ALIVE, or some required CE23 work order has no terminal receipt, or the tag v26.9.23 exists on a subject whose imported Semantic Manufacturing STOP does not replay true." .
+ce:GC-CE-26.9.23-falsifier-topology a sj:Falsifier ;
+    rdfs:label "GC-CE-26.9.23 silent topology erasure" ;
+    dcterms:description "They are contradictory if we simply replace the old 16-role manifest with a two-repo manifest and pretend the old obligations disappeared (chatman-ce23.md): the v26.9.23 root is accepted while a v26.9.1 required role has no explicit REQUIRED, SUCCESSOR, BLOCKED, UNSUPPORTED or REFUSED classification." .
+
+ce:GC-CE-26.9.24 a sj:GoalCheckpoint ;
+    dcterms:identifier "GC-CE-26.9.24" ;
+    rdfs:label "GC-CE-26.9.24 successor of GC-CE-26.9.23" ;
+    dcterms:description "Successor goal that receives every item typed out of GC-CE-26.9.23: NON_LLM_OPERATIONAL_ALIVE(C) for each benchmark class (executed unseen-member receipts, MSA_ALIVE, statistical qualification, zero LLM, replay; chatman-ce23-12-standings.md), every Successor-classed proposition of the CE23 prose, the successor repositories of the fleet partition, and every discovered item that falsifies no CE23 or GC23 proposition. Its stop predicate is not compiled yet: STOP is false by construction until accepted successor prose enters through the same first-mile pipeline." ;
+    sj:successorOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:Successor ;
+    rdfs:seeAlso v23:GC-26.9.24 ;
+    sj:stopQuery """PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
+# GC-CE-26.9.24 has no accepted prose yet: STOP is false by construction.
+ASK { FILTER(false) }""" .
+
+# -- Gates CE23-0 .. CE23-11 (chatman-ce23.md, "Required chatman-ecosystem v26.9.23 contract") --
+
+ce:CE23-0 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-0" ;
+    rdfs:label "CE23-0 Re-establish root identity" ;
+    dcterms:description "Re-establish root identity: chatman-ecosystem working subject is bound to a GitHub remote + exact SHA; lineage is proven rather than inferred." ;
+    rdfs:comment "Crown term: Identity." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:Bootstrap ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:exclusion "v26.9.23 therefore needs to repair transport/identity, not fix Chatman implementation code merely because of that classification (chatman-ce23.md)." ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-0.sh" ;
+    sj:acceptance ce:CE23-0-acceptance ;
+    sj:falsifier ce:CE23-0-falsifier .
+ce:CE23-0-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-0 acceptance" ;
+    dcterms:description "Admission condition (chatman-ce23.md, CE23-0): `chatman-ecosystem` working subject is bound to a GitHub remote + exact SHA; lineage is proven rather than inferred." .
+ce:CE23-0-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-0 falsifier" ;
+    dcterms:description "The CE23-0 court exits 0 while the working subject has no GitHub remote or no exact SHA, or its lineage is asserted without proof; the recorded gap is the counterexample: Overnight fleet classified the local checkout `UNSUPPORTED` because it could not relate it to published GitHub lineage (chatman-ce23.md)." .
+
+ce:CE23-1 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-1" ;
+    rdfs:label "CE23-1 Create an independent v26.9.23 release subject" ;
+    dcterms:description "Create an independent v26.9.23 release subject: Add release/v26.9.23/…; preserve release/v26.9.1 untouched." ;
+    rdfs:comment "Crown term: Identity." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:FirstMile ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-1.sh" ;
+    sj:acceptance ce:CE23-1-acceptance ;
+    sj:falsifier ce:CE23-1-falsifier .
+ce:CE23-1-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-1 acceptance" ;
+    dcterms:description "Admission condition (chatman-ce23.md, CE23-1): Add `release/v26.9.23/…`; preserve `release/v26.9.1` untouched." .
+ce:CE23-1-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-1 falsifier" ;
+    dcterms:description "The CE23-1 court exits 0 while no release/v26.9.23 subject exists, or while any path under release/v26.9.1 differs from its pre-v26.9.23 tree; the recorded gap is the counterexample: No v26.9.23 release subject exists today (chatman-ce23.md)." .
+
+ce:CE23-2 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-2" ;
+    rdfs:label "CE23-2 Crosswalk the old constitutional graph" ;
+    dcterms:description "Crosswalk the old constitutional graph: every one of the 16 roles required by release/v26.9.1/manifest.toml maps explicitly to REQUIRED, SUCCESSOR, BLOCKED, UNSUPPORTED, or REFUSED for the new boundary." ;
+    rdfs:comment "Crown term: BoundaryCrosswalk." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:FirstMile ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-2.sh" ;
+    sj:acceptance ce:CE23-2-acceptance ;
+    sj:falsifier ce:CE23-2-falsifier .
+ce:CE23-2-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-2 acceptance" ;
+    dcterms:description "Admission condition (chatman-ce23.md, CE23-2): Every one of the 16 roles required by `release/v26.9.1/manifest.toml` maps explicitly to `REQUIRED`, `SUCCESSOR`, `BLOCKED`, `UNSUPPORTED`, or `REFUSED` for the new boundary." .
+ce:CE23-2-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-2 falsifier" ;
+    dcterms:description "They *are* contradictory if we simply replace the old 16-role manifest with a two-repo manifest and pretend the old obligations disappeared (chatman-ce23.md): the CE23-2 court exits 0 while one of the 16 required roles of release/v26.9.1/manifest.toml has no explicit classification. Must not silently erase the old release topology." .
+
+ce:CE23-3 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-3" ;
+    rdfs:label "CE23-3 Import the Semantic Manufacturing crown" ;
+    dcterms:description "Import the Semantic Manufacturing crown: exact digest of a fresh STOP-GC-26.9.23 receipt says STOP=true, all 13 gate receipts admitted, replay succeeds." ;
+    rdfs:comment "Crown term: SM_STOP (SM_STOP = GC23-0 ∧ … ∧ GC23-12)." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:Core ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-3.sh" ;
+    sj:acceptance ce:CE23-3-acceptance ;
+    sj:falsifier ce:CE23-3-falsifier ;
+    rdfs:seeAlso v23:GC-26.9.23 .
+ce:CE23-3-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-3 acceptance" ;
+    dcterms:description "Admission condition (chatman-ce23.md, CE23-3): Exact digest of a fresh `STOP-GC-26.9.23` receipt says `STOP=true`, all 13 gate receipts admitted, replay succeeds." .
+ce:CE23-3-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-3 falsifier" ;
+    dcterms:description "The CE23-3 court exits 0 on a STOP-GC-26.9.23 receipt that is not fresh, says STOP=false, lacks an admitted gate receipt, or fails replay; the recorded gap is the counterexample: 11/13 observed; pushed STOP receipt stale (chatman-ce23.md)." .
+
+ce:CE23-4 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-4" ;
+    rdfs:label "CE23-4 Close GC23-12" ;
+    dcterms:description "Close GC23-12: V23-H manufactures successor prose; its digest is explicitly accepted; self-hosting court passes." ;
+    rdfs:comment "Crown term: SM_STOP (GC23-12 is one of its conjuncts). The digest acceptance is the operator's act." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:Core ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-4.sh" ;
+    sj:acceptance ce:CE23-4-acceptance ;
+    sj:falsifier ce:CE23-4-falsifier ;
+    rdfs:seeAlso v23:GC23-12 .
+ce:CE23-4-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-4 acceptance" ;
+    dcterms:description "Admission condition (chatman-ce23.md, CE23-4): V23-H manufactures successor prose; its digest is explicitly accepted; self-hosting court passes." .
+ce:CE23-4-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-4 falsifier" ;
+    dcterms:description "The CE23-4 court exits 0 while the successor digest was not explicitly accepted by the operator or the GC23-12 self-hosting court does not pass; the recorded gap is the counterexample: V23-H unfinished; `successor/ACCEPTED` absent (chatman-ce23.md)." .
+
+ce:CE23-5 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-5" ;
+    rdfs:label "CE23-5 Close GC23-11" ;
+    dcterms:description "Close GC23-11: xaas and ggen_igniter release changes reach exact post-merge main SHAs; fleet receipts are regenerated against those identities." ;
+    rdfs:comment "Crown term: ExactMainHeads (and SM_STOP through GC23-11)." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:LastMile ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-5.sh" ;
+    sj:acceptance ce:CE23-5-acceptance ;
+    sj:falsifier ce:CE23-5-falsifier ;
+    rdfs:seeAlso v23:GC23-11 .
+ce:CE23-5-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-5 acceptance" ;
+    dcterms:description "Admission condition (chatman-ce23.md, CE23-5): `xaas` and `ggen_igniter` release changes reach exact post-merge `main` SHAs; fleet receipts are regenerated against those identities." .
+ce:CE23-5-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-5 falsifier" ;
+    dcterms:description "The CE23-5 court exits 0 while a critical release head is not an exact post-merge main SHA, or a fleet receipt is bound to a pre-merge identity; the recorded gap is the counterexample: Both branches remain off main; no PRs (chatman-ce23.md)." .
+
+ce:CE23-6 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-6" ;
+    rdfs:label "CE23-6 Preserve fleet typing" ;
+    dcterms:description "Preserve fleet typing: every observed repo is classified; RequiredUnknown=0; UnclassifiedRequiredWork=0; noncritical failures cannot reopen the release without falsifying a GC23 proposition." ;
+    rdfs:comment "Crown term: FleetClosed (FleetClosed ⇔ RequiredUnknown = 0 ∧ UnclassifiedRequiredWork = 0)." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:Core ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-6.sh" ;
+    sj:acceptance ce:CE23-6-acceptance ;
+    sj:falsifier ce:CE23-6-falsifier .
+ce:CE23-6-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-6 acceptance" ;
+    dcterms:description "Admission condition (chatman-ce23.md, CE23-6): Every observed repo is classified; `RequiredUnknown=0`; `UnclassifiedRequiredWork=0`; noncritical failures cannot reopen the release without falsifying a GC23 proposition." .
+ce:CE23-6-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-6 falsifier" ;
+    dcterms:description "The CE23-6 court exits 0 while an observed repository is unclassified, RequiredUnknown or UnclassifiedRequiredWork is nonzero, or a noncritical failure reopens the release without falsifying a GC23 proposition; starting projection: Existing 21-repo matrix supplies the starting projection (chatman-ce23.md)." .
+
+ce:CE23-7 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-7" ;
+    rdfs:label "CE23-7 Version-fence Chatman tooling" ;
+    dcterms:description "Version-fence Chatman tooling: verify_release, portfolio survey/planner, standing verifier, West projection, etc. can explicitly target release/v26.9.23 rather than silently defaulting to v26.9.1." ;
+    rdfs:comment "Crown term: Replay (the root replay targets release/v26.9.23, never a silent v26.9.1 default)." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:Core ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-7.sh" ;
+    sj:acceptance ce:CE23-7-acceptance ;
+    sj:falsifier ce:CE23-7-falsifier .
+ce:CE23-7-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-7 acceptance" ;
+    dcterms:description "Admission condition (chatman-ce23.md, CE23-7): `verify_release`, portfolio survey/planner, standing verifier, West projection, etc. can explicitly target `release/v26.9.23` rather than silently defaulting to `v26.9.1`." .
+ce:CE23-7-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-7 falsifier" ;
+    dcterms:description "The CE23-7 court exits 0 while a Chatman tool asked for release/v26.9.23 reads release/v26.9.1; the recorded gap is the counterexample: Multiple current scripts/catalog surfaces default to `release/v26.9.1/...` (chatman-ce23.md)." .
+
+ce:CE23-8 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-8" ;
+    rdfs:label "CE23-8 Preserve zero-intelligence KNOWN path" ;
+    dcterms:description "Preserve zero-intelligence KNOWN path: imported crown proves LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH=0 and UNRECEIPTED_ACTUATION=0." ;
+    rdfs:comment "Crown terms: KnownPath_LLM=0 and UnreceiptedActuation=0." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:Core ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-8.sh" ;
+    sj:acceptance ce:CE23-8-acceptance ;
+    sj:falsifier ce:CE23-8-falsifier .
+ce:CE23-8-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-8 acceptance" ;
+    dcterms:description "Admission condition (chatman-ce23.md, CE23-8): Imported crown proves `LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH=0` and `UNRECEIPTED_ACTUATION=0`." .
+ce:CE23-8-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-8 falsifier" ;
+    dcterms:description "The CE23-8 court exits 0 while the imported crown records an LLM invocation on the KNOWN reference path or an unreceipted actuation, or while these counts appear only in documentation: Must be carried into root release receipt, not merely documented (chatman-ce23.md)." .
+
+ce:CE23-9 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-9" ;
+    rdfs:label "CE23-9 Exact-head root court" ;
+    dcterms:description "Exact-head root court: candidate Chatman SHA passes generated-projection drift, manifest/ref validation, unit/integration, imported receipt validation, replay, and strict release crown." ;
+    rdfs:comment "Crown term: Replay." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:LastMile ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-9.sh" ;
+    sj:acceptance ce:CE23-9-acceptance ;
+    sj:falsifier ce:CE23-9-falsifier .
+ce:CE23-9-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-9 acceptance" ;
+    dcterms:description "Admission condition (chatman-ce23.md, CE23-9): Candidate Chatman SHA passes generated-projection drift, manifest/ref validation, unit/integration, imported receipt validation, replay, and strict release crown." .
+ce:CE23-9-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-9 falsifier" ;
+    dcterms:description "The CE23-9 court exits 0 at a candidate Chatman SHA where any of generated-projection drift, manifest/ref validation, unit/integration, imported receipt validation, replay or the strict release crown fails, or at a SHA other than the exact candidate head." .
+
+ce:CE23-10 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-10" ;
+    rdfs:label "CE23-10 Produce root release receipt" ;
+    dcterms:description "Produce root release receipt: receipt binds Chatman SHA, xaas SHA, ggen_igniter SHA, graph/ontology/schema/toolchain/provider digests, fleet digest, all gate receipts, replay and exclusions." ;
+    rdfs:comment "Crown term: RootReceipt." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:LastMile ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-10.sh" ;
+    sj:acceptance ce:CE23-10-acceptance ;
+    sj:falsifier ce:CE23-10-falsifier .
+ce:CE23-10-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-10 acceptance" ;
+    dcterms:description "Admission condition (chatman-ce23.md, CE23-10): Receipt binds Chatman SHA, xaas SHA, ggen_igniter SHA, graph/ontology/schema/toolchain/provider digests, fleet digest, all gate receipts, replay and exclusions." .
+ce:CE23-10-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-10 falsifier" ;
+    dcterms:description "The CE23-10 court exits 0 while the root release receipt omits one of the bound identities (Chatman, xaas or ggen_igniter SHA; graph, ontology, schema, toolchain or provider digest; fleet digest; a gate receipt; replay; exclusions) or fails validate_receipt.py." .
+
+ce:CE23-11 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-11" ;
+    rdfs:label "CE23-11 Tag only the crowned subject" ;
+    dcterms:description "Tag only the crowned subject: v26.9.23 identifies the exact Chatman release whose imported Semantic Manufacturing STOP replays true." ;
+    rdfs:comment "Not a crown term: the tag is the consequence of CHATMAN_STOP (tag only after reproducible STOP=true); its court runs only after the root stopQuery is true." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:LastMile ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23.md" ;
+    sj:sourceSha256 "sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-11.sh" ;
+    sj:acceptance ce:CE23-11-acceptance ;
+    sj:falsifier ce:CE23-11-falsifier .
+ce:CE23-11-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-11 acceptance" ;
+    dcterms:description "Admission condition (chatman-ce23.md, CE23-11): `v26.9.23` identifies the exact Chatman release whose imported Semantic Manufacturing STOP replays true." .
+ce:CE23-11-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-11 falsifier" ;
+    dcterms:description "The tag v26.9.23 exists on a Chatman subject whose imported Semantic Manufacturing STOP does not replay true, or it is created before CHATMAN_STOP is true: Impossible until CE23-3…10 close (chatman-ce23.md)." .
+
+# -- CE23-12 and its three conjunct gates -------------------------------------
+# chatman-ce23-12-bench.md adds CE23-12 as a Chatman CE23 crown gate (the
+# GC23-0..12 contract stays stable); chatman-ce23-12-standings.md binds it for
+# v26.9.23 to CE23-12 = BenchmarkDesign ∧ MSAContract ∧
+# GeneratedQualificationPlan. Design capital (substrate, candidate standing,
+# not repo code), /Users/sac/wt/v26922/v26923/bench/:
+#   DESIGN.md          sha256:f4d185d70ea3e7d56a4ba19b8e07c04c933efd5c705b5d918566658eaf579a19
+#   ontology-draft.ttl sha256:3a17698927ee0c7053e76f4d516d7a14a2f92e35ee2db0971c8f432ed58aecdf
+#   orders.json        sha256:332d01021ae817734a7ac568cd30e4076ce5a864d3c576168d267a38caa60843
+# orders.json holds the hand-assembled reference orders CE23-12-BD-01..09;
+# they are NOT work orders of this graph -- the CE23-12 orders are compiler
+# output of the two prose units. The bench and standings extraction JSON
+# (candidates/raw/) is the recorded LLM edge of that design run
+# (llm:claude-opus-5-5@wf_a0af447e-5fa/bench:design), reused rather than
+# re-extracted (ARD section 5.5: no second LLM pass over the same revision).
+
+ce:CE23-12 a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-12" ;
+    rdfs:label "CE23-12 DfLSS non-LLM benchmark design crown" ;
+    dcterms:description "CE23-12: NonLLMClassClosureBenchmark (chatman-ce23-12-bench.md), for v26.9.23 bound to CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan (chatman-ce23-12-standings.md): the release establishes the measurement system and qualification contract now; actual class-level operational standing must come from executed benchmark receipts." ;
+    rdfs:comment "Crown amendment: CE23-12 joins the root crown as a Chatman CE23 crown gate (chatman-ce23-12-bench.md: 'make this a Chatman CE23 crown gate, rather than mutating the already-admitted Semantic Manufacturing checkpoint'). Standing for v26.9.23: BENCHMARK_DESIGN_ALIVE; NON_LLM_OPERATIONAL_ALIVE is never implied." ;
+    sj:checkpointOf ce:GC-CE-26.9.23 ;
+    sj:boundaryClass sj:LastMile ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23-12-bench.md" ;
+    sj:sourceSha256 "sha256:4146d688c21db6e1af51a2187df8056b1a0f977001c817d64fbde0547029b485" ;
+    sj:exclusion "BENCHMARK_DESIGN_ALIVE does not imply NONLLM_OPERATIONAL_ALIVE (chatman-ce23-12-standings.md); no benchmark class standing is promoted by design." ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-12.sh" ;
+    sj:acceptance ce:CE23-12-acceptance ;
+    sj:falsifier ce:CE23-12-falsifier .
+ce:CE23-12-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-12 acceptance" ;
+    dcterms:description "CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan (chatman-ce23-12-standings.md): each conjunct gate has an ALIVE gate receipt at the exact Chatman SHA, and every receipt records non_llm_operational UNKNOWN for every class without executed unseen-member receipts." .
+ce:CE23-12-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-12 falsifier" ;
+    dcterms:description "BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE (chatman-ce23-12-standings.md): the CE23-12 court exits 0 while a conjunct gate lacks an ALIVE receipt, or while some class standing is NON_LLM_OPERATIONAL_ALIVE (or BENCHMARK_QUALIFIED) without executed unseen-member receipts -- treating documentation about execution as execution." .
+
+ce:CE23-12-BenchmarkDesign a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-12-BenchmarkDesign" ;
+    rdfs:label "CE23-12 conjunct BenchmarkDesign" ;
+    dcterms:description "BenchmarkDesign (chatman-ce23-12-standings.md): D = claimed KNOWN classes and CTQs defined; M = measurement/receipt/OCEL model defined; benchmark ontology admitted; candidate classes enumerated; membership tests identified; independent verifiers identified; near-miss/UNKNOWN falsifiers identified; all generated artifacts trace to operator prose." ;
+    sj:checkpointOf ce:CE23-12 ;
+    sj:boundaryClass sj:LastMile ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23-12-standings.md" ;
+    sj:sourceSha256 "sha256:80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-12-BenchmarkDesign.sh" ;
+    sj:acceptance ce:CE23-12-BenchmarkDesign-acceptance ;
+    sj:falsifier ce:CE23-12-BenchmarkDesign-falsifier .
+ce:CE23-12-BenchmarkDesign-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-12-BenchmarkDesign acceptance" ;
+    dcterms:description "Acceptance (chatman-ce23-12-standings.md): benchmark ontology admitted; candidate classes enumerated; membership tests identified; independent verifiers identified; near-miss/UNKNOWN falsifiers identified; all generated artifacts trace to operator prose -- with D (claimed KNOWN classes and CTQs) and M (measurement/receipt/OCEL model) defined." .
+ce:CE23-12-BenchmarkDesign-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-12-BenchmarkDesign falsifier" ;
+    dcterms:description "The court exits 0 while a claimed KNOWN class has only a declared label (no membership test), no independent verifier, no near-miss UNKNOWN falsifier, or a design node that traces to no operator prose span." .
+
+ce:CE23-12-MSAContract a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-12-MSAContract" ;
+    rdfs:label "CE23-12 conjunct MSAContract" ;
+    dcterms:description "MSAContract (chatman-ce23-12-standings.md): MSA = Repeatability_verifier ∧ Reproducibility_environment ∧ MutationSensitivity ∧ ClassificationAgreement -- before trusting benchmark results, test the benchmark itself." ;
+    sj:checkpointOf ce:CE23-12 ;
+    sj:boundaryClass sj:LastMile ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23-12-standings.md" ;
+    sj:sourceSha256 "sha256:80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2" ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-12-MSAContract.sh" ;
+    sj:acceptance ce:CE23-12-MSAContract-acceptance ;
+    sj:falsifier ce:CE23-12-MSAContract-falsifier .
+ce:CE23-12-MSAContract-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-12-MSAContract acceptance" ;
+    dcterms:description "The generated court answers each MSA question (chatman-ce23-12-standings.md): Does the same artifact always receive the same verdict? Do independent verifiers agree? Does an intentionally corrupted output reliably fail? Does a stale receipt reliably fail? Can benchmark ordering change the answer? Does cached state change classification? Can the membership test confuse a near-miss UNKNOWN with KNOWN?" .
+ce:CE23-12-MSAContract-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-12-MSAContract falsifier" ;
+    dcterms:description "Otherwise a 100% benchmark pass rate might only establish a weak benchmark (chatman-ce23-12-standings.md): the court exits 0 while an MSA property has no court, or a corrupted output, a stale receipt or a near-miss passes as KNOWN." .
+
+ce:CE23-12-GeneratedQualificationPlan a sj:GoalCheckpoint ;
+    dcterms:identifier "CE23-12-GeneratedQualificationPlan" ;
+    rdfs:label "CE23-12 conjunct GeneratedQualificationPlan" ;
+    dcterms:description "GeneratedQualificationPlan (chatman-ce23-12-standings.md): A = experiment, DOE, corpus, statistics and qualification rules defined; DOE support matrix generated; statistical acceptance rules generated; benchmark work orders generated; standing typed by evidence volume (class, n, defects, confidence, environment, factors, receipt; tiers N 30/100/300/3000); Factor(OS) = UNSUPPORTED on a macOS-only executor." ;
+    sj:checkpointOf ce:CE23-12 ;
+    sj:boundaryClass sj:LastMile ;
+    dcterms:source "release/v26.9.23/sjira/chatman-ce23-12-standings.md" ;
+    sj:sourceSha256 "sha256:80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2" ;
+    sj:exclusion "Do not synthesize fake cross-platform evidence (chatman-ce23-12-standings.md)." ;
+    sj:courtCommand "sh release/v26.9.23/courts/CE23-12-GeneratedQualificationPlan.sh" ;
+    sj:acceptance ce:CE23-12-GeneratedQualificationPlan-acceptance ;
+    sj:falsifier ce:CE23-12-GeneratedQualificationPlan-falsifier .
+ce:CE23-12-GeneratedQualificationPlan-acceptance a sj:AcceptanceCriterion ;
+    rdfs:label "CE23-12-GeneratedQualificationPlan acceptance" ;
+    dcterms:description "Acceptance (chatman-ce23-12-standings.md): DOE support matrix generated; statistical acceptance rules generated; benchmark work orders generated; the qualification system distinguishes N_discovery < N_qualification < N_operational, and the receipt explicitly says that cross-OS robustness remains outside the demonstrated evidence ceiling." .
+ce:CE23-12-GeneratedQualificationPlan-falsifier a sj:Falsifier ;
+    rdfs:label "CE23-12-GeneratedQualificationPlan falsifier" ;
+    dcterms:description "The court exits 0 while the DOE gives the unsupported OS factor a column (a nominal design whose factors were not actually varied), a zero-failure run is read as more than its evidence tier bounds (0 failures in 30 trials bounds p_f only below about 0.10), or a benchmark work order is hand-written rather than generated." .
+
+# -- Capabilities named by candidate hints (naming grants no authority) -------
+
+ce:cap-construct-chatman-lane a sj:Capability ;
+    rdfs:label "Construct: chatman-ecosystem CE23 lane" ;
+    dcterms:description "Bounded construction inside one chatman-ecosystem lane worktree (branch ce23/<LANE>, integrated into release/v26.9.23-int) with Chicago tests; naming the capability grants no authority." ;
+    sj:capabilityId "construct:chatman-ecosystem-lane" .
+ce:cap-release-semantic-manufacturing a sj:Capability ;
+    rdfs:label "Release: Semantic Manufacturing v26.9.23" ;
+    dcterms:description "The Semantic Manufacturing release closure of xaas and ggen_igniter (GC-26.9.23; DRIVER.md release parts A3 and B, lane V23-Q, operator GC23-12 acceptance). The chatman root imports its receipts by digest and never actuates it; naming the capability grants no authority." ;
+    sj:capabilityId "release:semantic-manufacturing" .
