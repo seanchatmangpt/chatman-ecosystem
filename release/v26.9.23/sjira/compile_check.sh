@@ -8,7 +8,10 @@
 #
 # Check mode exits 0 iff, for each prose unit U in UNITS below:
 #   1. corrections.py check: candidates/U.extract.json == apply(candidates/raw/U.extract.json,
-#      candidates/corrections.json) (the recorded corrections of the LLM edge);
+#      candidates/corrections.json) (the recorded corrections of the LLM edge); the bench unit
+#      carries no correction (its extraction is the raw edge byte for byte): every bench item is a
+#      CE23-12 design obligation (chatman-ce23-12-standings.md BenchmarkDesign A = 'experiment,
+#      DOE, corpus, statistics and qualification rules defined') and is never demoted off CE23-12;
 #   2. prose_spans.py check --extract: candidates/U.ttl re-verifies against the
 #      prose bytes of U (digest, spans, IRIs in the ce: namespace) and re-emits
 #      byte-identically from the extraction (no hand edit); chatman-ce23 must
@@ -127,6 +130,9 @@ if [ "$mode" = check ]; then
   run python3 "$here/corrections.py" check --raw-dir "$rel/candidates/raw" \
     --corrections "$rel/candidates/corrections.json" --out-dir "$rel/candidates" ||
     refuse "corrections.py check"
+  run cmp -s "$rel/candidates/raw/chatman-ce23-12-bench.extract.json" \
+    "$rel/candidates/chatman-ce23-12-bench.extract.json" ||
+    refuse "chatman-ce23-12-bench carries a correction: bench items are CE23-12 design obligations (BenchmarkDesign/MSAContract), never demoted"
 
   for unit in $UNITS; do
     if [ "$unit" = chatman-ce23 ]; then
