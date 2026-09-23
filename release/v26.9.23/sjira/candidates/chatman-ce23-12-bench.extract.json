@@ -49,15 +49,17 @@
   "statement": "A deterministic worker that accepts invalid work is worse than routing it UNKNOWN (B2 false-accept = 0)."
  },
  {
-  "boundary_class": "Successor",
+  "boundary_class": "LastMile",
   "kind": "Postcondition",
   "quote": "Run a designed experiment rather than random chaos.",
+  "required_by": "CE23-12",
   "statement": "Variation robustness (B3) is measured with a designed experiment over controlled factors."
  },
  {
-  "boundary_class": "Successor",
+  "boundary_class": "LastMile",
   "kind": "Postcondition",
   "quote": "not uncontrolled continuation.",
+  "required_by": "CE23-12",
   "statement": "Every morphism edge failure (B4) ends in a typed state, never uncontrolled continuation."
  },
  {
@@ -68,9 +70,10 @@
   "statement": "Unseen-member transfer (B5) freezes class machinery built from training members before execution on unseen instances."
  },
  {
-  "boundary_class": "Successor",
+  "boundary_class": "LastMile",
   "kind": "Invariant",
   "quote": "A non-LLM system is only safe if it knows when **not** to apply the known machinery.",
+  "required_by": "CE23-12",
   "statement": "Near-neighbour non-members (B6) must route UNKNOWN; the admission boundary is measured."
  },
  {

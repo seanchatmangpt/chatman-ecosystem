@@ -21,11 +21,14 @@ It holds no work order and no receipt. Each gate names the prose that defines it
 gates it defines. The compiler therefore refuses (`uncovered_gate`) any gate that its prose does
 not require.
 
-Extraction identities: `chatman-ce23` was extracted by `llm:claude-opus-5-5@wave-CE0/CE-INTAKE`.
-The bench and standings units reuse the extraction of the benchmark design run
-(`llm:claude-opus-5-5@wf_a0af447e-5fa/bench:design`). No second LLM pass over the same revision
-is permitted (ARD section 5.5). There are 30 recorded corrections, all of `required_by` or
-`boundary_class`, and each states its reason from `chatman-ce23-12-standings.md`.
+Extraction identities (PVOCAB `llm:<model>@<runId>`): `chatman-ce23` was extracted by
+`llm:claude-opus-5-5@wf_2755fdff-28e/CE0:build:CE-INTAKE`. The bench and standings units reuse the
+extraction of the benchmark design run (`llm:claude-opus-5-5@wf_a0af447e-5fa/bench:design`). No
+second LLM pass over the same revision is permitted (ARD section 5.5). There are 24 recorded
+corrections, all of `required_by` or `boundary_class` on the standings unit, and each states its
+reason from `chatman-ce23-12-standings.md`. The bench unit carries no correction: every bench item
+is a BenchmarkDesign/MSAContract design obligation of CE23-12 (9 work orders), and the standings
+rule, not a correction, keeps operational standing out of the design crown.
 
 ```sh
 sh release/v26.9.23/sjira/compile_check.sh                  # the court (check)

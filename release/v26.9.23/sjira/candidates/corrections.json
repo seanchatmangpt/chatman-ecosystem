@@ -3,60 +3,6 @@
   {
    "field": "required_by",
    "from": "CE23-12",
-   "index": 7,
-   "quote": "Run a designed experiment rather than random chaos.",
-   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; this item states an executed-benchmark outcome (B3 variation robustness measured), which is NON_LLM_OPERATIONAL evidence ('V = Execute ∧ Observe ∧ Analyze ∧ Qualify ... cannot be established until the generated executor actually runs the test corpus'), so it may not be required by CE23-12 for v26.9.23 and is typed Successor (ce:GC-CE-26.9.24).",
-   "to": null,
-   "unit": "chatman-ce23-12-bench"
-  },
-  {
-   "field": "boundary_class",
-   "from": "LastMile",
-   "index": 7,
-   "quote": "Run a designed experiment rather than random chaos.",
-   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; this item states an executed-benchmark outcome (B3 variation robustness measured), which is NON_LLM_OPERATIONAL evidence ('V = Execute ∧ Observe ∧ Analyze ∧ Qualify ... cannot be established until the generated executor actually runs the test corpus'), so it may not be required by CE23-12 for v26.9.23 and is typed Successor (ce:GC-CE-26.9.24).",
-   "to": "Successor",
-   "unit": "chatman-ce23-12-bench"
-  },
-  {
-   "field": "required_by",
-   "from": "CE23-12",
-   "index": 8,
-   "quote": "not uncontrolled continuation.",
-   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; this item states an executed-benchmark outcome (B4 edge failures observed to end in typed states), which is NON_LLM_OPERATIONAL evidence ('V = Execute ∧ Observe ∧ Analyze ∧ Qualify ... cannot be established until the generated executor actually runs the test corpus'), so it may not be required by CE23-12 for v26.9.23 and is typed Successor (ce:GC-CE-26.9.24).",
-   "to": null,
-   "unit": "chatman-ce23-12-bench"
-  },
-  {
-   "field": "boundary_class",
-   "from": "LastMile",
-   "index": 8,
-   "quote": "not uncontrolled continuation.",
-   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; this item states an executed-benchmark outcome (B4 edge failures observed to end in typed states), which is NON_LLM_OPERATIONAL evidence ('V = Execute ∧ Observe ∧ Analyze ∧ Qualify ... cannot be established until the generated executor actually runs the test corpus'), so it may not be required by CE23-12 for v26.9.23 and is typed Successor (ce:GC-CE-26.9.24).",
-   "to": "Successor",
-   "unit": "chatman-ce23-12-bench"
-  },
-  {
-   "field": "required_by",
-   "from": "CE23-12",
-   "index": 10,
-   "quote": "A non-LLM system is only safe if it knows when **not** to apply the known machinery.",
-   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; this item states an executed-benchmark outcome (B6 near-neighbours observed to route UNKNOWN; admission boundary measured), which is NON_LLM_OPERATIONAL evidence ('V = Execute ∧ Observe ∧ Analyze ∧ Qualify ... cannot be established until the generated executor actually runs the test corpus'), so it may not be required by CE23-12 for v26.9.23 and is typed Successor (ce:GC-CE-26.9.24).",
-   "to": null,
-   "unit": "chatman-ce23-12-bench"
-  },
-  {
-   "field": "boundary_class",
-   "from": "LastMile",
-   "index": 10,
-   "quote": "A non-LLM system is only safe if it knows when **not** to apply the known machinery.",
-   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; this item states an executed-benchmark outcome (B6 near-neighbours observed to route UNKNOWN; admission boundary measured), which is NON_LLM_OPERATIONAL evidence ('V = Execute ∧ Observe ∧ Analyze ∧ Qualify ... cannot be established until the generated executor actually runs the test corpus'), so it may not be required by CE23-12 for v26.9.23 and is typed Successor (ce:GC-CE-26.9.24).",
-   "to": "Successor",
-   "unit": "chatman-ce23-12-bench"
-  },
-  {
-   "field": "required_by",
-   "from": "CE23-12",
    "index": 3,
    "quote": "claimed KNOWN classes and CTQs defined;",
    "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-BenchmarkDesign sj:checkpointOf ce:CE23-12), and the item is one of the design conjuncts the standings file lists for BENCHMARK_DESIGN_ALIVE (D: classes and CTQs defined; M: measurement/receipt/OCEL model defined; benchmark ontology admitted; candidate classes enumerated; membership tests, independent verifiers and near-miss/UNKNOWN falsifiers identified; all generated artifacts trace to operator prose). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
@@ -271,6 +217,6 @@
    "unit": "chatman-ce23-12-standings"
   }
  ],
- "law": "Recorded corrections of the CE23 extraction JSON (raw O, candidates/raw/). Only required_by and boundary_class are correctable; candidates/<unit>.extract.json = corrections.py apply(raw, this file). Corrected by lane CE-INTAKE (wave CE0); the extractor identity of each unit is unchanged.",
+ "law": "Recorded corrections of the CE23 extraction JSON (raw O, candidates/raw/). Only required_by and boundary_class are correctable; candidates/<unit>.extract.json = corrections.py apply(raw, this file). Corrected by lane CE-INTAKE (wave CE0); the extractor identity of each unit is unchanged. No correction moves a chatman-ce23-12-bench item off CE23-12: every bench item is a BenchmarkDesign/MSAContract design obligation of v26.9.23 (chatman-ce23-12-standings.md: BenchmarkDesign A = 'experiment, DOE, corpus, statistics and qualification rules defined'; acceptance 'near-miss/UNKNOWN falsifiers identified', 'DOE support matrix generated'), and the standings rule already keeps operational standing (NON_LLM_OPERATIONAL) out of the design crown. Repair 1 of lane CE-INTAKE removed the 6 bench demotions of items 7 (B3), 8 (B4) and 10 (B6).",
  "schema": "ce23-extraction-corrections/v1"
 }

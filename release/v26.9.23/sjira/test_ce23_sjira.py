@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -156,7 +157,7 @@ class CorrectionsTest(unittest.TestCase):
     def test_committed_extractions_recompute(self):
         result = py(str(HERE / "corrections.py"), "check", *self.args(ROOT))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("chatman-ce23-12-bench=6 chatman-ce23-12-standings=24", result.stdout)
+        self.assertIn("chatman-ce23=0 chatman-ce23-12-bench=0 chatman-ce23-12-standings=24", result.stdout)
 
     def test_raw_extractions_are_the_recorded_llm_edge(self):
         for unit in UNITS:
@@ -189,8 +190,9 @@ class CorrectionsTest(unittest.TestCase):
 
         result = self.mutate(edit)
         self.assertEqual(result.returncode, 1)
-        self.assertIn("REFUSED chatman-ce23-12-bench: output_drift", result.stdout)
         self.assertIn("REFUSED chatman-ce23-12-standings: output_drift", result.stdout)
+        # the bench unit carries no correction: its extraction is the raw LLM edge as recorded
+        self.assertNotIn("REFUSED chatman-ce23-12-bench", result.stdout)
 
     def test_quote_guard_and_uncorrectable_fields_are_refused(self):
         def edit(root):
@@ -204,6 +206,58 @@ class CorrectionsTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("quote_guard", result.stdout)
         self.assertIn("field_not_correctable", result.stdout)
+
+
+class DesignObligationTest(unittest.TestCase):
+    """CE23-12 keeps every benchmark design obligation, and every candidate names its extraction run.
+
+    chatman-ce23-12-standings.md: BenchmarkDesign A = 'experiment, DOE, corpus, statistics and
+    qualification rules defined', with acceptance 'near-miss/UNKNOWN falsifiers identified' and 'DOE
+    support matrix generated'. The standings rule keeps NON_LLM_OPERATIONAL standing out of the design
+    crown, so no bench item (B1..B6: DOE, typed fault states, near-miss UNKNOWN, ...) is demoted off
+    CE23-12 by a correction. Real committed files only.
+    """
+
+    BENCH = "chatman-ce23-12-bench"
+    RUN_ID = re.compile(r"^llm:claude-opus-5-5@wf_[0-9a-f]{8}-[0-9a-f]{3}/\S+$")
+
+    def test_no_correction_touches_a_bench_item(self):
+        doc = json.loads((ROOT / REL / "candidates/corrections.json").read_text("utf-8"))
+        touched = [(e["index"], e["field"]) for e in doc["corrections"] if e["unit"] == self.BENCH]
+        self.assertEqual(touched, [])
+
+    def test_bench_extraction_is_the_raw_llm_edge(self):
+        generated = (ROOT / REL / "candidates" / f"{self.BENCH}.extract.json").read_bytes()
+        raw = (ROOT / REL / "candidates/raw" / f"{self.BENCH}.extract.json").read_bytes()
+        self.assertEqual(generated, raw)
+
+    def test_every_raw_ce23_12_bench_item_stays_required_by_ce23_12(self):
+        raw = json.loads((ROOT / REL / "candidates/raw" / f"{self.BENCH}.extract.json").read_text("utf-8"))
+        wanted = {i["quote"] for i in raw if i.get("required_by") == "CE23-12"}
+        self.assertEqual(len(wanted), 17)
+        graph = Graph()
+        graph.parse(ROOT / REL / "candidates" / f"{self.BENCH}.ttl", format="turtle")
+        required = {
+            str(graph.value(s, SJ.sourceText))
+            for s in graph.subjects(SJ.requiredBy, CE["CE23-12"])
+        }
+        for quote in ("Run a designed experiment rather than random chaos.", "not uncontrolled continuation."):
+            self.assertIn(quote, required)
+        self.assertEqual(len(required), 17)
+
+    def test_bench_unit_compiles_to_nine_design_orders(self):
+        graph = Graph()
+        graph.parse(ROOT / REL / "compiled" / self.BENCH / "orders.ttl", format="turtle")
+        self.assertEqual(len(set(graph.subjects(RDF.type, SJ.WorkOrder))), 9)
+
+    def test_every_candidate_names_its_extraction_run(self):
+        for unit in UNITS:
+            with self.subTest(unit=unit):
+                graph = Graph()
+                graph.parse(ROOT / REL / "candidates" / f"{unit}.ttl", format="turtle")
+                ids = {str(o) for o in graph.objects(None, SJ.extractedBy)}
+                self.assertEqual(len(ids), 1, ids)
+                self.assertRegex(ids.pop(), self.RUN_ID)
 
 
 class UnitGoalTest(unittest.TestCase):
