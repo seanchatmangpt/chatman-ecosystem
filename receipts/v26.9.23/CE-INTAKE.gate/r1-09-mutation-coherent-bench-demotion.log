@@ -1,0 +1,34 @@
+# coherent mutant of subject 42a3550823836c9f9c7b580273673e072194c4f1 in <scratch>/mut: re-add the bench item-7 (B3 DOE) demotion to corrections.json
+mutant corrections: 26
+$ GGEN_IGNITER_DIR=<lane gi> sh release/v26.9.23/sjira/compile_check.sh   # step 1: corrections.json changed, nothing regenerated
+REFUSED chatman-ce23-12-bench: output_drift: release/v26.9.23/sjira/candidates/chatman-ce23-12-bench.extract.json != apply(raw, corrections)
+CORRECTIONS REFUSED: 1 refusal(s)
+REFUSED: corrections.py check
+COMPILE_CHECK REFUSED
+exit=1
+# step 2: regenerate like the pipeline does (corrections.py apply, prose_spans.py emit, compile_check.sh --write -> compiled/)
+CORRECTIONS APPLIED: 3 units; corrections chatman-ce23=0 chatman-ce23-12-bench=2 chatman-ce23-12-standings=24
+EMIT: 19 candidates -> release/v26.9.23/sjira/candidates/chatman-ce23-12-bench.ttl sha256:c48ae7274b43a8eb069b27201de9bf110a97fcad87684a4bc6a398d33ee74a45
+compile_check --write exit=0
+DELTA: 8 required Postcondition/Invariant/Falsifier, 0 witnessed ALIVE (0 ALIVE receipts read), 8 work orders
+$ GGEN_IGNITER_DIR=<lane gi> sh release/v26.9.23/sjira/compile_check.sh   # step 3: coherent mutant
+REFUSED: chatman-ce23-12-bench carries a correction: bench items are CE23-12 design obligations (BenchmarkDesign/MSAContract), never demoted
+COMPILE_CHECK REFUSED
+exit=1
+$ (cd release/v26.9.23/sjira && python3 -m unittest test_ce23_sjira.DesignObligationTest -v)
+test_bench_extraction_is_the_raw_llm_edge (test_ce23_sjira.DesignObligationTest.test_bench_extraction_is_the_raw_llm_edge) ... FAIL
+test_bench_unit_compiles_to_nine_design_orders (test_ce23_sjira.DesignObligationTest.test_bench_unit_compiles_to_nine_design_orders) ... FAIL
+test_every_candidate_names_its_extraction_run (test_ce23_sjira.DesignObligationTest.test_every_candidate_names_its_extraction_run) ... ok
+test_every_raw_ce23_12_bench_item_stays_required_by_ce23_12 (test_ce23_sjira.DesignObligationTest.test_every_raw_ce23_12_bench_item_stays_required_by_ce23_12) ... FAIL
+test_no_correction_touches_a_bench_item (test_ce23_sjira.DesignObligationTest.test_no_correction_touches_a_bench_item) ... FAIL
+FAIL: test_bench_extraction_is_the_raw_llm_edge (test_ce23_sjira.DesignObligationTest.test_bench_extraction_is_the_raw_llm_edge)
+FAIL: test_bench_unit_compiles_to_nine_design_orders (test_ce23_sjira.DesignObligationTest.test_bench_unit_compiles_to_nine_design_orders)
+FAIL: test_every_raw_ce23_12_bench_item_stays_required_by_ce23_12 (test_ce23_sjira.DesignObligationTest.test_every_raw_ce23_12_bench_item_stays_required_by_ce23_12)
+FAIL: test_no_correction_touches_a_bench_item (test_ce23_sjira.DesignObligationTest.test_no_correction_touches_a_bench_item)
+Ran 5 tests in 0.042s
+FAILED (failures=4)
+AssertionError: b'[\n[2040 chars]s": "Successor",\n  "kind": "Postcondition",\n[3290 chars]n]\n' != b'[\n[2040 chars]s": "LastMile",\n  "kind": "Postcondition",
+AssertionError: 8 != 9
+AssertionError: 'Run a designed experiment rather than random chaos.' not found in {'The latter should be treated as a safety-critical CTQ.', 'Do not make this 
+AssertionError: Lists differ: [(7, 'boundary_class'), (7, 'required_by')] != []
+exit=1

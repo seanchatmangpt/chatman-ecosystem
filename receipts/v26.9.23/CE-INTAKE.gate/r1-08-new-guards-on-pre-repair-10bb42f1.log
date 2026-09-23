@@ -1,0 +1,26 @@
+# pre-repair subject 10bb42f1 (git archive) with HEAD 42a3550823836c9f9c7b580273673e072194c4f1's test_ce23_sjira.py and compile_check.sh copied in
+$ (cd <scratch>/pre/release/v26.9.23/sjira && python3 -m unittest test_ce23_sjira.DesignObligationTest test_ce23_sjira.CorrectionsTest -v)
+test_bench_extraction_is_the_raw_llm_edge (test_ce23_sjira.DesignObligationTest.test_bench_extraction_is_the_raw_llm_edge) ... FAIL
+test_bench_unit_compiles_to_nine_design_orders (test_ce23_sjira.DesignObligationTest.test_bench_unit_compiles_to_nine_design_orders) ... FAIL
+test_every_candidate_names_its_extraction_run (test_ce23_sjira.DesignObligationTest.test_every_candidate_names_its_extraction_run) ... 
+test_every_raw_ce23_12_bench_item_stays_required_by_ce23_12 (test_ce23_sjira.DesignObligationTest.test_every_raw_ce23_12_bench_item_stays_required_by_ce23_12) ... FAIL
+test_no_correction_touches_a_bench_item (test_ce23_sjira.DesignObligationTest.test_no_correction_touches_a_bench_item) ... FAIL
+test_committed_extractions_recompute (test_ce23_sjira.CorrectionsTest.test_committed_extractions_recompute) ... FAIL
+test_dropping_the_corrections_is_refused (test_ce23_sjira.CorrectionsTest.test_dropping_the_corrections_is_refused) ... FAIL
+test_hand_edit_of_a_generated_extraction_is_refused (test_ce23_sjira.CorrectionsTest.test_hand_edit_of_a_generated_extraction_is_refused) ... ok
+test_quote_guard_and_uncorrectable_fields_are_refused (test_ce23_sjira.CorrectionsTest.test_quote_guard_and_uncorrectable_fields_are_refused) ... ok
+test_raw_extractions_are_the_recorded_llm_edge (test_ce23_sjira.CorrectionsTest.test_raw_extractions_are_the_recorded_llm_edge) ... ok
+FAIL: test_bench_extraction_is_the_raw_llm_edge (test_ce23_sjira.DesignObligationTest.test_bench_extraction_is_the_raw_llm_edge)
+FAIL: test_bench_unit_compiles_to_nine_design_orders (test_ce23_sjira.DesignObligationTest.test_bench_unit_compiles_to_nine_design_orders)
+FAIL: test_every_candidate_names_its_extraction_run (test_ce23_sjira.DesignObligationTest.test_every_candidate_names_its_extraction_run) (unit='chatman-ce23')
+FAIL: test_every_raw_ce23_12_bench_item_stays_required_by_ce23_12 (test_ce23_sjira.DesignObligationTest.test_every_raw_ce23_12_bench_item_stays_required_by_ce23_12)
+FAIL: test_no_correction_touches_a_bench_item (test_ce23_sjira.DesignObligationTest.test_no_correction_touches_a_bench_item)
+FAIL: test_committed_extractions_recompute (test_ce23_sjira.CorrectionsTest.test_committed_extractions_recompute)
+FAIL: test_dropping_the_corrections_is_refused (test_ce23_sjira.CorrectionsTest.test_dropping_the_corrections_is_refused)
+Ran 10 tests in 0.564s
+FAILED (failures=7)
+exit=1
+$ GGEN_IGNITER_DIR=<lane gi> sh <scratch>/pre/release/v26.9.23/sjira/compile_check.sh
+REFUSED: chatman-ce23-12-bench carries a correction: bench items are CE23-12 design obligations (BenchmarkDesign/MSAContract), never demoted
+COMPILE_CHECK REFUSED
+exit=1

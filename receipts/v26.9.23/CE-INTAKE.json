@@ -2,7 +2,7 @@
  "identity": {
   "subject": "CE-INTAKE",
   "repo": "seanchatmangpt/chatman-ecosystem",
-  "subject_sha": "35b3ed073dbc3785b7931eea7ba3c8d657a4b4e3",
+  "subject_sha": "42a3550823836c9f9c7b580273673e072194c4f1",
   "base_sha": "a896e16c68af1315be3492e39939c354ce46b10c",
   "graph_hash": "sha256:9fc86273c27a3e72418d8fb89da544367570de0bce50a078fd352a5e282afb09",
   "branch": "ce23/CE-INTAKE",
@@ -16,19 +16,60 @@
    "toolchain": "elixir 1.18.4-otp-27, erlang 27.2.4 (.tool-versions pin), fresh _build/test",
    "prose_spans": "/Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py sha256:86a0e9b30d192adff8026d281b1735ee4b9e371e4d29083ed0cb089a62730421 (last changed at xaas 2244d8e18d368841fc6b0a3a892cb729b7729bd0; read only)"
   },
-  "prd_ard": "PRD PR-002, PR-003, PR-004, PR-005, PR-017; ARD sections 5.2-5.5, 17, 24 M9; DRIVER.md 14:20 PT CE0; chatman-ce23-12-standings.md standing rule"
+  "prd_ard": "PRD PR-002, PR-003, PR-004, PR-005, PR-017; ARD sections 5.2-5.5, 17, 24 M9; DRIVER.md 14:20 PT CE0; chatman-ce23-12-standings.md standing rule",
+  "repair": {
+   "round": 1,
+   "prior_subject": "35b3ed073dbc3785b7931eea7ba3c8d657a4b4e3",
+   "prior_receipt_commit": "10bb42f12314b40c6120f41e740ea6b5c3d48e11",
+   "repair_commits": [
+    "0141b227163e38fc0e1ba89b5472e7f3431abb29",
+    "42a3550823836c9f9c7b580273673e072194c4f1"
+   ]
+  }
  },
  "authority": {
   "ceiling": "CONSTRUCT",
-  "grant": "wave CE0 lane CE-INTAKE of the orthogonal-swarm workflow (DRIVER.md 14:20 PT, operator 'launch an orthogonal swarm to assist'); lane worktree only; no push, no integrate, no remote effect, no edit of release/v26.9.1 or of any other executor's worktree",
-  "actor": "claude-opus-5-5 workflow subagent (lane CE-INTAKE); the extraction of chatman-ce23.md is this agent's LLM edge, recorded as extractedBy llm:claude-opus-5-5@wave-CE0/CE-INTAKE; every executed product step ran under env -i with a no-LLM PATH"
+  "grant": "wave CE0 lane CE-INTAKE of the orthogonal-swarm workflow wf_2755fdff-28e (DRIVER.md 14:20 PT, operator 'launch an orthogonal swarm to assist'), build + repair round 1 (court verdicts GATE refuted, DOCTRINE refuted, REVERT-MUTATION pass); lane worktree only; no push, no integrate, no remote effect, no edit of release/v26.9.1 or of any other executor's worktree",
+  "actor": "claude-opus-5-5 workflow subagents of wf_2755fdff-28e: CE0:build:CE-INTAKE (the extraction of chatman-ce23.md is its LLM edge, recorded as extractedBy llm:claude-opus-5-5@wf_2755fdff-28e/CE0:build:CE-INTAKE) and CE0:repair1:CE-INTAKE (no LLM extraction; re-emit of the recorded extraction bytes only); every executed product step ran under env -i with a no-LLM PATH"
  },
  "consequence": {
   "commits": [
-   "35b3ed073dbc3785b7931eea7ba3c8d657a4b4e3"
+   "35b3ed073dbc3785b7931eea7ba3c8d657a4b4e3",
+   "10bb42f12314b40c6120f41e740ea6b5c3d48e11",
+   "0141b227163e38fc0e1ba89b5472e7f3431abb29",
+   "42a3550823836c9f9c7b580273673e072194c4f1"
   ],
   "files_changed": [
    "HANDWRITTEN.md",
+   "receipts/v26.9.23/CE-INTAKE.gate/00-prose-byte-identity.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/01-gate-literal-prose-spans.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/02-gate-prose-spans-ce-namespace.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/03-gate-compile-check-lane-gi.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/04-gate-compile-check-int-default.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/05-unittest.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/06-revert-base-a896e16c.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/07-mutation-one-byte-orders.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/08-mutation-court-command.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/09-compile-write-runA.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/09-compile-write-runB.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/10-double-run-diff.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/11-release-v26.9.1-untouched.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/12-mock-grep.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-00-subject.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-01-gate-literal.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-02-gate-prose-spans-ce-namespace.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-03-gate-compile-check-lane-gi.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-04-gate-compile-check-int-default.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-05-unittest.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-06-compile-write-runA.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-06-compile-write-runB.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-07-double-run-diff.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-08-new-guards-on-pre-repair-10bb42f1.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-09-mutation-coherent-bench-demotion.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-10-revert-base-a896e16c.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-11-gate-spec-infeasibility.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-12-invariants.log",
+   "receipts/v26.9.23/CE-INTAKE.json",
    "release/v26.9.23/courts/CE23-0.sh",
    "release/v26.9.23/courts/CE23-1.sh",
    "release/v26.9.23/courts/CE23-10.sh",
@@ -73,22 +114,7 @@
    "release/v26.9.23/sjira/unit_goal.py",
    "release/v26.9.23/sjira/units/chatman-ce23-12-bench.goal.ttl",
    "release/v26.9.23/sjira/units/chatman-ce23-12-standings.goal.ttl",
-   "release/v26.9.23/sjira/units/chatman-ce23.goal.ttl",
-   "receipts/v26.9.23/CE-INTAKE.json",
-   "receipts/v26.9.23/CE-INTAKE.gate/00-prose-byte-identity.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/01-gate-literal-prose-spans.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/02-gate-prose-spans-ce-namespace.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/03-gate-compile-check-lane-gi.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/04-gate-compile-check-int-default.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/05-unittest.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/06-revert-base-a896e16c.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/07-mutation-one-byte-orders.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/08-mutation-court-command.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/09-compile-write-runA.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/09-compile-write-runB.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/10-double-run-diff.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/11-release-v26.9.1-untouched.log",
-   "receipts/v26.9.23/CE-INTAKE.gate/12-mock-grep.log"
+   "release/v26.9.23/sjira/units/chatman-ce23.goal.ttl"
   ],
   "remote_effects": [],
   "local_effects": [
@@ -107,7 +133,7 @@
    },
    "units": {
     "chatman-ce23": {
-     "extractedBy": "llm:claude-opus-5-5@wave-CE0/CE-INTAKE",
+     "extractedBy": "llm:claude-opus-5-5@wf_2755fdff-28e/CE0:build:CE-INTAKE (was the run-less label llm:claude-opus-5-5@wave-CE0/CE-INTAKE; same extraction bytes, re-emitted, no second LLM pass, ARD 5.5)",
      "raw_extract_sha256": "b17a74e187d2bef301db7978a51991b953f5004f3aa924f7cfe10097e98d4c06",
      "corrections": 0,
      "candidates": 46,
@@ -116,21 +142,24 @@
      "view_gates": 12,
      "admitted": 46,
      "orders": 21,
-     "propositions_sha256": "a1e67cce1ca82ea752d8aa4e3a603efce08fdbf5b3d7bc6dd91ab4fe168adebd",
-     "orders_sha256": "01cd0ae2d743a3be370b4e7cd719be6d684cc81db3e2626cfa3bcd4e693963a2"
+     "propositions_sha256": "e32e8cac3624c387863463690d2c9930b90033ee1e83bb14c911360821297aae",
+     "orders_sha256": "09250f7fbd0f7b45e3e8f485c93ba0954276f6d01be67fc52649642241aaa809",
+     "candidates_sha256": "62f0d124dadf024630dd08d8e6aaa0766c2a83218a4eb0fdf18050af5d590021"
     },
     "chatman-ce23-12-bench": {
      "extractedBy": "llm:claude-opus-5-5@wf_a0af447e-5fa/bench:design (reused; ARD 5.5 forbids a second LLM pass)",
      "raw_extract_sha256": "6186da0a069f32fbf5e915028b1668b0c2052c831c8f265802e21d0b137e5bf8",
-     "corrections": 6,
+     "corrections": 0,
      "candidates": 19,
-     "required": 14,
+     "required": 17,
      "view_root": "GC-CE-26.9.23",
      "view_gates": 1,
      "admitted": 19,
-     "orders": 6,
-     "propositions_sha256": "64f6012e1d08f73651ceffcd58c85f08ace3ea6c70f29204e18f8075c9d83fc6",
-     "orders_sha256": "c2abcd6bbb4975a6c242768937e641f156040e76f713f092e29882ce1513b150"
+     "orders": 9,
+     "propositions_sha256": "4c124874c986a70e6687c9d6ac7b46e660d963745892d5b5b9cd911908cf6018",
+     "orders_sha256": "6201a0732fd2181142d90e61dfb77d8d73dffefc2e4af0e946715ff59438b432",
+     "candidates_sha256": "1e50ec731527374b311bbf21b6c5588e4028f5ceaebc32c6ad2f0d731c563d87",
+     "extraction_equals_raw": true
     },
     "chatman-ce23-12-standings": {
      "extractedBy": "llm:claude-opus-5-5@wf_a0af447e-5fa/bench:design (reused)",
@@ -143,142 +172,292 @@
      "admitted": 30,
      "orders": 24,
      "propositions_sha256": "c92d6c8fa3f056335d7cae3e1b309271144754cc00d7bfb3f41639fae02af12c",
-     "orders_sha256": "d7643c129b4620f820776d155863383f6ff5e4ab5551f0a1a92e8085de3130b5"
+     "orders_sha256": "d7643c129b4620f820776d155863383f6ff5e4ab5551f0a1a92e8085de3130b5",
+     "candidates_sha256": "1e90aad1fdbbd2c1858272fec5b463a3ade122efc659b42f7cfa33bb6576934c"
     }
    },
-   "orders_total": 51,
+   "orders_total": 54,
    "corrections": {
     "path": "release/v26.9.23/sjira/candidates/corrections.json",
-    "sha256": "7f66492ee6b57b2dca2d628b05fd6fb197676af47f1de3533a082661e0fe7fce",
-    "count": 30,
-    "bench": "items 7 (B3 robustness measured), 8 (B4 typed edge failures observed), 10 (B6 near-neighbours route UNKNOWN, measured): required_by CE23-12 -> none and boundary_class LastMile -> Successor, because they state executed-benchmark outcomes (NON_LLM_OPERATIONAL evidence) that the standings rule excludes from v26.9.23",
+    "sha256": "62fdb29cc206c6515ecd12e6f94ea3e8151af06a24c669dd1cabec225ddad358",
+    "count": 24,
+    "bench": "none (repair 1 removed the 6 demotions of items 7 B3 DOE, 8 B4 typed fault states, 10 B6 near-miss UNKNOWN): every bench item is a CE23-12 design obligation (chatman-ce23-12-standings.md BenchmarkDesign A = 'experiment, DOE, corpus, statistics and qualification rules defined'; acceptance 'near-miss/UNKNOWN falsifiers identified', 'DOE support matrix generated'; bench/orders.json BD-04/BD-06/BD-08); compile_check.sh now refuses any bench correction",
     "standings": "24 required_by CE23-12 -> the conjunct gate each item belongs to (BenchmarkDesign 8, MSAContract 8, GeneratedQualificationPlan 8); 5 items stay on CE23-12; the unit view is rooted at CE23-12 with the 3 conjunct gates, so the compiler refuses unless each conjunct is required (witnessed: test_uncorrected_standings_extraction_leaves_conjuncts_uncovered)"
    },
    "capabilities": {
     "construct:chatman-ecosystem-lane": 17,
     "release:semantic-manufacturing": 4,
-    "construct:unassigned (UNKNOWN)": 30
+    "construct:unassigned (UNKNOWN)": 33
    }
-  }
+  },
+  "repair_1_files": [
+   "release/v26.9.23/sjira/README.md",
+   "release/v26.9.23/sjira/candidates/chatman-ce23-12-bench.extract.json",
+   "release/v26.9.23/sjira/candidates/chatman-ce23-12-bench.ttl",
+   "release/v26.9.23/sjira/candidates/chatman-ce23.ttl",
+   "release/v26.9.23/sjira/candidates/corrections.json",
+   "release/v26.9.23/sjira/compile_check.sh",
+   "release/v26.9.23/sjira/compiled/chatman-ce23-12-bench/orders.ttl",
+   "release/v26.9.23/sjira/compiled/chatman-ce23-12-bench/propositions.ttl",
+   "release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl",
+   "release/v26.9.23/sjira/compiled/chatman-ce23/propositions.ttl",
+   "release/v26.9.23/sjira/test_ce23_sjira.py",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-00-subject.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-01-gate-literal.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-02-gate-prose-spans-ce-namespace.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-03-gate-compile-check-lane-gi.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-04-gate-compile-check-int-default.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-05-unittest.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-06-compile-write-runA.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-06-compile-write-runB.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-07-double-run-diff.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-08-new-guards-on-pre-repair-10bb42f1.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-09-mutation-coherent-bench-demotion.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-10-revert-base-a896e16c.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-11-gate-spec-infeasibility.log",
+   "receipts/v26.9.23/CE-INTAKE.gate/r1-12-invariants.log",
+   "receipts/v26.9.23/CE-INTAKE.json"
+  ]
  },
  "replay": {
   "commands": [
+   {
+    "cmd": "pwd; git rev-parse HEAD; git status --porcelain; git -C <lane gi> rev-parse HEAD; git -C ggen_igniter-int rev-parse HEAD; shasum -a 256 prose_spans.py",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 0,
+    "output_sha256": "bdb47db29c7118d220449386dd56569257042ea48511030d5b257bd392c02f85",
+    "summary": "subject 42a3550823836c9f9c7b580273673e072194c4f1, tree clean except this log; judges ggen_igniter 3ed6a7a (lane gi and int); prose_spans sha256:86a0e9b3... (log receipts/v26.9.23/CE-INTAKE.gate/r1-00-subject.log)"
+   },
+   {
+    "cmd": "python3 /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py check --source release/v26.9.23/sjira/chatman-ce23.md --candidates release/v26.9.23/sjira/candidates/chatman-ce23.ttl && sh release/v26.9.23/sjira/compile_check.sh",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 1,
+    "output_sha256": "a73803401961ac45267f83e70217af87527329007b42ae6ceb7775edcb67926c",
+    "summary": "LANE GATE AS WRITTEN on the subject: exit 1, CHECK FAILED 46 refusals over 46 candidates, all iri_mismatch (the frozen tool recomputes IRIs in its default v26.9.23# namespace); compile_check.sh is not reached. Unsatisfiable by any task-conformant subject (see r1-11); this is the standing's derived_from (log receipts/v26.9.23/CE-INTAKE.gate/r1-01-gate-literal.log)"
+   },
+   {
+    "cmd": "python3 /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py check --source release/v26.9.23/sjira/chatman-ce23.md --candidates release/v26.9.23/sjira/candidates/chatman-ce23.ttl --namespace 'https://ggen-igniter.dev/sjira/chatman-26.9.23#' --prefix ce --require-gates 12 --gate-prefix CE23-",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 0,
+    "output_sha256": "a984008aec9c2506be0f6f4711be074a37ae61b682bd7e9f1fafbfb7e222a15d",
+    "summary": "gate first command with the task's ce: namespace: CHECK OK 46 candidates, CE23-0..11 all covered, required 45 + not_required 1 (log receipts/v26.9.23/CE-INTAKE.gate/r1-02-gate-prose-spans-ce-namespace.log)"
+   },
+   {
+    "cmd": "GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi sh release/v26.9.23/sjira/compile_check.sh",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 0,
+    "output_sha256": "aa139d4c67ef9cd9912f1e5c54e0bf393c6be495f01d396d3dd88f9166d811d3",
+    "summary": "gate second command, lane judge: COMPILE_CHECK OK, 0 REFUSED (corrections incl. the new bench no-correction rule, 3 candidate checks + re-emit equality, partition 16 gates, 3 views, compile_prose --check x3, --admit-goal x4, 16 court scripts) (log receipts/v26.9.23/CE-INTAKE.gate/r1-03-gate-compile-check-lane-gi.log)"
+   },
+   {
+    "cmd": "sh release/v26.9.23/sjira/compile_check.sh",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 0,
+    "output_sha256": "de8f88824771d7f332224d25f6bbb15aebfece1d1f2152e32589e1a6b39a8866",
+    "summary": "same court with the default judge /Users/sac/wt/v26922/fri/ggen_igniter-int @3ed6a7a: COMPILE_CHECK OK; output identical to the lane-judge run below the command line (log receipts/v26.9.23/CE-INTAKE.gate/r1-04-gate-compile-check-int-default.log)"
+   },
+   {
+    "cmd": "GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi python3 -m unittest discover -s release/v26.9.23/sjira -p 'test_*.py' -v",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 0,
+    "output_sha256": "fc58e46dc91587918e8b49268c6ef5614ad17f9d6b8868bd3b9e92748796b106",
+    "summary": "Ran 30 tests, OK, 0 skipped (25 prior + 5 DesignObligationTest); real mix compile_prose and oxigraph stop witness included (log receipts/v26.9.23/CE-INTAKE.gate/r1-05-unittest.log)"
+   },
+   {
+    "cmd": "GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi sh release/v26.9.23/sjira/compile_check.sh --write <scratch>/runA",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 0,
+    "output_sha256": "ce4241e4ade7f7f0cc6d4d9c20f408991d063e926aeac0f54d9398285b4ff233",
+    "summary": "manufacture run A: COMPILE_WRITE OK (log receipts/v26.9.23/CE-INTAKE.gate/r1-06-compile-write-runA.log)"
+   },
+   {
+    "cmd": "GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi sh release/v26.9.23/sjira/compile_check.sh --write <scratch>/runB",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 0,
+    "output_sha256": "29ec08f1bd9bd33419293ba3af9feca9fda06a99aeef2bd25a131fc6650e9fed",
+    "summary": "manufacture run B: COMPILE_WRITE OK (log receipts/v26.9.23/CE-INTAKE.gate/r1-06-compile-write-runB.log)"
+   },
+   {
+    "cmd": "diff -r <scratch>/runA <scratch>/runB && diff -r <scratch>/runA release/v26.9.23/sjira/compiled",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 0,
+    "output_sha256": "7df205dc7bb9e6b21562aa76fefe02132617573ae4d970424f374ade83ef4577",
+    "summary": "two runs byte-identical and equal to the committed compiled/; rdflib WorkOrders chatman-ce23 21 + bench 9 + standings 24 = 54 (log receipts/v26.9.23/CE-INTAKE.gate/r1-07-double-run-diff.log)"
+   },
+   {
+    "cmd": "git archive 10bb42f1 release | tar -x -C <scratch>/pre; copy HEAD's test_ce23_sjira.py + compile_check.sh; unittest DesignObligationTest CorrectionsTest; compile_check.sh",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 1,
+    "output_sha256": "db5ce3d5a939d0658527f12f9c3206463e618435d1c34df5e4db6fbbd1bfd49f",
+    "summary": "anti-vacuity of the repair: on the pre-repair subject the new guards refuse (exit 1): 5/5 DesignObligationTest tests fail (bench corrections present, 6 bench orders, 14 bench items on CE23-12, run-less extractedBy) and compile_check REFUSED 'chatman-ce23-12-bench carries a correction' (log receipts/v26.9.23/CE-INTAKE.gate/r1-08-new-guards-on-pre-repair-10bb42f1.log)"
+   },
+   {
+    "cmd": "(scratch copy of HEAD) re-add the item-7 B3 demotion; compile_check; regenerate (corrections.py apply, prose_spans emit, compile_check --write); compile_check; unittest DesignObligationTest",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 1,
+    "output_sha256": "1d86bbaad95197cc9ca9fad16a633cdfb6dd0e6a19801f755ed3e1bedbbd3f78",
+    "summary": "mutation: uncoherent edit -> REFUSED output_drift (exit 1); coherent mutant (8 bench orders) -> compile_check REFUSED 'bench carries a correction' (exit 1) and DesignObligationTest 4 failures (exit 1) (log receipts/v26.9.23/CE-INTAKE.gate/r1-09-mutation-coherent-bench-demotion.log)"
+   },
+   {
+    "cmd": "git archive a896e16c | tar -x -C <scratch>/base; <corrected lane gate>",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 1,
+    "output_sha256": "fcd098cf2365ab81f68baa93450f21d7c1f073eb5251448e854684641c21bd3a",
+    "summary": "revert to base: exit 1 (FileNotFoundError, release/v26.9.23/sjira absent) (log receipts/v26.9.23/CE-INTAKE.gate/r1-10-revert-base-a896e16c.log)"
+   },
+   {
+    "cmd": "grep prose_spans.py DEFAULT_NAMESPACE/expected/--namespace; sed prose.ex 300-301,441,474-483; grep goal.ttl @prefix ce:",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 0,
+    "output_sha256": "a841304b45bf15ad1d4e5ed08f94f67edfc06757e50bfce8ec402923b2582488",
+    "summary": "why the gate as written cannot pass: prose_spans recomputes <v26.9.23#>P-<h> by default (no env override), compile_prose requires <root namespace>P-<h> = <chatman-26.9.23#>P-<h> (root ce:GC-CE-26.9.23, task binding); no IRI equals both (log receipts/v26.9.23/CE-INTAKE.gate/r1-11-gate-spec-infeasibility.log)"
+   },
+   {
+    "cmd": "cmp prose x3 vs operator originals; cmp raw bench/standings extractions vs bench/candidates; git diff/rev-parse release/v26.9.1; mock grep; git diff --name-status 10bb42f1 HEAD",
+    "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "exit": 0,
+    "output_sha256": "913c4a04376e1e9add5380f005f145b5642f0f4d4cce1e85c59ea8f032696977",
+    "summary": "prose byte-identical (6d788331.., 4146d688.., 80091c45..); raw bench/standings extractions byte-identical to the recorded LLM edge; release/v26.9.1 tree 7e0feef1 at base and HEAD; mock grep exit 1 (no matches); repair touches 11 files under release/v26.9.23/sjira only (log receipts/v26.9.23/CE-INTAKE.gate/r1-12-invariants.log)"
+   },
    {
     "cmd": "for f in chatman-ce23.md chatman-ce23-12-bench.md chatman-ce23-12-standings.md; do cmp /Users/sac/wt/v26922/v26923/$f release/v26.9.23/sjira/$f; done; shasum -a 256 release/v26.9.23/sjira/*.md",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "437b2c9dc53f00ff450603b116dc4df1789395d97c7a6171f25279cdd33c5325",
-    "summary": "the three prose files are byte-identical to the operator originals: chatman-ce23.md sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3, chatman-ce23-12-bench.md sha256:4146d688c21db6e1af51a2187df8056b1a0f977001c817d64fbde0547029b485, chatman-ce23-12-standings.md sha256:80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2 (log receipts/v26.9.23/CE-INTAKE.gate/00-prose-byte-identity.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): the three prose files are byte-identical to the operator originals: chatman-ce23.md sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3, chatman-ce23-12-bench.md sha256:4146d688c21db6e1af51a2187df8056b1a0f977001c817d64fbde0547029b485, chatman-ce23-12-standings.md sha256:80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2 (log receipts/v26.9.23/CE-INTAKE.gate/00-prose-byte-identity.log)"
    },
    {
     "cmd": "sh -c 'python3 /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py check --source release/v26.9.23/sjira/chatman-ce23.md --candidates release/v26.9.23/sjira/candidates/chatman-ce23.ttl; test $? -eq 1'",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "3ba6b4e26f9ad6a86d0013c49c3511ede5580332f1d6458276eeab0b47cbcd9f",
-    "summary": "LANE GATE AS WRITTEN, first command, witnessed refusing (exit 1, wrapped so 0 = refused as observed): REFUSED iri_mismatch on all 46 candidates -- the frozen prose_spans.py recomputes IRIs in its default namespace https://ggen-igniter.dev/sjira/v26.9.23#, while the task binds CE instances to ce: = https://ggen-igniter.dev/sjira/chatman-26.9.23# (compile_prose also requires candidate IRIs in the goal root's namespace); every digest/span/text check passes, only the namespace argument is missing from the gate string; see gate_specification (log receipts/v26.9.23/CE-INTAKE.gate/01-gate-literal-prose-spans.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): LANE GATE AS WRITTEN, first command, witnessed refusing (exit 1, wrapped so 0 = refused as observed): REFUSED iri_mismatch on all 46 candidates -- the frozen prose_spans.py recomputes IRIs in its default namespace https://ggen-igniter.dev/sjira/v26.9.23#, while the task binds CE instances to ce: = https://ggen-igniter.dev/sjira/chatman-26.9.23# (compile_prose also requires candidate IRIs in the goal root's namespace); every digest/span/text check passes, only the namespace argument is missing from the gate string; see gate_specification (log receipts/v26.9.23/CE-INTAKE.gate/01-gate-literal-prose-spans.log)"
    },
    {
     "cmd": "python3 /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py check --source release/v26.9.23/sjira/chatman-ce23.md --candidates release/v26.9.23/sjira/candidates/chatman-ce23.ttl --namespace 'https://ggen-igniter.dev/sjira/chatman-26.9.23#' --prefix ce --require-gates 12 --gate-prefix CE23-",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "5fa1717cbb4f50e87dcf42ccb86f712d425a2d72de1bf5dc124cbbb892c4f5b1",
-    "summary": "LANE GATE, first command with the ce: namespace: CHECK OK 46 candidates bound to chatman-ce23.md sha256:6d788331..; gates CE23-0=3 CE23-1=3 CE23-2=4 CE23-3=5 CE23-4=3 CE23-5=3 CE23-6=7 CE23-7=2 CE23-8=2 CE23-9=2 CE23-10=1 CE23-11=2; required 45 + not_required 1 (log receipts/v26.9.23/CE-INTAKE.gate/02-gate-prose-spans-ce-namespace.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): LANE GATE, first command with the ce: namespace: CHECK OK 46 candidates bound to chatman-ce23.md sha256:6d788331..; gates CE23-0=3 CE23-1=3 CE23-2=4 CE23-3=5 CE23-4=3 CE23-5=3 CE23-6=7 CE23-7=2 CE23-8=2 CE23-9=2 CE23-10=1 CE23-11=2; required 45 + not_required 1 (log receipts/v26.9.23/CE-INTAKE.gate/02-gate-prose-spans-ce-namespace.log)"
    },
    {
     "cmd": "GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi sh release/v26.9.23/sjira/compile_check.sh",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "f42f876c1b804c7b6624e48c1b55cc254748b80efc85df8afb85c23c47b6e85e",
-    "summary": "LANE GATE second command, judge = lane ggen_igniter worktree at 3ed6a7afc51fcfc652cfa72f75680d7fa1543bc8 (fresh _build/test under the elixir 1.18.4-otp-27 / erlang 27.2.4 pin): COMPILE_CHECK OK -- corrections (bench=6, standings=24), 3 candidate checks with --extract re-emit equality, partition of 16 gates, 3 view checks, compile_prose --check x3 (46/19/30 admitted; 21/6/24 orders), --admit-goal x4 (goal.ttl 341 triples 18 GoalCheckpoints 0 WorkOrders; 3 views), 16 court scripts; 0 REFUSED lines (log receipts/v26.9.23/CE-INTAKE.gate/03-gate-compile-check-lane-gi.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): LANE GATE second command, judge = lane ggen_igniter worktree at 3ed6a7afc51fcfc652cfa72f75680d7fa1543bc8 (fresh _build/test under the elixir 1.18.4-otp-27 / erlang 27.2.4 pin): COMPILE_CHECK OK -- corrections (bench=6, standings=24), 3 candidate checks with --extract re-emit equality, partition of 16 gates, 3 view checks, compile_prose --check x3 (46/19/30 admitted; 21/6/24 orders), --admit-goal x4 (goal.ttl 341 triples 18 GoalCheckpoints 0 WorkOrders; 3 views), 16 court scripts; 0 REFUSED lines (log receipts/v26.9.23/CE-INTAKE.gate/03-gate-compile-check-lane-gi.log)"
    },
    {
     "cmd": "sh release/v26.9.23/sjira/compile_check.sh",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "f42f876c1b804c7b6624e48c1b55cc254748b80efc85df8afb85c23c47b6e85e",
-    "summary": "same court with the default judge /Users/sac/wt/v26922/fri/ggen_igniter-int (HEAD 3ed6a7afc51fcfc652cfa72f75680d7fa1543bc8, read only via a private APFS build clone): COMPILE_CHECK OK, byte-identical log to the lane-judge run (log receipts/v26.9.23/CE-INTAKE.gate/04-gate-compile-check-int-default.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): same court with the default judge /Users/sac/wt/v26922/fri/ggen_igniter-int (HEAD 3ed6a7afc51fcfc652cfa72f75680d7fa1543bc8, read only via a private APFS build clone): COMPILE_CHECK OK, byte-identical log to the lane-judge run (log receipts/v26.9.23/CE-INTAKE.gate/04-gate-compile-check-int-default.log)"
    },
    {
     "cmd": "GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi python3 -m unittest discover -s release/v26.9.23/sjira -p 'test_*.py' -v",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "e2db194604126287983ef56c7e4b3e862c7dde028889f5d210897f0f8b3fe965",
-    "summary": "25 Chicago tests OK, 0 skipped: stop query (bare false, 15 crown ALIVE true, each of 15 missing false, non-ALIVE receipt, CE23-11 not a term, deleted gate, open/Successor/terminal/tag orders), corrections refusals (hand edit, dropped corrections, quote guard, uncorrectable field), unit views (partition gap, source pin, hand-edited view), one-byte prose mutation, real compile_prose refusals (uncovered_gate CE23-10; raw standings extraction leaves the 3 conjuncts uncovered; bench candidates vs chatman-ce23 view provenance_mismatch), oxigraph stop witness STOP=true with 15 crown gates, false without CE23-12-MSAContract (log receipts/v26.9.23/CE-INTAKE.gate/05-unittest.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): 25 Chicago tests OK, 0 skipped: stop query (bare false, 15 crown ALIVE true, each of 15 missing false, non-ALIVE receipt, CE23-11 not a term, deleted gate, open/Successor/terminal/tag orders), corrections refusals (hand edit, dropped corrections, quote guard, uncorrectable field), unit views (partition gap, source pin, hand-edited view), one-byte prose mutation, real compile_prose refusals (uncovered_gate CE23-10; raw standings extraction leaves the 3 conjuncts uncovered; bench candidates vs chatman-ce23 view provenance_mismatch), oxigraph stop witness STOP=true with 15 crown gates, false without CE23-12-MSAContract (log receipts/v26.9.23/CE-INTAKE.gate/05-unittest.log)"
    },
    {
     "cmd": "git archive a896e16c68af1315be3492e39939c354ce46b10c release receipts | tar -x -C <scratch>; cd <scratch>; sh -c '<corrected lane gate>; test $? -ne 0'",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "3cc72e0f0e13f0eb5064a21f092d51db8c5114c14d7b0235746e5fb44b519ae7",
-    "summary": "REVERT MUTATION: at the base subject (lane diff reverted) the corrected lane gate fails (prose_spans FileNotFoundError: no chatman-ce23.md); wrapped so 0 = gate failed as required (log receipts/v26.9.23/CE-INTAKE.gate/06-revert-base-a896e16c.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): REVERT MUTATION: at the base subject (lane diff reverted) the corrected lane gate fails (prose_spans FileNotFoundError: no chatman-ce23.md); wrapped so 0 = gate failed as required (log receipts/v26.9.23/CE-INTAKE.gate/06-revert-base-a896e16c.log)"
    },
    {
     "cmd": "(scratch copy of HEAD; one byte of compiled/chatman-ce23-12-standings/orders.ttl changed) GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi sh -c 'sh release/v26.9.23/sjira/compile_check.sh; test $? -eq 1'",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "b7c311ee7e15c13fdea2cb5eedc8f0fcaebe7b320b1fd8fc3fa098b74613ad3f",
-    "summary": "ONE-BYTE MUTATION of a compiled order file: compile_prose --check REFUSED(output_drift), COMPILE_CHECK REFUSED exit 1; wrapped so 0 = refused (log receipts/v26.9.23/CE-INTAKE.gate/07-mutation-one-byte-orders.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): ONE-BYTE MUTATION of a compiled order file: compile_prose --check REFUSED(output_drift), COMPILE_CHECK REFUSED exit 1; wrapped so 0 = refused (log receipts/v26.9.23/CE-INTAKE.gate/07-mutation-one-byte-orders.log)"
    },
    {
     "cmd": "(scratch copy of HEAD; goal.ttl CE23-9 court command repointed to CE23-10.sh) GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi sh -c 'sh release/v26.9.23/sjira/compile_check.sh; test $? -eq 1'",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "7944a366ff782d40a1a6002e68d34068d91443abdef84e29c9cc155324c30be3",
-    "summary": "GOAL MUTATION: unit view output_drift and 'gate CE23-9 court command is sh release/v26.9.23/courts/CE23-10.sh, expected ...CE23-9.sh', COMPILE_CHECK REFUSED exit 1; wrapped so 0 = refused (log receipts/v26.9.23/CE-INTAKE.gate/08-mutation-court-command.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): GOAL MUTATION: unit view output_drift and 'gate CE23-9 court command is sh release/v26.9.23/courts/CE23-10.sh, expected ...CE23-9.sh', COMPILE_CHECK REFUSED exit 1; wrapped so 0 = refused (log receipts/v26.9.23/CE-INTAKE.gate/08-mutation-court-command.log)"
    },
    {
     "cmd": "GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi sh release/v26.9.23/sjira/compile_check.sh --write <scratch>/runA",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "2e9170887e2fbe916f62ac386064516771c5aaff32ab6d463394f962507d9865",
-    "summary": "compile run 1 on the committed head: 21 + 6 + 24 WorkOrders written (log receipts/v26.9.23/CE-INTAKE.gate/09-compile-write-runA.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): compile run 1 on the committed head: 21 + 6 + 24 WorkOrders written (log receipts/v26.9.23/CE-INTAKE.gate/09-compile-write-runA.log)"
    },
    {
     "cmd": "GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi sh release/v26.9.23/sjira/compile_check.sh --write <scratch>/runB",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "de062cd81ac10387da68dc9323ed9f73a82aeec54a01a50cef4316336e8f755a",
-    "summary": "compile run 2 on the committed head (log receipts/v26.9.23/CE-INTAKE.gate/09-compile-write-runB.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): compile run 2 on the committed head (log receipts/v26.9.23/CE-INTAKE.gate/09-compile-write-runB.log)"
    },
    {
     "cmd": "diff -r <scratch>/runA <scratch>/runB && diff -r <scratch>/runA release/v26.9.23/sjira/compiled",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "summary": "the two compile runs are byte-identical to each other and to the committed compiled/ (empty diff) (log receipts/v26.9.23/CE-INTAKE.gate/10-double-run-diff.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): the two compile runs are byte-identical to each other and to the committed compiled/ (empty diff) (log receipts/v26.9.23/CE-INTAKE.gate/10-double-run-diff.log)"
    },
    {
     "cmd": "git diff --stat a896e16c68af1315be3492e39939c354ce46b10c HEAD -- release/v26.9.1; git rev-parse HEAD:release/v26.9.1",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "239d8cecde9a1e5ae45b126ea5420d20e78e8553ebfb7540cb24f930b6e46383",
-    "summary": "release/v26.9.1 untouched: empty diff, tree 7e0feef1b137bea72fe1cf22a599636f77b0e47c (same as the CE23-0 receipt) (log receipts/v26.9.23/CE-INTAKE.gate/11-release-v26.9.1-untouched.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): release/v26.9.1 untouched: empty diff, tree 7e0feef1b137bea72fe1cf22a599636f77b0e47c (same as the CE23-0 receipt) (log receipts/v26.9.23/CE-INTAKE.gate/11-release-v26.9.1-untouched.log)"
    },
    {
     "cmd": "sh -c \"grep -rn 'unittest.mock\\|Mock(\\|MagicMock\\|patch(\\|monkeypatch' release/v26.9.23; test $? -eq 1\"",
     "cwd": "/Users/sac/wt/v26922/v23/CE-INTAKE",
     "exit": 0,
     "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "summary": "no mock/patch/monkeypatch anywhere in release/v26.9.23 (grep exit 1 = no match; wrapped so 0 = none) (log receipts/v26.9.23/CE-INTAKE.gate/12-mock-grep.log)"
+    "summary": "PRIOR ROUND (subject 35b3ed07, superseded by the r1 commands above): no mock/patch/monkeypatch anywhere in release/v26.9.23 (grep exit 1 = no match; wrapped so 0 = none) (log receipts/v26.9.23/CE-INTAKE.gate/12-mock-grep.log)"
    }
   ],
-  "durable_location": "receipts/v26.9.23/CE-INTAKE.gate/ (committed with this receipt); release/v26.9.23/sjira/compile_check.sh re-derives every artifact"
+  "durable_location": "receipts/v26.9.23/CE-INTAKE.gate/ (r1-*.log = repair round 1 on subject 42a3550823836c9f9c7b580273673e072194c4f1; unprefixed logs = build round on 35b3ed07); release/v26.9.23/sjira/compile_check.sh re-derives every artifact"
  },
  "gate_specification": {
   "as_written": "python3 /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py check --source release/v26.9.23/sjira/chatman-ce23.md --candidates release/v26.9.23/sjira/candidates/chatman-ce23.ttl && sh release/v26.9.23/sjira/compile_check.sh",
-  "as_written_exit": 1,
-  "defect": "the literal prose_spans check omits --namespace/--prefix, so the frozen tool recomputes candidate IRIs in the v23 namespace and refuses iri_mismatch x46; the task itself binds CE instances to the ce: namespace and compile_prose requires candidate IRIs in the root's namespace, so no candidate set can satisfy both the literal string and the lane contract",
+  "as_written_exit_at_subject": 1,
+  "as_written_output": "CHECK FAILED: 46 refusal(s) over 46 candidates (46 x iri_mismatch)",
+  "defect": "the literal prose_spans check omits --namespace/--prefix, so the frozen tool (sha256 86a0e9b3..., read only, no env override) recomputes candidate IRIs in https://ggen-igniter.dev/sjira/v26.9.23#; the task binds CE instances to ce: = https://ggen-igniter.dev/sjira/chatman-26.9.23# and compile_prose derives proposition IRIs from the goal root's namespace (prose.ex:300, 441, 474-482), so no candidate set satisfies both the literal string and the lane contract (r1-11). Fix location: the wave spec's gate string, not the subject (GATE court: 'The lane content needs no change'); the driver's continuation lane CE-INTAKE-C in lanes/scan-plan.json already passes --namespace from a NAMESPACE file",
   "corrected": "python3 /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py check --source release/v26.9.23/sjira/chatman-ce23.md --candidates release/v26.9.23/sjira/candidates/chatman-ce23.ttl --namespace 'https://ggen-igniter.dev/sjira/chatman-26.9.23#' --prefix ce --require-gates 12 --gate-prefix CE23- && sh release/v26.9.23/sjira/compile_check.sh",
-  "corrected_exit": 0
+  "corrected_exit_at_subject": 0,
+  "equivalent_single_command": "sh release/v26.9.23/sjira/compile_check.sh (it already runs the ce:-namespaced prose_spans check for all 3 units, with --require-gates 12 for chatman-ce23)"
  },
  "residue": [
-  "30 CE23-12 orders carry capability construct:unassigned (typed UNKNOWN): the reused bench/standings extraction has no requiresCapability hints and corrections.py admits only required_by/boundary_class corrections; capability assignment (chatman release/v26.9.23/bench vs ggen-marketplace nonllm-class-qualification-pack, per bench/DESIGN.md) is open for CE-LANEPLAN or a recorded re-extraction",
+  "33 CE23-12 orders (24 standings + 9 bench) carry capability construct:unassigned (typed UNKNOWN): the reused bench/standings extraction has no requiresCapability hints and corrections.py admits only required_by/boundary_class corrections; capability assignment (chatman release/v26.9.23/bench vs ggen-marketplace nonllm-class-qualification-pack, per bench/DESIGN.md) is open for CE-LANEPLAN or a recorded re-extraction",
+  "the lane gate string as written is unsatisfiable (gate_specification); integrate step 4 re-running it literally will refuse this lane until the wave spec carries --namespace (CE-INTAKE-C already does)",
   "the CE23 root stop court (CE23-9) does not exist; stop_witness.exs evaluates the root stopQuery on oxigraph the way mix xaas.stop_court does, with synthetic ALIVE nodes, and asserts no receipt",
   "unit_goal.py / corrections.py exist because the frozen compile_prose and prose_spans.py lack multi-unit goals and correction ledgers (HANDWRITTEN.md rows; successor GC-26.9.24 generator work)",
-  "the Elixir sparql 0.3.12 engine (used by compile_prose for prose/*.rq) cannot evaluate the root stopQuery (Protocol.UndefinedError on :\"$undefined\"); the stop courts use oxigraph, which evaluates it (witnessed)"
+  "the Elixir sparql 0.3.12 engine (used by compile_prose for prose/*.rq) cannot evaluate the root stopQuery (Protocol.UndefinedError on :\"$undefined\"); the stop courts use oxigraph, which evaluates it (witnessed)",
+  "layout differs from the CE-INTAKE-C target (units/<u>/{source.md,extract.json,candidates.ttl,goal.ttl,compiled/}, NAMESPACE, courts/intake.sh); normalization by git mv is that lane's order"
  ],
  "standing": {
-  "value": "ALIVE",
-  "derived_from": "at subject 35b3ed073dbc3785b7931eea7ba3c8d657a4b4e3: the corrected lane gate (replay commands 3 and 4, exit 0: prose_spans check in the ce: namespace + compile_check.sh with the lane judge and with the default ggen_igniter-int judge, both at ggen_igniter 3ed6a7a), 25 Chicago tests (command 6), two byte-identical compile runs equal to the committed compiled/ (commands 10-12), release/v26.9.1 untouched (command 13); anti-vacuity: the revert to base and two mutations make the gate fail (commands 7-9, wrapped). The lane gate string as written refuses (command 2) only on its missing namespace argument -- recorded under gate_specification, not hidden"
+  "value": "PARTIAL_ALIVE",
+  "broken_term": "R_missing_standing",
+  "broken_term_detail": "gate_specification: the lane gate as written exits 1 on this subject for a reason outside the subject (missing --namespace/--prefix, unsatisfiable under the task's ce: binding, r1-11)",
+  "derived_from": "at subject 42a3550823836c9f9c7b580273673e072194c4f1: the lane gate as written exits 1 (replay command 2, 46 x iri_mismatch), so ALIVE is not derivable from the specified gate. Scoped sub-standing, not the lane standing: under the corrected gate (commands 3-5, exit 0 with the lane judge and the default ggen_igniter-int judge at 3ed6a7a), 30 Chicago tests (command 6), two byte-identical manufacture runs equal to the committed compiled/ (commands 7-9), anti-vacuity (commands 10-12 refuse), invariants (command 14) the subject holds; it becomes ALIVE only when a gate string with the ce: namespace is the specified gate and is re-run on the exact head",
+  "subject_standing_under_corrected_gate": "ALIVE (observed on 42a3550823836c9f9c7b580273673e072194c4f1)"
+ },
+ "court_repair_1": {
+  "GATE": {
+   "verdict": "refuted",
+   "broken_term": "R_missing_standing",
+   "resolution": "standing no longer ALIVE over a self-amended gate: PARTIAL_ALIVE derived from the gate as written (exit 1) with the corrected gate recorded separately; the gate-string defect is outside the lane (wave spec) and is proven unsatisfiable in r1-11; no subject change can make it pass without violating the ce: namespace binding"
+  },
+  "DOCTRINE": {
+   "verdict": "refuted",
+   "broken_term": "requirement_set (+ standing, + PVOCAB extractedBy)",
+   "resolution": "6 bench corrections removed (B3/B4/B6 stay required by CE23-12; bench 6 -> 9 orders, the scan probe's expected 9); compile_check.sh refuses any bench correction; DesignObligationTest guards it; chatman-ce23 extractedBy re-emitted with run id wf_2755fdff-28e; standing PARTIAL_ALIVE"
+  },
+  "REVERT-MUTATION": {
+   "verdict": "pass",
+   "resolution": "re-witnessed for the new commits: r1-08 (new guards refuse the pre-repair subject), r1-09 (coherent demotion mutant refused), r1-10 (revert to base refused)"
+  }
  }
 }

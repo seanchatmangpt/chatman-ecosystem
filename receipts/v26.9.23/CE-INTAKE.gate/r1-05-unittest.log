@@ -1,0 +1,37 @@
+$ GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi python3 -m unittest discover -s release/v26.9.23/sjira -p 'test_*.py' -v
+test_committed_candidates_verify (test_ce23_sjira.CandidatesTest.test_committed_candidates_verify) ... ok
+test_one_byte_of_prose_changed_is_refused (test_ce23_sjira.CandidatesTest.test_one_byte_of_prose_changed_is_refused) ... ok
+test_candidates_of_another_prose_are_refused_by_the_view_pin (test_ce23_sjira.CompilerTest.test_candidates_of_another_prose_are_refused_by_the_view_pin) ... ok
+test_committed_units_compile_and_recompute (test_ce23_sjira.CompilerTest.test_committed_units_compile_and_recompute) ... ok
+test_gate_without_a_required_proposition_is_refused (test_ce23_sjira.CompilerTest.test_gate_without_a_required_proposition_is_refused) ... ok
+test_oxigraph_stop_witness_agrees_with_the_crown (test_ce23_sjira.CompilerTest.test_oxigraph_stop_witness_agrees_with_the_crown) ... ok
+test_uncorrected_standings_extraction_leaves_conjuncts_uncovered (test_ce23_sjira.CompilerTest.test_uncorrected_standings_extraction_leaves_conjuncts_uncovered) ... ok
+test_committed_extractions_recompute (test_ce23_sjira.CorrectionsTest.test_committed_extractions_recompute) ... ok
+test_dropping_the_corrections_is_refused (test_ce23_sjira.CorrectionsTest.test_dropping_the_corrections_is_refused) ... ok
+test_hand_edit_of_a_generated_extraction_is_refused (test_ce23_sjira.CorrectionsTest.test_hand_edit_of_a_generated_extraction_is_refused) ... ok
+test_quote_guard_and_uncorrectable_fields_are_refused (test_ce23_sjira.CorrectionsTest.test_quote_guard_and_uncorrectable_fields_are_refused) ... ok
+test_raw_extractions_are_the_recorded_llm_edge (test_ce23_sjira.CorrectionsTest.test_raw_extractions_are_the_recorded_llm_edge) ... ok
+test_bench_extraction_is_the_raw_llm_edge (test_ce23_sjira.DesignObligationTest.test_bench_extraction_is_the_raw_llm_edge) ... ok
+test_bench_unit_compiles_to_nine_design_orders (test_ce23_sjira.DesignObligationTest.test_bench_unit_compiles_to_nine_design_orders) ... ok
+test_every_candidate_names_its_extraction_run (test_ce23_sjira.DesignObligationTest.test_every_candidate_names_its_extraction_run) ... ok
+test_every_raw_ce23_12_bench_item_stays_required_by_ce23_12 (test_ce23_sjira.DesignObligationTest.test_every_raw_ce23_12_bench_item_stays_required_by_ce23_12) ... ok
+test_no_correction_touches_a_bench_item (test_ce23_sjira.DesignObligationTest.test_no_correction_touches_a_bench_item) ... ok
+test_all_crown_gates_alive_is_true (test_ce23_sjira.StopQueryTest.test_all_crown_gates_alive_is_true) ... ok
+test_deleted_crown_gate_makes_stop_false (test_ce23_sjira.StopQueryTest.test_deleted_crown_gate_makes_stop_false) ... ok
+test_each_missing_crown_gate_makes_stop_false (test_ce23_sjira.StopQueryTest.test_each_missing_crown_gate_makes_stop_false) ... ok
+test_goal_asserts_no_receipt_and_stop_is_false (test_ce23_sjira.StopQueryTest.test_goal_asserts_no_receipt_and_stop_is_false) ... ok
+test_non_alive_receipt_does_not_count (test_ce23_sjira.StopQueryTest.test_non_alive_receipt_does_not_count) ... ok
+test_open_order_under_a_crown_gate_keeps_stop_false (test_ce23_sjira.StopQueryTest.test_open_order_under_a_crown_gate_keeps_stop_false) ... ok
+test_tag_gate_is_a_consequence_not_a_term (test_ce23_sjira.StopQueryTest.test_tag_gate_is_a_consequence_not_a_term) ... ok
+test_terminal_order_receipt_closes_and_tag_orders_are_outside (test_ce23_sjira.StopQueryTest.test_terminal_order_receipt_closes_and_tag_orders_are_outside) ... ok
+test_committed_views_and_partition_hold (test_ce23_sjira.UnitGoalTest.test_committed_views_and_partition_hold) ... ok
+test_gate_pinned_to_other_bytes_is_refused (test_ce23_sjira.UnitGoalTest.test_gate_pinned_to_other_bytes_is_refused) ... ok
+test_gate_without_a_unit_is_a_partition_gap (test_ce23_sjira.UnitGoalTest.test_gate_without_a_unit_is_a_partition_gap) ... ok
+test_hand_edited_view_is_refused (test_ce23_sjira.UnitGoalTest.test_hand_edited_view_is_refused) ... ok
+test_view_roots_and_gates (test_ce23_sjira.UnitGoalTest.test_view_roots_and_gates) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 38.498s
+
+OK
+exit=0

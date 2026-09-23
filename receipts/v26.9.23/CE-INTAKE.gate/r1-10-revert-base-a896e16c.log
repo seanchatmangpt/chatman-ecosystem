@@ -1,0 +1,6 @@
+$ git archive a896e16c | tar -x -C <scratch>/base; cd <scratch>/base; <corrected lane gate>
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'release/v26.9.23/sjira/chatman-ce23.md'
+exit=1
+ls: release/v26.9.23/sjira: No such file or directory
