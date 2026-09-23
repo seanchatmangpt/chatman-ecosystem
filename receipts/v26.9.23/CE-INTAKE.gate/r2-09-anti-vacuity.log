@@ -1,0 +1,32 @@
+$ s=$(mktemp -d) && git archive a896e16c | tar -x -C "$s" && cd "$s" && python3 /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py check --source release/v26.9.23/sjira/chatman-ce23.md --candidates release/v26.9.23/sjira/candidates/chatman-ce23.ttl --namespace 'https://ggen-igniter.dev/sjira/chatman-26.9.23#' --prefix ce --require-gates 12 --gate-prefix CE23- && sh release/v26.9.23/sjira/compile_check.sh; rc=$?; cd /; rm -rf "$s"; exit $rc
+Traceback (most recent call last):
+  File "/Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py", line 676, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py", line 672, in main
+    return cmd_emit(args) if args.command == "emit" else cmd_check(args)
+                                                         ~~~~~~~~~^^^^^^
+  File "/Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py", line 574, in cmd_check
+    source = Path(args.source).read_bytes()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 777, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'release/v26.9.23/sjira/chatman-ce23.md'
+exit=1
+$ s=$(mktemp -d) && git archive 96fb0bfbb6aa10e5750fcd8942b46c68690620a2 | tar -x -C "$s" && printf "#" >> "$s/release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl" && GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi sh "$s/release/v26.9.23/sjira/compile_check.sh" > "$s/out" 2>&1; rc=$?; grep REFUSED "$s/out"; rm -rf "$s"; exit $rc
+REFUSED(output_drift) /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.DunLpMEZzv/release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl: existing output differs from the recomputed bytes
+REFUSED: 1 refusal(s); nothing written
+REFUSED: compile_prose --check chatman-ce23
+COMPILE_CHECK REFUSED
+exit=1
+$ s=$(mktemp -d) && git archive 96fb0bfbb6aa10e5750fcd8942b46c68690620a2 | tar -x -C "$s" && sed -i "" "s/elif got != want:/elif False:/" "$s/release/v26.9.23/sjira/replay_court.py" && grep -c "elif False:" "$s/release/v26.9.23/sjira/replay_court.py" && cd "$s/release/v26.9.23/sjira" && python3 -m unittest test_ce23_sjira.ReplayCourtTest > "$s/out" 2>&1; rc=$?; grep -E "^(FAIL|Ran|FAILED)" "$s/out"; cd /; rm -rf "$s"; exit $rc
+1
+FAIL: test_four_argument_cmp_recorded_as_exit_0_is_refused (test_ce23_sjira.ReplayCourtTest.test_four_argument_cmp_recorded_as_exit_0_is_refused)
+FAIL: test_placeholder_and_unterminated_blocks_are_refused (test_ce23_sjira.ReplayCourtTest.test_placeholder_and_unterminated_blocks_are_refused)
+FAIL: test_receipt_replay_commands_are_re_executed_in_their_cwd (test_ce23_sjira.ReplayCourtTest.test_receipt_replay_commands_are_re_executed_in_their_cwd)
+Ran 5 tests in 0.666s
+FAILED (failures=3)
+exit=1

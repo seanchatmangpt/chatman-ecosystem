@@ -1,0 +1,20 @@
+$ for f in chatman-ce23.md chatman-ce23-12-bench.md chatman-ce23-12-standings.md; do cmp /Users/sac/wt/v26922/v26923/$f release/v26.9.23/sjira/$f || exit 1; done; shasum -a 256 release/v26.9.23/sjira/chatman-ce23*.md
+4146d688c21db6e1af51a2187df8056b1a0f977001c817d64fbde0547029b485  release/v26.9.23/sjira/chatman-ce23-12-bench.md
+80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2  release/v26.9.23/sjira/chatman-ce23-12-standings.md
+6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3  release/v26.9.23/sjira/chatman-ce23.md
+exit=0
+$ cmp release/v26.9.23/sjira/candidates/raw/chatman-ce23-12-bench.extract.json /Users/sac/wt/v26922/v26923/bench/candidates/chatman-ce23-12-bench.extract.json && cmp release/v26.9.23/sjira/candidates/raw/chatman-ce23-12-standings.extract.json /Users/sac/wt/v26922/v26923/bench/candidates/chatman-ce23-12-standings.extract.json
+exit=0
+$ test "$(git rev-parse 96fb0bfbb6aa10e5750fcd8942b46c68690620a2:release/v26.9.1)" = "$(git rev-parse a896e16c:release/v26.9.1)" && git rev-parse 96fb0bfbb6aa10e5750fcd8942b46c68690620a2:release/v26.9.1
+7e0feef1b137bea72fe1cf22a599636f77b0e47c
+exit=0
+$ grep -rn 'unittest.mock\|Mock(\|MagicMock\|patch(\|monkeypatch' release/v26.9.23
+exit=1
+$ git diff --name-status 200d83cb 96fb0bfbb6aa10e5750fcd8942b46c68690620a2
+M	HANDWRITTEN.md
+M	release/v26.9.23/sjira/README.md
+A	release/v26.9.23/sjira/replay_court.py
+M	release/v26.9.23/sjira/test_ce23_sjira.py
+exit=0
+$ git diff --quiet 42a35508 96fb0bfbb6aa10e5750fcd8942b46c68690620a2 -- release/v26.9.23/sjira/goal.ttl release/v26.9.23/sjira/candidates release/v26.9.23/sjira/units release/v26.9.23/sjira/compiled release/v26.9.23/sjira/compile_check.sh release/v26.9.23/sjira/corrections.py release/v26.9.23/sjira/unit_goal.py release/v26.9.23/courts
+exit=0

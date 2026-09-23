@@ -1,0 +1,33 @@
+$ for f in receipts/v26.9.23/CE-INTAKE.gate/r2-0*.log; do python3 release/v26.9.23/sjira/replay_court.py log --log "$f" || exit 1; done
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-00-subject.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE-INTAKE.gate/r2-00-subject.log replay to their recorded exit
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-01-gate-literal.log:1: exit=1
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE-INTAKE.gate/r2-01-gate-literal.log replay to their recorded exit
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-02-gate-corrected-lane-gi.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE-INTAKE.gate/r2-02-gate-corrected-lane-gi.log replay to their recorded exit
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-03-gate-corrected-int-default.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE-INTAKE.gate/r2-03-gate-corrected-int-default.log replay to their recorded exit
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-04-unittest.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE-INTAKE.gate/r2-04-unittest.log replay to their recorded exit
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-05-double-run.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE-INTAKE.gate/r2-05-double-run.log replay to their recorded exit
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-06-workorders.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE-INTAKE.gate/r2-06-workorders.log replay to their recorded exit
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-07-invariants.log:1: exit=0
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-07-invariants.log:6: exit=0
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-07-invariants.log:8: exit=0
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-07-invariants.log:11: exit=1
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-07-invariants.log:13: exit=0
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-07-invariants.log:19: exit=0
+REPLAY OK: 6/6 blocks of receipts/v26.9.23/CE-INTAKE.gate/r2-07-invariants.log replay to their recorded exit
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-08-erratum-r1.log:1: exit=1
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-08-erratum-r1.log:9: exit=2
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-08-erratum-r1.log:13: exit=1
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-08-erratum-r1.log:19: exit=0
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-08-erratum-r1.log:24: exit=0
+REPLAY OK: 5/5 blocks of receipts/v26.9.23/CE-INTAKE.gate/r2-08-erratum-r1.log replay to their recorded exit
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-09-anti-vacuity.log:1: exit=1
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-09-anti-vacuity.log:19: exit=1
+OK receipts/v26.9.23/CE-INTAKE.gate/r2-09-anti-vacuity.log:25: exit=1
+REPLAY OK: 3/3 blocks of receipts/v26.9.23/CE-INTAKE.gate/r2-09-anti-vacuity.log replay to their recorded exit
+exit=0
