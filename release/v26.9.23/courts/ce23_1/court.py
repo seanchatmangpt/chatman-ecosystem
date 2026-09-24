@@ -21,8 +21,18 @@ that diverges from the head under release/v26.9.1 or the subject is itself refus
   A2 checkout    the working tree holds no change under the subject paths
   A3 pointers    release/v26.9.23/{manifest,constitutional-role-crosswalk}.toml are
                  symlinks to their render (mode 120000, target out/<name>), not copies
-  A4 independent every path ggen.toml reads (ontology source, templates dir, pack path,
-                 extra_ontologies) is relative and inside release/v26.9.23
+  A4 independent ggen.toml is closed-world: every key is one the court judges (project.name,
+                 ontology.source/prefixes, templates.dir, packs.<n>.path/lock/extra_ontologies,
+                 law.rules/gates/shapes), anything else (e.g. law.reflexive, which reads the
+                 uncommitted .ggen-v2/receipt-log.jsonl) is CONFIG_UNJUDGED; every path it
+                 reads is relative, normalized, inside release/v26.9.23 and a committed
+                 regular file or directory of the head (never a symlink or gitlink)
+  A5 contained   every committed entry of the judged slice (release/v26.9.1, the subject,
+                 the committed tools) is a regular file: the only symlinks are the pinned
+                 line pointers (a symlink or gitlink reads bytes the commit does not carry)
+  C1 court       the court judging (CE23-1.sh, court.py, subject.toml as loaded) is
+                 byte-identical to the committed court at the judged head, so the pins the
+                 head is judged against are the head's own
   V1 vendor      every vendor/ggen-marketplace/VENDOR.toml row: the committed tree equals
                  the row's tree and the marketplace object <commit>:<subdir>, the commit is
                  on the published marketplace ref, and ggen.toml takes every pack from a
@@ -49,7 +59,7 @@ that diverges from the head under release/v26.9.1 or the subject is itself refus
                  sjira/compiled/*/orders.ttl (independent of ggen.toml's import list), with
                  CE23-1 rows present
   AV corpus      a synthetic two-commit repository (base: release/v26.9.1 at base_commit;
-                 head: the judged slice) must be ALIVE unmutated (control M0), and each of 17
+                 head: the judged slice) must be ALIVE unmutated (control M0), and each of 23
                  mutants must be refused with its expected codes (and named reason): MV revert
                  of the subject; M1 hand-edited render; M2 a CriticalPath component dropped
                  from the graph, M2b also from the render; M3/M4 a v26.9.1 byte change / new
@@ -57,7 +67,14 @@ that diverges from the head under release/v26.9.1 or the subject is itself refus
                  uncommitted subject edit; M7 edited classification import; M8 version
                  literal; M9 a compiled orders unit dropped from the imports; M10 a re-pinned
                  component; M11 an import read from release/v26.9.1; M12 a classification
-                 source outside the pin; MB an orphan base (see mutants())
+                 source outside the pin; M13 the import an absolute symlink to identical bytes
+                 outside the repository; M14 the import a relative symlink leaving the subject;
+                 M15 law.reflexive; M16 lock = false; M17 a component re-pinned off its ref;
+                 M18 committed court pins that are not the running court's; MB an orphan base
+                 (see mutants())
+
+A clause that finds a committed subject file unreadable in the slice (e.g. a dangling symlink)
+refuses it typed (SUBJECT_UNREADABLE) instead of faulting.
 
 Every subprocess runs real tools (git, ggen, python3) on real files; there is no test double.
 They run under a no-LLM environment: a fresh HOME, a PATH of the resolved directories of
@@ -87,16 +104,33 @@ import sys
 import tempfile
 import tomllib
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Callable
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
-PINS = tomllib.loads((HERE / "subject.toml").read_text(encoding="utf-8"))
+_PIN_BYTES = (HERE / "subject.toml").read_bytes()
+PINS = tomllib.loads(_PIN_BYTES.decode("utf-8"))
 SUBJ = PINS["subject"]
 TOOLS = PINS["tools"]
 SDIR = SUBJ["subject_dir"]
 PRED_DIR = f"release/{SUBJ['predecessor']}"
+# C1: the court as loaded (bytes read once, at import), keyed by its committed path.
+_WRAPPER = HERE.parent / "CE23-1.sh"
+COURT_BYTES: dict[str, bytes | None] = {
+    f"{SDIR}/courts/CE23-1.sh": _WRAPPER.read_bytes() if _WRAPPER.is_file() else None,
+    f"{SDIR}/courts/ce23_1/court.py": Path(__file__).resolve().read_bytes(),
+    f"{SDIR}/courts/ce23_1/subject.toml": _PIN_BYTES,
+}
+# A4: the closed ggen.toml schema the court judges (every other key is CONFIG_UNJUDGED).
+CONFIG_SCHEMA = {
+    "project": {"name": "str"},
+    "ontology": {"source": "path", "prefixes": "prefixes"},
+    "templates": {"dir": "path"},
+    "law": {"rules": "paths", "gates": "paths", "shapes": "paths"},
+}
+PACK_SCHEMA = {"path": "path", "lock": "bool", "extra_ontologies": "paths"}
+REGULAR_MODES = ("100644", "100755")
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 FM = re.compile(r"\[FM-[A-Z]+-[0-9]+\][^\n]{0,240}")
 VERIFY_FIELDS = ("id", "repository", "ref", "ref_check", "sha", "role", "disposition", "standing", "required", "depends_on")
@@ -272,7 +306,8 @@ def judge(root: Path, base: str, env: Env, work: Path) -> Verdict:
         return v
     v.ok("A1", f"{len(required)} subject paths committed under {SDIR}")
     paths = [f"{SDIR}/{p}" for p in ("ggen.toml", "ggen.lock", "release.ttl", "templates", "imports",
-                                      SUBJ["generated_dir"], SUBJ["vendor_dir"], "sjira/compiled", *SUBJ["line_pointers"])]
+                                      SUBJ["generated_dir"], SUBJ["vendor_dir"], "sjira/compiled",
+                                      "courts/CE23-1.sh", "courts/ce23_1", *SUBJ["line_pointers"])]
     dirty = env.out(root, "status", "--porcelain=v1", "--untracked-files=all", "--", *paths)
     if dirty:
         v.refuse("SUBJECT_DIRTY", "A2", f"working tree diverges from the head: {dirty.splitlines()[:6]}")
@@ -289,42 +324,156 @@ def judge(root: Path, base: str, env: Env, work: Path) -> Verdict:
         else:
             v.ok("A3", f"{SDIR}/{name} -> {target}")
 
-    # A4: the sub-project reads only its own directory (independent of release/v26.9.1).
-    config_blob = env.out(root, "show", f"{head}:{SDIR}/ggen.toml")
-    try:
-        config = tomllib.loads(config_blob or "")
-    except tomllib.TOMLDecodeError as exc:
-        v.refuse("SUBJECT_NOT_INDEPENDENT", "A4", f"{SDIR}/ggen.toml is not TOML: {exc}")
-        config = {}
-    refs = [config.get("ontology", {}).get("source"), config.get("templates", {}).get("dir")]
-    for entry in config.get("packs", {}).values():
-        if isinstance(entry, dict):
-            refs += [entry.get("path"), *entry.get("extra_ontologies", [])]
-    outside = [r for r in refs if not isinstance(r, str) or not r or r.startswith("/") or ".." in Path(r).parts]
-    if outside or not config:
-        v.refuse("SUBJECT_NOT_INDEPENDENT", "A4", f"{SDIR}/ggen.toml reads outside {SDIR}: {outside}")
-    else:
-        v.ok("A4", f"{SDIR}/ggen.toml reads only inside {SDIR} ({len(refs)} paths)")
+    config_law(v, root, head, env)      # A4
+    self_contained(v, root, head, env)  # A5
+    court_identity(v, root, head, env)  # C1
 
     # Materialize the exact committed slice.
     slice_dir = work / "slice"
     try:
-        env.archive(root, head, [PRED_DIR, SDIR, TOOLS["verify_release"], *TOOLS["support"]], slice_dir)
+        env.archive(root, head, slice_scope(), slice_dir)
     except RuntimeError as exc:
         v.refuse("SUBJECT_ABSENT", "A1", f"committed slice not materializable: {exc}")
         return v
     sub = slice_dir / SDIR
 
-    vendor_rows = vendor(v, root, head, sub, env)
-    render(v, sub, env)
-    gates(v, sub, env, vendor_rows)
-    man = manifest_law(v, sub)
+    def clause(name: str, fn: Callable, *args):
+        # A committed subject file the slice cannot read (a dangling symlink, a missing input)
+        # is a defect of the subject: typed refusal, never a court fault.
+        try:
+            return fn(*args)
+        except OSError as exc:
+            v.refuse("SUBJECT_UNREADABLE", name, f"committed subject file unreadable in the slice: {exc}")
+            return None
+
+    vendor_rows = clause("V1", vendor, v, root, head, sub, env) or []
+    clause("G1", render, v, sub, env)
+    clause("G2", gates, v, sub, env, vendor_rows)
+    man = clause("M1", manifest_law, v, sub)
     if man is not None:
-        import_identity(v, sub, man, env)
-        lineage(v, man, env)
-        tool(v, slice_dir, sub, env)
-    rows(v, sub)
+        clause("I1", import_identity, v, sub, man, env)
+        clause("M2", lineage, v, man, env)
+        clause("T1", tool, v, slice_dir, sub, env)
+    clause("R1", rows, v, sub)
     return v
+
+
+def slice_scope() -> list[str]:
+    return [PRED_DIR, SDIR, TOOLS["verify_release"], *TOOLS["support"]]
+
+
+def config_law(v: Verdict, root: Path, head: str, env: Env) -> None:
+    """A4: ggen.toml is closed-world and every path it reads is a committed regular entry of the subject."""
+    blob = env.out(root, "show", f"{head}:{SDIR}/ggen.toml")
+    try:
+        config = tomllib.loads(blob or "")
+    except tomllib.TOMLDecodeError as exc:
+        v.refuse("SUBJECT_NOT_INDEPENDENT", "A4", f"{SDIR}/ggen.toml is not TOML: {exc}")
+        return
+    if not config:
+        v.refuse("SUBJECT_NOT_INDEPENDENT", "A4", f"{SDIR}/ggen.toml is empty at {head}")
+        return
+    reads: list[tuple[str, object]] = []
+    unjudged: list[str] = []
+
+    def take(where: str, kind: str, value: object) -> None:
+        if kind == "path":
+            reads.append((where, value))
+        elif kind == "paths" and isinstance(value, list):
+            reads.extend((f"{where}[{i}]", item) for i, item in enumerate(value))
+        elif kind == "str" and isinstance(value, str):
+            pass
+        elif kind == "bool" and isinstance(value, bool):
+            pass
+        elif kind == "prefixes" and isinstance(value, dict) and all(isinstance(x, str) for x in value.values()):
+            pass
+        else:
+            unjudged.append(f"{where} = {value!r} (not a {kind})")
+
+    for top, value in config.items():
+        if top == "packs" and isinstance(value, dict):
+            for name, entry in value.items():
+                if not isinstance(entry, dict):
+                    unjudged.append(f"packs.{name} = {entry!r}")
+                    continue
+                for key, val in entry.items():
+                    kind = PACK_SCHEMA.get(key)
+                    if kind is None:
+                        unjudged.append(f"packs.{name}.{key}")
+                    else:
+                        take(f"packs.{name}.{key}", kind, val)
+            continue
+        schema = CONFIG_SCHEMA.get(top)
+        if schema is None or not isinstance(value, dict):
+            unjudged.append(top)
+            continue
+        for key, val in value.items():
+            kind = schema.get(key)
+            if kind is None:
+                unjudged.append(f"{top}.{key}")
+            else:
+                take(f"{top}.{key}", kind, val)
+    if unjudged:
+        v.refuse("CONFIG_UNJUDGED", "A4",
+                 f"{SDIR}/ggen.toml carries keys the court does not judge (each may read an input the court "
+                 f"never sees, e.g. law.reflexive reads the uncommitted .ggen-v2/receipt-log.jsonl): {unjudged[:6]}")
+    wheres = {where.split("[")[0] for where, _ in reads}
+    absent = [k for k in ("ontology.source", "templates.dir") if k not in wheres]
+    bad: list[str] = []
+    for where, r in reads:
+        if not isinstance(r, str) or not r or r.startswith(("/", "~")) or ".." in PurePosixPath(r).parts \
+                or PurePosixPath(r).as_posix() != r:
+            bad.append(f"{where} = {r!r} (absolute, home-relative, '..' or not normalized)")
+            continue
+        entry = (env.out(root, "ls-tree", head, "--", f"{SDIR}/{r}") or "").split()
+        if not entry or entry[0] not in (*REGULAR_MODES, "040000"):
+            bad.append(f"{where} = {r!r} is {entry[:2] or 'not committed'} at the head, not a committed regular "
+                       f"file or directory of {SDIR} (a symlink or gitlink reads outside the commit)")
+    if absent or bad:
+        v.refuse("SUBJECT_NOT_INDEPENDENT", "A4", f"{SDIR}/ggen.toml reads outside {SDIR}: {bad[:6]}"
+                 + (f"; missing {absent}" if absent else ""))
+    elif not unjudged:
+        v.ok("A4", f"{SDIR}/ggen.toml is closed-world; its {len(reads)} read paths are committed regular "
+                   f"entries inside {SDIR}")
+
+
+def self_contained(v: Verdict, root: Path, head: str, env: Env) -> None:
+    """A5: no committed symlink or gitlink in the judged slice except the pinned line pointers."""
+    proc = env.git_(root, "ls-tree", "-r", "-z", head, "--", *slice_scope())
+    if proc.returncode != 0:
+        v.unknown("GIT_FAILED", "A5", f"git ls-tree {head}: {proc.stderr.strip()[-240:]}")
+        return
+    pointers = {f"{SDIR}/{name}" for name in SUBJ["line_pointers"]}
+    entries, foreign = 0, []
+    for record in filter(None, proc.stdout.split("\0")):
+        meta, _, path = record.partition("\t")
+        mode, kind, oid = meta.split()
+        entries += 1
+        if mode in REGULAR_MODES or (mode == "120000" and path in pointers):
+            continue
+        target = env.out(root, "cat-file", "blob", oid) if mode == "120000" else f"commit {oid}"
+        foreign.append(f"{path} ({mode} {'symlink' if mode == '120000' else kind}) -> {target}")
+    if foreign:
+        v.refuse("SUBJECT_NOT_INDEPENDENT", "A5",
+                 f"the judged slice holds {len(foreign)} symlink/gitlink entries beyond the pinned line pointers "
+                 f"(each reads bytes the commit does not carry): {foreign[:6]}")
+    else:
+        v.ok("A5", f"{entries} committed entries of the judged slice are regular files except the "
+                   f"{len(pointers)} pinned line-pointer symlinks")
+
+
+def court_identity(v: Verdict, root: Path, head: str, env: Env) -> None:
+    """C1: the court judging is the committed court of the judged head (code and pins)."""
+    diverged = []
+    for rel, loaded in COURT_BYTES.items():
+        blob = env.git_(root, "cat-file", "blob", f"{head}:{rel}", text=False)
+        if loaded is None or blob.returncode != 0 or blob.stdout != loaded:
+            diverged.append(f"{rel} ({'absent at head' if blob.returncode != 0 else 'differs from the loaded court'})")
+    if diverged:
+        v.refuse("COURT_NOT_AT_HEAD", "C1",
+                 f"the court judging is not the committed court at {head}: {diverged}")
+    else:
+        v.ok("C1", f"the judging court ({len(COURT_BYTES)} files: wrapper, code, pins) is byte-identical to the head's")
 
 
 def vendor(v: Verdict, root: Path, head: str, sub: Path, env: Env) -> list[dict]:
@@ -698,6 +847,51 @@ def mutants(env: Env) -> list[Mutant]:
               ":docs/sjira/v26.9.22/fleet/classification.ttl sha256:")
         regen(r)
 
+    def symlink_import_absolute(r: Path) -> None:
+        # The committed import becomes an absolute symlink to identical bytes outside the
+        # repository: every byte and lock check still matches, but the commit carries no copy.
+        f = sub(r) / SUBJ["classification_import"]
+        outside = r.parent / f"{r.name}-external" / f.name
+        outside.parent.mkdir(parents=True, exist_ok=True)
+        outside.write_bytes(f.read_bytes())
+        f.unlink()
+        f.symlink_to(outside)
+
+    def symlink_import_relative(r: Path) -> None:
+        # A relative symlink leaving the subject to identical bytes committed elsewhere in the
+        # repository (resolvable in a checkout, dangling in the subject slice).
+        f = sub(r) / SUBJ["classification_import"]
+        shadow = r / "shadow" / f.name
+        shadow.parent.mkdir(parents=True)
+        shadow.write_bytes(f.read_bytes())
+        f.unlink()
+        f.symlink_to(os.path.relpath(shadow, f.parent))
+
+    def reflexive(r: Path) -> None:
+        # ggen accepts law.reflexive and renders the same bytes, but the sync graph then reads the
+        # uncommitted .ggen-v2/receipt-log.jsonl.
+        with (sub(r) / "ggen.toml").open("a", encoding="utf-8") as f:
+            f.write("\n[law]\nreflexive = true\n")
+
+    def unlock(r: Path) -> None:
+        _edit(sub(r) / "ggen.toml", "lock = true", "lock = false")
+
+    def off_ref(r: Path) -> None:
+        # ggen_igniter re-pinned to a commit of its canonical checkout that is not on the
+        # component's ref (chosen from the checkout, so the premise holds when the ref moves).
+        man = tomllib.loads((sub(r) / "out/manifest.toml").read_text(encoding="utf-8"))
+        comp = next(c for c in man["components"] if c.get("id") == "ggen_igniter")
+        repo, ref = repo_for("ggen_igniter"), f"refs/remotes/origin/{comp['ref']}"
+        other = env.out(repo, "rev-list", "-n", "1", "--remotes", "--not", ref)
+        if not other or not SHA40.match(other):
+            raise RuntimeError(f"{repo} holds no remote commit off {ref} to re-pin ggen_igniter to")
+        _edit(sub(r) / "release.ttl", f'er:commitSha "{comp["sha"]}"', f'er:commitSha "{other}"')
+        regen(r)
+
+    def court_pins(r: Path) -> None:
+        with (sub(r) / "courts/ce23_1/subject.toml").open("a", encoding="utf-8") as f:
+            f.write("# committed pins that are not the running court's\n")
+
     def orphan_base(r: Path) -> str:
         empty = env.run([env.git, "-C", str(r), "hash-object", "-t", "tree", "--stdin", "-w"], stdin=b"")
         proc = env.run([env.git, "-C", str(r), "-c", "user.name=ce23-1-court", "-c", "user.email=ce23-1-court@localhost",
@@ -731,6 +925,17 @@ def mutants(env: Env) -> list[Mutant]:
         Mutant("M11", "ggen.toml reads a release/v26.9.1 file as an import", ("SUBJECT_NOT_INDEPENDENT",), read_predecessor),
         Mutant("M12", "classification source re-pointed outside the pinned path, render regenerated",
                ("IMPORT_SOURCE_UNPINNED",), foreign_source),
+        Mutant("M13", "classification import an absolute symlink to identical bytes outside the repository",
+               ("SUBJECT_NOT_INDEPENDENT",), symlink_import_absolute, "symlink"),
+        Mutant("M14", "classification import a relative symlink leaving the subject (identical bytes in the repository)",
+               ("SUBJECT_NOT_INDEPENDENT",), symlink_import_relative, "symlink"),
+        Mutant("M15", "ggen.toml law.reflexive = true (sync reads the uncommitted receipt log)", ("CONFIG_UNJUDGED",),
+               reflexive, "law.reflexive"),
+        Mutant("M16", "ggen.toml pack lock = false (ggen.lock no longer pins the pack)",
+               ("PACK_NOT_LOCKED", "GENERATED_SET_MISMATCH"), unlock),
+        Mutant("M17", "ggen_igniter re-pinned to a commit off its ref, render regenerated", ("COMPONENT_NOT_ON_REF",), off_ref),
+        Mutant("M18", "committed court pins differ from the pins of the court judging", ("COURT_NOT_AT_HEAD",), court_pins,
+               "subject.toml"),
         Mutant("MB", "the judged head does not descend from the base (orphan base commit)", ("BASE_NOT_ANCESTOR",), orphan_base),
     ]
 
@@ -782,7 +987,7 @@ def anti_vacuity(root: Path, env: Env, work: Path, root_base: str | None = None)
             if got.alive:
                 v.ok("AV M0", f"{desc}: ALIVE ({len(got.lines)} clauses)")
             else:
-                v.refuse("AV_HARNESS", "AV M0", f"{desc} not ALIVE: {[l for l in got.lines if not l.startswith('OK')][:4]}")
+                v.refuse("AV_HARNESS", "AV M0", f"{desc} not ALIVE: {[line for line in got.lines if not line.startswith('OK')][:4]}")
         elif not got.refused:
             v.refuse("VACUOUS", f"AV {mid}", f"{desc}: admitted ({'UNKNOWN ' + str(got.unknowns) if got.unknowns else 'ALIVE'})")
         elif missing := [code for code in m.expect if code not in got.refused]:
