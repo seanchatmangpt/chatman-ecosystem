@@ -1,0 +1,23 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_ce23_0_court.py -v
+test_a_clone_without_the_archive_is_unknown_never_alive_never_refused (test_ce23_0_court.ClauseCase.test_a_clone_without_the_archive_is_unknown_never_alive_never_refused) ... ok
+test_every_committed_court_file_absent_is_refused (test_ce23_0_court.ClauseCase.test_every_committed_court_file_absent_is_refused) ... ok
+test_preserved_world_is_alive_and_publication_pending_is_no_edge (test_ce23_0_court.ClauseCase.test_preserved_world_is_alive_and_publication_pending_is_no_edge) ... ok
+test_the_seal_round_trips_through_its_own_receipt_clause (test_ce23_0_court.ClauseCase.test_the_seal_round_trips_through_its_own_receipt_clause) ... ok
+test_the_second_namespace_is_judged_as_strictly_as_the_first (test_ce23_0_court.ClauseCase.test_the_second_namespace_is_judged_as_strictly_as_the_first) ... ok
+test_an_untracked_orders_file_links_nothing (test_ce23_0_court.OrderCase.test_an_untracked_orders_file_links_nothing) ... ok
+test_a_rewritten_marker_or_deleted_court_block_never_switches_r1_off (test_ce23_0_court.ReceiptCase.test_a_rewritten_marker_or_deleted_court_block_never_switches_r1_off) ... ok
+test_only_the_pinned_pre_court_receipt_is_exempt (test_ce23_0_court.ReceiptCase.test_only_the_pinned_pre_court_receipt_is_exempt) ... ok
+test_standing_is_derived_from_the_recorded_run (test_ce23_0_court.ReceiptCase.test_standing_is_derived_from_the_recorded_run) ... ok
+test_the_court_digest_is_the_court_at_the_subject (test_ce23_0_court.ReceiptCase.test_the_court_digest_is_the_court_at_the_subject) ... ok
+test_the_superseded_record_is_recomputed_at_the_subject (test_ce23_0_court.ReceiptCase.test_the_superseded_record_is_recomputed_at_the_subject) ... ok
+test_relation_is_total_over_real_histories (test_ce23_0_court.RelationCase.test_relation_is_total_over_real_histories) ... ok
+test_committed_identity_fact_names_no_shadow_path (test_ce23_0_court.SubjectCase.test_committed_identity_fact_names_no_shadow_path) ... ok
+test_committed_receipt_is_court_emitted_and_replays (test_ce23_0_court.SubjectCase.test_committed_receipt_is_court_emitted_and_replays) ... ok
+test_receipt_history_after_the_first_seal_is_court_emitted (test_ce23_0_court.SubjectCase.test_receipt_history_after_the_first_seal_is_court_emitted) ... ok
+test_only_the_subject_repository_on_github_binds (test_ce23_0_court.UrlCase.test_only_the_subject_repository_on_github_binds) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 68.073s
+
+OK
+exit=0
