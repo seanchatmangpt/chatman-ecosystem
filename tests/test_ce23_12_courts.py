@@ -14,6 +14,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import shutil
+import site
 import subprocess
 import sys
 import tempfile
@@ -207,7 +208,10 @@ class EndToEndCase(unittest.TestCase):
         proc = subprocess.run([sys.executable, str(COURT / "court.py"), "gqp", "--root", str(repo), "--no-av"],
                               capture_output=True, text=True, timeout=1200,
                               env={"PATH": f"{Path(sys.executable).parent}:{Path(shutil.which('ggen')).resolve().parent}:/usr/bin:/bin",
-                                   "HOME": str(Path.home()), "PYTHONDONTWRITEBYTECODE": "1"})
+                                   "HOME": str(Path.home()), "PYTHONDONTWRITEBYTECODE": "1",
+                                   "PYTHONUSERBASE": site.getuserbase(), "LANG": "en_US.UTF-8"})
+        if proc.returncode == 75 and "REFUSED[" not in proc.stdout:
+            self.skipTest("the court typed an absent tool UNKNOWN: " + proc.stdout.strip().splitlines()[0])
         self.assertEqual(proc.returncode, 1, proc.stdout[-2000:])
         self.assertIn("REFUSED[handwritten_work_order] A4", proc.stdout)
 
