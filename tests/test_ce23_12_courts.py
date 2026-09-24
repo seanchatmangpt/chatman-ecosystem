@@ -242,6 +242,23 @@ class MutationSensitivityCase(unittest.TestCase):
         self.assertEqual(res["judged"], {"G1": 2, "K1": 1, "A1v": 1, "A4": 1})
         self.assertEqual(court.git(self.repo, "status", "--porcelain", "-uall"), "")
 
+    def test_a_blind_k1_in_the_subject_is_counted_as_escapes(self) -> None:
+        # the subject's own K1 script loses its output comparison: kernel-literal corruptions escape it,
+        # and Q3 counts them although no blinded variant can be built from that script
+        script = self.sub.pack / "scripts" / "evidence_tiers.py"
+        original = script.read_bytes()
+        text = original.decode("utf-8")
+        self.assertEqual(text.count(court.KERNEL_BLIND[0]), 1)
+        script.write_text(text.replace(court.KERNEL_BLIND[0], court.KERNEL_BLIND[1]), encoding="utf-8")
+        try:
+            real, blinded = court.q3_instruments(self.sub)
+            res = court.q3_run(self.sub, [u for u in self.units if u["class"] == "kernel"][:2], real, blinded)
+        finally:
+            script.write_bytes(original)
+        self.assertEqual((res["classes"]["kernel"]["n"], res["classes"]["kernel"]["misses"]), (2, 2))
+        self.assertEqual(res["blind_admits"], {"K1": 0})
+        self.assertEqual(court.git(self.repo, "status", "--porcelain", "-uall"), "")
+
     def test_blinded_instruments_as_judges_let_every_unit_escape(self) -> None:
         res = court.q3_run(self.sub, self.pick, self.blinded, self.blinded)
         for k in ("projection", "kernel", "doe", "plan"):

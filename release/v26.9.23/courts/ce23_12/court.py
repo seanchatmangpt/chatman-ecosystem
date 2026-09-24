@@ -1065,25 +1065,36 @@ def clause_plan_pairs_only(ctx: Ctx) -> None:
         ctx.v.ok("A4", f"[pair-only coverage] {len(entries)} plan entries cover every class x family, MSA court and capability gap")
 
 
-def blinded_script(ctx: Ctx, name: str, anchor: tuple[str, str], dest_dir: Path) -> Path:
-    """A copy of the judged tree's pack/scripts/<name>.py with one checked property removed."""
+def blinded_script(ctx: Ctx, name: str, anchor: tuple[str, str], dest_dir: Path) -> tuple[Path | None, str]:
+    """A copy of the judged tree's pack/scripts/<name>.py with one checked property removed; (None, why)
+    when the tree's script has no single line to blind (then no detection by it can be witnessed informative)."""
     text = (ctx.pack / "scripts" / f"{name}.py").read_text(encoding="utf-8")
     if text.count(anchor[0]) != 1:
-        raise Refusal(f"Q3 blinding anchor not found exactly once in pack/scripts/{name}.py: {anchor[0].strip()[:70]!r}")
+        return None, f"pack/scripts/{name}.py has no single line {anchor[0].strip()[:70]!r} to blind"
     dest_dir.mkdir(parents=True, exist_ok=True)
     dest = dest_dir / f"{name}.py"
     dest.write_text(text.replace(anchor[0], anchor[1]), encoding="utf-8")
-    return dest
+    return dest, ""
+
+
+def blind_unavailable(why: str):
+    def judge(ctx: Ctx) -> None:
+        raise Refusal(f"blinded variant unavailable: {why}")
+    return judge
 
 
 def q3_instruments(sub: Ctx) -> tuple[dict, dict]:
-    """(real, blinded) judges, each a callable(ctx) that records the instrument's verdict line."""
+    """(real, blinded) judges, each a callable(ctx) that records the instrument's verdict line. An escape
+    of a real judge is counted whether or not its blinded variant exists; a detection is counted only
+    when the blinded variant exists and admits the unit."""
     blind_dir = sub.scratch / "q3-blinded"
-    kernel_blind = blinded_script(sub, "evidence_tiers", KERNEL_BLIND, blind_dir)
-    doe_blind = blinded_script(sub, "doe_verify", DOE_BLIND, blind_dir)
+    kernel_blind, kernel_why = blinded_script(sub, "evidence_tiers", KERNEL_BLIND, blind_dir)
+    doe_blind, doe_why = blinded_script(sub, "doe_verify", DOE_BLIND, blind_dir)
     real = {"G1": clause_regenerate, "K1": clause_kernel, "A1v": clause_doe_verifier, "A4": clause_plan_core}
-    blinded = {"G1": lambda s: clause_regenerate(s, names_only), "K1": lambda s: clause_kernel(s, str(kernel_blind)),
-               "A1v": lambda s: clause_doe_verifier(s, str(doe_blind)), "A4": clause_plan_pairs_only}
+    blinded = {"G1": lambda s: clause_regenerate(s, names_only),
+               "K1": (lambda s: clause_kernel(s, str(kernel_blind))) if kernel_blind else blind_unavailable(kernel_why),
+               "A1v": (lambda s: clause_doe_verifier(s, str(doe_blind))) if doe_blind else blind_unavailable(doe_why),
+               "A4": clause_plan_pairs_only}
     return real, blinded
 
 
