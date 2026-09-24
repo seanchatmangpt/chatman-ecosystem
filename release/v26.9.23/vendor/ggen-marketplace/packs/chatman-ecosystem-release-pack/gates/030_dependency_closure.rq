@@ -1,0 +1,25 @@
+# MESSAGE: Dependencies are edges inside the same admitted release graph. Self
+# dependencies, missing dependency subjects, cross-release dependencies, and
+# directed dependency cycles are refused.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+SELECT ?component ?reason WHERE {
+  {
+    ?component a er:Component ; er:dependsOn ?dependency .
+    FILTER(?component = ?dependency)
+    BIND("self-dependency" AS ?reason)
+  } UNION {
+    ?component a er:Component ; er:dependsOn ?dependency .
+    FILTER NOT EXISTS { ?dependency a er:Component }
+    BIND("dependency-not-admitted" AS ?reason)
+  } UNION {
+    ?release er:hasComponent ?component .
+    ?component a er:Component ; er:dependsOn ?dependency .
+    FILTER NOT EXISTS { ?release er:hasComponent ?dependency }
+    BIND("dependency-outside-release" AS ?reason)
+  } UNION {
+    ?component a er:Component .
+    ?component er:dependsOn+ ?component .
+    BIND("dependency-cycle" AS ?reason)
+  }
+}
+ORDER BY ?component ?reason

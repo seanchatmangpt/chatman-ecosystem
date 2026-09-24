@@ -1,0 +1,17 @@
+# fixture	source	rows	reason (a row gate 090 must return; rows = total 090 rows for the fixture)
+stale-r0	lift	31	stop-not-alive
+stale-r0	lift	31	admitted-gates-0-below-required-13
+stale-r0	lift	31	stop-subject-sha-differs-from-crown-component-commit-sha
+stale-r0	lift	31	gate-not-alive:GC23-12
+stale-r0	lift	31	gate-paired-subject-sha-differs-from-paired-component:GC23-0
+stale-r0	lift	31	llm-invocations-on-known-reference-path-absent-null-or-nonzero
+stale-r0	lift	31	unreceipted-actuation-absent-null-or-nonzero
+llm1	lift	1	llm-invocations-on-known-reference-path-absent-null-or-nonzero
+unreceipted-null	lift	1	unreceipted-actuation-absent-null-or-nonzero
+drop-gate	lift	1	admitted-gates-12-below-required-13
+foreign-subject	lift	2	gate-subject-sha-differs-from-crown-subject:GC23-7
+foreign-subject	lift	2	admitted-gates-12-below-required-13
+gi-mismatch	lift	1	gate-paired-subject-sha-differs-from-paired-component:GC23-4
+no-required-count	graph:requiredGateCount	1	required-gate-count-absent-or-invalid
+no-stop-digest	graph:stopReceiptSha256	1	stop-receipt-digest-absent
+no-gate-digest	graph:receiptSha256	1	gate-receipt-digest-absent:GC23-0

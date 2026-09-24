@@ -1,0 +1,11 @@
+# MESSAGE: One repository may identify at most one component in one release.
+# Multiple coordinates for the same repo would make standing and dependency
+# identity ambiguous at the release boundary.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+SELECT ?release ?repository WHERE {
+  ?release a er:Release ; er:hasComponent ?left, ?right .
+  ?left er:repository ?repository .
+  ?right er:repository ?repository .
+  FILTER(STR(?left) < STR(?right))
+}
+ORDER BY ?release ?repository

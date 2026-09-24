@@ -1,0 +1,11 @@
+[project]
+name = "chatman-ecosystem-release-pack-qualification-v26-9-23"
+
+[ontology]
+source = "release.ttl"
+
+[templates]
+dir = "templates"
+
+[packs]
+chatman-ecosystem-release-pack = { path = "../..", lock = false, extra_ontologies = ["imports/legacy-v26.9.1.ttl", "imports/fleet-classification.ttl", "imports/court-references.ttl", "imports/ce23-orders.ttl"] }

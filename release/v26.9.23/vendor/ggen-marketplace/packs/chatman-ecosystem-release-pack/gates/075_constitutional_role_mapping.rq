@@ -1,0 +1,62 @@
+# MESSAGE: Every required role of a release, and the role of every required
+# MESSAGE: component, maps to exactly one frozen constitutional role (the
+# MESSAGE: survey_portfolio RELEASE_ROLE_UNMAPPED law): the primary and every
+# MESSAGE: capability are er:ConstitutionalRole individuals, the authority ceiling
+# MESSAGE: is non-empty, and an Actuate primary is BRCE-exclusive.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT DISTINCT ?subject ?reason WHERE {
+  {
+    ?release a er:Release ; er:requiredRole ?role .
+    FILTER NOT EXISTS { ?release er:hasRoleMapping ?m . ?m er:releaseRole ?role . }
+    BIND(?release AS ?subject)
+    BIND(CONCAT("release-role-unmapped:", STR(?role)) AS ?reason)
+  } UNION {
+    ?release a er:Release ; er:hasComponent ?c .
+    ?c a er:Component ; er:required true ; er:role ?role .
+    FILTER NOT EXISTS { ?release er:hasRoleMapping ?m . ?m er:releaseRole ?role . }
+    BIND(?c AS ?subject)
+    BIND(CONCAT("required-component-role-unmapped:", STR(?role)) AS ?reason)
+  } UNION {
+    ?release a er:Release ; er:hasRoleMapping ?m1, ?m2 .
+    ?m1 er:releaseRole ?role .
+    ?m2 er:releaseRole ?role2 .
+    FILTER(STR(?m1) < STR(?m2) && STR(?role) = STR(?role2))
+    BIND(?release AS ?subject)
+    BIND(CONCAT("release-role-mapped-twice:", STR(?role)) AS ?reason)
+  } UNION {
+    ?release a er:Release ; er:hasRoleMapping ?m .
+    OPTIONAL { ?m er:releaseRole ?maybeRole . }
+    FILTER NOT EXISTS { ?m er:primary ?p . ?p a er:ConstitutionalRole . }
+    BIND(?m AS ?subject)
+    BIND(CONCAT("mapping-primary-not-constitutional:", COALESCE(STR(?maybeRole), "?")) AS ?reason)
+  } UNION {
+    ?release a er:Release ; er:hasRoleMapping ?m .
+    ?m er:primary ?p1, ?p2 .
+    FILTER(STR(?p1) < STR(?p2))
+    OPTIONAL { ?m er:releaseRole ?maybeRole . }
+    BIND(?m AS ?subject)
+    BIND(CONCAT("mapping-with-multiple-primaries:", COALESCE(STR(?maybeRole), "?")) AS ?reason)
+  } UNION {
+    ?release a er:Release ; er:hasRoleMapping ?m .
+    ?m er:capability ?cap .
+    FILTER NOT EXISTS { ?cap a er:ConstitutionalRole . }
+    OPTIONAL { ?m er:releaseRole ?maybeRole . }
+    BIND(?m AS ?subject)
+    BIND(CONCAT("mapping-capability-not-constitutional:", COALESCE(STR(?maybeRole), "?")) AS ?reason)
+  } UNION {
+    ?release a er:Release ; er:hasRoleMapping ?m .
+    OPTIONAL { ?m er:releaseRole ?maybeRole . }
+    FILTER NOT EXISTS { ?m er:authorityCeiling ?ceiling . FILTER(STRLEN(STR(?ceiling)) > 0) }
+    BIND(?m AS ?subject)
+    BIND(CONCAT("mapping-without-authority-ceiling:", COALESCE(STR(?maybeRole), "?")) AS ?reason)
+  } UNION {
+    ?release a er:Release ; er:hasRoleMapping ?m .
+    ?m er:primary er:CONST_ACTUATE .
+    FILTER NOT EXISTS { ?m er:brceExclusive true . }
+    OPTIONAL { ?m er:releaseRole ?maybeRole . }
+    BIND(?m AS ?subject)
+    BIND(CONCAT("ambient-actuation-mapping:", COALESCE(STR(?maybeRole), "?")) AS ?reason)
+  }
+}
+ORDER BY ?subject ?reason

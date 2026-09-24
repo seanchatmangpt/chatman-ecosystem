@@ -1,0 +1,31 @@
+# MESSAGE: The release's required set has an independent source. Every CriticalPath
+# MESSAGE: repository of the imported fleet classification, and every repository a
+# MESSAGE: court of the governing checkpoint executes (er:courtReferencesComponent),
+# MESSAGE: must be a required er:Component of each release in the graph. Dropping a
+# MESSAGE: required repository consistently (component, dependsOn edge and required
+# MESSAGE: role together) is therefore still refused.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+SELECT DISTINCT ?release ?reason WHERE {
+  {
+    ?release a er:Release .
+    ?fc a sj:FleetClassification ; dcterms:identifier ?id ; sj:fleetClass sj:CriticalPath .
+    FILTER NOT EXISTS {
+      ?release er:hasComponent ?c .
+      ?c a er:Component ; er:required true ; er:repository ?repo .
+      FILTER(STRAFTER(STR(?repo), "/") = STR(?id))
+    }
+    BIND(CONCAT("critical-path-repository-not-required-component:", STR(?id)) AS ?reason)
+  } UNION {
+    ?release a er:Release .
+    ?court er:courtReferencesComponent ?slug .
+    FILTER NOT EXISTS {
+      ?release er:hasComponent ?c .
+      ?c a er:Component ; er:required true ; er:repository ?repo .
+      FILTER(STR(?repo) = STR(?slug))
+    }
+    BIND(CONCAT("court-executed-repository-not-required-component:", STR(?slug)) AS ?reason)
+  }
+}
+ORDER BY ?release ?reason

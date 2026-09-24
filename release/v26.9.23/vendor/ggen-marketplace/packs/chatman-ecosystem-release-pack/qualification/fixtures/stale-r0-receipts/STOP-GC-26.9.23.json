@@ -1,0 +1,125 @@
+{
+  "authority": {
+    "actor": "xaas.stop_court",
+    "ceiling": "OBSERVE",
+    "grant": "NONE"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": []
+  },
+  "identity": {
+    "base_sha": "bd1efb165f625e3505953b2c242196838d4311b6",
+    "graph_hash": "sha256:9858c187e7204b4444f1f15c621f482460b41dac51ffa8553575f43fbef709a3",
+    "repo": "/Users/sac/wt/v26922/v23/V23-P",
+    "subject": "GC-26.9.23/STOP",
+    "subject_sha": "11a24fba65c90b5c146cdd16d2328c64c647731c"
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-0.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "5431ceea3420695e715b11d6024547b51039b610b8edbc85a6bbf51a5579a457",
+        "summary": "UNKNOWN: GC23-0 machinery lands in lane V23-C"
+      },
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-1.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "b312de8513c8b717c3945975fa71375219b3d87cb5c08ddf30ab3f830469ed3c",
+        "summary": "UNKNOWN: GC23-1 machinery lands in lane V23-B"
+      },
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-2.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "fa0aeab2b065bb5d0e95a41834f49eb28a4266a3bd080168d9b68ee70c264570",
+        "summary": "UNKNOWN: GC23-2 machinery lands in lane V23-C"
+      },
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-3.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "fb404d90c99a6bd6e44704bd91c1a422c82cd99beed3ae1ff5bf92b1079808c2",
+        "summary": "UNKNOWN: GC23-3 machinery lands in lane V23-C"
+      },
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-4.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "f186c8c1c303d79ddc480f724ce5a54675a495b44bfff3754c79d04d34a38089",
+        "summary": "UNKNOWN: GC23-4 machinery lands in lane V23-D"
+      },
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-5.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "3f9b2d861a547569767470970b1d9206021f984e7cd5c2d28765fa74bc3db641",
+        "summary": "UNKNOWN: GC23-5 machinery lands in lane V23-D"
+      },
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-6.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "493fd767260c20fb94bf8e088f0c702bf43bbc7c8acf9924d86154de96fdae16",
+        "summary": "UNKNOWN: GC23-6 machinery lands in lane V23-D"
+      },
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-7.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "06110ffcce9ec0b107b79302a04bbeb4a5a23b009ce4fe704e5d2cd2b9e58e0e",
+        "summary": "UNKNOWN: GC23-7 machinery lands in lane V23-D"
+      },
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-8.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "9d33ba5992c1e30a7753f33b60da551b5c2f68e0ffafa30dc770d62ebc514430",
+        "summary": "UNKNOWN: GC23-8 machinery lands in lane V23-D"
+      },
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-9.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "2f03a09e53efcab54889f277d0a281418dc63fc60f012527adeaf231ef123d5c",
+        "summary": "UNKNOWN: GC23-9 machinery lands in lane V23-M"
+      },
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-10.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "0d66f437097de4820aba8ec42bf1525e83fcdacb8a3df99dbd103595b8e18b41",
+        "summary": "UNKNOWN: GC23-10 machinery lands in lane V23-R"
+      },
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-11.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "75f8dc9f9e37ba73e8d6517e8d976bff1f6dc03606a14901284e92c7846e93ba",
+        "summary": "UNKNOWN: GC23-11 machinery lands in lane V23-F"
+      },
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-12.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 75,
+        "output_sha256": "49dc39c49e473ec27e5aba76913f15bec6235f094d084590c1194e89bb2afec7",
+        "summary": "UNKNOWN: GC23-12 machinery lands in lane V23-H"
+      },
+      {
+        "cmd": "mix xaas.stop_court --checkpoint GC-26.9.23",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-P",
+        "exit": 1,
+        "summary": "sj:stopQuery ASK over the goal graph + 13 admitted gate receipts: STOP=false"
+      }
+    ],
+    "durable_location": "docs/sjira/v26.9.23/receipts/STOP-GC-26.9.23.json"
+  },
+  "standing": {
+    "derived_from": "sj:stopQuery of GC-26.9.23 at 11a24fba65c90b5c146cdd16d2328c64c647731c: 0/13 gates ALIVE; STOP=false",
+    "value": "UNKNOWN"
+  }
+}

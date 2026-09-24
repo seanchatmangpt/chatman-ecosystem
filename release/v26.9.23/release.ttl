@@ -1,0 +1,74 @@
+@prefix er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix r23: <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.23#> .
+
+# Chatman Ecosystem v26.9.23 release instance (CE23-1, release/v26.9.23/sjira/goal.ttl
+# ce:CE23-1): the consumer-owned facts of an independent v26.9.23 release subject. Law,
+# vocabulary, gates and templates belong to the vendored chatman-ecosystem-release-pack
+# (vendor/ggen-marketplace/VENDOR.toml); every file under out/ is its render
+# ((cd release/v26.9.23 && ggen sync run)). release/v26.9.1 is not read or changed.
+#
+# Scope (chatman-ce23.md, "Project disposition for this release"): critical path =
+# xaas + ggen_igniter; they are the only components. Their role names are the ARD 4 roles
+# of the imported fleet classification (sj:fleetRole of v23:fleet-xaas "execution
+# realization", v23:fleet-ggen_igniter "semantic manufacture"); pack gate 080 refuses a
+# release that drops any CriticalPath repository of that classification.
+#
+# Component identity (pre-stage): the S23 freeze pair of the Semantic Manufacturing release
+# (both commits on origin/friday/gc-fri-0800). CE23-5 (exact post-merge main heads)
+# re-binds er:branchRef / er:commitSha and the classification pin; standing is never stored
+# here (UNKNOWN): the root court (CE23-9/CE23-10) derives it from receipts.
+#
+# Not asserted here: er:crosswalkFrom and the lifted v26.9.1 roles (CE23-2 adds them with
+# the court-reference observation), imported crowns (CE23-3/CE23-8).
+
+r23:release a er:Release ;
+    rdfs:label "Chatman Ecosystem" ;
+    er:version "26.9.23" ;
+    er:targetDate "2026-09-23"^^xsd:date ;
+    er:standing er:UNKNOWN ;
+    er:authorityClass er:SELECT_CONSTRUCT ;
+    er:requiredRole "execution-realization", "semantic-manufacture" ;
+    er:classificationSource "seanchatmangpt/xaas@6fd59588c2e06b83d1af6ebc653e7b545de6f90f:docs/sjira/v26.9.23/fleet/classification.ttl sha256:d9e99f074ef2a8c994119681d9359ea1778e68333cc8da94b6b1c0aa44873636" ;
+    er:hasComponent r23:xaas, r23:ggen_igniter ;
+    er:hasRoleMapping r23:map-execution-realization, r23:map-semantic-manufacture .
+
+r23:xaas a er:Component ;
+    er:componentId "xaas" ;
+    er:repository "seanchatmangpt/xaas" ;
+    er:branchRef "friday/gc-fri-0800" ;
+    er:commitSha "6fd59588c2e06b83d1af6ebc653e7b545de6f90f" ;
+    er:role "execution-realization" ;
+    er:disposition er:REQUIRED ;
+    er:standing er:UNKNOWN ;
+    er:required true ;
+    er:refCheckMode er:GITHUB_LIVE ;
+    er:dependsOn r23:ggen_igniter .
+
+r23:ggen_igniter a er:Component ;
+    er:componentId "ggen_igniter" ;
+    er:repository "seanchatmangpt/ggen_igniter" ;
+    er:branchRef "friday/gc-fri-0800" ;
+    er:commitSha "6e7834ee68b6617b7f11ac48b1e9fc2651fc448d" ;
+    er:role "semantic-manufacture" ;
+    er:disposition er:REQUIRED ;
+    er:standing er:UNKNOWN ;
+    er:required true ;
+    er:refCheckMode er:GITHUB_LIVE .
+
+# Constitutional mappings (gate 075; survey_portfolio RELEASE_ROLE_UNMAPPED law). xaas
+# realizes BRCE court execution and consequence receipts (ARD 4): Actuate, BRCE-exclusive.
+# ggen_igniter owns ontology, shapes, admission and the frontier (ARD 4) with no DO.
+r23:map-execution-realization a er:RoleMapping ;
+    er:releaseRole "execution-realization" ;
+    er:primary er:CONST_ACTUATE ;
+    er:capability er:CONST_RECEIPT, er:CONST_REPLAY ;
+    er:authorityCeiling "BRCE_EXCLUSIVE_DO" ;
+    er:brceExclusive true .
+
+r23:map-semantic-manufacture a er:RoleMapping ;
+    er:releaseRole "semantic-manufacture" ;
+    er:primary er:CONST_CONSTRUCT ;
+    er:capability er:CONST_ADMIT, er:CONST_PROJECT ;
+    er:authorityCeiling "CONSTRUCT_ONLY_NO_DO" .

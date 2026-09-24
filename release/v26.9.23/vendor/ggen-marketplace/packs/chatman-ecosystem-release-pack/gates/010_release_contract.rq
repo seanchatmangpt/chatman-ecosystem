@@ -1,0 +1,27 @@
+# MESSAGE: A release must have exactly one non-empty version, target date,
+# standing, and authority class; at least one component; and it may never
+# carry DO authority. This pack is release SELECT/CONSTRUCT law only.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+SELECT ?release ?reason WHERE {
+  ?release a er:Release .
+  {
+    FILTER NOT EXISTS { ?release er:version ?v . FILTER(STRLEN(STR(?v)) > 0) }
+    BIND("missing-version" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?release er:targetDate ?d }
+    BIND("missing-target-date" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?release er:standing ?s . ?s a er:StandingState }
+    BIND("missing-or-invalid-standing" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?release er:authorityClass ?a . ?a a er:AuthorityClass }
+    BIND("missing-or-invalid-authority-class" AS ?reason)
+  } UNION {
+    ?release er:authorityClass er:DO .
+    BIND("ambient-do-authority-forbidden" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?release er:hasComponent ?c . ?c a er:Component }
+    BIND("empty-release" AS ?reason)
+  }
+}
+ORDER BY ?release ?reason

@@ -1,0 +1,22 @@
+# MESSAGE: EXTERNAL_EXACT is not a skip. It requires authority-named observation
+# evidence that exactly matches the component's repository/ref/SHA identity.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+SELECT ?component ?reason WHERE {
+  ?component a er:Component ;
+      er:repository ?repo ;
+      er:branchRef ?ref ;
+      er:commitSha ?sha ;
+      er:refCheckMode er:EXTERNAL_EXACT .
+  FILTER NOT EXISTS {
+    ?component er:hasRefObservation ?observation .
+    ?observation a er:RefObservation ;
+        er:observationAuthority ?authority ;
+        er:observedRepository ?repo ;
+        er:observedRef ?ref ;
+        er:observedSha ?sha ;
+        er:observedAt ?at .
+    FILTER(STRLEN(STR(?authority)) > 0 && STRLEN(STR(?at)) > 0)
+  }
+  BIND("missing-or-mismatched-external-ref-observation" AS ?reason)
+}
+ORDER BY ?component

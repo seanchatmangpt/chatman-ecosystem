@@ -1,0 +1,34 @@
+# MESSAGE: Every admitted component must carry exact repository/ref/SHA identity,
+# role, disposition, standing, required boolean, and ref-check mode. Ref names are
+# not identities; a 40-lowercase-hex commit SHA is mandatory.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?component ?reason WHERE {
+  ?component a er:Component .
+  {
+    FILTER NOT EXISTS { ?component er:repository ?repo . FILTER(REGEX(STR(?repo), "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")) }
+    BIND("missing-or-invalid-repository" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?component er:branchRef ?ref . FILTER(STRLEN(STR(?ref)) > 0) }
+    BIND("missing-ref" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?component er:commitSha ?sha . FILTER(REGEX(STR(?sha), "^[0-9a-f]{40}$")) }
+    BIND("missing-or-invalid-exact-sha" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?component er:role ?role . FILTER(STRLEN(STR(?role)) > 0) }
+    BIND("missing-role" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?component er:disposition ?d . ?d a er:Disposition }
+    BIND("missing-or-invalid-disposition" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?component er:standing ?s . ?s a er:StandingState }
+    BIND("missing-or-invalid-standing" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?component er:required ?required . FILTER(DATATYPE(?required) = xsd:boolean) }
+    BIND("missing-required-boolean" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?component er:refCheckMode ?mode . ?mode a er:RefCheckMode }
+    BIND("missing-or-invalid-ref-check-mode" AS ?reason)
+  }
+}
+ORDER BY ?component ?reason

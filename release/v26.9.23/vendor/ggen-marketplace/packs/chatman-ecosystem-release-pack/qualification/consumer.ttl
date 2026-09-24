@@ -1,0 +1,72 @@
+@prefix er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#> .
+@prefix q: <https://ggen.dev/marketplace/qualification/chatman-ecosystem-release#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+q:release a er:Release ;
+    er:version "26.9.1" ;
+    er:targetDate "2026-09-01"^^xsd:date ;
+    er:standing er:UNKNOWN ;
+    er:authorityClass er:SELECT_CONSTRUCT ;
+    er:requiredRole "manufacture", "actuation", "capstone" ;
+    er:hasComponent q:ggen, q:gymact, q:fdegym ;
+    er:hasRoleMapping q:map-manufacture, q:map-actuation, q:map-capstone .
+
+# Constitutional role mappings (gate 075; values mirror the frozen v26.9.1
+# constitutional-role-crosswalk.toml rows for these three roles).
+q:map-manufacture a er:RoleMapping ;
+    er:releaseRole "manufacture" ;
+    er:primary er:CONST_CONSTRUCT ;
+    er:capability er:CONST_PROJECT ;
+    er:authorityCeiling "CANDIDATE_MANUFACTURE_ONLY" .
+
+q:map-actuation a er:RoleMapping ;
+    er:releaseRole "actuation" ;
+    er:primary er:CONST_CONSTRUCT ;
+    er:capability er:CONST_PRODUCE_EVIDENCE ;
+    er:authorityCeiling "GYMACT_SEARCH_EVALUATION_NO_AMBIENT_DO" .
+
+q:map-capstone a er:RoleMapping ;
+    er:releaseRole "capstone" ;
+    er:primary er:CONST_PRODUCE_EVIDENCE ;
+    er:capability er:CONST_CLASS_CLOSE, er:CONST_REPLAY ;
+    er:authorityCeiling "CAPSTONE_CANNOT_SELF_PROMOTE_RELEASE" .
+
+q:ggen a er:Component ;
+    er:repository "example/ggen" ;
+    er:branchRef "main" ;
+    er:commitSha "1111111111111111111111111111111111111111" ;
+    er:role "manufacture" ;
+    er:disposition er:REQUIRED ;
+    er:standing er:UNKNOWN ;
+    er:required true ;
+    er:refCheckMode er:GITHUB_LIVE .
+
+q:gymact a er:Component ;
+    er:repository "example/gymact" ;
+    er:branchRef "main" ;
+    er:commitSha "2222222222222222222222222222222222222222" ;
+    er:role "actuation" ;
+    er:disposition er:REQUIRED ;
+    er:standing er:UNKNOWN ;
+    er:required true ;
+    er:refCheckMode er:EXTERNAL_EXACT ;
+    er:dependsOn q:ggen ;
+    er:hasRefObservation q:gymact-observation .
+
+q:gymact-observation a er:RefObservation ;
+    er:observationAuthority "qualification-authority" ;
+    er:observedRepository "example/gymact" ;
+    er:observedRef "main" ;
+    er:observedSha "2222222222222222222222222222222222222222" ;
+    er:observedAt "2026-08-13T22:31:00-07:00" .
+
+q:fdegym a er:Component ;
+    er:repository "example/fdegym" ;
+    er:branchRef "main" ;
+    er:commitSha "3333333333333333333333333333333333333333" ;
+    er:role "capstone" ;
+    er:disposition er:CROWN ;
+    er:standing er:UNKNOWN ;
+    er:required true ;
+    er:refCheckMode er:GITHUB_LIVE ;
+    er:dependsOn q:ggen, q:gymact .

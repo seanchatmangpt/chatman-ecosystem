@@ -1,0 +1,45 @@
+# CE23-1 court pins: the release-instance facts release/v26.9.23/courts/ce23_1/court.py
+# judges against (hand-authored; HANDWRITTEN.md row).
+
+[subject]
+gate = "CE23-1"
+target = "v26.9.23"
+target_version = "26.9.23"
+predecessor = "v26.9.1"
+# GitHub main at CE23-0 (the lineage CE23-0 proves): the last subject before any v26.9.23
+# work, i.e. the pre-v26.9.23 tree of release/v26.9.1. It must be an ancestor of the judged
+# head, and release/v26.9.1 at the head must be its tree byte for byte.
+base_commit = "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1"
+predecessor_tree = "7e0feef1b137bea72fe1cf22a599636f77b0e47c"
+predecessor_manifest_sha256 = "30b1d83ce544299557da50084ced696172d219f6790c2cfc5b78116902850949"
+# The ggen sub-project that is the release subject (paths below are relative to it).
+subject_dir = "release/v26.9.23"
+# Consumer-owned inputs and the generator's outputs that must exist in the committed tree
+# (the full output set is derived: it must equal what `ggen sync run` renders).
+inputs = [
+  "ggen.toml",
+  "release.ttl",
+  "templates/.gitkeep",
+  "imports/fleet-classification.ttl",
+  "vendor/ggen-marketplace/VENDOR.toml",
+]
+outputs = [
+  "ggen.lock",
+  "out/manifest.toml",
+  "out/constitutional-role-crosswalk.toml",
+  "out/requirements.toml",
+]
+generated_dir = "out"
+vendor_dir = "vendor/ggen-marketplace"
+classification_import = "imports/fleet-classification.ttl"
+orders_glob = "sjira/compiled/*/orders.ttl"
+# Release-line inputs the fenced tools resolve from release/v26.9.23/ (scripts/release_line.py):
+# each is a symlink to its render, never a second copy.
+[subject.line_pointers]
+"manifest.toml" = "out/manifest.toml"
+"constitutional-role-crosswalk.toml" = "out/constitutional-role-crosswalk.toml"
+
+[tools]
+# The committed tools the court runs from the judged subject (never from the working tree).
+verify_release = "scripts/verify_release.py"
+support = ["scripts/release_line.py", "scripts/verify_calendar_release.py"]

@@ -1,0 +1,213 @@
+@prefix er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Reusable release-composition vocabulary. This pack deliberately contains no
+# Chatman Ecosystem v26.9.1 component SHAs: exact release-instance identity is
+# consumer observation and must not be duplicated into marketplace source.
+
+er:Release a rdfs:Class ;
+    rdfs:label "Dependency-closed release subject" ;
+    dcterms:description "A release binds exact component identities and standing without granting execution authority." .
+
+er:Component a rdfs:Class ;
+    rdfs:label "Release component" ;
+    dcterms:description "One repository/ref/exact-commit subject admitted into a release graph." .
+
+er:RefObservation a rdfs:Class ;
+    rdfs:label "External ref observation" ;
+    dcterms:description "Authority-named evidence that a ref resolved to an exact commit when the local verifier cannot observe that ref directly." .
+
+er:StandingState a rdfs:Class .
+er:Disposition a rdfs:Class .
+er:RefCheckMode a rdfs:Class .
+er:AuthorityClass a rdfs:Class .
+
+er:UNKNOWN a er:StandingState .
+er:PARTIAL_ALIVE a er:StandingState .
+er:ALIVE a er:StandingState .
+er:BLOCKED a er:StandingState .
+er:BUILD_BROKEN a er:StandingState .
+er:UNSUPPORTED a er:StandingState .
+
+er:CROWN a er:Disposition .
+er:REQUIRED a er:Disposition .
+er:ADAPTER a er:Disposition .
+er:BENCH_GYM a er:Disposition .
+er:SOURCE_ARCHAEOLOGY a er:Disposition .
+er:OUT_OF_RELEASE a er:Disposition .
+
+er:GITHUB_LIVE a er:RefCheckMode .
+er:EXTERNAL_EXACT a er:RefCheckMode .
+
+er:SELECT_CONSTRUCT a er:AuthorityClass .
+er:DO a er:AuthorityClass .
+
+er:version a rdf:Property ; rdfs:domain er:Release .
+er:targetDate a rdf:Property ; rdfs:domain er:Release .
+er:standing a rdf:Property ; rdfs:range er:StandingState .
+er:authorityClass a rdf:Property ; rdfs:domain er:Release ; rdfs:range er:AuthorityClass .
+er:hasComponent a rdf:Property ; rdfs:domain er:Release ; rdfs:range er:Component .
+er:requiredRole a rdf:Property ; rdfs:domain er:Release .
+
+er:repository a rdf:Property ; rdfs:domain er:Component .
+er:branchRef a rdf:Property ; rdfs:domain er:Component .
+er:commitSha a rdf:Property ; rdfs:domain er:Component .
+er:role a rdf:Property ; rdfs:domain er:Component .
+er:disposition a rdf:Property ; rdfs:domain er:Component ; rdfs:range er:Disposition .
+er:required a rdf:Property ; rdfs:domain er:Component .
+er:dependsOn a rdf:Property ; rdfs:domain er:Component ; rdfs:range er:Component .
+er:refCheckMode a rdf:Property ; rdfs:domain er:Component ; rdfs:range er:RefCheckMode .
+er:hasRefObservation a rdf:Property ; rdfs:domain er:Component ; rdfs:range er:RefObservation .
+
+er:observationAuthority a rdf:Property ; rdfs:domain er:RefObservation .
+er:observedRepository a rdf:Property ; rdfs:domain er:RefObservation .
+er:observedRef a rdf:Property ; rdfs:domain er:RefObservation .
+er:observedSha a rdf:Property ; rdfs:domain er:RefObservation .
+er:observedAt a rdf:Property ; rdfs:domain er:RefObservation .
+er:observedBy a rdf:Property ; rdfs:domain er:RefObservation ; rdfs:range prov:Agent .
+
+# ---------------------------------------------------------------------------
+# v0.2.0: legacy-role crosswalk, constitutional role mapping, requirement rows
+# (CE23-1 independent release subject; CE23-2 explicit disposition of every
+# predecessor required role). Still generic law: the predecessor manifest, the
+# fleet classification, court-reference observations and every explicit
+# decision are consumer-owned inputs (qualification/consumer-v26.9.23 shows
+# the shape). Role-boundary values are a value class of their own: they never
+# reuse er:Disposition (component disposition, domain er:Component) or the
+# er:StandingState individuals er:BLOCKED / er:UNSUPPORTED.
+# ---------------------------------------------------------------------------
+
+er:LegacyRelease a rdfs:Class ;
+    rdfs:label "Frozen predecessor release (lifted observation)" ;
+    dcterms:description "A predecessor release lifted from its committed manifest bytes (lift/manifest_to_er.py). Deliberately not an er:Release and its components are not er:Component, so gates 010-060 never re-judge frozen facts; gate 070 only requires that each of its required roles is crosswalked." .
+
+er:LegacyComponent a rdfs:Class ;
+    rdfs:label "Predecessor release component (lifted observation)" .
+
+er:RoleDisposition a rdfs:Class ;
+    rdfs:label "Role-boundary disposition" ;
+    dcterms:description "Exactly one per (predecessor required role, successor release): the boundary the successor release assigns to the old role, with its provenance (er:decidedBy for an explicit decision, er:derivedBy for a pack rule) and a non-empty er:reason." .
+
+er:RoleBoundary a rdfs:Class ;
+    rdfs:label "Role boundary value" .
+
+er:ROLE_REQUIRED a er:RoleBoundary ; rdfs:label "REQUIRED" .
+er:ROLE_SUCCESSOR a er:RoleBoundary ; rdfs:label "SUCCESSOR" .
+er:ROLE_BLOCKED a er:RoleBoundary ; rdfs:label "BLOCKED" .
+er:ROLE_UNSUPPORTED a er:RoleBoundary ; rdfs:label "UNSUPPORTED" .
+er:ROLE_REFUSED a er:RoleBoundary ; rdfs:label "REFUSED" .
+
+# Sentinel, deliberately untyped: it is NOT an er:RoleBoundary, so gate 070
+# refuses any disposition that carries it (an unknown fleet class, or an
+# explicit "we did not decide" row).
+er:ROLE_UNCLASSIFIED rdfs:label "UNCLASSIFIED" .
+
+er:crosswalkFrom a rdf:Property ; rdfs:domain er:Release ; rdfs:range er:LegacyRelease ;
+    dcterms:description "The successor release must dispose every required role of this predecessor release." .
+er:legacyRequiredRole a rdf:Property ; rdfs:domain er:LegacyRelease .
+er:legacyComponent a rdf:Property ; rdfs:range er:LegacyComponent ;
+    dcterms:description "LegacyRelease -> its lifted components; RoleDisposition -> the lifted component that supplied the role." .
+er:legacyRepository a rdf:Property ; rdfs:domain er:LegacyComponent .
+er:legacyRole a rdf:Property .
+er:legacySha a rdf:Property .
+er:legacyStanding a rdf:Property ; rdfs:range er:StandingState .
+er:componentId a rdf:Property ;
+    dcterms:description "Manifest component id (verify_release `id` / `depends_on` key)." .
+er:sourceSha256 a rdf:Property ;
+    dcterms:description "sha256:<hex> of the exact bytes a lifted or imported graph was derived from." .
+
+er:boundary a rdf:Property ; rdfs:domain er:RoleDisposition ; rdfs:range er:RoleBoundary .
+er:sourceRelease a rdf:Property ; rdfs:domain er:RoleDisposition ; rdfs:range er:LegacyRelease .
+er:targetRelease a rdf:Property ; rdfs:domain er:RoleDisposition ; rdfs:range er:Release .
+er:reason a rdf:Property ; rdfs:domain er:RoleDisposition .
+er:decidedBy a rdf:Property ; rdfs:domain er:RoleDisposition ;
+    dcterms:description "Authority of an explicit decision (operator testimony or an admitted first-mile proposition). Refused by gate 070 for a repository present in the fleet classification." .
+er:derivedBy a rdf:Property ; rdfs:domain er:RoleDisposition ;
+    dcterms:description "Pack rule that derived the disposition: rule:fleet-classification or rule:no-GC23-court-reference." .
+er:suppliedBy a rdf:Property ; rdfs:domain er:RoleDisposition ; rdfs:range er:Component .
+er:classificationSource a rdf:Property ;
+    dcterms:description "Identity of the imported fleet classification (repo@sha:path sha256:<hex>) consulted for a release or a disposition." .
+er:courtReferencesComponent a rdf:Property ;
+    dcterms:description "Observation: a court of the governing checkpoint executes this repository (object = owner/name slug). Such a repository never derives SUCCESSOR by rule:no-GC23-court-reference; it needs a fleet classification row or an explicit decision." .
+
+# Constitutional role mapping (survey_portfolio RELEASE_ROLE_UNMAPPED law).
+er:ConstitutionalRole a rdfs:Class ;
+    rdfs:label "Frozen constitutional calculus role" .
+er:constitutionalName a rdf:Property ; rdfs:domain er:ConstitutionalRole .
+er:calculusOrder a rdf:Property ; rdfs:domain er:ConstitutionalRole .
+
+er:CONST_OBSERVE a er:ConstitutionalRole ; er:constitutionalName "Observe" ; er:calculusOrder 1 .
+er:CONST_CANDIDATE_STATE a er:ConstitutionalRole ; er:constitutionalName "CandidateState" ; er:calculusOrder 2 .
+er:CONST_SEMANTIC_STATE a er:ConstitutionalRole ; er:constitutionalName "SemanticState" ; er:calculusOrder 3 .
+er:CONST_CONSTRUCT a er:ConstitutionalRole ; er:constitutionalName "Construct" ; er:calculusOrder 4 .
+er:CONST_PROJECT a er:ConstitutionalRole ; er:constitutionalName "Project" ; er:calculusOrder 5 .
+er:CONST_PRODUCE_EVIDENCE a er:ConstitutionalRole ; er:constitutionalName "ProduceEvidence" ; er:calculusOrder 6 .
+er:CONST_ADMIT a er:ConstitutionalRole ; er:constitutionalName "Admit" ; er:calculusOrder 7 .
+er:CONST_ACTUATE a er:ConstitutionalRole ; er:constitutionalName "Actuate" ; er:calculusOrder 8 .
+er:CONST_RECEIPT a er:ConstitutionalRole ; er:constitutionalName "Receipt" ; er:calculusOrder 9 .
+er:CONST_REPLAY a er:ConstitutionalRole ; er:constitutionalName "Replay" ; er:calculusOrder 10 .
+er:CONST_CLASS_CLOSE a er:ConstitutionalRole ; er:constitutionalName "ClassClose" ; er:calculusOrder 11 .
+
+er:RoleMapping a rdfs:Class ;
+    rdfs:label "Release role -> constitutional role mapping" .
+er:hasRoleMapping a rdf:Property ; rdfs:domain er:Release ; rdfs:range er:RoleMapping .
+er:releaseRole a rdf:Property ; rdfs:domain er:RoleMapping .
+er:primary a rdf:Property ; rdfs:domain er:RoleMapping ; rdfs:range er:ConstitutionalRole .
+er:capability a rdf:Property ; rdfs:domain er:RoleMapping ; rdfs:range er:ConstitutionalRole .
+er:authorityCeiling a rdf:Property ; rdfs:domain er:RoleMapping .
+er:brceExclusive a rdf:Property ; rdfs:domain er:RoleMapping ;
+    dcterms:description "Required true when the primary role is Actuate: consequential DO stays BRCE-exclusive." .
+
+# ---------------------------------------------------------------------------
+# v0.3.0: imported upstream checkpoint crown (CE23-3 import the Semantic
+# Manufacturing crown by exact digest; CE23-8 zero-intelligence KNOWN path).
+# bin/import-crown-lift.py lifts a stop-court receipt directory (one STOP
+# receipt + one receipt per gate) into these facts; gate 090 admits the crown.
+# Schema validation of a receipt cannot decide STOP truth (a stale 0/13 STOP
+# receipt is shape-valid), so the law is a gate over the lifted facts. The
+# receipt bytes and the exact subject SHAs are consumer-owned observations.
+# ---------------------------------------------------------------------------
+
+er:ImportedCrown a rdfs:Class ;
+    rdfs:label "Imported upstream checkpoint crown" ;
+    dcterms:description "The STOP receipt of an upstream checkpoint court and its gate receipts, bound to exact component SHAs of the importing release. Admitted by gate 090 only when STOP standing is ALIVE, at least er:requiredGateCount distinct gates are ALIVE at the crown subject, every gate ran at the crown subject and against the paired subject, and both zero-intelligence counters are present and 0." .
+
+er:ImportedComponent a rdfs:Class ;
+    rdfs:label "Subject named by an imported crown" ;
+    dcterms:description "Repository + exact commit SHA the importing release binds an imported crown to. Deliberately not er:Component, so gates 010-060 judge release components only." .
+
+er:ImportedGateReceipt a rdfs:Class ;
+    rdfs:label "Gate receipt of an imported crown (lifted observation)" .
+
+er:crownComponent a rdf:Property ; rdfs:domain er:ImportedCrown ; rdfs:range er:ImportedComponent ;
+    dcterms:description "The component whose exact commit the STOP court judged (the STOP receipt's identity.subject_sha must equal its er:commitSha)." .
+er:pairedComponent a rdf:Property ; rdfs:domain er:ImportedCrown ; rdfs:range er:ImportedComponent ;
+    dcterms:description "The component every gate court ran against (each gate receipt's paired subject SHA, e.g. gate.ggen_igniter_sha, must equal its er:commitSha)." .
+er:crownCheckpoint a rdf:Property ; rdfs:domain er:ImportedCrown ;
+    dcterms:description "Checkpoint id the STOP receipt judges (e.g. GC-26.9.23)." .
+er:crownSubjectSha a rdf:Property ; rdfs:domain er:ImportedCrown ;
+    dcterms:description "identity.subject_sha of the STOP receipt." .
+er:stopStanding a rdf:Property ; rdfs:domain er:ImportedCrown ; rdfs:range er:StandingState ;
+    dcterms:description "standing.value of the STOP receipt (ALIVE iff the court printed STOP=true)." .
+er:stopReceiptSha256 a rdf:Property ; rdfs:domain er:ImportedCrown ;
+    dcterms:description "sha256:<hex> of the exact STOP receipt bytes." .
+er:requiredGateCount a rdf:Property ; rdfs:domain er:ImportedCrown ;
+    dcterms:description "Number of gates of the checkpoint (the court's own N/M denominator, or a consumer pin); gate 090 requires that many distinct ALIVE gate receipts at the crown subject." .
+er:llmInvocationsOnKnownReferencePath a rdf:Property ; rdfs:domain er:ImportedCrown ;
+    dcterms:description "release_counters.LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH.value of the STOP receipt; absent when the court wrote null (unreadable source)." .
+er:unreceiptedActuation a rdf:Property ; rdfs:domain er:ImportedCrown ;
+    dcterms:description "release_counters.UNRECEIPTED_ACTUATION.value of the STOP receipt; absent when the court wrote null (unreadable source)." .
+er:hasGateReceipt a rdf:Property ; rdfs:domain er:ImportedCrown ; rdfs:range er:ImportedGateReceipt .
+er:gateId a rdf:Property ; rdfs:domain er:ImportedGateReceipt ;
+    dcterms:description "gate.gate of the receipt (e.g. GC23-5)." .
+er:gateStanding a rdf:Property ; rdfs:domain er:ImportedGateReceipt ; rdfs:range er:StandingState .
+er:gateSubjectSha a rdf:Property ; rdfs:domain er:ImportedGateReceipt ;
+    dcterms:description "identity.subject_sha of the gate receipt." .
+er:pairedSubjectSha a rdf:Property ; rdfs:domain er:ImportedGateReceipt ;
+    dcterms:description "The paired subject SHA the gate court ran against (gate.ggen_igniter_sha for the xaas stop court)." .
+er:receiptSha256 a rdf:Property ; rdfs:domain er:ImportedGateReceipt ;
+    dcterms:description "sha256:<hex> of the exact gate receipt bytes." .

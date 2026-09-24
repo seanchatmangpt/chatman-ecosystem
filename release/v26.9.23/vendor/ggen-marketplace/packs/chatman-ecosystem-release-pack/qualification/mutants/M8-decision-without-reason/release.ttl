@@ -1,0 +1,66 @@
+@prefix er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix q23: <https://ggen.dev/marketplace/qualification/chatman-ecosystem-release/v26.9.23/> .
+
+# Pack QUALIFICATION fixture, not the Chatman v26.9.23 release instance: the real
+# release facts (component SHAs at the post-merge main pair, role names, constitutional
+# mappings) are consumer-owned in chatman-ecosystem release/v26.9.23 (CE23-1/CE23-5).
+# The two component SHAs are real pushed heads of origin/friday/gc-fri-0800; every
+# other input under imports/ is a byte copy or a lifted observation (SOURCES.md).
+
+q23:release a er:Release ;
+    rdfs:label "Chatman Ecosystem" ;
+    er:version "26.9.23" ;
+    er:targetDate "2026-09-23"^^xsd:date ;
+    er:standing er:UNKNOWN ;
+    er:authorityClass er:SELECT_CONSTRUCT ;
+    er:requiredRole "execution-realization", "semantic-manufacture" ;
+    er:crosswalkFrom <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1> ;
+    er:classificationSource "seanchatmangpt/xaas@b4ef5d664cb5afa2ab5456ac20d28500f5b00144:docs/sjira/v26.9.23/fleet/classification.ttl sha256:d9e99f074ef2a8c994119681d9359ea1778e68333cc8da94b6b1c0aa44873636" ;
+    er:hasComponent q23:xaas, q23:ggen_igniter ;
+    er:hasRoleMapping q23:map-execution-realization, q23:map-semantic-manufacture .
+
+q23:xaas a er:Component ;
+    er:componentId "xaas" ;
+    er:repository "seanchatmangpt/xaas" ;
+    er:branchRef "friday/gc-fri-0800" ;
+    er:commitSha "b4ef5d664cb5afa2ab5456ac20d28500f5b00144" ;
+    er:role "execution-realization" ;
+    er:disposition er:REQUIRED ;
+    er:standing er:UNKNOWN ;
+    er:required true ;
+    er:refCheckMode er:GITHUB_LIVE ;
+    er:dependsOn q23:ggen_igniter .
+
+q23:ggen_igniter a er:Component ;
+    er:componentId "ggen_igniter" ;
+    er:repository "seanchatmangpt/ggen_igniter" ;
+    er:branchRef "friday/gc-fri-0800" ;
+    er:commitSha "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc" ;
+    er:role "semantic-manufacture" ;
+    er:disposition er:REQUIRED ;
+    er:standing er:UNKNOWN ;
+    er:required true ;
+    er:refCheckMode er:GITHUB_LIVE .
+
+q23:map-execution-realization a er:RoleMapping ;
+    er:releaseRole "execution-realization" ;
+    er:primary er:CONST_ACTUATE ;
+    er:capability er:CONST_RECEIPT, er:CONST_REPLAY ;
+    er:authorityCeiling "BRCE_EXCLUSIVE_DO" ;
+    er:brceExclusive true .
+
+q23:map-semantic-manufacture a er:RoleMapping ;
+    er:releaseRole "semantic-manufacture" ;
+    er:primary er:CONST_CONSTRUCT ;
+    er:capability er:CONST_ADMIT, er:CONST_PROJECT ;
+    er:authorityCeiling "CONSTRUCT_ONLY_NO_DO" .
+
+# MUTATION: explicit decision for formal-proof
+<https://ggen.dev/marketplace/qualification/chatman-ecosystem-release/v26.9.23/release/decision/formal-proof> a er:RoleDisposition ;
+    er:legacyRole "formal-proof" ;
+    er:sourceRelease <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1> ;
+    er:targetRelease <https://ggen.dev/marketplace/qualification/chatman-ecosystem-release/v26.9.23/release> ;
+    er:boundary er:ROLE_BLOCKED ;
+    er:decidedBy "mutant:M8" .

@@ -1,0 +1,28 @@
+# MESSAGE: requirements.toml renders one row per checkpointed sj:WorkOrder and never
+# MESSAGE: drops a row: each such order must name its gate (sj:checkpointOf), an
+# MESSAGE: owner/name repository, a 40-lowercase-hex base SHA and a falsifier with a
+# MESSAGE: non-empty description, so every row is "gate, repo@sha40 subject, falsifier".
+PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+SELECT DISTINCT ?order ?reason WHERE {
+  ?order a sj:WorkOrder ; sj:checkpointOf ?gate .
+  {
+    FILTER NOT EXISTS { ?order sj:repository ?repo . FILTER(REGEX(STR(?repo), "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")) }
+    BIND("missing-or-invalid-repository" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?order sj:baseSha ?sha . FILTER(REGEX(STR(?sha), "^[0-9a-f]{40}$")) }
+    BIND("missing-or-invalid-base-sha" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?order sj:falsifier ?f . ?f dcterms:description ?text . FILTER(STRLEN(STR(?text)) > 0) }
+    BIND("missing-falsifier-description" AS ?reason)
+  } UNION {
+    ?order sj:repository ?r1, ?r2 .
+    FILTER(STR(?r1) < STR(?r2))
+    BIND("multiple-repositories" AS ?reason)
+  } UNION {
+    ?order sj:baseSha ?s1, ?s2 .
+    FILTER(STR(?s1) < STR(?s2))
+    BIND("multiple-base-shas" AS ?reason)
+  }
+}
+ORDER BY ?order ?reason

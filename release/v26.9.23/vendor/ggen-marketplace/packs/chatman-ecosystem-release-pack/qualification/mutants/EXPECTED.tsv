@@ -1,0 +1,13 @@
+# mutant	native_code	native_gate	runner	runner_reason
+M1-drop-crosswalk-row	FM-PACK-013	070_role_crosswalk_total.rq	REFUSED	role-without-disposition:formal-proof
+M2-disposition-unclassified	FM-PACK-013	070_role_crosswalk_total.rq	REFUSED	unclassified-or-untyped-boundary:research
+M3-court-reference-blocks-derivation	FM-PACK-013	070_role_crosswalk_total.rq	REFUSED	role-without-disposition:formal-proof
+M4-drop-ggen_igniter-consistently	FM-PACK-013	080_critical_path_coverage.rq	REFUSED	critical-path-repository-not-required-component:ggen_igniter
+M5-open-ontologies-critical-path	FM-PACK-013	070_role_crosswalk_total.rq	REFUSED	required-role-not-supplied-by-target-release:public-ontology
+M6-hand-edited-rendered-file	FM-WRITE-005	-	ALIVE	-
+M7-decision-overrides-classification	FM-PACK-013	070_role_crosswalk_total.rq	REFUSED	decision-overrides-fleet-classification:manufacture:ggen
+M8-decision-without-reason	FM-PACK-013	070_role_crosswalk_total.rq	REFUSED	disposition-without-reason:formal-proof
+M9-role-unmapped	FM-PACK-013	075_constitutional_role_mapping.rq	REFUSED	release-role-unmapped:semantic-manufacture
+M10-ambient-actuation	FM-PACK-013	075_constitutional_role_mapping.rq	REFUSED	ambient-actuation-mapping:execution-realization
+M11-requirement-row-without-falsifier	FM-PACK-013	085_requirement_row_identity.rq	REFUSED	missing-falsifier-description
+M12-classification-basename-collision	FM-PACK-013	070_role_crosswalk_total.rq	REFUSED	fleet-classification-basename-collision:ggen

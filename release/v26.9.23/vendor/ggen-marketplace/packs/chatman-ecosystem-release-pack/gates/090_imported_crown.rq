@@ -1,0 +1,78 @@
+# MESSAGE: An imported upstream crown (er:ImportedCrown, lifted from a stop-court receipt
+# MESSAGE: directory by bin/import-crown-lift.py) is admitted only when: its STOP standing is
+# MESSAGE: ALIVE; its STOP receipt digest is recorded; at least er:requiredGateCount distinct
+# MESSAGE: gates have an ALIVE receipt at the crown subject; the STOP subject SHA equals the
+# MESSAGE: crown component's commitSha; every gate receipt is ALIVE, digested, ran at the crown
+# MESSAGE: subject and against the paired component's commitSha; and
+# MESSAGE: LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH and UNRECEIPTED_ACTUATION are present and 0
+# MESSAGE: (a null counter is absent and refused). Every multi-valued fact must hold for each value.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+SELECT DISTINCT ?crown ?reason WHERE {
+  {
+    ?crown a er:ImportedCrown .
+    FILTER(NOT EXISTS { ?crown er:stopStanding er:ALIVE . }
+           || EXISTS { ?crown er:stopStanding ?s . FILTER(?s != er:ALIVE) })
+    BIND("stop-not-alive" AS ?reason)
+  } UNION {
+    ?crown a er:ImportedCrown .
+    FILTER(NOT EXISTS { ?crown er:stopReceiptSha256 ?d . FILTER(REGEX(STR(?d), "^sha256:[0-9a-f]{64}$")) })
+    BIND("stop-receipt-digest-absent" AS ?reason)
+  } UNION {
+    ?crown a er:ImportedCrown .
+    FILTER(NOT EXISTS { ?crown er:requiredGateCount ?r . FILTER(isNumeric(?r) && ?r > 0) })
+    BIND("required-gate-count-absent-or-invalid" AS ?reason)
+  } UNION {
+    ?crown a er:ImportedCrown ; er:requiredGateCount ?required .
+    {
+      SELECT ?crown (COUNT(DISTINCT ?id) AS ?n) WHERE {
+        ?crown a er:ImportedCrown .
+        OPTIONAL {
+          ?crown er:crownSubjectSha ?cs ; er:hasGateReceipt ?g .
+          ?g er:gateId ?id ; er:gateStanding er:ALIVE ; er:gateSubjectSha ?gs .
+          FILTER(STR(?gs) = STR(?cs))
+        }
+      } GROUP BY ?crown
+    }
+    FILTER(isNumeric(?required) && ?n < ?required)
+    BIND(CONCAT("admitted-gates-", STR(?n), "-below-required-", STR(?required)) AS ?reason)
+  } UNION {
+    ?crown a er:ImportedCrown .
+    FILTER(NOT EXISTS { ?crown er:crownSubjectSha ?s ; er:crownComponent ?c . ?c er:commitSha ?sha . FILTER(STR(?s) = STR(?sha)) }
+           || EXISTS { ?crown er:crownSubjectSha ?s ; er:crownComponent ?c . ?c er:commitSha ?sha . FILTER(STR(?s) != STR(?sha)) })
+    BIND("stop-subject-sha-differs-from-crown-component-commit-sha" AS ?reason)
+  } UNION {
+    ?crown a er:ImportedCrown ; er:hasGateReceipt ?g .
+    OPTIONAL { ?g er:gateId ?gid . }
+    FILTER(NOT EXISTS { ?g er:gateStanding er:ALIVE . }
+           || EXISTS { ?g er:gateStanding ?gst . FILTER(?gst != er:ALIVE) })
+    BIND(CONCAT("gate-not-alive:", COALESCE(STR(?gid), STR(?g))) AS ?reason)
+  } UNION {
+    ?crown a er:ImportedCrown ; er:hasGateReceipt ?g .
+    OPTIONAL { ?g er:gateId ?gid . }
+    FILTER(NOT EXISTS { ?g er:receiptSha256 ?d . FILTER(REGEX(STR(?d), "^sha256:[0-9a-f]{64}$")) })
+    BIND(CONCAT("gate-receipt-digest-absent:", COALESCE(STR(?gid), STR(?g))) AS ?reason)
+  } UNION {
+    ?crown a er:ImportedCrown ; er:hasGateReceipt ?g .
+    OPTIONAL { ?g er:gateId ?gid . }
+    FILTER(NOT EXISTS { ?g er:gateSubjectSha ?gs . ?crown er:crownSubjectSha ?cs . FILTER(STR(?gs) = STR(?cs)) }
+           || EXISTS { ?g er:gateSubjectSha ?gs . ?crown er:crownSubjectSha ?cs . FILTER(STR(?gs) != STR(?cs)) })
+    BIND(CONCAT("gate-subject-sha-differs-from-crown-subject:", COALESCE(STR(?gid), STR(?g))) AS ?reason)
+  } UNION {
+    ?crown a er:ImportedCrown ; er:hasGateReceipt ?g .
+    OPTIONAL { ?g er:gateId ?gid . }
+    FILTER(NOT EXISTS { ?g er:pairedSubjectSha ?gp . ?crown er:pairedComponent ?p . ?p er:commitSha ?psha . FILTER(STR(?gp) = STR(?psha)) }
+           || EXISTS { ?g er:pairedSubjectSha ?gp . ?crown er:pairedComponent ?p . ?p er:commitSha ?psha . FILTER(STR(?gp) != STR(?psha)) })
+    BIND(CONCAT("gate-paired-subject-sha-differs-from-paired-component:", COALESCE(STR(?gid), STR(?g))) AS ?reason)
+  } UNION {
+    ?crown a er:ImportedCrown .
+    FILTER(NOT EXISTS { ?crown er:llmInvocationsOnKnownReferencePath ?v . FILTER(isNumeric(?v) && ?v = 0) }
+           || EXISTS { ?crown er:llmInvocationsOnKnownReferencePath ?v . FILTER(!isNumeric(?v) || ?v != 0) })
+    BIND("llm-invocations-on-known-reference-path-absent-null-or-nonzero" AS ?reason)
+  } UNION {
+    ?crown a er:ImportedCrown .
+    FILTER(NOT EXISTS { ?crown er:unreceiptedActuation ?v . FILTER(isNumeric(?v) && ?v = 0) }
+           || EXISTS { ?crown er:unreceiptedActuation ?v . FILTER(!isNumeric(?v) || ?v != 0) })
+    BIND("unreceipted-actuation-absent-null-or-nonzero" AS ?reason)
+  }
+}
+ORDER BY ?crown ?reason
