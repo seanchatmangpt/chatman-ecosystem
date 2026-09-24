@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
-"""Fail-closed evidence law for v26.9.1 component standing."""
+"""Fail-closed evidence law for the component standing of a declared release line.
+
+The manifest is the one scripts/release_line.py resolves: --manifest, --release vYY.M.D,
+or the catalog/west.toml pointer (CE23-7: no literal release default).
+"""
 
 from __future__ import annotations
 
 import argparse
 import json
 import re
+import sys
 import tomllib
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import release_line  # noqa: E402
 
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 RECEIPT_RE = re.compile(r"^[A-Za-z0-9_.-]+:[^\s]+$")
@@ -93,12 +101,13 @@ def verify(path: Path) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--manifest",
-        type=Path,
-        default=Path("release/v26.9.1/manifest.toml"),
-    )
+    parser.add_argument("--release", help="target release line vYY.M.D (default: the catalog/west.toml pointer)")
+    parser.add_argument("--manifest", type=Path)
     args = parser.parse_args()
+    try:
+        args.manifest = release_line.require(release_line.resolve_manifest(args.release, args.manifest))
+    except release_line.ReleaseLineError as exc:
+        parser.error(str(exc))
     try:
         receipt = verify(args.manifest)
     except EvidenceRefusal as exc:

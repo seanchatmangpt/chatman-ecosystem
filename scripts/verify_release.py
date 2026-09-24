@@ -26,6 +26,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import release_line  # noqa: E402
+
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 REPO_RE = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 ALLOWED_STANDINGS = {
@@ -66,7 +69,7 @@ def manifest_digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def validate_manifest(data: dict[str, Any]) -> list[Finding]:
+def validate_manifest(data: dict[str, Any], manifest_path: Path | None = None) -> list[Finding]:
     findings: list[Finding] = []
     release = data.get("release")
     components = data.get("components")
@@ -76,8 +79,17 @@ def validate_manifest(data: dict[str, Any]) -> list[Finding]:
     if not isinstance(components, list) or not components:
         return [Finding("ECOSYSTEM_COMPONENTS_MISSING", "components", "at least one [[components]] entry is required")]
 
-    if release.get("version") != "26.9.1":
-        findings.append(Finding("ECOSYSTEM_VERSION_MISMATCH", "release.version", "expected 26.9.1"))
+    # Version law (CE23-7): the manifest version is the one its release/vYY.M.D/
+    # directory binds; no verifier carries a literal release line.
+    version = release.get("version")
+    if not isinstance(version, str) or version.startswith("v") or not release_line.VERSION_RE.fullmatch(version):
+        findings.append(Finding("ECOSYSTEM_VERSION_INVALID", "release.version", str(version)))
+    elif manifest_path is not None:
+        expected = release_line.version_from_path(manifest_path)
+        if expected is None:
+            findings.append(Finding("ECOSYSTEM_VERSION_PATH_UNBOUND", "release.version", Path(manifest_path).parent.as_posix()))
+        elif version != expected:
+            findings.append(Finding("ECOSYSTEM_VERSION_MISMATCH", "release.version", f"VERSION_PATH_MISMATCH: expected {expected}"))
     if release.get("standing") not in ALLOWED_STANDINGS:
         findings.append(Finding("ECOSYSTEM_RELEASE_STANDING_INVALID", "release.standing", str(release.get("standing"))))
 
@@ -228,7 +240,7 @@ def _detect_cycles(by_id: dict[str, dict[str, Any]]) -> list[Finding]:
 def _github_json(url: str, timeout: float) -> dict[str, Any]:
     headers = {
         "Accept": "application/vnd.github+json",
-        "User-Agent": "chatman-ecosystem-release-verifier/26.9.1",
+        "User-Agent": "chatman-ecosystem-release-verifier/2",
         "X-GitHub-Api-Version": "2022-11-28",
     }
     token = (os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or "").strip()
@@ -382,14 +394,19 @@ def build_report(path: Path, data: dict[str, Any], findings: list[Finding], chec
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--manifest", type=Path, default=Path("release/v26.9.1/manifest.toml"))
+    parser.add_argument("--release", help="target release line vYY.M.D (default: the catalog/west.toml pointer)")
+    parser.add_argument("--manifest", type=Path)
     parser.add_argument("--check-refs", action="store_true")
     parser.add_argument("--require-alive", action="store_true")
     parser.add_argument("--report", type=Path)
     args = parser.parse_args(argv)
+    try:
+        args.manifest = release_line.require(release_line.resolve_manifest(args.release, args.manifest))
+    except release_line.ReleaseLineError as exc:
+        parser.error(str(exc))
 
     data = load_manifest(args.manifest)
-    findings = validate_manifest(data)
+    findings = validate_manifest(data, args.manifest)
     ref_coverage = {
         "github_live": 0,
         "github_exact": 0,

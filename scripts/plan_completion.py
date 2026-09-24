@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Construct deterministic, powerless completion intents for Chatman Ecosystem v26.9.1."""
+"""Construct deterministic, powerless completion intents for a declared Chatman Ecosystem release line.
+
+The line is the one scripts/release_line.py resolves (--release, the manifest's release
+directory, or the catalog/west.toml pointer); branch names carry the manifest's own version.
+"""
 
 from __future__ import annotations
 
@@ -10,6 +14,9 @@ import sys
 import tomllib
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import release_line  # noqa: E402
 
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 ACTIVE_FLEET_KEYS = {
@@ -40,7 +47,7 @@ def release_action(component: dict[str, Any]) -> tuple[str, int]:
     raise ValueError(f"unsupported standing: {standing}")
 
 
-def branch_slug(component_id: str, action: str) -> str:
+def branch_slug(component_id: str, action: str, version: str) -> str:
     slug = re.sub(r"[^a-z0-9]+", "-", component_id.lower()).strip("-")
     suffix = {
         "REPAIR_EXACT_FAILURE": "repair",
@@ -53,7 +60,7 @@ def branch_slug(component_id: str, action: str) -> str:
         "QUALIFY_BOUNDED_EPISODE": "gym",
         "HARVEST_AND_FREEZE": "harvest",
     }[action]
-    return f"agent/v26.9.1-{slug}-{suffix}"
+    return f"agent/v{version}-{slug}-{suffix}"
 
 
 def acceptance(action: str, exact_subject: bool) -> list[str]:
@@ -74,6 +81,7 @@ def acceptance(action: str, exact_subject: bool) -> list[str]:
 
 
 def release_packets(manifest: dict[str, Any]) -> list[dict[str, Any]]:
+    version = str(manifest["release"]["version"])
     by_id = {component["id"]: component for component in manifest["components"]}
     packets: list[dict[str, Any]] = []
     for component in manifest["components"]:
@@ -98,7 +106,7 @@ def release_packets(manifest: dict[str, Any]) -> list[dict[str, Any]]:
             "promotion_ready": not blocked_by and component["standing"] == "ALIVE",
             "action": action,
             "priority": priority,
-            "branch": None if action == "HOLD_EXACT_IDENTITY" else branch_slug(component["id"], action),
+            "branch": None if action == "HOLD_EXACT_IDENTITY" else branch_slug(component["id"], action, version),
             "do_authority": False,
             "acceptance": acceptance(action, exact_subject=True),
         }
@@ -109,7 +117,7 @@ def release_packets(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     return packets
 
 
-def bootstrap_packets(bootstrap: dict[str, Any], release_components: set[str]) -> list[dict[str, Any]]:
+def bootstrap_packets(bootstrap: dict[str, Any], release_components: set[str], version: str) -> list[dict[str, Any]]:
     if bootstrap.get("bootstrap", {}).get("do_authority") is not False:
         raise ValueError("bootstrap must be powerless: do_authority=false")
     packets: list[dict[str, Any]] = []
@@ -135,7 +143,7 @@ def bootstrap_packets(bootstrap: dict[str, Any], release_components: set[str]) -
             "promotion_ready": False,
             "action": "BOOTSTRAP_REPOSITORY",
             "priority": 0,
-            "branch": branch_slug(requirement["id"], "BOOTSTRAP_REPOSITORY"),
+            "branch": branch_slug(requirement["id"], "BOOTSTRAP_REPOSITORY", version),
             "do_authority": False,
             "acceptance": acceptance("BOOTSTRAP_REPOSITORY", exact_subject=False),
         }
@@ -143,7 +151,7 @@ def bootstrap_packets(bootstrap: dict[str, Any], release_components: set[str]) -
     return packets
 
 
-def portfolio_packets(policy: dict[str, Any], release_repositories: set[str]) -> list[dict[str, Any]]:
+def portfolio_packets(policy: dict[str, Any], release_repositories: set[str], version: str) -> list[dict[str, Any]]:
     packets: list[dict[str, Any]] = []
     dispositions = policy["dispositions"]
     for key, (disposition, action, priority) in ACTIVE_FLEET_KEYS.items():
@@ -167,7 +175,7 @@ def portfolio_packets(policy: dict[str, Any], release_repositories: set[str]) ->
                     "promotion_ready": False,
                     "action": action,
                     "priority": priority,
-                    "branch": branch_slug(component_id, action),
+                    "branch": branch_slug(component_id, action, version),
                     "do_authority": False,
                     "acceptance": acceptance(action, exact_subject=False),
                 }
@@ -185,10 +193,11 @@ def construct_plan(
     release_rows = release_packets(manifest)
     release_ids = {row["id"] for row in release_rows}
     release_repositories = {row["repository"] for row in release_rows}
-    bootstrap_rows = bootstrap_packets(bootstrap, release_ids)
+    version = str(release["version"])
+    bootstrap_rows = bootstrap_packets(bootstrap, release_ids, version)
     rows = release_rows + bootstrap_rows
     if include_portfolio:
-        rows.extend(portfolio_packets(policy, release_repositories))
+        rows.extend(portfolio_packets(policy, release_repositories, version))
 
     rows.sort(key=lambda row: (row["priority"], row["release_blocking"] is False, row["repository"], row["id"]))
 
@@ -254,11 +263,20 @@ def validate_plan(plan: dict[str, Any]) -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--manifest", type=Path, default=Path("release/v26.9.1/manifest.toml"))
-    parser.add_argument("--fleet", type=Path, default=Path("release/v26.9.1/fleet-policy.toml"))
-    parser.add_argument("--bootstrap", type=Path, default=Path("release/v26.9.1/fanout-bootstrap.toml"))
+    parser.add_argument("--release", help="target release line vYY.M.D (default: the catalog/west.toml pointer)")
+    parser.add_argument("--manifest", type=Path)
+    parser.add_argument("--fleet", type=Path, help="default: fleet-policy.toml beside the manifest")
+    parser.add_argument("--bootstrap", type=Path, help="default: fanout-bootstrap.toml beside the manifest")
     parser.add_argument("--release-only", action="store_true")
     args = parser.parse_args(argv)
+    try:
+        args.manifest = release_line.require(release_line.resolve_manifest(args.release, args.manifest))
+        args.fleet = release_line.require(release_line.companion(args.manifest, "fleet-policy.toml", args.fleet, args.release))
+        args.bootstrap = release_line.require(
+            release_line.companion(args.manifest, "fanout-bootstrap.toml", args.bootstrap, args.release)
+        )
+    except release_line.ReleaseLineError as exc:
+        parser.error(str(exc))
 
     manifest = load(args.manifest)
     policy = load(args.fleet)

@@ -12,12 +12,16 @@ import configparser
 import copy
 import json
 import re
+import sys
 import tomllib
 from pathlib import Path, PurePosixPath
 from typing import Any
 
 import yaml
 from west.manifest import Manifest
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import release_line  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
@@ -111,11 +115,26 @@ def _resolved_manifest_data(root: Path) -> tuple[dict[str, Any], list[dict[str, 
     return combined, raw_projects, import_names
 
 
-def verify(root: Path = ROOT) -> dict[str, Any]:
+def _target_source(root: Path, manifest: Path) -> str:
+    """The manifest path as West userdata names it: POSIX, relative to the workspace root."""
+    if manifest.is_absolute():
+        try:
+            manifest = manifest.resolve().relative_to(root.resolve())
+        except ValueError:
+            return manifest.as_posix()
+    return PurePosixPath(manifest.as_posix()).as_posix()
+
+
+def verify(root: Path = ROOT, release_manifest: Path | None = None) -> dict[str, Any]:
+    """Verify the West projection against one release manifest.
+
+    ``release_manifest`` (relative to ``root``) is the targeted line; ``None`` means the
+    catalog/west.toml pointer. A project whose userdata names a different source manifest
+    was projected from another line and is refused (CE23-7: no silent cross-line verify).
+    """
     policy = tomllib.loads((root / "catalog/west.toml").read_text(encoding="utf-8"))
-    release = tomllib.loads(
-        (root / policy["boundaries"]["release_manifest"]).read_text(encoding="utf-8")
-    )
+    target = release_manifest if release_manifest is not None else Path(policy["boundaries"]["release_manifest"])
+    release = tomllib.loads((root / target).read_text(encoding="utf-8"))
     repositories = tomllib.loads((root / "catalog/repositories.toml").read_text(encoding="utf-8"))
     manifest_data, raw_projects, import_names = _resolved_manifest_data(root)
     manifest = Manifest.from_data(yaml.safe_dump(manifest_data, sort_keys=False))
@@ -142,12 +161,14 @@ def verify(root: Path = ROOT) -> dict[str, Any]:
 
     release_missing: list[str] = []
     release_mismatch: list[str] = []
+    release_projects: list[Any] = []
     for component in release.get("components", []):
         repo = f"https://github.com/{component['repository']}"
         project = by_repo.get(repo)
         if project is None:
             release_missing.append(component["id"])
             continue
+        release_projects.append(project)
         userdata = project.userdata if isinstance(project.userdata, dict) else {}
         release_data = userdata.get("release", {}) if isinstance(userdata, dict) else {}
         expected_sha = component["sha"]
@@ -159,6 +180,22 @@ def verify(root: Path = ROOT) -> dict[str, Any]:
         raise SystemExit("REFUSED:WEST_RELEASE_COMPONENT_MISSING:" + ",".join(release_missing))
     if release_mismatch:
         raise SystemExit("REFUSED:WEST_RELEASE_SHA_MISMATCH:" + ",".join(release_mismatch))
+
+    # A release-bound project whose userdata names its source manifest must name the
+    # targeted one: a projection of another line is not verified as this line's.
+    target_source = _target_source(root, target)
+    foreign_source = sorted(
+        project.name
+        for project in release_projects
+        if isinstance(project.userdata, dict)
+        and isinstance(project.userdata.get("chateco"), dict)
+        and "source" in project.userdata["chateco"]
+        and str(project.userdata["chateco"]["source"]) != target_source
+    )
+    if foreign_source:
+        raise SystemExit(
+            f"REFUSED:WEST_RELEASE_SOURCE_MISMATCH:{target_source}:" + ",".join(foreign_source)
+        )
 
     catalog_urls = {
         entry["url"].rstrip("/").removesuffix(".git")
@@ -238,8 +275,19 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--root", type=Path, default=ROOT)
+    parser.add_argument("--release", help="target release line vYY.M.D (default: the catalog/west.toml pointer)")
+    parser.add_argument("--release-manifest", type=Path, help="release manifest relative to --root")
     args = parser.parse_args()
-    result = verify(args.root)
+    target = None
+    try:
+        if args.release_manifest is not None:
+            target = release_line.bind(args.release_manifest, args.release)
+        elif args.release is not None:
+            target = release_line.release_file("manifest.toml", args.release, args.root)
+        release_line.require(target or release_line.declared_manifest(args.root), args.root)
+    except release_line.ReleaseLineError as exc:
+        parser.error(str(exc))
+    result = verify(args.root, target)
     if args.json:
         print(json.dumps(result, indent=2, sort_keys=True))
     else:
