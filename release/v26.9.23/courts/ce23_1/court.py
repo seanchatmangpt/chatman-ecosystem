@@ -36,7 +36,12 @@ that diverges from the head under release/v26.9.1 or the subject is itself refus
   V1 vendor      every vendor/ggen-marketplace/VENDOR.toml row: the committed tree equals
                  the row's tree and the marketplace object <commit>:<subdir>, the commit is
                  on the published marketplace ref, and ggen.toml takes every pack from a
-                 vendored row with lock = true
+                 vendored row with lock = true. Publication is typed (publication()): a
+                 commit that refs/heads/<ref> of the canonical checkout holds while that line
+                 fast-forwards origin/<ref> is UNKNOWN[VENDOR_PUBLICATION_PENDING] (a plain
+                 push of the admitted line closes it, no change to the subject does); a
+                 commit on neither is REFUSED[VENDOR_COMMIT_OFF_REF] (the pin leaves the
+                 declared line: publishing it needs another line or a force)
   G1 render      `ggen sync run` on the committed subject exits 0 and writes nothing (native
                  refusals: FM-WRITE-005 hand edit, FM-PACK-008 vendored drift, FM-PACK-013
                  gate); a fresh render of out/ and a fresh ggen.lock equal the committed
@@ -59,7 +64,8 @@ that diverges from the head under release/v26.9.1 or the subject is itself refus
                  sjira/compiled/*/orders.ttl (independent of ggen.toml's import list), with
                  CE23-1 rows present
   AV corpus      a synthetic two-commit repository (base: release/v26.9.1 at base_commit;
-                 head: the judged slice) must be ALIVE unmutated (control M0), and each of 23
+                 head: the judged slice) must be ALIVE unmutated (control M0; UNKNOWN, never
+                 refused, while its vendored pin awaits publication), and each of 24
                  mutants must be refused with its expected codes (and named reason): MV revert
                  of the subject; M1 hand-edited render; M2 a CriticalPath component dropped
                  from the graph, M2b also from the render; M3/M4 a v26.9.1 byte change / new
@@ -70,8 +76,13 @@ that diverges from the head under release/v26.9.1 or the subject is itself refus
                  source outside the pin; M13 the import an absolute symlink to identical bytes
                  outside the repository; M14 the import a relative symlink leaving the subject;
                  M15 law.reflexive; M16 lock = false; M17 a component re-pinned off its ref;
-                 M18 committed court pins that are not the running court's; MB an orphan base
-                 (see mutants())
+                 M18 committed court pins that are not the running court's; MB an orphan base;
+                 MV1d the vendored pin on a marketplace line diverged from its published ref.
+                 Publication is witnessed on synthetic marketplaces (bare repositories over the
+                 canonical checkout's objects via git alternates; only their refs differ):
+                 control M0p (the pin published) must be ALIVE, edge MV1p (the pin one
+                 fast-forward ahead of its published ref) must be UNKNOWN
+                 [VENDOR_PUBLICATION_PENDING] and never refused (see mutants())
 
 A clause that finds a committed subject file unreadable in the slice (e.g. a dangling symlink)
 refuses it typed (SUBJECT_UNREADABLE) instead of faulting.
@@ -86,7 +97,8 @@ and CE23_REPO_<ID> per component (default ~/<id>, e.g. CE23_REPO_XAAS, CE23_REPO
     python3 release/v26.9.23/courts/ce23_1/court.py [--no-av] [--keep SCRATCH]
 
 Exit: 0 ALIVE; 1 REFUSED (typed REFUSED[<code>] lines name the counterexample);
-75 UNKNOWN (typed UNKNOWN[<code>] lines: a tool or a canonical checkout is absent).
+75 UNKNOWN (typed UNKNOWN[<code>] lines: a tool or a canonical checkout is absent, or a
+vendored marketplace pin awaits the publication of its line).
 """
 
 from __future__ import annotations
@@ -263,8 +275,9 @@ def repo_for(component_id: str) -> Path:
 
 
 # --------------------------------------------------------------------- judge
-def judge(root: Path, base: str, env: Env, work: Path) -> Verdict:
-    """Judge the committed head of `root` against the CE23-1 proposition."""
+def judge(root: Path, base: str, env: Env, work: Path, marketplace: Path | None = None) -> Verdict:
+    """Judge the committed head of `root` against the CE23-1 proposition (V1 reads `marketplace`,
+    default the canonical checkout)."""
     v = Verdict()
     head = env.out(root, "rev-parse", "--verify", "HEAD^{commit}")
     if head is None:
@@ -346,7 +359,7 @@ def judge(root: Path, base: str, env: Env, work: Path) -> Verdict:
             v.refuse("SUBJECT_UNREADABLE", name, f"committed subject file unreadable in the slice: {exc}")
             return None
 
-    vendor_rows = clause("V1", vendor, v, root, head, sub, env) or []
+    vendor_rows = clause("V1", vendor, v, root, head, sub, env, marketplace) or []
     clause("G1", render, v, sub, env)
     clause("G2", gates, v, sub, env, vendor_rows)
     man = clause("M1", manifest_law, v, sub)
@@ -476,13 +489,45 @@ def court_identity(v: Verdict, root: Path, head: str, env: Env) -> None:
         v.ok("C1", f"the judging court ({len(COURT_BYTES)} files: wrapper, code, pins) is byte-identical to the head's")
 
 
-def vendor(v: Verdict, root: Path, head: str, sub: Path, env: Env) -> list[dict]:
+def marketplace_repo() -> Path:
+    return Path(os.environ.get("CE23_MARKETPLACE_REPO") or (Path.home() / "ggen-marketplace")).expanduser()
+
+
+def publication(env: Env, repo: Path, commit: str, ref: str) -> tuple[str, str]:
+    """Where `commit` stands against the declared line `ref` of the checkout `repo`:
+
+      published   an ancestor of refs/remotes/origin/<ref>
+      pending     not yet there, but an ancestor of refs/heads/<ref>, which fast-forwards origin/<ref>:
+                  a plain push of the line publishes it; no change to the subject closes this edge
+      unobserved  the checkout has no refs/remotes/origin/<ref>
+      off-ref     anything else: the pin leaves the declared line
+    """
+    remote, local = f"refs/remotes/origin/{ref}", f"refs/heads/{ref}"
+
+    def ancestor(a: str, b: str) -> bool:
+        return env.git_(repo, "merge-base", "--is-ancestor", a, b).returncode == 0
+
+    if env.out(repo, "rev-parse", "--verify", "--quiet", f"{remote}^{{commit}}") is None:
+        return "unobserved", f"{repo} has no {remote}"
+    if ancestor(commit, remote):
+        return "published", f"on {remote}"
+    tip = env.out(repo, "rev-parse", "--verify", "--quiet", f"{local}^{{commit}}")
+    if tip and ancestor(commit, local) and ancestor(remote, local):
+        ahead = env.out(repo, "rev-list", "--count", f"{remote}..{local}")
+        return "pending", (f"{commit} is not yet on {remote}; {local} ({tip[:12]}) holds it and fast-forwards {remote} "
+                           f"by {ahead} commits: publication is a plain push of {ref}, no change to the subject")
+    where = ("absent" if not tip else f"at {tip[:12]}, not holding the pin" if not ancestor(commit, local)
+             else f"at {tip[:12]}, diverged from {remote}")
+    return "off-ref", f"{commit} is on neither {remote} nor a fast-forward of it ({local} {where})"
+
+
+def vendor(v: Verdict, root: Path, head: str, sub: Path, env: Env, marketplace: Path | None = None) -> list[dict]:
     doc = tomllib.loads((sub / SUBJ["vendor_dir"] / "VENDOR.toml").read_text(encoding="utf-8"))
     packs = doc.get("pack", [])
     if not packs:
         v.refuse("VENDOR_EMPTY", "V1", f"{SUBJ['vendor_dir']}/VENDOR.toml declares no [[pack]]")
         return []
-    marketplace = Path(os.environ.get("CE23_MARKETPLACE_REPO") or (Path.home() / "ggen-marketplace")).expanduser()
+    marketplace = marketplace or marketplace_repo()
     for row in packs:
         rel = f"{SDIR}/{SUBJ['vendor_dir']}/{row['subdir']}"
         here = env.out(root, "rev-parse", f"{head}:{rel}")
@@ -496,14 +541,15 @@ def vendor(v: Verdict, root: Path, head: str, sub: Path, env: Env) -> list[dict]
         if there != row["tree"]:
             v.refuse("VENDOR_NOT_BYTE_IDENTICAL", "V1", f"marketplace {row['commit']}:{row['subdir']} is {there}, vendored {row['tree']}")
             continue
-        ref = f"refs/remotes/origin/{row['ref']}"
-        if env.out(marketplace, "rev-parse", "--verify", f"{ref}^{{commit}}") is None:
-            v.unknown("MARKETPLACE_REF_UNOBSERVED", "V1", f"{marketplace} has no {ref}")
-            continue
-        if env.git_(marketplace, "merge-base", "--is-ancestor", row["commit"], ref).returncode != 0:
-            v.refuse("VENDOR_COMMIT_UNPUBLISHED", "V1", f"{row['commit']} is not on {ref}")
-            continue
-        v.ok("V1", f"{row['name']} {row['subdir']} tree {row['tree']} = marketplace {row['commit'][:12]} on origin/{row['ref']}")
+        state, detail = publication(env, marketplace, row["commit"], row["ref"])
+        if state == "unobserved":
+            v.unknown("MARKETPLACE_REF_UNOBSERVED", "V1", detail)
+        elif state == "pending":
+            v.unknown("VENDOR_PUBLICATION_PENDING", "V1", f"{row['name']} {detail}")
+        elif state == "off-ref":
+            v.refuse("VENDOR_COMMIT_OFF_REF", "V1", f"{row['name']} {detail}")
+        else:
+            v.ok("V1", f"{row['name']} {row['subdir']} tree {row['tree']} = marketplace {row['commit'][:12]} on origin/{row['ref']}")
     config = tomllib.loads((sub / "ggen.toml").read_text(encoding="utf-8"))
     vendored = {f"{SUBJ['vendor_dir']}/{row['subdir']}" for row in packs}
     entries = config.get("packs", {})
@@ -722,7 +768,10 @@ class Mutant:
     """One anti-vacuity mutant: `mutate` edits the synthetic repository in place (and may return
     a replacement base commit); it is committed unless `commit` is False (a working-tree
     mutant). The judge must refuse with every code in `expect`, and a refusal line must carry
-    `mention` when set (the refusal is for the named reason, not an incidental one)."""
+    `mention` when set (the refusal is for the named reason, not an incidental one). With an
+    empty `expect` the judge must refuse nothing: an `edge` mutant must be UNKNOWN with every
+    code in `edge` (an edge, never a counterexample), otherwise it is a control (ALIVE). `market`
+    judges V1 against a synthetic marketplace in that publication state (synthetic_marketplace())."""
 
     id: str
     desc: str
@@ -730,6 +779,44 @@ class Mutant:
     mutate: Callable[[Path], str | None]
     mention: str | None = None
     commit: bool = True
+    edge: tuple[str, ...] = ()
+    market: str | None = None
+
+
+def synthetic_marketplace(env: Env, subject: Path, dest: Path, state: str) -> Path:
+    """A bare repository over the canonical marketplace checkout's objects (git alternates: nothing
+    is copied and the checkout is only read) whose refs put every VENDOR.toml pin of `subject` in
+    publication `state`: published (origin/<ref> = <ref> = the pin), pending (origin/<ref> = the
+    pin's first parent, <ref> = the pin: a fast-forward) or diverged (<ref> = the pin, origin/<ref>
+    = a sibling commit of the pin's tree on its first parent: no fast-forward)."""
+    real = marketplace_repo()
+    common = env.out(real, "rev-parse", "--path-format=absolute", "--git-common-dir")
+    if not common:
+        raise RuntimeError(f"{real} is not a git checkout (canonical marketplace absent)")
+    if env.run([env.git, "init", "-q", "--bare", str(dest)]).returncode != 0:
+        raise RuntimeError(f"git init --bare {dest} failed")
+    (dest / "objects" / "info" / "alternates").write_text(f"{common}/objects\n", encoding="utf-8")
+    rows = tomllib.loads((subject / SDIR / SUBJ["vendor_dir"] / "VENDOR.toml").read_text(encoding="utf-8")).get("pack", [])
+    for row in rows:
+        pin, ref = row["commit"], row["ref"]
+        parent = env.out(dest, "rev-parse", "--verify", f"{pin}^1")
+        if not parent:
+            raise RuntimeError(f"pin {pin} has no parent in {real}")
+        remote, local = pin, pin
+        if state == "pending":
+            remote = parent
+        elif state == "diverged":
+            sibling = env.run([env.git, "-C", str(dest), "-c", "user.name=ce23-1-court", "-c", "user.email=ce23-1-court@localhost",
+                               "commit-tree", f"{pin}^{{tree}}", "-p", parent, "-m", "diverged published line"])
+            if sibling.returncode != 0:
+                raise RuntimeError(f"commit-tree: {sibling.stderr[-200:]}")
+            remote = sibling.stdout.strip()
+        elif state != "published":
+            raise RuntimeError(f"unknown publication state {state}")
+        for name, sha in ((f"refs/remotes/origin/{ref}", remote), (f"refs/heads/{ref}", local)):
+            if env.git_(dest, "update-ref", name, sha).returncode != 0:
+                raise RuntimeError(f"update-ref {name} {sha} in {dest}")
+    return dest
 
 
 def _edit(path: Path, old: str, new: str) -> None:
@@ -892,6 +979,9 @@ def mutants(env: Env) -> list[Mutant]:
         with (sub(r) / "courts/ce23_1/subject.toml").open("a", encoding="utf-8") as f:
             f.write("# committed pins that are not the running court's\n")
 
+    def noop(r: Path) -> None:
+        return None
+
     def orphan_base(r: Path) -> str:
         empty = env.run([env.git, "-C", str(r), "hash-object", "-t", "tree", "--stdin", "-w"], stdin=b"")
         proc = env.run([env.git, "-C", str(r), "-c", "user.name=ce23-1-court", "-c", "user.email=ce23-1-court@localhost",
@@ -937,6 +1027,12 @@ def mutants(env: Env) -> list[Mutant]:
         Mutant("M18", "committed court pins differ from the pins of the court judging", ("COURT_NOT_AT_HEAD",), court_pins,
                "subject.toml"),
         Mutant("MB", "the judged head does not descend from the base (orphan base commit)", ("BASE_NOT_ANCESTOR",), orphan_base),
+        Mutant("MV1d", "the vendored pin on a marketplace line diverged from its published ref (no fast-forward)",
+               ("VENDOR_COMMIT_OFF_REF",), noop, "diverged", commit=False, market="diverged"),
+        Mutant("MV1p", "the vendored pin one fast-forward ahead of its published marketplace ref (publication pending)",
+               (), noop, commit=False, edge=("VENDOR_PUBLICATION_PENDING",), market="pending"),
+        Mutant("M0p", "unmutated synthetic subject, its vendored pin published (control after the line's push)",
+               (), noop, commit=False, market="published"),
     ]
 
 
@@ -963,17 +1059,19 @@ def anti_vacuity(root: Path, env: Env, work: Path, root_base: str | None = None)
     def one(m: Mutant | None) -> tuple[Mutant | None, Verdict | str]:
         repo = work / f"av-{m.id if m else 'M0'}"
         shutil.copytree(synth, repo, symlinks=True)
-        judged_base = base
+        judged_base, market = base, None
         try:
             if m is not None:
                 replacement = m.mutate(repo)
                 judged_base = replacement or base
                 if m.commit:
                     env.commit_all(repo, f"mutant {m.id}: {m.desc}")
+                if m.market:
+                    market = synthetic_marketplace(env, repo, work / f"av-{m.id}-market.git", m.market)
         except (RuntimeError, OSError) as exc:
             return m, f"AV_CONSTRUCT: {exc}"
         try:
-            return m, judge(repo, judged_base, env, work / f"av-{m.id if m else 'M0'}-work")
+            return m, judge(repo, judged_base, env, work / f"av-{m.id if m else 'M0'}-work", market)
         except Exception as exc:  # noqa: BLE001 (a court fault witnesses nothing: typed UNKNOWN)
             return m, f"COURT_FAULT: {type(exc).__name__}: {exc}"
 
@@ -983,11 +1081,23 @@ def anti_vacuity(root: Path, env: Env, work: Path, root_base: str | None = None)
         mid, desc = (m.id, m.desc) if m else ("M0", "unmutated synthetic subject (control)")
         if isinstance(got, str):
             v.unknown("AV_CONSTRUCT", f"AV {mid}", f"{desc}: {got}")
-        elif m is None:
-            if got.alive:
-                v.ok("AV M0", f"{desc}: ALIVE ({len(got.lines)} clauses)")
+        elif m is None or not m.expect:
+            # a control (M0 on the canonical marketplace, M0p on a published line) or an edge mutant:
+            # never refused; an edge mutant is UNKNOWN on its named edge, a control ALIVE (a control that
+            # is UNKNOWN only, e.g. M0 while its vendored pin awaits publication, witnesses nothing: UNKNOWN)
+            label, edge = f"AV {mid}", (m.edge if m else ())
+            not_ok = [line for line in got.lines if not line.startswith("OK")][:4]
+            if got.refused:
+                v.refuse("AV_EDGE_REFUSED" if edge else "AV_HARNESS", label, f"{desc} refused: {not_ok}")
+            elif edge and (missing := [code for code in edge if code not in got.unknowns]):
+                v.refuse("AV_WRONG_TYPING", label, f"{desc}: {'ALIVE' if got.alive else 'UNKNOWN ' + str(sorted(set(got.unknowns)))}, "
+                                                   f"expected UNKNOWN {missing}")
+            elif edge:
+                v.ok(label, f"{desc}: UNKNOWN {sorted(set(got.unknowns))}, nothing refused")
+            elif got.alive:
+                v.ok(label, f"{desc}: ALIVE ({len(got.lines)} clauses)")
             else:
-                v.refuse("AV_HARNESS", "AV M0", f"{desc} not ALIVE: {[line for line in got.lines if not line.startswith('OK')][:4]}")
+                v.unknown("AV_CONTROL_UNKNOWN", label, f"{desc} UNKNOWN, nothing refused: {not_ok}")
         elif not got.refused:
             v.refuse("VACUOUS", f"AV {mid}", f"{desc}: admitted ({'UNKNOWN ' + str(got.unknowns) if got.unknowns else 'ALIVE'})")
         elif missing := [code for code in m.expect if code not in got.refused]:

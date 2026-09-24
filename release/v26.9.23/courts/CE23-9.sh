@@ -1,8 +1,9 @@
 #!/bin/sh
 # CE23-9 court: Exact-head root court (release/v26.9.23/sjira/goal.ttl ce:CE23-9).
 # Run from the chatman-ecosystem root by the CE23 root court. Exit 0 = ALIVE; exit 75 = UNKNOWN
-# (a tool, the rendered court, exact-head CI of an unpublished head, or the operator's GC23-12
-# acceptance edge behind CHATMAN_STOP; nothing refused); exit 1 carries typed REFUSED[<code>] lines
+# (a tool, the rendered court, exact-head CI of an unpublished head, a replayed court's edge such as
+# CE23-1's vendored marketplace pin awaiting its line's push, or the operator's GC23-12 acceptance
+# edge behind CHATMAN_STOP; nothing refused); exit 1 carries typed REFUSED[<code>] lines
 # naming the counterexample; any other exit = the court ran and witnessed nothing (standing UNKNOWN).
 # Machinery (step CE23-9): the members are er:Gate facts of release/v26.9.23/release.ttl, rendered by
 # the vendored chatman-ecosystem-release-pack 0.4.0 into release/v26.9.23/out/scripts/crown_v26_9_23.sh

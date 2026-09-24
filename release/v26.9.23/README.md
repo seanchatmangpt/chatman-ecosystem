@@ -41,7 +41,8 @@ then sync again. Never edit `out/` or a vendored file: the next sync refuses a h
 sh release/v26.9.23/courts/CE23-1.sh
 ```
 
-The court judges the exact committed head. Its clauses and its 23-mutant anti-vacuity corpus
+The court judges the exact committed head. Its clauses and its anti-vacuity corpus (24 refused mutants, the pending-publication edge
+MV1p and the published control M0p)
 are listed in `courts/ce23_1/court.py`, and its pins are in `courts/ce23_1/subject.toml`.
 
 ```bash

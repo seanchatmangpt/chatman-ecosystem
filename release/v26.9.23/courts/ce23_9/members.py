@@ -9,8 +9,9 @@ head of the checkout it runs in and ends with exactly one verdict line:
   MEMBER_ALIVE <member> ...                exit 0
   MEMBER_REFUSED[<code>,...] <member> ...  exit 1   (a counterexample on the subject)
   MEMBER_UNKNOWN[<code>,...] <member> ...  exit 75  (an edge the subject cannot close: an absent tool,
-                                                     an unpublished head, the operator's GC23-12
-                                                     acceptance; nothing refused)
+                                                     an unpublished head or vendored pin (a pending
+                                                     fast-forward push of its line), the operator's
+                                                     GC23-12 acceptance; nothing refused)
 
   members.py subject-clean       the checkout is exactly HEAD (no tracked, staged or untracked change)
                                  and HEAD descends from the release base
