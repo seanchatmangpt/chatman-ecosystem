@@ -1,0 +1,55 @@
+$ sh release/v26.9.23/sjira/compile_check.sh && for c in release/v26.9.23/sjira/candidates/*.ttl; do echo $c; done
+CORRECTIONS CHECK OK: 3 units; corrections chatman-ce23=0 chatman-ce23-12-bench=0 chatman-ce23-12-standings=24
+== prose_spans.py check chatman-ce23 --namespace https://ggen-igniter.dev/sjira/chatman-26.9.23# --prefix ce --require-gates 12 --gate-prefix CE23-
+CHECK OK: 46 candidates bound to release/v26.9.23/sjira/chatman-ce23.md sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3; gates CE23-0=3 CE23-1=3 CE23-2=4 CE23-3=5 CE23-4=3 CE23-5=3 CE23-6=7 CE23-7=2 CE23-8=2 CE23-9=2 CE23-10=1 CE23-11=2
+TALLY: required 45 + not_required 1 = 46 (multi_required 0); requiredBy CE23-0=3 CE23-1=3 CE23-10=1 CE23-11=2 CE23-2=4 CE23-3=5 CE23-4=3 CE23-5=3 CE23-6=7 CE23-7=2 CE23-8=2 CE23-9=2 GC-CE-26.9.23=8
+COVERAGE OK: release/v26.9.23/sjira/chatman-ce23.md view GC-CE-26.9.23: 12 gate(s) covered CE23-0=3 CE23-1=3 CE23-10=1 CE23-11=2 CE23-2=4 CE23-3=5 CE23-4=3 CE23-5=3 CE23-6=7 CE23-7=2 CE23-8=2 CE23-9=2; view root GC-CE-26.9.23=8; no foreign requirement
+== prose_spans.py check chatman-ce23-12-bench --namespace https://ggen-igniter.dev/sjira/chatman-26.9.23# --prefix ce
+CHECK OK: 19 candidates bound to release/v26.9.23/sjira/chatman-ce23-12-bench.md sha256:4146d688c21db6e1af51a2187df8056b1a0f977001c817d64fbde0547029b485
+TALLY: required 17 + not_required 2 = 19 (multi_required 0); requiredBy CE23-12=17
+COVERAGE OK: release/v26.9.23/sjira/chatman-ce23-12-bench.md view GC-CE-26.9.23: 1 gate(s) covered CE23-12=17; view root GC-CE-26.9.23=0; no foreign requirement
+== prose_spans.py check chatman-ce23-12-standings --namespace https://ggen-igniter.dev/sjira/chatman-26.9.23# --prefix ce
+CHECK OK: 30 candidates bound to release/v26.9.23/sjira/chatman-ce23-12-standings.md sha256:80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2
+TALLY: required 29 + not_required 1 = 30 (multi_required 0); requiredBy CE23-12=5 CE23-12-BenchmarkDesign=8 CE23-12-GeneratedQualificationPlan=8 CE23-12-MSAContract=8
+COVERAGE OK: release/v26.9.23/sjira/chatman-ce23-12-standings.md view CE23-12: 3 gate(s) covered CE23-12-BenchmarkDesign=8 CE23-12-GeneratedQualificationPlan=8 CE23-12-MSAContract=8; view root CE23-12=5; no foreign requirement
+PARTITION OK: 16 GoalCheckpoints under https://ggen-igniter.dev/sjira/chatman-26.9.23#GC-CE-26.9.23 partitioned by 3 units (release/v26.9.23/sjira/chatman-ce23.md=12 release/v26.9.23/sjira/chatman-ce23-12-bench.md=1 release/v26.9.23/sjira/chatman-ce23-12-standings.md=3)
+VIEW CHECK OK: release/v26.9.23/sjira/chatman-ce23.md -> release/v26.9.23/sjira/units/chatman-ce23.goal.ttl sha256:a77549a2bd7f7052e498a59df76b3bd56435ab4075881c245368014ddbc9aa8a
+VIEW CHECK OK: release/v26.9.23/sjira/chatman-ce23-12-bench.md -> release/v26.9.23/sjira/units/chatman-ce23-12-bench.goal.ttl sha256:2a76f96a8cfffcb9eb66ef017f6d67f48f8dfb0bdff66ea02b7e906fb4832a39
+VIEW CHECK OK: release/v26.9.23/sjira/chatman-ce23-12-standings.md -> release/v26.9.23/sjira/units/chatman-ce23-12-standings.goal.ttl sha256:2a654042402b2bff7f60046e0d6899e0b195207dc95135ace98a6343c5abdf5b
+== compile_prose --check chatman-ce23
+ADMITTED: 46 propositions (45 required, 1 not required)
+KINDS: Authority=1 Dependency=3 Evidence=9 Exclusion=4 Falsifier=1 Invariant=7 Metric=1 Object=2 Postcondition=13 State=4 Successor=1
+REQUIRED_BY: CE23-0=3 CE23-1=3 CE23-10=1 CE23-11=2 CE23-2=4 CE23-3=5 CE23-4=3 CE23-5=3 CE23-6=7 CE23-7=2 CE23-8=2 CE23-9=2 GC-CE-26.9.23=8
+DELTA: 21 required Postcondition/Invariant/Falsifier, 0 witnessed ALIVE (0 ALIVE receipts read), 21 work orders
+propositions.ttl sha256:e32e8cac3624c387863463690d2c9930b90033ee1e83bb14c911360821297aae
+orders.ttl sha256:09250f7fbd0f7b45e3e8f485c93ba0954276f6d01be67fc52649642241aaa809
+CHECK: /Users/sac/wt/v26922/v23/CE-INTAKE/release/v26.9.23/sjira/compiled/chatman-ce23 outputs recompute byte-identically
+== compile_prose --check chatman-ce23-12-bench
+ADMITTED: 19 propositions (17 required, 2 not required)
+KINDS: Evidence=1 Exclusion=1 Falsifier=1 Invariant=3 Metric=5 Object=1 Postcondition=5 Successor=1 Transition=1
+REQUIRED_BY: CE23-12=17
+DELTA: 9 required Postcondition/Invariant/Falsifier, 0 witnessed ALIVE (0 ALIVE receipts read), 9 work orders
+propositions.ttl sha256:4c124874c986a70e6687c9d6ac7b46e660d963745892d5b5b9cd911908cf6018
+orders.ttl sha256:6201a0732fd2181142d90e61dfb77d8d73dffefc2e4af0e946715ff59438b432
+CHECK: /Users/sac/wt/v26922/v23/CE-INTAKE/release/v26.9.23/sjira/compiled/chatman-ce23-12-bench outputs recompute byte-identically
+== compile_prose --check chatman-ce23-12-standings
+ADMITTED: 30 propositions (29 required, 1 not required)
+KINDS: Evidence=2 Exclusion=1 Falsifier=7 Invariant=3 Metric=1 Postcondition=14 State=1 Successor=1
+REQUIRED_BY: CE23-12=5 CE23-12-BenchmarkDesign=8 CE23-12-GeneratedQualificationPlan=8 CE23-12-MSAContract=8
+DELTA: 24 required Postcondition/Invariant/Falsifier, 0 witnessed ALIVE (0 ALIVE receipts read), 24 work orders
+propositions.ttl sha256:c92d6c8fa3f056335d7cae3e1b309271144754cc00d7bfb3f41639fae02af12c
+orders.ttl sha256:d7643c129b4620f820776d155863383f6ff5e4ab5551f0a1a92e8085de3130b5
+CHECK: /Users/sac/wt/v26922/v23/CE-INTAKE/release/v26.9.23/sjira/compiled/chatman-ce23-12-standings outputs recompute byte-identically
+== compile_prose --admit-goal release/v26.9.23/sjira/goal.ttl
+GOAL ADMITTED: /Users/sac/wt/v26922/v23/CE-INTAKE/release/v26.9.23/sjira/goal.ttl sha256:9fc86273c27a3e72418d8fb89da544367570de0bce50a078fd352a5e282afb09 (341 triples, 18 GoalCheckpoints, 0 WorkOrders)
+== compile_prose --admit-goal release/v26.9.23/sjira/units/chatman-ce23.goal.ttl
+GOAL ADMITTED: /Users/sac/wt/v26922/v23/CE-INTAKE/release/v26.9.23/sjira/units/chatman-ce23.goal.ttl sha256:a77549a2bd7f7052e498a59df76b3bd56435ab4075881c245368014ddbc9aa8a (104 triples, 13 GoalCheckpoints, 0 WorkOrders)
+== compile_prose --admit-goal release/v26.9.23/sjira/units/chatman-ce23-12-bench.goal.ttl
+GOAL ADMITTED: /Users/sac/wt/v26922/v23/CE-INTAKE/release/v26.9.23/sjira/units/chatman-ce23-12-bench.goal.ttl sha256:2a76f96a8cfffcb9eb66ef017f6d67f48f8dfb0bdff66ea02b7e906fb4832a39 (27 triples, 2 GoalCheckpoints, 0 WorkOrders)
+== compile_prose --admit-goal release/v26.9.23/sjira/units/chatman-ce23-12-standings.goal.ttl
+GOAL ADMITTED: /Users/sac/wt/v26922/v23/CE-INTAKE/release/v26.9.23/sjira/units/chatman-ce23-12-standings.goal.ttl sha256:2a654042402b2bff7f60046e0d6899e0b195207dc95135ace98a6343c5abdf5b (41 triples, 4 GoalCheckpoints, 0 WorkOrders)
+COMPILE_CHECK OK: 3 units (chatman-ce23, chatman-ce23-12-bench, chatman-ce23-12-standings): corrections, candidates (ce: namespace, CE23 gate coverage per unit view), unit views, compile_prose --check, goal admission and 16 gate courts all hold
+release/v26.9.23/sjira/candidates/chatman-ce23-12-bench.ttl
+release/v26.9.23/sjira/candidates/chatman-ce23-12-standings.ttl
+release/v26.9.23/sjira/candidates/chatman-ce23.ttl
+exit=0
