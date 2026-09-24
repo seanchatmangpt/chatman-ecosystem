@@ -20,6 +20,7 @@ the committed lift of the manifest blob at the base commit (CE23-2).
 | `manifest.toml`, `constitutional-role-crosswalk.toml` | symlinks to `out/`, so `scripts/release_line.py` resolves the line | pointer |
 | `sjira/` | CE23 governing graph, prose and compiled work orders | CE-INTAKE |
 | `courts/` | gate courts named by `sjira/goal.ttl` | per gate |
+| `courts/ce23_9/` | CE23-9 root court: judge (`court.py`), members (`members.py`), CI check universe (`ci_checks.py`), local CI job runner (`ci_job.py`), pins (`root.toml`), the byte-copied generated receipt validator and its provenance, the real base check-run fixture | CE23-9 |
 | `bench/` | CE23-12 benchmark design: capital (`DESIGN.md`, `ontology-draft.ttl`, `orders.json`), the in-repo `nonllm-class-qualification-pack` (`bench/pack/`), the design graph `design.ttl` and its ggen projections (`bench/out/`) | CE23-12 |
 
 ## Regenerate
@@ -71,6 +72,24 @@ sh release/v26.9.23/courts/CE23-12-GeneratedQualificationPlan.sh   # DOE, statis
 
 Clauses, the anti-vacuity corpora and the pins are in `courts/ce23_12/` (`court.py`, `mutations.toml`,
 `pins.toml`); the design itself is documented in `bench/README.md`.
+
+The CE23-9 exact-head root court is generated: its members are the `er:Gate` facts at the end of
+`release.ttl`, rendered by the vendored pack (0.4.0) into `out/scripts/crown_v26_9_23.sh`, with the
+typed non-success CI checks in `out/typed-checks.txt` and the re-hashed imports in
+`out/receipts/IMPORTS.sha256`:
+
+```bash
+sh release/v26.9.23/courts/CE23-9.sh      # exit 0 ALIVE, 1 REFUSED, 75 UNKNOWN
+```
+
+Members, in order: `subject-clean`, `projection-drift` (release subject, bench, views/generated),
+`manifest-refs`, the local CI members `ci.crown.fast`, `ci.crown.test` (unit/integration),
+`ci.crown.cold-cache`, `ci.gall-crown`, `ci.release-control-plane`, `ci.old-estate-revops` (each runs
+the committed job's `run:` steps at HEAD through `courts/ce23_9/ci_job.py`), `imported-receipts`,
+`ci-dispositions`, `replay`, `exact-head-ci` and `chatman-stop` (CHATMAN_STOP; UNKNOWN on the
+operator's GC23-12 acceptance edge while STOP=false). Every CI check the release pull request and main
+carry is a local member, a typed `er:CheckDisposition` or judged by its exact-head check-run
+(`members.py ci-dispositions` prints the table).
 
 ## See also
 

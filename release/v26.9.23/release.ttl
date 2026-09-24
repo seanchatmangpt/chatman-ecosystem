@@ -2,6 +2,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix r23: <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.23#> .
+@prefix ce9: <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.23/court#> .
 
 # Chatman Ecosystem v26.9.23 release instance (CE23-1, release/v26.9.23/sjira/goal.ttl
 # ce:CE23-1): the consumer-owned facts of an independent v26.9.23 release subject. Law,
@@ -28,6 +29,10 @@
 # undisposed role and the CE23-2 court refuses a render that does not carry all 16.
 #
 # Not asserted here: imported crowns (CE23-3/CE23-8).
+#
+# Exact-head root court (CE23-9): the er:Gate, er:Probe, er:CheckDisposition and er:ImportedReceipt
+# facts at the end of this file; the vendored pack (0.4.0) renders them into
+# out/scripts/crown_v26_9_23.sh and out/typed-checks.txt. Not asserted here: er:RootReceipt (CE23-10).
 
 r23:release a er:Release ;
     rdfs:label "Chatman Ecosystem" ;
@@ -39,7 +44,15 @@ r23:release a er:Release ;
     er:crosswalkFrom <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1> ;
     er:classificationSource "seanchatmangpt/xaas@6fd59588c2e06b83d1af6ebc653e7b545de6f90f:docs/sjira/v26.9.23/fleet/classification.ttl sha256:d9e99f074ef2a8c994119681d9359ea1778e68333cc8da94b6b1c0aa44873636" ;
     er:hasComponent r23:xaas, r23:ggen_igniter ;
-    er:hasRoleMapping r23:map-execution-realization, r23:map-semantic-manufacture .
+    er:hasRoleMapping r23:map-execution-realization, r23:map-semantic-manufacture ;
+    er:courtRoot "../.." ;
+    er:gate r23:gate-subject-clean, r23:gate-projection-drift, r23:gate-manifest-refs,
+        r23:gate-ci-crown-fast, r23:gate-ci-crown-test, r23:gate-ci-crown-cold-cache, r23:gate-ci-gall-crown,
+        r23:gate-ci-release-control-plane, r23:gate-ci-old-estate-revops, r23:gate-imported-receipts,
+        r23:gate-ci-dispositions, r23:gate-replay, r23:gate-exact-head-ci, r23:gate-chatman-stop ;
+    er:probe r23:probe-subject, r23:probe-ggen, r23:probe-python, r23:probe-rustc, r23:probe-cargo ;
+    er:checkDisposition r23:check-cargo-deny, r23:check-chatman-crown, r23:check-weaver-live, r23:check-portfolio-survey,
+        r23:check-gall-agent-scaffold, r23:check-docs-vacuity .
 
 r23:xaas a er:Component ;
     er:componentId "xaas" ;
@@ -79,3 +92,204 @@ r23:map-semantic-manufacture a er:RoleMapping ;
     er:primary er:CONST_CONSTRUCT ;
     er:capability er:CONST_ADMIT, er:CONST_PROJECT ;
     er:authorityCeiling "CONSTRUCT_ONLY_NO_DO" .
+
+# ---------------------------------------------------------------------------------------------------
+# CE23-9 exact-head root court (release/v26.9.23/sjira/goal.ttl ce:CE23-9; chatman-ce23.md: "candidate
+# Chatman SHA passes generated-projection drift, manifest/ref validation, unit/integration, imported
+# receipt validation, replay, and strict release crown"). Every er:command runs from the
+# chatman-ecosystem root (er:courtRoot "../.."), in er:gateOrder, as `bash -euo pipefail -c`; the court
+# stops at the first non-zero member with that member's order as its exit status. Members end with one
+# MEMBER_ALIVE / MEMBER_REFUSED[...] / MEMBER_UNKNOWN[...] line (exit 0 / 1 / 75), read by the judge
+# release/v26.9.23/courts/ce23_9/court.py (sh release/v26.9.23/courts/CE23-9.sh), which runs this court.
+#
+# Strict crown membership (driver decision 2026-09-23): every CI check the exact head carries
+# (courts/ce23_9/ci_checks.py over the committed workflows and the release's changed files) has one
+# disposition: a local member below (ce9:reproducesCheck; courts/ce23_9/ci_job.py runs the committed
+# job's run: steps at HEAD), a typed er:CheckDisposition (pre-existing failures unrelated to CE23
+# propositions, with evidence), or its check-run at the exact head (member exact-head-ci).
+# ---------------------------------------------------------------------------------------------------
+
+r23:gate-subject-clean a er:Gate ;
+    er:gateOrder 1 ;
+    er:gateName "subject-clean" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/members.py subject-clean" .
+
+r23:gate-projection-drift a er:Gate ;
+    er:gateOrder 2 ;
+    er:gateName "projection-drift" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/members.py projection-drift" .
+
+r23:gate-manifest-refs a er:Gate ;
+    er:gateOrder 3 ;
+    er:gateName "manifest-refs" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/members.py manifest-refs" .
+
+r23:gate-ci-crown-fast a er:Gate ;
+    er:gateOrder 4 ;
+    er:gateName "ci.crown.fast" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/ci_job.py .github/workflows/crown.yml fast" ;
+    ce9:reproducesCheck "Fast constitutional gates" ;
+    ce9:checkWorkflow ".github/workflows/crown.yml" ;
+    ce9:checkJob "fast" .
+
+# unit/integration: the Python control-plane fixtures, cargo test, rustdoc, storage, receipts and the
+# exact-head release build of crown.yml's test job.
+r23:gate-ci-crown-test a er:Gate ;
+    er:gateOrder 5 ;
+    er:gateName "ci.crown.test" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/ci_job.py .github/workflows/crown.yml test" ;
+    ce9:reproducesCheck "Full behavior and negative fixtures" ;
+    ce9:checkWorkflow ".github/workflows/crown.yml" ;
+    ce9:checkJob "test" .
+
+r23:gate-ci-crown-cold-cache a er:Gate ;
+    er:gateOrder 6 ;
+    er:gateName "ci.crown.cold-cache" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/ci_job.py .github/workflows/crown.yml cold-cache" ;
+    ce9:reproducesCheck "Cold-cache correctness" ;
+    ce9:checkWorkflow ".github/workflows/crown.yml" ;
+    ce9:checkJob "cold-cache" .
+
+r23:gate-ci-gall-crown a er:Gate ;
+    er:gateOrder 7 ;
+    er:gateName "ci.gall-crown" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/ci_job.py .github/workflows/gall-crown.yml gall" ;
+    ce9:reproducesCheck "S0-S3 exact-head crown" ;
+    ce9:checkWorkflow ".github/workflows/gall-crown.yml" ;
+    ce9:checkJob "gall" .
+
+r23:gate-ci-release-control-plane a er:Gate ;
+    er:gateOrder 8 ;
+    er:gateName "ci.release-control-plane" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/ci_job.py .github/workflows/release-control-plane.yml manifest" ;
+    ce9:reproducesCheck "manifest" ;
+    ce9:checkWorkflow ".github/workflows/release-control-plane.yml" ;
+    ce9:checkJob "manifest" .
+
+r23:gate-ci-old-estate-revops a er:Gate ;
+    er:gateOrder 9 ;
+    er:gateName "ci.old-estate-revops" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/ci_job.py .github/workflows/old-estate-revops.yml exact-head" ;
+    ce9:reproducesCheck "Exact-head planner admission" ;
+    ce9:checkWorkflow ".github/workflows/old-estate-revops.yml" ;
+    ce9:checkJob "exact-head" .
+
+r23:gate-imported-receipts a er:Gate ;
+    er:gateOrder 10 ;
+    er:gateName "imported-receipts" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/members.py imported-receipts" .
+
+r23:gate-ci-dispositions a er:Gate ;
+    er:gateOrder 11 ;
+    er:gateName "ci-dispositions" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/members.py ci-dispositions" .
+
+r23:gate-replay a er:Gate ;
+    er:gateOrder 12 ;
+    er:gateName "replay" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/members.py replay" .
+
+r23:gate-exact-head-ci a er:Gate ;
+    er:gateOrder 13 ;
+    er:gateName "exact-head-ci" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/members.py exact-head-ci" .
+
+# CHATMAN_STOP (the release's own STOP condition, a consumer gate checked at court time, never a
+# generic pack gate): UNKNOWN on the operator's GC23-12 acceptance edge while STOP=false.
+r23:gate-chatman-stop a er:Gate ;
+    er:gateOrder 14 ;
+    er:gateName "chatman-stop" ;
+    er:command "python3 release/v26.9.23/courts/ce23_9/members.py chatman-stop" .
+
+r23:probe-subject a er:Probe ;
+    er:probeOrder 1 ;
+    er:probeName "subject_sha" ;
+    er:command "git rev-parse HEAD" .
+
+r23:probe-ggen a er:Probe ;
+    er:probeOrder 2 ;
+    er:probeName "toolchain.ggen" ;
+    er:command "ggen --version 2>/dev/null | head -1" .
+
+r23:probe-python a er:Probe ;
+    er:probeOrder 3 ;
+    er:probeName "toolchain.python" ;
+    er:command "python3 --version" .
+
+r23:probe-rustc a er:Probe ;
+    er:probeOrder 4 ;
+    er:probeName "toolchain.rustc" ;
+    er:command "rustc --version" .
+
+r23:probe-cargo a er:Probe ;
+    er:probeOrder 5 ;
+    er:probeName "toolchain.cargo" ;
+    er:command "cargo --version" .
+
+# Typed dispositions: checks the exact head carries that fail (or cannot conclude success) for causes
+# that precede v26.9.23 and that no CE23 proposition covers. Evidence observed with gh api and local
+# runs on 2026-09-24.
+r23:check-cargo-deny a er:CheckDisposition ;
+    er:checkName "Dependency license and source policy" ;
+    er:checkWorkflow ".github/workflows/crown.yml" ;
+    er:failureClass er:pre_existing ;
+    er:checkBoundary er:ROLE_SUCCESSOR ;
+    er:checkEvidence "seanchatmangpt/chatman-ecosystem@c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 Crown Admission run 34548430864 (push) job 103106030500 failure at step 'Run cargo deny check'; local `cargo deny check` at the base-repaired head ecff99255832 exits 13 (advisories FAILED, bans ok, licenses FAILED, sources FAILED; e.g. rustls 0.23.43 GHSA-2mjx-qc3c-rqvc via sqlx-core 0.9.0) and cargo-machete is absent on the court host; dependency policy is no CE23 proposition: successor GC-26.9.24 (scan GC24-cargo-deny-policy)" .
+
+r23:check-chatman-crown a er:CheckDisposition ;
+    er:checkName "CHATMAN ECOSYSTEM CROWN" ;
+    er:checkWorkflow ".github/workflows/crown.yml" ;
+    er:failureClass er:pre_existing ;
+    er:checkBoundary er:ROLE_BLOCKED ;
+    er:checkEvidence "seanchatmangpt/chatman-ecosystem@c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 Crown Admission run 34548430864: the crown job concluded skipped because it needs [policy, test, cold-cache, github-read] and policy ('Dependency license and source policy', typed pre_existing) failed; it cannot conclude success at any head while that failure stands. Its admission inputs fast, test and cold-cache are local members ci.crown.fast, ci.crown.test and ci.crown.cold-cache; github-read is judged by its exact-head check-run" .
+
+r23:check-weaver-live a er:CheckDisposition ;
+    er:checkName "Execute every Weaver capability through Ash.Reactor" ;
+    er:checkWorkflow ".github/workflows/weaver-live.yml" ;
+    er:failureClass er:pre_existing ;
+    er:checkBoundary er:ROLE_SUCCESSOR ;
+    er:checkEvidence "seanchatmangpt/chatman-ecosystem@c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 Weaver Exact-Subject Capability Crown run 34548430863 (push) job 103105992638 failure at step 'Verify Ash/Reactor integration' (integrations/weaver_ash mix format/compile/test/hex.audit); v26.9.23 changes no file under integrations/ (git diff c59596f5..HEAD -- integrations/ is empty); the Weaver capability crown is no CE23 proposition" .
+
+r23:check-portfolio-survey a er:CheckDisposition ;
+    er:checkName "survey" ;
+    er:checkWorkflow ".github/workflows/portfolio-survey.yml" ;
+    er:failureClass er:pre_existing ;
+    er:checkBoundary er:ROLE_SUCCESSOR ;
+    er:checkEvidence "seanchatmangpt/chatman-ecosystem@c59596f5506e7a00ca4ed6b909ebf6d6659b74c1: all 13 scheduled v26.9.1 portfolio survey runs failed at step 'Manufacture 80/20 ERRC plan' (e.g. runs 35892560432, 35757546923, 35636896394; job 107288386630); schedule-only on main (its pull_request paths match the release only beyond GitHub's 300-file window); successor GC-26.9.24 (scan GC24-errc-survey-keyerror)" .
+
+r23:check-gall-agent-scaffold a er:CheckDisposition ;
+    er:checkName "Observe nothingnesses/agent-scaffold" ;
+    er:checkWorkflow ".github/workflows/gall.yml" ;
+    er:failureClass er:environment ;
+    er:checkBoundary er:ROLE_SUCCESSOR ;
+    er:checkEvidence "seanchatmangpt/chatman-ecosystem@c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 Gall Checkpoints scheduled runs 35376717087 and 34630114002: job 105702992704 failed at step 'Resolve current exact subject' (GitHub API read of the third-party repository nothingnesses/agent-scaffold) while the other 13 matrix repositories concluded success; schedule-only, observes a repository outside the release" .
+
+r23:check-docs-vacuity a er:CheckDisposition ;
+    er:checkName "audit" ;
+    er:checkWorkflow ".github/workflows/docs-vacuity.yml" ;
+    er:failureClass er:pre_existing ;
+    er:checkBoundary er:ROLE_SUCCESSOR ;
+    er:checkEvidence "scripts/audit_doc_vacuity.py exits 1 with the same 15 LOW_SEMANTIC_DENSITY findings on the c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 tree and at the head b9aed434ed5e (local runs 2026-09-24); pull_request runs failed at 680861cb, bebad484, 4b5859e4 and d7010133 (2026-09-21); the release changes only docs/security/ggen-signing-keys-v26.9.23.md under docs/, which is not among the findings" .
+
+# Imported inputs the court re-hashes before any member runs (exit 100 on a missing file or a digest
+# mismatch); paths are relative to the court root.
+r23:import-fleet-classification a er:ImportedReceipt ;
+    er:importName "fleet-classification" ;
+    er:importPath "release/v26.9.23/imports/fleet-classification.ttl" ;
+    er:importDigest "sha256:d9e99f074ef2a8c994119681d9359ea1778e68333cc8da94b6b1c0aa44873636" ;
+    er:ordinal 1 ;
+    er:importSource "seanchatmangpt/xaas@6fd59588c2e06b83d1af6ebc653e7b545de6f90f:docs/sjira/v26.9.23/fleet/classification.ttl" .
+
+r23:import-legacy-v26-9-1 a er:ImportedReceipt ;
+    er:importName "legacy-v26.9.1" ;
+    er:importPath "release/v26.9.23/imports/legacy-v26.9.1.ttl" ;
+    er:importDigest "sha256:683a1cef30086c88453d73a0b9eb4b3c1f5a0fdfb17004a92e4e7842ec183170" ;
+    er:ordinal 2 ;
+    er:importSource "lift/manifest_to_er.py over seanchatmangpt/chatman-ecosystem@c59596f5506e7a00ca4ed6b909ebf6d6659b74c1:release/v26.9.1/manifest.toml" .
+
+r23:import-court-references a er:ImportedReceipt ;
+    er:importName "court-references" ;
+    er:importPath "release/v26.9.23/imports/court-references.ttl" ;
+    er:importDigest "sha256:dce0ff43c89fa04063aa89e10884996e6c84fa4458a3711a9c1f6eee554d1f46" ;
+    er:ordinal 3 ;
+    er:importSource "courts/ce23_2/observe_court_refs.py over seanchatmangpt/xaas@6fd59588c2e06b83d1af6ebc653e7b545de6f90f docs/sjira/v26.9.23/courts" .
