@@ -60,6 +60,10 @@ class Refusal(Exception):
     pass
 
 
+class Unknown(Exception):
+    """An environmental absence (a tool, a checkout, the court's own scratch): standing UNKNOWN."""
+
+
 # ----------------------------------------------------------------------------------------------------
 # Verdicts, environment, subject
 
@@ -135,8 +139,13 @@ class Env:
         return v
 
     def run(self, argv: list[str], cwd: Path, timeout: int = 1200, extra: dict | None = None):
+        self.alive()
         return subprocess.run(argv, cwd=str(cwd), env=self.vars(extra), capture_output=True, text=True,
                               timeout=timeout)
+
+    def alive(self) -> None:
+        if not (self.bin / "ggen").exists() or not self.tmp.is_dir():
+            raise Unknown(f"the court's scratch {self.scratch} vanished during the run (removed by another process)")
 
 
 def git(root: Path, *args: str, check: bool = True) -> str:
@@ -480,6 +489,7 @@ def clause_asks(ctx: Ctx, ids: list[str], clause: str) -> None:
 
 def pack_report(ctx: Ctx) -> dict:
     if "report" not in ctx.cache:
+        ctx.env.alive()
         verify = ctx.mod("verify")
         corpus = verify.load_corpus(HERE / "mutations.toml")
         old_path = os.environ.get("PATH", "")
@@ -859,6 +869,7 @@ def verify_ggen_again(ctx: Ctx) -> dict:
         import rdflib
         inst = verify.Instruments(ctx.bench, rdflib.Graph().parse(ctx.bench / "design.ttl", format="turtle"))
         ctx.cache["instruments"] = inst
+    ctx.env.alive()
     old_path = os.environ.get("PATH", "")
     os.environ["PATH"] = ctx.env.path
     try:
@@ -1212,6 +1223,8 @@ def run_on(ctx: Ctx, repo: Path, label: str, clauses) -> Quiet:
     for fn in clauses:
         try:
             fn(sub)
+        except Unknown:
+            raise
         except Exception as exc:  # a crash is not a refusal: recorded so the AV row fails loudly
             q.lines.append(("CRASH", fn.__name__, f"{type(exc).__name__}: {exc}"))
     return q
@@ -1576,7 +1589,12 @@ def main() -> int:
     started = time.monotonic()
     label = CONJUNCTS.get(args.conjunct, "CE23-12")
     verdicts = Verdicts(label)
-    scratch = Path(tempfile.mkdtemp(prefix=f"ce23-12-{args.conjunct}-"))
+    # The court's scratch lives under CE23_12_TMP when set, else the system /tmp (not the caller's
+    # TMPDIR: a session TMPDIR can be removed by another process mid-run; a vanished scratch is typed
+    # UNKNOWN[SCRATCH_LOST], never mistaken for a missing tool).
+    base = os.environ.get("CE23_12_TMP") or "/tmp"
+    Path(base).mkdir(parents=True, exist_ok=True)
+    scratch = Path(tempfile.mkdtemp(prefix=f"ce23-12-{args.conjunct}-", dir=base))
     try:
         ctx = Ctx(args.root.resolve(), args.conjunct, scratch, verdicts)
         if clause_tools(ctx) and clause_subject(ctx):
@@ -1584,6 +1602,11 @@ def main() -> int:
                 {"bd": court_bd, "msa": court_msa, "gqp": court_gqp, "crown": court_crown}[args.conjunct](ctx, not args.no_av)
             except Refusal as exc:
                 verdicts.refuse("court_error", "E1", str(exc))
+            except Unknown as exc:
+                verdicts.unknown("SCRATCH_LOST", "E1", str(exc))
+            except SystemExit as exc:
+                # a pack instrument's typed exit (e.g. UNKNOWN[TOOL_MISSING]) is an environmental absence
+                verdicts.unknown("INSTRUMENT_EXIT", "E1", str(exc.code))
         code = verdicts.exit_code()
         if args.receipt_out:
             write_receipt(ctx, args.conjunct, code, args.receipt_out, started)
