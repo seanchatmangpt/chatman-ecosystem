@@ -186,6 +186,70 @@ class ReceiptAdmissionCase(unittest.TestCase):
         self.assertEqual(court.cohen_kappa([True, False, True], [True, False, True]), 1.0)
 
 
+class LawEncodingCase(unittest.TestCase):
+    """Q2 counts independence by law text, not by engine: the three SPARQL-text engines are one encoding."""
+
+    def test_five_instruments_are_three_law_encodings(self) -> None:
+        names = ["ggen", "native", "shacl", "sparql-oxigraph", "sparql-rdflib"]
+        self.assertEqual(court.law_encodings(names), [["ggen", "sparql-oxigraph", "sparql-rdflib"], ["native"], ["shacl"]])
+
+    def test_engines_of_one_text_are_never_independent(self) -> None:
+        self.assertEqual(court.law_encodings(["sparql-rdflib", "sparql-oxigraph"]), [["sparql-oxigraph", "sparql-rdflib"]])
+
+
+class MutationSensitivityCase(unittest.TestCase):
+    """Q3 units on a real synthetic git repository of HEAD: every committed-output unit is judged on the
+    written mutant by the real court instrument (G1 renders with the real ggen, K1 and A1v run the pack
+    scripts as subprocesses, A4 parses the mutated plan), and by a blinded variant of it. The count
+    follows the instruments' verdicts: judged by the blinded variants instead, every unit escapes."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        if shutil.which("ggen") is None:
+            raise unittest.SkipTest("ggen absent")
+        cls.tmp = tempfile.TemporaryDirectory(prefix="ce23-12-q3.")
+        scratch = Path(cls.tmp.name)
+        ctx = court.Ctx(ROOT, "msa", scratch / "court", court.Quiet("t"))
+        repo = court.synthetic_repo(ctx, "q3")
+        cls.repo = repo
+        cls.sub = court.Ctx(repo, "msa", scratch / "judge", court.Quiet("t"))
+        cls.sub.env = ctx.env
+        cls.units = court.q3_units(cls.sub.bench)
+        cls.real, cls.blinded = court.q3_instruments(cls.sub)
+        cls.pick = [next(u for u in cls.units if u["class"] == k) for k in ("projection", "kernel", "doe", "plan")]
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.tmp.cleanup()
+
+    def test_units_are_distinct_corrupted_subjects(self) -> None:
+        ids = [(u["rel"], court.sha256_bytes(u["bytes"])) for u in self.units]
+        self.assertEqual(len(ids), len(set(ids)))
+        for u in self.units:
+            self.assertNotEqual(u["bytes"], (self.sub.bench / u["rel"]).read_bytes(), u["subject"])
+        orders = (self.sub.bench / "out/plan/orders.ttl").read_text(encoding="utf-8").count(" a sj:WorkOrder ;")
+        self.assertEqual(sum(1 for u in self.units if u["class"] == "plan"), orders)
+
+    def test_control_tree_admitted_by_every_real_instrument(self) -> None:
+        for name in ("G1", "K1", "A1v", "A4"):
+            self.assertEqual(court.q3_verdict(self.sub, name, self.real[name])[0], "OK", name)
+
+    def test_each_unit_refused_by_its_instrument_and_admitted_by_the_blinded_one(self) -> None:
+        res = court.q3_run(self.sub, self.pick, self.real, self.blinded)
+        for k in ("projection", "kernel", "doe", "plan"):
+            self.assertEqual((res["classes"][k]["n"], res["classes"][k]["misses"], res["classes"][k]["zero_information"]), (1, 0, 0), k)
+        self.assertEqual(res["blind_admits"], res["judged"])
+        self.assertEqual(res["judged"], {"G1": 2, "K1": 1, "A1v": 1, "A4": 1})
+        self.assertEqual(court.git(self.repo, "status", "--porcelain", "-uall"), "")
+
+    def test_blinded_instruments_as_judges_let_every_unit_escape(self) -> None:
+        res = court.q3_run(self.sub, self.pick, self.blinded, self.blinded)
+        for k in ("projection", "kernel", "doe", "plan"):
+            self.assertEqual((res["classes"][k]["n"], res["classes"][k]["misses"]), (1, 1), k)
+        self.assertEqual(len(res["escapes"]), 4)
+        self.assertEqual(court.git(self.repo, "status", "--porcelain", "-uall"), "")
+
+
 class EndToEndCase(unittest.TestCase):
     """The real GeneratedQualificationPlan court on a synthetic git repository whose design holds a
     hand-written work order: the court must exit 1 with REFUSED[handwritten_work_order]."""

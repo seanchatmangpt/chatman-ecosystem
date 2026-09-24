@@ -320,11 +320,16 @@ def run_script(ctx: Ctx, clause: str, code: str, argv: list[str], okmsg: str) ->
     return True
 
 
+def clause_kernel(ctx: Ctx, script: str = "pack/scripts/evidence_tiers.py") -> bool:
+    """K1: the statistics kernel's --check over the bench tree (the Q3 harness also runs a blinded copy)."""
+    return run_script(ctx, "K1", "kernel_drift", [script, "--consumer", ".", "--check"],
+                      "generated tiers and bound rows equal the kernel (scipy/statsmodels agree to 1e-9)")
+
+
 def clause_generated_inputs(ctx: Ctx) -> None:
     run_script(ctx, "I1", "import_drift", ["pack/scripts/import_inputs.py", "--consumer", ".", "--check"],
                "imports/ are byte copies of the committed sjira candidates, goal graph and compiled orders")
-    run_script(ctx, "K1", "kernel_drift", ["pack/scripts/evidence_tiers.py", "--consumer", ".", "--check"],
-               "generated tiers and bound rows equal the kernel (scipy/statsmodels agree to 1e-9)")
+    clause_kernel(ctx)
     run_script(ctx, "L1", "lift_drift", ["pack/scripts/lift_reference_orders.py", "--consumer", ".", "--check"],
                "generated/reference-orders.ttl equals the lift of orders.json")
 
@@ -366,15 +371,17 @@ def out_files(base: Path) -> dict[str, bytes]:
     return {str(p.relative_to(base)): p.read_bytes() for p in sorted(out.rglob("*")) if p.is_file()} if out.exists() else {}
 
 
-def clause_regenerate(ctx: Ctx) -> None:
-    if "regen" in ctx.cache:
-        ctx.v.ok("G1", ctx.cache["regen"])
-        return
-    committed = out_files(ctx.bench)
-    tracked = {p[len(PINS['subject']['bench']) + 1:] for p in tracked_bench_files(ctx) if "/out/" in "/" + p[len(PINS['subject']['bench']) + 1:]}
-    if set(committed) != tracked:
-        ctx.v.refuse("untracked_projection", "G1", f"out/ on disk differs from out/ in HEAD: {sorted(set(committed) ^ tracked)[:5]}")
-        return
+def projection_equal(a: dict[str, bytes], b: dict[str, bytes]) -> bool:
+    """The G1 comparator: the same out/ file set and every file byte-identical."""
+    return a == b
+
+
+def regen_renders(ctx: Ctx) -> list[dict[str, bytes]] | None:
+    """Two fresh `ggen sync run` renders of the bench tree (out/ excluded from the input); None after a
+    typed G1 refusal. Cached per Ctx: the Q3 harness judges one mutant with the real and the blinded
+    comparator over the same two renders."""
+    if "renders" in ctx.cache:
+        return ctx.cache["renders"]
     renders = []
     for label in ("a", "b"):
         dest, proc = fresh_render(ctx, label)
@@ -384,20 +391,40 @@ def clause_regenerate(ctx: Ctx) -> None:
             code = "ggen_gate_refused" if gate else "ggen_sync_failed"
             ctx.v.refuse(code, "G1", f"fresh `ggen sync run` exit {proc.returncode}: {(gate.group(1) if gate else '')} "
                          f"{[ln for ln in text.splitlines() if 'ERROR' in ln][:1]}")
-            return
+            return None
         renders.append(out_files(dest))
-    if renders[0] != renders[1]:
+    ctx.cache["renders"] = renders
+    return renders
+
+
+def clause_regenerate(ctx: Ctx, same=projection_equal) -> None:
+    key = "regen" if same is projection_equal else f"regen:{same.__name__}"
+    if key in ctx.cache:
+        ctx.v.ok("G1", ctx.cache[key])
+        return
+    committed = out_files(ctx.bench)
+    tracked = {p[len(PINS['subject']['bench']) + 1:] for p in tracked_bench_files(ctx) if "/out/" in "/" + p[len(PINS['subject']['bench']) + 1:]}
+    if set(committed) != tracked:
+        ctx.v.refuse("untracked_projection", "G1", f"out/ on disk differs from out/ in HEAD: {sorted(set(committed) ^ tracked)[:5]}")
+        return
+    renders = regen_renders(ctx)
+    if renders is None:
+        return
+    if not same(renders[0], renders[1]):
         diff = sorted(k for k in set(renders[0]) | set(renders[1]) if renders[0].get(k) != renders[1].get(k))
         ctx.v.refuse("nondeterministic_projection", "G1", f"two fresh renders differ: {diff[:5]}")
         return
-    if renders[0] != committed:
+    if not same(renders[0], committed):
         diff = sorted(k for k in set(renders[0]) | set(committed) if renders[0].get(k) != committed.get(k))
         ctx.v.refuse("projection_drift", "G1", f"committed out/ differs from a fresh render (hand edit or stale projection): {diff[:6]}")
         return
     msg = (f"two fresh `ggen sync run` renders of the committed bench tree (ggen.lock pins the pack and every "
            f"input; every pack gate admitted) are byte-identical to each other and to the committed out/ ({len(committed)} files)")
-    ctx.cache["regen"] = msg
-    ctx.cache["regen_files"] = committed
+    if same is not projection_equal:
+        msg = f"[comparator {same.__name__}] " + msg
+    ctx.cache[key] = msg
+    if same is projection_equal:
+        ctx.cache["regen_files"] = committed
     ctx.v.ok("G1", msg)
 
 
@@ -550,13 +577,30 @@ def clause_nonimplication(ctx: Ctx, clause: str) -> None:
 # GeneratedQualificationPlan clauses
 
 
+DOE_ARGS = ["out/doe/design-matrix.json", "--ci", "out/doe/ci-matrix.json"]
+
+
+def clause_doe_verifier(ctx: Ctx, script: str = "pack/scripts/doe_verify.py") -> None:
+    """A1v: A1's independent DOE verifier alone, same argv, read as A1 reads it (by exit: 0 ADMITTED,
+    3 REFUSED): the Q3 judge of DOE corruptions."""
+    proc = ctx.env.run(["python3", script, *DOE_ARGS], ctx.bench)
+    refusals = [ln for ln in proc.stdout.splitlines() if ln.startswith("REFUSED(")]
+    if proc.returncode == 0:
+        ctx.v.ok("A1v", f"{Path(script).name} exit 0 (ADMITTED) on the generated design and CI matrices")
+    elif proc.returncode == 3 and refusals:
+        ctx.v.refuse("doe_refused", "A1v", " ".join(refusals)[:500])
+    elif proc.returncode == 75:
+        ctx.v.unknown("TOOL_MISSING", "A1v", (proc.stdout + proc.stderr)[-300:])
+    else:
+        ctx.v.refuse("doe_verifier_error", "A1v", f"exit {proc.returncode}: {(proc.stdout + proc.stderr)[-300:]}")
+
+
 def clause_doe(ctx: Ctx) -> None:
     import rdflib
     NLB = rdflib.Namespace("https://ggen.dev/nonllm-bench#")
     RDFS = rdflib.RDFS
     g = ctx.union()
-    proc = ctx.env.run(["python3", "pack/scripts/doe_verify.py", "out/doe/design-matrix.json", "--ci", "out/doe/ci-matrix.json"],
-                       ctx.bench)
+    proc = ctx.env.run(["python3", "pack/scripts/doe_verify.py", *DOE_ARGS], ctx.bench)
     if proc.returncode != 0:
         ctx.v.refuse("doe_refused", "A1", " ".join(ln for ln in proc.stdout.splitlines() if ln.startswith("REFUSED"))[:500])
         return
@@ -766,10 +810,12 @@ def tier_of(ctx: Ctx, n: int, x: int) -> str:
     return "BELOW_DISCOVERY"
 
 
-def msa_row(ctx: Ctx, question: str, n: int, defects: int, unit: str) -> dict:
+def msa_row(ctx: Ctx, question: str, n: int, defects: int, unit: str, extra: dict | None = None) -> dict:
     p = bound(ctx, n, defects)
     row = {"question": question, "n": n, "defects": defects, "upper_bound_95": round(p, 6), "tier": tier_of(ctx, n, defects),
            "unit": unit, "scope": PINS["statement"]["environment_scope"]}
+    if extra:
+        row.update(extra)
     ctx.cache.setdefault("msa_rows", []).append(row)
     return row
 
@@ -897,12 +943,43 @@ def cohen_kappa(a: list[bool], b: list[bool]) -> float | None:
     return (po - pe) / (1 - pe)
 
 
+# Law encodings of the five instruments (release/v26.9.23/bench/pack/scripts/verify.py Instruments): the
+# law texts each instrument evaluates. Instruments that share a law text are one encoding of the law run
+# on several engines; their agreement measures engine agreement, not an independent implementation of
+# the law (sparql-rdflib, sparql-oxigraph and ggen all evaluate pack/gates/*.rq; both SPARQL
+# instruments also evaluate the design's nlb:askQuery texts).
+LAW_TEXTS = {
+    "shacl": frozenset({"pack/shacl/nlb-shapes.ttl"}),
+    "sparql-rdflib": frozenset({"design.ttl nlb:askQuery", "pack/gates/*.rq", "pack/templates/*.tmpl construct"}),
+    "sparql-oxigraph": frozenset({"design.ttl nlb:askQuery", "pack/gates/*.rq", "pack/templates/*.tmpl construct"}),
+    "ggen": frozenset({"pack/gates/*.rq", "pack/templates/*.tmpl construct"}),
+    "native": frozenset({"pack/scripts/native_predicates.py"}),
+}
+
+
+def law_encodings(names: list[str]) -> list[list[str]]:
+    """Partition registered instruments into law encodings: the connected components of 'shares a law text'."""
+    groups: list[set[str]] = []
+    for name in names:
+        joined, rest = {name}, []
+        for g in groups:
+            if any(LAW_TEXTS[name] & LAW_TEXTS[m] for m in g):
+                joined |= g
+            else:
+                rest.append(g)
+        groups = rest + [joined]
+    return sorted(sorted(g) for g in groups)
+
+
 def clause_msa_agreement(ctx: Ctx) -> None:
     report = pack_report(ctx)
     arts = report["artifacts"]
     names = sorted(arts[0]["instruments"])
+    unregistered = [n for n in names if n not in LAW_TEXTS]
+    encodings = law_encodings([n for n in names if n in LAW_TEXTS])
+    enc_of = {n: i for i, g in enumerate(encodings) for n in g}
     goods = sum(a["good"] for a in arts)
-    disagreements = 0
+    disagreements = cross = same = 0
     kappas = []
     for i, x in enumerate(names):
         for y in names[i + 1:]:
@@ -910,89 +987,282 @@ def clause_msa_agreement(ctx: Ctx) -> None:
             ay = [a["instruments"][y]["accept"] for a in arts]
             disagreements += sum(p != q for p, q in zip(ax, ay))
             kappas.append(cohen_kappa(ax, ay))
+            if x in enc_of and enc_of.get(x) == enc_of.get(y):
+                same += 1
+            else:
+                cross += 1
     pairs = len(kappas)
     units = len(arts)
     split = sum(1 for a in arts if len({v["accept"] for v in a["instruments"].values()}) != 1)
     truth_miss = sum(1 for a in arts for v in a["instruments"].values() if v["accept"] != a["good"])
-    row = msa_row(ctx, "classification agreement", units, split, f"distinct artifact ({goods} good, {len(arts) - goods} bad) judged by {len(names)} independent instruments ({pairs} pairs); a defect = any disagreement on the artifact")
-    if split or disagreements or truth_miss or any(k is None or abs(k - 1.0) > 1e-12 for k in kappas):
+    label = "; ".join(" + ".join(g) for g in encodings)
+    row = msa_row(ctx, "classification agreement", units, split,
+                  f"distinct artifact ({goods} good, {len(arts) - goods} bad) judged by {len(names)} instruments over {len(encodings)} "
+                  f"independent law encodings ({label}): {cross} cross-encoding pairs (independent implementations of the law), "
+                  f"{same} same-encoding pairs (engine agreement only); a defect = any disagreement on the artifact",
+                  {"law_encodings": encodings, "cross_encoding_pairs": cross, "same_encoding_pairs": same})
+    if unregistered:
+        ctx.v.refuse("msa_instrument_unregistered", "Q2", f"instruments without a registered law text (independence unknown): {unregistered}")
+    elif len(encodings) < 2:
+        ctx.v.refuse("msa_agreement_not_independent", "Q2", f"all {len(names)} instruments evaluate one law encoding ({label}): agreement measures engines only")
+    elif split or disagreements or truth_miss or any(k is None or abs(k - 1.0) > 1e-12 for k in kappas):
         ctx.v.refuse("msa_agreement", "Q2", f"{disagreements} pairwise disagreements, {truth_miss} verdicts against the registered truth, kappas {kappas}")
     else:
-        ctx.v.ok("Q2", f"classification agreement: {len(names)} independent instruments ({', '.join(names)}) agree on every artifact; Cohen's kappa = 1.0 for all {pairs} pairs "
-                 f"(defined: both good and bad items judged); 0/{units} artifacts with a disagreement (95% upper bound {row['upper_bound_95']}, tier {row['tier']})")
+        ctx.v.ok("Q2", f"classification agreement: {len(names)} instruments over {len(encodings)} independent law encodings ({label}) agree on "
+                 f"every artifact; Cohen's kappa = 1.0 for all {pairs} pairs ({cross} cross-encoding pairs measure independent implementations "
+                 f"of the law, {same} same-encoding pairs measure engine agreement only; defined: both good and bad items judged); "
+                 f"0/{units} artifacts with a disagreement (95% upper bound {row['upper_bound_95']}, tier {row['tier']})")
 
 
-def clause_msa_mutation(ctx: Ctx) -> None:
+# ----------------------------------------------------------------------------------------------------
+# Q3 mutation sensitivity. n counts distinct corrupted subjects, each judged on the mutant by the court
+# instrument that guards it (never an arithmetic identity on the corruption): design mutants by the five
+# pack instruments; committed-output corruptions, written one at a time into a synthetic git repository
+# of HEAD and restored after each unit, by G1 (the fresh-render comparator), K1 (evidence_tiers.py
+# --check), A1v (doe_verify.py, read by exit as A1 reads it) and A4 (plan coverage). Every
+# committed-output unit is also judged by a blinded variant of each instrument that judges it (the one
+# property that instrument checks removed): an escape of the real instrument is always counted; a
+# detected unit is counted only when every blinded variant admits it (the detection is witnessed to
+# come from the checked property); a detected unit that a blinded variant also refuses carries no
+# information about the property and is reported as a zero-information unit, never counted.
+
+KERNEL_BLIND = ('        if not path.is_file() or path.read_text(encoding="utf-8") != text:\n',
+                '        if False:  # BLINDED by the CE23-12 Q3 harness: committed outputs never compared\n')
+DOE_BLIND = ("    return 0 if not refusals else 3\n",
+             "    return 0  # BLINDED by the CE23-12 Q3 harness: the exit ignores every refusal\n")
+Q3_EXPECT = {  # instrument -> (expected refusal code, needle its detail must carry)
+    "G1": ("projection_drift", ""),
+    "K1": ("kernel_drift", "REFUSED[kernel_output_drift]"),
+    "A1v": ("doe_refused", "REFUSED("),
+    "A4": ("plan_incomplete", "not one-to-one"),
+}
+Q3_BLIND_NAMES = {"G1": "file-name comparator", "K1": "--check without the output comparison",
+                  "A1v": "exit ignoring refusals", "A4": "pair-only coverage"}
+
+
+def names_only(a: dict[str, bytes], b: dict[str, bytes]) -> bool:
+    """Blinded G1 comparator: the same out/ file names; file contents are never compared."""
+    return set(a) == set(b)
+
+
+def clause_plan_pairs_only(ctx: Ctx) -> None:
+    """Blinded A4: coverage read from the plan's provenance entries alone (every KNOWN_CANDIDATE class x
+    benchmark family, MSA court and capability gap has an nlb:PlanEntry); orders are never matched to entries."""
     import rdflib
-    report = pack_report(ctx)
-    bad_arts = [a for a in report["artifacts"] if not a["good"]]
-    units = misses = 0
-    for a in bad_arts:  # one unit per distinct mutant: a miss if any of the 5 instruments admits it
-        units += 1
-        misses += any(v["accept"] for v in a["instruments"].values())
-    # projection corruption: every committed out/ file with one byte changed must fail the G1 comparison
-    regen = ctx.cache.get("regen_files")
-    if regen is None:
-        clause_regenerate(ctx)
-        regen = ctx.cache.get("regen_files", {})
-    for rel, data in sorted(regen.items()):
-        units += 1
+    NLB = rdflib.Namespace("https://ggen.dev/nonllm-bench#")
+    g = ctx.union()
+    plan = plan_graph(ctx)
+    entries = list(plan.subjects(rdflib.RDF.type, NLB.PlanEntry))
+    pairs = {(plan.value(e, NLB.planClass), plan.value(e, NLB.planFamily)) for e in entries}
+    sources = {plan.value(e, NLB.planSource) for e in entries}
+    classes = sorted(g.subjects(NLB.claimStatus, rdflib.Literal("KNOWN_CANDIDATE")))
+    families = sorted(g.subjects(rdflib.RDF.type, NLB.BenchmarkFamily))
+    others = sorted(g.subjects(rdflib.RDF.type, NLB.MSACourt)) + sorted(g.subjects(rdflib.RDF.type, NLB.CapabilityGap))
+    missing = [f"{c} x {f}" for c in classes for f in families if (c, f) not in pairs] + [str(s) for s in others if s not in sources]
+    if missing:
+        ctx.v.refuse("plan_incomplete", "A4", f"[pair-only coverage] uncovered: {missing[:4]}")
+    else:
+        ctx.v.ok("A4", f"[pair-only coverage] {len(entries)} plan entries cover every class x family, MSA court and capability gap")
+
+
+def blinded_script(ctx: Ctx, name: str, anchor: tuple[str, str], dest_dir: Path) -> Path:
+    """A copy of the judged tree's pack/scripts/<name>.py with one checked property removed."""
+    text = (ctx.pack / "scripts" / f"{name}.py").read_text(encoding="utf-8")
+    if text.count(anchor[0]) != 1:
+        raise Refusal(f"Q3 blinding anchor not found exactly once in pack/scripts/{name}.py: {anchor[0].strip()[:70]!r}")
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest = dest_dir / f"{name}.py"
+    dest.write_text(text.replace(anchor[0], anchor[1]), encoding="utf-8")
+    return dest
+
+
+def q3_instruments(sub: Ctx) -> tuple[dict, dict]:
+    """(real, blinded) judges, each a callable(ctx) that records the instrument's verdict line."""
+    blind_dir = sub.scratch / "q3-blinded"
+    kernel_blind = blinded_script(sub, "evidence_tiers", KERNEL_BLIND, blind_dir)
+    doe_blind = blinded_script(sub, "doe_verify", DOE_BLIND, blind_dir)
+    real = {"G1": clause_regenerate, "K1": clause_kernel, "A1v": clause_doe_verifier, "A4": clause_plan_core}
+    blinded = {"G1": lambda s: clause_regenerate(s, names_only), "K1": lambda s: clause_kernel(s, str(kernel_blind)),
+               "A1v": lambda s: clause_doe_verifier(s, str(doe_blind)), "A4": clause_plan_pairs_only}
+    return real, blinded
+
+
+def delete_order_block(text: str, order_iri: str) -> str:
+    """out/plan/orders.ttl without one generated order's block (the order and its acceptance, falsifier,
+    court and action nodes, which the template writes as one blank-line-terminated block)."""
+    anchor = f"<{order_iri}> a sj:WorkOrder ;"
+    if text.count(anchor) != 1:
+        raise Refusal(f"plan order block anchor not found exactly once: {anchor[:90]}")
+    start = text.index(anchor)
+    end = text.index("\n\n", start)
+    return text[:start] + text[end + 2:]
+
+
+def q3_units(bench: Path) -> list[dict]:
+    """The committed-output units of Q3 over a bench tree: one distinct corrupted subject each."""
+    import rdflib
+    SJ = rdflib.Namespace("https://ggen-igniter.dev/ontology/semantic-jira#")
+    units = []
+    for rel, data in sorted(out_files(bench).items()):
+        if not data:
+            raise Refusal(f"Q3: {rel} is empty; a one-byte corruption is undefined")
         corrupted = bytearray(data)
         pos = len(corrupted) // 2
         corrupted[pos] = (corrupted[pos] + 1) % 256
-        misses += bytes(corrupted) == regen[rel]
-    # kernel corruption: every computed literal of the generated tiers and bound rows, perturbed, must fail --check
-    kernel_mod = ctx.mod("evidence_tiers")
-    kernel = kernel_mod.Kernel(ctx.bench)
-    tiers_text, bounds_text, _rows = kernel.render()
-    for rel, text in (("generated/evidence-tiers.ttl", tiers_text), ("generated/bound-table.ttl", bounds_text)):
-        committed = (ctx.bench / rel).read_text(encoding="utf-8")
+        units.append({"class": "projection", "subject": f"{rel}@byte{pos}", "rel": rel, "bytes": bytes(corrupted), "judges": ["G1"]})
+    for rel in ("generated/evidence-tiers.ttl", "generated/bound-table.ttl"):
+        committed = (bench / rel).read_text(encoding="utf-8")
         for m in re.finditer(r'"(\d+\.\d{6})"\^\^', committed):
-            units += 1
             lit = m.group(1)
             perturbed = lit[:-1] + str((int(lit[-1]) + 1) % 10)
-            mutated = committed[: m.start(1)] + perturbed + committed[m.end(1):]
-            misses += mutated == text
-    # DOE corruption: flip each run's toolchain column, and generate E = AB; the independent verifier must refuse
-    doe = ctx.mod("doe_verify")
-    design = json.loads((ctx.bench / "out/doe/design-matrix.json").read_text(encoding="utf-8"))
+            text = committed[: m.start(1)] + perturbed + committed[m.end(1):]
+            units.append({"class": "kernel", "subject": f"{rel}@{m.start(1)}:{lit}->{perturbed}", "rel": rel,
+                          "bytes": text.encode("utf-8"), "judges": ["K1"]})
+    matrix_rel = "out/doe/design-matrix.json"
+    design = json.loads((bench / matrix_rel).read_text(encoding="utf-8"))
     variants = []
     for r in range(len(design["runs"])):
         d = json.loads(json.dumps(design))
         d["runs"][r]["coded"]["E"] *= -1
-        variants.append(d)
+        variants.append((f"run {design['runs'][r]['run']} E flipped", d))
     d = json.loads(json.dumps(design))
     for run in d["runs"]:
         run["coded"]["E"] = run["coded"]["A"] * run["coded"]["B"]
-    variants.append(d)
+    variants.append(("E = AB", d))
     d = json.loads(json.dumps(design))
     d["factors"].append({"column": "G", "factor": "OS", "support": "UNSUPPORTED", "role": "base", "low": "macOS", "high": "linux"})
     for i, run in enumerate(d["runs"]):
         run["coded"]["G"] = 1 if i % 2 else -1
-    variants.append(d)
-    for d in variants:
-        units += 1
-        a = doe.analyse(d)
-        declared = d["declared"]
-        admitted = (a["resolution"] == declared["resolution"] and a["defining_relation"] == declared["defining_relation"]
-                    and a["balanced"] and a["orthogonal"] and all(f["support"] == "VARIED" for f in d["factors"]))
-        misses += admitted
-    # plan corruption: deleting any one generated order must break regeneration equality and plan coverage
-    plan = plan_graph(ctx)
-    SJ = rdflib.Namespace("https://ggen-igniter.dev/ontology/semantic-jira#")
-    NLB = rdflib.Namespace("https://ggen.dev/nonllm-bench#")
-    entries = {plan.value(e, NLB.planOrder): e for e in plan.subjects(rdflib.RDF.type, NLB.PlanEntry)}
+    variants.append(("OS column", d))
+    for label, d in variants:
+        units.append({"class": "doe", "subject": f"{matrix_rel}: {label}", "rel": matrix_rel,
+                      "bytes": (json.dumps(d, indent=1) + "\n").encode("utf-8"), "judges": ["A1v"]})
+    plan_rel = "out/plan/orders.ttl"
+    text = (bench / plan_rel).read_text(encoding="utf-8")
+    plan = rdflib.Graph().parse(data=text, format="turtle")
+    subjects = set(plan.subjects())
     for order in sorted(plan.subjects(rdflib.RDF.type, SJ.WorkOrder)):
-        units += 1
-        remaining = set(entries) - {order}
-        misses += len(remaining) == len(entries)
-    row = msa_row(ctx, "mutation sensitivity", units, misses, "distinct corrupted output: design mutants (a miss if any of 5 instruments admits), one-byte out/ corruptions, kernel literal perturbations, DOE corruptions, deleted plan orders")
+        mutated = delete_order_block(text, str(order))
+        gone = subjects - set(rdflib.Graph().parse(data=mutated, format="turtle").subjects())
+        want = {order} | {plan.value(order, p) for p in (SJ.acceptance, SJ.falsifier, SJ.requiresCourt, SJ.nextAction)}
+        if gone != want:
+            raise Refusal(f"Q3 plan unit {order}: the deletion removed {sorted(map(str, gone))[:3]}, not exactly the order and its 4 nodes")
+        units.append({"class": "plan", "subject": f"{plan_rel} without {str(order).rsplit('#', 1)[-1]}", "rel": plan_rel,
+                      "bytes": mutated.encode("utf-8"), "judges": ["G1", "A4"]})
+    return units
+
+
+def q3_verdict(sub: Ctx, clause: str, judge) -> tuple[str, str]:
+    """Run one judge on the tree as it is on disk; return its (status, detail) for its clause."""
+    q = Quiet(f"q3-{clause}")
+    sub.v = q
+    try:
+        judge(sub)
+    except Unknown:
+        raise
+    except Exception as exc:  # a crash is no detection
+        return "CRASH", f"{type(exc).__name__}: {exc}"
+    mine = [ln for ln in q.lines if ln[1] == clause]
+    for prefix in ("REFUSED", "UNKNOWN"):
+        hit = [ln for ln in mine if ln[0].startswith(prefix)]
+        if hit:
+            return hit[0][0], hit[0][2]
+    return ("OK", mine[0][2]) if mine else ("SILENT", f"{clause} recorded no verdict")
+
+
+def q3_run(sub: Ctx, units: list[dict], real: dict, blinded: dict) -> dict:
+    """Write each unit's corruption into sub's tree, judge it with the real and the blinded instruments,
+    restore the control bytes; tally per class."""
+    res: dict = {"classes": {}, "escapes": [], "zero_information": [], "unknown": [], "blind_admits": {}, "judged": {}}
+    for u in units:
+        path = sub.bench / u["rel"]
+        original = path.read_bytes()
+        if u["bytes"] == original:
+            raise Refusal(f"Q3 unit {u['subject']} equals the control bytes")
+        path.write_bytes(u["bytes"])
+        sub.cache = {k: v for k, v in sub.cache.items() if k.startswith("mod:")}
+        try:
+            judged = [(j, q3_verdict(sub, j, real[j]), q3_verdict(sub, j, blinded[j])) for j in u["judges"]]
+        finally:
+            path.write_bytes(original)
+        c = res["classes"].setdefault(u["class"], {"n": 0, "misses": 0, "zero_information": 0, "instruments": list(u["judges"])})
+        if any(v[0].startswith("UNKNOWN") for _, r, b in judged for v in (r, b)):
+            res["unknown"].append(f"{u['subject']}: {[(j, r[0], b[0]) for j, r, b in judged]}")
+            continue
+        for j, _, b in judged:
+            res["judged"][j] = res["judged"].get(j, 0) + 1
+            res["blind_admits"][j] = res["blind_admits"].get(j, 0) + (b[0] == "OK")
+        detected = all(r[0] == f"REFUSED[{Q3_EXPECT[j][0]}]" and Q3_EXPECT[j][1] in r[1] for j, r, _ in judged)
+        informative = all(b[0] == "OK" for _, _, b in judged)
+        if not detected:
+            c["n"] += 1
+            c["misses"] += 1
+            res["escapes"].append(f"{u['subject']}: {[(j, r[0], r[1][:120]) for j, r, _ in judged]}")
+        elif informative:
+            c["n"] += 1
+        else:
+            c["zero_information"] += 1
+            res["zero_information"].append(f"{u['subject']}: blinded {[(j, b[0]) for j, _, b in judged]}")
+    return res
+
+
+def clause_msa_mutation(ctx: Ctx) -> None:
+    report = pack_report(ctx)
+    bad_arts = [a for a in report["artifacts"] if not a["good"]]
+    n_inst = len(bad_arts[0]["instruments"]) if bad_arts else 0
+    # design mutants: one unit per distinct registered mutant, judged by the 5 pack instruments; a miss if any admits
+    design_misses = sum(1 for a in bad_arts if any(v["accept"] for v in a["instruments"].values()))
+    repo = synthetic_repo(ctx, "q3")
+    sub = Ctx(repo, ctx.conjunct, ctx.scratch / "q3-judge", Quiet("q3"))
+    sub.env = ctx.env
+    units = q3_units(sub.bench)
+    ids = [(u["rel"], sha256_bytes(u["bytes"])) for u in units]
+    if len(set(ids)) != len(ids):
+        ctx.v.refuse("msa_mutation_duplicate", "Q3", f"{len(ids) - len(set(ids))} committed-output units repeat a corrupted subject")
+        return
+    real, blinded = q3_instruments(sub)
+    control = {j: q3_verdict(sub, j, real[j]) for j in sorted({j for u in units for j in u["judges"]})}
+    bad_control = {j: v for j, v in control.items() if v[0] != "OK"}
+    if bad_control:
+        if all(v[0].startswith("UNKNOWN") for v in bad_control.values()):
+            ctx.v.unknown("TOOL_MISSING", "Q3", f"an instrument could not judge the control tree: {bad_control}")
+        else:
+            statuses = {j: v[0] for j, v in bad_control.items()}
+            ctx.v.refuse("msa_mutation_control", "Q3", f"the unmutated tree is not admitted (an instrument that refuses everything "
+                         f"detects nothing): {statuses} {[v[1][:160] for v in bad_control.values()][:2]}")
+        return
+    res = q3_run(sub, units, real, blinded)
+    dirty = git(repo, "status", "--porcelain", "-uall").strip()
+    if dirty:
+        ctx.v.refuse("msa_mutation_harness", "Q3", f"the synthetic repository was not restored after the units: {dirty.splitlines()[:3]}")
+        return
+    if res["unknown"]:
+        ctx.v.unknown("TOOL_MISSING", "Q3", f"{len(res['unknown'])} units could not be judged: {res['unknown'][:2]}")
+        return
+    classes = {"design": {"n": len(bad_arts), "misses": design_misses, "zero_information": 0,
+                          "instruments": sorted(bad_arts[0]["instruments"]) if bad_arts else []}}
+    classes.update(res["classes"])
+    n = sum(c["n"] for c in classes.values())
+    misses = sum(c["misses"] for c in classes.values())
+    zero = len(res["zero_information"])
+    k = {name: classes.get(name, {}).get("n", 0) for name in ("projection", "kernel", "doe", "plan")}
+    blind = ", ".join(f"{j} {Q3_BLIND_NAMES[j]} {res['blind_admits'].get(j, 0)}/{res['judged'].get(j, 0)}" for j in sorted(res["judged"]))
+    row = msa_row(ctx, "mutation sensitivity", n, misses,
+                  "distinct corrupted subject judged on the mutant by the instrument that guards it: design mutants (5 pack instruments; "
+                  "a miss if any admits), one-byte out/ corruptions (G1), kernel literal perturbations (K1), DOE corruptions (A1v), "
+                  "deleted plan orders (G1 and A4); a committed-output unit counts only as an escape or as a detection that the "
+                  "blinded instrument does not reproduce (zero-information units excluded)",
+                  {"classes": classes, "zero_information_units": zero, "blinded_admits": {j: [res["blind_admits"].get(j, 0), res["judged"].get(j, 0)] for j in sorted(res["judged"])}})
     if misses:
-        ctx.v.refuse("msa_mutation_escape", "Q3", f"{misses}/{units} corrupted outputs passed")
+        ctx.v.refuse("msa_mutation_escape", "Q3", f"{misses}/{n} corrupted subjects escaped the instrument that guards them: {res['escapes'][:3]}")
     else:
-        ctx.v.ok("Q3", f"mutation sensitivity: {units}/{units} intentionally corrupted outputs fail ({len(bad_arts)} design mutants each refused by all {len(bad_arts[0]['instruments']) if bad_arts else 0} instruments, "
-                 f"{len(regen)} projection corruptions, kernel literal perturbations, DOE flips incl. E=AB and an OS column, "
-                 f"{len(entries)} deleted plan orders); 0 escapes (95% upper bound {row['upper_bound_95']}, tier {row['tier']})")
+        ctx.v.ok("Q3", f"mutation sensitivity: {n}/{n} distinct corrupted subjects refused on the mutant by the instrument that guards each "
+                 f"({len(bad_arts)} design mutants by all {n_inst} pack instruments; {k['projection']} one-byte out/ corruptions by G1, "
+                 f"{k['kernel']} kernel literal perturbations by K1 evidence_tiers.py --check, {k['doe']} DOE corruptions incl. E=AB and "
+                 f"an OS column by A1v doe_verify.py, {k['plan']} deleted plan orders by G1 and A4); every committed-output unit written "
+                 f"into a synthetic git repository of HEAD and restored (control tree admitted by {', '.join(sorted(control))}), each "
+                 f"witnessed informative by its blinded instrument ({blind}); {zero} zero-information units excluded; 0 escapes "
+                 f"(95% upper bound {row['upper_bound_95']}, tier {row['tier']})")
 
 
 def fresh_receipt(ctx: Ctx, conjunct: str, standing: str = "ALIVE") -> dict:
@@ -1457,10 +1727,7 @@ def clause_plan_core(ctx: Ctx) -> None:
 def delete_plan_order(order_id: str):
     def f(repo: Path):
         path = repo / "release/v26.9.23/bench/out/plan/orders.ttl"
-        text = path.read_text(encoding="utf-8")
-        start = text.index(f"<https://chatman.dev/release/v26.9.23#{order_id}> a sj:WorkOrder ;")
-        end = text.index("\n\n", start)
-        path.write_text(text[:start] + text[end + 2:], encoding="utf-8")
+        path.write_text(delete_order_block(path.read_text(encoding="utf-8"), f"https://chatman.dev/release/v26.9.23#{order_id}"), encoding="utf-8")
     return f
 
 
