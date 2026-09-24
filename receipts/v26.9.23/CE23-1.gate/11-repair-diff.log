@@ -1,0 +1,8 @@
+$ git diff --stat 03de16bdca94278c947f940ef113bd752ce2b5a0 527ffaf35044bf15f66f6b6f30e0a0c4dd986011
+ HANDWRITTEN.md                          |   2 +-
+ release/v26.9.23/README.md              |   2 +-
+ release/v26.9.23/courts/CE23-1.sh       |   6 +-
+ release/v26.9.23/courts/ce23_1/court.py | 271 ++++++++++++++++++++++++++++----
+ tests/test_ce23_1_court.py              |  95 ++++++++++-
+ 5 files changed, 338 insertions(+), 38 deletions(-)
+exit=0

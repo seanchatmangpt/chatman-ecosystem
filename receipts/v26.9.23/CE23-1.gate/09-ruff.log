@@ -1,0 +1,3 @@
+$ ruff check --no-cache release/v26.9.23/courts/ce23_1/court.py tests/test_ce23_1_court.py receipts/v26.9.23/CE23-1.gate/probe_symlink.py
+All checks passed!
+exit=0
