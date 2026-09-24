@@ -1,0 +1,26 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_ce23_12_courts.py -v
+test_committed_design_is_resolution_iv (test_ce23_12_courts.DoeCase.test_committed_design_is_resolution_iv) ... ok
+test_os_factor_never_in_a_run (test_ce23_12_courts.DoeCase.test_os_factor_never_in_a_run) ... ok
+test_toolchain_generated_by_cold_and_concurrency_drops_to_resolution_iii (test_ce23_12_courts.DoeCase.test_toolchain_generated_by_cold_and_concurrency_drops_to_resolution_iii) ... ok
+test_handwritten_order_refused_by_the_court (test_ce23_12_courts.EndToEndCase.test_handwritten_order_refused_by_the_court) ... ok
+test_committed_design_admitted (test_ce23_12_courts.InstrumentCase.test_committed_design_admitted) ... ok
+test_every_removal_pattern_matches (test_ce23_12_courts.InstrumentCase.test_every_removal_pattern_matches) ... ok
+test_lawful_discovery_tuple_admitted (test_ce23_12_courts.InstrumentCase.test_lawful_discovery_tuple_admitted) ... ok
+test_native_split_law_sees_a_patch_id_leak (test_ce23_12_courts.InstrumentCase.test_native_split_law_sees_a_patch_id_leak) ... ok
+test_os_column_refused_under_factor (test_ce23_12_courts.InstrumentCase.test_os_column_refused_under_factor) ... ok
+test_overclaim_refused_under_standing (test_ce23_12_courts.InstrumentCase.test_overclaim_refused_under_standing) ... ok
+test_bounds_agree_with_scipy_beta_quantile (test_ce23_12_courts.KernelCase.test_bounds_agree_with_scipy_beta_quantile) ... ok
+test_committed_tables_equal_a_fresh_computation (test_ce23_12_courts.KernelCase.test_committed_tables_equal_a_fresh_computation) ... ok
+test_yield_sizes_follow_the_closed_form (test_ce23_12_courts.KernelCase.test_yield_sizes_follow_the_closed_form) ... ok
+test_zero_defect_bounds_match_the_operator_table (test_ce23_12_courts.KernelCase.test_zero_defect_bounds_match_the_operator_table) ... ok
+test_exact_head_receipt_admitted (test_ce23_12_courts.ReceiptAdmissionCase.test_exact_head_receipt_admitted) ... ok
+test_kappa_undefined_without_both_classes (test_ce23_12_courts.ReceiptAdmissionCase.test_kappa_undefined_without_both_classes) ... ok
+test_operational_claim_refused (test_ce23_12_courts.ReceiptAdmissionCase.test_operational_claim_refused) ... ok
+test_stale_subject_refused (test_ce23_12_courts.ReceiptAdmissionCase.test_stale_subject_refused) ... ok
+test_varied_os_refused (test_ce23_12_courts.ReceiptAdmissionCase.test_varied_os_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 47.994s
+
+OK
+exit=0

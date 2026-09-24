@@ -1,0 +1,2 @@
+$ ! grep -rn "unittest.mock\|Mock(\|MagicMock\|patch(\|monkeypatch" tests/test_ce23_12_courts.py release/v26.9.23/courts/ce23_12 release/v26.9.23/bench/pack
+exit=0

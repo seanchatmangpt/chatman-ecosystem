@@ -1,0 +1,4 @@
+$ git rev-parse HEAD && git status --porcelain -uall -- release tests HANDWRITTEN.md | wc -l
+0cc590b51554be855aa8a3bdd99869bcb9a6d11d
+       0
+exit=0

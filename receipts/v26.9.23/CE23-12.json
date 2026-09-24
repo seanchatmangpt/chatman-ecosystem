@@ -1,0 +1,415 @@
+{
+ "identity": {
+  "subject": "CE23-12 = BenchmarkDesign AND MSAContract AND GeneratedQualificationPlan (standing BENCHMARK_DESIGN_ALIVE; orders CE23-12-BD-01..09)",
+  "repo": "seanchatmangpt/chatman-ecosystem",
+  "subject_sha": "0cc590b51554be855aa8a3bdd99869bcb9a6d11d",
+  "base_sha": "8c150da27ac77f860b0eecf44fba71afbff72427",
+  "pushed_base_sha": "717d52cd78d8936c6b8b2e102dc348cccf6262c4",
+  "branch": "release/v26.9.23-int",
+  "checkout": "/Users/sac/chatman-ecosystem",
+  "bench_tree": "dee59fef7fac2ab39ced5f67635a0cbab4b956d4",
+  "graph_hash": "sha256:171131665900787446655baeb7e10b6ff3b3a76840f0e22a47e60867b1c00a75",
+  "gate": "ce:CE23-12 and its conjuncts ce:CE23-12-BenchmarkDesign, ce:CE23-12-MSAContract, ce:CE23-12-GeneratedQualificationPlan (release/v26.9.23/sjira/goal.ttl); sj:courtCommand sh release/v26.9.23/courts/CE23-12{,-BenchmarkDesign,-MSAContract,-GeneratedQualificationPlan}.sh",
+  "prose": {
+   "release/v26.9.23/sjira/chatman-ce23-12-bench.md": "sha256:4146d688c21db6e1af51a2187df8056b1a0f977001c817d64fbde0547029b485",
+   "release/v26.9.23/sjira/chatman-ce23-12-standings.md": "sha256:80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2"
+  },
+  "pack": "nonllm-class-qualification-pack 0.1.0, in-repo at release/v26.9.23/bench/pack (operator directive: the reusable nlb: vocabulary may stay in-repo for v26.9.23); successor home ggen-marketplace/packs/nonllm-class-qualification-pack + dflss-pack 0.3.0 (orders CE23-12-BD-01/02)",
+  "pack_lock": "content_hash = \"blake3:1c4f54f6dadba2ef0ba1d70cd3abe2f5bd1cbd705c676a0c8169b05d6fa7ae7c\"",
+  "generator": "ggen 26.9.18 (/opt/homebrew/Cellar/ggen/26.9.18/bin/ggen sha256 357cfd4e595c6f8a)",
+  "court_receipt": "receipts/v26.9.23/CE23-12.gate/court-receipt-CE23-12.json (emitted by the crown run, ADMITTED by validate_receipt.py)"
+ },
+ "authority": {
+  "ceiling": "CONSTRUCT",
+  "grant": "workflow step CE23-12 (operator directives 2026-09-23/24: one canonical checkout per repository, no worktrees, commits with git commit -F, no push/rebase/reset/force/stash; GC23-12 acceptance operator-only)",
+  "actor": "claude-code subagent, workflow step CE23-12"
+ },
+ "consequence": {
+  "commits": [
+   "860ce679ae14834014eab7406bf76e80e315eed8",
+   "c09c218d0f9f1486e1d26157c21d2e2c21f5542c",
+   "71ed64b11795c6deb750e392bb3fa72fb236d6b8",
+   "0cc590b51554be855aa8a3bdd99869bcb9a6d11d"
+  ],
+  "files_changed": [
+   "HANDWRITTEN.md",
+   "release/v26.9.23/README.md",
+   "release/v26.9.23/bench/README.md",
+   "release/v26.9.23/bench/bench.toml",
+   "release/v26.9.23/bench/design.ttl",
+   "release/v26.9.23/bench/generated/bound-table.ttl",
+   "release/v26.9.23/bench/generated/evidence-tiers.ttl",
+   "release/v26.9.23/bench/generated/reference-orders.ttl",
+   "release/v26.9.23/bench/ggen.lock",
+   "release/v26.9.23/bench/ggen.toml",
+   "release/v26.9.23/bench/imports/chatman-ce23-12-bench.candidates.ttl",
+   "release/v26.9.23/bench/imports/chatman-ce23-12-bench.orders.ttl",
+   "release/v26.9.23/bench/imports/chatman-ce23-12-standings.candidates.ttl",
+   "release/v26.9.23/bench/imports/chatman-ce23-12-standings.orders.ttl",
+   "release/v26.9.23/bench/imports/goal.ttl",
+   "release/v26.9.23/bench/out/ACCEPTANCE_RULES.md",
+   "release/v26.9.23/bench/out/CLASSES.md",
+   "release/v26.9.23/bench/out/CTQ_TRACKER.md",
+   "release/v26.9.23/bench/out/MSA_CONTRACT.md",
+   "release/v26.9.23/bench/out/QUALIFICATION_REPORT.md",
+   "release/v26.9.23/bench/out/acceptance-rules.json",
+   "release/v26.9.23/bench/out/cases/nc-authority-escalation.json",
+   "release/v26.9.23/bench/out/cases/nc-changed-outcome.json",
+   "release/v26.9.23/bench/out/cases/nc-corrupted-receipt.json",
+   "release/v26.9.23/bench/out/cases/nc-hidden-llm-provider.json",
+   "release/v26.9.23/bench/out/cases/nc-malformed-digest.json",
+   "release/v26.9.23/bench/out/cases/nc-missing-capability.json",
+   "release/v26.9.23/bench/out/cases/nc-stale-subject.json",
+   "release/v26.9.23/bench/out/cases/nc-unverifiable-consequence.json",
+   "release/v26.9.23/bench/out/cases/nc-wrong-generated-file.json",
+   "release/v26.9.23/bench/out/cases/nm-ex-config.json",
+   "release/v26.9.23/bench/out/cases/nm-ex-deps.json",
+   "release/v26.9.23/bench/out/cases/nm-ex-generated.json",
+   "release/v26.9.23/bench/out/cases/nm-ex-semantic.json",
+   "release/v26.9.23/bench/out/cases/nm-ex-syntax.json",
+   "release/v26.9.23/bench/out/cases/nm-gg-pack.json",
+   "release/v26.9.23/bench/out/cases/nm-gg-schema.json",
+   "release/v26.9.23/bench/out/cases/nm-gg-template.json",
+   "release/v26.9.23/bench/out/cases/nm-gg-turtle.json",
+   "release/v26.9.23/bench/out/cases/nm-js-1e3.json",
+   "release/v26.9.23/bench/out/cases/nm-js-dupkey.json",
+   "release/v26.9.23/bench/out/cases/nm-js-invalid.json",
+   "release/v26.9.23/bench/out/cases/nm-js-scope.json",
+   "release/v26.9.23/bench/out/cases/nm-py-config.json",
+   "release/v26.9.23/bench/out/cases/nm-py-generated.json",
+   "release/v26.9.23/bench/out/cases/nm-py-lint.json",
+   "release/v26.9.23/bench/out/cases/nm-py-syntax.json",
+   "release/v26.9.23/bench/out/cases/nm-rs-config.json",
+   "release/v26.9.23/bench/out/cases/nm-rs-edition.json",
+   "release/v26.9.23/bench/out/cases/nm-rs-generated.json",
+   "release/v26.9.23/bench/out/cases/nm-rs-syntax.json",
+   "release/v26.9.23/bench/out/ci/bench-ce23-12-b3.yml",
+   "release/v26.9.23/bench/out/doe/ci-matrix.json",
+   "release/v26.9.23/bench/out/doe/design-matrix.json",
+   "release/v26.9.23/bench/out/doe/factor-standing.json",
+   "release/v26.9.23/bench/out/plan/ORDERS.md",
+   "release/v26.9.23/bench/out/plan/orders.ttl",
+   "release/v26.9.23/bench/out/spc/chart-data.json",
+   "release/v26.9.23/bench/pack/README.md",
+   "release/v26.9.23/bench/pack/gates/010_known_class_contract.rq",
+   "release/v26.9.23/bench/pack/gates/020_boundary_cases.rq",
+   "release/v26.9.23/bench/pack/gates/030_factor_support.rq",
+   "release/v26.9.23/bench/pack/gates/040_standing_evidence.rq",
+   "release/v26.9.23/bench/pack/gates/050_trace.rq",
+   "release/v26.9.23/bench/pack/gates/060_split_disjoint.rq",
+   "release/v26.9.23/bench/pack/gates/070_ctq_fields.rq",
+   "release/v26.9.23/bench/pack/gates/080_measurement_model.rq",
+   "release/v26.9.23/bench/pack/gates/090_msa_contract.rq",
+   "release/v26.9.23/bench/pack/gates/100_plan_coverage.rq",
+   "release/v26.9.23/bench/pack/ontology.ttl",
+   "release/v26.9.23/bench/pack/pack.toml",
+   "release/v26.9.23/bench/pack/scripts/doe_verify.py",
+   "release/v26.9.23/bench/pack/scripts/evidence_tiers.py",
+   "release/v26.9.23/bench/pack/scripts/import_inputs.py",
+   "release/v26.9.23/bench/pack/scripts/lift_reference_orders.py",
+   "release/v26.9.23/bench/pack/scripts/native_predicates.py",
+   "release/v26.9.23/bench/pack/scripts/verify.py",
+   "release/v26.9.23/bench/pack/shacl/nlb-shapes.ttl",
+   "release/v26.9.23/bench/pack/templates/acceptance-rules.json.tmpl",
+   "release/v26.9.23/bench/pack/templates/acceptance-rules.md.tmpl",
+   "release/v26.9.23/bench/pack/templates/case-manifest.json.tmpl",
+   "release/v26.9.23/bench/pack/templates/ci-workflow.yml.tmpl",
+   "release/v26.9.23/bench/pack/templates/class-catalog.md.tmpl",
+   "release/v26.9.23/bench/pack/templates/ctq-tracker.md.tmpl",
+   "release/v26.9.23/bench/pack/templates/doe-ci-matrix.json.tmpl",
+   "release/v26.9.23/bench/pack/templates/doe-design-matrix.json.tmpl",
+   "release/v26.9.23/bench/pack/templates/doe-factor-standing.json.tmpl",
+   "release/v26.9.23/bench/pack/templates/msa-contract.md.tmpl",
+   "release/v26.9.23/bench/pack/templates/plan-orders.md.tmpl",
+   "release/v26.9.23/bench/pack/templates/plan-orders.ttl.tmpl",
+   "release/v26.9.23/bench/pack/templates/qualification-report.md.tmpl",
+   "release/v26.9.23/bench/pack/templates/spc-chart-data.json.tmpl",
+   "release/v26.9.23/bench/templates/.gitkeep",
+   "release/v26.9.23/courts/CE23-12-BenchmarkDesign.sh",
+   "release/v26.9.23/courts/CE23-12-GeneratedQualificationPlan.sh",
+   "release/v26.9.23/courts/CE23-12-MSAContract.sh",
+   "release/v26.9.23/courts/CE23-12.sh",
+   "release/v26.9.23/courts/ce23_12/court.py",
+   "release/v26.9.23/courts/ce23_12/mutations.toml",
+   "release/v26.9.23/courts/ce23_12/pins.toml",
+   "tests/test_ce23_12_courts.py"
+  ],
+  "design": {
+   "known_candidate_classes": 5,
+   "kept_classes": 15,
+   "near_misses": 21,
+   "negative_controls": 9,
+   "ctqs": 15,
+   "rty_stages": 7,
+   "msa_properties": 7,
+   "msa_courts": 12,
+   "factors": 8,
+   "varied_factors": 6,
+   "doe": "2^(6-2) resolution IV, I=ABCE=ADEF=BCDF, 16 runs; OS UNSUPPORTED (no column), repo size PARTIAL",
+   "tiers": {
+    "DISCOVERY": [
+     30,
+     "0.095034"
+    ],
+    "QUALIFICATION": [
+     100,
+     "0.029513"
+    ],
+    "OPERATIONAL": [
+     300,
+     "0.009936"
+    ],
+    "SCALE_3000": [
+     3000,
+     "0.000998"
+    ]
+   },
+   "generated_orders": 58,
+   "generated_orders_by_kind": {
+    "CLASS_FAMILY_TIER": 30,
+    "MSA_COURT": 12,
+    "CAPABILITY_GAP": 16
+   },
+   "prose_derived_orders": {
+    "chatman-ce23-12-bench": 9,
+    "chatman-ce23-12-standings": 24
+   },
+   "reference_orders_covered": "24/24 NON_LLM_OPERATIONAL successor (OP-01..OP-24)",
+   "projections": 43,
+   "pack_corpus": "3 good fixtures admitted, 28 mutants refused, 5 instruments"
+  },
+  "msa": [
+   {
+    "defects": 0,
+    "n": 31,
+    "question": "repeatability",
+    "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+    "tier": "DISCOVERY",
+    "unit": "distinct artifact, re-judged by 5 instruments (155 instrument-artifact pairs: native and pyoxigraph 31x, pyshacl, rdflib and ggen 2x); a defect = any verdict change",
+    "upper_bound_95": 0.092114
+   },
+   {
+    "defects": 0,
+    "n": 31,
+    "question": "classification agreement",
+    "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+    "tier": "DISCOVERY",
+    "unit": "distinct artifact (3 good, 28 bad) judged by 5 independent instruments (10 pairs); a defect = any disagreement on the artifact",
+    "upper_bound_95": 0.092114
+   },
+   {
+    "defects": 0,
+    "n": 175,
+    "question": "mutation sensitivity",
+    "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+    "tier": "QUALIFICATION",
+    "unit": "distinct corrupted output: design mutants (a miss if any of 5 instruments admits), one-byte out/ corruptions, kernel literal perturbations, DOE corruptions, deleted plan orders",
+    "upper_bound_95": 0.016973
+   },
+   {
+    "defects": 0,
+    "n": 70,
+    "question": "stale receipt detection",
+    "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+    "tier": "DISCOVERY",
+    "unit": "receipt bound to an ancestor subject (30) or a perturbed bench tree digest (40)",
+    "upper_bound_95": 0.041893
+   },
+   {
+    "defects": 0,
+    "n": 30,
+    "question": "ordering invariance",
+    "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+    "tier": "DISCOVERY",
+    "unit": "seeded permutation of triple insertion order and artifact evaluation order",
+    "upper_bound_95": 0.095034
+   },
+   {
+    "defects": 0,
+    "n": 6,
+    "question": "environment / cached-state reproducibility",
+    "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+    "tier": "BELOW_DISCOVERY",
+    "unit": "verdict vector of the corpus in fresh env -i processes (cwd, TMPDIR, HOME, hash seed, locale) + ggen cold vs warm render",
+    "upper_bound_95": 0.393038
+   },
+   {
+    "defects": 0,
+    "n": 47,
+    "question": "membership boundary (near-miss vs KNOWN)",
+    "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+    "tier": "DISCOVERY",
+    "unit": "distinct mutated design: every near-miss made a class member or expected ALIVE, every KNOWN class reduced to a declared label (a miss if native or pyoxigraph admits)",
+    "upper_bound_95": 0.06175
+   }
+  ],
+  "non_llm_operational": {
+   "class-elixir-format": {
+    "n": 0,
+    "standing": "UNKNOWN"
+   },
+   "class-ggen-projection": {
+    "n": 0,
+    "standing": "UNKNOWN"
+   },
+   "class-json-canonical": {
+    "n": 0,
+    "standing": "UNKNOWN"
+   },
+   "class-python-format": {
+    "n": 0,
+    "standing": "UNKNOWN"
+   },
+   "class-rust-format": {
+    "n": 0,
+    "standing": "UNKNOWN"
+   }
+  },
+  "environment": {
+   "os_factor": "UNSUPPORTED",
+   "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+   "statement": "cross-OS robustness remains outside the demonstrated evidence ceiling"
+  },
+  "handwritten_residue": "HANDWRITTEN.md rows: bench/design.ttl, bench/pack scripts + wiring, the CE23-12 courts",
+  "remote_effects": [],
+  "remote_effects_note": "none: no push (the driver pushes); ~/xaas and ~/ggen_igniter read only (git show at pinned commits, compile_check's private build clone)"
+ },
+ "replay": {
+  "commands": [
+   {
+    "cmd": "git rev-parse HEAD && git status --porcelain -uall -- release tests HANDWRITTEN.md | wc -l",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "280b2e0c3486d141ace117f787561fc9569f7102c26a49dacdc8aead182a9f7a",
+    "log": "receipts/v26.9.23/CE23-12.gate/00-subject.log",
+    "summary": "HEAD = the subject on a clean tree (0 porcelain lines under release/, tests/, HANDWRITTEN.md) before any receipt file"
+   },
+   {
+    "cmd": "sh release/v26.9.23/courts/CE23-12-BenchmarkDesign.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "c40bb7ba8b3e4cc73c7ca5341c07f04e31feef65fa178e2874c6a115f6bc4311",
+    "log": "receipts/v26.9.23/CE23-12.gate/01-benchmark-design.log",
+    "summary": "CE23-12-BenchmarkDesign ALIVE: 25 OK, 0 REFUSED, 0 UNKNOWN in 108.7s; conjunct of BENCHMARK_DESIGN_ALIVE; NON_LLM_OPERATIONAL_ALIVE UNKNOWN for every class (n = 0)"
+   },
+   {
+    "cmd": "sh release/v26.9.23/courts/CE23-12-MSAContract.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "3913931485190f33785e8dd3edb49a9730a9492e15a319e57f7a7bb77fec8d57",
+    "log": "receipts/v26.9.23/CE23-12.gate/02-msa-contract.log",
+    "summary": "CE23-12-MSAContract ALIVE: 25 OK, 0 REFUSED, 0 UNKNOWN in 388.5s; conjunct of BENCHMARK_DESIGN_ALIVE; NON_LLM_OPERATIONAL_ALIVE UNKNOWN for every class (n = 0)"
+   },
+   {
+    "cmd": "sh release/v26.9.23/courts/CE23-12-GeneratedQualificationPlan.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "ce19747b6b565f44ad5aa73094468a28ba7cecefb7308567527c16ae4a54e272",
+    "log": "receipts/v26.9.23/CE23-12.gate/03-generated-qualification-plan.log",
+    "summary": "CE23-12-GeneratedQualificationPlan ALIVE: 26 OK, 0 REFUSED, 0 UNKNOWN in 62.9s; conjunct of BENCHMARK_DESIGN_ALIVE; NON_LLM_OPERATIONAL_ALIVE UNKNOWN for every class (n = 0)"
+   },
+   {
+    "cmd": "sh release/v26.9.23/courts/CE23-12.sh --receipt-out receipts/v26.9.23/CE23-12.gate/court-receipt-CE23-12.json",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "84758ff8eacc53be84fd27eae9341de0a9a5d0d117195908bef169b9af5f3e7a",
+    "log": "receipts/v26.9.23/CE23-12.gate/04-crown.log",
+    "summary": "CE23-12 ALIVE: 9 OK, 0 REFUSED, 0 UNKNOWN in 557.1s; standing BENCHMARK_DESIGN_ALIVE; NON_LLM_OPERATIONAL_ALIVE UNKNOWN for every class (n = 0)"
+   },
+   {
+    "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_ce23_12_courts.py -v",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "aae08014c67ade56ec5c9d7e3786d375dcc3baa7c71926e2ecf6377fc6622032",
+    "log": "receipts/v26.9.23/CE23-12.gate/05-unittest-ce23-12.log",
+    "summary": "OK"
+   },
+   {
+    "cmd": "sh release/v26.9.23/courts/CE23-1.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "0dc2490c97b868266ec548c5f1009703b284e55e86b5b08ebaa599972b0ecd5e",
+    "log": "receipts/v26.9.23/CE23-12.gate/06-ce23-1-court.log",
+    "summary": "neighbour court CE23-1 on the same head"
+   },
+   {
+    "cmd": "sh release/v26.9.23/courts/CE23-2.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "60ec45301961ce7410f2c8beaf67bb221ced8da99e493ccaaf7eeaf350288050",
+    "log": "receipts/v26.9.23/CE23-12.gate/07-ce23-2-court.log",
+    "summary": "neighbour court CE23-2 on the same head"
+   },
+   {
+    "cmd": "sh release/v26.9.23/courts/CE23-7.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "6ec61571aa21d3f43bb22fdca59643fcc9c0fee9351b6bc932007fc5ac5a6a92",
+    "log": "receipts/v26.9.23/CE23-12.gate/08-ce23-7-court.log",
+    "summary": "neighbour court CE23-7 on the same head (F8 runs the whole unit suite)"
+   },
+   {
+    "cmd": "sh release/v26.9.23/sjira/compile_check.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "f140b9f319aa48d85fca6612a56ae421e5c906a32a89b5ba3bcae7655139ad17",
+    "log": "receipts/v26.9.23/CE23-12.gate/09-compile-check.log",
+    "summary": "CE23 first-mile court (prose, candidates, views, compile_prose --check, goal admission, 16 gate courts)"
+   },
+   {
+    "cmd": "for f in CE23-12 CE23-12-BenchmarkDesign CE23-12-MSAContract CE23-12-GeneratedQualificationPlan; do git show origin/release/v26.9.23-int:release/v26.9.23/courts/$f.sh | sh; echo \"$f base exit=$?\"; done; git rev-parse origin/release/v26.9.23-int",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "c1d8d655b216abf58284d9b51334af6d9d6233992abf88e3d27e22ec838f1682",
+    "log": "receipts/v26.9.23/CE23-12.gate/10-base-stubs.log",
+    "summary": "pre-existing state: at the pushed base origin/release/v26.9.23-int the four CE23-12 scripts are stubs exiting 75"
+   },
+   {
+    "cmd": "ruff check release/v26.9.23/bench/pack/scripts release/v26.9.23/courts/ce23_12 tests/test_ce23_12_courts.py",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "bff048ade09e183e53b6afbc2cd5665a28257e1262055af12943701705429478",
+    "log": "receipts/v26.9.23/CE23-12.gate/11-ruff.log",
+    "summary": "ruff over the new Python"
+   },
+   {
+    "cmd": "! grep -rn \"unittest.mock\\|Mock(\\|MagicMock\\|patch(\\|monkeypatch\" tests/test_ce23_12_courts.py release/v26.9.23/courts/ce23_12 release/v26.9.23/bench/pack",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "050920bec95a119b9d65221a688fe92e14e10e6101937e8f028f24e3d00d3021",
+    "log": "receipts/v26.9.23/CE23-12.gate/12-mock-grep.log",
+    "summary": "no mock/patch/monkeypatch in the new tests, courts or pack"
+   },
+   {
+    "cmd": "! grep -rIn \"/Users/sac/wt\\|~/wt\" release/v26.9.23/bench/pack release/v26.9.23/bench/design.ttl release/v26.9.23/bench/bench.toml release/v26.9.23/bench/ggen.toml release/v26.9.23/bench/generated release/v26.9.23/bench/out release/v26.9.23/courts/ce23_12 release/v26.9.23/courts/CE23-12.sh release/v26.9.23/courts/CE23-12-BenchmarkDesign.sh release/v26.9.23/courts/CE23-12-MSAContract.sh release/v26.9.23/courts/CE23-12-GeneratedQualificationPlan.sh tests/test_ce23_12_courts.py",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "ff88cf693ef75e9438122a35000f885f226151586f3bdfd0714afc61d840767c",
+    "log": "receipts/v26.9.23/CE23-12.gate/13-wt-grep.log",
+    "summary": "no /Users/sac/wt or ~/wt reference in the new sources, generated outputs, courts or tests"
+   },
+   {
+    "cmd": "git diff --name-only 8c150da27ac77f860b0eecf44fba71afbff72427 HEAD -- release/v26.9.1 release/v26.9.23/bench/DESIGN.md release/v26.9.23/bench/ontology-draft.ttl release/v26.9.23/bench/orders.json release/v26.9.23/bench/candidates release/v26.9.23/sjira | wc -l",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "fa7696cde8650b459ab75ecd14f061d2b6b76f517ef903cd71094eef94969266",
+    "log": "receipts/v26.9.23/CE23-12.gate/14-pinned-paths-untouched.log",
+    "summary": "release/v26.9.1, the design capital, candidates and sjira/ unchanged since the step base 8c150da2"
+   }
+  ],
+  "durable_location": "receipts/v26.9.23/CE23-12.gate/",
+  "witness": "replay_court.py log re-executed 00, 05, 09, 10, 11, 12, 13, 14 to their recorded exits (8/8 REPLAY OK); the conjunct courts 01-03 were re-executed independently by the crown run 04 on the same head (each exit 0, receipts admitted by the crown); 01-04 and 06-08 take 1-9 minutes each and are replayable with replay_court.py log one at a time",
+  "gate_command_note": "the step gate `sh CE23-12-BenchmarkDesign.sh; sh CE23-12-MSAContract.sh; sh CE23-12-GeneratedQualificationPlan.sh; sh CE23-12.sh` was run as four separately recorded commands (01-04; 04 adds --receipt-out) to keep each under 20 minutes; exits bd=0 msa=0 gqp=0 ce23_12=0"
+ },
+ "standing": {
+  "value": "ALIVE",
+  "standing_kind": "BENCHMARK_DESIGN_ALIVE",
+  "non_llm_operational": "UNKNOWN for every class (n = 0 executed unseen members); never implied by BENCHMARK_DESIGN_ALIVE",
+  "derived_from": "sh release/v26.9.23/courts/CE23-12.sh (and the three conjunct courts) exit 0 at 0cc590b51554be855aa8a3bdd99869bcb9a6d11d"
+ },
+ "observed_failures_this_step": [
+  "860ce679: CE23-12-MSAContract.sh exit 1 'UNKNOWN[TOOL_MISSING] ggen not on PATH' after the session TMPDIR /Users/sac/.cache/tmp holding the court scratch was removed by another process mid-run (introduced by this step: scratch under a volatile TMPDIR; SystemExit surfaced as exit 1); fixed forward in c09c218d",
+  "c09c218d: CE23-7.sh REFUSED[UNIT_SUITE] F8: tests/test_ce23_12_courts.py EndToEndCase ran the court without PYTHONUSERBASE under CE23-7's fresh-HOME env (introduced by this step); fixed forward in 71ed64b1",
+  "71ed64b1: all gates exit 0, but the MSA rows counted (instrument x artifact) repetitions as n (pseudo-replication, tier inflated to OPERATIONAL for 31 artifacts); fixed forward in 0cc590b5"
+ ]
+}

@@ -1,0 +1,203 @@
+{
+ "authority": {
+  "actor": "release/v26.9.23/courts/ce23_12/court.py crown",
+  "ceiling": "OBSERVE",
+  "grant": "NONE (a court observes; it actuates nothing)"
+ },
+ "clauses": [
+  {
+   "clause": "E0",
+   "detail": "no-LLM environment: env -i, PATH=/tmp/ce23-12-crown-nax2vpdk/bin:/usr/bin:/bin (python3, git, ggen only), no LLM client reachable",
+   "status": "OK"
+  },
+  {
+   "clause": "S0",
+   "detail": "subject 0cc590b51554be855aa8a3bdd99869bcb9a6d11d clean over ['release/v26.9.23/bench', 'release/v26.9.23/courts', 'release/v26.9.23/sjira']; bench tree dee59fef7fac2ab39ced5f67635a0cbab4b956d4",
+   "status": "OK"
+  },
+  {
+   "clause": "P1",
+   "detail": "both CE23-12 prose units byte-equal their pins and goal.ttl's sj:sourceSha256 (4146d688.., 80091c45..)",
+   "status": "OK"
+  },
+  {
+   "clause": "T1",
+   "detail": "all 22 committed propositions required by ce:CE23-12 are traced by 169 design nodes; every cited proposition is a committed, span-verified candidate",
+   "status": "OK"
+  },
+  {
+   "clause": "X2",
+   "detail": "BENCHMARK_DESIGN_ALIVE does not imply NON_LLM_OPERATIONAL_ALIVE: all 5 KNOWN_CANDIDATE tuples are UNKNOWN at n = 0, no ALIVE standing exists in the design graph, the report projects every class UNKNOWN",
+   "status": "OK"
+  },
+  {
+   "clause": "C-BenchmarkDesign",
+   "detail": "release/v26.9.23/courts/CE23-12-BenchmarkDesign.sh exit 0 in 110.0s (25 OK, 0 REFUSED, 0 UNKNOWN); its receipt is ALIVE at the exact head 0cc590b51554 / bench tree dee59fef7fac and records non_llm_operational UNKNOWN (n = 0) for all 5 classes",
+   "status": "OK"
+  },
+  {
+   "clause": "C-MSAContract",
+   "detail": "release/v26.9.23/courts/CE23-12-MSAContract.sh exit 0 in 383.9s (25 OK, 0 REFUSED, 0 UNKNOWN); its receipt is ALIVE at the exact head 0cc590b51554 / bench tree dee59fef7fac and records non_llm_operational UNKNOWN (n = 0) for all 5 classes",
+   "status": "OK"
+  },
+  {
+   "clause": "C-GeneratedQualificationPlan",
+   "detail": "release/v26.9.23/courts/CE23-12-GeneratedQualificationPlan.sh exit 0 in 62.4s (26 OK, 0 REFUSED, 0 UNKNOWN); its receipt is ALIVE at the exact head 0cc590b51554 / bench tree dee59fef7fac and records non_llm_operational UNKNOWN (n = 0) for all 5 classes",
+   "status": "OK"
+  },
+  {
+   "clause": "AV",
+   "detail": "crown receipt admission: the exact-head receipt admitted; stale subject, stale bench tree, wrong conjunct, REFUSED standing, a class claimed NON_LLM_OPERATIONAL_ALIVE, a missing class and a varied OS factor each refused",
+   "status": "OK"
+  }
+ ],
+ "conjuncts": {
+  "BenchmarkDesign": {
+   "bench_tree": "dee59fef7fac2ab39ced5f67635a0cbab4b956d4",
+   "replay": "25 OK, 0 REFUSED, 0 UNKNOWN in 109.2s",
+   "standing": "ALIVE",
+   "subject_sha": "0cc590b51554be855aa8a3bdd99869bcb9a6d11d"
+  },
+  "GeneratedQualificationPlan": {
+   "bench_tree": "dee59fef7fac2ab39ced5f67635a0cbab4b956d4",
+   "replay": "26 OK, 0 REFUSED, 0 UNKNOWN in 61.6s",
+   "standing": "ALIVE",
+   "subject_sha": "0cc590b51554be855aa8a3bdd99869bcb9a6d11d"
+  },
+  "MSAContract": {
+   "bench_tree": "dee59fef7fac2ab39ced5f67635a0cbab4b956d4",
+   "replay": "25 OK, 0 REFUSED, 0 UNKNOWN in 383.4s",
+   "standing": "ALIVE",
+   "subject_sha": "0cc590b51554be855aa8a3bdd99869bcb9a6d11d"
+  }
+ },
+ "consequence": {
+  "commits": [],
+  "files_changed": [],
+  "remote_effects": []
+ },
+ "environment": {
+  "os_factor": "UNSUPPORTED",
+  "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+  "statement": "cross-OS robustness remains outside the demonstrated evidence ceiling"
+ },
+ "identity": {
+  "base_sha": "71ed64b11795c6deb750e392bb3fa72fb236d6b8",
+  "bench_tree": "dee59fef7fac2ab39ced5f67635a0cbab4b956d4",
+  "conjunct": "crown",
+  "gate": "ce:CE23-12 (release/v26.9.23/sjira/goal.ttl), sj:courtCommand 'sh release/v26.9.23/courts/CE23-12.sh'",
+  "graph_hash": "sha256:171131665900787446655baeb7e10b6ff3b3a76840f0e22a47e60867b1c00a75",
+  "pack": "nonllm-class-qualification-pack 0.1.0 (in-repo, release/v26.9.23/bench/pack; successor home ggen-marketplace)",
+  "pack_lock": "content_hash = \"blake3:1c4f54f6dadba2ef0ba1d70cd3abe2f5bd1cbd705c676a0c8169b05d6fa7ae7c\"",
+  "prose": {
+   "release/v26.9.23/sjira/chatman-ce23-12-bench.md": "sha256:4146d688c21db6e1af51a2187df8056b1a0f977001c817d64fbde0547029b485",
+   "release/v26.9.23/sjira/chatman-ce23-12-standings.md": "sha256:80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2"
+  },
+  "repo": "/Users/sac/chatman-ecosystem",
+  "repository": "seanchatmangpt/chatman-ecosystem",
+  "subject": "CE23-12",
+  "subject_sha": "0cc590b51554be855aa8a3bdd99869bcb9a6d11d"
+ },
+ "msa": [
+  {
+   "defects": 0,
+   "n": 31,
+   "question": "repeatability",
+   "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+   "tier": "DISCOVERY",
+   "unit": "distinct artifact, re-judged by 5 instruments (155 instrument-artifact pairs: native and pyoxigraph 31x, pyshacl, rdflib and ggen 2x); a defect = any verdict change",
+   "upper_bound_95": 0.092114
+  },
+  {
+   "defects": 0,
+   "n": 31,
+   "question": "classification agreement",
+   "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+   "tier": "DISCOVERY",
+   "unit": "distinct artifact (3 good, 28 bad) judged by 5 independent instruments (10 pairs); a defect = any disagreement on the artifact",
+   "upper_bound_95": 0.092114
+  },
+  {
+   "defects": 0,
+   "n": 175,
+   "question": "mutation sensitivity",
+   "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+   "tier": "QUALIFICATION",
+   "unit": "distinct corrupted output: design mutants (a miss if any of 5 instruments admits), one-byte out/ corruptions, kernel literal perturbations, DOE corruptions, deleted plan orders",
+   "upper_bound_95": 0.016973
+  },
+  {
+   "defects": 0,
+   "n": 70,
+   "question": "stale receipt detection",
+   "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+   "tier": "DISCOVERY",
+   "unit": "receipt bound to an ancestor subject (30) or a perturbed bench tree digest (40)",
+   "upper_bound_95": 0.041893
+  },
+  {
+   "defects": 0,
+   "n": 30,
+   "question": "ordering invariance",
+   "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+   "tier": "DISCOVERY",
+   "unit": "seeded permutation of triple insertion order and artifact evaluation order",
+   "upper_bound_95": 0.095034
+  },
+  {
+   "defects": 0,
+   "n": 6,
+   "question": "environment / cached-state reproducibility",
+   "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+   "tier": "BELOW_DISCOVERY",
+   "unit": "verdict vector of the corpus in fresh env -i processes (cwd, TMPDIR, HOME, hash seed, locale) + ggen cold vs warm render",
+   "upper_bound_95": 0.393038
+  },
+  {
+   "defects": 0,
+   "n": 47,
+   "question": "membership boundary (near-miss vs KNOWN)",
+   "scope": "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED",
+   "tier": "DISCOVERY",
+   "unit": "distinct mutated design: every near-miss made a class member or expected ALIVE, every KNOWN class reduced to a declared label (a miss if native or pyoxigraph admits)",
+   "upper_bound_95": 0.06175
+  }
+ ],
+ "non_llm_operational": {
+  "class-elixir-format": {
+   "n": 0,
+   "standing": "UNKNOWN"
+  },
+  "class-ggen-projection": {
+   "n": 0,
+   "standing": "UNKNOWN"
+  },
+  "class-json-canonical": {
+   "n": 0,
+   "standing": "UNKNOWN"
+  },
+  "class-python-format": {
+   "n": 0,
+   "standing": "UNKNOWN"
+  },
+  "class-rust-format": {
+   "n": 0,
+   "standing": "UNKNOWN"
+  }
+ },
+ "replay": {
+  "commands": [
+   {
+    "cmd": "sh release/v26.9.23/courts/CE23-12.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "summary": "9 OK, 0 REFUSED, 0 UNKNOWN in 557.1s"
+   }
+  ]
+ },
+ "standing": {
+  "derived_from": "sh release/v26.9.23/courts/CE23-12.sh exit 0 at 0cc590b51554be855aa8a3bdd99869bcb9a6d11d",
+  "standing_kind": "BENCHMARK_DESIGN_ALIVE",
+  "value": "ALIVE"
+ }
+}
