@@ -653,9 +653,16 @@ def m_chatman_stop(root: Path, v: Verdict) -> int:
         g.add((node, RDF.type, sj.Receipt))
         g.add((node, sj.standing, Literal(r["standing"])))
         for gid in r["gates"]:
-            if gid in ids:
-                g.add((ids[gid], sj.receipt, node))
-                projected.setdefault(gid, []).append(f"{r['standing']}:{r['rel']}")
+            if gid not in ids:
+                continue
+            if stub_court(root, str(g.value(ids[gid], sj.courtCommand) or "")):
+                # standing is derived from a court run: a gate whose court cannot run (the CE-INTAKE stub,
+                # exit 75, also UNKNOWN in member replay) gets no standing from a receipt in this query
+                v.line(f"not projected onto {gid}: {r['rel']} ({r['standing']}) - {gid}'s court is the CE-INTAKE stub "
+                       f"(exit 75), so no court run backs a gate standing")
+                continue
+            g.add((ids[gid], sj.receipt, node))
+            projected.setdefault(gid, []).append(f"{r['standing']}:{r['rel']}")
         for wo in r["orders"]:
             if wo in order_iri:
                 g.add((order_iri[wo], sj.receipt, node))
@@ -698,10 +705,15 @@ def m_chatman_stop(root: Path, v: Verdict) -> int:
     return v.close(f"CHATMAN_STOP={'true' if stop else 'false'} (goal sj:stopQuery; CE23-9 and CE23-10 provisional)")
 
 
+def stub_court(root: Path, cmd: str) -> bool:
+    """The gate's court command runs the CE-INTAKE machinery-absent stub (prints UNKNOWN, exit 75)."""
+    script = root / cmd.split()[-1] if cmd else None
+    return bool(script and script.is_file() and "machinery lands in a generated CE23 lane" in script.read_text(encoding="utf-8"))
+
+
 def gates_court(root: Path, ids: dict, gid: str, g) -> str:
     cmd = str(g.value(ids[gid], rdflib_ns(SJ).courtCommand) or "")
-    script = root / cmd.split()[-1] if cmd else None
-    if script and script.is_file() and "machinery lands in a generated CE23 lane" in script.read_text(encoding="utf-8"):
+    if stub_court(root, cmd):
         return f"its court {cmd} is the CE-INTAKE stub (exit 75): machinery absent"
     return f"court {cmd or 'none'}"
 

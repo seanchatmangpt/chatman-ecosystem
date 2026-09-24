@@ -311,6 +311,21 @@ class LawCase(unittest.TestCase):
         self.assertEqual(projected["receipts/v26.9.23/CE23-0.json"]["gates"], ["CE23-0"])
         self.assertNotIn("receipts/v26.9.23/CE23-12.gate/court-receipt-CE23-12.json", projected)
 
+    def test_stub_court_gets_no_gate_standing_from_its_receipt(self) -> None:
+        # CE23-0 carries an ALIVE receipt while its court is still the CE-INTAKE stub: chatman-stop must not
+        # count it (the replay member types the same court UNKNOWN)
+        self.assertTrue(members.stub_court(ROOT, "sh release/v26.9.23/courts/CE23-0.sh"))
+        self.assertFalse(members.stub_court(ROOT, "sh release/v26.9.23/courts/CE23-1.sh"))
+        self.assertFalse(members.stub_court(ROOT, ""))
+        with redirect_stdout(io.StringIO()) as out:
+            rc = members.m_chatman_stop(ROOT, members.Verdict("chatman-stop"))
+        text = out.getvalue()
+        if "MARKETPLACE_UNAVAILABLE" in text:
+            self.skipTest("receipt validator not readable from the canonical marketplace checkout")
+        self.assertIn("not projected onto CE23-0: receipts/v26.9.23/CE23-0.json (ALIVE)", text)
+        self.assertIn("UNKNOWN[NO_ALIVE_RECEIPT:CE23-0]", text)
+        self.assertNotEqual(rc, 0)
+
     def test_disposition_law(self) -> None:
         prefix = members.PINS["ci"]["local_member_prefix"]
         index = {("w.yml", "a"): {"job": "ja"}, ("w.yml", "b"): {"job": "jb"}, ("v.yml", "b"): {"job": "jb"}}
