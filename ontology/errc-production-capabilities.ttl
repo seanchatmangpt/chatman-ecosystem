@@ -1,0 +1,51 @@
+@prefix ce: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/capabilities#> .
+@prefix pcc: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/platform-console-capabilities#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+pcc:ErrcProductionCapabilityOntology a owl:Ontology ;
+    dcterms:title "ERRC production capability extensions" ;
+    dcterms:description "Grounded non-DO capabilities created by the ERRC production closure. These capabilities manufacture decisions/projections only; none grants consequential authority." ;
+    owl:imports <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/capabilities> .
+
+pcc:MuStarCanonicalImplementationSelect a ce:Capability ;
+    dcterms:title "mustar.canonical-implementation.select" ;
+    dcterms:description "Deterministically selects one canonical implementation only after observed build evidence, positive execution, negative refusal, receipt replay, and authority-fence evidence pass. Performance cannot compensate for a missing proof surface." ;
+    ce:capabilityClass ce:Select ;
+    ce:executionOwner "chatman-ecosystem/ecosystem-errc" ;
+    ce:sourceRepository "chatman-ecosystem" ;
+    ce:requiredAuthority "SELECT only; ecosystem-errc::mustar_select; no DO authority" ;
+    ce:brokerRequired false ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "candidate" ;
+    ce:implementationPattern "mustar-select" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:GgenCapabilityProjectionConstruct a ce:Capability ;
+    dcterms:title "ggen.domain-capability.construct" ;
+    dcterms:description "Constructs generated capability allowlists and cross-repo capability-pattern projections from admitted RDF facts. Generation is a projection and does not grant downstream authority." ;
+    ce:capabilityClass ce:Construct ;
+    ce:executionOwner "ggen/domain-capability-pack" ;
+    ce:sourceRepository "ggen" ;
+    ce:requiredAuthority "ggen sync admission; generated-artifact boundary" ;
+    ce:brokerRequired false ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "candidate" ;
+    ce:implementationPattern "ggen-construct" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .
+
+pcc:CapabilityCatalogDataProjection a ce:Capability ;
+    dcterms:title "capability-catalog.data.projection" ;
+    dcterms:description "Read-only generated data product containing capability identity, class, owner, authority, broker/receipt requirement, reversibility and derived implementation pattern. The projection is not a permit." ;
+    ce:capabilityClass ce:Data ;
+    ce:executionOwner "ggen/domain-capability-pack" ;
+    ce:sourceRepository "ggen" ;
+    ce:requiredAuthority "read admitted ontology; no mutation authority" ;
+    ce:brokerRequired false ;
+    ce:receiptRequired true ;
+    ce:reversible true ;
+    ce:standing "candidate" ;
+    ce:implementationPattern "data-projection" ;
+    ce:interface ce:CLI, ce:API, ce:MCP, ce:A2A .

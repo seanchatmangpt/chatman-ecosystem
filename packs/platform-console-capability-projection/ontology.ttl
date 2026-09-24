@@ -1,0 +1,7 @@
+@prefix proj: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/capability-projection#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+proj:CapabilityProjectionOntology a owl:Ontology ;
+    dcterms:title "Platform Console Capability Projection" ;
+    dcterms:description "Projection-local metadata only. Capability individuals are supplied through ggen extra_ontologies from the canonical Chatman Ecosystem ontology files." .

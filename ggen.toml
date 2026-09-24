@@ -6,6 +6,7 @@ source = "ontology.ttl"
 
 [packs]
 soc2-readiness-pack = { path = "/Users/sac/ggen-marketplace/packs/soc2-readiness-pack" }
+platform-console-capability-projection = { path = "packs/platform-console-capability-projection", extra_ontologies = ["ontology/capabilities.ttl", "ontology/platform-console-capabilities.ttl", "ontology/errc-production-capabilities.ttl"] }
 
 [templates]
 dir = "templates"
