@@ -10,8 +10,9 @@ into release/v26.9.23/out/scripts/crown_v26_9_23.sh (imports re-hashed, probes, 
 er:gateOrder under `bash -euo pipefail -c`, stopping at the first non-zero member with its order as
 the exit status). This judge runs that rendered court on the exact committed head and types its result:
 
-  C1  the judging court (wrapper, judge, members, runner, universe, pins, vendored validator, fixture)
-      is byte-identical to HEAD
+  C1  the judging court (wrapper, judge, members, runner, universe, pins, fixture) is byte-identical to
+      HEAD; the generated receipt validator is not committed: it is read at run time from the pinned,
+      published ggen-marketplace blob and admitted by sha256 (root.toml [validator])
   R1  the rendered court runs exactly the release graph's er:Gate rows (order, name, command)
   K   the rendered court itself; a member that stops it is typed from its exit (0 ALIVE, 75 UNKNOWN,
       anything else REFUSED) and its MEMBER_* line; the members after it are then continued by this
@@ -19,7 +20,7 @@ the exit status). This judge runs that rendered court on the exact committed hea
       never changes the rendered court's verdict
   AV  anti-vacuity on real data: the exact-head CI law refuses the real check-runs of the pre-repair
       base c59596f5 for exactly the checks the base repair fixed (fixture), the disposition law refuses
-      a stale typed row / a foreign member command / a double disposition, the vendored validator
+      a stale typed row / a foreign member command / a double disposition, the pinned validator
       refuses mutated copies of a real receipt, and pack gate 090 refuses the stale 0/13 STOP crown
       (vendored fixture) while it admits the positive one
 
@@ -245,7 +246,14 @@ def av_validator(root: Path, j: Judge, scratch: Path) -> None:
         j.refuse("AV_HARNESS", "AV3", "no ALIVE receipt to mutate")
         return
     rel, doc = src
-    validator = members.VALIDATOR_DIR / "unified_receipt_validator.py"
+    validator, findings = members.materialize_validator(scratch / "validator")
+    for kind, code, text in findings:
+        if kind == "REFUSED":
+            j.refuse(code, "AV3", text)
+        elif kind == "UNKNOWN":
+            j.unk(code, "AV3", text)
+    if validator is None:
+        return
     mutants = {}
     m = copy.deepcopy(doc)
     m["identity"]["subject_sha"] = "NOTASHA"
@@ -270,7 +278,7 @@ def av_validator(root: Path, j: Judge, scratch: Path) -> None:
     elif admitted or foreign.returncode == 0:
         j.refuse("AV_VACUOUS", "AV3", f"mutated copies of {rel} admitted: {admitted}; foreign subject ancestry exit {foreign.returncode}")
     else:
-        j.ok("AV3", f"the vendored validator admits {rel} and refuses {sorted(mutants)}; a foreign subject_sha is not an ancestor of HEAD")
+        j.ok("AV3", f"the pinned validator admits {rel} and refuses {sorted(mutants)}; a foreign subject_sha is not an ancestor of HEAD")
 
 
 def av_stale_crown(root: Path, j: Judge, scratch: Path) -> None:

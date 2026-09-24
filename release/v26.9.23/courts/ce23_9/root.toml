@@ -25,10 +25,28 @@ court_files = [
   "release/v26.9.23/courts/ce23_9/ci_checks.py",
   "release/v26.9.23/courts/ce23_9/ci_job.py",
   "release/v26.9.23/courts/ce23_9/root.toml",
-  "release/v26.9.23/vendor/receipt-provenance/unified_receipt_validator.py",
-  "release/v26.9.23/vendor/receipt-provenance/unified_receipt_validator.provenance.toml",
   "release/v26.9.23/courts/ce23_9/fixtures/checkruns-c59596f5.json",
 ]
+
+[validator]
+# The generated receipt validator of ggen-marketplace receipt-provenance-unification-pack (MP-RPV:
+# dfcm_fleet_v1 contract + durable profile). It is never committed here: its generated contract table
+# cites source files by absolute path (among them one under the retired shadow tree), so the members
+# imported-receipts and chatman-stop and the judge's AV3 read it at run time as
+#   git -C $CE23_MARKETPLACE_REPO show <commit>:<path>     (default: the canonical ~/ggen-marketplace)
+# into their own scratch and run that copy only when its sha256 is `sha256`
+# (REFUSED[VALIDATOR_NOT_BYTE_IDENTICAL] otherwise; UNKNOWN[MARKETPLACE_UNAVAILABLE] without the
+# checkout). `commit` must be on origin/<ref> (published): a pin on a fast-forward of that line is
+# UNKNOWN[VALIDATOR_PUBLICATION_PENDING], a pin off it REFUSED[VALIDATOR_OFF_REF]. To move it: point
+# commit/blob/sha256 at the new marketplace commit; the file is regenerated only in ggen-marketplace.
+repository = "seanchatmangpt/ggen-marketplace"
+ref = "release/v26.9.23-int"
+commit = "e3988aba4a850095d94d3b18a4495766d13e4d5e"
+pack = "packs/receipt-provenance-unification-pack"
+path = "packs/receipt-provenance-unification-pack/generated/unified_receipt_validator.py"
+blob = "facbff0551319ae11da812c9c3e1c6c901d2aa3f"
+sha256 = "008ce23419325ebda2998fb7445a38da80a7735ba3ca6fdc56c0e0a7ec686f70"
+contract = "dfcm_fleet_v1"
 
 [stop]
 # CHATMAN_STOP: member `chatman-stop` evaluates goal_root's own sj:stopQuery over goal.ttl, the compiled

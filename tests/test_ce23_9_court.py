@@ -6,7 +6,10 @@ are read through the court's own functions (release/v26.9.23/courts/ce23_9/ci_ch
 as a real subprocess); the exact-head CI law runs over the committed real check-runs of base c59596f5
 (fixtures/checkruns-c59596f5.json, captured with gh api); the judge runs a court rendered by the real
 ggen from the vendored chatman-ecosystem-release-pack template with three members (ALIVE, UNKNOWN,
-REFUSED). No collaborator is replaced. The whole court is `sh release/v26.9.23/courts/CE23-9.sh`.
+REFUSED); the receipt validator is read from the real pinned ggen-marketplace blob (a named skip where
+the canonical marketplace checkout is absent), and its pin typing (published / publication pending /
+off the line / unobserved) is judged on real git repositories. No collaborator is replaced. The whole
+court is `sh release/v26.9.23/courts/CE23-9.sh`.
 """
 
 from __future__ import annotations
@@ -191,6 +194,89 @@ class CiJobCase(Repo):
 
 
 @unittest.skipUnless(HAVE_LIBS, "PyYAML and rdflib are court dependencies")
+class ValidatorPinCase(Repo):
+    """The receipt validator is never committed: it is the pinned marketplace blob, read at run time."""
+
+    PATH = "packs/p/generated/validator.py"
+
+    def market(self, body: bytes = b"print('validator')\n") -> tuple[str, str]:
+        """This case's repository as a marketplace: base, then `line` holding the validator at PATH."""
+        (self.repo / self.PATH).parent.mkdir(parents=True, exist_ok=True)
+        (self.repo / self.PATH).write_bytes(body)
+        pinned = self.commit("validator")
+        return pinned, members.sha256(body)
+
+    def pin(self, commit: str, digest: str) -> dict:
+        return {"commit": commit, "path": self.PATH, "sha256": digest, "ref": "line"}
+
+    def materialize(self, pin: dict) -> tuple[Path | None, list]:
+        dest = Path(self.tmp.name) / f"dest-{len(os.listdir(self.tmp.name))}"
+        return members.materialize_validator(dest, pin, self.repo)
+
+    def refs(self, remote: str | None, local: str | None) -> None:
+        for ref, sha in (("refs/remotes/origin/line", remote), ("refs/heads/line", local)):
+            if sha:
+                git(self.repo, "update-ref", ref, sha)
+
+    def test_published_pin_is_admitted_and_written(self) -> None:
+        pinned, digest = self.market()
+        self.refs(pinned, pinned)
+        path, findings = self.materialize(self.pin(pinned, digest))
+        self.assertEqual([k for k, _, _ in findings], ["OK"], findings)
+        self.assertIsNotNone(path)
+        self.assertEqual(members.sha256(path.read_bytes()), digest)
+
+    def test_pending_publication_is_an_edge_not_a_counterexample(self) -> None:
+        pinned, digest = self.market()
+        self.refs(self.base, pinned)  # the line fast-forwards the published ref: only a push is missing
+        path, findings = self.materialize(self.pin(pinned, digest))
+        self.assertEqual([(k, c) for k, c, _ in findings], [("UNKNOWN", "VALIDATOR_PUBLICATION_PENDING")])
+        self.assertIsNotNone(path)
+
+    def test_pin_off_the_line_is_refused(self) -> None:
+        pinned, digest = self.market()
+        git(self.repo, "checkout", "-q", "-b", "other", self.base)
+        self.write("x.txt", "diverged\n")
+        sibling = self.commit("diverged published line")
+        self.refs(sibling, pinned)  # the local line cannot fast-forward the published ref
+        _, findings = self.materialize(self.pin(pinned, digest))
+        self.assertEqual([(k, c) for k, c, _ in findings], [("REFUSED", "VALIDATOR_OFF_REF")])
+        self.assertIn("diverged", findings[0][2])
+        self.refs(self.base, self.base)  # neither the published ref nor the local line holds the pin
+        _, findings = self.materialize(self.pin(pinned, digest))
+        self.assertEqual([(k, c) for k, c, _ in findings], [("REFUSED", "VALIDATOR_OFF_REF")])
+
+    def test_unobserved_ref_absent_commit_and_digest_mismatch(self) -> None:
+        pinned, digest = self.market()
+        _, findings = self.materialize(self.pin(pinned, digest))
+        self.assertEqual([(k, c) for k, c, _ in findings], [("UNKNOWN", "MARKETPLACE_REF_UNOBSERVED")])
+        path, findings = self.materialize(self.pin("0" * 40, digest))
+        self.assertEqual(([(k, c) for k, c, _ in findings], path), ([("UNKNOWN", "MARKETPLACE_UNAVAILABLE")], None))
+        self.refs(pinned, pinned)
+        path, findings = self.materialize(self.pin(pinned, "f" * 64))
+        self.assertEqual(([(k, c) for k, c, _ in findings], path), ([("REFUSED", "VALIDATOR_NOT_BYTE_IDENTICAL")], None))
+
+    def test_real_pin_reads_the_published_marketplace_blob(self) -> None:
+        pin = members.PINS["validator"]
+        path, findings = members.materialize_validator(Path(self.tmp.name) / "real", pin)
+        if path is None and findings[0][1] == "MARKETPLACE_UNAVAILABLE":
+            self.skipTest(f"canonical ggen-marketplace checkout absent: {findings[0][2]}")
+        self.assertIsNotNone(path)
+        self.assertEqual(members.sha256(path.read_bytes()), pin["sha256"])
+        self.assertNotIn("REFUSED", [k for k, _, _ in findings], findings)
+        # no copy is committed: the court's files are the ones root.toml names, and none is a validator
+        committed = git(ROOT, "ls-files", "--", "release/v26.9.23").splitlines()
+        self.assertEqual([f for f in committed if f.endswith("unified_receipt_validator.py")], [])
+
+    def test_judging_court_names_no_shadow_tree_path(self) -> None:
+        needles = (str(Path.home() / "wt") + "/", "~/" + "wt/", "$HOME/" + "wt/")
+        for rel in members.SUBJ["court_files"]:
+            data = subprocess.run(["git", "-C", str(ROOT), "show", f"HEAD:{rel}"], capture_output=True).stdout
+            self.assertTrue(data, rel)
+            self.assertEqual([n for n in needles if n.encode() in data], [], rel)
+
+
+@unittest.skipUnless(HAVE_LIBS, "PyYAML and rdflib are court dependencies")
 class LawCase(unittest.TestCase):
     def test_exact_head_law_on_the_real_base_checkruns(self) -> None:
         fixture = json.loads((COURT_DIR / "fixtures" / "checkruns-c59596f5.json").read_text(encoding="utf-8"))
@@ -279,10 +365,13 @@ class GeneratedCourtCase(unittest.TestCase):
                          [("alive", "ALIVE", "court"), ("edge", "UNKNOWN", "court"), ("bad", "REFUSED", "continued")])
         self.assertIn("COURT_STOPPED order=2 name=edge", out.getvalue())
         self.assertEqual((judge.refused, judge.unknown), (["MEMBER:bad"], ["MEMBER:edge"]))
-        # the court's own R receipt of that run is valid under the vendored generated validator
+        # the court's own R receipt of that run is valid under the pinned generated validator
         receipt = Path(tmp.name) / "court-receipt.json"
         court.write_receipt(receipt, ROOT, git(ROOT, "rev-parse", "HEAD"), "REFUSED", table, judge, 0.0)
-        check = subprocess.run([sys.executable, str(members.VALIDATOR_DIR / "unified_receipt_validator.py"), str(receipt),
+        validator, findings = members.materialize_validator(Path(tmp.name) / "validator")
+        if validator is None:
+            self.skipTest(f"receipt validator not readable from the canonical marketplace checkout: {findings}")
+        check = subprocess.run([sys.executable, str(validator), str(receipt),
                                 "--contract", "dfcm_fleet_v1"], capture_output=True, text=True)
         self.assertEqual(check.returncode, 0, check.stdout + check.stderr)
         self.assertEqual(json.loads(receipt.read_text())["standing"]["broken_term"], "mu_on_O")

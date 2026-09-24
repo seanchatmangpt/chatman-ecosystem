@@ -20,9 +20,10 @@ head of the checkout it runs in and ends with exactly one verdict line:
                                  `ecosystem projection check` admits views/generated
   members.py manifest-refs       manifest/ref validation: verify_release --release v26.9.23 --check-refs
   members.py imported-receipts   every receipt of the release (receipts/v26.9.23/**/*.json in the R shape)
-                                 is valid under the vendored generated validator (dfcm_fleet_v1) and its
-                                 subject is a commit of this history at or before HEAD; imported crown
-                                 receipts (none until CE23-3) are reported
+                                 is valid under the generated validator (dfcm_fleet_v1; read at run time
+                                 from the pinned, published ggen-marketplace blob, root.toml [validator])
+                                 and its subject is a commit of this history at or before HEAD; imported
+                                 crown receipts (none until CE23-3) are reported
   members.py ci-dispositions     every CI check the exact head carries (ci_checks.py universe) has exactly
                                  one disposition: a local member (er:Gate ce9:reproducesCheck), a typed
                                  er:CheckDisposition, or its check-run at the exact head; no stale row
@@ -60,8 +61,6 @@ import ci_checks  # noqa: E402
 PINS = tomllib.loads((HERE / "root.toml").read_text(encoding="utf-8"))
 SUBJ = PINS["subject"]
 SDIR = SUBJ["subject_dir"]
-# The byte copy of the generated receipt validator (data under vendor/, outside the courts tree).
-VALIDATOR_DIR = HERE.parents[1] / "vendor" / "receipt-provenance"
 ER = "http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#"
 CE9 = "https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.23/court#"
 SJ = "https://ggen-igniter.dev/ontology/semantic-jira#"
@@ -265,25 +264,75 @@ def m_manifest_refs(root: Path, v: Verdict) -> int:
 # imported-receipts
 
 
-def validator_identity(root: Path, v: Verdict) -> Path | None:
-    prov = tomllib.loads((VALIDATOR_DIR / "unified_receipt_validator.provenance.toml").read_text(encoding="utf-8"))["validator"]
-    local = VALIDATOR_DIR / "unified_receipt_validator.py"
-    got = sha256(local.read_bytes())
-    committed = subprocess.run(["git", "-C", str(root), "show", f"HEAD:{local.relative_to(root)}"], capture_output=True).stdout
-    if got != prov["sha256"] or sha256(committed) != prov["sha256"]:
-        v.refuse("VALIDATOR_DRIFT", f"{local.name} sha256 {got} (committed {sha256(committed)}) != provenance {prov['sha256']}")
-        return None
-    market = Path(os.environ.get("CE23_MARKETPLACE_REPO") or (Path.home() / "ggen-marketplace")).expanduser()
-    blob = subprocess.run(["git", "-C", str(market), "show", f"{prov['commit']}:{prov['path']}"], capture_output=True)
+def marketplace_repo() -> Path:
+    """The canonical ggen-marketplace checkout (read only): CE23_MARKETPLACE_REPO, default ~/ggen-marketplace."""
+    return Path(os.environ.get("CE23_MARKETPLACE_REPO") or (Path.home() / "ggen-marketplace")).expanduser()
+
+
+def publication(repo: Path, commit: str, ref: str) -> tuple[str, str]:
+    """Where `commit` stands against the declared line `ref` of the checkout `repo`:
+
+      published   an ancestor of refs/remotes/origin/<ref>
+      pending     not yet there, but an ancestor of refs/heads/<ref>, which fast-forwards origin/<ref>: a
+                  plain push of the line publishes it (the driver's edge); no change to the subject closes it
+      unobserved  the checkout has no refs/remotes/origin/<ref>
+      off-ref     anything else: the pin leaves the declared line (publishing it needs another line or a force)
+    """
+    remote, local = f"refs/remotes/origin/{ref}", f"refs/heads/{ref}"
+
+    def ancestor(a: str, b: str) -> bool:
+        return run(["git", "-C", str(repo), "merge-base", "--is-ancestor", a, b], repo).returncode == 0
+
+    if not git(repo, "rev-parse", "--verify", "--quiet", f"{remote}^{{commit}}"):
+        return "unobserved", f"{repo} has no {remote}"
+    if ancestor(commit, remote):
+        return "published", f"on {remote}"
+    tip = git(repo, "rev-parse", "--verify", "--quiet", f"{local}^{{commit}}")
+    if tip and ancestor(commit, local) and ancestor(remote, local):
+        ahead = git(repo, "rev-list", "--count", f"{remote}..{local}")
+        return "pending", (f"{commit[:12]} is not yet on {remote}; {local} ({tip[:12]}) holds it and fast-forwards {remote} "
+                           f"by {ahead} commits: publication is a plain push of {ref}")
+    where = ("absent" if not tip else f"at {tip[:12]}, not holding {commit[:12]}" if not ancestor(commit, local)
+             else f"at {tip[:12]}, diverged from {remote}")
+    return "off-ref", f"{commit[:12]} is on neither {remote} nor a fast-forward of it ({local} {where})"
+
+
+def materialize_validator(dest: Path, pin: dict | None = None, market: Path | None = None) -> tuple[Path | None, list[tuple[str, str, str]]]:
+    """The generated receipt validator this court runs: the blob <pin.commit>:<pin.path> of the canonical
+    ggen-marketplace checkout, written under `dest` only when its sha256 is pin.sha256 (never a committed copy:
+    root.toml [validator]). Returns (path or None, findings), each finding (OK|REFUSED|UNKNOWN, code, text)."""
+    pin = pin or PINS["validator"]
+    market = market or marketplace_repo()
+    blob = subprocess.run(["git", "-C", str(market), "show", f"{pin['commit']}:{pin['path']}"], capture_output=True)
     if blob.returncode != 0:
-        v.unk("MARKETPLACE_UNAVAILABLE", f"{market} holds no {prov['commit'][:12]}:{prov['path']}")
-    elif sha256(blob.stdout) != prov["sha256"]:
-        v.refuse("VALIDATOR_NOT_BYTE_IDENTICAL", f"marketplace {prov['commit'][:12]}:{prov['path']} sha256 {sha256(blob.stdout)}")
-    elif run(["git", "-C", str(market), "merge-base", "--is-ancestor", prov["commit"], f"refs/remotes/origin/{prov['ref']}"], market).returncode != 0:
-        v.refuse("VALIDATOR_UNPUBLISHED", f"{prov['commit'][:12]} is not on origin/{prov['ref']}")
-    else:
-        v.line(f"OK validator {prov['path']} = ggen-marketplace {prov['commit'][:12]} (published on origin/{prov['ref']}), sha256 {got[:16]}")
-    return local
+        return None, [("UNKNOWN", "MARKETPLACE_UNAVAILABLE", f"{market} holds no {pin['commit'][:12]}:{pin['path']}")]
+    got = sha256(blob.stdout)
+    if got != pin["sha256"]:
+        return None, [("REFUSED", "VALIDATOR_NOT_BYTE_IDENTICAL",
+                       f"ggen-marketplace {pin['commit'][:12]}:{pin['path']} sha256 {got} != pinned {pin['sha256']}")]
+    state, detail = publication(market, pin["commit"], pin["ref"])
+    finding = {"published": ("OK", "", f"validator {pin['path']} = ggen-marketplace {pin['commit'][:12]} ({detail}), "
+                                       f"sha256 {got[:16]}, read at run time (never committed here)"),
+               "pending": ("UNKNOWN", "VALIDATOR_PUBLICATION_PENDING", detail),
+               "unobserved": ("UNKNOWN", "MARKETPLACE_REF_UNOBSERVED", detail),
+               "off-ref": ("REFUSED", "VALIDATOR_OFF_REF", detail)}[state]
+    dest.mkdir(parents=True, exist_ok=True)
+    path = dest / Path(pin["path"]).name
+    path.write_bytes(blob.stdout)
+    return path, [finding]
+
+
+def admitted_validator(v: Verdict) -> Path | None:
+    """materialize_validator into this member's scratch, its findings recorded on `v`."""
+    path, findings = materialize_validator(scratch_dir("validator"))
+    for kind, code, text in findings:
+        if kind == "REFUSED":
+            v.refuse(code, text)
+        elif kind == "UNKNOWN":
+            v.unk(code, text)
+        else:
+            v.line(f"OK {text}")
+    return path
 
 
 def r_receipts(root: Path) -> list[tuple[str, dict]]:
@@ -299,7 +348,7 @@ def r_receipts(root: Path) -> list[tuple[str, dict]]:
 
 
 def m_imported_receipts(root: Path, v: Verdict) -> int:
-    validator = validator_identity(root, v)
+    validator = admitted_validator(v)
     if validator is None:
         return v.close("validator not admitted")
     receipts = r_receipts(root)
@@ -589,7 +638,9 @@ def m_chatman_stop(root: Path, v: Verdict) -> int:
     under = {gid for gid, c in ids.items() if goal_root in set(g.transitive_objects(c, sj.checkpointOf)) and c != goal_root}
     tag = {gid for gid in under if gid == "CE23-11"}
     order_iri = {str(o).rsplit("#", 1)[-1].lower().removeprefix("wo-"): o for o in g.subjects(RDF.type, sj.WorkOrder)}
-    validator, head = VALIDATOR_DIR / "unified_receipt_validator.py", git(root, "rev-parse", "HEAD")
+    validator, head = admitted_validator(v), git(root, "rev-parse", "HEAD")
+    if validator is None:
+        return v.close("CHATMAN_STOP=unknown (no admitted receipt validator: no receipt can be projected)")
     projected: dict[str, list[str]] = {}
     for r in projected_receipts(root):
         p = run([sys.executable, str(validator), r["rel"], "--contract", "dfcm_fleet_v1"], root)
