@@ -1,0 +1,27 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 release/v26.9.23/sjira/replay_court.py receipt --receipt receipts/v26.9.23/CE23-0.json
+OK receipts/v26.9.23/CE23-0.json#1: exit=0
+OK receipts/v26.9.23/CE23-0.json#2: exit=0
+OK receipts/v26.9.23/CE23-0.json#3: exit=0
+OK receipts/v26.9.23/CE23-0.json#4: exit=0
+OK receipts/v26.9.23/CE23-0.json#5: exit=0
+OK receipts/v26.9.23/CE23-0.json#6: exit=0
+OK receipts/v26.9.23/CE23-0.json#7: exit=0
+OK receipts/v26.9.23/CE23-0.json#8: exit=0
+OK receipts/v26.9.23/CE23-0.json#9: exit=0
+OK receipts/v26.9.23/CE23-0.json#10: exit=0
+OK receipts/v26.9.23/CE23-0.json#11: exit=0
+OK receipts/v26.9.23/CE23-0.json#12: exit=0
+OK receipts/v26.9.23/CE23-0.json#13: exit=0
+OK receipts/v26.9.23/CE23-0.json#14: exit=0
+OK receipts/v26.9.23/CE23-0.json#15: exit=0
+OK receipts/v26.9.23/CE23-0.json#16: exit=0
+OK receipts/v26.9.23/CE23-0.json#17: exit=0
+OK receipts/v26.9.23/CE23-0.json#18: exit=0
+OK receipts/v26.9.23/CE23-0.json#19: exit=0
+OK receipts/v26.9.23/CE23-0.json#20: exit=0
+OK receipts/v26.9.23/CE23-0.json#21: exit=0
+OK receipts/v26.9.23/CE23-0.json#22: exit=0
+OK receipts/v26.9.23/CE23-0.json#23: exit=0
+OK receipts/v26.9.23/CE23-0.json#24: exit=0
+REPLAY OK: 24/24 replay.commands of receipts/v26.9.23/CE23-0.json replay to their recorded exit
+exit=0
