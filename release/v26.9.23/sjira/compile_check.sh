@@ -47,7 +47,7 @@
 # with MIX_BUILD_PATH on a private APFS clone of $GGEN_IGNITER_DIR/_build/test,
 # so the judged ggen_igniter checkout is read, never written.
 #
-# Env: GGEN_IGNITER_DIR (default /Users/sac/wt/v26922/fri/ggen_igniter-int),
+# Env: GGEN_IGNITER_DIR (default: the canonical checkout ~/ggen_igniter),
 #      PROSE_SPANS (default the frozen xaas-int scripts/sjira/prose_spans.py),
 #      ELIXIR_BIN / ERLANG_BIN (default the .tool-versions pins 1.18.4-otp-27 / 27.2.4).
 # Exit: 0 all hold; 1 refusal; 75 environment (tool missing / no no-LLM PATH).
@@ -56,8 +56,8 @@ set -u
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../.." && pwd)
 rel=release/v26.9.23/sjira
-gi=${GGEN_IGNITER_DIR:-/Users/sac/wt/v26922/fri/ggen_igniter-int}
-spans=${PROSE_SPANS:-/Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py}
+gi=${GGEN_IGNITER_DIR:-$HOME/ggen_igniter}
+spans=${PROSE_SPANS:-$HOME/xaas/scripts/sjira/prose_spans.py}
 elixir_bin=${ELIXIR_BIN:-/Users/sac/.asdf/installs/elixir/1.18.4-otp-27/bin}
 erlang_bin=${ERLANG_BIN:-/Users/sac/.asdf/installs/erlang/27.2.4/bin}
 ns="https://ggen-igniter.dev/sjira/chatman-26.9.23#"

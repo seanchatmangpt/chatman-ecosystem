@@ -42,8 +42,8 @@ CROWN = (
     "CE23-0 CE23-1 CE23-2 CE23-3 CE23-4 CE23-5 CE23-6 CE23-7 CE23-8 CE23-9 CE23-10 "
     "CE23-12 CE23-12-BenchmarkDesign CE23-12-MSAContract CE23-12-GeneratedQualificationPlan"
 ).split()
-GI = Path(os.environ.get("GGEN_IGNITER_DIR", "/Users/sac/wt/v26922/fri/ggen_igniter-int"))
-SPANS = Path(os.environ.get("PROSE_SPANS", "/Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py"))
+GI = Path(os.environ.get("GGEN_IGNITER_DIR", os.path.expanduser("~/ggen_igniter")))
+SPANS = Path(os.environ.get("PROSE_SPANS", os.path.expanduser("~/xaas/scripts/sjira/prose_spans.py")))
 ELIXIR_BIN = Path(os.environ.get("ELIXIR_BIN", "/Users/sac/.asdf/installs/elixir/1.18.4-otp-27/bin"))
 ERLANG_BIN = Path(os.environ.get("ERLANG_BIN", "/Users/sac/.asdf/installs/erlang/27.2.4/bin"))
 
