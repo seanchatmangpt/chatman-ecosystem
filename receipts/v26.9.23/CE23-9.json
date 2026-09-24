@@ -1,0 +1,186 @@
+{
+  "identity": {
+    "subject": "CE23-9/exact-head-root-court",
+    "repo": "seanchatmangpt/chatman-ecosystem",
+    "subject_sha": "ec2965b6ef22889a0258778368c36433023a3d6e",
+    "base_sha": "c636def7f1525ac519c3a97fc88c879794f4bbd1",
+    "release_base_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+    "branch": "release/v26.9.23-int",
+    "checkout": "/Users/sac/chatman-ecosystem",
+    "gate": "ce:CE23-9 (release/v26.9.23/sjira/goal.ttl), sj:courtCommand 'sh release/v26.9.23/courts/CE23-9.sh'",
+    "work_orders": [
+      "WO-D7653B4E63788368 (release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl; subject P-3b9df60b806ec39e)"
+    ],
+    "vendored_pack": "chatman-ecosystem-release-pack 0.4.0 from ggen-marketplace 6cfd0b7ad3891611486994240b7aed6b5e6dc3e6 (MP-RELPACK-COURT FINISHED), tree 480d08dd99c28ddbfcf093e4eafe25d271df879d; not yet on origin/release/v26.9.23-int of ggen-marketplace (origin at e3988aba4)",
+    "validator": "receipt-provenance-unification-pack generated/unified_receipt_validator.py from ggen-marketplace e3988aba4a850095d94d3b18a4495766d13e4d5e (published), sha256 008ce23419325ebda2998fb7445a38da80a7735ba3ca6fdc56c0e0a7ec686f70, byte copy at release/v26.9.23/vendor/receipt-provenance/",
+    "spec": "scan-verified specs CE23-9-root-court, CE23-9-base-repair, CE23-9-imported-receipt-validator (read-only evidence); operator contract release/v26.9.23/sjira/chatman-ce23.md CE23-9; driver decision 'CE23-9 strict crown membership'"
+  },
+  "authority": {
+    "ceiling": "CONSTRUCT",
+    "grant": "workflow step CE23-9 (operator directives 2026-09-23/24: one canonical checkout per repository, no worktrees, commits with git commit -F, no push/rebase/reset/force/stash); WO-D7653B4E63788368 sj:authorityCeiling CONSTRUCT",
+    "actor": "claude-code subagent, workflow step CE23-9"
+  },
+  "consequence": {
+    "commits": [
+      "ecff99255832ddd0d89e5c188d0dadc371160017",
+      "b9aed434ed5e073080e4aaf5297b62fd87b78fad",
+      "4328b578a9f2f035a709fc134b947929cf758b13",
+      "d4daa5f5e198ba3b09612100b887aa66ac9d14cd",
+      "fe226a3275fae6311ac58e513f363423303c43d6",
+      "ec2965b6ef22889a0258778368c36433023a3d6e"
+    ],
+    "files_changed": [
+      "HANDWRITTEN.md",
+      "apps/ecosystem-cli/src/bin/old-estate-revops.rs",
+      "crates/ecosystem-runtime/src/bin/wasm4pm-paas.rs",
+      "release/v26.9.23/README.md",
+      "release/v26.9.23/courts/CE23-9.sh",
+      "release/v26.9.23/courts/ce23_9/ci_checks.py",
+      "release/v26.9.23/courts/ce23_9/ci_job.py",
+      "release/v26.9.23/courts/ce23_9/court.py",
+      "release/v26.9.23/courts/ce23_9/fixtures/checkruns-c59596f5.json",
+      "release/v26.9.23/courts/ce23_9/members.py",
+      "release/v26.9.23/courts/ce23_9/root.toml",
+      "release/v26.9.23/ggen.lock",
+      "release/v26.9.23/out/receipts/IMPORTS.sha256",
+      "release/v26.9.23/out/receipts/ROOT.json",
+      "release/v26.9.23/out/receipts/root-receipt.unsealed.toml",
+      "release/v26.9.23/out/scripts/crown_v26_9_23.sh",
+      "release/v26.9.23/out/typed-checks.txt",
+      "release/v26.9.23/release.ttl",
+      "release/v26.9.23/vendor/ggen-marketplace/VENDOR.toml",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/.gitignore",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/HANDWRITTEN.md",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/README.md",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/gates/010_release_contract.rq",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/gates/020_component_identity.rq",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/gates/085_requirement_row_identity.rq",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/gates/095_release_court.rq",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/gates/097_root_receipt.rq",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/ontology.ttl",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/pack.toml",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/chatman-harness/Cargo.toml",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/chatman-harness/src/main.rs",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/chatman-receipt.schema.json",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/consumer-v26.9.23/SOURCES.md",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/consumer-v26.9.23/ggen.toml",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/consumer-v26.9.23/observed.ttl",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/consumer-v26.9.23/release.ttl",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/court-mutants.EXPECTED.tsv",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/fixtures/SOURCES.md",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/qualify.sh",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/templates/imports.sha256.tmpl",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/templates/release-court.sh.tmpl",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/templates/root-receipt.json.tmpl",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/templates/root-receipt.toml.tmpl",
+      "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/templates/typed-checks.txt.tmpl",
+      "release/v26.9.23/vendor/receipt-provenance/unified_receipt_validator.provenance.toml",
+      "release/v26.9.23/vendor/receipt-provenance/unified_receipt_validator.py",
+      "tests/test_ce23_9_court.py",
+      "views/generated/portfolio.md"
+    ],
+    "remote_effects": [],
+    "local_effects": [
+      "scratch only under /private/tmp/claude-501/v23-scratch/FIN2-CE23-9/ (gate logs before copy, mutation repo, check-run captures)",
+      "the court's own temp trees under $TMPDIR/ce23-9-* and each replayed court's own scratch",
+      "cargo target/ rebuilt by the cold-cache member (gitignored)"
+    ],
+    "unchanged_by_design": [
+      "release/v26.9.1/** (CE23-1 court clause P1 at the subject)",
+      "the canonical ggen-marketplace checkout (read only: git show / archive / rev-parse)",
+      "the xaas and ggen_igniter checkouts (read only: git cat-file for the operator-acceptance observation)"
+    ],
+    "court_members_at_subject": "see 01-gate-court.log MEMBERS table",
+    "post_seal": "this receipt and CE23-9.gate/ are committed after sealing on top of the subject; a commit cannot carry its own hash"
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "git rev-parse HEAD && git status --porcelain -uall | wc -l",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "bc22facc1f9e0dea552f37441ab2c5dc15475543b6cbb585c57f5b6eab56ac65",
+        "log": "receipts/v26.9.23/CE23-9.gate/00-subject.log",
+        "summary": "HEAD = ec2965b6 on a clean tree before any receipt file"
+      },
+      {
+        "cmd": "sh release/v26.9.23/courts/CE23-9.sh; echo exit=$?",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 1,
+        "output_sha256": "8ebb0aaad18990d19e0f84b1b3b32c9c1885385b06a54a56ce2d4479cf57789e",
+        "log": "receipts/v26.9.23/CE23-9.gate/01-gate-court.log",
+        "summary": "the gate of this step on the committed head (see standing)"
+      },
+      {
+        "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_ce23_9_court.py -v",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "cf8e0a32ddc70e4622fe5928c4e73eb7c833f8b6b782f842763c3d0f01e79bac",
+        "log": "receipts/v26.9.23/CE23-9.gate/02-unittest-ce23-9.log",
+        "summary": "16 CE23-9 tests OK (real git repos, real ggen render of the pack court template, real base check-runs)"
+      },
+      {
+        "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_*.py'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "ad33bed50242dfb2905b983c0ca22f8d1568f07ee1420dfee5177c0b2617a097",
+        "log": "receipts/v26.9.23/CE23-9.gate/03-unittest-full.log",
+        "summary": "full Python suite at the subject"
+      },
+      {
+        "cmd": "git diff c636def7f1525ac519c3a97fc88c879794f4bbd1 ecff99255832ddd0d89e5c188d0dadc371160017 | shasum -a 256; git diff --name-only c636def7f1525ac519c3a97fc88c879794f4bbd1 ecff99255832ddd0d89e5c188d0dadc371160017",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "bb0a38ad3d4b634274a1f11e59612d36c23d73a3958f6e09ca15486f501f6de6",
+        "log": "receipts/v26.9.23/CE23-9.gate/04-base-repair-replay.log",
+        "summary": "base repair diff sha256 04642534e96404309f9dd2252e828503f40c909280b9e5704c4a54f4ce4ff5c1 = the scan-verified generator replay; 3 files"
+      },
+      {
+        "cmd": "hand-edit mutation: git archive <subject> release/v26.9.23 into a synthetic git repo, remove the chatman-stop run_gate line of out/scripts/crown_v26_9_23.sh, commit, python3 release/v26.9.23/courts/ce23_9/members.py projection-drift --root <repo>",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 1,
+        "output_sha256": "1d3dc10164b542c8e8f4dc8b1096588bd0d2df077c020fb10ac9e8c1431231d6",
+        "log": "receipts/v26.9.23/CE23-9.gate/05-mutation-hand-edit.log",
+        "summary": "REFUSED[PROJECTION_DRIFT] out/scripts/crown_v26_9_23.sh (the synthetic repo has no Cargo workspace, so views/generated is refused too)"
+      },
+      {
+        "cmd": "git show c636def7f1525ac519c3a97fc88c879794f4bbd1:release/v26.9.23/courts/CE23-9.sh | sh; echo stub-exit=$?",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "7c3cb8cd493aa34b19e53e0d0fe8d33369aa95df62bd1c3c0fab4d9b0cd0558e",
+        "log": "receipts/v26.9.23/CE23-9.gate/06-stub-revert.log",
+        "summary": "revert witness: the base court is the CE-INTAKE stub, exit 75 (UNKNOWN)"
+      },
+      {
+        "cmd": "! grep -rnE 'unittest.mock|Mock\\(|MagicMock|patch\\(|monkeypatch' tests/test_ce23_9_court.py release/v26.9.23/courts/ce23_9/ && ! git grep -nE '(/Users/sac/wt|~/wt|[$]HOME/wt)' HEAD -- scripts tests release/v26.9.23/courts HANDWRITTEN.md && ruff check --no-cache release/v26.9.23/courts/ce23_9 tests/test_ce23_9_court.py",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "1dbd45278ccca6af64f8f5a3a0c99384bc7ea69da01505ff9a116a87ebe7a880",
+        "log": "receipts/v26.9.23/CE23-9.gate/07-hygiene.log",
+        "summary": "no mocks, no retired shadow-tree reference in scripts/tests/courts/HANDWRITTEN.md, ruff clean"
+      },
+      {
+        "cmd": "sh release/v26.9.23/courts/CE23-9.sh (first run, subject 4328b578)",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 1,
+        "output_sha256": "57ecd952ec912d842cfd9f1658a3cc4e56aaa77dcb04d4958c9363ea829df63b",
+        "log": "receipts/v26.9.23/CE23-9.gate/08-gate-court-4328b578-rate-limited.log",
+        "summary": "prior subject: manifest-refs and ci.release-control-plane refused only on GitHub API rate-limit 403s; 1429 s; led to d4daa5f5 (rate limits typed UNKNOWN, concurrent replay, goal stopQuery)"
+      },
+      {
+        "cmd": "sh release/v26.9.23/courts/CE23-9.sh --receipt-out <scratch> (subject fe226a32)",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 1,
+        "output_sha256": "023119c99e4e082385771c72bba435f2870e5061f4ebb529dbe1e9d197ff3a9c",
+        "log": "receipts/v26.9.23/CE23-9.gate/09-gate-court-fe226a32.log",
+        "summary": "prior subject: members 1-11 ALIVE, replay REFUSED (CE23-1 VENDOR_COMMIT_UNPUBLISHED), exact-head-ci and chatman-stop UNKNOWN; 1113 s; its --receipt-out lacked remote_effects (fixed in ec2965b6)"
+      }
+    ],
+    "durable_location": "receipts/v26.9.23/CE23-9.json and receipts/v26.9.23/CE23-9.gate/ (tracked in git on release/v26.9.23-int)"
+  },
+  "standing": {
+    "value": "BLOCKED:marketplace-commit-unpublished",
+    "derived_from": "sh release/v26.9.23/courts/CE23-9.sh exit 1 at ec2965b6ef22889a0258778368c36433023a3d6e (01-gate-court.log)",
+    "broken_term": "mu_on_O"
+  }
+}

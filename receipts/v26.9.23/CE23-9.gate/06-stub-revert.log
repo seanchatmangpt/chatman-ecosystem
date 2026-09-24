@@ -1,0 +1,4 @@
+$ git show c636def7f1525ac519c3a97fc88c879794f4bbd1:release/v26.9.23/courts/CE23-9.sh | sh; echo stub-exit=$?
+UNKNOWN: CE23-9 machinery lands in a generated CE23 lane
+stub-exit=75
+exit=0

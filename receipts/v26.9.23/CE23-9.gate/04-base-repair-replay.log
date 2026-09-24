@@ -1,0 +1,6 @@
+$ git diff c636def7f1525ac519c3a97fc88c879794f4bbd1 ecff99255832ddd0d89e5c188d0dadc371160017 | shasum -a 256; git diff --name-only c636def7f1525ac519c3a97fc88c879794f4bbd1 ecff99255832ddd0d89e5c188d0dadc371160017
+04642534e96404309f9dd2252e828503f40c909280b9e5704c4a54f4ce4ff5c1  -
+apps/ecosystem-cli/src/bin/old-estate-revops.rs
+crates/ecosystem-runtime/src/bin/wasm4pm-paas.rs
+views/generated/portfolio.md
+exit=0
