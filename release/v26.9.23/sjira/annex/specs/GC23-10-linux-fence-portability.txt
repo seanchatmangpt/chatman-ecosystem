@@ -1,0 +1,41 @@
+ID GC23-10-linux-fence-portability dim=traversal repo=xaas path=/Users/sac/wt/v26922/fri/xaas-int
+REQ successor GC-26.9.24, unless the CE23-9 root court is designed to re-execute GC23 courts on a Linux runner (then required for CE23-9 replay)
+req_now c=False v=False
+DEPENDS ['CE23-10-court-environment-identity']
+TASK This is successor GC-26.9.24 work, not v26.9.23. The xaas release subject friday/gc-fri-0800 is frozen (DRIVER.md:141, 159-161), so do the work on a branch off xaas main after V23-Q merges.
+
+1. Replace the darwin-only fence in docs/sjira/v26.9.23/courts/GC23-10.sh (:53-79, plus the sandbox-exec wrapper at :95) with a platform-dispatched fence. On darwin, keep the current sandbox-exec deny profile. On linux, use a mount-namespace mask over $HOME/.claude, such as bwrap --tmpfs or an equivalent read-only overlay.
+2. Keep the live anti-vacuity probe. Seed ~/.claude so the probe is not vacuous; the fence must prove it unreadable, or the court exits 75.
+3. Provide a Linux court environment on this host (colima docker, Linux aarch64, is live). It must carry both toolchain pins (xaas elixir 1.20.2-otp-28 / erlang 28.5.0.2; ggen_igniter elixir 1.18.4-otp-27 / erlang 27.2.4), python3, git, a Linux-built ggen_igniter _build, and the ggen_igniter objects with ref v23/episode-fmt-1-receipt.
+4. Record the OS factor through the CE23-10 court-environment manifest. Claim no cross-OS evidence until the Linux run exits 0.
+
+Drop the candidate's 'alternative' from this lane. Defining the CE23-9 root replay as receipt validation plus digest recomputation, with macOS named as the court platform, belongs to the CE23-9 / CE23-10 lanes. That path is already Linux-portable: replay_project.py --check reproduces sha256:e24bff79…76fb on Linux aarch64 and on darwin.
+
+Depends on: the V23-Q release merge (frozen subject) and CE23-10-court-environment-identity.
+GEN No generator owns this artifact; I checked `grep -rlE 'sandbox-exec|bwrap'` over /Users/sac/ggen-marketplace/packs (only unrelated wasm4pm-interview-assist-pack provenance) and over ggen_igniter priv/lib (no hits). Hand-written residue that cannot be generated today:
+- the fence dispatch in GC23-10.sh (:53-79 plus :95, about 30 lines);
+- a Linux court image definition that carries both .tool-versions pins.
+
+The future owner should be a court-body projection generator, if GC23 court scripts become generated (candidate SCAN-GEN-court-projection).
+
+If the Linux court is ever CI-hosted, /Users/sac/ggen-marketplace/packs/github-actions-pack can render it: templates/workflow.yml.tmpl, local_runtime_manifest.json.tmpl, and LocalExecutionProfile/CapabilityRoute with typed UNSUPPORTED routes for the OS factor. That only works after xaas adopts the pack (gha: instance data plus ggen.toml wiring). Today neither xaas nor ggen_igniter consumes it, and all 17 of their workflows are hand-written, with no GENERATED header.
+RESIDUE A fence abstraction in GC23-10.sh:53-79 (about 20 lines).
+GATE On this host, inside a Linux container that has the pinned toolchains and ro-mounted checkouts (xaas at the post-release main branch carrying the change, ggen_igniter with ref v23/episode-fmt-1-receipt), with a seeded ~/.claude in the container, run:
+
+XAAS_DIR=<xaas> GGEN_IGNITER_DIR=<ggen_igniter> sh docs/sjira/v26.9.23/courts/GC23-10.sh
+
+Pass requires all of the following:
+- It exits 0 and prints 'fence: <dir> unreadable under the replay profile' (not 'absent'), the cold-digest line equal to recorded sha256:e24bff7983a500c010aa88bb782586f4f32accfbb3c6e7860d5f79f2317376fb, and the ALIVE line.
+- Anti-vacuity: with the Linux mask disabled, the same run exits 75 with '... does not fence ...'.
+- Regression: on darwin, the same script still exits 0.
+FALSIFIER GC23-10 on Linux exits 75 'no sandbox-exec; cannot fence ~/.claude'.
+REASONS
+- (a) The evidence citations check out. GC23-10.sh:53 is `command -v sandbox-exec ... || { echo UNKNOWN ...; exit 75; }` (xaas-int e999e62). The darwin dependence is also at :72 (the probe) and :95 (the sandbox-exec wrapper around every replay), not only :53-79. Workflows: in xaas there are 4 files with runs-on ubuntu-24.04 and 9 with ubuntu-latest, and ggen_igniter adds 4 more ubuntu-latest files. `grep -E 'stop_court|GC23|courts/'` over both repos' .github/workflows returns no matches.
+- (d) I witnessed the falsifier live. In a Linux aarch64 container (colima docker 28.0.4, local image ghcr.io/seanchatmangpt/ggen-ecosystem:v26.9.22, --network none, read-only mounts), GC23-10.sh printed 'UNKNOWN: GC23-10 no sandbox-exec; cannot fence ~/.claude' and exited 75. Log: /private/tmp/claude-501/v23-scratch/SCAN-GC23-10-linux-fence-verify/linux-falsifier.log. A Linux host is available on this machine, so the gate can run locally without CI.
+- (c) Not required now. PR-013 (prd-ard.md:547-556) and GC23-10 (prd-ard.md:840-842) require an independent cold reconstruction; neither names a platform. GC23-10 is already ALIVE on darwin (MORNING.md 10:19 update; chatman-ce23.md:48). Release lane V23-Q runs the stop court locally (release.run.js stopCourt, 'mix xaas.stop_court ... --receipts-dir'), and no CI workflow runs a GC23 court. No GC23 proposition is falsified without this lane.
+- (c) The CE23-9 'unless' branch does not arise. The chatman-ecosystem crown.yml does run on ubuntu-latest (6 jobs, via gh api). But the CE23-9/CE23-3 replay can be receipt validation plus digest recomputation, and that part is already Linux-portable: `replay_project.py fmt-1 --check replay.json` gives the same digest, sha256:e24bff7983a500c010aa88bb782586f4f32accfbb3c6e7860d5f79f2317376fb, on Linux aarch64 (python 3.11.2, container) and on darwin, both exit 0. Log: linux-digest-recompute.log in the same scratch dir. The digest is path-independent: the absolute repo path appears only in sources (semantic_replay.ex:865-890), and the recorded state contains no /Users/ path.
+- Landing it now would break the frozen-subject rule. DRIVER.md:141 freezes xaas/ggen_igniter friday/gc-fri-0800 and admits no successor work, and DRIVER.md:159-161 says moving sha_xaas voids the 12/13 court. Editing GC23-10.sh on the release branch would do exactly that. The lane must land on a branch off main after V23-Q merges.
+- It is still a real successor lane (GC-26.9.24). The operator's standings (DRIVER.md:158-159; chatman-ce23-12-standings.md:198-211) type the OS factor as UNSUPPORTED with no fake cross-OS evidence, and MSA requires Reproducibility_environment. This lane is what makes the OS factor realizable later. The operator's premise was conditional ('if the current executor only has macOS'), and a local Linux docker daemon is live.
+- (b) The candidate understates the residue. A ~20-line fence is necessary but not sufficient for exit 0 on Linux. The Linux run also needs both toolchain pins: xaas .tool-versions elixir 1.20.2-otp-28 / erlang 28.5.0.2, and ggen_igniter elixir 1.18.4-otp-27 / erlang 27.2.4. It needs a Linux-built _build, because GC23-10.sh:83-85 clones the darwin _build/test. It also needs python3, git, and the ggen_igniter objects with ref v23/episode-fmt-1-receipt (the drive.json subject). A sibling scan (SCAN-TRAVERSAL/gc23-10-fresh.log) already reached a BUILD_BROKEN exit 75 on a fresh graph side.
+- (b) The generation-path claim needs correcting. No generator owns court shell scripts or a sandbox fence: `grep -rlE 'sandbox-exec|bwrap'` over /Users/sac/ggen-marketplace/packs hits only unrelated wasm4pm-interview-assist-pack provenance nodes, and ggen_igniter priv/lib has no hits. /Users/sac/ggen-marketplace/packs/github-actions-pack does exist, with templates/workflow.yml.tmpl, local_runtime_manifest.json.tmpl, local_dispatch.sh.tmpl, and the LocalExecutionProfile/CapabilityRoute vocabulary with explicit UNSUPPORTED routes (pack.toml v0.3.0). Neither critical repo consumes it: no gha: instance data, and none of the 17 workflow files carries a GENERATED header. Adopting the pack is a prerequisite, not an existing path.
+- (e) It does not duplicate other lanes. release.run.js never touches GC23-10.sh or Linux. R1-X-FENCE (wave-R1a.json) gates the publish-image/deploy CI jobs behind workflow_dispatch, which has nothing to do with the ~/.claude fence. The only lane specs that mention sandbox-exec are wave-B1/B1b, which originated V23-R and are already merged.

@@ -1,0 +1,42 @@
+ID GC24-CI-validator-vendor dim=ci repo=seanchatmangpt/xaas + seanchatmangpt/ggen_igniter path=/Users/sac/wt/v26922/fri/xaas-int
+REQ successor GC-26.9.24 (falsifies no GC23/CE23 proposition: STOP is decided by the local stop court, and PRD §28 says green CI alone is not ALIVE)
+req_now c=False v=False
+DEPENDS ['CE23-5-XA-rproj-validator-guard']
+TASK Successor GC-26.9.24 in seanchatmangpt/xaas only. Do it on a branch off xaas main after the V23-Q release merge, because the release subjects are frozen. It depends on R1-X-PIN (wave R1a), which adds the validator-absent skip guard to r_projection_test.exs.
+
+Add a separate hosted-CI court workflow, for example .github/workflows/gc23-courts.yml, and leave ci_cd.yaml untouched. It is rendered by github-actions-pack from gha: facts written in xaas. Its steps:
+1. Check out the exact xaas subject.
+2. Check out the public seanchatmangpt/ggen_igniter at a pinned SHA and export GGEN_IGNITER_DIR.
+3. pip install pinned jsonschema and rdflib.
+4. Install byte-identical validate_receipt.py and receipt.schema.json into $HOME/.claude/dfcm/ and assert their sha256 equals the fleet copies (bc703c76…, c19451fa…). Both the tests and the validator hard-code that path, and the stop court binds validator_sha256.
+5. Run test/mix/tasks/xaas_stop_court_test.exs and test/xaas/receipt/r_projection_test.exs.
+
+Explicitly out of scope until their residue is fixed: semantic_drive, machine_experience and semantic_replay (setup_all asserts `cp -cRp` exits 0) and v26_9_23_goal_test.exs (host path at :25). Each of those is a separate successor candidate.
+GEN CI YAML: the existing github-actions-pack v0.3.2 at /Users/sac/ggen-marketplace/packs/github-actions-pack (templates/workflow.yml.tmpl renders .github/workflows/{{fileName}} from gha:Workflow/Job/Step facts; on marketplace origin/main at 97e630cb). Wire it through a new [packs.github_actions] git+subdir+version entry in xaas ggen.toml, the same mechanism as [packs.xaas_castle_bridge] at ggen.toml:19-22, then run `ggen sync`. The residue is the gha: individuals TTL written in xaas.
+
+Validator and schema: no pack owns ~/.claude/dfcm/{validate_receipt.py,receipt.schema.json}. The proposed owner is to extend the existing receipt-provenance-unification-pack (templates/unified_receipt_validator.py.tmpl) with a sixth rp:ReceiptContract for the fleet R schema, rather than create a new pack. Until that exists, the hand-written residue is a byte-identical vendored copy with sha256 pins and a --check drift test.
+
+Irreducible hand-written residue: the CI step that installs into $HOME/.claude/dfcm, and the pinned pip installs of jsonschema and rdflib.
+RESIDUE Unknown until the pack exists.
+GATE On the exact PR head, the hosted job must show all of the following:
+1. `sha256sum $HOME/.claude/dfcm/validate_receipt.py` prints bc703c76837d369788ff50858547eab98d01d38ce467469f8b9a8214e9f55e2c, and receipt.schema.json prints c19451fafb55dce681f149d88afe00987be0b4daa6a97651d4bfad2aaf2a6d74.
+2. `mix test test/mix/tasks/xaas_stop_court_test.exs test/xaas/receipt/r_projection_test.exs` reports 0 failures and 0 skipped.
+
+Anti-vacuity mutations; each must make the gate fail:
+- Removing the rdflib install makes exactly the test at xaas_stop_court_test.exs:568-572 report skipped.
+- Removing the validator install makes the xaas_stop_court module skip. After R1-X-PIN, r_projection skips as well.
+- Editing one byte of the vendored validator fails the sha256 assertion.
+
+Falsifier: the two court modules still report skipped (or failed) on hosted ubuntu runners.
+FALSIFIER Court modules still report skipped on hosted runners.
+REASONS
+- (a) All six cited lines are real in xaas-int e999e62. xaas_stop_court_test.exs:30-32 and v26_9_23_goal_test.exs:39 skip when ~/.claude/dfcm/validate_receipt.py is missing. semantic_drive_test.exs:49, machine_experience_test.exs:1072 and semantic_replay_test.exs:31,411 skip when GGEN_IGNITER_DIR is unset or lacks the needed files. `git ls-files | grep -i 'validate_receipt|receipt.schema'` returns nothing.
+- One correction: test/xaas/receipt/r_projection_test.exs has NO skip guard. It calls python3 on the hard-coded ~/.claude/dfcm path (lines 18 and 291), so on a hosted runner it FAILS today; it does not skip. Wave R1a lane R1-X-PIN already owns the guard (wave-R1a.json: 'r_projection_test.exs lacks the validator-absent skip guard its sibling test has'). So the dependency 'CE23-5-XA-rproj-validator-guard' duplicates R1-X-PIN; depends_on should be R1-X-PIN plus the V23-Q merge to main.
+- (c) Successor classification holds, so required_now=false. PRD §28 (prd-ard.md:2012) says 'Green CI alone is not ALIVE', and the local stop court decides STOP. The release lane only needs a green exact-head CI with fix-forward; it does not need court coverage (release.run.js REL:pr steps 3-5). CE23-9's 'imported receipt validation' is about the chatman-ecosystem root court, not xaas hosted CI. MORNING.md freezes the release subjects, so this has to land on a branch off main after the release merge.
+- (e) Does not duplicate V23-Q. release.run.js only fixes failing checks and adds no court coverage. The ci_cd.yaml push triggers are main, feat/**, fix/** and epoch/** (lines 4-9), so friday/gc-fri-0800 has not run hosted CI yet. The only overlap is the r_projection guard, which R1-X-PIN owns.
+- (b) 'No existing pack' is only half true. The CI YAML can be generated by github-actions-pack v0.3.2 (/Users/sac/ggen-marketplace/packs/github-actions-pack/templates/workflow.yml.tmpl, output `to: .github/workflows/{{ fileName }}`, on marketplace origin/main at 97e630cb). xaas can wire it the same way as [packs.xaas_castle_bridge] (ggen.toml:19-22), and ggen.toml:7-8 already requires locked marketplace packs over vendored copies. xaas does not use that pack today, and ci_cd.yaml is hand-written (no GENERATED header).
+- For the validator and schema, no pack projects ~/.claude/dfcm today. The closest existing owner is receipt-provenance-unification-pack (templates/unified_receipt_validator.py.tmpl; pack.toml:5 unifies 5 other receipt contracts). project_agents.py does not fit as the model: it writes marker blocks into ~/.zcode/AGENTS.md and similar files, not into repositories.
+- Hand-written residue that no generator can own: (1) the gha:Workflow/Job/Step facts in a xaas TTL file (the pack ships zero individuals by contract). (2) If receipt-provenance-unification-pack is extended rather than copying the validator byte-for-byte, two semantic checks with no pack equivalent (UNVERIFIED): ALIVE requires every replay exit to be 0, and subject_sha must be found with `git cat-file -e`. (3) A CI step that installs the files at $HOME/.claude/dfcm, because the tests hard-code that path (xaas_stop_court_test.exs:28, r_projection_test.exs:18) and validate_receipt.py hard-codes the schema under Path.home(). (4) Pinned pip installs of jsonschema and rdflib.
+- (d) The gate as written cannot pass even if the vendoring works. Without rdflib on the runner, xaas_stop_court_test.exs:568-570 still skips one test, and CI installs rdflib nowhere except r79-tcps-admission.yml:35. The copy must also be byte-identical: xaas_stop_court_test.exs:736-737 checks validator_sha256, and the local sha256 values are validate_receipt.py bc703c76837d369788ff50858547eab98d01d38ce467469f8b9a8214e9f55e2c and receipt.schema.json c19451fafb55dce681f149d88afe00987be0b4daa6a97651d4bfad2aaf2a6d74.
+- The task's goal 'so the skipped court modules actually run' is too broad. semantic_drive_test.exs:70, machine_experience_test.exs:1110 and semantic_replay_test.exs:49,422 run `{_, 0} = System.cmd("cp", ["-cRp", ...])` in setup_all with no fallback. GNU cp 9.11 here rejects -c: 'invalid option -- c', exit 1. How ubuntu-latest's cp behaves is UNVERIFIED. v26_9_23_goal_test.exs:25 hard-codes a host path, @accepted_prose /Users/sac/wt/v26922/v26923/prd-ard.md. Turning those skips on would turn them into failures, so the task is narrowed to the two gate files.
+- Nothing is needed in ggen_igniter: `git grep 'claude/dfcm' -- test lib` is empty in ggen_igniter-int at 3937a4f. It is only checked out as a dependency, and seanchatmangpt/ggen_igniter is PUBLIC (gh repo view), so the checkout needs no secret. The repo field should be seanchatmangpt/xaas only.

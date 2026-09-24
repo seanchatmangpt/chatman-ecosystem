@@ -1,0 +1,60 @@
+ID CE23-compile-prose dim=generators repo=chatman-ecosystem (outputs); run with ggen_igniter int mix + xaas prose_spans.py path=release/v26.9.23/{chatman-ce23.md,candidates.extract.json,candidates.ttl,goal.ttl,compiled/}
+REQ operator testimony chatman-ce23.md:1-4 ('compiled into work orders through the v26.9.23 first-mile pipeline, not hand-authored into a backlog') applied with the GC23-12 proposition to the next accepted prose; feeds CE23-0..11
+req_now c=True v=True
+DEPENDS ['CE23-0 identity lane']
+TASK Compile chatman-ce23.md (gates CE23-0..11) into WorkOrders through the v26.9.23 first mile. Do not hand-write CE lanes.
+
+Run this in a chatman-ecosystem checkout bound to origin by CE23-0, on the release/v26.9.23 subject created by CE23-1.
+
+1. Commit release/v26.9.23/prose/chatman-ce23.md byte-identical to the operator file (sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3). Use the same layout as bench order CE23-12-BD-05.
+2. Record the LLM extraction, the one permitted LLM edge, as release/v26.9.23/prose/chatman-ce23.extract.json. Every CE23-n needs at least one required candidate of kind Postcondition, Invariant or Falsifier; the delta only manufactures orders from those kinds.
+3. Emit the candidates:
+   `python3 <xaas>/scripts/sjira/prose_spans.py emit --source release/v26.9.23/prose/chatman-ce23.md --extract release/v26.9.23/prose/chatman-ce23.extract.json --out release/v26.9.23/prose/chatman-ce23.ttl --source-path release/v26.9.23/prose/chatman-ce23.md --extracted-by llm:<model>@<runId> --namespace 'https://chatman.dev/release/v26.9.23#' --prefix ce23`
+   Emit takes no --gate-prefix.
+4. Write the goal view release/v26.9.23/first-mile/ce23/goal.ttl (hand-written residue):
+   - root ce23:CE-26.9.23, with sj:repository "seanchatmangpt/chatman-ecosystem", sj:baseSha = the CE23-0 SHA, and sj:sourceSha256 = the prose sha;
+   - gates ce23:CE23-0..11, each sj:checkpointOf the root.
+   CE23-12 is not in this view: its prose is chatman-ce23-12-{bench,standings}.md, owned by BD-05/BD-08. Those views use the same root IRI with only CE23-12.
+5. Compile:
+   `mix semantic_jira.compile_prose --source <ce>/release/v26.9.23/prose/chatman-ce23.md --candidates <ce>/release/v26.9.23/prose/chatman-ce23.ttl --goal <ce>/release/v26.9.23/first-mile/ce23/goal.ttl --out-dir <ce>/release/v26.9.23/first-mile/ce23/compiled`
+   Run it in a ggen_igniter checkout at the post-merge main SHA, with MIX_BUILD_PATH set to a private cp -c clone of its _build.
+6. Run the intake:
+   `MIX_ENV=test sh docs/sjira/v26.9.23/courts/no_llm_env.sh TMPDIR=<scratch>/ MIX_BUILD_PATH=<private clone of xaas _build/test> -- mix xaas.successor --dir <ce>/release/v26.9.23/first-mile/ce23 --ggen-igniter-dir <gi> --ggen-build-path <private clone of gi _build/test>`
+   Run it from an xaas checkout at the post-merge main SHA. Each order then carries its tuple_digest and route standing.
+7. Add residue ledger rows for goal.ttl and the extraction JSON in chatman-ecosystem, with owner semantic-jira-pack (a prose -> GoalCheckpoint extractor, or a repeatable --source compile).
+
+Sequencing (DRIVER.md:136-138): steps 1-4 may be prepared now. Steps 5-6 and the receipt run after V23-Q merges and the release is bound to the new main SHAs. The receipt names both tool SHAs and the view digests.
+GEN Owner of the compiler: ggen_igniter `mix semantic_jira.compile_prose` (lib/mix/tasks/semantic_jira.compile_prose.ex; GgenIgniter.SemanticJira.Prose), with pack rules priv/ggen/semantic-jira-pack/prose/{root,uncovered_gates,contradictions,foreign_requirements}.rq, delta.construct.rq and shapes/proposition.shacl.ttl.
+
+Provenance: xaas scripts/sjira/prose_spans.py emit/check. --namespace and --prefix work on both subcommands; --gate-prefix and --require-gates are check-only.
+
+Intake: xaas `mix xaas.successor` (lib/xaas/sjira/successor.ex + scripts/successor_work_graph.exs). This is itself ledgered residue (HANDWRITTEN.md:10, owner semantic-jira-pack `mix semantic_jira.work_graph`).
+
+All three ran on a CE fixture: exit 0, --check byte-identical twice.
+
+Irreducible hand-written residue:
+1. The per-source goal views (root ce23:CE-26.9.23 plus gate nodes). No pack renders GoalCheckpoints from prose (0 GoalCheckpoint matches across 326 ggen-marketplace packs). compile_prose and prose_spans are single-source (compile_prose.ex:47, prose_spans.py:657), so one CE goal with gates CE23-0..12 cannot compile from chatman-ce23.md alone (observed REFUSED(uncovered_gate) CE23-12). Owner: semantic-jira-pack, via a prose -> GoalCheckpoint gate extractor and a repeatable --source compile whose coverage is taken over the union. That extension is successor work on a ggen_igniter branch off post-merge main.
+2. The extraction JSON (recorded raw O, the one permitted LLM edge).
+RESIDUE release/v26.9.23/goal.ttl (root CE-26.9.23 + gates CE23-0..11): no pack renders GoalCheckpoints from a prose gate table, the same gap as xaas HANDWRITTEN.md:12 (owner semantic-jira-pack, a prose -> GoalCheckpoint extractor). Also the LLM extraction JSON (recorded raw O). Both need ledger rows.
+GATE Run everything from chatman-ecosystem at the candidate SHA, with X=<xaas main>/scripts/sjira/prose_spans.py, NS='https://chatman.dev/release/v26.9.23#', R=release/v26.9.23. Every step must exit 0, and the whole gate must pass twice.
+
+1. `python3 $X check --source $R/prose/chatman-ce23.md --candidates $R/prose/chatman-ce23.ttl --namespace "$NS" --prefix ce23 --gate-prefix CE23- --require-gates 12 --extract $R/prose/chatman-ce23.extract.json`
+2. `(cd <ggen_igniter at post-merge main> && MIX_BUILD_PATH=<private clone of _build/dev> mix semantic_jira.compile_prose --source <ce>/$R/prose/chatman-ce23.md --candidates <ce>/$R/prose/chatman-ce23.ttl --goal <ce>/$R/first-mile/ce23/goal.ttl --out-dir <ce>/$R/first-mile/ce23/compiled --check)`
+3. `(cd <xaas at post-merge main> && MIX_ENV=test sh docs/sjira/v26.9.23/courts/no_llm_env.sh TMPDIR=<scratch>/ MIX_BUILD_PATH=<private clone of _build/test> -- mix xaas.successor --dir <ce>/$R/first-mile/ce23 --ggen-igniter-dir <gi> --ggen-build-path <private clone of gi _build/test> --check)`. The last JSON line must report check='outputs recompute byte-identically' and work_orders >= 12.
+4. The committed prose sha256 equals 6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3.
+FALSIFIER Delete the only candidate required by CE23-2: compile_prose must refuse uncovered_gate (prose/uncovered_gates.rq). A one-byte change to chatman-ce23.md must make check refuse every span. A wave-CE lane whose id is not a compiled order id must be refusable by the lane renderer.
+REASONS
+- (a) Every citation checks out on disk. chatman-ce23.md:1-4 is the provenance header. xaas-int goal.ttl:379-394 is GC23-12, with its falsifier at :392-394 limited to 'A GC-26.9.24 WorkOrder'. The V23-H precedent is real: 7 sj:WorkOrder in successor/compiled/orders.ttl and 7 tuple_digest in successor/intake/work.json. compile_prose.ex:16-37 documents the flags, including --check. xaas HANDWRITTEN.md:12 is the goal.ttl residue row with owner semantic-jira-pack.
+- One flag is wrong: prose_spans.py accepts --gate-prefix on check only (prose_spans.py:666-668). Running `prose_spans.py emit ... --gate-prefix CE23-` exits 2 with `unrecognized arguments: --gate-prefix CE23-`. Emit also needs --source-path and --extracted-by.
+- (b) The generation path exists and ran end to end on a scratch CE fixture (/private/tmp/claude-501/v23-scratch/SCAN-CE23-compile-prose/ce). Step 1: prose_spans emit and check (--require-gates 12) gave CHECK OK with 12 candidates, one per gate CE23-0..11. Step 2: `mix semantic_jira.compile_prose` at ggen_igniter-int 3937a4f (private MIX_BUILD_PATH clone) admitted 12 propositions and produced 12 WorkOrders; --check was byte-identical twice. Step 3: `mix xaas.successor` under MIX_ENV=test and courts/no_llm_env.sh produced 12 orders, all UNKNOWN (construct:unassigned), with 12 tuple_digest; --check was byte-identical twice. The int worktrees' git status was unchanged.
+- Two environment traps. With plain env in a Claude session, the intake refuses REFUSED(llm_credential_present). Under no_llm_env without MIX_ENV=test and test-build clones it refuses REFUSED(work_graph_refused): the rustler NIF needs cargo, which is not on the no-LLM PATH. Mix must never run on the int worktree's own _build.
+- (b) There is a multi-source gap. compile_prose takes a single --source (compile_prose.ex:47 `source: :string`) and so does prose_spans (prose_spans.py:657). Observed: one CE goal with gates CE23-0..12 compiled over chatman-ce23.md gives REFUSED(uncovered_gate) CE23-12, exit 1. CE23-12 lives in chatman-ce23-12-{bench,standings}.md.
+- Per-source goal views work as the interim. The same root IRI ce23:CE-26.9.23 with only the gates each source covers compiled cleanly: bench 19 admitted to 9 orders and standings 30 admitted to 24 orders, both exit 0, using the bench lane's existing candidates. The views are hand-written residue.
+- (b) The residue is irreducible today. No ggen-marketplace pack mentions GoalCheckpoint (grep over 326 packs: 0 files). The semantic-jira-pack templates/bootstrap render goals only from a graph, not from prose.
+- (c) required_now=true, but on corrected grounds. GC23-12 does not require this lane: its falsifier covers GC-26.9.24 WorkOrders only. What falsifies without it: the operator release-closure chain (DRIVER.md:134-140, 'CE23 generated from chatman-ce23.md (+ chatman-ce23-12-bench.md) through prose -> candidates -> admission -> delta -> WorkOrders -> generated lane plan'), which sits before the root crown and the v26.9.23 tag (CE23-9/CE23-11). Also chatman-ce23-12-standings.md:85 and :113-114 ('benchmark work orders generated', 'all generated artifacts trace to operator prose'). Bench order CE23-12-BD-08 calls compile_prose with `--goal <CE23 goal>`, which this lane manufactures.
+- (c) Sequencing. The chain puts this after the release PRs merge and bind to the new main SHAs (DRIVER.md:136-138). Release subjects are frozen (DRIVER.md:141). ggen_igniter-int will move under the R1a repair lanes R1-GI-FMT and R1-GI-PIN. The admitted run and its receipt must therefore use the post-merge main SHAs of ggen_igniter and xaas. Extraction, emit and the goal views can be prepared earlier on a chatman-ecosystem branch.
+- (d) The gate is runnable and falsifiers 1 and 2 were witnessed. Removing the CE23-2 candidate gives REFUSED(uncovered_gate) CE23-2, exit 1. A one-byte prose change gives prose_spans check exit 1 (12 source_sha256_mismatch + 12 gate_uncovered + projection_drift) and compile_prose exit 1 (13 REFUSED(provenance_mismatch)).
+- (d) Falsifier 3 cannot run in this lane. No renderer turns compiled/orders.ttl into lanes: lanes/mkrun.py only embeds a JSON spec into sm-lane-wave.js. That falsifier belongs to GEN-lane-wave-spec.
+- (e) This does not duplicate V23-Q. lanes/release.run.js, rel-a.run.js, rel-a2.run.js, wave-S.json and wave-R1.json contain no CE23, chatman, compile_prose or prose_spans work. No merged lane does it either.
+- (e) It overlaps with bench orders CE23-12-BD-05 (CE23-12 prose and candidates) and BD-08 (CE23-12 compile). Split: this lane owns chatman-ce23.md (CE23-0..11) and the CE root IRI; BD-05/BD-08 own CE23-12. It must use the bench namespace `ce23: <https://chatman.dev/release/v26.9.23#>` (bench/candidates/chatman-ce23-12-bench.ttl:8) and the release/v26.9.23/prose/ layout.
+- The CE23-0 dependency is real. /Users/sac/chatman-ecosystem is at 6c21e25 with no remote and no release/ directory. GitHub seanchatmangpt/chatman-ecosystem main is c59596f5 and has release/v26.8.23 and release/v26.9.1. The root's sj:baseSha needs CE23-0, and the release/v26.9.23 path needs CE23-1.
