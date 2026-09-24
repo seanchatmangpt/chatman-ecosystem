@@ -1,0 +1,238 @@
+{
+ "identity": {
+  "subject": "CE23-2/legacy-role-crosswalk (16 roles of release/v26.9.1 disposed for the v26.9.23 boundary)",
+  "repo": "seanchatmangpt/chatman-ecosystem",
+  "subject_sha": "9fa340fe05f0edbd9d552d472311fa2138904c60",
+  "base_sha": "b0d5add2cdfed33a2d6fe56f6640634883931a29",
+  "release_base_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+  "branch": "release/v26.9.23-int",
+  "checkout": "/Users/sac/chatman-ecosystem",
+  "gate": "ce:CE23-2 (release/v26.9.23/sjira/goal.ttl), sj:courtCommand 'sh release/v26.9.23/courts/CE23-2.sh'",
+  "work_orders": [
+   "WO-10D3712C7E428097 (P-9bede300ee207fff: every one of the 16 roles maps explicitly to REQUIRED/SUCCESSOR/BLOCKED/UNSUPPORTED/REFUSED)",
+   "WO-89D3E6F27D821FC1 (P-c3009da205b323f0: the old v26.9.1 release topology is never silently erased)",
+   "WO-DA180019E3B62EF3 (P-50cc4a507c380830: a two-repo manifest pretending the old obligations disappeared falsifies the crosswalk; witnessed refused by AV MV, M1b, M14)"
+  ],
+  "vendored_pack": "chatman-ecosystem-release-pack 0.3.0 from ggen-marketplace e3988aba4a850095d94d3b18a4495766d13e4d5e, tree bf05126e21d0ac2fab7721e103dbffbb0045a5cf (unchanged by this step)",
+  "observation_source": "seanchatmangpt/xaas@6fd59588c2e06b83d1af6ebc653e7b545de6f90f docs/sjira/v26.9.23/courts/*.sh (17 scripts) with scripts/sjira/fleet_matrix.py at that commit, read-only from the canonical checkout ~/xaas"
+ },
+ "authority": {
+  "ceiling": "CONSTRUCT",
+  "grant": "workflow step CE23-2 (operator directives 2026-09-23/24: one canonical checkout per repository, no worktrees, commits with git commit -F, no push/rebase/reset/force/stash); CE23-2 work orders sj:authorityCeiling CONSTRUCT",
+  "actor": "claude-code subagent, workflow step CE23-2"
+ },
+ "consequence": {
+  "commits": [
+   "9fa340fe05f0edbd9d552d472311fa2138904c60"
+  ],
+  "files_changed": [
+   "HANDWRITTEN.md",
+   "release/v26.9.23/README.md",
+   "release/v26.9.23/courts/CE23-2.sh",
+   "release/v26.9.23/courts/ce23_2/court.py",
+   "release/v26.9.23/courts/ce23_2/crosswalk.toml",
+   "release/v26.9.23/courts/ce23_2/observe_court_refs.py",
+   "release/v26.9.23/ggen.lock",
+   "release/v26.9.23/ggen.toml",
+   "release/v26.9.23/imports/court-references.ttl",
+   "release/v26.9.23/imports/legacy-v26.9.1.ttl",
+   "release/v26.9.23/out/crosswalk.ttl",
+   "release/v26.9.23/out/legacy-role-crosswalk.toml",
+   "release/v26.9.23/out/manifest.toml",
+   "release/v26.9.23/out/role-derivations.toml",
+   "release/v26.9.23/release.ttl",
+   "tests/test_ce23_2_court.py"
+  ],
+  "crosswalk": {
+   "rows": 16,
+   "boundaries": {
+    "SUCCESSOR": 16
+   },
+   "derived_by": {
+    "rule:fleet-classification": [
+     "public-ontology/open-ontologies",
+     "manufacture/ggen",
+     "pack-marketplace/ggen-marketplace",
+     "actuation/gymact",
+     "explore/autofde-lab"
+    ],
+    "rule:no-GC23-court-reference": [
+     "research/process-intelligence",
+     "process-type-law/wasm4pm-compat",
+     "config-admission/star-toml",
+     "formal-proof/mfact",
+     "cmca-kernel/bcinr",
+     "orchestration/mfw",
+     "process-execution/wasm4pm",
+     "provenance/affidavit",
+     "fleet-conformance/praxis",
+     "product/autofde",
+     "capstone/fdegym"
+    ]
+   },
+   "explicit_decisions": [],
+   "handwritten_crosswalk_rows": 0
+  },
+  "receipt_files": [
+   "receipts/v26.9.23/CE23-2.gate/00-subject.log",
+   "receipts/v26.9.23/CE23-2.gate/01-gate-court.log",
+   "receipts/v26.9.23/CE23-2.gate/02-unittest-ce23-2.log",
+   "receipts/v26.9.23/CE23-2.gate/03-ce23-1-court.log",
+   "receipts/v26.9.23/CE23-2.gate/04-unittest-ce23-1.log",
+   "receipts/v26.9.23/CE23-2.gate/05-ce23-7-court.log",
+   "receipts/v26.9.23/CE23-2.gate/06-compile-check.log",
+   "receipts/v26.9.23/CE23-2.gate/07-release-v26.9.1-untouched.log",
+   "receipts/v26.9.23/CE23-2.gate/08-base-stub.log",
+   "receipts/v26.9.23/CE23-2.gate/09-lane-spec-check.log",
+   "receipts/v26.9.23/CE23-2.gate/10-mock-grep.log",
+   "receipts/v26.9.23/CE23-2.gate/11-ruff.log",
+   "receipts/v26.9.23/CE23-2.gate/12-wt-grep.log",
+   "receipts/v26.9.23/CE23-2.gate/13-lift-equals-pack-qualification.log",
+   "receipts/v26.9.23/CE23-2.gate/14-pack-qualify.log",
+   "receipts/v26.9.23/CE23-2.gate/lane_spec_check.py",
+   "receipts/v26.9.23/CE23-2.json"
+  ],
+  "remote_effects": [],
+  "remote_effects_note": "none: no push (the driver pushes); ~/xaas and ~/ggen-marketplace read only"
+ },
+ "replay": {
+  "commands": [
+   {
+    "cmd": "git rev-parse HEAD && git status --porcelain -uall | wc -l",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "b6c7cabbc4923febc9a1f2ad36c42c1dddd11b4b8fcbc44a59b12d55fe80f9f9",
+    "log": "receipts/v26.9.23/CE23-2.gate/00-subject.log",
+    "summary": "HEAD = 9fa340fe on a clean tree (0 porcelain lines, -uall) before any receipt file"
+   },
+   {
+    "cmd": "sh release/v26.9.23/courts/CE23-2.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "1ff278b44a95481f5e11be5045952a8f232e597f178568323dec76438ba2c7a1",
+    "log": "receipts/v26.9.23/CE23-2.gate/01-gate-court.log",
+    "summary": "sh release/v26.9.23/courts/CE23-2.sh: 50 OK (31 subject clauses S0 C1 A2 P1 V1 W0 L1 X1 G1 G2 W1x17 W2 W3 D1; AV M0 control ALIVE + 18 mutants refused with expected codes), 0 REFUSED/UNKNOWN, CE23-2 ALIVE"
+   },
+   {
+    "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_ce23_2_court.py -v",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "2fb49a928f0b46bcc6915cac803aa01eb9e01b73a85ab2091b23cba948c42a4c",
+    "log": "receipts/v26.9.23/CE23-2.gate/02-unittest-ce23-2.log",
+    "summary": "tests/test_ce23_2_court.py: Ran 16 OK (role function, W1 duplicate/foreign/topology/boundary/provenance, W3 undecidable/ambiguous, D1, observer determinism = committed import)"
+   },
+   {
+    "cmd": "sh release/v26.9.23/courts/CE23-1.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "39b6c3de5e04cfc26f6c71fb30393fa898a97c4dc0dc19548795af7780904fd7",
+    "log": "receipts/v26.9.23/CE23-2.gate/03-ce23-1-court.log",
+    "summary": "CE23-1.sh on the CE23-2 head: 46 OK, CE23-1 ALIVE (the subject change keeps CE23-1: A4 closed-world with 2 new committed imports, G1 render reproduces, T1 verify_release on the new manifest)"
+   },
+   {
+    "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_ce23_1_court.py -v",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "eed73e269e16fc8119e27be8532dfd80a60953c5383a9bd998e52b75050d3c8e",
+    "log": "receipts/v26.9.23/CE23-2.gate/04-unittest-ce23-1.log",
+    "summary": "tests/test_ce23_1_court.py: Ran 10 OK"
+   },
+   {
+    "cmd": "PYTHONDONTWRITEBYTECODE=1 sh release/v26.9.23/courts/CE23-7.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "18cfcb42dbb9dd1be61697cc63eb49054c98ee5224e196677072a9c195d66265",
+    "log": "receipts/v26.9.23/CE23-2.gate/05-ce23-7-court.log",
+    "summary": "CE23-7.sh: CE23-7 ALIVE, F8 unittest Ran 496 (floor 470) OK"
+   },
+   {
+    "cmd": "PYTHONDONTWRITEBYTECODE=1 sh release/v26.9.23/sjira/compile_check.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "498c84e1e418358743904f55e9b2363d2627bf43e4c5828f0394cc4d8135a2fb",
+    "log": "receipts/v26.9.23/CE23-2.gate/06-compile-check.log",
+    "summary": "compile_check.sh: COMPILE_CHECK OK (3 units, 16 gate courts sh -n clean and bound to goal.ttl)"
+   },
+   {
+    "cmd": "git diff --exit-code c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 9fa340fe05f0edbd9d552d472311fa2138904c60 -- release/v26.9.1 && git rev-parse 9fa340fe05f0edbd9d552d472311fa2138904c60:release/v26.9.1 && git show 9fa340fe05f0edbd9d552d472311fa2138904c60:release/v26.9.1/manifest.toml | shasum -a 256",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "f2baa313894ed93830e5ac5d6f9a49a34ea671d5689df16803217abb99381847",
+    "log": "receipts/v26.9.23/CE23-2.gate/07-release-v26.9.1-untouched.log",
+    "summary": "git diff c59596f5..9fa340fe -- release/v26.9.1 empty; tree 7e0feef1 (CE23-1 pin); manifest blob sha256 30b1d83c"
+   },
+   {
+    "cmd": "git show b0d5add2cdfed33a2d6fe56f6640634883931a29:release/v26.9.23/courts/CE23-2.sh | sh; test $? -eq 75",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "04fda10df9335920d68fe75b4a6c3e1dc6404f8c020f331544fc7c5d7a7ad119",
+    "log": "receipts/v26.9.23/CE23-2.gate/08-base-stub.log",
+    "summary": "the base b0d5add2 CE23-2.sh is the stub: prints UNKNOWN and exits 75 (asserted by test $? -eq 75): pre-existing standing UNKNOWN, not a failure"
+   },
+   {
+    "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 receipts/v26.9.23/CE23-2.gate/lane_spec_check.py",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "37dcac63c3dae817fc4a05f2dd74f67ba899b11caf55dc9d20a7b62f16c56551",
+    "log": "receipts/v26.9.23/CE23-2.gate/09-lane-spec-check.log",
+    "summary": "scan-plan lane CE23-2 gate adapted to the pack's field names: ggen sync writes nothing, git diff clean, 16 rows = the 16 (role, component, sha) triples of the manifest, typed boundaries, provenance"
+   },
+   {
+    "cmd": "! grep -rnE \"unittest.mock|Mock\\(|MagicMock|patch\\(|monkeypatch\" tests/test_ce23_2_court.py release/v26.9.23/courts/ce23_2 receipts/v26.9.23/CE23-2.gate/lane_spec_check.py",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "14cc153d193cfc8cef225e26161d6959c048a050915dd9c99481557dcaa91e1e",
+    "log": "receipts/v26.9.23/CE23-2.gate/10-mock-grep.log",
+    "summary": "! grep: no unittest.mock / Mock( / MagicMock / patch( / monkeypatch in the CE23-2 tests, court or lane_spec_check.py"
+   },
+   {
+    "cmd": "ruff check --no-cache release/v26.9.23/courts/ce23_2 tests/test_ce23_2_court.py",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "1b15e0a1dd67a85520e8caaca75f92a096f00b8336b8a4b1ed117be1891a98b6",
+    "log": "receipts/v26.9.23/CE23-2.gate/11-ruff.log",
+    "summary": "ruff: All checks passed"
+   },
+   {
+    "cmd": "! git grep -n -E '(/Users/sac/wt|~/wt|[$]HOME/wt)' 9fa340fe05f0edbd9d552d472311fa2138904c60 -- release/v26.9.23/courts/CE23-2.sh release/v26.9.23/courts/ce23_2 tests/test_ce23_2_court.py release/v26.9.23/ggen.toml release/v26.9.23/release.ttl release/v26.9.23/imports/legacy-v26.9.1.ttl release/v26.9.23/imports/court-references.ttl release/v26.9.23/out/legacy-role-crosswalk.toml release/v26.9.23/out/crosswalk.ttl release/v26.9.23/out/role-derivations.toml",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "1c8c1d3c0787f6b2e9ca9f2f70822343be646aa5444c25a79f3e46de2ca04fa9",
+    "log": "receipts/v26.9.23/CE23-2.gate/12-wt-grep.log",
+    "summary": "! git grep at 9fa340fe: no /Users/sac/wt, ~/wt or $HOME/wt in the CE23-2 court, tests, wiring, imports or render"
+   },
+   {
+    "cmd": "git show c59596f5506e7a00ca4ed6b909ebf6d6659b74c1:release/v26.9.1/manifest.toml > /private/tmp/claude-501/v23-scratch/FIN2-CE23-2/m.toml && python3 release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/lift/manifest_to_er.py /private/tmp/claude-501/v23-scratch/FIN2-CE23-2/m.toml https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1 seanchatmangpt/chatman-ecosystem@c59596f5506e7a00ca4ed6b909ebf6d6659b74c1:release/v26.9.1/manifest.toml | cmp - release/v26.9.23/imports/legacy-v26.9.1.ttl && cmp release/v26.9.23/imports/legacy-v26.9.1.ttl release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/consumer-v26.9.23/imports/legacy-v26.9.1.ttl && shasum -a 256 release/v26.9.23/imports/legacy-v26.9.1.ttl",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "4295120c694598d92fb544809cab7eb81876385b3321f8c1afcf86ec2b440a72",
+    "log": "receipts/v26.9.23/CE23-2.gate/13-lift-equals-pack-qualification.log",
+    "summary": "imports/legacy-v26.9.1.ttl = the vendored lift of the base manifest blob = the pack's own qualification input (sha256 683a1cef)"
+   },
+   {
+    "cmd": "TMPDIR=/private/tmp/claude-501/v23-scratch/FIN2-CE23-2/qual-tmp PYTHONDONTWRITEBYTECODE=1 bash release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/qualify.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "1ae0fa2fe769069e9d9da1e67fef9df424a3c26f51de9853f0cda06b124310ab",
+    "log": "receipts/v26.9.23/CE23-2.gate/14-pack-qualify.log",
+    "summary": "vendored chatman-ecosystem-release-pack qualification/qualify.sh (real ggen + rdflib, scratch TMPDIR): 54 PASS, QUALIFICATION ALIVE"
+   }
+  ],
+  "durable_location": "receipts/v26.9.23/CE23-2.gate/ (tracked in git on release/v26.9.23-int)",
+  "replay_court": "python3 release/v26.9.23/sjira/replay_court.py receipt --receipt receipts/v26.9.23/CE23-2.json"
+ },
+ "falsifiers_witnessed": "receipts/v26.9.23/CE23-2.gate/01-gate-court.log AV: MV (CE23-2 reverted, pack gates admit the two-repo release) refused ROLE_UNMAPPED + CROSSWALK_NOT_WIRED; M1b (formal-proof erased consistently, 15 rows admitted by every pack gate) refused LEGACY_IMPORT_NOT_LIFT + ROLE_UNMAPPED; M14 (legacy import unwired, empty crosswalk admitted by every pack gate) refused; M7 (an unadmitted operator decision the pack admits) refused DECISION_UNADMITTED; M1/M6 hand edits refused FM-WRITE-005; M2/M3/M5/M8 refused natively by gate 070 (M4 by 080); M9/M10 stale court-reference observation refused",
+ "open_edges": [
+  "CE23-5 re-bind: when xaas/ggen_igniter move to exact post-merge main SHAs, imports/court-references.ttl must be re-observed (observe_court_refs.py) and the classification import refreshed, then out/ re-rendered; until then X1 refuses the moved head (by design, AV M10). Standing on any later head is not implied.",
+  "All 16 roles derive SUCCESSOR from the current classification and court observation; no role is REQUIRED/BLOCKED/UNSUPPORTED/REFUSED. A different disposition for an out-of-universe role is an operator decision: an er:decidedBy fact citing operator testimony plus a crosswalk.toml [decisions] entry (none exists; not inferred).",
+  "Lane-spec path drift: the scan plan named release/v26.9.23/legacy-role-crosswalk.toml with a disposition field and a mutants/run.sh; the vendored pack renders out/legacy-role-crosswalk.toml with a boundary field and the mutants live in the court's anti-vacuity corpus (18). CE23-9's root court must reference the out/ path.",
+  "Optional import of authority_ceiling per role from release/v26.9.1/constitutional-role-crosswalk.toml was not done.",
+  "Residue: observe_court_refs.py (court-reference observation step) belongs in chatman-ecosystem-release-pack beside lift/manifest_to_er.py (successor GC-CE-26.9.24; HANDWRITTEN.md row).",
+  "X1 needs the canonical xaas checkout at 6fd59588 (CE23_REPO_XAAS, default ~/xaas); without it the court exits 75 UNKNOWN, never ALIVE.",
+  "GC23-12 acceptance is operator-only; STOP=false; CE23-2 ALIVE does not imply the CE crown or any tag."
+ ],
+ "standing": {
+  "value": "ALIVE",
+  "derived_from": "receipts/v26.9.23/CE23-2.gate/01-gate-court.log: sh release/v26.9.23/courts/CE23-2.sh exit 0 (50 OK, 0 REFUSED/UNKNOWN, CE23-2 ALIVE) on the clean committed subject 9fa340fe05f0edbd9d552d472311fa2138904c60 (00-subject.log); non-vacuity from the same log (AV control M0 ALIVE, 18 mutants refused with expected codes, including MV/M1b/M14 which every pack gate admits). Neighbours unchanged: CE23-1 ALIVE (03), CE23-7 ALIVE (05), compile_check OK (06), release/v26.9.1 untouched (07). Pre-existing: the base b0d5add2 CE23-2 court was a stub (exit 75, UNKNOWN; 08). Scope: gate CE23-2 on 9fa340fe only; STOP, GC23-12 and every other CE23 gate are not implied."
+ }
+}

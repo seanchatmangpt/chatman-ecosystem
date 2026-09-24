@@ -1,0 +1,54 @@
+$ sh release/v26.9.23/courts/CE23-2.sh
+CE23-2 court: subject 9fa340fe05f0edbd9d552d472311fa2138904c60 at /Users/sac/chatman-ecosystem
+OK S0: head 9fa340fe05f0edbd9d552d472311fa2138904c60 descends from base c59596f5506e7a00ca4ed6b909ebf6d6659b74c1
+OK C1: the judging court (4 files: wrapper, code, pins, observer) is byte-identical to the head's
+OK A2: checkout clean under release/v26.9.1/manifest.toml and the CE23-2 subject paths
+OK P1: release/v26.9.1/manifest.toml = base blob = pin (sha256 30b1d83ce5442995); 16 distinct required roles, each with exactly one component
+OK V1: vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack tree bf05126e21d0ac2fab7721e103dbffbb0045a5cf = VENDOR.toml row (marketplace e3988aba4a85)
+OK W0: ggen.toml feeds ['imports/legacy-v26.9.1.ttl', 'imports/court-references.ttl', 'imports/fleet-classification.ttl'] to the vendored pack; <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.23#release> er:crosswalkFrom <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1>
+OK L1: imports/legacy-v26.9.1.ttl = vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/lift/manifest_to_er.py of release/v26.9.1/manifest.toml@c59596f5506e (sha256 683a1cef30086c88)
+OK X1: imports/court-references.ttl = fresh observation (14 court facts; xaas checkout xaas, read-only)
+OK G1: ggen 26.9.18: sync on the committed subject writes nothing; two fresh renders in separate directories are byte-identical to each other and to the committed 8 files
+OK G2: vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/bin/run-gates.py (rdflib): RELEASE_GATES ALIVE, 11 gates
+OK G2: gates 070/080 admit the committed out/crosswalk.ttl as data (no rule applied)
+OK W1: public-ontology <- open-ontologies@16d01cfcbc2a (UNKNOWN): SUCCESSOR by rule:fleet-classification
+OK W1: research <- process-intelligence@4492a9f92cd8 (UNKNOWN): SUCCESSOR by rule:no-GC23-court-reference
+OK W1: process-type-law <- wasm4pm-compat@577e2d1d8bdf (UNKNOWN): SUCCESSOR by rule:no-GC23-court-reference
+OK W1: config-admission <- star-toml@8395515cf8e6 (BUILD_BROKEN): SUCCESSOR by rule:no-GC23-court-reference
+OK W1: manufacture <- ggen@162e466d8f07 (UNKNOWN): SUCCESSOR by rule:fleet-classification
+OK W1: pack-marketplace <- ggen-marketplace@ceb2b69ad1dc (ALIVE): SUCCESSOR by rule:fleet-classification
+OK W1: formal-proof <- mfact@308384002a15 (UNKNOWN): SUCCESSOR by rule:no-GC23-court-reference
+OK W1: cmca-kernel <- bcinr@d6fefefdb95d (UNKNOWN): SUCCESSOR by rule:no-GC23-court-reference
+OK W1: orchestration <- mfw@2ecde02f9d7e (BLOCKED): SUCCESSOR by rule:no-GC23-court-reference
+OK W1: actuation <- gymact@cf9a36fcc5b0 (BLOCKED): SUCCESSOR by rule:fleet-classification
+OK W1: explore <- autofde-lab@87d719f441de (BUILD_BROKEN): SUCCESSOR by rule:fleet-classification
+OK W1: process-execution <- wasm4pm@b7ebccb53b12 (UNKNOWN): SUCCESSOR by rule:no-GC23-court-reference
+OK W1: provenance <- affidavit@5dc78f113e60 (ALIVE): SUCCESSOR by rule:no-GC23-court-reference
+OK W1: fleet-conformance <- praxis@bc6b842e0b86 (UNKNOWN): SUCCESSOR by rule:no-GC23-court-reference
+OK W1: product <- autofde@c3f8abc2e833 (ALIVE): SUCCESSOR by rule:no-GC23-court-reference
+OK W1: capstone <- fdegym@2d7c5acb3cbb (UNKNOWN): SUCCESSOR by rule:no-GC23-court-reference
+OK W1: 16/16 roles of release/v26.9.1/manifest.toml disposed exactly once in out/legacy-role-crosswalk.toml: {'SUCCESSOR': 16}
+OK W2: out/crosswalk.ttl (16 er:RoleDisposition) and out/role-derivations.toml (16 derived, 0 decided) state the same 16 dispositions
+OK W3: court re-derivation of the disposition rule agrees on 16 undecided roles (21 classified repositories, 2 court-executed repositories)
+OK D1: 0 explicit decisions, all admitted (0 admitted in crosswalk.toml)
+OK AV M0: unmutated synthetic subject (control): ALIVE (31 clauses)
+OK AV MV: CE23-2 reverted: crosswalkFrom and both imports removed, render regenerated (the two-repo release with the old 16-role topology silently erased; every pack gate admits it): refused ['COURT_REFERENCES_NOT_OBSERVATION', 'CROSSWALK_HEADER', 'CROSSWALK_NOT_WIRED', 'LEGACY_IMPORT_NOT_LIFT', 'ROLE_UNMAPPED', 'SUBJECT_UNREADABLE'] (16 roles)
+OK AV M1: the formal-proof row cut from the committed legacy-role-crosswalk.toml (role_count 15): refused ['CROSSWALK_HEADER', 'DISPOSITION_NOT_DERIVED', 'GENERATION_REFUSED', 'PROJECTIONS_DISAGREE', 'ROLE_UNMAPPED'] (FM-WRITE-005)
+OK AV M1b: formal-proof erased consistently from the lifted import (role and mfact component), render regenerated: 15 rows and every pack gate admits it: refused ['COURT_REFERENCES_NOT_OBSERVATION', 'CROSSWALK_HEADER', 'DISPOSITION_NOT_DERIVED', 'LEGACY_IMPORT_NOT_LIFT', 'ROLE_UNMAPPED'] (formal-proof)
+OK AV M2: open-ontologies classified outside the five classes (sj:Deferred), relocked: refused ['CLASSIFICATION_NOT_PINNED', 'DISPOSITION_NOT_DERIVED', 'GATES_REFUSED', 'GENERATION_REFUSED'] (070_role_crosswalk_total)
+OK AV M3: a GC23 court observed executing seanchatmangpt/mfact (court-reference import edited), relocked: refused ['COURT_REFERENCES_NOT_OBSERVATION', 'GATES_REFUSED', 'GENERATION_REFUSED', 'PROJECTION_NOT_TOTAL', 'ROLE_UNDECIDABLE'] (070_role_crosswalk_total)
+OK AV M4: ggen_igniter dropped consistently from release.ttl: refused ['COURT_REFERENCES_NOT_OBSERVATION', 'GATES_REFUSED', 'GENERATION_REFUSED', 'PROJECTION_NOT_TOTAL'] (080_critical_path_coverage)
+OK AV M5: open-ontologies reclassified CriticalPath in the classification import, relocked: refused ['CLASSIFICATION_NOT_PINNED', 'DISPOSITION_NOT_DERIVED', 'GATES_REFUSED', 'GENERATION_REFUSED', 'PROJECTION_NOT_TOTAL'] (required-role-not-supplied)
+OK AV M6: hand edit of the committed render: formal-proof SUCCESSOR -> REQUIRED: refused ['DISPOSITION_NOT_DERIVED', 'GENERATION_REFUSED', 'PROJECTIONS_DISAGREE', 'REQUIRED_NOT_SUPPLIED'] (FM-WRITE-005)
+OK AV M7: an explicit decision no pin admits (formal-proof REFUSED by 'operator'), render regenerated: every pack gate admits it: refused ['DECISION_UNADMITTED'] (formal-proof)
+OK AV M8: an explicit decision overriding the fleet classification (manufacture / ggen): refused ['DECISION_UNADMITTED', 'GATES_REFUSED', 'GENERATION_REFUSED', 'PROJECTION_NOT_TOTAL'] (070_role_crosswalk_total)
+OK AV M9: court-reference import naming another xaas commit, render regenerated: refused ['COURT_REFERENCES_NOT_OBSERVATION']
+OK AV M10: xaas component re-pinned to its parent commit, render regenerated, courts not re-observed: refused ['COURT_REFERENCES_NOT_OBSERVATION']
+OK AV M11: a role renamed in the committed release/v26.9.1/manifest.toml: refused ['PREDECESSOR_CHANGED']
+OK AV M12: uncommitted edit of out/legacy-role-crosswalk.toml: refused ['SUBJECT_DIRTY']
+OK AV M13: committed court pins differ from the pins of the court judging: refused ['COURT_NOT_AT_HEAD'] (crosswalk.toml)
+OK AV M14: the legacy import unwired from ggen.toml (file and crosswalkFrom kept), render regenerated: every pack gate admits the empty crosswalk: refused ['CROSSWALK_HEADER', 'CROSSWALK_NOT_WIRED', 'DISPOSITION_NOT_DERIVED', 'ROLE_UNMAPPED']
+OK AV M15: vendored gate 070 relaxed to admit everything: refused ['GENERATION_REFUSED', 'VENDOR_TREE_MISMATCH'] (FM-PACK-008)
+OK AV MB: the judged head does not descend from the base (orphan base commit): refused ['BASE_NOT_ANCESTOR', 'PREDECESSOR_ABSENT']
+CE23-2 ALIVE
+exit=0

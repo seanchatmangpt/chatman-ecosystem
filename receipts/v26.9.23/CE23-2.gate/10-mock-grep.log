@@ -1,0 +1,2 @@
+$ ! grep -rnE "unittest.mock|Mock\(|MagicMock|patch\(|monkeypatch" tests/test_ce23_2_court.py release/v26.9.23/courts/ce23_2 receipts/v26.9.23/CE23-2.gate/lane_spec_check.py
+exit=0

@@ -1,0 +1,3 @@
+$ ruff check --no-cache release/v26.9.23/courts/ce23_2 tests/test_ce23_2_court.py
+All checks passed!
+exit=0
