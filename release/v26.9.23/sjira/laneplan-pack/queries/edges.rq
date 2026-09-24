@@ -1,0 +1,19 @@
+# edges.rq -- typed gate dependencies (dependencies.ttl) with the kind and
+# requiring gates of their grounding proposition.
+PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
+PREFIX lp: <https://ggen-igniter.dev/ontology/lane-plan#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+SELECT ?edge ?edge_down ?edge_up ?edge_type ?edge_class ?edge_source ?edge_evidence ?source_kind ?source_required WHERE {
+  ?edge a lp:GateDependency .
+  OPTIONAL { ?edge lp:downstream ?edge_down . }
+  OPTIONAL { ?edge lp:upstream ?edge_up . }
+  OPTIONAL { ?edge lp:dependencyType ?edge_type . }
+  OPTIONAL { ?edge lp:dependencyClass ?edge_class . }
+  OPTIONAL { ?edge lp:evidence ?edge_evidence . }
+  OPTIONAL {
+    ?edge dcterms:source ?edge_source .
+    OPTIONAL { ?edge_source sj:propositionKind ?source_kind . }
+    OPTIONAL { ?edge_source sj:requiredBy ?source_required . }
+  }
+}
+ORDER BY ?edge ?source_required

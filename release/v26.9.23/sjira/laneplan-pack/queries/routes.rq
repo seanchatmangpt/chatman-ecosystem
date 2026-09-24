@@ -1,0 +1,12 @@
+# routes.rq -- capability routes (routes.ttl).
+PREFIX lp: <https://ggen-igniter.dev/ontology/lane-plan#>
+SELECT ?route ?route_namespace ?route_capability ?route_boundary ?route_placement ?route_delegated_to ?route_reason WHERE {
+  ?route a lp:Route ;
+         lp:placement ?route_placement .
+  OPTIONAL { ?route lp:capabilityNamespace ?route_namespace . }
+  OPTIONAL { ?route lp:capabilityId ?route_capability . }
+  OPTIONAL { ?route lp:boundaryClass ?route_boundary . }
+  OPTIONAL { ?route lp:delegatedTo ?route_delegated_to . }
+  OPTIONAL { ?route lp:reason ?route_reason . }
+}
+ORDER BY ?route

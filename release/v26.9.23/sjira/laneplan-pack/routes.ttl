@@ -1,0 +1,50 @@
+@prefix lp: <https://ggen-igniter.dev/ontology/lane-plan#> .
+@prefix cel: <https://ggen-igniter.dev/sjira/chatman-26.9.23/lane-plan#> .
+@prefix sj: <https://ggen-igniter.dev/ontology/semantic-jira#> .
+
+# Capability routing of the CE23 lane plan (lane CE-LANEPLAN, wave F1ce).
+# Precedence, applied by templates/lane_wave.json.eex to every work order under
+# the plan root: (1) an order of the root checkpoint itself -> root (observed by
+# the root stop query, no lane); (2) a boundary-class route; (3) an exact
+# capability-id route; (4) the capability-namespace route; (5) no route ->
+# REFUSED:SJIRA_LANE_PLAN capability_unrouted (the whole render writes nothing;
+# an order is never dropped).
+
+# (2) The bootstrap order is the precondition of the plan itself: every
+# compiled order carries sj:baseSha = the CE23-0 subject, so it is observed by
+# its gate court, never constructed by a generated lane.
+cel:route-bootstrap a lp:Route ;
+    lp:boundaryClass sj:Bootstrap ;
+    lp:placement "bootstrap" ;
+    lp:reason "sj:Bootstrap order: the lane plan is manufactured on its subject (sj:baseSha); its gate court observes it" .
+
+# (3) The compiler's placeholder for an order with no admitted capability hint
+# (semantic-jira-pack prose/delta.construct.rq: "capability-to-provider
+# resolution stays UNKNOWN until a capability is admitted"). Placed, typed,
+# never routed to a lane (routing it would manufacture from unadmitted input).
+cel:route-unassigned a lp:Route ;
+    lp:capabilityId "construct:unassigned" ;
+    lp:placement "unassigned" ;
+    lp:reason "capability_unassigned: no capability hint admitted for the subject proposition; provider resolution stays UNKNOWN until one is admitted (semantic-jira-pack prose/delta.construct.rq)" .
+
+# (4) Namespace routes.
+cel:route-construct a lp:Route ;
+    lp:capabilityNamespace "construct" ;
+    lp:placement "lane" ;
+    lp:reason "construct:* -> one lane per root-child gate, provider = the lp:RepositoryExecutor of the order's sj:repository" .
+
+cel:route-court a lp:Route ;
+    lp:capabilityNamespace "court" ;
+    lp:placement "court_only" ;
+    lp:reason "court:* -> observed by the gate court only, no construction" .
+
+cel:route-recipe a lp:Route ;
+    lp:capabilityNamespace "recipe" ;
+    lp:placement "recipe_delegation" ;
+    lp:reason "recipe:* -> delegated to its recipe worker, listed, never dropped" .
+
+cel:route-release a lp:Route ;
+    lp:capabilityNamespace "release" ;
+    lp:placement "delegation" ;
+    lp:delegatedTo "the Semantic Manufacturing release of xaas and ggen_igniter (GC-26.9.23; DRIVER.md release parts A3 and B, lane V23-Q, operator GC23-12 acceptance); the chatman root imports its receipts by digest and never actuates it" ;
+    lp:reason "release:* -> delegated to the release executor; every lane of the gate or downstream of it is delegation-gated (wave CE2)" .

@@ -1,0 +1,11 @@
+# waves.rq -- the generated wave files, one render per row (--for-each waves).
+PREFIX lp: <https://ggen-igniter.dev/ontology/lane-plan#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+SELECT ?wave ?wave_id ?wave_ordinal ?wave_gated ?wave_title WHERE {
+  ?wave a lp:Wave ;
+        lp:waveId ?wave_id ;
+        lp:ordinal ?wave_ordinal ;
+        lp:delegationGated ?wave_gated .
+  OPTIONAL { ?wave dcterms:title ?wave_title . }
+}
+ORDER BY ?wave_ordinal

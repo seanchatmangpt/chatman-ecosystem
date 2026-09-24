@@ -1,0 +1,12 @@
+# gates.rq -- every GoalCheckpoint with its identifier, parent and court
+# command (goal.ttl). A lane is keyed by the root-child gate an order's
+# checkpoint belongs to (a CE23-12 conjunct belongs to CE23-12).
+PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+SELECT ?gate ?gate_id ?gate_parent ?gate_court WHERE {
+  ?gate a sj:GoalCheckpoint .
+  OPTIONAL { ?gate dcterms:identifier ?gate_id . }
+  OPTIONAL { ?gate sj:checkpointOf ?gate_parent . }
+  OPTIONAL { ?gate sj:courtCommand ?gate_court . }
+}
+ORDER BY ?gate

@@ -1,0 +1,65 @@
+@prefix lp: <https://ggen-igniter.dev/ontology/lane-plan#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# Lane-plan vocabulary (lane CE-LANEPLAN, wave F1ce): the executor facts a
+# generated sm-lane-wave spec needs beyond the admitted work-order graph.
+# Work orders, gates and propositions stay in the semantic-jira-pack sj:
+# vocabulary; this vocabulary adds only (1) executor topology, (2) capability
+# routing, (3) typed gate dependencies grounded in admitted propositions and
+# (4) the waves. Nearest pack terms rejected: sj:DependencyEdge requires
+# exactly one sj:upstreamWorkOrder of class sj:WorkOrder
+# (shapes/work-order.shacl.ttl sj:DependencyEdgeShape), so a checkpoint-level
+# edge typed with it would violate the pack shape; sj:nextCheckpoint links an
+# order to its own checkpoint in the compiled CE23 graph and carries no type or
+# grounding.
+
+lp:LanePlan a rdfs:Class ;
+    rdfs:label "Lane plan" ;
+    rdfs:comment "The generated wave specs of one root GoalCheckpoint and their runner parameters." .
+lp:root a rdf:Property ; rdfs:domain lp:LanePlan ;
+    rdfs:comment "The root GoalCheckpoint whose work orders the plan places." .
+lp:baseBranch a rdf:Property ; rdfs:range xsd:string .
+lp:worktreeRoot a rdf:Property ; rdfs:range xsd:string .
+lp:branchPrefix a rdf:Property ; rdfs:range xsd:string .
+lp:receiptsDir a rdf:Property ; rdfs:range xsd:string .
+lp:maxRepairs a rdf:Property ; rdfs:range xsd:integer .
+
+lp:RepositoryExecutor a rdfs:Class ;
+    rdfs:label "Repository executor" ;
+    rdfs:comment "Where lanes of one repository run: the source clone the lane worktrees branch from and the integration worktree they merge into. Provider resolution for construct:* capabilities (the compiler's capability description: 'provider resolution belongs to the executor registry')." .
+lp:github a rdf:Property ; rdfs:range xsd:string ;
+    rdfs:comment "owner/name; joins sj:repository of a work order." .
+lp:alias a rdf:Property ; rdfs:range xsd:string .
+lp:sourcePath a rdf:Property ; rdfs:range xsd:string .
+lp:intPath a rdf:Property ; rdfs:range xsd:string .
+
+lp:Route a rdfs:Class ;
+    rdfs:label "Capability route" ;
+    rdfs:comment "Maps a capability namespace (the part of sj:capabilityId before ':'), an exact capability id, or a boundary class to a placement. An order no route matches is refused (capability_unrouted); nothing is dropped." .
+lp:capabilityNamespace a rdf:Property ; rdfs:range xsd:string .
+lp:capabilityId a rdf:Property ; rdfs:range xsd:string .
+lp:boundaryClass a rdf:Property .
+lp:placement a rdf:Property ; rdfs:range xsd:string ;
+    rdfs:comment "lane | court_only | recipe_delegation | delegation | unassigned | bootstrap." .
+lp:delegatedTo a rdf:Property ; rdfs:range xsd:string .
+lp:reason a rdf:Property ; rdfs:range xsd:string .
+
+lp:GateDependency a rdfs:Class ;
+    rdfs:label "Typed gate dependency" ;
+    rdfs:comment "lp:downstream cannot close before lp:upstream closes. Grounded by dcterms:source: an admitted proposition required by the downstream gate, the upstream gate or the plan root." .
+lp:downstream a rdf:Property .
+lp:upstream a rdf:Property .
+lp:dependencyType a rdf:Property ; rdfs:range xsd:string .
+lp:dependencyClass a rdf:Property ; rdfs:range xsd:string ;
+    rdfs:comment "semantic (the grounding proposition states the dependency) | implementation (a re-verified implementation fact, lp:evidence)." .
+lp:evidence a rdf:Property ; rdfs:range xsd:string .
+
+lp:Wave a rdfs:Class ;
+    rdfs:label "Wave" ;
+    rdfs:comment "One generated sm-lane-wave spec file. lp:delegationGated true holds the lanes whose own gate or any upstream gate has a delegated order; false holds the rest." .
+lp:waveId a rdf:Property ; rdfs:range xsd:string .
+lp:ordinal a rdf:Property ; rdfs:range xsd:integer .
+lp:delegationGated a rdf:Property ; rdfs:range xsd:boolean .

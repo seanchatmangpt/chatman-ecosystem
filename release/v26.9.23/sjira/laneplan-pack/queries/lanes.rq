@@ -1,0 +1,12 @@
+# lanes.rq -- one row per (work order, checkpoint) under the lane-plan root
+# (lane CE-LANEPLAN). An order under two checkpoints yields two rows and is
+# refused (tuple_ambiguous checkpoint); an order under no gate of the root is
+# refused (order_outside_root). Every row becomes exactly one placement.
+PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+SELECT ?order ?order_id ?gate WHERE {
+  ?order a sj:WorkOrder ;
+         sj:checkpointOf ?gate .
+  OPTIONAL { ?order dcterms:identifier ?order_id . }
+}
+ORDER BY ?order ?gate

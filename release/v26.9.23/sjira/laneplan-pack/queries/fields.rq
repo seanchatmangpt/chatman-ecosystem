@@ -1,0 +1,37 @@
+# fields.rq -- every order field the lane plan reads, one row per (order,
+# field, value), so the template sees 0, 1 or n values per field and refuses
+# tuple_incomplete / tuple_ambiguous exactly like mix xaas.stop_court's
+# order_tuple (xaas lib/mix/tasks/xaas.stop_court.ex) and ggen_igniter
+# GgenIgniter.SemanticJira.Bootstrap.Graph (tuple = subject, postcondition,
+# capability = the sj:capabilityId of the single sj:requiresCapability,
+# evidence_ceiling = sj:evidenceCeiling, authority_ceiling,
+# consequence_class; exclusions 0..n). span_* are the subject proposition's
+# source span (sj:subject holds the proposition IRI as a string).
+PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+SELECT ?order ?field ?value WHERE {
+  ?order a sj:WorkOrder .
+  {
+    { ?order sj:subject ?value . BIND("subject" AS ?field) }
+    UNION { ?order sj:postcondition ?value . BIND("postcondition" AS ?field) }
+    UNION { ?order sj:requiresCapability ?value . BIND("capability_node" AS ?field) }
+    UNION { ?order sj:requiresCapability ?cap . ?cap sj:capabilityId ?value . BIND("capability" AS ?field) }
+    UNION { ?order sj:evidenceCeiling ?value . BIND("evidence_ceiling" AS ?field) }
+    UNION { ?order sj:authorityCeiling ?value . BIND("authority_ceiling" AS ?field) }
+    UNION { ?order sj:consequenceClass ?value . BIND("consequence_class" AS ?field) }
+    UNION { ?order sj:exclusion ?value . BIND("exclusion" AS ?field) }
+    UNION { ?order sj:repository ?value . BIND("repository" AS ?field) }
+    UNION { ?order sj:boundaryClass ?value . BIND("boundary_class" AS ?field) }
+    UNION { ?order sj:baseSha ?value . BIND("base_sha" AS ?field) }
+    UNION { ?order sj:promotionRule ?value . BIND("promotion_rule" AS ?field) }
+    UNION { ?order sj:successorPolicy ?value . BIND("successor_policy" AS ?field) }
+    UNION { ?order sj:acceptance ?acc . ?acc dcterms:description ?value . BIND("acceptance" AS ?field) }
+    UNION { ?order sj:falsifier ?fal . ?fal dcterms:description ?value . BIND("falsifier" AS ?field) }
+    UNION { ?order sj:subject ?s1 . BIND(IRI(STR(?s1)) AS ?p1) ?p1 sj:propositionKind ?value . BIND("span_kind" AS ?field) }
+    UNION { ?order sj:subject ?s2 . BIND(IRI(STR(?s2)) AS ?p2) ?p2 sj:sourceDocument ?value . BIND("span_document" AS ?field) }
+    UNION { ?order sj:subject ?s3 . BIND(IRI(STR(?s3)) AS ?p3) ?p3 sj:sourceStart ?value . BIND("span_start" AS ?field) }
+    UNION { ?order sj:subject ?s4 . BIND(IRI(STR(?s4)) AS ?p4) ?p4 sj:sourceEnd ?value . BIND("span_end" AS ?field) }
+    UNION { ?order sj:subject ?s5 . BIND(IRI(STR(?s5)) AS ?p5) ?p5 sj:sourceSha256 ?value . BIND("span_sha256" AS ?field) }
+  }
+}
+ORDER BY ?order ?field ?value

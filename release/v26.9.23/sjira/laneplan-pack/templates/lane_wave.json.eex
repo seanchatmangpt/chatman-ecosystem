@@ -1,0 +1,514 @@
+<%
+# lane_wave.json.eex -- the CE23 lane plan (lane CE-LANEPLAN, wave F1ce):
+# admitted CE23 work orders -> sm-lane-wave spec JSON, one file per lp:Wave
+# (mix ggen_igniter.sync --for-each waves). Queries: lanes, fields, gates,
+# edges, routes, executors, plan, waves (laneplan-pack/queries/*.rq).
+#
+# Law (release/v26.9.23/sjira/laneplan-pack/README.md):
+# - every work order under the plan root gets exactly one placement: a lane
+#   (construct:*, one lane per root-child gate), or a typed non-lane placement
+#   (root, bootstrap, unassigned, court_only, recipe_delegation, delegation);
+#   none is dropped;
+# - the tuple (subject, postcondition, capability, evidence_ceiling,
+#   authority_ceiling, consequence_class, exclusions) must be complete and
+#   unambiguous; its digest is GgenIgniter.SemanticJira.Bootstrap.Graph
+#   .tuple_digest/1 (the mix xaas.stop_court receipt-linking digest);
+# - `after` holds only lanes of the same wave (sm-lane-wave drops unknown
+#   ids); every other live upstream is a typed precondition;
+# - a lane is delegation-gated iff its gate or a live upstream gate has a
+#   delegated order; a dependency on a gate with no order is closed and
+#   vanishes;
+# - lane task text is assembled only from order fields (plus the gate court
+#   command and the receipts dir);
+# - any violation raises REFUSED:SJIRA_LANE_PLAN <reason> before anything is
+#   written.
+alias GgenIgniter.SemanticJira.Bootstrap.Graph
+
+refuse = fn reason -> raise ArgumentError, "REFUSED:SJIRA_LANE_PLAN " <> reason end
+str = fn
+  nil -> nil
+  v -> to_string(v)
+end
+obj = fn pairs -> Jason.OrderedObject.new(pairs) end
+frag = fn iri -> iri |> String.split("#") |> List.last() end
+nat = fn id ->
+  Regex.scan(~r/\d+|\D+/, id)
+  |> Enum.map(fn [x] ->
+    case Integer.parse(x) do
+      {n, ""} -> {0, n, ""}
+      _ -> {1, 0, x}
+    end
+  end)
+end
+values_of = fn rows, key -> rows |> Enum.map(&str.(&1[key])) |> Enum.reject(&is_nil/1) |> Enum.uniq() |> Enum.sort() end
+at_most_one = fn list, what ->
+  case list do
+    [] -> nil
+    [v] -> v
+    _ -> refuse.("#{what} ambiguous: #{Enum.join(list, " | ")}")
+  end
+end
+
+# -- plan (registry.ttl + the root) -------------------------------------------
+plan_vals = Enum.group_by(plan, &str.(&1["plan_field"]), &str.(&1["plan_value"]))
+plan_one = fn key ->
+  case plan_vals |> Map.get(key, []) |> Enum.uniq() do
+    [v] -> v
+    [] -> refuse.("plan_incomplete #{key}")
+    many -> refuse.("plan_ambiguous #{key} #{Enum.join(many, " | ")}")
+  end
+end
+root = plan_one.("root")
+root_id = plan_one.("root_id")
+base_branch = plan_one.("base_branch")
+worktree_root = plan_one.("worktree_root")
+branch_prefix = plan_one.("branch_prefix")
+receipts_dir = plan_one.("receipts_dir")
+max_repairs = plan_one.("max_repairs") |> String.to_integer()
+root_exclusions = plan_vals |> Map.get("root_exclusion", []) |> Enum.uniq() |> Enum.sort()
+root_successor = plan_vals |> Map.get("root_successor_policy", []) |> Enum.uniq() |> Enum.sort()
+
+# -- gates (goal.ttl) -----------------------------------------------------------
+gate_info =
+  gates
+  |> Enum.group_by(&str.(&1["gate"]))
+  |> Map.new(fn {g, rows} ->
+    {g,
+     %{
+       id: at_most_one.(values_of.(rows, "gate_id"), "gate identifier of #{g}"),
+       parent: at_most_one.(values_of.(rows, "gate_parent"), "gate parent of #{g}"),
+       court: at_most_one.(values_of.(rows, "gate_court"), "gate court of #{g}")
+     }}
+  end)
+gate_id = fn g -> (gate_info[g] && gate_info[g].id) || refuse.("gate_unidentified #{g}") end
+ancestry = fn g ->
+  Enum.reduce_while(1..64, [g], fn _, [h | _] = acc ->
+    case gate_info[h] && gate_info[h].parent do
+      nil -> {:halt, acc}
+      p -> if p in acc, do: refuse.("gate_cycle #{g}"), else: {:cont, [p | acc]}
+    end
+  end)
+end
+# :root for the root, the root-child ancestor for a gate under the root,
+# :outside otherwise (not a GoalCheckpoint of this plan).
+lane_gate_of = fn g ->
+  chain = ancestry.(g)
+  cond do
+    g == root -> :root
+    not Map.has_key?(gate_info, g) -> :outside
+    root in chain -> chain |> Enum.drop_while(&(&1 != root)) |> Enum.at(1)
+    true -> :outside
+  end
+end
+lane_gates =
+  gate_info
+  |> Map.keys()
+  |> Enum.filter(&(gate_info[&1].parent == root))
+  |> Enum.sort_by(&nat.(gate_id.(&1)))
+
+# -- routes (routes.ttl) and executors (registry.ttl) ----------------------------
+route_list =
+  routes
+  |> Enum.group_by(&str.(&1["route"]))
+  |> Enum.sort()
+  |> Enum.map(fn {r, rows} ->
+    %{
+      iri: r,
+      namespace: at_most_one.(values_of.(rows, "route_namespace"), "route namespace of #{r}"),
+      capability: at_most_one.(values_of.(rows, "route_capability"), "route capability of #{r}"),
+      boundary: at_most_one.(values_of.(rows, "route_boundary"), "route boundary of #{r}"),
+      placement: at_most_one.(values_of.(rows, "route_placement"), "route placement of #{r}"),
+      delegated_to: at_most_one.(values_of.(rows, "route_delegated_to"), "route delegatedTo of #{r}"),
+      reason: at_most_one.(values_of.(rows, "route_reason"), "route reason of #{r}")
+    }
+  end)
+placements_known = ~w(lane court_only recipe_delegation delegation unassigned bootstrap)
+Enum.each(route_list, fn r ->
+  unless r.placement in placements_known, do: refuse.("route_placement_unknown #{r.iri} #{inspect(r.placement)}")
+end)
+executor_by_github =
+  executors
+  |> Enum.group_by(&str.(&1["executor"]))
+  |> Enum.sort()
+  |> Enum.map(fn {e, rows} ->
+    %{
+      github: at_most_one.(values_of.(rows, "executor_github"), "executor github of #{e}"),
+      alias: at_most_one.(values_of.(rows, "executor_alias"), "executor alias of #{e}"),
+      source: at_most_one.(values_of.(rows, "executor_source"), "executor sourcePath of #{e}"),
+      int: at_most_one.(values_of.(rows, "executor_int"), "executor intPath of #{e}")
+    }
+  end)
+  |> Enum.group_by(& &1.github)
+
+# -- orders (lanes.rq + fields.rq) ----------------------------------------------
+field_map =
+  fields
+  |> Enum.group_by(&str.(&1["order"]))
+  |> Map.new(fn {o, rows} -> {o, Enum.group_by(rows, &str.(&1["field"]), &str.(&1["value"]))} end)
+tuple_scalars = ~w(subject postcondition capability evidence_ceiling authority_ceiling consequence_class)
+orders =
+  lanes
+  |> Enum.group_by(&str.(&1["order"]))
+  |> Enum.sort()
+  |> Enum.map(fn {o, rows} ->
+    f = Map.get(field_map, o, %{})
+    vals = fn key -> f |> Map.get(key, []) |> Enum.reject(&is_nil/1) |> Enum.uniq() |> Enum.sort() end
+    oid =
+      case values_of.(rows, "order_id") do
+        [x] -> x
+        [] -> refuse.("tuple_incomplete #{o} identifier")
+        many -> refuse.("tuple_ambiguous #{o} identifier #{Enum.join(many, " | ")}")
+      end
+    gate =
+      case values_of.(rows, "gate") do
+        [g] -> g
+        many -> refuse.("tuple_ambiguous #{oid} checkpoint #{Enum.join(many, " | ")}")
+      end
+    scalar = fn key ->
+      case vals.(key) do
+        [v] -> v
+        [] -> refuse.("tuple_incomplete #{oid} #{key}")
+        _ -> refuse.("tuple_ambiguous #{oid} #{key}")
+      end
+    end
+    tuple_values =
+      Enum.map(tuple_scalars, fn
+        "capability" ->
+          case vals.("capability_node") do
+            [_one] -> {"capability", scalar.("capability")}
+            [] -> refuse.("tuple_incomplete #{oid} capability")
+            _ -> refuse.("tuple_ambiguous #{oid} capability")
+          end
+        key ->
+          {key, scalar.(key)}
+      end)
+    tuple = Map.new([{"exclusions", vals.("exclusion")} | tuple_values])
+    span_one = fn key ->
+      case vals.("span_" <> key) do
+        [v] -> v
+        _ -> refuse.("subject_untraced #{oid} #{key} (sj:subject #{tuple["subject"]} names no single admitted proposition span)")
+      end
+    end
+    span = %{
+      kind: span_one.("kind"),
+      document: span_one.("document"),
+      start: span_one.("start") |> String.to_integer(),
+      end: span_one.("end") |> String.to_integer(),
+      sha256: span_one.("sha256")
+    }
+    capability = tuple["capability"]
+    namespace = capability |> String.split(":", parts: 2) |> hd()
+    boundaries = vals.("boundary_class")
+    lg = lane_gate_of.(gate)
+    {placement, route} =
+      cond do
+        lg == :outside -> refuse.("order_outside_root #{oid} checkpoint #{gate}")
+        lg == :root -> {"root", nil}
+        r = Enum.find(route_list, &(&1.boundary && &1.boundary in boundaries)) -> {r.placement, r}
+        r = Enum.find(route_list, &(&1.capability && &1.capability == capability)) -> {r.placement, r}
+        r = Enum.find(route_list, &(&1.namespace && &1.namespace == namespace)) -> {r.placement, r}
+        true -> refuse.("capability_unrouted #{oid} #{capability}")
+      end
+    %{
+      iri: o,
+      id: oid,
+      gate: gate,
+      gate_id: if(gate == root, do: root_id, else: gate_id.(gate)),
+      lane_gate: lg,
+      tuple: tuple,
+      digest: Graph.tuple_digest(tuple),
+      span: span,
+      placement: placement,
+      route: route,
+      repositories: vals.("repository"),
+      acceptance: vals.("acceptance"),
+      falsifier: vals.("falsifier"),
+      promotion: vals.("promotion_rule"),
+      successor: vals.("successor_policy")
+    }
+  end)
+orders_by_gate = Enum.group_by(orders, & &1.lane_gate)
+placed = fn g, kind -> orders_by_gate |> Map.get(g, []) |> Enum.filter(&(&1.placement == kind)) end
+live_gate = fn g -> Map.get(orders_by_gate, g, []) != [] end
+
+# -- dependencies (edges.rq) ----------------------------------------------------
+edge_list =
+  edges
+  |> Enum.group_by(&str.(&1["edge"]))
+  |> Enum.sort()
+  |> Enum.map(fn {e, rows} ->
+    one = fn key -> at_most_one.(values_of.(rows, key), "#{key} of #{e}") end
+    down = one.("edge_down") || refuse.("dangling_edge #{e} (no lp:downstream)")
+    up = one.("edge_up") || refuse.("dangling_edge #{e} (no lp:upstream)")
+    down_lg = lane_gate_of.(down)
+    up_lg = lane_gate_of.(up)
+    if down_lg in [:root, :outside], do: refuse.("dangling_edge #{e} downstream #{down} is not a gate under #{root_id}")
+    if up_lg in [:root, :outside], do: refuse.("dangling_edge #{e} upstream #{up} is not a gate under #{root_id}")
+    type = one.("edge_type") || refuse.("dependency_untyped #{e} (no lp:dependencyType)")
+    class = one.("edge_class")
+    unless class in ["semantic", "implementation"], do: refuse.("dependency_untyped #{e} class #{inspect(class)}")
+    evidence = one.("edge_evidence")
+    if class == "implementation" and is_nil(evidence), do: refuse.("dependency_ungrounded #{e} (implementation edge without lp:evidence)")
+    source = one.("edge_source")
+    kind = one.("source_kind")
+    required = values_of.(rows, "source_required")
+    unless source && kind && Enum.any?([down, up, root], &(&1 in required)),
+      do: refuse.("dependency_ungrounded #{e} (source #{inspect(source)} is not an admitted proposition required by #{gate_id.(down)}, #{gate_id.(up)} or #{root_id})")
+    %{edge: e, down: down_lg, up: up_lg, type: type, class: class, source: source, kind: kind, evidence: evidence}
+  end)
+  |> Enum.reject(&(&1.down == &1.up))
+# A dependency on a gate without orders is closed: it vanishes.
+live_edges = Enum.filter(edge_list, &live_gate.(&1.up))
+live_ups = fn g -> live_edges |> Enum.filter(&(&1.down == g)) |> Enum.map(& &1.up) |> Enum.uniq() end
+
+{topo, cyclic} =
+  Enum.reduce_while(0..length(lane_gates), {[], MapSet.new(lane_gates)}, fn _, {done, rest} ->
+    ready =
+      rest
+      |> Enum.filter(fn g -> Enum.all?(live_ups.(g), &(not MapSet.member?(rest, &1))) end)
+      |> Enum.sort_by(&nat.(gate_id.(&1)))
+    if ready == [], do: {:halt, {done, rest}}, else: {:cont, {done ++ ready, MapSet.difference(rest, MapSet.new(ready))}}
+  end)
+if MapSet.size(cyclic) > 0,
+  do: refuse.("dependency_cycle " <> (cyclic |> Enum.map(gate_id) |> Enum.sort_by(nat) |> Enum.join(", ")))
+gated =
+  Enum.reduce(topo, %{}, fn g, acc ->
+    Map.put(acc, g, placed.(g, "delegation") != [] or Enum.any?(live_ups.(g), &Map.fetch!(acc, &1)))
+  end)
+any_gated = Enum.any?(Map.values(gated))
+
+# -- waves ----------------------------------------------------------------------
+wave_rows = Enum.map(waves, fn w -> {str.(w["wave_id"]), str.(w["wave_gated"]) == "true"} end)
+wave_for = fn flag ->
+  case Enum.filter(wave_rows, fn {_, g} -> g == flag end) do
+    [{id, _}] -> id
+    _ -> refuse.("wave_unmapped delegationGated #{flag}")
+  end
+end
+this_gated = str.(wave_gated) == "true"
+this_wave = str.(wave_id)
+this_title = waves |> Enum.find(&(str.(&1["wave_id"]) == this_wave)) |> Map.get("wave_title") |> str.()
+wave_of_gate = fn g -> wave_for.(Map.fetch!(gated, g)) end
+
+# -- lanes ----------------------------------------------------------------------
+lane_ids = Enum.filter(lane_gates, &(placed.(&1, "lane") != []))
+lane_repo = fn g ->
+  repos = placed.(g, "lane") |> Enum.flat_map(& &1.repositories) |> Enum.uniq() |> Enum.sort()
+  repo =
+    case repos do
+      [r] -> r
+      [] -> refuse.("repository_unassigned lane #{gate_id.(g)}")
+      many -> refuse.("lane_repository_ambiguous #{gate_id.(g)} #{Enum.join(many, " | ")}")
+    end
+  executor =
+    case Map.get(executor_by_github, repo, []) do
+      [e] -> e
+      [] -> refuse.("repository_unregistered #{repo} (lane #{gate_id.(g)})")
+      _ -> refuse.("repository_ambiguous #{repo}")
+    end
+  if executor.alias in [nil, ""], do: refuse.("repository_unregistered #{repo} (no lp:alias)")
+  if executor.source in [nil, ""], do: refuse.("source_unregistered #{executor.alias}")
+  if executor.int in [nil, ""], do: refuse.("int_unregistered #{executor.alias}")
+  executor
+end
+executors_used = lane_ids |> Enum.map(lane_repo) |> Enum.uniq_by(& &1.alias) |> Enum.sort_by(& &1.alias)
+order_ids = fn list -> list |> Enum.map(& &1.id) |> Enum.sort() end
+non_lane_preconditions = fn g ->
+  gid = gate_id.(g)
+  ~w(bootstrap court_only recipe_delegation delegation unassigned)
+  |> Enum.map(&{&1, placed.(g, &1)})
+  |> Enum.reject(fn {_kind, list} -> list == [] end)
+  |> Enum.map(fn {kind, list} ->
+    route = hd(list).route
+    %{
+      kind: kind,
+      gate: gid,
+      wave: nil,
+      work_orders: order_ids.(list),
+      satisfied_by:
+        case kind do
+          "bootstrap" -> "ALIVE observation by the gate court #{gate_info[g].court || gid}"
+          "court_only" -> "ALIVE observation by the gate court #{gate_info[g].court || gid}"
+          "recipe_delegation" -> "ALIVE receipt of the delegated recipe worker"
+          "delegation" -> "ALIVE receipts of the delegated executor: #{route.delegated_to}"
+          "unassigned" -> "UNKNOWN until a capability is admitted for these orders (#{route.reason})"
+        end
+    }
+  end)
+end
+precondition_json = fn p ->
+  obj.(
+    [{"kind", p.kind}, {"gate", p.gate}] ++
+      if(p.wave, do: [{"wave", p.wave}], else: []) ++
+      if(p.work_orders, do: [{"work_orders", p.work_orders}], else: []) ++
+      [{"satisfied_by", p.satisfied_by}]
+  )
+end
+lane_json =
+  for g <- lane_ids, wave_of_gate.(g) == this_wave do
+    gid = gate_id.(g)
+    court = gate_info[g].court || refuse.("gate_court_missing #{gid}")
+    executor = lane_repo.(g)
+    ups = live_ups.(g) |> Enum.sort_by(&nat.(gate_id.(&1)))
+    after_ids = for u <- ups, placed.(u, "lane") != [], wave_of_gate.(u) == this_wave, do: gate_id.(u)
+    preconditions =
+      (for u <- ups, placed.(u, "lane") != [], wave_of_gate.(u) != this_wave do
+         %{
+           kind: "lane",
+           gate: gate_id.(u),
+           wave: wave_of_gate.(u),
+           work_orders: nil,
+           satisfied_by: "lane #{gate_id.(u)} merged into #{base_branch} with an ALIVE receipt #{receipts_dir}/#{gate_id.(u)}.json"
+         }
+       end) ++ non_lane_preconditions.(g) ++ Enum.flat_map(ups, non_lane_preconditions)
+    depends_on =
+      live_edges
+      |> Enum.filter(&(&1.down == g))
+      |> Enum.sort_by(&{nat.(gate_id.(&1.up)), &1.edge})
+      |> Enum.map(fn e ->
+        obj.(
+          [
+            {"upstream", gate_id.(e.up)},
+            {"type", e.type},
+            {"class", e.class},
+            {"source", e.source},
+            {"edge", e.edge}
+          ] ++ if(e.evidence, do: [{"evidence", e.evidence}], else: [])
+        )
+      end)
+    lane_orders = placed.(g, "lane") |> Enum.sort_by(&{nat.(&1.gate_id), &1.id})
+    order_lines =
+      Enum.flat_map(lane_orders, fn o ->
+        t = o.tuple
+        [
+          "Work order #{o.id} <#{o.iri}> (checkpoint #{o.gate_id}; subject #{t["subject"]}, #{o.span.kind} #{o.span.document} bytes [#{o.span.start}, #{o.span.end}) #{o.span.sha256}):",
+          "  postcondition: #{t["postcondition"]}"
+        ] ++
+          Enum.map(o.acceptance, &"  acceptance: #{&1}") ++
+          Enum.map(o.falsifier, &"  falsifier: #{&1}") ++
+          [
+            "  capability #{t["capability"]}; consequence #{t["consequence_class"]}; evidence ceiling #{t["evidence_ceiling"]}; authority ceiling #{t["authority_ceiling"]}"
+          ] ++
+          Enum.map(t["exclusions"], &"  exclusion: #{&1}") ++
+          Enum.map(o.promotion, &"  promotion: #{&1}") ++
+          ["  tuple_digest #{o.digest}"]
+      end)
+    precondition_lines =
+      Enum.map(preconditions, fn p ->
+        what = if p.work_orders, do: " #{Enum.join(p.work_orders, ", ")}", else: ""
+        where = if p.wave, do: " (wave #{p.wave})", else: ""
+        "  #{p.kind} #{p.gate}#{where}#{what}: #{p.satisfied_by}"
+      end)
+    successor_lines = lane_orders |> Enum.flat_map(& &1.successor) |> Enum.uniq() |> Enum.sort() |> Enum.map(&"Successor policy: #{&1}")
+    task =
+      Enum.join(
+        [
+          "#{gid}: generated lane of #{root_id} (#{length(lane_orders)} work order(s) of checkpoint #{g}); every line below is an admitted work-order field and the order tuple governs.",
+          "Court: #{court} (the gate's sj:courtCommand); replace its machinery-absent body with the machinery that observes every postcondition below on the exact committed subject."
+        ] ++
+          order_lines ++
+          if(after_ids == [], do: [], else: ["After (same wave): #{Enum.join(after_ids, ", ")}"]) ++
+          if(precondition_lines == [], do: [], else: ["Preconditions (outside this lane's wave or placement):" | precondition_lines]) ++
+          [
+            "Receipt: #{receipts_dir}/#{gid}.json in the fleet R schema; identity.work_orders lists every work order above as {work_order: <IRI>, tuple_digest: <digest>} (a single-order lane also sets identity.work_order and identity.tuple_digest); standing only from an observed run of #{court} on the exact committed subject."
+          ] ++ successor_lines,
+        "\n"
+      )
+    obj.([
+      {"id", gid},
+      {"repo", executor.alias},
+      {"after", after_ids},
+      {"gate", court},
+      {"task", task},
+      {"checkpoint", g},
+      {"work_orders",
+       Enum.map(lane_orders, fn o ->
+         obj.([
+           {"work_order", o.iri},
+           {"id", o.id},
+           {"checkpoint", o.gate_id},
+           {"tuple_digest", o.digest},
+           {"capability", o.tuple["capability"]},
+           {"subject", o.tuple["subject"]},
+           {"span",
+            obj.([
+              {"kind", o.span.kind},
+              {"document", o.span.document},
+              {"start", o.span.start},
+              {"end", o.span.end},
+              {"sha256", o.span.sha256}
+            ])}
+         ])
+       end)},
+      {"depends_on", depends_on},
+      {"preconditions", Enum.map(preconditions, precondition_json)}
+    ])
+  end
+
+# -- non-lane placements of this wave --------------------------------------------
+placement_wave = fn o ->
+  case o.lane_gate do
+    :root -> wave_for.(any_gated)
+    g -> wave_of_gate.(g)
+  end
+end
+placements_json =
+  orders
+  |> Enum.filter(&(&1.placement != "lane" and placement_wave.(&1) == this_wave))
+  |> Enum.sort_by(&{nat.(&1.gate_id), &1.id})
+  |> Enum.map(fn o ->
+    obj.(
+      [
+        {"work_order", o.iri},
+        {"id", o.id},
+        {"placement", o.placement},
+        {"gate", if(o.lane_gate == :root, do: root_id, else: gate_id.(o.lane_gate))},
+        {"checkpoint", o.gate_id},
+        {"capability", o.tuple["capability"]},
+        {"tuple_digest", o.digest},
+        {"subject", o.tuple["subject"]},
+        {"span",
+         obj.([
+           {"kind", o.span.kind},
+           {"document", o.span.document},
+           {"start", o.span.start},
+           {"end", o.span.end},
+           {"sha256", o.span.sha256}
+         ])},
+        {"reason",
+         cond do
+           o.placement == "root" -> "an order of the root checkpoint: observed by the #{root_id} stop query (sj:stopQuery), no lane"
+           true -> o.route.reason
+         end}
+      ] ++ if(o.route && o.route.delegated_to, do: [{"delegated_to", o.route.delegated_to}], else: [])
+    )
+  end)
+
+context =
+  Enum.join(
+    [
+      "Generated lane plan of #{root_id} (#{root}), wave #{this_wave}: #{this_title}. Rendered by mix ggen_igniter.sync from release/v26.9.23/sjira/{goal.ttl, compiled/*/orders.ttl, compiled/*/propositions.ttl} and release/v26.9.23/sjira/laneplan-pack/{ontology,registry,routes,dependencies}.ttl through laneplan-pack/templates/lane_wave.json.eex; court: sh release/v26.9.23/sjira/laneplan_check.sh."
+    ] ++
+      Enum.map(executors_used, &"- #{&1.alias} lanes: source #{&1.source}, integration worktree #{&1.int} (branch #{base_branch}); lane worktrees #{worktree_root}/<lane> on branch #{branch_prefix}/<lane>; receipts #{receipts_dir}/<lane>.json.") ++
+      Enum.map(root_exclusions, &"- Root exclusion (#{root_id}): #{&1}") ++
+      Enum.map(root_successor, &"- Successor policy (#{root_id}): #{&1}"),
+    "\n"
+  )
+
+doc =
+  obj.([
+    {"wave", this_wave},
+    {"repos", obj.(Enum.map(executors_used, &{&1.alias, &1.source}))},
+    {"ints", obj.(Enum.map(executors_used, &{&1.alias, &1.int}))},
+    {"base_branch", base_branch},
+    {"worktree_root", worktree_root},
+    {"branch_prefix", branch_prefix},
+    {"receipts_dir", receipts_dir},
+    {"max_repairs", max_repairs},
+    {"context", context},
+    {"root", root_id},
+    {"delegation_gated", this_gated},
+    {"lanes", lane_json},
+    {"placements", placements_json}
+  ])
+%><%= Jason.encode!(doc, pretty: true) %>

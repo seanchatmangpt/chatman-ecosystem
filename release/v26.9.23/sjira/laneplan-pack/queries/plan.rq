@@ -1,0 +1,20 @@
+# plan.rq -- the lane plan's root, its root fields (exclusions, successor
+# policy) and the runner parameters, one row per (field, value).
+PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
+PREFIX lp: <https://ggen-igniter.dev/ontology/lane-plan#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+SELECT ?plan_field ?plan_value WHERE {
+  ?plan a lp:LanePlan .
+  {
+    { ?plan lp:root ?plan_value . BIND("root" AS ?plan_field) }
+    UNION { ?plan lp:root ?r1 . ?r1 dcterms:identifier ?plan_value . BIND("root_id" AS ?plan_field) }
+    UNION { ?plan lp:root ?r2 . ?r2 sj:exclusion ?plan_value . BIND("root_exclusion" AS ?plan_field) }
+    UNION { ?plan lp:root ?r3 . ?r3 sj:successorPolicy ?plan_value . BIND("root_successor_policy" AS ?plan_field) }
+    UNION { ?plan lp:baseBranch ?plan_value . BIND("base_branch" AS ?plan_field) }
+    UNION { ?plan lp:worktreeRoot ?plan_value . BIND("worktree_root" AS ?plan_field) }
+    UNION { ?plan lp:branchPrefix ?plan_value . BIND("branch_prefix" AS ?plan_field) }
+    UNION { ?plan lp:receiptsDir ?plan_value . BIND("receipts_dir" AS ?plan_field) }
+    UNION { ?plan lp:maxRepairs ?plan_value . BIND("max_repairs" AS ?plan_field) }
+  }
+}
+ORDER BY ?plan_field ?plan_value

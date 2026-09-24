@@ -1,0 +1,11 @@
+# executors.rq -- repository executors (registry.ttl): provider resolution for
+# lane placements, keyed by sj:repository = lp:github.
+PREFIX lp: <https://ggen-igniter.dev/ontology/lane-plan#>
+SELECT ?executor ?executor_github ?executor_alias ?executor_source ?executor_int WHERE {
+  ?executor a lp:RepositoryExecutor .
+  OPTIONAL { ?executor lp:github ?executor_github . }
+  OPTIONAL { ?executor lp:alias ?executor_alias . }
+  OPTIONAL { ?executor lp:sourcePath ?executor_source . }
+  OPTIONAL { ?executor lp:intPath ?executor_int . }
+}
+ORDER BY ?executor

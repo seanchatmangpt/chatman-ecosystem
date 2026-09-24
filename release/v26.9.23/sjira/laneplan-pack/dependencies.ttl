@@ -1,0 +1,213 @@
+@prefix lp: <https://ggen-igniter.dev/ontology/lane-plan#> .
+@prefix cel: <https://ggen-igniter.dev/sjira/chatman-26.9.23/lane-plan#> .
+@prefix ce: <https://ggen-igniter.dev/sjira/chatman-26.9.23#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# Typed gate dependencies of the CE23 lane plan (lane CE-LANEPLAN, wave F1ce).
+# Residue: the compiled CE23 graph carries its dependencies only as admitted
+# Dependency/Postcondition proposition text (compile_prose manufactures no
+# sj:dependsOn edge from a Dependency proposition; HANDWRITTEN.md row). Each
+# edge below names the admitted proposition that grounds it (dcterms:source);
+# the template refuses an edge whose source is not an admitted proposition
+# required by its downstream gate, its upstream gate or the plan root
+# (dependency_ungrounded), an endpoint that is not a gate under the root
+# (dangling_edge) and a cycle (dependency_cycle).
+#
+# Grounding propositions (compiled/*/propositions.ttl):
+#   P-86e47dafb32e113c Dependency, CE23-11: "The v26.9.23 tag is impossible until
+#     CE23-3 through CE23-10 close."
+#   P-90fa9bcde22793cd Dependency, root: the critical path "... fresh 13/13
+#     STOP=true receipt -> manufacture chatman-ecosystem/release/v26.9.23 ->
+#     crosswalk old roles -> root crown/replay -> tag". Encoded: CE23-2 after
+#     CE23-1 (crosswalk after manufacture), CE23-9 after CE23-2 (root
+#     crown/replay after crosswalk); the tag step is P-86e47dafb32e113c.
+#     Not encoded as an edge: "fresh STOP=true -> manufacture". CE23-1
+#     pre-stages the subject at the frozen S23 SHAs and CE23-3 (after the fresh
+#     STOP, below) imports the crown and rebinds that subject to the main SHAs
+#     (DRIVER.md finish sequence: CE1 before the release, CE2 after it), so the
+#     bound release subject still follows the fresh STOP.
+#   P-8e2088155f51a849 Postcondition, CE23-3: a fresh STOP=true with all 13
+#     gate receipts admitted needs GC23-12 closed (CE23-4) and GC23-11 at the
+#     post-merge main SHAs (CE23-5).
+#   P-9832a6b4845218f9 Postcondition, CE23-8: "The imported Semantic
+#     Manufacturing crown proves ..." (the import is CE23-3).
+#   P-998f1d40dae58d30 Postcondition, CE23-10: the root receipt binds "all gate
+#     receipts" (every crown gate except the tag CE23-11).
+#   P-56e51d07af69f595 Postcondition, CE23-7 (implementation class, lp:evidence
+#     re-verified at 717d52cd).
+
+cel:dep-CE23-11-on-CE23-3 a lp:GateDependency ;
+    lp:downstream ce:CE23-11 ;
+    lp:upstream ce:CE23-3 ;
+    lp:dependencyType "requiresGateClosed" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-86e47dafb32e113c .
+
+cel:dep-CE23-11-on-CE23-4 a lp:GateDependency ;
+    lp:downstream ce:CE23-11 ;
+    lp:upstream ce:CE23-4 ;
+    lp:dependencyType "requiresGateClosed" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-86e47dafb32e113c .
+
+cel:dep-CE23-11-on-CE23-5 a lp:GateDependency ;
+    lp:downstream ce:CE23-11 ;
+    lp:upstream ce:CE23-5 ;
+    lp:dependencyType "requiresGateClosed" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-86e47dafb32e113c .
+
+cel:dep-CE23-11-on-CE23-6 a lp:GateDependency ;
+    lp:downstream ce:CE23-11 ;
+    lp:upstream ce:CE23-6 ;
+    lp:dependencyType "requiresGateClosed" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-86e47dafb32e113c .
+
+cel:dep-CE23-11-on-CE23-7 a lp:GateDependency ;
+    lp:downstream ce:CE23-11 ;
+    lp:upstream ce:CE23-7 ;
+    lp:dependencyType "requiresGateClosed" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-86e47dafb32e113c .
+
+cel:dep-CE23-11-on-CE23-8 a lp:GateDependency ;
+    lp:downstream ce:CE23-11 ;
+    lp:upstream ce:CE23-8 ;
+    lp:dependencyType "requiresGateClosed" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-86e47dafb32e113c .
+
+cel:dep-CE23-11-on-CE23-9 a lp:GateDependency ;
+    lp:downstream ce:CE23-11 ;
+    lp:upstream ce:CE23-9 ;
+    lp:dependencyType "requiresGateClosed" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-86e47dafb32e113c .
+
+cel:dep-CE23-11-on-CE23-10 a lp:GateDependency ;
+    lp:downstream ce:CE23-11 ;
+    lp:upstream ce:CE23-10 ;
+    lp:dependencyType "requiresGateClosed" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-86e47dafb32e113c .
+
+cel:dep-CE23-2-on-CE23-1 a lp:GateDependency ;
+    lp:downstream ce:CE23-2 ;
+    lp:upstream ce:CE23-1 ;
+    lp:dependencyType "criticalPathOrder" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-90fa9bcde22793cd .
+
+cel:dep-CE23-9-on-CE23-2 a lp:GateDependency ;
+    lp:downstream ce:CE23-9 ;
+    lp:upstream ce:CE23-2 ;
+    lp:dependencyType "criticalPathOrder" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-90fa9bcde22793cd .
+
+cel:dep-CE23-3-on-CE23-4 a lp:GateDependency ;
+    lp:downstream ce:CE23-3 ;
+    lp:upstream ce:CE23-4 ;
+    lp:dependencyType "requiresFreshStop" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-8e2088155f51a849 .
+
+cel:dep-CE23-3-on-CE23-5 a lp:GateDependency ;
+    lp:downstream ce:CE23-3 ;
+    lp:upstream ce:CE23-5 ;
+    lp:dependencyType "requiresFreshStop" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-8e2088155f51a849 .
+
+cel:dep-CE23-8-on-CE23-3 a lp:GateDependency ;
+    lp:downstream ce:CE23-8 ;
+    lp:upstream ce:CE23-3 ;
+    lp:dependencyType "requiresImportedCrown" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-9832a6b4845218f9 .
+
+cel:dep-CE23-10-on-CE23-0 a lp:GateDependency ;
+    lp:downstream ce:CE23-10 ;
+    lp:upstream ce:CE23-0 ;
+    lp:dependencyType "bindsGateReceipt" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-998f1d40dae58d30 .
+
+cel:dep-CE23-10-on-CE23-1 a lp:GateDependency ;
+    lp:downstream ce:CE23-10 ;
+    lp:upstream ce:CE23-1 ;
+    lp:dependencyType "bindsGateReceipt" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-998f1d40dae58d30 .
+
+cel:dep-CE23-10-on-CE23-2 a lp:GateDependency ;
+    lp:downstream ce:CE23-10 ;
+    lp:upstream ce:CE23-2 ;
+    lp:dependencyType "bindsGateReceipt" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-998f1d40dae58d30 .
+
+cel:dep-CE23-10-on-CE23-3 a lp:GateDependency ;
+    lp:downstream ce:CE23-10 ;
+    lp:upstream ce:CE23-3 ;
+    lp:dependencyType "bindsGateReceipt" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-998f1d40dae58d30 .
+
+cel:dep-CE23-10-on-CE23-4 a lp:GateDependency ;
+    lp:downstream ce:CE23-10 ;
+    lp:upstream ce:CE23-4 ;
+    lp:dependencyType "bindsGateReceipt" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-998f1d40dae58d30 .
+
+cel:dep-CE23-10-on-CE23-5 a lp:GateDependency ;
+    lp:downstream ce:CE23-10 ;
+    lp:upstream ce:CE23-5 ;
+    lp:dependencyType "bindsGateReceipt" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-998f1d40dae58d30 .
+
+cel:dep-CE23-10-on-CE23-6 a lp:GateDependency ;
+    lp:downstream ce:CE23-10 ;
+    lp:upstream ce:CE23-6 ;
+    lp:dependencyType "bindsGateReceipt" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-998f1d40dae58d30 .
+
+cel:dep-CE23-10-on-CE23-7 a lp:GateDependency ;
+    lp:downstream ce:CE23-10 ;
+    lp:upstream ce:CE23-7 ;
+    lp:dependencyType "bindsGateReceipt" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-998f1d40dae58d30 .
+
+cel:dep-CE23-10-on-CE23-8 a lp:GateDependency ;
+    lp:downstream ce:CE23-10 ;
+    lp:upstream ce:CE23-8 ;
+    lp:dependencyType "bindsGateReceipt" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-998f1d40dae58d30 .
+
+cel:dep-CE23-10-on-CE23-9 a lp:GateDependency ;
+    lp:downstream ce:CE23-10 ;
+    lp:upstream ce:CE23-9 ;
+    lp:dependencyType "bindsGateReceipt" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-998f1d40dae58d30 .
+
+cel:dep-CE23-10-on-CE23-12 a lp:GateDependency ;
+    lp:downstream ce:CE23-10 ;
+    lp:upstream ce:CE23-12 ;
+    lp:dependencyType "bindsGateReceipt" ;
+    lp:dependencyClass "semantic" ;
+    dcterms:source ce:P-998f1d40dae58d30 .
+
+cel:dep-CE23-1-on-CE23-7 a lp:GateDependency ;
+    lp:downstream ce:CE23-1 ;
+    lp:upstream ce:CE23-7 ;
+    lp:dependencyType "consumesCapability" ;
+    lp:dependencyClass "implementation" ;
+    lp:evidence "scripts/verify_release.py:79-80 at 717d52cd admits only release.version 26.9.1 (ECOSYSTEM_VERSION_MISMATCH 'expected 26.9.1' otherwise), so the release/v26.9.23 subject of CE23-1 is not admissible by verify_release before the CE23-7 version fence; scan evidence /Users/sac/wt/v26922/v26923/lanes/scan-plan.json wave CE1 lane CE23-1 (after CE23-7)" ;
+    dcterms:source ce:P-56e51d07af69f595 .

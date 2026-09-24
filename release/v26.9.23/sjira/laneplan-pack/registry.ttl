@@ -1,0 +1,40 @@
+@prefix lp: <https://ggen-igniter.dev/ontology/lane-plan#> .
+@prefix cel: <https://ggen-igniter.dev/sjira/chatman-26.9.23/lane-plan#> .
+@prefix ce: <https://ggen-igniter.dev/sjira/chatman-26.9.23#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Executor topology of the CE23 lane plan (lane CE-LANEPLAN, wave F1ce). The
+# irreducible residue: where lanes run is a fact of this executor, not of the
+# operator prose (HANDWRITTEN.md row). Values from DRIVER.md (chatman-ecosystem
+# lanes: CE23-0 clone, int worktree, base branch) and the sm-lane-wave runner
+# contract (~/.claude/workflows/sm-lane-wave.js wave fields).
+
+cel:plan a lp:LanePlan ;
+    dcterms:title "CE23 generated lane plan" ;
+    lp:root ce:GC-CE-26.9.23 ;
+    lp:baseBranch "release/v26.9.23-int" ;
+    lp:worktreeRoot "/Users/sac/wt/v26922/v23" ;
+    lp:branchPrefix "ce23" ;
+    lp:receiptsDir "receipts/v26.9.23" ;
+    lp:maxRepairs 2 .
+
+# The chatman source is the CE23-0 GitHub clone, never the disjoint local
+# checkout /Users/sac/chatman-ecosystem (DRIVER.md 15:05 PT, chatman lineage).
+cel:executor-chatman a lp:RepositoryExecutor ;
+    lp:github "seanchatmangpt/chatman-ecosystem" ;
+    lp:alias "chatman" ;
+    lp:sourcePath "/Users/sac/wt/v26922/chatman-ecosystem/repo" ;
+    lp:intPath "/Users/sac/wt/v26922/fri/chatman-ecosystem-int" .
+
+cel:wave-CE1 a lp:Wave ;
+    lp:waveId "CE1" ;
+    lp:ordinal 1 ;
+    lp:delegationGated false ;
+    dcterms:title "runnable now: no delegated order in the lane or upstream" .
+
+cel:wave-CE2 a lp:Wave ;
+    lp:waveId "CE2" ;
+    lp:ordinal 2 ;
+    lp:delegationGated true ;
+    dcterms:title "gated on the Semantic Manufacturing release: a delegated release:* order in the lane or upstream" .
