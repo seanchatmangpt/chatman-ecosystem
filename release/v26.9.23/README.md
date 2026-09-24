@@ -39,6 +39,25 @@ then sync again. Never edit `out/` or a vendored file: the next sync refuses a h
 ## Court
 
 ```bash
+sh release/v26.9.23/courts/CE23-0.sh      # exit 0 ALIVE, 1 REFUSED, 75 UNKNOWN
+```
+
+The CE23-0 court judges the root identity of the canonical checkout's exact head: origin is
+`github.com/seanchatmangpt/chatman-ecosystem`, a live `git ls-remote` puts the release base
+`c59596f5` on GitHub main, the head descends from it with the GitHub root alone and is or
+fast-forwards the published `release/v26.9.23-int`. The lineage is proven, not inferred: the
+pre-migration local-only lineage (root `551cf5c`, 9 commits) and the retired shadow clone's refs are
+preserved at their pinned SHAs under `refs/heads/archive/local-lineage/*` and
+`refs/archive/pre-single-repo-migration/20260924T0600Z/*`, and `git merge-base` recomputes every
+relation. Clauses and the 26-case corpus (synthetic repositories): `courts/ce23_0/court.py`; pins:
+`courts/ce23_0/identity.toml`. The receipt and the identity fact are the court's own output:
+
+```bash
+sh release/v26.9.23/courts/CE23-0.sh --receipt-out receipts/v26.9.23/CE23-0.json \
+  --identity-out receipts/v26.9.23/CE23-0.identity.ttl
+```
+
+```bash
 sh release/v26.9.23/courts/CE23-1.sh
 ```
 

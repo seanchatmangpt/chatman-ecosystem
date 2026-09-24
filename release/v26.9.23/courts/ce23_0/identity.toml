@@ -1,0 +1,91 @@
+# CE23-0 court pins: root identity of the chatman-ecosystem working subject (hand-authored;
+# HANDWRITTEN.md row). release/v26.9.23/courts/ce23_0/court.py judges the canonical checkout's exact
+# committed head against these facts. Every SHA below was observed with git in the canonical checkout
+# on 2026-09-24 after the single-repository migration (20260924T0600Z); moving any of them is a pin
+# change with its own receipt, never an edit of a sealed receipt.
+
+[subject]
+gate = "CE23-0"
+gate_iri = "https://ggen-igniter.dev/sjira/chatman-26.9.23#CE23-0"
+repository = "seanchatmangpt/chatman-ecosystem"
+subject_dir = "release/v26.9.23"
+goal = "sjira/goal.ttl"
+# The published line the working subject continues (its GitHub head is observed live by I4).
+branch = "release/v26.9.23-int"
+# GitHub main when CE23-0 first bound the subject: the release base. It must be on GitHub main
+# (I2) and an ancestor of the head (I3).
+base_commit = "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1"
+# The only root commit of the GitHub lineage: the head's root set must be exactly this (I3).
+github_root = "14cfd7b01aac25b3271963378d07357eb0c55af6"
+receipt = "receipts/v26.9.23/CE23-0.json"
+identity = "receipts/v26.9.23/CE23-0.identity.ttl"
+# release/v26.9.1 is never modified by CE23 work (goal.ttl law): its tree at the head is this tree
+# and the base's (P1).
+predecessor = "release/v26.9.1"
+predecessor_tree = "7e0feef1b137bea72fe1cf22a599636f77b0e47c"
+# Seconds a live `git ls-remote` of the GitHub remote may take (I2, I4).
+ls_remote_timeout = 60
+# The judging court: every file here must be byte-identical to HEAD (C1). The receipt validator
+# is the one CE23-9 pins (ce23_9/root.toml [validator], read through ce23_9/members.py).
+court_files = [
+  "release/v26.9.23/courts/CE23-0.sh",
+  "release/v26.9.23/courts/ce23_0/court.py",
+  "release/v26.9.23/courts/ce23_0/identity.toml",
+  "release/v26.9.23/courts/ce23_9/members.py",
+  "release/v26.9.23/courts/ce23_9/ci_checks.py",
+  "release/v26.9.23/courts/ce23_9/root.toml",
+]
+
+[identity_fact]
+# The er:Component + er:RefObservation fact of the GitHub main observation (K1), judged by these
+# gates of the vendored chatman-ecosystem-release-pack through its own runner bin/run-gates.py.
+pack = "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack"
+gates = ["020_component_identity.rq", "050_ref_observation_law.rq", "060_unique_repository.rq"]
+component_iri = "https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.23/identity#chatman-ecosystem"
+observation_iri = "https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.23/identity#github-main"
+role = "release-root"
+disposition = "CROWN"
+
+[local_lineage]
+# The pre-migration local-only lineage of this checkout (9 commits, 2026-09-12..22: Sigma ontology,
+# census, SCM prototype, jurisdiction contracts, v26.9.22 lane receipts). It shares no ancestor with
+# the GitHub lineage; the migration preserved every head under both namespaces (L1).
+root = "551cf5c563d93356b261892dd787595872056753"
+commits = 9
+namespaces = [
+  "refs/heads/archive/local-lineage/",
+  "refs/archive/pre-single-repo-migration/20260924T0600Z/heads/",
+]
+# The pre-migration checkout's HEAD, preserved by the migration.
+checkout_head_ref = "refs/archive/pre-single-repo-migration/20260924T0600Z/worktree-head/chatman-ecosystem"
+checkout_head = "6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d"
+# merge-base verdict of every head against the base and the head (L2): equal | ancestor | descendant
+# | diverged | unrelated.
+relation = "unrelated"
+# Whether any GitHub remote-tracking ref reaches a local-lineage commit (L3). Publishing the local
+# lineage is an operator decision; it moves this pin in the same change.
+published = false
+
+[local_lineage.heads]
+"main" = "6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d"
+"exp/pr3-jurisdiction-refusal-contracts" = "5307ea79539d6739a60e4220a6b695e026a4211e"
+"release/v26.9.22" = "7ac66d8c55ce4aba62cd6416e9f3eecd358700e4"
+"preserve/v26.9.22/main" = "5cb279b4a444e9f87b9cd94ff2dbd617d4e2622c"
+
+[shadow_clone]
+# The retired GitHub clone that carried v26.9.23 before the migration. Its refs are preserved in
+# this checkout under `prefix` (S1); the clone itself is gone and no court reads its path.
+prefix = "refs/archive/pre-single-repo-migration/20260924T0600Z/shadow-clone/"
+# Its own preservation of the local lineage (heads = local_lineage.heads): an independent second
+# copy that must agree with L1.
+local_lineage_prefix = "preserve/v26.9.23/local-checkout/heads/"
+# The shadow-era CE23-0 receipt commit: an ancestor of the head.
+identity_commit = "a896e16c68af1315be3492e39939c354ce46b10c"
+# The shadow's published int: an ancestor of the head (the canonical line continues it).
+published_int = "remotes/origin/release/v26.9.23-int"
+
+[shadow_clone.refs]
+"heads/main" = "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1"
+"heads/release/v26.9.23-int" = "de648940eb7beb21597767fda4e38a7d05ed8f74"
+"remotes/origin/main" = "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1"
+"remotes/origin/release/v26.9.23-int" = "717d52cd78d8936c6b8b2e102dc348cccf6262c4"

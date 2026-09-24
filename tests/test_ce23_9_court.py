@@ -312,18 +312,52 @@ class LawCase(unittest.TestCase):
         self.assertNotIn("receipts/v26.9.23/CE23-12.gate/court-receipt-CE23-12.json", projected)
 
     def test_stub_court_gets_no_gate_standing_from_its_receipt(self) -> None:
-        # CE23-0 carries an ALIVE receipt while its court is still the CE-INTAKE stub: chatman-stop must not
-        # count it (the replay member types the same court UNKNOWN)
-        self.assertTrue(members.stub_court(ROOT, "sh release/v26.9.23/courts/CE23-0.sh"))
-        self.assertFalse(members.stub_court(ROOT, "sh release/v26.9.23/courts/CE23-1.sh"))
+        # A gate whose court is still the CE-INTAKE stub (exit 75) gets no standing from an ALIVE receipt:
+        # chatman-stop must not count it (the replay member types the same court UNKNOWN). Since step CE23-0
+        # no stub gate of this subject carries a receipt, so the case is judged on a real git repository
+        # holding this subject's goal, compiled orders, release graph, courts and imported-crown render plus
+        # one ALIVE receipt for the stub gate CE23-3.
+        sub = "release/v26.9.23"
+        self.assertTrue(members.stub_court(ROOT, f"sh {sub}/courts/CE23-3.sh"))
+        self.assertFalse(members.stub_court(ROOT, f"sh {sub}/courts/CE23-0.sh"))
+        self.assertFalse(members.stub_court(ROOT, f"sh {sub}/courts/CE23-1.sh"))
         self.assertFalse(members.stub_court(ROOT, ""))
-        with redirect_stdout(io.StringIO()) as out:
-            rc = members.m_chatman_stop(ROOT, members.Verdict("chatman-stop"))
+        with tempfile.TemporaryDirectory(prefix="ce23-9-stub.") as tmp:
+            repo = Path(tmp) / "repo"
+            rels = [f"{sub}/sjira/goal.ttl", f"{sub}/release.ttl", f"{sub}/out/imported-crown.toml",
+                    *(str(p.relative_to(ROOT)) for p in sorted((ROOT / sub / "sjira" / "compiled").glob("*/orders.ttl"))),
+                    *(str(p.relative_to(ROOT)) for p in sorted((ROOT / sub / "courts").glob("CE23-*.sh")))]
+            for rel in rels:
+                (repo / rel).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / rel, repo / rel)
+            env = dict(os.environ, GIT_AUTHOR_NAME="ce23-9 test", GIT_AUTHOR_EMAIL="test@ce23-9.invalid",
+                       GIT_COMMITTER_NAME="ce23-9 test", GIT_COMMITTER_EMAIL="test@ce23-9.invalid")
+
+            def git(*args: str) -> str:
+                return subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, text=True, env=env).stdout.strip()
+
+            git("init", "-q", "-b", "main")
+            git("add", "--", *rels)
+            git("commit", "-q", "-m", "subject slice")
+            head = git("rev-parse", "HEAD")
+            receipt = {"identity": {"subject": "CE23-3/stub-receipt-fixture", "repo": "seanchatmangpt/chatman-ecosystem",
+                                    "subject_sha": head, "base_sha": head, "gate": "ce:CE23-3 (fixture)"},
+                       "authority": {"ceiling": "SELECT", "grant": "test fixture", "actor": "tests/test_ce23_9_court.py"},
+                       "consequence": {"commits": [], "files_changed": [], "remote_effects": []},
+                       "replay": {"commands": [{"cmd": "true", "cwd": ".", "exit": 0}]},
+                       "standing": {"value": "ALIVE", "derived_from": "fixture: a receipt no court run backs"}}
+            path = repo / "receipts" / "v26.9.23" / "CE23-3.json"
+            path.parent.mkdir(parents=True)
+            path.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+            git("add", "--", "receipts/v26.9.23/CE23-3.json")
+            git("commit", "-q", "-m", "an ALIVE receipt for a stub gate")
+            with redirect_stdout(io.StringIO()) as out:
+                rc = members.m_chatman_stop(repo, members.Verdict("chatman-stop"))
         text = out.getvalue()
         if "MARKETPLACE_UNAVAILABLE" in text:
             self.skipTest("receipt validator not readable from the canonical marketplace checkout")
-        self.assertIn("not projected onto CE23-0: receipts/v26.9.23/CE23-0.json (ALIVE)", text)
-        self.assertIn("UNKNOWN[NO_ALIVE_RECEIPT:CE23-0]", text)
+        self.assertIn("not projected onto CE23-3: receipts/v26.9.23/CE23-3.json (ALIVE)", text)
+        self.assertIn("UNKNOWN[NO_ALIVE_RECEIPT:CE23-3]", text)
         self.assertNotEqual(rc, 0)
 
     def test_disposition_law(self) -> None:
