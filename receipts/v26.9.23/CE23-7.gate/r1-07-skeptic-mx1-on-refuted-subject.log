@@ -1,0 +1,9 @@
+$ out=$(M=/private/tmp/claude-501/v23-scratch/FIN2-CE23-7/mut-prior SUBJECT=1a43c41afc638bdcd6e7dadc91509da627909637 ONLY='MX1 MX1b' bash release/v26.9.23/courts/ce23_7/mutate.sh 2>&1); echo "$out"; grep -E '^(UNKNOWN|REFUSED)' /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/mut-prior/MX1b.log | cut -c1-200; echo "$out" | grep -qE '^MUTANT MX1 exit=0 .*final=CE23-7 ALIVE$' && grep -q 'UNKNOWN\[FIXTURE_UNBUILDABLE\] F4' /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/mut-prior/MX1b.log
+CE23-7 mutants: subject 1a43c41afc638bdcd6e7dadc91509da627909637 from /Users/sac/chatman-ecosystem into /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/mut-prior
+MUTANT MX1 exit=0 expect=[exit 1, REFUSED\[SILENT_V26_9_1_READ\] F4: .* opened .*/release/v26\.9\.1/manifest\.toml] witnessed=[NONE] final=CE23-7 ALIVE
+MUTANT MX1b exit=1 expect=[exit 1, REFUSED\[SILENT_V26_9_1_READ\] F4: pointer->v26\.9\.1 \(self-hosted\): verify_standing_evidence] witnessed=[NONE] final=CE23-7 REFUSED (2 counterexample(s))
+MUTATION WITNESSES FAILED subject=1a43c41afc638bdcd6e7dadc91509da627909637
+UNKNOWN[FIXTURE_UNBUILDABLE] F4: catalog/west.toml: anchor '^release_manifest = "release/v26\\.9\\.1/manifest.toml"$' not found once
+REFUSED[FALSIFIER_ADMITTED] F5d: verify_west_workspace (projection sourced from v26.9.1): expected exit 1 with REFUSED:WEST_RELEASE_SOURCE_MISMATCH, got exit 0: ered": 2,
+REFUSED[UNIT_SUITE] F8: exit 1, Ran 453 (floor 453): ['FAIL: test_main_prints_valid_plan_json_and_exits_zero (test_completion_fanout.MainCliTests.test_main_prints_valid_plan_json_and_exits_zero)', 'FA
+exit=0

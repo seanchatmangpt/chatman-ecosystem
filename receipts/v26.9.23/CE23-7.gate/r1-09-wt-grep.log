@@ -1,0 +1,4 @@
+$ ! git grep -nE '(/Users/sac/wt|~/wt|[$]HOME/wt)' HEAD -- scripts tests release/v26.9.23/courts HANDWRITTEN.md
+exit=0
+$ ! git diff 1a43c41afc638bdcd6e7dadc91509da627909637 HEAD -- scripts tests release/v26.9.23/courts HANDWRITTEN.md | grep -nE '^[+].*(/Users/sac/wt|~/wt|[$]HOME/wt)'
+exit=0

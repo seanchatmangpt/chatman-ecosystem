@@ -1,0 +1,3 @@
+$ ruff check --no-cache scripts/verify_release.py tests/test_release_line.py tests/test_release_control.py tests/test_ce23_7_probe.py tests/test_completion_fanout.py release/v26.9.23/courts/ce23_7/court.py release/v26.9.23/courts/ce23_7/audit_run.py
+All checks passed!
+exit=0

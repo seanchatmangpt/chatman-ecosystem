@@ -1,0 +1,43 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_ce23_7_probe.py' -v && PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_release_*.py' -k PathFree -k test_manifest_is_structurally_admitted -k pointer -k projection -v && PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_completion_fanout.py' -k MainCli -v
+test_a_git_object_store_open_is_blind (test_ce23_7_probe.ProbeBlindTests.test_a_git_object_store_open_is_blind) ... ok
+test_an_off_host_socket_is_blind (test_ce23_7_probe.ProbeBlindTests.test_an_off_host_socket_is_blind) ... ok
+test_an_unrelated_child_process_is_blind (test_ce23_7_probe.ProbeBlindTests.test_an_unrelated_child_process_is_blind) ... ok
+test_judge_reads_refuses_a_read_before_it_reports_a_blind_spot (test_ce23_7_probe.ProbeBlindTests.test_judge_reads_refuses_a_read_before_it_reports_a_blind_spot) ... REFUSED[SILENT_V26_9_1_READ] T: tool targeting v26.9.23 opened /Users/sac/.cache/tmp/tmp757wdu47/release/v26.9.1/manifest.toml
+ok
+test_native_code_is_blind (test_ce23_7_probe.ProbeBlindTests.test_native_code_is_blind) ... ok
+test_a_byte_copy_of_a_predecessor_file_is_a_read_outside_the_target_line (test_ce23_7_probe.ProbeReadTests.test_a_byte_copy_of_a_predecessor_file_is_a_read_outside_the_target_line) ... ok
+test_a_child_process_naming_the_predecessor_is_a_read (test_ce23_7_probe.ProbeReadTests.test_a_child_process_naming_the_predecessor_is_a_read) ... ok
+test_a_clean_target_read_is_neither_read_nor_blind (test_ce23_7_probe.ProbeReadTests.test_a_clean_target_read_is_neither_read_nor_blind) ... ok
+test_a_directory_listing_of_the_predecessor_is_a_read (test_ce23_7_probe.ProbeReadTests.test_a_directory_listing_of_the_predecessor_is_a_read) ... ok
+test_a_url_naming_the_predecessor_is_a_read (test_ce23_7_probe.ProbeReadTests.test_a_url_naming_the_predecessor_is_a_read) ... ok
+test_an_open_under_the_predecessor_line_is_a_read_wherever_it_lives (test_ce23_7_probe.ProbeReadTests.test_an_open_under_the_predecessor_line_is_a_read_wherever_it_lives) ... ok
+test_any_component_naming_the_predecessor_is_a_read (test_ce23_7_probe.ProbeReadTests.test_any_component_naming_the_predecessor_is_a_read) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.633s
+
+OK
+test_manifest_is_structurally_admitted (test_release_control.ReleaseControlTests.test_manifest_is_structurally_admitted) ... ok
+test_an_invalid_expected_version_is_refused_typed (test_release_line.PathFreeVersionLawTests.test_an_invalid_expected_version_is_refused_typed) ... ok
+test_expected_version_admits_its_own_line_in_either_spelling (test_release_line.PathFreeVersionLawTests.test_expected_version_admits_its_own_line_in_either_spelling) ... ok
+test_expected_version_refuses_another_line_without_a_path (test_release_line.PathFreeVersionLawTests.test_expected_version_refuses_another_line_without_a_path) ... ok
+test_path_and_expected_version_are_judged_independently (test_release_line.PathFreeVersionLawTests.test_path_and_expected_version_are_judged_independently) ... ok
+test_without_path_or_expected_version_only_the_calendar_form_is_judged (test_release_line.PathFreeVersionLawTests.test_without_path_or_expected_version_only_the_calendar_form_is_judged) ... ok
+test_planner_default_is_the_explicit_pointer_line (test_release_line.PlannerLineTests.test_planner_default_is_the_explicit_pointer_line) ... ok
+test_default_is_the_declared_pointer_line (test_release_line.ReleaseLineResolverTests.test_default_is_the_declared_pointer_line) ... ok
+test_missing_pointer_is_refused_typed (test_release_line.ReleaseLineResolverTests.test_missing_pointer_is_refused_typed) ... ok
+test_west_default_is_the_explicit_pointer_line (test_release_line.StandingAndWestLineTests.test_west_default_is_the_explicit_pointer_line) ... ok
+test_west_refuses_a_projection_sourced_from_another_line (test_release_line.StandingAndWestLineTests.test_west_refuses_a_projection_sourced_from_another_line) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 2.181s
+
+OK
+test_main_prints_valid_plan_json_and_exits_zero (test_completion_fanout.MainCliTests.test_main_prints_valid_plan_json_and_exits_zero) ... ok
+test_main_release_only_excludes_portfolio_packets (test_completion_fanout.MainCliTests.test_main_release_only_excludes_portfolio_packets) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.138s
+
+OK
+exit=0
