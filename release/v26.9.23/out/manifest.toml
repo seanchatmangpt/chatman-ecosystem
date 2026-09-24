@@ -9,7 +9,7 @@ version = "26.9.23"
 target_date = "2026-09-23"
 standing = "UNKNOWN"
 authority_class = "SELECT_CONSTRUCT"
-predecessor_version = ""
+predecessor_version = "26.9.1"
 classification_source = "seanchatmangpt/xaas@6fd59588c2e06b83d1af6ebc653e7b545de6f90f:docs/sjira/v26.9.23/fleet/classification.ttl sha256:d9e99f074ef2a8c994119681d9359ea1778e68333cc8da94b6b1c0aa44873636"
 required_roles = [
   "execution-realization",

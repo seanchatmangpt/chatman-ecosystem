@@ -3,7 +3,8 @@
 This directory is the independent v26.9.23 release subject (CE23-1 in
 `sjira/goal.ttl`). It is a ggen sub-project over the byte-identically vendored
 `chatman-ecosystem-release-pack`. `release/v26.9.1` is its predecessor and is never
-read or changed by it.
+changed by it; the render never reads it: its 16 roles enter only as `imports/legacy-v26.9.1.ttl`,
+the committed lift of the manifest blob at the base commit (CE23-2).
 
 ## Layout
 
@@ -12,6 +13,8 @@ read or changed by it.
 | `ggen.toml` | sub-project config: vendored pack entry (`lock = true`) and `extra_ontologies` inputs | hand-written wiring |
 | `release.ttl` | release-instance facts: version, the xaas and ggen_igniter components, role mappings | consumer-owned (pack law) |
 | `imports/fleet-classification.ttl` | byte copy of xaas `docs/sjira/v26.9.23/fleet/classification.ttl` at the pinned xaas commit | import |
+| `imports/legacy-v26.9.1.ttl` | the pack's `lift/manifest_to_er.py` over the `release/v26.9.1/manifest.toml` blob of the base commit c59596f5 (CE23-2) | lifted import |
+| `imports/court-references.ttl` | `courts/ce23_2/observe_court_refs.py`: which xaas GC-26.9.23 court scripts (at the xaas component commit) execute which repository (CE23-2) | observed import |
 | `vendor/ggen-marketplace/` | vendored marketplace packs; `VENDOR.toml` records commit and tree per pack | byte copy |
 | `out/`, `ggen.lock` | render of `ggen sync run`: manifest, crosswalks, requirements, role derivations, imported crowns | generated |
 | `manifest.toml`, `constitutional-role-crosswalk.toml` | symlinks to `out/`, so `scripts/release_line.py` resolves the line | pointer |
@@ -39,6 +42,22 @@ sh release/v26.9.23/courts/CE23-1.sh
 
 The court judges the exact committed head. Its clauses and its 23-mutant anti-vacuity corpus
 are listed in `courts/ce23_1/court.py`, and its pins are in `courts/ce23_1/subject.toml`.
+
+```bash
+sh release/v26.9.23/courts/CE23-2.sh
+```
+
+The CE23-2 court judges the 16-role legacy crosswalk (`out/legacy-role-crosswalk.toml`,
+`out/crosswalk.ttl`, `out/role-derivations.toml`): every required role of
+`release/v26.9.1/manifest.toml`, read from the base blob, has exactly one row with REQUIRED,
+SUCCESSOR, BLOCKED, UNSUPPORTED or REFUSED, its own legacy component and a derived or decided
+provenance; both imports are re-derived byte for byte; the render reproduces twice. Clauses and the
+18-mutant corpus: `courts/ce23_2/court.py`; pins and admitted decisions (none):
+`courts/ce23_2/crosswalk.toml`. To refresh the court-reference import after a component re-pin:
+
+```bash
+cd release/v26.9.23 && python3 courts/ce23_2/observe_court_refs.py --subject . > imports/court-references.ttl
+```
 
 ## See also
 

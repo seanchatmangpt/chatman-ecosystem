@@ -20,8 +20,14 @@
 # re-binds er:branchRef / er:commitSha and the classification pin; standing is never stored
 # here (UNKNOWN): the root court (CE23-9/CE23-10) derives it from receipts.
 #
-# Not asserted here: er:crosswalkFrom and the lifted v26.9.1 roles (CE23-2 adds them with
-# the court-reference observation), imported crowns (CE23-3/CE23-8).
+# Legacy crosswalk (CE23-2): er:crosswalkFrom binds this release to the v26.9.1 release it
+# must dispose. Every one of the 16 required roles of release/v26.9.1/manifest.toml (lifted
+# into imports/legacy-v26.9.1.ttl) is disposed by the vendored pack's disposition rule over
+# the imported fleet classification and imports/court-references.ttl; there is no explicit
+# er:decidedBy fact here (courts/ce23_2/crosswalk.toml admits none). Gate 070 refuses an
+# undisposed role and the CE23-2 court refuses a render that does not carry all 16.
+#
+# Not asserted here: imported crowns (CE23-3/CE23-8).
 
 r23:release a er:Release ;
     rdfs:label "Chatman Ecosystem" ;
@@ -30,6 +36,7 @@ r23:release a er:Release ;
     er:standing er:UNKNOWN ;
     er:authorityClass er:SELECT_CONSTRUCT ;
     er:requiredRole "execution-realization", "semantic-manufacture" ;
+    er:crosswalkFrom <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1> ;
     er:classificationSource "seanchatmangpt/xaas@6fd59588c2e06b83d1af6ebc653e7b545de6f90f:docs/sjira/v26.9.23/fleet/classification.ttl sha256:d9e99f074ef2a8c994119681d9359ea1778e68333cc8da94b6b1c0aa44873636" ;
     er:hasComponent r23:xaas, r23:ggen_igniter ;
     er:hasRoleMapping r23:map-execution-realization, r23:map-semantic-manufacture .

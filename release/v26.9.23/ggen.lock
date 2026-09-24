@@ -2,4 +2,4 @@
 
 [packs.chatman-ecosystem-release-pack]
 source = "path:vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack"
-content_hash = "blake3:86fb23bc81a50d9496cab44ac996829835ded8daee70d7a633b66f99e167aa5a"
+content_hash = "blake3:2dd19eac9c94ab697d219255c8894cee3f5e955b63a35ff2bdf24849c21d6d24"
