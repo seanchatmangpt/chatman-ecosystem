@@ -36,6 +36,15 @@ court_files = [
   "release/v26.9.23/courts/ce23_9/root.toml",
 ]
 
+[receipt_history]
+# The receipts at `receipt` this court did not emit and R1 may report as superseded without judging:
+# exactly these blob ids. 19373ddc is the shadow-era receipt of a896e16c (subject c59596f5, written
+# before this court existed; superseded by the court's first seal, 1c7f0433). Any other receipt at
+# HEAD without the court's marker (court.emitted_by = the wrapper) is REFUSED[RECEIPT_NOT_COURT_EMITTED]:
+# an edited or hand-written receipt is never skipped. Adding a blob here is a pin change with its own
+# receipt.
+superseded_blobs = ["19373ddc50219b638bda5e0c4ce47382c48da51b"]
+
 [identity_fact]
 # The er:Component + er:RefObservation fact of the GitHub main observation (K1), judged by these
 # gates of the vendored chatman-ecosystem-release-pack through its own runner bin/run-gates.py.

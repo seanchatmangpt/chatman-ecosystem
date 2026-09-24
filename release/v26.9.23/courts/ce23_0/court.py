@@ -29,7 +29,9 @@ is read from a receipt except in R1, which judges the receipt. Clauses:
                a committed fact (receipts/v26.9.23/CE23-0.identity.ttl) is admitted too and its
                observed SHA lies on the published line between the base and the live M
   O1 order     the gate's sj:courtCommand is this court and the compiled CE23 orders checkpoint at
-               least one sj:WorkOrder on ce:CE23-0 (the receipt links them)
+               least one sj:WorkOrder on ce:CE23-0 (the receipt links them); goal.ttl and every
+               compiled orders.ttl are read from HEAD's tree, never the working tree (an untracked
+               orders file links nothing)
   L1 local     the pre-migration local-only lineage: every pinned head at its exact SHA in every
                archive namespace (and nothing else there), the pre-migration checkout HEAD ref, and
                the pinned shape (commit count, root set). Absent refs are refused while the commits
@@ -45,17 +47,24 @@ is read from a receipt except in R1, which judges the receipt. Clauses:
                commit and the shadow's published int are the head or its ancestors; the relation of
                the shadow's unpublished int to the head is reported
   P1 v26.9.1   release/v26.9.1 at the head is the base tree and the pinned tree
-  R1 receipt   a court-emitted receipts/v26.9.23/CE23-0.json at HEAD: its subject is the head or an
-               ancestor, the pinned generated validator (dfcm_fleet_v1) admits it, and every claim it
-               records (lineage, shadow clone, predecessor, GitHub observation, base, repository) equals
-               this run's recomputation at its subject; a receipt this court did not emit is reported
-               as superseded by the next seal, not judged
+  R1 receipt   receipts/v26.9.23/CE23-0.json at HEAD is judged unless its blob is one of the pinned
+               pre-court receipts (identity.toml [receipt_history] superseded_blobs); a receipt without
+               the court's marker (court.emitted_by = the wrapper) that is not pinned is refused
+               (RECEIPT_NOT_COURT_EMITTED), so an edited marker or a deleted court block never switches
+               the judgment off. A court-emitted receipt: its subject is the head or an ancestor; the
+               pinned generated validator (dfcm_fleet_v1) admits it; court.loaded_sha256 is exactly the
+               sha256 of the court files at its subject (RECEIPT_COURT_MISMATCH); its standing, exit and
+               counts derive from its own recorded clause lines, and an ALIVE one records the pinned
+               lineage relation and an untouched predecessor (RECEIPT_STANDING_UNDERIVED); every claim
+               it records (lineage, shadow clone, predecessor, the receipt it supersedes, GitHub
+               observation, base, repository) equals this run's recomputation at its subject
   AV corpus    a synthetic GitHub (bare repository), a synthetic local lineage and a synthetic
                checkout built with git in scratch, judged by the same clauses: controls M0 (head one
-               commit ahead of the published line), M0p (published) and M0s (sealed with this
-               court's own receipt and identity fact) must be ALIVE; 21 mutants must be refused
-               with their expected codes, and the two evidence edges (M6 a clone without the
-               archive, M15 GitHub unreachable) must be UNKNOWN and never refused (see mutants())
+               commit ahead of the published line, carrying the pinned pre-court receipt), M0p
+               (published) and M0s (the court committed, then sealed with this court's own receipt
+               and identity fact) must be ALIVE; 28 mutants must be refused with their expected
+               codes, and the two evidence edges (M6 a clone without the archive, M15 GitHub
+               unreachable) must be UNKNOWN and never refused (see mutants())
 
 Seal: --receipt-out FILE writes the fleet R receipt of this run (validated by the pinned validator
 before it is written) and --identity-out FILE the identity fact; both are court output, committed
@@ -500,23 +509,41 @@ def k1_fact(g: Git, pins: dict, gh: dict | None, head: str, law_root: Path, scra
     return text
 
 
-def o1_orders(law_root: Path, pins: dict, j: Judge) -> list[str]:
+def committed_graph(lg: Git, law_root: Path, rel: str):
+    """The Turtle file `rel` as committed at HEAD of `law_root` (None when HEAD does not hold it), parsed
+    with the file's own URI as base, exactly as a parse of the file would."""
+    import rdflib  # noqa: PLC0415
+    data = lg.blob(f"HEAD:{rel}")
+    if data is None:
+        return None
+    return rdflib.Graph().parse(data=data.decode("utf-8"), format="turtle", publicID=(law_root / rel).as_uri())
+
+
+def o1_orders(law_root: Path, pins: dict, env: dict, j: Judge) -> list[str]:
+    """Reads goal.ttl and the compiled orders from HEAD's tree of `law_root`: W1 ignores untracked files, so
+    a working-tree glob would let an untracked orders.ttl link the gate."""
     import rdflib  # noqa: PLC0415
     from rdflib import RDF, URIRef  # noqa: PLC0415
     sj, dct = rdflib.Namespace(SJ), rdflib.Namespace(DCT)
-    sub = law_root / SDIR
+    lg = Git(law_root, env)
     gate = URIRef(pins["subject"]["gate_iri"])
-    goal = rdflib.Graph().parse(sub / pins["subject"]["goal"], format="turtle")
+    goal_rel = f"{SDIR}/{pins['subject']['goal']}"
+    goal = committed_graph(lg, law_root, goal_rel)
+    if goal is None:
+        j.refuse("GOAL_ABSENT", "O1", f"{goal_rel} is not committed at HEAD of {law_root}")
+        return []
     cmd = str(goal.value(gate, sj.courtCommand) or "")
     if cmd != COURT_CMD:
         j.refuse("COURT_COMMAND_MISMATCH", "O1", f"{gate} sj:courtCommand is {cmd!r}, not {COURT_CMD!r}")
     orders = []
-    for f in sorted((sub / "sjira" / "compiled").glob("*/orders.ttl")):
-        g = rdflib.Graph().parse(f, format="turtle")
+    compiled = re.compile(rf"{re.escape(SDIR)}/sjira/compiled/[^/]+/orders\.ttl")
+    committed = lg.out("ls-tree", "-r", "--name-only", "HEAD", "--", f"{SDIR}/sjira/compiled").splitlines()
+    for rel in sorted(p for p in committed if compiled.fullmatch(p)):
+        g = committed_graph(lg, law_root, rel)
         for o in sorted(g.subjects(sj.checkpointOf, gate)):
             if (o, RDF.type, sj.WorkOrder) in g:
                 subject = str(g.value(o, sj.subject) or "").rsplit("#", 1)[-1]
-                orders.append(f"{g.value(o, dct.identifier)} ({f.relative_to(law_root)}; subject {subject})")
+                orders.append(f"{g.value(o, dct.identifier)} ({rel}; subject {subject})")
     if not orders:
         j.refuse("ORDER_UNLINKED", "O1", f"no compiled sj:WorkOrder is checkpointed on {gate}")
     elif cmd == COURT_CMD:
@@ -647,25 +674,106 @@ def validate(validator: Path, doc_path: Path) -> tuple[int, str]:
     return p.returncode, (p.stdout + p.stderr).strip()
 
 
-def r1_receipt(g: Git, pins: dict, head: str, gh: dict | None, scratch: Path, validator: dict, j: Judge) -> dict | None:
-    """Judges a court-emitted receipt at HEAD; returns the supersession record of the receipt at HEAD."""
-    rel = pins["subject"]["receipt"]
-    data = g.blob(f"HEAD:{rel}")
+def _obj(x) -> dict:
+    return x if isinstance(x, dict) else {}
+
+
+def receipt_record(g: Git, rel: str, rev: str) -> tuple[dict | None, dict | None]:
+    """The supersession record of the receipt `rel` at `rev` (what a seal at `rev` supersedes: a function of
+    the commit, so R1 recomputes it) and its parsed document (None when it is not a JSON object);
+    (None, None) when `rev` holds no receipt."""
+    data = g.blob(f"{rev}:{rel}")
     if data is None:
-        j.ok("R1", f"no committed receipt at HEAD ({rel}): sealed by --receipt-out")
-        return None
-    record = {"path": rel, "blob": g.out("rev-parse", f"HEAD:{rel}"), "commit": g.out("log", "-1", "--format=%H", "HEAD", "--", rel)}
+        return None, None
+    record = {"path": rel, "blob": g.out("rev-parse", f"{rev}:{rel}"), "commit": g.out("log", "-1", "--format=%H", rev, "--", rel)}
     try:
         doc = json.loads(data.decode("utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        j.refuse("RECEIPT_INVALID", "R1", f"{rel} at HEAD is not JSON: {exc}")
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return record, None
+    if not isinstance(doc, dict):
+        return record, None
+    record.update({"subject_sha": str(_obj(doc.get("identity")).get("subject_sha", "")),
+                   "standing": str(_obj(doc.get("standing")).get("value", "")),
+                   "emitted_by_this_court": _obj(doc.get("court")).get("emitted_by") == WRAPPER})
+    return record, doc
+
+
+def court_identity_mismatch(g: Git, doc: dict, subject: str) -> list[str]:
+    """A court-emitted receipt names the court that sealed it: court.loaded_sha256 must be exactly the
+    sha256 of each court file (the wrapper, court.py, the pins) as committed at its subject (C1 held the
+    loaded court byte-identical to the subject when it sealed)."""
+    court = _obj(doc.get("court"))
+    loaded = _obj(court.get("loaded_sha256"))
+    out = []
+    if court.get("pins") != f"{SDIR}/courts/ce23_0/identity.toml":
+        out.append(f"court.pins {court.get('pins')!r}")
+    if set(loaded) != set(LOADED):
+        out.append(f"court.loaded_sha256 names {sorted(loaded)}, not the court files {sorted(LOADED)}")
+    for path in sorted(set(loaded) & set(LOADED)):
+        blob = g.blob(f"{subject}:{path}")
+        want = sha256(blob) if blob is not None else "(absent at the subject)"
+        if loaded[path] != want:
+            out.append(f"{path}: loaded {str(loaded[path])[:12]} is not the blob at the subject ({want[:12]})")
+    return out
+
+
+def standing_underived(doc: dict, pins: dict, subject: str) -> list[str]:
+    """A court-emitted receipt's standing is derived, never stored: the verdict of its own recorded clause
+    lines fixes standing.value, the replayed court command's exit and summary, and the counts in
+    standing.derived_from; an ALIVE receipt must record what an ALIVE run records (the pinned lineage
+    relation, an untouched predecessor)."""
+    clauses = _obj(doc.get("court")).get("clauses")
+    if not isinstance(clauses, list) or not clauses:
+        return ["court.clauses absent: no recorded run to derive the standing from"]
+    verdicts = [str(_obj(c).get("verdict")) for c in clauses]
+    n = {k: verdicts.count(k) for k in ("OK", "REFUSED", "UNKNOWN")}
+    out = []
+    if sum(n.values()) != len(verdicts):
+        out.append(f"clause verdicts outside OK/REFUSED/UNKNOWN: {sorted(set(verdicts) - set(n))}")
+    verdict = "REFUSED" if n["REFUSED"] else "UNKNOWN" if n["UNKNOWN"] else "ALIVE"
+    want = {"ALIVE": "ALIVE", "UNKNOWN": "UNKNOWN", "REFUSED": "BLOCKED"}[verdict]
+    st = _obj(doc.get("standing"))
+    if st.get("value") != want:
+        out.append(f"standing.value {st.get('value')!r} but its clause lines derive {want} ({n})")
+    prefix = f"{COURT_CMD} exit {EXIT[verdict]} at {subject} ({n['OK']} OK, {n['REFUSED']} REFUSED, {n['UNKNOWN']} UNKNOWN;"
+    if not str(st.get("derived_from", "")).startswith(prefix):
+        out.append(f"standing.derived_from does not start {prefix!r}")
+    cmds = _obj(doc.get("replay")).get("commands")
+    first = _obj(cmds[0]) if isinstance(cmds, list) and cmds else {}
+    if (first.get("cmd"), first.get("exit"), first.get("summary")) != (COURT_CMD, EXIT[verdict], f"CE23-0 {verdict} at {subject}"):
+        out.append(f"replay.commands[0] {first.get('cmd')!r} exit {first.get('exit')!r} is not the court's run ({EXIT[verdict]})")
+    if want == "ALIVE":
+        lineage, pred = _obj(doc.get("lineage")), _obj(doc.get("predecessor"))
+        rel = pins["local_lineage"]["relation"]
+        off = sorted(f"{k}->{n}" for k in ("relation_to_base", "relation_to_subject")
+                     for n, r in _obj(lineage.get(k)).items() if r != rel)
+        if not lineage or off:
+            out.append(f"ALIVE while the recorded lineage relations {off or '(absent)'} are not the pinned {rel!r}")
+        if not (pred.get("tree_at_subject") and pred.get("tree_at_subject") == pred.get("tree_at_base") == pred.get("pinned_tree")):
+            out.append("ALIVE while the recorded predecessor tree is not the base tree and the pinned tree")
+    return out
+
+
+def r1_receipt(g: Git, pins: dict, head: str, gh: dict | None, scratch: Path, validator: dict, j: Judge) -> dict | None:
+    """Judges the receipt at HEAD (only a pinned pre-court blob is exempt); returns its supersession record."""
+    rel = pins["subject"]["receipt"]
+    record, doc = receipt_record(g, rel, "HEAD")
+    if record is None:
+        j.ok("R1", f"no committed receipt at HEAD ({rel}): sealed by --receipt-out")
+        return None
+    superseded = list(_obj(pins.get("receipt_history")).get("superseded_blobs", []))
+    at = f"{rel} at HEAD (blob {record['blob'][:12]}, commit {record['commit'][:12]})"
+    if doc is None:
+        j.refuse("RECEIPT_INVALID", "R1", f"{at} is not a JSON object")
         return record
-    record.update({"subject_sha": str(doc.get("identity", {}).get("subject_sha", "")),
-                   "standing": str(doc.get("standing", {}).get("value", "")),
-                   "emitted_by_this_court": doc.get("court", {}).get("emitted_by") == WRAPPER})
     if not record["emitted_by_this_court"]:
-        j.ok("R1", f"{rel} at HEAD (blob {record['blob'][:12]}, commit {record['commit'][:12]}, subject "
-                   f"{record['subject_sha'][:12]}) was not emitted by this court: superseded by the next seal, not judged")
+        if record["blob"] in superseded:
+            j.ok("R1", f"{at}, subject {record['subject_sha'][:12]}, is the pinned pre-court receipt (identity.toml "
+                       "[receipt_history]): superseded by the next seal, not judged")
+        else:
+            j.refuse("RECEIPT_NOT_COURT_EMITTED", "R1", f"{at} carries no court.emitted_by = {WRAPPER!r} and is not a pinned "
+                                                        f"pre-court receipt {[b[:12] for b in superseded]}: a receipt this "
+                                                        "court did not emit is refused, never skipped")
         return record
     subject = record["subject_sha"]
     if g.relation(subject, head) not in ON_LINE:
@@ -679,22 +787,32 @@ def r1_receipt(g: Git, pins: dict, head: str, gh: dict | None, scratch: Path, va
             (j.refuse if kind == "REFUSED" else j.unk)(code, "R1", f"{rel}: {text}")
     else:
         doc_path = scratch / "committed-receipt.json"
-        doc_path.write_bytes(data)
+        doc_path.write_bytes(g.blob(f"HEAD:{rel}") or b"")
         rc, out = validate(validator["path"], doc_path)
         if rc != 0:
             j.refuse("RECEIPT_INVALID", "R1", f"{rel}: the pinned validator (dfcm_fleet_v1) exit {rc}: {out.splitlines()[-3:]}")
+    court_off = court_identity_mismatch(g, doc, subject)
+    if court_off:
+        j.refuse("RECEIPT_COURT_MISMATCH", "R1", f"{rel} (subject {subject[:12]}) names a court that is not the court committed "
+                                                 f"at its subject: {court_off}")
+    underived = standing_underived(doc, pins, subject)
+    if underived:
+        j.refuse("RECEIPT_STANDING_UNDERIVED", "R1", f"{rel} (subject {subject[:12]}) records a standing its own run does not "
+                                                     f"derive: {underived}")
     s = pins["subject"]
     mismatch = []
-    ident = doc.get("identity", {})
+    if doc.get("supersedes") != receipt_record(g, rel, subject)[0]:
+        mismatch.append("supersedes (not the receipt at its subject)")
+    ident = _obj(doc.get("identity"))
     if ident.get("repo") != s["repository"] or ident.get("base_sha") != s["base_commit"]:
         mismatch.append(f"identity repo/base {ident.get('repo')}/{ident.get('base_sha')}")
     for key, fn in (("lineage", lineage_block), ("shadow_clone", shadow_block), ("predecessor", predecessor_block)):
         want = fn(g, pins, subject)
         have = doc.get(key)
         if have != want:
-            diff = sorted(k for k in set(want) | set(have or {}) if (have or {}).get(k) != want.get(k))
+            diff = sorted(k for k in set(want or {}) | set(_obj(have)) if _obj(have).get(k) != _obj(want).get(k))
             mismatch.append(f"{key}.{diff}")
-    claimed = doc.get("github", {})
+    claimed = _obj(doc.get("github"))
     if claimed:
         cm, cb = str(claimed.get("main", "")), str(claimed.get("branch_sha", ""))
         if g.relation(s["base_commit"], cm) not in ON_LINE:
@@ -709,9 +827,10 @@ def r1_receipt(g: Git, pins: dict, head: str, gh: dict | None, scratch: Path, va
         mismatch.append("github (absent)")
     if mismatch:
         j.refuse("RECEIPT_CLAIM_MISMATCH", "R1", f"{rel} (subject {subject[:12]}) records claims this run does not recompute: {mismatch}")
-    else:
-        j.ok("R1", f"{rel} (court-emitted, subject {subject[:12]}, standing {record['standing']}): every recorded claim equals the "
-                   "recomputation at its subject")
+    elif not court_off and not underived:
+        j.ok("R1", f"{rel} (court-emitted, subject {subject[:12]}, standing {record['standing']} derived from its "
+                   f"{len(_obj(doc.get('court')).get('clauses') or [])} clause lines, court = the court at its subject): every "
+                   "recorded claim equals the recomputation at its subject")
     return record
 
 
@@ -740,7 +859,7 @@ def judge(root: Path, pins: dict, j: Judge, env: dict, scratch: Path, validator:
     i3_head_lineage(g, pins, head, j)
     obs["github"] = gh
     obs["identity_ttl"] = k1_fact(g, pins, gh, head, law_root, scratch, j)
-    obs["orders"] = o1_orders(law_root, pins, j)
+    obs["orders"] = o1_orders(law_root, pins, env, j)
     obs["lineage"] = l1_l3_lineage(g, pins, head, j)
     obs["shadow_clone"] = s1_shadow(g, pins, head, j)
     obs["predecessor"] = p1_predecessor(g, pins, head, j)
@@ -869,7 +988,8 @@ def build_world(base: Path, env: dict, law_root: Path, with_archive: bool = True
     b = commit_file(seed, env, "release/v26.9.1/manifest.toml", "version = \"26.9.1\"\n", "base: v26.9.1 release")
     sh_git(seed, env, "push", "-q", str(gh), "main")
     sh_git(seed, env, "checkout", "-q", "-b", "release/v26.9.23-int")
-    i1 = commit_file(seed, env, "receipts/v26.9.23/CE23-0.json", "{}\n", "shadow-era identity commit")
+    i1 = commit_file(seed, env, PINS["subject"]["receipt"], "{}\n", "shadow-era identity commit")
+    pre_court = sh_git(seed, env, "rev-parse", f"{i1}:{PINS['subject']['receipt']}")
     sh_git(seed, env, "push", "-q", str(gh), "release/v26.9.23-int")
     # the retired clone's unpublished int: one commit past the published one, held only by the clone
     s1 = sh_git(seed, env, "commit-tree", f"{i1}^{{tree}}", "-p", i1, "-m", "shadow wip, never published")
@@ -887,6 +1007,7 @@ def build_world(base: Path, env: dict, law_root: Path, with_archive: bool = True
     pins = copy.deepcopy(PINS)
     pins["subject"].update({"base_commit": b, "github_root": g0, "predecessor_tree": sh_git(work, env, "rev-parse", f"{b}:release/v26.9.1")})
     pins["local_lineage"].update({"root": l0, "commits": 2, "heads": {"main": l1, "side": l0}, "checkout_head": l1})
+    pins["receipt_history"] = {"superseded_blobs": [pre_court]}
     pins["shadow_clone"].update({"identity_commit": i1, "refs": {"heads/main": b, "heads/release/v26.9.23-int": s1,
                                                                  "remotes/origin/main": b, "remotes/origin/release/v26.9.23-int": i1}})
     if with_archive:
@@ -901,7 +1022,14 @@ def build_world(base: Path, env: dict, law_root: Path, with_archive: bool = True
 
 
 def seal_world(work: Path, env: dict, pins: dict, validator: dict, transport: str, law_root: Path, scratch: Path) -> None:
-    """The court seals the synthetic checkout exactly as it seals the subject: judge, emit, commit."""
+    """The court seals the synthetic checkout exactly as it seals the subject: the court (as loaded) is
+    committed, then judged at that subject, emitted and committed."""
+    for rel, data in LOADED.items():
+        if data is not None:
+            (work / rel).parent.mkdir(parents=True, exist_ok=True)
+            (work / rel).write_bytes(data)
+            sh_git(work, env, "add", "--", rel)
+    sh_git(work, env, "commit", "-q", "-m", "the CE23-0 court committed at the subject")
     j = Judge(quiet=True)
     obs = judge(work, pins, j, env, scratch, validator, transport=transport, law_root=law_root)
     if j.verdict() != "ALIVE":
@@ -970,6 +1098,21 @@ def mutants(pins: dict, env: dict) -> list[dict]:
     def foreign_subject(w: Path, gh: Path) -> None:
         edit_json(w / s["receipt"], lambda d: d["identity"].update({"subject_sha": l1}))
         git(w, "commit", "-q", "-am", "mutant: receipt subject is the local lineage")
+
+    def forge(fn, what: str):
+        def mutate(w: Path, gh: Path) -> None:
+            edit_json(w / s["receipt"], fn)
+            git(w, "commit", "-q", "-am", f"mutant: {what}")
+        return mutate
+
+    def false_lineage(d: dict) -> None:
+        d["lineage"]["relation_to_base"].update({"main": "descendant"})
+
+    def hand_receipt(w: Path, gh: Path) -> None:
+        head = git(w, "rev-parse", "HEAD")
+        (w / s["receipt"]).write_text(json.dumps({"identity": {"subject_sha": head, "repo": s["repository"]},
+                                                  "standing": {"value": "ALIVE"}}, indent=2) + "\n", encoding="utf-8")
+        git(w, "commit", "-q", "-am", "mutant: a hand-written receipt replaces the pinned pre-court one")
 
     def fact(observed_only: bool):
         def mutate(w: Path, gh: Path) -> None:
@@ -1049,6 +1192,32 @@ def mutants(pins: dict, env: dict) -> list[dict]:
          "why": "an insteadOf rule reroutes the GitHub remote (judged without a corpus transport)"},
         {"id": "M21", "world": "open", "mutate": lambda w, g: git(w, "update-ref", pins["local_lineage"]["checkout_head_ref"], l0),
          "verdict": "REFUSED", "codes": ["LINEAGE_UNPRESERVED"], "why": "the pre-migration checkout HEAD ref repointed"},
+        {"id": "M22", "world": "sealed",
+         "mutate": forge(lambda d: (false_lineage(d), d["court"].update({"emitted_by": "hand"})), "false claim, marker rewritten"),
+         "verdict": "REFUSED", "codes": ["RECEIPT_NOT_COURT_EMITTED"],
+         "why": "the sealed receipt claims a descendant lineage and its court marker is rewritten (M11 without the marker)"},
+        {"id": "M23", "world": "sealed", "mutate": forge(lambda d: (false_lineage(d), d.pop("court")), "false claim, court block deleted"),
+         "verdict": "REFUSED", "codes": ["RECEIPT_NOT_COURT_EMITTED"],
+         "why": "the sealed receipt claims a descendant lineage and its court block is deleted"},
+        {"id": "M24", "world": "sealed",
+         "mutate": forge(lambda d: (d["identity"].update({"subject_sha": l1}), d["court"].update({"emitted_by": "hand"})),
+                         "local-lineage subject, marker rewritten"),
+         "verdict": "REFUSED", "codes": ["RECEIPT_NOT_COURT_EMITTED"],
+         "why": "the sealed receipt's subject is a local-lineage commit and its court marker is rewritten (M19 without the marker)"},
+        {"id": "M25", "world": "sealed",
+         "mutate": forge(lambda d: d["court"]["loaded_sha256"].update({f"{SDIR}/courts/ce23_0/court.py": "0" * 64}), "court digest"),
+         "verdict": "REFUSED", "codes": ["RECEIPT_COURT_MISMATCH"],
+         "why": "the sealed receipt names a court.py that is not the court committed at its subject"},
+        {"id": "M26", "world": "sealed",
+         "mutate": forge(lambda d: d["court"]["clauses"].append({"verdict": "REFUSED", "clause": "P1", "code": "PREDECESSOR_TOUCHED",
+                                                                 "text": "a recorded refusal"}), "refusal under ALIVE"),
+         "verdict": "REFUSED", "codes": ["RECEIPT_STANDING_UNDERIVED"],
+         "why": "the sealed receipt records a refused clause and keeps its ALIVE standing"},
+        {"id": "M27", "world": "sealed", "mutate": forge(lambda d: d["supersedes"].update({"blob": "0" * 40}), "supersession"),
+         "verdict": "REFUSED", "codes": ["RECEIPT_CLAIM_MISMATCH"],
+         "why": "the sealed receipt claims to supersede a receipt that was not at its subject"},
+        {"id": "M28", "world": "open", "mutate": hand_receipt, "verdict": "REFUSED", "codes": ["RECEIPT_NOT_COURT_EMITTED"],
+         "why": "a hand-written ALIVE receipt replaces the pinned pre-court receipt"},
     ]
 
 

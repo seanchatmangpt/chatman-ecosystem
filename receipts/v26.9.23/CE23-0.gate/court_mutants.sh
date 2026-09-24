@@ -39,6 +39,17 @@ mutate CM5-shadow-continuation 'if broken:
         j.refuse("SHADOW_LINE_NOT_CONTINUED"' 'if False and broken:
         j.refuse("SHADOW_LINE_NOT_CONTINUED"'
 mutate CM6-evidence-rule 'if not any(observed.values()) and not chk and not all(objects.values()):' 'if not any(observed.values()) and not chk:'
+# skeptic repair r1 (R1 admission hole): each weakening below must be caught by the new corpus mutants
+mutate CM7-unmarked-receipt 'j.refuse("RECEIPT_NOT_COURT_EMITTED", "R1", ' 'j.ok("R1", '
+mutate CM8-exemption-unpinned 'if record["blob"] in superseded:' 'if True:'
+mutate CM9-court-digest '    if court_off:
+        j.refuse("RECEIPT_COURT_MISMATCH"' '    if False and court_off:
+        j.refuse("RECEIPT_COURT_MISMATCH"'
+mutate CM10-standing-derivation '    if underived:
+        j.refuse("RECEIPT_STANDING_UNDERIVED"' '    if False and underived:
+        j.refuse("RECEIPT_STANDING_UNDERIVED"'
+mutate CM11-supersession 'mismatch.append("supersedes (not the receipt at its subject)")' 'pass'
 rm -rf "$scratch"
-[ "$fail" -eq 0 ] && echo "COURT_MUTANTS CAUGHT 6/6" || echo "COURT_MUTANTS FAILED"
+n=$(grep -c '^mutate CM' "$0")
+[ "$fail" -eq 0 ] && echo "COURT_MUTANTS CAUGHT $n/$n" || echo "COURT_MUTANTS FAILED"
 exit "$fail"

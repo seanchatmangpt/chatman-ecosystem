@@ -5,7 +5,7 @@ over real repositories built with git in temporary directories (a bare "GitHub",
 and a checkout whose archive namespaces preserve it, exactly as the court's own corpus builds them),
 the real vendored release pack gate runner, and the generated receipt validator CE23-9 pins (read
 from the canonical ggen-marketplace checkout; the seal cases skip, named, without it). No
-collaborator is replaced. The full subject run (live ls-remote of GitHub + the 26-case corpus) is
+collaborator is replaced. The full subject run (live ls-remote of GitHub + the 33-case corpus) is
 `sh release/v26.9.23/courts/CE23-0.sh`; these cases pin the verdict algebra it rests on.
 """
 
@@ -51,6 +51,14 @@ class Scratch(unittest.TestCase):
             self.skipTest(f"pinned receipt validator not admitted here: {code} {text}")
         return {"path": path, "finding": findings[0]}
 
+    def judge(self, work: Path, pins: dict, gh: Path | None, validator: dict | None = None) -> court.Judge:
+        j = court.Judge(quiet=True)
+        v = validator or {"path": None, "finding": ("SKIP", "", "no validation in this case")}
+        scratch = self.base / f"s-{len(list(self.base.glob('s-*')))}"
+        scratch.mkdir()
+        court.judge(work, pins, j, self.env, scratch, v, transport=str(gh) if gh else None, law_root=ROOT)
+        return j
+
 
 class RelationCase(Scratch):
     def test_relation_is_total_over_real_histories(self) -> None:
@@ -84,14 +92,6 @@ class UrlCase(unittest.TestCase):
 
 
 class ClauseCase(Scratch):
-    def judge(self, work: Path, pins: dict, gh: Path | None, validator: dict | None = None) -> court.Judge:
-        j = court.Judge(quiet=True)
-        v = validator or {"path": None, "finding": ("SKIP", "", "no validation in this case")}
-        scratch = self.base / f"s-{len(list(self.base.glob('s-*')))}"
-        scratch.mkdir()
-        court.judge(work, pins, j, self.env, scratch, v, transport=str(gh) if gh else None, law_root=ROOT)
-        return j
-
     def test_preserved_world_is_alive_and_publication_pending_is_no_edge(self) -> None:
         work, gh, pins = self.world()
         j = self.judge(work, pins, gh)
@@ -136,24 +136,135 @@ class ClauseCase(Scratch):
         self.assertIn("RECEIPT_CLAIM_MISMATCH", refused)
 
 
+class ReceiptCase(Scratch):
+    """R1 judges every receipt at HEAD but the pinned pre-court blob (the skeptic's r1_probe forgeries)."""
+
+    SKIP = {"path": None, "finding": ("SKIP", "", "no validation in this case")}
+
+    def sealed(self) -> tuple[Path, Path, dict]:
+        work, gh, pins = self.world()
+        court.seal_world(work, self.env, pins, self.SKIP, str(gh), ROOT, self.base)
+        return work, gh, pins
+
+    def forge(self, work: Path, pins: dict, fn) -> None:
+        court.edit_json(work / pins["subject"]["receipt"], fn)
+        self.git(work, "commit", "-q", "-am", "forged receipt")
+
+    def test_only_the_pinned_pre_court_receipt_is_exempt(self) -> None:
+        work, gh, pins = self.world()
+        j = self.judge(work, pins, gh)
+        self.assertEqual((j.verdict(), j.refused), ("ALIVE", []))
+        self.assertIn("pinned pre-court receipt", [x["text"] for x in j.lines if x["clause"] == "R1"][0])
+        unpinned = dict(pins, receipt_history={"superseded_blobs": []})
+        self.assertEqual(self.judge(work, unpinned, gh).refused, ["RECEIPT_NOT_COURT_EMITTED"])
+
+    def test_a_rewritten_marker_or_deleted_court_block_never_switches_r1_off(self) -> None:
+        l1 = None
+        for label, fn in (("marker", lambda d: (d["lineage"]["relation_to_base"].update({"main": "descendant"}),
+                                                d["court"].update({"emitted_by": "hand"}))),
+                          ("court block", lambda d: (d["lineage"]["relation_to_base"].update({"main": "descendant"}), d.pop("court"))),
+                          ("subject", lambda d: (d["identity"].update({"subject_sha": l1}), d["court"].update({"emitted_by": "hand"})))):
+            with self.subTest(label):
+                self.base = Path(tempfile.mkdtemp(prefix=f"f-{label[:6]}.", dir=self.tmp.name))
+                work, gh, pins = self.sealed()
+                l1 = pins["local_lineage"]["heads"]["main"]
+                self.assertEqual(self.judge(work, pins, gh).verdict(), "ALIVE")
+                self.forge(work, pins, fn)
+                j = self.judge(work, pins, gh)
+                self.assertEqual((j.verdict(), j.refused), ("REFUSED", ["RECEIPT_NOT_COURT_EMITTED"]), j.lines)
+
+    def test_the_court_digest_is_the_court_at_the_subject(self) -> None:
+        work, gh, pins = self.sealed()
+        key = f"{court.SDIR}/courts/ce23_0/court.py"
+        self.forge(work, pins, lambda d: d["court"]["loaded_sha256"].update({key: "0" * 64}))
+        self.assertEqual(self.judge(work, pins, gh).refused, ["RECEIPT_COURT_MISMATCH"])
+
+    def test_standing_is_derived_from_the_recorded_run(self) -> None:
+        work, gh, pins = self.sealed()
+        doc = json.loads((work / pins["subject"]["receipt"]).read_text(encoding="utf-8"))
+        subject = doc["identity"]["subject_sha"]
+        self.assertEqual(court.standing_underived(doc, pins, subject), [])
+        blocked = json.loads(json.dumps(doc))
+        blocked["standing"]["value"] = "BLOCKED"
+        self.assertTrue(court.standing_underived(blocked, pins, subject))
+        touched = json.loads(json.dumps(doc))
+        touched["predecessor"]["tree_at_subject"] = "0" * 40
+        self.assertEqual(len(court.standing_underived(touched, pins, subject)), 1)
+        related = json.loads(json.dumps(doc))
+        related["lineage"]["relation_to_subject"]["main"] = "ancestor"
+        self.assertEqual(len(court.standing_underived(related, pins, subject)), 1)
+        self.forge(work, pins, lambda d: d["court"]["clauses"].append({"verdict": "REFUSED", "clause": "P1", "code": "X", "text": "t"}))
+        self.assertEqual(self.judge(work, pins, gh).refused, ["RECEIPT_STANDING_UNDERIVED"])
+
+    def test_the_superseded_record_is_recomputed_at_the_subject(self) -> None:
+        work, gh, pins = self.sealed()
+        doc = json.loads((work / pins["subject"]["receipt"]).read_text(encoding="utf-8"))
+        self.assertEqual(doc["supersedes"]["blob"], pins["receipt_history"]["superseded_blobs"][0])
+        self.forge(work, pins, lambda d: d["supersedes"].update({"blob": "0" * 40}))
+        self.assertEqual(self.judge(work, pins, gh).refused, ["RECEIPT_CLAIM_MISMATCH"])
+
+
+class OrderCase(Scratch):
+    """O1 reads the goal and the compiled orders from HEAD's tree, never the working tree."""
+
+    def test_an_untracked_orders_file_links_nothing(self) -> None:
+        real = court.Git(ROOT, court.caller_env())
+        law = self.base / "law"
+        self.git(self.base, "init", "-q", "-b", "main", str(law))
+        goal = f"{court.SDIR}/{court.SUBJ['goal']}"
+        orders = f"{court.SDIR}/sjira/compiled/chatman-ce23/orders.ttl"
+        for rel in (goal, orders):
+            (law / rel).parent.mkdir(parents=True, exist_ok=True)
+            (law / rel).write_bytes(real.blob(f"HEAD:{rel}") or b"")
+        self.git(law, "add", "--", goal)
+        self.git(law, "commit", "-q", "-m", "goal only; orders untracked")
+        j = court.Judge(quiet=True)
+        self.assertEqual(court.o1_orders(law, court.PINS, self.env, j), [])
+        self.assertEqual(j.refused, ["ORDER_UNLINKED"])
+        self.git(law, "add", "--", orders)
+        self.git(law, "commit", "-q", "-m", "orders committed")
+        j = court.Judge(quiet=True)
+        linked = court.o1_orders(law, court.PINS, self.env, j)
+        self.assertEqual(j.refused, [])
+        self.assertTrue(linked and all(f"({orders}; subject " in o for o in linked), linked)
+        self.assertEqual(linked, [o for o in court.o1_orders(ROOT, court.PINS, self.env, court.Judge(quiet=True)) if orders in o])
+
+
 class SubjectCase(unittest.TestCase):
     """The committed receipt of this checkout, judged by R1 without the network (no live observation)."""
 
+    def test_receipt_history_after_the_first_seal_is_court_emitted(self) -> None:
+        g = court.Git(ROOT, court.caller_env())
+        rel = court.SUBJ["receipt"]
+        pinned = court.PINS["receipt_history"]["superseded_blobs"]
+        commits = g.out("log", "--format=%H", "--reverse", "HEAD", "--", rel).split()
+        self.assertTrue(commits, "no CE23-0 receipt in HEAD's history")
+        sealed = False
+        for c in commits:
+            record, doc = court.receipt_record(g, rel, c)
+            if record is None:
+                continue
+            if record.get("emitted_by_this_court"):
+                sealed = True
+                continue
+            self.assertFalse(sealed, f"{c[:12]}: a receipt this court did not emit follows the court's first seal")
+            self.assertIn(record["blob"], pinned, f"{c[:12]}: an unpinned receipt this court did not emit")
+
     def test_committed_receipt_is_court_emitted_and_replays(self) -> None:
         g = court.Git(ROOT, court.caller_env())
-        data = g.blob(f"HEAD:{court.SUBJ['receipt']}")
-        if data is None:
-            self.skipTest("no committed CE23-0 receipt")
-        doc = json.loads(data.decode("utf-8"))
-        if doc.get("court", {}).get("emitted_by") != court.WRAPPER:
-            self.skipTest("the committed CE23-0 receipt predates the court's seal")
-        self.assertIsNone(SHADOW_PATH.search(data.decode("utf-8")), "the sealed receipt names a retired shadow path")
+        record, doc = court.receipt_record(g, court.SUBJ["receipt"], "HEAD")
+        self.assertIsNotNone(record, "no committed CE23-0 receipt")
+        if record["blob"] in court.PINS["receipt_history"]["superseded_blobs"]:
+            self.skipTest("the committed CE23-0 receipt is the pinned pre-court receipt (identity.toml [receipt_history])")
+        self.assertTrue(record["emitted_by_this_court"], f"the committed receipt {record} was not emitted by this court")
+        text = (g.blob(f"HEAD:{court.SUBJ['receipt']}") or b"").decode("utf-8")
+        self.assertIsNone(SHADOW_PATH.search(text), "the sealed receipt names a retired shadow path")
         with tempfile.TemporaryDirectory(prefix="ce23-0-subject.") as tmp:
             path, findings = court.validator_for(Path(tmp))
-            if path is None or findings[0][0] != "OK":
-                self.skipTest(f"pinned receipt validator not admitted here: {findings}")
+            validator = ({"path": path, "finding": findings[0]} if path is not None and findings[0][0] == "OK" else
+                         {"path": None, "finding": ("SKIP", "", f"pinned receipt validator not admitted here: {findings}")})
             j = court.Judge(quiet=True)
-            court.r1_receipt(g, court.PINS, g.out("rev-parse", "HEAD"), None, Path(tmp), {"path": path, "finding": findings[0]}, j)
+            court.r1_receipt(g, court.PINS, g.out("rev-parse", "HEAD"), None, Path(tmp), validator, j)
         self.assertEqual((j.refused, j.unknown), ([], []), j.lines)
         self.assertTrue(any("every recorded claim equals the recomputation" in x["text"] for x in j.lines), j.lines)
 
