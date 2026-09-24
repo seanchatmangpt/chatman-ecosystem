@@ -12,7 +12,7 @@
 # runner, the imported fleet classification is the byte copy its source names, every
 # CriticalPath repository is a required component on its ref, verify_release --release
 # v26.9.23 admits the rendered manifest, requirements.toml keeps every compiled order; then
-# the anti-vacuity corpus (control + 15 mutants in synthetic git repos) must be refused.
+# the anti-vacuity corpus (control ALIVE, 17 mutants in synthetic git repos refused).
 # Pins: ce23_1/subject.toml; vendored pack provenance: release/v26.9.23/vendor/ggen-marketplace/VENDOR.toml.
 here=$(cd "$(dirname "$0")" && pwd)
 command -v python3 >/dev/null 2>&1 || { echo "UNKNOWN[TOOL_MISSING] CE23-1: python3 not on PATH"; exit 75; }

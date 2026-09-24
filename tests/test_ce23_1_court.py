@@ -4,7 +4,7 @@ Chicago style: every case builds a real git repository in a temporary directory 
 materialized with `git archive` from this checkout's pinned base commit) and judges it with the
 court's own judge() (release/v26.9.23/courts/ce23_1/court.py), running the real git and tar. No
 collaborator is replaced. The full subject (ggen render, vendored pack, imports, verify_release,
-the 15-mutant corpus) is judged by `sh release/v26.9.23/courts/CE23-1.sh`, not here.
+the 17-mutant corpus) is judged by `sh release/v26.9.23/courts/CE23-1.sh`, not here.
 """
 
 from __future__ import annotations

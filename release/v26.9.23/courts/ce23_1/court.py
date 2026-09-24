@@ -21,6 +21,8 @@ that diverges from the head under release/v26.9.1 or the subject is itself refus
   A2 checkout    the working tree holds no change under the subject paths
   A3 pointers    release/v26.9.23/{manifest,constitutional-role-crosswalk}.toml are
                  symlinks to their render (mode 120000, target out/<name>), not copies
+  A4 independent every path ggen.toml reads (ontology source, templates dir, pack path,
+                 extra_ontologies) is relative and inside release/v26.9.23
   V1 vendor      every vendor/ggen-marketplace/VENDOR.toml row: the committed tree equals
                  the row's tree and the marketplace object <commit>:<subdir>, the commit is
                  on the published marketplace ref, and ggen.toml takes every pack from a
@@ -32,8 +34,8 @@ that diverges from the head under release/v26.9.1 or the subject is itself refus
   G2 gates       the pack's second executor (bin/run-gates.py, rdflib) admits the same
                  union graph: RELEASE_GATES ALIVE
   I1 import      imports/fleet-classification.ttl is the byte copy its classification
-                 source names (repository and commit of a required component, sha256), read
-                 from that component's canonical checkout
+                 source names (the pinned repository and path, at the commit of that
+                 repository's required component, sha256), read from its canonical checkout
   M1 manifest    the manifest the line resolves is version 26.9.23; every CriticalPath
                  repository of the imported classification is a required component with an
                  exact 40-hex SHA and every verify_release field; the crosswalk is bound to
@@ -47,14 +49,15 @@ that diverges from the head under release/v26.9.1 or the subject is itself refus
                  sjira/compiled/*/orders.ttl (independent of ggen.toml's import list), with
                  CE23-1 rows present
   AV corpus      a synthetic two-commit repository (base: release/v26.9.1 at base_commit;
-                 head: the judged slice) must be ALIVE unmutated (control M0), and each of 15
+                 head: the judged slice) must be ALIVE unmutated (control M0), and each of 17
                  mutants must be refused with its expected codes (and named reason): MV revert
                  of the subject; M1 hand-edited render; M2 a CriticalPath component dropped
                  from the graph, M2b also from the render; M3/M4 a v26.9.1 byte change / new
                  file, M3w uncommitted; M5 relaxed vendored gate; M6 forked pointer, M6w an
                  uncommitted subject edit; M7 edited classification import; M8 version
                  literal; M9 a compiled orders unit dropped from the imports; M10 a re-pinned
-                 component; MB an orphan base (see mutants())
+                 component; M11 an import read from release/v26.9.1; M12 a classification
+                 source outside the pin; MB an orphan base (see mutants())
 
 Every subprocess runs real tools (git, ggen, python3) on real files; there is no test double.
 They run under a no-LLM environment: a fresh HOME, a PATH of the resolved directories of
@@ -286,6 +289,23 @@ def judge(root: Path, base: str, env: Env, work: Path) -> Verdict:
         else:
             v.ok("A3", f"{SDIR}/{name} -> {target}")
 
+    # A4: the sub-project reads only its own directory (independent of release/v26.9.1).
+    config_blob = env.out(root, "show", f"{head}:{SDIR}/ggen.toml")
+    try:
+        config = tomllib.loads(config_blob or "")
+    except tomllib.TOMLDecodeError as exc:
+        v.refuse("SUBJECT_NOT_INDEPENDENT", "A4", f"{SDIR}/ggen.toml is not TOML: {exc}")
+        config = {}
+    refs = [config.get("ontology", {}).get("source"), config.get("templates", {}).get("dir")]
+    for entry in config.get("packs", {}).values():
+        if isinstance(entry, dict):
+            refs += [entry.get("path"), *entry.get("extra_ontologies", [])]
+    outside = [r for r in refs if not isinstance(r, str) or not r or r.startswith("/") or ".." in Path(r).parts]
+    if outside or not config:
+        v.refuse("SUBJECT_NOT_INDEPENDENT", "A4", f"{SDIR}/ggen.toml reads outside {SDIR}: {outside}")
+    else:
+        v.ok("A4", f"{SDIR}/ggen.toml reads only inside {SDIR} ({len(refs)} paths)")
+
     # Materialize the exact committed slice.
     slice_dir = work / "slice"
     try:
@@ -451,6 +471,10 @@ def import_identity(v: Verdict, sub: Path, man: dict, env: Env) -> None:
     m = SOURCE_RE.match(source)
     if not m:
         v.refuse("CLASSIFICATION_SOURCE_INVALID", "I1", f"classification_source {source!r}")
+        return
+    if (m["repo"], m["path"]) != (SUBJ["classification_repository"], SUBJ["classification_path"]):
+        v.refuse("IMPORT_SOURCE_UNPINNED", "I1",
+                 f"classification from {m['repo']}:{m['path']}, pinned {SUBJ['classification_repository']}:{SUBJ['classification_path']}")
         return
     pinned = {str(c.get("repository")): c for c in man.get("components", []) if c.get("required") is True}
     comp = pinned.get(m["repo"])
@@ -665,6 +689,15 @@ def mutants(env: Env) -> list[Mutant]:
         with (sub(r) / "release.ttl").open("a", encoding="utf-8") as f:
             f.write("# uncommitted\n")
 
+    def read_predecessor(r: Path) -> None:
+        _edit(sub(r) / "ggen.toml", '"imports/fleet-classification.ttl", ',
+              '"imports/fleet-classification.ttl", "../v26.9.1/qlever/structural_similarity.rq", ')
+
+    def foreign_source(r: Path) -> None:
+        _edit(sub(r) / "release.ttl", ":docs/sjira/v26.9.23/fleet/classification.ttl sha256:",
+              ":docs/sjira/v26.9.22/fleet/classification.ttl sha256:")
+        regen(r)
+
     def orphan_base(r: Path) -> str:
         empty = env.run([env.git, "-C", str(r), "hash-object", "-t", "tree", "--stdin", "-w"], stdin=b"")
         proc = env.run([env.git, "-C", str(r), "-c", "user.name=ce23-1-court", "-c", "user.email=ce23-1-court@localhost",
@@ -695,6 +728,9 @@ def mutants(env: Env) -> list[Mutant]:
         Mutant("M9", "one compiled orders unit dropped from ggen.toml, render regenerated", ("REQUIREMENT_ROWS_DROPPED",), drop_rows),
         Mutant("M10", "xaas re-pinned to another commit of its ref, classification source unchanged, render regenerated",
                ("IMPORT_NOT_PINNED",), repin),
+        Mutant("M11", "ggen.toml reads a release/v26.9.1 file as an import", ("SUBJECT_NOT_INDEPENDENT",), read_predecessor),
+        Mutant("M12", "classification source re-pointed outside the pinned path, render regenerated",
+               ("IMPORT_SOURCE_UNPINNED",), foreign_source),
         Mutant("MB", "the judged head does not descend from the base (orphan base commit)", ("BASE_NOT_ANCESTOR",), orphan_base),
     ]
 
@@ -731,7 +767,10 @@ def anti_vacuity(root: Path, env: Env, work: Path, root_base: str | None = None)
                     env.commit_all(repo, f"mutant {m.id}: {m.desc}")
         except (RuntimeError, OSError) as exc:
             return m, f"AV_CONSTRUCT: {exc}"
-        return m, judge(repo, judged_base, env, work / f"av-{m.id if m else 'M0'}-work")
+        try:
+            return m, judge(repo, judged_base, env, work / f"av-{m.id if m else 'M0'}-work")
+        except Exception as exc:  # noqa: BLE001 (a court fault witnesses nothing: typed UNKNOWN)
+            return m, f"COURT_FAULT: {type(exc).__name__}: {exc}"
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=min(6, os.cpu_count() or 2)) as pool:
         results = list(pool.map(one, [None, *mutants(env)]))
@@ -777,7 +816,11 @@ def main(argv: list[str] | None = None) -> int:
     try:
         head = env.out(ROOT, "rev-parse", "HEAD")
         print(f"CE23-1 court: subject {head} at {ROOT}")
-        subject = judge(ROOT, SUBJ["base_commit"], env, work / "subject")
+        try:
+            subject = judge(ROOT, SUBJ["base_commit"], env, work / "subject")
+        except Exception as exc:  # noqa: BLE001 (a court fault witnesses nothing: typed UNKNOWN)
+            subject = Verdict()
+            subject.unknown("COURT_FAULT", "CE23-1", f"{type(exc).__name__}: {exc}")
         for line in subject.lines:
             print(line)
         if args.no_av:

@@ -32,6 +32,10 @@ outputs = [
 generated_dir = "out"
 vendor_dir = "vendor/ggen-marketplace"
 classification_import = "imports/fleet-classification.ttl"
+# The only admissible source of that import: the xaas GC-26.9.23 fleet classification, read
+# at the commit of the release's required xaas component.
+classification_repository = "seanchatmangpt/xaas"
+classification_path = "docs/sjira/v26.9.23/fleet/classification.ttl"
 orders_glob = "sjira/compiled/*/orders.ttl"
 # Release-line inputs the fenced tools resolve from release/v26.9.23/ (scripts/release_line.py):
 # each is a symlink to its render, never a second copy.
