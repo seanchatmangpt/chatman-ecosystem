@@ -831,33 +831,38 @@ def clause_msa_contract(ctx: Ctx) -> None:
 def clause_msa_repeatability(ctx: Ctx) -> None:
     report = pack_report(ctx)
     base_vec = {a["id"]: [(k, v["accept"], tuple(v["laws"])) for k, v in sorted(a["instruments"].items())] for a in report["artifacts"]}
-    units = defects = 0
+    changed: set[str] = set()
+    pairs = 0
     fast = ("native", "sparql-oxigraph")
     first = verdict_vector(ctx, fast)
     repeats = [first] + [verdict_vector(ctx, fast) for _ in range(29)]
     for art_id in first:
         for i, name in enumerate(fast):
-            units += 1
+            pairs += 1
             seen = {r[art_id][i] for r in repeats} | {next(v for v in base_vec[art_id] if v[0] == name)}
-            defects += len(seen) != 1
+            if len(seen) != 1:
+                changed.add(art_id)
     slow = ("shacl", "sparql-rdflib")
     again = verdict_vector(ctx, slow)
     for art_id in again:
         for i, name in enumerate(slow):
-            units += 1
-            prior = next(v for v in base_vec[art_id] if v[0] == name)
-            defects += again[art_id][i] != prior
+            pairs += 1
+            if again[art_id][i] != next(v for v in base_vec[art_id] if v[0] == name):
+                changed.add(art_id)
     ggen_again = verify_ggen_again(ctx)
     for art_id, verdict in ggen_again.items():
-        units += 1
-        prior = next(v for v in base_vec[art_id] if v[0] == "ggen")
-        defects += verdict != prior
-    row = msa_row(ctx, "repeatability", units, defects, "(instrument, artifact) pair re-judged: native and pyoxigraph 31x, pyshacl, rdflib and ggen 2x")
+        pairs += 1
+        if verdict != next(v for v in base_vec[art_id] if v[0] == "ggen"):
+            changed.add(art_id)
+    # n counts distinct artifacts, never (instrument, artifact) repetitions (no pseudo-replication).
+    units, defects = len(base_vec), len(changed)
+    row = msa_row(ctx, "repeatability", units, defects,
+                  f"distinct artifact, re-judged by 5 instruments ({pairs} instrument-artifact pairs: native and pyoxigraph 31x, pyshacl, rdflib and ggen 2x); a defect = any verdict change")
     if defects:
-        ctx.v.refuse("msa_repeatability", "Q1", f"{defects}/{units} (instrument, artifact) pairs changed verdict on repetition")
+        ctx.v.refuse("msa_repeatability", "Q1", f"{defects}/{units} artifacts changed verdict on repetition: {sorted(changed)[:5]}")
     else:
-        ctx.v.ok("Q1", f"repeatability: same artifact, same verdict for {units}/{units} (instrument, artifact) pairs "
-                 f"(0 defects; 95% upper bound {row['upper_bound_95']}, tier {row['tier']})")
+        ctx.v.ok("Q1", f"repeatability: same artifact, same verdict for {units}/{units} distinct artifacts across {pairs} re-judged "
+                 f"instrument-artifact pairs (0 defects; 95% upper bound {row['upper_bound_95']}, tier {row['tier']})")
 
 
 def verify_ggen_again(ctx: Ctx) -> dict:
@@ -906,14 +911,15 @@ def clause_msa_agreement(ctx: Ctx) -> None:
             disagreements += sum(p != q for p, q in zip(ax, ay))
             kappas.append(cohen_kappa(ax, ay))
     pairs = len(kappas)
-    units = len(arts) * pairs
+    units = len(arts)
+    split = sum(1 for a in arts if len({v["accept"] for v in a["instruments"].values()}) != 1)
     truth_miss = sum(1 for a in arts for v in a["instruments"].values() if v["accept"] != a["good"])
-    row = msa_row(ctx, "classification agreement", units, disagreements, f"(artifact, instrument pair) over {len(arts)} artifacts ({goods} good, {len(arts) - goods} bad) x {pairs} pairs of 5 independent instruments")
-    if disagreements or truth_miss or any(k is None or abs(k - 1.0) > 1e-12 for k in kappas):
+    row = msa_row(ctx, "classification agreement", units, split, f"distinct artifact ({goods} good, {len(arts) - goods} bad) judged by {len(names)} independent instruments ({pairs} pairs); a defect = any disagreement on the artifact")
+    if split or disagreements or truth_miss or any(k is None or abs(k - 1.0) > 1e-12 for k in kappas):
         ctx.v.refuse("msa_agreement", "Q2", f"{disagreements} pairwise disagreements, {truth_miss} verdicts against the registered truth, kappas {kappas}")
     else:
-        ctx.v.ok("Q2", f"classification agreement: 5 independent instruments agree on every artifact; Cohen's kappa = 1.0 for all {pairs} pairs "
-                 f"(defined: both good and bad items judged); 0/{units} disagreements (95% upper bound {row['upper_bound_95']}, tier {row['tier']})")
+        ctx.v.ok("Q2", f"classification agreement: {len(names)} independent instruments ({', '.join(names)}) agree on every artifact; Cohen's kappa = 1.0 for all {pairs} pairs "
+                 f"(defined: both good and bad items judged); 0/{units} artifacts with a disagreement (95% upper bound {row['upper_bound_95']}, tier {row['tier']})")
 
 
 def clause_msa_mutation(ctx: Ctx) -> None:
@@ -921,10 +927,9 @@ def clause_msa_mutation(ctx: Ctx) -> None:
     report = pack_report(ctx)
     bad_arts = [a for a in report["artifacts"] if not a["good"]]
     units = misses = 0
-    for a in bad_arts:
-        for v in a["instruments"].values():
-            units += 1
-            misses += v["accept"]
+    for a in bad_arts:  # one unit per distinct mutant: a miss if any of the 5 instruments admits it
+        units += 1
+        misses += any(v["accept"] for v in a["instruments"].values())
     # projection corruption: every committed out/ file with one byte changed must fail the G1 comparison
     regen = ctx.cache.get("regen_files")
     if regen is None:
@@ -981,11 +986,11 @@ def clause_msa_mutation(ctx: Ctx) -> None:
         units += 1
         remaining = set(entries) - {order}
         misses += len(remaining) == len(entries)
-    row = msa_row(ctx, "mutation sensitivity", units, misses, "corrupted artifact: design mutants x 5 instruments, one-byte out/ corruptions, kernel literal perturbations, DOE corruptions, deleted plan orders")
+    row = msa_row(ctx, "mutation sensitivity", units, misses, "distinct corrupted output: design mutants (a miss if any of 5 instruments admits), one-byte out/ corruptions, kernel literal perturbations, DOE corruptions, deleted plan orders")
     if misses:
         ctx.v.refuse("msa_mutation_escape", "Q3", f"{misses}/{units} corrupted outputs passed")
     else:
-        ctx.v.ok("Q3", f"mutation sensitivity: {units}/{units} intentionally corrupted outputs fail ({len(bad_arts)} design mutants x 5 instruments, "
+        ctx.v.ok("Q3", f"mutation sensitivity: {units}/{units} intentionally corrupted outputs fail ({len(bad_arts)} design mutants each refused by all {len(bad_arts[0]['instruments']) if bad_arts else 0} instruments, "
                  f"{len(regen)} projection corruptions, kernel literal perturbations, DOE flips incl. E=AB and an OS column, "
                  f"{len(entries)} deleted plan orders); 0 escapes (95% upper bound {row['upper_bound_95']}, tier {row['tier']})")
 
@@ -1158,10 +1163,8 @@ def clause_msa_boundary(ctx: Ctx) -> None:
             else:
                 g.remove((m, NLB.expectedStanding, None))
                 g.add((m, NLB.expectedStanding, ES.ALIVE))
-            for fn in (inst.native, inst.sparql_oxigraph):
-                units += 1
-                accept, laws, _ = fn(g)
-                misses += accept
+            units += 1
+            misses += any(fn(g)[0] for fn in (inst.native, inst.sparql_oxigraph))
     for c in sorted(base.subjects(NLB.claimStatus, rdflib.Literal("KNOWN_CANDIDATE"))):
         g = rdflib.Graph() + base
         for mc in list(g.objects(c, NLB.membershipClause)):
@@ -1169,11 +1172,9 @@ def clause_msa_boundary(ctx: Ctx) -> None:
         label = rdflib.URIRef(str(c) + "-declared-label")
         g.add((c, NLB.membershipClause, label))
         g.add((label, NLB.clauseBasis, rdflib.Literal("DECLARED_LABEL")))
-        for fn in (inst.native, inst.sparql_oxigraph):
-            units += 1
-            accept, laws, _ = fn(g)
-            misses += accept
-    row = msa_row(ctx, "membership boundary (near-miss vs KNOWN)", units, misses, "every near-miss made a class member or expected ALIVE, every KNOWN class reduced to a declared label, x 2 instruments")
+        units += 1
+        misses += any(fn(g)[0] for fn in (inst.native, inst.sparql_oxigraph))
+    row = msa_row(ctx, "membership boundary (near-miss vs KNOWN)", units, misses, "distinct mutated design: every near-miss made a class member or expected ALIVE, every KNOWN class reduced to a declared label (a miss if native or pyoxigraph admits)")
     if misses:
         ctx.v.refuse("msa_boundary", "Q7", f"{misses}/{units} near-miss confusions admitted")
     else:
