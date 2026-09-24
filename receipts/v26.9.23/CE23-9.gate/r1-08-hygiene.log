@@ -1,0 +1,11 @@
+$ ! /usr/bin/grep -rnE "unittest.mock|Mock\(|MagicMock|patch\(|monkeypatch" tests/test_ce23_9_court.py tests/test_ce23_1_court.py release/v26.9.23/courts/ce23_9/ release/v26.9.23/courts/ce23_1/
+grep-exit=1 (1 = no match)
+$ git diff c636def7 HEAD -- . ":!receipts" | /usr/bin/grep -E "^\+" | /usr/bin/grep -nE "(/Users/sac/wt|~/wt|[$]HOME/wt)"
+grep-exit=1 (1 = no added line names the shadow tree)
+$ git grep -nE "(/Users/sac/wt|~/wt|[$]HOME/wt)" HEAD -- scripts tests release/v26.9.23/courts HANDWRITTEN.md release/v26.9.23/vendor/receipt-provenance
+git-grep-exit=1 (1 = no match)
+$ git ls-files release/v26.9.23/vendor/receipt-provenance | wc -l
+       0
+$ ruff check --no-cache release/v26.9.23/courts/ce23_9 release/v26.9.23/courts/ce23_1 tests/test_ce23_9_court.py tests/test_ce23_1_court.py
+All checks passed!
+ruff-exit=0

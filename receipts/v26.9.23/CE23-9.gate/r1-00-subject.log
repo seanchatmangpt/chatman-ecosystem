@@ -1,0 +1,3 @@
+$ git rev-parse HEAD && git status --porcelain -uall | wc -l   (before the gate)
+d2f36659e0860f0c456137d50be8856da1d86839
+       0

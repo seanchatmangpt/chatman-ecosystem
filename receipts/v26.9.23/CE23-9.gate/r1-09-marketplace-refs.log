@@ -1,0 +1,16 @@
+$ git -C ~/ggen-marketplace fetch origin (refresh remote-tracking refs, read only on the subject)
+$ git -C ~/ggen-marketplace ls-remote origin refs/heads/release/v26.9.23-int
+e3988aba4a850095d94d3b18a4495766d13e4d5e	refs/heads/release/v26.9.23-int
+$ git -C ~/ggen-marketplace rev-parse refs/remotes/origin/release/v26.9.23-int refs/heads/release/v26.9.23-int
+e3988aba4a850095d94d3b18a4495766d13e4d5e
+6cfd0b7ad3891611486994240b7aed6b5e6dc3e6
+$ git -C ~/ggen-marketplace merge-base --is-ancestor 6cfd0b7ad3891611486994240b7aed6b5e6dc3e6 refs/remotes/origin/release/v26.9.23-int
+exit=1 (1 = the vendored pin is not published)
+$ git -C ~/ggen-marketplace merge-base --is-ancestor refs/remotes/origin/release/v26.9.23-int refs/heads/release/v26.9.23-int
+exit=0 (0 = the local line fast-forwards the published ref)
+$ git -C ~/ggen-marketplace rev-list --count refs/remotes/origin/release/v26.9.23-int..refs/heads/release/v26.9.23-int
+14
+$ git -C ~/ggen-marketplace merge-base --is-ancestor e3988aba4a850095d94d3b18a4495766d13e4d5e refs/remotes/origin/release/v26.9.23-int
+exit=0 (0 = the validator pin is published)
+$ git -C ~/ggen-marketplace show e3988aba:packs/receipt-provenance-unification-pack/generated/unified_receipt_validator.py | shasum -a 256
+008ce23419325ebda2998fb7445a38da80a7735ba3ca6fdc56c0e0a7ec686f70  -

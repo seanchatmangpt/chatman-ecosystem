@@ -1,0 +1,7 @@
+$ python3 probe_court_files_shadow.py b001d01872acc77c530f4efc8586f45d154f3bf2 HEAD
+b001d01872acc77c530f4efc8586f45d154f3bf2: 9 court files, shadow-tree hits ['release/v26.9.23/vendor/receipt-provenance/unified_receipt_validator.py: /Users/sac/wt/']
+HEAD: 7 court files, shadow-tree hits []
+exit=1
+$ python3 probe_court_files_shadow.py HEAD
+HEAD: 7 court files, shadow-tree hits []
+exit=0
