@@ -171,6 +171,47 @@ class VerifyReleaseVersionLawTests(unittest.TestCase):
         self.assertIn("RELEASE_INPUT_MISSING:release/v26.9.30/manifest.toml", proc.stderr)
 
 
+VR_SPEC = importlib.util.spec_from_file_location("verify_release_ce23_7", SCRIPTS / "verify_release.py")
+assert VR_SPEC is not None and VR_SPEC.loader is not None
+verify_release = importlib.util.module_from_spec(VR_SPEC)
+sys.modules["verify_release_ce23_7"] = verify_release
+VR_SPEC.loader.exec_module(verify_release)
+
+
+class PathFreeVersionLawTests(unittest.TestCase):
+    """validate_manifest(data) callers without a path bind the line with expected_version."""
+
+    def setUp(self) -> None:
+        self.path = ROOT / "release" / PRED / "manifest.toml"
+        self.data = verify_release.load_manifest(self.path)
+
+    def version_findings(self, **kwargs) -> list[tuple[str, str]]:
+        return [(f.code, f.detail) for f in verify_release.validate_manifest(self.data, **kwargs) if "VERSION" in f.code]
+
+    def test_expected_version_admits_its_own_line_in_either_spelling(self) -> None:
+        for spelling in (PRED, PRED[1:]):
+            self.assertEqual([], verify_release.validate_manifest(self.data, expected_version=spelling))
+
+    def test_expected_version_refuses_another_line_without_a_path(self) -> None:
+        self.assertEqual([("ECOSYSTEM_VERSION_MISMATCH", "VERSION_TARGET_MISMATCH: expected 26.9.23")],
+                         self.version_findings(expected_version=TARGET))
+
+    def test_path_and_expected_version_are_judged_independently(self) -> None:
+        self.assertEqual([], self.version_findings(manifest_path=self.path))
+        self.assertEqual([("ECOSYSTEM_VERSION_MISMATCH", "VERSION_TARGET_MISMATCH: expected 26.9.23")],
+                         self.version_findings(manifest_path=self.path, expected_version=TARGET))
+
+    def test_without_path_or_expected_version_only_the_calendar_form_is_judged(self) -> None:
+        self.assertEqual([], self.version_findings())
+        self.data["release"]["version"] = "v" + self.data["release"]["version"]
+        self.assertEqual(["ECOSYSTEM_VERSION_INVALID"], [code for code, _ in self.version_findings(expected_version=TARGET)])
+
+    def test_an_invalid_expected_version_is_refused_typed(self) -> None:
+        with self.assertRaises(release_line.ReleaseLineError) as caught:
+            verify_release.validate_manifest(self.data, expected_version="v26.13.1")
+        self.assertTrue(str(caught.exception).startswith("RELEASE_LINE_INVALID:"), str(caught.exception))
+
+
 class PlannerLineTests(unittest.TestCase):
     def test_planner_branches_carry_the_target_line(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

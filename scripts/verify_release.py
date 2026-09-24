@@ -69,7 +69,18 @@ def manifest_digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def validate_manifest(data: dict[str, Any], manifest_path: Path | None = None) -> list[Finding]:
+def validate_manifest(
+    data: dict[str, Any], manifest_path: Path | None = None, expected_version: str | None = None
+) -> list[Finding]:
+    """Structural findings for a release manifest.
+
+    The version law binds ``release.version`` to the line it belongs to: the
+    release/vYY.M.D/ directory of ``manifest_path`` and/or, path-free, an explicit
+    ``expected_version`` (vYY.M.D or YY.M.D; an invalid value raises
+    release_line.ReleaseLineError RELEASE_LINE_INVALID). With neither, only the
+    version's calendar form is checked: no verifier carries a literal release line.
+    """
+    wanted = release_line.canonical(expected_version)[1:] if expected_version is not None else None
     findings: list[Finding] = []
     release = data.get("release")
     components = data.get("components")
@@ -84,12 +95,15 @@ def validate_manifest(data: dict[str, Any], manifest_path: Path | None = None) -
     version = release.get("version")
     if not isinstance(version, str) or version.startswith("v") or not release_line.VERSION_RE.fullmatch(version):
         findings.append(Finding("ECOSYSTEM_VERSION_INVALID", "release.version", str(version)))
-    elif manifest_path is not None:
-        expected = release_line.version_from_path(manifest_path)
-        if expected is None:
-            findings.append(Finding("ECOSYSTEM_VERSION_PATH_UNBOUND", "release.version", Path(manifest_path).parent.as_posix()))
-        elif version != expected:
-            findings.append(Finding("ECOSYSTEM_VERSION_MISMATCH", "release.version", f"VERSION_PATH_MISMATCH: expected {expected}"))
+    else:
+        if manifest_path is not None:
+            expected = release_line.version_from_path(manifest_path)
+            if expected is None:
+                findings.append(Finding("ECOSYSTEM_VERSION_PATH_UNBOUND", "release.version", Path(manifest_path).parent.as_posix()))
+            elif version != expected:
+                findings.append(Finding("ECOSYSTEM_VERSION_MISMATCH", "release.version", f"VERSION_PATH_MISMATCH: expected {expected}"))
+        if wanted is not None and version != wanted:
+            findings.append(Finding("ECOSYSTEM_VERSION_MISMATCH", "release.version", f"VERSION_TARGET_MISMATCH: expected {wanted}"))
     if release.get("standing") not in ALLOWED_STANDINGS:
         findings.append(Finding("ECOSYSTEM_RELEASE_STANDING_INVALID", "release.standing", str(release.get("standing"))))
 

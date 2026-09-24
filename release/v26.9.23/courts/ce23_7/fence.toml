@@ -11,10 +11,15 @@ base_commit = "aa4e3873b40c3406378800ca82facc366293b564"
 # checkout) sha256 over sorted "<sha256>  <path>" lines of its files minus __pycache__.
 predecessor_tree = "7e0feef1b137bea72fe1cf22a599636f77b0e47c"
 predecessor_files_sha256 = "27dbc487c10b004578f67f6cb2165818f3669f01cb9e027639fd7b8ea4ed037e"
-# Floor for `python3 -m unittest discover -s tests`: 434 at base_commit + 19 in tests/test_release_line.py.
-unittest_floor = 453
+# Floor for `python3 -m unittest discover -s tests`: 434 at base_commit + 24 in
+# tests/test_release_line.py + 12 in tests/test_ce23_7_probe.py (the court probe itself).
+unittest_floor = 470
 # Token of the predecessor line in any spelling (26.9.1, 26_9_1, v26-9-1), not 26.9.10+.
 token = '26[._-]9[._-]1(?![0-9])'
+# A targeted run that opens a byte copy of a release/v26.9.1 file of at least this size,
+# anywhere outside release/v26.9.23/, read the predecessor line (court audit(): a copy under
+# another name is the same read). Smaller files (empty __init__.py-sized) carry no identity.
+content_min_bytes = 64
 
 # The fenced tools: no predecessor token, --release accepted, default = the catalog pointer,
 # inputs resolved by scripts/release_line.py. The court exercises every one of them.

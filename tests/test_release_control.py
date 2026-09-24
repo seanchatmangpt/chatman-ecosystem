@@ -21,7 +21,7 @@ class ReleaseControlTests(unittest.TestCase):
         self.data = verify_release.load_manifest(self.manifest_path)
 
     def test_manifest_is_structurally_admitted(self) -> None:
-        self.assertEqual([], verify_release.validate_manifest(self.data))
+        self.assertEqual([], verify_release.validate_manifest(self.data, self.manifest_path))
 
     def test_crown_escalates_exact_build_breaks_over_runtime_blocks(self) -> None:
         self.assertEqual("BUILD_BROKEN", verify_release.crown_standing(self.data, []))

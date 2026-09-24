@@ -8,22 +8,37 @@ Falsifier (goal.ttl ce:CE23-7-falsifier): the court exits 0 while a Chatman tool
 release/v26.9.23 reads release/v26.9.1.
 
 Every clause runs the real tools as subprocesses on real files (no mocks). A PEP 578 audit
-hook (audit_run.py) records every path each v26.9.23-targeted run opens; any open under a
-release/v26.9.1/ directory is the falsifier witnessed. Clauses:
+hook (audit_run.py) records what each v26.9.23-targeted run reads, and audit() judges the
+whole log, wherever a path lives (the synthesized tree, the tool's own repository, anywhere):
+
+  REFUSED[SILENT_V26_9_1_READ]  an open, a directory read (listdir/scandir/chdir/glob) or a
+                   sqlite open of a path with a v26.9.1 component (release/v26.9.1/..., docs/
+                   v26.9.1/..., any spelling of the token); an open of a byte copy (>= fence
+                   content_min_bytes) of a release/v26.9.1 file outside release/v26.9.23/; a
+                   child process, native (ctypes) call, off-host connection or probe fault
+                   whose recorded arguments name v26.9.1; a URL naming v26.9.1
+  UNKNOWN[PROBE_BLIND]          what the hook cannot see into: any other child process, native
+                   code, off-host connection or probe fault, and any open of a .git object
+                   store. Such a run is never ALIVE.
+
+Each targeted tool also runs self-hosted (its scripts/ copied into a synthesized tree whose
+pointer names v26.9.1), so a read anchored on the tool's own repository pointer is judged
+whatever line the judged subject's pointer names. Clauses:
 
   F1 predecessor   release/v26.9.1 is byte-untouched (git tree / file digest pin)
   F2 identity      each tool targeting v26.9.1 emits the pre-fence bytes: pinned digests
                    (while the inputs hash to their pins) and/or the differential against
                    the pre-fence tools materialized from fence.base_commit
   F3 pointer       each tool's default equals its explicit --release <catalog pointer line>
-  F4 line          in a synthesized two-line tree (pointer flipped, and pointer kept with
-                   an explicit --release v26.9.23) every tool succeeds bound to 26.9.23 and
-                   opens nothing under release/v26.9.1/
+  F4 line          in synthesized two-line trees (pointer flipped; pointer kept with an
+                   explicit --release v26.9.23, run from the subject and self-hosted; no
+                   predecessor at all) every tool succeeds bound to 26.9.23 and audit()
+                   witnesses no v26.9.1 read and no blind spot
   F5 falsifiers    must refuse, typed: a v26.9.1 manifest under release/v26.9.23 (version-path
                    law), --release/--manifest conflicts, a cross-line companion input, a West
                    projection sourced from another line, an invalid line
   F6 subject       on the judged subject itself every tool run with --release v26.9.23 either
-                   succeeds bound to 26.9.23 or refuses typed, never reading release/v26.9.1
+                   succeeds bound to 26.9.23 or refuses typed; audit() judges every run
   F7 literals      no fenced tool names the predecessor line; every other scripts/**/*.py that
                    does carries a typed fence.toml ledger row (none stale)
   F8 unit          python3 -m unittest discover -s tests: OK, Ran >= fence.unittest_floor
@@ -59,7 +74,7 @@ import tempfile
 import threading
 import tomllib
 import urllib.parse
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 HERE = Path(__file__).resolve().parent
@@ -72,6 +87,7 @@ PRED = FENCE["predecessor"]  # v26.9.1
 TARGET_VERSION = TARGET[1:]
 PRED_VERSION = PRED[1:]
 TOKEN = re.compile(FENCE["token"])
+CONTENT_MIN = int(FENCE["content_min_bytes"])
 OBSERVED_AT = "2026-09-23T00:00:00Z"
 LINE_INPUTS = ("manifest.toml", "fleet-policy.toml", "fanout-bootstrap.toml", "constitutional-role-crosswalk.toml")
 WEST_INPUTS = ("catalog", "west.yml", "west", ".gitmodules", "west-commands.yml")
@@ -169,6 +185,89 @@ def opened_under(log: Path, directory: Path) -> list[str]:
 
 def probe_fired(log: Path, script: Path) -> bool:
     return log.exists() and os.path.realpath(script) in log.read_text(encoding="utf-8").splitlines()
+
+
+def names_predecessor(path: str) -> bool:
+    """A path with any component naming the predecessor line (release/v26.9.1, docs/v26.9.1, ...)."""
+    return any(TOKEN.search(part) for part in PurePosixPath(path).parts)
+
+
+def under_line(path: str, line: str) -> bool:
+    parts = PurePosixPath(path).parts
+    return any(parts[i] == "release" and parts[i + 1] == line for i in range(len(parts) - 1))
+
+
+_PRED_DIGESTS: dict[int, set[str]] = {}
+
+
+def pred_digests() -> dict[int, set[str]]:
+    """{size: {sha256}} of the release/v26.9.1 files of at least content_min_bytes."""
+    if not _PRED_DIGESTS:
+        for path in (ROOT / "release" / PRED).rglob("*"):
+            if path.is_file() and "__pycache__" not in path.parts and path.stat().st_size >= CONTENT_MIN:
+                _PRED_DIGESTS.setdefault(path.stat().st_size, set()).add(sha(path.read_bytes()))
+    return _PRED_DIGESTS
+
+
+def byte_copy(path: str) -> bool:
+    try:
+        candidate = Path(path)
+        size = candidate.stat().st_size if candidate.is_file() else -1
+        return size in pred_digests() and sha(candidate.read_bytes()) in pred_digests()[size]
+    except OSError:
+        return False
+
+
+BLIND_KINDS = {"@exec": "spawned a child process", "@native": "ran native code (ctypes)",
+               "@net": "connected off-host", "@blind": "hit a probe fault"}
+
+
+def audit(log: Path) -> tuple[list[str], list[str]]:
+    """(v26.9.1 reads, blind spots) witnessed in one targeted run's audit_run.py log."""
+    reads: list[str] = []
+    blind: list[str] = []
+    seen: set[str] = set()
+    lines = log.read_text(encoding="utf-8").splitlines() if log.exists() else []
+    for line in lines:
+        tag, _, payload = line.partition("\t") if line.startswith("@") else ("", "", line)
+        if tag in ("", "@dir", "@db"):
+            verb = {"": "opened", "@dir": "read the directory", "@db": "opened (sqlite)"}[tag]
+            if names_predecessor(payload):
+                reads.append(f"{verb} {payload}")
+            elif ".git" in PurePosixPath(payload).parts:
+                blind.append(f"{verb} {payload} in a git object store; a {PRED} blob read cannot be excluded")
+            elif not tag and payload not in seen and not under_line(payload, TARGET):
+                seen.add(payload)
+                if byte_copy(payload):
+                    reads.append(f"opened {payload}, a byte copy of a release/{PRED} file")
+        elif tag in BLIND_KINDS:
+            what = BLIND_KINDS[tag]
+            if TOKEN.search(payload):
+                reads.append(f"{what} naming {PRED}: {payload[:200]}")
+            else:
+                blind.append(f"{what} the audit hook cannot see into: {payload[:200]}")
+        elif tag == "@url":
+            if TOKEN.search(payload):
+                reads.append(f"requested {payload}")
+        else:
+            blind.append(f"unrecognized audit line {line[:120]!r}")
+    return reads, blind
+
+
+def judge_reads(label: str, clause: str, log: Path, script: Path) -> bool:
+    """The falsifier clause: a targeted run fired the probe and read no v26.9.1, blind nowhere."""
+    if not probe_fired(log, script):
+        V.unknown_("PROBE_SILENT", clause, f"{label}: the audit hook recorded no open of {script}")
+        return False
+    reads, blind = audit(log)
+    if reads:
+        V.refuse("SILENT_V26_9_1_READ", clause, f"{label} targeting {TARGET} {reads[0]}"
+                 + (f" (+{len(reads) - 1} more)" if len(reads) > 1 else ""))
+        return False
+    if blind:
+        V.unknown_("PROBE_BLIND", clause, f"{label} targeting {TARGET}: {blind[0]}")
+        return False
+    return True
 
 
 def git(*args: str) -> subprocess.CompletedProcess[str]:
@@ -456,13 +555,8 @@ def f3_pointer(work: Path) -> None:
 
 
 def check_bound(tid: str, clause: str, proc: subprocess.CompletedProcess[str], log: Path, tree: Path,
-                script: str, out: Path | None = None) -> bool:
-    silent = opened_under(log, tree / "release" / PRED)
-    if not probe_fired(log, ROOT / script):
-        V.unknown_("PROBE_SILENT", clause, f"{tid}: the audit hook recorded no open of {script}")
-        return False
-    if silent:
-        V.refuse("SILENT_V26_9_1_READ", clause, f"{tid} targeting {TARGET} opened {silent[0]}")
+                script: str, out: Path | None = None, host: Path = ROOT, label: str | None = None) -> bool:
+    if not judge_reads(label or tid, clause, log, host / script):
         return False
     if proc.returncode != 0:
         V.refuse("TARGET_RUN_FAILED", clause, f"{tid}: exit {proc.returncode}: {(proc.stderr or proc.stdout).strip()[-300:]}")
@@ -496,6 +590,12 @@ def check_bound(tid: str, clause: str, proc: subprocess.CompletedProcess[str], l
     return True
 
 
+def host_tools(tree: Path) -> Path:
+    """Self-host the subject's tools in a synthesized tree: tree/scripts is ROOT/scripts."""
+    shutil.copytree(ROOT / "scripts", tree / "scripts", ignore=shutil.ignore_patterns("__pycache__"))
+    return tree
+
+
 def line_runs(tree: Path, work: Path, tag: str, explicit: bool) -> None:
     flag = ["--release", TARGET] if explicit else []
     cases = [
@@ -508,12 +608,12 @@ def line_runs(tree: Path, work: Path, tag: str, explicit: bool) -> None:
     for tid, script, argv in cases:
         log = work / f"{tag}-{tid.replace(' ', '')}.opens"
         proc = tool(script, argv, tree, log)
-        if check_bound(tid, "F4", proc, log, tree, script):
-            V.ok("F4", f"{tag}: {tid} {' '.join(flag) or '(default)'} bound to {TARGET_VERSION}, nothing opened under release/{PRED}")
+        if check_bound(tid, "F4", proc, log, tree, script, label=f"{tag}: {tid}"):
+            V.ok("F4", f"{tag}: {tid} {' '.join(flag) or '(default)'} bound to {TARGET_VERSION}, no {PRED} read, no blind spot")
     log, out = work / f"{tag}-survey.opens", work / f"{tag}-survey"
     proc = survey(flag, tree, out, tree / "release" / TARGET / "manifest.toml", log)
-    if check_bound("survey_portfolio", "F4", proc, log, tree, "scripts/survey_portfolio.py", out):
-        V.ok("F4", f"{tag}: survey_portfolio {' '.join(flag) or '(default)'} bound to {TARGET_VERSION}, nothing opened under release/{PRED}")
+    if check_bound("survey_portfolio", "F4", proc, log, tree, "scripts/survey_portfolio.py", out, label=f"{tag}: survey_portfolio"):
+        V.ok("F4", f"{tag}: survey_portfolio {' '.join(flag) or '(default)'} bound to {TARGET_VERSION}, no {PRED} read, no blind spot")
 
 
 def f4_line(work: Path) -> None:
@@ -521,21 +621,28 @@ def f4_line(work: Path) -> None:
     kept = synth_line(work / "line-kept", flip=False)
     line_runs(flipped, work, "pointer->v26.9.23", explicit=False)
     line_runs(flipped, work, "pointer->v26.9.23+flag", explicit=True)
-    # West stays out of the kept-pointer tree: its projection there is sourced from v26.9.1 (F5d).
+    # West stays out of the kept-pointer trees: its projection there is sourced from v26.9.1 (F5d).
+    # The kept tree runs twice: the subject's tools (ROOT/scripts), and the same tools self-hosted
+    # in a kept tree, so a read anchored on the tool's own repository pointer lands on v26.9.1
+    # whatever line the judged subject's own pointer names.
+    hosted = host_tools(synth_line(work / "line-kept-hosted", flip=False))
     flag = ["--release", TARGET]
-    for tid, script, argv in [
-        ("verify_release", "scripts/verify_release.py", flag),
-        ("plan_completion", "scripts/plan_completion.py", flag),
-        ("verify_standing_evidence", "scripts/verify_standing_evidence.py", flag),
-    ]:
-        log = work / f"kept-{tid}.opens"
-        proc = tool(script, argv, kept, log)
-        if check_bound(tid, "F4", proc, log, kept, script):
-            V.ok("F4", f"pointer->{PRED}: {tid} --release {TARGET} bound to {TARGET_VERSION}, nothing opened under release/{PRED}")
-    log, out = work / "kept-survey.opens", work / "kept-survey"
-    proc = survey(flag, kept, out, kept / "release" / TARGET / "manifest.toml", log)
-    if check_bound("survey_portfolio", "F4", proc, log, kept, "scripts/survey_portfolio.py", out):
-        V.ok("F4", f"pointer->{PRED}: survey_portfolio --release {TARGET} bound to {TARGET_VERSION}, nothing opened under release/{PRED}")
+    for tree, host, where in ((kept, ROOT, f"pointer->{PRED}"), (hosted, hosted, f"pointer->{PRED} (self-hosted)")):
+        for tid, script, argv in [
+            ("verify_release", "scripts/verify_release.py", flag),
+            ("plan_completion", "scripts/plan_completion.py", flag),
+            ("plan_completion --release-only", "scripts/plan_completion.py", [*flag, "--release-only"]),
+            ("verify_standing_evidence", "scripts/verify_standing_evidence.py", flag),
+        ]:
+            log = work / f"{tree.name}-{tid.replace(' ', '')}.opens"
+            proc = tool(script, argv, tree, log, root=host)
+            if check_bound(tid, "F4", proc, log, tree, script, host=host, label=f"{where}: {tid}"):
+                V.ok("F4", f"{where}: {tid} --release {TARGET} bound to {TARGET_VERSION}, no {PRED} read, no blind spot")
+        log, out = work / f"{tree.name}-survey.opens", work / f"{tree.name}-survey"
+        proc = survey(flag, tree, out, tree / "release" / TARGET / "manifest.toml", log, root=host)
+        if check_bound("survey_portfolio", "F4", proc, log, tree, "scripts/survey_portfolio.py", out, host=host,
+                       label=f"{where}: survey_portfolio"):
+            V.ok("F4", f"{where}: survey_portfolio --release {TARGET} bound to {TARGET_VERSION}, no {PRED} read, no blind spot")
     # Default and explicit agree on the flipped tree (the pointer is the only default).
     for tid, script, extra in [("verify_release", "scripts/verify_release.py", []),
                                ("plan_completion", "scripts/plan_completion.py", []),
@@ -549,11 +656,12 @@ def f4_line(work: Path) -> None:
                               ("plan_completion", "scripts/plan_completion.py", []),
                               ("verify_standing_evidence", "scripts/verify_standing_evidence.py", []),
                               ("verify_west_workspace", "scripts/verify_west_workspace.py", ["--json", "--root", str(alone)])]:
-        proc = tool(script, argv, alone)
+        log = work / f"alone-{tid}.opens"
+        proc = tool(script, argv, alone, log)
         if proc.returncode != 0:
             V.refuse("PREDECESSOR_REQUIRED", "F4", f"{tid}: fails without release/{PRED}: {(proc.stderr or proc.stdout).strip()[-200:]}")
-        else:
-            V.ok("F4", f"no release/{PRED} in the tree: {tid} (default) exit 0")
+        elif check_bound(tid, "F4", proc, log, alone, script, label=f"no release/{PRED} in the tree: {tid}"):
+            V.ok("F4", f"no release/{PRED} in the tree: {tid} (default) exit 0, no {PRED} read, no blind spot")
 
 
 def expect_refusal(clause: str, tid: str, proc: subprocess.CompletedProcess[str], exit_code: int, marker: str) -> None:
@@ -621,12 +729,9 @@ def f6_subject(work: Path) -> None:
         else:
             proc = tool(script, argv, ROOT, log)
         text = (proc.stdout + proc.stderr).strip()
-        silent = opened_under(log, ROOT / "release" / PRED)
-        if not probe_fired(log, ROOT / script):
-            V.unknown_("PROBE_SILENT", "F6", f"{tid}: the audit hook recorded no open of {script}")
-        elif silent:
-            V.refuse("SILENT_V26_9_1_READ", "F6", f"{tid} --release {TARGET} at the subject opened {silent[0]}")
-        elif proc.returncode == 0:
+        if not judge_reads(f"{tid} at the subject", "F6", log, ROOT / script):
+            continue
+        if proc.returncode == 0:
             if check_bound(tid, "F6", proc, log, ROOT, script, out):
                 V.ok("F6", f"{tid} --release {TARGET} at the subject: exit 0 bound to {TARGET_VERSION}")
         elif missing := re.search(rf"RELEASE_INPUT_MISSING:release/{re.escape(TARGET)}/[^ \n]+", text):
