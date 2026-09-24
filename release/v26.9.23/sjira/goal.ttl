@@ -18,7 +18,7 @@
 #                              implied by design)
 # Product contract: xaas docs/sjira/v26.9.23/prd-ard.md (PRD section 12 GC23-0 ..
 # GC23-12, section 13 STOP; ARD section 5 first mile, section 17 compiler,
-# section 24 M9 no bespoke backlog). Driver: /Users/sac/wt/v26922/v26923/DRIVER.md.
+# section 24 M9 no bespoke backlog). Driver record: migration/v26923-single-repo/ (the retired driver substrate is preserved at refs/archive/pre-single-repo-migration/20260924T0600Z/shadow-files).
 #
 # Vocabulary: the semantic-jira-pack sj: namespace (ggen_igniter
 # priv/ggen/semantic-jira-pack), the same GoalCheckpoint contract the xaas
@@ -515,7 +515,7 @@ ce:CE23-11-falsifier a sj:Falsifier ;
 # GC23-0..12 contract stays stable); chatman-ce23-12-standings.md binds it for
 # v26.9.23 to CE23-12 = BenchmarkDesign ∧ MSAContract ∧
 # GeneratedQualificationPlan. Design capital (substrate, candidate standing,
-# not repo code), /Users/sac/wt/v26922/v26923/bench/:
+# not repo code), release/v26.9.23/bench/:
 #   DESIGN.md          sha256:f4d185d70ea3e7d56a4ba19b8e07c04c933efd5c705b5d918566658eaf579a19
 #   ontology-draft.ttl sha256:3a17698927ee0c7053e76f4d516d7a14a2f92e35ee2db0971c8f432ed58aecdf
 #   orders.json        sha256:332d01021ae817734a7ac568cd30e4076ce5a864d3c576168d267a38caa60843

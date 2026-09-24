@@ -1,0 +1,995 @@
+# CE23-12 benchmark ontology DRAFT (standing UNKNOWN: design capital, not admitted anywhere).
+#
+# Source prose (operator testimony, O* by fiat), bytes are the provenance:
+#   /Users/sac/wt/v26922/v26923/chatman-ce23-12-bench.md      sha256:4146d688c21db6e1af51a2187df8056b1a0f977001c817d64fbde0547029b485
+#   /Users/sac/wt/v26922/v26923/chatman-ce23-12-standings.md  sha256:80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2
+# Candidate propositions (ce23:P-*) are in bench/candidates/*.ttl, emitted and re-verified by
+# xaas scripts/sjira/prose_spans.py (sha256 86a0e9b3..., xaas commit 2244d8e1). Every ce23: design node
+# below carries prov:wasDerivedFrom one or more of those propositions (trace gate nlbsh:TraceShape).
+#
+# Target homes once admitted (orders.json):
+#   nlb:   vocabulary + shapes + gates -> ggen-marketplace/packs/nonllm-class-qualification-pack/ontology.ttl
+#          (extends the scratch candidate BENCH-design-prior-art/pack-candidate@ec2954742bb6; generic DfLSS
+#          terms go upstream to dflss-pack 0.3.0, CE23-12 order CE23-12-BD-01)
+#   ce23:  instance graph -> chatman-ecosystem release/v26.9.23/bench/design.ttl (CE23-12-BD-06)
+#
+# Reuse > compose > extend > invent. Reused vocabularies (read-only, verified on disk by the prior-art lane):
+#   dflss: ggen-marketplace@96feba8c9 packs/dflss-pack/ontology.ttl (DFLSSProject :42, CTQ :58, DOEExperiment :66,
+#          DOEFactor :70, DOEResponse :74, ControlPlan :78)
+#   req:   ggen-marketplace ontologies/open-ontologies/requirements.ttl (AdmittedCtq: source, measure, verification,
+#          negative case, control plan)
+#   cmd:   packs/ggen-combinatorial-maximalism-pack (DesignSpace :20, Dimension :25, Option :29, Candidate :33)
+#   es:    packs/evidence-standing-pack (Standing, Receipt, Replay, groundedBy; states UNKNOWN..REFUSED :57-63)
+#   sj:    ggen_igniter@3937a4f priv/ggen/semantic-jira-pack (WorkOrder, Court, Falsifier, Capability, Receipt,
+#          GoalCheckpoint, Proposition)
+#   xme:   xaas lib/xaas/ultracode/machine_experience.ex:82 (HANDWRITTEN, not in a pack; promotion is successor
+#          order CE23-12-OP-01)
+#   obo:   ggen-marketplace ontologies/public/obo/stato.owl (STATO_0000314 upper confidence limit, _0000561
+#          confidence level, _0000594 confusion matrix, _0000623 measure of agreement, _0000630 Cohen's kappa,
+#          _0000265 factor level; OBI_0500016 fractional factorial design, OBI_0000750 independent variable)
+#   sosa/ssn/prov/dqv/earl/mls: public vocabularies (DQV and EARL IRIs used, not vendored locally).
+#
+# Scratch vocabularies absorbed here (crosswalk in DESIGN.md section 11): cb: (BENCH-stats/bench-stats.ttl),
+# dflssx:/b3: (BENCH-B3/doe-gen/schema/b3-factors.ttl), corpus: (BENCH-measure-B1B5/corpus.ttl).
+
+@prefix nlb:     <https://ggen.dev/nonllm-bench#> .
+@prefix nlbsh:   <https://ggen.dev/nonllm-bench/shapes#> .
+@prefix ce23:    <https://chatman.dev/release/v26.9.23#> .
+@prefix dflss:   <https://ggen.dev/dflss#> .
+@prefix req:     <https://ggen.io/onto/requirements/> .
+@prefix cmd:     <https://chatmangpt.com/ontology/cmd#> .
+@prefix es:      <https://ggen.dev/ontology/evidence-standing#> .
+@prefix sj:      <https://ggen-igniter.dev/ontology/semantic-jira#> .
+@prefix xme:     <https://xaas.dev/ontology/machine-experience#> .
+@prefix sosa:    <http://www.w3.org/ns/sosa/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix dqv:     <http://www.w3.org/ns/dqv#> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix mls:     <http://www.w3.org/ns/mls#> .
+@prefix obo:     <http://purl.obolibrary.org/obo/> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+nlb: a owl:Ontology ;
+  rdfs:label "Non-LLM class qualification vocabulary (CE23-12 draft)" ;
+  owl:versionInfo "0.1.0-draft" ;
+  prov:wasDerivedFrom ce23:P-b29a6e572f8aef3b , ce23:P-d357273c1da8c3c8 .
+
+#################################################################################################
+# PART 1 -- VOCABULARY (nlb:)
+#################################################################################################
+
+# -- Suite, class, case ------------------------------------------------------------------------
+nlb:BenchmarkSuite a rdfs:Class ; rdfs:subClassOf dflss:DFLSSProject , mls:Study ;
+  rdfs:comment "A CE23-12 qualification study (DMADV). Its crown predicate is a sj:GoalCheckpoint whose sj:stopQuery is an ASK." .
+nlb:BenchmarkClass a rdfs:Class ; rdfs:subClassOf skos:Concept , mls:Task ;
+  rdfs:comment "A work class claimed (or refused) KNOWN. Node identity carries tools, verifiers, membership, split, CTQs and standing. GAP: xme:problemClass is a literal." .
+nlb:claimStatus a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "Closed set: KNOWN_CANDIDATE | PRESERVED | BLOCKED | NOT_KNOWN | OUTSIDE_BOUNDARY. Only KNOWN_CANDIDATE classes count toward N_classes." .
+nlb:readiness a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string .
+nlb:repairTool a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range nlb:ToolIdentity .
+nlb:repairArgv a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string .
+nlb:verifierArgv a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "The class verifier (often shares the repair engine: common-mode risk for formattedness)." .
+nlb:independentVerifier a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range nlb:Verifier ;
+  rdfs:comment "A verifier of a different implementation, mechanism or generator identity (nlb:independenceBasis)." .
+nlb:classToolchain a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "Toolchain identity bound into class membership and every receipt. Part of class identity, NOT a DOE factor: the same ggen_igniter@3937a4f tree is MEMBER under Elixir 1.18.4 and clean under 1.19.5." .
+nlb:canonicalScope a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "Declared path scope whose bytes the class may rewrite; paths outside route UNKNOWN(not_in_declared_canonical_scope)." .
+nlb:workerStatus a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range es:Standing .
+nlb:devRepo a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "Dev(C): repos whose subjects built, tuned or admitted the class machinery; never Test (split rule R2)." .
+nlb:freezeInstant a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:dateTime ;
+  rdfs:comment "T_freeze(C): commit time of the machinery freeze; later non-Dev members are Test (R4, lower precedence than R2)." .
+nlb:realUnseenObserved a rdf:Property ; rdfs:range xsd:integer ;
+  rdfs:comment "Count of real, membership-verified, not-yet-executed Test members observed by the corpus scan (O, not n)." .
+nlb:syntheticCapacity a rdf:Property ; rdfs:range xsd:integer .
+nlb:clusterCount a rdf:Property ; rdfs:range xsd:integer ; rdfs:comment "Distinct repositories (independence clusters)." .
+nlb:reachableTier a rdf:Property ; rdfs:range nlb:EvidenceTier .
+nlb:reachableTierWithSynthetic a rdf:Property ; rdfs:range nlb:EvidenceTier .
+
+nlb:ToolIdentity a rdfs:Class ; rdfs:subClassOf prov:SoftwareAgent .
+nlb:toolName a rdf:Property ; rdfs:domain nlb:ToolIdentity ; rdfs:range xsd:string .
+nlb:toolVersion a rdf:Property ; rdfs:domain nlb:ToolIdentity ; rdfs:range xsd:string .
+nlb:toolPath a rdf:Property ; rdfs:domain nlb:ToolIdentity ; rdfs:range xsd:string .
+nlb:implementationFamily a rdf:Property ; rdfs:range xsd:string ;
+  rdfs:comment "Implementation identity used by the independence check (nlbsh:KnownClassShape)." .
+
+nlb:membershipPredicate a rdf:Property ; rdfs:subPropertyOf xme:applicabilityPredicate ;
+  rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "Membership computed from observations (typed output, trial repair, independent semantic check, scope, config, environment), conjoined with the xme router predicate." .
+nlb:membershipClause a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range nlb:MembershipClause .
+nlb:MembershipClause a rdfs:Class ;
+  rdfs:comment "One conjunct of a membership test. nlb:clauseBasis says what it observes." .
+nlb:clauseBasis a rdf:Property ; rdfs:domain nlb:MembershipClause ; rdfs:range xsd:string ;
+  rdfs:comment "Closed set: TYPED_OUTPUT | TRIAL_REPAIR | INDEPENDENT_SEMANTIC | PATH_SCOPE | CONFIG_BASE_EQUAL | NOT_GENERATED | ENV_PRECONDITION | DECLARED_LABEL. A class whose clauses are all DECLARED_LABEL is refused (MSA P7a: route/2 membership is a declared label)." .
+nlb:clauseText a rdf:Property ; rdfs:domain nlb:MembershipClause ; rdfs:range xsd:string .
+
+nlb:BenchmarkCase a rdfs:Class ; rdfs:subClassOf sosa:Sample , earl:TestCase .
+nlb:NearMissCase a rdfs:Class ; rdfs:subClassOf nlb:BenchmarkCase ;
+  rdfs:comment "B6: x' approx C but x' not in C. Expected standing UNKNOWN before any lease (pre-actuation), with a typed reason." .
+nlb:NegativeControlCase a rdfs:Class ; rdfs:subClassOf nlb:BenchmarkCase ;
+  rdfs:comment "B2: deliberately invalid work; expected standing REFUSED with a typed reason; FalseAccept = 0." .
+nlb:FaultInjectionCase a rdfs:Class ; rdfs:subClassOf nlb:BenchmarkCase ;
+  rdfs:comment "B4: one fault at one morphism; expected a typed state, never uncontrolled continuation." .
+nlb:inClass a rdf:Property ; rdfs:domain nlb:BenchmarkCase ; rdfs:range nlb:BenchmarkClass .
+nlb:nearClass a rdf:Property ; rdfs:domain nlb:NearMissCase ; rdfs:range nlb:BenchmarkClass .
+nlb:split a rdf:Property ; rdfs:domain nlb:BenchmarkCase ; rdfs:range nlb:Split .
+nlb:executesAs a rdf:Property ; rdfs:domain nlb:BenchmarkCase ; rdfs:range sj:WorkOrder .
+nlb:expectedStanding a rdf:Property ; rdfs:domain nlb:BenchmarkCase ; rdfs:range es:Standing .
+nlb:expectedReason a rdf:Property ; rdfs:range xsd:string .
+nlb:memberOrigin a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "REAL | SYNTHETIC. Counted separately in every standing tuple." .
+nlb:mutationOperator a rdf:Property ; rdfs:range xsd:string .
+nlb:subjectDigest a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "sha256 of sorted path:P-blob-oid (content identity, split rule R1)." .
+nlb:patchId a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "git patch-id of the repair (second identity for R1 dedupe)." .
+nlb:cluster a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "Repository of origin (independence cluster)." .
+
+nlb:Split a rdfs:Class ; rdfs:subClassOf skos:Concept ;
+  rdfs:comment "Closed scheme {Train, Validation, Test}. Train(C) and Test(C) are disjoint by subject digest AND patch-id. Validation is usable for MSA, never counted in n." .
+nlb:Train a nlb:Split ; skos:prefLabel "train" .
+nlb:Validation a nlb:Split ; skos:prefLabel "validation (MSA only, never counted)" .
+nlb:Test a nlb:Split ; skos:prefLabel "test (unseen)" .
+
+# -- Morphisms, stages, faults ------------------------------------------------------------------
+nlb:Morphism a rdfs:Class ; rdfs:subClassOf skos:Concept .
+nlb:Observe a nlb:Morphism . nlb:Admit a nlb:Morphism . nlb:Select a nlb:Morphism .
+nlb:Construct a nlb:Morphism . nlb:Authorize a nlb:Morphism . nlb:DO a nlb:Morphism .
+nlb:ReceiptEdge a nlb:Morphism . nlb:ReplayEdge a nlb:Morphism .
+nlb:Stage a rdfs:Class ; rdfs:comment "An RTY stage Y_j; each needs an OCEL event type that is emitted on success AND on refusal." .
+nlb:coversMorphism a rdf:Property ; rdfs:domain nlb:Stage ; rdfs:range nlb:Morphism .
+nlb:ocelEventType a rdf:Property ; rdfs:domain nlb:Stage ; rdfs:range xsd:string .
+nlb:instrumentedToday a rdf:Property ; rdfs:domain nlb:Stage ; rdfs:range xsd:boolean .
+nlb:stageOrder a rdf:Property ; rdfs:range xsd:integer .
+nlb:FaultInjectionPoint a rdfs:Class .
+nlb:atMorphism a rdf:Property ; rdfs:range nlb:Morphism .
+nlb:fault a rdf:Property ; rdfs:range xsd:string .
+nlb:expectedTypedState a rdf:Property ; rdfs:range xsd:string .
+nlb:existingTyping a rdf:Property ; rdfs:range xsd:string .
+nlb:seamStatus a rdf:Property ; rdfs:range es:Standing .
+
+# -- Capability, verifier, falsifier, execution, observation, defect ---------------------------
+nlb:WorkerCapability a rdfs:Class ; rdfs:subClassOf sj:Capability .
+nlb:Verifier a rdfs:Class ; rdfs:subClassOf sj:Court , sosa:Procedure , earl:Assertor .
+nlb:verifierCommand a rdf:Property ; rdfs:domain nlb:Verifier ; rdfs:range xsd:string .
+nlb:independenceBasis a rdf:Property ; rdfs:domain nlb:Verifier ; rdfs:range xsd:string ;
+  rdfs:comment "DIFFERENT_IMPLEMENTATION | DIFFERENT_MECHANISM | DIFFERENT_GENERATOR_IDENTITY (C20 diverse double-compiling)." .
+nlb:Falsifier a rdfs:Class ; rdfs:subClassOf sj:Falsifier .
+nlb:Execution a rdfs:Class ; rdfs:subClassOf mls:Run , prov:Activity .
+nlb:Observation a rdfs:Class ; rdfs:subClassOf sosa:Observation , dqv:QualityMeasurement .
+nlb:Defect a rdfs:Class ; rdfs:subClassOf prov:Entity ;
+  rdfs:comment "A CTQ nonconformance typed by a Chatman broken_term (~/.claude/rules/chatman-equation.md)." .
+nlb:brokenTerm a rdf:Property ; rdfs:range xsd:string .
+nlb:violatesCtq a rdf:Property ; rdfs:domain nlb:Defect ; rdfs:range dflss:CTQ .
+nlb:groundedBy a rdf:Property ; rdfs:subPropertyOf es:groundedBy ; rdfs:range sj:Receipt .
+nlb:unseenExecutionReceipt a rdf:Property ; rdfs:subPropertyOf nlb:groundedBy ;
+  rdfs:comment "Receipt of one executed Test-split member. n counts DISTINCT subject digests over these, never executions." .
+
+# -- CTQ extension (dflss:CTQ is reused; these carry the operator's table + req 5 fields) --------
+nlb:operationalMeasure a rdf:Property ; rdfs:domain dflss:CTQ ; rdfs:range xsd:string .
+nlb:requiredResult a rdf:Property ; rdfs:domain dflss:CTQ ; rdfs:range xsd:string .
+nlb:verificationMethod a rdf:Property ; rdfs:domain dflss:CTQ ; rdfs:range xsd:string .
+nlb:negativeCase a rdf:Property ; rdfs:domain dflss:CTQ ; rdfs:range xsd:string .
+nlb:controlChart a rdf:Property ; rdfs:domain dflss:CTQ ; rdfs:range xsd:string ;
+  rdfs:comment "p | np | c | u | g | I-MR (control plan field of req:AdmittedCtq)." .
+nlb:safetyCritical a rdf:Property ; rdfs:domain dflss:CTQ ; rdfs:range xsd:boolean .
+
+# -- DOE ------------------------------------------------------------------------------------------
+nlb:FractionalFactorialDesign a rdfs:Class ; rdfs:subClassOf dflss:DOEExperiment , obo:OBI_0500016 .
+nlb:Factor a rdfs:Class ; rdfs:subClassOf dflss:DOEFactor , cmd:Dimension , obo:OBI_0000750 .
+nlb:Level a rdfs:Class ; rdfs:subClassOf cmd:Option , obo:STATO_0000265 .
+nlb:DesignRun a rdfs:Class ; rdfs:subClassOf cmd:Candidate ;
+  rdfs:comment "One treatment combination; projected by a CONSTRUCT over bit weights, never hand-listed." .
+nlb:support a rdf:Property ; rdfs:domain nlb:Factor ; rdfs:range xsd:string ;
+  rdfs:comment "Closed set VARIED | FIXED | PARTIAL | UNSUPPORTED (absorbs dflssx:support SUPPORTED/PARTIAL/UNSUPPORTED and the candidate's VARIED/FIXED/UNSUPPORTED). UNSUPPORTED = outside the evidence ceiling; never in a run." .
+nlb:supportReason a rdf:Property ; rdfs:range xsd:string .
+nlb:column a rdf:Property ; rdfs:domain nlb:Factor ; rdfs:range xsd:string .
+nlb:bitWeight a rdf:Property ; rdfs:domain nlb:Factor ; rdfs:range xsd:integer .
+nlb:generatedBy a rdf:Property ; rdfs:domain nlb:Factor ; rdfs:range nlb:Factor .
+nlb:reservedGeneratedBy a rdf:Property ; rdfs:domain nlb:Factor ; rdfs:range nlb:Factor ;
+  rdfs:comment "Generator reserved for a PARTIAL factor; activates only on promotion to VARIED." .
+nlb:lowRealization a rdf:Property ; rdfs:range xsd:string .
+nlb:highRealization a rdf:Property ; rdfs:range xsd:string .
+nlb:hasFactor a rdf:Property ; rdfs:subPropertyOf dflss:hasFactor .
+nlb:runCount a rdf:Property ; rdfs:range xsd:integer .
+nlb:resolution a rdf:Property ; rdfs:range xsd:integer .
+nlb:definingRelation a rdf:Property ; rdfs:range xsd:string .
+nlb:replicationForTier a rdf:Property ; rdfs:range xsd:string .
+
+# -- Statistics: tiers, bounds, the standing tuple ----------------------------------------------
+nlb:EvidenceTier a rdfs:Class ; rdfs:subClassOf skos:Concept ;
+  rdfs:comment "N_discovery < N_qualification < N_operational < N_scale. Bounds are exact one-sided Clopper-Pearson at confidence 0.95." .
+nlb:tierN a rdf:Property ; rdfs:domain nlb:EvidenceTier ; rdfs:range xsd:integer .
+nlb:tierRank a rdf:Property ; rdfs:domain nlb:EvidenceTier ; rdfs:range xsd:integer .
+nlb:confidence a rdf:Property ; rdfs:subPropertyOf obo:STATO_0000561 ; rdfs:range xsd:decimal .
+nlb:zeroDefectUpperBound a rdf:Property ; rdfs:range xsd:decimal .
+nlb:oneDefectUpperBound a rdf:Property ; rdfs:range xsd:decimal .
+nlb:ruleOfThreeBound a rdf:Property ; rdfs:range xsd:decimal .
+nlb:nominalFailureBound a rdf:Property ; rdfs:range xsd:decimal ;
+  rdfs:comment "The operator's tier label (~10%, ~3%, ~1%, ~0.1%)." .
+nlb:minNZeroDefect a rdf:Property ; rdfs:range xsd:integer ;
+  rdfs:comment "Smallest n with 0 defects whose exact bound is <= the nominal bound: ceil(ln(alpha)/ln(1-p*))." .
+
+nlb:BoundRow a rdfs:Class ;
+  rdfs:comment "Exact bound for one (n, x): p_U = BetaInv(0.95; x+1, n-x); x=0: 1-0.05^(1/n); n=0: 1. GENERATED by the single-mu kernel, cross-checked by a second implementation (scipy/statsmodels) to 1e-9. SPARQL 1.1 has no pow/log (ggen FM-GRAPH-003), so rows are data, not query-computed." .
+nlb:boundN a rdf:Property ; rdfs:domain nlb:BoundRow ; rdfs:range xsd:integer .
+nlb:boundDefects a rdf:Property ; rdfs:domain nlb:BoundRow ; rdfs:range xsd:integer .
+nlb:exactUpperBound a rdf:Property ; rdfs:domain nlb:BoundRow ; rdfs:range xsd:decimal .
+
+nlb:StandingKind a rdfs:Class ; rdfs:subClassOf skos:Concept ;
+  rdfs:comment "Typed standings for CE23-12. Individuals are also es:Standing states." .
+nlb:requiresStanding a rdf:Property ; rdfs:domain nlb:StandingKind ; rdfs:range nlb:StandingKind .
+nlb:doesNotImply a rdf:Property ; rdfs:domain nlb:StandingKind ; rdfs:range nlb:StandingKind ;
+  rdfs:comment "Explicit non-implication: holding the subject never establishes the object." .
+nlb:acceptancePredicate a rdf:Property ; rdfs:domain nlb:StandingKind ; rdfs:range nlb:AcceptancePredicate .
+nlb:AcceptancePredicate a rdfs:Class ; rdfs:subClassOf sj:AcceptanceCriterion .
+nlb:predicateId a rdf:Property ; rdfs:range xsd:string .
+nlb:conjunct a rdf:Property ; rdfs:range xsd:string ;
+  rdfs:comment "D | M | A | MSA_CONTRACT | PLAN | NON_IMPLICATION for the design; DESIGN | MSA | UNSEEN | STAT | ZERO_LLM | REPLAY for operational." .
+nlb:askQuery a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "SPARQL ASK over the design graph; true = holds." .
+nlb:checkCommand a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "Command whose exit 0 witnesses the predicate." .
+nlb:refusalMutation a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "Anti-vacuity: the mutation that must make the predicate false." .
+nlb:ownerOrder a rdf:Property ; rdfs:range xsd:string .
+
+nlb:ClassStanding a rdfs:Class ; rdfs:subClassOf es:Standing ;
+  rdfs:comment "Standing(C) = (C, kind, tier, n, n_real, n_synthetic, clusters, operators, defects, confidence, upper failure bound, bound method, environment scope, varied factors, unsupported factors, receipts)." .
+nlb:forClass a rdf:Property ; rdfs:domain nlb:ClassStanding ; rdfs:range nlb:BenchmarkClass .
+nlb:standingKind a rdf:Property ; rdfs:range nlb:StandingKind .
+nlb:tier a rdf:Property ; rdfs:range nlb:EvidenceTier .
+nlb:n a rdf:Property ; rdfs:range xsd:integer ; rdfs:comment "COUNT(DISTINCT subject digest) of executed Test members; repeated executions feed MSA, not n." .
+nlb:nReal a rdf:Property ; rdfs:range xsd:integer .
+nlb:nSynthetic a rdf:Property ; rdfs:range xsd:integer .
+nlb:operatorCount a rdf:Property ; rdfs:range xsd:integer .
+nlb:defects a rdf:Property ; rdfs:range xsd:integer .
+nlb:upperFailureBound a rdf:Property ; rdfs:subPropertyOf obo:STATO_0000314 ; rdfs:range xsd:decimal .
+nlb:boundMethod a rdf:Property ; rdfs:range xsd:string .
+nlb:environmentScope a rdf:Property ; rdfs:range xsd:string .
+nlb:variedFactor a rdf:Property ; rdfs:range nlb:Factor .
+nlb:unsupportedFactor a rdf:Property ; rdfs:range nlb:Factor .
+nlb:msaStanding a rdf:Property ; rdfs:range es:Standing .
+nlb:llmInvocations a rdf:Property ; rdfs:range xsd:integer .
+nlb:replayDivergence a rdf:Property ; rdfs:range xsd:integer .
+nlb:standingReason a rdf:Property ; rdfs:range xsd:string .
+
+# -- MSA, SPC, capability ------------------------------------------------------------------------
+nlb:MSAStudy a rdfs:Class ; rdfs:subClassOf dflss:PhaseActivity .
+nlb:MSAProperty a rdfs:Class ; rdfs:subClassOf skos:Concept .
+nlb:MSACourt a rdfs:Class ; rdfs:subClassOf nlb:Verifier ;
+  rdfs:comment "A generated court measuring one MSA property; standing from its own receipts with (n, defects, bound, scope)." .
+nlb:msaProperty a rdf:Property ; rdfs:domain nlb:MSACourt ; rdfs:range nlb:MSAProperty .
+nlb:statusToday a rdf:Property ; rdfs:range xsd:string ;
+  rdfs:comment "HOLDS_OBSERVED_DOMAIN | FAILS | FAILS_CLOSED | UNMEASURED, from the MSA scanner + skeptic (scratch O)." .
+nlb:evidenceNote a rdf:Property ; rdfs:range xsd:string .
+nlb:ControlChart a rdfs:Class ; rdfs:subClassOf prov:Entity .
+nlb:chartType a rdf:Property ; rdfs:range xsd:string .
+nlb:ControlLimit a rdfs:Class ; rdfs:subClassOf dqv:QualityMeasurement ;
+  rdfs:comment "Center line and UCL/LCL from a declared baseline window; distinct from obo:STATO_0000314 (a confidence limit)." .
+nlb:CapabilityResult a rdfs:Class ; rdfs:subClassOf dqv:QualityMeasurement .
+
+#################################################################################################
+# PART 2 -- THE TWO STANDING INDIVIDUALS (plus the intermediate BENCHMARK_QUALIFIED tier record)
+#################################################################################################
+
+nlb:BENCHMARK_DESIGN_ALIVE a nlb:StandingKind , es:Standing ;
+  skos:prefLabel "BENCHMARK_DESIGN_ALIVE" ;
+  rdfs:comment "CE23-12 for v26.9.23 = BenchmarkDesign AND MSAContract AND GeneratedQualificationPlan (D AND M AND A). A standing of a DESIGN; it certifies no execution." ;
+  nlb:doesNotImply nlb:NON_LLM_OPERATIONAL_ALIVE , nlb:BENCHMARK_QUALIFIED ;
+  nlb:acceptancePredicate ce23:BD-D1 , ce23:BD-D2 , ce23:BD-D3 , ce23:BD-D4 , ce23:BD-D5 , ce23:BD-D6 ,
+    ce23:BD-M1 , ce23:BD-M2 , ce23:BD-A1 , ce23:BD-A2 , ce23:BD-A3 , ce23:BD-A4 , ce23:BD-A5 , ce23:BD-A6 , ce23:BD-X1 ;
+  prov:wasDerivedFrom ce23:P-cc3821f7df83e938 , ce23:P-94cce1ee3a020ec4 , ce23:P-e3fad592bf0d3743 , ce23:P-87719c7113cc07bb .
+
+nlb:BENCHMARK_QUALIFIED a nlb:StandingKind , es:Standing ;
+  skos:prefLabel "BENCHMARK_QUALIFIED" ;
+  rdfs:comment "Per-class evidence-volume record BenchmarkQualified(class, n, defects, confidence, bound, scope) at a stated tier; the operator's example is n=30, 0 defects, 0.95, bound ~0.10, scope macOS." ;
+  nlb:requiresStanding nlb:BENCHMARK_DESIGN_ALIVE ;
+  nlb:doesNotImply nlb:NON_LLM_OPERATIONAL_ALIVE ;
+  prov:wasDerivedFrom ce23:P-de26870ebc0da3ab .
+
+nlb:NON_LLM_OPERATIONAL_ALIVE a nlb:StandingKind , es:Standing ;
+  skos:prefLabel "NON_LLM_OPERATIONAL_ALIVE" ;
+  rdfs:comment "NonLLMOperational(C) = BenchmarkDesign AND MSA_ALIVE AND UnseenExecution(C) AND StatisticalQualification(C) AND ZeroLLM(C) AND Replay(C). Always carried with its evidence tuple and tier; never promoted by design." ;
+  nlb:requiresStanding nlb:BENCHMARK_DESIGN_ALIVE , nlb:BENCHMARK_QUALIFIED ;
+  nlb:acceptancePredicate ce23:OP-1 , ce23:OP-2 , ce23:OP-3 , ce23:OP-4 , ce23:OP-5 , ce23:OP-6 ;
+  prov:wasDerivedFrom ce23:P-e4d899e1e24be748 , ce23:P-3951c3003b3ad270 , ce23:P-0da102e0639487ea , ce23:P-dc3d8f62602cde3e .
+
+#################################################################################################
+# PART 3 -- EVIDENCE TIERS (values recomputed with scipy 1.17.1 beta.ppf == 1-0.05^(1/n); DESIGN.md s2)
+#################################################################################################
+
+nlb:tier-below-discovery a nlb:EvidenceTier ; skos:prefLabel "BELOW_DISCOVERY" ; nlb:tierRank 0 ; nlb:tierN 0 ;
+  prov:wasDerivedFrom ce23:P-de26870ebc0da3ab .
+nlb:tier-discovery a nlb:EvidenceTier ; skos:prefLabel "DISCOVERY" ; nlb:tierRank 1 ; nlb:tierN 30 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:nominalFailureBound "0.10"^^xsd:decimal ;
+  nlb:zeroDefectUpperBound "0.095034"^^xsd:decimal ; nlb:oneDefectUpperBound "0.148596"^^xsd:decimal ;
+  nlb:ruleOfThreeBound "0.100"^^xsd:decimal ; nlb:minNZeroDefect 29 ;
+  prov:wasDerivedFrom ce23:P-de26870ebc0da3ab , ce23:P-54b789f4d65de73d .
+nlb:tier-qualification a nlb:EvidenceTier ; skos:prefLabel "QUALIFICATION" ; nlb:tierRank 2 ; nlb:tierN 100 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:nominalFailureBound "0.03"^^xsd:decimal ;
+  nlb:zeroDefectUpperBound "0.029513"^^xsd:decimal ; nlb:oneDefectUpperBound "0.046560"^^xsd:decimal ;
+  nlb:ruleOfThreeBound "0.030"^^xsd:decimal ; nlb:minNZeroDefect 99 ;
+  prov:wasDerivedFrom ce23:P-de26870ebc0da3ab .
+nlb:tier-operational a nlb:EvidenceTier ; skos:prefLabel "OPERATIONAL" ; nlb:tierRank 3 ; nlb:tierN 300 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:nominalFailureBound "0.01"^^xsd:decimal ;
+  nlb:zeroDefectUpperBound "0.009936"^^xsd:decimal ; nlb:oneDefectUpperBound "0.015715"^^xsd:decimal ;
+  nlb:ruleOfThreeBound "0.010"^^xsd:decimal ; nlb:minNZeroDefect 299 ;
+  prov:wasDerivedFrom ce23:P-de26870ebc0da3ab .
+nlb:tier-scale a nlb:EvidenceTier ; skos:prefLabel "SCALE_3000" ; nlb:tierRank 4 ; nlb:tierN 3000 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:nominalFailureBound "0.001"^^xsd:decimal ;
+  nlb:zeroDefectUpperBound "0.000998"^^xsd:decimal ; nlb:oneDefectUpperBound "0.001580"^^xsd:decimal ;
+  nlb:ruleOfThreeBound "0.001"^^xsd:decimal ; nlb:minNZeroDefect 2995 ;
+  prov:wasDerivedFrom ce23:P-de26870ebc0da3ab .
+
+# Bound rows used by the current standing tuples (n = 0). The kernel emits one row per (n, x) it is asked for.
+ce23:bound-0-0 a nlb:BoundRow ; nlb:boundN 0 ; nlb:boundDefects 0 ; nlb:exactUpperBound "1.0"^^xsd:decimal .
+ce23:bound-30-0 a nlb:BoundRow ; nlb:boundN 30 ; nlb:boundDefects 0 ; nlb:exactUpperBound "0.095034"^^xsd:decimal .
+ce23:bound-30-1 a nlb:BoundRow ; nlb:boundN 30 ; nlb:boundDefects 1 ; nlb:exactUpperBound "0.148596"^^xsd:decimal .
+ce23:bound-100-0 a nlb:BoundRow ; nlb:boundN 100 ; nlb:boundDefects 0 ; nlb:exactUpperBound "0.029513"^^xsd:decimal .
+ce23:bound-300-0 a nlb:BoundRow ; nlb:boundN 300 ; nlb:boundDefects 0 ; nlb:exactUpperBound "0.009936"^^xsd:decimal .
+ce23:bound-3000-0 a nlb:BoundRow ; nlb:boundN 3000 ; nlb:boundDefects 0 ; nlb:exactUpperBound "0.000998"^^xsd:decimal .
+
+#################################################################################################
+# PART 4 -- ACCEPTANCE PREDICATES
+#################################################################################################
+
+ce23:BD-D1 a nlb:AcceptancePredicate ; nlb:predicateId "BD-D1" ; nlb:conjunct "D" ;
+  dcterms:description "Benchmark ontology admitted: nlb vocabulary + nlbsh shapes + gates are merged in ggen-marketplace/packs/nonllm-class-qualification-pack at an exact SHA; the pack qualification consumer syncs in ggen strict mode; each gate and shape admits the clean fixture and refuses every registered mutation on rdflib, pyoxigraph and pyshacl." ;
+  nlb:checkCommand "cd ggen-marketplace/packs/nonllm-class-qualification-pack/qualification && ggen sync run && python3 ../scripts/verify.py" ;
+  nlb:refusalMutation "Each fixture in qualification/mutations/*.ttl (near-miss expecting ALIVE, n=31 u=0.05, x=1 u=0.01, 30 observations on 1 case, OS with a column, same-family independent verifier, untraced node) must be refused; any admitted mutation falsifies BD-D1." ;
+  nlb:ownerOrder "CE23-12-BD-02" ; prov:wasDerivedFrom ce23:P-b29a6e572f8aef3b .
+
+ce23:BD-D2 a nlb:AcceptancePredicate ; nlb:predicateId "BD-D2" ; nlb:conjunct "D" ;
+  dcterms:description "Candidate classes enumerated: at least 5 classes with claimStatus KNOWN_CANDIDATE, each with a bound class toolchain; refused and preserved classes are enumerated too." ;
+  nlb:askQuery """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+ASK { { SELECT (COUNT(DISTINCT ?c) AS ?k) WHERE { ?c a nlb:BenchmarkClass ; nlb:claimStatus "KNOWN_CANDIDATE" ; nlb:classToolchain ?t } } FILTER(?k >= 5) }""" ;
+  nlb:refusalMutation "Demote one KNOWN_CANDIDATE to PRESERVED: the ASK becomes false." ;
+  nlb:ownerOrder "CE23-12-BD-06" ; prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 , ce23:P-f7d560f5d644b1a4 .
+
+ce23:BD-D3 a nlb:AcceptancePredicate ; nlb:predicateId "BD-D3" ; nlb:conjunct "D" ;
+  dcterms:description "Membership tests identified and observed: every KNOWN_CANDIDATE has a membership predicate with at least one TYPED_OUTPUT clause and one TRIAL_REPAIR or INDEPENDENT_SEMANTIC clause; no class relies on a declared label only." ;
+  nlb:askQuery """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+ASK { FILTER NOT EXISTS { ?c a nlb:BenchmarkClass ; nlb:claimStatus "KNOWN_CANDIDATE" .
+  FILTER NOT EXISTS { ?c nlb:membershipPredicate ?p ; nlb:membershipClause ?a , ?b .
+    ?a nlb:clauseBasis "TYPED_OUTPUT" . ?b nlb:clauseBasis ?bb . FILTER(?bb IN ("TRIAL_REPAIR","INDEPENDENT_SEMANTIC")) } } }""" ;
+  nlb:refusalMutation "Replace a class's clauses with one DECLARED_LABEL clause (the current xme route/2 behaviour, machine_experience.ex:103-108): the ASK becomes false." ;
+  nlb:ownerOrder "CE23-12-BD-06" ; prov:wasDerivedFrom ce23:P-8bc683ae3c1a9de8 , ce23:P-44a93211e9c067ad .
+
+ce23:BD-D4 a nlb:AcceptancePredicate ; nlb:predicateId "BD-D4" ; nlb:conjunct "D" ;
+  dcterms:description "Independent verifiers identified: every KNOWN_CANDIDATE has an independent verifier whose implementation family differs from its repair tool's." ;
+  nlb:askQuery """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+ASK { FILTER NOT EXISTS { ?c a nlb:BenchmarkClass ; nlb:claimStatus "KNOWN_CANDIDATE" ; nlb:repairTool ?t . ?t nlb:implementationFamily ?ft .
+  FILTER NOT EXISTS { ?c nlb:independentVerifier ?v . ?v nlb:implementationFamily ?fv . FILTER(?fv != ?ft) } } }""" ;
+  nlb:refusalMutation "Declare the class verifier (same engine as the repair) as the independent verifier: the ASK becomes false." ;
+  nlb:ownerOrder "CE23-12-BD-06" ; prov:wasDerivedFrom ce23:P-a233ad30e1a31fca , ce23:P-6514eed0f00946e2 .
+
+ce23:BD-D5 a nlb:AcceptancePredicate ; nlb:predicateId "BD-D5" ; nlb:conjunct "D" ;
+  dcterms:description "Near-miss UNKNOWN falsifiers identified: every KNOWN_CANDIDATE has at least 3 NearMissCase individuals expecting es:UNKNOWN with a typed reason, and none is nlb:inClass." ;
+  nlb:askQuery """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+PREFIX es: <https://ggen.dev/ontology/evidence-standing#>
+ASK { FILTER NOT EXISTS { ?c a nlb:BenchmarkClass ; nlb:claimStatus "KNOWN_CANDIDATE" .
+  { SELECT ?c (COUNT(?m) AS ?k) WHERE { ?c a nlb:BenchmarkClass . OPTIONAL { ?m a nlb:NearMissCase ; nlb:nearClass ?c ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason ?r } } GROUP BY ?c }
+  FILTER(?k < 3) } }""" ;
+  nlb:refusalMutation "Set one near-miss's expected standing to es:ALIVE (the pack gate 030 mutation): the class drops below 3 and the ASK becomes false." ;
+  nlb:ownerOrder "CE23-12-BD-06" ; prov:wasDerivedFrom ce23:P-e86f34aec0045db1 , ce23:P-5c4d9223b171d729 .
+
+ce23:BD-D6 a nlb:AcceptancePredicate ; nlb:predicateId "BD-D6" ; nlb:conjunct "D" ;
+  dcterms:description "CTQs defined: the 15 operator CTQs exist as dflss:CTQ with the five req:AdmittedCtq fields (source trace, measure, verification method, negative case, control chart)." ;
+  nlb:askQuery """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+PREFIX dflss: <https://ggen.dev/dflss#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+ASK { { SELECT (COUNT(DISTINCT ?q) AS ?k) WHERE { ?q a dflss:CTQ ; prov:wasDerivedFrom ?s ; nlb:operationalMeasure ?m ; nlb:verificationMethod ?v ; nlb:negativeCase ?n ; nlb:controlChart ?cc ; nlb:requiredResult ?r } } FILTER(?k = 15) }""" ;
+  nlb:refusalMutation "Delete the control chart of one CTQ: the count drops to 14 and the ASK becomes false." ;
+  nlb:ownerOrder "CE23-12-BD-06" ; prov:wasDerivedFrom ce23:P-631296cc71d3da82 , ce23:P-94cce1ee3a020ec4 .
+
+ce23:BD-M1 a nlb:AcceptancePredicate ; nlb:predicateId "BD-M1" ; nlb:conjunct "M" ;
+  dcterms:description "Measurement/receipt/OCEL model defined: the 7 RTY stages each name an OCEL event type emitted on success and refusal; required receipt fields are declared (subject SHAs, actuator toolchain, argv sha256, factor levels, uname -sm, case id)." ;
+  nlb:askQuery """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+ASK { { SELECT (COUNT(DISTINCT ?s) AS ?k) WHERE { ?s a nlb:Stage ; nlb:ocelEventType ?e ; nlb:coversMorphism ?m ; nlb:instrumentedToday ?i } } FILTER(?k = 7)
+  FILTER EXISTS { ?r a nlb:ReceiptFieldSet ; nlb:requiredField "uname_sm" , "actuator_toolchain" , "factor_levels" } }""" ;
+  nlb:refusalMutation "Remove the event type of the Admit stage: the count drops to 6 and the ASK becomes false." ;
+  nlb:ownerOrder "CE23-12-BD-06" ; prov:wasDerivedFrom ce23:P-e3fad592bf0d3743 , ce23:P-a468b548fef60475 .
+
+ce23:BD-M2 a nlb:AcceptancePredicate ; nlb:predicateId "BD-M2" ; nlb:conjunct "MSA_CONTRACT" ;
+  dcterms:description "MSA contract defined: every MSA question of the operator prose is covered by at least one MSACourt with an instrument, today's status and a falsifier." ;
+  nlb:askQuery """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+ASK { FILTER NOT EXISTS { ?p a nlb:MSAProperty . FILTER NOT EXISTS { ?m a nlb:MSACourt ; nlb:msaProperty ?p ; nlb:statusToday ?s ; nlb:verifierCommand ?cmd } } }""" ;
+  nlb:refusalMutation "Delete the M2 receipt-currency court: stale-receipt detection becomes uncovered and the ASK becomes false." ;
+  nlb:ownerOrder "CE23-12-BD-06" ; prov:wasDerivedFrom ce23:P-22dff21d49b9f5a6 .
+
+ce23:BD-A1 a nlb:AcceptancePredicate ; nlb:predicateId "BD-A1" ; nlb:conjunct "A" ;
+  dcterms:description "DOE support matrix generated: factor-standing.json, design-matrix.json and ci-matrix.json are ggen projections of the factor graph; computed resolution equals declared resolution (>= IV); UNSUPPORTED factors appear only in not_varied; byte-identical on regeneration." ;
+  nlb:checkCommand "cd chatman-ecosystem/release/v26.9.23/bench && ggen sync run && git diff --exit-code -- out/doe && python3 <pack>/scripts/verify.py --doe out/doe/design-matrix.json" ;
+  nlb:refusalMutation "Set the toolchain generator to cold x concurrency only (I=ABE): resolution 3 must be REFUSED(resolution_below_required); give OS a column: gate 040 must refuse." ;
+  nlb:ownerOrder "CE23-12-BD-04" ; prov:wasDerivedFrom ce23:P-2d647d6e18f801df , ce23:P-9b8d48190eeaac75 , ce23:P-d79566375284518a .
+
+ce23:BD-A2 a nlb:AcceptancePredicate ; nlb:predicateId "BD-A2" ; nlb:conjunct "A" ;
+  dcterms:description "Statistical acceptance rules generated: tier individuals and exact BoundRows come from the kernel and agree with a second implementation to 1e-9; the overclaim shape compares a claimed bound with the exact (n, x) row and covers defects > 0; n is checked against distinct unseen receipts." ;
+  nlb:checkCommand "python3 <pack>/scripts/evidence_tiers.py --check && python3 <pack>/scripts/verify.py --shapes" ;
+  nlb:refusalMutation "Claims (n=31, x=0, u=0.05), (n=30, x=1, u=0.01) and (n=30 with 1 distinct receipt) must each violate nlbsh:ClassStandingShape; the candidate gate 010 admitted the first two (skeptic run)." ;
+  nlb:ownerOrder "CE23-12-BD-03" ; prov:wasDerivedFrom ce23:P-9224895d20a6a0bd , ce23:P-de26870ebc0da3ab , ce23:P-4d3769c9fc61645a .
+
+ce23:BD-A3 a nlb:AcceptancePredicate ; nlb:predicateId "BD-A3" ; nlb:conjunct "A" ;
+  dcterms:description "Corpus and split rule defined: every KNOWN_CANDIDATE declares Dev(C), T_freeze(C), a reachable tier with and without synthetic members, and a cluster count; Train and Test are disjoint by subject digest and patch-id." ;
+  nlb:askQuery """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+ASK { FILTER NOT EXISTS { ?c a nlb:BenchmarkClass ; nlb:claimStatus "KNOWN_CANDIDATE" .
+  FILTER NOT EXISTS { ?c nlb:devRepo ?d ; nlb:reachableTier ?t ; nlb:reachableTierWithSynthetic ?t2 ; nlb:clusterCount ?cc } }
+  FILTER NOT EXISTS { ?a nlb:split nlb:Train ; nlb:inClass ?c1 . ?b nlb:split nlb:Test ; nlb:inClass ?c1 .
+    { ?a nlb:subjectDigest ?x . ?b nlb:subjectDigest ?x } UNION { ?a nlb:patchId ?y . ?b nlb:patchId ?y } } }""" ;
+  nlb:refusalMutation "Add a Test member sharing a patch-id with a Train member (the xaas b6fbdc21 pair the corpus skeptic found): the ASK becomes false." ;
+  nlb:ownerOrder "CE23-12-BD-06" ; prov:wasDerivedFrom ce23:P-87719c7113cc07bb , ce23:P-f3bf6d9ee8cfe82a , ce23:P-54b789f4d65de73d .
+
+ce23:BD-A4 a nlb:AcceptancePredicate ; nlb:predicateId "BD-A4" ; nlb:conjunct "PLAN" ;
+  dcterms:description "Benchmark work orders generated (GeneratedQualificationPlan): the qualification-plan CONSTRUCT emits one tuple-complete sj:WorkOrder per (KNOWN_CANDIDATE class x B1..B6) plus one per MSA court; compile_prose over the CE23-12 candidates emits the prose-derived orders; both regenerate byte-identically (--check)." ;
+  nlb:checkCommand "mix semantic_jira.compile_prose --source <prose> --candidates <cands> --goal <ce23 goal> --out-dir <dir> --check (scratch clone of ggen_igniter@3937a4f) && ggen sync run (plan rule) && git diff --exit-code" ;
+  nlb:refusalMutation "Delete the B5 order of one class from the projection: regeneration differs (--check exits 1)." ;
+  nlb:ownerOrder "CE23-12-BD-08" ; prov:wasDerivedFrom ce23:P-eb6bf51d657d803f , ce23:P-e6e5199c02901c00 .
+
+ce23:BD-A5 a nlb:AcceptancePredicate ; nlb:predicateId "BD-A5" ; nlb:conjunct "A" ;
+  dcterms:description "Every generated artifact traces to operator prose: every design node is prov:wasDerivedFrom an sj:Proposition whose span re-verifies against the operator prose bytes (prose_spans.py check exit 0); every projection's generation receipt names the design graph digest." ;
+  nlb:checkCommand "python3 prose_spans.py check --source chatman-ce23-12-bench.md --candidates candidates/chatman-ce23-12-bench.ttl && python3 prose_spans.py check --source chatman-ce23-12-standings.md --candidates candidates/chatman-ce23-12-standings.ttl && pyshacl -s ontology.ttl -d design.ttl candidates/*.ttl" ;
+  nlb:refusalMutation "Remove prov:wasDerivedFrom from one CTQ (nlbsh:TraceShape violation), or change one byte inside a quoted span of the prose (prose_spans check REFUSED)." ;
+  nlb:ownerOrder "CE23-12-BD-05" ; prov:wasDerivedFrom ce23:P-354dcc1eb7f4ddb2 .
+
+ce23:BD-A6 a nlb:AcceptancePredicate ; nlb:predicateId "BD-A6" ; nlb:conjunct "A" ;
+  dcterms:description "No hand-written suite: benchmark definitions, case manifests, reports and the CI matrix are ggen projections with a GENERATED header; two regenerations are byte-identical over out/ (the .ggen-v2 chain hash is excluded: it advances by design)." ;
+  nlb:checkCommand "rm -rf out && ggen sync run && sha256sum -c out.sha256 && rm -rf out && ggen sync run && sha256sum -c out.sha256" ;
+  nlb:refusalMutation "Hand-edit one projected case manifest: regeneration restores the bytes and the committed tree differs." ;
+  nlb:ownerOrder "CE23-12-BD-07" ; prov:wasDerivedFrom ce23:P-d5b3bfcf4d7b43c7 , ce23:P-d357273c1da8c3c8 .
+
+ce23:BD-X1 a nlb:AcceptancePredicate ; nlb:predicateId "BD-X1" ; nlb:conjunct "NON_IMPLICATION" ;
+  dcterms:description "The design graph promotes nothing: no ClassStanding of kind NON_LLM_OPERATIONAL_ALIVE or BENCHMARK_QUALIFIED is in state es:ALIVE without unseen-execution receipts (tuples in state UNKNOWN are allowed and required); the CE23-12 design receipt reports every class UNKNOWN for operation." ;
+  nlb:askQuery """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+PREFIX es: <https://ggen.dev/ontology/evidence-standing#>
+ASK { FILTER NOT EXISTS { ?s a nlb:ClassStanding ; nlb:standingKind ?k ; es:standingState es:ALIVE . FILTER(?k IN (nlb:NON_LLM_OPERATIONAL_ALIVE, nlb:BENCHMARK_QUALIFIED)) FILTER NOT EXISTS { ?s nlb:unseenExecutionReceipt ?r } } }""" ;
+  nlb:refusalMutation "Set a class standing to es:ALIVE with n=0 and no receipt: the ASK becomes false and nlbsh:OperationalStandingShape reports a violation." ;
+  nlb:ownerOrder "CE23-12-BD-09" ; prov:wasDerivedFrom ce23:P-e4d899e1e24be748 , ce23:P-dc3d8f62602cde3e , ce23:P-0da102e0639487ea .
+
+ce23:OP-1 a nlb:AcceptancePredicate ; nlb:predicateId "OP-1" ; nlb:conjunct "DESIGN" ;
+  dcterms:description "BENCHMARK_DESIGN_ALIVE holds on the current design graph digest (validity scope: the digest the executor was generated from)." ;
+  prov:wasDerivedFrom ce23:P-3951c3003b3ad270 .
+ce23:OP-2 a nlb:AcceptancePredicate ; nlb:predicateId "OP-2" ; nlb:conjunct "MSA" ;
+  dcterms:description "MSA_ALIVE: every MSACourt ALIVE on its own receipts with >= 30 independent units and 0 defects on miss / false-accept / stale-accept; Cohen's kappa defined (both verifiers judged good and bad items) and every verifier disagreement routed UNKNOWN." ;
+  prov:wasDerivedFrom ce23:P-22dff21d49b9f5a6 , ce23:P-6514eed0f00946e2 .
+ce23:OP-3 a nlb:AcceptancePredicate ; nlb:predicateId "OP-3" ; nlb:conjunct "UNSEEN" ;
+  dcterms:description "UnseenExecution(C): n = COUNT(DISTINCT subject digest) of Test-split members (not Dev(C), deduped by digest and patch-id) each with an executed receipt from the generated executor under env -i, fresh HOME, clean exact-SHA checkout, no transcript and no LLM credential; n >= 30 for DISCOVERY." ;
+  prov:wasDerivedFrom ce23:P-f3bf6d9ee8cfe82a , ce23:P-0da102e0639487ea .
+ce23:OP-4 a nlb:AcceptancePredicate ; nlb:predicateId "OP-4" ; nlb:conjunct "STAT" ;
+  dcterms:description "StatisticalQualification(C): claimed upper bound >= exact Clopper-Pearson (n, x); tier = highest tier with n >= tierN and exact bound <= tier bound; FTY, RTY and P(false-KNOWN) reported with lower/upper 95% bounds; P(false-KNOWN) measured on >= 30 B6 near-misses with 0 false admissions for DISCOVERY." ;
+  prov:wasDerivedFrom ce23:P-05883ecca56c32e8 , ce23:P-b9022a10780f111d .
+ce23:OP-5 a nlb:AcceptancePredicate ; nlb:predicateId "OP-5" ; nlb:conjunct "ZERO_LLM" ;
+  dcterms:description "ZeroLLM(C): LLM invocations on the KNOWN path = 0 (c-chart, zero tolerance) AND the generated provider guard refuses every B2 hidden-provider control (env prefixes, binaries on PATH incl. codex/gemini/ollama/openai, local model ports) AND the court PATH reaches no LLM binary." ;
+  prov:wasDerivedFrom ce23:P-50376c3f972e19c0 .
+ce23:OP-6 a nlb:AcceptancePredicate ; nlb:predicateId "OP-6" ; nlb:conjunct "REPLAY" ;
+  dcterms:description "Replay(C): every unseen receipt replays: recipe re-executed on the base gives the same git write-tree digest (path-normalized) and evidence replay is identical; divergence count 0; replay_unobserved counts as a defect." ;
+  prov:wasDerivedFrom ce23:P-a468b548fef60475 .
+
+#################################################################################################
+# PART 5 -- THE CE23-12 DESIGN INSTANCE GRAPH (ce23:) -- target chatman-ecosystem release/v26.9.23/bench/design.ttl
+#################################################################################################
+
+ce23:suite-CE23-12 a nlb:BenchmarkSuite ;
+  rdfs:label "CE23-12 DfLSS Non-LLM Operational Benchmark" ;
+  prov:wasDerivedFrom ce23:P-d6a05b83a474ef62 , ce23:P-a463693a094b335f .
+
+ce23:CE23-12-design-standing a nlb:ClassStanding ;
+  rdfs:label "CE23-12 design standing record (current)" ;
+  nlb:standingKind nlb:BENCHMARK_DESIGN_ALIVE ;
+  es:standingState es:UNKNOWN ;
+  nlb:standingReason "candidate only: nonllm-class-qualification-pack not admitted (BD-D1), design graph not committed in a release subject (BD-06), projections not generated (BD-A1/A4/A6)" ;
+  prov:wasDerivedFrom ce23:P-cc3821f7df83e938 .
+
+# -- Tool identities ------------------------------------------------------------------------------
+ce23:tool-mix-format-1184 a nlb:ToolIdentity ; nlb:toolName "mix format" ; nlb:toolVersion "Elixir 1.18.4 / OTP 27.2.4 (asdf; ggen_igniter .tool-versions; court pin target_suites.ex:484)" ;
+  nlb:implementationFamily "elixir-code-formatter" .
+ce23:tool-elixir-ast-1202 a nlb:ToolIdentity ; nlb:toolName "Code.string_to_quoted (metadata stripped)" ; nlb:toolVersion "Elixir 1.20.2 / OTP 28" ;
+  nlb:implementationFamily "elixir-parser-ast-equality" .
+ce23:tool-ruff-0167 a nlb:ToolIdentity ; nlb:toolName "ruff format" ; nlb:toolVersion "0.16.7" ; nlb:toolPath "/Users/sac/gymact/.venv/bin/ruff (pin gymact/uv.lock:4367-4368)" ;
+  nlb:implementationFamily "ruff-rust" .
+ce23:tool-cpython-ast a nlb:ToolIdentity ; nlb:toolName "python3 ast.dump equality" ; nlb:toolVersion "CPython 3.14.3" ;
+  nlb:implementationFamily "cpython-ast" .
+ce23:tool-rustfmt a nlb:ToolIdentity ; nlb:toolName "rustfmt" ; nlb:toolVersion "1.9.0-stable (toolchain 1.97.1, ferroplan rust-toolchain.toml)" ;
+  nlb:implementationFamily "rustfmt" .
+ce23:tool-rustc-ast a nlb:ToolIdentity ; nlb:toolName "rustc -Zunpretty=ast-tree (spans, NodeIds, spacing erased)" ; nlb:toolVersion "1.100.0-nightly-2026-09-14" ;
+  nlb:implementationFamily "rustc-ast-tree" .
+ce23:tool-jq a nlb:ToolIdentity ; nlb:toolName "jq -S --indent 2" ; nlb:toolVersion "1.8.1" ; nlb:toolPath "/opt/homebrew/bin/jq" ;
+  nlb:implementationFamily "jq-c" .
+ce23:tool-cpython-json a nlb:ToolIdentity ; nlb:toolName "canon_json_check.py (json.dumps sort_keys indent=2 ensure_ascii=False + LF; duplicate-key hook)" ; nlb:toolVersion "CPython 3.14.3" ;
+  nlb:implementationFamily "cpython-json" .
+ce23:tool-ggen-26918 a nlb:ToolIdentity ; nlb:toolName "ggen sync run" ; nlb:toolVersion "26.9.18" ; nlb:toolPath "/opt/homebrew/Cellar/ggen/26.9.18 (sha256 357cfd4e595c6f8a)" ;
+  nlb:implementationFamily "ggen@26.9.18" .
+ce23:tool-ggen-26824 a nlb:ToolIdentity ; nlb:toolName "ggen sync run (second generator identity)" ; nlb:toolVersion "26.8.24" ; nlb:toolPath "/Users/sac/ggen/target/debug/ggen" ;
+  nlb:implementationFamily "ggen@26.8.24" .
+
+ce23:ver-elixir-ast a nlb:Verifier ; nlb:verifierCommand "elixir 1.20.2: Code.string_to_quoted!/2 on base and head of every changed file, metadata stripped, ==" ;
+  nlb:independenceBasis "DIFFERENT_MECHANISM" ; nlb:implementationFamily "elixir-parser-ast-equality" .
+ce23:ver-cpython-ast a nlb:Verifier ; nlb:verifierCommand "python3 -c ast.dump(ast.parse(base)) == ast.dump(ast.parse(head)) (docstring whitespace normalized)" ;
+  nlb:independenceBasis "DIFFERENT_IMPLEMENTATION" ; nlb:implementationFamily "cpython-ast" .
+ce23:ver-rustc-ast a nlb:Verifier ; nlb:verifierCommand "rustc +nightly-2026-09-14 -Zunpretty=ast-tree, spans/NodeIds/spacing erased, digest equality" ;
+  nlb:independenceBasis "DIFFERENT_MECHANISM" ; nlb:implementationFamily "rustc-ast-tree" ;
+  rdfs:comment "Too strict today: 4/11 false-UNKNOWN (closure-body block rewrite, dropped trailing commas in derive token streams). Normalization is order CE23-12-OP-23." .
+ce23:ver-cpython-json a nlb:Verifier ; nlb:verifierCommand "python3 canon_json_check.py <declared files>" ;
+  nlb:independenceBasis "DIFFERENT_IMPLEMENTATION" ; nlb:implementationFamily "cpython-json" .
+ce23:ver-ggen-26824 a nlb:Verifier ; nlb:verifierCommand "ggen 26.8.24 sync run in a clean copy; byte identity with the 26.9.18 projection (C20)" ;
+  nlb:independenceBasis "DIFFERENT_GENERATOR_IDENTITY" ; nlb:implementationFamily "ggen@26.8.24" .
+
+# -- The five KNOWN_CANDIDATE classes ------------------------------------------------------------
+ce23:class-elixir-format a nlb:BenchmarkClass ;
+  skos:prefLabel "format_drift/elixir (plain .formatter.exs, no import_deps/plugins)" ;
+  nlb:claimStatus "KNOWN_CANDIDATE" ;
+  nlb:readiness "READY (discovery n=5 fixture + 1 real CI member ggen_igniter@3937a4f bootstrap.ex:245, run 35895255818)" ;
+  nlb:repairTool ce23:tool-mix-format-1184 ; nlb:repairArgv "mix format (recipe:mix-format, xaas config/config.exs:293-299)" ;
+  nlb:verifierArgv "mix format --check-formatted (stdin closed)" ;
+  nlb:independentVerifier ce23:ver-elixir-ast ;
+  nlb:classToolchain "elixir 1.18.4-otp-27 / erlang 27.2.4 (target .tool-versions); receipt records elixir, OTP and ERTS identity" ;
+  nlb:canonicalScope ".formatter.exs inputs ({mix,.formatter}.exs, {config,lib,test}/**/*.{ex,exs}); scripts/ excluded" ;
+  nlb:workerStatus es:PARTIAL_ALIVE ;
+  nlb:membershipPredicate "exit 1 AND stderr contains 'mix format failed due to --check-formatted' AND no 'mix format failed for file' / dependency error AND .formatter.exs byte-equal to base AND no GENERATED/DO NOT EDIT header in the first 5 lines AND sandbox trial repair then check exits 0 AND git-visible delta within inputs (format_timestamp excluded) AND Elixir 1.20.2 AST equal for every changed file" ;
+  nlb:membershipClause ce23:mc-ex-1 , ce23:mc-ex-2 , ce23:mc-ex-3 , ce23:mc-ex-4 , ce23:mc-ex-5 ;
+  nlb:devRepo "ggen_igniter" ; nlb:freezeInstant "2026-09-22T22:23:17-07:00"^^xsd:dateTime ;
+  nlb:realUnseenObserved 26 ; nlb:syntheticCapacity 645 ; nlb:clusterCount 3 ;
+  nlb:reachableTier nlb:tier-below-discovery ; nlb:reachableTierWithSynthetic nlb:tier-operational ;
+  rdfs:comment "Plain-formatter scope: 26 real unseen (ash_a2a 15 and ash_surface 10 real-instrument verified, ggen-marketplace 1). The 14 xaas members (39 after patch-id dedupe in the corpus lane) belong to the import_deps class and are surrogate-measured only. Synthetic: Episode.drift/1 defmodule_spacing only (1 operator); >= 645 clean sites outside Dev in repos with a plain .formatter.exs (ash_a2a 626, ash_surface 19); the corpus lane's 2,191 also counts xaas 801 and ash_atlassian 12 (import_deps) and beam4pm 712 (no .formatter.exs). Worker exists but is bound to ggen_igniter (xaas.episode.ex:95-96,125)." ;
+  prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 , ce23:P-54b789f4d65de73d .
+ce23:mc-ex-1 a nlb:MembershipClause ; nlb:clauseBasis "TYPED_OUTPUT" ; nlb:clauseText "stderr token 'mix format failed due to --check-formatted' (exit code 1 alone is ambiguous: drift, TokenMissingError, missing deps)" .
+ce23:mc-ex-2 a nlb:MembershipClause ; nlb:clauseBasis "TRIAL_REPAIR" ; nlb:clauseText "sandbox mix format then --check-formatted exits 0" .
+ce23:mc-ex-3 a nlb:MembershipClause ; nlb:clauseBasis "INDEPENDENT_SEMANTIC" ; nlb:clauseText "Elixir 1.20.2 AST equality of every changed file" .
+ce23:mc-ex-4 a nlb:MembershipClause ; nlb:clauseBasis "CONFIG_BASE_EQUAL" ; nlb:clauseText ".formatter.exs byte-equal to base" .
+ce23:mc-ex-5 a nlb:MembershipClause ; nlb:clauseBasis "NOT_GENERATED" ; nlb:clauseText "no GENERATED / DO NOT EDIT / Do not hand-edit header in the first 5 lines" .
+
+ce23:class-python-format a nlb:BenchmarkClass ;
+  skos:prefLabel "format_drift/python (ruff format)" ;
+  nlb:claimStatus "KNOWN_CANDIDATE" ;
+  nlb:readiness "READY (discovery n=9 fixture)" ;
+  nlb:repairTool ce23:tool-ruff-0167 ; nlb:repairArgv "ruff format --no-cache <scope>" ;
+  nlb:verifierArgv "ruff format --no-cache --check --output-format json <scope>" ;
+  nlb:independentVerifier ce23:ver-cpython-ast ;
+  nlb:classToolchain "ruff 0.16.7 (target uv.lock pin); ruff 0.14.0 flags a different file set on gymact@5141f88e, so the pin is part of membership" ;
+  nlb:canonicalScope "pyproject [tool.ruff] include; src/ and tests/ for gymact" ;
+  nlb:workerStatus es:UNSUPPORTED ;
+  nlb:membershipPredicate "verifier exit 1 AND JSON violation list non-empty AND no GENERATED header in the first 6 lines AND pyproject.toml byte-equal to base AND sandbox trial repair then verifier exit 0 AND delta within scope AND CPython AST equal; exit 2 routes UNKNOWN(parse_or_tool_error)" ;
+  nlb:membershipClause ce23:mc-py-1 , ce23:mc-py-2 , ce23:mc-py-3 , ce23:mc-py-4 ;
+  nlb:devRepo "gymact" ; nlb:realUnseenObserved 65 ; nlb:syntheticCapacity 3095 ; nlb:clusterCount 1 ;
+  nlb:reachableTier nlb:tier-discovery ; nlb:reachableTierWithSynthetic nlb:tier-operational ;
+  rdfs:comment "65 unseen, all autofde-lab (1 cluster). Synthetic def-spacing generator is UNSUPPORTED (<= 3,095 clean files). Membership measured with ruff 0.14.0 in the corpus scan; qualification must use the target pin." ;
+  prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+ce23:mc-py-1 a nlb:MembershipClause ; nlb:clauseBasis "TYPED_OUTPUT" ; nlb:clauseText "JSON output violation list (text output changed between ruff 0.14 and 0.16)" .
+ce23:mc-py-2 a nlb:MembershipClause ; nlb:clauseBasis "TRIAL_REPAIR" ; nlb:clauseText "sandbox ruff format then --check exits 0" .
+ce23:mc-py-3 a nlb:MembershipClause ; nlb:clauseBasis "INDEPENDENT_SEMANTIC" ; nlb:clauseText "CPython ast.dump equality" .
+ce23:mc-py-4 a nlb:MembershipClause ; nlb:clauseBasis "NOT_GENERATED" ; nlb:clauseText "no GENERATED / DO NOT (HAND )EDIT in the first 6 lines" .
+
+ce23:class-rust-format a nlb:BenchmarkClass ;
+  skos:prefLabel "format_drift/rust (rustfmt)" ;
+  nlb:claimStatus "KNOWN_CANDIDATE" ;
+  nlb:readiness "PARTIAL (7/11 admitted; independent AST check too strict)" ;
+  nlb:repairTool ce23:tool-rustfmt ; nlb:repairArgv "rustfmt --edition <Cargo.toml edition> <files> (repo form: cargo fmt --all)" ;
+  nlb:verifierArgv "rustfmt --check --edition <edition> <files>" ;
+  nlb:independentVerifier ce23:ver-rustc-ast ;
+  nlb:classToolchain "rust 1.97.1 (rust-toolchain.toml); edition read from Cargo.toml (workspace-inherited)" ;
+  nlb:canonicalScope "crates/ of the workspace; rustfmt.toml byte-equal to base" ;
+  nlb:workerStatus es:UNSUPPORTED ;
+  nlb:membershipPredicate "exit 1 AND stdout 'Diff in <file>' AND no 'error' on stderr AND edition from Cargo.toml AND no rustfmt.toml change AND no @generated header AND trial repair passes AND delta within crates/ AND AST tree digest equal" ;
+  nlb:membershipClause ce23:mc-rs-1 , ce23:mc-rs-2 , ce23:mc-rs-3 ;
+  nlb:devRepo "open-ontologies (fewest verified; designated frozen by the corpus lane)" ; nlb:realUnseenObserved 63 ; nlb:syntheticCapacity 1467 ; nlb:clusterCount 3 ;
+  nlb:reachableTier nlb:tier-discovery ; nlb:reachableTierWithSynthetic nlb:tier-operational ;
+  rdfs:comment "63 unseen: ggen 43, ferroplan 17, frozen-duckdb 3. Synthetic fn-spacing generator UNSUPPORTED." ;
+  prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+ce23:mc-rs-1 a nlb:MembershipClause ; nlb:clauseBasis "TYPED_OUTPUT" ; nlb:clauseText "stdout 'Diff in <file>' and no stderr error" .
+ce23:mc-rs-2 a nlb:MembershipClause ; nlb:clauseBasis "TRIAL_REPAIR" ; nlb:clauseText "rustfmt then rustfmt --check exits 0" .
+ce23:mc-rs-3 a nlb:MembershipClause ; nlb:clauseBasis "INDEPENDENT_SEMANTIC" ; nlb:clauseText "nightly ast-tree digest equality (needs normalization)" .
+
+ce23:class-json-canonical a nlb:BenchmarkClass ;
+  skos:prefLabel "json_canonical_drift (declared scope: sorted keys, indent 2, UTF-8, LF, lowercase escapes)" ;
+  nlb:claimStatus "KNOWN_CANDIDATE" ;
+  nlb:readiness "READY once the per-path canonical form is declared in RDF (discovery n=9 fixture)" ;
+  nlb:repairTool ce23:tool-jq ; nlb:repairArgv "jq -S --indent 2 . <file> > tmp && mv tmp <file>, for every declared file" ;
+  nlb:verifierArgv "python3 canon_json_check.py <declared files>" ;
+  nlb:independentVerifier ce23:ver-cpython-json ;
+  nlb:classToolchain "jq 1.8.1 + CPython 3.14.3 json" ;
+  nlb:canonicalScope "UNDECLARED today: xaas docs/sjira/v26.9.23 JSON is 74 canonical / 3 uppercase-escape receipts / 1 indent-4 / 1 indent-1 unsorted / 4 unsorted / 1 compact; writer-owned episode receipts must be excluded or the form must fix escape case" ;
+  nlb:workerStatus es:UNSUPPORTED ;
+  nlb:membershipPredicate "verifier reports only NOT_CANONICAL AND every flagged path in the declared scope AND no INVALID / DUPLICATE_KEYS AND trial jq repair satisfies the python verifier AND parsed values equal AND multiset of numeric literal texts unchanged" ;
+  nlb:membershipClause ce23:mc-js-1 , ce23:mc-js-2 , ce23:mc-js-3 , ce23:mc-js-4 ;
+  nlb:devRepo "ferroplan" ; nlb:realUnseenObserved 22 ; nlb:clusterCount 6 ;
+  nlb:reachableTier nlb:tier-below-discovery ; nlb:reachableTierWithSynthetic nlb:tier-qualification ;
+  rdfs:comment "22 real data-format members (json|yaml|toml) verified by parse equality, no frozen repair tool per repo. Synthetic re-serialization generator UNSUPPORTED until a canonical form is declared." ;
+  prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+ce23:mc-js-1 a nlb:MembershipClause ; nlb:clauseBasis "TYPED_OUTPUT" ; nlb:clauseText "verifier lines are NOT_CANONICAL only (no INVALID, DUPLICATE_KEYS)" .
+ce23:mc-js-2 a nlb:MembershipClause ; nlb:clauseBasis "TRIAL_REPAIR" ; nlb:clauseText "trial jq repair satisfies the python verifier (jq/python agree)" .
+ce23:mc-js-3 a nlb:MembershipClause ; nlb:clauseBasis "PATH_SCOPE" ; nlb:clauseText "every flagged path inside nlb:canonicalScope" .
+ce23:mc-js-4 a nlb:MembershipClause ; nlb:clauseBasis "INDEPENDENT_SEMANTIC" ; nlb:clauseText "parsed values equal; numeric literal multiset unchanged" .
+
+ce23:class-ggen-projection a nlb:BenchmarkClass ;
+  skos:prefLabel "ggen_generated_projection_drift" ;
+  nlb:claimStatus "KNOWN_CANDIDATE" ;
+  nlb:readiness "READY (discovery n=5 fixture; ggen has no --check, verifier wraps dry-run JSON)" ;
+  nlb:repairTool ce23:tool-ggen-26918 ; nlb:repairArgv "(cwd project) ggen sync run --format json" ;
+  nlb:verifierArgv "ggen sync run --dry-run --format json; fail iff any decisions[*] is not 'skipped: unchanged' (exit code alone is 0 on drift)" ;
+  nlb:independentVerifier ce23:ver-ggen-26824 ;
+  nlb:classToolchain "ggen 26.9.18 (repair) + ggen 26.8.24 (second identity); historical ggen.toml schemas refused by 26.9.18 (FM-CONFIG-003) route UNKNOWN" ;
+  nlb:canonicalScope "manifest-declared outputs under the project dir; .ggen/, .ggen-v2/, ggen.lock excluded (gymact/.gitignore:95-97)" ;
+  nlb:workerStatus es:UNSUPPORTED ;
+  nlb:membershipPredicate "dry-run exits 0 and parses AND non-'skipped: unchanged' decisions non-empty AND trial sync exits 0 and dry-run then clean AND git-visible delta within declared outputs AND second generator identity reproduces identical bytes" ;
+  nlb:membershipClause ce23:mc-gg-1 , ce23:mc-gg-2 , ce23:mc-gg-3 , ce23:mc-gg-4 ;
+  nlb:devRepo "ggen" ; nlb:realUnseenObserved 13 ; nlb:syntheticCapacity 1397 ; nlb:clusterCount 1 ;
+  nlb:reachableTier nlb:tier-below-discovery ; nlb:reachableTierWithSynthetic nlb:tier-operational ;
+  rdfs:comment "13 unseen exact replays, all beam4pm. FM-WRITE-005 on F's own path (14 members) makes the frozen generator itself a drift detector. Synthetic output-perturbation capacity <= 1,397 marked files is an upper bound (generator UNSUPPORTED)." ;
+  prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+ce23:mc-gg-1 a nlb:MembershipClause ; nlb:clauseBasis "TYPED_OUTPUT" ; nlb:clauseText "dry-run JSON decisions not 'skipped: unchanged'" .
+ce23:mc-gg-2 a nlb:MembershipClause ; nlb:clauseBasis "TRIAL_REPAIR" ; nlb:clauseText "trial sync then clean dry-run" .
+ce23:mc-gg-3 a nlb:MembershipClause ; nlb:clauseBasis "INDEPENDENT_SEMANTIC" ; nlb:clauseText "ggen 26.8.24 byte-identical regeneration" .
+ce23:mc-gg-4 a nlb:MembershipClause ; nlb:clauseBasis "PATH_SCOPE" ; nlb:clauseText "delta within manifest-declared outputs" .
+
+# -- Preserved, blocked, refused and outside-boundary classes (non-dominated options kept, B6 neighbours) --
+ce23:class-cargo-lock-workspace a nlb:BenchmarkClass ; skos:prefLabel "cargo_lock_workspace_member_drift (offline, path deps only)" ;
+  nlb:claimStatus "PRESERVED" ; nlb:readiness "READY (discovery n=4 synthetic); 15 real unseen (ferroplan 6, ggen 6, open-ontologies 3)" ;
+  nlb:verifierArgv "cargo metadata --locked --offline --format-version 1 (exit 101 on drift); NOT the fleet idiom cargo update --locked --dry-run (exits 0 on drift: admission_vacuous)" ;
+  prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+ce23:class-gitlink-ff a nlb:BenchmarkClass ; skos:prefLabel "gitlink fast-forward roll" ;
+  nlb:claimStatus "PRESERVED" ; nlb:readiness "21 real unseen verified fast-forward (beam4pm 13, ggen-ecosystem 8); no worker" ;
+  prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+ce23:class-uv-lock a nlb:BenchmarkClass ; skos:prefLabel "uv_lock_project_drift (offline)" ;
+  nlb:claimStatus "PRESERVED" ; nlb:readiness "READY (discovery n=3 synthetic)" ; prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+ce23:class-mix-lock-unused a nlb:BenchmarkClass ; skos:prefLabel "mix_lock_unused_entries" ;
+  nlb:claimStatus "PRESERVED" ; nlb:readiness "READY only warm (deps/<name>/mix.exs present); cold repair deleted a needed transitive entry" ;
+  prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+ce23:class-doc-projection a nlb:BenchmarkClass ; skos:prefLabel "doc_projection_drift (dfcm catalog)" ;
+  nlb:claimStatus "PRESERVED" ; nlb:readiness "READY (n=4 synthetic); needs an explicit rdflib path pin" ; prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+ce23:class-elixir-format-import-deps a nlb:BenchmarkClass ; skos:prefLabel "format_drift/elixir with import_deps/plugins (xaas)" ;
+  nlb:claimStatus "PRESERVED" ; nlb:readiness "PARTIAL: not executed warm; cold gives exit 1 'Could not find an SCM for dependency :ash' (same exit as drift)" ;
+  prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+ce23:class-release-calver a nlb:BenchmarkClass ; skos:prefLabel "release_version_policy_drift (version-only CalVer)" ;
+  nlb:claimStatus "BLOCKED" ; nlb:readiness "BLOCKED: GgenIgniter.DoctorFixes.fix_version_policy! drops the final newline (doctor_fixes.ex:1162,1190), leaves source_ref stale (mix.exs:65), no monotonicity guard; <= 14 version-only real members" ;
+  prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+ce23:class-ruff-lint-autofix a nlb:BenchmarkClass ; skos:prefLabel "python_ruff_lint_autofix" ;
+  nlb:claimStatus "NOT_KNOWN" ; nlb:readiness "deterministic but not semantics-conserving (F401 deletes imports); B6 neighbour of python format" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:class-yaml-normalization a nlb:BenchmarkClass ; skos:prefLabel "yaml_config_normalization" ;
+  nlb:claimStatus "NOT_KNOWN" ; nlb:readiness "no declared fleet form: 9/13 xaas workflows are deno fmt fixpoints, 0/13 yq -P" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:class-schema-repair a nlb:BenchmarkClass ; skos:prefLabel "schema_repair (receipt missing a field)" ;
+  nlb:claimStatus "NOT_KNOWN" ; nlb:readiness "UNSUPPORTED(repair_tool): fields carry evidential content; verifier validate_receipt.py exists" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:class-release-semver a nlb:BenchmarkClass ; skos:prefLabel "release version choice (semver bumps, CHANGELOG prose)" ;
+  nlb:claimStatus "NOT_KNOWN" ; nlb:readiness "67 semver + 15 prose-bearing CalVer commits: a decision, B6 near-misses of release_version" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:class-registry-relock a nlb:BenchmarkClass ; skos:prefLabel "registry relock (network resolution)" ;
+  nlb:claimStatus "NOT_KNOWN" ; nlb:readiness "68 members need network resolution; offline replay UNSUPPORTED" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:class-lint-repair a nlb:BenchmarkClass ; skos:prefLabel "known_ci_repair/lint (clippy, credo, ruff check)" ;
+  nlb:claimStatus "NOT_KNOWN" ; nlb:readiness "163 shape-only members; no offline membership oracle" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:class-toml a nlb:BenchmarkClass ; skos:prefLabel "toml_normalization" ;
+  nlb:claimStatus "OUTSIDE_BOUNDARY" ; nlb:readiness "UNSUPPORTED(tool_absent): taplo absent" ; prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+ce23:class-gofmt a nlb:BenchmarkClass ; skos:prefLabel "go_gofmt_drift" ;
+  nlb:claimStatus "OUTSIDE_BOUNDARY" ; nlb:readiness "only fleet Go code is remo, REFUSED from v26.9.23" ; prov:wasDerivedFrom ce23:P-0bf49a6ad91b8c58 .
+
+# -- B6 near-miss cases (expected UNKNOWN before any lease) --------------------------------------
+ce23:nm-ex-syntax a nlb:NearMissCase ; nlb:nearClass ce23:class-elixir-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "parse_failure (missing end: exit 1 like drift)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-ex-generated a nlb:NearMissCase ; nlb:nearClass ce23:class-elixir-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "generated_projection_file" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-ex-deps a nlb:NearMissCase ; nlb:nearClass ce23:class-elixir-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "formatter_env_deps_absent (import_deps without deps)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-ex-config a nlb:NearMissCase ; nlb:nearClass ce23:class-elixir-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "formatter_config_changed_vs_base" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-ex-semantic a nlb:NearMissCase ; nlb:nearClass ce23:class-elixir-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "semantics_not_conserved (formatted behaviour change: 3/5 escaped the format court)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-py-syntax a nlb:NearMissCase ; nlb:nearClass ce23:class-python-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "parse_or_tool_error (exit 2)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-py-generated a nlb:NearMissCase ; nlb:nearClass ce23:class-python-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "generated_projection_file (gymact src/gymact/semantics/admission.py, registry.py)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-py-config a nlb:NearMissCase ; nlb:nearClass ce23:class-python-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "formatter_config_changed_vs_base" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-py-lint a nlb:NearMissCase ; nlb:nearClass ce23:class-python-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "different_causal_class (lint-only F401; same CI job, same tool family)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-rs-syntax a nlb:NearMissCase ; nlb:nearClass ce23:class-rust-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "parse_failure (missing brace)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-rs-generated a nlb:NearMissCase ; nlb:nearClass ce23:class-rust-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "generated_projection_file (@generated)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-rs-config a nlb:NearMissCase ; nlb:nearClass ce23:class-rust-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "formatter_config_changed_vs_base (rustfmt.toml max_width=60 added)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-rs-edition a nlb:NearMissCase ; nlb:nearClass ce23:class-rust-format ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "edition_mismatch (async fn under --edition 2015: E0670)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-js-dupkey a nlb:NearMissCase ; nlb:nearClass ce23:class-json-canonical ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "duplicate_keys_value_ambiguous" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-js-1e3 a nlb:NearMissCase ; nlb:nearClass ce23:class-json-canonical ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "repair_does_not_satisfy_verifier (jq rewrites 1e3 to 1E+3)" ; prov:wasDerivedFrom ce23:P-6514eed0f00946e2 .
+ce23:nm-js-invalid a nlb:NearMissCase ; nlb:nearClass ce23:class-json-canonical ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "invalid_json (trailing comma)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-js-scope a nlb:NearMissCase ; nlb:nearClass ce23:class-json-canonical ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "not_in_declared_canonical_scope (writer-owned episodes/fmt-1/prepare.json)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-gg-template a nlb:NearMissCase ; nlb:nearClass ce23:class-ggen-projection ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "pipeline_refused (template syntax error)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-gg-turtle a nlb:NearMissCase ; nlb:nearClass ce23:class-ggen-projection ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "pipeline_refused (ontology Turtle syntax error)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-gg-schema a nlb:NearMissCase ; nlb:nearClass ce23:class-ggen-projection ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "pipeline_refused (FM-CONFIG-003 historical ggen.toml schema)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+ce23:nm-gg-pack a nlb:NearMissCase ; nlb:nearClass ce23:class-ggen-projection ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason "pipeline_refused (FM-PACK-008 lock hash mismatch / FM-PACK-010 LFS pack fetch)" ; prov:wasDerivedFrom ce23:P-5c4d9223b171d729 .
+
+# -- CTQ tree (15; operator table) ----------------------------------------------------------------
+ce23:ctq-classification a dflss:CTQ ; rdfs:label "Classification correctness" ; nlb:safetyCritical true ;
+  nlb:operationalMeasure "KNOWN vs UNKNOWN confusion matrix (obo:STATO_0000594) over members and B6 near-misses" ; nlb:requiredResult "false-KNOWN = 0; upper bound reported" ;
+  nlb:verificationMethod "pre-actuation membership probe vs independent label oracle (M8)" ; nlb:negativeCase "B6 near-miss admitted KNOWN" ; nlb:controlChart "g" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 , ce23:P-05883ecca56c32e8 .
+ce23:ctq-routing a dflss:CTQ ; rdfs:label "Deterministic routing" ; nlb:safetyCritical false ;
+  nlb:operationalMeasure "same admitted input -> same provider/recipe" ; nlb:requiredResult "100%" ;
+  nlb:verificationMethod "route/2 over shuffled graph and permuted inputs (MSA P5)" ; nlb:negativeCase "B2 same descriptor, changed requested outcome" ; nlb:controlChart "p" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 .
+ce23:ctq-llm-isolation a dflss:CTQ ; rdfs:label "LLM isolation" ; nlb:safetyCritical true ;
+  nlb:operationalMeasure "reachable LLM calls, credentials, providers (env prefixes, binaries on PATH, local model ports)" ; nlb:requiredResult "0" ;
+  nlb:verificationMethod "generated provider guard + network fence probe (M10)" ; nlb:negativeCase "B2 hidden provider: GEMINI_/GOOGLE_/OLLAMA_/MISTRAL_/CODEX_ keys, codex/gemini/ollama/openai on PATH, /usr/local/bin/claude on the court PATH" ; nlb:controlChart "c" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 .
+ce23:ctq-conservation a dflss:CTQ ; rdfs:label "Semantic conservation" ; nlb:safetyCritical true ;
+  nlb:operationalMeasure "tuple digest preserved across hops" ; nlb:requiredResult "100%" ;
+  nlb:verificationMethod "verify_hops/1 + GC23-4 carrier re-derivation (complementary: all-hop forgery caught only by the latter)" ; nlb:negativeCase "B2 malformed tuple digest; single-hop and all-hop forgeries" ; nlb:controlChart "c" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 .
+ce23:ctq-execution a dflss:CTQ ; rdfs:label "Execution success" ; nlb:safetyCritical false ;
+  nlb:operationalMeasure "completed admitted KNOWN orders / admitted KNOWN orders (FTY)" ; nlb:requiredResult "target >= 99%; first crown FTY >= 95%" ;
+  nlb:verificationMethod "OCEL StageCompleted outcomes per case" ; nlb:negativeCase "B4 worker crash must not count as success" ; nlb:controlChart "p" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 .
+ce23:ctq-verification a dflss:CTQ ; rdfs:label "Verification sensitivity" ; nlb:safetyCritical true ;
+  nlb:operationalMeasure "injected bad result rejected" ; nlb:requiredResult "100%" ;
+  nlb:verificationMethod "planted bad outputs per class (define lane: 49/49 rejected) + formatted semantic corruptions (M6)" ; nlb:negativeCase "B2 intentionally wrong generated file" ; nlb:controlChart "g" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 , ce23:P-019fc42417808b99 .
+ce23:ctq-receipt a dflss:CTQ ; rdfs:label "Receipt completeness" ; nlb:safetyCritical true ;
+  nlb:operationalMeasure "successful consequences with a valid, current, field-bound receipt" ; nlb:requiredResult "100%" ;
+  nlb:verificationMethod "validate_receipt.py + currency court (M2) + R-projection binding court (M3)" ; nlb:negativeCase "B2 corrupted receipt (4/7 court-owned corruptions escape today)" ; nlb:controlChart "c" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 , ce23:P-18db2cd10b35adae .
+ce23:ctq-replay a dflss:CTQ ; rdfs:label "Replay equivalence" ; nlb:safetyCritical true ;
+  nlb:operationalMeasure "replay reproduces admitted result/state (write-tree digest, path-normalized)" ; nlb:requiredResult "100%; unobserved replay counts as a defect" ;
+  nlb:verificationMethod "re-execution replay + GC23-10 evidence replay" ; nlb:negativeCase "B2 stale subject SHA -> DIVERGED subject_changed" ; nlb:controlChart "c" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 .
+ce23:ctq-cold a dflss:CTQ ; rdfs:label "Cold reconstructability" ; nlb:safetyCritical false ;
+  nlb:operationalMeasure "no transcript/session dependence: fresh HOME, clean exact-SHA checkout" ; nlb:requiredResult "100%" ;
+  nlb:verificationMethod "hermetic cold rebuild court (M7)" ; nlb:negativeCase "B4 cold graph side BUILD_BROKEN must fail closed" ; nlb:controlChart "p" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 .
+ce23:ctq-idempotence a dflss:CTQ ; rdfs:label "Idempotence" ; nlb:safetyCritical true ;
+  nlb:operationalMeasure "repeated order does not duplicate consequence" ; nlb:requiredResult "100%" ;
+  nlb:verificationMethod "crash-after-DO re-drive fault case; uniqueness on (work_order_iri, tuple_digest, base_sha)" ; nlb:negativeCase "B4 lease loss / re-drive" ; nlb:controlChart "c" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 .
+ce23:ctq-fault-containment a dflss:CTQ ; rdfs:label "Fault containment" ; nlb:safetyCritical true ;
+  nlb:operationalMeasure "typed failure instead of uncontrolled fallback, per morphism" ; nlb:requiredResult "100%" ;
+  nlb:verificationMethod "generated B4 fault tests per FaultInjectionPoint" ; nlb:negativeCase "B4 fault continuing to DO or promoting standing" ; nlb:controlChart "c" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 , ce23:P-c5890eaf509015b3 .
+ce23:ctq-frontier a dflss:CTQ ; rdfs:label "Frontier closure" ; nlb:safetyCritical false ;
+  nlb:operationalMeasure "completed work leaves the current frontier; dependent enters" ; nlb:requiredResult "100%" ;
+  nlb:verificationMethod "GC23-8 frontier court per case" ; nlb:negativeCase "ALIVE order re-entering the frontier" ; nlb:controlChart "p" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 .
+ce23:ctq-class-transfer a dflss:CTQ ; rdfs:label "Class transfer" ; nlb:safetyCritical true ;
+  nlb:operationalMeasure "P(success | x in C, x not in Train) over distinct unseen subject digests" ; nlb:requiredResult "statistically qualified at a stated tier (>= DISCOVERY: n >= 30, 0 defects, p_U <= 0.095)" ;
+  nlb:verificationMethod "B5 execution through the generated executor; ClassStanding tuple" ; nlb:negativeCase "leakage: Test member sharing digest or patch-id with Train/Dev" ; nlb:controlChart "g" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 , ce23:P-a463693a094b335f .
+ce23:ctq-human a dflss:CTQ ; rdfs:label "Human dependence" ; nlb:safetyCritical false ;
+  nlb:operationalMeasure "exceptional-human intervention on the KNOWN path" ; nlb:requiredResult "0" ;
+  nlb:verificationMethod "OCEL actor attribution: no human actor between Observe and Receipt" ; nlb:negativeCase "operator edit inside a KNOWN run" ; nlb:controlChart "c" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 .
+ce23:ctq-llm-dependence a dflss:CTQ ; rdfs:label "LLM dependence" ; nlb:safetyCritical true ;
+  nlb:operationalMeasure "LLM invocations on the KNOWN path (count, not presence)" ; nlb:requiredResult "0" ;
+  nlb:verificationMethod "provider-object/event count over the batch OCEL (stop_court episode_counters at e999e62 is a name rule; needs an invocation fence)" ; nlb:negativeCase "B2 LLM fallback present" ; nlb:controlChart "c" ;
+  prov:wasDerivedFrom ce23:P-631296cc71d3da82 .
+
+# -- Measurement model: RTY stages and receipt fields --------------------------------------------
+ce23:stage-observe a nlb:Stage ; nlb:stageOrder 1 ; nlb:coversMorphism nlb:Observe ; nlb:ocelEventType "WorkOrderCreated" ; nlb:instrumentedToday true ; prov:wasDerivedFrom ce23:P-a468b548fef60475 , ce23:P-b9022a10780f111d .
+ce23:stage-admit a nlb:Stage ; nlb:stageOrder 2 ; nlb:coversMorphism nlb:Admit ; nlb:ocelEventType "StageCompleted{stage=admit} (to add: descriptor/contract/materialize emit nothing today)" ; nlb:instrumentedToday false ; prov:wasDerivedFrom ce23:P-a468b548fef60475 .
+ce23:stage-route a nlb:Stage ; nlb:stageOrder 3 ; nlb:coversMorphism nlb:Select ; nlb:ocelEventType "CapabilityResolved / RouteDecided" ; nlb:instrumentedToday true ; prov:wasDerivedFrom ce23:P-a468b548fef60475 .
+ce23:stage-execute a nlb:Stage ; nlb:stageOrder 4 ; nlb:coversMorphism nlb:Construct , nlb:Authorize , nlb:DO ; nlb:ocelEventType "LeaseAcquired, ActuationStarted, ActuationCompleted" ; nlb:instrumentedToday true ; prov:wasDerivedFrom ce23:P-a468b548fef60475 .
+ce23:stage-verify a nlb:Stage ; nlb:stageOrder 5 ; nlb:coversMorphism nlb:DO ; nlb:ocelEventType "VerificationCompleted" ; nlb:instrumentedToday true ; prov:wasDerivedFrom ce23:P-a468b548fef60475 .
+ce23:stage-receipt a nlb:Stage ; nlb:stageOrder 6 ; nlb:coversMorphism nlb:ReceiptEdge ; nlb:ocelEventType "ReceiptSealed" ; nlb:instrumentedToday true ; prov:wasDerivedFrom ce23:P-a468b548fef60475 .
+ce23:stage-replay a nlb:Stage ; nlb:stageOrder 7 ; nlb:coversMorphism nlb:ReplayEdge ; nlb:ocelEventType "StageCompleted{stage=replay} (to add: mix xaas.replay writes JSON, no OCEL)" ; nlb:instrumentedToday false ; prov:wasDerivedFrom ce23:P-a468b548fef60475 .
+nlb:ReceiptFieldSet a rdfs:Class .
+nlb:requiredField a rdf:Property ; rdfs:domain nlb:ReceiptFieldSet ; rdfs:range xsd:string .
+ce23:receipt-fields a nlb:ReceiptFieldSet ;
+  nlb:requiredField "subject_sha" , "tuple_digest" , "actuator_toolchain" , "recipe_argv_sha256" , "verifier_argv_sha256" , "factor_levels" , "uname_sm" , "case_id" , "split" , "stage_outcomes" ;
+  rdfs:comment "Today fmt-1 receipt.json lacks the actuator toolchain (export drops lease evidence, semantic_receipt.ex:94-104) and every OS/arch identity." ;
+  prov:wasDerivedFrom ce23:P-a468b548fef60475 , ce23:P-51855f58857c4cbb .
+
+# -- MSA contract --------------------------------------------------------------------------------
+ce23:msa-repeatability a nlb:MSAProperty ; rdfs:label "verifier repeatability" ; prov:wasDerivedFrom ce23:P-fee15861390483d9 .
+ce23:msa-agreement a nlb:MSAProperty ; rdfs:label "independent-verifier / classification agreement" ; prov:wasDerivedFrom ce23:P-6514eed0f00946e2 .
+ce23:msa-mutation a nlb:MSAProperty ; rdfs:label "mutation sensitivity" ; prov:wasDerivedFrom ce23:P-019fc42417808b99 .
+ce23:msa-stale a nlb:MSAProperty ; rdfs:label "stale receipt detection" ; prov:wasDerivedFrom ce23:P-18db2cd10b35adae .
+ce23:msa-ordering a nlb:MSAProperty ; rdfs:label "ordering invariance" ; prov:wasDerivedFrom ce23:P-2ac0f99d08e3a810 .
+ce23:msa-cache a nlb:MSAProperty ; rdfs:label "cached-state / environment reproducibility" ; prov:wasDerivedFrom ce23:P-68418717c9bee0d3 .
+ce23:msa-boundary a nlb:MSAProperty ; rdfs:label "membership boundary (near-miss vs KNOWN)" ; prov:wasDerivedFrom ce23:P-44a93211e9c067ad .
+
+ce23:M0 a nlb:MSACourt ; rdfs:label "M0 repeatability court (r repeats of the same artifact, stdin closed)" ; nlb:msaProperty ce23:msa-repeatability ;
+  nlb:verifierCommand "generated MSA trial plan: each class verifier r>=30 times per artifact" ; nlb:statusToday "HOLDS_OBSERVED_DOMAIN" ;
+  nlb:evidenceNote "format check 20/20, court suite 20/20, validate_receipt 10/10, route/hops/conserve 10/10, GC23-10 cold replay 4/4: all below N_discovery=30. Define-lane rerun 97/98 (1 timeout: inherited stdin + Hex prompt), no rerun script (R_missing_replay)." ;
+  prov:wasDerivedFrom ce23:P-fee15861390483d9 .
+ce23:M1 a nlb:MSACourt ; rdfs:label "M1 canonical-JSON kernel differential (RFC 8785 lowercase escapes)" ; nlb:msaProperty ce23:msa-agreement ;
+  nlb:verifierCommand "generated differential corpus incl. U+000B, U+000E, U+000F, U+001A..U+001F over Python json.dumps, xaas Route.digest, ggen_igniter tuple_digest" ; nlb:statusToday "FAILS" ;
+  nlb:evidenceNote "Python vs xaas 161/210 agree; the 9 code points get uppercase hex in Jason, lowercase in Python; falsifies semantic_drive.ex:195-196; reachable via route.ex:328-332. Recorded fmt-1 values 10/10 agree." ;
+  prov:wasDerivedFrom ce23:P-6514eed0f00946e2 .
+ce23:M2 a nlb:MSACourt ; rdfs:label "M2 receipt-currency court" ; nlb:msaProperty ce23:msa-stale ;
+  nlb:verifierCommand "subject_sha equals the current S23 tip or no covered-path change since" ; nlb:statusToday "FAILS" ;
+  nlb:evidenceNote "validate_receipt.py:19-24 checks existence only; a constructed stale fmt-1 receipt was ADMITTED (n_effective=1). SemanticReplay subject_changed catches episode staleness 2/2." ;
+  prov:wasDerivedFrom ce23:P-18db2cd10b35adae .
+ce23:M3 a nlb:MSACourt ; rdfs:label "M3 R-projection field binding court" ; nlb:msaProperty ce23:msa-mutation ;
+  nlb:verifierCommand "bind every R-projection field to the native receipt and git" ; nlb:statusToday "FAILS" ;
+  nlb:evidenceNote "4/7 court-owned receipt corruptions escape every court (acceptance false with ALIVE, commit not the subject, files outside scope, replay cmd true)." ;
+  prov:wasDerivedFrom ce23:P-019fc42417808b99 .
+ce23:M4 a nlb:MSACourt ; rdfs:label "M4 observed membership conjoined with xme:applicabilityPredicate" ; nlb:msaProperty ce23:msa-boundary ;
+  nlb:verifierCommand "generated pre-resolve membership probe per class" ; nlb:statusToday "FAILS" ;
+  nlb:evidenceNote "membership = declared label (machine_experience.ex:103-108, 222-248; episode.ex:57); effective n=1; near-miss routes KNOWN, claims a lease, ends REFUSED(recipe_step_failed) after DO." ;
+  prov:wasDerivedFrom ce23:P-44a93211e9c067ad .
+ce23:M5 a nlb:MSACourt ; rdfs:label "M5 typed verifier output classes" ; nlb:msaProperty ce23:msa-boundary ;
+  nlb:verifierCommand "court result format keyed on output tokens, not exit status" ; nlb:statusToday "FAILS" ;
+  nlb:evidenceNote "exit_status format (court_receipt.ex:66-75) maps drift and syntax damage to the same fail; output text separates 34/34." ;
+  prov:wasDerivedFrom ce23:P-44a93211e9c067ad .
+ce23:M6 a nlb:MSACourt ; rdfs:label "M6 base-vs-head AST-equivalence court (doc-only diff rule)" ; nlb:msaProperty ce23:msa-mutation ;
+  nlb:verifierCommand "independent semantic verifier per class" ; nlb:statusToday "FAILS" ;
+  nlb:evidenceNote "3/5 behaviour-changing formatted corruptions pass the format court (2/5 were doc edits: mkcases.py heredoc bug)." ;
+  prov:wasDerivedFrom ce23:P-019fc42417808b99 .
+ce23:M7 a nlb:MSACourt ; rdfs:label "M7 hermetic cold rebuild court" ; nlb:msaProperty ce23:msa-cache ;
+  nlb:verifierCommand "pinned toolchain, cargo/rustup in the court env, offline NIF cache, relocation-safe private build" ; nlb:statusToday "FAILS_CLOSED" ;
+  nlb:evidenceNote "cold graph side BUILD_BROKEN (cargo enoent graph_nif.ex:9; relocated yamerl include) -> UNKNOWN exit 75, no false verdict; warm ALIVE 2/2; format verifier warm vs cold 100/100 identical." ;
+  prov:wasDerivedFrom ce23:P-68418717c9bee0d3 .
+ce23:M8 a nlb:MSACourt ; rdfs:label "M8 independent label oracle for case generators" ; nlb:msaProperty ce23:msa-boundary ;
+  nlb:verifierCommand "labels computed by a parser/oracle independent of the generator and of the class verifier" ; nlb:statusToday "UNMEASURED" ;
+  nlb:evidenceNote "the MSA generator mislabelled SYN-unclosed_paren (it parses); the observed-membership prototype agreed with the generator's own labels only (not independent)." ;
+  prov:wasDerivedFrom ce23:P-44a93211e9c067ad .
+ce23:M9 a nlb:MSACourt ; rdfs:label "M9 ordering / permutation court" ; nlb:msaProperty ce23:msa-ordering ;
+  nlb:verifierCommand "seeded permutations of case order, exclusions and graph statements" ; nlb:statusToday "HOLDS_OBSERVED_DOMAIN" ;
+  nlb:evidenceNote "0/250 verdict diffs over 50 cases x 5 orders; conserve 5/5; route 5/5 (5 permutations are the unit of independence)." ;
+  prov:wasDerivedFrom ce23:P-2ac0f99d08e3a810 .
+ce23:M10 a nlb:MSACourt ; rdfs:label "M10 LLM-isolation instrument court" ; nlb:msaProperty ce23:msa-boundary ;
+  nlb:verifierCommand "generated provider denylist + network fence + court PATH scan against B2 hidden-provider controls" ; nlb:statusToday "FAILS" ;
+  nlb:evidenceNote "no_llm_guard/1 returned ok with GEMINI_/GOOGLE_/OLLAMA_/MISTRAL_/CODEX_ keys and codex/gemini/ollama/openai in /opt/homebrew/bin; court PATH hardcodes /usr/local/bin holding claude (target_suites.ex:636)." ;
+  prov:wasDerivedFrom ce23:P-50376c3f972e19c0 .
+ce23:M11 a nlb:MSACourt ; rdfs:label "M11 toolchain-binding court" ; nlb:msaProperty ce23:msa-cache ;
+  nlb:verifierCommand "verifier toolchain (elixir, OTP, ERTS / ruff / rustfmt) equals the class pin and is recorded" ; nlb:statusToday "FAILS" ;
+  nlb:evidenceNote "ggen_igniter@3937a4f: 1.16.0 and 1.18.4 flag files, 1.19.5 and 1.20.2 pass; both int _builds compiled by 1.19.5/OTP 28 against pins 1.18.4-otp-27 and 1.20.2-otp-28; ERTS from ~/.erlmcp/otp-28.3.1." ;
+  prov:wasDerivedFrom ce23:P-68418717c9bee0d3 .
+
+# -- DOE factors (B3). Column assignment solved by BENCH-B3/assign_search.py (96 of 720 valid; lexicographic first) --
+ce23:doe-B3 a nlb:FractionalFactorialDesign ;
+  rdfs:label "2^(6-2) resolution IV over the VARIED factors" ;
+  nlb:runCount 16 ; nlb:resolution 4 ; nlb:definingRelation "I=ABCE=ADEF=BCDF" ;
+  nlb:hasFactor ce23:factor-cold , ce23:factor-concurrency , ce23:factor-path , ce23:factor-env , ce23:factor-toolchain , ce23:factor-ordering ;
+  nlb:replicationForTier "m members per run, same members in every run (blocks): m=4 -> 64 executions (DISCOVERY, bound 0.0457); m=8 -> 128 (QUALIFICATION, 0.0231); m=20 -> 320 (OPERATIONAL, 0.0093). Executions count toward class-transfer n only when each run uses fresh unseen members (then r=2 -> 32, r=7 -> 112, r=19 -> 304)." ;
+  prov:wasDerivedFrom ce23:P-d79566375284518a , ce23:P-9b8d48190eeaac75 , ce23:P-2d647d6e18f801df .
+ce23:factor-cold a nlb:Factor ; rdfs:label "cold/warm" ; nlb:support "VARIED" ; nlb:column "A" ; nlb:bitWeight 1 ;
+  nlb:lowRealization "warm: operator HOME caches + existing _build" ;
+  nlb:highRealization "cold-A: fresh HOME seeded offline (hex 2.5.1, rebar3, rustler_precompiled cache), empty _build, deps cloned, ASDF_DATA_DIR/RUSTUP_HOME/CARGO_HOME pinned, cargo on PATH, HEX_OFFLINE=1" ;
+  nlb:supportReason "cold-A end-to-end UNVERIFIED (178 deps built in 1231 s, then cargo enoent from PATH); cold-B (empty deps) needs network: excluded" ;
+  prov:wasDerivedFrom ce23:P-d79566375284518a .
+ce23:factor-concurrency a nlb:Factor ; rdfs:label "concurrency" ; nlb:support "VARIED" ; nlb:column "B" ; nlb:bitWeight 2 ;
+  nlb:lowRealization "1 episode" ; nlb:highRealization "4 concurrent episodes, distinct MIX_TEST_PARTITION" ;
+  nlb:supportReason "temp-dir names repeat across OS processes (System.unique_integer, xaas.episode.ex:234, semantic_drive.ex:2091); worktree provision check-then-create race (worktrees.ex:102-104): expected B3 defects" ;
+  prov:wasDerivedFrom ce23:P-d79566375284518a .
+ce23:factor-path a nlb:Factor ; rdfs:label "subject/work-root path" ; nlb:support "VARIED" ; nlb:column "C" ; nlb:bitWeight 4 ;
+  nlb:lowRealization "short canonical path (<= 80 bytes)" ; nlb:highRealization "228-byte path with spaces for subject clone and --work-root" ;
+  nlb:supportReason "executor checkout path held FIXED (cold x spaced executor path is BUILD_BROKEN: picosat_elixir Makefile); receipts embed absolute paths, so replay uses a path-normalized digest" ;
+  prov:wasDerivedFrom ce23:P-d79566375284518a .
+ce23:factor-env a nlb:Factor ; rdfs:label "environment" ; nlb:support "VARIED" ; nlb:column "D" ; nlb:bitWeight 8 ;
+  nlb:lowRealization "env -i allowlist {HOME, PATH=toolchain+cargo+/usr/bin:/bin, LANG, MIX_ENV, ASDF_DATA_DIR, RUSTUP_HOME, CARGO_HOME, HEX_OFFLINE, CARGO_NET_OFFLINE}" ;
+  nlb:highRealization "sanitized ambient: login env minus guard-matched names, PATH minus dirs holding LLM binaries" ;
+  nlb:supportReason "the raw ambient env is not a level: it is the B2 hidden-provider negative control" ;
+  prov:wasDerivedFrom ce23:P-d79566375284518a .
+ce23:factor-toolchain a nlb:Factor ; rdfs:label "toolchain (executor node)" ; nlb:support "VARIED" ; nlb:column "E" ;
+  nlb:generatedBy ce23:factor-cold , ce23:factor-concurrency , ce23:factor-path ;
+  nlb:lowRealization "as-built: Elixir 1.19.5 on OTP 28.3.1" ; nlb:highRealization "pinned: asdf 1.20.2-otp-28 on erlang 28.5.0.2" ;
+  nlb:supportReason "executor node only; the class verifier toolchain is part of class identity (nlb:classToolchain), not a factor" ;
+  prov:wasDerivedFrom ce23:P-d79566375284518a .
+ce23:factor-ordering a nlb:Factor ; rdfs:label "member ordering" ; nlb:support "VARIED" ; nlb:column "F" ;
+  nlb:generatedBy ce23:factor-concurrency , ce23:factor-path , ce23:factor-env ;
+  nlb:lowRealization "canonical (sorted by case IRI)" ; nlb:highRealization "seeded permutation restricted to a linear extension of the member dependency DAG (me-2 reads me-1)" ;
+  prov:wasDerivedFrom ce23:P-d79566375284518a .
+ce23:factor-reposize a nlb:Factor ; rdfs:label "repo size" ; nlb:support "PARTIAL" ;
+  nlb:reservedGeneratedBy ce23:factor-cold , ce23:factor-path , ce23:factor-env ;
+  nlb:lowRealization "shallow subject clone (--depth 1)" ; nlb:highRealization "full-history subject clone" ;
+  nlb:supportReason "history contrast weak (26M vs 29M .git); tree size UNSUPPORTED (one registered format court suite, target_suites.ex:484). Promotion activates G=ACD: 2^(7-3) resolution IV, still 16 runs" ;
+  prov:wasDerivedFrom ce23:P-d79566375284518a .
+ce23:factor-os a nlb:Factor ; rdfs:label "OS" ; nlb:support "UNSUPPORTED" ;
+  nlb:supportReason "only macOS 26.2 arm64 (Darwin 25.2.0) runs the executor; cached Linux images carry no Erlang/Elixir/Rust and no aarch64-linux NIFs; a Linux level needs an operator-approved image pull. Cross-OS robustness is outside the demonstrated evidence ceiling." ;
+  prov:wasDerivedFrom ce23:P-505f07bd98c033b0 , ce23:P-51855f58857c4cbb .
+
+# -- B4 fault-injection points ----------------------------------------------------------------------
+ce23:fi-observe a nlb:FaultInjectionPoint ; nlb:atMorphism nlb:Observe ; nlb:fault "order not on frontier / work graph invalid" ;
+  nlb:expectedTypedState "BLOCKED:not_on_frontier | REFUSED(order_not_in_work_graph) | REFUSED(work_graph_invalid)" ; nlb:existingTyping "semantic_drive.ex:664-693, 2018" ; nlb:seamStatus es:PARTIAL_ALIVE ; prov:wasDerivedFrom ce23:P-c5890eaf509015b3 .
+ce23:fi-admit a nlb:FaultInjectionPoint ; nlb:atMorphism nlb:Admit ; nlb:fault "malformed tuple digest / descriptor refused" ;
+  nlb:expectedTypedState "REFUSED(tuple_digest_mismatch) admission_vacuous | descriptor_refused | materialize_refused" ; nlb:existingTyping "semantic_drive.ex:343-380, 868, 937" ; nlb:seamStatus es:PARTIAL_ALIVE ; prov:wasDerivedFrom ce23:P-c5890eaf509015b3 .
+ce23:fi-select a nlb:FaultInjectionPoint ; nlb:atMorphism nlb:Select ; nlb:fault "missing capability / provider unavailable / near-miss" ;
+  nlb:expectedTypedState "REFUSED(unregistered_capability) | BLOCKED(provider_unavailable) | UNKNOWN(not_member) before any lease" ; nlb:existingTyping "semantic_drive.ex:1691, route.ex:162-170; provider_unavailable: 0 hits; not_member: absent" ; nlb:seamStatus es:UNKNOWN ; prov:wasDerivedFrom ce23:P-c5890eaf509015b3 .
+ce23:fi-construct a nlb:FaultInjectionPoint ; nlb:atMorphism nlb:Construct ; nlb:fault "recipe step fails / dirty worktree / toolchain unresolved" ;
+  nlb:expectedTypedState "REFUSED(recipe_step_failed | dirty_worktree | toolchain_unresolved | invalid_recipe)" ; nlb:existingTyping "RecipeWorker refusals; semantic_drive.ex:1316-1326" ; nlb:seamStatus es:PARTIAL_ALIVE ; prov:wasDerivedFrom ce23:P-c5890eaf509015b3 .
+ce23:fi-authorize a nlb:FaultInjectionPoint ; nlb:atMorphism nlb:Authorize ; nlb:fault "authority escalation (authority_ceiling=DO row) / lease loss" ;
+  nlb:expectedTypedState "REFUSED(authority) | REFUSED(lease_lost) with no duplicate DO" ; nlb:existingTyping "lease_lost tests recipe_worker_test.exs:276-423; DO-ceiling refusal on the drive path UNVERIFIED" ; nlb:seamStatus es:UNKNOWN ; prov:wasDerivedFrom ce23:P-c5890eaf509015b3 .
+ce23:fi-do a nlb:FaultInjectionPoint ; nlb:atMorphism nlb:DO ; nlb:fault "worker crash (OS process) / verifier crash / crash after DO then re-drive" ;
+  nlb:expectedTypedState "BLOCKED or typed execution failure; verifier_crashed with no standing promotion; no second consequence" ; nlb:existingTyping "in-process RecipeWorker (semantic_drive.ex:962); MatchError -> generic REFUSED(drive_step_crashed) (1398, 404-420); non-unique work_order_iri index" ; nlb:seamStatus es:UNKNOWN ; prov:wasDerivedFrom ce23:P-c5890eaf509015b3 .
+ce23:fi-receipt a nlb:FaultInjectionPoint ; nlb:atMorphism nlb:ReceiptEdge ; nlb:fault "missing receipt / corrupted receipt between seal and project" ;
+  nlb:expectedTypedState "REFUSED / non-ALIVE (receipt_unsealed, pin_refused, r_projection_not_alive)" ; nlb:existingTyping "semantic_drive.ex:1041, 1094, 1932; seal-to-project corruption seam absent" ; nlb:seamStatus es:PARTIAL_ALIVE ; prov:wasDerivedFrom ce23:P-c5890eaf509015b3 .
+ce23:fi-replay a nlb:FaultInjectionPoint ; nlb:atMorphism nlb:ReplayEdge ; nlb:fault "stale identity / unreceipted transition" ;
+  nlb:expectedTypedState "DIVERGED subject_changed (R_missing_identity) | REFUSED(subject_mismatch)" ; nlb:existingTyping "semantic_replay.ex:38, 496-503" ; nlb:seamStatus es:PARTIAL_ALIVE ; prov:wasDerivedFrom ce23:P-c5890eaf509015b3 .
+ce23:fi-llm a nlb:FaultInjectionPoint ; nlb:atMorphism nlb:Select ; nlb:fault "LLM fallback / hidden provider present" ;
+  nlb:expectedTypedState "REFUSED(llm_credential_present) and benchmark failure (never a silent fallback)" ; nlb:existingTyping "no_llm_guard/1 semantic_drive.ex:96-99 (false-accepts non-listed providers)" ; nlb:seamStatus es:PARTIAL_ALIVE ; prov:wasDerivedFrom ce23:P-50376c3f972e19c0 .
+
+# -- Current class standing tuples (n = executed unseen members = 0 for every class) ----------------
+ce23:standing-elixir-format a nlb:ClassStanding ; nlb:forClass ce23:class-elixir-format ; nlb:standingKind nlb:NON_LLM_OPERATIONAL_ALIVE ;
+  es:standingState es:UNKNOWN ; nlb:tier nlb:tier-below-discovery ; nlb:n 0 ; nlb:nReal 0 ; nlb:nSynthetic 0 ; nlb:clusterCount 0 ; nlb:operatorCount 0 ; nlb:defects 0 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:upperFailureBound "1.0"^^xsd:decimal ; nlb:boundMethod "clopper-pearson-exact-one-sided" ;
+  nlb:environmentScope "macOS 26.2 arm64 (Darwin 25.2.0) executor, unreceipted (no uname in receipts); OS=UNSUPPORTED" ;
+  nlb:unsupportedFactor ce23:factor-os ; nlb:msaStanding es:UNKNOWN ;
+  nlb:standingReason "no executed unseen-member receipts; MSA not ALIVE; worker bound to ggen_igniter" ;
+  prov:wasDerivedFrom ce23:P-3951c3003b3ad270 , ce23:P-0da102e0639487ea .
+ce23:standing-python-format a nlb:ClassStanding ; nlb:forClass ce23:class-python-format ; nlb:standingKind nlb:NON_LLM_OPERATIONAL_ALIVE ;
+  es:standingState es:UNKNOWN ; nlb:tier nlb:tier-below-discovery ; nlb:n 0 ; nlb:nReal 0 ; nlb:nSynthetic 0 ; nlb:clusterCount 0 ; nlb:operatorCount 0 ; nlb:defects 0 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:upperFailureBound "1.0"^^xsd:decimal ; nlb:boundMethod "clopper-pearson-exact-one-sided" ;
+  nlb:environmentScope "macOS arm64; OS=UNSUPPORTED" ; nlb:unsupportedFactor ce23:factor-os ; nlb:msaStanding es:UNKNOWN ;
+  nlb:standingReason "worker UNSUPPORTED; no executed unseen-member receipts" ; prov:wasDerivedFrom ce23:P-3951c3003b3ad270 .
+ce23:standing-rust-format a nlb:ClassStanding ; nlb:forClass ce23:class-rust-format ; nlb:standingKind nlb:NON_LLM_OPERATIONAL_ALIVE ;
+  es:standingState es:UNKNOWN ; nlb:tier nlb:tier-below-discovery ; nlb:n 0 ; nlb:nReal 0 ; nlb:nSynthetic 0 ; nlb:clusterCount 0 ; nlb:operatorCount 0 ; nlb:defects 0 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:upperFailureBound "1.0"^^xsd:decimal ; nlb:boundMethod "clopper-pearson-exact-one-sided" ;
+  nlb:environmentScope "macOS arm64; OS=UNSUPPORTED" ; nlb:unsupportedFactor ce23:factor-os ; nlb:msaStanding es:UNKNOWN ;
+  nlb:standingReason "worker UNSUPPORTED; independent verifier too strict" ; prov:wasDerivedFrom ce23:P-3951c3003b3ad270 .
+ce23:standing-json-canonical a nlb:ClassStanding ; nlb:forClass ce23:class-json-canonical ; nlb:standingKind nlb:NON_LLM_OPERATIONAL_ALIVE ;
+  es:standingState es:UNKNOWN ; nlb:tier nlb:tier-below-discovery ; nlb:n 0 ; nlb:nReal 0 ; nlb:nSynthetic 0 ; nlb:clusterCount 0 ; nlb:operatorCount 0 ; nlb:defects 0 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:upperFailureBound "1.0"^^xsd:decimal ; nlb:boundMethod "clopper-pearson-exact-one-sided" ;
+  nlb:environmentScope "macOS arm64; OS=UNSUPPORTED" ; nlb:unsupportedFactor ce23:factor-os ; nlb:msaStanding es:UNKNOWN ;
+  nlb:standingReason "canonical scope undeclared; worker UNSUPPORTED" ; prov:wasDerivedFrom ce23:P-3951c3003b3ad270 .
+ce23:standing-ggen-projection a nlb:ClassStanding ; nlb:forClass ce23:class-ggen-projection ; nlb:standingKind nlb:NON_LLM_OPERATIONAL_ALIVE ;
+  es:standingState es:UNKNOWN ; nlb:tier nlb:tier-below-discovery ; nlb:n 0 ; nlb:nReal 0 ; nlb:nSynthetic 0 ; nlb:clusterCount 0 ; nlb:operatorCount 0 ; nlb:defects 0 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:upperFailureBound "1.0"^^xsd:decimal ; nlb:boundMethod "clopper-pearson-exact-one-sided" ;
+  nlb:environmentScope "macOS arm64; OS=UNSUPPORTED" ; nlb:unsupportedFactor ce23:factor-os ; nlb:msaStanding es:UNKNOWN ;
+  nlb:standingReason "worker UNSUPPORTED; 13 real unseen (1 cluster)" ; prov:wasDerivedFrom ce23:P-3951c3003b3ad270 .
+
+#################################################################################################
+# PART 6 -- SHACL SHAPE SKETCHES (nlbsh:). Validated with pyshacl 0.31.0 against this file + candidates
+# (conforms) and against mutation fixtures (each must violate): DESIGN.md section 12.
+#################################################################################################
+
+nlbsh:ClassStandingShape a sh:NodeShape ;
+  sh:targetClass nlb:ClassStanding ;
+  sh:property [ sh:path nlb:standingKind ; sh:minCount 1 ; sh:maxCount 1 ; sh:class nlb:StandingKind ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "evidence tuple incomplete: a class standing needs forClass, tier, n, defects, confidence, upperFailureBound, boundMethod, environmentScope" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:standingKind ?k . FILTER(?k != nlb:BENCHMARK_DESIGN_ALIVE)
+        FILTER NOT EXISTS { $this nlb:forClass ?c ; nlb:tier ?t ; nlb:n ?n ; nlb:defects ?d ; nlb:confidence ?cf ;
+          nlb:upperFailureBound ?u ; nlb:boundMethod ?m ; nlb:environmentScope ?e } }""" ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "overclaim: claimed upperFailureBound is below the exact Clopper-Pearson bound for (n, defects), or no generated BoundRow exists for (n, defects)" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:n ?n ; nlb:defects ?d ; nlb:upperFailureBound ?u .
+        OPTIONAL { ?row a nlb:BoundRow ; nlb:boundN ?n ; nlb:boundDefects ?d ; nlb:exactUpperBound ?x }
+        FILTER(!BOUND(?x) || ?u < ?x) }""" ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "tier overclaim: n below the tier's N, or the exact bound above the tier's zero-defect bound" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:n ?n ; nlb:defects ?d ; nlb:tier ?t . ?t nlb:tierN ?tn .
+        OPTIONAL { ?t nlb:zeroDefectUpperBound ?tb . ?row a nlb:BoundRow ; nlb:boundN ?n ; nlb:boundDefects ?d ; nlb:exactUpperBound ?x }
+        FILTER(?n < ?tn || (BOUND(?tb) && BOUND(?x) && ?x > ?tb)) }""" ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "pseudo-replication: n exceeds the number of distinct subject digests among unseen-execution receipts" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:n ?n . FILTER(?n > 0)
+        { SELECT $this (COUNT(DISTINCT ?dg) AS ?k) WHERE { OPTIONAL { $this nlb:unseenExecutionReceipt ?r . ?r nlb:subjectDigest ?dg } } GROUP BY $this }
+        FILTER(?k < ?n) }""" ] .
+
+nlbsh:OperationalStandingShape a sh:NodeShape ;
+  sh:targetSubjectsOf nlb:standingKind ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "NON_LLM_OPERATIONAL_ALIVE asserted ALIVE without DISCOVERY-tier evidence, MSA ALIVE, zero LLM invocations, zero replay divergence and no UNSUPPORTED varied factor" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      PREFIX es: <https://ggen.dev/ontology/evidence-standing#>
+      SELECT $this WHERE { $this nlb:standingKind nlb:NON_LLM_OPERATIONAL_ALIVE ; es:standingState es:ALIVE .
+        FILTER ( NOT EXISTS { $this nlb:tier ?t . ?t nlb:tierRank ?r . FILTER(?r >= 1) }
+          || NOT EXISTS { $this nlb:msaStanding es:ALIVE }
+          || NOT EXISTS { $this nlb:llmInvocations 0 }
+          || NOT EXISTS { $this nlb:replayDivergence 0 }
+          || EXISTS { $this nlb:variedFactor ?f . ?f nlb:support "UNSUPPORTED" } ) }""" ] .
+
+nlbsh:KnownClassShape a sh:NodeShape ;
+  sh:targetClass nlb:BenchmarkClass ;
+  sh:property [ sh:path nlb:claimStatus ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "KNOWN_CANDIDATE" "PRESERVED" "BLOCKED" "NOT_KNOWN" "OUTSIDE_BOUNDARY" ) ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "KNOWN_CANDIDATE lacks repair tool, verifier, class toolchain, observed membership (TYPED_OUTPUT + TRIAL_REPAIR/INDEPENDENT_SEMANTIC), an independent verifier of a different implementation family, or 3 near-misses expecting UNKNOWN" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      PREFIX es: <https://ggen.dev/ontology/evidence-standing#>
+      SELECT $this WHERE { $this nlb:claimStatus "KNOWN_CANDIDATE" .
+        FILTER ( NOT EXISTS { $this nlb:repairTool ?t ; nlb:verifierArgv ?v ; nlb:classToolchain ?tc ; nlb:membershipPredicate ?mp }
+          || NOT EXISTS { $this nlb:membershipClause ?a . ?a nlb:clauseBasis "TYPED_OUTPUT" }
+          || NOT EXISTS { $this nlb:membershipClause ?b . ?b nlb:clauseBasis ?bb . FILTER(?bb IN ("TRIAL_REPAIR","INDEPENDENT_SEMANTIC")) }
+          || NOT EXISTS { $this nlb:repairTool ?t2 ; nlb:independentVerifier ?iv . ?t2 nlb:implementationFamily ?f1 . ?iv nlb:implementationFamily ?f2 . FILTER(?f1 != ?f2) }
+          || NOT EXISTS { { SELECT $this (COUNT(DISTINCT ?m) AS ?k) WHERE { ?m a nlb:NearMissCase ; nlb:nearClass $this ; nlb:expectedStanding es:UNKNOWN } GROUP BY $this } FILTER(?k >= 3) } ) }""" ] .
+
+nlbsh:NearMissShape a sh:NodeShape ;
+  sh:targetClass nlb:NearMissCase ;
+  sh:property [ sh:path nlb:expectedStanding ; sh:minCount 1 ; sh:maxCount 1 ; sh:hasValue es:UNKNOWN ] ;
+  sh:property [ sh:path nlb:expectedReason ; sh:minCount 1 ] ;
+  sh:property [ sh:path nlb:inClass ; sh:maxCount 0 ] .
+
+nlbsh:FactorShape a sh:NodeShape ;
+  sh:targetClass nlb:Factor ;
+  sh:property [ sh:path nlb:support ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "VARIED" "FIXED" "PARTIAL" "UNSUPPORTED" ) ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "a non-VARIED factor (UNSUPPORTED, PARTIAL or FIXED) is placed in the design: it has a column, bit weight or generator, or a design lists it" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:support ?s . FILTER(?s != "VARIED")
+        FILTER ( EXISTS { $this nlb:column ?c } || EXISTS { $this nlb:bitWeight ?w } || EXISTS { $this nlb:generatedBy ?g } || EXISTS { ?d nlb:hasFactor $this } ) }""" ] .
+
+nlbsh:TraceShape a sh:NodeShape ;
+  sh:targetClass nlb:AcceptancePredicate , nlb:BenchmarkClass , dflss:CTQ , nlb:Factor , nlb:MSACourt , nlb:MSAProperty ,
+    nlb:NearMissCase , nlb:Stage , nlb:FaultInjectionPoint , nlb:ClassStanding , nlb:EvidenceTier , nlb:FractionalFactorialDesign ;
+  sh:property [ sh:path prov:wasDerivedFrom ; sh:minCount 1 ; sh:class sj:Proposition ;
+    sh:message "design node does not trace to an operator-prose proposition (sj:Proposition with a re-verified span)" ] .
