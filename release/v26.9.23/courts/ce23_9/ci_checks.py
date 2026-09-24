@@ -174,7 +174,10 @@ def universe(root: Path, base: str, head: str) -> dict:
         if not leaf.endswith((".yml", ".yaml")):
             continue
         path = f".github/workflows/{leaf}"
-        doc = yaml.safe_load(git(root, "show", f"{head}:{path}")) or {}
+        try:
+            doc = yaml.safe_load(git(root, "show", f"{head}:{path}")) or {}
+        except yaml.YAMLError as exc:
+            raise RuntimeError(f"{path} is not valid YAML at {head}: {str(exc).splitlines()[0]}") from exc
         workflows += 1
         on = triggers(doc)
         events, uncertain = [], []

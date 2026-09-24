@@ -28,7 +28,9 @@ timeout-minutes (default 20) apply.
 
   ci_job.py <workflow path> <job id> [--skip-step NAME ...] [--root DIR]
 Exit: 0 every executed step passed; 1 a step failed (CI_JOB_STEP_FAILED) or the job mutated the
-checkout; 3 not locally reproducible (UNSUPPORTED[...] line); 2 usage (unknown workflow/job).
+checkout; 3 not locally reproducible (UNSUPPORTED[...] line); 2 usage (unknown workflow/job); 75 a step
+failed while GitHub's API refused its reads with the rate limit (CI_JOB_STEP_RATE_LIMITED: an
+infrastructure edge, not a verdict on the subject; unauthenticated reads allow 60 per hour per address).
 """
 from __future__ import annotations
 
@@ -39,6 +41,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import threading
 from pathlib import Path
 
 sys.dont_write_bytecode = True
@@ -209,6 +212,28 @@ def read_env_file(path: Path) -> dict[str, str]:
     return out
 
 
+RATE_LIMITED = re.compile(r"HTTP Error 403: rate limit exceeded|API rate limit exceeded")
+
+
+def tee(argv_: list[str], cwd: Path, env: dict, timeout: int) -> tuple[int, str]:
+    """Run one step, streaming its combined output and keeping the last 64 KiB for classification."""
+    tail = ""
+    with subprocess.Popen(argv_, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+                          errors="replace") as proc:
+        watchdog = threading.Timer(timeout, proc.kill)
+        watchdog.start()
+        try:
+            assert proc.stdout is not None
+            for line in proc.stdout:
+                sys.stdout.write(line)
+                tail = (tail + line)[-65536:]
+            rc = proc.wait()
+        finally:
+            timed_out = not watchdog.is_alive()
+            watchdog.cancel()
+    return (124 if timed_out and rc != 0 else rc), tail
+
+
 def untracked(root: Path) -> set[str]:
     out = subprocess.run(["git", "-C", str(root), "ls-files", "--others", "--exclude-standard", "-z"],
                          capture_output=True, text=True).stdout
@@ -253,7 +278,11 @@ def main(argv: list[str] | None = None) -> int:
     if blob.returncode != 0 or not re.fullmatch(r"[0-9a-f]{40}", head):
         print(f"CI_JOB_USAGE {a.workflow} is not committed at HEAD {head}")
         return 2
-    doc = yaml.safe_load(blob.stdout) or {}
+    try:
+        doc = yaml.safe_load(blob.stdout) or {}
+    except yaml.YAMLError as exc:
+        print(f"CI_JOB_USAGE {a.workflow} is not valid YAML at HEAD: {str(exc).splitlines()[0]}")
+        return 2
     job = (doc.get("jobs") or {}).get(a.job)
     if not isinstance(job, dict):
         print(f"CI_JOB_USAGE {a.workflow} has no job {a.job}")
@@ -340,16 +369,18 @@ def run_steps(a, job: dict, ctx: Ctx, scratch: Path, files: dict, defaults_wd, t
         (scratch / f"step-{n}.sh").write_text(script + "\n", encoding="utf-8")
         cwd = (root / wd).resolve()
         print(f"CI_JOB_STEP step={n} name={label!r} cwd={os.path.relpath(cwd, root)}", flush=True)
-        try:
-            rc = subprocess.run(argv_, cwd=cwd, env=env, timeout=timeout).returncode
-        except subprocess.TimeoutExpired:
-            rc = 124
+        rc, tail = tee(argv_, cwd, env, timeout)
         extra_path = files["GITHUB_PATH"].read_text(encoding="utf-8").split()
         if extra_path:
             ctx.env["PATH"] = os.pathsep.join(extra_path + [ctx.env.get("PATH", "")])
         ctx.env.update(read_env_file(files["GITHUB_ENV"]))
         if rc != 0:
             ctx.failed = True
+            if RATE_LIMITED.search(tail):
+                print(f"CI_JOB_STEP_RATE_LIMITED step={n} name={label!r} exit={rc}: the step's GitHub API reads were "
+                      f"refused by the API rate limit (infrastructure edge; export GITHUB_TOKEN or GH_TOKEN, or rerun "
+                      f"after the limit resets); the job is not judged")
+                return 75
             print(f"CI_JOB_STEP_FAILED step={n} name={label!r} exit={rc}")
             return 1
         print(f"CI_JOB_STEP_PASS step={n} name={label!r}")

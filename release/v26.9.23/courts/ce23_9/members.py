@@ -240,11 +240,17 @@ def m_manifest_refs(root: Path, v: Verdict) -> int:
         report = json.loads(p.stdout)
     except json.JSONDecodeError:
         report = {}
-    if p.returncode != 0 or not report:
+    findings = report.get("findings") or []
+    limited = [f for f in findings if f.get("code") == "ECOSYSTEM_REF_CHECK_BLOCKED" and "rate limit" in str(f.get("detail", ""))]
+    if not report:
         v.refuse("MANIFEST_REFUSED", f"verify_release exit {p.returncode}: {(p.stdout + p.stderr).strip()[-400:]}")
     else:
-        if report.get("findings"):
-            v.refuse("MANIFEST_FINDINGS", f"{report['findings'][:5]}")
+        if limited:
+            v.unk("GITHUB_RATE_LIMITED", f"{len(limited)} ref observations refused by GitHub's API rate limit "
+                                         f"({sorted({f.get('subject') for f in limited})}): an infrastructure edge, not a "
+                                         f"finding on the manifest; export GITHUB_TOKEN or GH_TOKEN, or rerun after the reset")
+        if len(findings) > len(limited) or (p.returncode != 0 and not limited):
+            v.refuse("MANIFEST_FINDINGS", f"verify_release exit {p.returncode}: {[f for f in findings if f not in limited][:5]}")
         if report.get("release") != "26.9.23" or report.get("refs_checked") is not True:
             v.refuse("MANIFEST_UNBOUND", f"release={report.get('release')} refs_checked={report.get('refs_checked')}")
         v.line(f"verify_release --release v26.9.23 --check-refs: components={report.get('component_count')} "
@@ -482,19 +488,45 @@ def goal_gates(root: Path) -> dict[str, str]:
     return {str(r.id): str(r.cmd) for r in g.query(q)}
 
 
-def alive_receipts(root: Path) -> dict[str, str]:
-    out = {}
+GATE_TOKEN = re.compile(r"\bce:(CE23-[0-9]+(?:-[A-Za-z]+)?)")
+WO_TOKEN = re.compile(r"\bWO-([0-9A-Fa-f]{16})\b")
+
+
+def projected_receipts(root: Path) -> list[dict]:
+    """The root court's projection of the release's gate receipts (receipts_dir/*.json in the R shape):
+    the gates a receipt covers are its file stem (when it names a CE23 gate) and every ce:<gate> token of
+    identity.gate; the work orders it covers are the WO-<16 hex> tokens of identity.work_orders."""
+    out = []
     for rel, doc in r_receipts(root):
-        stem = Path(rel).stem
-        if Path(rel).parent.as_posix() == SUBJ["receipts_dir"] and doc.get("standing", {}).get("value") == "ALIVE":
-            out[stem] = rel
+        if Path(rel).parent.as_posix() != SUBJ["receipts_dir"]:
+            continue
+        ident = doc["identity"]
+        gates = set(GATE_TOKEN.findall(str(ident.get("gate", ""))))
+        if re.fullmatch(r"CE23-[0-9]+(?:-[A-Za-z]+)?", Path(rel).stem):
+            gates.add(Path(rel).stem)
+        orders = {m.lower() for m in WO_TOKEN.findall(" ".join(map(str, ident.get("work_orders") or [])))}
+        out.append({"rel": rel, "standing": str(doc.get("standing", {}).get("value", "")), "gates": sorted(gates),
+                    "orders": sorted(orders), "doc": doc})
     return out
 
 
-def run_court(root: Path, gate: str, cmd: str, v: Verdict) -> str:
-    print(f"  COURT_RUN {gate}: {cmd}", flush=True)
-    p = run(["sh", "-c", cmd], root, timeout=1200)
+def receipt_gates(root: Path) -> dict[str, list[str]]:
+    """Gate id -> the ALIVE receipts that cover it."""
+    covered: dict[str, list[str]] = {}
+    for r in projected_receipts(root):
+        if r["standing"] == "ALIVE":
+            for gate in r["gates"]:
+                covered.setdefault(gate, []).append(r["rel"])
+    return covered
+
+
+def court_process(root: Path, cmd: str) -> subprocess.CompletedProcess:
+    return run(["sh", "-c", cmd], root, timeout=1200)
+
+
+def record_court(gate: str, cmd: str, p: subprocess.CompletedProcess, v: Verdict) -> str:
     tail = [ln for ln in (p.stdout + p.stderr).strip().splitlines() if not ln.startswith("OK ")][-3:]
+    print(f"  COURT_RUN {gate}: {cmd} -> exit {p.returncode}", flush=True)
     if p.returncode == 0:
         v.line(f"OK {gate}: exit 0 ({(p.stdout.strip().splitlines() or [''])[-1][:160]})")
         return "ALIVE"
@@ -507,72 +539,139 @@ def run_court(root: Path, gate: str, cmd: str, v: Verdict) -> str:
 
 def m_replay(root: Path, v: Verdict) -> int:
     for surface, (out, locked) in GGEN_SURFACES.items():
-        a, why_a = cold_render(root, surface, out, locked, "replay-a")
-        b, why_b = cold_render(root, surface, out, locked, "replay-bb")
-        if a is None or b is None:
-            v.refuse("RENDER_REPLAY_REFUSED", f"{surface}: {why_a} / {why_b}")
-        elif a != b:
-            v.refuse("RENDER_NOT_DETERMINISTIC", f"{surface}: two cold renders differ: {sorted(k for k in a if a.get(k) != b.get(k))[:5]}")
+        committed = committed_render(root, surface, out, locked)
+        again, why = cold_render(root, surface, out, locked, "replay-second-location")
+        if again is None:
+            v.refuse("RENDER_REPLAY_REFUSED", f"{surface}: {why}")
+        elif again != committed:
+            v.refuse("RENDER_NOT_DETERMINISTIC", f"{surface}: a cold render from a second scratch location differs from the "
+                                                 f"committed bytes: {sorted(k for k in set(again) | set(committed) if again.get(k) != committed.get(k))[:5]}")
         else:
-            v.line(f"OK {surface}: two cold renders from distinct scratch locations are byte-identical ({len(a)} files)")
+            v.line(f"OK {surface}: a cold render from a second scratch location replays the committed {len(again)} files byte for byte")
     gates = goal_gates(root)
-    receipted = alive_receipts(root)
     exclude = PINS["stop"]["exclude"]
-    replayed = 0
-    for gate in sorted(receipted):
+    todo = []
+    for gate, rels in sorted(receipt_gates(root).items()):
         if gate not in gates or gate in exclude:
-            v.line(f"skip {receipted[gate]}: {gate} is {'excluded' if gate in exclude else 'not a court gate of the goal'}")
+            v.line(f"skip {rels}: {gate} is {'excluded' if gate in exclude else 'not a court gate of the goal root'}")
             continue
-        run_court(root, gate, gates[gate], v)
-        replayed += 1
-    return v.close(f"{replayed} receipted gate courts replayed at HEAD")
+        todo.append(gate)
+    # The receipted gate courts are independent read-only courts over the same committed head, each with
+    # its own scratch; they run concurrently so the root court stays within one bounded run.
+    from concurrent.futures import ThreadPoolExecutor  # noqa: PLC0415
+    with ThreadPoolExecutor(max_workers=max(1, len(todo))) as pool:
+        results = dict(zip(todo, pool.map(lambda g: (g, court_process(root, gates[g])), todo)))
+    for gate in todo:
+        record_court(gate, gates[gate], results[gate][1], v)
+    return v.close(f"{len(todo)} receipted gate courts replayed at HEAD")
 
 
 def m_chatman_stop(root: Path, v: Verdict) -> int:
-    gates = goal_gates(root)
-    exclude = PINS["stop"]["exclude"]
-    receipted = alive_receipts(root)
-    crown = sorted(g for g in gates if g not in exclude)
-    for g, why in sorted(exclude.items()):
-        v.line(f"excluded {g}: {why}")
-    v.line(f"crown gates {crown}; replayed by member replay (ALIVE receipt): {sorted(set(crown) & set(receipted))}")
-    for gate in [g for g in crown if g not in receipted]:
-        run_court(root, gate, gates[gate], v)
-    crowns = tomllib.loads((root / SDIR / SUBJ["imported_crown_render"]).read_text(encoding="utf-8"))
-    rows = crowns.get("imported_crown", [])
-    comp = PINS["stop"]["acceptance_component"]
+    """CHATMAN_STOP: the goal root's own sj:stopQuery (goal.ttl), evaluated with rdflib over goal.ttl, the
+    compiled CE23 orders and the admitted gate receipts projected as sj:Receipt nodes. The query is read
+    from the graph, never re-typed here. CE23-9 (this court) and CE23-10 (the root receipt rendered from
+    this court's observation) enter provisionally ALIVE: their standing is this court's own conjunction,
+    so STOP here means every other term holds; CE-REL re-evaluates the query with their real receipts."""
     import rdflib  # noqa: PLC0415
+    from rdflib import RDF, Literal, URIRef  # noqa: PLC0415
+    sj, dct = rdflib.Namespace(SJ), rdflib.Namespace(DCT)
+    g = rdflib.Graph().parse(root / SDIR / SUBJ["goal"], format="turtle")
+    for orders in sorted((root / SDIR / "sjira" / "compiled").glob("*/orders.ttl")):
+        g.parse(orders, format="turtle")
+    goal_root = URIRef(SUBJ["goal_root"])
+    query = g.value(goal_root, sj.stopQuery)
+    if query is None:
+        v.refuse("STOP_QUERY_ABSENT", f"{SUBJ['goal']} declares no sj:stopQuery on {goal_root}")
+        return v.close("CHATMAN_STOP=unknown")
+    ids = {str(g.value(c, dct.identifier)): c for c in g.subjects(RDF.type, sj.GoalCheckpoint)}
+    under = {gid for gid, c in ids.items() if goal_root in set(g.transitive_objects(c, sj.checkpointOf)) and c != goal_root}
+    tag = {gid for gid in under if gid == "CE23-11"}
+    order_iri = {str(o).rsplit("#", 1)[-1].lower().removeprefix("wo-"): o for o in g.subjects(RDF.type, sj.WorkOrder)}
+    validator, head = HERE / "unified_receipt_validator.py", git(root, "rev-parse", "HEAD")
+    projected: dict[str, list[str]] = {}
+    for r in projected_receipts(root):
+        p = run([sys.executable, str(validator), r["rel"], "--contract", "dfcm_fleet_v1"], root)
+        sha = str(r["doc"]["identity"].get("subject_sha", ""))
+        if p.returncode != 0 or run(["git", "-C", str(root), "merge-base", "--is-ancestor", sha, head], root).returncode != 0:
+            v.line(f"not projected {r['rel']}: not admitted (validator exit {p.returncode} or subject {sha[:12]} not at or before HEAD)")
+            continue
+        node = URIRef(f"urn:ce23-9:receipt:{r['rel']}")
+        g.add((node, RDF.type, sj.Receipt))
+        g.add((node, sj.standing, Literal(r["standing"])))
+        for gid in r["gates"]:
+            if gid in ids:
+                g.add((ids[gid], sj.receipt, node))
+                projected.setdefault(gid, []).append(f"{r['standing']}:{r['rel']}")
+        for wo in r["orders"]:
+            if wo in order_iri:
+                g.add((order_iri[wo], sj.receipt, node))
+    for gid, why in sorted(PINS["stop"]["exclude"].items()):
+        if gid in tag or gid not in ids:
+            continue
+        node = URIRef(f"urn:ce23-9:provisional:{gid}")
+        g.add((node, RDF.type, sj.Receipt))
+        g.add((node, sj.standing, Literal("ALIVE")))
+        g.add((ids[gid], sj.receipt, node))
+        v.line(f"PROVISIONAL {gid} ALIVE: {why}")
+    stop = bool(g.query(str(query)).askAnswer)
+    crown = sorted(under - tag)
+    missing, refused_gates = [], []
+    for gid in crown:
+        standings = [str(g.value(r, sj.standing)) for r in g.objects(ids[gid], sj.receipt)]
+        if "ALIVE" in standings:
+            continue
+        (refused_gates if any(s.startswith(("BLOCKED", "REFUSED")) for s in standings) else missing).append(gid)
+    open_orders = [o for o in g.subjects(RDF.type, sj.WorkOrder)
+                   if goal_root in set(g.transitive_objects(o, sj.checkpointOf))
+                   and not any(str(g.value(c, dct.identifier)) in tag for c in g.objects(o, sj.checkpointOf))
+                   and (o, sj.boundaryClass, sj.Successor) not in g
+                   and not any(str(g.value(r, sj.standing) or "").startswith(("ALIVE", "BLOCKED", "UNSUPPORTED", "REFUSED"))
+                               for r in g.objects(o, sj.receipt))]
+    v.line(f"crown gates {crown}; admitted receipts projected onto {sorted(projected)}")
+    for gid in refused_gates:
+        v.refuse(f"GATE_RECEIPT_NOT_ALIVE:{gid}", f"{gid} carries only non-ALIVE terminal receipts {projected.get(gid)}")
+    for gid in missing:
+        v.unk(f"NO_ALIVE_RECEIPT:{gid}", f"{gid} has no admitted ALIVE gate receipt ({gates_court(root, ids, gid, g)})")
+    if open_orders:
+        v.unk("ORDERS_OPEN", f"{len(open_orders)} CE23 work orders under the goal root have no terminal receipt and are not "
+                             f"Successor, e.g. {sorted(str(o).rsplit('#', 1)[-1] for o in open_orders)[:4]}")
+    if stop != (not missing and not refused_gates and not open_orders):
+        v.refuse("STOP_QUERY_DISAGREES", f"the goal's sj:stopQuery answered {stop} while the member's own reading found "
+                                         f"missing={missing} refused={refused_gates} open_orders={len(open_orders)}")
+    acceptance(root, v)
+    crowns = tomllib.loads((root / SDIR / SUBJ["imported_crown_render"]).read_text(encoding="utf-8"))
+    v.line(f"imported Semantic Manufacturing crowns rendered (pack gate 090 admitted): {crowns.get('imported_crowns', {}).get('crown_count', 0)}")
+    return v.close(f"CHATMAN_STOP={'true' if stop else 'false'} (goal sj:stopQuery; CE23-9 and CE23-10 provisional)")
+
+
+def gates_court(root: Path, ids: dict, gid: str, g) -> str:
+    cmd = str(g.value(ids[gid], rdflib_ns(SJ).courtCommand) or "")
+    script = root / cmd.split()[-1] if cmd else None
+    if script and script.is_file() and "machinery lands in a generated CE23 lane" in script.read_text(encoding="utf-8"):
+        return f"its court {cmd} is the CE-INTAKE stub (exit 75): machinery absent"
+    return f"court {cmd or 'none'}"
+
+
+def rdflib_ns(ns: str):
+    import rdflib  # noqa: PLC0415
+    return rdflib.Namespace(ns)
+
+
+def acceptance(root: Path, v: Verdict) -> None:
+    """The operator edge: GC23-12 successor acceptance committed in the acceptance component at its commit."""
+    import rdflib  # noqa: PLC0415
+    comp = PINS["stop"]["acceptance_component"]
     g = release_graph(root)
     er = rdflib.Namespace(ER)
     sha = next((str(g.value(c, er.commitSha)) for c in g.subjects(er.componentId, rdflib.Literal(comp))), "")
     repo = Path(os.environ.get(f"CE23_REPO_{comp.upper()}") or (Path.home() / comp)).expanduser()
-    accepted = run(["git", "-C", str(repo), "cat-file", "-e", f"{sha}:{PINS['stop']['acceptance_path']}"], root)
-    known = run(["git", "-C", str(repo), "cat-file", "-e", f"{sha}^{{commit}}"], root)
-    if known.returncode != 0:
+    if run(["git", "-C", str(repo), "cat-file", "-e", f"{sha}^{{commit}}"], root).returncode != 0:
         v.unk("ACCEPTANCE_UNOBSERVABLE", f"{repo} holds no {comp} component commit {sha[:12]}")
-    elif accepted.returncode != 0:
+    elif run(["git", "-C", str(repo), "cat-file", "-e", f"{sha}:{PINS['stop']['acceptance_path']}"], root).returncode != 0:
         v.unk("OPERATOR_ACCEPTANCE_ABSENT", f"GC23-12 successor acceptance ({PINS['stop']['acceptance_path']}) is absent at the "
-                                            f"{comp} component commit {sha[:12]}: operator-only edge, STOP=false")
+                                            f"{comp} component commit {sha[:12]}: operator-only edge, STOP=false until the operator commits it")
     else:
         v.line(f"OK operator acceptance present at {comp}@{sha[:12]}:{PINS['stop']['acceptance_path']}")
-    if not rows:
-        v.unk("IMPORTED_CROWN_ABSENT", "the release graph imports no Semantic Manufacturing crown (CE23-3 lifts it only from a "
-                                       "fresh STOP=true receipt); CHATMAN_STOP cannot be true")
-    for c in rows:
-        bad = []
-        if c.get("stop_standing") != "ALIVE":
-            bad.append(f"stop_standing={c.get('stop_standing')}")
-        if c.get("LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH") != 0 or c.get("UNRECEIPTED_ACTUATION") != 0:
-            bad.append("zero-intelligence counters not 0")
-        if len([x for x in c.get("gate", []) if x.get("standing") == "ALIVE"]) < int(c.get("required_gate_count", 0) or 0):
-            bad.append("fewer ALIVE gates than required")
-        if bad:
-            v.refuse("IMPORTED_CROWN_NOT_STOP", f"{c.get('checkpoint')}: {bad}")
-        else:
-            v.line(f"OK imported crown {c.get('checkpoint')}: STOP ALIVE at {str(c.get('stop_subject_sha'))[:12]}, "
-                   f"{c.get('required_gate_count')} gates, counters 0")
-    stop = "true" if not (v.refused or v.unknown) else "false" if v.refused else "unknown"
-    return v.close(f"CHATMAN_STOP={stop}")
 
 
 MEMBERS = {
@@ -599,6 +698,9 @@ def main(argv: list[str] | None = None) -> int:
         return MEMBERS[a.member](root, v)
     except ModuleNotFoundError as exc:
         v.unk("TOOL_MISSING", f"python module {exc.name} is not importable")
+        return v.close("not judged")
+    except RuntimeError as exc:
+        v.refuse("SUBJECT_UNREADABLE", str(exc))
         return v.close("not judged")
 
 

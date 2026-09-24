@@ -171,6 +171,19 @@ class CiJobCase(Repo):
         self.assertEqual(p.returncode, 0, p.stdout)
         self.assertIn("CI_JOB_SKIP_DECLARED step=1 name='slow'", p.stdout)
 
+    def test_github_rate_limit_is_an_infrastructure_edge_not_a_verdict(self) -> None:
+        p = self.job("jobs:\n  j:\n    steps:\n      - name: refs\n        run: |\n          echo 'HTTP Error 403: rate limit exceeded'\n          exit 2\n")
+        self.assertEqual(p.returncode, 75)
+        self.assertIn("CI_JOB_STEP_RATE_LIMITED step=1 name='refs' exit=2", p.stdout)
+        q = self.job("jobs:\n  j:\n    steps:\n      - name: refs\n        run: |\n          echo 'HTTP Error 404: not found'\n          exit 2\n")
+        self.assertEqual(q.returncode, 1)
+
+    def test_invalid_workflow_yaml_is_a_typed_usage_error(self) -> None:
+        p = self.job("jobs:\n  j:\n    steps:\n      - run: echo a: b: c\n")
+        self.assertEqual(p.returncode, 2)
+        self.assertIn("is not valid YAML at HEAD", p.stdout)
+        self.assertNotIn("Traceback", p.stdout + p.stderr)
+
     def test_job_if_false_in_pull_request_context(self) -> None:
         p = self.job("jobs:\n  j:\n    if: github.event_name == 'push'\n    steps:\n      - run: exit 1\n")
         self.assertEqual(p.returncode, 0)
@@ -202,6 +215,15 @@ class LawCase(unittest.TestCase):
         runs.append({"id": 4, "name": "new bad", "workflow": "w.yml", "status": "completed", "conclusion": "success"})
         refused, _, _ = members.judge_checkruns(runs, universe, typed, local, {"success"})
         self.assertEqual(refused, [])
+
+    def test_receipt_projection_names_gates_and_orders(self) -> None:
+        projected = {r["rel"]: r for r in members.projected_receipts(ROOT)}
+        ce23_12 = projected["receipts/v26.9.23/CE23-12.json"]
+        self.assertEqual(ce23_12["gates"], ["CE23-12", "CE23-12-BenchmarkDesign", "CE23-12-GeneratedQualificationPlan",
+                                            "CE23-12-MSAContract"])
+        self.assertIn("10d3712c7e428097", projected["receipts/v26.9.23/CE23-2.json"]["orders"])
+        self.assertEqual(projected["receipts/v26.9.23/CE23-0.json"]["gates"], ["CE23-0"])
+        self.assertNotIn("receipts/v26.9.23/CE23-12.gate/court-receipt-CE23-12.json", projected)
 
     def test_disposition_law(self) -> None:
         prefix = members.PINS["ci"]["local_member_prefix"]

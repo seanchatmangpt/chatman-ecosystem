@@ -53,8 +53,10 @@ import members  # noqa: E402
 
 PINS, SUBJ, SDIR = members.PINS, members.SUBJ, members.SDIR
 MEMBER_LINE = re.compile(r"^MEMBER_(ALIVE|REFUSED|UNKNOWN)(?:\[([^\]]*)\])? (\S+)(.*)$")
-# The base repair (fmt + clippy --fix + projection render) is what turns these four c59596f5 checks green;
-# every other non-success check-run at the base is typed in release.ttl.
+# At c59596f5 'Fast constitutional gates' and 'S0-S3 exact-head crown' failed (rustfmt drift) and 'Full
+# behavior and negative fixtures' and 'Cold-cache correctness' were skipped behind them: the local members
+# of those four checks refuse the base, and the CE23-9 base repair (projection render, cargo fmt, clippy
+# --fix) is what the exact head adds. Every other non-success check-run at the base is typed in release.ttl.
 AV_BASE_REFUSED = {"Fast constitutional gates", "S0-S3 exact-head crown",
                    "Full behavior and negative fixtures", "Cold-cache correctness"}
 
