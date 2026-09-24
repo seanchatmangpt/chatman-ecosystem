@@ -1,0 +1,338 @@
+{
+ "schema": "https://chatmangpt.com/schema/receipt/v1",
+ "kind": "FINAL-RECEIPT",
+ "migration_id": "v26923-single-repo",
+ "generated_at": "2026-09-24T20:26:54Z",
+ "identity": {
+  "subject": "v26.9.22/23 single-repo migration (one canonical checkout per repository)",
+  "repo": "seanchatmangpt/chatman-ecosystem",
+  "subject_sha": "1a59285f3beba1988ed176429f24a3f7ddd9474a",
+  "base_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1"
+ },
+ "authority": {
+  "ceiling": "DO",
+  "grant": "operator directive 2026-09-23/24 (reversible migration protocol, phases 0-13; merges on exact-head CI)",
+  "actor": "claude-code"
+ },
+ "consequence": {
+  "commits": [
+   "5f4087672d1cdef6c126cd82f2c924872a02990e",
+   "fe92e61154140ec9c210536648d499e6a0cf12d3",
+   "7659b10e22a806da98295ed799602a6f809562d9",
+   "292e40ab08a250ef3f049f9a80b4a65e332d9155",
+   "dafc1d45a02692ed3a18520627f5ad292c2b4b19",
+   "1a59285f3beba1988ed176429f24a3f7ddd9474a",
+   "118b3063d5d0d3edc204dcd00a78a9becfeafbbf",
+   "f0caffba449b1ca11606321a11b2384c0e3367cb",
+   "17cd4c8aa36568c6ece7c13ab458904416eb4f80"
+  ],
+  "files_changed": [
+   "migration/v26923-single-repo/**",
+   "release/v26.9.23/sjira/annex/**",
+   "release/v26.9.23/bench/tools/**"
+  ],
+  "remote_effects": [
+   "seanchatmangpt/xaas#65 MERGED",
+   "seanchatmangpt/ggen_igniter#28 MERGED",
+   "seanchatmangpt/xaas#66 MERGED",
+   "seanchatmangpt/ggen_igniter#29 MERGED",
+   "seanchatmangpt/ggen-marketplace#483 MERGED",
+   "seanchatmangpt/chatman-ecosystem#253 MERGED",
+   "seanchatmangpt/ggen#744 MERGED",
+   "seanchatmangpt/gymact#137 MERGED",
+   "seanchatmangpt/open-ontologies#44 MERGED",
+   "retired: /Users/sac/wt/v26922",
+   "retired: /Users/sac/beam4pm_ws2"
+  ]
+ },
+ "replay": {
+  "commands": [
+   {
+    "cmd": "git -C <repo> worktree list  (for each of 18 affected repos)",
+    "cwd": "/Users/sac/.claude/migration/v26923-single-repo",
+    "exit": 0,
+    "summary": "linked worktrees: 0"
+   },
+   {
+    "cmd": "git rev-parse --verify <ref> == PRESERVE.json sha, for every preservation ref (re-homed names for the retired shadow clone and beam4pm_ws2)",
+    "cwd": "/Users/sac/.claude/migration/v26923-single-repo",
+    "exit": 0,
+    "summary": "1016 refs, 0 unresolved"
+   },
+   {
+    "cmd": "gh pr view <n> -R <repo> --json state,mergeCommit  (for 9 PRs)",
+    "cwd": "/Users/sac/.claude/migration/v26923-single-repo",
+    "exit": 0,
+    "summary": "seanchatmangpt/xaas#65=MERGED, seanchatmangpt/ggen_igniter#28=MERGED, seanchatmangpt/xaas#66=MERGED, seanchatmangpt/ggen_igniter#29=MERGED, seanchatmangpt/ggen-marketplace#483=MERGED, seanchatmangpt/chatman-ecosystem#253=MERGED, seanchatmangpt/ggen#744=MERGED, seanchatmangpt/gymact#137=MERGED, seanchatmangpt/open-ontologies#44=MERGED"
+   },
+   {
+    "cmd": "python3 ~/.claude/dfcm/topology_guard.py < each case of topology_guard_cases.json",
+    "cwd": "/Users/sac/.claude/migration/v26923-single-repo",
+    "exit": 0,
+    "summary": "19 cases, 0 failures; hook installed=True"
+   }
+  ],
+  "durable_location": "git:seanchatmangpt/chatman-ecosystem@1a59285f3beba1988ed176429f24a3f7ddd9474a:migration/v26923-single-repo/FINAL-RECEIPT.json"
+ },
+ "standing": {
+  "value": "ALIVE",
+  "derived_from": "final_receipt.py recomputation of WORKTREES_ZERO=True, SHADOW_RETIRED=True, ROLLBACK_VERIFIED=True, OWNERSHIP_BOUND=True, MERGED=True, NO_RECURRENCE=True"
+ },
+ "stop_condition": {
+  "WORKTREES_ZERO": true,
+  "SHADOW_RETIRED": true,
+  "ROLLBACK_VERIFIED": true,
+  "OWNERSHIP_BOUND": true,
+  "MERGED": true,
+  "NO_RECURRENCE": true
+ },
+ "blockers": [],
+ "detail": {
+  "git_worktree_list": {
+   "affidavit": {
+    "repo": "/Users/sac/affidavit",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/affidavit  3106f64 [fix/affidavit-v26.9.17-boundary]"
+    ]
+   },
+   "ash_a2a": {
+    "repo": "/Users/sac/ash_a2a",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/ash_a2a  ffff182 [fix/test-determinism-v26.9.21]"
+    ]
+   },
+   "ash_atlassian": {
+    "repo": "/Users/sac/ash_atlassian",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/ash_atlassian  0338b9b [main]"
+    ]
+   },
+   "ash_surface": {
+    "repo": "/Users/sac/ash_surface",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/ash_surface  6b87f05 [feat/dfcm-surface-core]"
+    ]
+   },
+   "autofde-lab": {
+    "repo": "/Users/sac/autofde-lab",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/autofde-lab  ae255ad1 [master]"
+    ]
+   },
+   "beam4pm": {
+    "repo": "/Users/sac/beam4pm",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/beam4pm  3265c20f [chore/consume-ash-a2a-26.9.21]"
+    ]
+   },
+   "chatman-ecosystem": {
+    "repo": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/chatman-ecosystem  044c9a2e [docs/v26.9.23-annex-specs]"
+    ]
+   },
+   "ferroplan": {
+    "repo": "/Users/sac/ferroplan",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/ferroplan  9c872ce [main]"
+    ]
+   },
+   "frozen-duckdb": {
+    "repo": "/Users/sac/frozen-duckdb",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/frozen-duckdb  71c4b16 [feat/duckdb-1.5.5]"
+    ]
+   },
+   "ggen": {
+    "repo": "/Users/sac/ggen",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/ggen  118b3063d [main]"
+    ]
+   },
+   "ggen-ecosystem": {
+    "repo": "/Users/sac/ggen-ecosystem",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/ggen-ecosystem  3b211cdc [main]"
+    ]
+   },
+   "ggen-marketplace": {
+    "repo": "/Users/sac/ggen-marketplace",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/ggen-marketplace  c04bb6dd3 [main]"
+    ]
+   },
+   "ggen_igniter": {
+    "repo": "/Users/sac/ggen_igniter",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/ggen_igniter  390e363 [feat/sjira-origin-authority]"
+    ]
+   },
+   "gitvan": {
+    "repo": "/Users/sac/gitvan",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/gitvan  7346a62 [main]"
+    ]
+   },
+   "gymact": {
+    "repo": "/Users/sac/gymact",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/gymact  f0caffb [main]"
+    ]
+   },
+   "open-ontologies": {
+    "repo": "/Users/sac/open-ontologies",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/open-ontologies  948a9923 [main]"
+    ]
+   },
+   "xaas": {
+    "repo": "/Users/sac/xaas",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/xaas  7659b10 [main]"
+    ]
+   },
+   "zcode-cli": {
+    "repo": "/Users/sac/dev/zcode-cli",
+    "exit": 0,
+    "git_worktree_list": [
+     "/Users/sac/dev/zcode-cli  32093ea [main]"
+    ]
+   }
+  },
+  "linked_worktrees": {},
+  "shadow_present": [],
+  "rollback": {
+   "refs": 1016,
+   "unresolved": 0,
+   "restore_drill": "git archive <shadow-files> -> 2650/2650 files byte-equal to the live shadow tree before retirement (verify/restore-drill.txt)"
+  },
+  "ownership": {
+   "bound": 28,
+   "defects": [],
+   "dispositions": {
+    "ALREADY_ON_CANONICAL": 19,
+    "EVIDENCE_ONLY": 69,
+    "GENERATED_REPRODUCIBLE": 7,
+    "SAFE_TO_DELETE": 12,
+    "UNIQUE_AND_REQUIRED": 24,
+    "UNIQUE_BUT_OBSOLETE": 12,
+    "WIP_UNADMITTED": 19
+   }
+  },
+  "pull_requests": [
+   {
+    "pr": "seanchatmangpt/xaas#65",
+    "state": "MERGED",
+    "merge_commit": "5f4087672d1cdef6c126cd82f2c924872a02990e",
+    "base": "main"
+   },
+   {
+    "pr": "seanchatmangpt/ggen_igniter#28",
+    "state": "MERGED",
+    "merge_commit": "fe92e61154140ec9c210536648d499e6a0cf12d3",
+    "base": "main"
+   },
+   {
+    "pr": "seanchatmangpt/xaas#66",
+    "state": "MERGED",
+    "merge_commit": "7659b10e22a806da98295ed799602a6f809562d9",
+    "base": "main"
+   },
+   {
+    "pr": "seanchatmangpt/ggen_igniter#29",
+    "state": "MERGED",
+    "merge_commit": "292e40ab08a250ef3f049f9a80b4a65e332d9155",
+    "base": "main"
+   },
+   {
+    "pr": "seanchatmangpt/ggen-marketplace#483",
+    "state": "MERGED",
+    "merge_commit": "dafc1d45a02692ed3a18520627f5ad292c2b4b19",
+    "base": "main"
+   },
+   {
+    "pr": "seanchatmangpt/chatman-ecosystem#253",
+    "state": "MERGED",
+    "merge_commit": "1a59285f3beba1988ed176429f24a3f7ddd9474a",
+    "base": "main"
+   },
+   {
+    "pr": "seanchatmangpt/ggen#744",
+    "state": "MERGED",
+    "merge_commit": "118b3063d5d0d3edc204dcd00a78a9becfeafbbf",
+    "base": "main"
+   },
+   {
+    "pr": "seanchatmangpt/gymact#137",
+    "state": "MERGED",
+    "merge_commit": "f0caffba449b1ca11606321a11b2384c0e3367cb",
+    "base": "main"
+   },
+   {
+    "pr": "seanchatmangpt/open-ontologies#44",
+    "state": "MERGED",
+    "merge_commit": "17cd4c8aa36568c6ece7c13ab458904416eb4f80",
+    "base": "main"
+   }
+  ],
+  "recurrence_guard": {
+   "pretooluse_hook_installed": true,
+   "corpus_cases": 19,
+   "corpus_failures": 0,
+   "repo_guards": [
+    "xaas test/xaas/topology_guard_test.exs (main 7659b10)",
+    "ggen_igniter test/ggen_igniter_topology_guard_test.exs (main 292e40a)",
+    "chatman-ecosystem tests/test_topology_guard.py (main 1a59285f)"
+   ],
+   "retired_automation": [
+    "SHA256SUMS",
+    "sm-lane-wave.js",
+    "worktree-develop-and-record.js"
+   ]
+  }
+ },
+ "successors": {
+  "fleet_committed_signing_keys": {
+   "repos": [
+    "bcinr",
+    "cargo-cicd",
+    "chicago-tdd-tools",
+    "claude-code-config-lsp",
+    "five-layer-agents",
+    "mmdio",
+    "praxis",
+    "process-intelligence",
+    "rocket-craft",
+    "speckit-ralph",
+    "star-toml",
+    "wasm4pm",
+    "wasm4pm-compat",
+    "wasm4pm_copy",
+    "wasm4pm-compat_copy"
+   ],
+   "note": "tracked .ggen/keys/signing.key (or private key) at HEAD; rotate + remove + ignore per repo; new keys are ignored by ggen #744 (FM-KEY-012)"
+  },
+  "v23_scratch": "/private/tmp/claude-501/v23-scratch (58G, non-durable): unique capital moved (annex specs, bench tools); remaining lane logs and ~200 court-built probe/mutation repos are EVIDENCE_ONLY/GENERATED_REPRODUCIBLE, left for OS purge or an osx-clnr plan",
+  "ggen_marketplace_local_main": "5 local-only commits (invariant-gate-pack v0.1.0) preserved on origin/local-main/invariant-gate-pack-20260923, not merged",
+  "open_ontologies_local_main": "local main diverged and dirty (not this migration's work); origin/main holds the key fix",
+  "gc23_12_operator_acceptance": "operator-only edge: ~/.claude/migration/v26923-single-repo/operator/ACCEPT-GC23-12.md; then court at the main pair, CE23-3/10/11, tags at CE-REL",
+  "trash": "retired trees in ~/.Trash (*-retired-20260924T2025Z) until emptied"
+ }
+}

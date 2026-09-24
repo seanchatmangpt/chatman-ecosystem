@@ -1,0 +1,332 @@
+{
+ "ok": true,
+ "conditions": {
+  "ROLLBACK_READY": true,
+  "UNIQUE_REQUIRED_FILES=0": true,
+  "UNMIGRATED_RECEIPTS=0": true,
+  "UNPUSHED_REQUIRED_COMMITS=0": true,
+  "DIRTY_REQUIRED_WORKTREES=0": true
+ },
+ "detail": {
+  "rollback_bad": [],
+  "canonical_evidence": [
+   {
+    "subject": "/Users/sac/wt/v26922/v26923 (non-git driver substrate):DRIVER.md (driver log: gate map, PVOCAB, receipt-linking digests,",
+    "repo": "chatman-ecosystem",
+    "commit": "b9f0065e",
+    "path": "migration/v26923-single-repo/driver/DRIVER.md",
+    "kind": "MOVED",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs",
+     "origin/release/v26.9.23-int"
+    ]
+   },
+   {
+    "subject": "/Users/sac/wt/v26922/v26923 (non-git driver substrate):bench/DESIGN.md, bench/ontology-draft.ttl, bench/orders.json (CE2",
+    "repo": "chatman-ecosystem",
+    "commit": "aa4e3873",
+    "path": "release/v26.9.23/bench/DESIGN.md",
+    "kind": "MOVED",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs",
+     "origin/release/v26.9.23-int"
+    ]
+   },
+   {
+    "subject": "/Users/sac/wt/v26922/v26923 (non-git driver substrate):lanes/release.py + lanes/chain-release.sh (deterministic SM relea",
+    "repo": "xaas",
+    "commit": "65466f8",
+    "path": "scripts/sjira/release_v26_9_23.py",
+    "kind": "MOVED",
+    "on": [
+     "origin/main",
+     "origin/chore/v26923-topology-guard"
+    ]
+   },
+   {
+    "subject": "/Users/sac/wt/v26922/v26923 (non-git driver substrate):lanes/scan-plan.json (loop scan: 8 waves incl. CE1, CE2, CE-REL a",
+    "repo": "chatman-ecosystem",
+    "commit": "b9f0065e",
+    "path": "release/v26.9.23/sjira/annex/scan-plan.json",
+    "kind": "MOVED",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs",
+     "origin/release/v26.9.23-int"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:(4b) CE23-12 benchmark design capital inside driver/v26.9.23",
+    "repo": "chatman-ecosystem",
+    "commit": "aa4e3873",
+    "path": "release/v26.9.23/bench/DESIGN.md",
+    "kind": "MOVED",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs",
+     "origin/release/v26.9.23-int"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:CE23-0 root identity: the receipt must be re-sealed after the cutover",
+    "repo": "chatman-ecosystem",
+    "commit": "1785806d",
+    "path": "receipts/v26.9.23/CE23-0.json",
+    "kind": "RECEIPT",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs",
+     "origin/release/v26.9.23-int"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:CE23-1 independent release/v26.9.23 subject; release/v26.9.1 untouched",
+    "repo": "chatman-ecosystem",
+    "commit": "b0d5add2",
+    "path": "receipts/v26.9.23/CE23-1.json",
+    "kind": "RECEIPT",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs",
+     "origin/release/v26.9.23-int"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:CE23-2 16-role legacy crosswalk (BoundaryCrosswalk conjunct)",
+    "repo": "chatman-ecosystem",
+    "commit": "8c150da2",
+    "path": "receipts/v26.9.23/CE23-2.json",
+    "kind": "RECEIPT",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs",
+     "origin/release/v26.9.23-int"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:CE23-3 import the Semantic Manufacturing crown (SM_STOP conjunct)",
+    "repo": "chatman-ecosystem",
+    "commit": "1a59285f",
+    "path": "release/v26.9.23/sjira/goal.ttl",
+    "kind": "ORDER_OPEN",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs"
+    ]
+   },
+   {
+    "subject": "xaas:CE23-4 close GC23-12 (successor-digest acceptance + self-hosting court)",
+    "repo": "chatman-ecosystem",
+    "commit": "1a59285f",
+    "path": "release/v26.9.23/sjira/goal.ttl",
+    "kind": "ORDER_OPEN",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs"
+    ]
+   },
+   {
+    "subject": "xaas:CE23-5 close GC23-11 (exact post-merge main heads of xaas and ggen_igniter)",
+    "repo": "chatman-ecosystem",
+    "commit": "1a59285f",
+    "path": "release/v26.9.23/sjira/goal.ttl",
+    "kind": "ORDER_OPEN",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:CE23-6 fleet typing (FleetClosed conjunct)",
+    "repo": "chatman-ecosystem",
+    "commit": "1a59285f",
+    "path": "release/v26.9.23/sjira/goal.ttl",
+    "kind": "ORDER_OPEN",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:CE23-7 version-fence Chatman tooling",
+    "repo": "chatman-ecosystem",
+    "commit": "077a729d",
+    "path": "receipts/v26.9.23/CE23-7.json",
+    "kind": "RECEIPT",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs",
+     "origin/release/v26.9.23-int"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:CE23-8 zero-intelligence KNOWN path carried into the root receipt",
+    "repo": "chatman-ecosystem",
+    "commit": "1a59285f",
+    "path": "release/v26.9.23/sjira/goal.ttl",
+    "kind": "ORDER_OPEN",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:CE23-9 exact-head root court (strict crown membership) + root CHATMAN_STOP orders",
+    "repo": "chatman-ecosystem",
+    "commit": "2f2a0df8",
+    "path": "receipts/v26.9.23/CE23-9.json",
+    "kind": "RECEIPT",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs",
+     "origin/release/v26.9.23-int"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:CE23-10 root release receipt (RootReceipt conjunct)",
+    "repo": "chatman-ecosystem",
+    "commit": "1a59285f",
+    "path": "release/v26.9.23/sjira/goal.ttl",
+    "kind": "ORDER_OPEN",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:CE23-11 tag only the crowned subject",
+    "repo": "chatman-ecosystem",
+    "commit": "1a59285f",
+    "path": "release/v26.9.23/sjira/goal.ttl",
+    "kind": "ORDER_OPEN",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:CE23-12 BENCHMARK_DESIGN_ALIVE (BenchmarkDesign \u2227 MSAContract \u2227 GeneratedQualificationPlan)",
+    "repo": "chatman-ecosystem",
+    "commit": "c636def7",
+    "path": "receipts/v26.9.23/CE23-12.json",
+    "kind": "RECEIPT",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs",
+     "origin/release/v26.9.23-int"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:CE23 scan-verified implementation specs and bench draft tooling in non-durable scratch",
+    "repo": "chatman-ecosystem",
+    "commit": "044c9a2e",
+    "path": "release/v26.9.23/sjira/annex/specs/CE23-9-root-court.txt",
+    "kind": "MOVED",
+    "on": [
+     "origin/docs/v26.9.23-annex-specs"
+    ]
+   },
+   {
+    "subject": "ggen-marketplace:release/v26.9.23-int pushed segment 420bc91e7..e3988aba4 (lanes MP-RELPACK-XW, MP-RPV, MP-RELPACK-CROWN",
+    "repo": "ggen-marketplace",
+    "commit": "dafc1d45",
+    "path": "packs/receipt-provenance-unification-pack/pack.toml",
+    "kind": "MERGED",
+    "on": [
+     "origin/main"
+    ]
+   },
+   {
+    "subject": "ggen-marketplace:mp23/MP-RELPACK-COURT (pack 0.4.0: release court + root receipt; admitted-by-gate 8012f35ed, then WIP e",
+    "repo": "ggen-marketplace",
+    "commit": "dafc1d45",
+    "path": "receipts/v26.9.23/MP-RELPACK-COURT.json",
+    "kind": "MERGED",
+    "on": [
+     "origin/main"
+    ]
+   },
+   {
+    "subject": "ggen-marketplace:pack delta: chatman-ecosystem-release-pack 0.2.0 + 0.3.0 (ontology/gates 070-090/templates/bin/lift/qua",
+    "repo": "ggen-marketplace",
+    "commit": "dafc1d45",
+    "path": "packs/chatman-ecosystem-release-pack/pack.toml",
+    "kind": "MERGED",
+    "on": [
+     "origin/main"
+    ]
+   },
+   {
+    "subject": "ggen-marketplace:pack delta: chatman-ecosystem-release-pack 0.4.0 (gates 095_release_court.rq, 097_root_receipt.rq; temp",
+    "repo": "ggen-marketplace",
+    "commit": "dafc1d45",
+    "path": "packs/chatman-ecosystem-release-pack/gates/097_root_receipt.rq",
+    "kind": "MERGED",
+    "on": [
+     "origin/main"
+    ]
+   },
+   {
+    "subject": "ggen-marketplace:pack delta: receipt-provenance-unification-pack (MP-RPV: ontology, templates, pack.toml, PROVENANCE.md,",
+    "repo": "ggen-marketplace",
+    "commit": "dafc1d45",
+    "path": "packs/receipt-provenance-unification-pack/PROVENANCE.md",
+    "kind": "MERGED",
+    "on": [
+     "origin/main"
+    ]
+   },
+   {
+    "subject": "xaas:friday/gc-fri-0800",
+    "repo": "xaas",
+    "commit": "5f408767",
+    "path": "docs/sjira/v26.9.23/goal.ttl",
+    "kind": "MERGED",
+    "on": [
+     "origin/main",
+     "origin/chore/v26923-topology-guard"
+    ]
+   },
+   {
+    "subject": "ggen_igniter:friday/gc-fri-0800",
+    "repo": "ggen_igniter",
+    "commit": "fe92e611",
+    "path": "mix.exs",
+    "kind": "MERGED",
+    "on": [
+     "origin/main",
+     "origin/chore/v26923-topology-guard"
+    ]
+   },
+   {
+    "subject": "chatman-ecosystem:release/v26.9.23-int",
+    "repo": "chatman-ecosystem",
+    "commit": "1a59285f",
+    "path": "release/v26.9.23/sjira/goal.ttl",
+    "kind": "MERGED",
+    "on": [
+     "origin/main",
+     "origin/docs/v26.9.23-annex-specs"
+    ]
+   },
+   {
+    "subject": "ggen-marketplace:release/v26.9.23-int",
+    "repo": "ggen-marketplace",
+    "commit": "dafc1d45",
+    "path": "receipts/v26.9.23/MP-RELPACK-COURT.json",
+    "kind": "MERGED",
+    "on": [
+     "origin/main"
+    ]
+   }
+  ],
+  "files_not_archived": [],
+  "files_changed_since_archive": [],
+  "required_subjects_unresolved": [],
+  "receipts_not_archived": [],
+  "shadow_clone_commits_not_in_canonical": [],
+  "dirty_worktrees": []
+ }
+}
