@@ -20,7 +20,8 @@ the committed lift of the manifest blob at the base commit (CE23-2).
 | `manifest.toml`, `constitutional-role-crosswalk.toml` | symlinks to `out/`, so `scripts/release_line.py` resolves the line | pointer |
 | `sjira/` | CE23 governing graph, prose and compiled work orders | CE-INTAKE |
 | `courts/` | gate courts named by `sjira/goal.ttl` | per gate |
-| `courts/ce23_9/` | CE23-9 root court: judge (`court.py`), members (`members.py`), CI check universe (`ci_checks.py`), local CI job runner (`ci_job.py`), pins (`root.toml`), the byte-copied generated receipt validator and its provenance, the real base check-run fixture | CE23-9 |
+| `courts/ce23_9/` | CE23-9 root court: judge (`court.py`), members (`members.py`), CI check universe (`ci_checks.py`), local CI job runner (`ci_job.py`), pins (`root.toml`), the real base check-run fixture | CE23-9 |
+| `vendor/receipt-provenance/` | byte copy of the generated receipt validator of ggen-marketplace receipt-provenance-unification-pack (e3988aba) and its sha256 provenance, run by the CE23-9 court | byte copy |
 | `bench/` | CE23-12 benchmark design: capital (`DESIGN.md`, `ontology-draft.ttl`, `orders.json`), the in-repo `nonllm-class-qualification-pack` (`bench/pack/`), the design graph `design.ttl` and its ggen projections (`bench/out/`) | CE23-12 |
 
 ## Regenerate

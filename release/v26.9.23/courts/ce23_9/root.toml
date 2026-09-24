@@ -25,15 +25,17 @@ court_files = [
   "release/v26.9.23/courts/ce23_9/ci_checks.py",
   "release/v26.9.23/courts/ce23_9/ci_job.py",
   "release/v26.9.23/courts/ce23_9/root.toml",
-  "release/v26.9.23/courts/ce23_9/unified_receipt_validator.py",
-  "release/v26.9.23/courts/ce23_9/unified_receipt_validator.provenance.toml",
+  "release/v26.9.23/vendor/receipt-provenance/unified_receipt_validator.py",
+  "release/v26.9.23/vendor/receipt-provenance/unified_receipt_validator.provenance.toml",
   "release/v26.9.23/courts/ce23_9/fixtures/checkruns-c59596f5.json",
 ]
 
 [stop]
-# CHATMAN_STOP (chatman-ce23.md crown equation) over the gates of goal_root. Gates with an ALIVE
-# receipt under receipts_dir are replayed by member `replay`; member `chatman-stop` runs the courts
-# of every other crown gate. Excluded, with the reason printed by the member:
+# CHATMAN_STOP: member `chatman-stop` evaluates goal_root's own sj:stopQuery over goal.ttl, the compiled
+# orders and the admitted receipts under receipts_dir projected as sj:Receipt nodes; member `replay`
+# re-runs, at HEAD, the court of every root-level gate those receipts hold ALIVE. The gates below never
+# get their receipt from this court's inputs (reason printed by the members); CE23-9 and CE23-10 enter
+# the stop query provisionally ALIVE, CE23-11 is outside it:
 exclude = { "CE23-9" = "this court (a court cannot be a member of itself)", "CE23-10" = "the root release receipt is rendered from this court's observation (circular)", "CE23-11" = "the tag is a consequence of STOP=true, never a premise" }
 # The operator edge (GC23-12 acceptance, operator-only): the imported Semantic Manufacturing crown
 # can only reach STOP=true after the operator commits this file in the component repository.

@@ -60,6 +60,8 @@ import ci_checks  # noqa: E402
 PINS = tomllib.loads((HERE / "root.toml").read_text(encoding="utf-8"))
 SUBJ = PINS["subject"]
 SDIR = SUBJ["subject_dir"]
+# The byte copy of the generated receipt validator (data under vendor/, outside the courts tree).
+VALIDATOR_DIR = HERE.parents[1] / "vendor" / "receipt-provenance"
 ER = "http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#"
 CE9 = "https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.23/court#"
 SJ = "https://ggen-igniter.dev/ontology/semantic-jira#"
@@ -264,8 +266,8 @@ def m_manifest_refs(root: Path, v: Verdict) -> int:
 
 
 def validator_identity(root: Path, v: Verdict) -> Path | None:
-    prov = tomllib.loads((HERE / "unified_receipt_validator.provenance.toml").read_text(encoding="utf-8"))["validator"]
-    local = HERE / "unified_receipt_validator.py"
+    prov = tomllib.loads((VALIDATOR_DIR / "unified_receipt_validator.provenance.toml").read_text(encoding="utf-8"))["validator"]
+    local = VALIDATOR_DIR / "unified_receipt_validator.py"
     got = sha256(local.read_bytes())
     committed = subprocess.run(["git", "-C", str(root), "show", f"HEAD:{local.relative_to(root)}"], capture_output=True).stdout
     if got != prov["sha256"] or sha256(committed) != prov["sha256"]:
@@ -587,7 +589,7 @@ def m_chatman_stop(root: Path, v: Verdict) -> int:
     under = {gid for gid, c in ids.items() if goal_root in set(g.transitive_objects(c, sj.checkpointOf)) and c != goal_root}
     tag = {gid for gid in under if gid == "CE23-11"}
     order_iri = {str(o).rsplit("#", 1)[-1].lower().removeprefix("wo-"): o for o in g.subjects(RDF.type, sj.WorkOrder)}
-    validator, head = HERE / "unified_receipt_validator.py", git(root, "rev-parse", "HEAD")
+    validator, head = VALIDATOR_DIR / "unified_receipt_validator.py", git(root, "rev-parse", "HEAD")
     projected: dict[str, list[str]] = {}
     for r in projected_receipts(root):
         p = run([sys.executable, str(validator), r["rel"], "--contract", "dfcm_fleet_v1"], root)

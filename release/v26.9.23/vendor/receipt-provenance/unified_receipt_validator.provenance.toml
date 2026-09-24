@@ -1,8 +1,9 @@
-# Provenance of release/v26.9.23/courts/ce23_9/unified_receipt_validator.py: a byte-for-byte copy
+# Provenance of release/v26.9.23/vendor/receipt-provenance/unified_receipt_validator.py: a byte-for-byte copy
 # (never edited) of the generated validator of ggen-marketplace receipt-provenance-unification-pack
 # (MP-RPV: dfcm_fleet_v1 contract + durable profile), taken with
-#   git -C <ggen-marketplace> show <commit>:<path> > release/v26.9.23/courts/ce23_9/unified_receipt_validator.py
-# The CE23-9 root court (member imported-receipts) refuses the copy unless its sha256 equals `sha256`
+#   git -C <ggen-marketplace> show <commit>:<path> > release/v26.9.23/vendor/receipt-provenance/unified_receipt_validator.py
+# It lives under vendor/, not courts/: its generated contract table cites source files by absolute
+# path (data, never read at run time). The CE23-9 root court (member imported-receipts) refuses the copy unless its sha256 equals `sha256`
 # below and, when the canonical marketplace checkout is present (CE23_MARKETPLACE_REPO, default
 # ~/ggen-marketplace), the blob at `commit`:`path` has the same sha256 and `commit` is on
 # origin/`ref` (published). A file copy, not a VENDOR.toml [[pack]] row: the CE23-1 court treats every

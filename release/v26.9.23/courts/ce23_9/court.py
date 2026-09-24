@@ -245,7 +245,7 @@ def av_validator(root: Path, j: Judge, scratch: Path) -> None:
         j.refuse("AV_HARNESS", "AV3", "no ALIVE receipt to mutate")
         return
     rel, doc = src
-    validator = HERE / "unified_receipt_validator.py"
+    validator = members.VALIDATOR_DIR / "unified_receipt_validator.py"
     mutants = {}
     m = copy.deepcopy(doc)
     m["identity"]["subject_sha"] = "NOTASHA"
