@@ -131,6 +131,35 @@ CrossProductAgreement \not\Rightarrow Authority
 
 The implementation enforces this as data: `EvidenceRecord.authority` must be exactly `NONE`, and every output receipt has `authority = NONE`.
 
+## Required evidence dimensions
+
+The court distinguishes evidence production from evidence composition. A producer record is admissible only when it names the exact subject and validator that generated its claim; the cross-product court then evaluates relations between those already-bounded claims.
+
+| Dimension | Required identity | What a PASS can establish | What it cannot establish |
+|---|---|---|---|
+| HDDL | domain/problem + producer SHA | declared hierarchical-plan property for the admitted model | runtime execution or authority |
+| FOND | domain/problem + producer SHA | declared nondeterministic policy property | production environment fidelity |
+| TLA+ | spec/config + verifier identity | bounded formal property under the checked model | unmodeled production correctness |
+| POWL | model + producer SHA | declared process-structure property | observed conformance by itself |
+| OCEL 2.0 | log digest + producer SHA | observed object-centric event evidence | causal truth beyond the log |
+| BRCE | protocol/profile + producer SHA | consequence-control contract evidence | an authority grant |
+| Receipt | receipt digest + verifier identity | integrity and exact-subject evidence | the truth of claims not covered by its verifier |
+
+A relation therefore composes **standing**, never ambient privilege. Missing dimensions remain missing; a neighboring repository, similar claim, or successful validator for a different subject cannot fill the hole.
+
+## Primary falsifiers
+
+XPROD-001 is falsified by any executable witness where a required relation reaches `ALIVE` despite one of these conditions:
+
+- either side of the relation is absent, non-PASS, or bound to the wrong exact subject;
+- a required negative-control mutant survives;
+- one evidence record carries authority other than `NONE`;
+- two repositories are forced to share one Git SHA rather than their declared repository-specific subjects;
+- a deterministic replay of the same case yields a different receipt digest;
+- a producer claim is silently upgraded beyond its own evidence ceiling.
+
+These are topology-level composition failures. They do not reinterpret a producer's local verifier result.
+
 ## Executable surface
 
 ```bash
