@@ -13,7 +13,7 @@ reads this file, and the historical checkout paths inside it are evidence of the
 
 ## Scan-verified implementation specs (moved 2026-09-24)
 
-- `specs/` holds 47 files: the CE23-*, CE-*, GC23-* and GEN-* implementation specs that loop scan
+- `specs/` holds 47 files: 46 CE23-*, CE-*, GC23-* and GEN-* implementation specs that loop scan
   `wf_cf07ec8e-051` kept, plus `plan.final.min.json`, the synthesized plan they belong to
   (sha256 `03bf9cfc2efd572a...`).
 - `successor-specs/` holds the GC24-* and GC26924-* specs, which the plan assigns to successor GC-26.9.24,
