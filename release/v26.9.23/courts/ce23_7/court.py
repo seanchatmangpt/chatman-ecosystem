@@ -381,7 +381,12 @@ class FixtureError(RuntimeError):
 
 
 def synth_line(tree: Path, *, flip: bool, with_predecessor: bool = True) -> Path:
-    """A two-line tree: release/v26.9.1 copied, release/v26.9.23 derived from it."""
+    """A two-line tree: release/v26.9.1 copied, release/v26.9.23 derived from it.
+
+    The tree's catalog pointer and West projection sources are set to the chosen line
+    (v26.9.23 when ``flip``, else v26.9.1) whatever line the judged subject's own pointer
+    and projection name, so the fixture does not depend on the subject's pointer state.
+    """
     copy_west_surface(tree)
     pred_dir, target_dir = tree / "release" / PRED, tree / "release" / TARGET
     target_dir.mkdir(parents=True)
@@ -396,16 +401,18 @@ def synth_line(tree: Path, *, flip: bool, with_predecessor: bool = True) -> Path
         elif name == "fanout-bootstrap.toml":
             text = substitute(text, rf'^release = "{re.escape(PRED_VERSION)}"$', f'release = "{TARGET_VERSION}"', name)
         (target_dir / name).write_text(text, encoding="utf-8")
-    if flip:
-        catalog = tree / "catalog" / "west.toml"
-        catalog.write_text(substitute(
-            catalog.read_text(encoding="utf-8"),
-            rf'^release_manifest = "release/{re.escape(PRED)}/manifest.toml"$',
-            f'release_manifest = "release/{TARGET}/manifest.toml"', "catalog/west.toml"), encoding="utf-8")
-        for west_file in [tree / "west.yml", *sorted((tree / "west").glob("*.yml"))]:
-            text = west_file.read_text(encoding="utf-8")
-            west_file.write_text(text.replace(f"source: release/{PRED}/manifest.toml",
-                                              f"source: release/{TARGET}/manifest.toml"), encoding="utf-8")
+    line = TARGET if flip else PRED
+    catalog = tree / "catalog" / "west.toml"
+    catalog.write_text(substitute(
+        catalog.read_text(encoding="utf-8"),
+        r'^release_manifest = "release/v[0-9]+\.[0-9]+\.[0-9]+/manifest\.toml"$',
+        f'release_manifest = "release/{line}/manifest.toml"', "catalog/west.toml"), encoding="utf-8")
+    for west_file in [tree / "west.yml", *sorted((tree / "west").glob("*.yml"))]:
+        text = west_file.read_text(encoding="utf-8")
+        west_file.write_text(re.sub(r"source: release/v[0-9]+\.[0-9]+\.[0-9]+/manifest\.toml",
+                                    f"source: release/{line}/manifest.toml", text), encoding="utf-8")
+    if west_projection_line(tree) - {line}:
+        raise FixtureError(f"West projection of the synthesized tree names {sorted(west_projection_line(tree))}, not {line}")
     return tree
 
 

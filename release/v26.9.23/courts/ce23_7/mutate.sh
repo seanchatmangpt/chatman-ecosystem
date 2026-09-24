@@ -13,7 +13,8 @@
 #
 # The MX* mutants read v26.9.1 through channels the court's first probe did not judge
 # (skeptic refutation of CE23-7, 2026-09-24): a repository-anchored pointer read (MX1, the
-# skeptic's mutant; MX1b with the judged subject's own pointer flipped to v26.9.23), a child
+# skeptic's mutant; MX1b in the root-crown state, pointer and West projection on v26.9.23,
+# whose control M0b must stay ALIVE), a child
 # process (MX2), a byte copy under another name (MX3), a directory listing (MX4), an unaudited
 # child (MX5), native code (MX6), the git object store (MX7) and a URL (MX8). None names the
 # predecessor as a literal (the fenced-tool token scan, F7, stays silent on all of them).
@@ -63,6 +64,16 @@ lines = "".join("    " + line + "\n" for line in body.splitlines())
 open(p, "w").write(t.replace(old, old + lines))
 PY
   no_token "$M/$1/scripts/verify_standing_evidence.py"
+}
+crown_flip() {  # crown_flip <id>: the root-crown state, catalog pointer and West projection on v26.9.23
+  python3 - "$M/$1" <<'PY'
+import pathlib, re, sys
+root = pathlib.Path(sys.argv[1]); cat = root / "catalog" / "west.toml"
+new, n = re.subn(r'(?m)^release_manifest = "release/v26\.9\.1/manifest\.toml"$', 'release_manifest = "release/v26.9.23/manifest.toml"', cat.read_text())
+assert n == 1; cat.write_text(new)
+for f in [root / "west.yml", *sorted((root / "west").glob("*.yml"))]:
+    f.write_text(f.read_text().replace("source: release/v26.9.1/manifest.toml", "source: release/v26.9.23/manifest.toml"))
+PY
 }
 REPO='_repo = Path(__file__).resolve().parents[1]'
 LEGACY='_legacy = _repo / "release" / ("v26." + "9.1") / "manifest.toml"'
@@ -146,17 +157,17 @@ if _legacy.is_file():
   commit MX1; judge MX1 1 'REFUSED\[SILENT_V26_9_1_READ\] F4: .* opened .*/release/v26\.9\.1/manifest\.toml'
 fi
 
-if want MX1b; then  # MX1 with the judged subject's own pointer on v26.9.23: only the self-hosted run sees it
+if want M0b; then  # control: the unmutated subject in the root-crown state (pointer + West on v26.9.23) is ALIVE
+  mk M0b; crown_flip M0b; commit M0b; judge M0b 0 'CE23-7 ALIVE'
+fi
+
+if want MX1b; then  # MX1 in the root-crown state: only the self-hosted run can see the v26.9.1 read
   mk MX1b
   inject MX1b "$REPO"'
 _legacy = _repo / release_line.declared_manifest(_repo)
 if _legacy.is_file():
     _legacy.read_bytes()'
-  python3 - "$M/MX1b/catalog/west.toml" <<'PY'
-import re, sys; p = sys.argv[1]; t = open(p).read()
-new, n = re.subn(r'(?m)^release_manifest = "release/v26\.9\.1/manifest\.toml"$', 'release_manifest = "release/v26.9.23/manifest.toml"', t)
-assert n == 1; open(p, "w").write(new)
-PY
+  crown_flip MX1b
   commit MX1b; judge MX1b 1 'REFUSED\[SILENT_V26_9_1_READ\] F4: pointer->v26\.9\.1 \(self-hosted\): verify_standing_evidence'
 fi
 

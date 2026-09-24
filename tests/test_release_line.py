@@ -234,8 +234,10 @@ class PlannerLineTests(unittest.TestCase):
             self.assertIn("RELEASE_TARGET_CONFLICT:release/v26.9.1/fleet-policy.toml is bound to v26.9.1, the manifest to v26.9.23", proc.stderr)
 
     def test_planner_default_is_the_explicit_pointer_line(self) -> None:
+        # Holds whatever the pointer names and whether or not that line's inputs exist yet.
         default, explicit = run("plan_completion.py"), run("plan_completion.py", "--release", pointer_line())
-        self.assertEqual((0, default.stdout), (explicit.returncode, explicit.stdout))
+        self.assertEqual((default.returncode, default.stdout, default.stderr),
+                         (explicit.returncode, explicit.stdout, explicit.stderr))
 
 
 class _GitHub(http.server.BaseHTTPRequestHandler):
@@ -313,6 +315,11 @@ class StandingAndWestLineTests(unittest.TestCase):
                 shutil.copytree(ROOT / name, root / name)
             for name in ("west.yml", ".gitmodules"):
                 shutil.copy2(ROOT / name, root / name)
+            # The projection under test is the v26.9.1-sourced one, whatever the subject's own is.
+            for projection_file in [root / "west.yml", *sorted((root / "west").glob("*.yml"))]:
+                projection_file.write_text(re.sub(r"source: release/v[0-9]+\.[0-9]+\.[0-9]+/manifest\.toml",
+                                                  f"source: release/{PRED}/manifest.toml",
+                                                  projection_file.read_text(encoding="utf-8")), encoding="utf-8")
             write_line(root, TARGET, ("manifest.toml",))
             write_catalog(root, f"release/{TARGET}/manifest.toml")
             west = ["verify_west_workspace.py", "--json", "--root", str(root)]
