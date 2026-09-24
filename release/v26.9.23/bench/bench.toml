@@ -1,0 +1,46 @@
+# Consumer configuration of the nonllm-class-qualification-pack scripts for the CE23-12 benchmark
+# design (release/v26.9.23/bench). Read by pack/scripts/evidence_tiers.py (the single-mu statistics
+# kernel) and pack/scripts/lift_reference_orders.py (the reference-order lift). ggen reads ggen.toml;
+# this file carries only the two non-ggen generators' inputs and outputs, so every generated/ file is
+# reproducible from committed bytes: `python3 pack/scripts/<script> --consumer . --check`.
+
+[kernel]
+# Instance namespace of the generated BoundRows (consumer IRIs).
+namespace = "https://chatman.dev/release/v26.9.23#"
+# Graphs the kernel reads: tier specifications (pack), class standings, bound requests and crown
+# thresholds (design).
+inputs = ["pack/ontology.ttl", "design.ttl"]
+tiers_out = "generated/evidence-tiers.ttl"
+bounds_out = "generated/bound-table.ttl"
+# One-sided confidence of every exact Clopper-Pearson bound (alpha = 1 - confidence).
+confidence = "0.95"
+
+[lift]
+# orders.json: the hand-assembled CE23-12 reference orders (candidate design capital, O). The lift
+# records them as nlb:ReferenceOrder facts so the generated plan's coverage of every reference order
+# is a checkable graph property; it never turns a reference order into a work order.
+source = "orders.json"
+out = "generated/reference-orders.ttl"
+namespace = "https://chatman.dev/release/v26.9.23#"
+
+[lift.trace]
+# requirement value of an orders.json entry -> the committed operator-prose propositions it traces to.
+"CE23-12 design" = [
+  "https://ggen-igniter.dev/sjira/chatman-26.9.23#P-cc3821f7df83e938",
+  "https://ggen-igniter.dev/sjira/chatman-26.9.23#P-eb6bf51d657d803f",
+]
+"NON_LLM_OPERATIONAL successor" = [
+  "https://ggen-igniter.dev/sjira/chatman-26.9.23#P-e6e5199c02901c00",
+  "https://ggen-igniter.dev/sjira/chatman-26.9.23#P-3951c3003b3ad270",
+]
+
+[imports]
+# ggen refuses '..' in extra_ontologies (FM-CONFIG-003 invalid_path), so the design's inputs that live
+# elsewhere in the release subject are byte-identical copies under imports/, written and verified by
+# pack/scripts/import_inputs.py (a copy that differs from its source is REFUSED[import_drift]).
+# destination (relative to this directory) = source (relative to this directory)
+"imports/chatman-ce23-12-bench.candidates.ttl" = "../sjira/candidates/chatman-ce23-12-bench.ttl"
+"imports/chatman-ce23-12-standings.candidates.ttl" = "../sjira/candidates/chatman-ce23-12-standings.ttl"
+"imports/goal.ttl" = "../sjira/goal.ttl"
+"imports/chatman-ce23-12-bench.orders.ttl" = "../sjira/compiled/chatman-ce23-12-bench/orders.ttl"
+"imports/chatman-ce23-12-standings.orders.ttl" = "../sjira/compiled/chatman-ce23-12-standings/orders.ttl"

@@ -1,0 +1,222 @@
+{
+ "corrections": [
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 3,
+   "quote": "claimed KNOWN classes and CTQs defined;",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-BenchmarkDesign sj:checkpointOf ce:CE23-12), and the item is one of the design conjuncts the standings file lists for BENCHMARK_DESIGN_ALIVE (D: classes and CTQs defined; M: measurement/receipt/OCEL model defined; benchmark ontology admitted; candidate classes enumerated; membership tests, independent verifiers and near-miss/UNKNOWN falsifiers identified; all generated artifacts trace to operator prose). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-BenchmarkDesign",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 4,
+   "quote": "measurement/receipt/OCEL model defined;",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-BenchmarkDesign sj:checkpointOf ce:CE23-12), and the item is one of the design conjuncts the standings file lists for BENCHMARK_DESIGN_ALIVE (D: classes and CTQs defined; M: measurement/receipt/OCEL model defined; benchmark ontology admitted; candidate classes enumerated; membership tests, independent verifiers and near-miss/UNKNOWN falsifiers identified; all generated artifacts trace to operator prose). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-BenchmarkDesign",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 6,
+   "quote": "benchmark ontology admitted",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-BenchmarkDesign sj:checkpointOf ce:CE23-12), and the item is one of the design conjuncts the standings file lists for BENCHMARK_DESIGN_ALIVE (D: classes and CTQs defined; M: measurement/receipt/OCEL model defined; benchmark ontology admitted; candidate classes enumerated; membership tests, independent verifiers and near-miss/UNKNOWN falsifiers identified; all generated artifacts trace to operator prose). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-BenchmarkDesign",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 7,
+   "quote": "candidate classes enumerated",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-BenchmarkDesign sj:checkpointOf ce:CE23-12), and the item is one of the design conjuncts the standings file lists for BENCHMARK_DESIGN_ALIVE (D: classes and CTQs defined; M: measurement/receipt/OCEL model defined; benchmark ontology admitted; candidate classes enumerated; membership tests, independent verifiers and near-miss/UNKNOWN falsifiers identified; all generated artifacts trace to operator prose). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-BenchmarkDesign",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 8,
+   "quote": "membership tests identified",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-BenchmarkDesign sj:checkpointOf ce:CE23-12), and the item is one of the design conjuncts the standings file lists for BENCHMARK_DESIGN_ALIVE (D: classes and CTQs defined; M: measurement/receipt/OCEL model defined; benchmark ontology admitted; candidate classes enumerated; membership tests, independent verifiers and near-miss/UNKNOWN falsifiers identified; all generated artifacts trace to operator prose). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-BenchmarkDesign",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 9,
+   "quote": "independent verifiers identified",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-BenchmarkDesign sj:checkpointOf ce:CE23-12), and the item is one of the design conjuncts the standings file lists for BENCHMARK_DESIGN_ALIVE (D: classes and CTQs defined; M: measurement/receipt/OCEL model defined; benchmark ontology admitted; candidate classes enumerated; membership tests, independent verifiers and near-miss/UNKNOWN falsifiers identified; all generated artifacts trace to operator prose). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-BenchmarkDesign",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 10,
+   "quote": "near-miss/UNKNOWN falsifiers identified",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-BenchmarkDesign sj:checkpointOf ce:CE23-12), and the item is one of the design conjuncts the standings file lists for BENCHMARK_DESIGN_ALIVE (D: classes and CTQs defined; M: measurement/receipt/OCEL model defined; benchmark ontology admitted; candidate classes enumerated; membership tests, independent verifiers and near-miss/UNKNOWN falsifiers identified; all generated artifacts trace to operator prose). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-BenchmarkDesign",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 14,
+   "quote": "all generated artifacts trace to operator prose",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-BenchmarkDesign sj:checkpointOf ce:CE23-12), and the item is one of the design conjuncts the standings file lists for BENCHMARK_DESIGN_ALIVE (D: classes and CTQs defined; M: measurement/receipt/OCEL model defined; benchmark ontology admitted; candidate classes enumerated; membership tests, independent verifiers and near-miss/UNKNOWN falsifiers identified; all generated artifacts trace to operator prose). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-BenchmarkDesign",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 21,
+   "quote": "Before trusting benchmark results, test the benchmark itself.",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-MSAContract sj:checkpointOf ce:CE23-12), and the item is the MSA contract or one of its questions ('MSA = Repeatability_verifier ∧ Reproducibility_environment ∧ MutationSensitivity ∧ ClassificationAgreement'). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-MSAContract",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 22,
+   "quote": "Does the same artifact always receive the same verdict?",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-MSAContract sj:checkpointOf ce:CE23-12), and the item is the MSA contract or one of its questions ('MSA = Repeatability_verifier ∧ Reproducibility_environment ∧ MutationSensitivity ∧ ClassificationAgreement'). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-MSAContract",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 23,
+   "quote": "Do independent verifiers agree?",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-MSAContract sj:checkpointOf ce:CE23-12), and the item is the MSA contract or one of its questions ('MSA = Repeatability_verifier ∧ Reproducibility_environment ∧ MutationSensitivity ∧ ClassificationAgreement'). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-MSAContract",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 24,
+   "quote": "Does an intentionally corrupted output reliably fail?",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-MSAContract sj:checkpointOf ce:CE23-12), and the item is the MSA contract or one of its questions ('MSA = Repeatability_verifier ∧ Reproducibility_environment ∧ MutationSensitivity ∧ ClassificationAgreement'). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-MSAContract",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 25,
+   "quote": "Does a stale receipt reliably fail?",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-MSAContract sj:checkpointOf ce:CE23-12), and the item is the MSA contract or one of its questions ('MSA = Repeatability_verifier ∧ Reproducibility_environment ∧ MutationSensitivity ∧ ClassificationAgreement'). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-MSAContract",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 26,
+   "quote": "Can benchmark ordering change the answer?",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-MSAContract sj:checkpointOf ce:CE23-12), and the item is the MSA contract or one of its questions ('MSA = Repeatability_verifier ∧ Reproducibility_environment ∧ MutationSensitivity ∧ ClassificationAgreement'). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-MSAContract",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 27,
+   "quote": "Does cached state change classification?",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-MSAContract sj:checkpointOf ce:CE23-12), and the item is the MSA contract or one of its questions ('MSA = Repeatability_verifier ∧ Reproducibility_environment ∧ MutationSensitivity ∧ ClassificationAgreement'). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-MSAContract",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 28,
+   "quote": "Can the membership test confuse a near-miss UNKNOWN with KNOWN?",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-MSAContract sj:checkpointOf ce:CE23-12), and the item is the MSA contract or one of its questions ('MSA = Repeatability_verifier ∧ Reproducibility_environment ∧ MutationSensitivity ∧ ClassificationAgreement'). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-MSAContract",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 5,
+   "quote": "experiment, DOE, corpus, statistics and qualification rules defined.",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-GeneratedQualificationPlan sj:checkpointOf ce:CE23-12), and the item is part of the generated qualification plan (A: experiment, DOE, corpus, statistics and qualification rules; DOE support matrix and statistical acceptance rules generated; benchmark work orders generated; evidence-volume typed standing; OS factor UNSUPPORTED with no synthesized cross-OS evidence). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-GeneratedQualificationPlan",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 11,
+   "quote": "DOE support matrix generated",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-GeneratedQualificationPlan sj:checkpointOf ce:CE23-12), and the item is part of the generated qualification plan (A: experiment, DOE, corpus, statistics and qualification rules; DOE support matrix and statistical acceptance rules generated; benchmark work orders generated; evidence-volume typed standing; OS factor UNSUPPORTED with no synthesized cross-OS evidence). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-GeneratedQualificationPlan",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 12,
+   "quote": "statistical acceptance rules generated",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-GeneratedQualificationPlan sj:checkpointOf ce:CE23-12), and the item is part of the generated qualification plan (A: experiment, DOE, corpus, statistics and qualification rules; DOE support matrix and statistical acceptance rules generated; benchmark work orders generated; evidence-volume typed standing; OS factor UNSUPPORTED with no synthesized cross-OS evidence). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-GeneratedQualificationPlan",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 13,
+   "quote": "benchmark work orders generated",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-GeneratedQualificationPlan sj:checkpointOf ce:CE23-12), and the item is part of the generated qualification plan (A: experiment, DOE, corpus, statistics and qualification rules; DOE support matrix and statistical acceptance rules generated; benchmark work orders generated; evidence-volume typed standing; OS factor UNSUPPORTED with no synthesized cross-OS evidence). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-GeneratedQualificationPlan",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 17,
+   "quote": "It means the ontology should encode **confidence and evidence volume**, rather than collapsing everything into ALIVE.",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-GeneratedQualificationPlan sj:checkpointOf ce:CE23-12), and the item is part of the generated qualification plan (A: experiment, DOE, corpus, statistics and qualification rules; DOE support matrix and statistical acceptance rules generated; benchmark work orders generated; evidence-volume typed standing; OS factor UNSUPPORTED with no synthesized cross-OS evidence). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-GeneratedQualificationPlan",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 18,
+   "quote": "Do not synthesize fake cross-platform evidence.",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-GeneratedQualificationPlan sj:checkpointOf ce:CE23-12), and the item is part of the generated qualification plan (A: experiment, DOE, corpus, statistics and qualification rules; DOE support matrix and statistical acceptance rules generated; benchmark work orders generated; evidence-volume typed standing; OS factor UNSUPPORTED with no synthesized cross-OS evidence). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-GeneratedQualificationPlan",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 19,
+   "quote": "and the DOE should reduce the design over the supported factors rather than silently treating OS as invariant.",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-GeneratedQualificationPlan sj:checkpointOf ce:CE23-12), and the item is part of the generated qualification plan (A: experiment, DOE, corpus, statistics and qualification rules; DOE support matrix and statistical acceptance rules generated; benchmark work orders generated; evidence-volume typed standing; OS factor UNSUPPORTED with no synthesized cross-OS evidence). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-GeneratedQualificationPlan",
+   "unit": "chatman-ce23-12-standings"
+  },
+  {
+   "field": "required_by",
+   "from": "CE23-12",
+   "index": 20,
+   "quote": "The receipt should explicitly say that **cross-OS robustness remains outside the demonstrated evidence ceiling**.",
+   "reason": "chatman-ce23-12-standings.md: 'CE23-12 = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan' and 'BENCHMARK_DESIGN_ALIVE ⇏ NONLLM_OPERATIONAL_ALIVE'; CE23-12 is decomposed into its three conjunct gates (goal.ttl ce:CE23-12-GeneratedQualificationPlan sj:checkpointOf ce:CE23-12), and the item is part of the generated qualification plan (A: experiment, DOE, corpus, statistics and qualification rules; DOE support matrix and statistical acceptance rules generated; benchmark work orders generated; evidence-volume typed standing; OS factor UNSUPPORTED with no synthesized cross-OS evidence). The unit view of this prose (units/chatman-ce23-12-standings.goal.ttl) is rooted at ce:CE23-12 with exactly those three gates, so the compiler's coverage law (uncovered_gates.rq) refuses unless each conjunct is required by at least one admitted proposition.",
+   "to": "CE23-12-GeneratedQualificationPlan",
+   "unit": "chatman-ce23-12-standings"
+  }
+ ],
+ "law": "Recorded corrections of the CE23 extraction JSON (raw O, candidates/raw/). Only required_by and boundary_class are correctable; candidates/<unit>.extract.json = corrections.py apply(raw, this file). Corrected by lane CE-INTAKE (wave CE0); the extractor identity of each unit is unchanged. No correction moves a chatman-ce23-12-bench item off CE23-12: every bench item is a BenchmarkDesign/MSAContract design obligation of v26.9.23 (chatman-ce23-12-standings.md: BenchmarkDesign A = 'experiment, DOE, corpus, statistics and qualification rules defined'; acceptance 'near-miss/UNKNOWN falsifiers identified', 'DOE support matrix generated'), and the standings rule already keeps operational standing (NON_LLM_OPERATIONAL) out of the design crown. Repair 1 of lane CE-INTAKE removed the 6 bench demotions of items 7 (B3), 8 (B4) and 10 (B6).",
+ "schema": "ce23-extraction-corrections/v1"
+}

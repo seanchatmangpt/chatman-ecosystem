@@ -1,0 +1,48 @@
+$ sh release/v26.9.23/courts/CE23-0.sh
+CE23-0 court: subject b8332692beda6b8e4a2779f3162e8247b36c87cc at /Users/sac/chatman-ecosystem
+OK C1 the judging court (6 files, pins as loaded) is byte-identical to HEAD
+   validator: validator packs/receipt-provenance-unification-pack/generated/unified_receipt_validator.py = ggen-marketplace e3988aba4a85 (on refs/remotes/origin/release/v26.9.23-int), sha256 008ce23419325ebd, read at run time (never committed here)
+OK W1 no tracked change against HEAD: the working subject is exactly HEAD
+OK I1 remote.origin.url https://github.com/seanchatmangpt/chatman-ecosystem.git = github.com/seanchatmangpt/chatman-ecosystem
+OK I2 GitHub main = c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 (2026-09-24T18:22:32Z, live ls-remote); the release base c59596f5506e is equal to it
+OK I4 the head fast-forwards GitHub release/v26.9.23-int (717d52cd78d8) by 36 commits: publication pending, a plain push
+OK I3 the head b8332692beda6b8e4a2779f3162e8247b36c87cc descends from the release base c59596f5506e (ancestor) and its only root is the GitHub root 14cfd7b01aac (4777 commits)
+OK K1 the identity fact of this observation (er:Component seanchatmangpt/chatman-ecosystem @ main c59596f5506e, er:RefObservation by ls-remote) passes pack gates ['020_component_identity.rq', '050_ref_observation_law.rq', '060_unique_repository.rq']
+OK K1 no committed identity fact at HEAD (receipts/v26.9.23/CE23-0.identity.ttl): sealed by --identity-out
+OK O1 CE23-0 court command is this court; compiled orders: ['WO-68A1431B9FE77A26 (release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl; subject P-d8bfcebe5fa3a084)']
+OK L1 the local-only lineage (4 heads, 9 commits, root 551cf5c563d9) is preserved at its pinned SHAs under ['refs/heads/archive/local-lineage/', 'refs/archive/pre-single-repo-migration/20260924T0600Z/heads/'] and refs/archive/pre-single-repo-migration/20260924T0600Z/worktree-head/chatman-ecosystem
+OK L2 every local head is unrelated to the release base c59596f5506e and to the head (merge-base, 8 pairs); local main vs base: 0 shared blob ids, shared paths ['.gitignore', 'AGENTS.md']
+OK L3 no remote-tracking ref reaches the local root 551cf5c563d9 (published=False, as pinned)
+OK S1 the shadow clone's 4 pinned refs and its 4 local-lineage preserve refs hold their SHAs under refs/archive/pre-single-repo-migration/20260924T0600Z/shadow-clone/ (28 refs there); both preservations of the local lineage agree
+OK S1 the head continues the shadow-era line: CE23-0 commit a896e16c68af and the shadow's published int 717d52cd78d8 are its ancestors; the shadow's other preserved heads relate to the head as {'heads/main': 'ancestor', 'heads/release/v26.9.23-int': 'diverged', 'remotes/origin/main': 'ancestor', 'remotes/origin/release/v26.9.23-int': 'ancestor'} (merge bases {'heads/release/v26.9.23-int': '717d52cd78d8936c6b8b2e102dc348cccf6262c4'})
+OK P1 release/v26.9.1 at the head is the base tree and the pinned tree 7e0feef1b137
+OK R1 receipts/v26.9.23/CE23-0.json at HEAD (blob 19373ddc5021, commit a896e16c68af, subject c59596f5506e) was not emitted by this court: superseded by the next seal, not judged
+OK AV M0 ALIVE [] as expected: control: the head one commit ahead of the published line (publication pending)
+OK AV M0p ALIVE [] as expected: control: the head published
+OK AV M0s ALIVE [] as expected: control: sealed with the court's own receipt and identity fact
+OK AV M1 REFUSED ['REMOTE_NOT_SUBJECT'] as expected: origin is another GitHub repository
+OK AV M2 REFUSED ['NO_REMOTE'] as expected: no remote
+OK AV M3 REFUSED ['FOREIGN_ROOT_IN_HEAD', 'LINEAGE_RELATION_CHANGED'] as expected: the local lineage merged into the head
+OK AV M4 REFUSED ['LINEAGE_UNPRESERVED'] as expected: an archive ref repointed
+OK AV M5 REFUSED ['LINEAGE_UNPRESERVED', 'SHADOW_LINEAGE_UNPRESERVED'] as expected: one local head dropped from every preservation (its commit still reachable)
+OK AV M6 UNKNOWN ['LINEAGE_EVIDENCE_ABSENT', 'SHADOW_EVIDENCE_ABSENT'] as expected: edge: a checkout that never held the archive (a fresh GitHub clone)
+OK AV M6r REFUSED ['LINEAGE_UNPRESERVED', 'SHADOW_LINEAGE_UNPRESERVED'] as expected: every archive ref dropped while the commits are still in the object store (the twin of M6)
+OK AV M7 REFUSED ['BRANCH_DIVERGED', 'FOREIGN_ROOT_IN_HEAD', 'HEAD_NOT_ON_BASE', 'SHADOW_LINE_NOT_CONTINUED'] as expected: an orphan head
+OK AV M8 REFUSED ['BASE_NOT_ON_GITHUB_MAIN'] as expected: GitHub main force-pushed off the base
+OK AV M9 REFUSED ['BRANCH_DIVERGED'] as expected: the published line diverged from the head
+OK AV M10 REFUSED ['PREDECESSOR_TOUCHED'] as expected: release/v26.9.1 edited
+OK AV M11 REFUSED ['RECEIPT_CLAIM_MISMATCH'] as expected: the sealed receipt claims a descendant lineage
+OK AV M12 REFUSED ['IDENTITY_FACT_REFUSED'] as expected: the sealed identity fact's observed SHA differs from its commit SHA (pack gate 050)
+OK AV M12b REFUSED ['IDENTITY_FACT_CONTRADICTED'] as expected: the sealed identity fact binds main to a local-lineage commit (gates pass, the published line does not)
+OK AV M13 REFUSED ['LINEAGE_PUBLICATION_CHANGED'] as expected: the local lineage published
+OK AV M14 REFUSED ['PRESERVATIONS_DISAGREE'] as expected: the shadow's preservation of local main repointed
+OK AV M15 UNKNOWN ['GITHUB_UNREACHABLE'] as expected: edge: GitHub unreachable
+OK AV M16 REFUSED ['WORKING_SUBJECT_NOT_EXACT'] as expected: a tracked file changed and not committed
+OK AV M17 REFUSED ['LINEAGE_REF_UNPINNED'] as expected: an unpinned ref in an archive namespace
+OK AV M18 REFUSED ['BRANCH_DIVERGED', 'SHADOW_LINE_NOT_CONTINUED'] as expected: the int rebuilt on the base, dropping the shadow-era line
+OK AV M19 REFUSED ['RECEIPT_SUBJECT_FOREIGN'] as expected: the sealed receipt's subject is a local-lineage commit
+OK AV M20 REFUSED ['REMOTE_TRANSPORT_REWRITTEN'] as expected: an insteadOf rule reroutes the GitHub remote (judged without a corpus transport)
+OK AV M21 REFUSED ['LINEAGE_UNPRESERVED'] as expected: the pre-migration checkout HEAD ref repointed
+   AV: 26/26 corpus cases held (3 controls ALIVE, 2 edges UNKNOWN, 21 mutants refused)
+CE23-0 ALIVE (21s)
+exit=0

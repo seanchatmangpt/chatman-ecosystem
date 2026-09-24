@@ -1,0 +1,21 @@
+# CE23-12 benchmark design consumer (Chatman Ecosystem v26.9.23, orders CE23-12-BD-04/07/08): renders
+# every benchmark artifact of the design from canonical RDF through the in-repo
+# nonllm-class-qualification-pack (pack/). Inputs, all committed: design.ttl (the ce23: instance
+# graph), generated/*.ttl (kernel and lift output: python3 pack/scripts/evidence_tiers.py --consumer .
+# and python3 pack/scripts/lift_reference_orders.py --consumer .), and imports/ (byte copies, pack/scripts/import_inputs.py --check,
+# of the committed CE23-12 operator-prose candidates, the CE23 goal graph and the prose-derived CE23-12
+# work orders: ggen refuses '..' paths). Render: (cd release/v26.9.23/bench &&
+# ggen sync run). ggen.lock pins the pack and every extra_ontologies input (FM-PACK-008 on drift):
+# after an intended input change delete ggen.lock and the stale out/ files, then sync. out/ is never
+# hand-edited (FM-WRITE-005). Court: sh release/v26.9.23/courts/CE23-12.sh.
+[project]
+name = "chatman-ecosystem-ce23-12-benchmark-design"
+
+[ontology]
+source = "design.ttl"
+
+[templates]
+dir = "templates"
+
+[packs]
+nonllm-class-qualification-pack = { path = "pack", lock = true, extra_ontologies = ["generated/evidence-tiers.ttl", "generated/bound-table.ttl", "generated/reference-orders.ttl", "imports/chatman-ce23-12-bench.candidates.ttl", "imports/chatman-ce23-12-standings.candidates.ttl", "imports/goal.ttl", "imports/chatman-ce23-12-bench.orders.ttl", "imports/chatman-ce23-12-standings.orders.ttl"] }

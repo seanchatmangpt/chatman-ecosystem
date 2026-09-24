@@ -1,0 +1,4 @@
+$ git diff --exit-code c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 9fa340fe05f0edbd9d552d472311fa2138904c60 -- release/v26.9.1 && git rev-parse 9fa340fe05f0edbd9d552d472311fa2138904c60:release/v26.9.1 && git show 9fa340fe05f0edbd9d552d472311fa2138904c60:release/v26.9.1/manifest.toml | shasum -a 256
+7e0feef1b137bea72fe1cf22a599636f77b0e47c
+30b1d83ce544299557da50084ced696172d219f6790c2cfc5b78116902850949  -
+exit=0

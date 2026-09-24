@@ -1,0 +1,24 @@
+$ grep -n DEFAULT_NAMESPACE|expected = namespace|add_argument("--namespace" /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py
+49:DEFAULT_NAMESPACE = "https://ggen-igniter.dev/sjira/v26.9.23#"
+502:                expected = namespace + candidate_local(str(digest), a, b, str(kind))
+658:        p.add_argument("--namespace", default=DEFAULT_NAMESPACE, help="instance namespace for candidate IRIs")
+$ sed -n '300,301p;441p;474,483p' /Users/sac/wt/v26922/v23/CE-INTAKE-gi/lib/ggen_igniter/semantic_jira/prose.ex   # compile_prose: proposition IRIs live in the goal root's namespace
+    [namespace | _] = Regex.run(~r/\A.*[#\/]/, iri) || [iri]
+    %{iri: root, namespace: namespace, description: RDF.Graph.get(goal, root)}
+      iri_check(subject, root.namespace, sha, start, stop, kind)
+  defp iri_check(subject, namespace, sha, start, stop, kind) do
+    expected = proposition_iri(namespace, sha, start, stop, kind)
+    check(subject == expected, subject, "IRI does not recompute per PVOCAB: expected #{expected}")
+  end
+
+  @doc "PVOCAB proposition IRI: `<ns>P-<first 16 hex of sha256(\"<sha>:<start>:<end>:<kind>\")>`."
+  @spec proposition_iri(String.t(), String.t(), term(), term(), String.t()) :: String.t()
+  def proposition_iri(namespace, sha, start, stop, kind) do
+    namespace <> "P-" <> binary_part(Digest.hex("#{sha}:#{start}:#{stop}:#{kind}"), 0, 16)
+  end
+$ grep -n 'GC-CE-26.9.23> a\|^@prefix ce:' release/v26.9.23/sjira/goal.ttl release/v26.9.23/sjira/units/*.goal.ttl
+release/v26.9.23/sjira/goal.ttl:2:@prefix ce: <https://ggen-igniter.dev/sjira/chatman-26.9.23#> .
+# => prose_spans check without --namespace recomputes every IRI as https://ggen-igniter.dev/sjira/v26.9.23#P-<h>;
+#    compile_prose requires https://ggen-igniter.dev/sjira/chatman-26.9.23#P-<h> (root ce:GC-CE-26.9.23, task binding ce: = chatman-26.9.23#).
+#    No candidate IRI equals both strings, so the gate as written refuses every task-conformant subject (gate-spec defect).
+exit=0

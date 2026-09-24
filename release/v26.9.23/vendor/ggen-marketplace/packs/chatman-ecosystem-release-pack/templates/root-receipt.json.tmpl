@@ -1,0 +1,132 @@
+---
+to: out/receipts/ROOT.json
+sparql:
+  receipt: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?rr ?release ?version ?id ?repository ?sha ?actor ?grant ?after ?root ?nGates ?nPass ?nFail ?brokenTerm
+    WHERE {
+      ?rr a er:RootReceipt ; er:receiptRelease ?release .
+      { SELECT ?release (COUNT(DISTINCT ?g) AS ?nGates) WHERE { ?release a er:Release ; er:gate ?g . } GROUP BY ?release }
+      OPTIONAL {
+        SELECT ?release (COUNT(DISTINCT ?g) AS ?passCount) WHERE {
+          ?release er:gate ?g . ?g er:observedExit ?e .
+          FILTER(isNumeric(?e) && ?e = 0)
+          FILTER NOT EXISTS { ?g er:observedExit ?e2 . FILTER(?e2 != ?e) }
+        } GROUP BY ?release
+      }
+      OPTIONAL {
+        SELECT ?release (COUNT(DISTINCT ?g) AS ?failCount) WHERE {
+          ?release er:gate ?g . ?g er:observedExit ?e .
+          FILTER(!isNumeric(?e) || ?e != 0)
+        } GROUP BY ?release
+      }
+      OPTIONAL { ?release er:version ?v . }
+      OPTIONAL { ?release er:courtRoot ?cr . }
+      OPTIONAL { ?rr er:receiptId ?i . }
+      OPTIONAL { ?rr er:subjectRepository ?repo . }
+      OPTIONAL { ?rr er:subjectProbe ?p . ?p er:observedOutput ?o . }
+      OPTIONAL { ?rr er:actor ?a . }
+      OPTIONAL { ?rr er:receiptGrant ?gr . }
+      OPTIONAL { ?rr er:standingAfter ?af . }
+      BIND(COALESCE(STR(?v), "") AS ?version)
+      BIND(COALESCE(STR(?i), "") AS ?id)
+      BIND(COALESCE(STR(?repo), "") AS ?repository)
+      BIND(COALESCE(STR(?o), "UNOBSERVED") AS ?sha)
+      BIND(COALESCE(STR(?a), "") AS ?actor)
+      BIND(COALESCE(STR(?gr), "NONE") AS ?grant)
+      BIND(COALESCE(STRAFTER(STR(?af), "#"), "") AS ?after)
+      BIND(COALESCE(STR(?cr), ".") AS ?root)
+      BIND(COALESCE(?passCount, 0) AS ?nPass)
+      BIND(COALESCE(?failCount, 0) AS ?nFail)
+      # typed broken term of a non-ALIVE receipt: a refused gate (mu_on_O), no observed subject
+      # (R_missing_identity: the court never observed), or a gate without an observed exit
+      # (R_missing_consequence)
+      BIND(IF(?nFail > 0, "mu_on_O", IF(!BOUND(?o), "R_missing_identity", "R_missing_consequence")) AS ?brokenTerm)
+    }
+    ORDER BY ?rr
+  gates: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?rr ?order ?name ?command ?exit ?summary
+    WHERE {
+      ?rr a er:RootReceipt ; er:receiptRelease ?release .
+      ?release er:gate ?g .
+      ?g er:gateOrder ?order ; er:gateName ?n ; er:command ?c .
+      OPTIONAL { ?g er:observedExit ?e . }
+      BIND(STR(?n) AS ?name)
+      BIND(STR(?c) AS ?command)
+      BIND(COALESCE(STR(?e), "-1") AS ?exit)
+      BIND(IF(BOUND(?e), CONCAT("court gate ", STR(?order), " ", STR(?n), ": observed exit ", STR(?e)),
+              CONCAT("court gate ", STR(?order), " ", STR(?n), ": UNOBSERVED (no er:observedExit; the court stopped before it or never ran)")) AS ?summary)
+    }
+    ORDER BY ?rr ?order
+  components: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?rr ?repository ?sha
+    WHERE {
+      ?rr a er:RootReceipt ; er:receiptRelease ?release .
+      ?release er:hasComponent ?c .
+      ?c er:repository ?repo ; er:commitSha ?s .
+      BIND(STR(?repo) AS ?repository)
+      BIND(STR(?s) AS ?sha)
+    }
+    ORDER BY ?rr ?repository ?sha
+  probes: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?rr ?name ?output
+    WHERE {
+      ?rr a er:RootReceipt ; er:receiptRelease ?release .
+      ?release er:probe ?p .
+      ?p er:probeName ?n ; er:probeOrder ?order .
+      OPTIONAL { ?p er:observedOutput ?o . }
+      BIND(STR(?n) AS ?name)
+      BIND(COALESCE(STR(?o), "UNOBSERVED") AS ?output)
+    }
+    ORDER BY ?rr ?order ?name
+  imports: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?name ?path ?digest ?source
+    WHERE {
+      ?i a er:ImportedReceipt ; er:importName ?n ; er:importPath ?p ; er:importDigest ?d ; er:ordinal ?o .
+      OPTIONAL { ?i er:importSource ?s . }
+      BIND(STR(?n) AS ?name)
+      BIND(STR(?p) AS ?path)
+      BIND(STR(?d) AS ?digest)
+      BIND(COALESCE(STR(?s), "") AS ?source)
+    }
+    ORDER BY ?o ?name
+  changed: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?rr ?path
+    WHERE { ?rr a er:RootReceipt ; er:changedPath ?p . BIND(STR(?p) AS ?path) }
+    ORDER BY ?rr ?path
+---
+{% for r in receipt %}{
+  "identity": {
+    "subject": {{ r.id | json_encode() }},
+    "repo": {{ r.repository | json_encode() }},
+    "subject_sha": {{ r.sha | json_encode() }},
+    "base_sha": {{ r.sha | json_encode() }},
+    "release": {{ r.release | json_encode() }},
+    "version": {{ r.version | json_encode() }},
+    "components": [{% for c in components %}{% if c.rr == r.rr %}{% set v = c.repository ~ "@" ~ c.sha %}{% if not loop.first %}, {% endif %}{{ v | json_encode() }}{% endif %}{% endfor %}],
+    "observed": {{ "{" }}{% for p in probes %}{% if p.rr == r.rr %}{% if not loop.first %}, {% endif %}{{ p.name | json_encode() }}: {{ p.output | json_encode() }}{% endif %}{% endfor %}{{ "}" }},
+    "imports": [{% for i in imports %}
+      {"name": {{ i.name | json_encode() }}, "path": {{ i.path | json_encode() }}, "sha256": {{ i.digest | json_encode() }}, "source": {{ i.source | json_encode() }}}{% if not loop.last %},{% endif %}{% endfor %}
+    ],
+    "generator": "chatman-ecosystem-release-pack templates/root-receipt.json.tmpl"
+  },
+  "authority": {"ceiling": "CONSTRUCT", "grant": {{ r.grant | json_encode() }}, "actor": {{ r.actor | json_encode() }}},
+  "consequence": {"commits": [], "files_changed": [{% for c in changed %}{% if c.rr == r.rr %}{% if not loop.first %}, {% endif %}{{ c.path | json_encode() }}{% endif %}{% endfor %}], "remote_effects": []},
+  "replay": {
+    "commands": [{% for g in gates %}{% if g.rr == r.rr %}
+      {"cmd": {{ g.command | json_encode() }}, "cwd": {{ r.root | json_encode() }}, "exit": {{ g.exit }}, "summary": {{ g.summary | json_encode() }}}{% if not loop.last %},{% endif %}{% endif %}{% endfor %}
+    ],
+    "durable_location": "out/receipts/ROOT.json (rendered by ggen sync from the consumer graph and the court's observations)"
+  },
+  "standing": {
+    "value": {{ r.after | json_encode() }},{% set derived = "release court of " ~ r.release ~ " at " ~ r.repository ~ "@" ~ r.sha ~ ": " ~ r.nPass ~ "/" ~ r.nGates ~ " gates observed exit 0, " ~ r.nFail ~ " refused; standing_after derived by chatman-ecosystem-release-pack from er:observedExit and admitted by gate 097 (er:permitsStanding)" %}
+    "derived_from": {{ derived | json_encode() }}{% if r.after != "ALIVE" %},
+    "broken_term": {{ r.brokenTerm | json_encode() }}{% endif %}
+  }
+}
+{% endfor %}

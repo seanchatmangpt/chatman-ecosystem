@@ -1,0 +1,60 @@
+$ TMPDIR=/private/tmp/claude-501/v23-scratch/FIN2-CE23-2/qual-tmp PYTHONDONTWRITEBYTECODE=1 bash release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/qualify.sh
+PASS consumer.ttl runner
+PASS c23 sync 1
+PASS c23 sync 2
+PASS c23 renders byte-identical
+PASS c23 runner
+rendered: 16 roles disposed, manifest fields complete, roles mapped, requirements 21
+PASS c23 rendered contents
+PASS control sync
+PASS control runner
+PASS M6 differs from the control render only in the forged standing
+PASS explicit decision admitted and rendered
+PASS M1-drop-crosswalk-row native=1[FM-PACK-013] runner=1
+PASS M2-disposition-unclassified native=1[FM-PACK-013] runner=1
+PASS M3-court-reference-blocks-derivation native=1[FM-PACK-013] runner=1
+PASS M4-drop-ggen_igniter-consistently native=1[FM-PACK-013] runner=1
+PASS M5-open-ontologies-critical-path native=1[FM-PACK-013] runner=1
+PASS M6-hand-edited-rendered-file native=1[FM-WRITE-005] runner=0
+PASS M7-decision-overrides-classification native=1[FM-PACK-013] runner=1
+PASS M8-decision-without-reason native=1[FM-PACK-013] runner=1
+PASS M9-role-unmapped native=1[FM-PACK-013] runner=1
+PASS M10-ambient-actuation native=1[FM-PACK-013] runner=1
+PASS M11-requirement-row-without-falsifier native=1[FM-PACK-013] runner=1
+PASS M12-classification-basename-collision native=1[FM-PACK-013] runner=1
+PASS lift positive == committed
+PASS lift stale-r0 == committed
+PASS lift llm1 == committed
+PASS lift unreceipted-null == committed
+PASS lift drop-gate == committed
+PASS lift foreign-subject == committed
+PASS lift gi-mismatch == committed
+PASS crown consumer input == positive lift
+SKIP fixture re-derivation: set XAAS_REPO=<xaas checkout with 4b14e3f and 66b52e7>
+PASS lift refuses lift-empty
+PASS lift refuses lift-two
+PASS first render reports uncommitted (exit 3)
+PASS committed lift + render reproduce (IDENTICAL_ALIVE)
+rendered: STOP ALIVE, 13 gate digests match the receipt bytes, counters 0
+PASS crown render contents
+PASS hand-edited render refused (RENDER_DRIFT)
+PASS committed lift not matching the receipts refused (LIFT_DRIFT)
+PASS positive lift runner
+PASS crown mutant stale-r0: stop-not-alive (rows=31 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant stale-r0: admitted-gates-0-below-required-13 (rows=31 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant stale-r0: stop-subject-sha-differs-from-crown-component-commit-sha (rows=31 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant stale-r0: gate-not-alive:GC23-12 (rows=31 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant stale-r0: gate-paired-subject-sha-differs-from-paired-component:GC23-0 (rows=31 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant stale-r0: llm-invocations-on-known-reference-path-absent-null-or-nonzero (rows=31 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant stale-r0: unreceipted-actuation-absent-null-or-nonzero (rows=31 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant llm1: llm-invocations-on-known-reference-path-absent-null-or-nonzero (rows=1 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant unreceipted-null: unreceipted-actuation-absent-null-or-nonzero (rows=1 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant drop-gate: admitted-gates-12-below-required-13 (rows=1 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant foreign-subject: gate-subject-sha-differs-from-crown-subject:GC23-7 (rows=2 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant foreign-subject: admitted-gates-12-below-required-13 (rows=2 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant gi-mismatch: gate-paired-subject-sha-differs-from-paired-component:GC23-4 (rows=1 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant no-required-count: required-gate-count-absent-or-invalid (rows=1 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant no-stop-digest: stop-receipt-digest-absent (rows=1 native=1[FM-PACK-013 090] without-090=0)
+PASS crown mutant no-gate-digest: gate-receipt-digest-absent:GC23-0 (rows=1 native=1[FM-PACK-013 090] without-090=0)
+QUALIFICATION ALIVE scratch=/private/tmp/claude-501/v23-scratch/FIN2-CE23-2/qual-tmp/relpack-qual.YLf6bL
+exit=0

@@ -1,0 +1,2 @@
+$ ! git grep -n -E '(/Users/sac/wt|~/wt|[$]HOME/wt)' 9fa340fe05f0edbd9d552d472311fa2138904c60 -- release/v26.9.23/courts/CE23-2.sh release/v26.9.23/courts/ce23_2 tests/test_ce23_2_court.py release/v26.9.23/ggen.toml release/v26.9.23/release.ttl release/v26.9.23/imports/legacy-v26.9.1.ttl release/v26.9.23/imports/court-references.ttl release/v26.9.23/out/legacy-role-crosswalk.toml release/v26.9.23/out/crosswalk.ttl release/v26.9.23/out/role-derivations.toml
+exit=0

@@ -1,0 +1,3 @@
+$ git show b0d5add2cdfed33a2d6fe56f6640634883931a29:release/v26.9.23/courts/CE23-2.sh | sh; test $? -eq 75
+UNKNOWN: CE23-2 machinery lands in a generated CE23 lane
+exit=0

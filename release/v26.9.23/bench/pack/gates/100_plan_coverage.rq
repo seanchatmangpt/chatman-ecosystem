@@ -1,0 +1,31 @@
+# MESSAGE: The generated qualification plan covers every KNOWN_CANDIDATE class x benchmark family, every MSA court, every capability gap and every successor reference order, and every generated order has an acceptance and a falsifier.
+PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
+SELECT ?node ?reason WHERE {
+  {
+    ?node nlb:claimStatus "KNOWN_CANDIDATE" . ?f a nlb:BenchmarkFamily .
+    FILTER NOT EXISTS { ?e a nlb:PlanEntry ; nlb:planClass ?node ; nlb:planFamily ?f ; nlb:planOrder ?o }
+    BIND("class-family-without-generated-order" AS ?reason)
+  } UNION {
+    ?node a nlb:MSACourt .
+    FILTER NOT EXISTS { ?e a nlb:PlanEntry ; nlb:planSource ?node ; nlb:planOrder ?o }
+    BIND("msa-court-without-generated-order" AS ?reason)
+  } UNION {
+    ?node a nlb:CapabilityGap .
+    FILTER NOT EXISTS { ?e a nlb:PlanEntry ; nlb:planSource ?node ; nlb:planOrder ?o }
+    BIND("capability-gap-without-generated-order" AS ?reason)
+  } UNION {
+    ?e a nlb:PlanEntry ; nlb:planOrder ?node .
+    FILTER NOT EXISTS { ?node sj:acceptance ?a . ?a a sj:AcceptanceCriterion }
+    BIND("generated-order-without-acceptance" AS ?reason)
+  } UNION {
+    ?e a nlb:PlanEntry ; nlb:planOrder ?node .
+    FILTER NOT EXISTS { ?node sj:falsifier ?x . ?x a sj:Falsifier }
+    BIND("generated-order-without-falsifier" AS ?reason)
+  } UNION {
+    ?node a nlb:ReferenceOrder ; nlb:referenceRequirement "NON_LLM_OPERATIONAL successor" .
+    FILTER NOT EXISTS { ?e a nlb:PlanEntry ; nlb:referenceOrder ?node }
+    BIND("successor-reference-order-not-covered" AS ?reason)
+  }
+}
+ORDER BY ?node ?reason

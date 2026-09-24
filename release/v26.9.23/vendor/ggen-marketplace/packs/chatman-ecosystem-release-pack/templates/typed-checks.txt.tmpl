@@ -1,0 +1,18 @@
+---
+to: out/typed-checks.txt
+when: |
+  PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+  ASK { ?release a er:Release ; er:gate ?g . }
+sparql:
+  checks: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT DISTINCT ?name
+    WHERE {
+      ?release a er:Release ; er:gate ?g ; er:checkDisposition ?d .
+      ?d er:checkName ?n .
+      BIND(STR(?n) AS ?name)
+    }
+    ORDER BY ?name
+---
+{% for c in checks %}{{ c.name }}
+{% endfor %}

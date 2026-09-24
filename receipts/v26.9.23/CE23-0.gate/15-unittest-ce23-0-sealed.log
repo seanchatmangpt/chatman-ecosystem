@@ -1,0 +1,16 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_ce23_0_court.py -v
+test_a_clone_without_the_archive_is_unknown_never_alive_never_refused (test_ce23_0_court.ClauseCase.test_a_clone_without_the_archive_is_unknown_never_alive_never_refused) ... ok
+test_every_committed_court_file_absent_is_refused (test_ce23_0_court.ClauseCase.test_every_committed_court_file_absent_is_refused) ... ok
+test_preserved_world_is_alive_and_publication_pending_is_no_edge (test_ce23_0_court.ClauseCase.test_preserved_world_is_alive_and_publication_pending_is_no_edge) ... ok
+test_the_seal_round_trips_through_its_own_receipt_clause (test_ce23_0_court.ClauseCase.test_the_seal_round_trips_through_its_own_receipt_clause) ... ok
+test_the_second_namespace_is_judged_as_strictly_as_the_first (test_ce23_0_court.ClauseCase.test_the_second_namespace_is_judged_as_strictly_as_the_first) ... ok
+test_relation_is_total_over_real_histories (test_ce23_0_court.RelationCase.test_relation_is_total_over_real_histories) ... ok
+test_committed_identity_fact_names_no_shadow_path (test_ce23_0_court.SubjectCase.test_committed_identity_fact_names_no_shadow_path) ... ok
+test_committed_receipt_is_court_emitted_and_replays (test_ce23_0_court.SubjectCase.test_committed_receipt_is_court_emitted_and_replays) ... ok
+test_only_the_subject_repository_on_github_binds (test_ce23_0_court.UrlCase.test_only_the_subject_repository_on_github_binds) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 17.877s
+
+OK
+exit=0

@@ -1,0 +1,28 @@
+$ sh release/v26.9.23/courts/CE23-12-MSAContract.sh
+OK E0 no-LLM environment: env -i, PATH=/tmp/ce23-12-msa-3tvhjx7b/bin:/usr/bin:/bin (python3, git, ggen only), no LLM client reachable
+OK S0 subject 0cc590b51554be855aa8a3bdd99869bcb9a6d11d clean over ['release/v26.9.23/bench', 'release/v26.9.23/courts', 'release/v26.9.23/sjira']; bench tree dee59fef7fac2ab39ced5f67635a0cbab4b956d4
+OK P1 both CE23-12 prose units byte-equal their pins and goal.ttl's sj:sourceSha256 (4146d688.., 80091c45..)
+OK I1 imports/ are byte copies of the committed sjira candidates, goal graph and compiled orders | IMPORT OK imports/goal.ttl = ../sjira/goal.ttl sha256:eaee5dff5d754d1597e002f4f29e1fb199b02bfc3db6e0b573ab66bf0fa8c6a8
+OK K1 generated tiers and bound rows equal the kernel (scipy/statsmodels agree to 1e-9) | KERNEL OK: 14 bound rows, 4 tiers strictly ordered (30 < 100 < 300 < 3000), max |kernel - scipy/statsmodels| = 1.240e-15
+OK L1 generated/reference-orders.ttl equals the lift of orders.json | LIFT OK generated/reference-orders.ttl (33 reference orders)
+OK G0 ggen 26.9.18 at /opt/homebrew/Cellar/ggen/26.9.18/bin/ggen (sha256 357cfd4e595c6f8a)
+OK G1 two fresh `ggen sync run` renders of the committed bench tree (ggen.lock pins the pack and every input; every pack gate admitted) are byte-identical to each other and to the committed out/ (43 files)
+OK T1 all 8 committed propositions required by ce:CE23-12-MSAContract are traced by 28 design nodes; every cited proposition is a committed, span-verified candidate
+OK C0 design ASK predicates true on rdflib and pyoxigraph: BD-M2=True/True
+OK C1 MSA contract defined: the 7 operator MSA questions map to 7 MSA properties covered by 12 courts (instrument + status today ['FAILS', 'FAILS_CLOSED', 'HOLDS_OBSERVED_DOMAIN', 'UNMEASURED']); executor MSA_ALIVE is successor work and is not claimed
+OK X2 BENCHMARK_DESIGN_ALIVE does not imply NON_LLM_OPERATIONAL_ALIVE: all 5 KNOWN_CANDIDATE tuples are UNKNOWN at n = 0, no ALIVE standing exists in the design graph, the report projects every class UNKNOWN
+OK Q1 repeatability: same artifact, same verdict for 31/31 distinct artifacts across 155 re-judged instrument-artifact pairs (0 defects; 95% upper bound 0.092114, tier DISCOVERY)
+OK Q2 classification agreement: 5 independent instruments (ggen, native, shacl, sparql-oxigraph, sparql-rdflib) agree on every artifact; Cohen's kappa = 1.0 for all 10 pairs (defined: both good and bad items judged); 0/31 artifacts with a disagreement (95% upper bound 0.092114, tier DISCOVERY)
+OK Q3 mutation sensitivity: 175/175 intentionally corrupted outputs fail (28 design mutants each refused by all 5 instruments, 43 projection corruptions, kernel literal perturbations, DOE flips incl. E=AB and an OS column, 58 deleted plan orders); 0 escapes (95% upper bound 0.016973, tier QUALIFICATION)
+OK Q4 stale receipt detection: 70/70 stale receipts refused (30 ancestor subjects, 40 perturbed bench-tree digests), the fresh exact-head receipt admitted; 0 stale accepts (95% upper bound 0.041893, tier DISCOVERY)
+OK Q5 ordering invariance: 30/30 seeded permutations (triple order and artifact order) leave every verdict unchanged (95% upper bound 0.095034, tier DISCOVERY)
+OK Q6 environment reproducibility: 4 fresh env -i processes (cwd /, TMPDIR with spaces, fresh HOME, hash seeds, LANG=C) and the court's own process give one verdict digest ab8ef8afad74e367; ggen cold and warm renders byte-identical; 0/6 changes (95% upper bound 0.393038, tier BELOW_DISCOVERY: below N_discovery, stated as such)
+OK Q7 membership boundary: 47/47 near-miss confusions refused (each of 21 near-misses made a member or expected ALIVE; each KNOWN class reduced to a declared label; native + pyoxigraph); 0 false-KNOWN (95% upper bound 0.06175, tier DISCOVERY)
+OK AV:control control in a synthetic git repository -> ALIVE
+OK AV:msa-court-deleted mutant in a synthetic git repository -> REFUSED[msa_property_uncovered]
+OK AV:msa-property-untraced mutant in a synthetic git repository -> REFUSED[msa_question_unmapped]
+OK AV:msa-alive-claimed mutant in a synthetic git repository -> REFUSED[msa_status_claimed]
+OK AV anti-vacuity: control ALIVE and 3 mutants in synthetic git repositories refused with their expected codes
+OK AV receipt admission separates the exact-head receipt (admitted) from HEAD~1's (REFUSED stale_receipt)
+CE23-12-MSAContract ALIVE: 25 OK, 0 REFUSED, 0 UNKNOWN in 388.5s; conjunct of BENCHMARK_DESIGN_ALIVE; NON_LLM_OPERATIONAL_ALIVE UNKNOWN for every class (n = 0)
+exit=0

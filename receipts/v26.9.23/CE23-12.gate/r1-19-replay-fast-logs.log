@@ -1,0 +1,18 @@
+$ for l in r1-00-subject r1-08-vacuous-expressions r1-13-base-stubs r1-14-ruff r1-15-mock-grep r1-16-wt-grep r1-17-pinned-paths-untouched r1-18-repair-diff; do python3 release/v26.9.23/sjira/replay_court.py log --log receipts/v26.9.23/CE23-12.gate/$l.log || exit 1; done
+OK receipts/v26.9.23/CE23-12.gate/r1-00-subject.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE23-12.gate/r1-00-subject.log replay to their recorded exit
+OK receipts/v26.9.23/CE23-12.gate/r1-08-vacuous-expressions.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE23-12.gate/r1-08-vacuous-expressions.log replay to their recorded exit
+OK receipts/v26.9.23/CE23-12.gate/r1-13-base-stubs.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE23-12.gate/r1-13-base-stubs.log replay to their recorded exit
+OK receipts/v26.9.23/CE23-12.gate/r1-14-ruff.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE23-12.gate/r1-14-ruff.log replay to their recorded exit
+OK receipts/v26.9.23/CE23-12.gate/r1-15-mock-grep.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE23-12.gate/r1-15-mock-grep.log replay to their recorded exit
+OK receipts/v26.9.23/CE23-12.gate/r1-16-wt-grep.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE23-12.gate/r1-16-wt-grep.log replay to their recorded exit
+OK receipts/v26.9.23/CE23-12.gate/r1-17-pinned-paths-untouched.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE23-12.gate/r1-17-pinned-paths-untouched.log replay to their recorded exit
+OK receipts/v26.9.23/CE23-12.gate/r1-18-repair-diff.log:1: exit=0
+REPLAY OK: 1/1 blocks of receipts/v26.9.23/CE23-12.gate/r1-18-repair-diff.log replay to their recorded exit
+exit=0

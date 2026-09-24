@@ -1,0 +1,4 @@
+$ git rev-parse HEAD && git status --porcelain -uall | wc -l
+d8cbc54591a49f97bd7c3e948888095cf6b8eaeb
+       0
+exit=0

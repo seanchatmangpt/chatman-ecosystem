@@ -1,0 +1,151 @@
+# CE23-7 version fence: the release-instance facts the court judges against.
+# Read by release/v26.9.23/courts/ce23_7/court.py; hand-authored (HANDWRITTEN.md row).
+
+[fence]
+target = "v26.9.23"
+predecessor = "v26.9.1"
+# The subject before the fence (tools byte-identical to GitHub main c59596f5 for scripts/):
+# the differential baseline materialized with `git show <base>:scripts/<tool>.py`.
+base_commit = "aa4e3873b40c3406378800ca82facc366293b564"
+# release/v26.9.1 stays byte-untouched: its git tree at the subject, and (outside a git
+# checkout) sha256 over sorted "<sha256>  <path>" lines of its files minus __pycache__.
+predecessor_tree = "7e0feef1b137bea72fe1cf22a599636f77b0e47c"
+predecessor_files_sha256 = "27dbc487c10b004578f67f6cb2165818f3669f01cb9e027639fd7b8ea4ed037e"
+# Floor for `python3 -m unittest discover -s tests`: 434 at base_commit + 24 in
+# tests/test_release_line.py + 12 in tests/test_ce23_7_probe.py (the court probe itself).
+unittest_floor = 470
+# Token of the predecessor line in any spelling (26.9.1, 26_9_1, v26-9-1), not 26.9.10+.
+token = '26[._-]9[._-]1(?![0-9])'
+# A targeted run that opens a byte copy of a release/v26.9.1 file of at least this size,
+# anywhere outside release/v26.9.23/, read the predecessor line (court audit(): a copy under
+# another name is the same read). Smaller files (empty __init__.py-sized) carry no identity.
+content_min_bytes = 64
+
+# The fenced tools: no predecessor token, --release accepted, default = the catalog pointer,
+# inputs resolved by scripts/release_line.py. The court exercises every one of them.
+[[tool]]
+id = "verify_release"
+script = "scripts/verify_release.py"
+
+[[tool]]
+id = "plan_completion"
+script = "scripts/plan_completion.py"
+
+[[tool]]
+id = "survey_portfolio"
+script = "scripts/survey_portfolio.py"
+
+[[tool]]
+id = "verify_standing_evidence"
+script = "scripts/verify_standing_evidence.py"
+
+[[tool]]
+id = "verify_west_workspace"
+script = "scripts/verify_west_workspace.py"
+
+[[tool]]
+id = "release_line"
+script = "scripts/release_line.py"
+
+# Pinned v26.9.1 outputs, measured at base_commit and re-measured on the fenced tools.
+# A pin applies only while its inputs hash to inputs_sha256 (sha256 over "<sha256>  <path>"
+# lines in the listed order); otherwise the court falls back to the base_commit differential.
+[[baseline]]
+id = "verify_release"
+inputs = ["release/v26.9.1/manifest.toml"]
+inputs_sha256 = "cd97056eb6b10be06681b3df5d1a7edbf428bebfafb42a36daf7a8aca30484cc"
+output_sha256 = "b9228c037729eb9f7ba51456547121c74b3039b635863a4d6223d84f221e6c88"
+
+[[baseline]]
+id = "plan_release_only"
+inputs = ["release/v26.9.1/manifest.toml", "release/v26.9.1/fleet-policy.toml", "release/v26.9.1/fanout-bootstrap.toml"]
+inputs_sha256 = "be339b35d87229209cf2fc4eaef2cc27c90837926e5c9ba14bedea6e2b656438"
+output_sha256 = "9964d23e2cb7040d588df7bce82095df3c21d0c0194172ac146898d76c55e05e"
+
+[[baseline]]
+id = "plan_full"
+inputs = ["release/v26.9.1/manifest.toml", "release/v26.9.1/fleet-policy.toml", "release/v26.9.1/fanout-bootstrap.toml"]
+inputs_sha256 = "be339b35d87229209cf2fc4eaef2cc27c90837926e5c9ba14bedea6e2b656438"
+output_sha256 = "e19fe0040b989b3a81cb99330df77c7577317b121dc24756db608111696be27c"
+
+[[baseline]]
+id = "verify_standing_evidence"
+inputs = ["release/v26.9.1/manifest.toml"]
+inputs_sha256 = "cd97056eb6b10be06681b3df5d1a7edbf428bebfafb42a36daf7a8aca30484cc"
+output_sha256 = "5f01cc9d7222907240d8fd5f6149c5cc90ab4803a0d7a3063d8d0ff3240e5925"
+
+[[baseline]]
+id = "verify_west_workspace"
+inputs = ["catalog/west.toml", "catalog/repositories.toml", "west.yml", "west/20-public-portfolio.yml", "west/21-public-portfolio.yml", "west/30-external-corpus.yml", ".gitmodules", "release/v26.9.1/manifest.toml"]
+inputs_sha256 = "fd585b8ee8ee8b39bbd6c0e5121306ff11f9f3b5a8e22b6b8f235da4270eba5d"
+output_sha256 = "fe0993e63c4d34c98dbb74f1eb41cebcb88c37d5ba9bc3cacbbe07e47d24eb32"
+
+[[baseline]]
+id = "survey_portfolio"
+inputs = ["release/v26.9.1/manifest.toml", "release/v26.9.1/fleet-policy.toml", "release/v26.9.1/constitutional-role-crosswalk.toml"]
+inputs_sha256 = "88242fe137be0de4de7d8648739b55945078da9c6e90acf643c6e7954ee42a57"
+# sha256 of the output SHA256SUMS (every survey output file), fixture server answers from the manifest
+output_sha256 = "2958a08ef27fc9235a24a4a3dd35358e798c76a6d574f53821651728a9384b8d"
+
+# Every other scripts/**/*.py file that still names the predecessor line carries a typed
+# disposition here; an unledgered one is refused (a silent v26.9.1 default), and a row
+# whose file no longer names it is refused as stale (the ledger only shrinks).
+[[ledger]]
+path = "scripts/capability_control.py"
+disposition = "SUCCESSOR"
+owner = "GC-CE-26.9.24"
+reason = "module docstring names the v26.9.1 capability kernel; no release path default"
+
+[[ledger]]
+path = "scripts/dfcm_autonomic_finish.py"
+disposition = "SUCCESSOR"
+owner = "GC-CE-26.9.24"
+reason = "--manifest default at :926 serves the v26.9.1 dfcm.toml instance artifact the v26.9.23 release graph does not define"
+
+[[ledger]]
+path = "scripts/errc_portfolio.py"
+disposition = "SUCCESSOR"
+owner = "GC-CE-26.9.24"
+reason = "defaults :11-13 bind errc-policy.toml, a v26.9.1-only instance artifact"
+
+[[ledger]]
+path = "scripts/verify_crown_edges.py"
+disposition = "SUCCESSOR"
+owner = "GC-CE-26.9.24"
+reason = "VERSION :22 and default :356 verify the v26.9.1 crown-edges.toml instance artifact"
+
+[[ledger]]
+path = "scripts/verify_federated_capability_owner.py"
+disposition = "SUCCESSOR"
+owner = "GC-CE-26.9.24"
+reason = "paths :33-34 and version checks :100/:206 verify the v26.9.1 dfcm.toml federated descriptor"
+
+[[ledger]]
+path = "scripts/verify_live_azure_authority.py"
+disposition = "SUCCESSOR"
+owner = "GC-CE-26.9.24"
+reason = "default :21 verifies the v26.9.1 live-azure-authority.json instance artifact"
+
+[[ledger]]
+path = "scripts/verify_portfolio.py"
+disposition = "SUCCESSOR"
+owner = "GC-CE-26.9.24"
+reason = "defaults :135 bind candidates.toml, a v26.9.1-only instance artifact"
+
+[[ledger]]
+path = "scripts/verify_pending_branch_bundle.py"
+disposition = "SUCCESSOR"
+owner = "GC-CE-26.9.24"
+reason = "defaults :12/:165 verify the v26.9.1 pending-branches.toml instance artifact"
+
+[[ledger]]
+path = "scripts/verify_platform_reconstitution.py"
+disposition = "CHESTERTON_FENCE"
+owner = "benchmarks/platform-reconstitution/v1"
+reason = ":177 is an equality check against the v1 benchmark fixture pin (benchmark.toml:25), not a default; resolving it through the pointer breaks the v1 benchmark when the pointer moves"
+
+[[ledger]]
+path = "scripts/verify_v26_8_23.py"
+disposition = "PREDECESSOR_LAW"
+owner = "release/v26.8.23"
+reason = ":34 is the v26.8.23 release law that its declared future_composition_line release/v26.9.1 is preserved"

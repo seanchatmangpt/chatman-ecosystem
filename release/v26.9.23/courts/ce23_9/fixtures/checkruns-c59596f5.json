@@ -1,0 +1,601 @@
+{
+ "check_runs": [
+  {
+   "conclusion": "skipped",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103106306440,
+   "name": "CHATMAN ECOSYSTEM CROWN",
+   "run": "34548430864",
+   "status": "completed",
+   "workflow": ".github/workflows/crown.yml"
+  },
+  {
+   "conclusion": "skipped",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103106104108,
+   "name": "Cold-cache correctness",
+   "run": "34548430864",
+   "status": "completed",
+   "workflow": ".github/workflows/crown.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103106030500,
+   "name": "Dependency license and source policy",
+   "run": "34548430864",
+   "status": "completed",
+   "workflow": ".github/workflows/crown.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103106030362,
+   "name": "Exact-head GitHub connector smoke",
+   "run": "34548430864",
+   "status": "completed",
+   "workflow": ".github/workflows/crown.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103105992638,
+   "name": "Execute every Weaver capability through Ash.Reactor",
+   "run": "34548430863",
+   "status": "completed",
+   "workflow": ".github/workflows/weaver-live.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103106030227,
+   "name": "Fast constitutional gates",
+   "run": "34548430864",
+   "status": "completed",
+   "workflow": ".github/workflows/crown.yml"
+  },
+  {
+   "conclusion": "skipped",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103106104211,
+   "name": "Full behavior and negative fixtures",
+   "run": "34548430864",
+   "status": "completed",
+   "workflow": ".github/workflows/crown.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581316,
+   "name": "Observe IltonSeixas/rust-enterprise-boilerplate",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702993066,
+   "name": "Observe IltonSeixas/rust-enterprise-boilerplate",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581325,
+   "name": "Observe JerryIdoko/GOAT-Network-Micro-Billing-Proxy",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702992624,
+   "name": "Observe JerryIdoko/GOAT-Network-Micro-Billing-Proxy",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581435,
+   "name": "Observe Marve10s/Better-Fullstack",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702992756,
+   "name": "Observe Marve10s/Better-Fullstack",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581183,
+   "name": "Observe RAprogramm/entity-derive",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702992799,
+   "name": "Observe RAprogramm/entity-derive",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581280,
+   "name": "Observe bitv1be/vk-bot-api",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702992931,
+   "name": "Observe bitv1be/vk-bot-api",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581230,
+   "name": "Observe christopheduc-me/ai-agent-boilerplate",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702992715,
+   "name": "Observe christopheduc-me/ai-agent-boilerplate",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581278,
+   "name": "Observe conjure-cp/uniplate",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702992773,
+   "name": "Observe conjure-cp/uniplate",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581285,
+   "name": "Observe hyperlane-dev/hyperlane-broadcast",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702992689,
+   "name": "Observe hyperlane-dev/hyperlane-broadcast",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581241,
+   "name": "Observe loft-games/service-daemon-rs",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702993054,
+   "name": "Observe loft-games/service-daemon-rs",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581454,
+   "name": "Observe mathewaloisio97/rust-react-microservices-boilerplate",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702992771,
+   "name": "Observe mathewaloisio97/rust-react-microservices-boilerplate",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581346,
+   "name": "Observe nothingnesses/agent-scaffold",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702992704,
+   "name": "Observe nothingnesses/agent-scaffold",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581083,
+   "name": "Observe praxiomlabs/mcpkit",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702992746,
+   "name": "Observe praxiomlabs/mcpkit",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581486,
+   "name": "Observe systempromptio/systemprompt-template",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702992848,
+   "name": "Observe systempromptio/systemprompt-template",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103364581269,
+   "name": "Observe tamaro-skaljic/SpacetimeDSL",
+   "run": "34630114002",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105702993080,
+   "name": "Observe tamaro-skaljic/SpacetimeDSL",
+   "run": "35376717087",
+   "status": "completed",
+   "workflow": ".github/workflows/gall.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103105993041,
+   "name": "S0-S3 exact-head crown",
+   "run": "34548430834",
+   "status": "completed",
+   "workflow": ".github/workflows/gall-crown.yml"
+  },
+  {
+   "conclusion": "cancelled",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 106205590949,
+   "name": "S0-S3 exact-head crown",
+   "run": "35558103672",
+   "status": "completed",
+   "workflow": ".github/workflows/gall-crown.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103105992735,
+   "name": "manifest",
+   "run": "34548430842",
+   "status": "completed",
+   "workflow": ".github/workflows/release-control-plane.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 106205590750,
+   "name": "manifest",
+   "run": "35558103661",
+   "status": "completed",
+   "workflow": ".github/workflows/release-control-plane.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103349067899,
+   "name": "observe",
+   "run": "34625371853",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103583081403,
+   "name": "observe",
+   "run": "34704899564",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103758132754,
+   "name": "observe",
+   "run": "34770146412",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 104103585216,
+   "name": "observe",
+   "run": "34882089310",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 104494875456,
+   "name": "observe",
+   "run": "35002744029",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 104906345962,
+   "name": "observe",
+   "run": "35129399977",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105312738447,
+   "name": "observe",
+   "run": "35253920323",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105688834867,
+   "name": "observe",
+   "run": "35372294601",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105929164497,
+   "name": "observe",
+   "run": "35455213128",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 106112577015,
+   "name": "observe",
+   "run": "35523892473",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 106467592831,
+   "name": "observe",
+   "run": "35640264301",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 106862208402,
+   "name": "observe",
+   "run": "35762043365",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 107308242344,
+   "name": "observe",
+   "run": "35898469856",
+   "status": "completed",
+   "workflow": ".github/workflows/github-smoke.yml"
+  },
+  {
+   "conclusion": "success",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 106205591311,
+   "name": "qlever-crown",
+   "run": "35558103686",
+   "status": "completed",
+   "workflow": ".github/workflows/qlever-crown.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103338755131,
+   "name": "survey",
+   "run": "34622232499",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103576688199,
+   "name": "survey",
+   "run": "34702521995",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 103752723812,
+   "name": "survey",
+   "run": "34768143973",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 104091929005,
+   "name": "survey",
+   "run": "34878605909",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 104480515979,
+   "name": "survey",
+   "run": "34998436180",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 104891882164,
+   "name": "survey",
+   "run": "35125038228",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105299726469,
+   "name": "survey",
+   "run": "35249995672",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105675939416,
+   "name": "survey",
+   "run": "35368291294",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 105923802253,
+   "name": "survey",
+   "run": "35453190395",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 106106705760,
+   "name": "survey",
+   "run": "35521671502",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 106456413476,
+   "name": "survey",
+   "run": "35636896394",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 106847036960,
+   "name": "survey",
+   "run": "35757546923",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  },
+  {
+   "conclusion": "failure",
+   "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "id": 107288386630,
+   "name": "survey",
+   "run": "35892560432",
+   "status": "completed",
+   "workflow": ".github/workflows/portfolio-survey.yml"
+  }
+ ],
+ "head_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+ "observed": "2026-09-24",
+ "source": "gh api --paginate repos/seanchatmangpt/chatman-ecosystem/commits/c59596f5506e7a00ca4ed6b909ebf6d6659b74c1/check-runs (fields id, name, status, conclusion, head_sha, workflow run id from details_url); workflow path per check-run from gh api --paginate repos/seanchatmangpt/chatman-ecosystem/actions/runs?head_sha=c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 (run id -> path)"
+}

@@ -1,0 +1,3 @@
+# Only the hand-edited file is fixture; anything else sync writes here is scratch.
+out/*
+!out/manifest.toml

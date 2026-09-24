@@ -1,0 +1,5 @@
+$ ! grep -rnE 'unittest.mock|Mock\(|MagicMock|patch\(|monkeypatch' tests/test_release_line.py tests/test_ce23_7_probe.py tests/test_completion_fanout.py release/v26.9.23/courts/ce23_7/
+exit=0
+$ a=$(grep -cE '\bmock\b' tests/test_release_control.py); b=$(git show aa4e3873b40c3406378800ca82facc366293b564:tests/test_release_control.py | grep -cE '\bmock\b'); d=$(git diff aa4e3873b40c3406378800ca82facc366293b564 HEAD -- tests/test_release_control.py | grep -cE '^[+-][^+-].*\bmock\b'); echo "tests/test_release_control.py mock lines: subject=$a base=$b added_or_removed=$d"; test "$a" = "$b" && test "$d" = 0
+tests/test_release_control.py mock lines: subject=10 base=10 added_or_removed=0
+exit=0

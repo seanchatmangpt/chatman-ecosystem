@@ -1,0 +1,111 @@
+{
+  "authority": {
+    "actor": "xaas.stop_court",
+    "ceiling": "OBSERVE",
+    "grant": "NONE"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": []
+  },
+  "gate": {
+    "boundary_class": "Core",
+    "checkpoint": "GC-26.9.23",
+    "duration_ms": 4128,
+    "env": {
+      "GGEN_IGNITER_DIR": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+      "XAAS_DIR": "/Users/sac/wt/v26922/v23/V23-S"
+    },
+    "gate": "GC23-6",
+    "ggen_igniter_sha": "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+    "outcome": "passed",
+    "timed_out": false,
+    "timeout_ms": 900000
+  },
+  "identity": {
+    "base_sha": "bd1efb165f625e3505953b2c242196838d4311b6",
+    "graph_hash": "sha256:9858c187e7204b4444f1f15c621f482460b41dac51ffa8553575f43fbef709a3",
+    "repo": "seanchatmangpt/xaas",
+    "repo_source": "git remote origin (github.com)",
+    "subject": "GC-26.9.23/GC23-6",
+    "subject_sha": "26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce",
+    "worktree": "/Users/sac/wt/v26922/v23/V23-S"
+  },
+  "qualification_rewrite": {
+    "rewritten": [
+      "gate.gate",
+      "gate.outcome",
+      "identity.subject",
+      "standing"
+    ],
+    "source": "seanchatmangpt/xaas@4b14e3f227567846b3eceb26b104641ca7febf5c:receipts/v26.9.23/V23-S.gate/stop-court-GC23-11.receipt.json",
+    "source_git_blob": "f787525c2fb910a2faad0b4d994aae8edb11f39b",
+    "why": [
+      "positive witness: GC23-6 ALIVE at the smoke subject"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-11.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-S",
+        "exit": 3,
+        "invocation": {
+          "argv": [
+            "mix",
+            "xaas.stop_court",
+            "--checkpoint",
+            "GC-26.9.23",
+            "--receipts-dir",
+            "/private/tmp/claude-501/v23-scratch/S-V23-S/smoke2",
+            "--only",
+            "GC23-11"
+          ],
+          "cwd": "/Users/sac/wt/v26922/v23/V23-S",
+          "env": {
+            "GC23_FLEET_RECEIPTS_DIR": null,
+            "GGEN_IGNITER_DIR": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+            "MIX_ENV": "test"
+          },
+          "shell": "cd /Users/sac/wt/v26922/v23/V23-S && env -u GC23_FLEET_RECEIPTS_DIR GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int MIX_ENV=test mix xaas.stop_court --checkpoint GC-26.9.23 --receipts-dir /private/tmp/claude-501/v23-scratch/S-V23-S/smoke2 --only GC23-11"
+        },
+        "output_sha256": "42e024e98996cb24984acfb0f4a71a52e6029d1a127c1a6329cbea2b8a17bb7e",
+        "summary": "UNKNOWN: GC23-11 CriticalPath repositories lack exact-head standing (check-standing exit 1)"
+      }
+    ],
+    "durable_location": "/private/tmp/claude-501/v23-scratch/S-V23-S/smoke2/GC23-11.json"
+  },
+  "standing": {
+    "derived_from": "qualification rewrite: GC23-6 ALIVE at 26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce",
+    "value": "ALIVE"
+  },
+  "toolchain": {
+    "elixir": "1.19.5",
+    "erts_version": "16.2",
+    "otp_release": "28",
+    "python3": "Python 3.14.3",
+    "python3_path": "/opt/homebrew/bin/python3"
+  },
+  "verifier": {
+    "court_command": "sh docs/sjira/v26.9.23/courts/GC23-11.sh",
+    "court_command_sha256": "sha256:208ae724d5b2ce477f30e400ff8992e6e0c6ea058301c0eff9d32c849a9ddc8b",
+    "court_script": "docs/sjira/v26.9.23/courts/GC23-11.sh",
+    "court_script_at_subject": true,
+    "court_script_at_subject_why": null,
+    "court_script_sha256": "sha256:9fa04c23b10fac691f2e5e402f10764b32cefbfdab995caf340ce74fe12d2982",
+    "court_script_why": null,
+    "runner": "mix xaas.stop_court",
+    "runner_source": "lib/mix/tasks/xaas.stop_court.ex",
+    "runner_source_at_subject": true,
+    "runner_source_at_subject_why": null,
+    "runner_source_sha256": "sha256:e9e1e0745e220b8f8391f8536346e9f6e49bd1d1ce474557a1cba880096054ea",
+    "schema": "/Users/sac/.claude/dfcm/receipt.schema.json",
+    "schema_sha256": "sha256:c19451fafb55dce681f149d88afe00987be0b4daa6a97651d4bfad2aaf2a6d74",
+    "schema_why": null,
+    "stop_query_sha256": "sha256:77f7156957a337d31942ed612f70bb3514e77daa0978d6221a69e41efe1ba619",
+    "validator": "/Users/sac/.claude/dfcm/validate_receipt.py",
+    "validator_sha256": "sha256:bc703c76837d369788ff50858547eab98d01d38ce467469f8b9a8214e9f55e2c",
+    "validator_why": null
+  }
+}

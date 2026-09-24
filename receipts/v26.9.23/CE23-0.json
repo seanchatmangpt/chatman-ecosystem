@@ -1,0 +1,1045 @@
+{
+  "authority": {
+    "actor": "release/v26.9.23/courts/CE23-0.sh",
+    "ceiling": "SELECT",
+    "grant": "court run: read-only on the subject; one network read (git ls-remote of the GitHub remote); writes only the files named by --receipt-out/--identity-out"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [
+      "receipts/v26.9.23/CE23-0.json",
+      "receipts/v26.9.23/CE23-0.identity.ttl"
+    ],
+    "remote_effects": []
+  },
+  "court": {
+    "av": {
+      "cases": [
+        {
+          "codes": [],
+          "expected": "ALIVE",
+          "expected_codes": [],
+          "held": true,
+          "id": "M0",
+          "verdict": "ALIVE",
+          "why": "control: the head one commit ahead of the published line (publication pending)"
+        },
+        {
+          "codes": [],
+          "expected": "ALIVE",
+          "expected_codes": [],
+          "held": true,
+          "id": "M0p",
+          "verdict": "ALIVE",
+          "why": "control: the head published"
+        },
+        {
+          "codes": [],
+          "expected": "ALIVE",
+          "expected_codes": [],
+          "held": true,
+          "id": "M0s",
+          "verdict": "ALIVE",
+          "why": "control: sealed with the court's own receipt and identity fact"
+        },
+        {
+          "codes": [
+            "REMOTE_NOT_SUBJECT"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "REMOTE_NOT_SUBJECT"
+          ],
+          "held": true,
+          "id": "M1",
+          "verdict": "REFUSED",
+          "why": "origin is another GitHub repository"
+        },
+        {
+          "codes": [
+            "NO_REMOTE"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "NO_REMOTE"
+          ],
+          "held": true,
+          "id": "M2",
+          "verdict": "REFUSED",
+          "why": "no remote"
+        },
+        {
+          "codes": [
+            "FOREIGN_ROOT_IN_HEAD",
+            "LINEAGE_RELATION_CHANGED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "FOREIGN_ROOT_IN_HEAD",
+            "LINEAGE_RELATION_CHANGED"
+          ],
+          "held": true,
+          "id": "M3",
+          "verdict": "REFUSED",
+          "why": "the local lineage merged into the head"
+        },
+        {
+          "codes": [
+            "LINEAGE_UNPRESERVED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "LINEAGE_UNPRESERVED"
+          ],
+          "held": true,
+          "id": "M4",
+          "verdict": "REFUSED",
+          "why": "an archive ref repointed"
+        },
+        {
+          "codes": [
+            "LINEAGE_UNPRESERVED",
+            "SHADOW_LINEAGE_UNPRESERVED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "LINEAGE_UNPRESERVED"
+          ],
+          "held": true,
+          "id": "M5",
+          "verdict": "REFUSED",
+          "why": "one local head dropped from every preservation (its commit still reachable)"
+        },
+        {
+          "codes": [
+            "LINEAGE_EVIDENCE_ABSENT",
+            "SHADOW_EVIDENCE_ABSENT"
+          ],
+          "expected": "UNKNOWN",
+          "expected_codes": [
+            "LINEAGE_EVIDENCE_ABSENT",
+            "SHADOW_EVIDENCE_ABSENT"
+          ],
+          "held": true,
+          "id": "M6",
+          "verdict": "UNKNOWN",
+          "why": "edge: a checkout that never held the archive (a fresh GitHub clone)"
+        },
+        {
+          "codes": [
+            "LINEAGE_UNPRESERVED",
+            "SHADOW_LINEAGE_UNPRESERVED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "LINEAGE_UNPRESERVED",
+            "SHADOW_LINEAGE_UNPRESERVED"
+          ],
+          "held": true,
+          "id": "M6r",
+          "verdict": "REFUSED",
+          "why": "every archive ref dropped while the commits are still in the object store (the twin of M6)"
+        },
+        {
+          "codes": [
+            "BRANCH_DIVERGED",
+            "FOREIGN_ROOT_IN_HEAD",
+            "HEAD_NOT_ON_BASE",
+            "SHADOW_LINE_NOT_CONTINUED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "HEAD_NOT_ON_BASE",
+            "FOREIGN_ROOT_IN_HEAD"
+          ],
+          "held": true,
+          "id": "M7",
+          "verdict": "REFUSED",
+          "why": "an orphan head"
+        },
+        {
+          "codes": [
+            "BASE_NOT_ON_GITHUB_MAIN"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "BASE_NOT_ON_GITHUB_MAIN"
+          ],
+          "held": true,
+          "id": "M8",
+          "verdict": "REFUSED",
+          "why": "GitHub main force-pushed off the base"
+        },
+        {
+          "codes": [
+            "BRANCH_DIVERGED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "BRANCH_DIVERGED"
+          ],
+          "held": true,
+          "id": "M9",
+          "verdict": "REFUSED",
+          "why": "the published line diverged from the head"
+        },
+        {
+          "codes": [
+            "PREDECESSOR_TOUCHED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "PREDECESSOR_TOUCHED"
+          ],
+          "held": true,
+          "id": "M10",
+          "verdict": "REFUSED",
+          "why": "release/v26.9.1 edited"
+        },
+        {
+          "codes": [
+            "RECEIPT_CLAIM_MISMATCH",
+            "RECEIPT_STANDING_UNDERIVED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_CLAIM_MISMATCH"
+          ],
+          "held": true,
+          "id": "M11",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt claims a descendant lineage"
+        },
+        {
+          "codes": [
+            "IDENTITY_FACT_REFUSED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "IDENTITY_FACT_REFUSED"
+          ],
+          "held": true,
+          "id": "M12",
+          "verdict": "REFUSED",
+          "why": "the sealed identity fact's observed SHA differs from its commit SHA (pack gate 050)"
+        },
+        {
+          "codes": [
+            "IDENTITY_FACT_CONTRADICTED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "IDENTITY_FACT_CONTRADICTED"
+          ],
+          "held": true,
+          "id": "M12b",
+          "verdict": "REFUSED",
+          "why": "the sealed identity fact binds main to a local-lineage commit (gates pass, the published line does not)"
+        },
+        {
+          "codes": [
+            "LINEAGE_PUBLICATION_CHANGED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "LINEAGE_PUBLICATION_CHANGED"
+          ],
+          "held": true,
+          "id": "M13",
+          "verdict": "REFUSED",
+          "why": "the local lineage published"
+        },
+        {
+          "codes": [
+            "PRESERVATIONS_DISAGREE"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "PRESERVATIONS_DISAGREE"
+          ],
+          "held": true,
+          "id": "M14",
+          "verdict": "REFUSED",
+          "why": "the shadow's preservation of local main repointed"
+        },
+        {
+          "codes": [
+            "GITHUB_UNREACHABLE"
+          ],
+          "expected": "UNKNOWN",
+          "expected_codes": [
+            "GITHUB_UNREACHABLE"
+          ],
+          "held": true,
+          "id": "M15",
+          "verdict": "UNKNOWN",
+          "why": "edge: GitHub unreachable"
+        },
+        {
+          "codes": [
+            "WORKING_SUBJECT_NOT_EXACT"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "WORKING_SUBJECT_NOT_EXACT"
+          ],
+          "held": true,
+          "id": "M16",
+          "verdict": "REFUSED",
+          "why": "a tracked file changed and not committed"
+        },
+        {
+          "codes": [
+            "LINEAGE_REF_UNPINNED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "LINEAGE_REF_UNPINNED"
+          ],
+          "held": true,
+          "id": "M17",
+          "verdict": "REFUSED",
+          "why": "an unpinned ref in an archive namespace"
+        },
+        {
+          "codes": [
+            "BRANCH_DIVERGED",
+            "SHADOW_LINE_NOT_CONTINUED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "SHADOW_LINE_NOT_CONTINUED"
+          ],
+          "held": true,
+          "id": "M18",
+          "verdict": "REFUSED",
+          "why": "the int rebuilt on the base, dropping the shadow-era line"
+        },
+        {
+          "codes": [
+            "RECEIPT_SUBJECT_FOREIGN"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_SUBJECT_FOREIGN"
+          ],
+          "held": true,
+          "id": "M19",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt's subject is a local-lineage commit"
+        },
+        {
+          "codes": [
+            "REMOTE_TRANSPORT_REWRITTEN"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "REMOTE_TRANSPORT_REWRITTEN"
+          ],
+          "held": true,
+          "id": "M20",
+          "verdict": "REFUSED",
+          "why": "an insteadOf rule reroutes the GitHub remote (judged without a corpus transport)"
+        },
+        {
+          "codes": [
+            "LINEAGE_UNPRESERVED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "LINEAGE_UNPRESERVED"
+          ],
+          "held": true,
+          "id": "M21",
+          "verdict": "REFUSED",
+          "why": "the pre-migration checkout HEAD ref repointed"
+        },
+        {
+          "codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "held": true,
+          "id": "M22",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt claims a descendant lineage and its court marker is rewritten (M11 without the marker)"
+        },
+        {
+          "codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "held": true,
+          "id": "M23",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt claims a descendant lineage and its court block is deleted"
+        },
+        {
+          "codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "held": true,
+          "id": "M24",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt's subject is a local-lineage commit and its court marker is rewritten (M19 without the marker)"
+        },
+        {
+          "codes": [
+            "RECEIPT_COURT_MISMATCH"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_COURT_MISMATCH"
+          ],
+          "held": true,
+          "id": "M25",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt names a court.py that is not the court committed at its subject"
+        },
+        {
+          "codes": [
+            "RECEIPT_STANDING_UNDERIVED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_STANDING_UNDERIVED"
+          ],
+          "held": true,
+          "id": "M26",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt records a refused clause and keeps its ALIVE standing"
+        },
+        {
+          "codes": [
+            "RECEIPT_CLAIM_MISMATCH"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_CLAIM_MISMATCH"
+          ],
+          "held": true,
+          "id": "M27",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt claims to supersede a receipt that was not at its subject"
+        },
+        {
+          "codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "held": true,
+          "id": "M28",
+          "verdict": "REFUSED",
+          "why": "a hand-written ALIVE receipt replaces the pinned pre-court receipt"
+        }
+      ],
+      "summary": "33/33 corpus cases held (3 controls ALIVE, 2 edges UNKNOWN, 28 mutants refused)"
+    },
+    "clauses": [
+      {
+        "clause": "C1",
+        "code": "",
+        "text": "the judging court (6 files, pins as loaded) is byte-identical to HEAD",
+        "verdict": "OK"
+      },
+      {
+        "clause": "W1",
+        "code": "",
+        "text": "no tracked change against HEAD: the working subject is exactly HEAD",
+        "verdict": "OK"
+      },
+      {
+        "clause": "I1",
+        "code": "",
+        "text": "remote.origin.url https://github.com/seanchatmangpt/chatman-ecosystem.git = github.com/seanchatmangpt/chatman-ecosystem",
+        "verdict": "OK"
+      },
+      {
+        "clause": "I2",
+        "code": "",
+        "text": "GitHub main = c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 (2026-09-24T19:24:19Z, live ls-remote); the release base c59596f5506e is equal to it",
+        "verdict": "OK"
+      },
+      {
+        "clause": "I4",
+        "code": "",
+        "text": "the head fast-forwards GitHub release/v26.9.23-int (717d52cd78d8) by 39 commits: publication pending, a plain push",
+        "verdict": "OK"
+      },
+      {
+        "clause": "I3",
+        "code": "",
+        "text": "the head 9af94f93ece575acda2fa80374e272bc376d513b descends from the release base c59596f5506e (ancestor) and its only root is the GitHub root 14cfd7b01aac (4780 commits)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "K1",
+        "code": "",
+        "text": "the identity fact of this observation (er:Component seanchatmangpt/chatman-ecosystem @ main c59596f5506e, er:RefObservation by ls-remote) passes pack gates ['020_component_identity.rq', '050_ref_observation_law.rq', '060_unique_repository.rq']",
+        "verdict": "OK"
+      },
+      {
+        "clause": "K1",
+        "code": "",
+        "text": "committed receipts/v26.9.23/CE23-0.identity.ttl passes the pack gates; its GitHub main c59596f5506e is on the published line (base equal, live main equal)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "O1",
+        "code": "",
+        "text": "CE23-0 court command is this court; compiled orders: ['WO-68A1431B9FE77A26 (release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl; subject P-d8bfcebe5fa3a084)']",
+        "verdict": "OK"
+      },
+      {
+        "clause": "L1",
+        "code": "",
+        "text": "the local-only lineage (4 heads, 9 commits, root 551cf5c563d9) is preserved at its pinned SHAs under ['refs/heads/archive/local-lineage/', 'refs/archive/pre-single-repo-migration/20260924T0600Z/heads/'] and refs/archive/pre-single-repo-migration/20260924T0600Z/worktree-head/chatman-ecosystem",
+        "verdict": "OK"
+      },
+      {
+        "clause": "L2",
+        "code": "",
+        "text": "every local head is unrelated to the release base c59596f5506e and to the head (merge-base, 8 pairs); local main vs base: 0 shared blob ids, shared paths ['.gitignore', 'AGENTS.md']",
+        "verdict": "OK"
+      },
+      {
+        "clause": "L3",
+        "code": "",
+        "text": "no remote-tracking ref reaches the local root 551cf5c563d9 (published=False, as pinned)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "S1",
+        "code": "",
+        "text": "the shadow clone's 4 pinned refs and its 4 local-lineage preserve refs hold their SHAs under refs/archive/pre-single-repo-migration/20260924T0600Z/shadow-clone/ (28 refs there); both preservations of the local lineage agree",
+        "verdict": "OK"
+      },
+      {
+        "clause": "S1",
+        "code": "",
+        "text": "the head continues the shadow-era line: CE23-0 commit a896e16c68af and the shadow's published int 717d52cd78d8 are its ancestors; the shadow's other preserved heads relate to the head as {'heads/main': 'ancestor', 'heads/release/v26.9.23-int': 'diverged', 'remotes/origin/main': 'ancestor', 'remotes/origin/release/v26.9.23-int': 'ancestor'} (merge bases {'heads/release/v26.9.23-int': '717d52cd78d8936c6b8b2e102dc348cccf6262c4'})",
+        "verdict": "OK"
+      },
+      {
+        "clause": "P1",
+        "code": "",
+        "text": "release/v26.9.1 at the head is the base tree and the pinned tree 7e0feef1b137",
+        "verdict": "OK"
+      },
+      {
+        "clause": "R1",
+        "code": "",
+        "text": "receipts/v26.9.23/CE23-0.json (court-emitted, subject b8332692beda, standing ALIVE derived from its 42 clause lines, court = the court at its subject): every recorded claim equals the recomputation at its subject",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M0 ALIVE [] as expected: control: the head one commit ahead of the published line (publication pending)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M0p ALIVE [] as expected: control: the head published",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M0s ALIVE [] as expected: control: sealed with the court's own receipt and identity fact",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M1 REFUSED ['REMOTE_NOT_SUBJECT'] as expected: origin is another GitHub repository",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M2 REFUSED ['NO_REMOTE'] as expected: no remote",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M3 REFUSED ['FOREIGN_ROOT_IN_HEAD', 'LINEAGE_RELATION_CHANGED'] as expected: the local lineage merged into the head",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M4 REFUSED ['LINEAGE_UNPRESERVED'] as expected: an archive ref repointed",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M5 REFUSED ['LINEAGE_UNPRESERVED', 'SHADOW_LINEAGE_UNPRESERVED'] as expected: one local head dropped from every preservation (its commit still reachable)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M6 UNKNOWN ['LINEAGE_EVIDENCE_ABSENT', 'SHADOW_EVIDENCE_ABSENT'] as expected: edge: a checkout that never held the archive (a fresh GitHub clone)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M6r REFUSED ['LINEAGE_UNPRESERVED', 'SHADOW_LINEAGE_UNPRESERVED'] as expected: every archive ref dropped while the commits are still in the object store (the twin of M6)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M7 REFUSED ['BRANCH_DIVERGED', 'FOREIGN_ROOT_IN_HEAD', 'HEAD_NOT_ON_BASE', 'SHADOW_LINE_NOT_CONTINUED'] as expected: an orphan head",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M8 REFUSED ['BASE_NOT_ON_GITHUB_MAIN'] as expected: GitHub main force-pushed off the base",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M9 REFUSED ['BRANCH_DIVERGED'] as expected: the published line diverged from the head",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M10 REFUSED ['PREDECESSOR_TOUCHED'] as expected: release/v26.9.1 edited",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M11 REFUSED ['RECEIPT_CLAIM_MISMATCH', 'RECEIPT_STANDING_UNDERIVED'] as expected: the sealed receipt claims a descendant lineage",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M12 REFUSED ['IDENTITY_FACT_REFUSED'] as expected: the sealed identity fact's observed SHA differs from its commit SHA (pack gate 050)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M12b REFUSED ['IDENTITY_FACT_CONTRADICTED'] as expected: the sealed identity fact binds main to a local-lineage commit (gates pass, the published line does not)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M13 REFUSED ['LINEAGE_PUBLICATION_CHANGED'] as expected: the local lineage published",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M14 REFUSED ['PRESERVATIONS_DISAGREE'] as expected: the shadow's preservation of local main repointed",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M15 UNKNOWN ['GITHUB_UNREACHABLE'] as expected: edge: GitHub unreachable",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M16 REFUSED ['WORKING_SUBJECT_NOT_EXACT'] as expected: a tracked file changed and not committed",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M17 REFUSED ['LINEAGE_REF_UNPINNED'] as expected: an unpinned ref in an archive namespace",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M18 REFUSED ['BRANCH_DIVERGED', 'SHADOW_LINE_NOT_CONTINUED'] as expected: the int rebuilt on the base, dropping the shadow-era line",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M19 REFUSED ['RECEIPT_SUBJECT_FOREIGN'] as expected: the sealed receipt's subject is a local-lineage commit",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M20 REFUSED ['REMOTE_TRANSPORT_REWRITTEN'] as expected: an insteadOf rule reroutes the GitHub remote (judged without a corpus transport)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M21 REFUSED ['LINEAGE_UNPRESERVED'] as expected: the pre-migration checkout HEAD ref repointed",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M22 REFUSED ['RECEIPT_NOT_COURT_EMITTED'] as expected: the sealed receipt claims a descendant lineage and its court marker is rewritten (M11 without the marker)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M23 REFUSED ['RECEIPT_NOT_COURT_EMITTED'] as expected: the sealed receipt claims a descendant lineage and its court block is deleted",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M24 REFUSED ['RECEIPT_NOT_COURT_EMITTED'] as expected: the sealed receipt's subject is a local-lineage commit and its court marker is rewritten (M19 without the marker)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M25 REFUSED ['RECEIPT_COURT_MISMATCH'] as expected: the sealed receipt names a court.py that is not the court committed at its subject",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M26 REFUSED ['RECEIPT_STANDING_UNDERIVED'] as expected: the sealed receipt records a refused clause and keeps its ALIVE standing",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M27 REFUSED ['RECEIPT_CLAIM_MISMATCH'] as expected: the sealed receipt claims to supersede a receipt that was not at its subject",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M28 REFUSED ['RECEIPT_NOT_COURT_EMITTED'] as expected: a hand-written ALIVE receipt replaces the pinned pre-court receipt",
+        "verdict": "OK"
+      }
+    ],
+    "emitted_by": "release/v26.9.23/courts/CE23-0.sh",
+    "loaded_sha256": {
+      "release/v26.9.23/courts/CE23-0.sh": "8b7b0e1bfa0a70912f68bb39b311f2ca90e72b10587c494c25da4c21053db20a",
+      "release/v26.9.23/courts/ce23_0/court.py": "ba4a6e2b10a3b7cd086d93265d41a550022aff3175109ba369fce513202002a0",
+      "release/v26.9.23/courts/ce23_0/identity.toml": "99f06ab2c1c76ff34f87243a9d0c590465dff0b94b060a77fb1484f7e22e8dd9"
+    },
+    "pins": "release/v26.9.23/courts/ce23_0/identity.toml"
+  },
+  "github": {
+    "authority": "git ls-remote https://github.com/seanchatmangpt/chatman-ecosystem.git refs/heads/main refs/heads/release/v26.9.23-int",
+    "branch": "release/v26.9.23-int",
+    "branch_sha": "717d52cd78d8936c6b8b2e102dc348cccf6262c4",
+    "line": "publication-pending",
+    "main": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+    "observed_at": "2026-09-24T19:24:19Z",
+    "output_sha256": "a9539a98fc2c454d53e8d0280827a85d387e4373e965f580fed66a10b5731b5f",
+    "remote_url": "https://github.com/seanchatmangpt/chatman-ecosystem.git",
+    "subject_relation_to_branch_source": "ancestor"
+  },
+  "identity": {
+    "base_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+    "branch": "release/v26.9.23-int",
+    "checkout": "/Users/sac/chatman-ecosystem",
+    "gate": "ce:CE23-0 (release/v26.9.23/sjira/goal.ttl), sj:courtCommand 'sh release/v26.9.23/courts/CE23-0.sh'",
+    "repo": "seanchatmangpt/chatman-ecosystem",
+    "subject": "CE23-0/root-identity",
+    "subject_sha": "9af94f93ece575acda2fa80374e272bc376d513b",
+    "work_orders": [
+      "WO-68A1431B9FE77A26 (release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl; subject P-d8bfcebe5fa3a084)"
+    ]
+  },
+  "lineage": {
+    "base_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+    "blob_overlap_main_vs_base": {
+      "base_files": 12311,
+      "local_main_files": 28,
+      "shared_blob_ids": 0,
+      "shared_paths": [
+        ".gitignore",
+        "AGENTS.md"
+      ]
+    },
+    "checkout_head": {
+      "ref": "refs/archive/pre-single-repo-migration/20260924T0600Z/worktree-head/chatman-ecosystem",
+      "sha": "6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d"
+    },
+    "commits": 9,
+    "namespaces": {
+      "refs/archive/pre-single-repo-migration/20260924T0600Z/heads/": {
+        "exp/pr3-jurisdiction-refusal-contracts": "5307ea79539d6739a60e4220a6b695e026a4211e",
+        "main": "6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d",
+        "preserve/v26.9.22/main": "5cb279b4a444e9f87b9cd94ff2dbd617d4e2622c",
+        "release/v26.9.22": "7ac66d8c55ce4aba62cd6416e9f3eecd358700e4"
+      },
+      "refs/heads/archive/local-lineage/": {
+        "exp/pr3-jurisdiction-refusal-contracts": "5307ea79539d6739a60e4220a6b695e026a4211e",
+        "main": "6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d",
+        "preserve/v26.9.22/main": "5cb279b4a444e9f87b9cd94ff2dbd617d4e2622c",
+        "release/v26.9.22": "7ac66d8c55ce4aba62cd6416e9f3eecd358700e4"
+      }
+    },
+    "proof": "recomputed by git merge-base / rev-list over the preserved refs of this checkout",
+    "relation_to_base": {
+      "exp/pr3-jurisdiction-refusal-contracts": "unrelated",
+      "main": "unrelated",
+      "preserve/v26.9.22/main": "unrelated",
+      "release/v26.9.22": "unrelated"
+    },
+    "relation_to_subject": {
+      "exp/pr3-jurisdiction-refusal-contracts": "unrelated",
+      "main": "unrelated",
+      "preserve/v26.9.22/main": "unrelated",
+      "release/v26.9.22": "unrelated"
+    },
+    "remote_refs_reaching_local_root": [],
+    "root": [
+      "551cf5c563d93356b261892dd787595872056753"
+    ]
+  },
+  "predecessor": {
+    "path": "release/v26.9.1",
+    "pinned_tree": "7e0feef1b137bea72fe1cf22a599636f77b0e47c",
+    "tree_at_base": "7e0feef1b137bea72fe1cf22a599636f77b0e47c",
+    "tree_at_subject": "7e0feef1b137bea72fe1cf22a599636f77b0e47c"
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "sh release/v26.9.23/courts/CE23-0.sh",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "summary": "CE23-0 ALIVE at 9af94f93ece575acda2fa80374e272bc376d513b"
+      },
+      {
+        "cmd": "git merge-base --is-ancestor c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 9af94f93ece575acda2fa80374e272bc376d513b",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "the release base is an ancestor of the subject"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-list --max-parents=0 9af94f93ece575acda2fa80374e272bc376d513b)\" = 14cfd7b01aac25b3271963378d07357eb0c55af6'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "the subject's only root is the GitHub root"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git config --get remote.origin.url)\" = https://github.com/seanchatmangpt/chatman-ecosystem.git'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "origin is the GitHub remote"
+      },
+      {
+        "cmd": "git merge-base --is-ancestor c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "the release base is on GitHub main as observed"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse --verify --quiet refs/heads/archive/local-lineage/exp/pr3-jurisdiction-refusal-contracts)\" = 5307ea79539d6739a60e4220a6b695e026a4211e'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "local-lineage head exp/pr3-jurisdiction-refusal-contracts preserved"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse --verify --quiet refs/heads/archive/local-lineage/main)\" = 6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "local-lineage head main preserved"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse --verify --quiet refs/heads/archive/local-lineage/preserve/v26.9.22/main)\" = 5cb279b4a444e9f87b9cd94ff2dbd617d4e2622c'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "local-lineage head preserve/v26.9.22/main preserved"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse --verify --quiet refs/heads/archive/local-lineage/release/v26.9.22)\" = 7ac66d8c55ce4aba62cd6416e9f3eecd358700e4'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "local-lineage head release/v26.9.22 preserved"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse --verify --quiet refs/archive/pre-single-repo-migration/20260924T0600Z/heads/exp/pr3-jurisdiction-refusal-contracts)\" = 5307ea79539d6739a60e4220a6b695e026a4211e'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "local-lineage head exp/pr3-jurisdiction-refusal-contracts preserved"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse --verify --quiet refs/archive/pre-single-repo-migration/20260924T0600Z/heads/main)\" = 6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "local-lineage head main preserved"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse --verify --quiet refs/archive/pre-single-repo-migration/20260924T0600Z/heads/preserve/v26.9.22/main)\" = 5cb279b4a444e9f87b9cd94ff2dbd617d4e2622c'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "local-lineage head preserve/v26.9.22/main preserved"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse --verify --quiet refs/archive/pre-single-repo-migration/20260924T0600Z/heads/release/v26.9.22)\" = 7ac66d8c55ce4aba62cd6416e9f3eecd358700e4'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "local-lineage head release/v26.9.22 preserved"
+      },
+      {
+        "cmd": "sh -c 'git merge-base 6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 >/dev/null; test $? -eq 1'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "local main and the base share no ancestor"
+      },
+      {
+        "cmd": "sh -c 'git merge-base 6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d 9af94f93ece575acda2fa80374e272bc376d513b >/dev/null; test $? -eq 1'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "local main and the subject share no ancestor"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-list --count 5307ea79539d6739a60e4220a6b695e026a4211e 6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d 5cb279b4a444e9f87b9cd94ff2dbd617d4e2622c 7ac66d8c55ce4aba62cd6416e9f3eecd358700e4)\" = 9'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "the local lineage has the pinned commit count"
+      },
+      {
+        "cmd": "sh -c 'test -z \"$(git for-each-ref --contains 551cf5c563d93356b261892dd787595872056753 refs/remotes)\"'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "no remote-tracking ref reaches the local root"
+      },
+      {
+        "cmd": "git merge-base --is-ancestor a896e16c68af1315be3492e39939c354ce46b10c 9af94f93ece575acda2fa80374e272bc376d513b",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "the shadow-era CE23-0 commit is an ancestor of the subject"
+      },
+      {
+        "cmd": "git merge-base --is-ancestor 717d52cd78d8936c6b8b2e102dc348cccf6262c4 9af94f93ece575acda2fa80374e272bc376d513b",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "the shadow's published int is an ancestor of the subject"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse --verify --quiet refs/archive/pre-single-repo-migration/20260924T0600Z/shadow-clone/heads/main)\" = c59596f5506e7a00ca4ed6b909ebf6d6659b74c1'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "shadow ref heads/main preserved"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse --verify --quiet refs/archive/pre-single-repo-migration/20260924T0600Z/shadow-clone/heads/release/v26.9.23-int)\" = de648940eb7beb21597767fda4e38a7d05ed8f74'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "shadow ref heads/release/v26.9.23-int preserved"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse --verify --quiet refs/archive/pre-single-repo-migration/20260924T0600Z/shadow-clone/remotes/origin/main)\" = c59596f5506e7a00ca4ed6b909ebf6d6659b74c1'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "shadow ref remotes/origin/main preserved"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse --verify --quiet refs/archive/pre-single-repo-migration/20260924T0600Z/shadow-clone/remotes/origin/release/v26.9.23-int)\" = 717d52cd78d8936c6b8b2e102dc348cccf6262c4'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "shadow ref remotes/origin/release/v26.9.23-int preserved"
+      },
+      {
+        "cmd": "sh -c 'test \"$(git rev-parse 9af94f93ece575acda2fa80374e272bc376d513b:release/v26.9.1)\" = 7e0feef1b137bea72fe1cf22a599636f77b0e47c'",
+        "cwd": "/Users/sac/chatman-ecosystem",
+        "exit": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary": "release/v26.9.1 untouched"
+      }
+    ],
+    "durable_location": "git:seanchatmangpt/chatman-ecosystem@9af94f93ece575acda2fa80374e272bc376d513b:release/v26.9.23/courts/CE23-0.sh"
+  },
+  "shadow_clone": {
+    "identity_commit": {
+      "relation_to_subject": "ancestor",
+      "sha": "a896e16c68af1315be3492e39939c354ce46b10c"
+    },
+    "local_lineage_preserve": {
+      "exp/pr3-jurisdiction-refusal-contracts": "5307ea79539d6739a60e4220a6b695e026a4211e",
+      "main": "6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d",
+      "preserve/v26.9.22/main": "5cb279b4a444e9f87b9cd94ff2dbd617d4e2622c",
+      "release/v26.9.22": "7ac66d8c55ce4aba62cd6416e9f3eecd358700e4"
+    },
+    "merge_base_with_subject": {
+      "heads/release/v26.9.23-int": "717d52cd78d8936c6b8b2e102dc348cccf6262c4"
+    },
+    "prefix": "refs/archive/pre-single-repo-migration/20260924T0600Z/shadow-clone/",
+    "refs": {
+      "heads/main": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+      "heads/release/v26.9.23-int": "de648940eb7beb21597767fda4e38a7d05ed8f74",
+      "remotes/origin/main": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+      "remotes/origin/release/v26.9.23-int": "717d52cd78d8936c6b8b2e102dc348cccf6262c4"
+    },
+    "refs_under_prefix": 28,
+    "relation_to_subject": {
+      "heads/main": "ancestor",
+      "heads/release/v26.9.23-int": "diverged",
+      "remotes/origin/main": "ancestor",
+      "remotes/origin/release/v26.9.23-int": "ancestor"
+    }
+  },
+  "standing": {
+    "derived_from": "sh release/v26.9.23/courts/CE23-0.sh exit 0 at 9af94f93ece575acda2fa80374e272bc376d513b (49 OK, 0 REFUSED, 0 UNKNOWN; refused=[], unknown=[]; AV 33/33 corpus cases held (3 controls ALIVE, 2 edges UNKNOWN, 28 mutants refused); 30s)",
+    "value": "ALIVE"
+  },
+  "supersedes": {
+    "blob": "9c2cbec24739ee7038ae7e90634a5214081d8e39",
+    "commit": "1c7f0433fb888e34903528d9caa7b9a1d6d39a70",
+    "emitted_by_this_court": true,
+    "path": "receipts/v26.9.23/CE23-0.json",
+    "standing": "ALIVE",
+    "subject_sha": "b8332692beda6b8e4a2779f3162e8247b36c87cc"
+  }
+}

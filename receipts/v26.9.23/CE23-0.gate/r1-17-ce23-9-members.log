@@ -1,0 +1,31 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 release/v26.9.23/courts/ce23_9/members.py imported-receipts; echo imported-receipts=$?; PYTHONDONTWRITEBYTECODE=1 python3 release/v26.9.23/courts/ce23_9/members.py chatman-stop; echo chatman-stop=$?
+MEMBER imported-receipts root=/Users/sac/chatman-ecosystem
+  OK validator packs/receipt-provenance-unification-pack/generated/unified_receipt_validator.py = ggen-marketplace e3988aba4a85 (on refs/remotes/origin/release/v26.9.23-int), sha256 008ce23419325ebd, read at run time (never committed here)
+  OK receipts/v26.9.23/CE-INTAKE.json: dfcm_fleet_v1 valid; standing ALIVE at 77e3279a8bee (ancestor of HEAD)
+  OK receipts/v26.9.23/CE23-0.json: dfcm_fleet_v1 valid; standing ALIVE at 9af94f93ece5 (ancestor of HEAD)
+  OK receipts/v26.9.23/CE23-1.json: dfcm_fleet_v1 valid; standing ALIVE at 527ffaf35044 (ancestor of HEAD)
+  OK receipts/v26.9.23/CE23-12.gate/court-receipt-CE23-12.json: dfcm_fleet_v1 valid; standing ALIVE at 0cc590b51554 (ancestor of HEAD)
+  OK receipts/v26.9.23/CE23-12.gate/r1-court-receipt-CE23-12.json: dfcm_fleet_v1 valid; standing ALIVE at 2d734c047e49 (ancestor of HEAD)
+  OK receipts/v26.9.23/CE23-12.json: dfcm_fleet_v1 valid; standing ALIVE at 2d734c047e49 (ancestor of HEAD)
+  OK receipts/v26.9.23/CE23-2.json: dfcm_fleet_v1 valid; standing ALIVE at 9fa340fe05f0 (ancestor of HEAD)
+  OK receipts/v26.9.23/CE23-7.json: dfcm_fleet_v1 valid; standing ALIVE at d8cbc54591a4 (ancestor of HEAD)
+  OK receipts/v26.9.23/CE23-9.json: dfcm_fleet_v1 valid; standing UNKNOWN at d2f36659e086 (ancestor of HEAD)
+  imported Semantic Manufacturing crowns in the release graph: 0 (the STOP and gate receipts are lifted by CE23-3 and judged by pack gate 090 + member chatman-stop; 0 until STOP=true)
+MEMBER_ALIVE imported-receipts 9 release receipts validated, 0 imported crowns
+imported-receipts=0
+MEMBER chatman-stop root=/Users/sac/chatman-ecosystem
+  OK validator packs/receipt-provenance-unification-pack/generated/unified_receipt_validator.py = ggen-marketplace e3988aba4a85 (on refs/remotes/origin/release/v26.9.23-int), sha256 008ce23419325ebd, read at run time (never committed here)
+  PROVISIONAL CE23-10 ALIVE: the root release receipt is rendered from this court's observation (circular)
+  PROVISIONAL CE23-9 ALIVE: this court (a court cannot be a member of itself)
+  crown gates ['CE23-0', 'CE23-1', 'CE23-10', 'CE23-12', 'CE23-12-BenchmarkDesign', 'CE23-12-GeneratedQualificationPlan', 'CE23-12-MSAContract', 'CE23-2', 'CE23-3', 'CE23-4', 'CE23-5', 'CE23-6', 'CE23-7', 'CE23-8', 'CE23-9']; admitted receipts projected onto ['CE23-0', 'CE23-1', 'CE23-12', 'CE23-12-BenchmarkDesign', 'CE23-12-GeneratedQualificationPlan', 'CE23-12-MSAContract', 'CE23-2', 'CE23-7', 'CE23-9']
+  UNKNOWN[NO_ALIVE_RECEIPT:CE23-3] CE23-3 has no admitted ALIVE gate receipt (its court sh release/v26.9.23/courts/CE23-3.sh is the CE-INTAKE stub (exit 75): machinery absent)
+  UNKNOWN[NO_ALIVE_RECEIPT:CE23-4] CE23-4 has no admitted ALIVE gate receipt (its court sh release/v26.9.23/courts/CE23-4.sh is the CE-INTAKE stub (exit 75): machinery absent)
+  UNKNOWN[NO_ALIVE_RECEIPT:CE23-5] CE23-5 has no admitted ALIVE gate receipt (its court sh release/v26.9.23/courts/CE23-5.sh is the CE-INTAKE stub (exit 75): machinery absent)
+  UNKNOWN[NO_ALIVE_RECEIPT:CE23-6] CE23-6 has no admitted ALIVE gate receipt (its court sh release/v26.9.23/courts/CE23-6.sh is the CE-INTAKE stub (exit 75): machinery absent)
+  UNKNOWN[NO_ALIVE_RECEIPT:CE23-8] CE23-8 has no admitted ALIVE gate receipt (its court sh release/v26.9.23/courts/CE23-8.sh is the CE-INTAKE stub (exit 75): machinery absent)
+  UNKNOWN[ORDERS_OPEN] 47 CE23 work orders under the goal root have no terminal receipt and are not Successor, e.g. ['WO-07e6e9b425164781', 'WO-07f0abac0da76137', 'WO-083d79e8831e232c', 'WO-0cefcc4a0a229e25']
+  UNKNOWN[OPERATOR_ACCEPTANCE_ABSENT] GC23-12 successor acceptance (docs/sjira/v26.9.23/successor/ACCEPTED) is absent at the xaas component commit 6fd59588c2e0: operator-only edge, STOP=false until the operator commits it
+  imported Semantic Manufacturing crowns rendered (pack gate 090 admitted): 0
+MEMBER_UNKNOWN[NO_ALIVE_RECEIPT:CE23-3,NO_ALIVE_RECEIPT:CE23-4,NO_ALIVE_RECEIPT:CE23-5,NO_ALIVE_RECEIPT:CE23-6,NO_ALIVE_RECEIPT:CE23-8,ORDERS_OPEN,OPERATOR_ACCEPTANCE_ABSENT] chatman-stop CHATMAN_STOP=false (goal sj:stopQuery; CE23-9 and CE23-10 provisional)
+chatman-stop=75
+exit=0

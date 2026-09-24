@@ -1,0 +1,8 @@
+$ pwd; git rev-parse HEAD; git status --porcelain; git -C /Users/sac/wt/v26922/v23/CE-INTAKE-gi rev-parse HEAD; git -C /Users/sac/wt/v26922/fri/ggen_igniter-int rev-parse HEAD; shasum -a 256 /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py
+/Users/sac/wt/v26922/v23/CE-INTAKE
+42a3550823836c9f9c7b580273673e072194c4f1
+?? receipts/v26.9.23/CE-INTAKE.gate/r1-00-subject.log
+3ed6a7afc51fcfc652cfa72f75680d7fa1543bc8
+3ed6a7afc51fcfc652cfa72f75680d7fa1543bc8
+86a0e9b30d192adff8026d281b1735ee4b9e371e4d29083ed0cb089a62730421  /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py
+exit=0

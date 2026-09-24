@@ -1,0 +1,234 @@
+# nonllm-class-qualification-pack 0.1.0 -- SHACL shapes (nlbsh:). Declarative instrument of the
+# pack: evaluated by pyshacl in scripts/verify.py; the same laws are also SPARQL gates (gates/*.rq,
+# enforced by ggen sync) and a native Python evaluator (scripts/native_predicates.py). The three
+# implementations are the classification-agreement pair of the MSA contract.
+# Origin: release/v26.9.23/bench/ontology-draft.ttl PART 6 (pyshacl 0.31.0 qualified), extended with
+# the plan, family, gap and negative-control shapes.
+
+@prefix nlb:     <https://ggen.dev/nonllm-bench#> .
+@prefix nlbsh:   <https://ggen.dev/nonllm-bench/shapes#> .
+@prefix dflss:   <https://ggen.dev/dflss#> .
+@prefix es:      <https://ggen.dev/ontology/evidence-standing#> .
+@prefix sj:      <https://ggen-igniter.dev/ontology/semantic-jira#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+nlbsh:ClassStandingShape a sh:NodeShape ;
+  sh:targetClass nlb:ClassStanding ;
+  sh:property [ sh:path nlb:standingKind ; sh:minCount 1 ; sh:maxCount 1 ; sh:class nlb:StandingKind ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "evidence tuple incomplete: a class standing needs forClass, tier, n, defects, confidence, upperFailureBound, boundMethod, environmentScope" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:standingKind ?k . FILTER(?k != nlb:BENCHMARK_DESIGN_ALIVE)
+        FILTER NOT EXISTS { $this nlb:forClass ?c ; nlb:tier ?t ; nlb:n ?n ; nlb:defects ?d ; nlb:confidence ?cf ;
+          nlb:upperFailureBound ?u ; nlb:boundMethod ?m ; nlb:environmentScope ?e } }""" ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "overclaim: claimed upperFailureBound is below the exact Clopper-Pearson bound for (n, defects), or no generated BoundRow exists for (n, defects)" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:n ?n ; nlb:defects ?d ; nlb:upperFailureBound ?u .
+        OPTIONAL { ?row a nlb:BoundRow ; nlb:boundN ?n ; nlb:boundDefects ?d ; nlb:exactUpperBound ?x }
+        FILTER(!BOUND(?x) || ?u < ?x) }""" ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "tier overclaim: n below the tier's N, or the exact bound above the tier's zero-defect bound" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:n ?n ; nlb:defects ?d ; nlb:tier ?t . ?t nlb:tierN ?tn .
+        OPTIONAL { ?t nlb:zeroDefectUpperBound ?tb . ?row a nlb:BoundRow ; nlb:boundN ?n ; nlb:boundDefects ?d ; nlb:exactUpperBound ?x }
+        FILTER(?n < ?tn || (BOUND(?tb) && BOUND(?x) && ?x > ?tb)) }""" ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "pseudo-replication: n exceeds the number of distinct subject digests among unseen-execution receipts" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:n ?n . FILTER(?n > 0)
+        { SELECT $this (COUNT(DISTINCT ?dg) AS ?k) WHERE { OPTIONAL { $this nlb:unseenExecutionReceipt ?r . ?r nlb:subjectDigest ?dg } } GROUP BY $this }
+        FILTER(?k < ?n) }""" ] .
+
+nlbsh:OperationalStandingShape a sh:NodeShape ;
+  sh:targetSubjectsOf nlb:standingKind ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "NON_LLM_OPERATIONAL_ALIVE or BENCHMARK_QUALIFIED asserted ALIVE without unseen-execution receipts (documentation about execution is not execution)" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      PREFIX es: <https://ggen.dev/ontology/evidence-standing#>
+      SELECT $this WHERE { $this nlb:standingKind ?k ; es:standingState es:ALIVE .
+        FILTER(?k IN (nlb:NON_LLM_OPERATIONAL_ALIVE, nlb:BENCHMARK_QUALIFIED))
+        FILTER NOT EXISTS { $this nlb:unseenExecutionReceipt ?r } }""" ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "NON_LLM_OPERATIONAL_ALIVE asserted ALIVE without DISCOVERY-tier evidence, MSA ALIVE, zero LLM invocations, zero replay divergence and no UNSUPPORTED varied factor" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      PREFIX es: <https://ggen.dev/ontology/evidence-standing#>
+      SELECT $this WHERE { $this nlb:standingKind nlb:NON_LLM_OPERATIONAL_ALIVE ; es:standingState es:ALIVE .
+        FILTER ( NOT EXISTS { $this nlb:tier ?t . ?t nlb:tierRank ?r . FILTER(?r >= 1) }
+          || NOT EXISTS { $this nlb:msaStanding es:ALIVE }
+          || NOT EXISTS { $this nlb:llmInvocations 0 }
+          || NOT EXISTS { $this nlb:replayDivergence 0 }
+          || EXISTS { $this nlb:variedFactor ?f . ?f nlb:support "UNSUPPORTED" } ) }""" ] .
+
+nlbsh:KnownClassShape a sh:NodeShape ;
+  sh:targetClass nlb:BenchmarkClass ;
+  sh:property [ sh:path nlb:claimStatus ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "KNOWN_CANDIDATE" "PRESERVED" "BLOCKED" "NOT_KNOWN" "OUTSIDE_BOUNDARY" ) ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "KNOWN_CANDIDATE lacks repair tool, verifier, class toolchain, observed membership (TYPED_OUTPUT + TRIAL_REPAIR/INDEPENDENT_SEMANTIC), an independent verifier of a different implementation family, or 3 near-misses expecting UNKNOWN" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      PREFIX es: <https://ggen.dev/ontology/evidence-standing#>
+      SELECT $this WHERE { $this nlb:claimStatus "KNOWN_CANDIDATE" .
+        FILTER ( NOT EXISTS { $this nlb:repairTool ?t ; nlb:verifierArgv ?v ; nlb:classToolchain ?tc ; nlb:membershipPredicate ?mp }
+          || NOT EXISTS { $this nlb:membershipClause ?a . ?a nlb:clauseBasis "TYPED_OUTPUT" }
+          || NOT EXISTS { $this nlb:membershipClause ?b . ?b nlb:clauseBasis ?bb . FILTER(?bb IN ("TRIAL_REPAIR","INDEPENDENT_SEMANTIC")) }
+          || NOT EXISTS { $this nlb:repairTool ?t2 ; nlb:independentVerifier ?iv . ?t2 nlb:implementationFamily ?f1 . ?iv nlb:implementationFamily ?f2 . FILTER(?f1 != ?f2) }
+          || NOT EXISTS { { SELECT $this (COUNT(DISTINCT ?m) AS ?k) WHERE { ?m a nlb:NearMissCase ; nlb:nearClass $this ; nlb:expectedStanding es:UNKNOWN } GROUP BY $this } FILTER(?k >= 3) } ) }""" ] .
+
+nlbsh:NearMissShape a sh:NodeShape ;
+  sh:targetClass nlb:NearMissCase ;
+  sh:property [ sh:path nlb:expectedStanding ; sh:minCount 1 ; sh:maxCount 1 ; sh:hasValue es:UNKNOWN ] ;
+  sh:property [ sh:path nlb:expectedReason ; sh:minCount 1 ] ;
+  sh:property [ sh:path nlb:inClass ; sh:maxCount 0 ] .
+
+nlbsh:FactorShape a sh:NodeShape ;
+  sh:targetClass nlb:Factor ;
+  sh:property [ sh:path nlb:support ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "VARIED" "FIXED" "PARTIAL" "UNSUPPORTED" ) ] ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "a non-VARIED factor (UNSUPPORTED, PARTIAL or FIXED) is placed in the design: it has a column, bit weight or generator, or a design lists it" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:support ?s . FILTER(?s != "VARIED")
+        FILTER ( EXISTS { $this nlb:column ?c } || EXISTS { $this nlb:bitWeight ?w } || EXISTS { $this nlb:generatedBy ?g } || EXISTS { ?d nlb:hasFactor $this } ) }""" ] .
+
+nlbsh:TraceShape a sh:NodeShape ;
+  sh:targetClass nlb:AcceptancePredicate , nlb:BenchmarkClass , dflss:CTQ , nlb:Factor , nlb:MSACourt , nlb:MSAProperty ,
+    nlb:NearMissCase , nlb:NegativeControlCase , nlb:Stage , nlb:FaultInjectionPoint , nlb:ClassStanding , nlb:EvidenceTier ,
+    nlb:FractionalFactorialDesign , nlb:BenchmarkFamily , nlb:CapabilityGap , nlb:QualificationPlan , nlb:CrownThreshold ,
+    nlb:StatisticDefinition , nlb:BoundRequest , nlb:StandingKind , nlb:ReceiptFieldSet , nlb:BenchmarkSuite , nlb:PlanEntry ,
+    nlb:ReferenceOrder ;
+  sh:property [ sh:path prov:wasDerivedFrom ; sh:minCount 1 ; sh:class sj:Proposition ;
+    sh:message "design node does not trace to an operator-prose proposition (sj:Proposition with a re-verified span)" ] .
+
+nlbsh:NegativeControlShape a sh:NodeShape ;
+  sh:targetClass nlb:NegativeControlCase ;
+  sh:property [ sh:path nlb:expectedStanding ; sh:minCount 1 ; sh:maxCount 1 ; sh:hasValue es:REFUSED ;
+    sh:message "a B2 negative control must expect REFUSED (FalseAccept = 0)" ] ;
+  sh:property [ sh:path nlb:expectedReason ; sh:minCount 1 ] ;
+  sh:property [ sh:path nlb:inClass ; sh:maxCount 0 ] .
+
+nlbsh:FamilyShape a sh:NodeShape ;
+  sh:targetClass nlb:BenchmarkFamily ;
+  sh:property [ sh:path nlb:familyCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^B[1-6]$" ] ;
+  sh:property [ sh:path nlb:familyAcceptance ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path nlb:familyFalsifier ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path nlb:familyCapability ; sh:minCount 1 ; sh:maxCount 1 ; sh:class sj:Capability ;
+    sh:message "a benchmark family names the capability its generated orders require" ] ;
+  sh:property [ sh:path nlb:referenceOrder ; sh:minCount 1 ; sh:class nlb:ReferenceOrder ] .
+
+nlbsh:CapabilityGapShape a sh:NodeShape ;
+  sh:targetClass nlb:CapabilityGap ;
+  sh:property [ sh:path nlb:gapCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^[A-Z][A-Z0-9-]{1,40}$" ] ;
+  sh:property [ sh:path nlb:gapStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^(UNSUPPORTED|BLOCKED|PARTIAL)" ] ;
+  sh:property [ sh:path nlb:targetRepository ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rdfs:label ; sh:minCount 1 ] ;
+  sh:property [ sh:path nlb:referenceOrder ; sh:minCount 1 ; sh:class nlb:ReferenceOrder ] .
+
+nlbsh:PlanSourceCodeShape a sh:NodeShape ;
+  sh:targetClass nlb:MSACourt ;
+  sh:property [ sh:path nlb:courtCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^M[0-9]{1,2}$" ] ;
+  sh:property [ sh:path nlb:referenceOrder ; sh:minCount 1 ; sh:class nlb:ReferenceOrder ] .
+
+nlbsh:ClassCodeShape a sh:NodeShape ;
+  sh:targetClass nlb:BenchmarkClass ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "a KNOWN_CANDIDATE class needs exactly one upper-case nlb:classCode (generated order identity) and a target repository" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:claimStatus "KNOWN_CANDIDATE" .
+        FILTER ( NOT EXISTS { $this nlb:classCode ?c . FILTER(REGEX(?c, "^[A-Z][A-Z0-9-]{1,30}$")) }
+          || NOT EXISTS { $this nlb:targetRepository ?r } ) }""" ] .
+
+nlbsh:QualificationPlanShape a sh:NodeShape ;
+  sh:targetClass nlb:QualificationPlan ;
+  sh:property [ sh:path nlb:planRoot ; sh:minCount 1 ; sh:maxCount 1 ; sh:class sj:GoalCheckpoint ] ;
+  sh:property [ sh:path nlb:planCheckpoint ; sh:minCount 1 ; sh:maxCount 1 ; sh:class sj:GoalCheckpoint ] ;
+  sh:property [ sh:path nlb:msaCapability ; sh:minCount 1 ; sh:maxCount 1 ; sh:class sj:Capability ] ;
+  sh:property [ sh:path nlb:gapCapability ; sh:minCount 1 ; sh:maxCount 1 ; sh:class sj:Capability ] ;
+  sh:property [ sh:path nlb:planNamespace ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path nlb:planIdPrefix ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^[A-Z][A-Z0-9-]*-$" ] ;
+  sh:property [ sh:path nlb:planReplayPrefix ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+nlbsh:PlanEntryShape a sh:NodeShape ;
+  sh:targetClass nlb:PlanEntry ;
+  sh:property [ sh:path nlb:planOrder ; sh:minCount 1 ; sh:maxCount 1 ; sh:class sj:WorkOrder ] ;
+  sh:property [ sh:path nlb:planSource ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path nlb:planKind ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "CLASS_FAMILY_TIER" "MSA_COURT" "CAPABILITY_GAP" ) ] ;
+  sh:property [ sh:path nlb:referenceOrder ; sh:minCount 1 ; sh:class nlb:ReferenceOrder ] .
+
+# -- Coverage shapes: the CTQ tree, the measurement model, the MSA contract, the corpus split and the
+# -- class-count laws, so this declarative instrument judges every law the gates and the native
+# -- evaluator judge (a precondition of the MSA classification-agreement measurement).
+
+nlbsh:CtqShape a sh:NodeShape ;
+  sh:targetClass dflss:CTQ ;
+  sh:property [ sh:path nlb:operationalMeasure ; sh:minCount 1 ] ;
+  sh:property [ sh:path nlb:requiredResult ; sh:minCount 1 ] ;
+  sh:property [ sh:path nlb:verificationMethod ; sh:minCount 1 ] ;
+  sh:property [ sh:path nlb:negativeCase ; sh:minCount 1 ] ;
+  sh:property [ sh:path nlb:controlChart ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "p" "np" "c" "u" "g" "I-MR" ) ] .
+
+nlbsh:CtqTreeShape a sh:NodeShape ;
+  sh:targetNode nlb: ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "the operator's CTQ tree has fifteen CTQs" ;
+    sh:select """PREFIX dflss: <https://ggen.dev/dflss#>
+      PREFIX owl: <http://www.w3.org/2002/07/owl#>
+      SELECT $this WHERE { $this a owl:Ontology . { SELECT (COUNT(DISTINCT ?q) AS ?k) WHERE { ?q a dflss:CTQ } } FILTER(?k != 15) }""" ] .
+
+nlbsh:StageShape a sh:NodeShape ;
+  sh:targetClass nlb:Stage ;
+  sh:property [ sh:path nlb:ocelEventType ; sh:minCount 1 ] ;
+  sh:property [ sh:path nlb:coversMorphism ; sh:minCount 1 ] ;
+  sh:property [ sh:path nlb:instrumentedToday ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+  sh:property [ sh:path nlb:stageOrder ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+nlbsh:MeasurementModelShape a sh:NodeShape ;
+  sh:targetNode nlb: ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "the measurement model defines seven measured RTY stages and a receipt field set naming uname_sm, actuator_toolchain and factor_levels" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      PREFIX owl: <http://www.w3.org/2002/07/owl#>
+      SELECT $this WHERE { $this a owl:Ontology .
+        { { SELECT (COUNT(DISTINCT ?s) AS ?k) WHERE { ?s a nlb:Stage ; nlb:ocelEventType ?e ; nlb:coversMorphism ?m ; nlb:instrumentedToday ?i } } FILTER(?k != 7) }
+        UNION
+        { FILTER NOT EXISTS { ?r a nlb:ReceiptFieldSet ; nlb:requiredField "uname_sm" , "actuator_toolchain" , "factor_levels" } } }""" ] .
+
+nlbsh:MSAPropertyShape a sh:NodeShape ;
+  sh:targetClass nlb:MSAProperty ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "an MSA property has no MSA court with a command and a status for today" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { FILTER NOT EXISTS { ?m a nlb:MSACourt ; nlb:msaProperty $this ; nlb:statusToday ?s ; nlb:verifierCommand ?c } }""" ] .
+
+nlbsh:MSACourtStatusShape a sh:NodeShape ;
+  sh:targetClass nlb:MSACourt ;
+  sh:property [ sh:path nlb:statusToday ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "HOLDS_OBSERVED_DOMAIN" "FAILS" "FAILS_CLOSED" "UNMEASURED" ) ] ;
+  sh:property [ sh:path nlb:verifierCommand ; sh:minCount 1 ] ;
+  sh:property [ sh:path nlb:msaProperty ; sh:minCount 1 ; sh:class nlb:MSAProperty ] .
+
+nlbsh:SplitShape a sh:NodeShape ;
+  sh:targetSubjectsOf nlb:split ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "a Test member shares a subject digest or patch-id with a Train member of its class" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:split nlb:Test ; nlb:inClass ?c . ?a nlb:split nlb:Train ; nlb:inClass ?c .
+        { ?a nlb:subjectDigest ?x . $this nlb:subjectDigest ?x } UNION { ?a nlb:patchId ?y . $this nlb:patchId ?y } }""" ] .
+
+nlbsh:CorpusPlanShape a sh:NodeShape ;
+  sh:targetClass nlb:BenchmarkClass ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "a KNOWN_CANDIDATE lacks Dev(C), a reachable tier with and without synthetic members, or a cluster count" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      SELECT $this WHERE { $this nlb:claimStatus "KNOWN_CANDIDATE" .
+        FILTER NOT EXISTS { $this nlb:devRepo ?d ; nlb:reachableTier ?t ; nlb:reachableTierWithSynthetic ?t2 ; nlb:clusterCount ?cc } }""" ] .
+
+nlbsh:KnownClassCountShape a sh:NodeShape ;
+  sh:targetNode nlb: ;
+  sh:sparql [ a sh:SPARQLConstraint ;
+    sh:message "fewer than five KNOWN_CANDIDATE classes with a bound class toolchain" ;
+    sh:select """PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+      PREFIX owl: <http://www.w3.org/2002/07/owl#>
+      SELECT $this WHERE { $this a owl:Ontology . { SELECT (COUNT(DISTINCT ?c) AS ?k) WHERE { ?c a nlb:BenchmarkClass ; nlb:claimStatus "KNOWN_CANDIDATE" ; nlb:classToolchain ?t } } FILTER(?k < 5) }""" ] .

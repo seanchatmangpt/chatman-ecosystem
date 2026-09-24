@@ -1,0 +1,31 @@
+# Chatman Ecosystem v26.9.23 release subject (CE23-1): a ggen sub-project whose whole
+# law, vocabulary and templates come from the byte-identically vendored
+# chatman-ecosystem-release-pack (vendor/ggen-marketplace/VENDOR.toml). Consumer-owned
+# inputs only: release.ttl (release-instance facts), imports/fleet-classification.ttl
+# (byte copy of xaas docs/sjira/v26.9.23/fleet/classification.ttl at the pinned xaas
+# commit named in release.ttl er:classificationSource), the CE23-2 crosswalk inputs
+# imports/legacy-v26.9.1.ttl (the pack's lift/manifest_to_er.py over the release/v26.9.1
+# manifest blob of the base commit c59596f5) and imports/court-references.ttl
+# (courts/ce23_2/observe_court_refs.py: which GC-26.9.23 court scripts of xaas at the xaas
+# component commit execute which repository), feeding out/legacy-role-crosswalk.toml,
+# out/crosswalk.ttl and out/role-derivations.toml, and the compiled CE23 work orders
+# (sjira/compiled/*/orders.ttl, compile_prose output, feeding out/requirements.toml).
+# Render: (cd release/v26.9.23 && ggen sync run). ggen.lock pins the content hash of the
+# vendored pack together with every extra_ontologies input (FM-PACK-008 on drift): after an
+# intended input change (a re-vendored pack, a new classification import, recompiled
+# orders) delete ggen.lock and the stale out/ files, then sync. Outputs land in out/ and are
+# never hand-edited (FM-WRITE-005); manifest.toml and constitutional-role-crosswalk.toml in
+# this directory are symlinks to out/ so the release line resolves them
+# (scripts/release_line.py). Courts: sh release/v26.9.23/courts/CE23-1.sh (subject),
+# sh release/v26.9.23/courts/CE23-2.sh (16-role legacy crosswalk).
+[project]
+name = "chatman-ecosystem-release-v26-9-23"
+
+[ontology]
+source = "release.ttl"
+
+[templates]
+dir = "templates"
+
+[packs]
+chatman-ecosystem-release-pack = { path = "vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack", lock = true, extra_ontologies = ["imports/fleet-classification.ttl", "imports/legacy-v26.9.1.ttl", "imports/court-references.ttl", "sjira/compiled/chatman-ce23/orders.ttl", "sjira/compiled/chatman-ce23-12-bench/orders.ttl", "sjira/compiled/chatman-ce23-12-standings/orders.ttl"] }

@@ -173,11 +173,12 @@ class ValidatePlanFindingTests(unittest.TestCase):
 
 class MainCliTests(unittest.TestCase):
     """Exercises the argparse/main() entrypoint, which construct_plan-level unit
-    tests never invoke."""
+    tests never invoke. The v26.9.1 plan is named explicitly (CE23-7: the default is
+    the catalog pointer, which the root crown moves off v26.9.1)."""
 
     def test_main_prints_valid_plan_json_and_exits_zero(self) -> None:
         result = subprocess.run(
-            [sys.executable, str(ROOT / "scripts" / "plan_completion.py")],
+            [sys.executable, str(ROOT / "scripts" / "plan_completion.py"), "--release", "v26.9.1"],
             cwd=ROOT,
             capture_output=True,
             text=True,
@@ -190,7 +191,7 @@ class MainCliTests(unittest.TestCase):
 
     def test_main_release_only_excludes_portfolio_packets(self) -> None:
         result = subprocess.run(
-            [sys.executable, str(ROOT / "scripts" / "plan_completion.py"), "--release-only"],
+            [sys.executable, str(ROOT / "scripts" / "plan_completion.py"), "--release", "v26.9.1", "--release-only"],
             cwd=ROOT,
             capture_output=True,
             text=True,

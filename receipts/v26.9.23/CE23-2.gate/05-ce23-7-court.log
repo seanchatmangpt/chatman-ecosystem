@@ -1,0 +1,62 @@
+$ PYTHONDONTWRITEBYTECODE=1 sh release/v26.9.23/courts/CE23-7.sh
+CE23-7 court: subject 9fa340fe05f0edbd9d552d472311fa2138904c60 at /Users/sac/chatman-ecosystem
+OK F1: release/v26.9.1 git tree 7e0feef1b137bea72fe1cf22a599636f77b0e47c at HEAD
+OK F1: release/v26.9.1 file digest 27dbc487c10b0045 (minus __pycache__)
+OK F7: 6 fenced tools name no v26.9.1; 10 other bindings, all ledgered
+OK F2: verify_release --release v26.9.1 byte-identical (pin b9228c037729eb9f; differential vs aa4e3873b40c exit 0)
+OK F2: plan_release_only --release v26.9.1 byte-identical (pin 9964d23e2cb7040d; differential vs aa4e3873b40c exit 0)
+OK F2: plan_full --release v26.9.1 byte-identical (pin e19fe0040b989b3a; differential vs aa4e3873b40c exit 0)
+OK F2: verify_standing_evidence --release v26.9.1 byte-identical (pin 5f01cc9d72229072; differential vs aa4e3873b40c exit 0)
+OK F2: verify_west_workspace --release v26.9.1 byte-identical (pin fe0993e63c4d34c9; differential vs aa4e3873b40c exit 0)
+OK F2: survey_portfolio --release v26.9.1 byte-identical (pin 2958a08ef27fc923; differential vs aa4e3873b40c exit 0)
+OK F3: verify_release: default == --release v26.9.1 (exit 0)
+OK F3: plan_completion: default == --release v26.9.1 (exit 0)
+OK F3: verify_standing_evidence: default == --release v26.9.1 (exit 0)
+OK F3: verify_west_workspace: default == --release v26.9.1 (exit 0)
+OK F3: release_line: default == --release v26.9.1 (exit 0)
+OK F3: survey_portfolio: default == --release v26.9.1 (exit 0)
+OK F4: pointer->v26.9.23: verify_release (default) bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.23: plan_completion (default) bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.23: plan_completion --release-only (default) bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.23: verify_standing_evidence (default) bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.23: verify_west_workspace (default) bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.23: survey_portfolio (default) bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.23+flag: verify_release --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.23+flag: plan_completion --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.23+flag: plan_completion --release-only --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.23+flag: verify_standing_evidence --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.23+flag: verify_west_workspace --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.23+flag: survey_portfolio --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.1: verify_release --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.1: plan_completion --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.1: plan_completion --release-only --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.1: verify_standing_evidence --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.1: survey_portfolio --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.1 (self-hosted): verify_release --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.1 (self-hosted): plan_completion --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.1 (self-hosted): plan_completion --release-only --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.1 (self-hosted): verify_standing_evidence --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: pointer->v26.9.1 (self-hosted): survey_portfolio --release v26.9.23 bound to 26.9.23, no v26.9.1 read, no blind spot
+OK F4: no release/v26.9.1 in the tree: verify_release (default) exit 0, no v26.9.1 read, no blind spot
+OK F4: no release/v26.9.1 in the tree: plan_completion (default) exit 0, no v26.9.1 read, no blind spot
+OK F4: no release/v26.9.1 in the tree: verify_standing_evidence (default) exit 0, no v26.9.1 read, no blind spot
+OK F4: no release/v26.9.1 in the tree: verify_west_workspace (default) exit 0, no v26.9.1 read, no blind spot
+OK F5a: a v26.9.1 manifest under release/v26.9.23 refused: ['ECOSYSTEM_VERSION_MISMATCH']
+OK F5a: verify_release (unbound manifest) refused: exit 2, ECOSYSTEM_VERSION_PATH_UNBOUND
+OK F5b: verify_release refused: exit 2, RELEASE_TARGET_CONFLICT
+OK F5b: plan_completion refused: exit 2, RELEASE_TARGET_CONFLICT
+OK F5b: verify_standing_evidence refused: exit 2, RELEASE_TARGET_CONFLICT
+OK F5b: survey_portfolio refused: exit 2, RELEASE_TARGET_CONFLICT
+OK F5b: verify_west_workspace refused: exit 2, RELEASE_TARGET_CONFLICT
+OK F5c: plan_completion (cross-line fleet) refused: exit 2, RELEASE_TARGET_CONFLICT
+OK F5c: survey_portfolio (cross-line crosswalk) refused: exit 2, RELEASE_TARGET_CONFLICT
+OK F5d: verify_west_workspace (projection sourced from v26.9.1) refused: exit 1, REFUSED:WEST_RELEASE_SOURCE_MISMATCH
+OK F5e: release_line (invalid line) refused: exit 2, RELEASE_LINE_INVALID
+OK F6: verify_release --release v26.9.23 at the subject: exit 0 bound to 26.9.23
+OK F6: plan_completion --release v26.9.23 at the subject: typed RELEASE_INPUT_MISSING:release/v26.9.23/fleet-policy.toml
+OK F6: verify_standing_evidence --release v26.9.23 at the subject: exit 0 bound to 26.9.23
+OK F6: verify_west_workspace --release v26.9.23 at the subject: typed REFUSED:WEST_RELEASE_SHA_MISMATCH
+OK F6: survey_portfolio --release v26.9.23 at the subject: typed RELEASE_INPUT_MISSING:release/v26.9.23/fleet-policy.toml
+OK F8: unittest Ran 496 (floor 470) OK
+CE23-7 ALIVE
+exit=0

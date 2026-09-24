@@ -7,6 +7,7 @@ Version: `0.1.0`
 | Repository | Role | Standing |
 |---|---|---|
 | `repository:affidavit` | evidence-standing-attestation | `Observed` |
+| `repository:agent-lightning` | external-agentic-rl-commercial-workload | `Observed` |
 | `repository:agent-scaffold` | doctrine-projection-tool | `Candidate` |
 | `repository:ai-agent-boilerplate` | behavioral-fixture | `Candidate` |
 | `repository:autofde` | persistent-runtime-and-brce-boundary | `Observed` |
@@ -25,6 +26,7 @@ Version: `0.1.0`
 | `repository:hyperlane-broadcast` | rejected-ephemeral-broadcast-wrapper | `Rejected` |
 | `repository:lifegym` | bounded-domain-gym | `Observed` |
 | `repository:mcpkit` | mcp-conformance-checkpoint | `Candidate` |
+| `repository:mfact` | receipted-formal-mathematics-certification | `Observed` |
 | `repository:mfw` | manufacturing-work-orchestration | `Observed` |
 | `repository:rrgym` | bounded-domain-gym | `Observed` |
 | `repository:rust-enterprise-boilerplate` | architecture-pattern | `Candidate` |
@@ -40,15 +42,20 @@ Version: `0.1.0`
 
 | Document | Path | Canonical |
 |---|---|---|
+| `document:agi-academy` | `docs/AGI-ACADEMY.md` | false |
 | `document:api-surfaces` | `docs/API-SURFACES.md` | false |
 | `document:architecture` | `docs/ARCHITECTURE.md` | true |
+| `document:bfcc` | `docs/BFCC.md` | false |
 | `document:constitution` | `CONSTITUTION.md` | true |
 | `document:development` | `docs/DEVELOPMENT.md` | false |
 | `document:docs-maintenance` | `docs/DOCS-MAINTENANCE.md` | false |
 | `document:documentation-inventory` | `docs/DOCUMENTATION-INVENTORY.md` | true |
+| `document:formal-discovery-factory` | `docs/FORMAL-DISCOVERY-FACTORY.md` | false |
+| `document:frontier-release-factory` | `docs/FRONTIER-RELEASE-FACTORY.md` | false |
 | `document:ggen-service` | `docs/GGEN-SERVICE.md` | false |
 | `document:how-to-build-a-dyson-sphere` | `docs/how-to-build-a-dyson-sphere/README.md` | false |
 | `document:hyperdimensional-information-encryption` | `docs/architecture/hyperdimensional-information-encryption.md` | false |
+| `document:no-agent-coding` | `books/no-agent-coding/src/README.md` | false |
 | `document:observability` | `docs/OBSERVABILITY.md` | false |
 | `document:ocel-process-evidence` | `docs/OCEL-PROCESS-EVIDENCE.md` | false |
 | `document:operations` | `docs/OPERATIONS.md` | true |

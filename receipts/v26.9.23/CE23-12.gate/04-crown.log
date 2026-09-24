@@ -1,0 +1,12 @@
+$ sh release/v26.9.23/courts/CE23-12.sh --receipt-out receipts/v26.9.23/CE23-12.gate/court-receipt-CE23-12.json
+OK E0 no-LLM environment: env -i, PATH=/tmp/ce23-12-crown-nax2vpdk/bin:/usr/bin:/bin (python3, git, ggen only), no LLM client reachable
+OK S0 subject 0cc590b51554be855aa8a3bdd99869bcb9a6d11d clean over ['release/v26.9.23/bench', 'release/v26.9.23/courts', 'release/v26.9.23/sjira']; bench tree dee59fef7fac2ab39ced5f67635a0cbab4b956d4
+OK P1 both CE23-12 prose units byte-equal their pins and goal.ttl's sj:sourceSha256 (4146d688.., 80091c45..)
+OK T1 all 22 committed propositions required by ce:CE23-12 are traced by 169 design nodes; every cited proposition is a committed, span-verified candidate
+OK X2 BENCHMARK_DESIGN_ALIVE does not imply NON_LLM_OPERATIONAL_ALIVE: all 5 KNOWN_CANDIDATE tuples are UNKNOWN at n = 0, no ALIVE standing exists in the design graph, the report projects every class UNKNOWN
+OK C-BenchmarkDesign release/v26.9.23/courts/CE23-12-BenchmarkDesign.sh exit 0 in 110.0s (25 OK, 0 REFUSED, 0 UNKNOWN); its receipt is ALIVE at the exact head 0cc590b51554 / bench tree dee59fef7fac and records non_llm_operational UNKNOWN (n = 0) for all 5 classes
+OK C-MSAContract release/v26.9.23/courts/CE23-12-MSAContract.sh exit 0 in 383.9s (25 OK, 0 REFUSED, 0 UNKNOWN); its receipt is ALIVE at the exact head 0cc590b51554 / bench tree dee59fef7fac and records non_llm_operational UNKNOWN (n = 0) for all 5 classes
+OK C-GeneratedQualificationPlan release/v26.9.23/courts/CE23-12-GeneratedQualificationPlan.sh exit 0 in 62.4s (26 OK, 0 REFUSED, 0 UNKNOWN); its receipt is ALIVE at the exact head 0cc590b51554 / bench tree dee59fef7fac and records non_llm_operational UNKNOWN (n = 0) for all 5 classes
+OK AV crown receipt admission: the exact-head receipt admitted; stale subject, stale bench tree, wrong conjunct, REFUSED standing, a class claimed NON_LLM_OPERATIONAL_ALIVE, a missing class and a varied OS factor each refused
+CE23-12 ALIVE: 9 OK, 0 REFUSED, 0 UNKNOWN in 557.1s; standing BENCHMARK_DESIGN_ALIVE; NON_LLM_OPERATIONAL_ALIVE UNKNOWN for every class (n = 0)
+exit=0

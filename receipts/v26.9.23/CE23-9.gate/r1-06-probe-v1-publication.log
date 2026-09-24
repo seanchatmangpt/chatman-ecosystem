@@ -1,0 +1,31 @@
+$ python3 receipts/v26.9.23/CE23-9.gate/probe_v1_publication.py --scratch <scratch> --rev b001d01872acc77c530f4efc8586f45d154f3bf2 --rev HEAD --mutate-pending-refuse
+PROBE subject d2f36659e0860f0c456137d50be8856da1d86839 at /Users/sac/chatman-ecosystem
+MARKET canonical: origin/release/v26.9.23-int=e3988aba4a850095d94d3b18a4495766d13e4d5e heads/release/v26.9.23-int=6cfd0b7ad3891611486994240b7aed6b5e6dc3e6
+MARKET published: origin/release/v26.9.23-int=6cfd0b7ad3891611486994240b7aed6b5e6dc3e6 heads/release/v26.9.23-int=6cfd0b7ad3891611486994240b7aed6b5e6dc3e6
+MARKET pending: origin/release/v26.9.23-int=09d4dd2e7023175153982b8efee35806918187a9 heads/release/v26.9.23-int=6cfd0b7ad3891611486994240b7aed6b5e6dc3e6
+MARKET diverged: origin/release/v26.9.23-int=d62b5657f1164bc5407ed5ada8d35bb09a18898d heads/release/v26.9.23-int=6cfd0b7ad3891611486994240b7aed6b5e6dc3e6
+COURT b001d01872acc77c530f4efc8586f45d154f3bf2 MARKET canonical: refused=['VENDOR_COMMIT_UNPUBLISHED'] unknown=[]
+    REFUSED[VENDOR_COMMIT_UNPUBLISHED] V1: 6cfd0b7ad3891611486994240b7aed6b5e6dc3e6 is not on refs/remotes/origin/release/v26.9.23-int
+COURT b001d01872acc77c530f4efc8586f45d154f3bf2 MARKET published: refused=[] unknown=[]
+    OK V1: chatman-ecosystem-release-pack packs/chatman-ecosystem-release-pack tree 480d08dd99c28ddbfcf093e4eafe25d271df879d = marketplace 6cfd0b7ad389 on origin/release/v26.9.23-int
+COURT b001d01872acc77c530f4efc8586f45d154f3bf2 MARKET pending: refused=['VENDOR_COMMIT_UNPUBLISHED'] unknown=[]
+    REFUSED[VENDOR_COMMIT_UNPUBLISHED] V1: 6cfd0b7ad3891611486994240b7aed6b5e6dc3e6 is not on refs/remotes/origin/release/v26.9.23-int
+COURT b001d01872acc77c530f4efc8586f45d154f3bf2 MARKET diverged: refused=['VENDOR_COMMIT_UNPUBLISHED'] unknown=[]
+    REFUSED[VENDOR_COMMIT_UNPUBLISHED] V1: 6cfd0b7ad3891611486994240b7aed6b5e6dc3e6 is not on refs/remotes/origin/release/v26.9.23-int
+COURT HEAD MARKET canonical: refused=[] unknown=['VENDOR_PUBLICATION_PENDING']
+    UNKNOWN[VENDOR_PUBLICATION_PENDING] V1: chatman-ecosystem-release-pack 6cfd0b7ad3891611486994240b7aed6b5e6dc3e6 is not yet on refs/remotes/origin/release/v26.9.23-int; refs/heads/release/v26.9.23-int (6cfd0b7ad389) holds it and fast-forwards refs/remotes/origi
+COURT HEAD MARKET published: refused=[] unknown=[]
+    OK V1: chatman-ecosystem-release-pack packs/chatman-ecosystem-release-pack tree 480d08dd99c28ddbfcf093e4eafe25d271df879d = marketplace 6cfd0b7ad389 on origin/release/v26.9.23-int
+COURT HEAD MARKET pending: refused=[] unknown=['VENDOR_PUBLICATION_PENDING']
+    UNKNOWN[VENDOR_PUBLICATION_PENDING] V1: chatman-ecosystem-release-pack 6cfd0b7ad3891611486994240b7aed6b5e6dc3e6 is not yet on refs/remotes/origin/release/v26.9.23-int; refs/heads/release/v26.9.23-int (6cfd0b7ad389) holds it and fast-forwards refs/remotes/origi
+COURT HEAD MARKET diverged: refused=['VENDOR_COMMIT_OFF_REF'] unknown=[]
+    REFUSED[VENDOR_COMMIT_OFF_REF] V1: chatman-ecosystem-release-pack 6cfd0b7ad3891611486994240b7aed6b5e6dc3e6 is on neither refs/remotes/origin/release/v26.9.23-int nor a fast-forward of it (refs/heads/release/v26.9.23-int at 6cfd0b7ad389, diverged from refs/remo
+COURT HEAD+pending->refuse MARKET canonical: refused=['VENDOR_PUBLICATION_PENDING'] unknown=[]
+    REFUSED[VENDOR_PUBLICATION_PENDING] V1: chatman-ecosystem-release-pack 6cfd0b7ad3891611486994240b7aed6b5e6dc3e6 is not yet on refs/remotes/origin/release/v26.9.23-int; refs/heads/release/v26.9.23-int (6cfd0b7ad389) holds it and fast-forwards refs/remotes/origi
+COURT HEAD+pending->refuse MARKET published: refused=[] unknown=[]
+    OK V1: chatman-ecosystem-release-pack packs/chatman-ecosystem-release-pack tree 480d08dd99c28ddbfcf093e4eafe25d271df879d = marketplace 6cfd0b7ad389 on origin/release/v26.9.23-int
+COURT HEAD+pending->refuse MARKET pending: refused=['VENDOR_PUBLICATION_PENDING'] unknown=[]
+    REFUSED[VENDOR_PUBLICATION_PENDING] V1: chatman-ecosystem-release-pack 6cfd0b7ad3891611486994240b7aed6b5e6dc3e6 is not yet on refs/remotes/origin/release/v26.9.23-int; refs/heads/release/v26.9.23-int (6cfd0b7ad389) holds it and fast-forwards refs/remotes/origi
+COURT HEAD+pending->refuse MARKET diverged: refused=['VENDOR_COMMIT_OFF_REF'] unknown=[]
+    REFUSED[VENDOR_COMMIT_OFF_REF] V1: chatman-ecosystem-release-pack 6cfd0b7ad3891611486994240b7aed6b5e6dc3e6 is on neither refs/remotes/origin/release/v26.9.23-int nor a fast-forward of it (refs/heads/release/v26.9.23-int at 6cfd0b7ad389, diverged from refs/remo
+exit=0

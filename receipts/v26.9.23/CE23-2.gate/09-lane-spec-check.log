@@ -1,0 +1,3 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 receipts/v26.9.23/CE23-2.gate/lane_spec_check.py
+LANE_SPEC_CHECK OK: 16 rows = 16 manifest (role, component, sha) triples; ['SUCCESSOR']
+exit=0

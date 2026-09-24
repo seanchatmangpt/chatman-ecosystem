@@ -1,0 +1,31 @@
+$ sh receipts/v26.9.23/CE23-0.gate/court_mutants.sh
+CAUGHT CM1-root-set:
+    REFUSED[AV_MUTANT_ADMITTED] AV M3 (the local lineage merged into the head) judged REFUSED ['LINEAGE_RELATION_CHANGED'], expected REFUSED ['FOREIGN_ROOT_IN_HEAD', 'LINEAGE_RELATION_CHANGED']
+    REFUSED[AV_MUTANT_ADMITTED] AV M7 (an orphan head) judged REFUSED ['BRANCH_DIVERGED', 'HEAD_NOT_ON_BASE', 'SHADOW_LINE_NOT_CONTINUED'], expected REFUSED ['HEAD_NOT_ON_BASE', 'FOREIGN_ROOT_IN_HEAD']
+CAUGHT CM2-publication:
+    REFUSED[AV_MUTANT_ADMITTED] AV M13 (the local lineage published) judged ALIVE [], expected REFUSED ['LINEAGE_PUBLICATION_CHANGED']
+CAUGHT CM3-receipt-claims:
+    REFUSED[AV_MUTANT_ADMITTED] AV M11 (the sealed receipt claims a descendant lineage) judged REFUSED ['RECEIPT_STANDING_UNDERIVED'], expected REFUSED ['RECEIPT_CLAIM_MISMATCH']
+    REFUSED[AV_MUTANT_ADMITTED] AV M27 (the sealed receipt claims to supersede a receipt that was not at its subject) judged ALIVE [], expected REFUSED ['RECEIPT_CLAIM_MISMATCH']
+CAUGHT CM4-diverged-line:
+    REFUSED[AV_MUTANT_ADMITTED] AV M9 (the published line diverged from the head) judged ALIVE [], expected REFUSED ['BRANCH_DIVERGED']
+CAUGHT CM5-shadow-continuation:
+    REFUSED[AV_MUTANT_ADMITTED] AV M18 (the int rebuilt on the base, dropping the shadow-era line) judged REFUSED ['BRANCH_DIVERGED'], expected REFUSED ['SHADOW_LINE_NOT_CONTINUED']
+CAUGHT CM6-evidence-rule:
+    REFUSED[AV_MUTANT_ADMITTED] AV M6r (every archive ref dropped while the commits are still in the object store (the twin of M6)) judged REFUSED ['SHADOW_LINEAGE_UNPRESERVED'], expected REFUSED ['LINEAGE_UNPRESERVED', 'SHADOW_LINEAGE_UNPRESERVED']
+CAUGHT CM7-unmarked-receipt:
+    REFUSED[AV_MUTANT_ADMITTED] AV M22 (the sealed receipt claims a descendant lineage and its court marker is rewritten (M11 without the marker)) judged ALIVE [], expected REFUSED ['RECEIPT_NOT_COURT_EMITTED']
+    REFUSED[AV_MUTANT_ADMITTED] AV M23 (the sealed receipt claims a descendant lineage and its court block is deleted) judged ALIVE [], expected REFUSED ['RECEIPT_NOT_COURT_EMITTED']
+    REFUSED[AV_MUTANT_ADMITTED] AV M24 (the sealed receipt's subject is a local-lineage commit and its court marker is rewritten (M19 without the marker)) judged ALIVE [], expected REFUSED ['RECEIPT_NOT_COURT_EMITTED']
+CAUGHT CM8-exemption-unpinned:
+    REFUSED[AV_MUTANT_ADMITTED] AV M22 (the sealed receipt claims a descendant lineage and its court marker is rewritten (M11 without the marker)) judged ALIVE [], expected REFUSED ['RECEIPT_NOT_COURT_EMITTED']
+    REFUSED[AV_MUTANT_ADMITTED] AV M23 (the sealed receipt claims a descendant lineage and its court block is deleted) judged ALIVE [], expected REFUSED ['RECEIPT_NOT_COURT_EMITTED']
+    REFUSED[AV_MUTANT_ADMITTED] AV M24 (the sealed receipt's subject is a local-lineage commit and its court marker is rewritten (M19 without the marker)) judged ALIVE [], expected REFUSED ['RECEIPT_NOT_COURT_EMITTED']
+CAUGHT CM9-court-digest:
+    REFUSED[AV_MUTANT_ADMITTED] AV M25 (the sealed receipt names a court.py that is not the court committed at its subject) judged ALIVE [], expected REFUSED ['RECEIPT_COURT_MISMATCH']
+CAUGHT CM10-standing-derivation:
+    REFUSED[AV_MUTANT_ADMITTED] AV M26 (the sealed receipt records a refused clause and keeps its ALIVE standing) judged ALIVE [], expected REFUSED ['RECEIPT_STANDING_UNDERIVED']
+CAUGHT CM11-supersession:
+    REFUSED[AV_MUTANT_ADMITTED] AV M27 (the sealed receipt claims to supersede a receipt that was not at its subject) judged ALIVE [], expected REFUSED ['RECEIPT_CLAIM_MISMATCH']
+COURT_MUTANTS CAUGHT 11/11
+exit=0

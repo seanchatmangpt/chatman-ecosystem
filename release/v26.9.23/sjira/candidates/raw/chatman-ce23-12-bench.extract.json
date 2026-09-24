@@ -1,0 +1,133 @@
+[
+ {
+  "boundary_class": "LastMile",
+  "kind": "Invariant",
+  "quote": "The existing no-LLM episode is necessary but not sufficient.",
+  "required_by": "CE23-12",
+  "statement": "A single successful no-LLM episode does not establish that non-LLM feature completion is operational as a class."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Metric",
+  "quote": "The critical point is **class transfer**. Otherwise we have memorized a fixture.",
+  "required_by": "CE23-12",
+  "statement": "Class transfer to unseen members is the critical CTQ of the benchmark."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "Define exactly which work classes are claimed KNOWN/non-LLM",
+  "required_by": "CE23-12",
+  "statement": "The DEFINE phase names exactly which work classes are claimed KNOWN and non-LLM."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "Instrument every transition using OCEL + receipts",
+  "required_by": "CE23-12",
+  "statement": "The MEASURE phase instruments every transition with OCEL events and receipts."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Object",
+  "quote": "The DfLSS **Critical-to-Quality** characteristics should be:",
+  "required_by": "CE23-12",
+  "statement": "The CTQ tree lists fifteen critical-to-quality characteristics with operational measures and required results."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Evidence",
+  "quote": "Build a corpus of genuinely known transformations, not one fixture.",
+  "required_by": "CE23-12",
+  "statement": "The golden corpus B1 holds many genuinely known transformations per class, not one fixture."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Falsifier",
+  "quote": "A deterministic worker that “always succeeds” is worse than UNKNOWN.",
+  "required_by": "CE23-12",
+  "statement": "A deterministic worker that accepts invalid work is worse than routing it UNKNOWN (B2 false-accept = 0)."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "Run a designed experiment rather than random chaos.",
+  "required_by": "CE23-12",
+  "statement": "Variation robustness (B3) is measured with a designed experiment over controlled factors."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "not uncontrolled continuation.",
+  "required_by": "CE23-12",
+  "statement": "Every morphism edge failure (B4) ends in a typed state, never uncontrolled continuation."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Postcondition",
+  "quote": "Build class machinery from training/known examples.",
+  "required_by": "CE23-12",
+  "statement": "Unseen-member transfer (B5) freezes class machinery built from training members before execution on unseen instances."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Invariant",
+  "quote": "A non-LLM system is only safe if it knows when **not** to apply the known machinery.",
+  "required_by": "CE23-12",
+  "statement": "Near-neighbour non-members (B6) must route UNKNOWN; the admission boundary is measured."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Metric",
+  "quote": "The latter should be treated as a safety-critical CTQ.",
+  "required_by": "CE23-12",
+  "statement": "The false-KNOWN admission rate is a safety-critical CTQ."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Metric",
+  "quote": "So the end-to-end capability is substantially weaker than the individual components appear.",
+  "required_by": "CE23-12",
+  "statement": "Rolled throughput yield across stages, not a single success rate, is reported."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Metric",
+  "quote": "Use \\(C_{pk}\\) where meaningful, and binomial defect measures for discrete correctness.",
+  "required_by": "CE23-12",
+  "statement": "Cpk is used only where meaningful; discrete correctness uses binomial defect measures."
+ },
+ {
+  "boundary_class": "Successor",
+  "kind": "Transition",
+  "quote": "rather than silently assuming ALIVE forever.",
+  "statement": "After qualification, statistical process control monitors drift and a special cause triggers standing requalification."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Metric",
+  "quote": "Those are **initial engineering thresholds**, not timeless laws.",
+  "required_by": "CE23-12",
+  "statement": "The first-crown thresholds are initial engineering thresholds, later replaced by control limits from the observed process."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Exclusion",
+  "quote": "Do not make this another hand-written benchmark suite.",
+  "required_by": "CE23-12",
+  "statement": "The benchmark is not a hand-written suite."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Invariant",
+  "quote": "The benchmark definitions, case generators, reports, and CI matrix should be projections.",
+  "required_by": "CE23-12",
+  "statement": "Benchmark definitions, case generators, reports and the CI matrix are projections of canonical RDF."
+ },
+ {
+  "boundary_class": "Successor",
+  "kind": "Successor",
+  "quote": "Once a class reaches that state, **the LLM should no longer be used to solve members of that class**.",
+  "statement": "Once a class is qualified and SPC-controlled, the LLM is no longer used to solve its members."
+ }
+]

@@ -1,0 +1,58 @@
+$ s=$(mktemp -d) && GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi sh release/v26.9.23/sjira/compile_check.sh --write "$s/runA" && GGEN_IGNITER_DIR=/Users/sac/wt/v26922/v23/CE-INTAKE-gi sh release/v26.9.23/sjira/compile_check.sh --write "$s/runB" && diff -r "$s/runA" "$s/runB" && diff -r "$s/runA" release/v26.9.23/sjira/compiled && (cd "$s/runA" && shasum -a 256 */*.ttl); rc=$?; rm -rf "$s"; exit $rc
+== compile_prose  chatman-ce23
+ADMITTED: 46 propositions (45 required, 1 not required)
+KINDS: Authority=1 Dependency=3 Evidence=9 Exclusion=4 Falsifier=1 Invariant=7 Metric=1 Object=2 Postcondition=13 State=4 Successor=1
+REQUIRED_BY: CE23-0=3 CE23-1=3 CE23-10=1 CE23-11=2 CE23-2=4 CE23-3=5 CE23-4=3 CE23-5=3 CE23-6=7 CE23-7=2 CE23-8=2 CE23-9=2 GC-CE-26.9.23=8
+DELTA: 21 required Postcondition/Invariant/Falsifier, 0 witnessed ALIVE (0 ALIVE receipts read), 21 work orders
+propositions.ttl sha256:e32e8cac3624c387863463690d2c9930b90033ee1e83bb14c911360821297aae
+orders.ttl sha256:09250f7fbd0f7b45e3e8f485c93ba0954276f6d01be67fc52649642241aaa809
+WROTE: /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runA/chatman-ce23/propositions.ttl, /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runA/chatman-ce23/orders.ttl
+== compile_prose  chatman-ce23-12-bench
+ADMITTED: 19 propositions (17 required, 2 not required)
+KINDS: Evidence=1 Exclusion=1 Falsifier=1 Invariant=3 Metric=5 Object=1 Postcondition=5 Successor=1 Transition=1
+REQUIRED_BY: CE23-12=17
+DELTA: 9 required Postcondition/Invariant/Falsifier, 0 witnessed ALIVE (0 ALIVE receipts read), 9 work orders
+propositions.ttl sha256:4c124874c986a70e6687c9d6ac7b46e660d963745892d5b5b9cd911908cf6018
+orders.ttl sha256:6201a0732fd2181142d90e61dfb77d8d73dffefc2e4af0e946715ff59438b432
+WROTE: /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runA/chatman-ce23-12-bench/propositions.ttl, /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runA/chatman-ce23-12-bench/orders.ttl
+== compile_prose  chatman-ce23-12-standings
+ADMITTED: 30 propositions (29 required, 1 not required)
+KINDS: Evidence=2 Exclusion=1 Falsifier=7 Invariant=3 Metric=1 Postcondition=14 State=1 Successor=1
+REQUIRED_BY: CE23-12=5 CE23-12-BenchmarkDesign=8 CE23-12-GeneratedQualificationPlan=8 CE23-12-MSAContract=8
+DELTA: 24 required Postcondition/Invariant/Falsifier, 0 witnessed ALIVE (0 ALIVE receipts read), 24 work orders
+propositions.ttl sha256:c92d6c8fa3f056335d7cae3e1b309271144754cc00d7bfb3f41639fae02af12c
+orders.ttl sha256:d7643c129b4620f820776d155863383f6ff5e4ab5551f0a1a92e8085de3130b5
+WROTE: /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runA/chatman-ce23-12-standings/propositions.ttl, /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runA/chatman-ce23-12-standings/orders.ttl
+COMPILE_WRITE OK: /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runA/{chatman-ce23,chatman-ce23-12-bench,chatman-ce23-12-standings}
+== compile_prose  chatman-ce23
+ADMITTED: 46 propositions (45 required, 1 not required)
+KINDS: Authority=1 Dependency=3 Evidence=9 Exclusion=4 Falsifier=1 Invariant=7 Metric=1 Object=2 Postcondition=13 State=4 Successor=1
+REQUIRED_BY: CE23-0=3 CE23-1=3 CE23-10=1 CE23-11=2 CE23-2=4 CE23-3=5 CE23-4=3 CE23-5=3 CE23-6=7 CE23-7=2 CE23-8=2 CE23-9=2 GC-CE-26.9.23=8
+DELTA: 21 required Postcondition/Invariant/Falsifier, 0 witnessed ALIVE (0 ALIVE receipts read), 21 work orders
+propositions.ttl sha256:e32e8cac3624c387863463690d2c9930b90033ee1e83bb14c911360821297aae
+orders.ttl sha256:09250f7fbd0f7b45e3e8f485c93ba0954276f6d01be67fc52649642241aaa809
+WROTE: /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runB/chatman-ce23/propositions.ttl, /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runB/chatman-ce23/orders.ttl
+== compile_prose  chatman-ce23-12-bench
+ADMITTED: 19 propositions (17 required, 2 not required)
+KINDS: Evidence=1 Exclusion=1 Falsifier=1 Invariant=3 Metric=5 Object=1 Postcondition=5 Successor=1 Transition=1
+REQUIRED_BY: CE23-12=17
+DELTA: 9 required Postcondition/Invariant/Falsifier, 0 witnessed ALIVE (0 ALIVE receipts read), 9 work orders
+propositions.ttl sha256:4c124874c986a70e6687c9d6ac7b46e660d963745892d5b5b9cd911908cf6018
+orders.ttl sha256:6201a0732fd2181142d90e61dfb77d8d73dffefc2e4af0e946715ff59438b432
+WROTE: /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runB/chatman-ce23-12-bench/propositions.ttl, /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runB/chatman-ce23-12-bench/orders.ttl
+== compile_prose  chatman-ce23-12-standings
+ADMITTED: 30 propositions (29 required, 1 not required)
+KINDS: Evidence=2 Exclusion=1 Falsifier=7 Invariant=3 Metric=1 Postcondition=14 State=1 Successor=1
+REQUIRED_BY: CE23-12=5 CE23-12-BenchmarkDesign=8 CE23-12-GeneratedQualificationPlan=8 CE23-12-MSAContract=8
+DELTA: 24 required Postcondition/Invariant/Falsifier, 0 witnessed ALIVE (0 ALIVE receipts read), 24 work orders
+propositions.ttl sha256:c92d6c8fa3f056335d7cae3e1b309271144754cc00d7bfb3f41639fae02af12c
+orders.ttl sha256:d7643c129b4620f820776d155863383f6ff5e4ab5551f0a1a92e8085de3130b5
+WROTE: /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runB/chatman-ce23-12-standings/propositions.ttl, /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runB/chatman-ce23-12-standings/orders.ttl
+COMPILE_WRITE OK: /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.oOCkhxeNKW/runB/{chatman-ce23,chatman-ce23-12-bench,chatman-ce23-12-standings}
+6201a0732fd2181142d90e61dfb77d8d73dffefc2e4af0e946715ff59438b432  chatman-ce23-12-bench/orders.ttl
+4c124874c986a70e6687c9d6ac7b46e660d963745892d5b5b9cd911908cf6018  chatman-ce23-12-bench/propositions.ttl
+d7643c129b4620f820776d155863383f6ff5e4ab5551f0a1a92e8085de3130b5  chatman-ce23-12-standings/orders.ttl
+c92d6c8fa3f056335d7cae3e1b309271144754cc00d7bfb3f41639fae02af12c  chatman-ce23-12-standings/propositions.ttl
+09250f7fbd0f7b45e3e8f485c93ba0954276f6d01be67fc52649642241aaa809  chatman-ce23/orders.ttl
+e32e8cac3624c387863463690d2c9930b90033ee1e83bb14c911360821297aae  chatman-ce23/propositions.ttl
+exit=0

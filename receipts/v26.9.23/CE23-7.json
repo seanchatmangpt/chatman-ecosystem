@@ -1,0 +1,281 @@
+{
+ "identity": {
+  "subject": "CE23-7/version-fence-chatman-tooling (skeptic repair r1)",
+  "repo": "seanchatmangpt/chatman-ecosystem",
+  "subject_sha": "d8cbc54591a49f97bd7c3e948888095cf6b8eaeb",
+  "base_sha": "aa4e3873b40c3406378800ca82facc366293b564",
+  "branch": "release/v26.9.23-int",
+  "checkout": "/Users/sac/chatman-ecosystem",
+  "gate": "ce:CE23-7 (release/v26.9.23/sjira/goal.ttl), sj:courtCommand 'sh release/v26.9.23/courts/CE23-7.sh'",
+  "work_order": "WO-E4849CA80DD47CB7 (release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl; subject P-56e51d07af69f595)",
+  "repair_of": {
+   "refuted_subject": "e3a51dc5a06a8f9bad4764269f8ef8f76f0e3a32",
+   "refuted_receipt_commit": "1a43c41afc638bdcd6e7dadc91509da627909637",
+   "refuted_by": "independent skeptic, step CE23-7 (mutant MX1: repository-anchored declared_manifest read admitted, 52 OK, CE23-7 ALIVE)",
+   "prior_logs_kept": "receipts/v26.9.23/CE23-7.gate/00-06 and mutate.sh stay as recorded for e3a51dc5"
+  },
+  "spec": "/private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/CE23-7-version-fence.txt (scan-verified; prototype ce23-7-proto.diff ported and extended)"
+ },
+ "authority": {
+  "ceiling": "CONSTRUCT",
+  "grant": "workflow repair step CE23-7 (operator directives 2026-09-23/24: one canonical checkout per repository, commits with git commit -F, no push/rebase/reset/force/stash); WO-E4849CA80DD47CB7 sj:authorityCeiling CONSTRUCT",
+  "actor": "claude-code subagent, workflow repair step CE23-7"
+ },
+ "consequence": {
+  "commits": [
+   "e3a51dc5a06a8f9bad4764269f8ef8f76f0e3a32",
+   "2bcdb6159716b007d58c84d3da9d033478f748be",
+   "d8cbc54591a49f97bd7c3e948888095cf6b8eaeb"
+  ],
+  "repair_commits": {
+   "2bcdb6159716b007d58c84d3da9d033478f748be": "court judges every v26.9.1 read wherever it lives; self-hosted F4 runs; mutant corpus in the court; path-free expected_version",
+   "d8cbc54591a49f97bd7c3e948888095cf6b8eaeb": "court fixtures and tests independent of the subject's own pointer state (found by MX1b)"
+  },
+  "files_changed": [
+   "HANDWRITTEN.md",
+   "release/v26.9.23/courts/CE23-7.sh",
+   "release/v26.9.23/courts/ce23_7/audit_run.py",
+   "release/v26.9.23/courts/ce23_7/court.py",
+   "release/v26.9.23/courts/ce23_7/fence.toml",
+   "release/v26.9.23/courts/ce23_7/mutate.sh",
+   "scripts/plan_completion.py",
+   "scripts/release_line.py",
+   "scripts/survey_portfolio.py",
+   "scripts/verify_release.py",
+   "scripts/verify_standing_evidence.py",
+   "scripts/verify_west_workspace.py",
+   "tests/test_ce23_7_probe.py",
+   "tests/test_completion_fanout.py",
+   "tests/test_release_control.py",
+   "tests/test_release_line.py"
+  ],
+  "remote_effects": [],
+  "local_effects": [
+   "scratch only under /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/ (gate logs before copy, mutant archive repos mut-r1 and mut-prior, a pointer-flipped scratch copy)",
+   "the court's own temp trees under $TMPDIR/ce23-7-court.* (removed on exit)"
+  ],
+  "unchanged_by_design": [
+   "release/v26.9.1/** (git tree 7e0feef1b137bea72fe1cf22a599636f77b0e47c, court F1)",
+   "catalog/west.toml pointer (flip belongs to the root-crown lane)",
+   "verify_calendar_release.py REQUIRED_GATES (self-sourcing it is vacuous)",
+   "verify_platform_reconstitution.py:177 (v1 benchmark fixture pin, CHESTERTON_FENCE ledger row)",
+   "Cargo.toml / VERSION (verify_v26_8_23 pins 26.8.23)"
+  ],
+  "post_seal": "this receipt and the r1-* gate logs are committed after sealing on top of the subject; a commit cannot carry its own hash"
+ },
+ "skeptic_answers": [
+  {
+   "reason": "court counts a v26.9.1 read only under the tree the tool runs in (check_bound :460 opened_under(tree/release/v26.9.1), f6_subject :624 ROOT/release/v26.9.1); MX1 (repo-anchored declared_manifest read) admitted",
+   "answer": "court.audit() judges the whole probe log: any path with a component naming v26.9.1 (any spelling of fence.token), wherever it lives; judge_reads() is shared by every F4 and F6 run",
+   "commits": [
+    "2bcdb6159716b007d58c84d3da9d033478f748be"
+   ],
+   "evidence": [
+    "r1-06-mutants.log MX1 REFUSED[SILENT_V26_9_1_READ] F4 ... opened .../mut-r1/MX1/release/v26.9.1/manifest.toml",
+    "r1-07 MX1 on 1a43c41a: exit 0 CE23-7 ALIVE (defect reproduced)"
+   ]
+  },
+  {
+   "reason": "nothing checks a v26.9.1 read made after input resolution through the tool's own repo path (F6 stops at RELEASE_INPUT_MISSING)",
+   "answer": "F4 now also runs every targeted tool self-hosted (the subject's scripts/ copied into a synthesized tree whose pointer names v26.9.1), past input resolution, so a repository-anchored read is judged whatever line the subject's own pointer names; MX1b (MX1 with the subject in the root-crown pointer state, where the subject-hosted runs read release/v26.9.23) is refused only by that run; control M0b keeps the unmutated subject ALIVE in that state. F6 on the subject still ends at RELEASE_INPUT_MISSING until the v26.9.23 line inputs exist (CE23-1/CE23-2; open edge)",
+   "commits": [
+    "2bcdb6159716b007d58c84d3da9d033478f748be",
+    "d8cbc54591a49f97bd7c3e948888095cf6b8eaeb"
+   ],
+   "evidence": [
+    "r1-06-mutants.log MX1b REFUSED[SILENT_V26_9_1_READ] F4: pointer->v26.9.1 (self-hosted): verify_standing_evidence",
+    "r1-06-mutants.log M0b CE23-7 ALIVE"
+   ]
+  },
+  {
+   "reason": "docstrings ('refuses any read of release/v26.9.1', 'any open under a release/v26.9.1/ directory') promise more than the code checks",
+   "answer": "court.py, audit_run.py and CE23-7.sh headers now state exactly what is REFUSED (open, directory read, sqlite open, byte copy >= 64 bytes outside release/v26.9.23, child process / native call / off-host socket / probe fault / URL whose recorded arguments name v26.9.1) and what is UNKNOWN[PROBE_BLIND] (the same channels naming nothing, and .git object-store opens); a run with a blind spot is never ALIVE",
+   "commits": [
+    "2bcdb6159716b007d58c84d3da9d033478f748be"
+   ],
+   "evidence": [
+    "r1-11-targeted-tests.log: 12 probe cases (tests/test_ce23_7_probe.py) over real scripts under the real probe"
+   ]
+  },
+  {
+   "reason": "repair: refuse any logged open with a release/v26.9.1/ path segment wherever it lives, and add MX1 as a required mutant in mutate.sh",
+   "answer": "done, and generalized to the sibling channels: the corpus lives with the court (release/v26.9.23/courts/ce23_7/mutate.sh) with MX1 (the skeptic's exact hunk), MX1b, MX2 child cat, MX3 byte copy, MX4 listdir, MX5 unaudited child, MX6 ctypes open, MX7 .git read, MX8 URL; every MX hunk is checked token-free",
+   "commits": [
+    "2bcdb6159716b007d58c84d3da9d033478f748be",
+    "d8cbc54591a49f97bd7c3e948888095cf6b8eaeb"
+   ],
+   "evidence": [
+    "r1-06-mutants.log: MUTATION WITNESSES HOLD (19 judged: 2 controls ALIVE, 15 REFUSED and 2 UNKNOWN as named)"
+   ]
+  },
+  {
+   "reason": "minor: validate_manifest(data) with no path lost the old version-equality check; callers such as tests/test_release_control.py:24 and 193-224 got no path-free replacement",
+   "answer": "validate_manifest(data, manifest_path=None, expected_version=None): expected_version (vYY.M.D or YY.M.D; invalid -> RELEASE_LINE_INVALID) gives the path-free check ECOSYSTEM_VERSION_MISMATCH 'VERSION_TARGET_MISMATCH: expected X'; test_release_control:24 now passes the manifest path; lines 193-224 test other findings (role, duplicate, sha, cycle, external ref, dependency) and are unaffected; 5 new PathFreeVersionLawTests",
+   "commits": [
+    "2bcdb6159716b007d58c84d3da9d033478f748be"
+   ],
+   "evidence": [
+    "r1-11-targeted-tests.log PathFreeVersionLawTests (5) and test_manifest_is_structurally_admitted OK",
+    "r1-01 F2 verify_release --release v26.9.1 byte-identical to pin b9228c03 (output unchanged)"
+   ]
+  },
+  {
+   "reason": "found while answering (MX1b): with the subject's pointer moved to v26.9.23, synth_line's v26.9.1 anchor failed (every F4 fixture UNKNOWN[FIXTURE_UNBUILDABLE]) and the kept tree inherited the subject's pointer; 4 unit tests assumed the v26.9.1 pointer or West projection",
+   "answer": "synth_line sets the tree pointer and West sources to the chosen line and refuses to build otherwise; the planner-default test compares (exit, stdout, stderr); the West test normalizes its projection; MainCliTests name --release v26.9.1",
+   "commits": [
+    "d8cbc54591a49f97bd7c3e948888095cf6b8eaeb"
+   ],
+   "evidence": [
+    "r1-06-mutants.log M0b ALIVE (root-crown state)",
+    "r1-07 MX1b on 1a43c41a: UNKNOWN[FIXTURE_UNBUILDABLE] F4 and spurious F5d (old court)"
+   ]
+  }
+ ],
+ "replay": {
+  "commands": [
+   {
+    "cmd": "git rev-parse HEAD && git status --porcelain -uall | wc -l",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "b62b8cd24bbcf51c31d8d70eb609bea7e8d44f1bed99b2918e03a369978766d4",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-00-subject.log",
+    "summary": "HEAD = d8cbc545 on a clean tree (0 porcelain lines, -uall) before any receipt file"
+   },
+   {
+    "cmd": "sh release/v26.9.23/courts/CE23-7.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "de9d8cbab61aab3984c06a980a63fada7d6f51374b581ce9c165dc734042387d",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-01-gate-court.log",
+    "summary": "sh release/v26.9.23/courts/CE23-7.sh: 58 OK clauses F1-F8, 0 REFUSED/UNKNOWN, CE23-7 ALIVE"
+   },
+   {
+    "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_*.py'",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "c1f6ca5ad68591f7b35b9bee5225d0a325eb7e0cae379cb8668c42346895fe24",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-02-unittest.log",
+    "summary": "unittest discover: Ran 470 tests OK (fence unittest_floor 470)"
+   },
+   {
+    "cmd": "ruff check --no-cache scripts/verify_release.py tests/test_release_line.py tests/test_release_control.py tests/test_ce23_7_probe.py tests/test_completion_fanout.py release/v26.9.23/courts/ce23_7/court.py release/v26.9.23/courts/ce23_7/audit_run.py",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "1a36c3ace1071d4c02501d08d49065f79cbf23bb5927021e63ed2a0487a5c9db",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-03-ruff.log",
+    "summary": "ruff: All checks passed on the 7 Python files changed by the repair"
+   },
+   {
+    "cmd": "pyright scripts/verify_release.py tests/test_release_line.py tests/test_ce23_7_probe.py tests/test_completion_fanout.py release/v26.9.23/courts/ce23_7/court.py release/v26.9.23/courts/ce23_7/audit_run.py",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "8a3ae446367e4bff551c78937b83b4646f22600d51288e7033e05e4a1f8ecb2c",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-04-pyright.log",
+    "summary": "pyright on 6 changed files: 0 errors"
+   },
+   {
+    "cmd": "a=$(pyright tests/test_release_control.py | grep -oE 'test_release_control.py:[0-9]+:[0-9]+ - error'); mkdir -p /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/pre-base/tests && git show aa4e3873b40c3406378800ca82facc366293b564:tests/test_release_control.py > /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/pre-base/tests/test_release_control.py && b=$(cd /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/pre-base && pyright tests/test_release_control.py | grep -oE 'test_release_control.py:[0-9]+:[0-9]+ - error'); echo \"subject: $a\"; echo \"base aa4e3873: $b\"; test -n \"$a\" && test \"$a\" = \"$b\"",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "8a3ae446367e4bff551c78937b83b4646f22600d51288e7033e05e4a1f8ecb2c",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-04-pyright.log",
+    "summary": "pyright tests/test_release_control.py: the same 4 errors (lines 12-15, importlib Optional narrowing) at the subject and at base aa4e3873; exit 0 asserts they are identical and non-empty (pre-existing, not introduced)"
+   },
+   {
+    "cmd": "sh release/v26.9.23/sjira/compile_check.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "f140b9f319aa48d85fca6612a56ae421e5c906a32a89b5ba3bcae7655139ad17",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-05-compile-check.log",
+    "summary": "CE-INTAKE compile_check.sh: COMPILE_CHECK OK (16 gate courts sh -n clean, named by goal.ttl)"
+   },
+   {
+    "cmd": "M=/private/tmp/claude-501/v23-scratch/FIN2-CE23-7/mut-r1 SUBJECT=d8cbc54591a49f97bd7c3e948888095cf6b8eaeb bash release/v26.9.23/courts/ce23_7/mutate.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "82fad07608c10955b74db32a96f3030e91a269d50fc86f79323f42bc507fd0df",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-06-mutants.log",
+    "summary": "mutate.sh on d8cbc545: M0 and M0b (root-crown pointer state) ALIVE; M1-M8, MX1, MX1b, MX2, MX3, MX4, MX6, MX8 REFUSED typed (exit 1); MX5, MX7 UNKNOWN[PROBE_BLIND] (exit 75); MUTATION WITNESSES HOLD"
+   },
+   {
+    "cmd": "out=$(M=/private/tmp/claude-501/v23-scratch/FIN2-CE23-7/mut-prior SUBJECT=1a43c41afc638bdcd6e7dadc91509da627909637 ONLY='MX1 MX1b' bash release/v26.9.23/courts/ce23_7/mutate.sh 2>&1); echo \"$out\"; grep -E '^(UNKNOWN|REFUSED)' /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/mut-prior/MX1b.log | cut -c1-200; echo \"$out\" | grep -qE '^MUTANT MX1 exit=0 .*final=CE23-7 ALIVE$' && grep -q 'UNKNOWN\\[FIXTURE_UNBUILDABLE\\] F4' /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/mut-prior/MX1b.log",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "312512903eb09cebfa36d3be44d9e06521f1c345acdfa30040da4fa48f6529c9",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-07-skeptic-mx1-on-refuted-subject.log",
+    "summary": "MX1 and MX1b of the new corpus on the refuted subject 1a43c41a: MUTATION WITNESSES FAILED; exit 0 asserts MX1 was admitted (exit 0, CE23-7 ALIVE: the skeptic's defect, reproduced) and MX1b got UNKNOWN[FIXTURE_UNBUILDABLE] F4 (plus a spurious F5d) from the old court"
+   },
+   {
+    "cmd": "! grep -rnE 'unittest.mock|Mock\\(|MagicMock|patch\\(|monkeypatch' tests/test_release_line.py tests/test_ce23_7_probe.py tests/test_completion_fanout.py release/v26.9.23/courts/ce23_7/",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "9c0f2eda8b8f5f94855a45ba09d33b2244d86d085de29c0ca59ab28fc4c21236",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-08-mock-grep.log",
+    "summary": "! grep for unittest.mock/Mock(/MagicMock/patch(/monkeypatch over the new/changed Chicago tests and the court dir: 0 matches"
+   },
+   {
+    "cmd": "a=$(grep -cE '\\bmock\\b' tests/test_release_control.py); b=$(git show aa4e3873b40c3406378800ca82facc366293b564:tests/test_release_control.py | grep -cE '\\bmock\\b'); d=$(git diff aa4e3873b40c3406378800ca82facc366293b564 HEAD -- tests/test_release_control.py | grep -cE '^[+-][^+-].*\\bmock\\b'); echo \"tests/test_release_control.py mock lines: subject=$a base=$b added_or_removed=$d\"; test \"$a\" = \"$b\" && test \"$d\" = 0",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "9c0f2eda8b8f5f94855a45ba09d33b2244d86d085de29c0ca59ab28fc4c21236",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-08-mock-grep.log",
+    "summary": "tests/test_release_control.py: 10 'mock' lines at the subject and 10 at base aa4e3873, 0 added or removed (pre-existing unittest.mock use)"
+   },
+   {
+    "cmd": "! git grep -nE '(/Users/sac/wt|~/wt|[$]HOME/wt)' HEAD -- scripts tests release/v26.9.23/courts HANDWRITTEN.md",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "fccd13a2ef808769f21bbf2dc149022e2c1fcc699823e81a639e0b31a11257cb",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-09-wt-grep.log",
+    "summary": "! git grep /Users/sac/wt | ~/wt | $HOME/wt over HEAD scripts, tests, courts, HANDWRITTEN.md: 0 matches"
+   },
+   {
+    "cmd": "! git diff 1a43c41afc638bdcd6e7dadc91509da627909637 HEAD -- scripts tests release/v26.9.23/courts HANDWRITTEN.md | grep -nE '^[+].*(/Users/sac/wt|~/wt|[$]HOME/wt)'",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "fccd13a2ef808769f21bbf2dc149022e2c1fcc699823e81a639e0b31a11257cb",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-09-wt-grep.log",
+    "summary": "! added lines of 1a43c41a..HEAD under scripts, tests, courts, HANDWRITTEN.md naming /Users/sac/wt, ~/wt or $HOME/wt: 0"
+   },
+   {
+    "cmd": "git rev-parse HEAD:release/v26.9.1 && git diff --name-only aa4e3873b40c3406378800ca82facc366293b564 HEAD -- release/v26.9.1 | wc -l",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "d93d7c67e9fc374dbc669e8137b102c08cd9339dea26de40b39aa6d14b77d4f5",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-10-predecessor.log",
+    "summary": "release/v26.9.1 tree 7e0feef1b137 at HEAD; 0 files changed under it since aa4e3873"
+   },
+   {
+    "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_ce23_7_probe.py' -v && PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_release_*.py' -k PathFree -k test_manifest_is_structurally_admitted -k pointer -k projection -v && PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_completion_fanout.py' -k MainCli -v",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "4085dd466e71c3e8ccb638c92d51e12ed78ba02478d49e1aebcde9dd8066f258",
+    "log": "receipts/v26.9.23/CE23-7.gate/r1-11-targeted-tests.log",
+    "summary": "verbose runs: 12 probe tests, 11 path-free/pointer/projection tests, 2 MainCli tests, all OK"
+   }
+  ],
+  "durable_location": "receipts/v26.9.23/CE23-7.json and receipts/v26.9.23/CE23-7.gate/r1-* on branch release/v26.9.23-int",
+  "replay_court": "python3 release/v26.9.23/sjira/replay_court.py receipt --receipt receipts/v26.9.23/CE23-7.json"
+ },
+ "v26_9_1_identity_pins": {
+  "verify_release": "b9228c037729eb9f7ba51456547121c74b3039b635863a4d6223d84f221e6c88",
+  "plan_completion --release-only": "9964d23e2cb7040d588df7bce82095df3c21d0c0194172ac146898d76c55e05e",
+  "plan_completion": "e19fe0040b989b3a81cb99330df77c7577317b121dc24756db608111696be27c",
+  "verify_standing_evidence": "5f01cc9d7222907240d8fd5f6149c5cc90ab4803a0d7a3063d8d0ff3240e5925",
+  "verify_west_workspace --json": "fe0993e63c4d34c98dbb74f1eb41cebcb88c37d5ba9bc3cacbbe07e47d24eb32",
+  "survey_portfolio (SHA256SUMS, local fixture)": "2958a08ef27fc9235a24a4a3dd35358e798c76a6d574f53821651728a9384b8d",
+  "measured_by": "court.py --measure-base: the pre-fence tools materialized from aa4e3873b40c3406378800ca82facc366293b564"
+ },
+ "open_edges": [
+  "release/v26.9.23/{manifest,fleet-policy,fanout-bootstrap,constitutional-role-crosswalk}.toml do not exist at the subject: every tool run with --release v26.9.23 on the subject refuses typed RELEASE_INPUT_MISSING (F6); the real v26.9.23 line is CE23-1/CE23-2 work, after which F6 judges it past input resolution with the same audit()",
+  "catalog/west.toml still points at release/v26.9.1 and west.yml is the v26.9.1 projection; the flip belongs to the root-crown lane. Witnessed ready: M0b (the subject with pointer and West projection on v26.9.23) is CE23-7 ALIVE",
+  "probe reach (UNSUPPORTED by a PEP 578 hook): a compiled C extension that calls open(2) itself raises no audit event; ctypes, child processes, sockets and .git reads are judged (REFUSED when they name v26.9.1, UNKNOWN otherwise), a C extension is not. Closing it needs OS-level tracing (dtrace/fs_usage, root) or a sandbox profile denying release/v26.9.1",
+  "successor GC-CE-26.9.24: 8 tools with v26.9.1-only instance-artifact defaults, typed in release/v26.9.23/courts/ce23_7/fence.toml [[ledger]]",
+  "generation: chatman-ecosystem-release-pack has no version-path gate, no release_line.py template and no tool-fence court template (HANDWRITTEN.md rows)",
+  "pre-existing, not introduced: tests/test_release_control.py uses unittest.mock (10 'mock' lines at base aa4e3873 and at the subject, r1-08) and has 4 pyright errors at lines 12-15 (same at base, r1-04)"
+ ],
+ "standing": {
+  "value": "ALIVE",
+  "derived_from": "r1-01-gate-court.log: sh release/v26.9.23/courts/CE23-7.sh exit 0 (CE23-7 ALIVE, 58 OK, 0 REFUSED/UNKNOWN) on the committed clean subject d8cbc54591a49f97bd7c3e948888095cf6b8eaeb (r1-00); non-vacuity from r1-06-mutants.log (controls M0/M0b ALIVE; M1-M8, MX1-MX8, MX1b refused or UNKNOWN as named, including the skeptic's MX1) and r1-07 (the same corpus fails the refuted court: MX1 ALIVE on 1a43c41a); r1-02 unit Ran 470 OK. Scope: gate CE23-7 on d8cbc545 only; no other CE23 gate, STOP or GC23-12 standing is implied (STOP stays false until the operator's GC23-12 acceptance)"
+ }
+}

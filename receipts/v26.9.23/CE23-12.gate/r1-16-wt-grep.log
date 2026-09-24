@@ -1,0 +1,2 @@
+$ ! grep -rIn "/Users/sac/wt\|~/wt" release/v26.9.23/bench/pack release/v26.9.23/bench/design.ttl release/v26.9.23/bench/bench.toml release/v26.9.23/bench/ggen.toml release/v26.9.23/bench/generated release/v26.9.23/bench/out release/v26.9.23/courts/ce23_12 release/v26.9.23/courts/CE23-12.sh release/v26.9.23/courts/CE23-12-BenchmarkDesign.sh release/v26.9.23/courts/CE23-12-MSAContract.sh release/v26.9.23/courts/CE23-12-GeneratedQualificationPlan.sh tests/test_ce23_12_courts.py receipts/v26.9.23/CE23-12.gate/probe_q3_blinded_kernel.py
+exit=0

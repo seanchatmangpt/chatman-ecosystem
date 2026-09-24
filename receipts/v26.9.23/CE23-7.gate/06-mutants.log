@@ -1,0 +1,17 @@
+$ bash receipts/v26.9.23/CE23-7.gate/mutate.sh
+MUTANT M0 exit=0 expect=[CE23-7 ALIVE] witnessed=[CE23-7 ALIVE] final=CE23-7 ALIVE
+MUTANT M1 exit=1 expect=[REFUSED\[(FENCED_TOOL_NAMES_PREDECESSOR|FALSIFIER_ADMITTED|SILENT_V26_9_1_READ|OUTPUT_NOT_BOUND)] witnessed=[REFUSED[FENCED_TOOL_NAMES_PREDECESSOR] F7: scripts/verify_release.py:79, scripts/verify_release.py:80, scripts/verify_release.py:231, scripts/verify_release.py:385
+REFUSED[FENCED_TOOL_NAMES_PREDECESSOR] F7: scripts/plan_completion.py:2, scripts/plan_completion.py:56, scripts/plan_completion.py:257, scripts/plan_completion.py:258, scripts/plan_completion.py:259] final=CE23-7 REFUSED (52 counterexample(s))
+MUTANT M2 exit=1 expect=[REFUSED\[FALSIFIER_ADMITTED\] F5a] witnessed=[REFUSED[FALSIFIER_ADMITTED] F5a: a v26.9.1 manifest under release/v26.9.23: exit 0, findings []] final=CE23-7 REFUSED (2 counterexample(s))
+MUTANT M3 exit=1 expect=[REFUSED\[OUTPUT_NOT_BOUND\] F4] witnessed=[REFUSED[OUTPUT_NOT_BOUND] F4: plan_completion: output not bound to 26.9.23: ['agent/v26.9.1-autofde-lab-repair', 'agent/v26.9.1-gdmcp-bootstrap', 'agent/v26.9.1-star-toml-repair']
+REFUSED[OUTPUT_NOT_BOUND] F4: plan_completion --release-only: output not bound to 26.9.23: ['agent/v26.9.1-autofde-lab-repair', 'agent/v26.9.1-gdmcp-bootstrap', 'agent/v26.9.1-star-toml-repair']] final=CE23-7 REFUSED (6 counterexample(s))
+MUTANT M4 exit=1 expect=[REFUSED\[SILENT_V26_9_1_READ\]] witnessed=[REFUSED[SILENT_V26_9_1_READ] F4: verify_standing_evidence targeting v26.9.23 opened /Users/sac/.cache/tmp/ce23-7-court.mzxpehny/F4/line-flipped/release/v26.9.1/manifest.toml
+REFUSED[SILENT_V26_9_1_READ] F4: verify_standing_evidence targeting v26.9.23 opened /Users/sac/.cache/tmp/ce23-7-court.mzxpehny/F4/line-flipped/release/v26.9.1/manifest.toml] final=CE23-7 REFUSED (3 counterexample(s))
+MUTANT M5 exit=1 expect=[REFUSED\[FALSIFIER_ADMITTED\] F5d] witnessed=[REFUSED[FALSIFIER_ADMITTED] F5d: verify_west_workspace (projection sourced from v26.9.1): expected exit 1 with REFUSED:WEST_RELEASE_SOURCE_MISMATCH, got exit 0: ered": 2,] final=CE23-7 REFUSED (2 counterexample(s))
+MUTANT M6 exit=1 expect=[REFUSED\[UNLEDGERED_V26_9_1_BINDING\]] witnessed=[REFUSED[UNLEDGERED_V26_9_1_BINDING] F7: scripts/new_tool.py names v26.9.1 with no fence.toml ledger row] final=CE23-7 REFUSED (1 counterexample(s))
+MUTANT M7 exit=1 expect=[REFUSED\[PREDECESSOR_TOUCHED\]] witnessed=[REFUSED[PREDECESSOR_TOUCHED] F1: release/v26.9.1 tree 159df57435ac05b359e8ef209f9056e98f017862 != 7e0feef1b137bea72fe1cf22a599636f77b0e47c
+REFUSED[PREDECESSOR_TOUCHED] F1: release/v26.9.1 file digest c1236edfa5f1ad5fb6e2b584fb04260d6de4ce7e98131bfc30dbe8c826b1987a != pin] final=CE23-7 REFUSED (2 counterexample(s))
+MUTANT M8 exit=1 expect=[REFUSED\[(OUTPUT_NOT_BOUND|FENCED_TOOL_NAMES_PREDECESSOR)] witnessed=[REFUSED[OUTPUT_NOT_BOUND] F4: survey_portfolio: output not bound to 26.9.23: census scope
+REFUSED[OUTPUT_NOT_BOUND] F4: survey_portfolio: output not bound to 26.9.23: census scope] final=CE23-7 REFUSED (4 counterexample(s))
+MUTATION WITNESSES HOLD subject=e3a51dc5a06a8f9bad4764269f8ef8f76f0e3a32
+exit=0

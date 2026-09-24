@@ -1,0 +1,19 @@
+# MESSAGE: Every benchmark design node traces (prov:wasDerivedFrom) to an operator-prose proposition
+# (sj:Proposition) and to no other kind of node.
+PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+PREFIX dflss: <https://ggen.dev/dflss#>
+PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+SELECT DISTINCT ?node ?reason WHERE {
+  VALUES ?type { nlb:AcceptancePredicate nlb:BenchmarkClass dflss:CTQ nlb:Factor nlb:MSACourt nlb:MSAProperty
+    nlb:NearMissCase nlb:NegativeControlCase nlb:Stage nlb:FaultInjectionPoint nlb:ClassStanding nlb:EvidenceTier
+    nlb:FractionalFactorialDesign nlb:BenchmarkFamily nlb:CapabilityGap nlb:QualificationPlan nlb:CrownThreshold
+    nlb:StatisticDefinition nlb:BoundRequest nlb:StandingKind nlb:ReceiptFieldSet nlb:BenchmarkSuite nlb:PlanEntry
+    nlb:ReferenceOrder }
+  ?node a ?type .
+  OPTIONAL { ?node prov:wasDerivedFrom ?p }
+  OPTIONAL { ?node prov:wasDerivedFrom ?q . ?q a sj:Proposition }
+  BIND(IF(!BOUND(?q), "untraced-design-node", IF(BOUND(?p) && NOT EXISTS { ?p a sj:Proposition }, "trace-target-is-not-a-proposition", "")) AS ?reason)
+  FILTER(?reason != "")
+}
+ORDER BY ?node ?reason

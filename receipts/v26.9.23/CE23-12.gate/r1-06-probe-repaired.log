@@ -1,0 +1,9 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 receipts/v26.9.23/CE23-12.gate/probe_q3_blinded_kernel.py --court-rev 2d734c047e49a3254c45d189ece02ab13c659110
+COURT 2d734c047e49a3254c45d189ece02ab13c659110 = 2d734c047e49 release/v26.9.23/courts/ce23_12/court.py
+SUBJECT 14493d721edef9859f98429ef9fa7ec073603a57 = HEAD 2d734c047e49 with K1 blinded (changed: release/v26.9.23/bench/ggen.lock, release/v26.9.23/bench/pack/scripts/evidence_tiers.py)
+OK E0 no-LLM environment: env -i, PATH=/tmp/ce23-12-q3-probe-trux26rr/judge/bin:/usr/bin:/bin (python3, git, ggen only), no LLM client reachable
+OK S0 subject 14493d721edef9859f98429ef9fa7ec073603a57 clean over ['release/v26.9.23/bench', 'release/v26.9.23/courts', 'release/v26.9.23/sjira']; bench tree 15db4b5e5144f58b16be203dff40186a5ff1d20d
+REFUSED[msa_mutation_escape] Q3 28/175 corrupted subjects escaped the instrument that guards them: ["generated/evidence-tiers.ttl@615:1.000000->1.000001: [('K1', 'OK', 'generated tiers and bound rows equal the kernel (scipy/statsmodels agree to 1e-9) | KERNEL OK: 14 bound rows, 4 tiers st')]", "generated/evidence-tiers.ttl@728:1.000000->1.000001: [('K1', 'OK', 'generated tiers and bound rows equal the kernel (scipy/statsmodels agree to 1e-9) | KERNEL OK: 14 bound rows, 4 tiers st')]", "generated/evidence-tiers.ttl@1026:0.095034->0.095035: [('K1', 'OK', 'generated tiers and bound rows equal the kernel (scipy/statsmodels agree to 1e-9) | KERNEL OK: 14 bound rows, 4 tiers st')]"]
+ROW n=175 defects=28 upper_bound_95=0.212725 tier=BELOW_DISCOVERY kernel={'n': 28, 'misses': 28, 'zero_information': 0, 'instruments': ['K1']}
+PROBE: Q3 follows the instrument: all 28 kernel-literal units escape the blinded K1 and Q3 is REFUSED
+exit=0

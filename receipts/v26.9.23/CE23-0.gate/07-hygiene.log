@@ -1,0 +1,4 @@
+$ ! grep -rnE "unittest.mock|Mock\(|MagicMock|patch\(|monkeypatch" tests/test_ce23_0_court.py tests/test_ce23_9_court.py release/v26.9.23/courts/ce23_0 && ! git grep -nE "(/Users/sac/wt|~/wt|[$]HOME/wt)" HEAD -- release/v26.9.23/courts/ce23_0 release/v26.9.23/courts/CE23-0.sh tests/test_ce23_0_court.py && ruff check --no-cache release/v26.9.23/courts/ce23_0 tests/test_ce23_0_court.py tests/test_ce23_9_court.py && sh -n release/v26.9.23/courts/CE23-0.sh && echo HYGIENE_OK
+All checks passed!
+HYGIENE_OK
+exit=0

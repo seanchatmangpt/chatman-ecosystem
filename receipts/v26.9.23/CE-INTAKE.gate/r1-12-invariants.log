@@ -1,0 +1,27 @@
+$ for f in chatman-ce23.md chatman-ce23-12-bench.md chatman-ce23-12-standings.md; do cmp /Users/sac/wt/v26922/v26923/$f release/v26.9.23/sjira/$f; done; shasum -a 256 release/v26.9.23/sjira/*.md
+4146d688c21db6e1af51a2187df8056b1a0f977001c817d64fbde0547029b485  release/v26.9.23/sjira/chatman-ce23-12-bench.md
+80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2  release/v26.9.23/sjira/chatman-ce23-12-standings.md
+6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3  release/v26.9.23/sjira/chatman-ce23.md
+eaf446d00fbf9f7cd6ef434b8fd2ff95b6e3cd3247dcb8a5313f69068b7bf492  release/v26.9.23/sjira/README.md
+exit=0
+$ cmp release/v26.9.23/sjira/candidates/raw/chatman-ce23-12-{bench,standings}.extract.json /Users/sac/wt/v26922/v26923/bench/candidates/*.extract.json
+exit=0
+$ git diff --stat a896e16c HEAD -- release/v26.9.1; git rev-parse HEAD:release/v26.9.1 a896e16c:release/v26.9.1
+7e0feef1b137bea72fe1cf22a599636f77b0e47c
+7e0feef1b137bea72fe1cf22a599636f77b0e47c
+exit=0
+$ grep -rn 'unittest.mock\|Mock(\|MagicMock\|patch(\|monkeypatch' release/v26.9.23
+exit=1 (1 = no matches)
+$ git diff --name-status 10bb42f1 HEAD
+M	release/v26.9.23/sjira/README.md
+M	release/v26.9.23/sjira/candidates/chatman-ce23-12-bench.extract.json
+M	release/v26.9.23/sjira/candidates/chatman-ce23-12-bench.ttl
+M	release/v26.9.23/sjira/candidates/chatman-ce23.ttl
+M	release/v26.9.23/sjira/candidates/corrections.json
+M	release/v26.9.23/sjira/compile_check.sh
+M	release/v26.9.23/sjira/compiled/chatman-ce23-12-bench/orders.ttl
+M	release/v26.9.23/sjira/compiled/chatman-ce23-12-bench/propositions.ttl
+M	release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl
+M	release/v26.9.23/sjira/compiled/chatman-ce23/propositions.ttl
+M	release/v26.9.23/sjira/test_ce23_sjira.py
+exit=0

@@ -1,0 +1,63 @@
+# CE23-2 court pins: the facts release/v26.9.23/courts/ce23_2/court.py judges the 16-role
+# legacy crosswalk against (hand-authored; HANDWRITTEN.md row). The predecessor's roles are
+# never taken from these pins: the court reads them from release/v26.9.1/manifest.toml.
+
+[subject]
+gate = "CE23-2"
+subject_dir = "release/v26.9.23"
+target_version = "26.9.23"
+# The predecessor release whose required roles must each be disposed exactly once.
+predecessor = "v26.9.1"
+predecessor_version = "26.9.1"
+predecessor_manifest = "release/v26.9.1/manifest.toml"
+predecessor_manifest_sha256 = "30b1d83ce544299557da50084ced696172d219f6790c2cfc5b78116902850949"
+# GitHub main at CE23-0: the pre-v26.9.23 subject. The lift reads the manifest blob of this
+# commit (never the working tree), and the head must descend from it.
+base_commit = "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1"
+# The er:LegacyRelease IRI and dcterms:source label of the lift (pack lift/manifest_to_er.py).
+predecessor_iri = "https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1"
+source_label = "seanchatmangpt/chatman-ecosystem@c59596f5506e7a00ca4ed6b909ebf6d6659b74c1:release/v26.9.1/manifest.toml"
+# Every predecessor required role maps to exactly one of these boundaries (chatman-ce23.md CE23-2).
+boundaries = ["REQUIRED", "SUCCESSOR", "BLOCKED", "UNSUPPORTED", "REFUSED"]
+
+[subject.paths]
+# Relative to subject_dir.
+vendor_dir = "vendor/ggen-marketplace"
+pack_subdir = "packs/chatman-ecosystem-release-pack"
+lift = "lift/manifest_to_er.py"
+legacy_import = "imports/legacy-v26.9.1.ttl"
+court_references_import = "imports/court-references.ttl"
+classification_import = "imports/fleet-classification.ttl"
+crosswalk_toml = "out/legacy-role-crosswalk.toml"
+crosswalk_ttl = "out/crosswalk.ttl"
+derivations_toml = "out/role-derivations.toml"
+manifest_render = "out/manifest.toml"
+generated_dir = "out"
+
+[observation]
+# The governing checkpoint's courts: this repository at the commit of the release's required
+# component of the same repository (release.ttl er:commitSha), read from its canonical checkout
+# (CE23_REPO_XAAS, default ~/xaas). The observer is courts/ce23_2/observe_court_refs.py.
+repository = "seanchatmangpt/xaas"
+component_id = "xaas"
+
+[rule]
+# The pack disposition rule (templates/role-disposition-rule.toml.tmpl), re-derived by the court
+# as a second executor: fleet class -> boundary, else no court reference -> SUCCESSOR.
+classified = "rule:fleet-classification"
+unclassified_unexecuted = "rule:no-GC23-court-reference"
+unexecuted_boundary = "SUCCESSOR"
+
+[rule.classes]
+CriticalPath = "REQUIRED"
+Successor = "SUCCESSOR"
+Blocked = "BLOCKED"
+Refused = "REFUSED"
+Unsupported = "UNSUPPORTED"
+
+[decisions]
+# Explicit er:decidedBy dispositions admitted for this release. A decision is admissible only
+# when the rule cannot decide a role (its repository is unclassified and a GC23 court executes
+# it) and it cites operator testimony; each entry: { role, decided_by, boundary }. None today:
+# the rule disposes all 16 roles.
+admitted = []

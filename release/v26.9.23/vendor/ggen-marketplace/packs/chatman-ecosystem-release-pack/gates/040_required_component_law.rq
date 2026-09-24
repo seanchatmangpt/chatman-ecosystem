@@ -1,0 +1,24 @@
+# MESSAGE: Required components cannot be outside the release or UNSUPPORTED,
+# and every release-required role must be supplied by a required component in
+# that same release.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+SELECT ?subject ?reason WHERE {
+  {
+    ?component a er:Component ; er:required true ; er:disposition er:OUT_OF_RELEASE .
+    BIND(?component AS ?subject)
+    BIND("required-component-out-of-release" AS ?reason)
+  } UNION {
+    ?component a er:Component ; er:required true ; er:standing er:UNSUPPORTED .
+    BIND(?component AS ?subject)
+    BIND("required-component-unsupported" AS ?reason)
+  } UNION {
+    ?release a er:Release ; er:requiredRole ?role .
+    FILTER NOT EXISTS {
+      ?release er:hasComponent ?component .
+      ?component a er:Component ; er:required true ; er:role ?role .
+    }
+    BIND(?release AS ?subject)
+    BIND(CONCAT("required-role-missing:", STR(?role)) AS ?reason)
+  }
+}
+ORDER BY ?subject ?reason

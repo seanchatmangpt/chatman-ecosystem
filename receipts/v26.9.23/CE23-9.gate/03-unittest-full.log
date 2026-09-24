@@ -1,0 +1,10 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_*.py'
+............................................................................................................REFUSED[SILENT_V26_9_1_READ] T: tool targeting v26.9.23 opened /Users/sac/.cache/tmp/tmpvw3zms9v/release/v26.9.1/manifest.toml
+..............................................................................................................................................................................................................................................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 538 tests in 81.201s
+
+OK
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+{"detail": "seanchatmangpt/example:run-1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb!=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "refusal": "REFUSED[EVIDENCE_WRONG_HEAD]", "standing": "REFUSED"}
+exit=0

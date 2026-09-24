@@ -1,0 +1,55 @@
+# Pins of the CE23-12 courts (release/v26.9.23/courts/ce23_12/court.py). Every value here is an
+# identity the courts compare observations against; none is a standing. Paths are repository-relative
+# to the chatman-ecosystem root unless named otherwise.
+
+[subject]
+repository = "seanchatmangpt/chatman-ecosystem"
+bench = "release/v26.9.23/bench"
+# The judged slice must be clean (committed bytes = worktree bytes, no untracked file) on the head.
+judged = ["release/v26.9.23/bench", "release/v26.9.23/courts", "release/v26.9.23/sjira"]
+
+[prose]
+# Operator testimony (O* by fiat): the two CE23-12 prose units, byte-pinned as goal.ttl pins them.
+"release/v26.9.23/sjira/chatman-ce23-12-bench.md" = "sha256:4146d688c21db6e1af51a2187df8056b1a0f977001c817d64fbde0547029b485"
+"release/v26.9.23/sjira/chatman-ce23-12-standings.md" = "sha256:80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2"
+
+[candidates]
+# The committed candidate graphs of the two units (emitted by the frozen prose_spans.py).
+"release/v26.9.23/sjira/chatman-ce23-12-bench.md" = "release/v26.9.23/sjira/candidates/chatman-ce23-12-bench.ttl"
+"release/v26.9.23/sjira/chatman-ce23-12-standings.md" = "release/v26.9.23/sjira/candidates/chatman-ce23-12-standings.ttl"
+
+[capital]
+# CE23-12 design capital, pinned in goal.ttl (never edited by this step).
+"release/v26.9.23/bench/DESIGN.md" = "sha256:f4d185d70ea3e7d56a4ba19b8e07c04c933efd5c705b5d918566658eaf579a19"
+"release/v26.9.23/bench/ontology-draft.ttl" = "sha256:3a17698927ee0c7053e76f4d516d7a14a2f92e35ee2db0971c8f432ed58aecdf"
+"release/v26.9.23/bench/orders.json" = "sha256:332d01021ae817734a7ac568cd30e4076ce5a864d3c576168d267a38caa60843"
+
+[prose_spans]
+# The frozen first-mile span binder: read from the canonical xaas checkout at this commit (git show,
+# never the working tree); env XAAS_DIR overrides the checkout location (default ~/xaas).
+commit = "2244d8e18d368841fc6b0a3a892cb729b7729bd0"
+path = "scripts/sjira/prose_spans.py"
+sha256 = "86a0e9b30d192adff8026d281b1735ee4b9e371e4d29083ed0cb089a62730421"
+namespace = "https://ggen-igniter.dev/sjira/chatman-26.9.23#"
+prefix = "ce"
+
+[semantic_jira]
+# semantic-jira-pack work-order admission shapes, read at the S23 ggen_igniter component commit
+# (release.ttl r23:ggen_igniter er:commitSha); env GGEN_IGNITER_DIR overrides (default ~/ggen_igniter).
+commit = "6e7834ee68b6617b7f11ac48b1e9fc2651fc448d"
+shapes = "priv/ggen/semantic-jira-pack/shapes/work-order.shacl.ttl"
+ontology = "priv/ggen/semantic-jira-pack/ontology.ttl"
+
+[ggen]
+version = "26.9.18"
+
+[gates]
+# goal.ttl conjunct gates of CE23-12 (the prose->gate requirement edges the courts trace).
+BenchmarkDesign = "https://ggen-igniter.dev/sjira/chatman-26.9.23#CE23-12-BenchmarkDesign"
+MSAContract = "https://ggen-igniter.dev/sjira/chatman-26.9.23#CE23-12-MSAContract"
+GeneratedQualificationPlan = "https://ggen-igniter.dev/sjira/chatman-26.9.23#CE23-12-GeneratedQualificationPlan"
+crown = "https://ggen-igniter.dev/sjira/chatman-26.9.23#CE23-12"
+
+[statement]
+os_ceiling = "cross-OS robustness remains outside the demonstrated evidence ceiling"
+environment_scope = "macOS arm64 (Darwin) executor only; OS=UNSUPPORTED"

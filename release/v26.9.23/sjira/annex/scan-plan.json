@@ -1,0 +1,1000 @@
+{
+ "waves": [
+  {
+   "wave": "R1c",
+   "status": "required_now (GC23-11 exact-head qualification + CE23-5 exact-head CI); pre-freeze",
+   "preconditions": [
+    "wave R1a (wf_7a7c7064-905) finished; R1-X-COURTS merged (xaas-int 246460c, done); R1-X-GUARD, R1-X-FENCE, R1-X-PGREP, R1-X-DIGEST merged or re-queued here as continuation lanes per DRIVER step 3b"
+   ],
+   "repo_map": {
+    "xaas": {
+     "repo": "/Users/sac/xaas",
+     "int": "/Users/sac/wt/v26922/fri/xaas-int",
+     "branch": "friday/gc-fri-0800"
+    }
+   },
+   "repos": {
+    "xaas": "/Users/sac/xaas"
+   },
+   "ints": {
+    "xaas": "/Users/sac/wt/v26922/fri/xaas-int"
+   },
+   "base_branch": "friday/gc-fri-0800",
+   "worktree_root": "/Users/sac/wt/v26922/v23",
+   "branch_prefix": "v23",
+   "receipts_dir": "receipts/v26.9.23",
+   "max_repairs": 2,
+   "context": "Pre-freeze repair of the FROZEN release subjects (DRIVER.md 'Release closure procedure'; the full context block of /Users/sac/wt/v26922/v26923/lanes/wave-R1a.json applies verbatim: governing graph xaas docs/sjira/v26.9.23/goal.ttl, court exit contract, no-LLM court env, TOOLCHAIN PIN, RELEASE DEFECT REPAIR). S23=(sha_xaas, sha_igniter, graphDigest): only the named defect may change and no successor work is admitted; every lane of this wave merges BEFORE REL-A3 re-freezes S23, so the 12/13 court reruns once. Pins: xaas PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH ; ggen_igniter PATH=/Users/sac/.asdf/installs/elixir/1.18.4-otp-27/bin:/Users/sac/.asdf/installs/erlang/27.2.4/bin:$PATH ; prove with elixir --version and compile a fresh _build under the pin (APFS-clone deps/ only). Classify every failure: subject defect | environment | pre-existing | generator drift | evidence defect | infrastructure. Generated files change only through their generator; hand-written residue gets a HANDWRITTEN.md row (UNSUPPORTED(generator-capability) + owner pack; append-only, keep both sides on merge). These repair lanes have no goal.ttl order, so their receipts are not order-linked. Scan evidence under /private/tmp/claude-501/v23-scratch/SCAN-* is read-only input: re-run it, copy what you cite into receipts/v26.9.23/<LANE>.gate/, never cite a scratch path as durable. Verified per-lane scan specs: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/<candidate-id>.txt. Hosted CI: pushing the lane branch is allowed (never force); no PRs from lanes; dispatch xaas ci_cd.yaml (gh workflow run ... --ref <lane branch>) only after a YAML parse of the dispatched SHA proves publish-image and deploy cannot run for that dispatch (R1-X-FENCE). Keep every shell command under ~20 min; poll hosted runs in bounded steps.",
+   "lanes": [
+    {
+     "id": "R1-X-LOCK",
+     "repo": "xaas",
+     "after": [],
+     "gate": "PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH sh -c 'elixir --version && mix format --check-formatted && MIX_ENV=test mix compile --force --warnings-as-errors && mix test test/xaas/zcode_plugin'",
+     "task": "Continuation of R1a lane R1-X-LOCK (release defect F1, generator drift: zcode_plugin pack content hash vs ggen.lock, FM-PACK-008 at test/xaas/zcode_plugin/projection_test.exs). Continue in the EXISTING worktree /Users/sac/wt/v26922/v23/R1-X-LOCK (branch v23/R1-X-LOCK, head fa0d88c). The F1 repair is complete there (27cbcbe, generator-only re-lock through `ggen sync`). The R1a build stopped BLOCKED(admission_vacuous) only because the pinned 1.20.2 compile failed on the pre-existing 'unused require Ash.Query' (lib/xaas/ultracode/semantic_drive.ex:78), which R1-X-COURTS removed (now on friday/gc-fri-0800, merge 246460c). Do: `git merge --no-ff friday/gc-fri-0800 -F <msgfile>` into v23/R1-X-LOCK (merge forward; never rebase; keep both sides on conflict), run the lane gate on the merged head under the xaas pin, paste exits. Change nothing else; a gate failure outside F1 -> stop with blocked_reason + classification. Generation path: `ggen sync` (the same invocation projection_test.exs uses; record `ggen --version`); residue none. Falsifier: restoring ggen.lock to its e999e62 bytes makes projection_test.exs fail with FM-PACK-008. Update and validate receipts/v26.9.23/R1-X-LOCK.json (subject = new head, gate exits, toolchain, classification generator drift).",
+     "worktree": "/Users/sac/wt/v26922/v23/R1-X-LOCK",
+     "branch": "v23/R1-X-LOCK",
+     "required_now": true,
+     "defect_key": "F1-zcode-lock",
+     "scope": "GC23-11/CE23-5"
+    },
+    {
+     "id": "R1-X-PIN",
+     "repo": "xaas",
+     "after": [
+      "R1-X-LOCK"
+     ],
+     "gate": "PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH sh -c 'elixir --version && mix format --check-formatted && MIX_ENV=test mix compile --force --warnings-as-errors && GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int mix test' && PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH sh -c 'MIX_ENV=dev mix deps.compile --force postgrex && MIX_ENV=dev mix dialyzer --format github' && T=$(mktemp -d) && PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH env HOME=$T MIX_HOME=/Users/sac/.mix HEX_HOME=/Users/sac/.hex MIX_ENV=test mix test test/xaas/receipt/r_projection_test.exs > $T/rp.log 2>&1; tail -5 $T/rp.log; grep -Eq '8 tests, 0 failures, 5 skipped|Result: 3 passed, 5 skipped' $T/rp.log",
+     "task": "Required_23: GC23-11 exact-head qualification and CE23-5 green exact-head CI (ci_cd.yaml job ci runs compile --warnings-as-errors, dialyzer and the full suite) under the xaas .tool-versions pin Elixir 1.20.2-otp-28 / Erlang 28.5.0.2. Branch v23/R1-X-PIN off friday/gc-fri-0800 after R1-X-LOCK merged; every other R1a lane (GUARD, COURTS, FENCE, PGREP, DIGEST) must already be merged, else stop with blocked_reason (broken_term mu_on_O). Compile a fresh _build under the pin; run the FULL suite twice (order-dependent failures). Fix only what the pinned run reports and classify each. Verified scan candidates to re-check, not assume: (1) SemanticDrive.build_manifest/2 (semantic_drive.ex ~:593-628) matches only the vsn-1 Mix manifest {1,{elixir,otp},scm}; Elixir 1.20 writes {2,{elixir,otp},scm,lock} (Mix elixir_scm.ex @manifest_vsn 2): accept both declared shapes, refuse any other shape typed. (2) Dialyzer pattern_match at lib/xaas/ultracode/machine_experience.ex ~:539 (closed/5) and ~:1235 (objects/3): unreachable `nil -> []` clauses after RDF.Graph.description/2 (rdf 3.0.1 specs Description.t(), never nil). Replace with `graph |> RDF.Graph.description(subject) |> RDF.Description.triples()` and `graph |> RDF.Graph.description(subject) |> RDF.Description.get(RDF.iri(property), []) |> Enum.sort()` (verified diff /private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/fix.diff; at e999e62 before 'Total errors: 31, Skipped: 29', after 'Total errors: 29, Skipped: 29, Unnecessary Skips: 0' exit 0). Never add .dialyzer_ignore.exs entries. With APFS-cloned deps run `MIX_ENV=dev mix deps.compile --force postgrex` first (the ignore entry otherwise misses on a foreign absolute path: false exit 2). Dialyzer took ~20 min cold: run it as its own command, reuse a PLT from /Users/sac/wt/v26922/fri/xaas-int/_build/dev by cp -c if present. (3) test/xaas/receipt/r_projection_test.exs calls ~/.claude/dfcm/validate_receipt.py without an absent-validator guard (hosted runner: 5 failures 'can't open file .../validate_receipt.py'). Add a PER-TEST guard, not @moduletag (that would also skip the 3 fabric-only tests at ~:144/:195/:223): after @validator (~:18) `@needs_validator if File.regular?(@validator), do: false, else: \"needs ~/.claude/dfcm/validate_receipt.py (the fleet R-schema validator)\"` and `@tag skip: @needs_validator` on exactly the 5 tests that call validate/1 (~:58, :90, :107, :127, :164). Ready patch: /private/tmp/claude-501/v23-scratch/SCAN-XA-rproj-validator-guard/rproj-pertest-guard.patch. Classify environment. Generation path: none for these files (machine_experience.ex HANDWRITTEN.md:20, r_projection_test.exs :82, semantic_drive.ex existing rows); the edits shrink or guard already-ledgered files, so update row notes only. Falsifiers: restoring the nil clauses -> dialyzer exit 2 at :539/:1235; removing the guard -> the empty-HOME clause reports 5 failures; restoring the vsn-1-only match -> name the pinned test that fails. Receipt receipts/v26.9.23/R1-X-PIN.json with toolchain, both full-suite results, the dialyzer summary line and every classification.",
+     "required_now": true,
+     "defect_key": "xaas-pin-suite+dialyzer+rproj-guard",
+     "scope": "GC23-11/CE23-5",
+     "folds": [
+      "CE23-5-XA-dialyzer-dead-nil",
+      "CE23-5-XA-rproj-validator-guard (skeptic fold-in)",
+      "CE23-5-XA-elixir-scm-manifest-v2 (already listed)"
+     ]
+    }
+   ]
+  },
+  {
+   "wave": "R2",
+   "status": "required_now (CE23-3, CE23-5, CE23-6, GC23-1, GC23-7, GC23-9, GC23-10, GC23-11); pre-freeze; REL-A3 waits for it",
+   "preconditions": [
+    "wave R1c merged (R1-X-LOCK, R1-X-PIN)",
+    "reconcile with the orthogonal swarm's lanes/wave-R2.json (wf_2755fdff-28e swarm:synth) BEFORE launch: lanes sharing a defect_key are one lane (keep this spec's gate, add the swarm's witnessed hosted-CI evidence to the task); swarm-only lanes join this wave",
+    "cap: at most 5 builds start at once (after-chains below); ZCode lanes share the load"
+   ],
+   "repo_map": {
+    "xaas": {
+     "repo": "/Users/sac/xaas",
+     "int": "/Users/sac/wt/v26922/fri/xaas-int",
+     "branch": "friday/gc-fri-0800"
+    },
+    "ggen_igniter": {
+     "repo": "/Users/sac/ggen_igniter",
+     "int": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+     "branch": "friday/gc-fri-0800"
+    }
+   },
+   "repos": {
+    "xaas": "/Users/sac/xaas",
+    "ggen_igniter": "/Users/sac/ggen_igniter"
+   },
+   "ints": {
+    "xaas": "/Users/sac/wt/v26922/fri/xaas-int",
+    "ggen_igniter": "/Users/sac/wt/v26922/fri/ggen_igniter-int"
+   },
+   "base_branch": "friday/gc-fri-0800",
+   "worktree_root": "/Users/sac/wt/v26922/v23",
+   "branch_prefix": "v23",
+   "receipts_dir": "receipts/v26.9.23",
+   "max_repairs": 2,
+   "context": "Identical to wave R1c context (pre-freeze repair of the FROZEN release subjects; wave-R1a.json context verbatim; S23 moves once before REL-A3; pins xaas PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH and ggen_igniter PATH=/Users/sac/.asdf/installs/elixir/1.18.4-otp-27/bin:/Users/sac/.asdf/installs/erlang/27.2.4/bin:$PATH with a fresh _build; classify every failure; generated files only via their generator; HANDWRITTEN.md rows append-only; repair lanes are not order-linked; scratch evidence read-only and copied into receipts/v26.9.23/<LANE>.gate/; verified specs /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/<candidate-id>.txt; push lane branches without force, no PRs; dispatch xaas ci_cd.yaml only after a YAML parse proves publish-image/deploy cannot run for that dispatch; commands under ~20 min).",
+   "after_wave_driver_steps": [
+    "REL-A3 (rel-a2 without its child wave): re-freeze S23 at the post-R2 heads, pinned qualification, 12/13 court (now freshness-coherent), reseal, push, stage operator/ACCEPTED.proposed",
+    "amend Part B per R2-X-FIXEDPOINT: int precondition STOP_pre=true; V23-Q receipt written out of subject to /Users/sac/wt/v26922/v26923/release/v23q/ after merge + green exact-head CI; the final main court passes three --order-receipts-dir",
+    "Part B must not tag xaas/ggen_igniter before the chatman root crown (release.run.js:100 tags on STOP=true; DRIVER says tag last) until the operator answers the tag-scope edge"
+   ],
+   "lanes": [
+    {
+     "id": "R2-X-COHERENCE",
+     "repo": "xaas",
+     "after": [],
+     "gate": "cd /Users/sac/wt/v26922/v23/R2-X-COHERENCE && BASE=$(git merge-base HEAD friday/gc-fri-0800) && PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH sh -c 'elixir --version && mix format --check-formatted && MIX_ENV=test mix compile --force --warnings-as-errors && GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int mix test test/mix/tasks/xaas_stop_court_test.exs test/sjira/v26_9_23_goal_test.exs' && git diff $BASE -- lib/mix/tasks/xaas.stop_court.ex > /tmp/r2coh.diff && git apply -R /tmp/r2coh.diff && { PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH MIX_ENV=test mix test test/mix/tasks/xaas_stop_court_test.exs --only stale_subject; r=$?; git apply /tmp/r2coh.diff; test $r -ne 0; }",
+     "task": "Required_23: CE23-3 needs a FRESH STOP-GC-26.9.23 receipt and PRD section 26 F6 ('change covered subject after receipt: previous ALIVE standing no longer automatically applies') fires at the crown computer. Witnessed at e999e62 under the pin (/private/tmp/claude-501/v23-scratch/SCAN-CE23-3-crown-coherence/probe-e999e62.log): full ALIVE court, then any commit, then `mix xaas.stop_court --only G1` exits 0 with STOP=true while G2's receipt carries the superseded subject_sha. Repo xaas, lane worktree /Users/sac/wt/v26922/v23/R2-X-COHERENCE off friday/gc-fri-0800 after R1c. (1) In lib/mix/tasks/xaas.stop_court.ex judge_gate (~:1183-1198 at e999e62) link a gate receipt only when it is admitted AND identity.subject == \"<checkpoint>/<gate>\" AND the frozen-subject tuple equals the head: identity.subject_sha == ctx.subject_sha, gate.ggen_igniter_sha == ctx.ggen_igniter_sha, identity.graph_hash == ctx.graph_hash (operator S23 rule). (2) Otherwise mark why_unlinked = {:stale_subject | :stale_ggen_igniter | :stale_graph, receipt_value, head_value}, standing nil, CLI label ADMITTED-STALE; the wrong-subject case stays ADMITTED-UNLINKED. (3) Add stop.gates to the STOP receipt: per gate {gate, receipt path, verdict label, linked, standing, subject_sha, ggen_igniter_sha, graph_hash, why_unlinked}; REQUIRED_UNKNOWN picks this up unchanged. (4) Do NOT re-add validator/schema sha256 (V23-S already records them). (5) Chicago tests in test/mix/tasks/xaas_stop_court_test.exs (real git fixture repos, a real ggen_igniter git dir via --ggen-igniter-dir, tag them @tag :stale_subject): superseded xaas subject_sha, moved ggen_igniter HEAD, changed goal.ttl (graph_hash) each give exit 1 and G2 ADMITTED-STALE; an unchanged-subject control keeps STOP=true. Prototype: SCAN-CE23-3-crown-coherence/{proto.diff,proto.py,xaas/test/mix/tasks/xaas_stop_court_coherence_probe_test.exs}. Generation path: none \u2014 stop_court.ex is the hand-written reserved runner (HANDWRITTEN.md :102/:104/:106/:108, owner semantic-jira-pack); residue ~45 lines + 4 tests; update that row (paydown: a semantic-jira-pack freshness gate beside gates/046_alive_receipt_crown.rq over sj:subjectSha, successor). Falsifier: the reverted runner passes the three stale fixtures (the gate's revert clause must then fail). Any goal_test failure is classified against $BASE (pre-existing only if identical on base). Receipt receipts/v26.9.23/R2-X-COHERENCE.json.",
+     "required_now": true,
+     "defect_key": "CE23-3-crown-freshness",
+     "scope": "CE23-3 / PRD 26 F6",
+     "source_candidates": [
+      "CE23-3-crown-subject-coherence"
+     ]
+    },
+    {
+     "id": "R2-X-FIXEDPOINT",
+     "repo": "xaas",
+     "after": [
+      "R2-X-COHERENCE"
+     ],
+     "gate": "cd /Users/sac/wt/v26922/v23/R2-X-FIXEDPOINT && PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH sh -c 'elixir --version && mix format --check-formatted && MIX_ENV=test mix compile --force --warnings-as-errors && GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int mix test test/mix/tasks/xaas_stop_court_test.exs test/sjira/v26_9_23_goal_test.exs'",
+     "task": "Required_23 (CE23-3 fresh STOP=true, CE23-11, PRD section 13 RequiredUnknown=empty, PR-017 item 7). Fixed point: goal.ttl WO-V23-Q (:912-947) is a required order whose postcondition is STOP=true + REQUIRED_UNKNOWN=0, and stop.rq clause (3) needs a terminal receipt for every non-Successor order, so STOP can never become true and required_unknown/3 (~:1712-1735) always counts V23-Q. Make STOP=true at the exact main merge head reachable WITHOUT editing goal.ttl or stop.rq (compiled/orders.ttl:3 pins the goal digest). Lane worktree off friday/gc-fri-0800 after R2-X-COHERENCE merged (same file). (1) Add release_order: \"V23-Q\" to the GC-26.9.23 entry of @checkpoints in lib/mix/tasks/xaas.stop_court.ex (an optional --release-order may override it for fixture roots, but the DEFAULT invocation must carry the rule, because release.run.js and the recorded replays run `mix xaas.stop_court --checkpoint GC-26.9.23`). The court computes STOP_pre = the unchanged sj:stopQuery over the graph with the release order's sj:checkpointOf triple removed, and REQUIRED_UNKNOWN_pre excluding the release order; the STOP receipt records stop.release_order = {id, tuple_digest, STOP_pre, REQUIRED_UNKNOWN_pre, verdict}; print STOP_pre=... next to STOP=.... (2) Guard: the release order links as terminal only if its receipt standing is exactly \"ALIVE\" AND the receipt file is out of subject (not tracked in the judged xaas tree at HEAD; `git ls-files --error-unmatch` fails for it). An in-tree receipt of any standing, or an out-of-subject BLOCKED/UNSUPPORTED/REFUSED one, keeps STOP=false with a typed refusal (REFUSED(release_order_in_subject) / REFUSED(release_order_not_alive), broken_term R_missing_identity / admission_vacuous). (3) No new directory option: the existing repeatable --order-receipts-dir (~:294) replaces the registry list (~:495-503), so the final main-head court must pass all three: <M>/receipts/v26.9.23, $GGEN_IGNITER_DIR/receipts/v26.9.23 and the out-of-subject dir holding V23-Q.json. The existing duplicate_order_receipt refusal must still fire when the same order is in two dirs. (4) HANDWRITTEN.md row: UNSUPPORTED(generator-capability), owner semantic-jira-pack (render the stop court and registry incl. release_order from sj:GoalCheckpoint/sj:stopQuery). Chicago fixtures on a real tmp git root (gates G1..G2 true, required WO-1 with an ALIVE receipt, release order WO-R): (a) no WO-R receipt -> STOP_pre=true, REQUIRED_UNKNOWN_pre=0, STOP=false, REQUIRED_UNKNOWN=1, exit 1; (b) ALIVE WO-R receipt in an out-of-subject --order-receipts-dir (in-repo dirs also passed) -> STOP=true, exit 0; (c) BLOCKED WO-R committed in-tree -> STOP=false typed refusal; (d) BLOCKED WO-R out of subject -> STOP=false; (e) the real goal.ttl still reports STOP=false with V23-Q MISSING. Reverting the lane diff must make (a), (c), (d) fail. Generation path: none (reserved hand-written runner; residue ~60-100 lines + 5 fixtures). Coupled DRIVER change (not in this lane): Part B keys the int-stage precondition on STOP_pre=true, writes the V23-Q receipt (tuple digest sha256:79cf01e19ce4b3ee1f7064e607a1c8deb272aecbcc544003affcb015fe735e9f, citing STOP_pre=true, REQUIRED_UNKNOWN_pre=0 and the sha256 of the STOP_pre receipt) only after merge + green exact-head CI into the out-of-subject dir /Users/sac/wt/v26922/v26923/release/v23q/, and passes the three dirs to the final court; CE23-3 later commits that receipt into chatman release/v26.9.23/imported/receipts/ (durable, out of the xaas subject). The dropped out-of-subject git-notes transport is NOT required. Receipt receipts/v26.9.23/R2-X-FIXEDPOINT.json.",
+     "required_now": true,
+     "defect_key": "V23-Q-fixed-point",
+     "scope": "CE23-3 / CE23-11 / PRD 13",
+     "source_candidates": [
+      "CE23-3-release-order-fixed-point"
+     ]
+    },
+    {
+     "id": "R2-X-TOOLCHAIN",
+     "repo": "xaas",
+     "after": [],
+     "gate": "set -u; S=$(mktemp -d); XH=$(git -C /Users/sac/wt/v26922/v23/R2-X-TOOLCHAIN rev-parse HEAD); GH=$(git -C /Users/sac/wt/v26922/fri/ggen_igniter-int rev-parse HEAD); P=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin; git clone -q --shared --no-checkout /Users/sac/xaas $S/x && git -C $S/x checkout -q --detach $XH && git clone -q --shared --no-checkout /Users/sac/ggen_igniter $S/g && git -C $S/g checkout -q --detach $GH && git clone -q --shared --no-checkout /Users/sac/ggen_igniter $S/g0 && git -C $S/g0 checkout -q --detach $GH && cp -cR /Users/sac/wt/v26922/fri/xaas-int/deps $S/x/deps && cp -cR /Users/sac/wt/v26922/fri/ggen_igniter-int/deps $S/g/deps && mkdir -p $S/g/_build $S/t && cp -cR /Users/sac/wt/v26922/fri/ggen_igniter-int/_build/test $S/g/_build/test && cd $S/x && fail=0; for tc in ambient pin; do PP=$PATH; [ $tc = pin ] && PP=$P:$PATH; for n in 0 1 2 3 8 9; do env PATH=$PP XAAS_DIR=$S/x GGEN_IGNITER_DIR=$S/g TMPDIR=$S/t sh docs/sjira/v26.9.23/courts/GC23-$n.sh >$S/$tc-$n.log 2>&1; e=$?; echo \"$tc GC23-$n=$e\"; [ $e -eq 0 ] || fail=1; done; env PATH=$PP XAAS_DIR=$S/x GGEN_IGNITER_DIR=$S/g TMPDIR=$S/t sh docs/sjira/v26.9.23/courts/GC23-12.sh >$S/$tc-12.log 2>&1; e=$?; echo \"$tc GC23-12=$e\"; [ $e -eq 77 ] || fail=1; done; for n in 0 1 2 3 8 9; do env XAAS_DIR=$S/x GGEN_IGNITER_DIR=$S/g0 TMPDIR=$S/t sh docs/sjira/v26.9.23/courts/GC23-$n.sh >$S/nodeps-$n.log 2>&1; e=$?; [ $e -eq 75 ] && grep -q BUILD_BROKEN $S/nodeps-$n.log && ! grep -q '^REFUSED' $S/nodeps-$n.log || fail=1; done; cd /Users/sac/wt/v26922/v23/R2-X-TOOLCHAIN && GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int sh docs/sjira/v26.9.23/courts/GC23-5.sh || fail=1; test $fail -eq 0",
+     "task": "Required_23 (GC23-1 cold bootstrap, GC23-10 independent reconstruction, PRD 16 durable artifacts, PRD 20 typed BUILD_BROKEN(toolchain)). Witnessed (scan SCAN-TRAVERSAL + verifier S/e4,e6,e7,e9 logs): with the ggen_igniter build compiled in place under its own pin, the unpatched GC23-0 REFUSES at the unchanged subject (System.cmd(\"cargo\") :enoent, no cargo on the no-LLM PATH); under the xaas pin 1.20.2 (which rel-a2's court step uses) GC23-0/GC23-1 REFUSE because gi_mix.sh and bootstrap_court.sh compile the ggen_igniter graph side with the caller's mix and `faker` does not compile under 1.20.2; a deps-less checkout prints REFUSED instead of a typed BUILD_BROKEN. Lane worktree off friday/gc-fri-0800 after R1c (R1-X-GUARD established priv/no_llm/policy.json as the single court-environment source; R1-X-PIN edits build_manifest next to graph_path). (1) Rust as policy DATA in priv/no_llm/policy.json: a builder-resolved toolchain dir = dirname of `rustup which cargo` run inside $GGEN_IGNITER_DIR/native/ggen_graph_nif (the real toolchain bin, never the ~/.cargo/bin proxy), still checked against the provider-binary list; CARGO_HOME as caller_or_default ~/.cargo. no_llm_env.sh adds the dir to PATH; no_llm_guard admits CARGO_HOME; SemanticDrive.graph_path/2 (semantic_drive.ex ~:590) appends the same policy-resolved dir, not System.find_executable on the ambient PATH. (2) Elixir: gi_mix.sh (GC23-0/2/3/12) and the GC23-1 invocation of bootstrap_court.sh (BOOTSTRAP_ELIXIR_BIN/BOOTSTRAP_ERLANG_BIN) run the ggen_igniter graph side with the toolchain resolved by the existing `mix xaas.episode --graph-toolchain --ggen-igniter-dir --ggen-build-path` (SemanticDrive.graph_toolchain/2, already used by GC23-8/9/10), never the caller's mix. (3) Typed exits: a graph-side build failure ('== Compilation error', 'could not compile dependency', 'Unchecked dependencies', \"Can't continue due to errors on dependencies\", System.cmd enoent) exits 75 with BUILD_BROKEN(toolchain) naming broken_term in gi_mix.sh and in the build steps of GC23-1.sh, GC23-8.sh and GC23-9.sh (GC23-10 already does). (4) Record cargo/rustc versions in the court toolchain identity if a non-stop_court place exists; do NOT edit xaas.stop_court.ex (R2-X-COHERENCE/FIXEDPOINT own it). Start from only the graph_path hunk of /private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/cold-toolchain.prototype.patch (its no_llm_env.sh hunk does not apply on R1-X-GUARD). Out of scope (successor GC-26.9.24): rust-toolchain.toml in ggen_igniter (frozen subject; changes CI rustup), fresh-clone subject-ref resolution (GC23-10-subject-ref-fresh-clone). Generation path: none in ggen-marketplace (no pack renders a court environment; gym-ci-toolchain-bblock-pack pins Action SHAs only); the in-repo data owner is priv/no_llm/policy.json; residue ~3 policy entries, ~6 lines no_llm_env.sh, ~4 lines graph_path/2, ~15 lines gi_mix.sh, ~4 lines per GC23-1/8/9 build step; HANDWRITTEN.md row owner runtime-evidence-authenticity-pack (future CourtEnvironment/ToolchainBinding vocabulary). Falsifier: with the lane diff reverted, the pin run of GC23-0 prints REFUSED (faker), the cold-clone ambient run prints REFUSED (cargo :enoent), and the deps-less run prints REFUSED. The gate is long (six courts x2 toolchains): run it as the listed separate commands with logs. Receipt receipts/v26.9.23/R2-X-TOOLCHAIN.json.",
+     "required_now": true,
+     "defect_key": "court-toolchain-closure",
+     "scope": "GC23-1 / GC23-10",
+     "source_candidates": [
+      "GC23-10-cold-toolchain-cargo"
+     ]
+    },
+    {
+     "id": "R2-X-PYLOCK",
+     "repo": "xaas",
+     "after": [
+      "R2-X-TOOLCHAIN"
+     ],
+     "gate": "cd /Users/sac/wt/v26922/v23/R2-X-PYLOCK && L=$PWD/docs/sjira/v26.9.23/courts && G=/Users/sac/wt/v26922/fri/ggen_igniter-int && T=$(mktemp -d) && C='uv pip compile --generate-hashes --exclude-newer 2026-09-23T00:00:00Z --python-version 3.14 --python-platform aarch64-apple-darwin requirements.in -o requirements.lock' && (cd $L && uv pip compile --quiet --generate-hashes --exclude-newer 2026-09-23T00:00:00Z --python-version 3.14 --python-platform aarch64-apple-darwin --custom-compile-command \"$C\" requirements.in -o $T/lock) && cmp $T/lock $L/requirements.lock && grep -q '^pm4py==2.7.22.1 ' $L/requirements.lock && env PYTHONPATH=/Users/sac/chatmangpt/pm4py XAAS_DIR=$PWD GGEN_IGNITER_DIR=$G sh $L/GC23-7.sh >$T/g7 2>&1 && grep -q '^pm4py-identity: 2\\.7\\.22\\.1 .*mismatches=0' $T/g7 && ! grep -qF /Users/sac/chatmangpt/ $T/g7 && env PYTHONPATH=/Users/sac/chatmangpt/pm4py XAAS_DIR=$PWD GGEN_IGNITER_DIR=$G sh $L/GC23-9.sh >$T/g9 2>&1 && grep -q '^pm4py-identity: 2\\.7\\.22\\.1 .*mismatches=0' $T/g9 && ! grep -qF /Users/sac/chatmangpt/ $T/g9 && ! env GC23_COURT_PYTHON=/opt/homebrew/bin/python3 XAAS_DIR=$PWD GGEN_IGNITER_DIR=$G sh $L/GC23-7.sh >$T/m7 2>&1 && grep -q editable $T/m7 && test -x \"$(sh $L/py_env.sh --print-python)\" && echo GATE-PASS",
+     "task": "Required_23 (GC23-7/GC23-9 replayable OCEL 2.0 witness; GC23-11/F7 and CE23-6: the courts execute the unpublished, unclassified fork seanchatmangpt/pm4py). Witnessed: ambient /opt/homebrew python3 (3.14.3) imports pm4py 2.7.22.1 from /Users/sac/chatmangpt/pm4py (editable .pth, direct_url dir_info.editable true, HEAD b612dd9); GC23-7.sh (~:33,40,44,63) and GC23-9.sh (~:85,95,100) import it. A hash-locked PyPI venv reproduces the counts (fmt-1 11/11, me-1 15/13, me-2 12/12) and both courts stay ALIVE. Lane worktree off friday/gc-fri-0800 after R2-X-TOOLCHAIN (both edit GC23-9.sh; R1-X-GUARD/COURTS already merged). (1) Commit docs/sjira/v26.9.23/courts/requirements.in: pm4py==2.7.22.1, rdflib==7.6.0, jsonschema==4.23.0. (2) GENERATE requirements.lock in that dir only with `uv pip compile --generate-hashes --exclude-newer 2026-09-23T00:00:00Z --python-version 3.14 --python-platform aarch64-apple-darwin --custom-compile-command '<same command>' requirements.in -o requirements.lock` (uv 0.9.11 at /Users/sac/.local/bin/uv, byte-identical across runs; never hand-edit; record uv --version). (3) docs/sjira/v26.9.23/courts/py_env.sh resolves the court interpreter: GC23_COURT_PYTHON if set, else ${XDG_CACHE_HOME:-$HOME/.cache}/xaas-courts/py-<first 16 hex of sha256(requirements.lock)>/bin/python3 created with `uv venv --python /opt/homebrew/bin/python3` + `uv pip sync --require-hashes requirements.lock`; then a lock-conformance check under -I (every name==version pin equals importlib.metadata's version; no distribution's direct_url.json has dir_info.editable) printing `pm4py-identity: <version> <pm4py.__file__> pins=<n> mismatches=0`; mismatch -> exit 1 naming them; uv absent or sync failure -> exit 75; never falls back to ambient python3. `py_env.sh --print-python` prints only the resolved interpreter path (R2-X-TRAVERSAL consumes it). (4) GC23-7.sh and GC23-9.sh (incl. :286,306,336,356,386 for uniformity): `python3` -> \"$py\" -I with py from py_env.sh; echo the identity line; py_env exit 1 -> REFUSED (exit 1), 75 -> UNKNOWN (75). (5) test/xaas/ultracode/semantic_drive_test.exs ~:247-257 and machine_experience_test.exs ~:1478-1482 invoke the interpreter py_env.sh prints (or GC23_COURT_PYTHON) with -I. Dropped from this lane to avoid a stop_court.ex conflict: the optional python_lock_sha256 toolchain field (successor). Out of scope (successor): GC23-0/2/3/12 py() helpers (rdflib only, not a git toplevel) and no_llm_env.sh. Generation path: the lock is owned by the uv framework generator; no ggen-marketplace pack renders Python locks. Residue: requirements.in (3 lines), py_env.sh (~20 lines), the interpreter switch in two court bodies, two test call sites (owner: semantic-jira-pack court-body projection; HANDWRITTEN.md row). Falsifier: the courts still import pm4py from /Users/sac/chatmangpt/pm4py, or the locked reader yields event/object counts different from ocel.json; with the lane reverted the pm4py-identity grep fails. Receipt receipts/v26.9.23/R2-X-PYLOCK.json.",
+     "required_now": true,
+     "defect_key": "pm4py-court-lock",
+     "scope": "GC23-7 / GC23-9 / GC23-11",
+     "source_candidates": [
+      "GC23-7-pm4py-court-lock"
+     ]
+    },
+    {
+     "id": "R2-X-TRAVERSAL",
+     "repo": "xaas",
+     "after": [
+      "R2-X-PYLOCK"
+     ],
+     "gate": "cd /Users/sac/wt/v26922/v23/R2-X-TRAVERSAL && F=docs/sjira/v26.9.23/fleet && GI=/Users/sac/wt/v26922/fri/ggen_igniter-int && PY=$(sh docs/sjira/v26.9.23/courts/py_env.sh --print-python) && python3 scripts/sjira/fleet_matrix.py check-classification --classification $F/classification.ttl --universe $F/universe.json --courts-dir docs/sjira/v26.9.23/courts --expect-critical xaas --expect-critical ggen_igniter && python3 scripts/sjira/fleet_matrix.py check-traversal --courts-dir docs/sjira/v26.9.23/courts --python \"$PY\" --universe $F/universe.json --int xaas=$PWD --int ggen_igniter=$GI && { python3 scripts/sjira/fleet_matrix.py check-traversal --courts-dir docs/sjira/v26.9.23/courts --python /opt/homebrew/bin/python3 --universe $F/universe.json --int xaas=$PWD --int ggen_igniter=$GI > /tmp/r2trav.out 2>&1; test $? -eq 1; } && grep -q 'REFUSED(court_executes_nonrequired).*pm4py' /tmp/r2trav.out && ! grep -q 'REFUSED.*/opt/homebrew' /tmp/r2trav.out && grep -q 'check-traversal' docs/sjira/v26.9.23/courts/GC23-11.sh",
+     "task": "Required_23 (GC23-11 / ARD F7: every repo a GC23 court actually executes is classified; CE23-6 'noncritical failures cannot reopen the release without falsifying a GC23 proposition' needs the observed traversal, not a lexical one). Today `fleet_matrix.py check-classification --courts-dir` exits 0 ('OK 21 repositories') although the courts executed the unclassified pm4py fork. Lane worktree off friday/gc-fri-0800 after R2-X-PYLOCK (it provides py_env.sh --print-python). In xaas scripts/sjira/fleet_matrix.py add a `check-traversal` subcommand: --courts-dir, --python <court interpreter>, --universe, --int NAME=PATH (repeatable), --owner (default seanchatmangpt). (i) Derive court python modules from import/from-import statements in courts/*.sh and *.py incl. heredocs, `python3 -c '...'` strings and scripts a court runs (e.g. $GGEN_IGNITER_DIR/scripts/sjira/bootstrap_court.sh); drop stdlib names. (ii) Resolve each module via importlib.util.find_spec(...).origin with the given interpreter and each court executable (python3, mix, elixir, erl, git, jq, shasum) to its realpath. (iii) Map each location to its git toplevel and origin remote. (iv) REFUSED(court_executes_nonrequired) and exit 1 only when the toplevel is fleet-owned (origin owner == --owner, or a universe path), is not a CriticalPath subject, and the location is not under a CriticalPath subject path (pinned deps under deps/, e.g. ex4pm@17e7761, pass). Third-party toplevels such as /opt/homebrew (origin Homebrew/brew) are printed as toolchain identity, never refused. Exit 2 = could not run. Wire it into docs/sjira/v26.9.23/courts/GC23-11.sh right after check-classification (exit 1 -> REFUSED_EXIT, other non-zero -> UNKNOWN_EXIT); update the classification.ttl header comment (guard is observed, not lexical). Out of scope (successor): a mix.lock universe source, ex4pm/ash_r2rml/pm4py classification rows (covered by classification.ttl:65 convention), an er:dependsOn feed into chatman-ecosystem-release-pack, path:-dep detection. Prototype: /private/tmp/claude-501/v23-scratch/SCAN-GC23-11-dep-closure/traversal_probe.py (the naive spec refused 7 homebrew paths; the owner rule above is the verified one). Generation path: none (fleet_matrix.py is hand-written, HANDWRITTEN.md:44; no pack derives traversal facts); residue ~70 lines + ~8 lines GC23-11.sh; owner for successor: chatman-ecosystem-release-pack observe query emitting er:dependsOn. Falsifier: check-traversal passes while the interpreter resolves pm4py from /Users/sac/chatmangpt/pm4py (the ambient clause of the gate), or refuses a /opt/homebrew path. Receipt receipts/v26.9.23/R2-X-TRAVERSAL.json.",
+     "required_now": true,
+     "defect_key": "court-traversal-closure",
+     "scope": "GC23-11 / CE23-6",
+     "source_candidates": [
+      "GC23-11-dependency-closure-universe"
+     ]
+    },
+    {
+     "id": "R2-X-PROD-TIMEOUT",
+     "repo": "xaas",
+     "after": [],
+     "gate": "python3 -c \"import yaml; d=yaml.safe_load(open('.github/workflows/ci_cd.yaml')); j=d['jobs']['production']; assert j['timeout-minutes']==30; s=[x.get('run','') for x in j['steps']]; assert any('rm -rf deps _build' in r and 'mix deps.get --check-locked' in r for r in s); assert any('mix compile --force --warnings-as-errors' in r for r in s)\" && H=$(git rev-parse HEAD) && gh api repos/seanchatmangpt/xaas/commits/$H/check-runs --jq '.check_runs[]|select(.name==\"Exact-head production compile court\")|.conclusion' | sort -u | grep -qx success",
+     "task": "Required_23 (CE23-5: xaas must reach an exact post-merge main SHA; approved authority merges only on green exact-head CI, release.run.js:73-77). Pre-existing on main: job production ('Exact-head production compile court', .github/workflows/ci_cd.yaml ~:238, timeout-minutes 12) is cancelled at 12.2-12.8 min on every head where ggen_igniter is a prod dep (e.g. run 35810390156, check-run 107020707922 annotation 'The job has exceeded the maximum execution time of 12m0s'); sparql's .erl files alone take 5m35s on a GitHub runner (warm log). Scoping ggen_igniter back to dev/test is not possible (ash_a2a prod dep requires ggen_igniter; 10 prod lib files reference GgenIgniter). Lane worktree off friday/gc-fri-0800 after R1c (R1-X-FENCE edits the same file in non-overlapping hunks). Set jobs.production.timeout-minutes 12 -> 30 and change nothing else (keep the clean-state step `rm -rf deps _build` + `mix deps.get --check-locked` and `mix compile --force --warnings-as-errors`). HANDWRITTEN.md row for ci_cd.yaml: owner /Users/sac/ggen-marketplace/packs/github-actions-pack (v0.3.2 models gha:timeoutMinutes, ontology.ttl:102, templates/workflow.yml.tmpl:66-77,148-149) status UNSUPPORTED(consumer-adoption) \u2014 share the row with R1-X-FENCE's if present; adoption is successor GC24-CI-gha-pack-adoption. Remote witness: push v23/R2-X-PROD-TIMEOUT (never force), verify by YAML parse that publish-image and deploy cannot run for a dispatch without the expected_head_sha input, then `gh workflow run ci_cd.yaml -R seanchatmangpt/xaas --ref v23/R2-X-PROD-TIMEOUT` and poll (bounded commands) until the production check run on the lane head concludes; a concurrency cancel under 1 min is rerun, not counted. If the orthogonal swarm (wf_2755fdff-28e ci:xaas) already dispatched a run on friday/gc-fri-0800, cite its production-job result as the baseline. Falsifier: at 12 min the job is cancelled with the 12m0s annotation. Receipt receipts/v26.9.23/R2-X-PROD-TIMEOUT.json (classification pre-existing).",
+     "required_now": true,
+     "defect_key": "xaas-ci-production-timeout",
+     "scope": "CE23-5",
+     "source_candidates": [
+      "CE23-5-XA-prod-timeout"
+     ]
+    },
+    {
+     "id": "R2-X-IMAGE-CARGO",
+     "repo": "xaas",
+     "after": [
+      "R2-X-PROD-TIMEOUT"
+     ],
+     "gate": "docker build --platform linux/arm64 --target builder --build-arg CARGO_BUILD_JOBS=4 -t xaas-builder:r2 . > /tmp/r2img.log 2>&1 && grep -q 'Compiling crate ggen_graph_nif' /tmp/r2img.log && python3 -c \"import yaml; d=yaml.safe_load(open('.github/workflows/ci_cd.yaml')); assert d['jobs']['image-check']['timeout-minutes']==45\" && H=$(git rev-parse HEAD) && for n in 'Build container without publication' 'Bound CI receipt'; do gh api repos/seanchatmangpt/xaas/commits/$H/check-runs --jq \".check_runs[]|select(.name==\\\"$n\\\")|.conclusion\" | sort -u | grep -qx success || exit 1; done",
+     "task": "Required_23 (CE23-5; image-check gates the 'Bound CI receipt' job). Latent pre-existing on main: the Dockerfile builder stage (apt line ~:70 installs only build-essential git; `RUN mix deps.compile` ~:83) has no Rust toolchain, but ggen_igniter's NIF (deps/ggen_igniter/lib/ggen_igniter/native/graph_nif.ex:9, Rustler) is compiled in the prod image since mix.exs moved ggen_igniter to prod; oxigraph 0.5.11 default rocksdb pulls oxrocksdb-sys, whose bindgen needs libclang; the locked closure needs Rust >= 1.87. image-check is skipped today only because production times out first. Lane worktree off friday/gc-fri-0800 after R2-X-PROD-TIMEOUT (same ci_cd.yaml). (1) Baseline locally: `docker build --platform linux/arm64 --target builder --build-arg CARGO_BUILD_JOBS=4 .` (colima VM 4 GB) must fail in Rustler.Compiler.Config.metadata!/1 with cargo :enoent; if it passes, stop: lane unnecessary. (2) Builder stage only (the runner stage ships the built .so): add `curl ca-certificates libclang-dev` to the apt line; `ENV RUSTUP_HOME=/usr/local/rustup CARGO_HOME=/usr/local/cargo PATH=/usr/local/cargo/bin:$PATH`; install pinned Rust 1.97.1 (`curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain 1.97.1 --no-modify-path`, or COPY --from a digest-pinned rust:1.97.1-slim-bookworm), all before `RUN mix deps.compile`. Toolchain identity reused from ggen-marketplace tcps-release-pack/reference/containers/Dockerfile.release:1. (3) ci_cd.yaml image-check timeout-minutes 20 -> 45 (optionally gha cache-from/cache-to on the build-push-action); touch no other job. (4) HANDWRITTEN.md row: Dockerfile Rust-toolchain lines, UNSUPPORTED(generator-capability) \u2014 the source generator `mix phx.gen.release --docker` (deps/phoenix/priv/templates/phx.gen.release/Dockerfile.eex) has no Rust option and re-running it would drop the hand-kept pins; tcps-release-pack/templates/dockerfile_*.tmpl only pass a literal body; owner: an Elixir-release-container pack or tcps-release-pack extension (successor). RustlerPrecompiled needs a hex publish (outside authority; operator edge). (5) Rerun the builder build (exit 0, 'Compiling crate ggen_graph_nif'); revert-mutations: without the rust lines -> :enoent; without libclang-dev -> bindgen 'Unable to find libclang'. (6) Remote: dispatch ci_cd.yaml on the lane branch as in R2-X-PROD-TIMEOUT (after the same publish/deploy YAML proof) and require 'Build container without publication' and 'Bound CI receipt' success. Falsifier: image-check fails in mix deps.compile on ggen_igniter with cargo/rustler not found. Receipt receipts/v26.9.23/R2-X-IMAGE-CARGO.json (classification pre-existing, latent).",
+     "required_now": true,
+     "defect_key": "xaas-image-rust-toolchain",
+     "scope": "CE23-5",
+     "source_candidates": [
+      "CE23-5-XA-image-cargo"
+     ]
+    },
+    {
+     "id": "R2-X-WDCS2",
+     "repo": "xaas",
+     "after": [],
+     "gate": "cd /Users/sac/wt/v26922/v23/R2-X-WDCS2 && PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH sh -c 'MIX_ENV=test mix assets.setup && MIX_ENV=test mix assets.build' && test -s priv/static/assets/app.js && grep -q LiveSocket priv/static/assets/app.js && test -f assets/package.json && grep -q 'mix assets.setup && mix assets.build' .github/workflows/wd-cs2-exact-head.yml && (PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH MIX_ENV=test PHX_SERVER=true mix phx.server > /tmp/r2wd.log 2>&1 & echo $! > /tmp/r2wd.pid) && sleep 60 && c=$(curl --max-time 3 -s -o /dev/null -w '%{http_code}' -H 'Connection: Upgrade' -H 'Upgrade: websocket' -H 'Sec-WebSocket-Version: 13' -H 'Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==' -H 'Origin: http://127.0.0.1:4002' 'http://127.0.0.1:4002/live/websocket?vsn=2.0.0'); kill $(cat /tmp/r2wd.pid); test \"$c\" = 101 && H=$(git rev-parse HEAD) && gh api repos/seanchatmangpt/xaas/commits/$H/check-runs --jq '.check_runs[]|select(.name==\"wd-cs2\")|.conclusion' | sort -u | grep -qx success",
+     "task": "Required_23 as a merge unblocker for CE23-5 only (WD FA itself is successor GC-26.9.24 per chatman-ce23.md). .github/workflows/wd-cs2-exact-head.yml runs on every pull_request to main (no paths filter; 0 successful runs ever) and fails at e2e/wd-fa-cs2.spec.cjs:15 (Expected PARTIAL / Received KNOWN; run 35826687758, PR #63), so the release PR cannot be green. Two independent verified causes, all three edits required: (1) root package.json:14 \"type\": \"module\" makes assets/*.js ESM and esbuild 0.14.41 (config.exs:204) exits 1 'No matching export in \"vendor/topbar.js\" for import \"default\"' -> add assets/package.json with {\"private\": true}; (2) the workflow never builds assets -> add a step 'Build assets' after 'Resolve dependencies' running `mix assets.setup && mix assets.build` (MIX_ENV=test is set at workflow level); (3) the LiveView socket from Origin http://127.0.0.1:4002 gets 403 (config.exs:165 url host localhost, Phoenix check_origin default true, transport.ex:595) -> in config/test.exs XaasWeb.Endpoint add `check_origin: false` (precedent config/dev.exs:65); alternative: switch the workflow's PLAYWRIGHT_BASE_URL and readiness curl to http://localhost:4002. Lane worktree off friday/gc-fri-0800 after R1c. Generation path: the build commands are Phoenix aliases (mix.exs:253-254); the workflow step is hand YAML (github-actions-pack not adopted by xaas: successor); assets/package.json and check_origin have no generator (future Phoenix endpoint/asset pack); residue 3 files ~5 lines + HANDWRITTEN.md row. Remote: wd-cs2-exact-head.yml has workflow_dispatch (verified at xaas-int 246460c): push the lane branch, `gh workflow run wd-cs2-exact-head.yml -R seanchatmangpt/xaas --ref v23/R2-X-WDCS2`, poll in bounded steps, and require the wd-cs2 check run on the lane head to conclude success. Falsifiers: delete assets/package.json -> the assets step exits 1; revert the origin fix -> 403 and spec:15 fails again; if both local checks pass but wd-cs2 still fails at spec:15, the hypothesis is refuted: report BLOCKED with the log (operator edge: path-filter the WD court). Receipt receipts/v26.9.23/R2-X-WDCS2.json (classification pre-existing).",
+     "required_now": true,
+     "defect_key": "xaas-wd-cs2-assets-origin",
+     "scope": "CE23-5",
+     "source_candidates": [
+      "CE23-5-XA-wdcs2-assets"
+     ]
+    },
+    {
+     "id": "R2-GI-CI",
+     "repo": "ggen_igniter",
+     "after": [],
+     "gate": "python3 -c \"import yaml,sys; d=yaml.safe_load(open('.github/workflows/ci.yml')); t=d['jobs']['test']; s=t['steps'][0]; sys.exit(0 if s['name']=='Checkout' and s.get('with',{}).get('fetch-depth')==0 and t['timeout-minutes']==90 else 1)\" && git show 3937a4f:.github/workflows/ci.yml | python3 -c \"import yaml,sys; s=yaml.safe_load(sys.stdin)['jobs']['test']['steps'][0]; sys.exit(1 if s.get('with',{}).get('fetch-depth')==0 else 0)\" && H=$(git rev-parse HEAD) && J=$(gh api \"repos/seanchatmangpt/ggen_igniter/actions/runs?head_sha=$H\" --jq '.workflow_runs[]|select(.name==\"ggen_igniter CI\")|.id' | head -1) && test -n \"$J\" && gh run view $J -R seanchatmangpt/ggen_igniter --json jobs --jq '.jobs[]|select(.name|test(\"Elixir tests\"))|.conclusion' | grep -vqx cancelled",
+     "task": "Required_23 (CE23-5/GC23-11 for ggen_igniter: exact-head CI must be green before merge). Two verified CI defects in the same file .github/workflows/ci.yml, combined into one lane to avoid a same-file race. (a) fetch-depth: actions/checkout v6 defaults to depth 1, so the canonical baseSha d84da141 is unreachable and 3 tests in describe 'opt-in git ground truth for baseSha' fail with REFUSED:SEMANTIC_JIRA_BASE_SHA_UNVERIFIED (hosted runs 35495187017 and 35504307039 with fetch-depth 1: 3 failures; 35674544446 with fetch-depth 0: 0 failures). The fix existed and was dropped twice by merges (070dbd5 dropped 2f26c0b; 4ffa201 dropped a39921b; 76279a9, 8fc6ce6, 1b586f9 only propagated). Replay it, do not retype: `git show a39921b -- .github/workflows/ci.yml | git apply` (git apply --check passes on 3937a4f): adds the 6-line comment + `fetch-depth: 0` after `persist-credentials: false` (~:27). (b) timeout: jobs.test.timeout-minutes 30 -> 90 (~:17). At the identical ci.yml/mix.lock/mix.exs blobs every push run past `mix format` was cancelled at 30.3 min (35895253020, ...295, ...4599, ...4817, ...6423): a cold run spends 19.9 min before ExUnit (no cache key matches, and cancelled jobs never save caches), and ExUnit takes 19.2-34.7 min for the 1349-test suite, total ~39-56 min. Lane worktree off friday/gc-fri-0800 (already contains R1-GI-FMT 3ed6a7a, which fixes the format step that aborted run 35895255818 before mix test). Commit with -F naming both dropping merges. Generation path: no generator owns ggen_igniter ci.yml (no ggen.toml; hand-authored since 99f92a3); the eventual owner is github-actions-pack (gha:withParam ontology.ttl:133 rendered at workflow.yml.tmpl:180-183; gha:timeoutMinutes :102) \u2014 adoption is successor GC24-CI-gha-pack-adoption; record UNSUPPORTED(generator-capability) in the receipt (ggen_igniter HANDWRITTEN.md row if the ledger covers ci.yml). Local emulation under the ggen_igniter pin: in a FULL-history clone of the lane head with origin https://github.com/seanchatmangpt/ggen_igniter.git, `MIX_ENV=test mix test test/ggen_igniter_semantic_jira_pack_test.exs --only \"describe:opt-in git ground truth for baseSha (residual_base_sha_wrong_commit closure)\"` -> 0 failures (observed 67 tests, 0 failures, 61 excluded), and a depth-1 clone gives the BASE_SHA_UNVERIFIED failures. Hosted: push v23/R2-GI-CI (never force); its push-event 'ggen_igniter CI' run is cold; poll in bounded steps; the 'Elixir tests (mix credo + mix test)' job must reach 'Finished in ... seconds' with no 'exceeded the maximum execution time' annotation and 0 failures in that describe. Full green on the PR head stays V23-Q's acceptance. Falsifiers: depth-1 checkout -> 3 BASE_SHA_UNVERIFIED failures; timeout 30 -> cancelled at 30.3 min. Receipt receipts/v26.9.23/R2-GI-CI.json (classification pre-existing + generator drift by merge).",
+     "required_now": true,
+     "defect_key": "ggen_igniter-ci-fetch-depth+timeout",
+     "scope": "CE23-5",
+     "source_candidates": [
+      "CE23-5-GI-fetch-depth-conserve",
+      "CE23-5-GI-job-timeout"
+     ]
+    }
+   ]
+  },
+  {
+   "wave": "MP",
+   "status": "required_now (generator capital for CE23-1/2/3/8/9/10); runnable now, concurrent with R1c/R2 (touches no frozen subject)",
+   "preconditions": [
+    "driver bootstrap: git -C /Users/sac/ggen-marketplace fetch --no-prune origin && git -C /Users/sac/ggen-marketplace worktree add -b release/v26.9.23-int /Users/sac/wt/v26922/fri/ggen-marketplace-int 420bc91e7c1e291be73ab749b7e443252bc7bab8 (verify with git ls-remote that origin/main is still 420bc91e; rebase-free; the operator checkout's working tree is not touched)"
+   ],
+   "repo_map": {
+    "ggen-marketplace": {
+     "repo": "/Users/sac/ggen-marketplace",
+     "int": "/Users/sac/wt/v26922/fri/ggen-marketplace-int",
+     "branch": "release/v26.9.23-int",
+     "base": "origin/main 420bc91e7c1e291be73ab749b7e443252bc7bab8"
+    }
+   },
+   "repos": {
+    "ggen-marketplace": "/Users/sac/ggen-marketplace"
+   },
+   "ints": {
+    "ggen-marketplace": "/Users/sac/wt/v26922/fri/ggen-marketplace-int"
+   },
+   "base_branch": "release/v26.9.23-int",
+   "worktree_root": "/Users/sac/wt/v26922/v23",
+   "branch_prefix": "mp23",
+   "receipts_dir": "receipts/v26.9.23",
+   "max_repairs": 2,
+   "context": "Generator capital for the Chatman Ecosystem v26.9.23 root crown (operator chatman-ce23.md CE23-1/2/3/8/9/10; DRIVER.md 'Release closure procedure'). Repo seanchatmangpt/ggen-marketplace; int /Users/sac/wt/v26922/fri/ggen-marketplace-int on release/v26.9.23-int, based on GitHub origin/main 420bc91e7c1e291be73ab749b7e443252bc7bab8 (the local /Users/sac/ggen-marketplace main is 96feba8c9 = 5 unpushed operator commits and a dirty tree: never edit, reset or push it; read-only pattern sources there are fine). These lanes touch no frozen subject (xaas/ggen_igniter) and may run now. Generator: ggen 26.9.18 (/Users/sac/.local/bin/ggen; record ggen --version). Pack law stays generic: exact release-instance facts are consumer-owned (chatman-ecosystem-v26-9-1-release-gate/pack.toml:4); no STOP/CHATMAN_STOP gate in the generic pack (it would refuse the pack's own qualification/consumer.ttl). Pack gates must be proven both natively (consumer `ggen sync run` -> FM-PACK-013) and through an explicit rdflib runner (bin/run-gates.py; reuse packs/gym-autonomic-crown-pack/bin/run-gates.py), because a scan observed ggen enforcing pack gates only when the pack is consumed through a consumer [packs] entry. Qualification = real fixtures + mutants under the pack's qualification/, Chicago style, no mocks. Receipts receipts/v26.9.23/<LANE>.json (fleet R schema, python3 ~/.claude/dfcm/validate_receipt.py -> ADMITTED). After the wave the driver pushes release/v26.9.23-int (new branch, never force) and records its SHA; chatman consumes the packs by git+subdir pinned to that exact SHA (precedent: xaas ggen.toml:7-22). Merge to marketplace main is successor GC-26.9.24 (GC24-release-pack-upstream). Verified scan specs: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/<candidate-id>.txt.",
+   "after_wave_driver_steps": [
+    "git -C /Users/sac/wt/v26922/fri/ggen-marketplace-int push origin release/v26.9.23-int (new branch, never force); record the SHA as MP_SHA for every CE consumer (git+subdir version pin)"
+   ],
+   "lanes": [
+    {
+     "id": "MP-RELPACK-XW",
+     "repo": "ggen-marketplace",
+     "after": [],
+     "gate": "cd /Users/sac/wt/v26922/v23/MP-RELPACK-XW/packs/chatman-ecosystem-release-pack && test -n \"$(ls templates)\" && P=$PWD && python3 bin/run-gates.py qualification/consumer.ttl gates && (cd qualification/consumer-v26.9.23 && ggen sync run > /tmp/mpxw1.json && cp -R out /tmp/mpxw-out1 && ggen sync run > /tmp/mpxw2.json && diff -r out /tmp/mpxw-out1) && for m in qualification/mutants/*/; do (cd $m && ggen sync run > /tmp/mpxw-m.log 2>&1); r=$?; python3 $P/bin/run-gates.py $m/release.ttl $P/gates > /tmp/mpxw-g.log 2>&1; g=$?; test $r -ne 0 -o $g -ne 0 || { echo VACUOUS $m; exit 1; }; done",
+     "task": "Required_23 generator capital for CE23-1 (independent v26.9.23 release subject) and CE23-2 (explicit disposition of every one of the 16 v26.9.1 roles). Today packs/chatman-ecosystem-release-pack (ontology.ttl, gates/010-060, qualification/consumer.ttl) has NO templates, so `ggen sync run` refuses it FM-PACK-005, and er:Disposition lacks SUCCESSOR/BLOCKED/REFUSED (er:BLOCKED/er:UNSUPPORTED are StandingState IRIs). Extend the pack in lane worktree /Users/sac/wt/v26922/v23/MP-RELPACK-XW (branch mp23/MP-RELPACK-XW off release/v26.9.23-int): (1) Vocabulary (pack namespace er:, no IRI reuse of er:Disposition / StandingState): class er:RoleDisposition; value class er:RoleBoundary with er:ROLE_REQUIRED, er:ROLE_SUCCESSOR, er:ROLE_BLOCKED, er:ROLE_UNSUPPORTED, er:ROLE_REFUSED; sentinel er:ROLE_UNCLASSIFIED (untyped); properties er:legacyRole, er:legacyComponent, er:legacySha, er:legacyStanding, er:boundary, er:sourceRelease, er:targetRelease, er:reason, er:decidedBy, er:derivedBy, er:suppliedBy, er:classificationSource, er:legacyRequiredRole, er:courtReferencesComponent; class er:LegacyRelease so lifted v26.9.1 facts are not re-judged by gates 010-060. (2) gates/070_role_crosswalk_total.rq refuses: a legacyRequiredRole with 0 or >1 dispositions; a boundary not an er:RoleBoundary; duplicate rows per role; ROLE_REQUIRED not supplied by a required component of the target release; a disposition without er:reason or er:derivedBy/er:decidedBy; an explicit decision overriding a repo present in the fleet classification. gates/080_critical_path_coverage.rq refuses any CriticalPath repository of the imported fleet classification that is not a required er:Component of the target release. (3) Disposition rule as a template `construct:` frontmatter (Stage-2 enrich; `[[inference.rules]]` is refused FM-CONFIG-101 in the frontmatter schema; any CONSTRUCT needs ORDER BY, strict_mode E0011): a legacy role with no explicit disposition and no er:courtReferencesComponent fact gets ROLE_SUCCESSOR with er:derivedBy rule:no-GC23-court-reference (the operator topology law: a successor repo becomes required only if a GC23 court executes it); in-universe repos map CriticalPath->REQUIRED, Successor->SUCCESSOR, Blocked->BLOCKED, Refused->REFUSED, Unsupported->UNSUPPORTED by join on the GitHub slug (refuse basename collisions). (4) Templates (frontmatter pattern of packs/frontier-release-factory-pack/templates/acceptance-contract.toml.tmpl): release-manifest.toml.tmpl emitting every verify_release field (id, repository, ref, ref_check, sha, role, disposition, standing, required, depends_on; version from er:version); constitutional-role-crosswalk.toml.tmpl (release_role, primary, capabilities, authority_ceiling, so survey_portfolio RELEASE_ROLE_UNMAPPED stays clean); legacy-role-crosswalk.toml.tmpl (OPTIONAL join + gate, never an inner join that silently drops a row); requirements.toml.tmpl (rows from CE WorkOrders: gate, repo@sha40 subject, falsifier); a crosswalk.ttl.tmpl that wraps <IRI>/\"literal\" (ggen does not emit the inferred graph). (5) lift/manifest_to_er.py (~35 lines tomllib; the only code residue, owned by this pack; no marketplace pack parses TOML into RDF): release manifest TOML -> er:LegacyRelease/er:legacyRequiredRole TTL; gates 010-060 return 0 rows on its output. (6) bin/run-gates.py (reuse packs/gym-autonomic-crown-pack/bin/run-gates.py). (7) qualification/consumer-v26.9.23/ (ggen.toml consuming the pack by relative path + extra_ontologies, a lifted copy of chatman release/v26.9.1/manifest.toml at c59596f5, a copy of xaas docs/sjira/v26.9.23/fleet/classification.ttl with its sha256, court-reference facts) and qualification/mutants/{M1 drop one crosswalk row, M2 disposition UNCLASSIFIED, M3 add a court reference so no disposition derives, M4 drop ggen_igniter consistently (component + dependsOn + requiredRole), M5 reclassify open-ontologies CriticalPath, M6 hand-edited rendered file}; each mutant must be refused by the native sync (FM-PACK-013) or the explicit runner (record which; M1/M3/M4 passed the earlier probe gates, so gates 070/080 must catch them). pack.toml version 0.2.0 (was 0.1.0); update the pack description. Prototypes (verified with ggen 26.9.18): /private/tmp/claude-501/v23-scratch/SCAN-CHATMAN/genprobe-gates2, SCAN-CE23-2-crosswalk-gen/proto (import_manifest.py, crosswalk.construct.rq, gates/070, templates/*.tera), SCAN-VERIFY-CE23-1-2. Residue: lift/manifest_to_er.py only; gate/template/ontology additions are pack capital. Falsifier: any mutant renders with exit 0 and zero gate rows, or two consumer renders differ. Receipt receipts/v26.9.23/MP-RELPACK-XW.json.",
+     "required_now": true,
+     "scope": "CE23-1 / CE23-2 generator",
+     "source_candidates": [
+      "CE23-1-2-release-graph (pack half)",
+      "CE23-2-crosswalk-gen (pack half)"
+     ]
+    },
+    {
+     "id": "MP-RELPACK-CROWN",
+     "repo": "ggen-marketplace",
+     "after": [
+      "MP-RELPACK-XW"
+     ],
+     "gate": "cd /Users/sac/wt/v26922/v23/MP-RELPACK-CROWN/packs/chatman-ecosystem-release-pack && P=$PWD && python3 bin/run-gates.py qualification/imported-crown.positive.ttl gates && for f in stale-r0 llm1 unreceipted-null drop-gate foreign-subject gi-mismatch; do ! python3 bin/run-gates.py qualification/imported-crown.$f.ttl gates || { echo VACUOUS $f; exit 1; }; done && F=qualification/fixtures/positive-receipts && python3 bin/import-crown-lift.py $F $(cat $F/XAAS_SHA) $(cat $F/GI_SHA) | cmp - qualification/imported-crown.positive.ttl && python3 bin/run-gates.py qualification/consumer.ttl gates",
+     "task": "Required_23 generator capital for CE23-3 (import the Semantic Manufacturing crown by exact digest; STOP=true; 13 admitted gate receipts) and CE23-8 (LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH=0, UNRECEIPTED_ACTUATION=0 carried into the root receipt). Schema validation cannot decide STOP truth (validate_receipt.py ADMITS the stale 0/13 STOP receipt), so the law is a pack gate. Lane off release/v26.9.23-int after MP-RELPACK-XW (same pack). Add to packs/chatman-ecosystem-release-pack: ontology er:ImportedCrown, er:crownComponent, er:pairedComponent, er:crownSubjectSha, er:stopStanding, er:hasGateReceipt, er:gateStanding, er:gateSubjectSha, er:pairedSubjectSha, er:requiredGateCount, er:llmInvocationsOnKnownReferencePath, er:unreceiptedActuation, er:stopReceiptSha256, er:receiptSha256; gates/090_imported_crown.rq (SELECT-violation style of 010-060) refusing: STOP standing not ALIVE; fewer than er:requiredGateCount distinct ALIVE gate receipts whose subject_sha equals the crown subject; STOP subject_sha != the crown component er:commitSha; any gate.ggen_igniter_sha != the paired component er:commitSha; either counter absent, null or != 0 (V23-S writes null with a reason when unreadable); bin/import-crown-lift.py (receipt JSON dir -> er: TTL; generic for any upstream checkpoint crown; ~30-40 lines, prototype SCAN-CE23-3-8-crown-import/proto/lift_ttl.py); templates/imported-crown.toml.tmpl; bin/import-crown-generate.sh (lift -> run-gates -> consumer `ggen sync run` -> diff against the committed file; precedent gym-autonomic-crown-pack/bin/crown-generate.sh). Qualification fixtures (data): positive = the real V23-S smoke STOP whose counters are 0 with gates rewritten ALIVE at one subject; stale-r0 = xaas 66b52e7 R_0 receipts (STOP subject 11a24fba..., UNKNOWN, 0/13; prototype refused with 18 rows); llm1; unreceipted-null; drop-gate (12 gates); foreign-subject; gi-mismatch; each fixture dir carries XAAS_SHA and GI_SHA files naming its subjects. Prototype gate: SCAN-CE23-3-8-crown-import/proto/080_imported_crown.rq (renumbered 090 here). Residue: bin/import-crown-lift.py (owner: this pack). Falsifier: the stale R_0 fixture, a counter=1 fixture or a foreign-subject gate receipt passes the gates. Receipt receipts/v26.9.23/MP-RELPACK-CROWN.json.",
+     "required_now": true,
+     "scope": "CE23-3 / CE23-8 generator",
+     "source_candidates": [
+      "CE23-3-8-crown-import (step 0)"
+     ]
+    },
+    {
+     "id": "MP-RELPACK-COURT",
+     "repo": "ggen-marketplace",
+     "after": [
+      "MP-RELPACK-CROWN"
+     ],
+     "gate": "cd /Users/sac/wt/v26922/v23/MP-RELPACK-COURT/packs/chatman-ecosystem-release-pack && C=qualification/consumer-v26.9.23 && (cd $C && rm -rf out && ggen sync run > /dev/null && cp -R out /tmp/mpct1 && ggen sync run > /dev/null && diff -r out /tmp/mpct1 && test -s out/scripts/crown_v26_9_23.sh && test -s out/typed-checks.txt && test -s out/receipts/root-receipt.unsealed.toml && test -s out/receipts/ROOT.json && test -s out/receipts/IMPORTS.sha256) && python3 bin/run-gates.py qualification/consumer.ttl gates && ! grep -rl CHATMAN_STOP gates/",
+     "task": "Required_23 generator capital for CE23-9 (exact-head root court) and CE23-10 (root release receipt). No template or vocabulary for a release court or root receipt exists anywhere (the pack has no templates/; ggen-release-pack/publish_candidate_workflow.yml.tmpl only echoes a hand-written literal body). Lane off release/v26.9.23-int after MP-RELPACK-CROWN (same pack). Add: ontology er:Gate, er:gate, er:gateOrder, er:command, er:CheckDisposition, er:checkName, er:failureClass (individuals subject_defect, environment, pre_existing, generator_drift, evidence_defect, infrastructure), er:RootReceipt, er:ImportedReceipt (importName, importPath, importDigest, ordinal) and receipt properties; templates release-court.sh.tmpl (one SPARQL SELECT over er:Gate ordered by er:gateOrder, a Tera loop emitting each er:command under `set -euo pipefail`, typed exit per failing gate; pattern /Users/sac/ggen-marketplace/packs/invariant-gate-pack/templates/test_invariants.sh.tmpl \u2014 read-only, it exists only in the local unpushed main), typed-checks.txt.tmpl (from er:CheckDisposition rows), root-receipt.toml.tmpl (chatman Receipt shape: id receipt:release-v26-9-23, authority release, standing_before PARTIAL_ALIVE -> standing_after ALIVE \u2014 Unknown->Alive is refused by Standing::permits, lib.rs:208-232; observed[] component SHAs, chatman subject SHA, graph_hash, pack/ontology/schema digests, toolchain, V23-Q release-receipt digest; verified[] import name=sha256 pairs, STOP counters, fleet digest; excluded[] successor/blocked/refused typing; replay[] court commands), root-receipt.json.tmpl (fleet R schema; standing and exits from observed facts), imports.sha256.tmpl (so a later `shasum -a 256 -c --strict` recomputes every import digest). CHATMAN_STOP is NOT a generic pack gate (it would refuse the pack's own q:release UNKNOWN fixture and every pre-crown sync); the consumer checks it at court time. qualification/consumer-v26.9.23/ gains er:gate facts, one er:CheckDisposition, an observed.ttl fixture via extra_ontologies. Prototypes (ggen 26.9.18, two byte-identical syncs): SCAN-CE23-9-root-court/probe, SCAN-CE23-10-root-receipt/gen. Residue: none in the pack beyond ontology/templates (pack capital); the consumer's court-set facts stay consumer-owned. Falsifier: a hand-edited rendered crown script survives a re-sync without diff, or the rendered receipt accepts Unknown->Alive. Receipt receipts/v26.9.23/MP-RELPACK-COURT.json.",
+     "required_now": true,
+     "scope": "CE23-9 / CE23-10 generator",
+     "source_candidates": [
+      "CE23-9-root-court (pack half)",
+      "CE23-10-root-receipt (pack half)"
+     ]
+    },
+    {
+     "id": "MP-RPV",
+     "repo": "ggen-marketplace",
+     "after": [],
+     "gate": "set -e; cd /Users/sac/wt/v26922/v23/MP-RPV/packs/receipt-provenance-unification-pack && ggen sync run > /dev/null && ggen sync run | grep -q 'skipped: unchanged' && V=$PWD/generated/unified_receipt_validator.py && for f in /Users/sac/wt/v26922/fri/xaas-int/docs/sjira/v26.9.23/receipts/*.json /Users/sac/wt/v26922/fri/xaas-int/receipts/v26.9.23/*.json /Users/sac/wt/v26922/fri/ggen_igniter-int/receipts/v26.9.23/*.json qualification/fixtures/dfcm_fleet_v1/*.json; do a=0; python3 $V $f --contract=dfcm_fleet_v1 >/dev/null 2>&1 || a=$?; b=0; python3 /Users/sac/.claude/dfcm/validate_receipt.py $f >/dev/null 2>&1 || b=$?; [ $a = $b ] || { echo DIVERGE $f; exit 1; }; done && python3 $V --contract dfcm_fleet_v1 /Users/sac/wt/v26922/fri/xaas-int/docs/sjira/v26.9.23/receipts/GC23-4.json > /dev/null && for f in qualification/fixtures/durable/neg-*.json; do set +e; python3 $V --contract=dfcm_fleet_v1 --require-durable --repo-map seanchatmangpt/xaas=/Users/sac/wt/v26922/fri/xaas-int $f > /tmp/rpv.o 2>&1; e=$?; set -e; test $e -eq 1 && grep -Eq 'R_missing_identity|R_missing_replay' /tmp/rpv.o && ! grep -q Traceback /tmp/rpv.o; done && python3 $V --contract=dfcm_fleet_v1 --require-durable --repo-map seanchatmangpt/xaas=/Users/sac/wt/v26922/fri/xaas-int qualification/fixtures/durable/pos-git-blob.json && test -z \"$(python3 -c 'import rdflib,sys;g=rdflib.Graph();g.parse(\"ontology.ttl\");print(len(list(g.query(open(\"gates/01_no_actuation.rq\").read()))) or \"\")')\"",
+     "task": "Required_23 (CE23-9 'imported receipt validation' at the exact-head root court; CE23-3 'all 13 gate receipts admitted'; PRD 28 'a named receipt without validated contents is not ALIVE'). Two verified defects: (a) no validator runs on a GitHub runner \u2014 ~/.claude/dfcm/validate_receipt.py loads its schema from Path.home() (:9) and imports jsonschema; chatman has none; (b) its identity check is dead for every slug receipt: :20-25 checks subject_sha only when Path(identity.repo).is_dir(), and since V23-S identity.repo is the GitHub slug (forged-slug receipts with subject_sha 000..0 are ADMITTED). Do NOT edit ~/.claude/dfcm/validate_receipt.py (unversioned; its sha256 is the verifier identity V23-S binds into every receipt). Extend the generator instead: packs/receipt-provenance-unification-pack (ggen.toml + ontology.ttl + templates/unified_receipt_validator.py.tmpl -> generated/unified_receipt_validator.py, stdlib json/re/sys/subprocess only). Lane off release/v26.9.23-int (independent pack). (1) Template extension: jsonType array with rp:minItems and rp:itemPattern; a CONDITIONAL-required table (rp:requiredWhenPath/rp:requiredWhenPattern); rp:ImplicationRule (rp:ifPath, rp:ifPattern, rp:thenPath, rp:thenEquals); accept `--contract KEY` and `--contract=KEY`; per-binding rp:brokenTerm so refusals print R_missing_identity / R_missing_replay; rp:resolution kinds (subject_commit, notes_object, blob_at_commit, ancestor_of) rendered into a read-only resolver (`git cat-file -e`, `git merge-base --is-ancestor`) behind `--require-durable [--repo-map owner/repo=path ...]`; with no flags every verdict is unchanged. (2) Ontology facts (data, each with rp:sourceFile/rp:sourceLine so gates/02_every_fact_cited.rq returns 0 rows): contract dfcm_fleet_v1 (schemaUri https://chatmangpt.com/schema/receipt/v1, citing /Users/sac/.claude/dfcm/receipt.schema.json sha256 c19451fa...); value forms sha256-hex-prefixed, authority-ceiling, standing-dfcm, chatman-broken-term, array-of-git-sha-abbrev, array-of-string, array-min1, owner/repo slug, durable-location (git-notes:refs/notes/<ref>@<sha> | git:<owner/repo>@<sha>:<path> where subject_sha is <sha> or its ancestor | https URL; absolute local paths /private/tmp, /tmp, /var/folders and non-git dirs refused); ~19 field bindings (identity.{subject,repo,subject_sha,base_sha,graph_hash?}, authority.{actor,ceiling,grant}, consequence.{commits,files_changed,remote_effects}, replay.commands minItems 1 with {cmd,cwd,exit,output_sha256?}, standing.{value,derived_from}, standing.broken_term required when standing.value ^(BLOCKED|BUILD_BROKEN|REFUSED)); implication standing.value ^ALIVE$ => every replay exit == 0 (validate_receipt.py:18); replace rp:val_none with a Validator individual citing validate_receipt.py. Do NOT add a chatman_root_v1 contract (ecosystem-core Receipt::verify owns it; O(N^2) drift). (3) qualification/fixtures/dfcm_fleet_v1/ mutants derived from xaas GC23-4.json with expected exits; qualification/fixtures/durable/{neg-forged-GC23-4.json (/private/tmp/claude-501/v23-scratch/SCAN-stale-evidence/forged-GC23-4.json), neg-forged-slug-notes-sha0.json, pos-git-blob.json}. (4) Update pack.toml description and PROVENANCE.md ('read-only git probes'); gates/01_no_actuation.rq stays 0 rows. Prototypes: SCAN-CE23-9-imported-receipt-validator/ontology.diff, SCAN-CE23-9-validator-durable-identity-profile/pack/ontology.ttl:332-350. Residue: ontology instance facts (data) + fixtures; zero hand-written code outside the pack's template. Falsifiers: the default-profile verdict differs from validate_receipt.py on any current receipt (the gate's DIVERGE loop); a forged receipt is ADMITTED under --require-durable; a refusal prints a traceback instead of a broken_term. Receipt receipts/v26.9.23/MP-RPV.json.",
+     "required_now": true,
+     "scope": "CE23-9 / CE23-3 validator generator",
+     "source_candidates": [
+      "CE23-9-imported-receipt-validator",
+      "CE23-9-validator-durable-identity-profile (profile moved into the generated validator)"
+     ]
+    }
+   ]
+  },
+  {
+   "wave": "CE0b",
+   "status": "required_now (CE23 provenance chain + generated lane plan); runs after the swarm's CE0 wave returns; touches no frozen subject",
+   "preconditions": [
+    "orthogonal swarm wf_2755fdff-28e returned (ce:identity-court pass; CE0 lanes CE-INTAKE, CE-LANEPLAN merged or refuted)",
+    "optional hardening before any chatman push: install /private/tmp/claude-501/v23-scratch/SCAN-CE23-0-identity/pre-push.fence as /Users/sac/wt/v26922/chatman-ecosystem/repo/.git/hooks/pre-push (chmod +x; tested: refuses refs descending from local root 551cf5c, admits the GitHub lineage) so the preserved local lineage cannot be published by accident"
+   ],
+   "repo_map": {
+    "chatman": {
+     "repo": "/Users/sac/wt/v26922/chatman-ecosystem/repo",
+     "int": "/Users/sac/wt/v26922/fri/chatman-ecosystem-int",
+     "branch": "release/v26.9.23-int"
+    }
+   },
+   "repos": {
+    "chatman": "/Users/sac/wt/v26922/chatman-ecosystem/repo"
+   },
+   "ints": {
+    "chatman": "/Users/sac/wt/v26922/fri/chatman-ecosystem-int"
+   },
+   "base_branch": "release/v26.9.23-int",
+   "worktree_root": "/Users/sac/wt/v26922/v23",
+   "branch_prefix": "ce23",
+   "receipts_dir": "receipts/v26.9.23",
+   "max_repairs": 2,
+   "context": "Chatman Ecosystem v26.9.23 (operator chatman-ce23.md sha256:6d788331a4ebc5ad34c3579acc71d6572197ba830eaea23188f468505a1954d3; chatman-ce23-12-bench.md sha256:4146d688...b485; chatman-ce23-12-standings.md sha256:80091c45...b2d2). Repo handle /Users/sac/wt/v26922/chatman-ecosystem/repo (full GitHub clone; created by CE23-0 in swarm wf_2755fdff-28e), int /Users/sac/wt/v26922/fri/chatman-ecosystem-int on release/v26.9.23-int (base GitHub main c59596f5506e7a00ca4ed6b909ebf6d6659b74c1; CE23-0 receipt commit a896e16c pushed). NEVER write to /Users/sac/chatman-ecosystem (unrelated lineage root 551cf5c, no remote; preserved in the clone as refs/preserve/v26.9.23/local-checkout/heads/*) or to /Users/sac/wt/v26922/chatman-ecosystem/int. release/v26.9.1/** stays byte-untouched (manifest sha256 30b1d83ce544299557da50084ced696172d219f6790c2cfc5b78116902850949); tracked release/v26.9.1/qlever/__pycache__/*.pyc get dirtied by Python: export PYTHONDONTWRITEBYTECODE=1 and stage explicit paths only (never git add -A). The frozen xaas/ggen_igniter checkouts are read-only tools here (prose_spans.py; compile_prose only through /Users/sac/wt/v26922/fri/xaas-int/docs/sjira/v26.9.23/courts/gi_mix.sh with a GGEN_IGNITER_DIR prebuilt for MIX_ENV=test; never run mix in the int worktrees' own _build). Rust: rust-toolchain.toml 1.97.1. ggen 26.9.18. Every v26.9.23 generation runs from release/v26.9.23/ggen.toml (the root ggen.toml is the soc2 project and fails FM-CONFIG-004 at c59596f5), consuming ggen-marketplace packs by git+subdir at the pushed marketplace release/v26.9.23-int SHA. Generated lanes: receipts carry identity.work_order and identity.tuple_digest of the CE order this lane executes (from the committed CE compile; values printed in the generated wave spec); otherwise the order stays open. Verified scan specs: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/<candidate-id>.txt; the lane's annex release/v26.9.23/sjira/annex/<gate>.md carries the same verified content in-subject.",
+   "after_wave_driver_steps": [
+    "split the committed generated plan mechanically (jq select on lane id, never a hand edit): lanes with no unmet preconditions (CE23-7, CE23-1, CE23-2, CE23-9, and the CE23-12 design lanes) -> lanes/wave-CE1.json; post-release lanes (CE23-3, CE23-10) -> lanes/wave-CE2.json; CE23-11 -> lanes/ce-release.run.js input",
+    "copy release/v26.9.23/sjira/lane-plan/wave-CE1.json from chatman int to /Users/sac/wt/v26922/v26923/lanes/wave-CE1.json; python3 lanes/mkrun.py lanes/wave-CE1.json; check the rendered lane ids/after/preconditions against waves CE1/CE2 below (a mismatch is a lane-plan defect: repair the generator, never the JSON)"
+   ],
+   "lanes": [
+    {
+     "id": "CE-INTAKE-C",
+     "repo": "chatman",
+     "after": [],
+     "gate": "set -e; X=/Users/sac/wt/v26922/fri/xaas-int; C=/Users/sac/wt/v26922/v23/CE-INTAKE-C; S=$C/release/v26.9.23/sjira; GIB=${GIB:-/Users/sac/wt/v26922/v23/CE-INTAKE-C-gi}; test -d $GIB/_build/test; for u in $(ls $S/units); do U=$S/units/$u; python3 $X/scripts/sjira/prose_spans.py check --source $U/source.md --candidates $U/candidates.ttl --extract $U/extract.json --namespace \"$(cat $S/NAMESPACE)\" --prefix ce23; (cd $X && GGEN_IGNITER_DIR=$GIB sh docs/sjira/v26.9.23/courts/gi_mix.sh semantic_jira.compile_prose --admit-goal --goal $U/goal.ttl) | grep -q ' 0 WorkOrders)'; (cd $X && GGEN_IGNITER_DIR=$GIB sh docs/sjira/v26.9.23/courts/gi_mix.sh semantic_jira.compile_prose --source $U/source.md --candidates $U/candidates.ttl --goal $U/goal.ttl --out-dir $U/compiled --check); done; cmp $S/units/ce23/source.md /Users/sac/wt/v26922/v26923/chatman-ce23.md; cmp $S/units/bench/source.md /Users/sac/wt/v26922/v26923/chatman-ce23-12-bench.md; cmp $S/units/standings/source.md /Users/sac/wt/v26922/v26923/chatman-ce23-12-standings.md; cmp $S/units/bench/extract.json /Users/sac/wt/v26922/v26923/bench/candidates/chatman-ce23-12-bench.extract.json; cmp $S/units/standings/extract.json /Users/sac/wt/v26922/v26923/bench/candidates/chatman-ce23-12-standings.extract.json; sh $S/courts/intake.sh",
+     "task": "Required_23 (operator chain DRIVER.md 10:55 PT: CE23 through prose -> candidates -> admission -> delta -> WorkOrders; chatman-ce23.md:1-4 'not hand-authored into a backlog'; CE23-12 = BenchmarkDesign \u2227 MSAContract \u2227 GeneratedQualificationPlan). Continuation/repair of the swarm lane CE-INTAKE (wf_2755fdff-28e child wave CE0). Start from chatman int release/v26.9.23-int AFTER the swarm returns; if CE-INTAKE merged, first run each probe below on int HEAD and change only what fails (commit only a receipt addendum when all pass); if CE-INTAKE was refuted, this is the fresh-approach lane (DRIVER step 4). The layout this lane must leave (normalize the swarm's layout to it by moving files with git mv, never re-extracting): release/v26.9.23/sjira/{NAMESPACE, units/{ce23,bench,standings}/{source.md,extract.json,candidates.ttl,goal.ttl,compiled/{propositions,orders}.ttl}, courts/{CE23-<n>.sh stubs, intake.sh}}. Verified constraints (each observed in scan probes SCAN-CE-intake-A, SCAN-CE-intake-B-ce23-12, SCAN-CE23-compile-prose, SCAN-CE23-P-compile-ce23): (1) compile_prose takes ONE --source (compile_prose.ex:47) and prose/uncovered_gates.rq refuses a gate its source never requires: one goal with CE23-0..12 compiled over chatman-ce23.md gives REFUSED(uncovered_gate) CE23-12. So three compile units: ce23 (gates CE23-0..11 under root GC-CE-26.9.23), bench and standings (each its own unit root GC-CE23-12-<unit> with a SINGLE gate ce23:CE23-12; no per-conjunct or B1..B6 gates \u2014 the recorded extraction does not cover them; expect 9 bench and 24 standings WorkOrders). (2) One LLM edge per prose: the bench/standings extractions are ALREADY recorded (/Users/sac/wt/v26922/v26923/bench/candidates/*.extract.json, extractedBy llm:claude-opus-5-5@wf_a0af447e-5fa/...): copy byte-identical and re-emit deterministically with prose_spans.py emit; never re-extract them. One namespace for all units (IRIs are a deterministic function of namespace + span): keep the one CE-INTAKE chose if already committed, else https://chatman.dev/release/v26.9.23# (the recorded bench namespace), written to sjira/NAMESPACE; never xaas's default v23 space. (3) goal.ttl: every gate has rdfs:label, dcterms:identifier, sj:checkpointOf, sj:boundaryClass, sj:courtCommand (`--admit-goal` refuses a non-root gate without it), sj:repository \"seanchatmangpt/chatman-ecosystem\", sj:pathScope; the root sj:stopQuery is a SPARQL ASK (shapes/work-order.shacl.ttl:232) encoding CHATMAN_STOP (every CE gate has an ALIVE receipt AND the CE23-12 unit crowns are ALIVE, imported by IRI/receipt); the crown-equation LaTeX goes in dcterms:description; NO literal STOP-GC-26.9.23 digest (goal bytes feed every WorkOrder IRI and tuple digest; the import binds through the CE23-3 gate receipt); gate order via gate-to-gate sj:nextCheckpoint with CE23-11 (tag) last after CE23-12; no sj:WorkOrder in any goal. sj:baseSha = c59596f5506e7a00ca4ed6b909ebf6d6659b74c1. (4) Capability hints lowercase (construct:chatman-release; court:gc-26.9.23 for CE23-3, court:gc23-12 for CE23-4, court:gc23-11 for CE23-5/6, court:gc23-5 for CE23-8); 'court:GC23-5' was REFUSED(shacl_violation). An Exclusion for 'WD FA/V23-W should also not become a new v26.9.23 blocker' (boundary Successor). (5) prose_spans.py: --gate-prefix/--require-gates exist on `check` only (emit exits 2 with it); emit needs --source-path and --extracted-by. (6) Run compile_prose ONLY through /Users/sac/wt/v26922/fri/xaas-int/docs/sjira/v26.9.23/courts/gi_mix.sh (no-LLM env, private MIX_BUILD_PATH) with GGEN_IGNITER_DIR = a detached ggen_igniter worktree /Users/sac/wt/v26922/v23/CE-INTAKE-C-gi (`git -C /Users/sac/ggen_igniter worktree add --detach <path> <ggen_igniter-int HEAD>`) at the exact ggen_igniter-int HEAD prebuilt with MIX_ENV=test under the ggen_igniter pin outside the no-LLM env (the no-LLM PATH has no cargo; graph_nif enoent otherwise); record that SHA; this pre-stage compile is re-run byte-identically at the post-merge ggen_igniter main SHA by CE23-3. (7) courts/intake.sh runs, per unit: prose_spans check, compile --check, admit-goal requiring ' 0 WorkOrders)', and two anti-vacuity mutations that must be refused (orders.ttl removed -> output_drift; forged WO-0000000000000000 appended). Courts stay in chatman, never in xaas docs/sjira/v26.9.23/courts (fleet_matrix.py:597 globs that dir). (8) courts/CE23-0.sh is not a stub: its body is the mutation-verified identity gate /private/tmp/claude-501/v23-scratch/SCAN-CE23-0-identity-int/gate.sh adapted to the int /Users/sac/wt/v26922/fri/chatman-ecosystem-int, the clone /Users/sac/wt/v26922/chatman-ecosystem/repo and the preserve prefix refs/preserve/v26.9.23/local-checkout/heads/ (origin URL exact; c59596f5 ancestor of release/v26.9.23-int; receipt subject_sha == c59596f5; every refs/heads/* of /Users/sac/chatman-ecosystem preserved at its exact SHA; lineage verdict recomputed with merge-base = unrelated; root set of the int == {14cfd7b01aac25b3271963378d07357eb0c55af6}; pack gates 020/050/060 of chatman-ecosystem-release-pack return 0 rows over receipts/v26.9.23/CE23-0.identity.ttl, an er:Component + er:RefObservation fact that this lane adds if the swarm receipt lacks it); relink receipts/v26.9.23/CE23-0.json to the compiled CE23-0 order (identity.work_order + tuple_digest). Residue: goal.ttl files (class of xaas HANDWRITTEN.md:12; owner semantic-jira-pack prose->GoalCheckpoint extractor), court stubs (class of rows 48/104), the ce23 extract.json (LLM edge, recorded). The gate defaults GIB to that prebuilt checkout. Falsifiers (witnessed in probes): deleting the CE23-2 extraction item -> REFUSED(uncovered_gate); one changed source byte -> REFUSED(provenance_mismatch) + prose_spans source_sha256_mismatch; a deleted WorkOrder -> output_drift. Receipt receipts/v26.9.23/CE-INTAKE-C.json.",
+     "required_now": true,
+     "scope": "CE23 provenance chain; CE23-12 BD-05 + BD-08 step 1",
+     "source_candidates": [
+      "CE-intake-A",
+      "CE-intake-B-ce23-12",
+      "CE23-P-compile-ce23",
+      "CE23-compile-prose"
+     ]
+    },
+    {
+     "id": "CE-LANEPLAN-C",
+     "repo": "chatman",
+     "after": [
+      "CE-INTAKE-C"
+     ],
+     "gate": "set -e; L=/Users/sac/wt/v26922/v23/CE-LANEPLAN-C/release/v26.9.23/sjira/lane-plan; sh $L/../courts/lane_plan.sh",
+     "task": "Required_23 (operator chain 'WorkOrders -> generated lane plan -> chatman root crown'; prevents a CE equivalent of the hand-copied DRIVER.md tuple-digest table). Continuation/repair of swarm lane CE-LANEPLAN on chatman int after CE-INTAKE-C merged; if the swarm lane merged, run the probes first and change only what fails. The projection must: (1) render with stock `mix ggen_igniter.sync` through /Users/sac/wt/v26922/fri/xaas-int/docs/sjira/v26.9.23/courts/gi_mix.sh with `--manifest-dir <scratch> --verify-cwd $GGEN_IGNITER_DIR` (the authorized-root option, reconcile_reactor.ex:1980-1992; no render.exs; default oxigraph engine \u2014 the sparql package ignores ORDER BY) over cat(goal.ttl of every unit, compiled orders.ttl of every unit, registry.ttl); queries lanes.rq, work_order_subjects.rq, exclusions.rq, edges.rq, repos.rq; template lane_wave.json.eex; tuple digests via GgenIgniter.SemanticJira.Bootstrap.Graph.tuple_digest/1 (graph.ex:198; same bytes as xaas.stop_court.ex:448). (2) Route by capability namespace: construct:* -> one lane per gate; court:* -> court_only; recipe:* -> recipe_delegations; any other namespace REFUSED. Refusals, all REFUSED:SJIRA_LANE_PLAN writing nothing: tuple_incomplete, tuple_ambiguous (an order in >1 row or a second sj:postcondition), capability_unassigned, capability_unrouted, order_unplaced (subjects != lanes \u222a court_only \u222a recipe), path_scope_unresolved, repository_unregistered, int_unregistered, gate_court_missing, dependency_cycle, dangling_edge. Verified probe defects to close: recipe:/unknown-namespace orders were SILENTLY DROPPED (m7/m8 rendered exit 0 and lane CE23-0 vanished); a duplicate postcondition rendered two entries with different digests. (3) `after` holds only in-wave gate lanes; every other upstream goes to a `preconditions` list rendered into the task text (sm-lane-wave.js ~:168 silently filters unknown `after` ids). (4) Render the wave-level fields the runner reads (sm-lane-wave.js:15-24): wave, repos {chatman: /Users/sac/wt/v26922/chatman-ecosystem/repo}, ints {chatman: /Users/sac/wt/v26922/fri/chatman-ecosystem-int}, base_branch release/v26.9.23-int, worktree_root /Users/sac/wt/v26922/v23, branch_prefix ce23, receipts_dir receipts/v26.9.23, max_repairs, context from the root exclusions; each lane carries id (= gate id), repo, after, gate (`sh release/v26.9.23/sjira/courts/<gate>.sh`), task assembled only from order fields, work_order and tuple_digest. (5) Commit the output in the subject as release/v26.9.23/sjira/lane-plan/wave-CE1.json (the driver copies it to lanes/ and runs mkrun.py). (6) courts/lane_plan.sh: two renders cmp; cmp against the committed file; a mutation corpus in which every refusal fires and writes nothing (incl. m5 duplicate postcondition, m6 untyped upstream, m7 unknown namespace, m8 recipe order must appear in recipe_delegations); a digest differential: each lane's tuple_digest equals the digest printed by `mix xaas.stop_court --checkpoint <CE root> --graph <merged> --receipts-dir <scratch> --order-receipts-dir <scratch>` (off-registry mode, no xaas edit). Residue: registry.ttl (~10 lines of executor topology: github, alias, source repo path, int path, base branch \u2014 chatman's source path is the CE23-0 clone, never /Users/sac/chatman-ecosystem) and the merged.ttl concatenation (sync --ontology takes one file). Owner for promotion: semantic-jira-pack `mix semantic_jira.lane_plan` (successor S24-GI-LANEPLAN). Probe evidence: SCAN-selfhost/wave-CE.gen1.json, SCAN-CE-lane-plan-verify (sha256:bc3706aa... twice). Falsifier: two renders differ; a mutant still renders; a lane digest differs from the stop court's; the court passes after lane_wave.json.eex is reverted. Receipt receipts/v26.9.23/CE-LANEPLAN-C.json.",
+     "required_now": true,
+     "scope": "generated lane plan (operator chain)",
+     "source_candidates": [
+      "CE-lane-plan"
+     ]
+    },
+    {
+     "id": "CE-ANNEX",
+     "repo": "chatman",
+     "after": [
+      "CE-LANEPLAN-C"
+     ],
+     "gate": "set -e; cd /Users/sac/wt/v26922/v23/CE-ANNEX && A=release/v26.9.23/sjira/annex && for g in CE23-1 CE23-2 CE23-3 CE23-7 CE23-9 CE23-10 CE23-11 CE23-12; do test -s $A/$g.md; done && sh release/v26.9.23/sjira/courts/lane_plan.sh && python3 -c \"import json;w=json.load(open('release/v26.9.23/sjira/lane-plan/wave-CE1.json'));import os;assert all(('annex/'+l['id']+'.md') in l['task'] and os.path.exists('release/v26.9.23/sjira/annex/'+l['id']+'.md') for l in w['lanes'])\" && mv $A/CE23-7.md /tmp/annex.bak && { sh release/v26.9.23/sjira/courts/lane_plan.sh > /tmp/annex.m 2>&1; r=$?; mv /tmp/annex.bak $A/CE23-7.md; test $r -ne 0; } && grep -q annex_missing /tmp/annex.m",
+     "task": "Required_23 bridge between the generated lane plan and the verified scan evidence. The generated lane task is assembled only from order fields (postcondition, acceptance, falsifier, capability), which carry the operator's requirement but not the scan-verified implementation facts (generator paths, prototypes, falsifier commands). Commit those facts IN THE SUBJECT, bound by gate id, instead of hand-writing lane specs: release/v26.9.23/sjira/annex/<gate>.md for every construct gate. For CE23-1, CE23-2, CE23-3, CE23-7, CE23-9, CE23-10 and CE23-11 the annex contains verbatim the task, generation path, residue, gate and falsifier of the matching lane in the scan synthesis (driver copy of /private/tmp/claude-501/v23-scratch/SCAN-synthesize/plan.json, waves CE1/CE2/CE-REL; source specs /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/<candidate-id>.txt), plus a header 'scan evidence, not a requirement source; the order tuple governs'. For CE23-12 it contains the verbatim entries CE23-12-BD-01..BD-09 of /Users/sac/wt/v26922/v26923/bench/orders.json with bench/DESIGN.md row references; the OP-* entries are successor and go under an 'out of scope' heading. CE23-11's annex states that it runs through the driver release script lanes/ce-release.run.js, not sm-lane-wave. Extend lane_wave.json.eex so every construct lane's task ends with 'Implementation annex: release/v26.9.23/sjira/annex/<gate>.md' and the template refuses REFUSED:SJIRA_LANE_PLAN annex_missing when a construct lane's annex file is absent (add it to lane_plan.sh's mutation corpus); re-render and commit wave-CE1.json. Gates without a construct lane (CE23-0 done by bootstrap; CE23-4/5/6/8 court delegations) need no annex. Residue: the annex files (verified evidence carried into the subject; owner: the future semantic-jira-pack annotation of WorkOrders, successor) and ~6 template lines. Falsifier: removing one annex still renders (the gate's mutation clause), or a rendered lane task omits its annex path. Receipt receipts/v26.9.23/CE-ANNEX.json.",
+     "required_now": true,
+     "scope": "generated lane plan carries verified evidence"
+    }
+   ]
+  },
+  {
+   "wave": "CE1",
+   "status": "required_now (CE23-1, CE23-2, CE23-7, CE23-9 pre-stage); GENERATED \u2014 the driver launches the rendered wave-CE1.json, not this copy",
+   "preconditions": [
+    "CE0b merged (generated wave-CE1.json committed and copied)",
+    "MP wave merged and release/v26.9.23-int of ggen-marketplace pushed (MP_SHA)"
+   ],
+   "repo_map": {
+    "chatman": {
+     "repo": "/Users/sac/wt/v26922/chatman-ecosystem/repo",
+     "int": "/Users/sac/wt/v26922/fri/chatman-ecosystem-int",
+     "branch": "release/v26.9.23-int"
+    }
+   },
+   "repos": {
+    "chatman": "/Users/sac/wt/v26922/chatman-ecosystem/repo"
+   },
+   "ints": {
+    "chatman": "/Users/sac/wt/v26922/fri/chatman-ecosystem-int"
+   },
+   "base_branch": "release/v26.9.23-int",
+   "worktree_root": "/Users/sac/wt/v26922/v23",
+   "branch_prefix": "ce23",
+   "receipts_dir": "receipts/v26.9.23",
+   "max_repairs": 2,
+   "context": "Same as wave CE0b context (Chatman Ecosystem v26.9.23; clone /Users/sac/wt/v26922/chatman-ecosystem/repo, int /Users/sac/wt/v26922/fri/chatman-ecosystem-int on release/v26.9.23-int from GitHub main c59596f5; never write /Users/sac/chatman-ecosystem; release/v26.9.1 byte-untouched with PYTHONDONTWRITEBYTECODE=1 and explicit staging; generation from release/v26.9.23/ggen.toml with git+subdir packs at MP_SHA; receipts linked by work_order + tuple_digest; annex release/v26.9.23/sjira/annex/<gate>.md).",
+   "lanes": [
+    {
+     "id": "CE23-7",
+     "repo": "chatman",
+     "after": [],
+     "gate": "cd /Users/sac/wt/v26922/v23/CE23-7 && git merge-base --is-ancestor c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 HEAD && PYTHONDONTWRITEBYTECODE=1 bash scripts/gates/ce23_7_version_fence.sh && sh release/v26.9.23/sjira/courts/CE23-7.sh",
+     "task": "CE23-7 (version-fence Chatman tooling): every release-scoped tool can explicitly target release/v26.9.23 and targeting v26.9.1 stays byte-identical. Falsified today at c59596f5: verify_release.py:79-80 hard-codes '26.9.1' (a v26.9.23 manifest gets exit 2 ECOSYSTEM_VERSION_MISMATCH) and, worse, the unmodified v26.9.1 manifest copied under release/v26.9.23/ passes (wrong-line admission). Port the verified prototype diff /private/tmp/claude-501/v23-scratch/SCAN-CE23-7-version-fence/ce23-7-proto.diff (6 files): (1) scripts/release_line.py (~60 lines) resolves --release vYY.M.D (canonicalized by verify_calendar_release.canonical_release) else catalog/west.toml [boundaries].release_manifest, and exposes version_from_path(manifest_path). (2) verify_release.py:79-80 -> the path law: manifest version must equal the version bound by its release/vYY.M.D directory (mismatch ECOSYSTEM_VERSION_MISMATCH with detail 'VERSION_PATH_MISMATCH: expected X'; unbound dir ECOSYSTEM_VERSION_PATH_UNBOUND; malformed ECOSYSTEM_VERSION_INVALID); validate_manifest(data, manifest_path=None) keeps its one-argument form (tests/test_release_control.py:24); :385 gains --release and defaults --manifest through release_line. (3) plan_completion.py defaults :257-259 through release_line + --release; the branch prefix at :56 (agent/v26.9.1-, witnessed leaking 14 v26.9.1 branches into a v26.9.23 plan) derives from manifest release.version through release_packets, bootstrap_packets and portfolio_packets. (4) survey_portfolio.py:28-30 defaults + --release. (5) verify_standing_evidence.py:99 default + --release. (6) verify_west_workspace.py: --release-manifest; verify(root, release_manifest=None) and :117. (7) Commit the gate as scripts/gates/ce23_7_version_fence.sh (copy of SCAN-CE23-7-version-fence/gate_ce23_7.sh: C1 v26.9.1 report sha256 b9228c03...6c88 explicit and default; C2 temp v26.9.23 manifest findings==[]; C3 falsifier: v26.9.1 manifest under a temp release/v26.9.23 -> exit 2 with a VERSION finding naming 26.9.23; C4 resolver; C5 plan digests + no agent/v26.9.1- branch in a v26.9.23 plan; C6 west/standing digests; C7 no v26.9.1 literal left in the 5 tools; C8 verify_calendar_release --release v26.8.23 digest 893722e9...; C9 unittest Ran >= 434 OK in a git checkout) and Chicago tests tests/test_release_line.py (real subprocess, real temp release dirs, no mocks). Write the CE23-7 court body release/v26.9.23/sjira/courts/CE23-7.sh = that gate. Do NOT touch catalog/west.toml (pointer flip belongs to the root crown), verify_platform_reconstitution.py:177 (v1 benchmark fixture pin), verify_calendar_release.py REQUIRED_GATES (self-sourcing makes it vacuous: witnessed), Cargo.toml:16 / VERSION (verify_v26_8_23.py:5/:28 pin 26.8.23), release/v26.9.1/**. Successor GC-26.9.24 (out of scope): dfcm_autonomic_finish:926, errc_portfolio:11-13, verify_crown_edges:22/:356, verify_federated_capability_owner:33-34/:100/:206, verify_live_azure_authority:21, verify_portfolio:135, verify_pending_branch_bundle:12/:165 (they verify v26.9.1-only artifacts). Generation path: none owns chatman scripts/*.py (root ggen.toml is soc2; `ecosystem projection render` writes views/generated/* only); residue release_line.py + ~55 lines wiring + gate + tests; successor owner chatman-ecosystem-release-pack (gates/070_version_path.rq + templates/release_line.py.tmpl, precedent invariant-gate-pack/templates/invariant_gate.py.tmpl). Falsifier: a v26.9.1 manifest under release/v26.9.23 is admitted; any tool silently resolves v26.9.1 when targeted at v26.9.23; the v26.9.1 report digest changes; unittest < 434 OK (pre-existing: tests/test_release_control.py:106-117 uses mock.patch; add no mocks). Receipt receipts/v26.9.23/CE23-7.json linked to the CE23-7 order (work_order + tuple_digest).",
+     "required_now": true,
+     "generated_by": "CE-LANEPLAN render (wave-CE1.json); this spec = annex CE23-7",
+     "scope": "CE23-7",
+     "source_candidates": [
+      "CE23-7-version-fence"
+     ]
+    },
+    {
+     "id": "CE23-1",
+     "repo": "chatman",
+     "after": [
+      "CE23-7"
+     ],
+     "gate": "cd /Users/sac/wt/v26922/v23/CE23-1 && export PYTHONDONTWRITEBYTECODE=1 && git merge-base --is-ancestor c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 HEAD && (cd release/v26.9.23 && ggen sync run) && git diff --exit-code -- release/v26.9.23 && test -z \"$(git status --porcelain -- release/v26.9.23)\" && (cd release/v26.9.23 && ggen sync run) && git diff --exit-code -- release/v26.9.23 && git diff --exit-code c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 HEAD -- release/v26.9.1 && test \"$(shasum -a 256 release/v26.9.1/manifest.toml | cut -d' ' -f1)\" = 30b1d83ce544299557da50084ced696172d219f6790c2cfc5b78116902850949 && python3 -c \"import tomllib as t;n=t.load(open('release/v26.9.23/manifest.toml','rb'));C={c['repository']:c for c in n['components']};assert n['release']['version']=='26.9.23' and all(C[k]['required'] is True and len(C[k]['sha'])==40 and all(f in C[k] for f in ('id','ref','ref_check','role','disposition','standing','depends_on')) for k in ('seanchatmangpt/xaas','seanchatmangpt/ggen_igniter'))\" && python3 scripts/verify_release.py --manifest release/v26.9.23/manifest.toml > /tmp/ce231.json; python3 -c \"import json;d=json.load(open('/tmp/ce231.json'));assert d['release']=='26.9.23' and not [f for f in d['findings'] if 'VERSION' in f['code'] or f['code'] in ('ECOSYSTEM_COMPONENT_FIELDS_MISSING','ECOSYSTEM_REQUIRED_ROLE_MISSING')]\"",
+     "task": "CE23-1 (independent v26.9.23 release subject; release/v26.9.1 untouched). Falsified today: GitHub main c59596f5 has only release/v26.8.23 and release/v26.9.1. Preconditions: MP wave merged and pushed (MP_SHA); CE23-7 merged (verify_release can then admit a v26.9.23 manifest). Build release/v26.9.23/ as a ggen sub-project (the root ggen.toml fails FM-CONFIG-004 and loads soc2-readiness-pack by absolute path): ggen.toml (frontmatter schema) consuming `[packs.chatman-ecosystem-release-pack] git=\"https://github.com/seanchatmangpt/ggen-marketplace.git\" version=\"<MP_SHA>\" subdir=\"packs/chatman-ecosystem-release-pack\"` (precedent xaas ggen.toml:7-22; vendoring only as a byte-identical copy with its sha recorded, never a chatman-local fork); `extra_ontologies = imports/*.ttl`; a tracked templates/.gitkeep ([templates] dir=\"templates\"; omitting it is FM-CONFIG-002, a missing dir FM-CONFIG-004). Inputs: release.ttl (consumer facts: release IRI er:version \"26.9.23\"; xaas and ggen_igniter er:Component at the frozen S23 SHAs for this pre-stage, standing PARTIAL_ALIVE, re-bound to post-merge main SHAs by CE23-3); imports/legacy-v26.9.1.ttl produced by the pack's lift/manifest_to_er.py from release/v26.9.1/manifest.toml (16 components: role, id, sha, standing); imports/fleet-classification.ttl = bytes of xaas docs/sjira/v26.9.23/fleet/classification.ttl at the pinned xaas SHA (sha256 recorded). Render and commit release/v26.9.23/{manifest.toml, constitutional-role-crosswalk.toml, requirements.toml (rows from the committed CE WorkOrders)} via `(cd release/v26.9.23 && ggen sync run)` twice. .ggen-v2/receipt.json and .ggen/keys/signing.key are already gitignored (.gitignore:16-19). Write court body release/v26.9.23/sjira/courts/CE23-1.sh = this lane's gate. Generation path: ggen 26.9.18 + chatman-ecosystem-release-pack (MP-RELPACK-XW templates); residue: release.ttl instance facts (consumer-owned by the pack law). Falsifier: a hand edit to a generated file survives sync; the v26.9.1 manifest sha changes; dropping the ggen_igniter component is not refused (gate 080 over the imported classification). Receipt receipts/v26.9.23/CE23-1.json linked to the CE23-1 order.",
+     "required_now": true,
+     "generated_by": "CE-LANEPLAN render; this spec = annex CE23-1",
+     "scope": "CE23-1",
+     "source_candidates": [
+      "CE23-1-2-release-graph (consumer half)"
+     ]
+    },
+    {
+     "id": "CE23-2",
+     "repo": "chatman",
+     "after": [
+      "CE23-1"
+     ],
+     "gate": "cd /Users/sac/wt/v26922/v23/CE23-2 && export PYTHONDONTWRITEBYTECODE=1 && (cd release/v26.9.23 && ggen sync run) && git diff --exit-code -- release/v26.9.23 && python3 -c \"import tomllib as t;x=t.load(open('release/v26.9.23/legacy-role-crosswalk.toml','rb'));m=t.load(open('release/v26.9.1/manifest.toml','rb'));L={(c['role'],c['id'],c['sha']) for c in m['components']};X={(r['legacy_role'],r['legacy_component'],r['legacy_sha']) for r in x['role']};assert len(x['role'])==16 and X==L and sorted(r['legacy_role'] for r in x['role'])==sorted(m['release']['required_roles']) and all(r['disposition'] in {'REQUIRED','SUCCESSOR','BLOCKED','UNSUPPORTED','REFUSED'} for r in x['role']) and all(r.get('reason') or r.get('derived_by') for r in x['role'])\" && bash release/v26.9.23/mutants/run.sh",
+     "task": "CE23-2 (every one of the 16 roles of release/v26.9.1/manifest.toml:11-28 maps explicitly to REQUIRED | SUCCESSOR | BLOCKED | UNSUPPORTED | REFUSED for the new boundary; the old topology is not silently erased). After CE23-1 (same sub-project). Measured: 5 of the 16 role components are in the v26.9.23 fleet universe (open-ontologies, ggen, ggen-marketplace, gymact, autofde-lab, all Successor); 11 are absent (process-intelligence, wasm4pm-compat, star-toml, mfact, bcinr, mfw, wasm4pm, affidavit, praxis, autofde, fdegym) and no GC23 court references any of them (check-classification with an extended universe: 11 unclassified, 0 court_executes_nonrequired). Add imports/court-references.ttl produced by a read-only run of xaas scripts/sjira/fleet_matrix.py court references over the 16 legacy repos (at the pinned xaas SHA); the pack's disposition rule then derives ROLE_SUCCESSOR (er:derivedBy rule:no-GC23-court-reference) for the 11, and the in-universe 5 map from the imported classification. No hand-written decision facts unless the rule cannot decide a role (then an explicit er:decidedBy/er:reason fact citing operator testimony, listed in the receipt). Render and commit release/v26.9.23/{legacy-role-crosswalk.toml, crosswalk.ttl}; add release/v26.9.23/mutants/run.sh (copies release/v26.9.23 to a temp dir; each mutant must make `ggen sync run` exit non-zero with FM-PACK-013 or the pack's bin/run-gates.py return rows: M1 drop one crosswalk row, M2 disposition UNCLASSIFIED, M3 add a court reference for one legacy component, M4 drop ggen_igniter consistently, M5 reclassify open-ontologies CriticalPath in the imported classification (required-role-not-supplied); plus a committed hand edit to a generated file must diff after sync). release/v26.9.1/constitutional-role-crosswalk.toml stays untouched (optionally import its authority_ceiling). Court body courts/CE23-2.sh = this gate. Generation path: MP-RELPACK-XW gates 070/080 + disposition rule + templates; residue: the court-references import command line. Falsifier: any mutant renders with exit 0; a legacy role without a typed disposition; an inner join silently drops a row (15 of 16 rendered, witnessed in the probe). Receipt receipts/v26.9.23/CE23-2.json linked to the CE23-2 order.",
+     "required_now": true,
+     "generated_by": "CE-LANEPLAN render; this spec = annex CE23-2",
+     "scope": "CE23-2 (feeds CE23-6)",
+     "source_candidates": [
+      "CE23-1-2-release-graph (crosswalk half)",
+      "CE23-2-crosswalk-gen"
+     ]
+    },
+    {
+     "id": "CE23-9",
+     "repo": "chatman",
+     "after": [
+      "CE23-1",
+      "CE23-7"
+     ],
+     "gate": "cd /Users/sac/wt/v26922/v23/CE23-9 && git merge-base --is-ancestor c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 HEAD && cargo fmt --all -- --check && cargo clippy --locked --workspace --all-targets --all-features -- -D warnings && for s in 'catalog validate' 'architecture check' 'projection check' 'receipt verify-all'; do cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- $s || exit 1; done && rm -f scripts/crown_v26_9_23.sh .github/workflows/v26-9-23-release.yml release/v26.9.23/typed-checks.txt && (cd release/v26.9.23 && ggen sync run) && git diff --exit-code -- scripts/crown_v26_9_23.sh .github/workflows/v26-9-23-release.yml release/v26.9.23/typed-checks.txt && cmp scripts/unified_receipt_validator.py <(git -C /Users/sac/wt/v26922/fri/ggen-marketplace-int show $(cat release/v26.9.23/MP_SHA):packs/receipt-provenance-unification-pack/generated/unified_receipt_validator.py) && { bash scripts/crown_v26_9_23.sh; r=$?; test $r -eq 75; } && { CE_IMPORT_OVERRIDE=release/v26.9.23/fixtures/stale-r0 bash scripts/crown_v26_9_23.sh; r=$?; test $r -ne 0 -a $r -ne 75; }",
+     "task": "CE23-9 (exact-head root court: generated-projection drift, manifest/ref validation, unit/integration, imported receipt validation, replay, strict release crown) \u2014 pre-stage: build and prove the court machinery; the crowning run happens in CE23-10 after the release. Falsified today at c59596f5: crown.yml 'Fast constitutional gates' fails at cargo fmt (12 diffs) and hides a clippy failure (2 errors) and projection drift (views/generated/portfolio.md); run 34548430864. After CE23-1 and CE23-7. (1) Base repair, generators only, as ONE commit classified 'pre-existing + generator drift', staging exactly 3 paths: `cargo run --locked -p ecosystem-cli --bin ecosystem -- projection render` (+7 lines portfolio.md), `cargo fmt --all`, `cargo clippy --fix --allow-dirty --allow-staged --locked --workspace --all-targets --all-features` (2 fixes in wasm4pm-paas.rs); verified diff sha256 04642534e96404309f9dd2252e828503f40c909280b9e5704c4a54f4ce4ff5c1 replays byte-identically. (2) Vendor the MP-RPV generated validator byte-for-byte to scripts/unified_receipt_validator.py with scripts/unified_receipt_validator.provenance.json (marketplace MP_SHA, pack path, graph_hash, ggen version, file sha256) and commit release/v26.9.23/MP_SHA. (3) Consumer facts in release/v26.9.23/release.ttl: er:gate rows (ordered) \u2014 `ggen sync run` no drift in release/v26.9.23; ecosystem catalog validate / architecture check / projection check / receipt verify-all; `verify_release --manifest release/v26.9.23/manifest.toml --check-refs --require-alive` (manifest standings projected from receipts, never literal); unittest discover (434 OK at c59596f5, PYTHONDONTWRITEBYTECODE=1); unified_receipt_validator --contract=dfcm_fleet_v1 --require-durable on every imported receipt; sha256 of the imported STOP-GC-26.9.23.json equals the imported-crown digest with STOP=true; the pack's run-gates over imported/crown.ttl (gate 090); exact_subject_evidence_manifest --verify replay; CHATMAN_STOP as a consumer court-time ASK (never a sync-time pack gate); until the crown is imported the court exits 75 UNKNOWN with a typed line. er:CheckDisposition for every non-success check on c59596f5 with a failureClass: crown.yml 'Dependency license and source policy' (cargo deny, 6 errors: pre_existing, successor GC24-cargo-deny-policy unless the operator puts the strict CHATMAN ECOSYSTEM CROWN job in the court set), gall-crown.yml 'S0-S3 exact-head crown', weaver-live.yml, portfolio-survey.yml 'survey' (schedule, KeyError errc_portfolio.py:158), gall.yml 'Observe nothingnesses/agent-scaffold' (schedule). (4) Generate scripts/crown_v26_9_23.sh (release-court.sh.tmpl), release/v26.9.23/typed-checks.txt, and .github/workflows/v26-9-23-release.yml from gha:Workflow/Job/Step facts through github-actions-pack (git+subdir at MP_SHA; pull_request, path-scoped to release/v26.9.23/** + the script + the workflow; asserts the exact PR head SHA; actions pinned to 40-hex SHAs (gate 020); gha:noPushTriggerReason (gate 030); installs pinned ggen v26.9.18 x86_64-unknown-linux-gnu with sha256 check, pattern /Users/sac/ggen-ecosystem/tps/install-ggen.sh). If ggen refuses writing outside the sub-project, repair the root ggen.toml minimally instead (tracked templates/.gitkeep; soc2 pack path relative or git-pinned) and state which. (5) Commit a fixture release/v26.9.23/fixtures/stale-r0/ (the pushed 0/13 STOP receipt from xaas 66b52e7 + its gate receipts) and make the court honor CE_IMPORT_OVERRIDE for the anti-vacuity run. Court body courts/CE23-9.sh = `bash scripts/crown_v26_9_23.sh`. Generation path: MP-RELPACK-COURT + github-actions-pack + MP-RPV; residue: the court-set facts and failure classes (operator-visible declarations). Falsifier: the stale R_0 import or a reverted CE23-1 commit still gives crown exit 0; a hand-edited generated court survives re-sync; a failing check outside typed-checks.txt at the head. Receipt receipts/v26.9.23/CE23-9.json (PARTIAL_ALIVE until CE23-10's crowning run) linked to the CE23-9 order.",
+     "required_now": true,
+     "generated_by": "CE-LANEPLAN render; this spec = annex CE23-9",
+     "scope": "CE23-9",
+     "source_candidates": [
+      "CE23-9-base-repair",
+      "CE23-9-root-court",
+      "CE23-9-imported-receipt-validator (vendoring half)"
+     ]
+    }
+   ]
+  },
+  {
+   "wave": "CE2",
+   "status": "required_now (CE23-3, CE23-8 carry, CE23-10, CE23-9 crowning run); GENERATED; post-release (after operator ACCEPTED and Part B STOP=true at the main pair)",
+   "preconditions": [
+    "operator created xaas docs/sjira/v26.9.23/successor/ACCEPTED",
+    "Part B: PRs merged on green exact-head CI, rebind, main-pair court STOP=true reproduced (REL:verify), V23-Q receipt sealed out of subject",
+    "CE1 merged"
+   ],
+   "repo_map": {
+    "chatman": {
+     "repo": "/Users/sac/wt/v26922/chatman-ecosystem/repo",
+     "int": "/Users/sac/wt/v26922/fri/chatman-ecosystem-int",
+     "branch": "release/v26.9.23-int"
+    }
+   },
+   "repos": {
+    "chatman": "/Users/sac/wt/v26922/chatman-ecosystem/repo"
+   },
+   "ints": {
+    "chatman": "/Users/sac/wt/v26922/fri/chatman-ecosystem-int"
+   },
+   "base_branch": "release/v26.9.23-int",
+   "worktree_root": "/Users/sac/wt/v26922/v23",
+   "branch_prefix": "ce23",
+   "receipts_dir": "receipts/v26.9.23",
+   "max_repairs": 2,
+   "context": "Same as wave CE0b context.",
+   "lanes": [
+    {
+     "id": "CE23-3",
+     "repo": "chatman",
+     "after": [],
+     "gate": "cd /Users/sac/wt/v26922/v23/CE23-3 && I=release/v26.9.23/imported && T=$(mktemp -d) && XM=$(cat $I/XAAS_MAIN_SHA) && GM=$(cat $I/GI_MAIN_SHA) && for s in xaas ggen_igniter; do python3 scripts/exact_subject_evidence_manifest.py $I/$s.observations.json > $T/$s.manifest.json && cmp $I/$s.manifest.json $T/$s.manifest.json && python3 scripts/exact_subject_evidence_manifest.py $I/$s.manifest.json --verify > /dev/null || exit 1; done && git -C /Users/sac/wt/v26922/fri/ggen-marketplace-int archive $(cat release/v26.9.23/MP_SHA) packs/chatman-ecosystem-release-pack | tar -x -C $T && python3 $T/packs/chatman-ecosystem-release-pack/bin/import-crown-lift.py $I/receipts $XM $GM | cmp - $I/crown.ttl && python3 $T/packs/chatman-ecosystem-release-pack/bin/run-gates.py $I/crown.ttl $T/packs/chatman-ecosystem-release-pack/gates && for r in $I/receipts/*.json; do python3 scripts/unified_receipt_validator.py --contract=dfcm_fleet_v1 --require-durable --repo-map seanchatmangpt/xaas=/Users/sac/xaas --repo-map seanchatmangpt/ggen_igniter=/Users/sac/ggen_igniter $r || exit 1; done && (cd release/v26.9.23 && ggen sync run) && git diff --exit-code -- release/v26.9.23 && bash release/v26.9.23/mutants/run.sh",
+     "task": "CE23-3 (import the Semantic Manufacturing crown: exact digest of a FRESH STOP-GC-26.9.23 receipt with STOP=true, all 13 gate receipts admitted, replay succeeds) + CE23-8 (imported LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH=0 and UNRECEIPTED_ACTUATION=0) + the CE23-5 rebind (xaas/ggen_igniter at exact post-merge main SHAs). Preconditions: operator successor/ACCEPTED; Part B final court printed STOP=true at the merged main pair and REL:verify reproduced it; the V23-Q receipt is sealed out of subject (/Users/sac/wt/v26922/v26923/release/v23q/V23-Q.json, see R2-X-FIXEDPOINT); CE1 merged. (1) Copy VERBATIM (never edit) the 13 gate receipts + STOP-GC-26.9.23.json from the Part B main-head court output dir, the GC23-11 fleet qualification receipts for xaas and ggen_igniter at their main SHAs, V23-Q.json and release/release-receipt.json into release/v26.9.23/imported/receipts/; record XAAS_MAIN_SHA / GI_MAIN_SHA. Never take `git show <main>:docs/sjira/v26.9.23/receipts/*`: resealed in-tree receipts bind the parent (frozen) SHA and can never equal the main SHA they sit in (the prototype gate refused exactly that). (2) One observations JSON per subject for scripts/exact_subject_evidence_manifest.py (refuses STALE_OR_FOREIGN_SUBJECT :50, REPLAY_MISMATCH :137, claim ceiling PARTIAL_ALIVE :120): xaas = one observation per gate/STOP receipt (sensor = gate id, PASS iff standing ALIVE, evidence_id = sha256 of the receipt bytes, sha = identity.subject_sha); ggen_igniter = its fleet receipt plus each gate receipt's gate.ggen_igniter_sha (ggen_igniter has no gate receipts of its own); commit <subject>.manifest.json. (3) Lift with the pack's bin/import-crown-lift.py (MP-RELPACK-CROWN, at MP_SHA) into release/v26.9.23/imported/crown.ttl; run gate 090 (natively via the sub-project sync and explicitly via bin/run-gates.py). (4) Rebind release.ttl er:Component commitSha to the main SHAs; replace imports/fleet-classification.ttl with the fresh classification regenerated at the main pair by Part B (sha256 recorded); re-run the CE compile units byte-identically at the ggen_igniter MAIN SHA (CE-INTAKE-C intake.sh; any drift is a defect, not an update); re-render manifest/crosswalk/requirements/imported-crown.toml with `ggen sync run` and commit. (5) Validate every imported receipt with the vendored generated validator under --require-durable (identity resolvable in the mapped repos, durable_location git/https form). Court body courts/CE23-3.sh = this gate (and CE23-8's court delegates to gate 090's counter clauses). Generation path: MP-RELPACK-CROWN (lift + gate 090 + imported-crown.toml.tmpl) + exact_subject_evidence_manifest.py + ggen sync; residue: none beyond copying receipt bytes. Falsifiers: importing the pushed stale STOP (subject 11a24fba..., UNKNOWN, 0/13) is refused; a gate receipt whose subject_sha != xaas main SHA is refused (STALE_OR_FOREIGN_SUBJECT); a counter set to 1 or null is refused by gate 090. Receipt receipts/v26.9.23/CE23-3.json linked to the CE23-3 order.",
+     "required_now": true,
+     "generated_by": "CE-LANEPLAN render; this spec = annex CE23-3",
+     "scope": "CE23-3 / CE23-5 rebind / CE23-8",
+     "source_candidates": [
+      "CE23-3-8-crown-import (consumer half)"
+     ]
+    },
+    {
+     "id": "CE23-10",
+     "repo": "chatman",
+     "after": [
+      "CE23-3"
+     ],
+     "gate": "cd /Users/sac/wt/v26922/v23/CE23-10 && (cd release/v26.9.23 && ggen sync run --format json > /dev/null) && bash scripts/crown_v26_9_23.sh && git diff --exit-code -- release/v26.9.23 receipts/release-v26-9-23.toml && cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- receipt verify-all | grep -qx 'RECEIPTS_ALIVE count=6' && python3 -c \"import tomllib,json,jsonschema; jsonschema.validate(tomllib.load(open('receipts/release-v26-9-23.toml','rb')), json.load(open('schemas/receipt.schema.json')))\" && python3 ~/.claude/dfcm/validate_receipt.py release/v26.9.23/receipts/ROOT.json && python3 scripts/unified_receipt_validator.py --contract=dfcm_fleet_v1 release/v26.9.23/receipts/ROOT.json && (cd release/v26.9.23/imported/receipts && shasum -a 256 -c --strict ../../receipts/IMPORTS.sha256)",
+     "task": "CE23-10 (root release receipt binding Chatman SHA, xaas SHA, ggen_igniter SHA, graph/ontology/schema/toolchain/provider digests, fleet digest, all gate receipts, replay and exclusions) + the crowning run of CE23-9. After CE23-3. (0) Observe: the generated court scripts/crown_v26_9_23.sh runs every er:gate at the court subject SHA S (the commit carrying release/v26.9.23 minus receipts) and writes release/v26.9.23/observed.ttl: er:ImportedReceipt facts (importName, importPath, sha256 importDigest, ordinal) for every imported receipt; the V23-Q release-receipt digest; the fresh fleet classification digest; the STOP counters (LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH, UNRECEIPTED_ACTUATION, REQUIRED_UNKNOWN, UNCLASSIFIED_REQUIRED_WORK, STOP); toolchain strings (`rustc --version`, `ggen --version`, `python3 --version`); the court replay exits; component SHAs come from release.ttl. (1) Render via `cd release/v26.9.23 && ggen sync run` with observed.ttl unioned by extra_ontologies: receipts/root-receipt.unsealed.toml (chatman Receipt shape, standing_before PARTIAL_ALIVE -> standing_after ALIVE; UNKNOWN -> ALIVE is refused by seal/verify), receipts/ROOT.json (fleet R), receipts/IMPORTS.sha256. (2) Copy (a) to receipts/release-v26-9-23.toml and run `ecosystem receipt seal` (apps/ecosystem-cli/src/main.rs:100-102 -> ecosystem-core lib.rs:606; blake3, keyless integrity only). (3) Commit receipts only, as a child of S (a commit cannot carry its own hash); the in-tree receipt names S, never itself. verify-all ignores unknown TOML fields and a reseal after tamper passes, so the gate regenerates and diffs (git diff --exit-code) instead of trusting the seal alone. Court body courts/CE23-10.sh = this gate. Generation path: MP-RELPACK-COURT templates + existing `ecosystem receipt seal/verify-all` + validate_receipt.py + the vendored generated validator; residue: the ~15-line observe/copy/seal step inside the generated court (ggen cannot hash files or run commands). Falsifiers: a 1-byte tamper of the sealed body is not refused (digest mismatch expected); receipt SHAs differ from release/v26.9.23/manifest.toml; an import digest differs from sha256 of the imported file (shasum -c). Receipt receipts/v26.9.23/CE23-10.json linked to the CE23-10 order.",
+     "required_now": true,
+     "generated_by": "CE-LANEPLAN render; this spec = annex CE23-10",
+     "scope": "CE23-10 (+ CE23-9 crowning run)",
+     "source_candidates": [
+      "CE23-10-root-receipt",
+      "CE23-9-root-court (court run)"
+     ]
+    }
+   ]
+  },
+  {
+   "wave": "CE-REL",
+   "status": "required_now (CE23-11, terminal); a driver release script lanes/ce-release.run.js modeled on release.run.js, NOT an sm-lane-wave lane (it acts on the int branch and keeps its receipt out of tree)",
+   "preconditions": [
+    "CE2 merged",
+    "CE23-12 BENCHMARK_DESIGN_ALIVE (bench unit BD-09 court) ALIVE",
+    "V23-Q REL:verify reproduced STOP=true at the xaas/ggen_igniter main heads"
+   ],
+   "repo_map": {
+    "chatman": {
+     "repo": "/Users/sac/wt/v26922/chatman-ecosystem/repo",
+     "int": "/Users/sac/wt/v26922/fri/chatman-ecosystem-int",
+     "branch": "release/v26.9.23-int"
+    }
+   },
+   "lanes": [
+    {
+     "id": "CE23-11",
+     "repo": "chatman",
+     "after": [],
+     "gate": "W=/Users/sac/wt/v26922/fri/chatman-ecosystem-int; S=/private/tmp/claude-501/v23-scratch/CE23-11-gate; cd $W && git fetch --quiet --no-prune --tags origin && test \"$(git cat-file -t v26.9.23)\" = tag && C=$(git rev-parse 'v26.9.23^{commit}') && test \"$(git ls-remote origin 'refs/tags/v26.9.23^{}' | cut -f1)\" = \"$C\" && git merge-base --is-ancestor \"$C\" origin/main && rm -rf $S && git worktree prune && mkdir -p $S/rv/receipts && git worktree add --quiet --detach $S/at-tag \"$C\" && (cd $S/at-tag && bash scripts/crown_v26_9_23.sh && cargo build --locked --quiet -p ecosystem-cli --bin ecosystem) && git cat-file -p v26.9.23 | sed '1,/^$/d' > $S/msg.txt && test \"$(head -1 $S/msg.txt)\" = 'CE v26.9.23' && sed '1,2d' $S/msg.txt > $S/rv/receipts/root.toml && python3 -c \"import tomllib;r=tomllib.load(open('$S/rv/receipts/root.toml','rb'));assert r['subject']=='git:$C' and r['authority']=='release' and 'STOP=true' in ' '.join(r['verified'])\" && test \"$(ECOSYSTEM_ROOT=$S/rv $S/at-tag/target/debug/ecosystem receipt verify-all)\" = 'RECEIPTS_ALIVE count=1'; rc=$?; git worktree remove --force $S/at-tag 2>/dev/null; exit $rc",
+     "task": "CE23-11 (v26.9.23 identifies the exact Chatman release whose imported Semantic Manufacturing STOP replays true; tag last, tagging is the consequence of closure). (1) Push release/v26.9.23-int (never force); `gh pr create --base main` on seanchatmangpt/chatman-ecosystem; wait until every check run on the exact PR head H concluded success, except checks listed in release/v26.9.23/typed-checks.txt, and the generated v26-9-23-release.yml succeeded; fix forward (new commits, never force) and classify each failure. (2) `gh pr merge --merge` (never squash or rebase); verify the merge commit M has second parent H and origin/main == M. (3) `git worktree add --detach <scratch>/at-M M`; `bash scripts/crown_v26_9_23.sh` there must exit 0. (4) Render the post-merge root receipt from root-receipt.toml.tmpl with subject git:M (ECOSYSTEM_SUBJECT_SHA convention), authority release, verified[] naming the imported STOP-GC-26.9.23 digest with STOP=true and crown exit 0 at M; seal it with `ECOSYSTEM_ROOT=<scratch>/rv ecosystem receipt seal` (verify-all -> RECEIPTS_ALIVE count=1); never commit it (a commit cannot contain its own hash; the tag object is the durable out-of-tree carrier). (5) Message = 'CE v26.9.23', blank line, the sealed receipt; `git tag -a --cleanup=verbatim v26.9.23 M -F <msg>`; `git push origin refs/tags/v26.9.23` (no force; refuse if the tag exists remotely at another object; existing convention: annotated v26.9.10 'CE v26.9.10'). (6) Run the gate (prototype /private/tmp/claude-501/v23-scratch/SCAN-CE23-11-tag/gate_ce23_11.sh: positive rc=0; crown-fail, wrong-subject, tamper and lightweight-tag mutants rc=1). (7) Write the fleet-schema receipt /Users/sac/wt/v26922/v26923/release/CE23-11.json naming M, the tag object SHA and the blake3 digest, validated by validate_receipt.py, and link it to the CE23-11 order (work_order + tuple_digest). No registry publishes. Generation path: none for the tag message (compose: CE23-10 template re-rendered with subject git:M + existing seal/verify-all); residue: the title line, one concatenation, git plumbing; a reusable tag-message projection (post-release-pack gh_release_title/body precedent) is successor. Falsifier: the tag exists while the crown exits non-zero at the tagged SHA; the tag points to a SHA other than the receipt subject; a lightweight tag.",
+     "required_now": true,
+     "scope": "CE23-11",
+     "source_candidates": [
+      "CE23-11-tag"
+     ]
+    }
+   ]
+  },
+  {
+   "wave": "S24",
+   "status": "successor GC-26.9.24 \u2014 falsifies no GC23/CE23 proposition (PRD 10, PR-017, F8); launch only after the chatman v26.9.23 tag; never on friday/gc-fri-0800",
+   "preconditions": [
+    "chatman v26.9.23 tag pushed (CE23-11)",
+    "successor ints created from each repo's post-release origin/main: /Users/sac/wt/v26924/<repo>-int on branch successor/v26.9.24-int"
+   ],
+   "repo_map": {
+    "xaas": {
+     "repo": "/Users/sac/xaas",
+     "int": "/Users/sac/wt/v26924/xaas-int",
+     "branch": "successor/v26.9.24-int"
+    },
+    "ggen_igniter": {
+     "repo": "/Users/sac/ggen_igniter",
+     "int": "/Users/sac/wt/v26924/ggen_igniter-int",
+     "branch": "successor/v26.9.24-int"
+    },
+    "ggen-marketplace": {
+     "repo": "/Users/sac/ggen-marketplace",
+     "int": "/Users/sac/wt/v26924/ggen-marketplace-int",
+     "branch": "successor/v26.9.24-int"
+    },
+    "chatman": {
+     "repo": "/Users/sac/wt/v26922/chatman-ecosystem/repo",
+     "int": "/Users/sac/wt/v26924/chatman-int",
+     "branch": "successor/v26.9.24-int"
+    },
+    "claude-config": {
+     "repo": "/Users/sac/.claude (not a git repo: lanes edit ~/.claude/workflows directly after a copy-backup; receipts under /Users/sac/wt/v26922/v26923/receipts/fleet)",
+     "int": "n/a",
+     "branch": "n/a"
+    }
+   },
+   "base_branch": "successor/v26.9.24-int",
+   "worktree_root": "/Users/sac/wt/v26924/lanes",
+   "branch_prefix": "s24",
+   "receipts_dir": "receipts/v26.9.24",
+   "lanes": [
+    {
+     "id": "S24-GI-COURTS",
+     "repo": "ggen_igniter",
+     "after": [],
+     "gate": "mix semantic_jira.courts --goal <xaas main>/docs/sjira/v26.9.23/goal.ttl --out <xaas main>/docs/sjira/v26.9.23/courts --check && mix test test/ggen_igniter_semantic_jira_courts_test.exs",
+     "task": "Successor: retire the 13 hand-written GC23 court shells (2119 lines, 26 heredocs; xaas HANDWRITTEN.md rows 14/18/22/48/104) and check_scripts.sh by projecting them from sj:GoalCheckpoint facts: ggen_igniter `mix semantic_jira.courts --goal --out [--check]` (templates/court.sh.eex in semantic-jira-pack; header from graph facts; no absolute GGEN_IGNITER_DIR default, unset -> 75; keep the 0/75/77/else exit contract; an empty witness dir must not exit 0; sort falsifiers in-template since GROUP_CONCAT order is unspecified). The probe rendered all 13 skeletons with stock `mix ggen_igniter.sync --for-each` and V23-P's check_scripts.sh accepted them. Merged from GEN-court-projection + GI-court-body-projection. Base: ggen_igniter post-release main; render into xaas on a successor branch. Verified scan spec (task, generation path, residue, gate, falsifier, prototypes): /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GI-court-body-projection.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GI-court-body-projection",
+      "GEN-court-projection"
+     ]
+    },
+    {
+     "id": "S24-GI-LANEPLAN",
+     "repo": "ggen_igniter",
+     "after": [],
+     "gate": "mix test test/ggen_igniter_semantic_jira_lane_plan_test.exs && two renders cmp && cmp against chatman release/v26.9.23/sjira/lane-plan/wave-CE1.json",
+     "task": "Successor: promote the chatman CE lane-plan projection into semantic-jira-pack runtime-templates/lane_wave.json.eex + `mix semantic_jira.lane_plan` (precedent runtime-templates/descriptor.json.eex, Descriptor.render descriptor.ex:95-110; not templates/, which pack sync renders). Must reproduce the committed chatman wave-CE1.json byte-identically and keep every refusal. Do not merge to ggen_igniter main before the chatman v26.9.23 tag. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GI-lane-plan-promotion.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GI-lane-plan-promotion"
+     ]
+    },
+    {
+     "id": "S24-GI-DELTA-PLACEMENT",
+     "repo": "ggen_igniter",
+     "after": [],
+     "gate": "mix test test/ggen_igniter_semantic_jira_prose_test.exs (+ revert-mutation of delta.construct.rq)",
+     "task": "Successor: WorkOrders carry their gate's placement (sj:upstreamCheckpoint; GoalCheckpoint sj:repository/sj:baseSha/sj:pathScope with shapes) so lane plans need no registry guesses. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GI-delta-gate-placement.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GI-delta-gate-placement"
+     ]
+    },
+    {
+     "id": "S24-GI-MULTISOURCE",
+     "repo": "ggen_igniter",
+     "after": [],
+     "gate": "mix test test/ggen_igniter_semantic_jira_prose_test.exs (baseline 22 tests at 3937a4f + new multi-source cases)",
+     "task": "Successor: compile_prose `--source` repeatable (source: :keep), per-proposition source selection by digest, refuse zero/duplicate sources; removes the per-unit goal-view residue CE-INTAKE-C needed. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GI-multi-source-compile.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GI-multi-source-compile"
+     ]
+    },
+    {
+     "id": "S24-GI-CLI-TEMPLATE",
+     "repo": "ggen_igniter",
+     "after": [],
+     "gate": "render the six semantic_jira.* CLI shells and cmp against lib/mix/tasks/semantic_jira.{frontier,court_map,reconcile,xaas_receipt,descriptor,observe}.ex; mix test",
+     "task": "Successor: retire ggen_igniter HANDWRITTEN.md:20 (six runtime Mix.Task shells; igniter.gen.task emits Igniter.Mix.Task, the wrong shape) via a pack cli_task template over declared CLI vocabulary. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GEN-cli-task-template.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GEN-cli-task-template"
+     ]
+    },
+    {
+     "id": "S24-GI-PROSE-KERNEL",
+     "repo": "ggen_igniter",
+     "after": [],
+     "gate": "mix test test/ggen_igniter_semantic_jira_prose_test.exs && differential against xaas prose_spans.py on the committed corpora",
+     "task": "Successor: one prose-binding kernel (`mix semantic_jira.bind_prose`, scaffolded by `mix igniter.gen.task`) replacing the duplicated span/IRI logic of xaas scripts/sjira/prose_spans.py (O(N^2) drift law); xaas deletion after the differential passes. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GEN-prose-bind-single-kernel.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GEN-prose-bind-single-kernel"
+     ]
+    },
+    {
+     "id": "S24-GI-PACK-PROOF-TESTS",
+     "repo": "ggen_igniter",
+     "after": [],
+     "gate": "render twice cmp; MIX_ENV=test mix test test/generated under the 1.18.4 pin",
+     "task": "Successor: generate the SHACL presence-mutation suite replacing the hand-listed @mutation_table in test/ggen_igniter_semantic_jira_goal_checkpoint_test.exs:49-102. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GEN-pack-proof-tests.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GEN-pack-proof-tests"
+     ]
+    },
+    {
+     "id": "S24-LEDGER-PROJECTION",
+     "repo": "ggen_igniter",
+     "after": [],
+     "gate": "render HANDWRITTEN.md in each repo then git diff --exit-code HANDWRITTEN.md; graph gates 050/060/070",
+     "task": "Successor: HANDWRITTEN.md ledgers become projections of owning-ontology UNSUPPORTED facts (xaas 23->49 Active rows grew tonight; ggen_igniter rows L17, L20-L24 lack sj:ledger-unsupported-* facts); add sj:ledger-unsupported-004..010 first. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GEN-handwritten-ledger-projection.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GEN-handwritten-ledger-projection"
+     ]
+    },
+    {
+     "id": "S24-X-STOPCOURT-REGISTRY",
+     "repo": "xaas",
+     "after": [],
+     "gate": "GGEN_IGNITER_DIR=<gi> MIX_ENV=test mix test test/mix/tasks/xaas_stop_court_test.exs test/sjira/v26_9_23_goal_test.exs (baseline 56 tests)",
+     "task": "Successor: derive the stop court's order-receipt repositories from sj:repository on each WorkOrder in the checkpointOf+ closure instead of the hand registry (retires xaas HANDWRITTEN.md stop-court registry rows). Start after the tag (release receipts bind the runner sha256). Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GEN-stop-court-registry-from-graph.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GEN-stop-court-registry-from-graph"
+     ]
+    },
+    {
+     "id": "S24-X-ASH-ATTRIBUTE",
+     "repo": "xaas",
+     "after": [],
+     "gate": "render lib/mix/tasks/xaas.gen.capability_attribute.ex via gi_mix.sh ggen_igniter.sync; mix xaas.gen.capability_attribute --yes; mix ash_postgres.generate_migrations --check",
+     "task": "Successor: capability_id Ash attribute rendered from sj:CapabilityShape (sh:pattern + new sh:maxLength 128) instead of hand-typed (retires xaas HANDWRITTEN.md:40 Run half). Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GEN-ash-attribute-from-shape.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GEN-ash-attribute-from-shape"
+     ]
+    },
+    {
+     "id": "S24-X-WDFA-RENDER",
+     "repo": "xaas",
+     "after": [],
+     "gate": "gi_mix.sh ggen_igniter.sync --ontology docs/sjira/v26.9.23/wd-fa/claims.ttl --template <gi>/priv/ggen/semantic-jira-pack/templates/claims_proposal.md.eex ... then cmp",
+     "task": "Successor (V23-W stays on v23/V23-W @ de51e88): render the WD FA proposal Markdown from the claims graph (retires scripts/sjira/wd_claims.py 606 lines). Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GEN-wdfa-proposal-render.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GEN-wdfa-proposal-render"
+     ]
+    },
+    {
+     "id": "S24-X-TABLE-EXTRACTOR",
+     "repo": "xaas",
+     "after": [],
+     "gate": "python3 -m unittest scripts/sjira/test_prose_spans.py && two extract-table runs over chatman-ce23.md byte-identical",
+     "task": "Successor (PR-015): deterministic `prose_spans.py extract-table` for GFM requirement tables so table-shaped prose needs no LLM extraction; do not merge to xaas main before the chatman tag. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/XAAS-table-extractor.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "XAAS-table-extractor"
+     ]
+    },
+    {
+     "id": "S24-X-SUBJECT-REF",
+     "repo": "xaas",
+     "after": [],
+     "gate": "fresh clone (remote-tracking refs only) replays GC23-10 to the recorded digest; a second remote naming the ref -> subject_ref_ambiguous",
+     "task": "Successor (PR-013 strengthened): semantic_replay.ex subject_tip/2 resolves a pinned ref from refs/remotes/*/<ref> when the local branch is absent; the resolved refname goes only to output sources (outside the digest). Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GC23-10-subject-ref-fresh-clone.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GC23-10-subject-ref-fresh-clone"
+     ]
+    },
+    {
+     "id": "S24-X-POSTGRES-TYPED",
+     "repo": "xaas",
+     "after": [],
+     "gate": "DEV_DB_PORT=1 sh docs/sjira/v26.9.23/courts/GC23-4.sh -> exit 75 with UNKNOWN(dependency_unavailable): GC23-4 postgres",
+     "task": "Successor: an unavailable court dependency (Postgres) is typed UNKNOWN(dependency_unavailable), not a subject refusal. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GC23-4-postgres-typed-dependency.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GC23-4-postgres-typed-dependency"
+     ]
+    },
+    {
+     "id": "S24-X-LINUX-FENCE",
+     "repo": "xaas",
+     "after": [],
+     "gate": "GC23-10 inside a Linux container with ro-mounted checkouts and a seeded ~/.claude exits ALIVE",
+     "task": "Successor: platform-dispatched ~/.claude fence for GC23-10 (darwin sandbox-exec kept; linux mount-namespace mask). Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GC23-10-linux-fence-portability.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GC23-10-linux-fence-portability"
+     ]
+    },
+    {
+     "id": "S24-X-REMOTE-WORK",
+     "repo": "xaas",
+     "after": [],
+     "gate": "fleet_matrix.py emit conservation twin + typed disposition file for every open PR/branch on xaas, ggen_igniter, chatman-ecosystem",
+     "task": "Successor: typed disposition of open remote work on the three traversed repos (merge-before / superseded / successor), never closing or merging anything. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GC24-open-remote-work-disposition.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GC24-open-remote-work-disposition"
+     ]
+    },
+    {
+     "id": "S24-CI-VALIDATOR-VENDOR",
+     "repo": "xaas",
+     "after": [],
+     "gate": "hosted gc23-courts.yml job: validator + schema sha256 match, then the 5 r_projection validator tests run (not skipped)",
+     "task": "Successor: a separate hosted-CI court workflow rendered by github-actions-pack that materializes the fleet validator so the 5 guarded r_projection tests (R1-X-PIN) run in CI. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GC24-CI-validator-vendor.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GC24-CI-validator-vendor"
+     ]
+    },
+    {
+     "id": "S24-CI-GHA-ADOPTION",
+     "repo": "xaas",
+     "after": [],
+     "gate": "ggen sync run exits 0 in xaas and ggen_igniter with github-actions-pack v0.4.0 pinned; git diff --exit-code .github/workflows",
+     "task": "Successor: adopt github-actions-pack for xaas ci_cd.yaml and ggen_igniter ci.yml (retires the R1-X-FENCE, R2-X-PROD-TIMEOUT, R2-X-IMAGE-CARGO, R2-X-WDCS2 and R2-GI-CI hand YAML); pack v0.4.0 gains gates/060_consequential_push_authority.rq. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GC24-CI-gha-pack-adoption.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GC24-CI-gha-pack-adoption"
+     ]
+    },
+    {
+     "id": "S24-CI-RUNNER-PIN",
+     "repo": "xaas",
+     "after": [],
+     "gate": "python3 runner_pin_gate.py <repo> exits 0 with floating=0 for xaas (18 today) and ggen_igniter (4 today)",
+     "task": "Successor: refuse floating '-latest' runners (github-actions-pack gates/060_runner_pinned.rq, v0.3.3). Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GC24-CI-runner-image-pin.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GC24-CI-runner-image-pin"
+     ]
+    },
+    {
+     "id": "S24-MP-RELPACK-UPSTREAM",
+     "repo": "ggen-marketplace",
+     "after": [],
+     "gate": "gc24_release_pack_gate.sh <mp worktree> <chatman clone> v26.9.23 (templates non-empty; version 0.2.x; consumer renders identical)",
+     "task": "Successor: merge the release/v26.9.23-int pack work (chatman-ecosystem-release-pack 0.2.0, receipt-provenance-unification-pack extension) into ggen-marketplace main by PR after the chatman tag; add er:LineageObservation for CE23-0-style lineage facts. Operator decides the upstream merge. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GC24-release-pack-upstream.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GC24-release-pack-upstream"
+     ]
+    },
+    {
+     "id": "S24-MP-RECEIPT-NOTES",
+     "repo": "ggen-marketplace",
+     "after": [],
+     "gate": "python3 scripts/sjira_notes_qualify.py (real tmp git repos; exits 0 only if nothing REFUSED)",
+     "task": "Successor (catalog C21): an out-of-subject receipt-store pack (git notes | receipts branch | OCI referrer) reusing gvc:receiptRef; later `mix xaas.stop_court.seal/unseal` on xaas main. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GC26924-sjira-receipt-notes-pack.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GC26924-sjira-receipt-notes-pack"
+     ]
+    },
+    {
+     "id": "S24-CE-CARGO-DENY",
+     "repo": "chatman",
+     "after": [],
+     "gate": "cargo deny check -> 'advisories ok, bans ok, licenses ok, sources ok' (record cargo-deny 0.20.2 + advisory-db rev)",
+     "task": "Successor unless the operator puts the strict CHATMAN ECOSYSTEM CROWN job into the CE23-9 court set (then Required_23): clear the 6 pre-existing cargo-deny errors (notify CC0 exception, allow-org seanchatmangpt, RUSTSEC-2024-0370 ignore with reason, `cargo update -p rustls` 0.23.43->0.23.45 for RUSTSEC-2026-0285). Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GC24-cargo-deny-policy.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GC24-cargo-deny-policy"
+     ]
+    },
+    {
+     "id": "S24-CE-ERRC-KEYERROR",
+     "repo": "chatman",
+     "after": [],
+     "gate": "python3 -m unittest discover -s tests -p 'test_errc_portfolio.py' -v && survey_portfolio public-owner run exits 0",
+     "task": "Successor: fix the scheduled 'v26.9.1 portfolio survey' crash (errc_portfolio.py:158 reads r['subject'] but RAISE rows carry 'component'). Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GC24-errc-survey-keyerror.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GC24-errc-survey-keyerror"
+     ]
+    },
+    {
+     "id": "S24-RUNNER-AFTER",
+     "repo": "claude-config",
+     "after": [],
+     "gate": "node ~/.claude/workflows/tests/sm-lane-wave/harness.mjs fixture-dangling.run.js -> status blocked-dep, agent_labels []",
+     "task": "Successor (driver tooling): sm-lane-wave.js refuses `after` ids outside the wave (blocked-dep, broken_term mu_on_O) instead of silently filtering them (~:168), and renders `preconditions`. Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/RUNNER-after-preconditions.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "RUNNER-after-preconditions"
+     ]
+    },
+    {
+     "id": "S24-RUNNER-DURABLE",
+     "repo": "claude-config",
+     "after": [],
+     "gate": "every receipt added by the next post-release wave passes the generated validator --require-durable",
+     "task": "Successor: stop producing non-durable durable_location values at the source (runner doctrine: court output committed under receipts/<v>/<LANE>.gate/stop; slug identity.repo; replay cwd '.'). Verified scan spec: /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/GC26924-runner-durable-location.txt (driver: copy to /Users/sac/wt/v26922/v26923/lanes/scan-specs/ before launch).",
+     "required_now": false,
+     "scope": "successor GC-26.9.24",
+     "source_candidates": [
+      "GC26924-runner-durable-location"
+     ]
+    }
+   ]
+  }
+ ],
+ "repo_map": {
+  "xaas": {
+   "github": "seanchatmangpt/xaas",
+   "repo": "/Users/sac/xaas",
+   "int": "/Users/sac/wt/v26922/fri/xaas-int",
+   "branch": "friday/gc-fri-0800",
+   "state": "FROZEN release subject S23 (FREEZE.json e999e62; int now 246460c after R1-X-COURTS); moves only via R1a/R1c/R2 before REL-A3",
+   "merge_lock": "/Users/sac/wt/v26922/fri/xaas-int.merge.lock"
+  },
+  "ggen_igniter": {
+   "github": "seanchatmangpt/ggen_igniter",
+   "repo": "/Users/sac/ggen_igniter",
+   "int": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+   "branch": "friday/gc-fri-0800",
+   "state": "FROZEN release subject S23 (FREEZE.json 3937a4f; int now 3ed6a7a after R1-GI-FMT)",
+   "merge_lock": "/Users/sac/wt/v26922/fri/ggen_igniter-int.merge.lock"
+  },
+  "chatman-ecosystem": {
+   "github": "seanchatmangpt/chatman-ecosystem",
+   "wave_key": "chatman",
+   "repo": "/Users/sac/wt/v26922/chatman-ecosystem/repo",
+   "int": "/Users/sac/wt/v26922/fri/chatman-ecosystem-int",
+   "branch": "release/v26.9.23-int",
+   "base": "GitHub main c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
+   "int_head_observed": "a896e16c (CE23-0 receipt commit; pushed to origin)",
+   "created_by": "orthogonal swarm wf_2755fdff-28e ce:identity (full clone + worktree add); identity court pending at 14:36 PT",
+   "local_checkout": "/Users/sac/chatman-ecosystem: read-only, unrelated lineage (root 551cf5c, 4 refs, 0 remotes); preserved in the clone as refs/preserve/v26.9.23/local-checkout/heads/*",
+   "merge_lock": "/Users/sac/wt/v26922/fri/chatman-ecosystem-int.merge.lock",
+   "receipts_dir": "receipts/v26.9.23",
+   "pr_target": "main (CE-REL / CE23-11 only)"
+  },
+  "ggen-marketplace": {
+   "github": "seanchatmangpt/ggen-marketplace",
+   "wave_key": "ggen-marketplace",
+   "repo": "/Users/sac/ggen-marketplace (fetch + worktree add only; dirty tree + 5 unpushed operator commits on local main 96feba8c9: never edit/push)",
+   "int": "/Users/sac/wt/v26922/fri/ggen-marketplace-int",
+   "branch": "release/v26.9.23-int (to create)",
+   "base": "origin/main 420bc91e7c1e291be73ab749b7e443252bc7bab8",
+   "bootstrap": "git -C /Users/sac/ggen-marketplace fetch --no-prune origin && git -C /Users/sac/ggen-marketplace worktree add -b release/v26.9.23-int /Users/sac/wt/v26922/fri/ggen-marketplace-int 420bc91e7c1e291be73ab749b7e443252bc7bab8",
+   "merge_lock": "/Users/sac/wt/v26922/fri/ggen-marketplace-int.merge.lock",
+   "push": "new branch only, never force; consumers pin its exact SHA (MP_SHA)"
+  },
+  "successor_ints": "/Users/sac/wt/v26924/<repo>-int on successor/v26.9.24-int, created from each repo's post-release origin/main after the chatman v26.9.23 tag",
+  "plan_file": "/private/tmp/claude-501/v23-scratch/SCAN-synthesize/plan.json (full plan incl. edges/dropped; copy to /Users/sac/wt/v26922/v26923/lanes/ \u2014 scratch is not durable)"
+ },
+ "operator_edges": [
+  "GC23-12 acceptance (unchanged, last pre-release operator edge): after REL-A3 stages operator/ACCEPTED.proposed, independently verify that xaas docs/sjira/v26.9.23/successor/v26.9.24-wbpr.md hashes to sha256:b1d3d24fc1937f48b2986b1b701409090d765d3d33c4ff75dc498558bb390dc1 and commit docs/sjira/v26.9.23/successor/ACCEPTED. The R1c/R2 repairs move S23 but not that digest. The driver never creates ACCEPTED.",
+  "Local chatman lineage: /Users/sac/chatman-ecosystem holds local-only commits on 4 refs (root 551cf5c, including the v26.9.22 jurisdiction contracts). They share no ancestry and 0 blobs with GitHub main c59596f5. The loop keeps them only as refs/preserve/v26.9.23/local-checkout/heads/* inside /Users/sac/wt/v26922/chatman-ecosystem/repo and never pushes them. Decide: keep them local-only, or publish them under a namespace on GitHub (the successor lane GC24-local-lineage-reconcile is ready: new refs only, no force). Also decide whether /Users/sac/chatman-ecosystem itself should get a remote. The loop leaves that checkout untouched, so its fleet row stays 'Unsupported: no git remote' until it is re-observed.",
+  "v26.9.23 tag scope: lanes/release.run.js REL:final (line 100) tags xaas and ggen_igniter v26.9.23 as soon as the main-pair court prints STOP=true. DRIVER.md says 'tag v26.9.23 last', and CE23-11 makes the tag identify the crowned Chatman release. Choose (a) only chatman-ecosystem gets v26.9.23, or (b) xaas and ggen_igniter also get v26.9.23, but only after CE23-11. Until you answer, Part B does not tag xaas or ggen_igniter.",
+  "CE23-9 'strict release crown' membership: does the Chatman root court include crown.yml's 'CHATMAN ECOSYSTEM CROWN' job / scripts/crown.sh? That job runs `cargo deny check`, which has 6 pre-existing errors and has been red on main since run 34548430864. Default: it is typed pre_existing in release/v26.9.23/typed-checks.txt and left to the successor lane S24-CE-CARGO-DENY. Answering yes promotes that lane (ready and verified) to Required_23 before CE23-11.",
+  "wd-cs2 fallback: if R2-X-WDCS2's three edits do not turn the WD-specific wd-cs2-exact-head.yml court green, should that court be path-filtered so it stops gating unrelated PRs to xaas main? The connected LiveView click path is still UNVERIFIED. WD FA is successor scope, and changing a court's trigger scope is your decision.",
+  "Registry publishes stay manual. The alternative to R2-X-IMAGE-CARGO's Docker Rust toolchain is RustlerPrecompiled for ggen_graph_nif, which needs a hex publish and is outside the approved authority. Default: the Docker toolchain lines.",
+  "ggen-marketplace publication: the loop pushes only the new branch release/v26.9.23-int, created from origin/main 420bc91e. Two decisions are yours: merging that branch into marketplace main (S24-MP-RELPACK-UPSTREAM), and pushing the 5 unpushed commits on your local main 96feba8c9 (including invariant-gate-pack v0.1.0). Your checkout's dirty files are never touched.",
+  "Carry-over edges from MORNING.md and the ticks, still open: accept the Friday WBPR (docs/sjira/v26.9.22/friday/wbpr.md) or declare it superseded by the PRD; freeze the WD FA proposal text (V23-W, now successor); approve or decline a scoped clean-up plan for ~/.cache/tmp (~7 GB); and set a policy for the 4 per-checkout gitignored signing.key files that were deleted with their worktrees during cleanup (tick 20:55Z; the verifying keys were preserved)."
+ ],
+ "dropped": [
+  "CE23-3-out-of-subject-seal (skeptic): no GC23 or CE23 proposition names a receipt transport. The in-tree reseal is owned by rel-a2 RELA:reseal. Adding it would move the frozen subject, and its gate contradicts itself (STOP receipts carry no ggen_igniter_sha). The release-order fixed point uses the existing --order-receipts-dir instead. The git-notes store continues as successor S24-MP-RECEIPT-NOTES.",
+  "CE23-3-R0-history-relabel (skeptic): duplicates RELA:reseal (rel-a.run.js:76-87 and the rel-a2 step), which replaces the stale R_0 crown byte for byte. R_0 is already durable in commit 66b52e7.",
+  "CE23-10-release-lane-seal (skeptic): it edits release.run.js V23-Q v1, which stopped before the PR stage. Release work moved to rel-a/rel-a2, and the fleet receipts dir is no longer empty.",
+  "GC26924-receipt-identity-slug-normalization (skeptic): the premise misapplies PRD section 12. All 48 current lane and order receipts already validate ADMITTED.",
+  "GEN-lane-wave-spec (skeptic): it reproduces (byte-identical render, 10 of 10 digests match), but re-projecting the frozen V23 wave specs falsifies nothing. It is superseded for new work by CE-LANEPLAN / CE-LANEPLAN-C and by the successor promotion S24-GI-LANEPLAN.",
+  "GEN-fleet-observer-adopt (skeptic): falsifies no GC23 or CE23 proposition. HANDWRITTEN.md:44 already satisfies PRD section 22.",
+  "GC24-chatman-fleet-reobserve (skeptic): the premise was false at scan time. The fresh fleet classification at the main pair is already a Part B step.",
+  "GC24-west-release-userdata (skeptic): its gate could not run, and CE23-7 needs only explicit targeting, which lane CE23-7 covers.",
+  "CE23-9-receipt-validator-vendor (skeptic): the schema-drift evidence was misread (ggen_igniter's receipt.schema.json is a different contract). Superseded by MP-RPV plus the CE23-9 vendoring of the generated validator.",
+  "GC23-11-durable-fleet-receipts (skeptic): the fleet dir already holds the REL-A receipts. The durability of imported receipts comes from CE23-3 committing them into the chatman subject.",
+  "CE23-10-court-environment-identity (skeptic): duplicates merged V23-S (stop_court.ex toolchain/0 already records the runtime toolchain in every gate and STOP receipt).",
+  "V23-Q-ggi-pinned-format (skeptic): duplicates R1-GI-FMT (merged, ggen_igniter-int 3ed6a7a) and rel-a2's pinned qualification.",
+  "CE23-5-XA-unused-require (skeptic): duplicate. R1-X-COURTS removed the require (merged, xaas-int 246460c, verified absent at HEAD), which unblocks the R1-X-LOCK continuation in R1c.",
+  "CE23-5-XA-rproj-validator-guard (skeptic keep=false as a separate lane): the defect is real, but its @moduletag fix over-skips. Folded into R1-X-PIN (R1c) with the per-test guard and an empty-HOME gate clause.",
+  "CE23-5-XA-elixir-scm-manifest-v2 (skeptic): duplicate; it is already a listed candidate of R1-X-PIN, and the R1c task keeps it.",
+  "CE23-8-XA-publish-deploy-fence (skeptic): duplicates R1a R1-X-FENCE (in courts).",
+  "CE23-5-GI-format-recipe (skeptic): duplicates R1-GI-FMT (merged).",
+  "GC23-11-XA-zcode-lock-regen (skeptic): duplicates R1-X-LOCK (fix complete at 27cbcbe; continuation in R1c).",
+  "CE23-10-LOOP-toolchain-pin (skeptic): owned by the R1-X-PIN / R1-GI-PIN pinned gates and rel-a2's pinned qualification.",
+  "CE23-0-identity, CE23-0-identity-int, CE23-0-root-identity (synthesis dedupe): covered by the running orthogonal swarm wf_2755fdff-28e ce:identity (full GitHub clone, int release/v26.9.23-int at a896e16c pushed, preserve refs, receipt). The variant that adds a remote to /Users/sac/chatman-ecosystem is not used. Its tested pre-push fence becomes an optional driver hardening step, and the mutation-verified gate becomes the CE23-0 court body (CE-INTAKE-C item 8).",
+  "CE23-P-compile-ce23, CE23-compile-prose, CE-intake-A, CE-intake-B-ce23-12 (synthesis dedupe): covered by the swarm's CE0 lane CE-INTAKE. Their verified constraints travel in CE-INTAKE-C: one source per compile unit, a single CE23-12 gate per unit, the recorded bench extractions reused, stopQuery as ASK, rdfs:label and courtCommand on every gate, lowercase capability hints, and compile through gi_mix.sh.",
+  "CE-lane-plan (synthesis dedupe): covered by the swarm's CE-LANEPLAN. Its verified probe defects travel in CE-LANEPLAN-C: recipe and unknown-namespace orders were silently dropped, a duplicate postcondition was rendered, wave-level fields were missing, and render.exs is unnecessary given --manifest-dir.",
+  "CE23-2-crosswalk-gen (synthesis merge): merged into MP-RELPACK-XW and CE23-2. Its 11 hand-decided dispositions are replaced by the operator's topology law (no GC23 court reference -> ROLE_SUCCESSOR, derived with court-reference evidence). Its open-ontologies->CriticalPath falsifier is kept as mutant M5.",
+  "CE23-1-2-release-graph (synthesis split): the pack half goes to MP-RELPACK-XW and the consumer half to CE23-1 and CE23-2, following the skeptic's git+subdir pin instead of a vendored fork.",
+  "CE23-9-imported-receipt-validator + CE23-9-validator-durable-identity-profile (synthesis merge): merged into MP-RPV. The durable/identity profile lives in the generated validator, and ~/.claude/dfcm/validate_receipt.py stays unchanged, because its sha256 is the verifier identity V23-S binds into every receipt.",
+  "CE23-9-base-repair + CE23-9-root-court (synthesis merge): one lane per gate, CE23-9. The court machinery is pre-stage; the crowning run happens in CE23-10.",
+  "CE23-3-8-crown-import (synthesis split): step 0 goes to MP-RELPACK-CROWN (runs now) and the import to CE23-3 (post-release). Receipts are sourced from the Part B main-head court output, never from `git show <main>:docs/...`.",
+  "CE23-5-XA-dialyzer-dead-nil (synthesis fold): folded into R1-X-PIN, which is the candidate's own suggested alternative.",
+  "CE23-5-GI-fetch-depth-conserve + CE23-5-GI-job-timeout (synthesis merge): combined into R2-GI-CI because both edit .github/workflows/ci.yml.",
+  "GEN-court-projection + GI-court-body-projection (synthesis merge): combined into S24-GI-COURTS.",
+  "GC24-local-lineage-reconcile (synthesis): not a lane. It is operator-gated and is operator edge 2."
+ ],
+ "summary": "I turned the 56 candidates the skeptics kept (out of 75 from scan wf_cf07ec8e-051) into 8 waves. The main change from the raw candidate list: much of it is already running, so I de-duplicated against that first.\n\n**Already running (not re-added):**\n- **R1a** (wf_7a7c7064-905): COURTS and GI-FMT merged; LOCK is blocked; GUARD, FENCE, PGREP, DIGEST and GI-PIN are in flight.\n- **Orthogonal swarm** (wf_2755fdff-28e):\n  - CE23-0 identity is done. The GitHub clone is at /Users/sac/wt/v26922/chatman-ecosystem/repo and the int at /Users/sac/wt/v26922/fri/chatman-ecosystem-int, head a896e16c, pushed. Its identity court was still pending at 14:36 PT.\n  - Its CE0 child wave (CE-INTAKE, CE-LANEPLAN) has not started.\n  - Its CI pre-flight will produce lanes/wave-R2.json.\n\n**The 8 waves.** Everything is required_now for GC23/CE23 except S24.\n\n1. **R1c.**\n   - R1-X-LOCK continuation: merge friday/gc-fri-0800 forward to pick up COURTS' removal of the unused require, then re-run its gate.\n   - R1-X-PIN, amended to also carry the dialyzer dead-nil fix, a per-test validator guard in r_projection (checked with an empty HOME) and the vsn-2 Mix manifest shape.\n2. **R2** (9 lanes, before the freeze). REL-A3 must wait for it so S23 moves only once. Reconcile it with the swarm's wave-R2.json by `defect_key` before launch.\n   - **Crown-computer defects:**\n     - R2-X-COHERENCE: stale gate receipts can crown a moved head (PRD 26 F6).\n     - R2-X-FIXEDPOINT: required order V23-Q's postcondition is STOP itself, so STOP can never become true. The fix is STOP_pre plus an out-of-subject ALIVE V23-Q receipt, which also needs Part B changes.\n   - **Court replayability and traversal:**\n     - R2-X-TOOLCHAIN: cargo and faker break GC23-0/1 under the pinned builds; add a typed BUILD_BROKEN.\n     - R2-X-PYLOCK: the courts execute the unpublished pm4py fork; replace it with a uv hash lock.\n     - R2-X-TRAVERSAL: GC23-11 checks the traversal it observes, not a lexical one.\n   - **Exact-head CI:** R2-X-PROD-TIMEOUT, R2-X-IMAGE-CARGO, R2-X-WDCS2, and R2-GI-CI (fetch-depth replay plus a 90-minute timeout).\n3. **MP** (can run now; touches no frozen subject). New ggen-marketplace int at /Users/sac/wt/v26922/fri/ggen-marketplace-int (release/v26.9.23-int from origin/main 420bc91e); consumers pin it by git+subdir.\n   - chatman-ecosystem-release-pack gains:\n     - crosswalk and critical-path law plus templates (XW);\n     - imported-crown gate 090 and its lift (CROWN);\n     - release-court, root-receipt and typed-check templates (COURT).\n   - MP-RPV: receipt-provenance-unification-pack gets the dfcm_fleet_v1 contract and a `--require-durable` profile, so ~/.claude/dfcm/validate_receipt.py stays untouched.\n4. **CE0b.**\n   - CE-INTAKE-C and CE-LANEPLAN-C: continuations or repairs of the swarm lanes, carrying every constraint the skeptics verified.\n   - CE-ANNEX: commits the verified implementation evidence for each generated lane as an in-subject annex, so no lane spec is hand-written.\n5. **CE1** (generated, before release): CE23-7, CE23-1, CE23-2, CE23-9.\n6. **CE2** (generated, after release): CE23-3, CE23-10.\n7. **CE-REL:** CE23-11 as a driver release script: chatman PR, merge, post-merge crown, annotated tag.\n8. **S24:** 25 successor lanes (GC-26.9.24), launched only after the chatman tag.\n\n**Generator-first.** Every required lane names the generator that owns its artifact and states any irreducible hand-written residue plus the pack that should own it. The generators used:\n- ggen 26.9.18 with the release, github-actions and receipt-provenance packs\n- uv\n- cargo fmt, clippy --fix and `ecosystem projection render`\n- `mix ggen_igniter.sync`\n- prose_spans.py plus compile_prose, run through gi_mix.sh\n\n**Sequencing.** R1a -> R1c -> R2 -> REL-A3 -> operator ACCEPTED -> Part B -> CE2 -> CE-REL. Part B needs amending for STOP_pre, the V23-Q receipt and the tag scope. MP and CE0b -> CE1 run alongside the R waves.\n\n**Files.** The full plan is at /private/tmp/claude-501/v23-scratch/SCAN-synthesize/plan.json and the verified per-candidate specs are in /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/. Copy both into /Users/sac/wt/v26922/v26923/lanes/, because scratch is not durable."
+}

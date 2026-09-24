@@ -1,0 +1,48 @@
+# Residue ledger of the topology guard (scripts/topology_guard.py; tests/test_topology_guard.py).
+#
+# Law: repository topology is transport, never ontology. No committed executable, source, config,
+# court, query, ontology or test file names a shadow checkout or runs git's worktree-add subcommand.
+# A row below admits the hits inside a file that ANOTHER owner pins, and only while the pin holds:
+#   sha256-pin  the file's sha256 is named in pin_file (the bytes are the pinned bytes)
+#   vendored    the file is unmodified at HEAD and its pack's HEAD tree equals the VENDOR.toml tree
+#   snapshot    the file is unmodified at HEAD, lies under snapshot_root, and writer still writes it
+# `hits` is the exact number of hit lines under the row: fewer means lower the row, more means a new
+# reference entered a foreign copy; a row with no hit is stale and refused. Each row names the owner
+# and the edge that removes it. The ledger only shrinks; chatman-owned files never get a row.
+
+[[residue]]
+id = "xaas-fleet-classification-import"
+kind = "sha256-pin"
+paths = ["release/v26.9.23/imports/fleet-classification.ttl"]
+pin_file = "release/v26.9.23/release.ttl"
+hits = 6
+owner = "seanchatmangpt/xaas docs/sjira/v26.9.23/fleet/classification.ttl, byte-copied at the pinned xaas commit (release.ttl er:classificationSource; CE23-1 clause I1 refuses divergence)"
+edge = "xaas rewrites the six sj:classificationReason / sj:evidence literals that name its shadow integration checkouts to the canonical checkout and branch; this subject then re-pins er:classificationSource, re-copies the import, deletes ggen.lock and the stale out/ files and re-syncs. Until then these are RDF evidence literals of the frozen S23 classification, not paths any court opens."
+
+[[residue]]
+id = "release-pack-qualification-copies"
+kind = "vendored"
+paths = ["release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/qualification/*/imports/fleet-classification.ttl"]
+vendor_file = "release/v26.9.23/vendor/ggen-marketplace/VENDOR.toml"
+hits = 78
+owner = "seanchatmangpt/ggen-marketplace packs/chatman-ecosystem-release-pack: qualification/consumer-v26.9.23 and the 12 qualification/mutants/*/imports copies of the same xaas classification import (13 files x 6 lines)"
+edge = "after the xaas row lands, the marketplace pack refreshes its qualification copies and this subject re-vendors the pack (VENDOR.toml commit and tree; CE23-1 clause V1)."
+
+[[residue]]
+id = "ce23-12-design-capital"
+kind = "sha256-pin"
+paths = ["release/v26.9.23/bench/ontology-draft.ttl"]
+pin_file = "release/v26.9.23/courts/ce23_12/pins.toml"
+hits = 2
+owner = "CE23-12 design capital, sha256-pinned in release/v26.9.23/sjira/goal.ttl and courts/ce23_12/pins.toml [capital] (CE23-12 clause K0: never edited)"
+edge = "none required: two provenance comments name where the operator prose lived when the draft was written, beside that prose's sha256 (the prose is now release/v26.9.23/sjira/chatman-ce23-12-{bench,standings}.md). The row retires only with a re-pinned revision of the capital."
+
+[[residue]]
+id = "gall-core-pack-build-snapshot"
+kind = "snapshot"
+paths = ["platform-console/services/ggen-marketplace/ggen-packs-src/gall-core-pack/templates/*"]
+snapshot_root = "platform-console/services/ggen-marketplace/ggen-packs-src"
+writer = "platform-console/services/ggen-marketplace/prep.sh"
+hits = 3
+owner = "seanchatmangpt/ggen packs/gall-core-pack (mirrored in ggen-marketplace packs/gall-core-pack): templates agent_executor.py.tmpl (isolated agent tree) and run_checkpoints_sh.tmpl (detached replay tree), copied into this Docker build context by prep.sh (cp -R of the ggen packs directory; no byte pin)"
+edge = "gall-core-pack materializes the replay tree with git archive at the exact revision and runs an agent in an archive scratch tree whose result is committed onto a normal branch with plumbing (read-tree, write-tree, commit-tree, update-ref); this service then re-runs prep.sh."

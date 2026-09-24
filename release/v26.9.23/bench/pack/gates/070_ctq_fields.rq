@@ -1,0 +1,22 @@
+# MESSAGE: Every CTQ carries the five admitted-CTQ fields (trace, operational measure, verification
+# method, negative case, control chart) and a required result; the operator's CTQ tree has fifteen.
+PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+PREFIX dflss: <https://ggen.dev/dflss#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+SELECT ?node ?reason WHERE {
+  {
+    ?node a dflss:CTQ .
+    FILTER NOT EXISTS { ?node prov:wasDerivedFrom ?s ; nlb:operationalMeasure ?m ; nlb:verificationMethod ?v ; nlb:negativeCase ?n ; nlb:controlChart ?cc ; nlb:requiredResult ?r }
+    BIND("ctq-missing-admitted-field" AS ?reason)
+  } UNION {
+    ?node a dflss:CTQ ; nlb:controlChart ?cc .
+    FILTER(!(?cc IN ("p", "np", "c", "u", "g", "I-MR")))
+    BIND("ctq-control-chart-outside-closed-set" AS ?reason)
+  } UNION {
+    { SELECT (COUNT(DISTINCT ?q) AS ?k) WHERE { ?q a dflss:CTQ } }
+    FILTER(?k != 15)
+    BIND(<https://ggen.dev/dflss#CTQ> AS ?node)
+    BIND("ctq-tree-is-not-fifteen" AS ?reason)
+  }
+}
+ORDER BY ?node ?reason

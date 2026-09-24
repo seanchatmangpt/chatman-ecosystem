@@ -1,0 +1,111 @@
+# MESSAGE: Every required role of a predecessor er:LegacyRelease must be disposed
+# MESSAGE: exactly once by the successor er:Release that crosswalks from it, with a
+# MESSAGE: typed er:RoleBoundary, a non-empty er:reason and er:derivedBy or er:decidedBy
+# MESSAGE: provenance. ROLE_REQUIRED must be supplied by a required component of the
+# MESSAGE: successor release. An explicit decision may not override a repository present
+# MESSAGE: in the fleet classification, and an ambiguous (basename-colliding) join is refused.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+SELECT DISTINCT ?subject ?reason WHERE {
+  {
+    ?old a er:LegacyRelease ; er:legacyRequiredRole ?role .
+    FILTER NOT EXISTS { ?new a er:Release ; er:crosswalkFrom ?old . }
+    BIND(?old AS ?subject)
+    BIND(CONCAT("legacy-release-not-crosswalked:", STR(?role)) AS ?reason)
+  } UNION {
+    ?old a er:LegacyRelease ; er:legacyRequiredRole ?role .
+    FILTER NOT EXISTS { ?old er:legacyComponent ?lc . ?lc er:legacyRole ?role . }
+    BIND(?old AS ?subject)
+    BIND(CONCAT("legacy-role-without-lifted-component:", STR(?role)) AS ?reason)
+  } UNION {
+    ?new a er:Release ; er:crosswalkFrom ?old .
+    ?old er:legacyRequiredRole ?role .
+    FILTER NOT EXISTS {
+      ?d a er:RoleDisposition ; er:legacyRole ?role ; er:sourceRelease ?old ; er:targetRelease ?new .
+    }
+    BIND(?new AS ?subject)
+    BIND(CONCAT("role-without-disposition:", STR(?role)) AS ?reason)
+  } UNION {
+    ?d1 a er:RoleDisposition ; er:legacyRole ?role ; er:sourceRelease ?old ; er:targetRelease ?new .
+    ?d2 a er:RoleDisposition ; er:legacyRole ?role ; er:sourceRelease ?old ; er:targetRelease ?new .
+    FILTER(STR(?d1) < STR(?d2))
+    BIND(?new AS ?subject)
+    BIND(CONCAT("role-with-multiple-dispositions:", STR(?role)) AS ?reason)
+  } UNION {
+    ?d a er:RoleDisposition ; er:legacyRole ?role ; er:boundary ?b1, ?b2 .
+    FILTER(STR(?b1) < STR(?b2))
+    BIND(?d AS ?subject)
+    BIND(CONCAT("disposition-with-multiple-boundaries:", STR(?role)) AS ?reason)
+  } UNION {
+    ?d a er:RoleDisposition .
+    OPTIONAL { ?d er:legacyRole ?maybeRole . }
+    FILTER NOT EXISTS { ?d er:boundary ?b . ?b a er:RoleBoundary . }
+    BIND(?d AS ?subject)
+    BIND(CONCAT("unclassified-or-untyped-boundary:", COALESCE(STR(?maybeRole), "?")) AS ?reason)
+  } UNION {
+    ?d a er:RoleDisposition .
+    OPTIONAL { ?d er:legacyRole ?maybeRole . }
+    FILTER NOT EXISTS { ?d er:reason ?r . FILTER(STRLEN(STR(?r)) > 0) }
+    BIND(?d AS ?subject)
+    BIND(CONCAT("disposition-without-reason:", COALESCE(STR(?maybeRole), "?")) AS ?reason)
+  } UNION {
+    ?d a er:RoleDisposition .
+    OPTIONAL { ?d er:legacyRole ?maybeRole . }
+    FILTER NOT EXISTS { ?d er:derivedBy ?rule . }
+    FILTER NOT EXISTS { ?d er:decidedBy ?authority . }
+    BIND(?d AS ?subject)
+    BIND(CONCAT("disposition-without-provenance:", COALESCE(STR(?maybeRole), "?")) AS ?reason)
+  } UNION {
+    ?d a er:RoleDisposition .
+    OPTIONAL { ?d er:legacyRole ?maybeRole . }
+    FILTER NOT EXISTS {
+      ?d er:legacyRole ?role ; er:sourceRelease ?old ; er:targetRelease ?new .
+      ?old a er:LegacyRelease ; er:legacyRequiredRole ?role .
+      ?new a er:Release ; er:crosswalkFrom ?old .
+    }
+    BIND(?d AS ?subject)
+    BIND(CONCAT("disposition-outside-a-crosswalked-legacy-role:", COALESCE(STR(?maybeRole), "?")) AS ?reason)
+  } UNION {
+    ?d a er:RoleDisposition ; er:legacyRole ?role ; er:boundary er:ROLE_REQUIRED ; er:targetRelease ?new .
+    FILTER NOT EXISTS {
+      ?d er:suppliedBy ?supplier .
+      ?new er:hasComponent ?supplier .
+      ?supplier a er:Component ; er:required true .
+    }
+    FILTER NOT EXISTS {
+      ?new er:hasComponent ?c .
+      ?c a er:Component ; er:required true ; er:role ?role .
+    }
+    BIND(?d AS ?subject)
+    BIND(CONCAT("required-role-not-supplied-by-target-release:", STR(?role)) AS ?reason)
+  } UNION {
+    ?d a er:RoleDisposition ; er:legacyRole ?role ; er:decidedBy ?authority ; er:sourceRelease ?old .
+    ?old er:legacyComponent ?lc .
+    ?lc er:legacyRole ?role ; er:legacyRepository ?repo .
+    ?fc a sj:FleetClassification ; dcterms:identifier ?id .
+    FILTER(STR(?id) = STRAFTER(STR(?repo), "/"))
+    BIND(?d AS ?subject)
+    BIND(CONCAT("decision-overrides-fleet-classification:", STR(?role), ":", STR(?id)) AS ?reason)
+  } UNION {
+    ?d a er:RoleDisposition ; er:legacyRole ?role ; er:legacyComponent ?lc1, ?lc2 .
+    FILTER(STR(?lc1) < STR(?lc2))
+    BIND(?d AS ?subject)
+    BIND(CONCAT("disposition-with-ambiguous-legacy-supplier:", STR(?role)) AS ?reason)
+  } UNION {
+    ?fc1 a sj:FleetClassification ; dcterms:identifier ?id1 .
+    ?fc2 a sj:FleetClassification ; dcterms:identifier ?id2 .
+    FILTER(STR(?fc1) < STR(?fc2) && STR(?id1) = STR(?id2))
+    ?old a er:LegacyRelease .
+    BIND(?fc1 AS ?subject)
+    BIND(CONCAT("fleet-classification-basename-collision:", STR(?id1)) AS ?reason)
+  } UNION {
+    ?old a er:LegacyRelease ; er:legacyComponent ?lc1, ?lc2 .
+    ?lc1 er:legacyRepository ?repo1 .
+    ?lc2 er:legacyRepository ?repo2 .
+    FILTER(STR(?lc1) < STR(?lc2) && STRAFTER(STR(?repo1), "/") = STRAFTER(STR(?repo2), "/"))
+    BIND(?old AS ?subject)
+    BIND(CONCAT("legacy-component-basename-collision:", STRAFTER(STR(?repo1), "/")) AS ?reason)
+  }
+}
+ORDER BY ?subject ?reason

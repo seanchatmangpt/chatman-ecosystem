@@ -1,0 +1,36 @@
+# MESSAGE: A release must have exactly one non-empty version, target date,
+# standing, and authority class; at least one component; and it may never
+# carry DO authority. This pack is release SELECT/CONSTRUCT law only.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+# Each UNION branch binds ?release itself. A branch holding only FILTER NOT EXISTS is evaluated
+# bottom-up (SPARQL 1.1 section 18.6) with ?release unbound, so ggen's native engine found the
+# pattern on ANY subject and admitted the violation whenever another subject satisfied it
+# (rdflib substitutes the outer binding and refused it): court-mutants rows C29, C34, C35.
+SELECT ?release ?reason WHERE {
+  {
+    ?release a er:Release .
+    FILTER NOT EXISTS { ?release er:version ?v . FILTER(STRLEN(STR(?v)) > 0) }
+    BIND("missing-version" AS ?reason)
+  } UNION {
+    ?release a er:Release .
+    FILTER NOT EXISTS { ?release er:targetDate ?d }
+    BIND("missing-target-date" AS ?reason)
+  } UNION {
+    ?release a er:Release .
+    FILTER NOT EXISTS { ?release er:standing ?s . ?s a er:StandingState }
+    BIND("missing-or-invalid-standing" AS ?reason)
+  } UNION {
+    ?release a er:Release .
+    FILTER NOT EXISTS { ?release er:authorityClass ?a . ?a a er:AuthorityClass }
+    BIND("missing-or-invalid-authority-class" AS ?reason)
+  } UNION {
+    ?release a er:Release .
+    ?release er:authorityClass er:DO .
+    BIND("ambient-do-authority-forbidden" AS ?reason)
+  } UNION {
+    ?release a er:Release .
+    FILTER NOT EXISTS { ?release er:hasComponent ?c . ?c a er:Component }
+    BIND("empty-release" AS ?reason)
+  }
+}
+ORDER BY ?release ?reason

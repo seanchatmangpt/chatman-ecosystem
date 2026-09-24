@@ -1,0 +1,20 @@
+@prefix er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#> .
+
+# Observation (not a decision): fleet_matrix.court_references() of seanchatmangpt/xaas@b4ef5d664cb5afa2ab5456ac20d28500f5b00144
+# (scripts/sjira/fleet_matrix.py, read-only) over docs/sjira/v26.9.23/courts/*.sh at that
+# commit, for the 16 v26.9.1 component repositories plus xaas and ggen_igniter. None of
+# the 16 legacy repositories is executed by a GC23 court; only the two listed below are.
+# Command and output: SOURCES.md.
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/GC23-0.sh> er:courtReferencesComponent "seanchatmangpt/xaas", "seanchatmangpt/ggen_igniter" .
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/GC23-1.sh> er:courtReferencesComponent "seanchatmangpt/xaas", "seanchatmangpt/ggen_igniter" .
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/GC23-10.sh> er:courtReferencesComponent "seanchatmangpt/xaas", "seanchatmangpt/ggen_igniter" .
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/GC23-11.sh> er:courtReferencesComponent "seanchatmangpt/xaas", "seanchatmangpt/ggen_igniter" .
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/GC23-2.sh> er:courtReferencesComponent "seanchatmangpt/xaas", "seanchatmangpt/ggen_igniter" .
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/GC23-3.sh> er:courtReferencesComponent "seanchatmangpt/xaas", "seanchatmangpt/ggen_igniter" .
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/GC23-4.sh> er:courtReferencesComponent "seanchatmangpt/xaas" .
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/GC23-5.sh> er:courtReferencesComponent "seanchatmangpt/xaas", "seanchatmangpt/ggen_igniter" .
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/GC23-6.sh> er:courtReferencesComponent "seanchatmangpt/xaas", "seanchatmangpt/ggen_igniter" .
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/GC23-7.sh> er:courtReferencesComponent "seanchatmangpt/xaas" .
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/GC23-8.sh> er:courtReferencesComponent "seanchatmangpt/xaas", "seanchatmangpt/ggen_igniter" .
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/GC23-9.sh> er:courtReferencesComponent "seanchatmangpt/xaas", "seanchatmangpt/ggen_igniter" .
+<https://github.com/seanchatmangpt/xaas/blob/b4ef5d664cb5afa2ab5456ac20d28500f5b00144/docs/sjira/v26.9.23/courts/gi_mix.sh> er:courtReferencesComponent "seanchatmangpt/ggen_igniter" .

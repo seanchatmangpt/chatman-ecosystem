@@ -198,13 +198,7 @@ impl StdError for CliError {}
 
 type CliResult<T> = Result<T, Box<dyn StdError>>;
 
-const fn metrics(
-    edges: u8,
-    leverage: u8,
-    verifier: u8,
-    cost: u8,
-    irreversibility: u8,
-) -> Metrics {
+const fn metrics(edges: u8, leverage: u8, verifier: u8, cost: u8, irreversibility: u8) -> Metrics {
     Metrics {
         edges,
         leverage,
@@ -664,8 +658,7 @@ fn validate_manifest() -> Result<Value, CliError> {
             )));
         }
         if spec.class == StrategyClass::DependencyOnly
-            && (spec.mode != ExecutionMode::DependencyOnly
-                || spec.effect != ExternalEffect::None)
+            && (spec.mode != ExecutionMode::DependencyOnly || spec.effect != ExternalEffect::None)
         {
             return Err(CliError(format!(
                 "dependency-only repository `{}` crossed its fence",
@@ -690,9 +683,7 @@ fn validate_manifest() -> Result<Value, CliError> {
     }
 
     let nano = find_strategy("chatman-nano-stack")?;
-    if nano.class != StrategyClass::NegativeEvidence
-        || nano.mode != ExecutionMode::ObserveOnly
-    {
+    if nano.class != StrategyClass::NegativeEvidence || nano.mode != ExecutionMode::ObserveOnly {
         return Err(CliError(
             "chatman-nano-stack must remain negative evidence".into(),
         ));
@@ -902,7 +893,9 @@ fn run() -> CliResult<()> {
                 .get(1)
                 .ok_or_else(|| CliError("receipt requires an exact Git SHA".into()))?;
             let granted = optional_authority(arguments.get(2))?;
-            print_json(&serde_json::to_value(create_plan_receipt(git_sha, granted)?)?)
+            print_json(&serde_json::to_value(create_plan_receipt(
+                git_sha, granted,
+            )?)?)
         }
         "help" | "--help" | "-h" => {
             println!("{}", usage());
@@ -956,10 +949,7 @@ mod tests {
         {
             assert_eq!(disposition(spec), Disposition::Refused);
             assert_eq!(dfcm_score(spec), 0);
-            assert_eq!(
-                spec.refusal,
-                Some("REFUSED:NO_ADMITTED_REVOPS_SUBJECT")
-            );
+            assert_eq!(spec.refusal, Some("REFUSED:NO_ADMITTED_REVOPS_SUBJECT"));
         }
     }
 

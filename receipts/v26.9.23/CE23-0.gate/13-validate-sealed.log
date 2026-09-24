@@ -1,0 +1,20 @@
+$ python3 ~/.claude/dfcm/validate_receipt.py receipts/v26.9.23/CE23-0.json && git -C ~/ggen-marketplace show e3988aba4a850095d94d3b18a4495766d13e4d5e:packs/receipt-provenance-unification-pack/generated/unified_receipt_validator.py > "${TMPDIR:-/tmp}/ce23-0-validator.py" && shasum -a 256 "${TMPDIR:-/tmp}/ce23-0-validator.py" && python3 "${TMPDIR:-/tmp}/ce23-0-validator.py" receipts/v26.9.23/CE23-0.json --contract dfcm_fleet_v1 && python3 release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/bin/run-gates.py receipts/v26.9.23/CE23-0.identity.ttl release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/gates
+ADMITTED receipts/v26.9.23/CE23-0.json
+008ce23419325ebda2998fb7445a38da80a7735ba3ca6fdc56c0e0a7ec686f70  /Users/sac/.cache/tmp/ce23-0-validator.py
+VALID [dfcm_fleet_v1] -- receipts/v26.9.23/CE23-0.json
+GRAPH receipts/v26.9.23/CE23-0.identity.ttl triples=419
+GATE_PASS 010_release_contract.rq
+GATE_PASS 020_component_identity.rq
+GATE_PASS 030_dependency_closure.rq
+GATE_PASS 040_required_component_law.rq
+GATE_PASS 050_ref_observation_law.rq
+GATE_PASS 060_unique_repository.rq
+GATE_PASS 070_role_crosswalk_total.rq
+GATE_PASS 075_constitutional_role_mapping.rq
+GATE_PASS 080_critical_path_coverage.rq
+GATE_PASS 085_requirement_row_identity.rq
+GATE_PASS 090_imported_crown.rq
+GATE_PASS 095_release_court.rq
+GATE_PASS 097_root_receipt.rq
+RELEASE_GATES ALIVE failed=0
+exit=0

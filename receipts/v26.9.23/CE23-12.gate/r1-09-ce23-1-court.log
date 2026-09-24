@@ -1,0 +1,50 @@
+$ sh release/v26.9.23/courts/CE23-1.sh
+CE23-1 court: subject 2d734c047e49a3254c45d189ece02ab13c659110 at /Users/sac/chatman-ecosystem
+OK S0: head 2d734c047e49a3254c45d189ece02ab13c659110 descends from base c59596f5506e7a00ca4ed6b909ebf6d6659b74c1
+OK P1: release/v26.9.1 tree 7e0feef1b137bea72fe1cf22a599636f77b0e47c = pin = base tree
+OK P2: checkout clean under release/v26.9.1; manifest sha256 30b1d83ce544299557da50084ced696172d219f6790c2cfc5b78116902850949
+OK A1: 11 subject paths committed under release/v26.9.23
+OK A2: checkout clean under the subject paths
+OK A3: release/v26.9.23/manifest.toml -> out/manifest.toml
+OK A3: release/v26.9.23/constitutional-role-crosswalk.toml -> out/constitutional-role-crosswalk.toml
+OK A4: release/v26.9.23/ggen.toml is closed-world; its 9 read paths are committed regular entries inside release/v26.9.23
+OK A5: 434 committed entries of the judged slice are regular files except the 2 pinned line-pointer symlinks
+OK C1: the judging court (3 files: wrapper, code, pins) is byte-identical to the head's
+OK V1: chatman-ecosystem-release-pack packs/chatman-ecosystem-release-pack tree bf05126e21d0ac2fab7721e103dbffbb0045a5cf = marketplace e3988aba4a85 on origin/release/v26.9.23-int
+OK V1: ggen.toml pack chatman-ecosystem-release-pack from vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack, lock = true
+OK G1: ggen 26.9.18: committed render and lock reproduce byte-identically (8 files; sync on the committed tree writes nothing; idempotent)
+OK G2: chatman-ecosystem-release-pack bin/run-gates.py (rdflib): RELEASE_GATES ALIVE, 11 gates
+OK M1: CriticalPath ggen_igniter = required component seanchatmangpt/ggen_igniter@6e7834ee68b6617b7f11ac48b1e9fc2651fc448d
+OK M1: CriticalPath xaas = required component seanchatmangpt/xaas@6fd59588c2e06b83d1af6ebc653e7b545de6f90f
+OK M1: manifest 26.9.23; crosswalk 26.9.23 maps ['execution-realization', 'semantic-manufacture']
+OK I1: imports/fleet-classification.ttl = seanchatmangpt/xaas@6fd59588c2e0:docs/sjira/v26.9.23/fleet/classification.ttl (sha256 d9e99f074ef2a8c9)
+OK M2: seanchatmangpt/ggen_igniter@6e7834ee68b6 on origin/friday/gc-fri-0800
+OK M2: seanchatmangpt/xaas@6fd59588c2e0 on origin/friday/gc-fri-0800
+OK T1: scripts/verify_release.py --release v26.9.23: exit 0, release 26.9.23, findings [], manifest_sha256 aa1a2912b85895fd (= render)
+OK R1: requirements.toml: 54 rows = checkpointed orders of 3 compiled units (2 CE23-1)
+OK AV M0: unmutated synthetic subject (control): ALIVE (22 clauses)
+OK AV MV: revert: the CE23-1 subject removed (inputs, render, vendor, pointers): refused ['SUBJECT_ABSENT']
+OK AV M1: hand-edited committed render (xaas sha zeroed in out/manifest.toml): refused ['GENERATION_REFUSED', 'IMPORT_NOT_PINNED'] (FM-WRITE-005)
+OK AV M2: ggen_igniter dropped consistently from release.ttl: refused ['GATES_REFUSED', 'GENERATION_REFUSED'] (080_critical_path_coverage)
+OK AV M2b: ggen_igniter dropped from release.ttl and from the committed render: refused ['CRITICAL_PATH_NOT_REQUIRED', 'GATES_REFUSED', 'GENERATION_REFUSED']
+OK AV M3: one byte appended to release/v26.9.1/manifest.toml: refused ['PREDECESSOR_CHANGED']
+OK AV M4: a new file under release/v26.9.1: refused ['PREDECESSOR_CHANGED']
+OK AV M3w: uncommitted byte change to release/v26.9.1/manifest.toml: refused ['PREDECESSOR_DIRTY']
+OK AV M5: vendored gate 080 relaxed to admit everything: refused ['GENERATION_REFUSED', 'VENDOR_TREE_MISMATCH'] (FM-PACK-008)
+OK AV M6: manifest.toml pointer replaced by a copy of the render: refused ['LINE_POINTER_NOT_PROJECTION']
+OK AV M6w: uncommitted edit of release.ttl: refused ['SUBJECT_DIRTY']
+OK AV M7: classification import edited (ggen_igniter CriticalPath -> Successor): refused ['GENERATION_REFUSED', 'IMPORT_DIGEST_MISMATCH', 'IMPORT_NOT_BYTE_COPY']
+OK AV M8: release version literal 26.9.1, render regenerated: refused ['CROSSWALK_UNBOUND', 'MANIFEST_VERSION', 'VERIFY_RELEASE_REFUSED'] (ECOSYSTEM_VERSION_MISMATCH)
+OK AV M9: one compiled orders unit dropped from ggen.toml, render regenerated: refused ['REQUIREMENT_ROWS_DROPPED']
+OK AV M10: xaas re-pinned to another commit of its ref, classification source unchanged, render regenerated: refused ['IMPORT_NOT_PINNED']
+OK AV M11: ggen.toml reads a release/v26.9.1 file as an import: refused ['GATES_REFUSED', 'GENERATION_REFUSED', 'SUBJECT_NOT_INDEPENDENT']
+OK AV M12: classification source re-pointed outside the pinned path, render regenerated: refused ['IMPORT_SOURCE_UNPINNED']
+OK AV M13: classification import an absolute symlink to identical bytes outside the repository: refused ['SUBJECT_NOT_INDEPENDENT'] (symlink)
+OK AV M14: classification import a relative symlink leaving the subject (identical bytes in the repository): refused ['GATES_REFUSED', 'GENERATION_REFUSED', 'SUBJECT_NOT_INDEPENDENT', 'SUBJECT_UNREADABLE'] (symlink)
+OK AV M15: ggen.toml law.reflexive = true (sync reads the uncommitted receipt log): refused ['CONFIG_UNJUDGED'] (law.reflexive)
+OK AV M16: ggen.toml pack lock = false (ggen.lock no longer pins the pack): refused ['GENERATED_SET_MISMATCH', 'PACK_NOT_LOCKED']
+OK AV M17: ggen_igniter re-pinned to a commit off its ref, render regenerated: refused ['COMPONENT_NOT_ON_REF']
+OK AV M18: committed court pins differ from the pins of the court judging: refused ['COURT_NOT_AT_HEAD'] (subject.toml)
+OK AV MB: the judged head does not descend from the base (orphan base commit): refused ['BASE_NOT_ANCESTOR']
+CE23-1 ALIVE
+exit=0

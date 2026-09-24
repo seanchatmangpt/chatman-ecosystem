@@ -1,0 +1,12 @@
+$ pwd; git rev-parse HEAD; git status --porcelain; git merge --no-edit release/v26.9.23-int; git rev-parse release/v26.9.23-int; git merge-base HEAD release/v26.9.23-int; git -C /Users/sac/wt/v26922/v23/CE-INTAKE-gi rev-parse HEAD; git -C /Users/sac/wt/v26922/fri/ggen_igniter-int rev-parse HEAD; shasum -a 256 /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py release/v26.9.23/sjira/unit_goal.py release/v26.9.23/sjira/compile_check.sh
+/Users/sac/wt/v26922/v23/CE-INTAKE
+77e3279a8bee021e48a2e94df57443570e3e8158
+Already up to date.
+a896e16c68af1315be3492e39939c354ce46b10c
+a896e16c68af1315be3492e39939c354ce46b10c
+d6a6e5bd8de1da426ddc26130edfa45bbaf24f61
+d6a6e5bd8de1da426ddc26130edfa45bbaf24f61
+86a0e9b30d192adff8026d281b1735ee4b9e371e4d29083ed0cb089a62730421  /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py
+265d37492427d5b2aa4628a717eca10f6e428fb3d626e5605881eb601636d6a7  release/v26.9.23/sjira/unit_goal.py
+8ebdbc7555325b1df7dc712256db0a9fc630f9eedf2eb3e6fe0a34199b958d51  release/v26.9.23/sjira/compile_check.sh
+exit=0

@@ -1,0 +1,11 @@
+[project]
+name = "chatman-ecosystem-release-pack-qualification-imported-crown"
+
+[ontology]
+source = "consumer.ttl"
+
+[templates]
+dir = "templates"
+
+[packs]
+chatman-ecosystem-release-pack = { path = "../..", lock = false, extra_ontologies = ["imported/crown.ttl"] }

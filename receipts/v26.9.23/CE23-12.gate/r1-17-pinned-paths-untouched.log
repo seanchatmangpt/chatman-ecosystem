@@ -1,0 +1,3 @@
+$ git diff --name-only 8c150da27ac77f860b0eecf44fba71afbff72427 HEAD -- release/v26.9.1 release/v26.9.23/bench/DESIGN.md release/v26.9.23/bench/ontology-draft.ttl release/v26.9.23/bench/orders.json release/v26.9.23/bench/candidates release/v26.9.23/sjira | wc -l
+       0
+exit=0

@@ -1,0 +1,192 @@
+---
+to: out/receipts/root-receipt.unsealed.toml
+construct: |
+  PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+  CONSTRUCT { ?rr er:standingAfter ?after . }
+  WHERE {
+    ?rr a er:RootReceipt ; er:receiptRelease ?r ; er:standingBefore ?before .
+    { SELECT ?r (COUNT(DISTINCT ?g) AS ?nGates) WHERE { ?r a er:Release ; er:gate ?g . } GROUP BY ?r }
+    OPTIONAL {
+      SELECT ?r (COUNT(DISTINCT ?g) AS ?nPass) WHERE {
+        ?r er:gate ?g . ?g er:observedExit ?e .
+        FILTER(isNumeric(?e) && ?e = 0)
+        FILTER NOT EXISTS { ?g er:observedExit ?e2 . FILTER(?e2 != ?e) }
+      } GROUP BY ?r
+    }
+    OPTIONAL {
+      SELECT ?r (COUNT(DISTINCT ?g) AS ?nFail) WHERE {
+        ?r er:gate ?g . ?g er:observedExit ?e .
+        FILTER(!isNumeric(?e) || ?e != 0)
+      } GROUP BY ?r
+    }
+    BIND(COALESCE(?nPass, 0) AS ?pass)
+    BIND(COALESCE(?nFail, 0) AS ?fail)
+    # ALIVE only when every gate of the release has exactly one observed exit and all are 0;
+    # BLOCKED when any observed exit is non-zero; otherwise (no or incomplete observation) the
+    # standing before carries over, except ALIVE, which is never carried without complete
+    # evidence: chatman Standing::permits leaves ALIVE only for BLOCKED.
+    BIND(IF(?fail > 0, er:BLOCKED,
+         IF(?nGates > 0 && ?pass = ?nGates, er:ALIVE,
+         IF(?before = er:ALIVE, er:BLOCKED, ?before))) AS ?after)
+  }
+sparql:
+  receipt: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?rr ?release ?id ?repository ?sha ?actor ?authority ?intention ?before ?after ?timestamp
+    WHERE {
+      ?rr a er:RootReceipt ; er:receiptRelease ?release .
+      OPTIONAL { ?rr er:receiptId ?i . }
+      OPTIONAL { ?rr er:subjectRepository ?repo . }
+      OPTIONAL { ?rr er:subjectProbe ?p . ?p er:observedOutput ?o . }
+      OPTIONAL { ?rr er:actor ?a . }
+      OPTIONAL { ?rr er:receiptAuthority ?au . }
+      OPTIONAL { ?rr er:intention ?in . }
+      OPTIONAL { ?rr er:standingBefore ?b . }
+      OPTIONAL { ?rr er:standingAfter ?af . }
+      OPTIONAL { ?rr er:timestamp ?ts . }
+      BIND(COALESCE(STR(?i), "") AS ?id)
+      BIND(COALESCE(STR(?repo), "") AS ?repository)
+      BIND(COALESCE(STR(?o), "UNOBSERVED") AS ?sha)
+      BIND(COALESCE(STR(?a), "") AS ?actor)
+      BIND(COALESCE(STR(?au), "") AS ?authority)
+      BIND(COALESCE(STR(?in), "") AS ?intention)
+      BIND(COALESCE(STRAFTER(STR(?b), "#"), "") AS ?before)
+      BIND(COALESCE(STRAFTER(STR(?af), "#"), "") AS ?after)
+      BIND(COALESCE(STR(?ts), "") AS ?timestamp)
+    }
+    ORDER BY ?rr
+  components: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?rr ?repository ?sha
+    WHERE {
+      ?rr a er:RootReceipt ; er:receiptRelease ?release .
+      ?release er:hasComponent ?c .
+      ?c er:repository ?repo ; er:commitSha ?s .
+      BIND(STR(?repo) AS ?repository)
+      BIND(STR(?s) AS ?sha)
+    }
+    ORDER BY ?rr ?repository ?sha
+  probes: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?rr ?name ?output
+    WHERE {
+      ?rr a er:RootReceipt ; er:receiptRelease ?release .
+      ?release er:probe ?p .
+      ?p er:probeName ?n ; er:probeOrder ?order .
+      OPTIONAL { ?p er:observedOutput ?o . }
+      BIND(STR(?n) AS ?name)
+      BIND(COALESCE(STR(?o), "UNOBSERVED") AS ?output)
+    }
+    ORDER BY ?rr ?order ?name
+  gates: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?rr ?order ?name ?command ?exit
+    WHERE {
+      ?rr a er:RootReceipt ; er:receiptRelease ?release .
+      ?release er:gate ?g .
+      ?g er:gateOrder ?order ; er:gateName ?n ; er:command ?c .
+      OPTIONAL { ?g er:observedExit ?e . }
+      BIND(STR(?n) AS ?name)
+      BIND(STR(?c) AS ?command)
+      BIND(COALESCE(CONCAT("exit ", STR(?e)), "UNOBSERVED") AS ?exit)
+    }
+    ORDER BY ?rr ?order
+  imports: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?name ?digest
+    WHERE {
+      ?i a er:ImportedReceipt ; er:importName ?n ; er:importDigest ?d ; er:ordinal ?o .
+      BIND(STR(?n) AS ?name)
+      BIND(STR(?d) AS ?digest)
+    }
+    ORDER BY ?o ?name
+  crowns: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?checkpoint ?stop ?llm ?unreceipted
+    WHERE {
+      ?crown a er:ImportedCrown .
+      OPTIONAL { ?crown er:crownCheckpoint ?cp . }
+      OPTIONAL { ?crown er:stopStanding ?st . }
+      OPTIONAL { ?crown er:llmInvocationsOnKnownReferencePath ?l . }
+      OPTIONAL { ?crown er:unreceiptedActuation ?u . }
+      BIND(COALESCE(STR(?cp), STR(?crown)) AS ?checkpoint)
+      BIND(COALESCE(STRAFTER(STR(?st), "#"), "") AS ?stop)
+      BIND(COALESCE(STR(?l), "null") AS ?llm)
+      BIND(COALESCE(STR(?u), "null") AS ?unreceipted)
+    }
+    ORDER BY ?checkpoint ?crown
+  roles: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?rr ?role ?boundary ?via
+    WHERE {
+      ?rr a er:RootReceipt ; er:receiptRelease ?release .
+      ?d a er:RoleDisposition ; er:targetRelease ?release ; er:legacyRole ?lr ; er:boundary ?b .
+      FILTER(?b != er:ROLE_REQUIRED)
+      OPTIONAL { ?d er:derivedBy ?drv . }
+      OPTIONAL { ?d er:decidedBy ?dec . }
+      BIND(STR(?lr) AS ?role)
+      BIND(STRAFTER(STR(?b), "#ROLE_") AS ?boundary)
+      BIND(COALESCE(STR(?dec), STR(?drv), "") AS ?via)
+    }
+    ORDER BY ?rr ?role ?boundary ?via
+  checks: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?rr ?name ?boundary ?class
+    WHERE {
+      ?rr a er:RootReceipt ; er:receiptRelease ?release .
+      ?release er:checkDisposition ?d .
+      ?d er:checkName ?n .
+      OPTIONAL { ?d er:checkBoundary ?b . }
+      OPTIONAL { ?d er:failureClass ?fc . }
+      BIND(STR(?n) AS ?name)
+      BIND(COALESCE(STRAFTER(STR(?b), "#ROLE_"), "") AS ?boundary)
+      BIND(COALESCE(STRAFTER(STR(?fc), "#"), "") AS ?class)
+    }
+    ORDER BY ?rr ?name
+  changed: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?rr ?path
+    WHERE { ?rr a er:RootReceipt ; er:changedPath ?p . BIND(STR(?p) AS ?path) }
+    ORDER BY ?rr ?path
+---
+# GENERATED by ggen sync from chatman-ecosystem-release-pack (templates/root-receipt.toml.tmpl).
+# Unsealed root release receipt in the chatman-ecosystem Receipt shape (digest = ""): the
+# consumer copies it into its receipts/ and seals it (`ecosystem receipt seal`). Do not
+# hand-edit: a hand edit makes the next `ggen sync run` refuse (FM-WRITE-005).
+# standing_after is derived from the court's observed gate exits (construct above), and
+# gate 097 refuses a before->after pair that chatman Standing::permits refuses. Rendered on
+# every sync: before the court observes, subject ends in @UNOBSERVED, every executed[] entry
+# is UNOBSERVED and standing_after is not ALIVE, so the receipt is typed, never omitted.
+{% for r in receipt %}id = {{ r.id | json_encode() }}
+{% set subject = "git:" ~ r.repository ~ "@" ~ r.sha %}subject = {{ subject | json_encode() }}
+actor = {{ r.actor | json_encode() }}
+authority = {{ r.authority | json_encode() }}
+intention = {{ r.intention | json_encode() }}
+observed = [{% for c in components %}{% if c.rr == r.rr %}{% set v = c.repository ~ "@" ~ c.sha %}
+    {{ v | json_encode() }},{% endif %}{% endfor %}{% for p in probes %}{% if p.rr == r.rr %}{% set v = p.name ~ "=" ~ p.output %}
+    {{ v | json_encode() }},{% endif %}{% endfor %}
+]
+executed = [{% for g in gates %}{% if g.rr == r.rr %}{% set v = "gate " ~ g.order ~ " " ~ g.name ~ ": " ~ g.exit %}
+    {{ v | json_encode() }},{% endif %}{% endfor %}
+]
+changed = [{% for c in changed %}{% if c.rr == r.rr %}
+    {{ c.path | json_encode() }},{% endif %}{% endfor %}
+]
+verified = [{% for i in imports %}{% set v = i.name ~ "=" ~ i.digest %}
+    {{ v | json_encode() }},{% endfor %}{% for c in crowns %}{% set v1 = c.checkpoint ~ ":STOP=" ~ c.stop %}{% set v2 = c.checkpoint ~ ":LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH=" ~ c.llm %}{% set v3 = c.checkpoint ~ ":UNRECEIPTED_ACTUATION=" ~ c.unreceipted %}
+    {{ v1 | json_encode() }},
+    {{ v2 | json_encode() }},
+    {{ v3 | json_encode() }},{% endfor %}
+]
+excluded = [{% for d in roles %}{% if d.rr == r.rr %}{% set v = "role:" ~ d.role ~ "=" ~ d.boundary ~ " " ~ d.via %}
+    {{ v | json_encode() }},{% endif %}{% endfor %}{% for c in checks %}{% if c.rr == r.rr %}{% set v = "check:" ~ c.name ~ "=" ~ c.boundary ~ " failure_class=" ~ c.class %}
+    {{ v | json_encode() }},{% endif %}{% endfor %}
+]
+replay = [{% for g in gates %}{% if g.rr == r.rr %}
+    {{ g.command | json_encode() }},{% endif %}{% endfor %}
+]
+standing_before = {{ r.before | json_encode() }}
+standing_after = {{ r.after | json_encode() }}
+timestamp = {{ r.timestamp | json_encode() }}
+digest = ""
+{% endfor %}

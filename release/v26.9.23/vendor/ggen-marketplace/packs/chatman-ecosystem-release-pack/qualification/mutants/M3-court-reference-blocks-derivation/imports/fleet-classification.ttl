@@ -1,0 +1,289 @@
+@prefix sj: <https://ggen-igniter.dev/ontology/semantic-jira#> .
+@prefix v23: <https://ggen-igniter.dev/sjira/v26.9.23#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# GC23-11 bounded fleet classification (lane V23-F; PRD section 12 GC23-11, section 10
+# "making every repository ALIVE" is a non-goal; ARD section 4; ARD section 26 F7).
+#
+# One sj:FleetClassification per repository of fleet/universe.json (21 repositories).
+# Vocabulary: fleet/vocabulary.ttl (goal-graph-local; the semantic-jira-pack has no fleet
+# classification terms). Checked by `python3 scripts/sjira/fleet_matrix.py
+# check-classification` (exactly one row per universe repository; required iff
+# CriticalPath; Successor rows name v23:GC-26.9.24; a repository a GC23 court script names
+# must be CriticalPath). This graph declares scope only: it asserts no standing and no
+# receipt. CriticalPath standing is derived by `check-standing` from admitted receipts at
+# the exact head of each integration worktree.
+#
+# Every evidence row comes from fleet/observations.json (observed 2026-09-23T06:40:42Z:
+# git fetch --all --tags --no-prune, rev-parse, symbolic-ref, rev-list --left-right,
+# status --porcelain, gh pr list --state open) or from the file / run / PR it names.
+#
+# Required set: xaas and ggen_igniter (COORDINATION.md "Critical path = ggen_igniter + xaas").
+# ash_a2a and autofde-lab are NOT required at this base: no GC23 court script executes
+# either checkout (see their rows); the court-reference guard re-opens that question
+# mechanically when a machinery lane's court names one of them.
+
+# ── CriticalPath (required) ─────────────────────────────────────────────────
+
+v23:fleet-xaas a sj:FleetClassification ;
+    dcterms:identifier "xaas" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/xaas> ;
+    sj:fleetClass sj:CriticalPath ;
+    sj:requiredForCheckpoint true ;
+    sj:fleetRole "ARD 4: execution realization - provider registry, leases, deterministic RecipeWorker, BRCE, court execution, consequence receipts, OCEL egress, stop-court execution" ;
+    sj:classificationReason "Hosts the GC-26.9.23 governing graph and runs the stop court; every GC23 court command runs from its root. Subject under judgement: the integration worktree /Users/sac/wt/v26922/fri/xaas-int (branch friday/gc-fri-0800)." ;
+    sj:evidence "observations.json subjects row xaas: /Users/sac/wt/v26922/fri/xaas-int on friday/gc-fri-0800 (its exact head is observed per court run, never stored here)" ,
+        "observations.json: /Users/sac/xaas main 2fb10156c00a821a6915f239ace517bd860c1479 = origin/main (0/0), 1 dirty path, open PRs #61 #62 #63" ,
+        "/Users/sac/wt/v26922/COORDINATION.md Friday scope: critical path = ggen_igniter + xaas on friday/gc-fri-0800" ,
+        "receipts/v26.9.22/FRI-T4.json, receipts/v26.9.22/FRI-T5.json (lanes merged into friday/gc-fri-0800)" ,
+        "gh run 35824635852 (Claude daily backlog drain) failure at main 2fb10156; gh run 35810390154 (CI packer) success at 2fb10156" .
+
+v23:fleet-ggen_igniter a sj:FleetClassification ;
+    dcterms:identifier "ggen_igniter" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/ggen_igniter> ;
+    sj:fleetClass sj:CriticalPath ;
+    sj:requiredForCheckpoint true ;
+    sj:fleetRole "ARD 4: Elixir-side semantic manufacture and sJira - ontology, SHACL shapes, GoalCheckpoint, WorkOrder graph, frontier, prose candidate integration, semantic delta, XaaS descriptors, replay, TransitionLog" ;
+    sj:classificationReason "Owns the sJira ontology, shapes, admission and frontier (ARD 4) that the GC23 courts reach through GGEN_IGNITER_DIR. Subject under judgement: the integration worktree /Users/sac/wt/v26922/fri/ggen_igniter-int (branch friday/gc-fri-0800)." ;
+    sj:evidence "observations.json subjects row ggen_igniter: /Users/sac/wt/v26922/fri/ggen_igniter-int on friday/gc-fri-0800 (its exact head is observed per court run, never stored here)" ,
+        "observations.json: /Users/sac/ggen_igniter feat/zcode-ocel-pack d83d6c809d, 146 ahead / 0 behind origin/main d84da1419a, 1 dirty path, open PRs #16 #18 #19 #20 #21 #22 #23 #24 #25 #26" ,
+        "/Users/sac/wt/v26922/COORDINATION.md Friday scope: critical path = ggen_igniter + xaas; reserved files priv/ggen/semantic-jira-pack/{ontology.ttl,shapes/*}" ,
+        "gh run 35315548332 (ggen_igniter CI) failure at main d84da1419a" .
+
+# ── Successor (not required; work belongs to v23:GC-26.9.24) ───────────────
+
+v23:fleet-ash_a2a a sj:FleetClassification ;
+    dcterms:identifier "ash_a2a" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/ash_a2a> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "ARD 4: semantic capability typing - Capability, applicability, provider semantics, MachineExperience integration, KNOWN/UNKNOWN routes, zero-inference-on-KNOWN courts" ;
+    sj:classificationReason "Not required: no GC23 court executes an ash_a2a checkout. xaas links the ash_a2a hex release 26.9.12, so the only ash_a2a code a GC23 court can reach is that pinned artifact inside the xaas subject (its identity is the mix.lock checksum, covered by xaas exact-subject standing). If a court names ASH_A2A_DIR or the checkout path, check-classification --courts-dir refuses this row until it is reclassified CriticalPath." ;
+    sj:evidence "xaas mix.exs:100 {:ash_a2a, \"~> 26.9.12\"}; mix.lock ash_a2a hex 26.9.12 6eb702d08fd5b3a61774246e6b78ac7b5dfd8215ad5d5d06f97f85c2be2e5a18" ,
+        "observations.json: /Users/sac/ash_a2a fix/test-determinism-v26.9.21 ffff182add, 0 ahead / 54 behind origin/main 85e57381d4, 0 dirty, open PR #28" ,
+        "survey.json perRepo ash_a2a: reference SA2A implementation; consumers beam4pm (hex 26.9.21), xaas (26.9.12), ggen_igniter (26.9.17 dev/test)" .
+
+v23:fleet-autofde-lab a sj:FleetClassification ;
+    dcterms:identifier "autofde-lab" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/autofde-lab> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "ARD 4: learning and qualification experiments - two-episode MachineExperience courts, failure classification, prior-art experiments, WD reference case, negative controls, semantic replay experiments" ;
+    sj:classificationReason "Not required at this base: no GC23 court script executes autofde-lab. xaas reaches it only through the `autofde` executable (Xaas.Sa2a.Bridge) and the ~/autofde-lab/.venv target suites, neither on a GC23 court path yet. If lane V23-M's GC23-9 court runs autofde-lab code, check-classification --courts-dir refuses this row until it is reclassified CriticalPath." ;
+    sj:evidence "xaas lib/xaas/sa2a/bridge.ex:43 @port_command \"autofde\"; lib/xaas/ultracode/target_suites.ex:487 ~/autofde-lab/.venv/bin/python" ,
+        "observations.json: /Users/sac/autofde-lab master 1c25fdc776 = origin/master (0/0), 5 dirty paths, open PRs #162 #163 #167" ,
+        "DRIVER.md gate map: GC23-9 MachineExperience -> lane V23-M (wave B2), not landed" .
+
+v23:fleet-ggen a sj:FleetClassification ;
+    dcterms:identifier "ggen" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/ggen> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "ARD 4: deterministic semantic manufacture - graph/query to artifact, portable receipts, generation determinism, pack execution" ;
+    sj:classificationReason "Not required: no GC23 court executes the ggen checkout; a court that renders through ggen runs the installed binary (an artifact identity), not this repository's head. Local tags diverge from both remotes: the fetch refused 36 tag updates as clobbers and was not forced." ;
+    sj:evidence "observations.json: fetch failed (origin, upstream), 36 rejected refs 'would clobber existing tag'; never forced" ,
+        "observations.json: /Users/sac/ggen fix/ggen-v26.9.17-boundary 5cc8808c12, 34 ahead / 315 behind origin/main bfdc8a21fd, 0 dirty, 20 open PRs (#658..#730)" ,
+        "ggen on PATH: /opt/homebrew/bin/ggen 26.8.18" .
+
+v23:fleet-ggen-marketplace a sj:FleetClassification ;
+    dcterms:identifier "ggen-marketplace" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/ggen-marketplace> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "ARD 4: reusable manufacturing knowledge - ontology, SA2A bridge, receipt-chain, OCEL and verification packs" ;
+    sj:classificationReason "Not required: xaas vendors the packs it renders byte-for-byte, so pack bytes that reach a GC23 court are inside the xaas subject. Promoting repeated patterns into packs (ARD 4) is successor work." ;
+    sj:evidence "observations.json: /Users/sac/ggen-marketplace main d23e0c3743, 3 ahead / 0 behind origin/main 420bc91e7c, 3 dirty paths, open PRs #477 #481" ,
+        "survey.json perRepo ggen-marketplace: publishes sa2a-bridge-pack, vendored byte-for-byte into xaas lib/xaas/generated" .
+
+v23:fleet-zcode-cli a sj:FleetClassification ;
+    dcterms:identifier "zcode-cli" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/dev/zcode-cli> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "ARD 4: bounded worker CLI behavior; an executor implementation, not the semantic authority" ;
+    sj:classificationReason "Not required by construction: ARD 4 says the v26.9.23 KNOWN reference path must not depend on ZCode, and PRD 10 lists universal Claude/ZCode workflow takeover as a non-goal." ;
+    sj:evidence "prd-ard.md ARD 4 zcode-cli: 'The v26.9.23 KNOWN reference path must not depend on ZCode.'" ,
+        "observations.json: /Users/sac/dev/zcode-cli main 198f0dc458, 4 ahead / 0 behind fork/main f0014f1698 (fork = seanchatmangpt/zcode-cli; origin = kingsword09/zcode-cli), 0 dirty, open PR #4" .
+
+v23:fleet-engineering-standards a sj:FleetClassification ;
+    dcterms:identifier "engineering-standards" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <https://github.com/seanchatmangpt/engineering-standards> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "ARD 4: global engineering doctrine, architectural invariants, protocol conformance expectations, repository adoption contract; shall not become runtime state" ;
+    sj:classificationReason "Not required: doctrine only (ARD 4: it shall not become runtime state), no GC23 court executes it, and there is no local checkout. Adoption-contract conformance for the fleet is successor work." ;
+    sj:evidence "gh repo view seanchatmangpt/engineering-standards: exit 0, PUBLIC, default branch main" ,
+        "observations.json: no local checkout (fetch skipped); git ls-remote --symref HEAD -> main 610944c48b; open PR #1" .
+
+v23:fleet-open-ontologies a sj:FleetClassification ;
+    dcterms:identifier "open-ontologies" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/open-ontologies> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "ARD 4: may supply candidate extraction and ontology-scaffolding primitives for the UNKNOWN prose-to-semantics edge; admission remains separate" ;
+    sj:classificationReason "Not required: optional supplier for the UNKNOWN extraction edge, and the v26.9.23 extraction edge (lane V23-X) is recorded as an LLM candidate edge, not an open-ontologies call. No GC23 court executes it." ;
+    sj:evidence "observations.json: /Users/sac/open-ontologies main 948a992305, 305 ahead / 41 behind origin/main 1911055753, 18 dirty paths, open PRs #40 #41 #42 #43" ,
+        "universe.json: found as local checkout (not in fleet.ttl or survey.json); remotes origin seanchatmangpt/open-ontologies, upstream fabio-rovai/open-ontologies" .
+
+v23:fleet-beam4pm a sj:FleetClassification ;
+    dcterms:identifier "beam4pm" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/beam4pm> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "survey: SA2A consumer (ash_a2a hex, BeamPM.A2AAgent) and autofde-lab sa2a bridge" ;
+    sj:classificationReason "Not required: a downstream SA2A consumer; no GC23 court executes it." ;
+    sj:evidence "observations.json: /Users/sac/beam4pm chore/consume-ash-a2a-26.9.21 a386b6e285, 3 ahead / 0 behind origin/main 574368706e, 3 dirty paths, 19 open PRs (#59..#85)" ,
+        "survey.json perRepo beam4pm: consumes ash_a2a hex 26.9.21; bridges to the autofde-lab sa2a CLI" .
+
+v23:fleet-ash_surface a sj:FleetClassification ;
+    dcterms:identifier "ash_surface" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/ash_surface> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "survey: projects the ash_a2a capability index; SA2A candidate envelope without authority" ;
+    sj:classificationReason "Not required: a downstream SA2A consumer; no GC23 court executes it." ;
+    sj:evidence "observations.json: /Users/sac/ash_surface feat/dfcm-surface-core 386135cbef, 518 ahead / 1 behind origin/main 7d5492795d, 0 dirty, open PRs #3 #4 #5 #6" ,
+        "survey.json perRepo ash_surface: capability.ex pinned to ash_a2a@e25ed6e" .
+
+v23:fleet-ash_atlassian a sj:FleetClassification ;
+    dcterms:identifier "ash_atlassian" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/ash_atlassian> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "survey: target package of xaas SJIRA order SJ-007 (Atlassian migration)" ;
+    sj:classificationReason "Not required: a domain target of a v26.9.21 order, not part of the v26.9.23 pipeline; no GC23 court executes it." ;
+    sj:evidence "observations.json: /Users/sac/ash_atlassian main 0338b9ba16 = origin/main (0/0), 0 dirty, no open PRs" ,
+        "survey.json perRepo ash_atlassian: target of xaas docs/sjira/v26.9.21/007-ash-atlassian-target.md" .
+
+v23:fleet-ferroplan a sj:FleetClassification ;
+    dcterms:identifier "ferroplan" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/ferroplan> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "survey: HDDL/FOND planner the SA2A implementers depend on (ash_a2a hddl_cli pins it at git rev 29134d7)" ;
+    sj:classificationReason "Not required: a planner dependency pinned by git rev inside ash_a2a; no GC23 court executes it." ;
+    sj:evidence "observations.json: /Users/sac/ferroplan main 9c872ceef7 = origin/main (0/0), 0 dirty, no open PRs" ,
+        "survey.json perRepo ferroplan: ~/ash_a2a/native/hddl_cli/Cargo.toml:30-31 pins ferroplan at 29134d7" .
+
+v23:fleet-frozen-duckdb a sj:FleetClassification ;
+    dcterms:identifier "frozen-duckdb" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/frozen-duckdb> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "survey: SJIRA consumer (docs/sjira/v26.9.21, 36 work-order tickets); no SA2A" ;
+    sj:classificationReason "Not required: consumes generated sJira projections; no GC23 court executes it." ;
+    sj:evidence "observations.json: /Users/sac/frozen-duckdb feat/duckdb-1.5.5 632d3f5a1e, 48 ahead / 0 behind origin/master a3a69e43fa, 0 dirty, open PR #4" ,
+        "survey.json perRepo frozen-duckdb: docs/sjira/v26.9.21 rendered by ggen" .
+
+v23:fleet-gitvan a sj:FleetClassification ;
+    dcterms:identifier "gitvan" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/gitvan> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "survey: one of four FrontierEvidence producers (authority ceiling OBSERVE) for the xaas admission boundary" ;
+    sj:classificationReason "Not required: xaas names gitvan as a producer string (\"gitvan\" => \"OBSERVE\") but no GC23 court executes gitvan code." ;
+    sj:evidence "observations.json: /Users/sac/gitvan main c818a379dc, 34 ahead / 0 behind origin/main 8bfff10b11, 0 dirty, open PRs #22 #23 #24" ,
+        "survey.json perRepo gitvan: xaas lib/xaas/actuation/frontier_evidence.ex hard-codes \"gitvan\" => \"OBSERVE\"" .
+
+v23:fleet-gymact a sj:FleetClassification ;
+    dcterms:identifier "gymact" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/gymact> ;
+    sj:fleetClass sj:Successor ;
+    sj:requiredForCheckpoint false ;
+    sj:successorCheckpoint v23:GC-26.9.24 ;
+    sj:fleetRole "survey: target repo of SJIRA order SJ-008; SA2A model-advice boundary (draft PR #135)" ;
+    sj:classificationReason "Not required: a domain target of a v26.9.21 order; no GC23 court executes it." ;
+    sj:evidence "observations.json: /Users/sac/gymact main 5141f88e50 = origin/main (0/0), 1 dirty path, open PR #135" ,
+        "survey.json perRepo gymact: SJ-008 results on local branch sjira/sj-008 (worktree /Users/sac/xaas/worktrees/sjira/sj-008)" .
+
+# ── Blocked (not required; own standing path blocked outside this checkpoint) ──
+
+v23:fleet-ggen-ecosystem a sj:FleetClassification ;
+    dcterms:identifier "ggen-ecosystem" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/ggen-ecosystem> ;
+    sj:fleetClass sj:Blocked ;
+    sj:requiredForCheckpoint false ;
+    sj:fleetRole "ARD 4: cross-repository composition and qualification; validates ecosystem compatibility rather than inventing independent semantic state" ;
+    sj:classificationReason "Not required (no GC23 court executes it). Its own standing path is blocked: the scheduled autonomic-crown runs on main 21a8deee fail at the Git LFS smudge of vendor/ggen-marketplace ontologies/public/agrovoc/agrovoc_lod.nt.zip, an operator edge (LFS download budget) outside this checkpoint." ;
+    sj:evidence "gh run 35824027486 (autonomic-crown, schedule, 2026-09-23T05:49:41Z) failure at 21a8deee: 'smudge filter lfs failed' for ontologies/public/agrovoc/agrovoc_lod.nt.zip" ,
+        "gh run 35801445133 (autonomic-crown, schedule, 2026-09-23T00:18:01Z) failure at 21a8deee" ,
+        "observations.json: /Users/sac/ggen-ecosystem main 21a8deee05 = origin/main (0/0), 0 dirty, 11 open PRs incl. #350" .
+
+# ── Unsupported (not required; no single exact subject) ─────────────────────
+
+v23:fleet-chatman-ecosystem a sj:FleetClassification ;
+    dcterms:identifier "chatman-ecosystem" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/chatman-ecosystem> ;
+    sj:fleetClass sj:Unsupported ;
+    sj:requiredForCheckpoint false ;
+    sj:fleetRole "fleet.ttl: peripheral; survey: meta-A jurisdiction registry, one hand-written sJira-style ticket" ;
+    sj:classificationReason "Not required, and exact-subject standing is unsupported as observed: the local checkout has no git remote, and the GitHub repository's default-branch commit is absent from the local object store, so the local and published lineages cannot be identified as one subject without adding a remote (not done: observation only)." ;
+    sj:evidence "observations.json: /Users/sac/chatman-ecosystem main 6c21e2527a, no remote, 0 dirty" ,
+        "gh repo view seanchatmangpt/chatman-ecosystem: exit 0, PUBLIC, default main; git ls-remote HEAD c59596f5506e; commit absent locally; open PRs #250 #251 #252" .
+
+# ── Refused (not required; out of this checkpoint's scope) ──────────────────
+
+v23:fleet-remo a sj:FleetClassification ;
+    dcterms:identifier "remo" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/remo> ;
+    sj:fleetClass sj:Refused ;
+    sj:requiredForCheckpoint false ;
+    sj:fleetRole "survey: not relevant - Go/TS/Nuxt security and compliance demo platform; no SA2A or SJIRA artifact" ;
+    sj:classificationReason "Refused from scope: survey relevance false, and its GitHub remote no longer resolves. PRD 10 excludes exhaustive improvement of every repository." ;
+    sj:evidence "observations.json: fetch exit 128 'repository https://github.com/seanchatmangpt/remo.git/ not found'; gh pr list exit 1" ,
+        "observations.json: /Users/sac/remo main fa0b8e278e, 254 dirty paths" ,
+        "survey.json perRepo remo: relevant=false" .
+
+v23:fleet-turbo-fieldfare a sj:FleetClassification ;
+    dcterms:identifier "turbo-fieldfare" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/turbo-fieldfare> ;
+    sj:fleetClass sj:Refused ;
+    sj:requiredForCheckpoint false ;
+    sj:fleetRole "survey: not relevant - Swift/Metal Gemma inference runtime; no SA2A or SJIRA artifact" ;
+    sj:classificationReason "Refused from scope: survey relevance false; a local model runtime has no place on the no-LLM KNOWN path (PRD PR-009, GC23-5)." ;
+    sj:evidence "observations.json: /Users/sac/turbo-fieldfare main 6fbeb1ff68, 1 ahead / 12 behind origin/main 2ae1cd5f8b, 2 dirty paths, no open PRs" ,
+        "survey.json perRepo turbo-fieldfare: relevant=false" .
+
+v23:fleet-unjucks a sj:FleetClassification ;
+    dcterms:identifier "unjucks" ;
+    sj:classifiedUnder v23:GC-26.9.23 ;
+    sj:classifiesRepository <file:///Users/sac/unjucks> ;
+    sj:fleetClass sj:Refused ;
+    sj:requiredForCheckpoint false ;
+    sj:fleetRole "survey: not relevant - no SA2A or SJIRA artifact (only a Jira CSV export)" ;
+    sj:classificationReason "Refused from scope: survey relevance false. PRD 10 excludes exhaustive improvement of every repository." ;
+    sj:evidence "observations.json: /Users/sac/unjucks main 3cea56131f, 0 ahead / 7 behind origin/main 5ecffdee7b, 153 dirty paths, 16 open PRs (#311..#326)" ,
+        "survey.json perRepo unjucks: relevant=false" .

@@ -1,0 +1,7 @@
+$ git diff --stat ee1ca97e46117338186468f2199be18da8b4dc0d 2d734c047e49a3254c45d189ece02ab13c659110 && test "$(git diff --name-only ee1ca97e46117338186468f2199be18da8b4dc0d 2d734c047e49a3254c45d189ece02ab13c659110 -- release/v26.9.23/bench release/v26.9.23/sjira release/v26.9.1 | wc -l)" -eq 0
+ HANDWRITTEN.md                                 |   2 +-
+ release/v26.9.23/courts/CE23-12-MSAContract.sh |  10 +-
+ release/v26.9.23/courts/ce23_12/court.py       | 434 ++++++++++++++++++++-----
+ tests/test_ce23_12_courts.py                   |  81 +++++
+ 4 files changed, 444 insertions(+), 83 deletions(-)
+exit=0

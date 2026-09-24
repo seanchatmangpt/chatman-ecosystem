@@ -1,0 +1,13 @@
+$ pyright scripts/verify_release.py tests/test_release_line.py tests/test_ce23_7_probe.py tests/test_completion_fanout.py release/v26.9.23/courts/ce23_7/court.py release/v26.9.23/courts/ce23_7/audit_run.py
+0 errors, 0 warnings, 0 informations
+exit=0
+$ a=$(pyright tests/test_release_control.py | grep -oE 'test_release_control.py:[0-9]+:[0-9]+ - error'); mkdir -p /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/pre-base/tests && git show aa4e3873b40c3406378800ca82facc366293b564:tests/test_release_control.py > /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/pre-base/tests/test_release_control.py && b=$(cd /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/pre-base && pyright tests/test_release_control.py | grep -oE 'test_release_control.py:[0-9]+:[0-9]+ - error'); echo "subject: $a"; echo "base aa4e3873: $b"; test -n "$a" && test "$a" = "$b"
+subject: test_release_control.py:12:50 - error
+test_release_control.py:13:13 - error
+test_release_control.py:14:18 - error
+test_release_control.py:15:6 - error
+base aa4e3873: test_release_control.py:12:50 - error
+test_release_control.py:13:13 - error
+test_release_control.py:14:18 - error
+test_release_control.py:15:6 - error
+exit=0

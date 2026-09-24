@@ -1,0 +1,8 @@
+$ (synthetic repo /private/tmp/claude-501/v23-scratch/FIN2-CE23-9/mut-handedit2: git archive ec2965b6ef22889a0258778368c36433023a3d6e release/v26.9.23; chatman-stop run_gate line removed from out/scripts/crown_v26_9_23.sh; committed) python3 release/v26.9.23/courts/ce23_9/members.py projection-drift --root /private/tmp/claude-501/v23-scratch/FIN2-CE23-9/mut-handedit2
+MEMBER projection-drift root=/private/tmp/claude-501/v23-scratch/FIN2-CE23-9/mut-handedit2
+  REFUSED[PROJECTION_DRIFT] release/v26.9.23: committed bytes differ from a fresh render: ['out/scripts/crown_v26_9_23.sh']
+  OK release/v26.9.23/bench: 44 generated files reproduce byte for byte (cold sync; second sync idempotent)
+  REFUSED[VIEWS_PROJECTION_DRIFT] ecosystem projection check exit 101: error: could not find `Cargo.toml` in `/private/tmp/claude-501/v23-scratch/FIN2-CE23-9/mut-handedit2` or any parent directory
+  TYPED root ggen.toml (soc2-readiness-pack by the absolute path /Users/sac/ggen-marketplace/..., no templates/ dir): not a hermetic generator surface; `ggen sync run` refuses FM-CONFIG-004 already at base c59596f5 and no CI check runs it; SUCCESSOR (GC-26.9.24: vendor the pack by relative path)
+MEMBER_REFUSED[PROJECTION_DRIFT,VIEWS_PROJECTION_DRIFT] projection-drift 44 release-subject projections + views/generated
+exit=1

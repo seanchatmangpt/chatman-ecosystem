@@ -1,0 +1,2 @@
+$ ! grep -rnE "unittest.mock|Mock\(|MagicMock|patch\(|monkeypatch" tests/test_ce23_1_court.py release/v26.9.23/courts/ce23_1/court.py receipts/v26.9.23/CE23-1.gate/probe_symlink.py
+exit=0

@@ -1,0 +1,17 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_ce23_1_court.py -v
+test_committed_pins_other_than_the_judging_court_are_refused (test_ce23_1_court.ClauseCase.test_committed_pins_other_than_the_judging_court_are_refused) ... ok
+test_config_key_outside_the_judged_schema_is_refused (test_ce23_1_court.ClauseCase.test_config_key_outside_the_judged_schema_is_refused) ... ok
+test_contained_closed_world_subject_under_its_committed_court_is_admitted (test_ce23_1_court.ClauseCase.test_contained_closed_world_subject_under_its_committed_court_is_admitted) ... ok
+test_import_as_absolute_symlink_to_identical_bytes_is_refused (test_ce23_1_court.ClauseCase.test_import_as_absolute_symlink_to_identical_bytes_is_refused) ... ok
+test_read_path_not_committed_in_the_subject_is_refused (test_ce23_1_court.ClauseCase.test_read_path_not_committed_in_the_subject_is_refused) ... ok
+test_committed_render_binds_the_classification_to_the_xaas_component (test_ce23_1_court.RenderCase.test_committed_render_binds_the_classification_to_the_xaas_component) ... ok
+test_no_subject_is_refused_while_predecessor_holds (test_ce23_1_court.SubjectCase.test_no_subject_is_refused_while_predecessor_holds) ... ok
+test_orphan_base_is_refused (test_ce23_1_court.SubjectCase.test_orphan_base_is_refused) ... ok
+test_predecessor_change_is_refused (test_ce23_1_court.SubjectCase.test_predecessor_change_is_refused) ... ok
+test_uncommitted_predecessor_edit_is_refused (test_ce23_1_court.SubjectCase.test_uncommitted_predecessor_edit_is_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.986s
+
+OK
+exit=0

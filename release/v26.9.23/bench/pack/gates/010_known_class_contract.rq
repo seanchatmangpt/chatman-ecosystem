@@ -1,0 +1,36 @@
+# MESSAGE: A KNOWN_CANDIDATE class needs a repair tool, a class verifier, a bound class toolchain, an
+# observed membership test (a TYPED_OUTPUT clause and a TRIAL_REPAIR or INDEPENDENT_SEMANTIC clause;
+# a declared label alone is refused), an independent verifier of a different implementation family,
+# and at least three near-miss cases expecting UNKNOWN. At least five KNOWN_CANDIDATE classes exist.
+PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+PREFIX es: <https://ggen.dev/ontology/evidence-standing#>
+SELECT ?node ?reason WHERE {
+  {
+    ?node nlb:claimStatus "KNOWN_CANDIDATE" .
+    FILTER NOT EXISTS { ?node nlb:repairTool ?t ; nlb:verifierArgv ?v ; nlb:classToolchain ?tc ; nlb:membershipPredicate ?mp }
+    BIND("incomplete-class-identity" AS ?reason)
+  } UNION {
+    ?node nlb:claimStatus "KNOWN_CANDIDATE" .
+    FILTER NOT EXISTS { ?node nlb:membershipClause ?a . ?a nlb:clauseBasis "TYPED_OUTPUT" }
+    BIND("membership-without-typed-output" AS ?reason)
+  } UNION {
+    ?node nlb:claimStatus "KNOWN_CANDIDATE" .
+    FILTER NOT EXISTS { ?node nlb:membershipClause ?b . ?b nlb:clauseBasis ?bb . FILTER(?bb IN ("TRIAL_REPAIR", "INDEPENDENT_SEMANTIC")) }
+    BIND("membership-without-trial-or-semantic-clause" AS ?reason)
+  } UNION {
+    ?node nlb:claimStatus "KNOWN_CANDIDATE" .
+    FILTER NOT EXISTS { ?node nlb:repairTool ?t2 ; nlb:independentVerifier ?iv . ?t2 nlb:implementationFamily ?f1 . ?iv nlb:implementationFamily ?f2 . FILTER(?f1 != ?f2) }
+    BIND("no-independent-verifier-of-another-family" AS ?reason)
+  } UNION {
+    ?node nlb:claimStatus "KNOWN_CANDIDATE" .
+    OPTIONAL { SELECT ?node (COUNT(DISTINCT ?m) AS ?k) WHERE { ?m a nlb:NearMissCase ; nlb:nearClass ?node ; nlb:expectedStanding es:UNKNOWN ; nlb:expectedReason ?r } GROUP BY ?node }
+    FILTER(!BOUND(?k) || ?k < 3)
+    BIND("fewer-than-three-near-misses" AS ?reason)
+  } UNION {
+    { SELECT (COUNT(DISTINCT ?c) AS ?n) WHERE { ?c a nlb:BenchmarkClass ; nlb:claimStatus "KNOWN_CANDIDATE" ; nlb:classToolchain ?t } }
+    FILTER(?n < 5)
+    BIND(<https://ggen.dev/nonllm-bench#BenchmarkClass> AS ?node)
+    BIND("fewer-than-five-known-candidate-classes" AS ?reason)
+  }
+}
+ORDER BY ?node ?reason

@@ -1,0 +1,154 @@
+@prefix er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1> a er:LegacyRelease ;
+    dcterms:hasVersion "26.9.1" ;
+    dcterms:date "2026-09-01"^^xsd:date ;
+    er:legacyStanding er:UNKNOWN ;
+    dcterms:source "seanchatmangpt/chatman-ecosystem@c59596f5506e7a00ca4ed6b909ebf6d6659b74c1:release/v26.9.1/manifest.toml" ;
+    er:sourceSha256 "sha256:30b1d83ce544299557da50084ced696172d219f6790c2cfc5b78116902850949" ;
+    er:legacyRequiredRole "actuation" ;
+    er:legacyRequiredRole "capstone" ;
+    er:legacyRequiredRole "cmca-kernel" ;
+    er:legacyRequiredRole "config-admission" ;
+    er:legacyRequiredRole "explore" ;
+    er:legacyRequiredRole "fleet-conformance" ;
+    er:legacyRequiredRole "formal-proof" ;
+    er:legacyRequiredRole "manufacture" ;
+    er:legacyRequiredRole "orchestration" ;
+    er:legacyRequiredRole "pack-marketplace" ;
+    er:legacyRequiredRole "process-execution" ;
+    er:legacyRequiredRole "process-type-law" ;
+    er:legacyRequiredRole "product" ;
+    er:legacyRequiredRole "provenance" ;
+    er:legacyRequiredRole "public-ontology" ;
+    er:legacyRequiredRole "research" ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/affidavit> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/autofde> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/autofde-lab> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/bcinr> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/fdegym> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/ggen> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/ggen-marketplace> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/gymact> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/mfact> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/mfw> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/open-ontologies> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/praxis> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/process-intelligence> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/star-toml> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/wasm4pm> ;
+    er:legacyComponent <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/wasm4pm-compat> .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/affidavit> a er:LegacyComponent ;
+    er:componentId "affidavit" ;
+    er:legacyRepository "seanchatmangpt/affidavit" ;
+    er:legacyRole "provenance" ;
+    er:legacySha "5dc78f113e60ba95a4b4594a6da3511334e86024" ;
+    er:legacyStanding er:ALIVE .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/autofde> a er:LegacyComponent ;
+    er:componentId "autofde" ;
+    er:legacyRepository "seanchatmangpt/autofde" ;
+    er:legacyRole "product" ;
+    er:legacySha "c3f8abc2e83388b5bdb6cc1bbb8cd19a987c19c7" ;
+    er:legacyStanding er:ALIVE .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/autofde-lab> a er:LegacyComponent ;
+    er:componentId "autofde-lab" ;
+    er:legacyRepository "seanchatmangpt/autofde-lab" ;
+    er:legacyRole "explore" ;
+    er:legacySha "87d719f441ded3af123a73b95825d5f2847f9c66" ;
+    er:legacyStanding er:BUILD_BROKEN .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/bcinr> a er:LegacyComponent ;
+    er:componentId "bcinr" ;
+    er:legacyRepository "seanchatmangpt/bcinr" ;
+    er:legacyRole "cmca-kernel" ;
+    er:legacySha "d6fefefdb95df5dbbb520afe7b5a4df53aa6e27f" ;
+    er:legacyStanding er:UNKNOWN .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/fdegym> a er:LegacyComponent ;
+    er:componentId "fdegym" ;
+    er:legacyRepository "seanchatmangpt/fdegym" ;
+    er:legacyRole "capstone" ;
+    er:legacySha "2d7c5acb3cbb8df1608cf9b81be53a74e39a1946" ;
+    er:legacyStanding er:UNKNOWN .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/ggen> a er:LegacyComponent ;
+    er:componentId "ggen" ;
+    er:legacyRepository "seanchatmangpt/ggen" ;
+    er:legacyRole "manufacture" ;
+    er:legacySha "162e466d8f07d0a75a468b4441b4bc8b1aad369b" ;
+    er:legacyStanding er:UNKNOWN .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/ggen-marketplace> a er:LegacyComponent ;
+    er:componentId "ggen-marketplace" ;
+    er:legacyRepository "seanchatmangpt/ggen-marketplace" ;
+    er:legacyRole "pack-marketplace" ;
+    er:legacySha "ceb2b69ad1dc1bf0906a1979a9e18c53245181f3" ;
+    er:legacyStanding er:ALIVE .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/gymact> a er:LegacyComponent ;
+    er:componentId "gymact" ;
+    er:legacyRepository "seanchatmangpt/gymact" ;
+    er:legacyRole "actuation" ;
+    er:legacySha "cf9a36fcc5b0738269809b83e3ffcad7dae0a5c4" ;
+    er:legacyStanding er:BLOCKED .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/mfact> a er:LegacyComponent ;
+    er:componentId "mfact" ;
+    er:legacyRepository "seanchatmangpt/mfact" ;
+    er:legacyRole "formal-proof" ;
+    er:legacySha "308384002a15b9946acbcd6f560c5819723d79dc" ;
+    er:legacyStanding er:UNKNOWN .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/mfw> a er:LegacyComponent ;
+    er:componentId "mfw" ;
+    er:legacyRepository "seanchatmangpt/mfw" ;
+    er:legacyRole "orchestration" ;
+    er:legacySha "2ecde02f9d7eaea50cfb4ea7876340c6463ac3a1" ;
+    er:legacyStanding er:BLOCKED .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/open-ontologies> a er:LegacyComponent ;
+    er:componentId "open-ontologies" ;
+    er:legacyRepository "seanchatmangpt/open-ontologies" ;
+    er:legacyRole "public-ontology" ;
+    er:legacySha "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99" ;
+    er:legacyStanding er:UNKNOWN .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/praxis> a er:LegacyComponent ;
+    er:componentId "praxis" ;
+    er:legacyRepository "seanchatmangpt/praxis" ;
+    er:legacyRole "fleet-conformance" ;
+    er:legacySha "bc6b842e0b86e718b098ff3abdc47ef2ad83ee4b" ;
+    er:legacyStanding er:UNKNOWN .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/process-intelligence> a er:LegacyComponent ;
+    er:componentId "process-intelligence" ;
+    er:legacyRepository "seanchatmangpt/process-intelligence" ;
+    er:legacyRole "research" ;
+    er:legacySha "4492a9f92cd85d518b76a9cbd9c74418cf3ad44a" ;
+    er:legacyStanding er:UNKNOWN .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/star-toml> a er:LegacyComponent ;
+    er:componentId "star-toml" ;
+    er:legacyRepository "seanchatmangpt/star-toml" ;
+    er:legacyRole "config-admission" ;
+    er:legacySha "8395515cf8e68bfdc9edff49fb358c4f1da7c795" ;
+    er:legacyStanding er:BUILD_BROKEN .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/wasm4pm> a er:LegacyComponent ;
+    er:componentId "wasm4pm" ;
+    er:legacyRepository "seanchatmangpt/wasm4pm" ;
+    er:legacyRole "process-execution" ;
+    er:legacySha "b7ebccb53b1249d45d2472f7754c997982b2f1b7" ;
+    er:legacyStanding er:UNKNOWN .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1/component/wasm4pm-compat> a er:LegacyComponent ;
+    er:componentId "wasm4pm-compat" ;
+    er:legacyRepository "seanchatmangpt/wasm4pm-compat" ;
+    er:legacyRole "process-type-law" ;
+    er:legacySha "577e2d1d8bdfe27d96f61c63f3ea120994e8bfda" ;
+    er:legacyStanding er:UNKNOWN .

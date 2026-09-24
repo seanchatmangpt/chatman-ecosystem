@@ -1,0 +1,20 @@
+# revert-mutations of the V1 pending branch, judged by tests/test_ce23_1_court.py VendorCase in a synthetic git repo (git archive HEAD of release/v26.9.23/courts/ce23_1, CE23-1.sh, vendor/ggen-marketplace, ggen.toml and the test; one commit per mutant)
+$ python3 -m unittest discover -s tests -p test_ce23_1_court.py -k VendorCase
+== control (HEAD court) ==
+Ran 5 tests in 1.605s
+
+OK
+== mutant: V1 pending branch refuses ==
+FAIL: test_court_synthetic_marketplaces_type_the_real_vendored_pin (test_ce23_1_court.VendorCase.test_court_synthetic_marketplaces_type_the_real_vendored_pin)
+AssertionError: Tuples differ: (['VENDOR_PUBLICATION_PENDING'], []) != ([], ['VENDOR_PUBLICATION_PENDING'])
+FAIL: test_pending_fast_forward_is_an_edge_never_a_counterexample (test_ce23_1_court.VendorCase.test_pending_fast_forward_is_an_edge_never_a_counterexample)
+AssertionError: Tuples differ: (['VENDOR_PUBLICATION_PENDING'], []) != ([], ['VENDOR_PUBLICATION_PENDING'])
+Ran 5 tests in 1.430s
+FAILED (failures=2)
+== mutant: V1 pending branch admits (vacuous) ==
+FAIL: test_court_synthetic_marketplaces_type_the_real_vendored_pin (test_ce23_1_court.VendorCase.test_court_synthetic_marketplaces_type_the_real_vendored_pin)
+AssertionError: Tuples differ: ([], []) != ([], ['VENDOR_PUBLICATION_PENDING'])
+FAIL: test_pending_fast_forward_is_an_edge_never_a_counterexample (test_ce23_1_court.VendorCase.test_pending_fast_forward_is_an_edge_never_a_counterexample)
+AssertionError: Tuples differ: ([], []) != ([], ['VENDOR_PUBLICATION_PENDING'])
+Ran 5 tests in 1.317s
+FAILED (failures=2)

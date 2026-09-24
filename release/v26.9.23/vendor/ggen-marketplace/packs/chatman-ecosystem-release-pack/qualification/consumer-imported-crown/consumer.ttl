@@ -1,0 +1,6 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Qualification consumer of the imported-crown law: its only input is imported/crown.ttl,
+# the committed lift of qualification/fixtures/positive-receipts (bin/import-crown-lift.py),
+# consumed through a [packs] entry so `ggen sync run` enforces gate 090 natively (FM-PACK-013).
+<https://ggen.dev/marketplace/qualification/chatman-ecosystem-release/imported-crown> rdfs:label "imported-crown qualification consumer" .

@@ -1,0 +1,11 @@
+# Qualification harness (qualify.sh step 7h/7i): built by qualify.sh against ecosystem-core extracted
+# with `git archive` from seanchatmangpt/chatman-ecosystem at c59596f5506e7a00ca4ed6b909ebf6d6659b74c1,
+# laid out as <scratch>/crates/ecosystem-core next to <scratch>/harness (this directory).
+[package]
+name = "chatman-receipt-harness"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+ecosystem-core = { path = "../crates/ecosystem-core" }

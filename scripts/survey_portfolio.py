@@ -24,10 +24,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Protocol, Sequence
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import release_line  # noqa: E402
+
 DEFAULT_API = "https://api.github.com"
-DEFAULT_MANIFEST = Path("release/v26.9.1/manifest.toml")
-DEFAULT_FLEET = Path("release/v26.9.1/fleet-policy.toml")
-DEFAULT_CROSSWALK = Path("release/v26.9.1/constitutional-role-crosswalk.toml")
 DEFAULT_OUTPUT = Path(".artifacts/portfolio-survey")
 
 ALLOWED_CONSTITUTIONAL_ROLES = {
@@ -293,6 +293,13 @@ def _inventory_complete(evidence: Mapping[str, Any]) -> bool:
     return evidence.get("inventory_complete") is True
 
 
+def release_label(manifest: Mapping[str, Any]) -> str:
+    """The release line a survey is bound to: the manifest's own version (CE23-7)."""
+    release = manifest.get("release", {})
+    version = release.get("version") if isinstance(release, Mapping) else None
+    return f"v{version}" if isinstance(version, str) and version else "release"
+
+
 def build_survey(
     client: GitHubTransport,
     *,
@@ -435,7 +442,7 @@ def build_survey(
         if full_name == fleet_table.get("composition_root"):
             scope = "ROOT"
         elif component:
-            scope = "REQUIRED_V26_9_1"
+            scope = "REQUIRED_" + release_label(manifest).upper().replace(".", "_")
         elif disposition not in {"OUT_OF_RELEASE", ""}:
             scope = "CONSTITUTIONAL_SUPPORT"
         else:
@@ -485,7 +492,7 @@ def build_survey(
     }
 
 
-def render_report(survey: Mapping[str, Any]) -> str:
+def render_report(survey: Mapping[str, Any], release: str = "release") -> str:
     summary = survey["summary"]
     findings = survey.get("findings", [])
     drift = [finding for finding in findings if finding.get("code") == "REQUIRED_REF_DRIFT"]
@@ -506,7 +513,7 @@ def render_report(survey: Mapping[str, Any]) -> str:
         "## Boundary",
         "",
         f"- repositories observed in this inventory: **{summary['owned_repository_count']}**",
-        f"- v26.9.1 required components: **{summary['required_component_count']}**",
+        f"- {release} required components: **{summary['required_component_count']}**",
         f"- open core PRs: **{summary['open_core_pr_count']}**",
         f"- open issues in required repositories: **{summary['open_required_issue_count']}**",
         f"- exact required refs with drift: **{len(drift)}**",
@@ -548,7 +555,7 @@ def render_report(survey: Mapping[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def write_outputs(survey: Mapping[str, Any], output_dir: Path) -> None:
+def write_outputs(survey: Mapping[str, Any], output_dir: Path, release: str = "release") -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     repo_fields = [
         "repository", "visibility", "archived", "fork", "default_branch", "updated_at",
@@ -567,7 +574,7 @@ def write_outputs(survey: Mapping[str, Any], output_dir: Path) -> None:
     _csv_write(output_dir / "OPEN_CORE_PRS.csv", survey["open_core_prs"], pr_fields)
     _csv_write(output_dir / "OPEN_REQUIRED_ISSUES.csv", survey["open_required_issues"], issue_fields)
     (output_dir / "FINDINGS.json").write_text(json.dumps(survey, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    (output_dir / "REPORT.md").write_text(render_report(survey), encoding="utf-8")
+    (output_dir / "REPORT.md").write_text(render_report(survey, release), encoding="utf-8")
     checksum_rows = []
     for path in sorted(output_dir.iterdir()):
         if path.is_file() and path.name != "SHA256SUMS":
@@ -578,9 +585,10 @@ def write_outputs(survey: Mapping[str, Any], output_dir: Path) -> None:
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--owner", default="seanchatmangpt")
-    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
-    parser.add_argument("--fleet", type=Path, default=DEFAULT_FLEET)
-    parser.add_argument("--crosswalk", type=Path, default=DEFAULT_CROSSWALK)
+    parser.add_argument("--release", help="target release line vYY.M.D (default: the catalog/west.toml pointer)")
+    parser.add_argument("--manifest", type=Path)
+    parser.add_argument("--fleet", type=Path, help="default: fleet-policy.toml beside the manifest")
+    parser.add_argument("--crosswalk", type=Path, help="default: constitutional-role-crosswalk.toml beside the manifest")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--api-url", default=os.environ.get("GITHUB_API_URL", DEFAULT_API))
     parser.add_argument("--token-env", default="GITHUB_TOKEN")
@@ -588,7 +596,16 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--observed-at", default=None, help="Override timestamp for deterministic fixture/replay")
     parser.add_argument("--fail-on-blocking", action="store_true", help="Exit 2 when survey-contract BLOCKING findings exist")
     parser.add_argument("--require-policy-current", action="store_true", help="Exit 2 when complete inventory drifts from fleet-policy")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    try:
+        args.manifest = release_line.require(release_line.resolve_manifest(args.release, args.manifest))
+        args.fleet = release_line.require(release_line.companion(args.manifest, "fleet-policy.toml", args.fleet, args.release))
+        args.crosswalk = release_line.require(
+            release_line.companion(args.manifest, "constitutional-role-crosswalk.toml", args.crosswalk, args.release)
+        )
+    except release_line.ReleaseLineError as exc:
+        parser.error(str(exc))
+    return args
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -608,7 +625,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             crosswalk_findings=crosswalk_findings,
             observed_at=args.observed_at,
         )
-        write_outputs(survey, args.output_dir)
+        write_outputs(survey, args.output_dir, release_label(manifest))
     except (OSError, tomllib.TOMLDecodeError, SurveyError) as exc:
         print(json.dumps({"standing": "BLOCKED", "error": str(exc)}, indent=2), file=sys.stderr)
         return 2

@@ -1,0 +1,26 @@
+$ D=/private/tmp/claude-501/v23-scratch/FIN2-CE23-1/replay && mkdir -p $D && T=$(mktemp -d $D/probe.XXXXXX) && PYTHONDONTWRITEBYTECODE=1 python3 receipts/v26.9.23/CE23-1.gate/probe_symlink.py --court release/v26.9.23/courts/ce23_1/court.py --work $T/w; e=$?; rm -rf $T; exit $e
+court release/v26.9.23/courts/ce23_1/court.py judging slice of /Users/sac/chatman-ecosystem@527ffaf35044bf15f66f6b6f30e0a0c4dd986011
+OK S0: head 63e56fa8124d31b20eb86402a17462f9ec977ebf descends from base ed9d7d789682e748c96d48fa9ce361b9b12fe9d9
+OK P1: release/v26.9.1 tree 7e0feef1b137bea72fe1cf22a599636f77b0e47c = pin = base tree
+OK P2: checkout clean under release/v26.9.1; manifest sha256 30b1d83ce544299557da50084ced696172d219f6790c2cfc5b78116902850949
+OK A1: 11 subject paths committed under release/v26.9.23
+OK A2: checkout clean under the subject paths
+OK A3: release/v26.9.23/manifest.toml -> out/manifest.toml
+OK A3: release/v26.9.23/constitutional-role-crosswalk.toml -> out/constitutional-role-crosswalk.toml
+REFUSED[SUBJECT_NOT_INDEPENDENT] A4: release/v26.9.23/ggen.toml reads outside release/v26.9.23: ["packs.chatman-ecosystem-release-pack.extra_ontologies[0] = 'imports/fleet-classification.ttl' is ['120000', 'blob'] at the head, not a committed regular file or directory of release/v26.9.23 (a symlink or gitlink reads outside the commit)"]
+REFUSED[SUBJECT_NOT_INDEPENDENT] A5: the judged slice holds 1 symlink/gitlink entries beyond the pinned line pointers (each reads bytes the commit does not carry): ['release/v26.9.23/imports/fleet-classification.ttl (120000 symlink) -> /private/tmp/claude-501/v23-scratch/FIN2-CE23-1/replay/probe.i03QOz/w/external/fleet-classification.ttl']
+OK C1: the judging court (3 files: wrapper, code, pins) is byte-identical to the head's
+OK V1: chatman-ecosystem-release-pack packs/chatman-ecosystem-release-pack tree bf05126e21d0ac2fab7721e103dbffbb0045a5cf = marketplace e3988aba4a85 on origin/release/v26.9.23-int
+OK V1: ggen.toml pack chatman-ecosystem-release-pack from vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack, lock = true
+OK G1: ggen 26.9.18: committed render and lock reproduce byte-identically (8 files; sync on the committed tree writes nothing; idempotent)
+OK G2: chatman-ecosystem-release-pack bin/run-gates.py (rdflib): RELEASE_GATES ALIVE, 11 gates
+OK M1: CriticalPath ggen_igniter = required component seanchatmangpt/ggen_igniter@6e7834ee68b6617b7f11ac48b1e9fc2651fc448d
+OK M1: CriticalPath xaas = required component seanchatmangpt/xaas@6fd59588c2e06b83d1af6ebc653e7b545de6f90f
+OK M1: manifest 26.9.23; crosswalk 26.9.23 maps ['execution-realization', 'semantic-manufacture']
+OK I1: imports/fleet-classification.ttl = seanchatmangpt/xaas@6fd59588c2e0:docs/sjira/v26.9.23/fleet/classification.ttl (sha256 d9e99f074ef2a8c9)
+OK M2: seanchatmangpt/ggen_igniter@6e7834ee68b6 on origin/friday/gc-fri-0800
+OK M2: seanchatmangpt/xaas@6fd59588c2e0 on origin/friday/gc-fri-0800
+OK T1: scripts/verify_release.py --release v26.9.23: exit 0, release 26.9.23, findings [], manifest_sha256 fd976173e8aa5f2b (= render)
+OK R1: requirements.toml: 54 rows = checkpointed orders of 3 compiled units (2 CE23-1)
+PROBE REFUSED ['SUBJECT_NOT_INDEPENDENT']
+exit=0

@@ -1,0 +1,22 @@
+# Byte-identical vendoring of ggen-marketplace packs into the v26.9.23 release subject
+# (driver decision 2026-09-23: marketplace packs are vendored byte-identically into this
+# subject for v26.9.23; never a chatman-local fork). Each row's directory
+# release/v26.9.23/vendor/ggen-marketplace/<subdir> is
+#   git -C <ggen-marketplace> archive <commit> <subdir> | tar -x -C release/v26.9.23/vendor/ggen-marketplace
+# and its git tree object in this repository equals the marketplace tree object
+# `<commit>:<subdir>` (git trees are content-addressed, so equal tree ids mean equal bytes,
+# modes and paths). The CE23-1 court (release/v26.9.23/courts/ce23_1/court.py, clause V1)
+# refuses a row whose vendored tree differs from `tree`, or from the marketplace object at
+# `commit`, or whose commit is not on the published marketplace ref.
+# To move a pack: re-run the archive command at the new commit and update the row; never
+# edit a file under a vendored directory (upstream the change to ggen-marketplace instead).
+
+[[pack]]
+name = "chatman-ecosystem-release-pack"
+version = "0.4.0"
+subdir = "packs/chatman-ecosystem-release-pack"
+repository = "seanchatmangpt/ggen-marketplace"
+ref = "release/v26.9.23-int"
+commit = "6cfd0b7ad3891611486994240b7aed6b5e6dc3e6"
+tree = "480d08dd99c28ddbfcf093e4eafe25d271df879d"
+

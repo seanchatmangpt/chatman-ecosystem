@@ -1,0 +1,23 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_ce23_2_court.py -v
+test_decision_in_the_graph_alone_is_refused (test_ce23_2_court.DecisionCase.test_decision_in_the_graph_alone_is_refused) ... ok
+test_no_decision_is_admitted_and_none_exists (test_ce23_2_court.DecisionCase.test_no_decision_is_admitted_and_none_exists) ... ok
+test_observation_reproduces_the_committed_import (test_ce23_2_court.ObserverCase.test_observation_reproduces_the_committed_import) ... ok
+test_committed_manifest_is_a_function_of_16_roles (test_ce23_2_court.PredecessorCase.test_committed_manifest_is_a_function_of_16_roles) ... ok
+test_duplicated_required_role_is_ambiguous (test_ce23_2_court.PredecessorCase.test_duplicated_required_role_is_ambiguous) ... ok
+test_role_with_two_components_is_ambiguous (test_ce23_2_court.PredecessorCase.test_role_with_two_components_is_ambiguous) ... ok
+test_basename_collision_is_ambiguous (test_ce23_2_court.RuleCase.test_basename_collision_is_ambiguous) ... ok
+test_committed_inputs_derive_every_row (test_ce23_2_court.RuleCase.test_committed_inputs_derive_every_row) ... ok
+test_court_executed_unclassified_role_is_undecidable (test_ce23_2_court.RuleCase.test_court_executed_unclassified_role_is_undecidable) ... ok
+test_altered_legacy_sha_is_refused (test_ce23_2_court.TotalityCase.test_altered_legacy_sha_is_refused) ... ok
+test_committed_render_is_total (test_ce23_2_court.TotalityCase.test_committed_render_is_total) ... ok
+test_double_provenance_is_refused (test_ce23_2_court.TotalityCase.test_double_provenance_is_refused) ... ok
+test_duplicated_row_is_refused (test_ce23_2_court.TotalityCase.test_duplicated_row_is_refused) ... ok
+test_empty_reason_is_refused (test_ce23_2_court.TotalityCase.test_empty_reason_is_refused) ... ok
+test_foreign_row_is_refused (test_ce23_2_court.TotalityCase.test_foreign_row_is_refused) ... ok
+test_untyped_boundary_is_refused (test_ce23_2_court.TotalityCase.test_untyped_boundary_is_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.991s
+
+OK
+exit=0

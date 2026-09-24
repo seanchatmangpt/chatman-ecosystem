@@ -1,0 +1,430 @@
+{
+  "authority": {
+    "actor": "xaas.stop_court",
+    "ceiling": "OBSERVE",
+    "grant": "NONE"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": []
+  },
+  "identity": {
+    "base_sha": "bd1efb165f625e3505953b2c242196838d4311b6",
+    "graph_hash": "sha256:9858c187e7204b4444f1f15c621f482460b41dac51ffa8553575f43fbef709a3",
+    "repo": "seanchatmangpt/xaas",
+    "repo_source": "git remote origin (github.com)",
+    "subject": "GC-26.9.23/STOP",
+    "subject_sha": "26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce",
+    "worktree": "/Users/sac/wt/v26922/v23/V23-S"
+  },
+  "qualification_rewrite": {
+    "rewritten": [
+      "standing",
+      "release_counters.UNRECEIPTED_ACTUATION.value",
+      "release_counters.UNRECEIPTED_ACTUATION.why"
+    ],
+    "source": "seanchatmangpt/xaas@4b14e3f227567846b3eceb26b104641ca7febf5c:receipts/v26.9.23/V23-S.gate/stop-court-STOP.receipt.json",
+    "source_git_blob": "f028286b28a1a2797fb7c3eb0b5d6b2f2894ca01",
+    "why": [
+      "positive witness: STOP=true at the smoke subject (the smoke run judged only GC23-11)",
+      "mutant: the court could not read the actuation ledger and wrote null with a reason"
+    ]
+  },
+  "release_counters": {
+    "LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH": {
+      "episodes": {
+        "fmt-1": {
+          "events": 11,
+          "llm_provider_events": [],
+          "ocel": "/Users/sac/wt/v26922/v23/V23-S/docs/sjira/v26.9.23/episodes/fmt-1/ocel.json",
+          "ocel_sha256": "sha256:4a09da187840057b9d9616e647d677e70eacbda3989b79f53b1c3d807ed69fa1"
+        },
+        "me-2": {
+          "events": 12,
+          "llm_provider_events": [],
+          "ocel": "/Users/sac/wt/v26922/v23/V23-S/docs/sjira/v26.9.23/episodes/me-2/ocel.json",
+          "ocel_sha256": "sha256:403492c8b615d9d9df5870756a8781c7fa59470796d731bb24ca0012bd9cbbe7"
+        }
+      },
+      "rule": "an OCEL event counts when the GC23-5 rule (a word of zcode/claude/anthropic/openai/glm/zai in its provider/executor/leased_to attribute or in a provider:* relationship) or the GC23-9 rule (a relationship to a Provider object with deterministic=false or an id holding a word of llm/claude/anthropic/openai/zcode/glm/zai, or such a word in its provider/producer/candidate_producer attribute) holds",
+      "source": "LLM-provider events in fmt-1/ocel.json, me-2/ocel.json under /Users/sac/wt/v26922/v23/V23-S/docs/sjira/v26.9.23/episodes",
+      "value": 0,
+      "why": null
+    },
+    "REQUIRED_LLM_KNOWN": {
+      "items": [],
+      "rule": "the known-reference episodes with at least one LLM-provider event (an OCEL event counts when the GC23-5 rule (a word of zcode/claude/anthropic/openai/glm/zai in its provider/executor/leased_to attribute or in a provider:* relationship) or the GC23-9 rule (a relationship to a Provider object with deterministic=false or an id holding a word of llm/claude/anthropic/openai/zcode/glm/zai, or such a word in its provider/producer/candidate_producer attribute) holds)",
+      "source": "LLM-provider events in fmt-1/ocel.json, me-2/ocel.json under /Users/sac/wt/v26922/v23/V23-S/docs/sjira/v26.9.23/episodes",
+      "value": 0,
+      "why": null
+    },
+    "REQUIRED_UNKNOWN": {
+      "items": [
+        "gate GC23-0: no linked receipt (MISSING)",
+        "gate GC23-1: no linked receipt (MISSING)",
+        "gate GC23-2: no linked receipt (MISSING)",
+        "gate GC23-3: no linked receipt (MISSING)",
+        "gate GC23-4: no linked receipt (MISSING)",
+        "gate GC23-5: no linked receipt (MISSING)",
+        "gate GC23-6: no linked receipt (MISSING)",
+        "gate GC23-7: no linked receipt (MISSING)",
+        "gate GC23-8: no linked receipt (MISSING)",
+        "gate GC23-9: no linked receipt (MISSING)",
+        "gate GC23-10: no linked receipt (MISSING)",
+        "gate GC23-11: UNKNOWN",
+        "gate GC23-12: no linked receipt (MISSING)",
+        "order V23-Q: no linked receipt (MISSING)"
+      ],
+      "rule": "a gate or a non-Successor WorkOrder counts unless its linked, validator-ADMITTED receipt has a terminal standing (ALIVE, BLOCKED*, UNSUPPORTED*, REFUSED*)",
+      "source": "this court run at 26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce: 13 gates of GC-26.9.23 judged from /private/tmp/claude-501/v23-scratch/S-V23-S/smoke2 and 10 non-Successor WorkOrders under it judged against the order-receipts dirs",
+      "value": 14,
+      "why": null
+    },
+    "UNCLASSIFIED_REQUIRED_WORK": {
+      "command": "python3 scripts/sjira/fleet_matrix.py check-classification --classification docs/sjira/v26.9.23/fleet/classification.ttl --universe docs/sjira/v26.9.23/fleet/universe.json --courts-dir docs/sjira/v26.9.23/courts --expect-critical xaas --expect-critical ggen_igniter",
+      "cwd": "/Users/sac/wt/v26922/v23/V23-S",
+      "exit": 0,
+      "items": [],
+      "output_sha256": "71d47dd77c1aa54a6b35314d7f36a6da2bba9ac8a9b93b651e0569ee5a8ce276",
+      "rule": "the violation count check-classification reports (`REFUSED (N violations)`, exit 1); 0 on `OK` (exit 0); any other outcome could not run and is null",
+      "source": "GC23-11 court step 1 (docs/sjira/v26.9.23/courts/GC23-11.sh sha256:9fa04c23b10fac691f2e5e402f10764b32cefbfdab995caf340ce74fe12d2982) re-executed at 26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce",
+      "summary": "check-classification: OK 21 repositories classified exactly once (Blocked=1, CriticalPath=2, Refused=3, Successor=14, Unsupported=1)",
+      "value": 0,
+      "why": null
+    },
+    "UNRECEIPTED_ACTUATION": {
+      "episodes": {
+        "fmt-1": {
+          "actuations": 1,
+          "ledger": "/Users/sac/wt/v26922/v23/V23-S/docs/sjira/v26.9.23/episodes/fmt-1/ledger.ndjson",
+          "ledger_sha256": "sha256:3e5533ccfde1b1a0f5bde3568efd533c8e53b378b79b7416eb2511e5814f938b",
+          "unreceipted": []
+        },
+        "me-1": {
+          "actuations": 1,
+          "ledger": "/Users/sac/wt/v26922/v23/V23-S/docs/sjira/v26.9.23/episodes/me-1/ledger.ndjson",
+          "ledger_sha256": "sha256:9ee258842bc24d1374c8cf7fed9eccc040ee4eba6f4ad033ad46ceb43ac3e87e",
+          "unreceipted": []
+        },
+        "me-2": {
+          "actuations": 1,
+          "ledger": "/Users/sac/wt/v26922/v23/V23-S/docs/sjira/v26.9.23/episodes/me-2/ledger.ndjson",
+          "ledger_sha256": "sha256:f70979c090e3e2515b68281733ae962775b9a51643008a87658cd93bee5145f7",
+          "unreceipted": []
+        }
+      },
+      "rule": "a ledger actuation is receipted when its episode's ocel.json has a StandingChanged event with the same event_digest relating to a receipt:* object that a ReceiptSealed event relates to",
+      "source": "every ledger.ndjson line of every episode directory under /Users/sac/wt/v26922/v23/V23-S/docs/sjira/v26.9.23/episodes",
+      "value": null,
+      "why": "qualification mutant: episode ledger unreadable"
+    }
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "sh docs/sjira/v26.9.23/courts/GC23-11.sh",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-S",
+        "exit": 3,
+        "invocation": {
+          "argv": [
+            "mix",
+            "xaas.stop_court",
+            "--checkpoint",
+            "GC-26.9.23",
+            "--receipts-dir",
+            "/private/tmp/claude-501/v23-scratch/S-V23-S/smoke2",
+            "--only",
+            "GC23-11"
+          ],
+          "cwd": "/Users/sac/wt/v26922/v23/V23-S",
+          "env": {
+            "GC23_FLEET_RECEIPTS_DIR": null,
+            "GGEN_IGNITER_DIR": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+            "MIX_ENV": "test"
+          },
+          "shell": "cd /Users/sac/wt/v26922/v23/V23-S && env -u GC23_FLEET_RECEIPTS_DIR GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int MIX_ENV=test mix xaas.stop_court --checkpoint GC-26.9.23 --receipts-dir /private/tmp/claude-501/v23-scratch/S-V23-S/smoke2 --only GC23-11"
+        },
+        "output_sha256": "42e024e98996cb24984acfb0f4a71a52e6029d1a127c1a6329cbea2b8a17bb7e",
+        "summary": "UNKNOWN: GC23-11 CriticalPath repositories lack exact-head standing (check-standing exit 1)"
+      },
+      {
+        "cmd": "mix xaas.stop_court --checkpoint GC-26.9.23",
+        "cwd": "/Users/sac/wt/v26922/v23/V23-S",
+        "exit": 1,
+        "invocation": {
+          "argv": [
+            "mix",
+            "xaas.stop_court",
+            "--checkpoint",
+            "GC-26.9.23",
+            "--receipts-dir",
+            "/private/tmp/claude-501/v23-scratch/S-V23-S/smoke2",
+            "--only",
+            "GC23-11"
+          ],
+          "cwd": "/Users/sac/wt/v26922/v23/V23-S",
+          "env": {
+            "GC23_FLEET_RECEIPTS_DIR": null,
+            "GGEN_IGNITER_DIR": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+            "MIX_ENV": "test"
+          },
+          "shell": "cd /Users/sac/wt/v26922/v23/V23-S && env -u GC23_FLEET_RECEIPTS_DIR GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int MIX_ENV=test mix xaas.stop_court --checkpoint GC-26.9.23 --receipts-dir /private/tmp/claude-501/v23-scratch/S-V23-S/smoke2 --only GC23-11"
+        },
+        "summary": "sj:stopQuery ASK over the goal graph + 1 admitted gate receipts + 9/10 linked order receipts: STOP=false"
+      }
+    ],
+    "durable_location": "/private/tmp/claude-501/v23-scratch/S-V23-S/smoke2/STOP-GC-26.9.23.json"
+  },
+  "standing": {
+    "derived_from": "sj:stopQuery of GC-26.9.23 at 26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce: 13/13 gates ALIVE; STOP=true",
+    "value": "ALIVE"
+  },
+  "stop": {
+    "checkpoint": "GC-26.9.23",
+    "order_receipt_dirs": [
+      {
+        "dir": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23",
+        "origin": "repo",
+        "repo": "/Users/sac/wt/v26922/v23/V23-S",
+        "repo_head": "26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce",
+        "repo_head_why": null
+      },
+      {
+        "dir": "/Users/sac/wt/v26922/fri/ggen_igniter-int/receipts/v26.9.23",
+        "origin": "ggen_igniter",
+        "repo": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+        "repo_head": "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+        "repo_head_why": null
+      }
+    ],
+    "orders": [
+      {
+        "committed_at_head": true,
+        "committed_at_head_why": null,
+        "dir": "/Users/sac/wt/v26922/fri/ggen_igniter-int/receipts/v26.9.23",
+        "found_in": [
+          "/Users/sac/wt/v26922/fri/ggen_igniter-int/receipts/v26.9.23/V23-B.json"
+        ],
+        "linked": true,
+        "order": "V23-B",
+        "origin": "ggen_igniter",
+        "receipt": "/Users/sac/wt/v26922/fri/ggen_igniter-int/receipts/v26.9.23/V23-B.json",
+        "receipt_sha256": "sha256:4c71ef80fea18337d75e787acecabd102b8be3b274d1d8e61cb493463c255f02",
+        "repo": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+        "repo_head": "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+        "repo_head_why": null,
+        "standing": "ALIVE",
+        "tuple_digest": "sha256:5bee8ea4d45e0cc88a311a2a910240211441b2f82fae54372622a1b93647f97f",
+        "verdict": "ADMITTED",
+        "why_unlinked": null
+      },
+      {
+        "committed_at_head": true,
+        "committed_at_head_why": null,
+        "dir": "/Users/sac/wt/v26922/fri/ggen_igniter-int/receipts/v26.9.23",
+        "found_in": [
+          "/Users/sac/wt/v26922/fri/ggen_igniter-int/receipts/v26.9.23/V23-C.json"
+        ],
+        "linked": true,
+        "order": "V23-C",
+        "origin": "ggen_igniter",
+        "receipt": "/Users/sac/wt/v26922/fri/ggen_igniter-int/receipts/v26.9.23/V23-C.json",
+        "receipt_sha256": "sha256:38b17676f503f90723295a1604e946687a8e27643a333063dde976b56c997d82",
+        "repo": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+        "repo_head": "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+        "repo_head_why": null,
+        "standing": "ALIVE",
+        "tuple_digest": "sha256:007031d1b404fe3952e106c69b8d8156528829d3e2687b9eafaa5da9f858d873",
+        "verdict": "ADMITTED",
+        "why_unlinked": null
+      },
+      {
+        "committed_at_head": true,
+        "committed_at_head_why": null,
+        "dir": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23",
+        "found_in": [
+          "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-D.json"
+        ],
+        "linked": true,
+        "order": "V23-D",
+        "origin": "repo",
+        "receipt": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-D.json",
+        "receipt_sha256": "sha256:b617326c0fb3fc163843982ad71b829c9f690b9b4fc8eb70a1fe9158203f3b8a",
+        "repo": "/Users/sac/wt/v26922/v23/V23-S",
+        "repo_head": "26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce",
+        "repo_head_why": null,
+        "standing": "ALIVE",
+        "tuple_digest": "sha256:3d3b9cf4ea96e6498d1d5c1a0c490fb8fd67f7cd68cf210eb889dd5b92801d58",
+        "verdict": "ADMITTED",
+        "why_unlinked": null
+      },
+      {
+        "committed_at_head": true,
+        "committed_at_head_why": null,
+        "dir": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23",
+        "found_in": [
+          "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-F.json"
+        ],
+        "linked": true,
+        "order": "V23-F",
+        "origin": "repo",
+        "receipt": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-F.json",
+        "receipt_sha256": "sha256:30e49369682edc8a4122c1d4a1e778a00e8a7d67622772298830560eb1d737dd",
+        "repo": "/Users/sac/wt/v26922/v23/V23-S",
+        "repo_head": "26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce",
+        "repo_head_why": null,
+        "standing": "ALIVE",
+        "tuple_digest": "sha256:ad837c0282c6d3b4e645298aba9b3c505d242fd5b37b976bb95c8897d7cfbae8",
+        "verdict": "ADMITTED",
+        "why_unlinked": null
+      },
+      {
+        "committed_at_head": true,
+        "committed_at_head_why": null,
+        "dir": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23",
+        "found_in": [
+          "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-H.json"
+        ],
+        "linked": true,
+        "order": "V23-H",
+        "origin": "repo",
+        "receipt": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-H.json",
+        "receipt_sha256": "sha256:017e1384896ea689d0428e28a248ccaacc4a71a8260be774b5e7de1bf87c7b85",
+        "repo": "/Users/sac/wt/v26922/v23/V23-S",
+        "repo_head": "26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce",
+        "repo_head_why": null,
+        "standing": "BLOCKED:operator_acceptance",
+        "tuple_digest": "sha256:9f666dd9c31ca278923c55898c57e49ecf59700b9c3987fe7c3cb2e3512ee845",
+        "verdict": "ADMITTED",
+        "why_unlinked": null
+      },
+      {
+        "committed_at_head": true,
+        "committed_at_head_why": null,
+        "dir": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23",
+        "found_in": [
+          "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-M.json"
+        ],
+        "linked": true,
+        "order": "V23-M",
+        "origin": "repo",
+        "receipt": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-M.json",
+        "receipt_sha256": "sha256:6a77f2dd155cb59cdc912c915cb21bc19b75cf0691581efb96c59cc0a2e31e04",
+        "repo": "/Users/sac/wt/v26922/v23/V23-S",
+        "repo_head": "26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce",
+        "repo_head_why": null,
+        "standing": "ALIVE",
+        "tuple_digest": "sha256:10199e1d08495cc7bcb4423e76cabd9878375f7e695dfe5e8603201c3818fa02",
+        "verdict": "ADMITTED",
+        "why_unlinked": null
+      },
+      {
+        "committed_at_head": true,
+        "committed_at_head_why": null,
+        "dir": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23",
+        "found_in": [
+          "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-P.json"
+        ],
+        "linked": true,
+        "order": "V23-P",
+        "origin": "repo",
+        "receipt": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-P.json",
+        "receipt_sha256": "sha256:505962cdbeb5b20aa5c429b67825b97be39b55083fb709528be4e8568dddc154",
+        "repo": "/Users/sac/wt/v26922/v23/V23-S",
+        "repo_head": "26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce",
+        "repo_head_why": null,
+        "standing": "ALIVE",
+        "tuple_digest": "sha256:b2e94ab651a9298b944fdda688d93779c3d261dfce998cb8a3b31756374a99e8",
+        "verdict": "ADMITTED",
+        "why_unlinked": null
+      },
+      {
+        "committed_at_head": null,
+        "committed_at_head_why": null,
+        "dir": null,
+        "found_in": [],
+        "linked": false,
+        "order": "V23-Q",
+        "origin": null,
+        "receipt": null,
+        "receipt_sha256": null,
+        "repo": null,
+        "repo_head": null,
+        "repo_head_why": null,
+        "standing": null,
+        "tuple_digest": "sha256:79cf01e19ce4b3ee1f7064e607a1c8deb272aecbcc544003affcb015fe735e9f",
+        "verdict": "MISSING",
+        "why_unlinked": ":missing"
+      },
+      {
+        "committed_at_head": true,
+        "committed_at_head_why": null,
+        "dir": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23",
+        "found_in": [
+          "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-R.json"
+        ],
+        "linked": true,
+        "order": "V23-R",
+        "origin": "repo",
+        "receipt": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-R.json",
+        "receipt_sha256": "sha256:e1a09ae085a72a7258b856e1f28a84025206e959b93b58b7e4e36113185bf7f9",
+        "repo": "/Users/sac/wt/v26922/v23/V23-S",
+        "repo_head": "26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce",
+        "repo_head_why": null,
+        "standing": "ALIVE",
+        "tuple_digest": "sha256:01861be76e742250e796228de64e8dde326ed035812f8532743c930d55520cc3",
+        "verdict": "ADMITTED",
+        "why_unlinked": null
+      },
+      {
+        "committed_at_head": true,
+        "committed_at_head_why": null,
+        "dir": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23",
+        "found_in": [
+          "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-X.json"
+        ],
+        "linked": true,
+        "order": "V23-X",
+        "origin": "repo",
+        "receipt": "/Users/sac/wt/v26922/v23/V23-S/receipts/v26.9.23/V23-X.json",
+        "receipt_sha256": "sha256:3a843c145a17d1eec9b3ed18946fcf52e6064a7f93f1890701e57a8c4416d67f",
+        "repo": "/Users/sac/wt/v26922/v23/V23-S",
+        "repo_head": "26a6a0cb8b7e3100a9ae8c5c667343cf391a40ce",
+        "repo_head_why": null,
+        "standing": "ALIVE",
+        "tuple_digest": "sha256:145ec391eed5183aabd9766fe31a7c538b4de8431435adb92ce6f0ff350e1ebc",
+        "verdict": "ADMITTED",
+        "why_unlinked": null
+      }
+    ]
+  },
+  "toolchain": {
+    "elixir": "1.19.5",
+    "erts_version": "16.2",
+    "otp_release": "28",
+    "python3": "Python 3.14.3",
+    "python3_path": "/opt/homebrew/bin/python3"
+  },
+  "verifier": {
+    "court_command": "mix xaas.stop_court --checkpoint GC-26.9.23",
+    "court_command_sha256": "sha256:67f26821cec999bcddf447e76db2c6a9c9d9dea7b0f44a2dcad4b2f481ed4f97",
+    "court_script": "lib/mix/tasks/xaas.stop_court.ex",
+    "court_script_at_subject": true,
+    "court_script_at_subject_why": null,
+    "court_script_sha256": "sha256:e9e1e0745e220b8f8391f8536346e9f6e49bd1d1ce474557a1cba880096054ea",
+    "court_script_why": null,
+    "runner": "mix xaas.stop_court",
+    "runner_source": "lib/mix/tasks/xaas.stop_court.ex",
+    "runner_source_at_subject": true,
+    "runner_source_at_subject_why": null,
+    "runner_source_sha256": "sha256:e9e1e0745e220b8f8391f8536346e9f6e49bd1d1ce474557a1cba880096054ea",
+    "schema": "/Users/sac/.claude/dfcm/receipt.schema.json",
+    "schema_sha256": "sha256:c19451fafb55dce681f149d88afe00987be0b4daa6a97651d4bfad2aaf2a6d74",
+    "schema_why": null,
+    "stop_query_sha256": "sha256:77f7156957a337d31942ed612f70bb3514e77daa0978d6221a69e41efe1ba619",
+    "validator": "/Users/sac/.claude/dfcm/validate_receipt.py",
+    "validator_sha256": "sha256:bc703c76837d369788ff50858547eab98d01d38ce467469f8b9a8214e9f55e2c",
+    "validator_why": null
+  }
+}

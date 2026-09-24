@@ -1,0 +1,5 @@
+$ git show ee1ca97e46117338186468f2199be18da8b4dc0d:release/v26.9.23/courts/ce23_12/court.py | grep -n "misses += bytes(corrupted) == regen\|misses += mutated == text\|misses += len(remaining) == len(entries)"; ! grep -n "misses += bytes(corrupted) == regen\|misses += mutated == text\|misses += len(remaining) == len(entries)" release/v26.9.23/courts/ce23_12/court.py
+943:        misses += bytes(corrupted) == regen[rel]
+955:            misses += mutated == text
+988:        misses += len(remaining) == len(entries)
+exit=0

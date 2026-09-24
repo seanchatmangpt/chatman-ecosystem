@@ -1,0 +1,15 @@
+# MESSAGE: Train and Test members of a class are disjoint by subject digest and by patch-id (split
+# rules R1/R3); a KNOWN_CANDIDATE declares Dev(C), reachable tiers and a cluster count (BD-A3).
+PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+SELECT ?node ?reason WHERE {
+  {
+    ?a nlb:split nlb:Train ; nlb:inClass ?c . ?node nlb:split nlb:Test ; nlb:inClass ?c .
+    { ?a nlb:subjectDigest ?x . ?node nlb:subjectDigest ?x } UNION { ?a nlb:patchId ?y . ?node nlb:patchId ?y }
+    BIND("test-member-leaks-train-identity" AS ?reason)
+  } UNION {
+    ?node nlb:claimStatus "KNOWN_CANDIDATE" .
+    FILTER NOT EXISTS { ?node nlb:devRepo ?d ; nlb:reachableTier ?t ; nlb:reachableTierWithSynthetic ?t2 ; nlb:clusterCount ?cc }
+    BIND("corpus-plan-incomplete" AS ?reason)
+  }
+}
+ORDER BY ?node ?reason
