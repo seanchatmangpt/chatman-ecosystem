@@ -19,6 +19,7 @@ the committed lift of the manifest blob at the base commit (CE23-2).
 | `out/`, `ggen.lock` | render of `ggen sync run`: manifest, crosswalks, requirements, role derivations, imported crowns | generated |
 | `manifest.toml`, `constitutional-role-crosswalk.toml` | symlinks to `out/`, so `scripts/release_line.py` resolves the line | pointer |
 | `sjira/` | CE23 governing graph, prose and compiled work orders | CE-INTAKE |
+| `sjira/annex/` | the driver's loop-scan wave plan (`scan-plan.json`), moved byte-identically from the retired shadow tree; recorded evidence, read by nothing | CE-RECORD |
 | `courts/` | gate courts named by `sjira/goal.ttl` | per gate |
 | `courts/ce23_9/` | CE23-9 root court: judge (`court.py`), members (`members.py`), CI check universe (`ci_checks.py`), local CI job runner (`ci_job.py`), pins (`root.toml`, incl. the `[validator]` pin of the generated receipt validator, read at run time from ggen-marketplace and never committed here), the real base check-run fixture | CE23-9 |
 | `bench/` | CE23-12 benchmark design: capital (`DESIGN.md`, `ontology-draft.ttl`, `orders.json`), the in-repo `nonllm-class-qualification-pack` (`bench/pack/`), the design graph `design.ttl` and its ggen projections (`bench/out/`) | CE23-12 |
