@@ -1,0 +1,14 @@
+# GATE: this pack may not describe any actuating capability.
+# Any row returned is a REFUSAL: the pack has overstepped its authority
+# boundary (read-only predicate + data census). Expected result: zero rows.
+PREFIX rp: <http://seanchatmangpt.github.io/packs/receipt-provenance#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+SELECT ?offender ?why WHERE {
+  {
+    ?offender a prov:Activity .
+    BIND("declares a prov:Activity (actuation), not a predicate" AS ?why)
+  } UNION {
+    ?offender rp:actuates ?target .
+    BIND("declares rp:actuates" AS ?why)
+  }
+}

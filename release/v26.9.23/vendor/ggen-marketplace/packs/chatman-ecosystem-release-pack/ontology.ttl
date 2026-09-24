@@ -211,3 +211,123 @@ er:pairedSubjectSha a rdf:Property ; rdfs:domain er:ImportedGateReceipt ;
     dcterms:description "The paired subject SHA the gate court ran against (gate.ggen_igniter_sha for the xaas stop court)." .
 er:receiptSha256 a rdf:Property ; rdfs:domain er:ImportedGateReceipt ;
     dcterms:description "sha256:<hex> of the exact gate receipt bytes." .
+
+# ---------------------------------------------------------------------------
+# v0.4.0: exact-head release court, typed check dispositions and the root
+# release receipt (CE23-9 exact-head root court; CE23-10 root release
+# receipt). templates/release-court.sh.tmpl renders one court script per
+# release that declares er:gate rows; the script re-hashes every
+# er:ImportedReceipt, runs every er:Probe and every er:Gate in order under
+# `set -euo pipefail`, and (with COURT_OBSERVED=<file>) writes what it saw as
+# er:observedExit / er:observedOutput Turtle plus the er:observedCourtInput set
+# naming the whole court input it ran. The consumer feeds that file back
+# through `extra_ontologies`; the root-receipt templates render from it and
+# the receipt's standing_after is derived from the observed exits (never
+# declared). Which commands form the court, which checks are typed out and the
+# imported bytes stay consumer-owned; a release-specific STOP check is a
+# consumer er:Gate command, never a generic pack gate.
+# ---------------------------------------------------------------------------
+
+er:Gate a rdfs:Class ;
+    rdfs:label "Release court gate" ;
+    dcterms:description "One step of a release's exact-head court: a bash command run by the generated court script from the court root, in er:gateOrder order, as bash -euo pipefail -c <command>. A failing gate stops the court with exit status equal to its er:gateOrder (1..99); 100 (import), 101 (probe), 102 (observation file) and 103 (consumer or court root not a directory) are the court's other typed exits." .
+
+er:gate a rdf:Property ; rdfs:domain er:Release ; rdfs:range er:Gate .
+er:gateOrder a rdf:Property ; rdfs:domain er:Gate ;
+    dcterms:description "xsd:integer 1..99, unique per release: the court's run order and its typed exit status when this gate fails." .
+er:gateName a rdf:Property ; rdfs:domain er:Gate ;
+    dcterms:description "Short name ([A-Za-z0-9][A-Za-z0-9._:-]*) printed in the court's COURT_GATE_REFUSED line and in the receipts." .
+er:command a rdf:Property ;
+    dcterms:description "bash command text of an er:Gate or er:Probe, run from the court root (er:courtRoot, default the consumer root holding ggen.toml). Rendered as one single-quoted shell word and run as `bash -euo pipefail -c <command>`, so multi-line commands keep their shell meaning and a syntax error in a command is that gate's or probe's own failure (typed by its order, or 101), never a parse error of the court script." .
+er:observedExit a rdf:Property ; rdfs:domain er:Gate ;
+    dcterms:description "Observation written by the generated court (COURT_OBSERVED): the exit status of the gate's command at the court subject. Never declared by hand; the root receipt's standing is derived from it." .
+
+er:courtRoot a rdf:Property ; rdfs:domain er:Release ;
+    dcterms:description "Optional working directory of the release court, relative to the consumer root ([A-Za-z0-9._/-]+, default \".\"): gate and probe commands and er:importPath resolve from it (e.g. \"../..\" for a release sub-project whose commands run at the repository root)." .
+
+er:observedCommandSha256 a rdf:Property ;
+    dcterms:description "Observation written by the generated court next to er:observedExit / er:observedOutput: the SHA256 (lowercase hex, SPARQL SHA256 of the er:command lexical form) of the command text the court ran. Gate 095 refuses an observation whose value differs from the current er:command." .
+
+er:observedCourtInput a rdf:Property ; rdfs:domain er:Release ;
+    dcterms:description "Observation written by the generated court on the release, one value per element of the whole court input it ran: court|<version>|<court root>, component|<repository>|<commitSha> per er:hasComponent, import|<ordinal>|<importName>|<importPath>|sha256:<hex the court re-hashed> per er:ImportedReceipt, probe|<IRI>|<probeOrder>|<probeName>|<command sha256> and gate|<IRI>|<gateOrder>|<gateName>|<command sha256>. Gate 095 rebuilds the current input from the graph with the same forms and refuses any element present on one side only (and an observed gate or probe of a release without this set), so an import digest or path, a component SHA, the court root or version, or a probe or gate edited, added or removed after the court ran makes its observation stale: the consumer re-runs the court instead of re-rendering receipts from it." .
+
+er:Probe a rdfs:Class ;
+    rdfs:label "Release court observation probe" ;
+    dcterms:description "An observation command of a release court (court subject SHA, toolchain identity, input digests). The court runs every probe before any gate; a failing probe stops the court with exit 101. Its stdout (trailing newlines removed) is written as er:observedOutput." .
+er:probe a rdf:Property ; rdfs:domain er:Release ; rdfs:range er:Probe .
+er:probeName a rdf:Property ; rdfs:domain er:Probe ;
+    dcterms:description "Name ([a-z0-9][a-z0-9_.-]*), unique per release; the receipt's observed[] entry is <probeName>=<observedOutput>." .
+er:probeOrder a rdf:Property ; rdfs:domain er:Probe ;
+    dcterms:description "xsd:integer >= 1, unique per release: run and render order." .
+er:observedOutput a rdf:Property ; rdfs:domain er:Probe ;
+    dcterms:description "Observation written by the generated court: the probe's stdout at the court subject." .
+
+er:FailureClass a rdfs:Class ;
+    rdfs:label "Failure class of a non-success check" ;
+    dcterms:description "The six operator classes every non-success check at a release head is typed into (release closure procedure): subject defect, environment, pre-existing, generator drift, evidence defect, infrastructure. Closed: gate 095 decides on its own list of these six IRIs and refuses any other er:FailureClass individual, a missing one, or a label other than the individual's own name, so a consumer triple can neither add a class nor relabel one; the receipt renders the class from its IRI." .
+er:subject_defect a er:FailureClass ; rdfs:label "subject_defect" .
+er:environment a er:FailureClass ; rdfs:label "environment" .
+er:pre_existing a er:FailureClass ; rdfs:label "pre_existing" .
+er:generator_drift a er:FailureClass ; rdfs:label "generator_drift" .
+er:evidence_defect a er:FailureClass ; rdfs:label "evidence_defect" .
+er:infrastructure a er:FailureClass ; rdfs:label "infrastructure" .
+
+er:CheckDisposition a rdfs:Class ;
+    rdfs:label "Typed non-success check" ;
+    dcterms:description "A CI or crown check that does not succeed at the release subject and is typed out of the gating court set with a failure class, a boundary (SUCCESSOR, BLOCKED, UNSUPPORTED or REFUSED) and evidence. out/typed-checks.txt lists their names, so a consumer can require every non-success check-run at the head to be named there." .
+er:checkDisposition a rdf:Property ; rdfs:domain er:Release ; rdfs:range er:CheckDisposition .
+er:checkName a rdf:Property ; rdfs:domain er:CheckDisposition ;
+    dcterms:description "Check-run name exactly as the forge reports it (single line), unique per release." .
+er:checkWorkflow a rdf:Property ; rdfs:domain er:CheckDisposition ;
+    dcterms:description "Optional: workflow file that produces the check." .
+er:failureClass a rdf:Property ; rdfs:domain er:CheckDisposition ; rdfs:range er:FailureClass .
+er:checkBoundary a rdf:Property ; rdfs:domain er:CheckDisposition ; rdfs:range er:RoleBoundary ;
+    dcterms:description "Where the typed check goes: er:ROLE_SUCCESSOR, er:ROLE_BLOCKED, er:ROLE_UNSUPPORTED or er:ROLE_REFUSED. A typed check is never REQUIRED: a required check is an er:Gate." .
+er:checkEvidence a rdf:Property ; rdfs:domain er:CheckDisposition ;
+    dcterms:description "Non-empty evidence for the typing (check-run id, subject SHA, failing step)." .
+
+er:ImportedReceipt a rdfs:Class ;
+    rdfs:label "Imported receipt (byte copy bound by digest)" ;
+    dcterms:description "A byte-exact copy of an upstream receipt or evidence file carried by the release. The generated court re-hashes it before any probe or gate runs (exit 100 on a missing file or a digest mismatch); out/receipts/IMPORTS.sha256 lets `shasum -a 256 -c --strict` recompute every digest later from the consumer root." .
+er:importName a rdf:Property ; rdfs:domain er:ImportedReceipt ;
+    dcterms:description "Name in the receipt's verified[] entry <importName>=<importDigest>; unique." .
+er:importPath a rdf:Property ; rdfs:domain er:ImportedReceipt ;
+    dcterms:description "Path of the byte copy relative to the consumer root; unique." .
+er:importDigest a rdf:Property ; rdfs:domain er:ImportedReceipt ;
+    dcterms:description "sha256:<64 hex> of the byte copy, recorded when the bytes were imported." .
+er:ordinal a rdf:Property ; rdfs:domain er:ImportedReceipt ;
+    dcterms:description "xsd:integer render order, unique." .
+er:importSource a rdf:Property ; rdfs:domain er:ImportedReceipt ;
+    dcterms:description "Optional provenance locator of the original bytes (owner/repo@sha:path)." .
+
+er:RootReceipt a rdfs:Class ;
+    rdfs:label "Root release receipt" ;
+    dcterms:description "The release's root receipt, rendered unsealed in the chatman-ecosystem Receipt shape (out/receipts/root-receipt.unsealed.toml, sealed by the consumer) and in the fleet R schema (out/receipts/ROOT.json). observed[] = component repo@sha + probe outputs; verified[] = imported name=digest pairs + imported crown STOP and counters; excluded[] = non-REQUIRED role dispositions + typed checks; replay[] = the court's gate commands. standing_after is derived from the observed gate exits, and the before->after pair must be permitted by er:permitsStanding. Both receipts render on every sync, never omitted: before the court observes, the subject is UNOBSERVED, every gate UNOBSERVED (fleet exit -1) and ROOT.json carries broken_term R_missing_identity; the court removes both when it replaces its observation, so the next sync renders them from the new one." .
+er:receiptRelease a rdf:Property ; rdfs:domain er:RootReceipt ; rdfs:range er:Release .
+er:receiptId a rdf:Property ; rdfs:domain er:RootReceipt ;
+    dcterms:description "receipt:<[a-z0-9_-]+> (chatman receipt id pattern)." .
+er:subjectRepository a rdf:Property ; rdfs:domain er:RootReceipt ;
+    dcterms:description "owner/name of the repository whose commit the court judged." .
+er:subjectProbe a rdf:Property ; rdfs:domain er:RootReceipt ; rdfs:range er:Probe ;
+    dcterms:description "The probe whose observed output is the court subject SHA (e.g. `git rev-parse HEAD`). The receipt binds that commit; it lands in a receipts-only child commit, since a commit cannot contain its own SHA." .
+er:actor a rdf:Property ; rdfs:domain er:RootReceipt .
+er:receiptAuthority a rdf:Property ; rdfs:domain er:RootReceipt ;
+    dcterms:description "chatman Authority in snake_case (e.g. release)." .
+er:receiptGrant a rdf:Property ; rdfs:domain er:RootReceipt ;
+    dcterms:description "Optional grant reference for the fleet receipt's authority.grant (default NONE)." .
+er:intention a rdf:Property ; rdfs:domain er:RootReceipt .
+er:timestamp a rdf:Property ; rdfs:domain er:RootReceipt ;
+    dcterms:description "Consumer-declared receipt timestamp (a fact of the release graph, not the clock of the render)." .
+er:changedPath a rdf:Property ; rdfs:domain er:RootReceipt ;
+    dcterms:description "A path the receipt-carrying commit changes (receipt changed[] and consequence.files_changed)." .
+er:standingBefore a rdf:Property ; rdfs:domain er:RootReceipt ; rdfs:range er:StandingState .
+er:standingAfter a rdf:Property ; rdfs:domain er:RootReceipt ; rdfs:range er:StandingState ;
+    dcterms:description "Derived (templates/root-receipt.toml.tmpl construct): ALIVE only when every gate of the receipt's release has exactly one observed exit and all are 0; BLOCKED when any observed exit is non-zero; otherwise (no or incomplete observation) equal to er:standingBefore, except that a standing before of ALIVE becomes BLOCKED (ALIVE is never carried without complete evidence, and chatman Standing::permits allows ALIVE only to stay or become BLOCKED). A declared value that differs from the derivation makes two values and gate 097 refuses it." .
+
+er:permitsStanding a rdf:Property ; rdfs:domain er:StandingState ; rdfs:range er:StandingState ;
+    dcterms:description "Receipt standing transition law: chatman-ecosystem Standing::permits (crates/ecosystem-core/src/lib.rs:208-232 at c59596f5) restricted to the standings a chatman receipt can carry among this pack's individuals (UNKNOWN, PARTIAL_ALIVE, ALIVE, BLOCKED, UNSUPPORTED). UNKNOWN -> ALIVE is not permitted. Closed: gate 097 carries the nine pairs as its own table and decides on that table, never on graph data; it refuses any er:permitsStanding triple outside the table and any table pair missing from the graph, so these triples are a checked copy of the law that a consumer cannot extend." .
+er:UNKNOWN er:permitsStanding er:UNKNOWN .
+er:PARTIAL_ALIVE er:permitsStanding er:PARTIAL_ALIVE, er:ALIVE, er:BLOCKED .
+er:ALIVE er:permitsStanding er:ALIVE, er:BLOCKED .
+er:BLOCKED er:permitsStanding er:BLOCKED, er:PARTIAL_ALIVE .
+er:UNSUPPORTED er:permitsStanding er:UNSUPPORTED .

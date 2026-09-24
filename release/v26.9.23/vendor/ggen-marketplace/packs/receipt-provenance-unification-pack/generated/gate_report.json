@@ -1,0 +1,24 @@
+{
+  "note": "Gate report. gate_01/gate_02/gate_04/gate_05 PASS iff their offender list is empty. gate_03 is a census, not a gate: contracts with no executable validator on disk today.",
+  "gate_01_no_actuation": {
+    "verdict": "PASS",
+    "offenders": []
+  },
+  "gate_02_every_fact_cited": {
+    "verdict": "PASS",
+    "offenders": []
+  },
+  "gate_04_dfcm_facts_cited_with_line": {
+    "verdict": "PASS",
+    "offenders": []
+  },
+  "gate_05_probes_read_only": {
+    "verdict": "PASS",
+    "offenders": []
+  },
+  "gate_03_contracts_without_validator": [
+    {"title": "Chatman clean-session execution receipt", "source_file": "/Users/sac/gym-ecosystem/vendor/autofde-lab/schemas/chatman-clean-session-receipt.schema.json"},
+    {"title": "ggen-ecosystem bootstrap receipt", "source_file": "/Users/sac/gym-ecosystem/vendor/ggen-ecosystem/receipts/bootstrap-ggen-ecosystem-sync.json"},
+    {"title": "gym autonomic crown receipt", "source_file": "/Users/sac/gym-ecosystem/artifacts/autonomic-crown.json"}
+  ]
+}

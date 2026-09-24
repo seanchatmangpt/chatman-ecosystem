@@ -1,0 +1,177 @@
+{
+ "identity": {
+  "subject": "xaas",
+  "repo": "seanchatmangpt/xaas",
+  "subject_sha": "0000000000000000000000000000000000000000",
+  "base_sha": "e999e62b63c680517b9a562cef877d8b09b0cfdd",
+  "base_sha_why": "qualification of one frozen subject (no base->head transition judged); base_sha = subject_sha",
+  "worktree": "/Users/sac/wt/v26922/v23/rel-xaas-int",
+  "worktree_kind": "detached scratch worktree of /Users/sac/xaas (lane RELA exact-head qualification)",
+  "branch_of_subject": "friday/gc-fri-0800",
+  "freeze": "/Users/sac/wt/v26922/v26923/release/FREEZE.json xaas.sha",
+  "freeze_sha_matches": true,
+  "int_worktree_head_at_receipt": "e999e62b63c680517b9a562cef877d8b09b0cfdd",
+  "ggen_igniter_dir": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+  "ggen_igniter_dir_head": "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+  "tracked_tree_clean": true,
+  "mix_lock_sha256": "9d8343c16444361b29cc422fc3d70f659d824767bc47229ddacf4fb407f3161b",
+  "deps_build_provenance": "deps/ and _build/ APFS-cloned (cp -cR) from /Users/sac/wt/v26922/fri/xaas-int; mix.lock byte-identical (cmp exit 0)"
+ },
+ "authority": {
+  "ceiling": "OBSERVE",
+  "grant": "operator release sequence, exact-head qualification of xaas for GC23-11 (workflow computed task RELA); scratch worktree only; no commit, no push, no PR, no tag, no publish",
+  "actor": "claude-opus-5.5 workflow subagent (release lane RELA xaas)"
+ },
+ "consequence": {
+  "commits": [],
+  "files_changed": [],
+  "remote_effects": [],
+  "local_effects": [
+   "/Users/sac/wt/v26922/v23/rel-xaas-int: git checkout --detach e999e62b63c680517b9a562cef877d8b09b0cfdd (from fdacbed); deps/ and _build/ replaced by APFS clones of xaas-int's (old ones moved to /private/tmp/claude-501/v23-scratch/RELA-xaas/old-prov)",
+   "local Postgres xaas_test: mix test alias ecto.create --quiet + ecto.migrate --quiet",
+   "this receipt + /Users/sac/wt/v26922/v26923/receipts/fleet/xaas-e999e62b63c680517b9a562cef877d8b09b0cfdd.logs",
+   "probe worktrees (outside both int worktrees): /Users/sac/wt/v26922/v23/rela-gi-fmt-probe (ggen_igniter, deps/_build/test APFS-cloned from ggen_igniter-int, then compiled in place) and /Users/sac/wt/v26922/v23/rela-xaas-digest-probe (xaas, deps/_build APFS-cloned from rel-xaas-int)"
+  ]
+ },
+ "replay": {
+  "durable_location": "git-notes:refs/notes/receipts@0000000000000000000000000000000000000000",
+  "commands": [
+   {
+    "cmd": "GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int mix format --check-formatted",
+    "cwd": "/Users/sac/wt/v26922/v23/rel-xaas-int",
+    "exit": 0,
+    "summary": "warning lines: 1 (deps/ex4pm/mix.exs Application.get_env, pre-existing); no unformatted-file lines",
+    "output_sha256": "9e98961fd82020adae8746821bff6721ea9101fdff2967a88fc854260a70e8ad",
+    "log": "/Users/sac/wt/v26922/v26923/receipts/fleet/xaas-e999e62b63c680517b9a562cef877d8b09b0cfdd.logs/format.log",
+    "started_at": "2026-09-23T18:53:19Z",
+    "ended_at": "2026-09-23T18:53:25Z"
+   },
+   {
+    "cmd": "MIX_ENV=test GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int mix compile --force --warnings-as-errors",
+    "cwd": "/Users/sac/wt/v26922/v23/rel-xaas-int",
+    "exit": 0,
+    "summary": "Compiling 520 files (.ex); Generated xaas app; warning lines: 1 (deps/ex4pm/mix.exs Application.get_env, pre-existing, dependency mix.exs not the project)",
+    "output_sha256": "1408dc4a61b18909b528c886074b3308a2d45a595273b2bd349ee26abf663457",
+    "log": "/Users/sac/wt/v26922/v26923/receipts/fleet/xaas-e999e62b63c680517b9a562cef877d8b09b0cfdd.logs/compile.log",
+    "started_at": "2026-09-23T18:53:29Z",
+    "ended_at": "2026-09-23T18:53:53Z"
+   },
+   {
+    "cmd": "GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int mix test",
+    "cwd": "/Users/sac/wt/v26922/v23/rel-xaas-int",
+    "exit": 2,
+    "summary": "Finished in 406.8 seconds (10.1s async, 396.7s sync); 1858 tests, 5 failures (76 excluded)",
+    "output_sha256": "394828bd3afcded555a03405999a29ab884e6c2147254cbf7c13f495102845c5",
+    "log": "/Users/sac/wt/v26922/v26923/receipts/fleet/xaas-e999e62b63c680517b9a562cef877d8b09b0cfdd.logs/test.log",
+    "started_at": "2026-09-23T18:54:01Z",
+    "ended_at": "2026-09-23T19:00:56Z"
+   }
+  ]
+ },
+ "toolchain": {
+  "elixir": "Elixir 1.19.5 (compiled with Erlang/OTP 28)",
+  "elixir_bin": "/opt/homebrew/bin/elixir",
+  "mix_bin": "/opt/homebrew/bin/mix",
+  "otp_release_erts": "28 16.2",
+  "otp_version": "28.3.1",
+  "erl_bin": "/Users/sac/.erlmcp/otp-28.3.1/bin/erl",
+  "python3": "Python 3.14.3",
+  "postgres_server": "PostgreSQL 14.19 (Homebrew) on aarch64-apple-darwin24.4.0",
+  "tool_versions_pin": {
+   "elixir": "1.20.2-otp-28",
+   "erlang": "28.5.0.2"
+  },
+  "tool_versions_pin_used": false,
+  "tool_versions_note": "ambient toolchain used (the one xaas-int's provisioned _build was compiled with: deps .mix/compile.elixir_scm records 1.19.5); the .tool-versions pin is installed under ~/.asdf but was not on PATH"
+ },
+ "standing": {
+  "value": "PARTIAL_ALIVE",
+  "derived_from": "at subject_sha e999e62b63c680517b9a562cef877d8b09b0cfdd: format exit 0, forced warnings-as-errors test compile exit 0, mix test exit 2 (Finished in 406.8 seconds (10.1s async, 396.7s sync); 1858 tests, 5 failures (76 excluded)); not ALIVE because a replay step exited non-zero",
+  "broken_term": "mu_unlawful"
+ },
+ "failures": [
+  {
+   "test": "test/xaas/zcode_plugin/projection_test.exs:31 (Xaas.ZcodePlugin.ProjectionTest) committed projection == ggen sync",
+   "observed": "ggen 26.9.18 `ggen sync run` exit 1: [FM-PACK-008] pack zcode_plugin content hash mismatch (ggen.lock blake3:9a96572b... vs on-disk blake3:ee49a367...)",
+   "classification": "PRE-EXISTING (in origin/main)",
+   "evidence": "priv/zcode_plugin/ggen.lock last written by 191e7d5; merge 068c1d2 (ancestor of origin/main) edited packs/zcode-plugin-pack/templates/plugin.json.tmpl and marketplace plugin.json without re-locking; `git diff --stat origin/main e999e62 -- priv/zcode_plugin` is empty, so the inputs are byte-identical at origin/main",
+   "broken_term": "mu_unlawful",
+   "owner": "xaas (re-lock priv/zcode_plugin via `ggen sync` in that project)"
+  },
+  {
+   "test": "test/xaas/ultracode/semantic_jira_e2e_test.exs:106 (SJ-001) line 148 AdmissionBinding.snapshot_digest == graph work_order_digest",
+   "observed": "left sha256:5a8d6d30... right sha256:2da4d987...",
+   "classification": "PRE-EXISTING (cross-repo; recorded by lane V23-D b1b preexisting-sj001-graph-int.log; V23-T2R observed it passing at ggen_igniter-int 52798a0)",
+   "evidence": "ggen_igniter 33c8e86 (FRI-T6, in ggen_igniter-int via c90c17b) embeds `definition_digest` in the admitted snapshot (dropped by its digest/1) and digests the definition over an 18-field Map.take whitelist; xaas AdmissionBinding @digest_fields lacks definition_digest and computes the definition digest by dropping standing/dimensions. Probe rela/xaas-sj001-digest-probe ea17922 (both changes) -> SJ-001 1 test 0 failures (probe-sj001-digest2.log) but test/xaas/ultracode 785 tests 10 failures, 7 new in SemanticWorkTest/SemanticWorkFalsifierTest whose committed descriptors carry the pre-33c8e86 bridge definition digest (probe-ultracode-digestfix.log): not a complete fix",
+   "broken_term": "mu_unlawful",
+   "owner": "xaas AdmissionBinding + ggen_igniter SemanticJira definition-digest contract (one declared form per producer version)"
+  },
+  {
+   "test": "test/xaas/ultracode/semantic_drive_test.exs:107 (EP-A drive to ALIVE) line 214 diff == lib/ggen_igniter/semantic_jira/cli.ex",
+   "observed": "diff also contains lib/ggen_igniter/semantic_jira/bootstrap.ex",
+   "classification": "PRE-EXISTING relative to this lane; introduced into the release pair by ggen_igniter V23-B (bootstrap.ex 9958cfc/4165160/974b31d, integrated f5575d3, head 3937a4f)",
+   "evidence": "ggen_igniter-int 3937a4f `mix format --check-formatted` exits 1 under its .tool-versions pin elixir 1.18.4-otp-27 (bootstrap.ex line 245) and 0 under ambient 1.19.5 (gi-fmt-1184.log, gi-fmt-ambient.log); the xaas recipe provider formats the target under the target pin, so it rewrites bootstrap.ex. Probe ggen_igniter rela/gi-bootstrap-fmt-pin ccb01f6 (bootstrap.ex formatted under 1.18.4; both toolchains then exit 0) -> semantic_drive_test 9 tests 0 failures (probe-drive-fmtfix.log); revert-mutation rela/gi-bootstrap-fmt-revert-mutation 4086532 -> 9 tests 2 failures, the same two (probe-drive-revert.log)",
+   "broken_term": "admission_vacuous",
+   "owner": "ggen_igniter (format bootstrap.ex under the pinned toolchain; inferred, not re-run here: its lane gate reported green at f5575d3, which of the two toolchains only ambient 1.19.5 accepts)"
+  },
+  {
+   "test": "test/xaas/ultracode/semantic_drive_test.exs:345 (no-drift subject REFUSED(no_delta))",
+   "observed": "drive returned {:ok, ...} instead of REFUSED(no_delta): the recipe's format of bootstrap.ex is a delta",
+   "classification": "PRE-EXISTING, same root cause and same probe/mutation evidence as the EP-A failure",
+   "evidence": "see the previous entry",
+   "broken_term": "admission_vacuous",
+   "owner": "ggen_igniter"
+  },
+  {
+   "test": "test/xaas/ultracode/dispatch_test.exs:600 (hard timeout kills the process group)",
+   "observed": "`pgrep -f \"zcode.js --prompt\"` returned 10 pids after the kill",
+   "classification": "PRE-EXISTING (recorded by lane V23-D as pre-existing); environment-dependent",
+   "evidence": "the assertion pgreps machine-wide, not the test's process group; after the run, the same pgrep matched pid 82189 `node bin/zcode.js --prompt /xaas ...` whose ancestor BEAM 77379 had been running ~8h, unrelated to this run",
+   "broken_term": "mu_on_O",
+   "owner": "xaas test isolation (scope the survivor check to the dispatched process group)"
+  }
+ ],
+ "probe_logs": {
+  "probe-drive-fmtfix.log": {
+   "path": "/Users/sac/wt/v26922/v26923/receipts/fleet/xaas-e999e62b63c680517b9a562cef877d8b09b0cfdd.logs/probe-drive-fmtfix.log",
+   "sha256": "7d8f4c4ce6d5605760c28e78b34e3406c45d0414a50d4af819d643ca3bcde781"
+  },
+  "probe-drive-revert.log": {
+   "path": "/Users/sac/wt/v26922/v26923/receipts/fleet/xaas-e999e62b63c680517b9a562cef877d8b09b0cfdd.logs/probe-drive-revert.log",
+   "sha256": "953de13651ae78757affcf98eb5582acc82f156b3603cd120f80c89e6e803c24"
+  },
+  "probe-sj001-digest.log": {
+   "path": "/Users/sac/wt/v26922/v26923/receipts/fleet/xaas-e999e62b63c680517b9a562cef877d8b09b0cfdd.logs/probe-sj001-digest.log",
+   "sha256": "791d1f83345951ee1faf2404d2dcd354f6de412f4e8e6af94a760354efb2f094"
+  },
+  "probe-sj001-digest2.log": {
+   "path": "/Users/sac/wt/v26922/v26923/receipts/fleet/xaas-e999e62b63c680517b9a562cef877d8b09b0cfdd.logs/probe-sj001-digest2.log",
+   "sha256": "2992ff67ef28b063f9f75572eaf09681fe16298fb22fd246d6794ab86964805b"
+  },
+  "probe-ultracode-digestfix.log": {
+   "path": "/Users/sac/wt/v26922/v26923/receipts/fleet/xaas-e999e62b63c680517b9a562cef877d8b09b0cfdd.logs/probe-ultracode-digestfix.log",
+   "sha256": "4cbd97fd0d9154a4833c7782c57f030f1faf99a170cd680dee28d292ad2c5198"
+  },
+  "probe-gi-compile.log": {
+   "path": "/Users/sac/wt/v26922/v26923/receipts/fleet/xaas-e999e62b63c680517b9a562cef877d8b09b0cfdd.logs/probe-gi-compile.log",
+   "sha256": "6c9b776f5aac87eb99e77f9c539bf1c7774b4fd9ee60fab7b7af535c47954f81"
+  },
+  "gi-fmt-1184.log": {
+   "path": "/Users/sac/wt/v26922/v26923/receipts/fleet/xaas-e999e62b63c680517b9a562cef877d8b09b0cfdd.logs/gi-fmt-1184.log",
+   "sha256": "8a5fed539fcf829fd12c32653513723a97fdb631b7b7ede0fd4d528376145679"
+  },
+  "gi-fmt-ambient.log": {
+   "path": "/Users/sac/wt/v26922/v26923/receipts/fleet/xaas-e999e62b63c680517b9a562cef877d8b09b0cfdd.logs/gi-fmt-ambient.log",
+   "sha256": "021af2067f739bc652a92b28c6c03fefd316e644ad91a87addb0d041f82aa857"
+  }
+ },
+ "probe_branches": {
+  "ggen_igniter": {
+   "rela/gi-bootstrap-fmt-pin": "ccb01f62a4c7a3e721ce0ea125214354c84ddc75 (local only, not pushed, not integrated; worktree /Users/sac/wt/v26922/v23/rela-gi-fmt-probe; committed with core.hooksPath=/dev/null)",
+   "rela/gi-bootstrap-fmt-revert-mutation": "4086532aea93ea557bd1eac8710a853ce07b2f6d (anti-vacuity control)"
+  },
+  "xaas": {
+   "rela/xaas-sj001-digest-probe": "ea17922122975fb0963db39288b933f1c6c8b0a4 (local only; REFUTED as a complete fix; worktree /Users/sac/wt/v26922/v23/rela-xaas-digest-probe)"
+  }
+ }
+}

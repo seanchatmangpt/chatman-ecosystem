@@ -34,10 +34,45 @@ repositories plus xaas and ggen_igniter. Output:
 `imports/court-references.ttl` states exactly these hits as `er:courtReferencesComponent`
 facts with the `owner/name` slug as object.
 
+## Release court and root receipt (pack 0.4.0)
+
+`release.ttl` also declares a court for this consumer (qualification data): three gates (the
+explicit runner over this graph, `shasum -a 256 -c --strict out/receipts/IMPORTS.sha256`, and a
+consumer-owned check that the rendered crosswalk disposes 16 roles), five probes (`git rev-parse
+HEAD` as the receipt subject, `ggen --version`, `python3 --version`, sha256 of the pack
+`ontology.ttl` and of `release.ttl`), one typed check and three imports:
+
+- typed check `Dependency license and source policy`: `gh api
+  repos/seanchatmangpt/chatman-ecosystem/commits/c59596f5506e7a00ca4ed6b909ebf6d6659b74c1/check-runs`
+  (2026-09-23) lists check-run 103106030500 with conclusion `failure` (Crown Admission,
+  `.github/workflows/crown.yml`, run 34548430864, push); `gh api .../actions/jobs/103106030500`
+  names the failing step `Run cargo deny check`. Typed `pre_existing`, boundary SUCCESSOR.
+- imports: the three byte copies of the table above (`manifest-v26.9.1`, `fleet-classification`,
+  `ce23-orders`), with the sha256 values listed there.
+
+`observed.ttl` is the court's own output, never hand-written: at the lane commit named by its
+`subject_sha` line, in this directory, with `observed.ttl` holding only its prefix line, `ggen sync
+run` then `COURT_OBSERVED=observed.ttl bash out/scripts/crown_v26_9_23.sh` (exit 0, `COURT_ALIVE`).
+Its last statement is the release's `er:observedCourtInput` set (14 elements: the court, 2
+components, 3 imports, 5 probes, 3 gates); gate 095 refuses it once any of those inputs is edited,
+so changing a gate, probe, import, component SHA or the court root here means re-running the court.
+It is committed in the child commit, since a commit cannot contain its own SHA. `qualification/qualify.sh` step 7 re-runs the court in a git copy
+of the pack and requires every line except the subject line to reproduce; the subject must be an
+ancestor of HEAD.
+
 ## Expected consequence
 
-`ggen sync run` (ggen 26.9.18) exits 0 and writes six files under `out/` (not committed): the
+`ggen sync run` (ggen 26.9.18) exits 0 and writes the crosswalk files under `out/` (not committed): the
 five in-universe roles (public-ontology, manufacture, pack-marketplace, actuation, explore) are
 SUCCESSOR by `rule:fleet-classification`, the other eleven are SUCCESSOR by
 `rule:no-GC23-court-reference`, and no role is REQUIRED. A second run skips every file as
 identical.
+
+The same sync also writes the 0.4.0 outputs: `out/scripts/crown_v26_9_23.sh`,
+`out/typed-checks.txt` (one line), `out/receipts/IMPORTS.sha256` (three lines), and, from the
+committed observation, `out/receipts/root-receipt.unsealed.toml` (PARTIAL_ALIVE -> ALIVE, subject =
+the observed commit) and `out/receipts/ROOT.json` (ADMITTED by `~/.claude/dfcm/validate_receipt.py`).
+With `observed.ttl` holding only its prefix line (before the court), both receipts are still
+written, typed: subject `UNOBSERVED`, PARTIAL_ALIVE -> PARTIAL_ALIVE, ROOT.json `broken_term`
+`R_missing_identity` (refused by the fleet validator). The court removes both when it writes its
+observation, so the following sync renders them from it.

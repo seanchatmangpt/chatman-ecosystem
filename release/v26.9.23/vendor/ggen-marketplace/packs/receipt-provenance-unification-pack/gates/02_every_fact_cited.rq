@@ -1,0 +1,9 @@
+# GATE: every ReceiptContract and Validator must carry a real rp:sourceFile.
+# Any row returned is an UNCITED FACT — manufactured, not observed.
+# Expected result: zero rows. (rp:val_none is the one exempt sentinel.)
+PREFIX rp: <http://seanchatmangpt.github.io/packs/receipt-provenance#>
+SELECT ?s WHERE {
+  { ?s a rp:ReceiptContract } UNION { ?s a rp:Validator }
+  FILTER NOT EXISTS { ?s rp:sourceFile ?f }
+  FILTER(?s != rp:val_none)
+}

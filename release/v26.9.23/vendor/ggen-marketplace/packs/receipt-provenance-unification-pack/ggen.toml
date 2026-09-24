@@ -1,0 +1,9 @@
+[project]
+name = "receipt-provenance-unification"
+
+[ontology]
+source = "ontology.ttl"
+
+[templates]
+dir = "templates"
+aggregate_modules = false

@@ -1,0 +1,76 @@
+---
+to: generated/gate_report.json
+force: true
+sparql:
+  actuation: |
+    PREFIX rp: <http://seanchatmangpt.github.io/packs/receipt-provenance#>
+    PREFIX prov: <http://www.w3.org/ns/prov#>
+    SELECT ?offender ?why WHERE {
+      { ?offender a prov:Activity . BIND("declares a prov:Activity (actuation), not a predicate" AS ?why) }
+      UNION
+      { ?offender rp:actuates ?target . BIND("declares rp:actuates" AS ?why) }
+    }
+  uncited: |
+    PREFIX rp: <http://seanchatmangpt.github.io/packs/receipt-provenance#>
+    SELECT ?s WHERE {
+      { ?s a rp:ReceiptContract } UNION { ?s a rp:Validator }
+      FILTER NOT EXISTS { ?s rp:sourceFile ?f }
+      FILTER(?s != rp:val_none)
+    }
+  uncited_dfcm: |
+    PREFIX rp: <http://seanchatmangpt.github.io/packs/receipt-provenance#>
+    SELECT DISTINCT ?s ?why WHERE {
+      {
+        { ?s a rp:ImplicationRule } UNION { ?s a rp:ResolutionKind }
+        UNION { ?s a rp:LocationAlternative } UNION { ?s a rp:Profile }
+        UNION { ?s a rp:ReceiptContract ; rp:contractKey "dfcm_fleet_v1" }
+        UNION { ?c rp:contractKey "dfcm_fleet_v1" ; rp:validatedBy ?s }
+        UNION { ?s a rp:FieldBinding ; rp:contract ?c . ?c rp:contractKey "dfcm_fleet_v1" }
+        UNION { ?f a rp:FieldBinding ; rp:contract ?c ; rp:valueForm ?s . ?c rp:contractKey "dfcm_fleet_v1" }
+      }
+      OPTIONAL { ?s rp:sourceFile ?file }
+      OPTIONAL { ?s rp:sourceLine ?line }
+      FILTER(!BOUND(?file) || !BOUND(?line))
+      BIND(IF(!BOUND(?file), "no rp:sourceFile", "no rp:sourceLine") AS ?why)
+    }
+  write_probes: |
+    PREFIX rp: <http://seanchatmangpt.github.io/packs/receipt-provenance#>
+    SELECT ?kind ?argv WHERE {
+      ?kind a rp:ResolutionKind .
+      OPTIONAL { ?kind rp:gitArgv ?a }
+      BIND(COALESCE(?a, "") AS ?argv)
+      BIND(IF(STRSTARTS(?argv, "cat-file -e "), STRAFTER(?argv, "cat-file -e "),
+           IF(STRSTARTS(?argv, "merge-base --is-ancestor "), STRAFTER(?argv, "merge-base --is-ancestor "),
+           IF(STRSTARTS(?argv, "notes --ref=$ref list "), STRAFTER(?argv, "notes --ref=$ref list "), "!"))) AS ?rest)
+      FILTER(?rest = "!" || REGEX(?rest, "(^| )-"))
+    }
+  unvalidated: |
+    PREFIX rp: <http://seanchatmangpt.github.io/packs/receipt-provenance#>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    SELECT ?title ?src WHERE {
+      ?c a rp:ReceiptContract ; dcterms:title ?title ; rp:sourceFile ?src ;
+         rp:validatedBy rp:val_none .
+    } ORDER BY ?title
+---
+{
+  "note": "Gate report. gate_01/gate_02/gate_04/gate_05 PASS iff their offender list is empty. gate_03 is a census, not a gate: contracts with no executable validator on disk today.",
+  "gate_01_no_actuation": {
+    "verdict": "{% if actuation %}REFUSED{% else %}PASS{% endif %}",
+    "offenders": [{% for a in actuation %}{"subject": "{{ a.offender }}", "why": "{{ a.why }}"}{% if not loop.last %},{% endif %}{% endfor %}]
+  },
+  "gate_02_every_fact_cited": {
+    "verdict": "{% if uncited %}REFUSED{% else %}PASS{% endif %}",
+    "offenders": [{% for u in uncited %}"{{ u.s }}"{% if not loop.last %},{% endif %}{% endfor %}]
+  },
+  "gate_04_dfcm_facts_cited_with_line": {
+    "verdict": "{% if uncited_dfcm %}REFUSED{% else %}PASS{% endif %}",
+    "offenders": [{% for u in uncited_dfcm %}{"subject": "{{ u.s }}", "why": "{{ u.why }}"}{% if not loop.last %},{% endif %}{% endfor %}]
+  },
+  "gate_05_probes_read_only": {
+    "verdict": "{% if write_probes %}REFUSED{% else %}PASS{% endif %}",
+    "offenders": [{% for w in write_probes %}{"subject": "{{ w.kind }}", "argv": {{ w.argv | json_encode() }}}{% if not loop.last %},{% endif %}{% endfor %}]
+  },
+  "gate_03_contracts_without_validator": [
+{% for u in unvalidated %}    {"title": "{{ u.title }}", "source_file": "{{ u.src }}"}{% if not loop.last %},{% endif %}
+{% endfor %}  ]
+}

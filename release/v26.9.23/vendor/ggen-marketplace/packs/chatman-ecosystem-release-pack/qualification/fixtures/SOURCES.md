@@ -37,3 +37,12 @@ receipt shapes. It judged only GC23-11, so STOP=false in its bytes.
 
 Graph-level mutants (a lift fact removed: requiredGateCount, stopReceiptSha256, the first gate
 receiptSha256) are derived in scratch by `qualify.sh` from the positive lift, not committed.
+
+## Chatman receipt schema (0.4.0)
+
+`../chatman-receipt.schema.json` (kept outside this directory, whose files `derive-fixtures.py`
+re-derives) is a byte copy of `git show
+c59596f5506e7a00ca4ed6b909ebf6d6659b74c1:schemas/receipt.schema.json` in a clone of
+seanchatmangpt/chatman-ecosystem (blob b611d07b, sha256
+3c68cc5c85194f686afcef8eb93015786ccbfe4e9e15e461f20aae12079e3552). `qualify.sh` step 7 validates
+the rendered `root-receipt.unsealed.toml` against it with jsonschema.

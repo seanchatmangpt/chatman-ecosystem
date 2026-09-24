@@ -4,22 +4,30 @@
 # MESSAGE: non-empty description, so every row is "gate, repo@sha40 subject, falsifier".
 PREFIX sj: <https://ggen-igniter.dev/ontology/semantic-jira#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
+# Each UNION branch binds ?order itself. A branch holding only FILTER NOT EXISTS is evaluated
+# bottom-up (SPARQL 1.1 section 18.6) with ?order unbound, so ggen's native engine found the
+# pattern on ANY subject and admitted the violation whenever another subject satisfied it
+# (rdflib substitutes the outer binding and refused it): court-mutants rows C29, C34, C35.
 SELECT DISTINCT ?order ?reason WHERE {
-  ?order a sj:WorkOrder ; sj:checkpointOf ?gate .
   {
+    ?order a sj:WorkOrder ; sj:checkpointOf ?gate .
     FILTER NOT EXISTS { ?order sj:repository ?repo . FILTER(REGEX(STR(?repo), "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")) }
     BIND("missing-or-invalid-repository" AS ?reason)
   } UNION {
+    ?order a sj:WorkOrder ; sj:checkpointOf ?gate .
     FILTER NOT EXISTS { ?order sj:baseSha ?sha . FILTER(REGEX(STR(?sha), "^[0-9a-f]{40}$")) }
     BIND("missing-or-invalid-base-sha" AS ?reason)
   } UNION {
+    ?order a sj:WorkOrder ; sj:checkpointOf ?gate .
     FILTER NOT EXISTS { ?order sj:falsifier ?f . ?f dcterms:description ?text . FILTER(STRLEN(STR(?text)) > 0) }
     BIND("missing-falsifier-description" AS ?reason)
   } UNION {
+    ?order a sj:WorkOrder ; sj:checkpointOf ?gate .
     ?order sj:repository ?r1, ?r2 .
     FILTER(STR(?r1) < STR(?r2))
     BIND("multiple-repositories" AS ?reason)
   } UNION {
+    ?order a sj:WorkOrder ; sj:checkpointOf ?gate .
     ?order sj:baseSha ?s1, ?s2 .
     FILTER(STR(?s1) < STR(?s2))
     BIND("multiple-base-shas" AS ?reason)

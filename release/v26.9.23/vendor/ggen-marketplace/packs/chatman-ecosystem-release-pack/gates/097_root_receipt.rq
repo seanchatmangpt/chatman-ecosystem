@@ -1,0 +1,161 @@
+# MESSAGE: A root release receipt (er:RootReceipt) is admitted only when: it is the only root
+# MESSAGE: receipt of the graph; it has exactly one er:receiptId receipt:[a-z0-9_-]+, one
+# MESSAGE: er:receiptRelease that declares a gate, one non-empty er:subjectRepository, er:actor,
+# MESSAGE: er:intention and er:timestamp, one chatman er:receiptAuthority, one er:standingBefore
+# MESSAGE: among UNKNOWN/PARTIAL_ALIVE/ALIVE/BLOCKED/UNSUPPORTED and exactly one er:standingAfter
+# MESSAGE: (derived from the observed gate exits; a declared value that contradicts the
+# MESSAGE: derivation makes two); the before->after pair is one of the nine pairs of chatman
+# MESSAGE: Standing::permits that this gate carries as a closed table (UNKNOWN->ALIVE is refused),
+# MESSAGE: and the graph's er:permitsStanding triples are exactly that table (a consumer triple
+# MESSAGE: cannot extend the law, and the pack ontology copy cannot drift from it); its
+# MESSAGE: er:subjectProbe is a probe of its release and, once any gate of that release is observed,
+# MESSAGE: has exactly one 40-hex observed output; it verifies at least one import; every
+# MESSAGE: er:ImportedReceipt has exactly one er:importName ([A-Za-z0-9][A-Za-z0-9._:-]*),
+# MESSAGE: er:importPath ([A-Za-z0-9._/-]+, relative to the court root), sha256 er:importDigest
+# MESSAGE: and integer er:ordinal, each unique;
+# MESSAGE: and, for every er:ImportedCrown, every digest it admitted (STOP and gate receipts) is an
+# MESSAGE: imported digest and its crown and paired components are components of the receipt's
+# MESSAGE: release at the same commit, so the root receipt carries the exact bytes and subjects the
+# MESSAGE: crown law judged.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT DISTINCT ?subject ?reason WHERE {
+  {
+    ?subject a er:RootReceipt .
+    ?other a er:RootReceipt .
+    FILTER(?subject != ?other)
+    BIND("more-than-one-root-receipt" AS ?reason)
+  } UNION {
+    ?subject a er:RootReceipt .
+    FILTER(NOT EXISTS { ?subject er:receiptId ?id . FILTER(REGEX(STR(?id), "^receipt:[a-z0-9_-]+$")) }
+           || EXISTS { ?subject er:receiptId ?id . FILTER(!REGEX(STR(?id), "^receipt:[a-z0-9_-]+$")) }
+           || EXISTS { ?subject er:receiptId ?i1 , ?i2 . FILTER(?i1 != ?i2) })
+    BIND("receipt-id-not-exactly-one-chatman-id" AS ?reason)
+  } UNION {
+    ?subject a er:RootReceipt .
+    FILTER(NOT EXISTS { ?subject er:receiptRelease ?r . ?r a er:Release ; er:gate ?g . }
+           || EXISTS { ?subject er:receiptRelease ?r1 , ?r2 . FILTER(?r1 != ?r2) })
+    BIND("receipt-release-not-exactly-one-court-release" AS ?reason)
+  } UNION {
+    ?subject a er:RootReceipt .
+    VALUES ?p { er:subjectRepository er:actor er:intention er:timestamp }
+    FILTER(NOT EXISTS { ?subject ?p ?v . FILTER(STRLEN(STR(?v)) > 0) }
+           || EXISTS { ?subject ?p ?v1 , ?v2 . FILTER(?v1 != ?v2) })
+    BIND(CONCAT("receipt-field-not-exactly-one-non-empty:", STRAFTER(STR(?p), "#")) AS ?reason)
+  } UNION {
+    ?subject a er:RootReceipt .
+    FILTER(NOT EXISTS { ?subject er:receiptAuthority ?a . FILTER(STR(?a) IN ("observe", "classify", "draft", "persist_control_plane", "open_draft_pull_request", "modify_external_object", "communicate", "merge", "delete", "spend", "approve", "release")) }
+           || EXISTS { ?subject er:receiptAuthority ?a1 , ?a2 . FILTER(?a1 != ?a2) })
+    BIND("receipt-authority-not-exactly-one-chatman-authority" AS ?reason)
+  } UNION {
+    ?subject a er:RootReceipt .
+    FILTER(NOT EXISTS { ?subject er:standingBefore ?b . FILTER(?b IN (er:UNKNOWN, er:PARTIAL_ALIVE, er:ALIVE, er:BLOCKED, er:UNSUPPORTED)) }
+           || EXISTS { ?subject er:standingBefore ?b . FILTER(?b NOT IN (er:UNKNOWN, er:PARTIAL_ALIVE, er:ALIVE, er:BLOCKED, er:UNSUPPORTED)) }
+           || EXISTS { ?subject er:standingBefore ?b1 , ?b2 . FILTER(?b1 != ?b2) })
+    BIND("standing-before-not-exactly-one-receipt-standing" AS ?reason)
+  } UNION {
+    ?subject a er:RootReceipt .
+    FILTER(NOT EXISTS { ?subject er:standingAfter ?a . }
+           || EXISTS { ?subject er:standingAfter ?a1 , ?a2 . FILTER(?a1 != ?a2) })
+    BIND("standing-after-not-exactly-one-derived-value" AS ?reason)
+  } UNION {
+    # Closed transition law: chatman-ecosystem Standing::permits (crates/ecosystem-core/src/lib.rs:208-232
+    # at c59596f5) restricted to the five receipt standings. Decided on this pack-owned table, never on
+    # graph data, so no consumer triple can permit UNKNOWN->ALIVE.
+    ?subject a er:RootReceipt ; er:standingBefore ?before ; er:standingAfter ?after .
+    FILTER NOT EXISTS {
+      VALUES (?pb ?pa) {
+        (er:UNKNOWN er:UNKNOWN)
+        (er:PARTIAL_ALIVE er:PARTIAL_ALIVE) (er:PARTIAL_ALIVE er:ALIVE) (er:PARTIAL_ALIVE er:BLOCKED)
+        (er:ALIVE er:ALIVE) (er:ALIVE er:BLOCKED)
+        (er:BLOCKED er:BLOCKED) (er:BLOCKED er:PARTIAL_ALIVE)
+        (er:UNSUPPORTED er:UNSUPPORTED)
+      }
+      FILTER(?pb = ?before && ?pa = ?after)
+    }
+    BIND(CONCAT("illegal-standing-transition:", STRAFTER(STR(?before), "#"), "->", STRAFTER(STR(?after), "#")) AS ?reason)
+  } UNION {
+    # An er:permitsStanding triple outside the closed table (a consumer or ontology extension of the law).
+    ?subject er:permitsStanding ?to .
+    FILTER NOT EXISTS {
+      VALUES (?pb ?pa) {
+        (er:UNKNOWN er:UNKNOWN)
+        (er:PARTIAL_ALIVE er:PARTIAL_ALIVE) (er:PARTIAL_ALIVE er:ALIVE) (er:PARTIAL_ALIVE er:BLOCKED)
+        (er:ALIVE er:ALIVE) (er:ALIVE er:BLOCKED)
+        (er:BLOCKED er:BLOCKED) (er:BLOCKED er:PARTIAL_ALIVE)
+        (er:UNSUPPORTED er:UNSUPPORTED)
+      }
+      FILTER(?pb = ?subject && ?pa = ?to)
+    }
+    BIND(CONCAT("standing-law-extended:", STRAFTER(STR(?subject), "#"), "->", STRAFTER(STR(?to), "#")) AS ?reason)
+  } UNION {
+    # A pair of the closed table missing from the graph (the ontology copy drifted from the law).
+    VALUES (?subject ?to) {
+      (er:UNKNOWN er:UNKNOWN)
+      (er:PARTIAL_ALIVE er:PARTIAL_ALIVE) (er:PARTIAL_ALIVE er:ALIVE) (er:PARTIAL_ALIVE er:BLOCKED)
+      (er:ALIVE er:ALIVE) (er:ALIVE er:BLOCKED)
+      (er:BLOCKED er:BLOCKED) (er:BLOCKED er:PARTIAL_ALIVE)
+      (er:UNSUPPORTED er:UNSUPPORTED)
+    }
+    FILTER NOT EXISTS { ?subject er:permitsStanding ?to . }
+    BIND(CONCAT("standing-law-incomplete:", STRAFTER(STR(?subject), "#"), "->", STRAFTER(STR(?to), "#")) AS ?reason)
+  } UNION {
+    ?subject a er:RootReceipt .
+    FILTER(NOT EXISTS { ?subject er:subjectProbe ?p ; er:receiptRelease ?r . ?r er:probe ?p . }
+           || EXISTS { ?subject er:subjectProbe ?p1 , ?p2 . FILTER(?p1 != ?p2) })
+    BIND("subject-probe-not-exactly-one-probe-of-the-release" AS ?reason)
+  } UNION {
+    ?subject a er:RootReceipt ; er:receiptRelease ?r ; er:subjectProbe ?p .
+    FILTER EXISTS { ?r er:gate ?g . ?g er:observedExit ?e . }
+    FILTER(NOT EXISTS { ?p er:observedOutput ?sha . FILTER(REGEX(STR(?sha), "^[0-9a-f]{40}$")) }
+           || EXISTS { ?p er:observedOutput ?sha . FILTER(!REGEX(STR(?sha), "^[0-9a-f]{40}$")) })
+    BIND("observed-court-without-exact-subject-sha" AS ?reason)
+  } UNION {
+    ?subject a er:RootReceipt .
+    FILTER NOT EXISTS { ?i a er:ImportedReceipt . }
+    BIND("receipt-verifies-no-import" AS ?reason)
+  } UNION {
+    ?subject a er:ImportedReceipt .
+    VALUES ?p { er:importName er:importPath er:importDigest er:ordinal }
+    FILTER(NOT EXISTS { ?subject ?p ?v . FILTER(STRLEN(STR(?v)) > 0) }
+           || EXISTS { ?subject ?p ?v1 , ?v2 . FILTER(?v1 != ?v2) })
+    BIND(CONCAT("import-field-not-exactly-one:", STRAFTER(STR(?p), "#")) AS ?reason)
+  } UNION {
+    ?subject a er:ImportedReceipt ; er:importDigest ?d .
+    FILTER(!REGEX(STR(?d), "^sha256:[0-9a-f]{64}$"))
+    BIND("import-digest-not-sha256" AS ?reason)
+  } UNION {
+    ?subject a er:ImportedReceipt .
+    FILTER(EXISTS { ?subject er:importPath ?p . FILTER(!REGEX(STR(?p), "^[A-Za-z0-9._/-]+$")) }
+           || EXISTS { ?subject er:importName ?n . FILTER(!REGEX(STR(?n), "^[A-Za-z0-9][A-Za-z0-9._:-]*$")) })
+    BIND("import-name-or-path-unsafe" AS ?reason)
+  } UNION {
+    ?subject a er:ImportedReceipt ; er:ordinal ?o .
+    FILTER(datatype(?o) != xsd:integer)
+    BIND("import-ordinal-not-integer" AS ?reason)
+  } UNION {
+    ?subject a er:ImportedReceipt .
+    ?other a er:ImportedReceipt .
+    FILTER(?subject != ?other)
+    VALUES ?p { er:importName er:importPath er:ordinal }
+    ?subject ?p ?v . ?other ?p ?w .
+    FILTER(STR(?v) = STR(?w))
+    BIND(CONCAT("import-duplicate:", STRAFTER(STR(?p), "#"), ":", STR(?v)) AS ?reason)
+  } UNION {
+    ?subject a er:RootReceipt .
+    ?crown a er:ImportedCrown .
+    { ?crown er:stopReceiptSha256 ?d . } UNION { ?crown er:hasGateReceipt ?g . ?g er:receiptSha256 ?d . }
+    FILTER NOT EXISTS { ?i a er:ImportedReceipt ; er:importDigest ?id . FILTER(STR(?id) = STR(?d)) }
+    BIND(CONCAT("crown-digest-not-imported:", STR(?d)) AS ?reason)
+  } UNION {
+    ?subject a er:RootReceipt ; er:receiptRelease ?r .
+    ?crown a er:ImportedCrown .
+    { ?crown er:crownComponent ?ic . } UNION { ?crown er:pairedComponent ?ic . }
+    ?ic er:repository ?repo .
+    FILTER(NOT EXISTS { ?r er:hasComponent ?c . ?c er:repository ?crepo . FILTER(STR(?crepo) = STR(?repo)) }
+           || EXISTS { ?r er:hasComponent ?c . ?c er:repository ?crepo ; er:commitSha ?csha . ?ic er:commitSha ?isha .
+                       FILTER(STR(?crepo) = STR(?repo) && STR(?csha) != STR(?isha)) })
+    BIND(CONCAT("crown-component-not-the-release-component:", STR(?repo)) AS ?reason)
+  }
+}
+ORDER BY ?subject ?reason

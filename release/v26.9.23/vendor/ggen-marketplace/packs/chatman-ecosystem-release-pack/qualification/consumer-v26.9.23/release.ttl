@@ -19,7 +19,10 @@ q23:release a er:Release ;
     er:crosswalkFrom <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.1> ;
     er:classificationSource "seanchatmangpt/xaas@b4ef5d664cb5afa2ab5456ac20d28500f5b00144:docs/sjira/v26.9.23/fleet/classification.ttl sha256:d9e99f074ef2a8c994119681d9359ea1778e68333cc8da94b6b1c0aa44873636" ;
     er:hasComponent q23:xaas, q23:ggen_igniter ;
-    er:hasRoleMapping q23:map-execution-realization, q23:map-semantic-manufacture .
+    er:hasRoleMapping q23:map-execution-realization, q23:map-semantic-manufacture ;
+    er:gate q23:gate-explicit-runner, q23:gate-imports-recheck, q23:gate-crosswalk-total ;
+    er:probe q23:probe-subject, q23:probe-ggen, q23:probe-python, q23:probe-pack-ontology, q23:probe-release-graph ;
+    er:checkDisposition q23:check-cargo-deny .
 
 q23:xaas a er:Component ;
     er:componentId "xaas" ;
@@ -56,3 +59,99 @@ q23:map-semantic-manufacture a er:RoleMapping ;
     er:primary er:CONST_CONSTRUCT ;
     er:capability er:CONST_ADMIT, er:CONST_PROJECT ;
     er:authorityCeiling "CONSTRUCT_ONLY_NO_DO" .
+
+# ---------------------------------------------------------------------------
+# Release court and root receipt (pack 0.4.0; CE23-9, CE23-10). Qualification data:
+# the court judges this consumer itself. Commands run from the consumer root. The
+# court's observations are observed.ttl (written by out/scripts/crown_v26_9_23.sh with
+# COURT_OBSERVED=observed.ttl, never by hand; SOURCES.md).
+# ---------------------------------------------------------------------------
+
+q23:gate-explicit-runner a er:Gate ;
+    er:gateOrder 1 ;
+    er:gateName "explicit-runner" ;
+    er:command "python3 ../../bin/run-gates.py release.ttl ../../gates" .
+
+q23:gate-imports-recheck a er:Gate ;
+    er:gateOrder 2 ;
+    er:gateName "imports-recheck" ;
+    er:command "shasum -a 256 -c --strict out/receipts/IMPORTS.sha256" .
+
+# A release-specific check owned by the consumer and run at court time (the pattern for a
+# release's own STOP condition, which never becomes a generic pack gate).
+q23:gate-crosswalk-total a er:Gate ;
+    er:gateOrder 3 ;
+    er:gateName "crosswalk-total" ;
+    er:command """python3 - <<'PY'
+import tomllib
+doc = tomllib.load(open("out/legacy-role-crosswalk.toml", "rb"))
+roles = doc["role"]
+assert doc["crosswalk"]["role_count"] == 16 == len(roles) == len({r["legacy_role"] for r in roles}), len(roles)
+assert all(r["boundary"] and r["reason"] for r in roles)
+print("crosswalk total:", len(roles), "roles disposed")
+PY""" .
+
+q23:probe-subject a er:Probe ;
+    er:probeOrder 1 ;
+    er:probeName "subject_sha" ;
+    er:command "git rev-parse HEAD" .
+
+q23:probe-ggen a er:Probe ;
+    er:probeOrder 2 ;
+    er:probeName "toolchain.ggen" ;
+    er:command "ggen --version 2>/dev/null" .
+
+q23:probe-python a er:Probe ;
+    er:probeOrder 3 ;
+    er:probeName "toolchain.python" ;
+    er:command "python3 --version" .
+
+q23:probe-pack-ontology a er:Probe ;
+    er:probeOrder 4 ;
+    er:probeName "pack_ontology_sha256" ;
+    er:command "printf 'sha256:%s\\n' \"$(shasum -a 256 ../../ontology.ttl | cut -c1-64)\"" .
+
+q23:probe-release-graph a er:Probe ;
+    er:probeOrder 5 ;
+    er:probeName "release_graph_sha256" ;
+    er:command "printf 'sha256:%s\\n' \"$(shasum -a 256 release.ttl | cut -c1-64)\"" .
+
+q23:check-cargo-deny a er:CheckDisposition ;
+    er:checkName "Dependency license and source policy" ;
+    er:checkWorkflow ".github/workflows/crown.yml" ;
+    er:failureClass er:pre_existing ;
+    er:checkBoundary er:ROLE_SUCCESSOR ;
+    er:checkEvidence "seanchatmangpt/chatman-ecosystem@c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 check-run 103106030500 (Crown Admission run 34548430864, push) conclusion failure; failing step 'Run cargo deny check'; fails on the base before any v26.9.23 change (observed with gh api, 2026-09-23)" .
+
+q23:import-manifest-v26-9-1 a er:ImportedReceipt ;
+    er:importName "manifest-v26.9.1" ;
+    er:importPath "imports/manifest-v26.9.1.toml" ;
+    er:importDigest "sha256:30b1d83ce544299557da50084ced696172d219f6790c2cfc5b78116902850949" ;
+    er:ordinal 1 ;
+    er:importSource "seanchatmangpt/chatman-ecosystem@c59596f5506e7a00ca4ed6b909ebf6d6659b74c1:release/v26.9.1/manifest.toml" .
+
+q23:import-fleet-classification a er:ImportedReceipt ;
+    er:importName "fleet-classification" ;
+    er:importPath "imports/fleet-classification.ttl" ;
+    er:importDigest "sha256:d9e99f074ef2a8c994119681d9359ea1778e68333cc8da94b6b1c0aa44873636" ;
+    er:ordinal 2 ;
+    er:importSource "seanchatmangpt/xaas@b4ef5d664cb5afa2ab5456ac20d28500f5b00144:docs/sjira/v26.9.23/fleet/classification.ttl" .
+
+q23:import-ce23-orders a er:ImportedReceipt ;
+    er:importName "ce23-orders" ;
+    er:importPath "imports/ce23-orders.ttl" ;
+    er:importDigest "sha256:01cd0ae2d743a3be370b4e7cd719be6d684cc81db3e2626cfa3bcd4e693963a2" ;
+    er:ordinal 3 ;
+    er:importSource "seanchatmangpt/chatman-ecosystem@35b3ed073dbc3785b7931eea7ba3c8d657a4b4e3:release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl" .
+
+q23:root-receipt a er:RootReceipt ;
+    er:receiptRelease q23:release ;
+    er:receiptId "receipt:qualification-release-v26-9-23" ;
+    er:subjectRepository "seanchatmangpt/ggen-marketplace" ;
+    er:subjectProbe q23:probe-subject ;
+    er:actor "chatman-ecosystem-release-pack qualification court" ;
+    er:receiptAuthority "release" ;
+    er:intention "qualify the generic release court and root release receipt projections on the v26.9.23 crosswalk consumer" ;
+    er:standingBefore er:PARTIAL_ALIVE ;
+    er:timestamp "2026-09-23T00:00:00Z" ;
+    er:changedPath "packs/chatman-ecosystem-release-pack/qualification/consumer-v26.9.23/observed.ttl" .

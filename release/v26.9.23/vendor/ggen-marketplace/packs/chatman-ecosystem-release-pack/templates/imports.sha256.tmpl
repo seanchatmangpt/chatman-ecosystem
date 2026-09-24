@@ -1,0 +1,18 @@
+---
+to: out/receipts/IMPORTS.sha256
+when: |
+  PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+  ASK { ?i a er:ImportedReceipt . }
+sparql:
+  imports: |
+    PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+    SELECT ?path ?hex
+    WHERE {
+      ?i a er:ImportedReceipt ; er:importPath ?p ; er:importDigest ?d ; er:ordinal ?o .
+      BIND(STR(?p) AS ?path)
+      BIND(STRAFTER(STR(?d), "sha256:") AS ?hex)
+    }
+    ORDER BY ?o ?path
+---
+{% for i in imports %}{{ i.hex }}  {{ i.path }}
+{% endfor %}

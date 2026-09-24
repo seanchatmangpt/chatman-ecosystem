@@ -13,9 +13,20 @@
 
 [[pack]]
 name = "chatman-ecosystem-release-pack"
-version = "0.3.0"
+version = "0.4.0"
 subdir = "packs/chatman-ecosystem-release-pack"
 repository = "seanchatmangpt/ggen-marketplace"
 ref = "release/v26.9.23-int"
+commit = "6cfd0b7ad3891611486994240b7aed6b5e6dc3e6"
+tree = "480d08dd99c28ddbfcf093e4eafe25d271df879d"
+
+# Not a ggen.toml [packs] entry: the CE23-9 root court runs its generated validator
+# (generated/unified_receipt_validator.py, contract dfcm_fleet_v1) on the release's receipts.
+[[pack]]
+name = "receipt-provenance-unification-pack"
+version = "0.1.0"
+subdir = "packs/receipt-provenance-unification-pack"
+repository = "seanchatmangpt/ggen-marketplace"
+ref = "release/v26.9.23-int"
 commit = "e3988aba4a850095d94d3b18a4495766d13e4d5e"
-tree = "bf05126e21d0ac2fab7721e103dbffbb0045a5cf"
+tree = "f1d91659c725b8447efa036256dfafa9f83f758d"

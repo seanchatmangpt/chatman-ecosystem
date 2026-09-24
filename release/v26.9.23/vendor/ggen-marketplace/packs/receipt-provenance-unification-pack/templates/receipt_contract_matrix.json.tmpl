@@ -1,0 +1,60 @@
+---
+to: generated/receipt_contract_matrix.json
+force: true
+sparql:
+  contracts: |
+    PREFIX rp: <http://seanchatmangpt.github.io/packs/receipt-provenance#>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    SELECT ?key ?title ?uri ?delim ?validator ?src WHERE {
+      ?c a rp:ReceiptContract ;
+         rp:contractKey ?key ;
+         dcterms:title ?title ;
+         rp:schemaUri ?uri ;
+         rp:reasonDelimiter ?delim ;
+         rp:sourceFile ?src ;
+         rp:validatedBy ?v .
+      ?v rdfs:label ?validator .
+    } ORDER BY ?key
+  fields: |
+    PREFIX rp: <http://seanchatmangpt.github.io/packs/receipt-provenance#>
+    SELECT ?key ?path ?form ?mandatory ?profile ?term WHERE {
+      ?f a rp:FieldBinding ;
+         rp:contract ?c ;
+         rp:dottedPath ?path ;
+         rp:mandatory ?mandatory ;
+         rp:valueForm ?vf .
+      ?c rp:contractKey ?key .
+      ?vf <http://www.w3.org/2004/02/skos/core#prefLabel> ?form .
+      OPTIONAL { ?f rp:profile ?p . ?p rp:profileKey ?pk }
+      OPTIONAL { ?f rp:brokenTerm ?t }
+      BIND(COALESCE(?pk, "") AS ?profile)
+      BIND(COALESCE(?t, "") AS ?term)
+    } ORDER BY ?key ?profile ?path
+  rules: |
+    PREFIX rp: <http://seanchatmangpt.github.io/packs/receipt-provenance#>
+    SELECT ?key ?ifPath ?ifPattern ?thenPath ?thenEquals ?term WHERE {
+      ?r a rp:ImplicationRule ; rp:contract ?c ; rp:ifPath ?ifPath ; rp:ifPattern ?ifPattern ;
+         rp:thenPath ?thenPath ; rp:thenEquals ?thenEquals ; rp:brokenTerm ?term .
+      ?c rp:contractKey ?key .
+    } ORDER BY ?key ?ifPath ?thenPath
+  probes: |
+    PREFIX rp: <http://seanchatmangpt.github.io/packs/receipt-provenance#>
+    SELECT ?kind ?argv WHERE { ?r a rp:ResolutionKind ; rp:resolutionKey ?kind ; rp:gitArgv ?argv . } ORDER BY ?kind
+---
+{
+  "generated_by": "receipt-provenance-unification-pack (ggen)",
+  "note": "Machine-consumable census of every receipt contract observed on disk. Do not hand-edit; regenerate from ontology.ttl.",
+  "contracts": [
+{% for c in contracts %}    {"key": "{{ c.key }}", "title": "{{ c.title }}", "schema_uri": "{{ c.uri }}", "reason_delimiter": "{{ c.delim }}", "validator": "{{ c.validator }}", "source_file": "{{ c.src }}"}{% if not loop.last %},{% endif %}
+{% endfor %}  ],
+  "fields": [
+{% for f in fields %}    {"contract": "{{ f.key }}", "path": "{{ f.path }}", "value_form": "{{ f.form }}", "mandatory": {{ f.mandatory }}{% if f.profile %}, "profile": "{{ f.profile }}"{% endif %}{% if f.term %}, "broken_term": "{{ f.term }}"{% endif %}}{% if not loop.last %},{% endif %}
+{% endfor %}  ],
+  "implication_rules": [
+{% for r in rules %}    {"contract": "{{ r.key }}", "if_path": "{{ r.ifPath }}", "if_pattern": {{ r.ifPattern | json_encode() }}, "then_path": "{{ r.thenPath }}", "then_equals": {{ r.thenEquals | json_encode() }}, "broken_term": "{{ r.term }}"}{% if not loop.last %},{% endif %}
+{% endfor %}  ],
+  "read_only_probes": [
+{% for p in probes %}    {"kind": "{{ p.kind }}", "git_argv": {{ p.argv | json_encode() }}}{% if not loop.last %},{% endif %}
+{% endfor %}  ]
+}

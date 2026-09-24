@@ -8,4 +8,4 @@ source = "release.ttl"
 dir = "templates"
 
 [packs]
-chatman-ecosystem-release-pack = { path = "../..", lock = false, extra_ontologies = ["imports/legacy-v26.9.1.ttl", "imports/fleet-classification.ttl", "imports/court-references.ttl", "imports/ce23-orders.ttl"] }
+chatman-ecosystem-release-pack = { path = "../..", lock = false, extra_ontologies = ["imports/legacy-v26.9.1.ttl", "imports/fleet-classification.ttl", "imports/court-references.ttl", "imports/ce23-orders.ttl", "observed.ttl"] }

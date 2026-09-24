@@ -1,0 +1,207 @@
+# MESSAGE: A release court (templates/release-court.sh.tmpl) is admitted only when: every
+# MESSAGE: er:Gate belongs to exactly one er:Release and has exactly one er:gateOrder integer in
+# MESSAGE: 1..99 (unique per release; it is the court's typed exit status), exactly one
+# MESSAGE: er:gateName matching [A-Za-z0-9][A-Za-z0-9._:-]*, exactly one non-blank er:command and at
+# MESSAGE: most one integer er:observedExit in 0..255; every er:Probe belongs to exactly one release
+# MESSAGE: with exactly one er:probeName [a-z0-9][a-z0-9_.-]* and one er:probeOrder >= 1 (both unique
+# MESSAGE: per release), one non-blank er:command and at most one er:observedOutput; every
+# MESSAGE: er:CheckDisposition belongs to exactly one release with exactly one single-line
+# MESSAGE: er:checkName (unique per release), exactly one er:failureClass among the six operator
+# MESSAGE: classes (subject_defect, environment, pre_existing, generator_drift, evidence_defect,
+# MESSAGE: infrastructure; a closed list carried by this gate), exactly one er:checkBoundary among
+# MESSAGE: SUCCESSOR/BLOCKED/UNSUPPORTED/REFUSED and non-empty er:checkEvidence; the graph's
+# MESSAGE: er:FailureClass individuals are exactly those six, each labelled only with its own name
+# MESSAGE: (a consumer cannot add a class or relabel one); an observed gate or probe carries
+# MESSAGE: er:observedCommandSha256 equal to the SHA256 of its current er:command (no observation of
+# MESSAGE: another command); an observed court carries its er:observedCourtInput set, and that set equals
+# MESSAGE: the court's current input element for element (court|<version>|<court root>,
+# MESSAGE: component|<repository>|<commitSha>, import|<ordinal>|<name>|<path>|<digest>,
+# MESSAGE: probe|<IRI>|<order>|<name>|<command sha256>, gate|<IRI>|<order>|<name>|<command sha256>), so an
+# MESSAGE: import, component, court root, probe or gate edited, added or removed after the court ran
+# MESSAGE: makes its observation stale (re-run the court); gate and probe IRIs contain no single
+# MESSAGE: quote, er:courtRoot is one [A-Za-z0-9._/-]+ path, and a release that declares probes or typed
+# MESSAGE: checks declares a gate.
+PREFIX er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?subject ?reason WHERE {
+  {
+    ?subject a er:Gate .
+    { SELECT ?subject (COUNT(DISTINCT ?r) AS ?n) WHERE { ?subject a er:Gate . OPTIONAL { ?r er:gate ?subject . } } GROUP BY ?subject }
+    FILTER(?n != 1)
+    BIND(CONCAT("gate-release-count-", STR(?n)) AS ?reason)
+  } UNION {
+    ?subject a er:Gate .
+    FILTER(NOT EXISTS { ?subject er:gateOrder ?o . FILTER(datatype(?o) = xsd:integer && ?o >= 1 && ?o <= 99) }
+           || EXISTS { ?subject er:gateOrder ?o . FILTER(datatype(?o) != xsd:integer || ?o < 1 || ?o > 99) }
+           || EXISTS { ?subject er:gateOrder ?o1 , ?o2 . FILTER(?o1 != ?o2) })
+    BIND("gate-order-not-exactly-one-integer-1-99" AS ?reason)
+  } UNION {
+    ?r er:gate ?subject , ?other .
+    ?subject er:gateOrder ?o . ?other er:gateOrder ?o2 .
+    FILTER(?subject != ?other && ?o = ?o2)
+    BIND(CONCAT("gate-order-duplicate:", STR(?o)) AS ?reason)
+  } UNION {
+    ?subject a er:Gate .
+    FILTER(NOT EXISTS { ?subject er:gateName ?nm . FILTER(REGEX(STR(?nm), "^[A-Za-z0-9][A-Za-z0-9._:-]*$")) }
+           || EXISTS { ?subject er:gateName ?nm . FILTER(!REGEX(STR(?nm), "^[A-Za-z0-9][A-Za-z0-9._:-]*$")) }
+           || EXISTS { ?subject er:gateName ?n1 , ?n2 . FILTER(?n1 != ?n2) })
+    BIND("gate-name-not-exactly-one-token" AS ?reason)
+  } UNION {
+    ?subject a er:Gate .
+    FILTER(NOT EXISTS { ?subject er:command ?c . FILTER(REGEX(STR(?c), "[^ \\t\\r\\n]")) }
+           || EXISTS { ?subject er:command ?c . FILTER(!REGEX(STR(?c), "[^ \\t\\r\\n]")) }
+           || EXISTS { ?subject er:command ?c1 , ?c2 . FILTER(?c1 != ?c2) })
+    BIND("gate-command-not-exactly-one-non-blank" AS ?reason)
+  } UNION {
+    ?subject a er:Gate ; er:observedExit ?e .
+    FILTER(datatype(?e) != xsd:integer || ?e < 0 || ?e > 255
+           || EXISTS { ?subject er:observedExit ?e2 . FILTER(?e2 != ?e) })
+    BIND("gate-observed-exit-not-one-integer-0-255" AS ?reason)
+  } UNION {
+    ?subject a er:Probe .
+    { SELECT ?subject (COUNT(DISTINCT ?r) AS ?n) WHERE { ?subject a er:Probe . OPTIONAL { ?r er:probe ?subject . } } GROUP BY ?subject }
+    FILTER(?n != 1)
+    BIND(CONCAT("probe-release-count-", STR(?n)) AS ?reason)
+  } UNION {
+    ?subject a er:Probe .
+    FILTER(NOT EXISTS { ?subject er:probeName ?nm . FILTER(REGEX(STR(?nm), "^[a-z0-9][a-z0-9_.-]*$")) }
+           || EXISTS { ?subject er:probeName ?nm . FILTER(!REGEX(STR(?nm), "^[a-z0-9][a-z0-9_.-]*$")) }
+           || EXISTS { ?subject er:probeName ?n1 , ?n2 . FILTER(?n1 != ?n2) })
+    BIND("probe-name-not-exactly-one-token" AS ?reason)
+  } UNION {
+    ?subject a er:Probe .
+    FILTER(NOT EXISTS { ?subject er:probeOrder ?o . FILTER(datatype(?o) = xsd:integer && ?o >= 1) }
+           || EXISTS { ?subject er:probeOrder ?o . FILTER(datatype(?o) != xsd:integer || ?o < 1) }
+           || EXISTS { ?subject er:probeOrder ?o1 , ?o2 . FILTER(?o1 != ?o2) })
+    BIND("probe-order-not-exactly-one-positive-integer" AS ?reason)
+  } UNION {
+    ?r er:probe ?subject , ?other .
+    FILTER(?subject != ?other)
+    FILTER(EXISTS { ?subject er:probeName ?a . ?other er:probeName ?b . FILTER(STR(?a) = STR(?b)) }
+           || EXISTS { ?subject er:probeOrder ?a . ?other er:probeOrder ?b . FILTER(?a = ?b) })
+    BIND("probe-name-or-order-duplicate" AS ?reason)
+  } UNION {
+    ?subject a er:Probe .
+    FILTER(NOT EXISTS { ?subject er:command ?c . FILTER(REGEX(STR(?c), "[^ \\t\\r\\n]")) }
+           || EXISTS { ?subject er:command ?c . FILTER(!REGEX(STR(?c), "[^ \\t\\r\\n]")) }
+           || EXISTS { ?subject er:command ?c1 , ?c2 . FILTER(?c1 != ?c2) })
+    BIND("probe-command-not-exactly-one-non-blank" AS ?reason)
+  } UNION {
+    ?subject a er:Probe ; er:observedOutput ?v1 , ?v2 .
+    FILTER(?v1 != ?v2)
+    BIND("probe-observed-output-not-single" AS ?reason)
+  } UNION {
+    ?subject a er:CheckDisposition .
+    { SELECT ?subject (COUNT(DISTINCT ?r) AS ?n) WHERE { ?subject a er:CheckDisposition . OPTIONAL { ?r er:checkDisposition ?subject . } } GROUP BY ?subject }
+    FILTER(?n != 1)
+    BIND(CONCAT("check-disposition-release-count-", STR(?n)) AS ?reason)
+  } UNION {
+    ?subject a er:CheckDisposition .
+    FILTER(NOT EXISTS { ?subject er:checkName ?nm . FILTER(STRLEN(STR(?nm)) > 0 && !REGEX(STR(?nm), "[\\r\\n]")) }
+           || EXISTS { ?subject er:checkName ?nm . FILTER(STRLEN(STR(?nm)) = 0 || REGEX(STR(?nm), "[\\r\\n]")) }
+           || EXISTS { ?subject er:checkName ?n1 , ?n2 . FILTER(?n1 != ?n2) })
+    BIND("check-name-not-exactly-one-single-line" AS ?reason)
+  } UNION {
+    ?r er:checkDisposition ?subject , ?other .
+    ?subject er:checkName ?a . ?other er:checkName ?b .
+    FILTER(?subject != ?other && STR(?a) = STR(?b))
+    BIND(CONCAT("check-name-duplicate:", STR(?a)) AS ?reason)
+  } UNION {
+    ?subject a er:CheckDisposition .
+    OPTIONAL { ?subject er:checkName ?cn . }
+    # Closed list (DRIVER.md release closure procedure): decided on these six IRIs, never on graph
+    # data, so a consumer-declared er:FailureClass is not an operator class.
+    FILTER(NOT EXISTS { ?subject er:failureClass ?fc . FILTER(?fc IN (er:subject_defect, er:environment, er:pre_existing, er:generator_drift, er:evidence_defect, er:infrastructure)) }
+           || EXISTS { ?subject er:failureClass ?fc . FILTER(?fc NOT IN (er:subject_defect, er:environment, er:pre_existing, er:generator_drift, er:evidence_defect, er:infrastructure)) }
+           || EXISTS { ?subject er:failureClass ?f1 , ?f2 . FILTER(?f1 != ?f2) })
+    BIND(CONCAT("check-failure-class-not-exactly-one-operator-class:", COALESCE(STR(?cn), STR(?subject))) AS ?reason)
+  } UNION {
+    ?subject a er:FailureClass .
+    FILTER(?subject NOT IN (er:subject_defect, er:environment, er:pre_existing, er:generator_drift, er:evidence_defect, er:infrastructure))
+    BIND(CONCAT("failure-class-extended:", IF(CONTAINS(STR(?subject), "#"), STRAFTER(STR(?subject), "#"), STR(?subject))) AS ?reason)
+  } UNION {
+    VALUES ?subject { er:subject_defect er:environment er:pre_existing er:generator_drift er:evidence_defect er:infrastructure }
+    FILTER NOT EXISTS { ?subject a er:FailureClass . }
+    BIND(CONCAT("failure-class-missing:", STRAFTER(STR(?subject), "#")) AS ?reason)
+  } UNION {
+    VALUES ?subject { er:subject_defect er:environment er:pre_existing er:generator_drift er:evidence_defect er:infrastructure }
+    ?subject rdfs:label ?label .
+    FILTER(STR(?label) != STRAFTER(STR(?subject), "#"))
+    BIND(CONCAT("failure-class-label-not-its-name:", STRAFTER(STR(?subject), "#")) AS ?reason)
+  } UNION {
+    ?subject a er:CheckDisposition .
+    OPTIONAL { ?subject er:checkName ?cn . }
+    FILTER(NOT EXISTS { ?subject er:checkBoundary ?b . FILTER(?b IN (er:ROLE_SUCCESSOR, er:ROLE_BLOCKED, er:ROLE_UNSUPPORTED, er:ROLE_REFUSED)) }
+           || EXISTS { ?subject er:checkBoundary ?b . FILTER(?b NOT IN (er:ROLE_SUCCESSOR, er:ROLE_BLOCKED, er:ROLE_UNSUPPORTED, er:ROLE_REFUSED)) }
+           || EXISTS { ?subject er:checkBoundary ?b1 , ?b2 . FILTER(?b1 != ?b2) })
+    BIND(CONCAT("check-boundary-not-exactly-one-non-required:", COALESCE(STR(?cn), STR(?subject))) AS ?reason)
+  } UNION {
+    ?subject a er:CheckDisposition .
+    OPTIONAL { ?subject er:checkName ?cn . }
+    FILTER(NOT EXISTS { ?subject er:checkEvidence ?ev . FILTER(STRLEN(STR(?ev)) > 0) })
+    BIND(CONCAT("check-without-evidence:", COALESCE(STR(?cn), STR(?subject))) AS ?reason)
+  } UNION {
+    { ?subject a er:Gate . } UNION { ?subject a er:Probe . }
+    FILTER(EXISTS { ?subject er:observedExit ?x . } || EXISTS { ?subject er:observedOutput ?y . })
+    FILTER(NOT EXISTS { ?subject er:observedCommandSha256 ?h ; er:command ?c . FILTER(STR(?h) = SHA256(STR(?c))) }
+           || EXISTS { ?subject er:observedCommandSha256 ?h . ?subject er:command ?c . FILTER(STR(?h) != SHA256(STR(?c))) })
+    BIND("observation-of-another-command" AS ?reason)
+  } UNION {
+    # Court-input binding (the whole court input, not only each command): the generated court writes
+    # one er:observedCourtInput value per element of the input it ran; the current input is rebuilt
+    # here from the graph with the same element forms. Set equality, element by element (no
+    # aggregate, so the result does not depend on GROUP_CONCAT order in either executor).
+    ?subject a er:Release .
+    FILTER(EXISTS { ?subject er:gate ?og . { ?og er:observedExit ?ox . } UNION { ?og er:observedCommandSha256 ?oh . } }
+           || EXISTS { ?subject er:probe ?op . { ?op er:observedOutput ?oy . } UNION { ?op er:observedCommandSha256 ?oh . } })
+    FILTER NOT EXISTS { ?subject er:observedCourtInput ?anyInput . }
+    BIND("observation-without-court-input" AS ?reason)
+  } UNION {
+    ?subject a er:Release ; er:gate ?anyGate .
+    FILTER EXISTS { ?subject er:observedCourtInput ?anyInput . }
+    { ?subject er:version ?cv . OPTIONAL { ?subject er:courtRoot ?ccr . }
+        BIND(CONCAT("court|", STR(?cv), "|", COALESCE(STR(?ccr), ".")) AS ?el) }
+      UNION { ?subject er:hasComponent ?ck . ?ck er:repository ?ckr ; er:commitSha ?cks .
+        BIND(CONCAT("component|", STR(?ckr), "|", STR(?cks)) AS ?el) }
+      UNION { ?ci a er:ImportedReceipt ; er:importName ?cin ; er:importPath ?cip ; er:importDigest ?cid ; er:ordinal ?cio .
+        BIND(CONCAT("import|", STR(?cio), "|", STR(?cin), "|", STR(?cip), "|", STR(?cid)) AS ?el) }
+      UNION { ?subject er:probe ?cp . ?cp er:probeOrder ?cpo ; er:probeName ?cpn ; er:command ?cpc .
+        BIND(CONCAT("probe|", STR(?cp), "|", STR(?cpo), "|", STR(?cpn), "|", SHA256(STR(?cpc))) AS ?el) }
+      UNION { ?subject er:gate ?cg . ?cg er:gateOrder ?cgo ; er:gateName ?cgn ; er:command ?cgc .
+        BIND(CONCAT("gate|", STR(?cg), "|", STR(?cgo), "|", STR(?cgn), "|", SHA256(STR(?cgc))) AS ?el) }
+    FILTER NOT EXISTS { ?subject er:observedCourtInput ?oel . FILTER(STR(?oel) = ?el) }
+    BIND(CONCAT("court-input-not-observed:", ?el) AS ?reason)
+  } UNION {
+    ?subject er:observedCourtInput ?oel .
+    FILTER NOT EXISTS {
+      ?subject a er:Release ; er:gate ?anyGate .
+      { ?subject er:version ?cv . OPTIONAL { ?subject er:courtRoot ?ccr . }
+          BIND(CONCAT("court|", STR(?cv), "|", COALESCE(STR(?ccr), ".")) AS ?el) }
+        UNION { ?subject er:hasComponent ?ck . ?ck er:repository ?ckr ; er:commitSha ?cks .
+          BIND(CONCAT("component|", STR(?ckr), "|", STR(?cks)) AS ?el) }
+        UNION { ?ci a er:ImportedReceipt ; er:importName ?cin ; er:importPath ?cip ; er:importDigest ?cid ; er:ordinal ?cio .
+          BIND(CONCAT("import|", STR(?cio), "|", STR(?cin), "|", STR(?cip), "|", STR(?cid)) AS ?el) }
+        UNION { ?subject er:probe ?cp . ?cp er:probeOrder ?cpo ; er:probeName ?cpn ; er:command ?cpc .
+          BIND(CONCAT("probe|", STR(?cp), "|", STR(?cpo), "|", STR(?cpn), "|", SHA256(STR(?cpc))) AS ?el) }
+        UNION { ?subject er:gate ?cg . ?cg er:gateOrder ?cgo ; er:gateName ?cgn ; er:command ?cgc .
+          BIND(CONCAT("gate|", STR(?cg), "|", STR(?cgo), "|", STR(?cgn), "|", SHA256(STR(?cgc))) AS ?el) }
+      FILTER(?el = STR(?oel))
+    }
+    BIND(CONCAT("court-input-observed-but-gone:", STR(?oel)) AS ?reason)
+  } UNION {
+    { ?subject a er:Gate . } UNION { ?subject a er:Probe . }
+    FILTER(REGEX(STR(?subject), "'"))
+    BIND("court-iri-contains-quote" AS ?reason)
+  } UNION {
+    ?subject a er:Release ; er:courtRoot ?root .
+    FILTER(!REGEX(STR(?root), "^[A-Za-z0-9._/-]+$") || EXISTS { ?subject er:courtRoot ?r2 . FILTER(?r2 != ?root) })
+    BIND("court-root-not-one-safe-relative-path" AS ?reason)
+  } UNION {
+    ?subject a er:Release .
+    FILTER(EXISTS { ?subject er:probe ?p . } || EXISTS { ?subject er:checkDisposition ?d . })
+    FILTER NOT EXISTS { ?subject er:gate ?g . }
+    BIND("court-without-gates" AS ?reason)
+  }
+}
+ORDER BY ?subject ?reason

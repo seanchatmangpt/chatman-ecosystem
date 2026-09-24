@@ -6,3 +6,5 @@ qualification/mutants/*/out/*
 # Imported-crown qualification consumer (0.3.0): its render is checked by qualify.sh step 6
 # in scratch; a real consumer (chatman release/v26.9.23) commits its lift and render.
 qualification/consumer-imported-crown/out/
+# Court observation temp files (templates/release-court.sh.tmpl writes <file>.partial.<pid> then renames).
+qualification/consumer-v26.9.23/observed.ttl.partial.*
