@@ -254,7 +254,7 @@ def _detect_cycles(by_id: dict[str, dict[str, Any]]) -> list[Finding]:
 def _github_json(url: str, timeout: float) -> dict[str, Any]:
     headers = {
         "Accept": "application/vnd.github+json",
-        "User-Agent": "chatman-ecosystem-release-verifier/2",
+        "User-Agent": "chatman-ecosystem-release-verifier/26.9.1",
         "X-GitHub-Api-Version": "2022-11-28",
     }
     token = (os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or "").strip()
