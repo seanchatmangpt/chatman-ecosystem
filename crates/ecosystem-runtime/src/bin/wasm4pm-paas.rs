@@ -1,4 +1,4 @@
-//! Fail-closed PaaS bridge for the exact wasm4pm process-mining boundary.
+//! Fail-closed `PaaS` bridge for the exact wasm4pm process-mining boundary.
 //!
 //! The bridge deliberately does not reimplement wasm4pm. It verifies the generated
 //! Node-target WASM package, preserves wasm4pm refusals, delegates canonical CLI
@@ -68,10 +68,17 @@ fn package_paths(root: &Path) -> (PathBuf, PathBuf, PathBuf) {
 fn artifact_identity(root: &Path) -> Result<ArtifactIdentity, String> {
     let (js, declaration, wasm) = package_paths(root);
     if !js.is_file() {
-        return Err(format!("BUILD_BROKEN: missing generated Node module {}", js.display()));
+        return Err(format!(
+            "BUILD_BROKEN: missing generated Node module {}",
+            js.display()
+        ));
     }
-    let declaration_text = fs::read_to_string(&declaration)
-        .map_err(|error| format!("BUILD_BROKEN: cannot read {}: {error}", declaration.display()))?;
+    let declaration_text = fs::read_to_string(&declaration).map_err(|error| {
+        format!(
+            "BUILD_BROKEN: cannot read {}: {error}",
+            declaration.display()
+        )
+    })?;
     for export in REQUIRED_EXPORTS {
         if !declaration_text.contains(export) {
             return Err(format!(
@@ -82,7 +89,10 @@ fn artifact_identity(root: &Path) -> Result<ArtifactIdentity, String> {
     let wasm_bytes = fs::read(&wasm)
         .map_err(|error| format!("BUILD_BROKEN: cannot read {}: {error}", wasm.display()))?;
     if wasm_bytes.is_empty() {
-        return Err(format!("BUILD_BROKEN: empty WASM artifact {}", wasm.display()));
+        return Err(format!(
+            "BUILD_BROKEN: empty WASM artifact {}",
+            wasm.display()
+        ));
     }
     Ok(ArtifactIdentity {
         repository: WASM4PM_REPOSITORY,
@@ -102,8 +112,9 @@ fn output_value(output: &Output, operation: &str) -> Result<Value, String> {
             output.status.code()
         ));
     }
-    let stdout = String::from_utf8(output.stdout.clone())
-        .map_err(|error| format!("REFUSED: wasm4pm `{operation}` emitted non-UTF8 output: {error}"))?;
+    let stdout = String::from_utf8(output.stdout.clone()).map_err(|error| {
+        format!("REFUSED: wasm4pm `{operation}` emitted non-UTF8 output: {error}")
+    })?;
     let trimmed = stdout.trim();
     if trimmed.is_empty() {
         return Ok(Value::Null);
@@ -111,7 +122,12 @@ fn output_value(output: &Output, operation: &str) -> Result<Value, String> {
     Ok(serde_json::from_str(trimmed).unwrap_or_else(|_| Value::String(trimmed.to_owned())))
 }
 
-fn receipt(operation: &str, subject: &[u8], result: &Value, identity: &ArtifactIdentity) -> BridgeReceipt {
+fn receipt(
+    operation: &str,
+    subject: &[u8],
+    result: &Value,
+    identity: &ArtifactIdentity,
+) -> BridgeReceipt {
     let encoded = serde_json::to_vec(result).unwrap_or_default();
     BridgeReceipt {
         schema: "chatman.ecosystem.wasm4pm.receipt.v1",
@@ -125,7 +141,12 @@ fn receipt(operation: &str, subject: &[u8], result: &Value, identity: &ArtifactI
     }
 }
 
-fn emit(operation: &str, subject: &[u8], result: Value, identity: ArtifactIdentity) -> Result<(), String> {
+fn emit(
+    operation: &str,
+    subject: &[u8],
+    result: Value,
+    identity: ArtifactIdentity,
+) -> Result<(), String> {
     let response = BridgeResponse {
         receipt: receipt(operation, subject, &result, &identity),
         identity,
@@ -175,7 +196,9 @@ fn doctor(root: &Path) -> Result<(), String> {
 
 fn invoke(root: &Path, export: &str, args_json: &str) -> Result<(), String> {
     if !REQUIRED_EXPORTS.contains(&export) {
-        return Err(format!("UNSUPPORTED: export `{export}` is outside the admitted wasm4pm PaaS surface"));
+        return Err(format!(
+            "UNSUPPORTED: export `{export}` is outside the admitted wasm4pm PaaS surface"
+        ));
     }
     let args: Value = serde_json::from_str(args_json)
         .map_err(|error| format!("REFUSED: export arguments must be a JSON array: {error}"))?;
@@ -184,7 +207,7 @@ fn invoke(root: &Path, export: &str, args_json: &str) -> Result<(), String> {
     }
     let identity = artifact_identity(root)?;
     let (js, _, _) = package_paths(root);
-    let script = r#"
+    let script = r"
 import { pathToFileURL } from 'node:url';
 const modulePath = process.env.WASM4PM_JS;
 const exportName = process.env.WASM4PM_EXPORT;
@@ -197,7 +220,7 @@ const args = JSON.parse(encodedArgs);
 const result = await fn(...args);
 if (typeof result === 'string') process.stdout.write(result);
 else process.stdout.write(JSON.stringify(result));
-"#;
+";
     let output = Command::new("node")
         .arg("--input-type=module")
         .arg("--eval")
@@ -262,7 +285,10 @@ fn run() -> Result<(), String> {
             let forwarded: Vec<String> = args.filter(|value| value != "--").collect();
             cli(&root, &forwarded)
         }
-        _ => Err(format!("UNSUPPORTED: unknown bridge command `{command}`\n{}", usage())),
+        _ => Err(format!(
+            "UNSUPPORTED: unknown bridge command `{command}`\n{}",
+            usage()
+        )),
     }
 }
 
