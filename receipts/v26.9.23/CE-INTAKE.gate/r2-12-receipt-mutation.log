@@ -1,0 +1,5 @@
+$ s=$(mktemp -d) && python3 -c 'import json, sys; r = json.load(open("receipts/v26.9.23/CE-INTAKE.json")); c = r["replay"]["commands"]; r["replay"]["commands"] = [dict(c[1], exit=0), c[10]]; json.dump(r, open(sys.argv[1], "w"))' "$s/r.json" && python3 release/v26.9.23/sjira/replay_court.py receipt --receipt "$s/r.json"; rc=$?; rm -rf "$s"; exit $rc
+REFUSED /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.b1tCOOiafK/r.json#1: recorded exit=0, replayed exit=1 ('CHECK FAILED: 46 refusal(s) over 46 candidates')
+OK /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.b1tCOOiafK/r.json#2: exit=1
+REPLAY REFUSED: 1/2 replay.commands of /var/folders/s6/jqyw48zs39z38b_3f6f_x2sc0000gn/T/tmp.b1tCOOiafK/r.json replay to their recorded exit
+exit=1

@@ -1,0 +1,58 @@
+# CE23 first mile (Chatman Ecosystem v26.9.23)
+
+The CE23 work orders are compiled from the operator prose through the v26.9.23 first-mile
+pipeline, never hand-authored into a backlog (lane CE-INTAKE, wave CE0; xaas PRD PR-002..PR-005,
+ARD sections 5, 17 and 24 M9). Everything below `compiled/`, `units/` and `candidates/*.ttl`
+is generated; `sh compile_check.sh` recomputes all of it and exits 0 only on byte equality.
+
+| step | input -> output | kind |
+|---|---|---|
+| prose | `chatman-ce23.md`, `chatman-ce23-12-bench.md`, `chatman-ce23-12-standings.md` | operator testimony, byte-identical |
+| extract | prose -> `candidates/raw/<unit>.extract.json` | the one LLM edge, recorded with `extractedBy` |
+| correct | raw + `candidates/corrections.json` -> `candidates/<unit>.extract.json` | `corrections.py` (deterministic) |
+| emit | extraction -> `candidates/<unit>.ttl` (ce: namespace) | xaas `scripts/sjira/prose_spans.py` (frozen) |
+| view | `goal.ttl` -> `units/<unit>.goal.ttl` | `unit_goal.py` (deterministic) |
+| compile | prose + candidates + view -> `compiled/<unit>/{propositions,orders}.ttl` | ggen_igniter `mix semantic_jira.compile_prose` |
+
+The goal graph `goal.ttl` holds the root `GC-CE-26.9.23`, gates CE23-0 .. CE23-12 (CE23-12 with
+three conjunct gates), the successor bucket `GC-CE-26.9.24` and the crown-equation stop query.
+It holds no work order and no receipt. Each gate names the prose that defines it
+(`dcterms:source`, `sj:sourceSha256`), and each unit is compiled against the view of exactly the
+gates it defines. The compiler therefore refuses (`uncovered_gate`) any gate that its prose does
+not require.
+The prose layer applies the same law before the compiler runs: for every unit, `compile_check.sh`
+runs the frozen `prose_spans.py check --namespace 'https://ggen-igniter.dev/sjira/chatman-26.9.23#'
+--prefix ce --summary` (plus `--require-gates 12 --gate-prefix CE23-` for chatman-ce23, derived
+from the view by `unit_goal.py require-args`; the tool's `--require-gates` can only name a
+contiguous CE23-0 .. N-1 range), and `unit_goal.py coverage` refuses the unit unless every gate
+of its view is required by a verified candidate (`gate_uncovered`) and no candidate names a gate
+outside the view (`requirement_foreign`).
+
+Extraction identities (PVOCAB `llm:<model>@<runId>`): `chatman-ce23` was extracted by
+`llm:claude-opus-5-5@wf_2755fdff-28e/CE0:build:CE-INTAKE`. The bench and standings units reuse the
+extraction of the benchmark design run (`llm:claude-opus-5-5@wf_a0af447e-5fa/bench:design`). No
+second LLM pass over the same revision is permitted (ARD section 5.5). There are 24 recorded
+corrections, all of `required_by` or `boundary_class` on the standings unit, and each states its
+reason from `chatman-ce23-12-standings.md`. The bench unit carries no correction: every bench item
+is a BenchmarkDesign/MSAContract design obligation of CE23-12 (9 work orders), and the standings
+rule, not a correction, keeps operational standing out of the design crown.
+
+```sh
+sh release/v26.9.23/sjira/compile_check.sh                  # the court (check)
+sh release/v26.9.23/sjira/compile_check.sh --write OUTROOT  # manufacture into OUTROOT
+python3 -m unittest discover -s release/v26.9.23/sjira -p 'test_*.py' -v
+cd <ggen_igniter> && MIX_ENV=test mix run <repo>/release/v26.9.23/sjira/stop_witness.exs \
+  <repo>/release/v26.9.23/sjira/goal.ttl CE23-0 ...          # oxigraph CHATMAN_STOP witness
+python3 release/v26.9.23/sjira/replay_court.py record --log LOG -- 'CMD'  # record a gate-log block
+python3 release/v26.9.23/sjira/replay_court.py log --log LOG              # re-execute a gate log
+python3 release/v26.9.23/sjira/replay_court.py receipt --receipt R.json   # re-execute replay.commands
+```
+
+Receipt logs under `receipts/v26.9.23/CE-INTAKE.gate/` from repair round 2 on (`r2-*.log`) are
+written by `replay_court.py record`, which executes exactly the command line it writes; the lane
+receipt's `replay.commands` are the same literal command lines, and `replay_court.py receipt`
+re-executes all of them and refuses any exit that differs from the recorded one.
+
+The CE23-12 standing rule (`chatman-ce23-12-standings.md`): CE23-12 for v26.9.23 is
+BENCHMARK_DESIGN_ALIVE = BenchmarkDesign ∧ MSAContract ∧ GeneratedQualificationPlan.
+NON_LLM_OPERATIONAL_ALIVE is successor work and is never implied by the design.

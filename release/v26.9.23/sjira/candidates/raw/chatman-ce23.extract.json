@@ -1,0 +1,407 @@
+[
+ {
+  "boundary_class": "Core",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Invariant",
+  "quote": "should be a dependency-closed composition release around the Semantic Manufacturing checkpoint, not an “all repositories green” release.",
+  "required_by": "GC-CE-26.9.23",
+  "statement": "Chatman Ecosystem v26.9.23 is a dependency-closed composition release around the Semantic Manufacturing checkpoint, not an all-repositories-green release."
+ },
+ {
+  "boundary_class": "FirstMile",
+  "kind": "Evidence",
+  "quote": "There is not yet an admitted `chatman-ecosystem v26.9.23` subject, and the upstream Semantic Manufacturing crown is not yet complete.",
+  "required_by": "CE23-1",
+  "statement": "No admitted chatman-ecosystem v26.9.23 subject exists and the upstream Semantic Manufacturing crown is not complete."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "Evidence",
+  "quote": "GitHub branch still contains an older `STOP=false`, `0/13` receipt",
+  "required_by": "CE23-3",
+  "statement": "The pushed xaas branch still carries a stale STOP=false 0/13 receipt that is not admissible as the final crown."
+ },
+ {
+  "boundary_class": "Core",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "release:semantic-manufacturing"
+  },
+  "kind": "Invariant",
+  "quote": "Therefore the local 11/13 result must be re-sealed rather than treated as already published standing.",
+  "required_by": "CE23-3",
+  "statement": "The local 11/13 Semantic Manufacturing court result is re-sealed from court output before it is used, never treated as already published standing."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Dependency",
+  "quote": "qualify exact integration heads → stop court → PRs → exact-head CI/fix-forward → merge → independently verify → requalify main → release receipt → tag only after reproducible `STOP=true`",
+  "required_by": "CE23-5",
+  "statement": "The Semantic Manufacturing release proceeds in order: qualify exact integration heads, stop court, PRs, exact-head CI with fix-forward, merge, independent verification, requalify main, release receipt, and tag only after reproducible STOP=true."
+ },
+ {
+  "boundary_class": "Bootstrap",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Postcondition",
+  "quote": "`chatman-ecosystem` working subject is bound to a GitHub remote + exact SHA; lineage is proven rather than inferred",
+  "required_by": "CE23-0",
+  "statement": "The chatman-ecosystem working subject is bound to a GitHub remote and an exact SHA, and its lineage is proven rather than inferred."
+ },
+ {
+  "boundary_class": "Bootstrap",
+  "kind": "Evidence",
+  "quote": "Overnight fleet classified the local checkout `UNSUPPORTED` because it could not relate it to published GitHub lineage",
+  "required_by": "CE23-0",
+  "statement": "The overnight fleet classified the local chatman-ecosystem checkout UNSUPPORTED because it could not relate it to published GitHub lineage."
+ },
+ {
+  "boundary_class": "FirstMile",
+  "hints": {
+   "consequenceClass": "manufacture",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Postcondition",
+  "quote": "Add `release/v26.9.23/…`",
+  "required_by": "CE23-1",
+  "statement": "An independent release/v26.9.23 subject is added to chatman-ecosystem."
+ },
+ {
+  "boundary_class": "FirstMile",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Invariant",
+  "quote": "preserve `release/v26.9.1` untouched",
+  "required_by": "CE23-1",
+  "statement": "The release/v26.9.1 subject of chatman-ecosystem is preserved untouched."
+ },
+ {
+  "boundary_class": "FirstMile",
+  "hints": {
+   "consequenceClass": "projection",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Postcondition",
+  "quote": "Every one of the 16 roles required by `release/v26.9.1/manifest.toml` maps explicitly to `REQUIRED`, `SUCCESSOR`, `BLOCKED`, `UNSUPPORTED`, or `REFUSED` for the new boundary",
+  "required_by": "CE23-2",
+  "statement": "Every one of the 16 roles required by release/v26.9.1/manifest.toml maps explicitly to REQUIRED, SUCCESSOR, BLOCKED, UNSUPPORTED or REFUSED for the v26.9.23 boundary."
+ },
+ {
+  "boundary_class": "FirstMile",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Invariant",
+  "quote": "Must not silently erase the old release topology",
+  "required_by": "CE23-2",
+  "statement": "The old v26.9.1 release topology is never silently erased."
+ },
+ {
+  "boundary_class": "FirstMile",
+  "kind": "Object",
+  "quote": "The existing `chatman-ecosystem` manifest for `v26.9.1` has **16 required roles**",
+  "required_by": "CE23-2",
+  "statement": "The v26.9.1 chatman-ecosystem manifest has 16 required roles, from public ontology to capstone."
+ },
+ {
+  "boundary_class": "FirstMile",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Falsifier",
+  "quote": "They *are* contradictory if we simply replace the old 16-role manifest with a two-repo manifest and pretend the old obligations disappeared.",
+  "required_by": "CE23-2",
+  "statement": "Replacing the old 16-role manifest with a two-repo manifest that pretends the old obligations disappeared falsifies the boundary crosswalk."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "Object",
+  "quote": "ReleaseGraph_{23}",
+  "required_by": "GC-CE-26.9.23",
+  "statement": "The v26.9.23 release graph consists of the Chatman root, the Semantic Manufacturing crown, the fleet classification and the legacy role crosswalk."
+ },
+ {
+  "boundary_class": "Core",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Invariant",
+  "quote": "with only the subjects actually required by the v26.9.23 checkpoint participating in its conjunctive runtime crown.",
+  "required_by": "GC-CE-26.9.23",
+  "statement": "Only the subjects actually required by the v26.9.23 checkpoint participate in the conjunctive runtime crown."
+ },
+ {
+  "boundary_class": "Core",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Postcondition",
+  "quote": "Exact digest of a fresh `STOP-GC-26.9.23` receipt says `STOP=true`, all 13 gate receipts admitted, replay succeeds",
+  "required_by": "CE23-3",
+  "statement": "The exact digest of a fresh STOP-GC-26.9.23 receipt says STOP=true, all 13 Semantic Manufacturing gate receipts are admitted, and replay succeeds."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "Evidence",
+  "quote": "11/13 observed; pushed STOP receipt stale",
+  "required_by": "CE23-3",
+  "statement": "11 of 13 Semantic Manufacturing gates were observed ALIVE and the pushed STOP receipt is stale."
+ },
+ {
+  "boundary_class": "Core",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "release:semantic-manufacturing"
+  },
+  "kind": "Postcondition",
+  "quote": "SM\\_STOP=\\bigwedge_{i=0}^{12}GC23_i",
+  "required_by": "CE23-3",
+  "statement": "SM_STOP is the conjunction of the Semantic Manufacturing gates GC23-0 through GC23-12."
+ },
+ {
+  "boundary_class": "Core",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "release:semantic-manufacturing"
+  },
+  "kind": "Postcondition",
+  "quote": "V23-H manufactures successor prose; its digest is explicitly accepted; self-hosting court passes",
+  "required_by": "CE23-4",
+  "statement": "V23-H manufactures successor prose, its digest is explicitly accepted, and the GC23-12 self-hosting court passes."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "Authority",
+  "quote": "operator successor-digest acceptance",
+  "required_by": "CE23-4",
+  "statement": "Acceptance of the successor digest is an operator act on the critical path."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "Evidence",
+  "quote": "V23-H unfinished; `successor/ACCEPTED` absent",
+  "required_by": "CE23-4",
+  "statement": "V23-H was unfinished and successor/ACCEPTED was absent when the prose was written."
+ },
+ {
+  "boundary_class": "LastMile",
+  "hints": {
+   "consequenceClass": "actuation",
+   "requiresCapability": "release:semantic-manufacturing"
+  },
+  "kind": "Postcondition",
+  "quote": "`xaas` and `ggen_igniter` release changes reach exact post-merge `main` SHAs; fleet receipts are regenerated against those identities",
+  "required_by": "CE23-5",
+  "statement": "The xaas and ggen_igniter release changes reach exact post-merge main SHAs and the fleet receipts are regenerated against those identities."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Evidence",
+  "quote": "Both branches remain off main; no PRs",
+  "required_by": "CE23-5",
+  "statement": "Both critical release branches remain off main with no PRs open."
+ },
+ {
+  "boundary_class": "Core",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Postcondition",
+  "quote": "Every observed repo is classified; `RequiredUnknown=0`; `UnclassifiedRequiredWork=0`; noncritical failures cannot reopen the release without falsifying a GC23 proposition",
+  "required_by": "CE23-6",
+  "statement": "Every observed repository is classified, RequiredUnknown is 0, UnclassifiedRequiredWork is 0, and noncritical failures cannot reopen the release without falsifying a GC23 proposition."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "Evidence",
+  "quote": "Existing 21-repo matrix supplies the starting projection",
+  "required_by": "CE23-6",
+  "statement": "The existing 21-repository fleet matrix supplies the starting projection of the fleet classification."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "Metric",
+  "quote": "FleetClosed \\iff\nRequiredUnknown=0\n\\land UnclassifiedRequiredWork=0.",
+  "required_by": "CE23-6",
+  "statement": "FleetClosed holds iff RequiredUnknown = 0 and UnclassifiedRequiredWork = 0."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "State",
+  "quote": "**Critical path:** `xaas`, `ggen_igniter`.",
+  "required_by": "CE23-6",
+  "statement": "xaas and ggen_igniter are the critical path of the v26.9.23 release."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "State",
+  "quote": "**Successor:** `ash_a2a`, `ash_atlassian`, `ash_surface`, `autofde-lab`, `beam4pm`, `engineering-standards`, `ferroplan`, `frozen-duckdb`, `ggen`, `ggen-marketplace`, `gitvan`, `gymact`, `open-ontologies`, `zcode-cli`.",
+  "required_by": "CE23-6",
+  "statement": "ash_a2a, ash_atlassian, ash_surface, autofde-lab, beam4pm, engineering-standards, ferroplan, frozen-duckdb, ggen, ggen-marketplace, gitvan, gymact, open-ontologies and zcode-cli are Successor for this release."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "State",
+  "quote": "**Blocked but noncritical:** `ggen-ecosystem`.",
+  "required_by": "CE23-6",
+  "statement": "ggen-ecosystem is Blocked but noncritical for this release."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "State",
+  "quote": "**Refused from this release boundary:** `remo`, `turbo-fieldfare`, `unjucks`.",
+  "required_by": "CE23-6",
+  "statement": "remo, turbo-fieldfare and unjucks are Refused from this release boundary."
+ },
+ {
+  "boundary_class": "Bootstrap",
+  "kind": "Exclusion",
+  "quote": "v26.9.23 therefore needs to repair **transport/identity**, not “fix” Chatman implementation code merely because of that classification.",
+  "required_by": "CE23-0",
+  "statement": "Chatman implementation code is not changed merely because the local checkout was classified UNSUPPORTED; v26.9.23 repairs transport and identity only."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "Exclusion",
+  "quote": "“making every repository ALIVE” is not a release requirement.",
+  "required_by": "GC-CE-26.9.23",
+  "statement": "Making every repository ALIVE is not a v26.9.23 release requirement."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "Exclusion",
+  "quote": "WD FA/V23-W should also **not** become a new v26.9.23 blocker.",
+  "required_by": "GC-CE-26.9.23",
+  "statement": "WD FA and V23-W do not become a v26.9.23 blocker; live WD integration is excluded from this release."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "Exclusion",
+  "quote": "Do **not** spend v26.9.23 closing `ggen-ecosystem`, `autofde-lab`, `ash_surface`, `zcode-cli`, or other successor work unless an observation proves one of those repos is actually traversed by a GC23 court.",
+  "required_by": "GC-CE-26.9.23",
+  "statement": "v26.9.23 spends no work closing ggen-ecosystem, autofde-lab, ash_surface, zcode-cli or other successor work unless an observation proves a GC23 court traverses that repository."
+ },
+ {
+  "boundary_class": "Successor",
+  "kind": "Successor",
+  "quote": "That would change the topology; until then, it is successor work by construction.",
+  "statement": "Work on successor repositories is successor work by construction until an observation changes the topology."
+ },
+ {
+  "boundary_class": "Core",
+  "hints": {
+   "consequenceClass": "manufacture",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Postcondition",
+  "quote": "`verify_release`, portfolio survey/planner, standing verifier, West projection, etc. can explicitly target `release/v26.9.23` rather than silently defaulting to `v26.9.1`",
+  "required_by": "CE23-7",
+  "statement": "verify_release, the portfolio survey and planner, the standing verifier, the West projection and the other Chatman tooling can explicitly target release/v26.9.23 rather than silently defaulting to v26.9.1."
+ },
+ {
+  "boundary_class": "Core",
+  "kind": "Evidence",
+  "quote": "Multiple current scripts/catalog surfaces default to `release/v26.9.1/...`",
+  "required_by": "CE23-7",
+  "statement": "Multiple current Chatman scripts and catalog surfaces default to release/v26.9.1."
+ },
+ {
+  "boundary_class": "Core",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Postcondition",
+  "quote": "Imported crown proves `LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH=0` and `UNRECEIPTED_ACTUATION=0`",
+  "required_by": "CE23-8",
+  "statement": "The imported Semantic Manufacturing crown proves LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH=0 and UNRECEIPTED_ACTUATION=0."
+ },
+ {
+  "boundary_class": "Core",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Invariant",
+  "quote": "Must be carried into root release receipt, not merely documented",
+  "required_by": "CE23-8",
+  "statement": "The zero-LLM and zero-unreceipted-actuation evidence is carried into the root release receipt, not merely documented."
+ },
+ {
+  "boundary_class": "LastMile",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Postcondition",
+  "quote": "Candidate Chatman SHA passes generated-projection drift, manifest/ref validation, unit/integration, imported receipt validation, replay, and strict release crown",
+  "required_by": "CE23-9",
+  "statement": "The candidate Chatman SHA passes generated-projection drift, manifest and ref validation, unit and integration tests, imported receipt validation, replay and the strict release crown."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Evidence",
+  "quote": "Not manufactured yet",
+  "required_by": "CE23-9",
+  "statement": "The exact-head root court was not manufactured when the prose was written."
+ },
+ {
+  "boundary_class": "LastMile",
+  "hints": {
+   "consequenceClass": "manufacture",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Postcondition",
+  "quote": "Receipt binds Chatman SHA, xaas SHA, ggen_igniter SHA, graph/ontology/schema/toolchain/provider digests, fleet digest, all gate receipts, replay and exclusions",
+  "required_by": "CE23-10",
+  "statement": "The root release receipt binds the Chatman, xaas and ggen_igniter SHAs, the graph, ontology, schema, toolchain and provider digests, the fleet digest, all gate receipts, replay and exclusions."
+ },
+ {
+  "boundary_class": "LastMile",
+  "hints": {
+   "consequenceClass": "publication",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Postcondition",
+  "quote": "`v26.9.23` identifies the exact Chatman release whose imported Semantic Manufacturing STOP replays true",
+  "required_by": "CE23-11",
+  "statement": "The v26.9.23 tag identifies the exact Chatman release whose imported Semantic Manufacturing STOP replays true."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Dependency",
+  "quote": "Impossible until CE23-3…10 close",
+  "required_by": "CE23-11",
+  "statement": "The v26.9.23 tag is impossible until CE23-3 through CE23-10 close."
+ },
+ {
+  "boundary_class": "LastMile",
+  "hints": {
+   "consequenceClass": "verification",
+   "requiresCapability": "construct:chatman-ecosystem-lane"
+  },
+  "kind": "Invariant",
+  "quote": "CHATMAN\\_STOP_{26.9.23}\n=\nIdentity\n\\land BoundaryCrosswalk\n\\land SM\\_STOP\n\\land ExactMainHeads\n\\land FleetClosed\n\\land KnownPath_{LLM=0}\n\\land UnreceiptedActuation_{=0}\n\\land Replay\n\\land RootReceipt",
+  "required_by": "GC-CE-26.9.23",
+  "statement": "The root court computes CHATMAN_STOP = Identity ∧ BoundaryCrosswalk ∧ SM_STOP ∧ ExactMainHeads ∧ FleetClosed ∧ KnownPath_LLM=0 ∧ UnreceiptedActuation=0 ∧ Replay ∧ RootReceipt."
+ },
+ {
+  "boundary_class": "LastMile",
+  "kind": "Dependency",
+  "quote": "**V23-H → operator successor-digest acceptance → fresh 12/13 court → V23-Q release lane → PR both critical repos → exact-head CI/fix-forward → merge → requalify → GC23-11 → fresh 13/13 `STOP=true` receipt → manufacture `chatman-ecosystem/release/v26.9.23` → crosswalk old roles → root crown/replay → tag.**",
+  "required_by": "GC-CE-26.9.23",
+  "statement": "The critical path runs V23-H, operator successor-digest acceptance, a fresh 12/13 court, the V23-Q release lane, PRs of both critical repos, exact-head CI with fix-forward, merge, requalification, GC23-11, a fresh 13/13 STOP=true receipt, manufacture of chatman-ecosystem/release/v26.9.23, the old-role crosswalk, root crown and replay, then the tag."
+ }
+]

@@ -1,0 +1,8 @@
+$ pwd; git rev-parse HEAD; git status --porcelain; git -C /Users/sac/wt/v26922/v23/CE-INTAKE-gi rev-parse HEAD; git -C /Users/sac/wt/v26922/fri/ggen_igniter-int rev-parse HEAD; shasum -a 256 /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py release/v26.9.23/sjira/replay_court.py
+/Users/sac/wt/v26922/v23/CE-INTAKE
+96fb0bfbb6aa10e5750fcd8942b46c68690620a2
+3ed6a7afc51fcfc652cfa72f75680d7fa1543bc8
+3ed6a7afc51fcfc652cfa72f75680d7fa1543bc8
+86a0e9b30d192adff8026d281b1735ee4b9e371e4d29083ed0cb089a62730421  /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py
+61832a9274367187a7b2a9aedf786bd411ddfa9a641ef4e75064a90646350dc8  release/v26.9.23/sjira/replay_court.py
+exit=0

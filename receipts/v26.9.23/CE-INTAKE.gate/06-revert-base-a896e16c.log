@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py", line 676, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py", line 672, in main
+    return cmd_emit(args) if args.command == "emit" else cmd_check(args)
+                                                         ~~~~~~~~~^^^^^^
+  File "/Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py", line 574, in cmd_check
+    source = Path(args.source).read_bytes()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 777, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'release/v26.9.23/sjira/chatman-ce23.md'

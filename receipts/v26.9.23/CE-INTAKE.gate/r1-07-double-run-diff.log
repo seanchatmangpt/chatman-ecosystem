@@ -1,0 +1,12 @@
+$ diff -r <scratch>/runA <scratch>/runB && diff -r <scratch>/runA release/v26.9.23/sjira/compiled; (rdflib WorkOrder count); shasum -a 256 compiled/*/*.ttl
+exit=0
+WorkOrders chatman-ce23 21
+WorkOrders chatman-ce23-12-bench 9
+WorkOrders chatman-ce23-12-standings 24
+WorkOrders total 54
+6201a0732fd2181142d90e61dfb77d8d73dffefc2e4af0e946715ff59438b432  release/v26.9.23/sjira/compiled/chatman-ce23-12-bench/orders.ttl
+4c124874c986a70e6687c9d6ac7b46e660d963745892d5b5b9cd911908cf6018  release/v26.9.23/sjira/compiled/chatman-ce23-12-bench/propositions.ttl
+d7643c129b4620f820776d155863383f6ff5e4ab5551f0a1a92e8085de3130b5  release/v26.9.23/sjira/compiled/chatman-ce23-12-standings/orders.ttl
+c92d6c8fa3f056335d7cae3e1b309271144754cc00d7bfb3f41639fae02af12c  release/v26.9.23/sjira/compiled/chatman-ce23-12-standings/propositions.ttl
+09250f7fbd0f7b45e3e8f485c93ba0954276f6d01be67fc52649642241aaa809  release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl
+e32e8cac3624c387863463690d2c9930b90033ee1e83bb14c911360821297aae  release/v26.9.23/sjira/compiled/chatman-ce23/propositions.ttl
