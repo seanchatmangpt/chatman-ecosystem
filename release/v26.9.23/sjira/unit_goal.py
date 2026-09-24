@@ -31,9 +31,21 @@ root. `partition` refuses unless the declared units' gate sets partition
 every GoalCheckpoint under the root (sj:checkpointOf+), so no gate escapes
 the per-unit coverage law.
 
-  emit      --goal G --unit REL --source FILE --out VIEW
-  check     --goal G --unit REL --source FILE --out VIEW
-  partition --goal G --unit REL [--unit REL ...]
+`coverage` is the prose-side gate law for every unit (the frozen prose_spans.py
+`--require-gates N` can only require the contiguous range <prefix>0 .. N-1, so it
+expresses CE23-0 .. CE23-11 but not CE23-12 alone nor the CE23-12 conjuncts): it
+reads the tally prose_spans.py `check --summary` writes and refuses unless that
+check passed, every gate of G_U is required by a verified candidate
+(gate_uncovered) and no candidate is required by a gate outside G_U or P
+(requirement_foreign). `require-args` prints the native prose_spans flags when
+G_U is such a range (chatman-ce23: --require-gates 12 --gate-prefix CE23-), else
+an empty line, so no gate count is a literal of the court.
+
+  emit         --goal G --unit REL --source FILE --out VIEW
+  check        --goal G --unit REL --source FILE --out VIEW
+  partition    --goal G --unit REL [--unit REL ...]
+  require-args --goal G --unit REL --namespace NS [--gate-prefix CE23-]
+  coverage     --goal G --unit REL --namespace NS --summary PROSE_SPANS_SUMMARY.json
 
 Output: a header of `#` lines, then sorted N-Triples (valid Turtle).
 Deterministic: rdflib + standard library; no clock, network or LLM.
@@ -44,6 +56,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import sys
 from pathlib import Path
 
@@ -120,14 +133,14 @@ def ntriple(s, p, o) -> str:
     return f"{s.n3()} {p.n3()} {o.n3()} ."
 
 
-def view(goal_path: str, unit: str, source: bytes, refusals: list[str]) -> str | None:
+def unit_scope(goal_path: str, unit: str, refusals: list[str]) -> tuple[Graph, URIRef, URIRef, list[URIRef]] | None:
+    """(graph, goal root, view root P, gates G_U) of one unit, or None with refusals."""
     graph = load(goal_path, refusals)
     if graph is None:
         return None
     root = goal_root(graph, refusals)
     if root is None:
         return None
-    sha = digest(source)
     gates = unit_gates(graph, root, unit)
     if not gates:
         refusals.append(f"REFUSED {unit}: unit_empty: no GoalCheckpoint under the root has dcterms:source {unit!r}")
@@ -136,13 +149,21 @@ def view(goal_path: str, unit: str, source: bytes, refusals: list[str]) -> str |
     if len(parents) != 1:
         refusals.append(f"REFUSED {unit}: unit_parents: gates of the unit have {len(parents)} parents {parents}")
         return None
+    return graph, root, parents[0], gates
+
+
+def view(goal_path: str, unit: str, source: bytes, refusals: list[str]) -> str | None:
+    scope = unit_scope(goal_path, unit, refusals)
+    if scope is None:
+        return None
+    graph, root, parent, gates = scope
+    sha = digest(source)
     for gate in gates:
         pinned = graph.value(gate, sj("sourceSha256"))
         if pinned is None or str(pinned) != sha:
             refusals.append(f"REFUSED {gate}: source_sha256_mismatch: gate pins {pinned}, unit bytes are {sha}")
     if refusals:
         return None
-    parent = parents[0]
     triples: set[str] = set()
 
     def add(s, p, o):
@@ -238,6 +259,88 @@ def cmd_partition(args: argparse.Namespace) -> int:
     return 0
 
 
+def local_name(iri: URIRef, namespace: str) -> str:
+    """The key prose_spans.py's --summary uses for a gate IRI (its tally(): IRI minus the namespace)."""
+    text = str(iri)
+    return text[len(namespace) :] if text.startswith(namespace) else text
+
+
+def cmd_require_args(args: argparse.Namespace) -> int:
+    """Print the prose_spans.py check flags that require G_U natively, or nothing.
+
+    prose_spans.py `--require-gates N --gate-prefix P` requires exactly the IRIs
+    namespace + P0 .. P(N-1) (its cmd_check), so it expresses G_U only when G_U is
+    that contiguous range; any other G_U (CE23-12 alone; the CE23-12 conjuncts)
+    prints an empty line and is judged by `coverage` alone.
+    """
+    refusals: list[str] = []
+    scope = unit_scope(args.goal, args.unit, refusals)
+    if scope is None:
+        sys.stderr.write("".join(r + "\n" for r in refusals))
+        return 1
+    _graph, _root, _parent, gates = scope
+    locals_ = {local_name(g, args.namespace) for g in gates}
+    span = {f"{args.gate_prefix}{i}" for i in range(len(gates))}
+    if locals_ == span:
+        sys.stdout.write(f"--require-gates {len(gates)} --gate-prefix {args.gate_prefix}\n")
+    else:
+        sys.stdout.write("\n")
+    return 0
+
+
+def cmd_coverage(args: argparse.Namespace) -> int:
+    """Judge a prose_spans.py check --summary against the unit's gates.
+
+    Refuses unless the summary is a passing check (check OK, 0 refusals), every
+    gate of G_U is required by at least one verified candidate (gate_uncovered),
+    and every sj:requiredBy target of the unit's candidates is a gate of G_U or
+    the view root P (requirement_foreign): the prose-side twin of compile_prose's
+    uncovered_gates.rq / foreign_requirements.rq for every unit.
+    """
+    refusals: list[str] = []
+    scope = unit_scope(args.goal, args.unit, refusals)
+    summary = None
+    try:
+        summary = json.loads(Path(args.summary).read_text("utf-8"))
+    except (OSError, ValueError) as exc:
+        refusals.append(f"REFUSED {args.summary}: summary_unreadable: {type(exc).__name__}: {exc}")
+    if scope is None or summary is None:
+        sys.stdout.write("".join(r + "\n" for r in refusals))
+        sys.stdout.write(f"COVERAGE REFUSED: {len(refusals)} refusal(s)\n")
+        return 1
+    graph, _root, parent, gates = scope
+    if summary.get("check") != "OK" or summary.get("refusals") != 0:
+        refusals.append(
+            f"REFUSED {args.summary}: summary_not_ok: check={summary.get('check')!r} refusals={summary.get('refusals')!r}"
+        )
+    required_by = summary.get("required_by")
+    if not isinstance(required_by, dict):
+        refusals.append(f"REFUSED {args.summary}: summary_unreadable: no required_by tally")
+        required_by = {}
+    gate_keys = [local_name(g, args.namespace) for g in gates]
+    allowed = set(gate_keys) | {local_name(parent, args.namespace)}
+    for gate, key in zip(gates, gate_keys):
+        if not isinstance(required_by.get(key), int) or required_by[key] < 1:
+            refusals.append(f"REFUSED {gate}: gate_uncovered: no verified candidate of {args.unit} carries sj:requiredBy {key}")
+    for key in sorted(required_by):
+        if key not in allowed:
+            refusals.append(
+                f"REFUSED {args.unit}: requirement_foreign: {required_by[key]} candidate(s) required by {key}, "
+                f"outside the view {sorted(allowed)}"
+            )
+    if refusals:
+        sys.stdout.write("".join(r + "\n" for r in refusals))
+        sys.stdout.write(f"COVERAGE REFUSED: {len(refusals)} refusal(s)\n")
+        return 1
+    root_key = local_name(parent, args.namespace)
+    tally = " ".join(f"{k}={required_by[k]}" for k in gate_keys)
+    sys.stdout.write(
+        f"COVERAGE OK: {args.unit} view {graph.value(parent, dct('identifier'))}: {len(gates)} gate(s) covered "
+        f"{tally}; view root {root_key}={required_by.get(root_key, 0)}; no foreign requirement\n"
+    )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -250,9 +353,23 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("partition")
     p.add_argument("--goal", required=True)
     p.add_argument("--unit", action="append", required=True)
+    p = sub.add_parser("require-args")
+    p.add_argument("--goal", required=True)
+    p.add_argument("--unit", required=True)
+    p.add_argument("--namespace", required=True, help="instance namespace of the candidates (prose_spans --namespace)")
+    p.add_argument("--gate-prefix", default="CE23-", help="gate local-name prefix (prose_spans --gate-prefix)")
+    p = sub.add_parser("coverage")
+    p.add_argument("--goal", required=True)
+    p.add_argument("--unit", required=True)
+    p.add_argument("--namespace", required=True, help="instance namespace of the candidates (prose_spans --namespace)")
+    p.add_argument("--summary", required=True, help="the JSON written by prose_spans.py check --summary")
     args = parser.parse_args(argv)
     if args.cmd == "partition":
         return cmd_partition(args)
+    if args.cmd == "require-args":
+        return cmd_require_args(args)
+    if args.cmd == "coverage":
+        return cmd_coverage(args)
     return cmd_view(args)
 
 

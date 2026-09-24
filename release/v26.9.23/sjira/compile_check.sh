@@ -12,10 +12,18 @@
 #      carries no correction (its extraction is the raw edge byte for byte): every bench item is a
 #      CE23-12 design obligation (chatman-ce23-12-standings.md BenchmarkDesign A = 'experiment,
 #      DOE, corpus, statistics and qualification rules defined') and is never demoted off CE23-12;
-#   2. prose_spans.py check --extract: candidates/U.ttl re-verifies against the
-#      prose bytes of U (digest, spans, IRIs in the ce: namespace) and re-emits
-#      byte-identically from the extraction (no hand edit); chatman-ce23 must
-#      cover CE23-0 .. CE23-11;
+#   2. prose_spans.py check --namespace <ce:> --prefix ce --extract --summary, for
+#      EVERY unit: candidates/U.ttl re-verifies against the prose bytes of U
+#      (digest, spans, IRIs in the ce: namespace) and re-emits byte-identically
+#      from the extraction (no hand edit); the CE23 gates of U's view are required
+#      natively where the frozen tool can express them (--require-gates N
+#      --gate-prefix CE23- requires exactly CE23-0 .. CE23-(N-1), prose_spans.py
+#      cmd_check; unit_goal.py require-args derives the flags from goal.ttl:
+#      chatman-ce23 -> --require-gates 12) and, for every unit, unit_goal.py
+#      coverage judges the tool's own --summary tally: every gate of U's view
+#      (chatman-ce23: CE23-0 .. CE23-11; bench: CE23-12; standings: the three
+#      CE23-12 conjuncts) is required by a verified candidate (gate_uncovered)
+#      and no candidate is required outside the view (requirement_foreign);
 #   3. unit_goal.py partition + check: the three units partition the 16
 #      GoalCheckpoints under GC-CE-26.9.23 and units/U.goal.ttl is the
 #      byte-identical projection of goal.ttl;
@@ -134,16 +142,23 @@ if [ "$mode" = check ]; then
     "$rel/candidates/chatman-ce23-12-bench.extract.json" ||
     refuse "chatman-ce23-12-bench carries a correction: bench items are CE23-12 design obligations (BenchmarkDesign/MSAContract), never demoted"
 
+  mkdir -p "$scratch/summary" || unknown "cannot create $scratch/summary"
   for unit in $UNITS; do
-    if [ "$unit" = chatman-ce23 ]; then
-      gates="--require-gates 12 --gate-prefix CE23-"
-    else
+    # Native prose_spans gate flags derived from the unit view (never a literal count).
+    gates=$(run python3 "$here/unit_goal.py" require-args --goal "$rel/goal.ttl" --unit "$rel/$unit.md" \
+      --namespace "$ns" --gate-prefix CE23-) || {
+      refuse "unit_goal.py require-args $unit"
       gates=""
-    fi
+    }
+    echo "== prose_spans.py check $unit --namespace $ns --prefix ce${gates:+ $gates}"
     # shellcheck disable=SC2086
     run python3 "$spans" check --source "$rel/$unit.md" --candidates "$rel/candidates/$unit.ttl" \
-      --namespace "$ns" --prefix ce --extract "$rel/candidates/$unit.extract.json" $gates ||
+      --namespace "$ns" --prefix ce --extract "$rel/candidates/$unit.extract.json" \
+      --summary "$scratch/summary/$unit.json" $gates ||
       refuse "prose_spans.py check $unit"
+    run python3 "$here/unit_goal.py" coverage --goal "$rel/goal.ttl" --unit "$rel/$unit.md" \
+      --namespace "$ns" --summary "$scratch/summary/$unit.json" ||
+      refuse "unit_goal.py coverage $unit (CE23 gates of the unit view vs the prose_spans tally)"
   done
 
   run python3 "$here/unit_goal.py" partition --goal "$rel/goal.ttl" \
@@ -226,7 +241,7 @@ if [ "$fail" -ne 0 ]; then
   exit 1
 fi
 if [ "$mode" = check ]; then
-  echo "COMPILE_CHECK OK: 3 units (chatman-ce23, chatman-ce23-12-bench, chatman-ce23-12-standings): corrections, candidates, unit views, compile_prose --check, goal admission and 16 gate courts all hold"
+  echo "COMPILE_CHECK OK: 3 units (chatman-ce23, chatman-ce23-12-bench, chatman-ce23-12-standings): corrections, candidates (ce: namespace, CE23 gate coverage per unit view), unit views, compile_prose --check, goal admission and 16 gate courts all hold"
 else
   echo "COMPILE_WRITE OK: $out_root/{chatman-ce23,chatman-ce23-12-bench,chatman-ce23-12-standings}"
 fi

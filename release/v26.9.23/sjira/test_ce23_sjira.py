@@ -367,6 +367,131 @@ class CandidatesTest(unittest.TestCase):
             self.assertIn("source_sha256_mismatch", result.stdout)
 
 
+def spans_emit(root: Path, unit: str, items: list, extracted_by: str = "test:mutant") -> None:
+    """Write items as the unit's extraction (raw and corrected) and re-emit candidates/U.ttl with the frozen tool."""
+    data = json.dumps(items, indent=1, sort_keys=True, ensure_ascii=False) + "\n"
+    for path in (root / REL / "candidates" / f"{unit}.extract.json", root / REL / "candidates/raw" / f"{unit}.extract.json"):
+        path.write_text(data, "utf-8")
+    result = py(
+        str(SPANS), "emit", "--source", f"{REL}/{unit}.md", "--extract", f"{REL}/candidates/{unit}.extract.json",
+        "--out", f"{REL}/candidates/{unit}.ttl", "--source-path", f"{REL}/{unit}.md", "--extracted-by", extracted_by,
+        "--namespace", NS, "--prefix", "ce", cwd=root,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+@unittest.skipUnless(SPANS.is_file(), f"prose_spans.py not found at {SPANS}")
+class GateCoverageTest(unittest.TestCase):
+    """Every unit's candidates cover exactly the CE23 gates of its view (prose_spans --summary + unit_goal.py coverage)."""
+
+    VIEW_GATES = {
+        "chatman-ce23": [f"CE23-{i}" for i in range(12)],
+        "chatman-ce23-12-bench": ["CE23-12"],
+        "chatman-ce23-12-standings": ["CE23-12-BenchmarkDesign", "CE23-12-MSAContract", "CE23-12-GeneratedQualificationPlan"],
+    }
+
+    def require_args(self, root: Path, unit: str) -> subprocess.CompletedProcess:
+        return py(
+            str(HERE / "unit_goal.py"), "require-args", "--goal", f"{REL}/goal.ttl", "--unit", f"{REL}/{unit}.md",
+            "--namespace", NS, "--gate-prefix", "CE23-", cwd=root,
+        )
+
+    def spans_check(self, root: Path, unit: str, summary: Path) -> subprocess.CompletedProcess:
+        flags = self.require_args(root, unit).stdout.split()
+        return py(
+            str(SPANS), "check", "--source", f"{REL}/{unit}.md", "--candidates", f"{REL}/candidates/{unit}.ttl",
+            "--namespace", NS, "--prefix", "ce", "--extract", f"{REL}/candidates/{unit}.extract.json",
+            "--summary", str(summary), *flags, cwd=root,
+        )
+
+    def coverage(self, root: Path, unit: str, summary: Path) -> subprocess.CompletedProcess:
+        return py(
+            str(HERE / "unit_goal.py"), "coverage", "--goal", f"{REL}/goal.ttl", "--unit", f"{REL}/{unit}.md",
+            "--namespace", NS, "--summary", str(summary), cwd=root,
+        )
+
+    def judge(self, root: Path, unit: str) -> tuple[subprocess.CompletedProcess, subprocess.CompletedProcess]:
+        summary = root / "summary" / f"{unit}.json"
+        return self.spans_check(root, unit, summary), self.coverage(root, unit, summary)
+
+    def items(self, unit: str, raw: bool = False) -> list:
+        path = ROOT / REL / "candidates" / ("raw" if raw else "") / f"{unit}.extract.json"
+        return json.loads(path.read_text("utf-8"))
+
+    def test_native_require_gates_are_derived_from_the_view(self):
+        expect = {
+            "chatman-ce23": "--require-gates 12 --gate-prefix CE23-",
+            "chatman-ce23-12-bench": "",
+            "chatman-ce23-12-standings": "",
+        }
+        for unit, flags in expect.items():
+            with self.subTest(unit=unit):
+                result = self.require_args(ROOT, unit)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stdout, flags + "\n")
+
+    def test_every_committed_unit_covers_exactly_its_view_gates(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            for unit, gates in self.VIEW_GATES.items():
+                with self.subTest(unit=unit):
+                    summary = Path(tmp) / f"{unit}.json"
+                    spans = self.spans_check(ROOT, unit, summary)
+                    self.assertEqual(spans.returncode, 0, spans.stdout)
+                    if unit == "chatman-ce23":
+                        self.assertIn("gates CE23-0=3", spans.stdout)
+                    cover = self.coverage(ROOT, unit, summary)
+                    self.assertEqual(cover.returncode, 0, cover.stdout)
+                    self.assertIn(f"{len(gates)} gate(s) covered", cover.stdout)
+                    for gate in gates:
+                        self.assertIn(f" {gate}=", cover.stdout)
+
+    def test_bench_without_its_ce23_12_requirement_is_uncovered(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = copy_tree(Path(tmp))
+            items = self.items("chatman-ce23-12-bench")
+            for item in items:
+                item.pop("required_by", None)
+            spans_emit(root, "chatman-ce23-12-bench", items)
+            spans, cover = self.judge(root, "chatman-ce23-12-bench")
+            # the frozen tool alone accepts it: its --require-gates cannot name CE23-12 alone
+            self.assertEqual(spans.returncode, 0, spans.stdout)
+            self.assertEqual(cover.returncode, 1, cover.stdout)
+            self.assertIn(f"{NS}CE23-12: gate_uncovered", cover.stdout)
+
+    def test_uncorrected_standings_extraction_leaves_conjuncts_uncovered(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = copy_tree(Path(tmp))
+            spans_emit(root, "chatman-ce23-12-standings", self.items("chatman-ce23-12-standings", raw=True))
+            spans, cover = self.judge(root, "chatman-ce23-12-standings")
+            self.assertEqual(spans.returncode, 0, spans.stdout)
+            self.assertEqual(cover.returncode, 1, cover.stdout)
+            for gate in self.VIEW_GATES["chatman-ce23-12-standings"]:
+                self.assertIn(f"{NS}{gate}: gate_uncovered", cover.stdout)
+            self.assertIn("COVERAGE REFUSED: 3 refusal(s)", cover.stdout)
+
+    def test_requirement_outside_the_view_is_foreign(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = copy_tree(Path(tmp))
+            items = self.items("chatman-ce23-12-bench")
+            required = [i for i in items if i.get("required_by") == "CE23-12"]
+            required[0]["required_by"] = "CE23-3"
+            spans_emit(root, "chatman-ce23-12-bench", items)
+            spans, cover = self.judge(root, "chatman-ce23-12-bench")
+            self.assertEqual(spans.returncode, 0, spans.stdout)
+            self.assertEqual(cover.returncode, 1, cover.stdout)
+            self.assertIn("requirement_foreign: 1 candidate(s) required by CE23-3", cover.stdout)
+
+    def test_a_failed_prose_check_is_not_coverage(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = copy_tree(Path(tmp))
+            path = root / REL / "chatman-ce23-12-standings.md"
+            path.write_bytes(path.read_bytes().replace(b"MSA", b"MSB", 1))
+            spans, cover = self.judge(root, "chatman-ce23-12-standings")
+            self.assertEqual(spans.returncode, 1, spans.stdout)
+            self.assertEqual(cover.returncode, 1, cover.stdout)
+            self.assertIn("summary_not_ok: check='FAILED'", cover.stdout)
+
+
 class ReplayCourtTest(unittest.TestCase):
     """replay_court.py re-executes recorded commands for real (/bin/sh) and refuses any recorded
     exit that the literal command line does not reproduce (repair round 2, R_missing_replay)."""
@@ -543,6 +668,32 @@ class CompilerTest(unittest.TestCase):
             for gate in ("CE23-12-BenchmarkDesign", "CE23-12-MSAContract", "CE23-12-GeneratedQualificationPlan"):
                 self.assertIn(gate, output)
             self.assertIn("uncovered_gate", output)
+
+    def test_compile_check_runs_the_gate_coverage_on_every_unit(self):
+        """The court wires the prose-side CE23 gate law for the bench unit, not only for chatman-ce23."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = copy_tree(Path(tmp))
+            items = json.loads((ROOT / REL / "candidates/chatman-ce23-12-bench.extract.json").read_text("utf-8"))
+            for item in items:
+                item.pop("required_by", None)
+            spans_emit(root, "chatman-ce23-12-bench", items)
+            env = dict(
+                os.environ, GGEN_IGNITER_DIR=str(GI), PROSE_SPANS=str(SPANS), ELIXIR_BIN=str(ELIXIR_BIN),
+                ERLANG_BIN=str(ERLANG_BIN),
+            )
+            result = subprocess.run(
+                ["sh", str(root / REL / "compile_check.sh")], cwd=root, env=env, capture_output=True, text=True,
+                timeout=1200,
+            )
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn(
+                "== prose_spans.py check chatman-ce23 --namespace " + NS + " --prefix ce --require-gates 12 --gate-prefix CE23-",
+                result.stdout,
+            )
+            self.assertIn(f"{NS}CE23-12: gate_uncovered", result.stdout)
+            self.assertIn("REFUSED: unit_goal.py coverage chatman-ce23-12-bench", result.stdout)
+            self.assertNotIn("REFUSED: unit_goal.py coverage chatman-ce23 ", result.stdout)
+            self.assertIn("COMPILE_CHECK REFUSED", result.stdout)
 
     def test_candidates_of_another_prose_are_refused_by_the_view_pin(self):
         with tempfile.TemporaryDirectory() as tmp:

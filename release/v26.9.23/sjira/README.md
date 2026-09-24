@@ -20,6 +20,13 @@ It holds no work order and no receipt. Each gate names the prose that defines it
 (`dcterms:source`, `sj:sourceSha256`), and each unit is compiled against the view of exactly the
 gates it defines. The compiler therefore refuses (`uncovered_gate`) any gate that its prose does
 not require.
+The prose layer applies the same law before the compiler runs: for every unit, `compile_check.sh`
+runs the frozen `prose_spans.py check --namespace 'https://ggen-igniter.dev/sjira/chatman-26.9.23#'
+--prefix ce --summary` (plus `--require-gates 12 --gate-prefix CE23-` for chatman-ce23, derived
+from the view by `unit_goal.py require-args`; the tool's `--require-gates` can only name a
+contiguous CE23-0 .. N-1 range), and `unit_goal.py coverage` refuses the unit unless every gate
+of its view is required by a verified candidate (`gate_uncovered`) and no candidate names a gate
+outside the view (`requirement_foreign`).
 
 Extraction identities (PVOCAB `llm:<model>@<runId>`): `chatman-ce23` was extracted by
 `llm:claude-opus-5-5@wf_2755fdff-28e/CE0:build:CE-INTAKE`. The bench and standings units reuse the
