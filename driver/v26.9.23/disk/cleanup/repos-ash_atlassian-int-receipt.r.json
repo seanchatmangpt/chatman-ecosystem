@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (2 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:79ea6ca20408e78d1b2c943709320e6c6145810e7c6de3d62a141050958194df plan_hash:6f6d6fc3ec04a204ed971803708ede037f622961b955a33eeade7dccf60ea7c6 reason:v26922 repos cleanup 2026-09-23: ash_atlassian/int ARTIFACTS_ONLY, idle since 09-22 17:38, clean, no process, no merge lock; _build and deps only",
+    "actor": "claude:cleanup"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 2/2 plan items (120500224 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: 99590144 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-receipt.json --yes",
+        "cwd": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad",
+        "exit": 0,
+        "summary": "deleted=2 skipped=0 failed=0 refused=0",
+        "output_sha256": "e0e9bc42860bfb4a156d33116d290716a2d163b4d37aaaa0cda7cbcb682c4f2e"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-receipt.json (sha256 e0e9bc42860bfb4a156d33116d290716a2d163b4d37aaaa0cda7cbcb682c4f2e)"
+  }
+}

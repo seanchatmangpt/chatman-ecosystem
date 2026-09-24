@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "created_unix": 1790153277,
+  "roots": [
+    "/Users/sac/wt/v26922/ggen/int"
+  ],
+  "deps": false,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/ggen/int/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 67945603072,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/ggen/int/crates/bcinr-pddl/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 4096,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:v23-driver",
+    "approval_reason": "ggen release/v26.9.22 int worktree cargo target (67.95 GB; last write 2026-09-22 23:52, no cargo/rustc process, no open files); ggen is successor for GC-26.9.23; regenerable; non-build evidence files copied to disk/preserve-ggen-int-target; disk 16 GiB with critical-path B1 builds running",
+    "approved_at_unix": 1790153304,
+    "plan_hash": "62161dc75ad1b31037092da246ac154a9e5d1f79660ed150618694d980d3c1ef",
+    "hmac_signature": "ef3cac43c4716a9d2fc1f0292d4a6b6e218c0e964682f164343f1af67349752d"
+  }
+}

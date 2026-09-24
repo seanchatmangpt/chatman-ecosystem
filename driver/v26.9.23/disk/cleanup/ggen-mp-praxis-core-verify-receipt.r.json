@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (1 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:9caa5fd483c56a7dc4064e2901fed5c352bf20a97dcbd32f651d346869cdcd66 plan_hash:399aa2e3326c7eda568b1483ec9542ed6c80f1faf531e839597a8aa65c01b050 reason:ggen-mp group: ignored cargo target of ggen/int examples/praxis-core-verify (3.6G); 0 files newer than 12h cutoff, 0 tracked, git check-ignore /target; no open files/cwd/argv; worktree itself stays ACTIVE; regenerable",
+    "actor": "claude:cleanup"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 1/1 plan items (3825422336 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: -84508672 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-receipt.json --yes",
+        "cwd": "/",
+        "exit": 0,
+        "summary": "deleted=1 skipped=0 failed=0 refused=0",
+        "output_sha256": "5e9ed784ff2f761f19fb7cebf984b1095715cdb59e4937ec0367606a613fb042"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-receipt.json (sha256 5e9ed784ff2f761f19fb7cebf984b1095715cdb59e4937ec0367606a613fb042)"
+  }
+}

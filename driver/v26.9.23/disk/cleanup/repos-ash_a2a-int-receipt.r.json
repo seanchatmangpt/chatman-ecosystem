@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (2 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:5cb72861685d03a57e2b1459313d4840335f83dea9050dd48320c4dda01d4610 plan_hash:e7db546642eb94d053044499214000e6b87b5fb3694056630e14d0bfa9fc57da reason:v26922 repos cleanup 2026-09-23: ash_a2a/int ARTIFACTS_ONLY, idle since 09-22 23:28, clean, no process, no merge lock; rust target dirs only",
+    "actor": "claude:cleanup"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 2/2 plan items (1038221312 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: 968302592 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-receipt.json --yes",
+        "cwd": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad",
+        "exit": 0,
+        "summary": "deleted=2 skipped=0 failed=0 refused=0",
+        "output_sha256": "8308be877e60675761393f0c806a1f7112d0159bd6d796c93627af84d75eef3a"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-receipt.json (sha256 8308be877e60675761393f0c806a1f7112d0159bd6d796c93627af84d75eef3a)"
+  }
+}

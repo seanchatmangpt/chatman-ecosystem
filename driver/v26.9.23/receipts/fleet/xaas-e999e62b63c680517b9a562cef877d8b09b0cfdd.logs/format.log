@@ -1,0 +1,7 @@
+    warning: Application.get_env/2 is discouraged in the module body, use Application.compile_env/3 instead
+    │
+ 12 │   if is_nil(Application.get_env(:ash, :default_string_length_count)) do
+    │                         ~
+    │
+    └─ /Users/sac/wt/v26922/v23/rel-xaas-int/deps/ex4pm/mix.exs:12:25: Ex4pm.MixProject (module)
+

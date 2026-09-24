@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (2 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:ef3cac43c4716a9d2fc1f0292d4a6b6e218c0e964682f164343f1af67349752d plan_hash:62161dc75ad1b31037092da246ac154a9e5d1f79660ed150618694d980d3c1ef reason:ggen release/v26.9.22 int worktree cargo target (67.95 GB; last write 2026-09-22 23:52, no cargo/rustc process, no open files); ggen is successor for GC-26.9.23; regenerable; non-build evidence files copied to disk/preserve-ggen-int-target; disk 16 GiB with critical-path B1 builds running",
+    "actor": "claude:v23-driver"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 2/2 plan items (67945607168 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: 63093792768 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/ggenint-0156-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/ggenint-0156-receipt.json --yes",
+        "cwd": "/Users/sac/wt/v26922/ggen/int",
+        "exit": 0,
+        "summary": "deleted=2 skipped=0 failed=0 refused=0",
+        "output_sha256": "a12d72a5520c235b98470d31aa5054ca25f8fdc704bd4b2789bb70a34d71c798"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/ggenint-0156-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/ggenint-0156-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/ggenint-0156-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/ggenint-0156-receipt.json (sha256 a12d72a5520c235b98470d31aa5054ca25f8fdc704bd4b2789bb70a34d71c798)"
+  }
+}

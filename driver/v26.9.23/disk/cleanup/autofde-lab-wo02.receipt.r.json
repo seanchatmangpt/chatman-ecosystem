@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (4 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:cd6c396db0802ef4eac8a6d931f8eddc7de7eedb524263af7628a1ac569776a4 plan_hash:426ba129dbdadd23e2cad6698663acc90b48100f1ca960d3f94fe1abbaa2e0c7 reason:v26922 cleanup group autofde-etc: wo02 stays (dirty reports/rfc_sa2a_002_benchmarks.json, blob in no ref); reclaim only ignored .venv/build/.pytest_cache/.ruff_cache, idle >12h, no live process, none tracked",
+    "actor": "claude:cleanup"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 4/4 plan items (1456697344 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: -10952704 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.receipt.json --yes",
+        "cwd": "/Users/sac",
+        "exit": 0,
+        "summary": "deleted=4 skipped=0 failed=0 refused=0",
+        "output_sha256": "b8a895f4e094db14661f2f940bd9a328f9e11ef9c6a58308b43a8df851108bc3"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.receipt.json (sha256 b8a895f4e094db14661f2f940bd9a328f9e11ef9c6a58308b43a8df851108bc3)"
+  }
+}

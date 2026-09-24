@@ -1,0 +1,71 @@
+# Template for the PDDL→POWL projection test snapshot. Placeholders
+# (domain-vitae, problem-ullam, case-molestiae, state-enim-0..state-excepturi-8,
+# step-maiores-0..step-quisquam-7) are substituted with seeded fake-generated names
+# by tests/chatman_pddl_to_powl_projection.rs before import; the rendered
+# fixture is written under target/chatman/powl/fixtures/ and loaded from disk.
+# The PDDL is a strict linear 8-step chain (STRIPS8-bounded: unary predicates,
+# no ADL/derived-predicates/quantifiers/durative-actions): each action's
+# precondition is exactly the previous step's effect, matching
+# Pddl8Tape::from_plan's total-order-chain encoding.
+@prefix ex: <http://example.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ceng: <urn:chatman:engine#> .
+
+ex:bob ex:knows ex:alice .
+ex:Matter rdfs:subClassOf ex:PlannedMatter .
+ex:case-molestiae a ex:Matter .
+
+ex:world ceng:pddlDomain """
+(define (domain domain-vitae)
+  (:requirements :strips)
+  (:predicates
+    (state-enim-0 ?x)
+    (state-praesentium-1 ?x)
+    (state-provident-2 ?x)
+    (state-dolores-3 ?x)
+    (state-iure-4 ?x)
+    (state-consectetur-5 ?x)
+    (state-soluta-6 ?x)
+    (state-enim-7 ?x)
+    (state-excepturi-8 ?x))
+  (:action step-maiores-0
+    :parameters (?x)
+    :precondition (and (state-enim-0 ?x))
+    :effect (and (state-praesentium-1 ?x) (not (state-enim-0 ?x))))
+  (:action step-consequuntur-1
+    :parameters (?x)
+    :precondition (and (state-praesentium-1 ?x))
+    :effect (and (state-provident-2 ?x) (not (state-praesentium-1 ?x))))
+  (:action step-autem-2
+    :parameters (?x)
+    :precondition (and (state-provident-2 ?x))
+    :effect (and (state-dolores-3 ?x) (not (state-provident-2 ?x))))
+  (:action step-eos-3
+    :parameters (?x)
+    :precondition (and (state-dolores-3 ?x))
+    :effect (and (state-iure-4 ?x) (not (state-dolores-3 ?x))))
+  (:action step-labore-4
+    :parameters (?x)
+    :precondition (and (state-iure-4 ?x))
+    :effect (and (state-consectetur-5 ?x) (not (state-iure-4 ?x))))
+  (:action step-cupiditate-5
+    :parameters (?x)
+    :precondition (and (state-consectetur-5 ?x))
+    :effect (and (state-soluta-6 ?x) (not (state-consectetur-5 ?x))))
+  (:action step-veniam-6
+    :parameters (?x)
+    :precondition (and (state-soluta-6 ?x))
+    :effect (and (state-enim-7 ?x) (not (state-soluta-6 ?x))))
+  (:action step-quisquam-7
+    :parameters (?x)
+    :precondition (and (state-enim-7 ?x))
+    :effect (and (state-excepturi-8 ?x) (not (state-enim-7 ?x)))))
+""" .
+ex:world ceng:pddlProblem """
+(define (problem problem-ullam)
+  (:domain domain-vitae)
+  (:objects case-molestiae)
+  (:init (state-enim-0 case-molestiae))
+  (:goal (state-excepturi-8 case-molestiae))
+)
+""" .

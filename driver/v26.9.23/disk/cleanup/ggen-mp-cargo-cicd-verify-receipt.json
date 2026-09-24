@@ -1,0 +1,20 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790195272,
+    "execution_started_unix": 1790195284,
+    "execution_completed_unix": 1790195284,
+    "results": [
+      {
+        "path": "/Users/sac/wt/v26922/ggen/int/examples/cargo-cicd-verify/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 20213760,
+        "reversibility": "reversible"
+      }
+    ],
+    "available_before": 46195752960,
+    "available_after": 46195707904
+  }
+}

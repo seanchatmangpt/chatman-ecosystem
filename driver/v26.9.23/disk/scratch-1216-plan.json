@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "created_unix": 1790190933,
+  "roots": [
+    "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL",
+    "/private/tmp/claude-501/v23-scratch/SCAN-open-remote-work",
+    "/private/tmp/claude-501/v23-scratch/B1-V23-T2R",
+    "/private/tmp/claude-501/v23-scratch/B1b-V23-D"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/B1b-V23-D/xaas-b3f85b3/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/xaas-fresh/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/B1-V23-T2R/base/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264168960,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-open-remote-work/xaas-fmt/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264160768,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/B1-V23-T2R/base/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 803295232,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-open-remote-work/xaas-fmt/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 780558336,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/B1b-V23-D/xaas-b3f85b3/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 764108800,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/xaas-fresh/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 403144704,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh2/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh2/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 359182336,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh1/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 355381248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 176189440,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh1/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119128064,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh2/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119128064,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119123968,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-open-remote-work/xaas-fmt/.agents",
+      "kind": "dir",
+      "reason": "ai agents dir",
+      "bytes": 8192,
+      "reversibility": "unknown"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:v23-driver",
+    "approval_reason": "finished scratch of completed scanners and merged lanes; the one unknown item is .agents inside a disposable scratch clone of xaas (tracked in git, reproducible by clone); disk 20 GiB",
+    "approved_at_unix": 1790190940,
+    "plan_hash": "1f6617b0972576a0a94f822cf0a3e2c4c0a0a2db0f265f0a166d24274b61b7a8",
+    "hmac_signature": "babc597a586f380e53bcfa1a8bba58f745ebe6bd31ee99109b441d7db296f6f4"
+  }
+}

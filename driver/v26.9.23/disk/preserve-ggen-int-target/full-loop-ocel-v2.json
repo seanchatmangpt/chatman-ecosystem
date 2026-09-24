@@ -1,0 +1,399 @@
+{
+  "objectTypes": [
+    {
+      "name": "domain-capability-pack",
+      "attributes": []
+    },
+    {
+      "name": "dspy-pack",
+      "attributes": []
+    },
+    {
+      "name": "process-intelligence-rag-pack",
+      "attributes": []
+    },
+    {
+      "name": "shacl-projection-pack",
+      "attributes": []
+    },
+    {
+      "name": "shacl-to-pydantic-pack",
+      "attributes": []
+    },
+    {
+      "name": "standing-ladder-pack",
+      "attributes": []
+    },
+    {
+      "name": "wasm4pm-breed-provenance-pack",
+      "attributes": []
+    }
+  ],
+  "eventTypes": [
+    {
+      "name": "gate.refusal",
+      "attributes": [
+        {
+          "name": "detail",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "pack.sync",
+      "attributes": [
+        {
+          "name": "detail",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "objects": [
+    {
+      "id": "domain-capability-pack",
+      "type": "domain-capability-pack",
+      "attributes": []
+    },
+    {
+      "id": "dspy-pack",
+      "type": "dspy-pack",
+      "attributes": []
+    },
+    {
+      "id": "process-intelligence-rag-pack",
+      "type": "process-intelligence-rag-pack",
+      "attributes": []
+    },
+    {
+      "id": "shacl-projection-pack",
+      "type": "shacl-projection-pack",
+      "attributes": []
+    },
+    {
+      "id": "shacl-to-pydantic-pack",
+      "type": "shacl-to-pydantic-pack",
+      "attributes": []
+    },
+    {
+      "id": "standing-ladder-pack",
+      "type": "standing-ladder-pack",
+      "attributes": []
+    },
+    {
+      "id": "wasm4pm-breed-provenance-pack",
+      "type": "wasm4pm-breed-provenance-pack",
+      "attributes": []
+    }
+  ],
+  "events": [
+    {
+      "id": "ev_0",
+      "type": "pack.sync",
+      "time": 1790131968048,
+      "attributes": [
+        {
+          "name": "detail",
+          "value": "0a86a7231c1e451a30473dfd2ca8039eb0f290306126a3b952d441e90eaa3a31",
+          "time": 1790131968048
+        },
+        {
+          "name": "ok",
+          "value": true,
+          "time": 1790131968048
+        },
+        {
+          "name": "started",
+          "value": 1790131967978,
+          "time": 1790131968048
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "domain-capability-pack",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "ev_1",
+      "type": "pack.sync",
+      "time": 1790131968150,
+      "attributes": [
+        {
+          "name": "detail",
+          "value": "d6de2088b3c286d07379ce583cac47ff08485e0d104d1d1636dda2c45d4cf8ac",
+          "time": 1790131968150
+        },
+        {
+          "name": "ok",
+          "value": true,
+          "time": 1790131968150
+        },
+        {
+          "name": "started",
+          "value": 1790131968088,
+          "time": 1790131968150
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "process-intelligence-rag-pack",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "ev_2",
+      "type": "pack.sync",
+      "time": 1790131968916,
+      "attributes": [
+        {
+          "name": "detail",
+          "value": "583d1f7c549a2a4ff44de71bedc7a9ef02abdcc0929f02269077dd5733c4d723",
+          "time": 1790131968916
+        },
+        {
+          "name": "ok",
+          "value": true,
+          "time": 1790131968916
+        },
+        {
+          "name": "started",
+          "value": 1790131968160,
+          "time": 1790131968916
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "dspy-pack",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "ev_3",
+      "type": "gate.refusal",
+      "time": 1790131968983,
+      "attributes": [
+        {
+          "name": "detail",
+          "value": "validation error: [FM-PACK-013] pack `domain-capability-pack` gate `030_allowlist_subset.rq` refused the sync against the union graph: every dcp:LabAllowlist dcp:allows value must be a real dcp:Capability: SELECT returned 1 row(s); first row: { ?allowlist = http://seanchatmangpt.github.io/packs/domain-capability#sabotage-allowlist, ?bogusCapability = http://seanchatmangpt.github.io/packs/domain-capability#this-capability-does-not-exist }. Remediation: fix the offending facts (in this pack, another pack, or the project ontology — gates run against the UNION, so a violation may come from any graph source), or fix the gate query.",
+          "time": 1790131968983
+        },
+        {
+          "name": "ok",
+          "value": false,
+          "time": 1790131968983
+        },
+        {
+          "name": "started",
+          "value": 1790131968970,
+          "time": 1790131968983
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "domain-capability-pack",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "ev_4",
+      "type": "pack.sync",
+      "time": 1790131969016,
+      "attributes": [
+        {
+          "name": "detail",
+          "value": "27b75900107e9a1063683162ed16ed80daabc1c7094028854ffca60113959607",
+          "time": 1790131969016
+        },
+        {
+          "name": "ok",
+          "value": true,
+          "time": 1790131969016
+        },
+        {
+          "name": "started",
+          "value": 1790131968991,
+          "time": 1790131969016
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "shacl-projection-pack",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "ev_5",
+      "type": "gate.refusal",
+      "time": 1790131969036,
+      "attributes": [
+        {
+          "name": "detail",
+          "value": "validation error: [FM-PACK-013] pack `shacl-projection-pack` gate `010_shape_validity.rq` refused the sync against the union graph: every projected artifact linked via sp:derivedFromShape must resolve to a real,: SELECT returned 1 row(s); first row: { ?projection = http://seanchatmangpt.github.io/packs/shacl-projection#noPathModel, ?violation = SHACL property shape missing required sh:path }. Remediation: fix the offending facts (in this pack, another pack, or the project ontology — gates run against the UNION, so a violation may come from any graph source), or fix the gate query.",
+          "time": 1790131969036
+        },
+        {
+          "name": "ok",
+          "value": false,
+          "time": 1790131969036
+        },
+        {
+          "name": "started",
+          "value": 1790131969023,
+          "time": 1790131969036
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "shacl-projection-pack",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "ev_6",
+      "type": "pack.sync",
+      "time": 1790131969072,
+      "attributes": [
+        {
+          "name": "detail",
+          "value": "4e7ad28f137553581047ab4bc2734f3a4e66e4c117e1126761a2bb3760bb4e41",
+          "time": 1790131969072
+        },
+        {
+          "name": "ok",
+          "value": true,
+          "time": 1790131969072
+        },
+        {
+          "name": "started",
+          "value": 1790131969040,
+          "time": 1790131969072
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "shacl-to-pydantic-pack",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "ev_7",
+      "type": "pack.sync",
+      "time": 1790131969124,
+      "attributes": [
+        {
+          "name": "detail",
+          "value": "7153f89a0e88e705ebe48c3f708c09778cc8ecce7d609664c13ab2c0b7716956",
+          "time": 1790131969124
+        },
+        {
+          "name": "ok",
+          "value": true,
+          "time": 1790131969124
+        },
+        {
+          "name": "started",
+          "value": 1790131969077,
+          "time": 1790131969124
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "wasm4pm-breed-provenance-pack",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "ev_8",
+      "type": "gate.refusal",
+      "time": 1790131969187,
+      "attributes": [
+        {
+          "name": "detail",
+          "value": "validation error: [FM-PACK-013] pack `wasm4pm-breed-provenance-pack` gate `010_required.rq` refused the sync against the union graph: every wbp:Breed must have a non-empty wbp:order/breedId/sourceRepo/: SELECT returned 1 row(s); first row: { ?missing = http://seanchatmangpt.github.io/packs/wasm4pm-breed-provenance#breedId, ?s = http://seanchatmangpt.github.io/packs/wasm4pm-breed-provenance#sabotage-incomplete-breed }. Remediation: fix the offending facts (in this pack, another pack, or the project ontology — gates run against the UNION, so a violation may come from any graph source), or fix the gate query.",
+          "time": 1790131969187
+        },
+        {
+          "name": "ok",
+          "value": false,
+          "time": 1790131969187
+        },
+        {
+          "name": "started",
+          "value": 1790131969173,
+          "time": 1790131969187
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "wasm4pm-breed-provenance-pack",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "ev_9",
+      "type": "pack.sync",
+      "time": 1790131969250,
+      "attributes": [
+        {
+          "name": "detail",
+          "value": "13194d91ef8ae1eed1095777756c56eb8ab60c7be402339835f569bc804ed31e",
+          "time": 1790131969250
+        },
+        {
+          "name": "ok",
+          "value": true,
+          "time": 1790131969250
+        },
+        {
+          "name": "started",
+          "value": 1790131969194,
+          "time": 1790131969250
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "standing-ladder-pack",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "ev_10",
+      "type": "gate.refusal",
+      "time": 1790131969332,
+      "attributes": [
+        {
+          "name": "detail",
+          "value": "validation error: [FM-PACK-013] pack `standing-ladder-pack` gate `010_no_skipped_states.rq` refused the sync against the union graph: every stl:StandingClaim's stl:hasStanding must be backed by a real,: SELECT returned 1 row(s); first row: { ?claim = http://seanchatmangpt.github.io/packs/standing-ladder#sabotage-dangling-pin-claim, ?missingRungIndex = 0 }. Remediation: fix the offending facts (in this pack, another pack, or the project ontology — gates run against the UNION, so a violation may come from any graph source), or fix the gate query.",
+          "time": 1790131969332
+        },
+        {
+          "name": "ok",
+          "value": false,
+          "time": 1790131969332
+        },
+        {
+          "name": "started",
+          "value": 1790131969309,
+          "time": 1790131969332
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "standing-ladder-pack",
+          "qualifier": "subject"
+        }
+      ]
+    }
+  ]
+}

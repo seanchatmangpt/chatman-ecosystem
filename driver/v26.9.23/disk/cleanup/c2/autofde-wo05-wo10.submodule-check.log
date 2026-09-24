@@ -1,0 +1,172 @@
+### /Users/sac/wt/v26922/autofde-lab/wo05-170 :: cpp/sdk/Catch2
+url=https://github.com/catchorg/Catch2.git
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/HEAD -> origin/devel
+  origin/constexpr_approx
+  origin/devel
+  origin/devel-attempt-at-counter-warning-fix
+  origin/devel-c++17
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo05-170 :: cpp/sdk/PEGTL
+url=https://github.com/taocpp/PEGTL.git
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/4.x
+  origin/HEAD -> origin/main
+  origin/main
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo05-170 :: cpp/sdk/backward-cpp
+url=https://github.com/bombela/backward-cpp.git
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/HEAD -> origin/master
+  origin/master
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo05-170 :: cpp/sdk/json
+url=https://github.com/nlohmann/json.git
+fetch:
+   0b20b7e62..f751547a8  develop                 -> origin/develop
+ + 350f05ef8...c60733f47 docs/nul-byte-behavior  -> origin/docs/nul-byte-behavior  (forced update)
+ * [new branch]          fix-abi-tag-order-tests -> origin/fix-abi-tag-order-tests
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/master
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo05-170 :: cpp/sdk/nng
+url=https://github.com/nanomsg/nng.git
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/HEAD -> origin/main
+  origin/aio-sync
+  origin/backport-http-chunk
+  origin/branch1.10
+  origin/dependabot
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo05-170 :: cpp/sdk/nng/extern/nng-wolfssl
+url=https://github.com/staysail/nng-wolfssl
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/HEAD -> origin/master
+  origin/master
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo05-170 :: cpp/sdk/nngpp
+url=https://github.com/cwzx/nngpp.git
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/HEAD -> origin/master
+  origin/master
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo05-170 :: cpp/sdk/pybind11
+url=https://github.com/pybind/pybind11.git
+fetch:
+From https://github.com/pybind/pybind11
+   296d5d1d..bf21a6df  master     -> origin/master
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/stable
+  origin/v3.0
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo05-170 :: cpp/sdk/spdlog
+url=https://github.com/gabime/spdlog.git
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/HEAD -> origin/v1.x
+  origin/copilot/fix-code-review-suggestion
+  origin/copilot/fix-github-actions-job-failure
+  origin/copilot/understand-repo-structure
+  origin/v1.x
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo10 :: cpp/sdk/Catch2
+url=https://github.com/catchorg/Catch2.git
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/HEAD -> origin/devel
+  origin/constexpr_approx
+  origin/devel
+  origin/devel-attempt-at-counter-warning-fix
+  origin/devel-c++17
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo10 :: cpp/sdk/PEGTL
+url=https://github.com/taocpp/PEGTL.git
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/4.x
+  origin/HEAD -> origin/main
+  origin/main
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo10 :: cpp/sdk/backward-cpp
+url=https://github.com/bombela/backward-cpp.git
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/HEAD -> origin/master
+  origin/master
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo10 :: cpp/sdk/json
+url=https://github.com/nlohmann/json.git
+fetch:
+   0b20b7e62..f751547a8  develop                 -> origin/develop
+ + 350f05ef8...c60733f47 docs/nul-byte-behavior  -> origin/docs/nul-byte-behavior  (forced update)
+ * [new branch]          fix-abi-tag-order-tests -> origin/fix-abi-tag-order-tests
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/master
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo10 :: cpp/sdk/nng
+url=https://github.com/nanomsg/nng.git
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/HEAD -> origin/main
+  origin/aio-sync
+  origin/backport-http-chunk
+  origin/branch1.10
+  origin/dependabot
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo10 :: cpp/sdk/nng/extern/nng-wolfssl
+url=https://github.com/staysail/nng-wolfssl
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/HEAD -> origin/master
+  origin/master
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo10 :: cpp/sdk/nngpp
+url=https://github.com/cwzx/nngpp.git
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/HEAD -> origin/master
+  origin/master
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo10 :: cpp/sdk/pybind11
+url=https://github.com/pybind/pybind11.git
+fetch:
+From https://github.com/pybind/pybind11
+   296d5d1d..bf21a6df  master     -> origin/master
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/stable
+  origin/v3.0
+ignored:
+### /Users/sac/wt/v26922/autofde-lab/wo10 :: cpp/sdk/spdlog
+url=https://github.com/gabime/spdlog.git
+fetch:
+fetch_rc=0
+branch -r --contains HEAD:
+  origin/HEAD -> origin/v1.x
+  origin/copilot/fix-code-review-suggestion
+  origin/copilot/fix-github-actions-job-failure
+  origin/copilot/understand-repo-structure
+  origin/v1.x
+ignored:

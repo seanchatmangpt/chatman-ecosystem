@@ -1,0 +1,44 @@
+{
+ "repos": {
+  "chatman": "/Users/sac/wt/v26922/chatman-ecosystem/repo"
+ },
+ "ints": {
+  "chatman": "/Users/sac/wt/v26922/fri/chatman-ecosystem-int"
+ },
+ "base_branch": "release/v26.9.23-int",
+ "worktree_root": "/Users/sac/wt/v26922/v23",
+ "branch_prefix": "ce23",
+ "receipts_dir": "receipts/v26.9.23",
+ "max_repairs": 2,
+ "wave": "CE0b",
+ "context": "- chatman-ecosystem lanes: int worktree /Users/sac/wt/v26922/fri/chatman-ecosystem-int (branch release/v26.9.23-int, pushed; CE23-0 receipt a896e16c), repo handle /Users/sac/wt/v26922/chatman-ecosystem/repo; release/v26.9.1 is never modified; the preserved local lineage (refs/preserve/v26.9.23/local-checkout/*) is never pushed.\n- First-mile tools READ-ONLY from their frozen homes: python3 /Users/sac/wt/v26922/fri/xaas-int/scripts/sjira/prose_spans.py (for CE units ALWAYS pass --namespace 'https://ggen-igniter.dev/sjira/chatman-26.9.23#' --prefix ce; its default namespace is v26.9.23#), and ggen_igniter mix semantic_jira.* from your own detached ggen_igniter worktree at /Users/sac/wt/v26922/fri/ggen_igniter-int HEAD under its pin (PATH=/Users/sac/.asdf/installs/elixir/1.18.4-otp-27/bin:/Users/sac/.asdf/installs/erlang/27.2.4/bin:$PATH).\n- The CE wave is GENERATED from admitted CE23 semantics (operator); the LLM edge is only the extraction JSON (extractedBy recorded). CE23-12 for v26.9.23 = BenchmarkDesign \u2227 MSAContract \u2227 GeneratedQualificationPlan; NON_LLM_OPERATIONAL is never implied by design (chatman-ce23-12-standings.md). Benchmark design capital: /Users/sac/wt/v26922/v26923/bench/{DESIGN.md,ontology-draft.ttl,orders.json}.\n- Scan-verified implementation facts for the CE lanes are in /Users/sac/wt/v26922/v26923/lanes/scan-plan.json (waves CE0b, CE1, CE2) \u2014 read them, re-verify, cite in the subject; do not cite /private/tmp scratch paths as durable.",
+ "lanes": [
+  {
+   "id": "CE-INTAKE",
+   "repo": "chatman",
+   "worktree": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+   "branch": "ce23/CE-INTAKE",
+   "after": [],
+   "gate": "sh release/v26.9.23/sjira/compile_check.sh && for c in release/v26.9.23/sjira/candidates/*.ttl; do echo $c; done",
+   "task": "CONTINUATION of swarm lane CE-INTAKE (subject 96fb0bfb, receipt f318fd24): the work is correct; the earlier failure was the DRIVER's gate string, which omitted --namespace 'https://ggen-igniter.dev/sjira/chatman-26.9.23#' --prefix ce for prose_spans.py (its default namespace v26.9.23# can never match the ce: root). The gate is now compile_check.sh, which runs the ce-namespaced prose_spans check and compile_prose --check for all 3 units. Verify compile_check.sh really runs prose_spans check with --namespace/--prefix ce and --require-gates over the CE23 gates for every unit (if not, fix compile_check.sh), merge the current release/v26.9.23-int forward, rerun, refresh receipts/v26.9.23/CE-INTAKE.json (standing from these runs; no goal.ttl order linking unless the CE goal graph defines one), commit -F. Original task: prose intake of chatman-ce23.md, chatman-ce23-12-bench.md, chatman-ce23-12-standings.md -> CE goal graph (root ce:GC-CE-26.9.23, gates CE23-0..12, CE23-12 as its three conjuncts) -> candidates (LLM edge recorded) -> compile_prose outputs, byte-identical across runs."
+  },
+  {
+   "id": "CE-LANEPLAN",
+   "repo": "chatman",
+   "after": [
+    "CE-INTAKE"
+   ],
+   "gate": "sh release/v26.9.23/sjira/laneplan_check.sh",
+   "task": "Generated lane plan (operator: the CE wave is generated from admitted CE23 semantics). Build a projection turning the compiled sj:WorkOrders (release/v26.9.23/sjira/compiled/*/orders.ttl, as laid out by CE-INTAKE) into the sm-lane-wave spec JSON (read /Users/sac/.claude/workflows/sm-lane-wave.js for the exact contract: {wave, repos, ints, base_branch, worktree_root, branch_prefix, receipts_dir, context, lanes:[{id, repo, after, gate, task}]}). Ontology-first: SPARQL SELECTs (lanes.rq: one row per order; edges.rq: dependencies -> after) rendered through a template with existing generation machinery (prefer stock `mix ggen_igniter.sync` from your detached ggen_igniter worktree or ggen with a small pack under release/v26.9.23/sjira/laneplan-pack/, per scan-plan CE-LANEPLAN-C); lane task text assembled only from order fields. Output release/v26.9.23/lanes/wave-CE1.json (runnable-now lanes) and wave-CE2.json (lanes gated on the Semantic Manufacturing main heads: CE23-3/5/8/10/11). Court laneplan_check.sh: two renders byte-identical; an order missing a tuple field is refused (typed); deleting one order removes exactly its lane and its dependents' edges; every lane traces to an order IRI and every order to a proposition span. Receipt receipts/v26.9.23/CE-LANEPLAN.json."
+  },
+  {
+   "id": "CE-ANNEX",
+   "repo": "chatman",
+   "after": [
+    "CE-LANEPLAN"
+   ],
+   "gate": "set -e; cd /Users/sac/wt/v26922/v23/CE-ANNEX && A=release/v26.9.23/sjira/annex && for g in CE23-1 CE23-2 CE23-3 CE23-7 CE23-9 CE23-10 CE23-11 CE23-12; do test -s $A/$g.md; done && sh release/v26.9.23/sjira/courts/lane_plan.sh && python3 -c \"import json;w=json.load(open('release/v26.9.23/sjira/lane-plan/wave-CE1.json'));import os;assert all(('annex/'+l['id']+'.md') in l['task'] and os.path.exists('release/v26.9.23/sjira/annex/'+l['id']+'.md') for l in w['lanes'])\" && mv $A/CE23-7.md /tmp/annex.bak && { sh release/v26.9.23/sjira/courts/lane_plan.sh > /tmp/annex.m 2>&1; r=$?; mv /tmp/annex.bak $A/CE23-7.md; test $r -ne 0; } && grep -q annex_missing /tmp/annex.m",
+   "task": "Required_23 bridge between the generated lane plan and the verified scan evidence. The generated lane task is assembled only from order fields (postcondition, acceptance, falsifier, capability), which carry the operator's requirement but not the scan-verified implementation facts (generator paths, prototypes, falsifier commands). Commit those facts IN THE SUBJECT, bound by gate id, instead of hand-writing lane specs: release/v26.9.23/sjira/annex/<gate>.md for every construct gate. For CE23-1, CE23-2, CE23-3, CE23-7, CE23-9, CE23-10 and CE23-11 the annex contains verbatim the task, generation path, residue, gate and falsifier of the matching lane in the scan synthesis (driver copy of /private/tmp/claude-501/v23-scratch/SCAN-synthesize/plan.json, waves CE1/CE2/CE-REL; source specs /private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/<candidate-id>.txt), plus a header 'scan evidence, not a requirement source; the order tuple governs'. For CE23-12 it contains the verbatim entries CE23-12-BD-01..BD-09 of /Users/sac/wt/v26922/v26923/bench/orders.json with bench/DESIGN.md row references; the OP-* entries are successor and go under an 'out of scope' heading. CE23-11's annex states that it runs through the driver release script lanes/ce-release.run.js, not sm-lane-wave. Extend lane_wave.json.eex so every construct lane's task ends with 'Implementation annex: release/v26.9.23/sjira/annex/<gate>.md' and the template refuses REFUSED:SJIRA_LANE_PLAN annex_missing when a construct lane's annex file is absent (add it to lane_plan.sh's mutation corpus); re-render and commit wave-CE1.json. Gates without a construct lane (CE23-0 done by bootstrap; CE23-4/5/6/8 court delegations) need no annex. Residue: the annex files (verified evidence carried into the subject; owner: the future semantic-jira-pack annotation of WorkOrders, successor) and ~6 template lines. Falsifier: removing one annex still renders (the gate's mutation clause), or a rendered lane task omits its annex path. Receipt receipts/v26.9.23/CE-ANNEX.json. NOTE: derive every path from the merged CE-INTAKE/CE-LANEPLAN layout on release/v26.9.23-int (the scan's paths assumed a different layout); if a path in this lane's gate does not exist in that layout, adapt the gate to the equivalent real path and record the mapping in the receipt."
+  }
+ ]
+}

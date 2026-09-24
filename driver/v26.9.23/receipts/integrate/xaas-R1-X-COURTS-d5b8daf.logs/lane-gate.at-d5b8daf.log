@@ -1,0 +1,40 @@
+Erlang/OTP 28 [erts-16.4.0.2] [source] [64-bit] [smp:16:16] [ds:16:16:10] [async-threads:1] [jit]
+
+Elixir 1.20.2 (compiled with Erlang/OTP 28)
+    warning: Application.get_env/2 is discouraged in the module body, use Application.compile_env/3 instead
+    │
+ 12 │   if is_nil(Application.get_env(:ash, :default_string_length_count)) do
+    │                         ~
+    │
+    └─ /Users/sac/wt/v26922/fri/xaas-int/deps/ex4pm/mix.exs:12:25: Ex4pm.MixProject (module)
+
+    warning: Application.get_env/2 is discouraged in the module body, use Application.compile_env/3 instead
+    │
+ 12 │   if is_nil(Application.get_env(:ash, :default_string_length_count)) do
+    │                         ~
+    │
+    └─ /Users/sac/wt/v26922/fri/xaas-int/deps/ex4pm/mix.exs:12:25: Ex4pm.MixProject (module)
+
+Compiling 520 files (.ex)
+Compiling lib/mix/tasks/xaas.autonomic.controls.ex (it's taking more than 10s)
+Generated xaas app
+route_test: Result: 74 passed
+anchor: EP-A tuple sha256:af87dbf1ae1fc76844c86318906bebc0873809c0dc9e1099d0de5b47d94ab174 request sha256:33524064eb6f519f4c3b2bdd8b17d32b596808278775e09777a79f5a59aa3620 graph sha256:a6d7832e9db9b3c48d0de24db88710932ea26dc2665f866d8f08f1135bef379c via mix semantic_jira.descriptor (empty ledger) at ggen_igniter 3ed6a7afc51f (build_manifest elixir 1.18.4)
+hops: 5 hops, tuple sha256:af87dbf1ae1fc76844c86318906bebc0873809c0dc9e1099d0de5b47d94ab174, request sha256:33524064eb6f519f4c3b2bdd8b17d32b596808278775e09777a79f5a59aa3620, carriers re-derived
+F2 f2-underneath: REFUSED(tuple_digest_mismatch) broken_term=admission_vacuous hop=sa2a
+F2 f2-forged: REFUSED(tuple_digest_mismatch) broken_term=admission_vacuous hop=provider carrier=tuple field=postcondition
+F2 f2-allforged: REFUSED(tuple_digest_mismatch) broken_term=admission_vacuous hop=sjira anchor=admitted_work_graph carrier=tuple field=postcondition
+ALIVE: GC23-4 SA2A conservation witnessed on episode fmt-1 (5 hop digests equal to the admitted-order anchor; F2 incl. the all-hop forgery refused)
+R: ADMITTED consistent: EP-A at 9c5e7571c948f97f6ae08d9399f69f502d81efd4, commits 1, files ['lib/ggen_igniter/semantic_jira/cli.ex'] within ['.formatter.exs', 'config', 'lib', 'mix.exs', 'test'], replay `mix format --check-formatted`
+validator: ADMITTED /Users/sac/wt/v26922/fri/xaas-int/docs/sjira/v26.9.23/episodes/fmt-1/receipt.r.json
+court_acceptance_false_but_alive consequence_commit_not_subject files_changed_outside_scope replay_cmd_swapped native_digest_forged subject_sha_is_base
+mutant court_acceptance_false_but_alive: REFUSED(alive_acceptance_false) broken_term=admission_vacuous
+mutant consequence_commit_not_subject: REFUSED(consequence_not_subject) broken_term=R_missing_consequence
+mutant files_changed_outside_scope: REFUSED(consequence_outside_path_scope) broken_term=R_missing_authority
+mutant replay_cmd_swapped: REFUSED(replay_command_unbound) broken_term=R_missing_replay a replay command is not the court-recorded command
+mutant native_digest_forged: REFUSED(r_native_unbound) broken_term=R_missing_identity native=sha256:0000000000000000000000000000000000000000000000000000000000000000 sealed=sha256:2d70981e915b20f12160ed252ccbb760f4bab4e96d3d2b78188a6beba3a4cbf1
+mutant subject_sha_is_base: REFUSED(r_subject_not_sealed_head) broken_term=R_missing_identity subject_sha=80a8a4c71b331a39771ad65d1149eb835645d17c final_head=9c5e7571c948f97f6ae08d9399f69f502d81efd4
+ocel_validate: /Users/sac/wt/v26922/fri/xaas-int/docs/sjira/v26.9.23/episodes/fmt-1/ocel.json: valid (11 events, 11 objects)
+pm4py: 11 events, 11 objects, classes ['ActuationCompleted', 'ActuationStarted', 'CapabilityResolved', 'FrontierChanged', 'LeaseAcquired', 'ReceiptSealed', 'StandingChanged', 'VerificationCompleted', 'WorkOrderCreated'], object types ['Capability', 'Commit', 'GoalCheckpoint', 'Lease', 'Provider', 'Receipt', 'Repository', 'Subject', 'WorkOrder']
+ALIVE: GC23-7 receipt ADMITTED and consistent with its order and subject (6 receipt mutants refused), OCEL conformant (xaas court + pm4py) on episode fmt-1
+LANE_GATE_EXIT=0

@@ -1,0 +1,36 @@
+{
+  "plan": "v26.9.23 cleanup-2 (c2)",
+  "created": "2026-09-23T14:35-07:00",
+  "actor": "claude:cleanup-2 (workflow subagent)",
+  "authority": "workflow computed task Decision 3 (driver) + COORDINATION.md conservation law; CONSTRUCT preserve ref then DO worktree remove",
+  "items": [
+    {
+      "id": "gymact-w0-baseline-e75344d",
+      "path": "/Users/sac/wt/v26922/gymact/w0-baseline-e75344d",
+      "repo": "/Users/sac/gymact",
+      "decision": "PRESERVE_THEN_REMOVE",
+      "head": "e75344d45d5694e15e73652eb1b4b796de29b0a9 (detached)",
+      "gate": ["no lsof cwd under path", "no ps argv containing path", "no file newer than now-12h", "submodules .ggen/runtime .ggen/marketplace uninitialized"],
+      "snapshot": "tmp index: read-tree HEAD; add -A; add -f -- uv.lock; write-tree; commit-tree -p HEAD; update-ref refs/preserve/v26.9.23/cleanup/gymact-w0-baseline-e75344d",
+      "evidence_paths": ["reports/ocel/crown-p1-allowed/episode.ocel.json (M)", "reports/ocel/crown-p1-denied/episode.ocel.json (M)", "tests/fixtures/real_episode.ocel.json (M)", ".inspect_logs/*.eval (5 untracked)", "uv.lock (ignored, force-added: W0 environment pin)"],
+      "excluded": ["1570 __pycache__/*.pyc (derived bytecode)"],
+      "key_rule": ".ggen/keys/signing.key is tracked in HEAD e75344d (blob 29d016df) and unmodified; snapshot must add no key path: git diff --name-only HEAD <c> must contain no *.key/*signing* path",
+      "coverage_proof": "for every dirty/untracked/evidence path: git rev-parse <c>:<path> == git hash-object <worktree>/<path>",
+      "remove": "git --git-dir=/Users/sac/gymact/.git worktree remove --force /Users/sac/wt/v26922/gymact/w0-baseline-e75344d"
+    },
+    {
+      "id": "rmdir-wo05",
+      "path": "/Users/sac/wt/v26922/wo05",
+      "decision": "RMDIR_IF_EMPTY",
+      "gate": ["ls -A empty", "not a registered worktree in any of 755 repos' git worktree list", "no lsof cwd / ps argv"]
+    },
+    {
+      "id": "rmdir-zcode-cli-wo5",
+      "path": "/Users/sac/wt/v26922/zcode-cli/wo5",
+      "decision": "RMDIR_IF_EMPTY (per level, bottom-up)",
+      "observed": "ls -A = vendor; find: vendor/provider (empty dir), 0 files",
+      "gate": ["each rmdir target ls -A empty at the moment of rmdir (rmdir itself refuses non-empty)", "not a registered worktree", "no lsof cwd / ps argv"]
+    }
+  ],
+  "untouched": ["/Users/sac/wt/v26922/autofde-lab/pr163 (active ZCode L4 lane)", "fri/*-int", "v23/R1-*", "v23/rel-*", "wos/ggen-wo6", "/Users/sac/<repo> main checkouts"]
+}

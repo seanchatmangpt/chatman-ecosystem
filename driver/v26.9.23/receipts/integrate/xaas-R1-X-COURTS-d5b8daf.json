@@ -1,0 +1,115 @@
+{
+ "identity": {
+  "subject": "R1-X-COURTS integrate (xaas friday/gc-fri-0800)",
+  "repo": "/Users/sac/xaas",
+  "repo_slug": "seanchatmangpt/xaas",
+  "subject_sha": "d5b8daf452dda35a2779edddba251afcfdfbf054",
+  "base_sha": "e999e62b63c680517b9a562cef877d8b09b0cfdd",
+  "branch": "friday/gc-fri-0800",
+  "worktree": "/Users/sac/wt/v26922/fri/xaas-int",
+  "merged": "v23/R1-X-COURTS c14a25ca691b4185d189f09a1079a97217b74e98 (lane subject a4c2924)",
+  "prd_ard": "PRD section 12 GC23-4, GC23-7, GC23-8; PR-008, PR-011, PR-012; ARD section 8, 12, 14, 26 F2",
+  "toolchain": {
+   "xaas": "Elixir 1.20.2 / Erlang/OTP 28 (erts-16.4.0.2), the xaas .tool-versions pin; MIX_ENV=test compile --force in the int worktree",
+   "graph_side": "ggen_igniter-int 3ed6a7a _build/test compiled by Elixir 1.18.4 on OTP 27 (its .tool-versions pin); resolved by graph_toolchain/2 after d5b8daf to source build_manifest, elixir 1.18.4-otp-27, ERTS asdf erlang 27.2.4"
+  }
+ },
+ "authority": {
+  "ceiling": "CONSTRUCT",
+  "grant": "wave R1a Integrate stage for lane R1-X-COURTS (DRIVER.md 12:50 PT entry; COORDINATION.md fri int merge lock /Users/sac/wt/v26922/fri/xaas-int.merge.lock owner claude:R1a:R1-X-COURTS): merge --no-ff + at most one fix-forward commit; no push, no remote effect",
+  "actor": "claude-opus-5.5 workflow subagent (integrate R1-X-COURTS)"
+ },
+ "consequence": {
+  "commits": [
+   "246460c",
+   "d5b8daf452dda35a2779edddba251afcfdfbf054"
+  ],
+  "commit_notes": {
+   "246460c": "git merge --no-ff v23/R1-X-COURTS (clean, 32 files, no conflicts)",
+   "d5b8daf": "fix-forward: SemanticDrive.graph_toolchain/2 build_erts/2 -- the graph side runs on the ERTS its build was compiled on (asdf erlang of the manifest's OTP release, .tool-versions pin first); own-Elixir candidate only on the node's OTP; Chicago test for a foreign-OTP build; HANDWRITTEN row"
+  },
+  "files_changed": [
+   "HANDWRITTEN.md",
+   "lib/xaas/ultracode/semantic_drive.ex",
+   "test/xaas/ultracode/semantic_drive_test.exs",
+   "(merge) the 32 lane files of c14a25c"
+  ],
+  "remote_effects": [],
+  "reserved_files": "no Friday-reserved file touched by d5b8daf (semantic_drive.ex is not reserved)"
+ },
+ "replay": {
+  "durable_location": "/Users/sac/wt/v26922/v26923/receipts/integrate/xaas-R1-X-COURTS-d5b8daf.logs (outside the subject tree: a commit cannot carry its own gate receipt)",
+  "commands": [
+   {
+    "cmd": "git merge --no-ff v23/R1-X-COURTS -F <msg>",
+    "cwd": "/Users/sac/wt/v26922/fri/xaas-int @ e999e62 (clean)",
+    "exit": 0,
+    "summary": "merge 246460c, ort, no conflicts"
+   },
+   {
+    "cmd": "PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int MIX_ENV=test mix test --trace test/xaas/ultracode/semantic_drive_test.exs:608 :634",
+    "cwd": "/Users/sac/wt/v26922/fri/xaas-int (fix uncommitted)",
+    "exit": 0,
+    "summary": "new foreign-OTP toolchain test passed (1329.7ms)",
+    "log": "/Users/sac/wt/v26922/v26923/receipts/integrate/xaas-R1-X-COURTS-d5b8daf.logs/tests.toolchain-foreign-otp.log",
+    "output_sha256": "93daee795e6537219b3e2e08c674d071923ca624257c08438be41d80a09818f4"
+   },
+   {
+    "cmd": "PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int MIX_ENV=test mix test test/xaas/ultracode/semantic_drive_anchor_test.exs test/xaas/receipt/r_projection_consistency_test.exs",
+    "cwd": "/Users/sac/wt/v26922/fri/xaas-int (fix uncommitted)",
+    "exit": 0,
+    "summary": "Result: 21 passed",
+    "log": "/Users/sac/wt/v26922/v26923/receipts/integrate/xaas-R1-X-COURTS-d5b8daf.logs/tests.related.log",
+    "output_sha256": "a9a9f2ed0ca2f953fa888937f750deec368d86054df2109d40dbcb3f76f9bd7e"
+   },
+   {
+    "cmd": "PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int sh docs/sjira/v26.9.23/courts/GC23-8.sh",
+    "cwd": "/Users/sac/wt/v26922/fri/xaas-int (fix uncommitted)",
+    "exit": 0,
+    "summary": "ALIVE: GC23-8 (graph-side toolchain build_manifest elixir 1.18.4) -- the shared graph_toolchain/2 path",
+    "log": "/Users/sac/wt/v26922/v26923/receipts/integrate/xaas-R1-X-COURTS-d5b8daf.logs/post-fix-uncommitted.court-GC23-8.log",
+    "output_sha256": "804d100850cab8759bb922592702436862d68bbb757b48574498c82b9f6bdda7"
+   },
+   {
+    "cmd": "PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH sh -c 'elixir --version && mix format --check-formatted && MIX_ENV=test mix compile --force --warnings-as-errors && GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int sh docs/sjira/v26.9.23/courts/GC23-4.sh && GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int sh docs/sjira/v26.9.23/courts/GC23-7.sh'",
+    "cwd": "/Users/sac/wt/v26922/fri/xaas-int @ d5b8daf (clean tree)",
+    "exit": 0,
+    "summary": "lane gate: Elixir 1.20.2/OTP 28; formatted; compiled; GC23-4 ALIVE (anchor at ggen_igniter 3ed6a7a, build_manifest elixir 1.18.4; F2 all-hop forgery refused); GC23-7 ALIVE (R consistent, 6 receipt mutants refused, OCEL valid via xaas + pm4py)",
+    "log": "/Users/sac/wt/v26922/v26923/receipts/integrate/xaas-R1-X-COURTS-d5b8daf.logs/lane-gate.at-d5b8daf.log",
+    "output_sha256": "5b710202e08c46796e112a31f37c5eff58e00db677c0ecc22abbc73225827e38"
+   }
+  ]
+ },
+ "standing": {
+  "value": "ALIVE",
+  "derived_from": "the exact lane gate observed exit 0 on the committed int HEAD d5b8daf452dda35a2779edddba251afcfdfbf054 (clean tree) against GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int @ 3ed6a7a under the .tool-versions pin"
+ },
+ "classification": {
+  "failure_at_merge": "environment change exposing a subject defect: ggen_igniter-int _build/test was rebuilt under its OTP 27 pin after the lane gate ran (lane saw a 1.19.5/OTP 28 build); graph_toolchain/2 always used the running node's ERTS, so the merged GC23-4 anchor forced a full dependency rebuild and exited 75 (UNKNOWN). Repaired by one fix-forward commit (d5b8daf); no revert",
+  "pre_existing": [
+   "semantic_drive_test.exs: 3 SemanticDriveToolchainTest failures (Elixir 1.20 compile.elixir_scm 4-tuple vs the tests' 3-tuple transforms), identical at e999e62 and a4c2924; not changed here"
+  ]
+ },
+ "falsifiers": {
+  "fix": "with d5b8daf the GC23-4 court still exits 75 against the OTP-27 ggen_igniter-int build -> refuted by lane-gate.at-d5b8daf.log (GC23-4 ALIVE, build_manifest elixir 1.18.4)",
+  "fallback": "a build of an OTP release with no installed ERTS is resolved to build_manifest -> the existing 'another OTP release falls back to the pin' case (OTP 1) keeps the fallback path; its transform failure is pre-existing"
+ },
+ "observations_not_in_standing": [
+  {
+   "cmd": "PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int sh docs/sjira/v26.9.23/courts/GC23-4.sh",
+   "cwd": "/Users/sac/wt/v26922/fri/xaas-int @ 246460c",
+   "exit": 75,
+   "summary": "UNKNOWN: BUILD_BROKEN graph_side_build_broken -- 1.18.4-otp-27 on ERTS 28 recompiled deps in the private build clone; yaml_elixir yamerl_constr.hrl enoent",
+   "log": "/Users/sac/wt/v26922/v26923/receipts/integrate/xaas-R1-X-COURTS-d5b8daf.logs/pre-fix.court-GC23-4.at-246460c.log",
+   "output_sha256": "3613b710fdb1c3a229c26d7ffb0743a60ea415e22314139d9cf6e6eaae56b14c"
+  },
+  {
+   "cmd": "PATH=/Users/sac/.asdf/installs/elixir/1.20.2-otp-28/bin:/Users/sac/.asdf/installs/erlang/28.5.0.2/bin:$PATH GGEN_IGNITER_DIR=/Users/sac/wt/v26922/fri/ggen_igniter-int MIX_ENV=test mix test test/xaas/ultracode/semantic_drive_test.exs",
+   "cwd": "/Users/sac/wt/v26922/fri/xaas-int (fix uncommitted)",
+   "exit": 2,
+   "summary": "Result: 7/10 passed, 3 failed -- all 3 PRE-EXISTING (same toolchain tests fail at a4c2924 and e999e62: 3-tuple manifest transforms vs Elixir 1.20 4-tuple); the 2 episode tests that failed at the lane head now pass",
+   "log": "/Users/sac/wt/v26922/v26923/receipts/integrate/xaas-R1-X-COURTS-d5b8daf.logs/tests.semantic_drive_test.log",
+   "output_sha256": "8ed471338a62c05394709e8e9ec9994078f96c1284734fb54d4bf89c60f61f56"
+  }
+ ]
+}

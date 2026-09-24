@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (17 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:babc597a586f380e53bcfa1a8bba58f745ebe6bd31ee99109b441d7db296f6f4 plan_hash:1f6617b0972576a0a94f822cf0a3e2c4c0a0a2db0f265f0a166d24274b61b7a8 reason:finished scratch of completed scanners and merged lanes; the one unknown item is .agents inside a disposable scratch clone of xaas (tracked in git, reproducible by clone); disk 20 GiB",
+    "actor": "claude:v23-driver"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 17/17 plan items (9800609792 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: 31326208 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/scratch-1216-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/scratch-1216-receipt.json --yes",
+        "cwd": "/Users/sac",
+        "exit": 0,
+        "summary": "deleted=17 skipped=0 failed=0 refused=0",
+        "output_sha256": "445fa4cf2ec7b0e57f1b6a22954a3af31b2eced9609b8a8b85e1cda5aff66608"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/scratch-1216-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/scratch-1216-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/scratch-1216-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/scratch-1216-receipt.json (sha256 445fa4cf2ec7b0e57f1b6a22954a3af31b2eced9609b8a8b85e1cda5aff66608)"
+  }
+}

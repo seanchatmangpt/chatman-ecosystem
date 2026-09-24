@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "created_unix": 1790195707,
+  "roots": [
+    "/Users/sac/wt/v26922/ash_atlassian/int"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/ash_atlassian/int/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 100384768,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/ash_atlassian/int/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 20115456,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:cleanup",
+    "approval_reason": "v26922 repos cleanup 2026-09-23: ash_atlassian/int ARTIFACTS_ONLY, idle since 09-22 17:38, clean, no process, no merge lock; _build and deps only",
+    "approved_at_unix": 1790195717,
+    "plan_hash": "6f6d6fc3ec04a204ed971803708ede037f622961b955a33eeade7dccf60ea7c6",
+    "hmac_signature": "79ea6ca20408e78d1b2c943709320e6c6145810e7c6de3d62a141050958194df"
+  }
+}

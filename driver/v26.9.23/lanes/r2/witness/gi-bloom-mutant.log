@@ -1,0 +1,72 @@
+
+18:31:55.301 [notice]     :alarm_handler: {:set, {{:disk_almost_full, ~c"/System/Volumes/Data"}, []}}
+
+18:31:55.314 [notice]     :alarm_handler: {:set,
+ {{:disk_almost_full,
+   ~c"/Library/Developer/CoreSimulator/Cryptex/Images/bundle/SimRuntimeBundle-D726FE0C-2CD4-406E-97CD-6972CDB24A30"},
+  []}}
+
+18:31:55.314 [notice]     :alarm_handler: {:set,
+ {{:disk_almost_full, ~c"/Library/Developer/CoreSimulator/Volumes/iOS_22C150"},
+  []}}
+
+18:31:55.314 [notice]     :alarm_handler: {:set,
+ {{:disk_almost_full, ~c"/Library/Developer/CoreSimulator/Volumes/iOS_23D8133"},
+  []}}
+Running ExUnit with seed: 373030, max_cases: 32
+Excluding tags: [:requires_qlever_server]
+
+.............fatal: unable to read tree (17e2923d5270835783fa7879e7fc0c8730f4667b)
+fatal: unable to read tree (17e2923d5270835783fa7879e7fc0c8730f4667b)
+fatal: unable to read tree (17e2923d5270835783fa7879e7fc0c8730f4667b)
+.fatal: unable to read tree (17e2923d5270835783fa7879e7fc0c8730f4667b)
+
+
+  1) test run/1 covered-path currency reasons the unreadable corruption stays unreadable when a changed-path commit-graph exists (GgenIgniter.SemanticJiraBootstrapTest)
+     test/ggen_igniter_semantic_jira_bootstrap_test.exs:871
+     match (=) failed
+     code:  assert %{"covered_commit" => nil, "covered_commit_status" => "unreadable"} = t_a
+     left:  %{"covered_commit" => nil, "covered_commit_status" => "unreadable"}
+     right: %{
+              "base_sha" => "1111111111111111111111111111111111111111",
+              "capability" => ["recipe:fixture-a"],
+              "checkpoint" => ["https://ggen-igniter.dev/sjira/bootstrap-fixture#G-1"],
+              "covered_commit" => "0e7cedb26468f520253b72d9ee916f25a8289584",
+              "covered_commit_status" => "observed",
+              "covered_scope" => ["lib/"],
+              "critical_path" => true,
+              "cross_repository_scope" => ["other:docs/x.md"],
+              "definition_digest" => "sha256:66536d39e56c9c75aba1287f4578ba68db8db385302af873eff6a6905f4b9733",
+              "dependencies" => [],
+              "frontier" => "settled",
+              "frontier_reason" => "standing=ALIVE",
+              "invalidated" => [],
+              "iri" => "https://ggen-igniter.dev/sjira/bootstrap-fixture#WO-T-A",
+              "path_scope" => ["lib/", "other:docs/x.md",
+               "receipts/T-A.json"],
+              "receipt" => %{
+                "covered_commit" => "0e7cedb26468f520253b72d9ee916f25a8289584",
+                "ref" => "fixture/subject:receipts/T-A.json",
+                "sha256" => "sha256:dfdf332ea8f0ff854081e6cd8dc5d52decd40aa64417f8c3ea17c26cf83b770f",
+                "standing" => "ALIVE",
+                "subject_sha" => "0e7cedb26468f520253b72d9ee916f25a8289584"
+              },
+              "repository" => "fixture/subject",
+              "source" => "goal:goal.ttl",
+              "standing" => "ALIVE",
+              "standing_source" => "receipt",
+              "subject" => "fixture:order-a",
+              "subject_head" => "85330cb5322fc2f7edb79217ac927a527d5977e0",
+              "successor" => false,
+              "tuple" => "complete",
+              "tuple_digest" => "sha256:531183e0033603b9ff0fbde841dde6400a9738143d8665eac2e3d005e16f2100",
+              "unlinked" => []
+            }
+     stacktrace:
+       test/ggen_igniter_semantic_jira_bootstrap_test.exs:884: (test)
+
+............
+Finished in 12.2 seconds (0.00s async, 12.2s sync)
+27 tests, 1 failure
+[os_mon] memory supervisor port (memsup): Erlang has closed
+[os_mon] cpu supervisor port (cpu_sup): Erlang has closed

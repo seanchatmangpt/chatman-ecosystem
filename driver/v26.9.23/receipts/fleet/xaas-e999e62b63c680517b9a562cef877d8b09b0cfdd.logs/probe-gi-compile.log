@@ -1,0 +1,5 @@
+Compiling 104 files (.ex)
+Compiling crate ggen_graph_nif in release mode (native/ggen_graph_nif)
+Compiling lib/ggen_igniter/native/graph_nif.ex (it's taking more than 10s)
+Copying /Users/sac/wt/v26922/v23/rela-gi-fmt-probe/native/ggen_graph_nif/target/release/libggen_graph_nif.dylib to priv/native/ggen_graph_nif.so
+Generated ggen_igniter app

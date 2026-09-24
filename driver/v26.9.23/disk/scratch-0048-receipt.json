@@ -1,0 +1,68 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790149609,
+    "execution_started_unix": 1790149613,
+    "execution_completed_unix": 1790149618,
+    "results": [
+      {
+        "path": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/v23p-court/clone/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264181248,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/mut-XAAS-26922-21-13318/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264181248,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/v23p-court/clone/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 803831808,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/mut-XAAS-26922-21-13318/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 802091008,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/verify-FRI-T1-clone/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372342784,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/verify-FRI-T1-clone/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 175788032,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/verify-FRI-T1-clone/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119119872,
+        "reversibility": "reversible"
+      }
+    ],
+    "available_before": 18700455936,
+    "available_after": 20227268608
+  }
+}

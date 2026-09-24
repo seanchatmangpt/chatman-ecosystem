@@ -1,0 +1,92 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790207123,
+    "execution_started_unix": 1790207131,
+    "execution_completed_unix": 1790207135,
+    "results": [
+      {
+        "path": "/Users/sac/wt/v26922/frozen-duckdb/int/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 2242953216,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/autofde-lab/int/.venv",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1012826112,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/autofde-lab/int/build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 496209920,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/beam4pm/int/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 401264640,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/beam4pm/int/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 114237440,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/ash_surface/int/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 91033600,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/ash_surface/int/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 19472384,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/ash_surface/int/node_modules",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 8413184,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/autofde-lab/int/.ruff_cache",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 4841472,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/autofde-lab/int/.pytest_cache",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 98304,
+        "reversibility": "reversible"
+      }
+    ],
+    "available_before": 35374055424,
+    "available_after": 35343667200
+  }
+}

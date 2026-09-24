@@ -1,0 +1,26 @@
+@prefix powl2: <https://truex.io/ontology/powl2#> .
+@prefix base: <urn:chatman:powl:temporal-concurrency-demo/> .
+
+<urn:chatman:powl:temporal-concurrency-demo/n0> a powl2:Model .
+<urn:chatman:powl:temporal-concurrency-demo/n0> powl2:derivedFrom <urn:chatman:snapshot:temporal-concurrency-demo> .
+<urn:chatman:powl:temporal-concurrency-demo/n0> a powl2:PartialOrder .
+<urn:chatman:powl:temporal-concurrency-demo/n0> powl2:hasChild <urn:chatman:powl:temporal-concurrency-demo/n0/binding/0> .
+<urn:chatman:powl:temporal-concurrency-demo/n0/binding/0> a powl2:ChildBinding ;
+  powl2:childIndex 0 ;
+  powl2:childModel <urn:chatman:powl:temporal-concurrency-demo/n0/c0> .
+<urn:chatman:powl:temporal-concurrency-demo/n0/c0> a powl2:Leaf, powl2:ActivityLeaf ;
+  powl2:activityLabel "wash-dishes()" .
+<urn:chatman:powl:temporal-concurrency-demo/n0> powl2:hasChild <urn:chatman:powl:temporal-concurrency-demo/n0/binding/1> .
+<urn:chatman:powl:temporal-concurrency-demo/n0/binding/1> a powl2:ChildBinding ;
+  powl2:childIndex 1 ;
+  powl2:childModel <urn:chatman:powl:temporal-concurrency-demo/n0/c1> .
+<urn:chatman:powl:temporal-concurrency-demo/n0/c1> a powl2:Leaf, powl2:ActivityLeaf ;
+  powl2:activityLabel "sweep-floor()" .
+<urn:chatman:powl:temporal-concurrency-demo/n0> powl2:hasChild <urn:chatman:powl:temporal-concurrency-demo/n0/binding/2> .
+<urn:chatman:powl:temporal-concurrency-demo/n0/binding/2> a powl2:ChildBinding ;
+  powl2:childIndex 2 ;
+  powl2:childModel <urn:chatman:powl:temporal-concurrency-demo/n0/c2> .
+<urn:chatman:powl:temporal-concurrency-demo/n0/c2> a powl2:Leaf, powl2:ActivityLeaf ;
+  powl2:activityLabel "inspect-house()" .
+<urn:chatman:powl:temporal-concurrency-demo/n0/binding/0> powl2:precedes <urn:chatman:powl:temporal-concurrency-demo/n0/binding/2> .
+<urn:chatman:powl:temporal-concurrency-demo/n0/binding/1> powl2:precedes <urn:chatman:powl:temporal-concurrency-demo/n0/binding/2> .

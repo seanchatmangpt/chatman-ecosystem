@@ -1,0 +1,148 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790190933,
+    "execution_started_unix": 1790190940,
+    "execution_completed_unix": 1790190961,
+    "results": [
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/B1b-V23-D/xaas-b3f85b3/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264181248,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/xaas-fresh/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264181248,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/B1-V23-T2R/base/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264168960,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-open-remote-work/xaas-fmt/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264160768,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/B1-V23-T2R/base/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 803295232,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-open-remote-work/xaas-fmt/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 780558336,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/B1b-V23-D/xaas-b3f85b3/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 764108800,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/xaas-fresh/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 403144704,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh2/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh2/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 359182336,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh1/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 355381248,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 176189440,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh1/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119128064,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh2/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119128064,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL/gi-fresh/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119123968,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-open-remote-work/xaas-fmt/.agents",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 8192,
+        "reversibility": "unknown"
+      }
+    ],
+    "available_before": 21846208512,
+    "available_after": 21877534720
+  }
+}

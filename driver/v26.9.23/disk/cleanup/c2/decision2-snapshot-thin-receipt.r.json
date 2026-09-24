@@ -1,0 +1,36 @@
+{
+  "identity": {
+    "subject": "oclnr snapshot thin /",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "acdf150a2a108762ca34e2989bd642ad46cb528d",
+    "base_sha": "acdf150a2a108762ca34e2989bd642ad46cb528d"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "operator-invocation: `oclnr snapshot thin` run directly by its caller",
+    "actor": "oclnr"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "APFS local snapshots on /: thinned 1 (before 1, after 0), requested 3000000000 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "oclnr snapshot thin --bytes 3GB --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/c2/decision2-snapshot-thin-receipt.json",
+        "cwd": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2",
+        "exit": 0,
+        "summary": "thinned=1",
+        "output_sha256": "3e182c5c839ca47d9db43968f7c65499a72558519cfa57a04caf4fcfa15d85f4"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2/decision2-snapshot-thin-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`oclnr snapshot thin --bytes 3GB --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/c2/decision2-snapshot-thin-receipt.json`, exit 0) at oclnr acdf150; native receipt /Users/sac/wt/v26922/v26923/disk/cleanup/c2/decision2-snapshot-thin-receipt.json (sha256 3e182c5c839ca47d9db43968f7c65499a72558519cfa57a04caf4fcfa15d85f4)"
+  }
+}

@@ -1,0 +1,33 @@
+From f3130a2c7b71f00500f6c7d2a8678e7ec2f2bb8c Mon Sep 17 00:00:00 2001
+From: Sean Chatman <136349053+seanchatmangpt@users.noreply.github.com>
+Date: Wed, 23 Sep 2026 15:27:00 -0700
+Subject: [PATCH 2/5] test(r2-preflight): r_projection_test skips when the
+ fleet validator is absent (probe only; R1-X-PIN owns)
+
+The sibling guard of xaas_stop_court_test.exs: without
+~/.claude/dfcm/validate_receipt.py every R projection test fails with
+python3 exit 2. Included on this pre-flight branch only so the CI test court
+can proceed past it; R1-X-PIN owns the admitted repair.
+CI-like env: 0 tests, 8 skipped. Host env: 8 passed.
+---
+ test/xaas/receipt/r_projection_test.exs | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/test/xaas/receipt/r_projection_test.exs b/test/xaas/receipt/r_projection_test.exs
+index 6be352b..38429ad 100644
+--- a/test/xaas/receipt/r_projection_test.exs
++++ b/test/xaas/receipt/r_projection_test.exs
+@@ -17,6 +17,10 @@ defmodule Xaas.Receipt.RProjectionTest do
+   @provider "zcode-r-projection"
+   @validator Path.expand("~/.claude/dfcm/validate_receipt.py")
+ 
++  if not File.regular?(@validator) do
++    @moduletag skip: "needs ~/.claude/dfcm/validate_receipt.py (the fleet R-schema validator)"
++  end
++
+   @acc "https://ggen-igniter.dev/ontology/semantic-jira#r-projection-acceptance"
+   @court "https://ggen-igniter.dev/ontology/semantic-jira#r-projection-court"
+ 
+-- 
+2.51.2
+

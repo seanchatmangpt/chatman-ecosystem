@@ -1,0 +1,41 @@
+== coverage proof 2026-09-23T21:34:48Z c=243da10a614c4bd95ee0074aa04f2518e008fca8
+-- per-path blob match (dirty/untracked/evidence)
+OK   75c93c34fe323c4b30819e660b9f3e4e21f4fbed  reports/ocel/crown-p1-allowed/episode.ocel.json
+OK   586c7b35e3a050a9bff97bbac0acc5bab72468ea  reports/ocel/crown-p1-denied/episode.ocel.json
+OK   56ce1c7267cc2a8760e4c9087bc6c77c8e9eff61  tests/fixtures/real_episode.ocel.json
+OK   c31cb57f6e5022228368a8e795503613375811c0  .inspect_logs/2026-09-22T23-40-58-00-00_task_Wo4uaM47q93XeYetQn4kJP.eval
+OK   9f30417c406c064d30b49d5a824fc76e85559a93  .inspect_logs/2026-09-22T23-41-05-00-00_task_UT5rtd4J2QnUyfbDay5ovS.eval
+OK   c49cec3bdba76503b6e4f3e16d2c0f4c53a25763  .inspect_logs/2026-09-22T23-41-05-00-00_task_aVRdhN6DbXctWeopdePTk6.eval
+OK   6ac55a5295522e9209f4a472667fa0b0bc5a32b4  .inspect_logs/2026-09-22T23-41-06-00-00_task_2pcgwGEAutGWrVk2tBSBPc.eval
+OK   0868a3ec48f70629c27edb3d08dc4f2d8a3b17f5  .inspect_logs/2026-09-22T23-41-07-00-00_task_CpwUe8XRYY4de32pNBooV8.eval
+OK   5056615bab980bc0ce127e53eb31c871934012b1  uv.lock
+per-path fail=0
+-- whole-worktree vs snapshot (tmp index = c tree, refreshed, status incl untracked+ignored, excluding __pycache__)
+A  .inspect_logs/2026-09-22T23-40-58-00-00_task_Wo4uaM47q93XeYetQn4kJP.eval
+A  .inspect_logs/2026-09-22T23-41-05-00-00_task_UT5rtd4J2QnUyfbDay5ovS.eval
+A  .inspect_logs/2026-09-22T23-41-05-00-00_task_aVRdhN6DbXctWeopdePTk6.eval
+A  .inspect_logs/2026-09-22T23-41-06-00-00_task_2pcgwGEAutGWrVk2tBSBPc.eval
+A  .inspect_logs/2026-09-22T23-41-07-00-00_task_CpwUe8XRYY4de32pNBooV8.eval
+M  reports/ocel/crown-p1-allowed/episode.ocel.json
+M  reports/ocel/crown-p1-denied/episode.ocel.json
+M  tests/fixtures/real_episode.ocel.json
+A  uv.lock
+non-pycache residue lines: 9
+pycache-only ignored lines: 1570
+-- key rule
+key paths in diff HEAD..c: 0
+100644 blob 29d016dffcd95fe5df6cdc91fa1749493493dfb9	.ggen/keys/signing.key
+100644 blob b746dd7f13d7a60ba77f951a271afe6ba909fc03	.ggen/keys/verifying.key
+100644 blob 29d016dffcd95fe5df6cdc91fa1749493493dfb9	.ggen/keys/signing.key
+100644 blob b746dd7f13d7a60ba77f951a271afe6ba909fc03	.ggen/keys/verifying.key
+-- commit
+tree abb0bd5c6345a77a8e013628572442ca0ac5161a
+parent e75344d45d5694e15e73652eb1b4b796de29b0a9
+author Sean Chatman <136349053+seanchatmangpt@users.noreply.github.com> 1790199275 -0700
+committer Sean Chatman <136349053+seanchatmangpt@users.noreply.github.com> 1790199275 -0700
+
+-- note: 'A '/'M ' above are index(c) vs HEAD; worktree column blank => worktree == c for those paths
+diff-files (worktree vs c) lines: 0
+untracked not in c (exclude-standard) lines: 0
+ignored not in c, non-pycache lines: 0
+COVERAGE=PROVEN

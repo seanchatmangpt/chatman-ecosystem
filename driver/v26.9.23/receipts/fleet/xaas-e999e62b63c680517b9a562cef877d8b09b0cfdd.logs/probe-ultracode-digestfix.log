@@ -1,0 +1,281 @@
+    warning: Application.get_env/2 is discouraged in the module body, use Application.compile_env/3 instead
+    │
+ 12 │   if is_nil(Application.get_env(:ash, :default_string_length_count)) do
+    │                         ~
+    │
+    └─ /Users/sac/wt/v26922/v23/rela-xaas-digest-probe/deps/ex4pm/mix.exs:12:25: Ex4pm.MixProject (module)
+
+12:10:06.048 [warning] [ex_money] Automatically starting the exchange rate service is deprecated. Set `auto_start_exchange_rate_service: false` and, if you use the service, add `Money.ExchangeRates.Retriever` to your supervision tree.
+12:10:06.447 [warning] Xaas.Sa2a.Bridge not started: "autofde" executable not found on PATH. sa2a-bridge-pack edges (validate/admit/plan/execute/replay) are unavailable until autofde-lab (https://github.com/seanchatmangpt/autofde-lab) is installed and its "autofde" console script is on PATH.
+12:10:06.776 [warning] node not running in distributed mode. When running outside of a release, you must start net_kernel manually with
+longnames.
+https://www.erlang.org/doc/man/net_kernel.html#start-2
+
+12:10:06.863 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+12:10:06.863 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/v23/rela-xaas-digest-probe/_build/test/lib/prom_ex/priv/application.json.eex to Grafana: :unkown
+12:10:06.876 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+12:10:06.876 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/v23/rela-xaas-digest-probe/_build/test/lib/prom_ex/priv/beam.json.eex to Grafana: :unkown
+12:10:06.889 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+12:10:06.889 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/v23/rela-xaas-digest-probe/_build/test/lib/prom_ex/priv/phoenix.json.eex to Grafana: :unkown
+12:10:06.901 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+12:10:06.901 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/v23/rela-xaas-digest-probe/_build/test/lib/prom_ex/priv/ecto.json.eex to Grafana: :unkown
+Running ExUnit with seed: 878940, max_cases: 32
+Excluding tags: [:stress, :kind, :requires_cnv_deploy, :external, :external_llm, :subprocess, :property, :castle_kernel]
+
+12:10:06.911 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+12:10:06.911 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/v23/rela-xaas-digest-probe/_build/test/lib/prom_ex/priv/phoenix_live_view.json.eex to Grafana: :unkown
+12:10:06.915 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+12:10:06.915 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/v23/rela-xaas-digest-probe/_build/test/lib/xaas/priv/grafana_dashboards/infrastructure.json to Grafana: :unkown
+.
+
+  1) test descriptor fields the snapshot determines dependency edges cannot be injected when the admitted snapshot has none (Xaas.Ultracode.SemanticWorkFalsifierTest)
+     test/xaas/ultracode/semantic_work_falsifier_test.exs:82
+     match (=) failed
+     code:  assert {:ok, _} = SemanticWork.admit(descriptor, binding: :snapshot)
+     left:  {:ok, _}
+     right: {:error,
+             {:refused_semantic_work,
+              {:admitted_snapshot_mismatch,
+               :bridge_definition_digest}}}
+     stacktrace:
+       test/xaas/ultracode/semantic_work_falsifier_test.exs:88: (test)
+
+
+
+  2) test bridge fields the snapshot determines bridge.requires (acceptance / courts / falsifiers) is the snapshot's (Xaas.Ultracode.SemanticWorkFalsifierTest)
+     test/xaas/ultracode/semantic_work_falsifier_test.exs:41
+     match (=) failed
+     code:  assert {:ok, _} = SemanticWork.admit(descriptor, binding: mode)
+     left:  {:ok, _}
+     right: {:error,
+             {:refused_semantic_work,
+              {:admitted_snapshot_mismatch,
+               :bridge_definition_digest}}}
+     stacktrace:
+       test/xaas/ultracode/semantic_work_falsifier_test.exs:54: anonymous fn/3 in Xaas.Ultracode.SemanticWorkFalsifierTest."test bridge fields the snapshot determines bridge.requires (acceptance / courts / falsifiers) is the snapshot's"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/xaas/ultracode/semantic_work_falsifier_test.exs:53: (test)
+
+
+
+  3) test bridge fields the snapshot determines bridge.subject is the snapshot's (Xaas.Ultracode.SemanticWorkFalsifierTest)
+     test/xaas/ultracode/semantic_work_falsifier_test.exs:66
+     match (=) failed
+     code:  assert {:ok, _} = SemanticWork.admit(descriptor, binding: :snapshot)
+     left:  {:ok, _}
+     right: {:error,
+             {:refused_semantic_work,
+              {:admitted_snapshot_mismatch,
+               :bridge_definition_digest}}}
+     stacktrace:
+       test/xaas/ultracode/semantic_work_falsifier_test.exs:70: (test)
+
+...................................................................................................................................................................................12:10:09.200 [warning] [ultracode] epoch 46b6549e-280e-451e-a7ef-74b2db443316 (run c9d0f3e0-4a86-40e8-b47e-923ab05d9b04, cycle 0) expected_at=2026-09-23 19:09:08.805393Z exceeded epoch_timeout_seconds=1 -> marked :missed (receipt sealed)
+12:10:09.200 [warning] [ultracode] epoch 094ed732-ba12-421d-99f7-c19bf2d52484 (run 47abf72c-a16d-447c-98f0-d1a0a4fb2e5b, cycle 0) expected_at=2026-09-23 19:09:09.142916Z exceeded epoch_timeout_seconds=1 -> marked :missed (receipt sealed)
+...........12:10:09.236 [warning] [ultracode] epoch 8605a063-c2c7-47dc-9004-33a12961f5ed (run 575c0ec4-8ca5-4775-8d36-f7ca41673233, cycle 0) expected_at=2026-09-23 19:09:09.216907Z exceeded epoch_timeout_seconds=1 -> marked :missed (receipt sealed)
+12:10:09.245 [warning] [ultracode] epoch 8b90a9f8-e770-4b68-b040-27aad4235ccc (run b17612f4-42aa-4e13-a3b6-e1d745b96e99, cycle 0) expected_at=2026-09-23 19:09:09.223247Z exceeded epoch_timeout_seconds=1 -> marked :missed (receipt sealed)
+..12:10:09.276 [warning] [ultracode] undo: refusing to compensate epoch c7fd9076-f97a-417b-a815-4cadee39ee0d -- real row is :completed, not the :running state :construct left it in (a concurrent close/refuse/re-lease moved it); compensating would clobber a settled row
+..................................................................../Users/sac/.cache/tmp/xaas-ocel-mix-1790190609501-6346/36c92706-d115-4848-a736-7e96106922fd.ocel.json
+.....................................................12:10:10.054 [warning] XAAS_LEASE_CLOSE head mismatch epoch=1f30a9e4-3030-455e-89ac-21494205aace
+.........................................12:10:15.996 [warning] XAAS_LEASE_CLOSE head mismatch epoch=b5b6631a-f938-4d8a-8d75-c65b87d04fec
+.....................................
+
+  4) test digest binding (falsifier: digest altered after admission) XaaS recomputes exactly the digests the real graph admission produced (Xaas.Ultracode.SemanticWorkTest)
+     test/xaas/ultracode/semantic_work_test.exs:186
+     Assertion with == failed
+     code:  assert AdmissionBinding.definition_digest(snapshot) == descriptor["bridge"]["definition_digest"]
+     left:  "sha256:c0cc3a2e7d428c29c296d10d85c68cdbcfc241aa4adc0c03cb29048b32921f58"
+     right: "sha256:aa8e146cf922f53f6008d716b3da0955040d8187509383e8ecabff9d339217ab"
+     stacktrace:
+       test/xaas/ultracode/semantic_work_test.exs:193: (test)
+
+.
+
+  5) test digest binding (falsifier: digest altered after admission) materialize refuses a tampered descriptor before any worktree or Run exists (Xaas.Ultracode.SemanticWorkTest)
+     test/xaas/ultracode/semantic_work_test.exs:392
+     match (=) failed
+     code:  assert {:error, {:refused_semantic_work, {:graph_digest_unbound, :admitted_work_order, _}}} =
+              SemanticWork.materialize(tampered, binding: :snapshot)
+     left:  {:error, {:refused_semantic_work, {:graph_digest_unbound, :admitted_work_order, _}}}
+     right: {:error,
+             {:refused_semantic_work,
+              {:admitted_snapshot_mismatch,
+               :bridge_definition_digest}}}
+     stacktrace:
+       test/xaas/ultracode/semantic_work_test.exs:400: (test)
+
+.......
+
+  6) test digest binding (falsifier: digest altered after admission) untampered real descriptor is admitted in every binding mode (Xaas.Ultracode.SemanticWorkTest)
+     test/xaas/ultracode/semantic_work_test.exs:174
+     match (=) failed
+     code:  assert {:ok, admitted} = SemanticWork.admit(descriptor, binding: mode)
+     left:  {:ok, admitted}
+     right: {:error,
+             {:refused_semantic_work,
+              {:admitted_snapshot_mismatch,
+               :bridge_definition_digest}}}
+     stacktrace:
+       test/xaas/ultracode/semantic_work_test.exs:179: anonymous fn/3 in Xaas.Ultracode.SemanticWorkTest."test digest binding (falsifier: digest altered after admission) untampered real descriptor is admitted in every binding mode"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/xaas/ultracode/semantic_work_test.exs:178: (test)
+
+.....
+
+  7) test digest binding (falsifier: digest altered after admission) probe B: graph_digest altered, envelope OMITTED -> refused, not accepted (Xaas.Ultracode.SemanticWorkTest)
+     test/xaas/ultracode/semantic_work_test.exs:208
+     match (=) failed
+     The following variables were pinned:
+       digest = "sha256:4e0458934ec42dcc4953107d1fde191cc2ab2cb27f33fcf0804a30bfa6b91dda"
+     code:  assert {:error, {:refused_semantic_work, {:graph_digest_unbound, :admitted_work_order, ^digest}}} =
+              SemanticWork.admit(tampered, binding: mode)
+     left:  {:error, {:refused_semantic_work, {:graph_digest_unbound, :admitted_work_order, ^digest}}}
+     right: {:error,
+             {:refused_semantic_work,
+              {:admitted_snapshot_mismatch,
+               :bridge_definition_digest}}}
+     stacktrace:
+       test/xaas/ultracode/semantic_work_test.exs:220: anonymous fn/4 in Xaas.Ultracode.SemanticWorkTest."test digest binding (falsifier: digest altered after admission) probe B: graph_digest altered, envelope OMITTED -> refused, not accepted"/1
+       (elixir 1.19.5) lib/enum.ex:2520: Enum."-reduce/3-lists^foldl/2-0-"/3
+       test/xaas/ultracode/semantic_work_test.exs:219: (test)
+
+...
+
+  8) test a prepared episode drives EP-A to ALIVE: equal hop digests, sealed + independently verified receipt, admitted R, conformant OCEL, closed frontier (Xaas.Ultracode.SemanticDriveTest)
+     test/xaas/ultracode/semantic_drive_test.exs:107
+     Assertion with == failed
+     code:  assert git!(ctx.subject, ["diff", "--name-only", subject_sha, head]) == @drift
+     left:  "lib/ggen_igniter/semantic_jira/bootstrap.ex\nlib/ggen_igniter/semantic_jira/cli.ex"
+     right: "lib/ggen_igniter/semantic_jira/cli.ex"
+     stacktrace:
+       test/xaas/ultracode/semantic_drive_test.exs:214: (test)
+
+
+
+  9) test a subject with no drift is REFUSED(no_delta) by the provider: no commit, no ledger change, EP-A stays on the frontier (Xaas.Ultracode.SemanticDriveTest)
+     test/xaas/ultracode/semantic_drive_test.exs:345
+     match (=) failed
+     code:  assert {:refused,
+             %{
+               "standing" => "REFUSED(no_delta)",
+               "broken_term" => "R_missing_consequence",
+               "hop" => "provider"
+             }} = drive(ctx, out, pin_ref: pin)
+     left:  {:refused,
+             %{
+               "standing" => "REFUSED(no_delta)",
+               "broken_term" => "R_missing_consequence",
+               "hop" => "provider"
+             }}
+     right: {:ok,
+             %{
+               "artifacts" => ["contract.json", "descriptor.json",
+                "drive.json", "frontier_after.json",
+                "frontier_before.json", "hops.json", "ocel.json",
+                "ocel2.json", "receipt.json", "receipt.r.json",
+                "reconciler_receipt.json", "sa2a_task.json",
+                "verification.json"],
+               "checkpoint" => "https://ggen-igniter.dev/sjira/v26.9.23#GC-26.9.23",
+               "dependents" => ["EP-B"],
+               "finished_at" => "2026-09-23T19:12:56.132862Z",
+               "frontier" => %{
+                 "entered" => ["EP-B"],
+                 "left" => ["EP-A"]
+               },
+               "graph_side" => %{
+                 "ggen_igniter_dir" => "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+                 "ggen_igniter_sha" => "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+                 "toolchain" => %{
+                   "build_compiler" => %{
+                     "elixir" => "1.19.5",
+                     "otp" => "28"
+                   },
+                   "build_manifest" => "/Users/sac/.cache/tmp/xaas-drive-drive-all-37250/build/test/lib/ggen_igniter/.mix/compile.elixir_scm",
+                   "elixir" => "1.19.5",
+                   "erlang" => "28",
+                   "erts" => "running node (/Users/sac/.erlmcp/otp-28.3.1/lib/erlang/bin)",
+                   "mix" => "/opt/homebrew/Cellar/elixir/1.19.5/lib/elixir/bin/mix",
+                   "source" => "build_manifest"
+                 }
+               },
+               "hops" => ["sjira", "sa2a", "xaas", "provider",
+                "receipt"],
+               "no_llm_guard" => "passed",
+               "ocel" => %{
+                 "equivalent" => true,
+                 "events" => 11,
+                 "not_reached" => ["MachineExperienceAdmitted"],
+                 "objects" => 11,
+                 "reached" => ["WorkOrderCreated",
+                  "CapabilityResolved", "LeaseAcquired",
+                  "ActuationStarted", "ActuationCompleted",
+                  "VerificationCompleted", "ReceiptSealed",
+                  "StandingChanged", "FrontierChanged"]
+               },
+               "order" => "EP-A",
+               "provider" => %{
+                 "capability" => "recipe:mix-format",
+                 "executor" => "recipe-worker",
+                 "provider" => "recipe"
+               },
+               "request_digest" => "sha256:157b5081e3eea6f86872b743303a8751e8613497895156c72ebbdda03c9a09e9",
+               "schema" => "xaas/semantic-drive/v1",
+               "standing" => "ALIVE",
+               "started_at" => "2026-09-23T19:12:43.126971Z",
+               "subject" => %{
+                 "base_sha" => "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+                 "head" => "7798a1d013c2909bacac46a1634f4c10c75ee3bd",
+                 "pinned" => "t-nodelta-pin-38978",
+                 "repo" => "/Users/sac/.cache/tmp/xaas-drive-drive-all-37250/subject",
+                 "repository" => "seanchatmangpt/ggen_igniter"
+               },
+               "transition" => %{
+                 "authority" => "NONE",
+                 "definition_digest" => "sha256:3995cafa4ea89ff7330a7589e0b8b9e23c857c965eea34766af7dcf33f43ac0c",
+                 "event_digest" => "sha256:598bcf03ce40201398668f49b1768426a2c921b755c3473317c791d20f17004f",
+                 "from" => "UNKNOWN",
+                 "identity" => "EP-A",
+                 "kind" => "standing_transition_event",
+                 "receipt_digest" => "sha256:bdd69698bab90f0a85a6eaaca6c9745e691924d7efff7c9c4257b7ec456a28fc",
+                 "seq" => 1,
+                 "snapshot_digest" => "sha256:15ea635e2ec9cbfdcd310ef8f380ba6531be8cf451555062e1e6e148cf3d3912",
+                 "to" => "ALIVE",
+                 "transition_digest" => "sha256:4c7fd97fe78662a9e776f094b937d866f63840d0b21bb57a79f6cc421ef05e28"
+               },
+               "tuple_digest" => "sha256:9cddadfe915417d71806c8f084d1b8e0f270a88bdc2e3feb42f4dd28896a8704"
+             }}
+     stacktrace:
+       test/xaas/ultracode/semantic_drive_test.exs:353: (test)
+
+..............................................................................................................................12:13:22.826 [warning] [ultracode-engine] reaped epoch 76c00fda-9bf9-4980-b159-4c5e4615d322 (worker ended without closing)
+..12:13:22.867 [warning] [ultracode] run ebfe5996-0124-42eb-b361-0e2c3ac54b7a stopped: refused 1 live lease(s) (reason :run_stopped)
+....12:13:22.919 [warning] [ultracode-engine] reaped epoch d4df51c5-3b6b-44b2-8e26-529487dec064 (worker ended without closing)
+......12:13:23.012 [warning] [ultracode] run 5eadfd0d-1ae0-48e9-80a0-c0cf93e87980 stopped: refused 1 live lease(s) (reason :run_stopped)
+12:13:23.021 [warning] [ultracode] run 5eadfd0d-1ae0-48e9-80a0-c0cf93e87980 recovering from failed epoch d59f5679-f767-4386-a55b-fd24e2dc2672: constructed replacement epoch cycle=1 (epoch_id=d4b30830-954c-4588-8732-5b2c7f7664e1)
+......12:13:23.174 [warning] [ultracode] epoch 181ba73b-afe5-4ddc-b3b7-a73f5995bded (run 53616b77-ca63-4e78-8ac8-ad7455a27df5, cycle 0) expected_at=2026-09-23 19:12:23.163134Z exceeded epoch_timeout_seconds=1 -> marked :missed (receipt sealed)
+...............................................12:13:25.021 [warning] [recipe-worker] target pins %{"elixir" => "0.0.0-absent"} not installed under /Users/sac/.cache/tmp/xaas-recipe-test-asdf-empty-1790190804969-56578; falling back to the running node's toolchain (/opt/homebrew/bin/mix)
+............................................................error: /Users/sac/.cache/tmp/profile-sense-36ee2ac9/runs/fix-sense-b5c014 has no contracts/ directory
+..error: /Users/sac/.cache/tmp/profile-sense-d4f719fe/runs/fix-sense-4e0ff2 has no contracts/ directory
+..error: /Users/sac/.cache/tmp/profile-sense-f3423642/runs/fix-sense-6eabd5 has no contracts/ directory
+.error: /Users/sac/.cache/tmp/profile-sense-12d6e527/runs/fix-sense-eb4091 has no contracts/ directory
+.error: /Users/sac/.cache/tmp/profile-sense-1cc0cb84/runs/fix-sense-83c854 has no contracts/ directory
+............12:13:39.329 [warning] XAAS_LEASE_CLOSE head mismatch epoch=f9628d4f-0084-4ede-a127-085789548ddf
+..................12:13:41.716 [warning] [ultracode] epoch f135eb9e-1983-42fa-8407-a7ae1b506b93 (run b5be215b-0165-4831-a965-c8ecb9245f3a, cycle 0) expected_at=2026-09-23 19:13:41.708952Z exceeded epoch_timeout_seconds=0 -> marked :missed (receipt sealed)
+..................................................12:15:03.856 [warning] [ultracode] dispatch failover-class outcome (attempt 1); retrying once after 10ms
+12:15:03.861 [warning] [ultracode] dispatch failover-class outcome (attempt 1); retrying once after 10ms
+......
+
+ 10) test the hard timeout kills the whole process group and reports :timeout (Xaas.Ultracode.DispatchTest)
+     test/xaas/ultracode/dispatch_test.exs:600
+     dispatched process survived the timeout kill: 82188
+     82189
+
+     code: assert String.trim(out) == "", "dispatched process survived the timeout kill: #{out}"
+     stacktrace:
+       test/xaas/ultracode/dispatch_test.exs:629: (test)
+
+12:15:11.322 [warning] [ultracode] dispatch failover-class outcome (attempt 1); retrying once after 10ms
+...........12:15:13.071 [warning] [ultracode] dispatch failover-class outcome (attempt 1); retrying once after 10ms
+.............
+Finished in 309.4 seconds (6.9s async, 302.4s sync)
+785 tests, 10 failures (25 excluded)

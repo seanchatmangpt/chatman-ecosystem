@@ -1,0 +1,4 @@
+634964	/Users/sac/wt/v26922/autofde-lab/wo05-170
+635676	/Users/sac/wt/v26922/autofde-lab/wo10
+433968	/Users/sac/autofde-lab/.git/worktrees/wo05-170
+434160	/Users/sac/autofde-lab/.git/worktrees/wo10

@@ -1,0 +1,28 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790195680,
+    "execution_started_unix": 1790195693,
+    "execution_completed_unix": 1790195694,
+    "results": [
+      {
+        "path": "/Users/sac/wt/v26922/ash_a2a/int/native/graphlaw_host/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 903782400,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/ash_a2a/int/native/hddl_cli/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 134438912,
+        "reversibility": "reversible"
+      }
+    ],
+    "available_before": 81095131136,
+    "available_after": 82063433728
+  }
+}

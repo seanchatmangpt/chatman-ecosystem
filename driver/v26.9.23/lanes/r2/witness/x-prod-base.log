@@ -1,0 +1,6 @@
+# subject=/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/r2w/xaas head=c68c74dcf4e405e4382d34d51288763afc5939b0 fence_ref=6f59676
+production.timeout-minutes=12 required>=33
+publish-image.if="github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.expected_head_sha == github.sha && inputs.reason != ''"
+deploy.if="github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.expected_head_sha == github.sha && inputs.reason != ''"
+PRODCOURT FAIL: production budget below 1.5x the measured job
+PRODCOURT_GATE FAIL

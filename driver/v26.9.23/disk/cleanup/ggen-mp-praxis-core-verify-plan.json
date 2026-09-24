@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "created_unix": 1790195241,
+  "roots": [
+    "/Users/sac/wt/v26922/ggen/int/examples/praxis-core-verify"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/ggen/int/examples/praxis-core-verify/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 3825422336,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:cleanup",
+    "approval_reason": "ggen-mp group: ignored cargo target of ggen/int examples/praxis-core-verify (3.6G); 0 files newer than 12h cutoff, 0 tracked, git check-ignore /target; no open files/cwd/argv; worktree itself stays ACTIVE; regenerable",
+    "approved_at_unix": 1790195248,
+    "plan_hash": "399aa2e3326c7eda568b1483ec9542ed6c80f1faf531e839597a8aa65c01b050",
+    "hmac_signature": "9caa5fd483c56a7dc4064e2901fed5c352bf20a97dcbd32f651d346869cdcd66"
+  }
+}

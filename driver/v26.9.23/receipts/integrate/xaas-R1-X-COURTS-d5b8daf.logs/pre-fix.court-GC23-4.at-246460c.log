@@ -1,0 +1,7 @@
+route_test: Result: 74 passed
+    │                         ~
+    │
+    └─ /Users/sac/wt/v26922/fri/xaas-int/deps/ex4pm/mix.exs:12:25: Ex4pm.MixProject (module)
+
+{"broken_term":"mu_unlawful","detail":{"exit":1,"reason":"rsing file /Users/sac/.cache/tmp/gc23-4.lfRDcg/build/test/lib/yamerl/include/internal/yamerl_constr.hrl, got: {:error, :enoent}\n    (elixir 1.18.4) lib/record/extractor.ex:84: Record.Extractor.read_file/2\n    (elixir 1.18.4) lib/record/extractor.ex:50: Record.Extractor.extract_record/2\n    lib/yaml_elixir/records.ex:6: (module)\ncould not compile dependency :yaml_elixir, \"mix compile\" failed. Errors may have been logged above. You can recompile this dependency with \"mix deps.compile yaml_elixir --force\", update it with \"mix deps.update yaml_elixir\" or clean it with \"mix deps.clean yaml_elixir\"\n","toolchain":{"build_compiler":{"elixir":"1.18.4","otp":"27"},"elixir":"1.18.4-otp-27","mix":"/Users/sac/.asdf/installs/elixir/1.18.4-otp-27/bin/mix","source":"asdf"}},"hop":"sjira","reason":"graph_side_build_broken","standing":"BUILD_BROKEN"}
+UNKNOWN: GC23-4 the graph side in /Users/sac/wt/v26922/fri/ggen_igniter-int does not compile under the resolved toolchain (BUILD_BROKEN; the anchor cannot be witnessed)

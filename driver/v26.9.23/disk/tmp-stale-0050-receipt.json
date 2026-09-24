@@ -1,0 +1,380 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790149626,
+    "execution_started_unix": 1790149639,
+    "execution_completed_unix": 1790149676,
+    "results": [
+      {
+        "path": "/private/tmp/xaas-w9-sweep-wasm4pm/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1638858752,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/integration/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372322304,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a1/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372322304,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a2/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372322304,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a3/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372322304,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a4/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372322304,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a5/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372322304,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a6/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372322304,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a7/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372322304,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a8/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372322304,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a2/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372318208,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a3/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372318208,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a4/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372318208,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a5/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372318208,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a7/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372318208,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a8/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372318208,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/integration/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236576768,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a3/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236482560,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a1/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236474368,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a5/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236441600,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a8/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236441600,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a7/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236421120,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a2/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236404736,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a6/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236404736,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a7/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236310528,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a3/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236306432,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a5/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236216320,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a2/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236212224,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a4/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236208128,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a8/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 236199936,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a4/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 120573952,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a3/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 117276672,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a2/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a3/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a4/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a5/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a7/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/a8/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/integration/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a1/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a2/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a4/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a5/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a6/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a7/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/scj-finish/w2-a8/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 70545408,
+        "reversibility": "reversible"
+      }
+    ],
+    "available_before": 20233895936,
+    "available_after": 31869947904
+  }
+}

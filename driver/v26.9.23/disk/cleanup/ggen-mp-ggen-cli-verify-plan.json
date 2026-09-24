@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "created_unix": 1790195270,
+  "roots": [
+    "/Users/sac/wt/v26922/ggen/int/examples/ggen-cli-verify"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [],
+  "tool_roots": [],
+  "approval": null
+}

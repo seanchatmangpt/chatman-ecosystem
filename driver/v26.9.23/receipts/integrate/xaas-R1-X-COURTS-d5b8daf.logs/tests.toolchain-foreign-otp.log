@@ -1,0 +1,73 @@
+    warning: Application.get_env/2 is discouraged in the module body, use Application.compile_env/3 instead
+    │
+ 12 │   if is_nil(Application.get_env(:ash, :default_string_length_count)) do
+    │                         ~
+    │
+    └─ /Users/sac/wt/v26922/fri/xaas-int/deps/ex4pm/mix.exs:12:25: Ex4pm.MixProject (module)
+
+14:37:28.651 [warning] [ex_money] Automatically starting the exchange rate service is deprecated. Set `auto_start_exchange_rate_service: false` and, if you use the service, add `Money.ExchangeRates.Retriever` to your supervision tree.
+14:37:29.904 [warning] Xaas.Sa2a.Bridge not started: "autofde" executable not found on PATH. sa2a-bridge-pack edges (validate/admit/plan/execute/replay) are unavailable until autofde-lab (https://github.com/seanchatmangpt/autofde-lab) is installed and its "autofde" console script is on PATH.
+14:37:30.473 [warning] node not running in distributed mode. When running outside of a release, you must start net_kernel manually with
+longnames.
+https://www.erlang.org/doc/man/net_kernel.html#start-2
+
+14:37:30.702 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+14:37:30.702 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/fri/xaas-int/_build/test/lib/prom_ex/priv/application.json.eex to Grafana: :unkown
+14:37:30.722 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+14:37:30.722 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/fri/xaas-int/_build/test/lib/prom_ex/priv/beam.json.eex to Grafana: :unkown
+14:37:30.741 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+14:37:30.741 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/fri/xaas-int/_build/test/lib/prom_ex/priv/phoenix.json.eex to Grafana: :unkown
+14:37:30.757 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+14:37:30.757 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/fri/xaas-int/_build/test/lib/prom_ex/priv/ecto.json.eex to Grafana: :unkown
+Running ExUnit with seed: 731925, max_cases: 1
+Excluding tags: [:test]
+14:37:30.770 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+14:37:30.770 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/fri/xaas-int/_build/test/lib/prom_ex/priv/phoenix_live_view.json.eex to Grafana: :unkown
+Including tags: [location: {"test/xaas/ultracode/semantic_drive_test.exs", 608}, location: {"test/xaas/ultracode/semantic_drive_test.exs", 634}]
+
+14:37:30.778 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+14:37:30.778 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/fri/xaas-int/_build/test/lib/xaas/priv/grafana_dashboards/infrastructure.json to Grafana: :unkown
+
+Xaas.Ultracode.SemanticDriveToolchainTest [test/xaas/ultracode/semantic_drive_test.exs]
+  * test a build compiled by this node's Elixir on this ERTS resolves to that Elixir (source build_manifest), and it runs [L#538]  * test a build compiled by this node's Elixir on this ERTS resolves to that Elixir (source build_manifest), and it runs (excluded) [L#538]
+    warning: unused require Ash.Query
+    │
+ 37 │   require Ash.Query
+    │   ~
+    │
+    └─ test/xaas/ultracode/semantic_drive_test.exs:37:3
+
+  * test a build compiled by an Elixir with no install falls back to the checkout's pin, recording why [L#563]  * test a build compiled by an Elixir with no install falls back to the checkout's pin, recording why (excluded) [L#563]
+  * test no build at all falls back to the pin [L#646]  * test no build at all falls back to the pin (excluded) [L#646]
+  * test a build compiled on another OTP release falls back to the pin (an ERTS switch recompiles everything) [L#576]  * test a build compiled on another OTP release falls back to the pin (an ERTS switch recompiles everything) (excluded) [L#576]
+  * test a build compiled on another OTP release runs under an installed ERTS of that release (source build_manifest) [L#608]    warning: incompatible types given to Path.join/2:
+
+        Path.join(nil, "_build/test")
+
+    given types:
+
+        -nil-, binary()
+
+    but expected one of:
+
+        binary() or empty_list() or non_empty_list(term(), term()), term()
+
+    type warning found at:
+    │
+ 70 │     {_, 0} = System.cmd("cp", ["-cRp", Path.join(@ggen_dir, "_build/test"), build])
+    │                                             ~
+    │
+    └─ test/xaas/ultracode/semantic_drive_test.exs:70:45: Xaas.Ultracode.SemanticDriveTest.__ex_unit_setup_all_0/1
+
+  * test a build compiled on another OTP release runs under an installed ERTS of that release (source build_manifest) (1329.7ms) [L#608]
+
+Xaas.Ultracode.SemanticDriveTest [test/xaas/ultracode/semantic_drive_test.exs]
+  * test a prepared episode drives EP-A to ALIVE: equal hop digests, sealed + independently verified receipt, admitted R, conformant OCEL, closed frontier [L#107]  * test a prepared episode drives EP-A to ALIVE: equal hop digests, sealed + independently verified receipt, admitted R, conformant OCEL, closed frontier (excluded) [L#107]
+  * test an unregistered capability is REFUSED(unregistered_capability) at resolution: no Run, no ledger change [L#287]  * test an unregistered capability is REFUSED(unregistered_capability) at resolution: no Run, no ledger change (excluded) [L#287]
+  * test a subject with no drift is REFUSED(no_delta) by the provider: no commit, no ledger change, EP-A stays on the frontier [L#345]  * test a subject with no drift is REFUSED(no_delta) by the provider: no commit, no ledger change, EP-A stays on the frontier (excluded) [L#345]
+  * test Episode.prepare is deterministic and never moves a diverged branch [L#372]  * test Episode.prepare is deterministic and never moves a diverged branch (skipped) [L#372]
+  * test an LLM credential or an LLM binary on PATH is REFUSED(llm_credential_present) before any hop [L#309]  * test an LLM credential or an LLM binary on PATH is REFUSED(llm_credential_present) before any hop (excluded) [L#309]
+
+Finished in 1.6 seconds (1.6s async, 0.00s sync)
+
+Result: 1 passed, 1 skipped, 8 excluded

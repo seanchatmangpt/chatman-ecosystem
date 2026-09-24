@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "created_unix": 1790195289,
+  "roots": [
+    "/Users/sac/wt/v26922/autofde-lab/wo02"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/autofde-lab/wo02/.venv",
+      "kind": "dir",
+      "reason": "python virtualenv",
+      "bytes": 960372736,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/autofde-lab/wo02/build",
+      "kind": "dir",
+      "reason": "python build output",
+      "bytes": 496234496,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/autofde-lab/wo02/.pytest_cache",
+      "kind": "dir",
+      "reason": "python pytest cache",
+      "bytes": 77824,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/autofde-lab/wo02/.ruff_cache",
+      "kind": "dir",
+      "reason": "python ruff cache",
+      "bytes": 12288,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:cleanup",
+    "approval_reason": "v26922 cleanup group autofde-etc: wo02 stays (dirty reports/rfc_sa2a_002_benchmarks.json, blob in no ref); reclaim only ignored .venv/build/.pytest_cache/.ruff_cache, idle >12h, no live process, none tracked",
+    "approved_at_unix": 1790195301,
+    "plan_hash": "426ba129dbdadd23e2cad6698663acc90b48100f1ca960d3f94fe1abbaa2e0c7",
+    "hmac_signature": "cd6c396db0802ef4eac8a6d931f8eddc7de7eedb524263af7628a1ac569776a4"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "created_unix": 1790195362,
+  "roots": [
+    "/Users/sac/wt/v26922/gymact/int"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/gymact/int/.venv",
+      "kind": "dir",
+      "reason": "python virtualenv",
+      "bytes": 250871808,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/gymact/int/.ruff_cache",
+      "kind": "dir",
+      "reason": "python ruff cache",
+      "bytes": 520192,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/gymact/int/.pytest_cache",
+      "kind": "dir",
+      "reason": "python pytest cache",
+      "bytes": 24576,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:cleanup",
+    "approval_reason": "v26922 cleanup group autofde-etc: gymact/int is the release/v26.9.22 int merge target (KEEP worktree); reclaim only ignored .venv/.ruff_cache/.pytest_cache, idle >12h, no live process, no merge lock, nothing under receipts/, none tracked",
+    "approved_at_unix": 1790195371,
+    "plan_hash": "ed181d69da77ba5dd3c49f760af2c9c34f7b11c3c98726afee54c11f0f3b1ac8",
+    "hmac_signature": "7962d62bbeb51e6d21766a600896ac36116adacebae7c51bcd792000dcad8bbb"
+  }
+}

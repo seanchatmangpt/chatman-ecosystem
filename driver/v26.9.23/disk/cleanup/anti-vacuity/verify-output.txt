@@ -1,0 +1,365 @@
+FAIL removed:gone /Users/sac/wt/v26922/v23/R1-X-COURTS
+FAIL removed:unregistered /Users/sac/wt/v26922/v23/R1-X-COURTS
+PASS branch:kept /Users/sac/xaas refs/heads/v23/V23-F :: tip=97267bbe5634 head=97267bbe5634
+PASS branch:contains-head refs/heads/v23/V23-F
+PASS removed:gone /Users/sac/wt/v26922/v23/V23-P
+PASS removed:unregistered /Users/sac/wt/v26922/v23/V23-P
+PASS branch:kept /Users/sac/xaas refs/heads/v23/V23-P :: tip=e2a87664358a head=3937a4f89ecf
+FAIL branch:contains-head refs/heads/v23/V23-P
+PASS removed:gone /Users/sac/wt/v26922/v23/V23-X
+PASS removed:unregistered /Users/sac/wt/v26922/v23/V23-X
+PASS branch:kept /Users/sac/xaas refs/heads/v23/V23-X :: tip=5fef0ac7a267 head=5fef0ac7a267
+PASS branch:contains-head refs/heads/v23/V23-X
+PASS removed:gone /Users/sac/wt/v26922/wos/ggen-wo4
+PASS removed:unregistered /Users/sac/wt/v26922/wos/ggen-wo4
+PASS branch:kept /Users/sac/ggen refs/heads/fix/v26922-gall-semantic-work-descriptor :: tip=8d6df9af9947 head=8d6df9af9947
+PASS branch:contains-head refs/heads/fix/v26922-gall-semantic-work-descriptor
+PASS removed:gone /Users/sac/wt/v26922/mp-wo10-release
+PASS removed:unregistered /Users/sac/wt/v26922/mp-wo10-release
+PASS branch:kept /Users/sac/ggen-marketplace refs/heads/release-prep/v26.9.22 :: tip=28497f6e041e head=28497f6e041e
+PASS branch:contains-head refs/heads/release-prep/v26.9.22
+PASS removed:gone /Users/sac/wt/v26922/mp-wo3-sa2a-court
+PASS removed:unregistered /Users/sac/wt/v26922/mp-wo3-sa2a-court
+PASS branch:kept /Users/sac/ggen-marketplace refs/heads/feat/sa2a-bridge-court-26922 :: tip=8d971bc1cd4f head=8d971bc1cd4f
+PASS branch:contains-head refs/heads/feat/sa2a-bridge-court-26922
+PASS removed:gone /Users/sac/wt/v26922/mp-wo4-life-loop
+PASS removed:unregistered /Users/sac/wt/v26922/mp-wo4-life-loop
+PASS branch:kept /Users/sac/ggen-marketplace refs/heads/feat/v26.9.22-semantic-life-loop-pack :: tip=c76263f0b4e7 head=c76263f0b4e7
+PASS branch:contains-head refs/heads/feat/v26.9.22-semantic-life-loop-pack
+PASS removed:gone /Users/sac/wt/v26922/mp-wo7-wdfa
+PASS removed:unregistered /Users/sac/wt/v26922/mp-wo7-wdfa
+PASS branch:kept /Users/sac/ggen-marketplace refs/heads/docs/sjira-v26.9.21-wd-fa :: tip=ef2631d4a498 head=ef2631d4a498
+PASS branch:contains-head refs/heads/docs/sjira-v26.9.21-wd-fa
+PASS removed:gone /Users/sac/wt/v26922/autofde-lab/pr160
+PASS removed:unregistered /Users/sac/wt/v26922/autofde-lab/pr160
+PASS branch:kept /Users/sac/autofde-lab refs/heads/pr-160-crown :: tip=a4f417b3abbd head=a4f417b3abbd
+PASS branch:contains-head refs/heads/pr-160-crown
+PASS removed:gone /Users/sac/wt/v26922/autofde-lab/pr161
+PASS removed:unregistered /Users/sac/wt/v26922/autofde-lab/pr161
+PASS branch:kept /Users/sac/autofde-lab refs/heads/pr-161-specs :: tip=710b58fc44d9 head=710b58fc44d9
+PASS branch:contains-head refs/heads/pr-161-specs
+PASS removed:gone /Users/sac/wt/v26922/autofde-lab/pr164
+PASS removed:unregistered /Users/sac/wt/v26922/autofde-lab/pr164
+PASS branch:kept /Users/sac/autofde-lab refs/heads/pr-pr164-base :: tip=96bf592f97aa head=96bf592f97aa
+PASS branch:contains-head refs/heads/pr-pr164-base
+PASS removed:gone /Users/sac/wt/v26922/autofde-lab/pr165
+PASS removed:unregistered /Users/sac/wt/v26922/autofde-lab/pr165
+PASS branch:kept /Users/sac/autofde-lab refs/heads/pr-pr165-base :: tip=d9ae5b6e7427 head=d9ae5b6e7427
+PASS branch:contains-head refs/heads/pr-pr165-base
+PASS removed:gone /Users/sac/wt/v26922/autofde-lab/pr166
+PASS removed:unregistered /Users/sac/wt/v26922/autofde-lab/pr166
+PASS branch:kept /Users/sac/autofde-lab refs/heads/pr-pr166-base :: tip=fba7d807d6bb head=fba7d807d6bb
+PASS branch:contains-head refs/heads/pr-pr166-base
+PASS removed:gone /Users/sac/wt/v26922/autofde-lab/pr167
+PASS removed:unregistered /Users/sac/wt/v26922/autofde-lab/pr167
+PASS branch:kept /Users/sac/autofde-lab refs/heads/pr-pr167-base :: tip=a67f6d651793 head=a67f6d651793
+PASS branch:contains-head refs/heads/pr-pr167-base
+PASS removed:gone /Users/sac/wt/v26922/autofde-lab/pr168
+PASS removed:unregistered /Users/sac/wt/v26922/autofde-lab/pr168
+PASS branch:kept /Users/sac/autofde-lab refs/heads/pr-pr168-base :: tip=cac9d15334d8 head=cac9d15334d8
+PASS branch:contains-head refs/heads/pr-pr168-base
+PASS removed:gone /Users/sac/wt/v26922/autofde-lab/wo01
+PASS removed:unregistered /Users/sac/wt/v26922/autofde-lab/wo01
+PASS branch:kept /Users/sac/autofde-lab refs/heads/afde-26922-01-sj006 :: tip=bc70785ac301 head=bc70785ac301
+PASS branch:contains-head refs/heads/afde-26922-01-sj006
+PASS removed:gone /Users/sac/wt/v26922/autofde-lab/wo04
+PASS removed:unregistered /Users/sac/wt/v26922/autofde-lab/wo04
+PASS branch:kept /Users/sac/autofde-lab refs/heads/afde-26922-04-fabric-gymnasium :: tip=bde04bde6da0 head=bde04bde6da0
+PASS branch:contains-head refs/heads/afde-26922-04-fabric-gymnasium
+PASS removed:gone /Users/sac/wt/v26922/autofde-lab/wo08
+PASS removed:unregistered /Users/sac/wt/v26922/autofde-lab/wo08
+PASS branch:kept /Users/sac/autofde-lab refs/heads/afde-26922-08-hub-import :: tip=05c6b00af7e2 head=05c6b00af7e2
+PASS branch:contains-head refs/heads/afde-26922-08-hub-import
+PASS removed:gone /Users/sac/wt/v26922/autofde-lab/wo09
+PASS removed:unregistered /Users/sac/wt/v26922/autofde-lab/wo09
+PASS branch:kept /Users/sac/autofde-lab refs/heads/afde-26922-09-phase-h :: tip=5c815b1cb41b head=5c815b1cb41b
+PASS branch:contains-head refs/heads/afde-26922-09-phase-h
+PASS removed:gone /Users/sac/wt/v26922/wo05/fix
+PASS removed:unregistered /Users/sac/wt/v26922/wo05/fix
+PASS branch:kept /Users/sac/ggen_igniter refs/heads/wo/05-pr25-fix :: tip=5e23de6ae350 head=5e23de6ae350
+PASS branch:contains-head refs/heads/wo/05-pr25-fix
+PASS removed:gone /Users/sac/wt/v26922/gymact/wo4-gymact4
+PASS removed:unregistered /Users/sac/wt/v26922/gymact/wo4-gymact4
+PASS branch:kept /Users/sac/gymact refs/heads/feat/v26922-gymact4-togaf-templates :: tip=20c7d3f6f1b8 head=20c7d3f6f1b8
+PASS branch:contains-head refs/heads/feat/v26922-gymact4-togaf-templates
+FAIL copy:sha256 /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-wo4-gymact4.uv.lock :: 29cab5936409
+PASS removed:gone /Users/sac/wt/v26922/gymact/wo5-gymact5
+PASS removed:unregistered /Users/sac/wt/v26922/gymact/wo5-gymact5
+PASS branch:kept /Users/sac/gymact refs/heads/feat/v26922-gymact5-constants :: tip=bd1445b9291b head=bd1445b9291b
+PASS branch:contains-head refs/heads/feat/v26922-gymact5-constants
+PASS copy:sha256 /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-wo5-gymact5.uv.lock :: 29cab5936409
+PASS removed:gone /Users/sac/wt/v26922/gymact/wo6-gymact6
+PASS removed:unregistered /Users/sac/wt/v26922/gymact/wo6-gymact6
+PASS branch:kept /Users/sac/gymact refs/heads/feat/v26922-gymact6-mcp-closure :: tip=ef5f8a9fef15 head=ef5f8a9fef15
+PASS branch:contains-head refs/heads/feat/v26922-gymact6-mcp-closure
+PASS copy:sha256 /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-wo6-gymact6.uv.lock :: 29cab5936409
+PASS removed:gone /Users/sac/wt/v26922/gymact/wo7-gymact7
+PASS removed:unregistered /Users/sac/wt/v26922/gymact/wo7-gymact7
+PASS branch:kept /Users/sac/gymact refs/heads/feat/v26922-gymact7-named-skips :: tip=2ef8038a415f head=2ef8038a415f
+PASS branch:contains-head refs/heads/feat/v26922-gymact7-named-skips
+PASS removed:gone /Users/sac/wt/v26922/gymact/wo8-hermetic
+PASS removed:unregistered /Users/sac/wt/v26922/gymact/wo8-hermetic
+PASS branch:kept /Users/sac/gymact refs/heads/feat/v26922-gymact6-hermetic :: tip=04bac87d55b1 head=04bac87d55b1
+PASS branch:contains-head refs/heads/feat/v26922-gymact6-hermetic
+PASS removed:gone /Users/sac/wt/v26922/gymact/wo9-pr135
+PASS removed:unregistered /Users/sac/wt/v26922/gymact/wo9-pr135
+PASS branch:kept /Users/sac/gymact refs/heads/feat/sa2a-model-advice-boundary-local :: tip=f31d0bf9331e head=f31d0bf9331e
+PASS branch:contains-head refs/heads/feat/sa2a-model-advice-boundary-local
+PASS copy:sha256 /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-wo9-pr135.uv.lock :: e0f911bd5934
+PASS removed:gone /Users/sac/wt/v26922/ash_a2a/law-ASH_A2A-26922-14
+PASS removed:unregistered /Users/sac/wt/v26922/ash_a2a/law-ASH_A2A-26922-14
+PASS branch:kept /Users/sac/ash_a2a refs/heads/law/ASH_A2A-26922-14 :: tip=52ec184e00dc head=52ec184e00dc
+PASS branch:contains-head refs/heads/law/ASH_A2A-26922-14
+PASS removed:gone /Users/sac/wt/v26922/ash_a2a/w0-baseline
+PASS removed:unregistered /Users/sac/wt/v26922/ash_a2a/w0-baseline
+PASS detached:reachable 596960660fb4 in /Users/sac/ash_a2a :: 11 refs
+PASS removed:gone /Users/sac/wt/v26922/ferroplan/law-FERROPLAN-26922-09
+PASS removed:unregistered /Users/sac/wt/v26922/ferroplan/law-FERROPLAN-26922-09
+PASS branch:kept /Users/sac/ferroplan refs/heads/law/FERROPLAN-26922-09 :: tip=f33a216bd4ff head=f33a216bd4ff
+PASS branch:contains-head refs/heads/law/FERROPLAN-26922-09
+PASS removed:gone /Users/sac/wt/v26922/fri/FRI-T1
+PASS removed:unregistered /Users/sac/wt/v26922/fri/FRI-T1
+PASS branch:kept /Users/sac/ggen_igniter refs/heads/fri/FRI-T1 :: tip=ecf65fa435c5 head=ecf65fa435c5
+PASS branch:contains-head refs/heads/fri/FRI-T1
+PASS removed:gone /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-19
+PASS removed:unregistered /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-19
+PASS branch:kept /Users/sac/ggen_igniter refs/heads/law/GGEN_IGNITER-26922-19 :: tip=6a4c22792c60 head=6a4c22792c60
+PASS branch:contains-head refs/heads/law/GGEN_IGNITER-26922-19
+PASS removed:gone /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-21
+PASS removed:unregistered /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-21
+PASS branch:kept /Users/sac/ggen_igniter refs/heads/law/GGEN_IGNITER-26922-21 :: tip=1acbf0e6713d head=1acbf0e6713d
+PASS branch:contains-head refs/heads/law/GGEN_IGNITER-26922-21
+PASS removed:gone /Users/sac/wt/v26922/ggen_igniter/w0-baseline
+PASS removed:unregistered /Users/sac/wt/v26922/ggen_igniter/w0-baseline
+PASS detached:reachable c1aa83910172 in /Users/sac/ggen_igniter :: 43 refs
+PASS removed:gone /Users/sac/wt/v26922/xaas/court
+PASS removed:unregistered /Users/sac/wt/v26922/xaas/court
+PASS detached:reachable 25f7205db96b in /Users/sac/xaas :: 44 refs
+PASS removed:gone /Users/sac/wt/v26922/xaas/sjira-graph
+PASS removed:unregistered /Users/sac/wt/v26922/xaas/sjira-graph
+PASS branch:kept /Users/sac/xaas refs/heads/sjira/v26.9.22-multirepo-graph :: tip=5f3be7abc941 head=5f3be7abc941
+PASS branch:contains-head refs/heads/sjira/v26.9.22-multirepo-graph
+PASS removed:gone /Users/sac/wt/v26922/zcode-cli/wo9
+PASS removed:unregistered /Users/sac/wt/v26922/zcode-cli/wo9
+PASS branch:kept /Users/sac/dev/zcode-cli refs/heads/wo9/hygiene :: tip=014cfaf03a41 head=014cfaf03a41
+PASS branch:contains-head refs/heads/wo9/hygiene
+PASS removed:gone /Users/sac/wt/v26922/fri/FRI-T3
+PASS removed:unregistered /Users/sac/wt/v26922/fri/FRI-T3
+PASS branch:kept /Users/sac/xaas refs/heads/fri/FRI-T3 :: tip=e10b92d9946c head=e10b92d9946c
+PASS branch:contains-head refs/heads/fri/FRI-T3
+FAIL preserve:ref refs/preserve/v26.9.23/cleanup/fri-FRI-T3 :: 51bf07f12ff3
+FAIL preserve:tree refs/preserve/v26.9.23/cleanup/fri-FRI-T3 :: 000000000000
+FAIL preserve:parent-is-head refs/preserve/v26.9.23/cleanup/fri-FRI-T3
+FAIL preserve:stat refs/preserve/v26.9.23/cleanup/fri-FRI-T3
+PASS removed:gone /Users/sac/wt/v26922/fri/FRI-T4
+PASS removed:unregistered /Users/sac/wt/v26922/fri/FRI-T4
+PASS branch:kept /Users/sac/xaas refs/heads/fri/FRI-T4 :: tip=b822231ffadb head=b822231ffadb
+PASS branch:contains-head refs/heads/fri/FRI-T4
+PASS preserve:ref refs/preserve/v26.9.23/cleanup/fri-FRI-T4 :: 7221d655ccd8
+PASS preserve:tree refs/preserve/v26.9.23/cleanup/fri-FRI-T4 :: ad0bcb55fbb8
+PASS preserve:parent-is-head refs/preserve/v26.9.23/cleanup/fri-FRI-T4
+PASS preserve:stat refs/preserve/v26.9.23/cleanup/fri-FRI-T4 :: 3 files changed, 10198 insertions(+)
+PASS removed:gone /Users/sac/wt/v26922/fri/FRI-T5
+PASS removed:unregistered /Users/sac/wt/v26922/fri/FRI-T5
+PASS branch:kept /Users/sac/xaas refs/heads/fri/FRI-T5 :: tip=684d28788f18 head=684d28788f18
+PASS branch:contains-head refs/heads/fri/FRI-T5
+PASS preserve:ref refs/preserve/v26.9.23/cleanup/fri-FRI-T5 :: 4aa08b9a7a4e
+PASS preserve:tree refs/preserve/v26.9.23/cleanup/fri-FRI-T5 :: 53c737c7aad6
+PASS preserve:parent-is-head refs/preserve/v26.9.23/cleanup/fri-FRI-T5
+PASS preserve:stat refs/preserve/v26.9.23/cleanup/fri-FRI-T5 :: 2 files changed, 4 insertions(+)
+PASS removed:gone /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-15-A
+PASS removed:unregistered /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-15-A
+PASS branch:kept /Users/sac/ggen_igniter refs/heads/law/GGEN_IGNITER-26922-15-A :: tip=c1aa83910172 head=c1aa83910172
+PASS branch:contains-head refs/heads/law/GGEN_IGNITER-26922-15-A
+PASS preserve:ref refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-15-A :: 42fa29dbd0f2
+PASS preserve:tree refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-15-A :: f243be625b20
+PASS preserve:parent-is-head refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-15-A
+PASS preserve:stat refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-15-A :: 12 files changed, 1879 insertions(+)
+PASS removed:gone /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-15-B
+PASS removed:unregistered /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-15-B
+PASS branch:kept /Users/sac/ggen_igniter refs/heads/law/GGEN_IGNITER-26922-15-B :: tip=6d8ad5978631 head=6d8ad5978631
+PASS branch:contains-head refs/heads/law/GGEN_IGNITER-26922-15-B
+PASS preserve:ref refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-15-B :: eff2fdcb96f5
+PASS preserve:tree refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-15-B :: 9ae01c8ce681
+PASS preserve:parent-is-head refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-15-B
+PASS preserve:stat refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-15-B :: 1 file changed, 514087 insertions(+)
+PASS removed:gone /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-18-A
+PASS removed:unregistered /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-18-A
+PASS branch:kept /Users/sac/ggen_igniter refs/heads/law/GGEN_IGNITER-26922-18-A :: tip=facdf0dbd3cd head=facdf0dbd3cd
+PASS branch:contains-head refs/heads/law/GGEN_IGNITER-26922-18-A
+PASS preserve:ref refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-18-A :: 45d491abce51
+PASS preserve:tree refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-18-A :: 63fea072932f
+PASS preserve:parent-is-head refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-18-A
+PASS preserve:stat refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-18-A :: 13 files changed, 580261 insertions(+), 3 deletions(-)
+PASS removed:gone /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-18-B
+PASS removed:unregistered /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-18-B
+PASS branch:kept /Users/sac/ggen_igniter refs/heads/law/GGEN_IGNITER-26922-18-B :: tip=92b17af575a0 head=92b17af575a0
+PASS branch:contains-head refs/heads/law/GGEN_IGNITER-26922-18-B
+PASS preserve:ref refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-18-B :: 5d7595a9888a
+PASS preserve:tree refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-18-B :: 0ba462b6328f
+PASS preserve:parent-is-head refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-18-B
+PASS preserve:stat refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-18-B :: 5 files changed, 474 insertions(+)
+PASS removed:gone /Users/sac/wt/v26922/ggen_igniter/wo-03
+PASS removed:unregistered /Users/sac/wt/v26922/ggen_igniter/wo-03
+PASS branch:kept /Users/sac/ggen_igniter refs/heads/wo/03-restore-union :: tip=facdf0dbd3cd head=facdf0dbd3cd
+PASS branch:contains-head refs/heads/wo/03-restore-union
+PASS preserve:ref refs/preserve/v26.9.23/cleanup/ggen_igniter-wo-03 :: da5c83a6d88d
+PASS preserve:tree refs/preserve/v26.9.23/cleanup/ggen_igniter-wo-03 :: ea8b38ed2632
+PASS preserve:parent-is-head refs/preserve/v26.9.23/cleanup/ggen_igniter-wo-03
+PASS preserve:stat refs/preserve/v26.9.23/cleanup/ggen_igniter-wo-03 :: 37 files changed, 5844 insertions(+), 135 deletions(-)
+PASS removed:gone /Users/sac/wt/v26922/xaas/law-XAAS-26922-21
+PASS removed:unregistered /Users/sac/wt/v26922/xaas/law-XAAS-26922-21
+PASS branch:kept /Users/sac/xaas refs/heads/law/XAAS-26922-21 :: tip=6fd6f6d0226d head=6fd6f6d0226d
+PASS branch:contains-head refs/heads/law/XAAS-26922-21
+PASS preserve:ref refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-21 :: 50acaf451100
+PASS preserve:tree refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-21 :: ff3c15ac67fd
+PASS preserve:parent-is-head refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-21
+PASS preserve:stat refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-21 :: 1 file changed, 4454 insertions(+)
+PASS removed:gone /Users/sac/wt/v26922/xaas/law-XAAS-26922-26
+PASS removed:unregistered /Users/sac/wt/v26922/xaas/law-XAAS-26922-26
+PASS branch:kept /Users/sac/xaas refs/heads/law/XAAS-26922-26 :: tip=ec06b7c8b956 head=ec06b7c8b956
+PASS branch:contains-head refs/heads/law/XAAS-26922-26
+PASS preserve:ref refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-26 :: 1e4bf7521b9f
+PASS preserve:tree refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-26 :: e87f2460131d
+PASS preserve:parent-is-head refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-26
+PASS preserve:stat refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-26 :: 3 files changed, 4 insertions(+)
+PASS preserve:no-secret-key refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-26 :: signing=0 verifying=1
+PASS removed:gone /Users/sac/wt/v26922/xaas/uc-rt-A
+PASS removed:unregistered /Users/sac/wt/v26922/xaas/uc-rt-A
+PASS branch:kept /Users/sac/xaas refs/heads/law/XAAS-26922-26-rt-A :: tip=61098b11184b head=61098b11184b
+PASS branch:contains-head refs/heads/law/XAAS-26922-26-rt-A
+PASS preserve:ref refs/preserve/v26.9.23/cleanup/xaas-uc-rt-A :: 1153403d7bd3
+PASS preserve:tree refs/preserve/v26.9.23/cleanup/xaas-uc-rt-A :: 83b5a569fe48
+PASS preserve:parent-is-head refs/preserve/v26.9.23/cleanup/xaas-uc-rt-A
+PASS preserve:stat refs/preserve/v26.9.23/cleanup/xaas-uc-rt-A :: 3 files changed, 21 insertions(+)
+PASS preserve:no-secret-key refs/preserve/v26.9.23/cleanup/xaas-uc-rt-A :: signing=0 verifying=1
+PASS removed:gone /Users/sac/wt/v26922/xaas/uc-rt-B
+PASS removed:unregistered /Users/sac/wt/v26922/xaas/uc-rt-B
+PASS branch:kept /Users/sac/xaas refs/heads/law/XAAS-26922-26-rt-B :: tip=cbb3c43527a5 head=cbb3c43527a5
+PASS branch:contains-head refs/heads/law/XAAS-26922-26-rt-B
+PASS preserve:ref refs/preserve/v26.9.23/cleanup/xaas-uc-rt-B :: cbd91aaa6fb6
+PASS preserve:tree refs/preserve/v26.9.23/cleanup/xaas-uc-rt-B :: 44bf9223173b
+PASS preserve:parent-is-head refs/preserve/v26.9.23/cleanup/xaas-uc-rt-B
+PASS preserve:stat refs/preserve/v26.9.23/cleanup/xaas-uc-rt-B :: 3 files changed, 8 insertions(+)
+PASS preserve:no-secret-key refs/preserve/v26.9.23/cleanup/xaas-uc-rt-B :: signing=0 verifying=1
+PASS removed:gone /Users/sac/wt/v26922/xaas/uc-watch
+PASS removed:unregistered /Users/sac/wt/v26922/xaas/uc-watch
+PASS branch:kept /Users/sac/xaas refs/heads/law/XAAS-26922-26-watch :: tip=3244fe724dca head=3244fe724dca
+PASS branch:contains-head refs/heads/law/XAAS-26922-26-watch
+PASS preserve:ref refs/preserve/v26.9.23/cleanup/xaas-uc-watch :: 6453118b83da
+PASS preserve:tree refs/preserve/v26.9.23/cleanup/xaas-uc-watch :: 2aa262e6a7ba
+PASS preserve:parent-is-head refs/preserve/v26.9.23/cleanup/xaas-uc-watch
+PASS preserve:stat refs/preserve/v26.9.23/cleanup/xaas-uc-watch :: 3 files changed, 20 insertions(+)
+PASS preserve:no-secret-key refs/preserve/v26.9.23/cleanup/xaas-uc-watch :: signing=0 verifying=1
+PASS artifacts:worktree-kept /Users/sac/wt/v26922/ggen/int
+PASS artifacts:oclnr-all-deleted ggen-mp-praxis-core-verify-receipt.json :: 1 items
+PASS artifacts:absent /Users/sac/wt/v26922/ggen/int/examples/praxis-core-verify/target
+PASS artifacts:R-admitted ggen-mp-praxis-core-verify-receipt.r.json :: ADMITTED /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-receipt.r.json
+PASS artifacts:worktree-kept /Users/sac/wt/v26922/ggen/int
+PASS artifacts:oclnr-all-deleted ggen-mp-receiptctl-receipt.json :: 1 items
+PASS artifacts:absent /Users/sac/wt/v26922/ggen/int/examples/receiptctl/target
+PASS artifacts:R-admitted ggen-mp-receiptctl-receipt.r.json :: ADMITTED /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-receipt.r.json
+PASS artifacts:worktree-kept /Users/sac/wt/v26922/ggen/int
+PASS artifacts:oclnr-all-deleted ggen-mp-star-toml-verify-receipt.json :: 1 items
+PASS artifacts:absent /Users/sac/wt/v26922/ggen/int/examples/star-toml-verify/target
+PASS artifacts:R-admitted ggen-mp-star-toml-verify-receipt.r.json :: ADMITTED /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-receipt.r.json
+PASS artifacts:worktree-kept /Users/sac/wt/v26922/ggen/int
+PASS artifacts:oclnr-all-deleted ggen-mp-cargo-cicd-verify-receipt.json :: 1 items
+PASS artifacts:absent /Users/sac/wt/v26922/ggen/int/examples/cargo-cicd-verify/target
+PASS artifacts:R-admitted ggen-mp-cargo-cicd-verify-receipt.r.json :: ADMITTED /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-receipt.r.json
+PASS artifacts:worktree-kept /Users/sac/wt/v26922/autofde-lab/wo02
+PASS artifacts:oclnr-all-deleted autofde-lab-wo02.receipt.json :: 4 items
+PASS artifacts:absent /Users/sac/wt/v26922/autofde-lab/wo02/.venv
+PASS artifacts:absent /Users/sac/wt/v26922/autofde-lab/wo02/build
+PASS artifacts:absent /Users/sac/wt/v26922/autofde-lab/wo02/.pytest_cache
+PASS artifacts:absent /Users/sac/wt/v26922/autofde-lab/wo02/.ruff_cache
+PASS artifacts:R-admitted autofde-lab-wo02.receipt.r.json :: ADMITTED /Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.receipt.r.json
+PASS artifacts:worktree-kept /Users/sac/wt/v26922/gymact/int
+PASS artifacts:oclnr-all-deleted gymact-int.receipt.json :: 3 items
+PASS artifacts:absent /Users/sac/wt/v26922/gymact/int/.venv
+PASS artifacts:absent /Users/sac/wt/v26922/gymact/int/.ruff_cache
+PASS artifacts:absent /Users/sac/wt/v26922/gymact/int/.pytest_cache
+PASS artifacts:R-admitted gymact-int.receipt.r.json :: ADMITTED /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.receipt.r.json
+PASS artifacts:worktree-kept /Users/sac/wt/v26922/ash_a2a/int
+PASS artifacts:oclnr-all-deleted repos-ash_a2a-int-receipt.json :: 2 items
+PASS artifacts:absent /Users/sac/wt/v26922/ash_a2a/int/native/graphlaw_host/target
+PASS artifacts:absent /Users/sac/wt/v26922/ash_a2a/int/native/hddl_cli/target
+PASS artifacts:R-admitted repos-ash_a2a-int-receipt.r.json :: ADMITTED /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-receipt.r.json
+PASS artifacts:worktree-kept /Users/sac/wt/v26922/ash_atlassian/int
+PASS artifacts:oclnr-all-deleted repos-ash_atlassian-int-receipt.json :: 2 items
+PASS artifacts:absent /Users/sac/wt/v26922/ash_atlassian/int/_build
+PASS artifacts:absent /Users/sac/wt/v26922/ash_atlassian/int/deps
+PASS artifacts:R-admitted repos-ash_atlassian-int-receipt.r.json :: ADMITTED /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-receipt.r.json
+PASS artifacts:worktree-kept /Users/sac/wt/v26922/ggen_igniter/int
+PASS artifacts:oclnr-all-deleted repos-ggen_igniter-int-receipt.json :: 2 items
+PASS artifacts:absent /Users/sac/wt/v26922/ggen_igniter/int/native/ggen_graph_nif/target
+PASS artifacts:absent /Users/sac/wt/v26922/ggen_igniter/int/_build
+PASS artifacts:R-admitted repos-ggen_igniter-int-receipt.r.json :: ADMITTED /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ggen_igniter-int-receipt.r.json
+PASS snapshot:thinned :: thinned=3
+PASS snapshot:R-admitted
+PASS untouched:exists /Users/sac/wt/v26922/COORDINATION.md
+PASS untouched:exists /Users/sac/wt/v26922/ash_a2a/w0-baseline-logs
+PASS untouched:exists /Users/sac/wt/v26922/ash_surface/int
+PASS untouched:exists /Users/sac/wt/v26922/autofde-lab/int
+PASS untouched:exists /Users/sac/wt/v26922/autofde-lab/pr163
+PASS untouched:exists /Users/sac/wt/v26922/autofde-lab/wo05-170
+PASS untouched:exists /Users/sac/wt/v26922/autofde-lab/wo10
+PASS untouched:exists /Users/sac/wt/v26922/beam4pm/int
+PASS untouched:exists /Users/sac/wt/v26922/ferroplan/w0-logs
+PASS untouched:exists /Users/sac/wt/v26922/ferroplan/w0-venv
+PASS untouched:exists /Users/sac/wt/v26922/fleet.ttl
+PASS untouched:exists /Users/sac/wt/v26922/fri/FRI-T2
+PASS untouched:exists /Users/sac/wt/v26922/fri/FRI-T6
+PASS untouched:exists /Users/sac/wt/v26922/fri/ggen_igniter-int
+PASS untouched:exists /Users/sac/wt/v26922/fri/xaas-int
+PASS untouched:exists /Users/sac/wt/v26922/frozen-duckdb/int
+PASS untouched:exists /Users/sac/wt/v26922/ggen-ecosystem/int
+PASS untouched:exists /Users/sac/wt/v26922/ggen-marketplace/int
+PASS untouched:exists /Users/sac/wt/v26922/ggen/int/examples/ggen-cli-verify/target
+PASS untouched:exists /Users/sac/wt/v26922/ggen/int/examples/rmcp-verify/target
+PASS untouched:exists /Users/sac/wt/v26922/ggen/int/target
+PASS untouched:exists /Users/sac/wt/v26922/ggen_igniter/int/deps
+PASS untouched:exists /Users/sac/wt/v26922/ggen_igniter/wo-02
+PASS untouched:exists /Users/sac/wt/v26922/ggen_igniter/wo-09
+PASS untouched:exists /Users/sac/wt/v26922/gitvan/deactivated
+PASS untouched:exists /Users/sac/wt/v26922/gitvan/int
+PASS untouched:exists /Users/sac/wt/v26922/gitvan/msgs
+PASS untouched:exists /Users/sac/wt/v26922/gymact/w0-baseline-e75344d
+PASS untouched:exists /Users/sac/wt/v26922/gymact/w0-logs
+PASS untouched:exists /Users/sac/wt/v26922/mp-wo2-ci-debt
+PASS untouched:exists /Users/sac/wt/v26922/orders.json
+PASS untouched:exists /Users/sac/wt/v26922/survey.json
+PASS untouched:exists /Users/sac/wt/v26922/transitions.jsonl
+PASS untouched:exists /Users/sac/wt/v26922/v23/R1-GI-FMT
+PASS untouched:exists /Users/sac/wt/v26922/v23/R1-X-COURTS
+PASS untouched:exists /Users/sac/wt/v26922/v23/R1-X-FENCE
+PASS untouched:exists /Users/sac/wt/v26922/v23/R1-X-GUARD
+PASS untouched:exists /Users/sac/wt/v26922/v23/R1-X-LOCK
+PASS untouched:exists /Users/sac/wt/v26922/v23/R1-X-PGREP
+PASS untouched:exists /Users/sac/wt/v26922/v23/V23-B
+PASS untouched:exists /Users/sac/wt/v26922/v23/V23-C
+PASS untouched:exists /Users/sac/wt/v26922/v23/V23-D
+PASS untouched:exists /Users/sac/wt/v26922/v23/V23-D-gi
+PASS untouched:exists /Users/sac/wt/v26922/v23/V23-H
+PASS untouched:exists /Users/sac/wt/v26922/v23/V23-K
+PASS untouched:exists /Users/sac/wt/v26922/v23/V23-L
+PASS untouched:exists /Users/sac/wt/v26922/v23/V23-M
+PASS untouched:exists /Users/sac/wt/v26922/v23/V23-R
+PASS untouched:exists /Users/sac/wt/v26922/v23/V23-S
+PASS untouched:exists /Users/sac/wt/v26922/v23/V23-W
+PASS untouched:exists /Users/sac/wt/v26922/v23/rel-ggen_igniter-int
+PASS untouched:exists /Users/sac/wt/v26922/v23/rel-xaas-int
+PASS untouched:exists /Users/sac/wt/v26922/v23/rela-gi-fmt-probe
+PASS untouched:exists /Users/sac/wt/v26922/v23/rela-xaas-digest-probe
+PASS untouched:exists /Users/sac/wt/v26922/v26923
+PASS untouched:exists /Users/sac/wt/v26922/wos/ggen-wo3
+PASS untouched:exists /Users/sac/wt/v26922/wos/ggen-wo5
+PASS untouched:exists /Users/sac/wt/v26922/wos/ggen-wo6
+PASS untouched:exists /Users/sac/wt/v26922/wos/ggen-wo7
+PASS untouched:exists /Users/sac/wt/v26922/xaas/int
+PASS untouched:exists /Users/sac/wt/v26922/xaas/msgs
+PASS untouched:exists /Users/sac/wt/v26922/xaas/w0-baseline-logs
+PASS untouched:exists /Users/sac/wt/v26922/zcode-cli/int
+PASS untouched:exists /Users/sac/wt/v26922/zcode-cli/wo5
+FAIL untouched:exists /Users/sac/wt/v26922/v23/V23-F
+SUMMARY checks=364 pass=355 fail=9

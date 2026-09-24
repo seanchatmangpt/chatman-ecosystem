@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "created_unix": 1790145989,
+  "roots": [
+    "/Users/sac/wt/v26922/fri/FRI-T3"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/fri/FRI-T3/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/fri/FRI-T3/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 763162624,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:v23-driver",
+    "approval_reason": "merged lane worktree FRI-T3 (HEAD ancestor of friday/gc-fri-0800); _build+deps regenerable; disk 20GiB before wave B1",
+    "approved_at_unix": 1790145989,
+    "plan_hash": "b6d89581cb7fb355e1bacc3295694624891758ad10d43b16371b8d06eb8abe88",
+    "hmac_signature": "64de47917ea5bd0881b44edb9d6616099c6e121ce530f1ec17852429531d9676"
+  }
+}

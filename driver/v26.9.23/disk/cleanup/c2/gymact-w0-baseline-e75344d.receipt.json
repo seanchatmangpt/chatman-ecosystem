@@ -1,0 +1,54 @@
+{
+  "identity": {
+    "subject": "v26.9.23 cleanup-2: gymact/w0-baseline-e75344d PRESERVE_THEN_REMOVE + rmdir wo05, zcode-cli/wo5",
+    "repo": "/Users/sac/gymact",
+    "subject_sha": "243da10a614c4bd95ee0074aa04f2518e008fca8",
+    "base_sha": "e75344d45d5694e15e73652eb1b4b796de29b0a9",
+    "preserve_ref": "refs/preserve/v26.9.23/cleanup/gymact-w0-baseline-e75344d",
+    "preserve_tree": "abb0bd5c6345a77a8e013628572442ca0ac5161a",
+    "gymact_main_checkout_head_at_receipt": "5141f88e5049cf1265cd847a86090c35852200cd",
+    "plan": {"path": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2/gymact-w0-baseline-e75344d.plan.json", "sha256": "c27e86dea080b1ae27ddc6ab587f807fcdbfa5faf1cff13609e52e79f89009af"}
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "workflow computed task Decision 3 (driver): PRESERVE_THEN_REMOVE gymact/w0-baseline-e75344d; rmdir wo05 and zcode-cli/wo5 if empty and unregistered; under COORDINATION.md conservation law",
+    "actor": "claude:cleanup-2 (workflow subagent)"
+  },
+  "consequence": {
+    "commits": ["243da10a614c4bd95ee0074aa04f2518e008fca8"],
+    "files_changed": [
+      ".inspect_logs/2026-09-22T23-40-58-00-00_task_Wo4uaM47q93XeYetQn4kJP.eval",
+      ".inspect_logs/2026-09-22T23-41-05-00-00_task_UT5rtd4J2QnUyfbDay5ovS.eval",
+      ".inspect_logs/2026-09-22T23-41-05-00-00_task_aVRdhN6DbXctWeopdePTk6.eval",
+      ".inspect_logs/2026-09-22T23-41-06-00-00_task_2pcgwGEAutGWrVk2tBSBPc.eval",
+      ".inspect_logs/2026-09-22T23-41-07-00-00_task_CpwUe8XRYY4de32pNBooV8.eval",
+      "reports/ocel/crown-p1-allowed/episode.ocel.json",
+      "reports/ocel/crown-p1-denied/episode.ocel.json",
+      "tests/fixtures/real_episode.ocel.json",
+      "uv.lock"
+    ],
+    "remote_effects": [
+      "gymact: ref refs/preserve/v26.9.23/cleanup/gymact-w0-baseline-e75344d created -> 243da10a (parent e75344d; 9 files changed, 5804 insertions, 3 deletions); uv.lock force-added (ignored; sha256 29cab593..., identical to cleanup/gymact-wo4-gymact4.uv.lock)",
+      "gymact: worktree /Users/sac/wt/v26922/gymact/w0-baseline-e75344d removed (git worktree remove --force; detached HEAD e75344d, reachable from feat/v26922-gymact4/5/6 branches); admin dir .git/worktrees/w0-baseline-e75344d gone; du 27660 KB before; df avail delta over the remove +10900 KB (other writers active on volume)",
+      "excluded from snapshot: 1570 __pycache__/*.pyc (derived). No key path added: git diff --name-only HEAD..243da10a has 0 *.key/signing paths; .ggen/keys/signing.key is tracked in HEAD e75344d (blob 29d016df) unchanged and only inherited",
+      "filesystem: rmdir /Users/sac/wt/v26922/wo05 (ls -A empty, 0 files, unregistered in 755 repos' worktree lists)",
+      "filesystem: rmdir bottom-up /Users/sac/wt/v26922/zcode-cli/wo5/vendor/provider, .../wo5/vendor, .../wo5 (tree held only empty dirs, 0 files; each level ls -A empty at its rmdir; unregistered)",
+      "untouched: /Users/sac/wt/v26922/autofde-lab/pr163 (HEAD f4b88da7 present), fri/*-int, v23/R1-*, v23/rel-*, wos/ggen-wo6, all /Users/sac/<repo> main checkouts; no branch/ref deleted"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {"cmd": "lsof -a -d cwd -Fn | grep -F <wt>; ps -axo pid,command | grep -F <wt>; find <wt> -newermt now-12h | wc -l", "cwd": "/Users/sac", "exit": 0, "summary": "gate re-checked immediately before snapshot (21:34:34Z) and before remove (21:35:05Z): no cwd, no argv, 0 files newer than 12h. Attempt 1 aborted at gate (self-match on own tee pid 75000); no state changed"},
+      {"cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/gymact/w0-baseline-e75344d read-tree HEAD; add -A; add -f -- uv.lock; write-tree -> abb0bd5c6345a77a8e013628572442ca0ac5161a; commit-tree -p HEAD -> 243da10a614c4bd95ee0074aa04f2518e008fca8; update-ref refs/preserve/v26.9.23/cleanup/gymact-w0-baseline-e75344d 243da10a614c4bd95ee0074aa04f2518e008fca8", "cwd": "/Users/sac/wt/v26922/gymact/w0-baseline-e75344d", "exit": 0, "summary": "PRESERVE; log /Users/sac/wt/v26922/v26923/disk/cleanup/c2/gymact-w0-baseline-e75344d.log", "output_sha256": "61e41caaabe48a297bf002dbe5ceeaaa9c9e75ec39ec0bc8ca7a9f9d2f70bacc"},
+      {"cmd": "per-path: git rev-parse 243da10a:<p> == git hash-object <p> for 3 M + 5 ?? + uv.lock; tmp index=243da10a tree: diff-files, ls-files --others --exclude-standard, ls-files --others --ignored (non-pycache)", "cwd": "/Users/sac/wt/v26922/gymact/w0-baseline-e75344d", "exit": 0, "summary": "COVERAGE=PROVEN: 9/9 blob matches, diff-files 0, untracked 0, non-pycache ignored 0, key paths in diff 0", "output_sha256": "22f982f2adda744c2d405db0af9ea89410083b24475281dac922ab44a468e1a7"},
+      {"cmd": "git --git-dir=/Users/sac/gymact/.git worktree remove --force /Users/sac/wt/v26922/gymact/w0-baseline-e75344d", "cwd": "/Users/sac", "exit": 0, "summary": "REMOVE; path gone, not in worktree list, preserve ref still 243da10a with blobs readable"},
+      {"cmd": "git --git-dir=<g> worktree list --porcelain for 755 git dirs under /Users/sac; cat /Users/sac/*/.git/worktrees/*/gitdir | grep wo05|zcode-cli/wo5", "cwd": "/Users/sac", "exit": 0, "summary": "0 registrations for either path (2034 worktree entries scanned)", "output_sha256": "3c7f959ea914034c1f7927f033538167c433af0d0dcb180b8e149d316a82952b"},
+      {"cmd": "rmdir /Users/sac/wt/v26922/wo05; rmdir /Users/sac/wt/v26922/zcode-cli/wo5/vendor/provider /Users/sac/wt/v26922/zcode-cli/wo5/vendor /Users/sac/wt/v26922/zcode-cli/wo5 (each guarded by ls -A empty)", "cwd": "/Users/sac", "exit": 0, "summary": "4 rmdir exit 0; both paths absent", "output_sha256": "b0a9dc1b2b4fb52831f867305450aae3c8c07e85685aab130f8590d2b274fb47"}
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2/gymact-w0-baseline-e75344d.receipt.json; content durable in /Users/sac/gymact refs/preserve/v26.9.23/cleanup/gymact-w0-baseline-e75344d"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[1..3] at subject 243da10a (coverage file sha256 22f982f2adda744c2d405db0af9ea89410083b24475281dac922ab44a468e1a7 shows 9/9 blob matches and empty worktree-vs-snapshot diff before replay[3] removed the worktree), replay[5] rmdir exits 0 with 0 files under both dirs"
+  }
+}

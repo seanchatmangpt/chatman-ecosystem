@@ -1,0 +1,30 @@
+=== /Users/sac/wt/v26922/autofde-lab/wo05-170 slug=autofde-lab-wo05-170 2026-09-23T14:35:34-0700
+head=a78d774225ff9692d5e54e464b981f26693d5f2b durable_example=refs/heads/afde-26922-05-wd-fa-format
+SUB cpp/sdk/Catch2 head=6e79e682b726f524310d55dec8ddac4e9c52fb5f fetch_rc=0 remote_contains=origin/HEAD -> origin/devel verdict=PASS
+SUB cpp/sdk/PEGTL head=708de300144de0ec8bd58491facfc5f34d0d0559 fetch_rc=0 remote_contains=origin/4.x verdict=PASS
+SUB cpp/sdk/backward-cpp head=3bb9240cb15459768adb3e7d963a20e1523a6294 fetch_rc=0 remote_contains=origin/HEAD -> origin/master verdict=PASS
+SUB cpp/sdk/json head=55f93686c01528224f448c19128836e7df245f72 fetch_rc=0 remote_contains=origin/master verdict=PASS
+SUB cpp/sdk/nng head=a6de76c0b1e08ceba5c3e47dd1107f1a09490b0d fetch_rc=0 remote_contains=origin/HEAD -> origin/main verdict=PASS
+SUB cpp/sdk/nng/extern/nng-wolfssl head=288d545b92720e3fc38df400419a043cfadb840b fetch_rc=0 remote_contains=origin/HEAD -> origin/master verdict=PASS
+SUB cpp/sdk/nngpp head=cc5d2641babab165d8a9943817c46d36c6dc17c2 fetch_rc=0 remote_contains=origin/HEAD -> origin/master verdict=PASS
+SUB cpp/sdk/pybind11 head=d03662f0984f652b60e7ddce53d3868002275197 fetch_rc=0 remote_contains=origin/stable verdict=PASS
+SUB cpp/sdk/spdlog head=79524ddd08a4ec981b7fea76afd08ee05f83755d fetch_rc=0 remote_contains=origin/HEAD -> origin/v1.x verdict=PASS
+preserve_ref=refs/preserve/v26.9.23/cleanup/autofde-lab-wo05-170 commit=9d27211d3cd9e572a649e13a67b0083e27726b2a tree=7af5ddb5b69c7f6b72e37ac4bfea36eef2374a3d head_tree=7af5ddb5b69c7f6b72e37ac4bfea36eef2374a3d
+5457 regular_checked
+coverage_blob_mismatch=[] gitlink_mismatch=[] private_keys=[]
+DRY-RUN: would run git -C /Users/sac/autofde-lab worktree remove --force /Users/sac/wt/v26922/autofde-lab/wo05-170
+=== /Users/sac/wt/v26922/autofde-lab/wo10 slug=autofde-lab-wo10 2026-09-23T14:35:50-0700
+head=ec733ea5197f7ca0c9295fd1b36760a232eb8ef0 durable_example=refs/heads/afde-26922-10-gymact-schema
+SUB cpp/sdk/Catch2 head=6e79e682b726f524310d55dec8ddac4e9c52fb5f fetch_rc=0 remote_contains=origin/HEAD -> origin/devel verdict=PASS
+SUB cpp/sdk/PEGTL head=708de300144de0ec8bd58491facfc5f34d0d0559 fetch_rc=0 remote_contains=origin/4.x verdict=PASS
+SUB cpp/sdk/backward-cpp head=3bb9240cb15459768adb3e7d963a20e1523a6294 fetch_rc=0 remote_contains=origin/HEAD -> origin/master verdict=PASS
+SUB cpp/sdk/json head=55f93686c01528224f448c19128836e7df245f72 fetch_rc=0 remote_contains=origin/master verdict=PASS
+SUB cpp/sdk/nng head=a6de76c0b1e08ceba5c3e47dd1107f1a09490b0d fetch_rc=0 remote_contains=origin/HEAD -> origin/main verdict=PASS
+SUB cpp/sdk/nng/extern/nng-wolfssl head=288d545b92720e3fc38df400419a043cfadb840b fetch_rc=0 remote_contains=origin/HEAD -> origin/master verdict=PASS
+SUB cpp/sdk/nngpp head=cc5d2641babab165d8a9943817c46d36c6dc17c2 fetch_rc=0 remote_contains=origin/HEAD -> origin/master verdict=PASS
+SUB cpp/sdk/pybind11 head=d03662f0984f652b60e7ddce53d3868002275197 fetch_rc=0 remote_contains=origin/stable verdict=PASS
+SUB cpp/sdk/spdlog head=79524ddd08a4ec981b7fea76afd08ee05f83755d fetch_rc=0 remote_contains=origin/HEAD -> origin/v1.x verdict=PASS
+preserve_ref=refs/preserve/v26.9.23/cleanup/autofde-lab-wo10 commit=56419782207a896c865d82418c3af4fb9313f419 tree=9270f2cc085ac9e183cd14953131d8703b08db3b head_tree=9270f2cc085ac9e183cd14953131d8703b08db3b
+5426 regular_checked
+coverage_blob_mismatch=[] gitlink_mismatch=[] private_keys=[]
+DRY-RUN: would run git -C /Users/sac/autofde-lab worktree remove --force /Users/sac/wt/v26922/autofde-lab/wo10

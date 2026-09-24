@@ -1,0 +1,82 @@
+@prefix powl2: <https://truex.io/ontology/powl2#> .
+@prefix base: <urn:chatman:powl:eligendi-seed-1/> .
+
+<urn:chatman:powl:eligendi-seed-1/n0> a powl2:Model .
+<urn:chatman:powl:eligendi-seed-1/n0> powl2:derivedFrom <urn:chatman:snapshot:pddl-to-powl:seed-1> .
+<urn:chatman:powl:eligendi-seed-1/n0> a powl2:PartialOrder .
+<urn:chatman:powl:eligendi-seed-1/n0> powl2:hasChild <urn:chatman:powl:eligendi-seed-1/n0/binding/0> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/0> a powl2:ChildBinding ;
+  powl2:childIndex 0 ;
+  powl2:childModel <urn:chatman:powl:eligendi-seed-1/n0/c0> .
+<urn:chatman:powl:eligendi-seed-1/n0/c0> a powl2:Leaf, powl2:ActivityLeaf ;
+  powl2:activityLabel "step-iure-0(case-quibusdam)" .
+<urn:chatman:powl:eligendi-seed-1/n0> powl2:hasChild <urn:chatman:powl:eligendi-seed-1/n0/binding/1> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/1> a powl2:ChildBinding ;
+  powl2:childIndex 1 ;
+  powl2:childModel <urn:chatman:powl:eligendi-seed-1/n0/c1> .
+<urn:chatman:powl:eligendi-seed-1/n0/c1> a powl2:Leaf, powl2:ActivityLeaf ;
+  powl2:activityLabel "step-repellat-1(case-quibusdam)" .
+<urn:chatman:powl:eligendi-seed-1/n0> powl2:hasChild <urn:chatman:powl:eligendi-seed-1/n0/binding/2> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/2> a powl2:ChildBinding ;
+  powl2:childIndex 2 ;
+  powl2:childModel <urn:chatman:powl:eligendi-seed-1/n0/c2> .
+<urn:chatman:powl:eligendi-seed-1/n0/c2> a powl2:Leaf, powl2:ActivityLeaf ;
+  powl2:activityLabel "step-impedit-2(case-quibusdam)" .
+<urn:chatman:powl:eligendi-seed-1/n0> powl2:hasChild <urn:chatman:powl:eligendi-seed-1/n0/binding/3> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/3> a powl2:ChildBinding ;
+  powl2:childIndex 3 ;
+  powl2:childModel <urn:chatman:powl:eligendi-seed-1/n0/c3> .
+<urn:chatman:powl:eligendi-seed-1/n0/c3> a powl2:Leaf, powl2:ActivityLeaf ;
+  powl2:activityLabel "step-aut-3(case-quibusdam)" .
+<urn:chatman:powl:eligendi-seed-1/n0> powl2:hasChild <urn:chatman:powl:eligendi-seed-1/n0/binding/4> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/4> a powl2:ChildBinding ;
+  powl2:childIndex 4 ;
+  powl2:childModel <urn:chatman:powl:eligendi-seed-1/n0/c4> .
+<urn:chatman:powl:eligendi-seed-1/n0/c4> a powl2:Leaf, powl2:ActivityLeaf ;
+  powl2:activityLabel "step-occaecati-4(case-quibusdam)" .
+<urn:chatman:powl:eligendi-seed-1/n0> powl2:hasChild <urn:chatman:powl:eligendi-seed-1/n0/binding/5> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/5> a powl2:ChildBinding ;
+  powl2:childIndex 5 ;
+  powl2:childModel <urn:chatman:powl:eligendi-seed-1/n0/c5> .
+<urn:chatman:powl:eligendi-seed-1/n0/c5> a powl2:Leaf, powl2:ActivityLeaf ;
+  powl2:activityLabel "step-sequi-5(case-quibusdam)" .
+<urn:chatman:powl:eligendi-seed-1/n0> powl2:hasChild <urn:chatman:powl:eligendi-seed-1/n0/binding/6> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/6> a powl2:ChildBinding ;
+  powl2:childIndex 6 ;
+  powl2:childModel <urn:chatman:powl:eligendi-seed-1/n0/c6> .
+<urn:chatman:powl:eligendi-seed-1/n0/c6> a powl2:Leaf, powl2:ActivityLeaf ;
+  powl2:activityLabel "step-eum-6(case-quibusdam)" .
+<urn:chatman:powl:eligendi-seed-1/n0> powl2:hasChild <urn:chatman:powl:eligendi-seed-1/n0/binding/7> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/7> a powl2:ChildBinding ;
+  powl2:childIndex 7 ;
+  powl2:childModel <urn:chatman:powl:eligendi-seed-1/n0/c7> .
+<urn:chatman:powl:eligendi-seed-1/n0/c7> a powl2:Leaf, powl2:ActivityLeaf ;
+  powl2:activityLabel "step-ut-7(case-quibusdam)" .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/0> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/1> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/0> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/2> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/0> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/3> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/0> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/4> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/0> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/5> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/0> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/6> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/0> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/7> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/1> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/2> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/1> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/3> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/1> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/4> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/1> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/5> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/1> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/6> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/1> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/7> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/2> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/3> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/2> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/4> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/2> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/5> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/2> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/6> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/2> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/7> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/3> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/4> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/3> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/5> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/3> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/6> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/3> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/7> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/4> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/5> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/4> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/6> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/4> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/7> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/5> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/6> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/5> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/7> .
+<urn:chatman:powl:eligendi-seed-1/n0/binding/6> powl2:precedes <urn:chatman:powl:eligendi-seed-1/n0/binding/7> .

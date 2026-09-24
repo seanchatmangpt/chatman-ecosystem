@@ -1,0 +1,17 @@
+** (Mix) mix format failed due to --check-formatted.
+The following files are not formatted:
+
+[1m[31m/private/tmp/claude-501/v23-scratch/RELA-xaas/gi-fmt/lib/ggen_igniter/semantic_jira/bootstrap.ex
+[0m
+           |
+ 243  243  |         {:ok, root} <- root(goal, queries),
+ 244  244  |         {:ok, graphs} <- read_graphs(args.graphs, subjects),
+ 245      -|         {:ok, orders} <- orders(goal, graphs, queries, Subjects.ref(subjects, args.goal, "goal")),
+      245 +|         {:ok, orders} <-
+      246 +|           orders(goal, graphs, queries, Subjects.ref(subjects, args.goal, "goal")),
+ 246  247  |         {:ok, receipts, receipt_dirs} <- read_receipts(args.receipts_dirs, subjects),
+ 247  248  |         {:ok, events} <- read_ledger(args.ledger),
+           |
+
+
+

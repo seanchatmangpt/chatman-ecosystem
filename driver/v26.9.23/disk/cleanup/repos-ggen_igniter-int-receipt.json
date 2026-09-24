@@ -1,0 +1,28 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790195726,
+    "execution_started_unix": 1790195734,
+    "execution_completed_unix": 1790195736,
+    "results": [
+      {
+        "path": "/Users/sac/wt/v26922/ggen_igniter/int/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/ggen_igniter/int/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 322998272,
+        "reversibility": "reversible"
+      }
+    ],
+    "available_before": 82103500800,
+    "available_after": 82787622912
+  }
+}

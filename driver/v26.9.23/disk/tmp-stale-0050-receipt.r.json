@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (46 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:7c1a08047e226a0f1dade53983edcca279dd779937dece1b3171cd250557b89c plan_hash:8c99f7e6541dc4874900cfa97352b4f0579500bbea5d19abac16c36a109d860b reason:stale /private/tmp scratch trees (scj-finish mtime 2026-09-19, xaas-w9-sweep-wasm4pm 2026-09-21; no open files); build artifacts only (target/_build/deps), all reversible; disk 19 GiB during B1",
+    "actor": "claude:v23-driver"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 46/46 plan items (11758256128 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: 11636051968 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/tmp-stale-0050-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/tmp-stale-0050-receipt.json --yes",
+        "cwd": "/Users/sac",
+        "exit": 0,
+        "summary": "deleted=46 skipped=0 failed=0 refused=0",
+        "output_sha256": "b88b8efe98e94f9acbf0625fe65f8fdbb6a43fba3422c6d32fd98221e8daadb2"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/tmp-stale-0050-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/tmp-stale-0050-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/tmp-stale-0050-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/tmp-stale-0050-receipt.json (sha256 b88b8efe98e94f9acbf0625fe65f8fdbb6a43fba3422c6d32fd98221e8daadb2)"
+  }
+}

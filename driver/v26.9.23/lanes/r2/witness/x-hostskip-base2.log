@@ -1,0 +1,59 @@
+# subject=/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/r2w/xaas head=c68c74dcf4e405e4382d34d51288763afc5939b0 logs=/Users/sac/.cache/tmp/r2-x-hostskip.O6eTLO
+Elixir 1.20.2 (compiled with Erlang/OTP 28)
+    warning: Application.get_env/2 is discouraged in the module body, use Application.compile_env/3 instead
+    │
+ 12 │   if is_nil(Application.get_env(:ash, :default_string_length_count)) do
+    │                         ~
+    │
+    └─ /private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/r2w/xaas/deps/ex4pm/mix.exs:12:25: Ex4pm.MixProject (module)
+
+    warning: Application.get_env/2 is discouraged in the module body, use Application.compile_env/3 instead
+    │
+ 12 │   if is_nil(Application.get_env(:ash, :default_string_length_count)) do
+    │                         ~
+    │
+    └─ /private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/r2w/xaas/deps/ex4pm/mix.exs:12:25: Ex4pm.MixProject (module)
+
+Compiling 521 files (.ex)
+Generated xaas app
+  1) test produce/6 with the exit_status format REAL mix format court over a real tmp repo: formatted -> pass, unformatted -> fail (Xaas.Ultracode.CourtReceiptTest)
+     test/xaas/ultracode/court_receipt_test.exs:306
+     Assertion with == failed
+     code:  assert green["acceptance_results"] == %{@format_iri => true}
+     left:  %{
+              "https://ggen-igniter.dev/ontology/semantic-jira#fri-format-acceptance" => false
+            }
+     right: %{
+              "https://ggen-igniter.dev/ontology/semantic-jira#fri-format-acceptance" => true
+            }
+     stacktrace:
+       test/xaas/ultracode/court_receipt_test.exs:311: (test)
+
+.......**.
+
+  2) test successor_law.py admits the committed successor and refuses a smuggled WorkOrder (real python3) (Xaas.Sjira.SuccessorTest)
+     test/xaas/sjira/successor_test.exs:135
+     Traceback (most recent call last):
+       File "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/r2w/xaas/docs/sjira/v26.9.23/courts/successor_law.py", line 53, in <module>
+         from rdflib import Graph, Literal, URIRef
+     ModuleNotFoundError: No module named 'rdflib'
+
+     code: assert code == 0, out
+     stacktrace:
+       test/xaas/sjira/successor_test.exs:138: (test)
+
+........
+
+  3) test court receipt passthrough (suites without an adapter) REAL ggen-igniter-format court: formatted commit passes, unformatted is refuted (Xaas.Ultracode.SemanticReceiptTest)
+     test/xaas/ultracode/semantic_receipt_test.exs:196
+     %{"court_receipt" => %{"acceptance_results" => %{"https://ggen-igniter.dev/ontology/semantic-jira#fri-format-acceptance" => false}, "binding" => %{"argv_sha256" => "26fd0160d2536650804f14178055d5bd377a3ab41bc79a416bcb49ceebb68d5b", "head" => "b2a03f9e8748b7fa75728e7db6d2acffe693a6b8", "step_id" => "format", "suite" => "ggen-igniter-format"}, "court_results" => %{"https://ggen-igniter.dev/ontology/semantic-jira#fri-format-court" => %{"argv_sha256" => "26fd0160d2536650804f14178055d5bd377a3ab41bc79a416bcb49ceebb68d5b", "head" => "b2a03f9e8748b7fa75728e7db6d2acffe693a6b8", "passed" => false, "step_id" => "format", "suite" => "ggen-igniter-format"}}, "falsifier_results" => %{"https://ggen-igniter.dev/ontology/semantic-jira#fri-format-falsifier" => "failed"}}, "status" => "fail", "steps" => [%{"id" => "format", "status" => "fail"}]}
+     code: assert export["outcome"] == "alive", inspect(export["fabric_verifier"])
+     stacktrace:
+       test/xaas/ultracode/semantic_receipt_test.exs:207: (test)
+
+...........
+Finished in 3.7 seconds (0.1s async, 3.6s sync)
+
+Result: 48/51 passed, 2 skipped
+Failed: 3 tests
+# clause 2 (hosted-runner shape) FAILED

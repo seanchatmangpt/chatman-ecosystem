@@ -1,0 +1,183 @@
+{
+ "identity": {
+  "subject": "cleanup-2/decision-2/autofde-lab-wo10",
+  "repo": "/Users/sac/autofde-lab",
+  "subject_sha": "ec733ea5197f7ca0c9295fd1b36760a232eb8ef0",
+  "base_sha": "ec733ea5197f7ca0c9295fd1b36760a232eb8ef0"
+ },
+ "authority": {
+  "ceiling": "DO",
+  "grant": "cleanup-2 Decision 2 (driver): git worktree remove --force allowed for autofde-lab wo05-170 and wo10 under superproject+per-submodule clean/reachable gates",
+  "actor": "claude subagent (workflow cleanup-2), 2026-09-23"
+ },
+ "consequence": {
+  "commits": [
+   "56419782207a896c865d82418c3af4fb9313f419"
+  ],
+  "files_changed": [
+   "/Users/sac/wt/v26922/autofde-lab/wo10 (linked worktree removed)",
+   "/Users/sac/autofde-lab/.git/worktrees/wo10 (admin dir incl. 9 submodule clones under modules/ removed)"
+  ],
+  "remote_effects": [
+   "none pushed; read-only git fetch --no-prune --tags origin in each of the 9 submodule clones (github.com upstreams)"
+  ],
+  "refs_created": [
+   "refs/preserve/v26.9.23/cleanup/autofde-lab-wo10 -> 56419782207a896c865d82418c3af4fb9313f419 (tree 9270f2cc085ac9e183cd14953131d8703b08db3b == HEAD^{tree}, parent ec733ea5197f7ca0c9295fd1b36760a232eb8ef0)"
+  ],
+  "refs_deleted": [],
+  "branch_kept": "refs/heads/afde-26922-10-gymact-schema -> ec733ea5197f7ca0c9295fd1b36760a232eb8ef0",
+  "bytes_released_du_kib": {
+   "worktree": 635676,
+   "admin_dir_with_submodule_clones": 434160
+  },
+  "per_submodule": [
+   {
+    "path": "cpp/sdk/Catch2",
+    "head": "6e79e682b726f524310d55dec8ddac4e9c52fb5f",
+    "porcelain_incl_ignored": "empty",
+    "stash": "none",
+    "local_or_reflog_commits_not_in_remotes_or_tags": 0,
+    "remote_contains": "origin/devel",
+    "verdict": "PASS",
+    "preserve_ref": "not needed (HEAD on remote)"
+   },
+   {
+    "path": "cpp/sdk/PEGTL",
+    "head": "708de300144de0ec8bd58491facfc5f34d0d0559",
+    "porcelain_incl_ignored": "empty",
+    "stash": "none",
+    "local_or_reflog_commits_not_in_remotes_or_tags": 0,
+    "remote_contains": "origin/4.x, origin/main",
+    "verdict": "PASS",
+    "preserve_ref": "not needed (HEAD on remote)"
+   },
+   {
+    "path": "cpp/sdk/backward-cpp",
+    "head": "3bb9240cb15459768adb3e7d963a20e1523a6294",
+    "porcelain_incl_ignored": "empty",
+    "stash": "none",
+    "local_or_reflog_commits_not_in_remotes_or_tags": 0,
+    "remote_contains": "origin/master",
+    "verdict": "PASS",
+    "preserve_ref": "not needed (HEAD on remote)"
+   },
+   {
+    "path": "cpp/sdk/json",
+    "head": "55f93686c01528224f448c19128836e7df245f72",
+    "porcelain_incl_ignored": "empty",
+    "stash": "none",
+    "local_or_reflog_commits_not_in_remotes_or_tags": 0,
+    "remote_contains": "origin/master",
+    "verdict": "PASS",
+    "preserve_ref": "not needed (HEAD on remote)"
+   },
+   {
+    "path": "cpp/sdk/nng",
+    "head": "a6de76c0b1e08ceba5c3e47dd1107f1a09490b0d",
+    "porcelain_incl_ignored": "empty",
+    "stash": "none",
+    "local_or_reflog_commits_not_in_remotes_or_tags": 0,
+    "remote_contains": "origin/main",
+    "verdict": "PASS",
+    "preserve_ref": "not needed (HEAD on remote)"
+   },
+   {
+    "path": "cpp/sdk/nng/extern/nng-wolfssl",
+    "head": "288d545b92720e3fc38df400419a043cfadb840b",
+    "porcelain_incl_ignored": "empty",
+    "stash": "none",
+    "local_or_reflog_commits_not_in_remotes_or_tags": 0,
+    "remote_contains": "origin/master",
+    "verdict": "PASS",
+    "preserve_ref": "not needed (HEAD on remote)"
+   },
+   {
+    "path": "cpp/sdk/nngpp",
+    "head": "cc5d2641babab165d8a9943817c46d36c6dc17c2",
+    "porcelain_incl_ignored": "empty",
+    "stash": "none",
+    "local_or_reflog_commits_not_in_remotes_or_tags": 0,
+    "remote_contains": "origin/master",
+    "verdict": "PASS",
+    "preserve_ref": "not needed (HEAD on remote)"
+   },
+   {
+    "path": "cpp/sdk/pybind11",
+    "head": "d03662f0984f652b60e7ddce53d3868002275197",
+    "porcelain_incl_ignored": "empty",
+    "stash": "none",
+    "local_or_reflog_commits_not_in_remotes_or_tags": 0,
+    "remote_contains": "origin/stable, origin/v3.0",
+    "verdict": "PASS",
+    "preserve_ref": "not needed (HEAD on remote)"
+   },
+   {
+    "path": "cpp/sdk/spdlog",
+    "head": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+    "porcelain_incl_ignored": "empty",
+    "stash": "none",
+    "local_or_reflog_commits_not_in_remotes_or_tags": 0,
+    "remote_contains": "origin/v1.x",
+    "verdict": "PASS",
+    "preserve_ref": "not needed (HEAD on remote)"
+   }
+  ],
+  "uninitialized_submodules": "53 gitlinks (cpp/tests/data/pddl, vendor/gyms/*) uninitialized: empty dirs verified, no content"
+ },
+ "replay": {
+  "commands": [
+   {
+    "cmd": "zsh decision2_autofde.sh --dry-run",
+    "cwd": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2",
+    "exit": 0,
+    "summary": "all gates PASS, preserve refs created, coverage 0 mismatches",
+    "output_sha256": "81d0a5b691ae5117f77b0f863fe1901d090dadad397837ce6def1163aa0e68f8"
+   },
+   {
+    "cmd": "zsh decision2_autofde.sh",
+    "cwd": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2",
+    "exit": 0,
+    "summary": "gates re-checked immediately before acting; 5426 blobs verified against disk; gitlinks match; 0 private keys added; git -C /Users/sac/autofde-lab worktree remove --force /Users/sac/wt/v26922/autofde-lab/wo10 rc=0",
+    "output_sha256": "2a3daf604c086d83d22faa95e6e26cad799a30651355c04502c9bb333f859a87"
+   },
+   {
+    "cmd": "per-submodule fetch --no-prune --tags origin + branch -r --contains HEAD",
+    "cwd": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2",
+    "exit": 0,
+    "summary": "18/18 submodule clones PASS",
+    "output_sha256": "6237382ce16ce1a8709a873f77eced5f606be9749643e2bf4d57ba77d332b91b"
+   },
+   {
+    "cmd": "reflog/ORIG_HEAD/FETCH_HEAD and submodule local-ref reachability",
+    "cwd": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2",
+    "exit": 0,
+    "summary": "0 unreachable superproject commits; 0 submodule commits outside remotes/tags",
+    "output_sha256": "e1380d882ee6bbccaf6451adaea7aec0a1126dd2ba6df85c50dae1775873f080"
+   },
+   {
+    "cmd": "oclnr snapshot thin --bytes 3GB --receipt decision2-snapshot-thin-receipt.json",
+    "cwd": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2",
+    "exit": 0,
+    "summary": "thinned com.apple.TimeMachine.2026-09-23-133944.local; df avail 72345788 -> 77001360 KiB (volume-wide, shared with concurrent cleanup-2 lanes)",
+    "output_sha256": "3e182c5c839ca47d9db43968f7c65499a72558519cfa57a04caf4fcfa15d85f4"
+   },
+   {
+    "cmd": "git -C /Users/sac/autofde-lab worktree list | grep wo10; git -C /Users/sac/autofde-lab rev-parse refs/preserve/v26.9.23/cleanup/autofde-lab-wo10 refs/heads/afde-26922-10-gymact-schema",
+    "cwd": "/Users/sac/autofde-lab",
+    "exit": 0,
+    "summary": "worktree absent; preserve ref 56419782207a896c865d82418c3af4fb9313f419; branch ec733ea5197f7ca0c9295fd1b36760a232eb8ef0"
+   }
+  ],
+  "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2",
+  "anti_vacuity": [
+   "blob-coverage check vs HEAD~1 tree of wo10 reported mismatch src/autofde_lab/hub/domain/gym_procedure/level4_crown.py",
+   "submodule remote gate on a local-only probe commit in nngpp returned empty (would FAIL)",
+   "first dry-run gitlink gate refused (fired)",
+   "zsh decision2_autofde.sh --dry-run (first pass) exit=1: gitlink gate refused on uninitialized submodules (verifier false positive; fixed to require empty dir for uninitialized gitlinks) (log sha256 480cbd9b6dca98a716aff6aa3e512668380562d9f84adc77cfaf17264ec420cb, decision2-dryrun-1-falsepositive-gitlink.log)"
+  ]
+ },
+ "standing": {
+  "value": "ALIVE",
+  "derived_from": "decision2-execute.log at subject ec733ea5197f7ca0c9295fd1b36760a232eb8ef0: all gates PASS, remove rc=0, preserve ref and branch resolve after removal"
+ }
+}

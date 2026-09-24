@@ -1,0 +1,113 @@
+# G0 Workflow Topology Evidence
+
+- Standing: `PARTIAL_ALIVE`
+- Workflows: **83**
+
+## Trigger fan-out
+
+- `merge_group` — 2 workflows
+- `pull_request` — 55 workflows
+- `push` — 41 workflows
+- `release` — 2 workflows
+- `schedule` — 2 workflows
+- `workflow_call` — 2 workflows
+- `workflow_dispatch` — 60 workflows
+- `workflow_run` — 1 workflows
+
+## Mutable action references
+
+- `Swatinem/rust-cache@v2` — `.github/workflows/architecture-autonomics.yml`
+- `actions/checkout@v4` — `.github/workflows/autofde-execution-profile-contract.yml`, `.github/workflows/autofde-manufacturer-contract.yml`, `.github/workflows/cell4-ggen-ecosystem-ocel.yml`, `.github/workflows/dd-ui-profile.yml`, `.github/workflows/tf-acceptance.yml`, `.github/workflows/validate-dteam-kernel.yml`, `.github/workflows/validate-dteam-x64.yml`
+- `actions/setup-node@v4` — `.github/workflows/dd-ui-profile.yml`
+- `actions/setup-node@v7` — `.github/workflows/nasa-dark-mode.yml`
+- `actions/setup-python@v5` — `.github/workflows/autofde-execution-profile-contract.yml`, `.github/workflows/autofde-manufacturer-contract.yml`
+- `actions/upload-artifact@v4` — `.github/workflows/agent-source-capsule.yml`, `.github/workflows/cell4-ggen-ecosystem-ocel.yml`, `.github/workflows/certification-assist-evidence-control-v26-7-31.yml`, `.github/workflows/certification-assist-v26-7-30.yml`, `.github/workflows/combinatorial-maximalism-pack.yml`, `.github/workflows/ontostar-mustar-powlv2-agents.yml`, `.github/workflows/speedrun-talent-network-gbb.yml`, `.github/workflows/validate-dteam-kernel.yml`, `.github/workflows/validate-dteam-x64.yml`
+- `dtolnay/rust-toolchain@stable` — `.github/workflows/architecture-autonomics.yml`, `.github/workflows/fortune5-crown-normalize.yml`, `.github/workflows/tf-acceptance.yml`
+- `extractions/setup-just@v4` — `.github/workflows/tf-acceptance.yml`
+- `hashicorp/setup-terraform@v3` — `.github/workflows/tf-acceptance.yml`
+
+## Permission ceilings
+
+- `.github/workflows/agent-apply-ci-gall-patch.yml` — workflow:contents:write
+- `.github/workflows/agent-apply-ggen-engine-refactor.yml` — workflow:contents:write
+- `.github/workflows/agent-exact-tree-materialize.yml` — workflow:contents:read
+- `.github/workflows/agent-source-capsule.yml` — workflow:contents:read
+- `.github/workflows/architecture-autonomics.yml` — workflow:contents:read
+- `.github/workflows/autofde-execution-profile-contract.yml` — workflow:contents:read
+- `.github/workflows/autofde-manufacturer-contract.yml` — workflow:contents:read
+- `.github/workflows/automated-rollback.yml` — job:actions:write, job:contents:read, workflow:contents:write, workflow:deployments:write
+- `.github/workflows/automatic-autonomic-v26-7-31.yml` — workflow:contents:read
+- `.github/workflows/book-chicago-tdd.yml` — workflow:contents:read
+- `.github/workflows/book-gap-audit.yml` — workflow:contents:read
+- `.github/workflows/cell4-ggen-ecosystem-ocel.yml` — workflow:contents:read
+- `.github/workflows/certification-assist-evidence-control-v26-7-31.yml` — workflow:contents:read
+- `.github/workflows/certification-assist-v26-7-30.yml` — workflow:contents:read
+- `.github/workflows/ci.yml` — workflow:contents:read
+- `.github/workflows/clap-noun-verb-zero-code.yml` — workflow:contents:read
+- `.github/workflows/combinatorial-maximalism-pack.yml` — workflow:contents:read
+- `.github/workflows/crown-conjecture-lean.yml` — workflow:contents:read
+- `.github/workflows/cyberpunk-tv-platform.yml` — workflow:contents:read
+- `.github/workflows/dd-ui-profile.yml` — workflow:contents:read
+- `.github/workflows/deploy-docs.yml` — workflow:contents:write
+- `.github/workflows/detect-partial-publish.yml` — workflow:contents:read
+- `.github/workflows/docker-build-push.yml` — workflow:contents:read, workflow:packages:write
+- `.github/workflows/docs.yml` — workflow:contents:read
+- `.github/workflows/ecosystem-alive-generated-command-format.yml` — workflow:contents:read
+- `.github/workflows/eod-repo-synthesis.yml` — workflow:contents:read
+- `.github/workflows/erlang-ci.yml` — workflow:contents:read
+- `.github/workflows/erlang-release.yml` — workflow:contents:write
+- `.github/workflows/example-tpot2.yml` — workflow:contents:read
+- `.github/workflows/examples-core-team-constructor.yml` — workflow:contents:read
+- `.github/workflows/examples-repair-constructor.yml` — workflow:contents:read
+- `.github/workflows/federated-capability-owner.yml` — workflow:contents:read
+- `.github/workflows/fortune5-architecture.yml` — workflow:contents:read
+- `.github/workflows/fortune5-bblock-normalize.yml` — workflow:contents:write
+- `.github/workflows/fortune5-bblock.yml` — workflow:contents:read
+- `.github/workflows/fortune5-crown-normalize.yml` — workflow:contents:write
+- `.github/workflows/fortune5-required-capabilities.yml` — workflow:contents:read
+- `.github/workflows/frontmatter-best-practices.yml` — workflow:contents:write
+- `.github/workflows/gbb-certification.yml` — workflow:contents:read
+- `.github/workflows/gbb-kernel.yml` — workflow:contents:write
+- `.github/workflows/generate-release-notes.yml` — job:contents:write, job:pull-requests:write, workflow:implicit-default
+- `.github/workflows/ggen-first-lean4-rust.yml` — workflow:contents:read
+- `.github/workflows/ggen-lsp-runtime-crown.yml` — workflow:contents:read
+- `.github/workflows/ggen-root-dogfood.yml` — workflow:contents:read
+- `.github/workflows/ggen-self-host-observer.yml` — workflow:contents:read
+- `.github/workflows/ggen-self-host.yml` — workflow:contents:read
+- `.github/workflows/ggen-sync-run-selftest.yml` — job:contents:read, workflow:contents:read
+- `.github/workflows/ggen-sync-run.yml` — workflow:contents:read
+- `.github/workflows/homebrew-release.yml` — workflow:contents:read
+- `.github/workflows/live-examples.yml` — workflow:contents:write
+- `.github/workflows/marketplace-deploy.yml` — workflow:contents:read, workflow:id-token:write, workflow:pages:write
+- `.github/workflows/marketplace-docs.yml` — job:contents:read, job:id-token:write, job:pages:write, workflow:implicit-default
+- `.github/workflows/marketplace-test.yml` — workflow:contents:read
+- `.github/workflows/marketplace.yml` — workflow:contents:read, workflow:id-token:write, workflow:pages:write
+- `.github/workflows/materialize-book-gap-report.yml` — workflow:contents:write
+- `.github/workflows/measure-r52-epistemic-consumer.yml` — workflow:contents:read
+- `.github/workflows/mfw-gmrw-offline-toolchain.yml` — workflow:contents:read
+- `.github/workflows/mmdio-semantic-crown-contract.yml` — workflow:contents:read
+- `.github/workflows/nasa-dark-mode.yml` — workflow:contents:read
+- `.github/workflows/non-llm-safe-ea-self-play.yml` — workflow:contents:read
+- `.github/workflows/ontostar-mustar-powlv2-agents.yml` — workflow:contents:read
+- `.github/workflows/pack-gall.yml` — workflow:contents:read
+- `.github/workflows/part-passport.yml` — workflow:contents:read
+- `.github/workflows/pcq-marketplace-alive.yml` — workflow:contents:read
+- `.github/workflows/publish-candidate.yml` — workflow:contents:write
+- `.github/workflows/publish-registry.yml` — workflow:contents:read, workflow:id-token:write, workflow:pages:write
+- `.github/workflows/quality.yml` — workflow:contents:read
+- `.github/workflows/r47-independent-consumer.yml` — workflow:contents:read
+- `.github/workflows/receipt-chain-migration-constructor.yml` — workflow:contents:read
+- `.github/workflows/release-debian.yml` — workflow:contents:write
+- `.github/workflows/release.yml` — workflow:actions:write, workflow:contents:write
+- `.github/workflows/rwr-level5.yml` — workflow:contents:read
+- `.github/workflows/scorecard.yml` — job:id-token:write, job:security-events:write, workflow:read-all
+- `.github/workflows/secrets-sync.yml` — job:contents:read, job:id-token:write, workflow:contents:read
+- `.github/workflows/semantic-release.yml` — workflow:actions:write, workflow:contents:write, workflow:packages:write, workflow:pull-requests:write
+- `.github/workflows/speedrun-talent-network-gbb.yml` — workflow:contents:read
+- `.github/workflows/tai-enterprise-rebuild.yml` — workflow:contents:read
+- `.github/workflows/tcps-generated-validation.yml` — workflow:contents:read
+- `.github/workflows/testing-bblock.yml` — workflow:contents:read
+- `.github/workflows/tf-acceptance.yml` — workflow:contents:read
+- `.github/workflows/validate-dteam-kernel.yml` — workflow:contents:read
+- `.github/workflows/validate-dteam-x64.yml` — workflow:contents:read
+- `.github/workflows/verify-v26-8-1-source-removal.yml` — workflow:contents:read

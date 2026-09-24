@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "created_unix": 1790195272,
+  "roots": [
+    "/Users/sac/wt/v26922/ggen/int/examples/cargo-cicd-verify"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/ggen/int/examples/cargo-cicd-verify/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 20213760,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:cleanup",
+    "approval_reason": "ggen-mp group: ignored cargo target of ggen/int examples/cargo-cicd-verify; 0 files newer than 12h cutoff, 0 tracked, git check-ignore; no open files/cwd/argv; worktree stays ACTIVE; regenerable",
+    "approved_at_unix": 1790195283,
+    "plan_hash": "235fc824207b096e88317088d3f1e2cef1a35fc975a711554d906e44d1a58203",
+    "hmac_signature": "098124e6c31620a4d7a8b0729023c0fab893a3a69ac34b5a614982ab8e0ff51a"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "created_unix": 1790146006,
+  "roots": [
+    "/Users/sac/wt/v26922/fri/FRI-T5"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/fri/FRI-T5/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/fri/FRI-T5/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 763191296,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:v23-driver",
+    "approval_reason": "merged lane worktree FRI-T5 (HEAD ancestor of friday/gc-fri-0800); _build+deps regenerable; disk 20GiB before wave B1",
+    "approved_at_unix": 1790146006,
+    "plan_hash": "bf18bd01c7b3679749b27f95e38d878d0b7a5667d335aa5661ca52a47395b5f0",
+    "hmac_signature": "4e595f54ed644e6f6caeffa4af3e9f1c4c9885c4c3640f212ae35e0e289a65f8"
+  }
+}

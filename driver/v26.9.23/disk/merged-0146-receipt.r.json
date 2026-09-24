@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (9 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:0e55e5be201434ac31d6eb12d38156f1d132bd239c62d3ae70be19572c7b5aa6 plan_hash:8115b22008d20a5319ddae51d87a0dff31fe8b16649dd79dce3ab824b73b12a3 reason:merged lane worktrees V23-P/X/F (B0) and FRI-T1 (via V23-T1R, 52798a0): HEAD ancestor of friday/gc-fri-0800, clean; build artifacts only; disk 16 GiB during B1",
+    "actor": "claude:v23-driver"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 9/9 plan items (6969319424 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: -23576576 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/merged-0146-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/merged-0146-receipt.json --yes",
+        "cwd": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+        "exit": 0,
+        "summary": "deleted=9 skipped=0 failed=0 refused=0",
+        "output_sha256": "0c6e60ad529d77cf34b27121ad06d1a7c78dace6cb4cb88fd7d22621763ee4c3"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/merged-0146-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/merged-0146-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/merged-0146-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/merged-0146-receipt.json (sha256 0c6e60ad529d77cf34b27121ad06d1a7c78dace6cb4cb88fd7d22621763ee4c3)"
+  }
+}

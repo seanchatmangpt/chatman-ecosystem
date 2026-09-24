@@ -1,0 +1,21 @@
+# subject=/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/r2w/xaas head=c68c74dcf4e405e4382d34d51288763afc5939b0 logs=/Users/sac/.cache/tmp/r2-x-hostskip.BOBhmH
+Elixir 1.20.2 (compiled with Erlang/OTP 28)
+    warning: Application.get_env/2 is discouraged in the module body, use Application.compile_env/3 instead
+    │
+ 12 │   if is_nil(Application.get_env(:ash, :default_string_length_count)) do
+    │                         ~
+    │
+    └─ /private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/r2w/xaas/deps/ex4pm/mix.exs:12:25: Ex4pm.MixProject (module)
+
+    warning: Application.get_env/2 is discouraged in the module body, use Application.compile_env/3 instead
+    │
+ 12 │   if is_nil(Application.get_env(:ash, :default_string_length_count)) do
+    │                         ~
+    │
+    └─ /private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/r2w/xaas/deps/ex4pm/mix.exs:12:25: Ex4pm.MixProject (module)
+
+Compiling 521 files (.ex)
+Generated xaas app
+host   : Result: 53 passed | failures 0 | skipped 0
+cilike : Result: 48 passed, 5 skipped | failures 0 | skipped 5
+HOSTSKIP_GATE OK

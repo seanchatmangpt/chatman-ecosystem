@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (1 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:8407777a7cff2380a9e2f41bacf2a5b6643e3040b96ec9dab057c1c6600b267f plan_hash:b3d7d022fe319c546a7b0e6b91e133d339820a40add4a48b8e82d01b565cab7f reason:ggen-mp group: ignored cargo target of ggen/int examples/receiptctl; 0 files newer than 12h cutoff, 0 tracked, git check-ignore; no open files/cwd/argv; worktree stays ACTIVE; regenerable",
+    "actor": "claude:cleanup"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 1/1 plan items (847142912 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: -1196032 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-receipt.json --yes",
+        "cwd": "/",
+        "exit": 0,
+        "summary": "deleted=1 skipped=0 failed=0 refused=0",
+        "output_sha256": "59f9f651125bab4ef5c8673021502a1f32277677d3322ffc6dfcc8334cb17d1f"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-receipt.json (sha256 59f9f651125bab4ef5c8673021502a1f32277677d3322ffc6dfcc8334cb17d1f)"
+  }
+}

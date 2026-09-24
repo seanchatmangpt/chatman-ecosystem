@@ -1,0 +1,40 @@
+== 2026-09-23T21:34:21Z gate re-check
+lsof cwd: none
+75000 tee -a /Users/sac/wt/v26922/v26923/disk/cleanup/c2/gymact-w0-baseline-e75344d.log
+LIVE_ARGV
+(attempt 1 aborted at gate: ps match was this session's own 'tee -a' on the log path, pid 75000; pattern narrowed to full worktree path)
+== 2026-09-23T21:34:34Z gate re-check (attempt 2)
+lsof cwd: none
+ps argv: none
+files newer than 2026-09-23 02:34:34: 0
+HEAD=e75344d45d5694e15e73652eb1b4b796de29b0a9
+tree=abb0bd5c6345a77a8e013628572442ca0ac5161a
+commit=243da10a614c4bd95ee0074aa04f2518e008fca8
+ref=243da10a614c4bd95ee0074aa04f2518e008fca8
+== diff HEAD..c name-status
+A	.inspect_logs/2026-09-22T23-40-58-00-00_task_Wo4uaM47q93XeYetQn4kJP.eval
+A	.inspect_logs/2026-09-22T23-41-05-00-00_task_UT5rtd4J2QnUyfbDay5ovS.eval
+A	.inspect_logs/2026-09-22T23-41-05-00-00_task_aVRdhN6DbXctWeopdePTk6.eval
+A	.inspect_logs/2026-09-22T23-41-06-00-00_task_2pcgwGEAutGWrVk2tBSBPc.eval
+A	.inspect_logs/2026-09-22T23-41-07-00-00_task_CpwUe8XRYY4de32pNBooV8.eval
+M	reports/ocel/crown-p1-allowed/episode.ocel.json
+M	reports/ocel/crown-p1-denied/episode.ocel.json
+M	tests/fixtures/real_episode.ocel.json
+A	uv.lock
+ 9 files changed, 5804 insertions(+), 3 deletions(-)
+== 2026-09-23T21:35:05Z remove: gate re-check
+lsof cwd: none
+ps argv: none
+files newer than 2026-09-23 02:35:06: 0
+preserve ref: 243da10a614c4bd95ee0074aa04f2518e008fca8
+du -sk before: 27660
+/dev/disk3s5   971350180 863188264  74345400    93% 18944218 743454000    2%   /System/Volumes/Data
+worktree remove exit=0
+ls: /Users/sac/wt/v26922/gymact/w0-baseline-e75344d: No such file or directory
+still-registered grep exit=1
+admin-dir grep exit=1
+ref after: 243da10a614c4bd95ee0074aa04f2518e008fca8
+commit
+5056615bab980bc0ce127e53eb31c871934012b1
+56ce1c7267cc2a8760e4c9087bc6c77c8e9eff61
+/dev/disk3s5   971350180 863177332  74356300    93% 18939888 743563000    2%   /System/Volumes/Data

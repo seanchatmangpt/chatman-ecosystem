@@ -1,0 +1,10 @@
+# subject=/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/r2w/xaas head=c68c74dcf4e405e4382d34d51288763afc5939b0 fence_ref=6f59676
+builder rust toolchains: []
+pinned_image=False checked_rustup_init=False curl_pipe_sh=False
+image-check.timeout-minutes=20 required>=36
+DOCKERRUST FAIL: no Rust toolchain >= 1.87 in the builder stage
+DOCKERRUST FAIL: builder apt layer lacks clang
+DOCKERRUST FAIL: builder apt layer lacks libclang-dev
+DOCKERRUST FAIL: Rust toolchain is not an integrity-pinned input (digest-pinned image or sha256-checked rustup-init)
+DOCKERRUST FAIL: image-check budget below 1.5x the measured job
+DOCKERRUST_GATE FAIL

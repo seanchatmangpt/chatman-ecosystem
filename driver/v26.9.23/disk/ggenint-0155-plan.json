@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "created_unix": 1790153267,
+  "roots": [
+    "/Users/sac/wt/v26922/ggen/int"
+  ],
+  "deps": false,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/ggen/int/crates/bcinr-pddl/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 4096,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": null
+}

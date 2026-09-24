@@ -1,0 +1,20 @@
+== variant=base (tree: c68c74d files; swarm=candidate patch; scan=assets/package.json+build step+check_origin false; nobuild=candidate minus assets/package.json)
+origin fix: workflow_localhost=False test_check_origin_false=False
+WDCS2_STATIC FAIL: assets/package.json absent: esbuild inherits the root package.json 'type': 'module'
+WDCS2_STATIC FAIL: assets not built before the server starts (assets.build steps [], phx.server steps [10])
+WDCS2_STATIC FAIL: LiveView origin still refused: workflow uses ['http://127.0.0.1:4002'] and config/test.exs keeps check_origin
+WDCS2_STATIC FAIL
+rc=1
+== variant=swarm (tree: c68c74d files; swarm=candidate patch; scan=assets/package.json+build step+check_origin false; nobuild=candidate minus assets/package.json)
+origin fix: workflow_localhost=True test_check_origin_false=False
+WDCS2_STATIC OK
+rc=0
+== variant=scan (tree: c68c74d files; swarm=candidate patch; scan=assets/package.json+build step+check_origin false; nobuild=candidate minus assets/package.json)
+origin fix: workflow_localhost=False test_check_origin_false=True
+WDCS2_STATIC OK
+rc=0
+== variant=nobuild (tree: c68c74d files; swarm=candidate patch; scan=assets/package.json+build step+check_origin false; nobuild=candidate minus assets/package.json)
+origin fix: workflow_localhost=True test_check_origin_false=False
+WDCS2_STATIC FAIL: assets/package.json absent: esbuild inherits the root package.json 'type': 'module'
+WDCS2_STATIC FAIL
+rc=1

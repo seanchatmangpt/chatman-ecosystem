@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "created_unix": 1790195271,
+  "roots": [
+    "/Users/sac/wt/v26922/ggen/int/examples/star-toml-verify"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/ggen/int/examples/star-toml-verify/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 241377280,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:cleanup",
+    "approval_reason": "ggen-mp group: ignored cargo target of ggen/int examples/star-toml-verify; 0 files newer than 12h cutoff, 0 tracked, git check-ignore; no open files/cwd/argv; worktree stays ACTIVE; regenerable",
+    "approved_at_unix": 1790195282,
+    "plan_hash": "9852676d3af36d9f3a4c948361c328fe389bffd3589aceefb1f8cf268239b9d5",
+    "hmac_signature": "387a3563f2e78a85becd00112d8b255814701aeafd4b840ce9aa84f9ba2b731b"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790195289,
+    "execution_started_unix": 1790195322,
+    "execution_completed_unix": 1790195327,
+    "results": [
+      {
+        "path": "/Users/sac/wt/v26922/autofde-lab/wo02/.venv",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 960372736,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/autofde-lab/wo02/build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 496234496,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/autofde-lab/wo02/.pytest_cache",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 77824,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/autofde-lab/wo02/.ruff_cache",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 12288,
+        "reversibility": "reversible"
+      }
+    ],
+    "available_before": 46295044096,
+    "available_after": 46284091392
+  }
+}

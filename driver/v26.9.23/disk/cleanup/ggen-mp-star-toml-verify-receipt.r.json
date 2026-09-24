@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (1 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:387a3563f2e78a85becd00112d8b255814701aeafd4b840ce9aa84f9ba2b731b plan_hash:9852676d3af36d9f3a4c948361c328fe389bffd3589aceefb1f8cf268239b9d5 reason:ggen-mp group: ignored cargo target of ggen/int examples/star-toml-verify; 0 files newer than 12h cutoff, 0 tracked, git check-ignore; no open files/cwd/argv; worktree stays ACTIVE; regenerable",
+    "actor": "claude:cleanup"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 1/1 plan items (241377280 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: -24576 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-receipt.json --yes",
+        "cwd": "/",
+        "exit": 0,
+        "summary": "deleted=1 skipped=0 failed=0 refused=0",
+        "output_sha256": "818504ed9d3d537fc20ac71d825cb7e10e247e7e8da180a0f38828f91a180b87"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-receipt.json (sha256 818504ed9d3d537fc20ac71d825cb7e10e247e7e8da180a0f38828f91a180b87)"
+  }
+}

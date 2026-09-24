@@ -1,0 +1,20 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790195268,
+    "execution_started_unix": 1790195282,
+    "execution_completed_unix": 1790195282,
+    "results": [
+      {
+        "path": "/Users/sac/wt/v26922/ggen/int/examples/receiptctl/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 847142912,
+        "reversibility": "reversible"
+      }
+    ],
+    "available_before": 46259679232,
+    "available_after": 46258483200
+  }
+}

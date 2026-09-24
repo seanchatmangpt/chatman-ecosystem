@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "created_unix": 1790149609,
+  "roots": [
+    "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/v23p-court",
+    "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/verify-FRI-T1-clone",
+    "/private/tmp/mut-XAAS-26922-21-13318"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/v23p-court/clone/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/mut-XAAS-26922-21-13318/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/v23p-court/clone/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 803831808,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/mut-XAAS-26922-21-13318/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 802091008,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/verify-FRI-T1-clone/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372342784,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/verify-FRI-T1-clone/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 175788032,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/verify-FRI-T1-clone/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119119872,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:v23-driver",
+    "approval_reason": "finished scratch clones of this session (B0 V23-P court clone, wave-A FRI-T1 verify clone, W1 XAAS-21 mutation worktree); build artifacts only; disk 17 GiB and falling during B1",
+    "approved_at_unix": 1790149613,
+    "plan_hash": "88f83c8551cbf1c7b9aa817d2dacc5d2c8fe1e9325bf54916d51476d1a7d76f0",
+    "hmac_signature": "ce09a288ad5f7ea5b760a35876ae9ca06bb07c13ad49fd9cc6377ea441cf957f"
+  }
+}

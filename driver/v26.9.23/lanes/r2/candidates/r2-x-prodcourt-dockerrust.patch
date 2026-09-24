@@ -1,0 +1,80 @@
+From 0e2ec6409e7e73e6020ce1481ae82c346b06ba89 Mon Sep 17 00:00:00 2001
+From: Sean Chatman <136349053+seanchatmangpt@users.noreply.github.com>
+Date: Wed, 23 Sep 2026 15:27:00 -0700
+Subject: [PATCH 4/5] ci(r2-preflight): production/image-check timeouts and
+ Rust in the image builder (R2-X-PRODCOURT, R2-X-DOCKERRUST candidates)
+
+Pre-existing: "Exact-head production compile court" is cancelled at its
+12-minute limit on main 2fb1015 (run 35810390156) and on every release
+pre-flight run; the log shows sparql's .erl parser taking 5m22s and
+ggen_igniter's NIF (oxigraph + oxrocksdb-sys, release mode) only starting at
+minute 12. image-check (skipped so far because production never passes)
+would then fail: the Dockerfile builder has no cargo, and ggen_igniter's
+`use Rustler` compiles native/ggen_graph_nif from source -- reproduced in
+the builder image: System.cmd("cargo", ["metadata", ...]) :enoent.
+Builder gains rustup (1.97.0; oxigraph 0.5.11 needs >= 1.87) and
+clang/libclang-dev (oxrocksdb-sys bindgen). publish-image/deploy untouched.
+Successor candidate (generator side, needs a ggen_igniter release): oxigraph
+default-features = false in ggen_graph_nif (only Store::new() is used), which
+drops RocksDB and libclang from every consumer build.
+---
+ .github/workflows/ci_cd.yaml |  8 ++++++--
+ Dockerfile                   | 13 ++++++++++++-
+ 2 files changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/.github/workflows/ci_cd.yaml b/.github/workflows/ci_cd.yaml
+index a48a791..9b08325 100644
+--- a/.github/workflows/ci_cd.yaml
++++ b/.github/workflows/ci_cd.yaml
+@@ -235,7 +235,10 @@ jobs:
+ 
+   production:
+     runs-on: ubuntu-latest
+-    timeout-minutes: 12
++    # Clean-state prod compile: sparql's generated .erl parser (~5 min) and
++    # ggen_igniter's Rustler NIF in release mode (oxigraph + RocksDB C++) do
++    # not fit in 12 minutes on a hosted runner.
++    timeout-minutes: 45
+     name: Exact-head production compile court
+     env:
+       MIX_ENV: prod
+@@ -273,7 +276,8 @@ jobs:
+ 
+   image-check:
+     runs-on: ubuntu-latest
+-    timeout-minutes: 20
++    # Same clean prod dependency graph as `production`, plus assets and release.
++    timeout-minutes: 60
+     needs: [ci, production, asyncapi, workbench]
+     name: Build container without publication
+     permissions:
+diff --git a/Dockerfile b/Dockerfile
+index e223165..747816e 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -67,10 +67,21 @@ ENV ERL_FLAGS="+JPperf true"
+ WORKDIR /app
+ 
+ RUN apt-get update -y \
+-  && apt-get install -y --no-install-recommends build-essential git \
++  && apt-get install -y --no-install-recommends build-essential git curl ca-certificates clang libclang-dev \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/*
+ 
++# ggen_igniter (hex) compiles its Rustler NIF native/ggen_graph_nif from source
++# at `mix deps.compile` (`use Rustler`, no precompiled artifact): the builder
++# needs cargo >= 1.87 (oxigraph/oxrocksdb-sys 0.5.11 rust-version) and libclang
++# (oxrocksdb-sys runs bindgen). Without it: System.cmd("cargo", ...) :enoent.
++ENV RUSTUP_HOME=/usr/local/rustup \
++    CARGO_HOME=/usr/local/cargo \
++    PATH=/usr/local/cargo/bin:$PATH
++RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
++  | sh -s -- -y --no-modify-path --profile minimal --default-toolchain 1.97.0 \
++  && cargo --version
++
+ RUN mix local.hex --force && mix local.rebar --force
+ 
+ ENV MIX_ENV="prod"
+-- 
+2.51.2
+

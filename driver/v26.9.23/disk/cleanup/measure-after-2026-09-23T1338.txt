@@ -1,0 +1,52 @@
+2026-09-23T13:38:25-0700
+/dev/disk3s1s1   926Gi    11Gi    77Gi    13%    453k  808M    0%   /
+/dev/disk3s1s1   971350180  11982156  80818280    13%  453019 808182800    0%   /
+Snapshots for disk /:
+  0B	wo05
+4.0K	agent-calibration.json
+4.0K	fleet.ttl
+4.0K	order-classes.json
+4.0K	transitions.jsonl
+4.0K	w0-xaas-deps-removed.txt
+8.0K	.DS_Store
+8.0K	CLAUDE.md.before-doctrine-move
+8.0K	COORDINATION.md
+8.0K	oclnr-plists-before
+8.0K	settings.json.before-bash-doctrine
+8.0K	settings.json.before-handoff-hook
+8.0K	settings.json.before-hook
+ 12K	zcode-AGENTS.md.before
+ 28K	w0-buildartifact-dirs.txt
+ 56K	vacuity-scan.json
+100K	orders.json
+132K	chatman-ecosystem
+176K	w0-result.json
+184K	ash_atlassian
+240K	ggen-ecosystem-uniqueness.json
+304K	w1-result.json
+892K	survey.json
+2.0M	court
+5.3M	ocel
+ 17M	ggen-ecosystem
+ 32M	v26923
+ 44M	xaas
+ 54M	ferroplan
+ 60M	gitvan
+ 95M	zcode-cli
+114M	ash_surface
+123M	gymact
+261M	ash_a2a
+536M	beam4pm
+901M	ggen_igniter
+2.1G	frozen-duckdb
+2.7G	ggen-marketplace
+2.7G	mp-wo2-ci-debt
+4.5G	autofde-lab
+5.6G	fri
+ 12G	ggen
+ 21G	wos
+ 33G	v23
+90542640	.
+ 86G	.
+2026-09-23T13:40:09-0700
+/dev/disk3s1s1   926Gi    11Gi    77Gi    13%    453k  804M    0%   /

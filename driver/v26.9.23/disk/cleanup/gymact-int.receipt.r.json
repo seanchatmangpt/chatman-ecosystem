@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (3 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:7962d62bbeb51e6d21766a600896ac36116adacebae7c51bcd792000dcad8bbb plan_hash:ed181d69da77ba5dd3c49f760af2c9c34f7b11c3c98726afee54c11f0f3b1ac8 reason:v26922 cleanup group autofde-etc: gymact/int is the release/v26.9.22 int merge target (KEEP worktree); reclaim only ignored .venv/.ruff_cache/.pytest_cache, idle >12h, no live process, no merge lock, nothing under receipts/, none tracked",
+    "actor": "claude:cleanup"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 3/3 plan items (251416576 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: 281759744 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.receipt.json --yes",
+        "cwd": "/Users/sac",
+        "exit": 0,
+        "summary": "deleted=3 skipped=0 failed=0 refused=0",
+        "output_sha256": "4a8ca1a8f11daee32d0452bd1dc10e3b46f798c8b2b53cc06e9e3eea057abb93"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.receipt.json (sha256 4a8ca1a8f11daee32d0452bd1dc10e3b46f798c8b2b53cc06e9e3eea057abb93)"
+  }
+}

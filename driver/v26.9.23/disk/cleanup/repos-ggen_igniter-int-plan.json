@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "created_unix": 1790195726,
+  "roots": [
+    "/Users/sac/wt/v26922/ggen_igniter/int"
+  ],
+  "deps": false,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/ggen_igniter/int/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/ggen_igniter/int/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 322998272,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:cleanup",
+    "approval_reason": "v26922 repos cleanup 2026-09-23: ggen_igniter/int ARTIFACTS_ONLY without --deps (int/deps is symlinked from wo-02 and wo-09), idle since 09-23 00:04, clean, no process, no merge lock; rust target and _build only",
+    "approved_at_unix": 1790195734,
+    "plan_hash": "cf7d1fa511d6ecd58331189d0f1e32ed16daebc213b61aa9f400d55ce574a552",
+    "hmac_signature": "2478c7f071c0bc0cd2693c76443f84383d438de9784ba16c0d35da920bcc19ca"
+  }
+}

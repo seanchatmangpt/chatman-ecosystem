@@ -1,0 +1,7 @@
+route_test: Result: 74 passed
+anchor: EP-A tuple sha256:af87dbf1ae1fc76844c86318906bebc0873809c0dc9e1099d0de5b47d94ab174 request sha256:33524064eb6f519f4c3b2bdd8b17d32b596808278775e09777a79f5a59aa3620 graph sha256:a6d7832e9db9b3c48d0de24db88710932ea26dc2665f866d8f08f1135bef379c via mix semantic_jira.descriptor (empty ledger) at ggen_igniter 3ed6a7afc51f (build_manifest elixir 1.18.4)
+hops: 5 hops, tuple sha256:af87dbf1ae1fc76844c86318906bebc0873809c0dc9e1099d0de5b47d94ab174, request sha256:33524064eb6f519f4c3b2bdd8b17d32b596808278775e09777a79f5a59aa3620, carriers re-derived
+F2 f2-underneath: REFUSED(tuple_digest_mismatch) broken_term=admission_vacuous hop=sa2a
+F2 f2-forged: REFUSED(tuple_digest_mismatch) broken_term=admission_vacuous hop=provider carrier=tuple field=postcondition
+F2 f2-allforged: REFUSED(tuple_digest_mismatch) broken_term=admission_vacuous hop=sjira anchor=admitted_work_graph carrier=tuple field=postcondition
+ALIVE: GC23-4 SA2A conservation witnessed on episode fmt-1 (5 hop digests equal to the admitted-order anchor; F2 incl. the all-hop forgery refused)

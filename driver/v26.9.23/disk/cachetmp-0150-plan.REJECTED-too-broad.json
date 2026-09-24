@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "created_unix": 1790153164,
+  "roots": [
+    "/Users/sac/.cache/tmp"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/.cache",
+      "kind": "dir",
+      "reason": "generic user cache",
+      "bytes": 7959552000,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/Library/Caches/Mozilla.sccache",
+      "kind": "dir",
+      "reason": "sccache compiler cache",
+      "bytes": 3943612416,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/.cargo/registry/src",
+      "kind": "dir",
+      "reason": "cargo registry unpacked sources",
+      "bytes": 1614249984,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/.npm/_cacache",
+      "kind": "dir",
+      "reason": "npm content cache",
+      "bytes": 1224790016,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/Library/Caches/Google",
+      "kind": "dir",
+      "reason": "Chrome browser cache",
+      "bytes": 616853504,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/Library/Caches/ms-playwright",
+      "kind": "dir",
+      "reason": "Playwright downloaded browsers",
+      "bytes": 584081408,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/Library/pnpm/store",
+      "kind": "dir",
+      "reason": "pnpm content-addressable store",
+      "bytes": 449032192,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/.cargo/registry/cache",
+      "kind": "dir",
+      "reason": "cargo registry cache (.crate)",
+      "bytes": 208687104,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/Library/Caches/Homebrew",
+      "kind": "dir",
+      "reason": "Homebrew downloaded-bottle cache",
+      "bytes": 37359616,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": null
+}

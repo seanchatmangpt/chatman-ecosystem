@@ -1,0 +1,28 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790153277,
+    "execution_started_unix": 1790153304,
+    "execution_completed_unix": 1790153406,
+    "results": [
+      {
+        "path": "/Users/sac/wt/v26922/ggen/int/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 67945603072,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/ggen/int/crates/bcinr-pddl/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 4096,
+        "reversibility": "reversible"
+      }
+    ],
+    "available_before": 16717443072,
+    "available_after": 79811235840
+  }
+}

@@ -1,0 +1,86 @@
+From dc9ebd8470186b64420d79b089a956ab3237b8d8 Mon Sep 17 00:00:00 2001
+From: Sean Chatman <136349053+seanchatmangpt@users.noreply.github.com>
+Date: Wed, 23 Sep 2026 15:27:00 -0700
+Subject: [PATCH 3/5] ci(r2-preflight): WD CS2 court builds LiveView assets and
+ uses the endpoint host (R2-X-WDCS2 candidate)
+
+Pre-existing: wd-cs2-exact-head.yml fails at "Run Playwright WD court" on
+main-equivalent b9bf336 (run 35826687758) and on 246460c (run 35923001574):
+the scenario click never re-renders because LiveView never connects.
+Two causes, both reproduced locally at 295e020 with the pinned toolchain:
+1. priv/static/assets is untracked and the workflow never builds it
+   (/assets/app.js 404); and `mix assets.build` itself fails because the
+   root package.json sets "type": "module", so esbuild treats
+   assets/vendor/topbar.js (UMD) as ESM with no default export.
+   assets/package.json restores CommonJS scope under assets/.
+2. The test endpoint's url host is localhost; a 127.0.0.1 origin is refused
+   by Phoenix check_origin.
+Falsifier matrix (local, 295e020): no assets + 127.0.0.1 -> fail (CI
+failure reproduced); assets + 127.0.0.1 -> fail (check_origin); no assets +
+localhost -> fail; assets + localhost -> 1 passed.
+Also caches deps/_build with the ci_cd.yaml key (the cold compile took 22 of
+the job's 35 minutes on main).
+---
+ .github/workflows/wd-cs2-exact-head.yml | 15 +++++++++++++--
+ assets/package.json                     |  3 +++
+ 2 files changed, 16 insertions(+), 2 deletions(-)
+ create mode 100644 assets/package.json
+
+diff --git a/.github/workflows/wd-cs2-exact-head.yml b/.github/workflows/wd-cs2-exact-head.yml
+index aa083b3..f7757a1 100644
+--- a/.github/workflows/wd-cs2-exact-head.yml
++++ b/.github/workflows/wd-cs2-exact-head.yml
+@@ -50,6 +50,13 @@ jobs:
+       - uses: actions/setup-node@v6
+         with:
+           node-version: "22"
++      - name: Cache exact-toolchain deps and build
++        uses: actions/cache@v6
++        with:
++          path: |
++            deps
++            _build
++          key: ${{ runner.os }}-mix-${{ hashFiles('.tool-versions') }}-${{ hashFiles('**/mix.lock') }}
+       - name: Resolve dependencies
+         run: |
+           mix deps.get --check-locked
+@@ -66,6 +73,8 @@ jobs:
+           set -euo pipefail
+           ! grep -rnE 'unittest\.mock|Mock\(|MagicMock|monkeypatch|Mox\b|:meck|meck\.' \
+             lib/xaas/case_studies lib/xaas_web/live/wd_fa test/xaas/case_studies e2e/wd-fa-cs2.spec.cjs
++      - name: Build LiveView assets (priv/static/assets is untracked)
++        run: mix assets.setup && mix assets.build
+       - name: Install Playwright Chromium
+         run: npx playwright install --with-deps chromium
+       - name: Start real Phoenix server
+@@ -74,14 +83,16 @@ jobs:
+         run: |
+           MIX_ENV=test mix phx.server > /tmp/wd-cs2-phx.log 2>&1 &
+           for i in $(seq 1 45); do
+-            if curl -fsS http://127.0.0.1:4002/case-studies/wd-fa >/dev/null; then exit 0; fi
++            if curl -fsS http://localhost:4002/case-studies/wd-fa >/dev/null; then exit 0; fi
+             sleep 1
+           done
+           cat /tmp/wd-cs2-phx.log
+           exit 1
+       - name: Run Playwright WD court
+         env:
+-          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4002
++          # The test endpoint's url host is localhost; a 127.0.0.1 origin is
++          # refused by Phoenix check_origin, so LiveView would never connect.
++          PLAYWRIGHT_BASE_URL: http://localhost:4002
+         run: npx playwright test e2e/wd-fa-cs2.spec.cjs
+       - name: Print standing
+         run: |
+diff --git a/assets/package.json b/assets/package.json
+new file mode 100644
+index 0000000..352055c
+--- /dev/null
++++ b/assets/package.json
+@@ -0,0 +1,3 @@
++{
++  "private": true
++}
+-- 
+2.51.2
+

@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (111 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:0c131ce26b47b2df7ee1e47b33a6beb8507b10a13828c91aeeadf3d496828ea4 plan_hash:e13b0a8d33c17e99e9cf5273eab8c7ad0037bfe6b96e1b96948766c66e50a2d4 reason:build artifacts inside scratch dirs of FINISHED workflows (loop scan, bench DMA); evidence files kept. The 9 unknown items are .agents dirs (8-37 KB) inside scratch copies of xaas/ggen-marketplace trees, reproducible from those repos' git history; no live process has files open under the plan roots (only R1c-R1-X-PIN, not in the plan)",
+    "actor": "claude:v23-driver"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 111/111 plan items (44366950400 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: -3178262528 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/scanscratch-1816-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/scanscratch-1816-receipt.json --yes",
+        "cwd": "/Users/sac",
+        "exit": 0,
+        "summary": "deleted=111 skipped=0 failed=0 refused=0",
+        "output_sha256": "3de8d13fa78bdee90e129afd29879155c3d452222186c0ce9dda29d61f290c8b"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/scanscratch-1816-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/scanscratch-1816-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/scanscratch-1816-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/cleanup/scanscratch-1816-receipt.json (sha256 3de8d13fa78bdee90e129afd29879155c3d452222186c0ce9dda29d61f290c8b)"
+  }
+}

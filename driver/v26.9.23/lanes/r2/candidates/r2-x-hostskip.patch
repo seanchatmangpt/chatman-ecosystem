@@ -1,0 +1,119 @@
+From f7dde474ce819741c27b6a676140b2cf445d84b3 Mon Sep 17 00:00:00 2001
+From: Sean Chatman <136349053+seanchatmangpt@users.noreply.github.com>
+Date: Wed, 23 Sep 2026 15:27:00 -0700
+Subject: [PATCH 1/5] test(r2-preflight): named skips for host-coupled real
+ courts (R2-X-HOSTSKIP candidate)
+
+CI pre-flight (dispatched ci_cd.yaml runs 35922997741 at 246460c and
+35924767606 at 295e020) fails the Exact-head test court at
+court_receipt_test.exs:306: the registered ggen-igniter-format suite runs
+`mix format --check-formatted` on a PATH of ~/.asdf installs
+(elixir 1.18.4-otp-27, erlang 27.2.4) that a setup-beam runner does not have,
+so the court exits 127 and the acceptance is false. semantic_receipt_test's
+REAL ggen-igniter-format court has the same coupling, and successor_test's
+successor_law.py needs python3 rdflib, absent from the runner's python.
+
+Each test now probes its real precondition (a working `mix` on the suite's
+pinned PATH; `import rdflib`) and skips by name when it is absent -- the
+convention of xaas_stop_court_test / v26_9_23_goal_test -- never a double.
+
+Verified: CI-like env (fresh HOME, pinned PATH, no asdf/rdflib): 43 passed,
+3 skipped; host env (asdf pins, homebrew python3 rdflib 7.6.0): 46 passed.
+Subject defect (tests entered with FRI-T3 2393308 and V23-H eecc5fe).
+---
+ test/xaas/sjira/successor_test.exs            |  7 ++++++
+ test/xaas/ultracode/court_receipt_test.exs    | 24 +++++++++++++++++++
+ test/xaas/ultracode/semantic_receipt_test.exs | 24 +++++++++++++++++++
+ 3 files changed, 55 insertions(+)
+
+diff --git a/test/xaas/sjira/successor_test.exs b/test/xaas/sjira/successor_test.exs
+index 2fbcfb8..6d6775a 100644
+--- a/test/xaas/sjira/successor_test.exs
++++ b/test/xaas/sjira/successor_test.exs
+@@ -132,6 +132,13 @@ defmodule Xaas.Sjira.SuccessorTest do
+ 
+   # ------------------------------------------------------------------ successor_law.py
+ 
++  # successor_law.py reads the goal graph with rdflib; a runner whose python3
++  # lacks it (CI: ubuntu-latest system python) skips by name, as
++  # xaas_stop_court_test and v26_9_23_goal_test do.
++  @rdflib (python = System.find_executable("python3")) &&
++            elem(System.cmd(python, ["-c", "import rdflib"], stderr_to_stdout: true), 1) == 0
++
++  @tag skip: if(@rdflib, do: false, else: "successor_law.py needs python3 with rdflib")
+   test "successor_law.py admits the committed successor and refuses a smuggled WorkOrder (real python3)" do
+     law = Path.join(@courts, "successor_law.py")
+     {out, code} = System.cmd("python3", [law, "--xaas", @repo], stderr_to_stdout: true)
+diff --git a/test/xaas/ultracode/court_receipt_test.exs b/test/xaas/ultracode/court_receipt_test.exs
+index a7bb920..bc60b2c 100644
+--- a/test/xaas/ultracode/court_receipt_test.exs
++++ b/test/xaas/ultracode/court_receipt_test.exs
+@@ -302,6 +302,30 @@ defmodule Xaas.Ultracode.CourtReceiptTest do
+                produce_exit(%{exit_step(0, "pass") | "id" => "compile"})
+     end
+ 
++    # The registered ggen-igniter-format suite pins the graph side's own
++    # toolchain by absolute PATH (asdf installs under ~/.asdf). A runner where
++    # that PATH does not yield a working `mix` (CI: setup-beam, no asdf) cannot
++    # execute the real court, so the test is skipped by name -- never faked.
++    @format_toolchain (case System.cmd(
++                              "/usr/bin/env",
++                              [
++                                "-i",
++                                "HOME=" <> System.tmp_dir!(),
++                                "PATH=" <> TargetSuites.devs()["ggen-igniter-format"].env["PATH"],
++                                "mix",
++                                "--version"
++                              ],
++                              stderr_to_stdout: true
++                            ) do
++                         {_, 0} -> true
++                         _ -> false
++                       end)
++    @tag skip:
++           if(@format_toolchain,
++             do: false,
++             else:
++               "ggen-igniter-format toolchain absent: no working mix on the suite's pinned PATH"
++           )
+     @tag timeout: 300_000
+     test "REAL mix format court over a real tmp repo: formatted -> pass, unformatted -> fail" do
+       suite = TargetSuites.devs()["ggen-igniter-format"]
+diff --git a/test/xaas/ultracode/semantic_receipt_test.exs b/test/xaas/ultracode/semantic_receipt_test.exs
+index cea89db..f8e0a9b 100644
+--- a/test/xaas/ultracode/semantic_receipt_test.exs
++++ b/test/xaas/ultracode/semantic_receipt_test.exs
+@@ -192,6 +192,30 @@ defmodule Xaas.Ultracode.SemanticReceiptTest do
+       assert export["receipt_digest"] == SemanticReceipt.receipt_digest(export)
+     end
+ 
++    # The registered ggen-igniter-format suite pins the graph side's own
++    # toolchain by absolute PATH (asdf installs under ~/.asdf). A runner where
++    # that PATH does not yield a working `mix` (CI: setup-beam, no asdf) cannot
++    # execute the real court, so the test is skipped by name -- never faked.
++    @format_toolchain (case System.cmd(
++                              "/usr/bin/env",
++                              [
++                                "-i",
++                                "HOME=" <> System.tmp_dir!(),
++                                "PATH=" <> TargetSuites.devs()["ggen-igniter-format"].env["PATH"],
++                                "mix",
++                                "--version"
++                              ],
++                              stderr_to_stdout: true
++                            ) do
++                         {_, 0} -> true
++                         _ -> false
++                       end)
++    @tag skip:
++           if(@format_toolchain,
++             do: false,
++             else:
++               "ggen-igniter-format toolchain absent: no working mix on the suite's pinned PATH"
++           )
+     @tag timeout: 600_000
+     test "REAL ggen-igniter-format court: formatted commit passes, unformatted is refuted",
+          %{sha: sha} do
+-- 
+2.51.2
+

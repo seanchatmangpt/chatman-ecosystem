@@ -1,0 +1,71 @@
+# Template for the PDDL→POWL projection test snapshot. Placeholders
+# (domain-dolorem, problem-aut, case-quibusdam, state-adipisci-0..state-autem-8,
+# step-iure-0..step-ut-7) are substituted with seeded fake-generated names
+# by tests/chatman_pddl_to_powl_projection.rs before import; the rendered
+# fixture is written under target/chatman/powl/fixtures/ and loaded from disk.
+# The PDDL is a strict linear 8-step chain (STRIPS8-bounded: unary predicates,
+# no ADL/derived-predicates/quantifiers/durative-actions): each action's
+# precondition is exactly the previous step's effect, matching
+# Pddl8Tape::from_plan's total-order-chain encoding.
+@prefix ex: <http://example.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ceng: <urn:chatman:engine#> .
+
+ex:bob ex:knows ex:alice .
+ex:Matter rdfs:subClassOf ex:PlannedMatter .
+ex:case-quibusdam a ex:Matter .
+
+ex:world ceng:pddlDomain """
+(define (domain domain-dolorem)
+  (:requirements :strips)
+  (:predicates
+    (state-adipisci-0 ?x)
+    (state-molestiae-1 ?x)
+    (state-numquam-2 ?x)
+    (state-quia-3 ?x)
+    (state-assumenda-4 ?x)
+    (state-aliquam-5 ?x)
+    (state-sint-6 ?x)
+    (state-sapiente-7 ?x)
+    (state-autem-8 ?x))
+  (:action step-iure-0
+    :parameters (?x)
+    :precondition (and (state-adipisci-0 ?x))
+    :effect (and (state-molestiae-1 ?x) (not (state-adipisci-0 ?x))))
+  (:action step-repellat-1
+    :parameters (?x)
+    :precondition (and (state-molestiae-1 ?x))
+    :effect (and (state-numquam-2 ?x) (not (state-molestiae-1 ?x))))
+  (:action step-impedit-2
+    :parameters (?x)
+    :precondition (and (state-numquam-2 ?x))
+    :effect (and (state-quia-3 ?x) (not (state-numquam-2 ?x))))
+  (:action step-aut-3
+    :parameters (?x)
+    :precondition (and (state-quia-3 ?x))
+    :effect (and (state-assumenda-4 ?x) (not (state-quia-3 ?x))))
+  (:action step-occaecati-4
+    :parameters (?x)
+    :precondition (and (state-assumenda-4 ?x))
+    :effect (and (state-aliquam-5 ?x) (not (state-assumenda-4 ?x))))
+  (:action step-sequi-5
+    :parameters (?x)
+    :precondition (and (state-aliquam-5 ?x))
+    :effect (and (state-sint-6 ?x) (not (state-aliquam-5 ?x))))
+  (:action step-eum-6
+    :parameters (?x)
+    :precondition (and (state-sint-6 ?x))
+    :effect (and (state-sapiente-7 ?x) (not (state-sint-6 ?x))))
+  (:action step-ut-7
+    :parameters (?x)
+    :precondition (and (state-sapiente-7 ?x))
+    :effect (and (state-autem-8 ?x) (not (state-sapiente-7 ?x)))))
+""" .
+ex:world ceng:pddlProblem """
+(define (problem problem-aut)
+  (:domain domain-dolorem)
+  (:objects case-quibusdam)
+  (:init (state-adipisci-0 case-quibusdam))
+  (:goal (state-autem-8 case-quibusdam))
+)
+""" .

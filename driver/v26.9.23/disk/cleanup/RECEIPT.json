@@ -1,0 +1,1003 @@
+{
+ "identity": {
+  "subject": "v26922-cleanup",
+  "repo": "/Users/sac/xaas",
+  "subject_sha": "e999e62b63c680517b9a562cef877d8b09b0cfdd",
+  "base_sha": "e999e62b63c680517b9a562cef877d8b09b0cfdd",
+  "subject_root": "/Users/sac/wt/v26922",
+  "anchor_note": "The cleaned subject /Users/sac/wt/v26922 is not a git repository (git rev-parse: 'not a git repository'), so no single commit identifies it and validate_receipt.py refuses a receipt whose repo is that path (R_missing_identity). identity.repo/subject_sha therefore anchor to the xaas freeze subject refs/heads/friday/gc-fri-0800 = e999e62b (origin/friday/gc-fri-0800 = b4ef5d66, which is behind it). The actual per-repo identities of everything touched are in identity.touched_repos (HEAD of every removed worktree, every preserve commit, and each repo's main-checkout HEAD at receipt time, which the cleanup did not move).",
+  "workflow_run": "wf_301c29f7-ec0 (script /Users/sac/.claude/projects/-Users-sac-wt-v26922/1fecd79a-9323-4b57-a949-d7892a3ea283/workflows/scripts/v26922-cleanup-wf_301c29f7-ec0.js; journal .../subagents/workflows/wf_301c29f7-ec0/journal.jsonl)",
+  "manifest": {
+   "path": "/Users/sac/wt/v26922/v26923/disk/cleanup/cleanup-manifest.json",
+   "sha256": "98fb34c887c8f6c7fb8112cc8d9d76bdaae9f507c714b9de8e0a9db5df11bd2e"
+  },
+  "osx_clnr_identity": "/Users/sac/.oclnr/bin/oclnr built from /Users/sac/osx-clnr d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+  "touched_repos": [
+   {
+    "repo": "/Users/sac/ash_a2a",
+    "worktrees_removed": [
+     {
+      "path": "/Users/sac/wt/v26922/ash_a2a/law-ASH_A2A-26922-14",
+      "head": "52ec184e00dc98a042702c8eca7512c6a63d32ae",
+      "branch_kept": "law/ASH_A2A-26922-14"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/ash_a2a/w0-baseline",
+      "head": "596960660fb4c54777c0b8a24d9d284318898071",
+      "branch_kept": null
+     }
+    ],
+    "preserve_refs_created": [],
+    "artifacts_reclaimed_in": [
+     "/Users/sac/wt/v26922/ash_a2a/int"
+    ],
+    "main_checkout_head_at_receipt": "ffff182add3cac4944b076bf50238f532ca6552d"
+   },
+   {
+    "repo": "/Users/sac/ash_atlassian",
+    "worktrees_removed": [],
+    "preserve_refs_created": [],
+    "artifacts_reclaimed_in": [
+     "/Users/sac/wt/v26922/ash_atlassian/int"
+    ],
+    "main_checkout_head_at_receipt": "0338b9ba169e93d0f5df91f175ef2e62e668fa97"
+   },
+   {
+    "repo": "/Users/sac/autofde-lab",
+    "worktrees_removed": [
+     {
+      "path": "/Users/sac/wt/v26922/autofde-lab/pr160",
+      "head": "a4f417b3abbd661f1f1100000eafefc47ca59f5b",
+      "branch_kept": "pr-160-crown"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/autofde-lab/pr161",
+      "head": "710b58fc44d901479ecea11028464eb2cb9602c3",
+      "branch_kept": "pr-161-specs"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/autofde-lab/pr164",
+      "head": "96bf592f97aa8902e6cee58938ce15f37d63c2c1",
+      "branch_kept": "pr-pr164-base"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/autofde-lab/pr165",
+      "head": "d9ae5b6e7427f52343a5ddd23d78a153f5c1c723",
+      "branch_kept": "pr-pr165-base"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/autofde-lab/pr166",
+      "head": "fba7d807d6bbd8980450a85e8de26b2167ba70ab",
+      "branch_kept": "pr-pr166-base"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/autofde-lab/pr167",
+      "head": "a67f6d651793ff1636e6f746354e7b07c8503fbc",
+      "branch_kept": "pr-pr167-base"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/autofde-lab/pr168",
+      "head": "cac9d15334d808057650e139bcba617b13f03d42",
+      "branch_kept": "pr-pr168-base"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/autofde-lab/wo01",
+      "head": "bc70785ac301985a83830031ab82554a5c611907",
+      "branch_kept": "afde-26922-01-sj006"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/autofde-lab/wo04",
+      "head": "bde04bde6da000c26b98fc58855006c9d2d65a3b",
+      "branch_kept": "afde-26922-04-fabric-gymnasium"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/autofde-lab/wo08",
+      "head": "05c6b00af7e29ea0055d0ccdb5fd2c078b48e8fd",
+      "branch_kept": "afde-26922-08-hub-import"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/autofde-lab/wo09",
+      "head": "5c815b1cb41b8d1200e452061fe08fe0611c8b49",
+      "branch_kept": "afde-26922-09-phase-h"
+     }
+    ],
+    "preserve_refs_created": [],
+    "artifacts_reclaimed_in": [
+     "/Users/sac/wt/v26922/autofde-lab/wo02"
+    ],
+    "main_checkout_head_at_receipt": "ae255ad123dfdcef9b3de82395006834abb20a28"
+   },
+   {
+    "repo": "/Users/sac/dev/zcode-cli",
+    "worktrees_removed": [
+     {
+      "path": "/Users/sac/wt/v26922/zcode-cli/wo9",
+      "head": "014cfaf03a41a699c05a1ddcf9c7bb353304f59b",
+      "branch_kept": "wo9/hygiene"
+     }
+    ],
+    "preserve_refs_created": [],
+    "main_checkout_head_at_receipt": "198f0dc45879bdda238352c0bcae25a60cf649eb"
+   },
+   {
+    "repo": "/Users/sac/ferroplan",
+    "worktrees_removed": [
+     {
+      "path": "/Users/sac/wt/v26922/ferroplan/law-FERROPLAN-26922-09",
+      "head": "f33a216bd4ffacbf4b395ce0eba6ce8ca7279b95",
+      "branch_kept": "law/FERROPLAN-26922-09"
+     }
+    ],
+    "preserve_refs_created": [],
+    "main_checkout_head_at_receipt": "9c872ceef75d03e33a323fbd0bac5ae22ece725c"
+   },
+   {
+    "repo": "/Users/sac/ggen",
+    "worktrees_removed": [
+     {
+      "path": "/Users/sac/wt/v26922/wos/ggen-wo4",
+      "head": "8d6df9af99473f4991926ed33ba22b6d3fdca9d2",
+      "branch_kept": "fix/v26922-gall-semantic-work-descriptor"
+     }
+    ],
+    "preserve_refs_created": [],
+    "artifacts_reclaimed_in": [
+     "/Users/sac/wt/v26922/ggen/int"
+    ],
+    "main_checkout_head_at_receipt": "5cc8808c12e465c89cf4e441a68cb340ca884ccc"
+   },
+   {
+    "repo": "/Users/sac/ggen-marketplace",
+    "worktrees_removed": [
+     {
+      "path": "/Users/sac/wt/v26922/mp-wo10-release",
+      "head": "28497f6e041e784bb83f17f6807e796892cea95e",
+      "branch_kept": "release-prep/v26.9.22"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/mp-wo3-sa2a-court",
+      "head": "8d971bc1cd4fc812a3e0f931974de5201067a743",
+      "branch_kept": "feat/sa2a-bridge-court-26922"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/mp-wo4-life-loop",
+      "head": "c76263f0b4e74462d64d22358ada1cf0aa2e132e",
+      "branch_kept": "feat/v26.9.22-semantic-life-loop-pack"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/mp-wo7-wdfa",
+      "head": "ef2631d4a49876daacc352ca6a2736d55ba0e13a",
+      "branch_kept": "docs/sjira-v26.9.21-wd-fa"
+     }
+    ],
+    "preserve_refs_created": [],
+    "main_checkout_head_at_receipt": "96feba8c95c9ae9cae776ca0afb6a32c81c67727"
+   },
+   {
+    "repo": "/Users/sac/ggen_igniter",
+    "worktrees_removed": [
+     {
+      "path": "/Users/sac/wt/v26922/wo05/fix",
+      "head": "5e23de6ae350980b777caca43383afd2206ba1b1",
+      "branch_kept": "wo/05-pr25-fix"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/fri/FRI-T1",
+      "head": "ecf65fa435c5fd76665804ec705f5104cf21c35f",
+      "branch_kept": "fri/FRI-T1"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-19",
+      "head": "6a4c22792c60c7e484d4a7eb5ea8780391631bf8",
+      "branch_kept": "law/GGEN_IGNITER-26922-19"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-21",
+      "head": "1acbf0e6713d9383a36291613a2e50d99fdfe68e",
+      "branch_kept": "law/GGEN_IGNITER-26922-21"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/ggen_igniter/w0-baseline",
+      "head": "c1aa83910172f177158ce9862474492d79c37178",
+      "branch_kept": null
+     },
+     {
+      "path": "/Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-15-A",
+      "head": "c1aa83910172f177158ce9862474492d79c37178",
+      "branch_kept": "law/GGEN_IGNITER-26922-15-A"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-15-B",
+      "head": "6d8ad59786317d77b4526947fcadd011c5c05303",
+      "branch_kept": "law/GGEN_IGNITER-26922-15-B"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-18-A",
+      "head": "facdf0dbd3cd95f5b8a630dcbcacc0140d6582fc",
+      "branch_kept": "law/GGEN_IGNITER-26922-18-A"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-18-B",
+      "head": "92b17af575a02ebc4e91bd8a28a5808caf2b35f3",
+      "branch_kept": "law/GGEN_IGNITER-26922-18-B"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/ggen_igniter/wo-03",
+      "head": "facdf0dbd3cd95f5b8a630dcbcacc0140d6582fc",
+      "branch_kept": "wo/03-restore-union"
+     }
+    ],
+    "preserve_refs_created": [
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-15-A",
+      "commit": "42fa29dbd0f278d1fba06ccfdc629f94d3ea6c10"
+     },
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-15-B",
+      "commit": "eff2fdcb96f56c8725c1fa20a8085e7fd3bb5db0"
+     },
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-18-A",
+      "commit": "45d491abce513602c77551f54196abf47932638d"
+     },
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-18-B",
+      "commit": "5d7595a9888a3c1493ef89fbe7ee0e83c7eaedda"
+     },
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/ggen_igniter-wo-03",
+      "commit": "da5c83a6d88db01337fc33289972c891d8212129"
+     }
+    ],
+    "artifacts_reclaimed_in": [
+     "/Users/sac/wt/v26922/ggen_igniter/int"
+    ],
+    "main_checkout_head_at_receipt": "d83d6c809dcfaad23d64ea1142c5a8640d2a9337"
+   },
+   {
+    "repo": "/Users/sac/gymact",
+    "worktrees_removed": [
+     {
+      "path": "/Users/sac/wt/v26922/gymact/wo4-gymact4",
+      "head": "20c7d3f6f1b85f63927d5b9b8b68a41b6447d9c6",
+      "branch_kept": "feat/v26922-gymact4-togaf-templates"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/gymact/wo5-gymact5",
+      "head": "bd1445b9291b74ee76f263e7476bfe73bea927e5",
+      "branch_kept": "feat/v26922-gymact5-constants"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/gymact/wo6-gymact6",
+      "head": "ef5f8a9fef150edb3218d136bd7f533723df05a2",
+      "branch_kept": "feat/v26922-gymact6-mcp-closure"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/gymact/wo7-gymact7",
+      "head": "2ef8038a415ff5c469fc3c365b036dd434cc1369",
+      "branch_kept": "feat/v26922-gymact7-named-skips"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/gymact/wo8-hermetic",
+      "head": "04bac87d55b1daa2bd5584730a72901575d4f1ea",
+      "branch_kept": "feat/v26922-gymact6-hermetic"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/gymact/wo9-pr135",
+      "head": "f31d0bf9331e579af6603faf4bc8f5ee91175001",
+      "branch_kept": "feat/sa2a-model-advice-boundary-local"
+     }
+    ],
+    "preserve_refs_created": [],
+    "artifacts_reclaimed_in": [
+     "/Users/sac/wt/v26922/gymact/int"
+    ],
+    "main_checkout_head_at_receipt": "5141f88e5049cf1265cd847a86090c35852200cd"
+   },
+   {
+    "repo": "/Users/sac/xaas",
+    "worktrees_removed": [
+     {
+      "path": "/Users/sac/wt/v26922/v23/V23-F",
+      "head": "97267bbe56349bda42bd5c66d1483268da33ba5e",
+      "branch_kept": "v23/V23-F"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/v23/V23-P",
+      "head": "e2a87664358a53589c1d4648c826d5e8982f4c26",
+      "branch_kept": "v23/V23-P"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/v23/V23-X",
+      "head": "5fef0ac7a2676fc499c7d2863cf5e7b168c722d6",
+      "branch_kept": "v23/V23-X"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/xaas/court",
+      "head": "25f7205db96bb5eeef4cebb00da3714d7f0a35c8",
+      "branch_kept": null
+     },
+     {
+      "path": "/Users/sac/wt/v26922/xaas/sjira-graph",
+      "head": "5f3be7abc941c4f78e1c0e8fb74181adeb44c7c6",
+      "branch_kept": "sjira/v26.9.22-multirepo-graph"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/fri/FRI-T3",
+      "head": "e10b92d9946c52a1d39494573cc6077a3aee8ef4",
+      "branch_kept": "fri/FRI-T3"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/fri/FRI-T4",
+      "head": "b822231ffadb902771842934bd00946abc28e91a",
+      "branch_kept": "fri/FRI-T4"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/fri/FRI-T5",
+      "head": "684d28788f18ccf6ea534dcc31676d1f4b96e35c",
+      "branch_kept": "fri/FRI-T5"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/xaas/law-XAAS-26922-21",
+      "head": "6fd6f6d0226db681bc1ff7dda137e9bcafa12be7",
+      "branch_kept": "law/XAAS-26922-21"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/xaas/law-XAAS-26922-26",
+      "head": "ec06b7c8b956ef5a7cfe21a25b013f274062c853",
+      "branch_kept": "law/XAAS-26922-26"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/xaas/uc-rt-A",
+      "head": "61098b11184bd2d217bd1cb6085a10aff41ba5b4",
+      "branch_kept": "law/XAAS-26922-26-rt-A"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/xaas/uc-rt-B",
+      "head": "cbb3c43527a550df131a84858f9a403f1cf9a12b",
+      "branch_kept": "law/XAAS-26922-26-rt-B"
+     },
+     {
+      "path": "/Users/sac/wt/v26922/xaas/uc-watch",
+      "head": "3244fe724dca8f4f55fb3a73155254fb811c2ae0",
+      "branch_kept": "law/XAAS-26922-26-watch"
+     }
+    ],
+    "preserve_refs_created": [
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/fri-FRI-T3",
+      "commit": "51bf07f12ff3c32da6b44d486ef67b8fa17a19b8"
+     },
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/fri-FRI-T4",
+      "commit": "7221d655ccd8a18ea9bc96d3c54ca4d562f14bb2"
+     },
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/fri-FRI-T5",
+      "commit": "4aa08b9a7a4e0d61540401ca0320296ec33b12e0"
+     },
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-21",
+      "commit": "50acaf451100d7d73d8749841f0198013c36992b"
+     },
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-26",
+      "commit": "1e4bf7521b9f4f24ace716cc2d9dc176e8bb713d"
+     },
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/xaas-uc-rt-A",
+      "commit": "1153403d7bd34a98af8330e7b33c5e64e0efc4d8"
+     },
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/xaas-uc-rt-B",
+      "commit": "cbd91aaa6fb6096c60b64a0252922ff3c437a243"
+     },
+     {
+      "ref": "refs/preserve/v26.9.23/cleanup/xaas-uc-watch",
+      "commit": "6453118b83da17bfedc2469576236d87dc5a94d7"
+     }
+    ],
+    "main_checkout_head_at_receipt": "2fb10156c00a821a6915f239ace517bd860c1479"
+   }
+  ]
+ },
+ "authority": {
+  "ceiling": "DO",
+  "grant": "operator request in session 1fecd79a-9323-4b57-a949-d7892a3ea283 at 2026-09-23T19:58:15Z: \"are you using ~/wt/v26922? Can we clean up some of it?\"; bounded by the workflow RULES (never-touch list, 12h recency, live-process, reachability, preserve-before-remove, oclnr-only artifact reclaim, never delete a branch/ref, never rm -rf/git clean/prune); each oclnr delete additionally carried its own plan approval (approver claude:cleanup, hmac in the per-plan R projection)",
+  "actor": "claude (workflow wf_301c29f7-ec0: 5 inventory agents, 5 skeptic verifiers, 5 executors; this receipt agent)"
+ },
+ "consequence": {
+  "commits": [
+   "51bf07f12ff3c32da6b44d486ef67b8fa17a19b8",
+   "7221d655ccd8a18ea9bc96d3c54ca4d562f14bb2",
+   "4aa08b9a7a4e0d61540401ca0320296ec33b12e0",
+   "42fa29dbd0f278d1fba06ccfdc629f94d3ea6c10",
+   "eff2fdcb96f56c8725c1fa20a8085e7fd3bb5db0",
+   "45d491abce513602c77551f54196abf47932638d",
+   "5d7595a9888a3c1493ef89fbe7ee0e83c7eaedda",
+   "da5c83a6d88db01337fc33289972c891d8212129",
+   "50acaf451100d7d73d8749841f0198013c36992b",
+   "1e4bf7521b9f4f24ace716cc2d9dc176e8bb713d",
+   "1153403d7bd34a98af8330e7b33c5e64e0efc4d8",
+   "cbd91aaa6fb6096c60b64a0252922ff3c437a243",
+   "6453118b83da17bfedc2469576236d87dc5a94d7"
+  ],
+  "files_changed": [
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/RECEIPT.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/anti-vacuity/cleanup-manifest.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/anti-vacuity/verify-output.txt",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/anti-vacuity/verify_cleanup.py",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.plan.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.receipt.affidavit.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.receipt.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.receipt.r.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/cleanup-manifest.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-plan.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-receipt.affidavit.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-receipt.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-receipt.r.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-ggen-cli-verify-plan.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-plan.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-receipt.affidavit.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-receipt.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-receipt.r.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-plan.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-plan.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-receipt.affidavit.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-receipt.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-receipt.r.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-rmcp-verify-plan.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-snapshot-thin-receipt.affidavit.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-snapshot-thin-receipt.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-snapshot-thin-receipt.r.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-plan.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-receipt.affidavit.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-receipt.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-receipt.r.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.plan.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.receipt.affidavit.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.receipt.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.receipt.r.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/gymact-wo4-gymact4.uv.lock",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/gymact-wo5-gymact5.uv.lock",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/gymact-wo6-gymact6.uv.lock",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/gymact-wo9-pr135.uv.lock",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/measure-after-2026-09-23T1338.txt",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/measure-before-2026-09-23T1300.txt",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-plan.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-receipt.affidavit.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-receipt.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-receipt.r.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-plan.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-receipt.affidavit.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-receipt.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-receipt.r.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-cleanup-2026-09-23.jsonl",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ggen_igniter-int-plan.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ggen_igniter-int-receipt.affidavit.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ggen_igniter-int-receipt.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/repos-ggen_igniter-int-receipt.r.json",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/verify-output.txt",
+   "/Users/sac/wt/v26922/v26923/disk/cleanup/verify_cleanup.py"
+  ],
+  "summary_md": "NOT WRITTEN: the harness refused a SUMMARY.md report-file write from this subagent; the operator summary (freed space, counts, preserve refs, what was left and why) is returned in the workflow's receipt output instead",
+  "remote_effects": [
+   "none on any git remote: no push, no remote ref created, moved or deleted",
+   "local git: 49 linked worktrees removed (git worktree remove; 13 of them after a verified preserve snapshot); 13 refs created under refs/preserve/v26.9.23/cleanup/ (xaas 8, ggen_igniter 5); 0 branches or refs deleted; 0 main checkouts touched",
+   "local filesystem (osx-clnr): 9 delete executions, 17 ignored build/cache dirs deleted, 8496324608 bytes (7.91 GiB) claimed, 0 failed; worktrees kept",
+   "local filesystem: 3 APFS local Time Machine snapshots thinned (10:35, 11:38, 12:35)",
+   "local filesystem: 4 ignored uv.lock files copied to the cleanup dir before their worktrees were removed",
+   "destroyed without preservation, by approved decision: 4 per-checkout ggen signing.key files (xaas law-XAAS-26922-26, uc-rt-A, uc-rt-B, uc-watch; ignored by .gitignore *.key; the matching verifying.key and .ggen-v2 receipts are in the preserve commits) and the ignored build/cache content of every removed worktree (_build, deps, target, __pycache__, .ruff_cache, .pytest_cache, .venv, ExUnit tmp)",
+   "space: du /Users/sac/wt/v26922 117G -> 86G; df / avail 49Gi (13:00, pre-workflow) / 43Gi (13:26, pre-execute) -> 77Gi (13:38); repos-group worktree removals measured 5643152 KiB; other groups' worktree removals not measured per item"
+  ]
+ },
+ "replay": {
+  "commands": [
+   {
+    "cmd": "python3 /Users/sac/wt/v26922/v26923/disk/cleanup/verify_cleanup.py",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "idempotent post-state replay of every executed action in cleanup-manifest.json: 363/363 checks pass (49 removals gone+unregistered, branches kept and containing old HEAD or detached HEAD still ref-reachable, 13 preserve refs == recorded commit/tree/parent/shortstat, 0 signing.key in the 4 zcode_plugin snapshots, 4 uv.lock copies hash-match, 9 oclnr actions: worktree kept + every deleted path absent + R projection ADMITTED, snapshot thin receipt, 64 never-touch/rejected/skipped paths still present)",
+    "output_sha256": "b195f6bf34bd109db371eb1707f29390eabcd1666a51007d9eecf5c47be75d88"
+   },
+   {
+    "cmd": "! python3 /Users/sac/wt/v26922/v26923/disk/cleanup/anti-vacuity/verify_cleanup.py",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "anti-vacuity: the same verifier over a mutated manifest (ACTIVE R1-X-COURTS claimed removed, wrong preserve commit, wrong uv.lock hash, removed V23-F claimed present, branch not containing claimed HEAD) is REFUSED: 9 checks fail, verifier exit 1, negated to 0",
+    "output_sha256": "ef5be0349dab5be95d3a0e13e58d9beeba5185de79ebc553770326954ba41706"
+   },
+   {
+    "cmd": "python3 /Users/sac/.claude/dfcm/validate_receipt.py /Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.receipt.r.json /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-receipt.r.json /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-receipt.r.json /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-receipt.r.json /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-snapshot-thin-receipt.r.json /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-receipt.r.json /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.receipt.r.json /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-receipt.r.json /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-receipt.r.json /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ggen_igniter-int-receipt.r.json",
+    "cwd": "/Users/sac/wt/v26922/v26923/disk/cleanup",
+    "exit": 0,
+    "summary": "10/10 osx-clnr R projections ADMITTED (9 delete execute + 1 snapshot thin)"
+   },
+   {
+    "cmd": "cd /Users/sac/wt/v26922 && du -sh * 2>/dev/null | sort -h | tail -25; du -sh .; df -h / | tail -1",
+    "cwd": "/Users/sac/wt/v26922",
+    "exit": 0,
+    "summary": "BEFORE (13:00:28 PDT, main session, pre-workflow): du . = 117G; df / avail 49Gi (20%)",
+    "output_sha256": "836524f3f52a5abfbbdd606ff38b05df4019520381ef130a414934503efb8dc4"
+   },
+   {
+    "cmd": "df -h /; df -k /; tmutil listlocalsnapshots /; cd /Users/sac/wt/v26922 && du -sh * .[!.]* | sort -h; du -sk .; du -sh .; df -h /",
+    "cwd": "/Users/sac/wt/v26922",
+    "exit": 0,
+    "summary": "AFTER (13:38:25..13:40:09 PDT): du . = 86G (90542640 KiB); df / avail 77Gi (80818280 KiB, 13%); 0 local snapshots",
+    "output_sha256": "bfb662a9e0dee8d690693e7b371935ce9ee51d723d7b08afd00f9acb370322f9"
+   },
+   {
+    "cmd": "git -C /Users/sac/xaas worktree remove /Users/sac/wt/v26922/v23/V23-F",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (v23, 2026-09-23T13:27-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 97267bbe5634 kept on refs/heads/v23/V23-F; freed ~15M (df -h / shows 43Gi avail before and after; change below df's display resolution)"
+   },
+   {
+    "cmd": "git -C /Users/sac/xaas worktree remove /Users/sac/wt/v26922/v23/V23-P",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (v23, 2026-09-23T13:27-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD e2a87664358a kept on refs/heads/v23/V23-P; freed ~15M (below df display resolution)"
+   },
+   {
+    "cmd": "git -C /Users/sac/xaas worktree remove /Users/sac/wt/v26922/v23/V23-X",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (v23, 2026-09-23T13:27-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 5fef0ac7a267 kept on refs/heads/v23/V23-X; freed ~15M (below df display resolution)"
+   },
+   {
+    "cmd": "git -C /Users/sac/ggen worktree remove /Users/sac/wt/v26922/wos/ggen-wo4",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (wos, 2026-09-23T13:27-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 8d6df9af9947 kept on refs/heads/fix/v26922-gall-semantic-work-descriptor; freed 640M (du -sh before removal). df -h / Avail read 43Gi both before (13:26:51 PDT) and after. The gain is below the display granularity and may also be pinned by APFS local snapshots, which were not thinned: that is out of scope for this group."
+   },
+   {
+    "cmd": "git -C /Users/sac/ggen-marketplace worktree remove /Users/sac/wt/v26922/mp-wo10-release",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (ggen-mp, 2026-09-23T13:28-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 28497f6e041e kept on refs/heads/release-prep/v26.9.22; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/ggen-marketplace worktree remove /Users/sac/wt/v26922/mp-wo3-sa2a-court",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (ggen-mp, 2026-09-23T13:28-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 8d971bc1cd4f kept on refs/heads/feat/sa2a-bridge-court-26922; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/ggen-marketplace worktree remove /Users/sac/wt/v26922/mp-wo4-life-loop",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (ggen-mp, 2026-09-23T13:28-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD c76263f0b4e7 kept on refs/heads/feat/v26.9.22-semantic-life-loop-pack; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/ggen-marketplace worktree remove /Users/sac/wt/v26922/mp-wo7-wdfa",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (ggen-mp, 2026-09-23T13:28-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD ef2631d4a498 kept on refs/heads/docs/sjira-v26.9.21-wd-fa; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/autofde-lab worktree remove /Users/sac/wt/v26922/autofde-lab/pr160",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD a4f417b3abbd kept on refs/heads/pr-160-crown; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/autofde-lab worktree remove /Users/sac/wt/v26922/autofde-lab/pr161",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 710b58fc44d9 kept on refs/heads/pr-161-specs; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/autofde-lab worktree remove /Users/sac/wt/v26922/autofde-lab/pr164",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 96bf592f97aa kept on refs/heads/pr-pr164-base; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/autofde-lab worktree remove /Users/sac/wt/v26922/autofde-lab/pr165",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD d9ae5b6e7427 kept on refs/heads/pr-pr165-base; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/autofde-lab worktree remove /Users/sac/wt/v26922/autofde-lab/pr166",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD fba7d807d6bb kept on refs/heads/pr-pr166-base; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/autofde-lab worktree remove /Users/sac/wt/v26922/autofde-lab/pr167",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD a67f6d651793 kept on refs/heads/pr-pr167-base; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/autofde-lab worktree remove /Users/sac/wt/v26922/autofde-lab/pr168",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD cac9d15334d8 kept on refs/heads/pr-pr168-base; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/autofde-lab worktree remove /Users/sac/wt/v26922/autofde-lab/wo01",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD bc70785ac301 kept on refs/heads/afde-26922-01-sj006; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/autofde-lab worktree remove /Users/sac/wt/v26922/autofde-lab/wo04",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD bde04bde6da0 kept on refs/heads/afde-26922-04-fabric-gymnasium; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/autofde-lab worktree remove /Users/sac/wt/v26922/autofde-lab/wo08",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 05c6b00af7e2 kept on refs/heads/afde-26922-08-hub-import; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/autofde-lab worktree remove /Users/sac/wt/v26922/autofde-lab/wo09",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 5c815b1cb41b kept on refs/heads/afde-26922-09-phase-h; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/ggen_igniter worktree remove /Users/sac/wt/v26922/wo05/fix",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 5e23de6ae350 kept on refs/heads/wo/05-pr25-fix; freed not measured per item"
+   },
+   {
+    "cmd": "cp -p /Users/sac/wt/v26922/gymact/wo4-gymact4/uv.lock /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-wo4-gymact4.uv.lock",
+    "cwd": "/Users/sac/wt/v26922/gymact/wo4-gymact4",
+    "exit": 0,
+    "summary": "ignored uv.lock copied before removal (sha256 29cab5936409 verified by cmp at execution)"
+   },
+   {
+    "cmd": "git -C /Users/sac/gymact worktree remove /Users/sac/wt/v26922/gymact/wo4-gymact4",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 20c7d3f6f1b8 kept on refs/heads/feat/v26922-gymact4-togaf-templates; freed not measured per item"
+   },
+   {
+    "cmd": "cp -p /Users/sac/wt/v26922/gymact/wo5-gymact5/uv.lock /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-wo5-gymact5.uv.lock",
+    "cwd": "/Users/sac/wt/v26922/gymact/wo5-gymact5",
+    "exit": 0,
+    "summary": "ignored uv.lock copied before removal (sha256 29cab5936409 verified by cmp at execution)"
+   },
+   {
+    "cmd": "git -C /Users/sac/gymact worktree remove /Users/sac/wt/v26922/gymact/wo5-gymact5",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD bd1445b9291b kept on refs/heads/feat/v26922-gymact5-constants; freed not measured per item"
+   },
+   {
+    "cmd": "cp -p /Users/sac/wt/v26922/gymact/wo6-gymact6/uv.lock /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-wo6-gymact6.uv.lock",
+    "cwd": "/Users/sac/wt/v26922/gymact/wo6-gymact6",
+    "exit": 0,
+    "summary": "ignored uv.lock copied before removal (sha256 29cab5936409 verified by cmp at execution)"
+   },
+   {
+    "cmd": "git -C /Users/sac/gymact worktree remove /Users/sac/wt/v26922/gymact/wo6-gymact6",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD ef5f8a9fef15 kept on refs/heads/feat/v26922-gymact6-mcp-closure; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/gymact worktree remove /Users/sac/wt/v26922/gymact/wo7-gymact7",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 2ef8038a415f kept on refs/heads/feat/v26922-gymact7-named-skips; freed not measured per item"
+   },
+   {
+    "cmd": "git -C /Users/sac/gymact worktree remove /Users/sac/wt/v26922/gymact/wo8-hermetic",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 04bac87d55b1 kept on refs/heads/feat/v26922-gymact6-hermetic; freed not measured per item"
+   },
+   {
+    "cmd": "cp -p /Users/sac/wt/v26922/gymact/wo9-pr135/uv.lock /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-wo9-pr135.uv.lock",
+    "cwd": "/Users/sac/wt/v26922/gymact/wo9-pr135",
+    "exit": 0,
+    "summary": "ignored uv.lock copied before removal (sha256 e0f911bd5934 verified by cmp at execution)"
+   },
+   {
+    "cmd": "git -C /Users/sac/gymact worktree remove /Users/sac/wt/v26922/gymact/wo9-pr135",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (autofde-etc, 2026-09-23T13:27..13:31-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD f31d0bf9331e kept on refs/heads/feat/sa2a-model-advice-boundary-local; freed not measured per item"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/ash_a2a/.git worktree remove /Users/sac/wt/v26922/ash_a2a/law-ASH_A2A-26922-14",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 52ec184e00dc kept on refs/heads/law/ASH_A2A-26922-14; freed 1.64 GiB (1724264 KB)"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/ash_a2a/.git worktree remove /Users/sac/wt/v26922/ash_a2a/w0-baseline",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 596960660fb4 (detached, ref-reachable); freed 13.5 MB"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/ferroplan/.git worktree remove /Users/sac/wt/v26922/ferroplan/law-FERROPLAN-26922-09",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD f33a216bd4ff kept on refs/heads/law/FERROPLAN-26922-09; freed 26.9 MB"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/ggen_igniter/.git worktree remove /Users/sac/wt/v26922/fri/FRI-T1",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD ecf65fa435c5 kept on refs/heads/fri/FRI-T1; freed 37.6 MB"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/ggen_igniter/.git worktree remove /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-19",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 6a4c22792c60 kept on refs/heads/law/GGEN_IGNITER-26922-19; freed 392.6 MB"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/ggen_igniter/.git worktree remove /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-21",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 1acbf0e6713d kept on refs/heads/law/GGEN_IGNITER-26922-21; freed 37.1 MB"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/ggen_igniter/.git worktree remove /Users/sac/wt/v26922/ggen_igniter/w0-baseline",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD c1aa83910172 (detached, ref-reachable); freed 545.8 MB"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/xaas/.git worktree remove /Users/sac/wt/v26922/xaas/court",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 25f7205db96b (detached, ref-reachable); freed 41.4 MB"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/xaas/.git worktree remove /Users/sac/wt/v26922/xaas/sjira-graph",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 5f3be7abc941 kept on refs/heads/sjira/v26.9.22-multirepo-graph; freed 15.6 MB"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/dev/zcode-cli/.git worktree remove /Users/sac/wt/v26922/zcode-cli/wo9",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE REMOVABLE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 014cfaf03a41 kept on refs/heads/wo9/hygiene; freed 17.5 MB"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/fri/FRI-T3 read-tree HEAD; add -A; add -f -- priv/ocel; write-tree -> 3c53f297c63e24ddea8f6a43bb6cc03eee91e861; commit-tree -p HEAD -> 51bf07f12ff3c32da6b44d486ef67b8fa17a19b8; update-ref refs/preserve/v26.9.23/cleanup/fri-FRI-T3 51bf07f12ff3c32da6b44d486ef67b8fa17a19b8",
+    "cwd": "/Users/sac/wt/v26922/fri/FRI-T3",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 4 files changed, 31544 insertions(+)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/xaas/.git worktree remove --force /Users/sac/wt/v26922/fri/FRI-T3",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD e10b92d9946c kept on refs/heads/fri/FRI-T3; freed 30.6 MB"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/fri/FRI-T4 read-tree HEAD; add -A; add -f -- priv/ocel; write-tree -> ad0bcb55fbb8de4e3128ed2708c42f340b1e1dd5; commit-tree -p HEAD -> 7221d655ccd8a18ea9bc96d3c54ca4d562f14bb2; update-ref refs/preserve/v26.9.23/cleanup/fri-FRI-T4 7221d655ccd8a18ea9bc96d3c54ca4d562f14bb2",
+    "cwd": "/Users/sac/wt/v26922/fri/FRI-T4",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 3 files changed, 10198 insertions(+)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/xaas/.git worktree remove --force /Users/sac/wt/v26922/fri/FRI-T4",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD b822231ffadb kept on refs/heads/fri/FRI-T4; freed 19.9 MB"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/fri/FRI-T5 read-tree HEAD; add -A; write-tree -> 53c737c7aad602c702c40dfde60110d0617fa7f1; commit-tree -p HEAD -> 4aa08b9a7a4e0d61540401ca0320296ec33b12e0; update-ref refs/preserve/v26.9.23/cleanup/fri-FRI-T5 4aa08b9a7a4e0d61540401ca0320296ec33b12e0",
+    "cwd": "/Users/sac/wt/v26922/fri/FRI-T5",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 2 files changed, 4 insertions(+)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/xaas/.git worktree remove --force /Users/sac/wt/v26922/fri/FRI-T5",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 684d28788f18 kept on refs/heads/fri/FRI-T5; freed 14.9 MB"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-15-A read-tree HEAD; add -A; write-tree -> f243be625b207637ec096c9e293ba302c3b7076a; commit-tree -p HEAD -> 42fa29dbd0f278d1fba06ccfdc629f94d3ea6c10; update-ref refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-15-A 42fa29dbd0f278d1fba06ccfdc629f94d3ea6c10",
+    "cwd": "/Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-15-A",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 12 files changed, 1879 insertions(+)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/ggen_igniter/.git worktree remove --force /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-15-A",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD c1aa83910172 kept on refs/heads/law/GGEN_IGNITER-26922-15-A; freed 37.5 MB"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-15-B read-tree HEAD; add -A; add -f -- erl_crash.dump; write-tree -> 9ae01c8ce681b321aefe5846ecec4911a52d4824; commit-tree -p HEAD -> eff2fdcb96f56c8725c1fa20a8085e7fd3bb5db0; update-ref refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-15-B eff2fdcb96f56c8725c1fa20a8085e7fd3bb5db0",
+    "cwd": "/Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-15-B",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 1 file changed, 514087 insertions(+)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/ggen_igniter/.git worktree remove /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-15-B",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 6d8ad5978631 kept on refs/heads/law/GGEN_IGNITER-26922-15-B; freed 51.6 MB"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-18-A read-tree HEAD; add -A; add -f -- erl_crash.dump; write-tree -> 63fea072932fea55fcded2a475c84fddc174d69e; commit-tree -p HEAD -> 45d491abce513602c77551f54196abf47932638d; update-ref refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-18-A 45d491abce513602c77551f54196abf47932638d",
+    "cwd": "/Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-18-A",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 13 files changed, 580261 insertions(+), 3 deletions(-)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/ggen_igniter/.git worktree remove --force /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-18-A",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD facdf0dbd3cd kept on refs/heads/law/GGEN_IGNITER-26922-18-A; freed 54.5 MB"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-18-B read-tree HEAD; add -A; write-tree -> 0ba462b6328f95b4eee9e095586597cc1d360ce4; commit-tree -p HEAD -> 5d7595a9888a3c1493ef89fbe7ee0e83c7eaedda; update-ref refs/preserve/v26.9.23/cleanup/ggen_igniter-law-GGEN_IGNITER-26922-18-B 5d7595a9888a3c1493ef89fbe7ee0e83c7eaedda",
+    "cwd": "/Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-18-B",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 5 files changed, 474 insertions(+)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/ggen_igniter/.git worktree remove --force /Users/sac/wt/v26922/ggen_igniter/law-GGEN_IGNITER-26922-18-B",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 92b17af575a0 kept on refs/heads/law/GGEN_IGNITER-26922-18-B; freed 37.6 MB"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/ggen_igniter/wo-03 read-tree HEAD; add -A; add -f -- .ggen_igniter tmp; write-tree -> ea8b38ed26326e77e69075e893814226892bd46d; commit-tree -p HEAD -> da5c83a6d88db01337fc33289972c891d8212129; update-ref refs/preserve/v26.9.23/cleanup/ggen_igniter-wo-03 da5c83a6d88db01337fc33289972c891d8212129",
+    "cwd": "/Users/sac/wt/v26922/ggen_igniter/wo-03",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 37 files changed, 5844 insertions(+), 135 deletions(-)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/ggen_igniter/.git worktree remove --force /Users/sac/wt/v26922/ggen_igniter/wo-03",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD facdf0dbd3cd kept on refs/heads/wo/03-restore-union; freed 701.1 MB"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/xaas/law-XAAS-26922-21 read-tree HEAD; add -A; add -f -- priv/ocel; write-tree -> ff3c15ac67fdf1c2dc0a92b15f31bafd79a8025e; commit-tree -p HEAD -> 50acaf451100d7d73d8749841f0198013c36992b; update-ref refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-21 50acaf451100d7d73d8749841f0198013c36992b",
+    "cwd": "/Users/sac/wt/v26922/xaas/law-XAAS-26922-21",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 1 file changed, 4454 insertions(+)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/xaas/.git worktree remove /Users/sac/wt/v26922/xaas/law-XAAS-26922-21",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 6fd6f6d0226d kept on refs/heads/law/XAAS-26922-21; freed 1.66 GiB (1739356 KB)"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/xaas/law-XAAS-26922-26 read-tree HEAD; add -A; add -f -- priv/zcode_plugin/.ggen-v2 priv/zcode_plugin/.ggen/keys/verifying.key; write-tree -> e87f2460131d568c195e83b2d08fae9919a82524; commit-tree -p HEAD -> 1e4bf7521b9f4f24ace716cc2d9dc176e8bb713d; update-ref refs/preserve/v26.9.23/cleanup/xaas-law-XAAS-26922-26 1e4bf7521b9f4f24ace716cc2d9dc176e8bb713d",
+    "cwd": "/Users/sac/wt/v26922/xaas/law-XAAS-26922-26",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 3 files changed, 4 insertions(+)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/xaas/.git worktree remove /Users/sac/wt/v26922/xaas/law-XAAS-26922-26",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD ec06b7c8b956 kept on refs/heads/law/XAAS-26922-26; freed 13.0 MB"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/xaas/uc-rt-A read-tree HEAD; add -A; add -f -- priv/zcode_plugin/.ggen-v2 priv/zcode_plugin/.ggen/keys/verifying.key; write-tree -> 83b5a569fe48878b6523657f0358cb9ea9fb2a83; commit-tree -p HEAD -> 1153403d7bd34a98af8330e7b33c5e64e0efc4d8; update-ref refs/preserve/v26.9.23/cleanup/xaas-uc-rt-A 1153403d7bd34a98af8330e7b33c5e64e0efc4d8",
+    "cwd": "/Users/sac/wt/v26922/xaas/uc-rt-A",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 3 files changed, 21 insertions(+)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/xaas/.git worktree remove /Users/sac/wt/v26922/xaas/uc-rt-A",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 61098b11184b kept on refs/heads/law/XAAS-26922-26-rt-A; freed 13.4 MB"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/xaas/uc-rt-B read-tree HEAD; add -A; add -f -- priv/zcode_plugin/.ggen-v2 priv/zcode_plugin/.ggen/keys/verifying.key; write-tree -> 44bf9223173b7f5bbb0a5683bbd967bb7fbd5f77; commit-tree -p HEAD -> cbd91aaa6fb6096c60b64a0252922ff3c437a243; update-ref refs/preserve/v26.9.23/cleanup/xaas-uc-rt-B cbd91aaa6fb6096c60b64a0252922ff3c437a243",
+    "cwd": "/Users/sac/wt/v26922/xaas/uc-rt-B",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 3 files changed, 8 insertions(+)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/xaas/.git worktree remove /Users/sac/wt/v26922/xaas/uc-rt-B",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD cbb3c43527a5 kept on refs/heads/law/XAAS-26922-26-rt-B; freed 13.2 MB"
+   },
+   {
+    "cmd": "GIT_INDEX_FILE=<tmp> git -C /Users/sac/wt/v26922/xaas/uc-watch read-tree HEAD; add -A; add -f -- priv/zcode_plugin/.ggen-v2 priv/zcode_plugin/.ggen/keys/verifying.key; write-tree -> 2aa262e6a7baf5484a722a966dae853ee342f5aa; commit-tree -p HEAD -> 6453118b83da17bfedc2469576236d87dc5a94d7; update-ref refs/preserve/v26.9.23/cleanup/xaas-uc-watch 6453118b83da17bfedc2469576236d87dc5a94d7",
+    "cwd": "/Users/sac/wt/v26922/xaas/uc-watch",
+    "exit": 0,
+    "summary": "PRESERVE (repos, 2026-09-23T13:30..13:35-0700): coverage proven before removal (worktree vs snapshot diff empty; 3 files changed, 20 insertions(+)); log repos-cleanup-2026-09-23.jsonl"
+   },
+   {
+    "cmd": "git --git-dir=/Users/sac/xaas/.git worktree remove /Users/sac/wt/v26922/xaas/uc-watch",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "summary": "REMOVE PRESERVE_THEN_REMOVE (repos, 2026-09-23T13:30..13:35-0700); gate re-checked immediately before (no cwd/argv process, no change <12h, porcelain as classified); HEAD 3244fe724dca kept on refs/heads/law/XAAS-26922-26-watch; freed 13.3 MB"
+   },
+   {
+    "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-praxis-core-verify-receipt.json --yes",
+    "cwd": "/",
+    "exit": 0,
+    "output_sha256": "5e9ed784ff2f761f19fb7cebf984b1095715cdb59e4937ec0367606a613fb042",
+    "summary": "ARTIFACTS_ONLY (ggen-mp) in kept worktree /Users/sac/wt/v26922/ggen/int: local filesystem: deleted 1/1 plan items (3825422336 bytes claimed), 0 already missing, 0 failed, 0 refused; R projection ggen-mp-praxis-core-verify-receipt.r.json (plan approved by claude:cleanup, affidavit ACCEPTED)"
+   },
+   {
+    "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-receiptctl-receipt.json --yes",
+    "cwd": "/",
+    "exit": 0,
+    "output_sha256": "59f9f651125bab4ef5c8673021502a1f32277677d3322ffc6dfcc8334cb17d1f",
+    "summary": "ARTIFACTS_ONLY (ggen-mp) in kept worktree /Users/sac/wt/v26922/ggen/int: local filesystem: deleted 1/1 plan items (847142912 bytes claimed), 0 already missing, 0 failed, 0 refused; R projection ggen-mp-receiptctl-receipt.r.json (plan approved by claude:cleanup, affidavit ACCEPTED)"
+   },
+   {
+    "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-star-toml-verify-receipt.json --yes",
+    "cwd": "/",
+    "exit": 0,
+    "output_sha256": "818504ed9d3d537fc20ac71d825cb7e10e247e7e8da180a0f38828f91a180b87",
+    "summary": "ARTIFACTS_ONLY (ggen-mp) in kept worktree /Users/sac/wt/v26922/ggen/int: local filesystem: deleted 1/1 plan items (241377280 bytes claimed), 0 already missing, 0 failed, 0 refused; R projection ggen-mp-star-toml-verify-receipt.r.json (plan approved by claude:cleanup, affidavit ACCEPTED)"
+   },
+   {
+    "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-receipt.json --yes",
+    "cwd": "/",
+    "exit": 0,
+    "output_sha256": "09d0936608011372d3115d9b64a4df37ffef34d3263b69772669d26da59eb886",
+    "summary": "ARTIFACTS_ONLY (ggen-mp) in kept worktree /Users/sac/wt/v26922/ggen/int: local filesystem: deleted 1/1 plan items (20213760 bytes claimed), 0 already missing, 0 failed, 0 refused; R projection ggen-mp-cargo-cicd-verify-receipt.r.json (plan approved by claude:cleanup, affidavit ACCEPTED)"
+   },
+   {
+    "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/autofde-lab-wo02.receipt.json --yes",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "output_sha256": "b8a895f4e094db14661f2f940bd9a328f9e11ef9c6a58308b43a8df851108bc3",
+    "summary": "ARTIFACTS_ONLY (autofde-etc) in kept worktree /Users/sac/wt/v26922/autofde-lab/wo02: local filesystem: deleted 4/4 plan items (1456697344 bytes claimed), 0 already missing, 0 failed, 0 refused; R projection autofde-lab-wo02.receipt.r.json (plan approved by claude:cleanup, affidavit ACCEPTED)"
+   },
+   {
+    "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/gymact-int.receipt.json --yes",
+    "cwd": "/Users/sac",
+    "exit": 0,
+    "output_sha256": "4a8ca1a8f11daee32d0452bd1dc10e3b46f798c8b2b53cc06e9e3eea057abb93",
+    "summary": "ARTIFACTS_ONLY (autofde-etc) in kept worktree /Users/sac/wt/v26922/gymact/int: local filesystem: deleted 3/3 plan items (251416576 bytes claimed), 0 already missing, 0 failed, 0 refused; R projection gymact-int.receipt.r.json (plan approved by claude:cleanup, affidavit ACCEPTED)"
+   },
+   {
+    "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_a2a-int-receipt.json --yes",
+    "cwd": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad",
+    "exit": 0,
+    "output_sha256": "8308be877e60675761393f0c806a1f7112d0159bd6d796c93627af84d75eef3a",
+    "summary": "ARTIFACTS_ONLY (repos) in kept worktree /Users/sac/wt/v26922/ash_a2a/int: local filesystem: deleted 2/2 plan items (1038221312 bytes claimed), 0 already missing, 0 failed, 0 refused; R projection repos-ash_a2a-int-receipt.r.json (plan approved by claude:cleanup, affidavit ACCEPTED)"
+   },
+   {
+    "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ash_atlassian-int-receipt.json --yes",
+    "cwd": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad",
+    "exit": 0,
+    "output_sha256": "e0e9bc42860bfb4a156d33116d290716a2d163b4d37aaaa0cda7cbcb682c4f2e",
+    "summary": "ARTIFACTS_ONLY (repos) in kept worktree /Users/sac/wt/v26922/ash_atlassian/int: local filesystem: deleted 2/2 plan items (120500224 bytes claimed), 0 already missing, 0 failed, 0 refused; R projection repos-ash_atlassian-int-receipt.r.json (plan approved by claude:cleanup, affidavit ACCEPTED)"
+   },
+   {
+    "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ggen_igniter-int-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/repos-ggen_igniter-int-receipt.json --yes",
+    "cwd": "/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad",
+    "exit": 0,
+    "output_sha256": "57f0d1b519698cce4f444df3001716e1bf23505806b29c9cb67352160113014a",
+    "summary": "ARTIFACTS_ONLY (repos) in kept worktree /Users/sac/wt/v26922/ggen_igniter/int: local filesystem: deleted 2/2 plan items (695332864 bytes claimed), 0 already missing, 0 failed, 0 refused; R projection repos-ggen_igniter-int-receipt.r.json (plan approved by claude:cleanup, affidavit ACCEPTED)"
+   },
+   {
+    "cmd": "/Users/sac/.oclnr/bin/oclnr snapshot thin --bytes 5GB --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-snapshot-thin-receipt.json",
+    "cwd": "/",
+    "exit": 0,
+    "output_sha256": "8be8d33f28eccc0fd4cfacb507a486f43eec48f6e138053b8a9d13b80ec05f82",
+    "summary": "APFS local snapshots thinned at 13:32 PDT: com.apple.TimeMachine.2026-09-23-103556/113817/123554; snapshots_after = []"
+   }
+  ],
+  "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup (plain directory under the v26923 driver substrate, which is not a git repository; not tmp and not gitignored; the 13 preserve commits are durable in their repos' object stores)"
+ },
+ "standing": {
+  "value": "ALIVE",
+  "derived_from": "replay[0] verify_cleanup.py exit 0 (363/363) run at receipt time against the post-state of all 49 removals, 13 preserve refs, 4 copies, 9 oclnr actions, the snapshot thin and 64 conservation paths; replay[1] shows the verifier refuses a mutated manifest (anti-vacuity); replay[2] admits all 10 oclnr R projections; every executed action in replay[5..] has exit 0 recorded by its executor. Anchor subject xaas e999e62b (see identity.anchor_note). Not covered: freed bytes for the 26 worktree removals outside the repos group were not measured per item."
+ }
+}

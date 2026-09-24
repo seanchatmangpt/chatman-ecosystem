@@ -1,0 +1,900 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790212564,
+    "execution_started_unix": 1790212651,
+    "execution_completed_unix": 1790212724,
+    "results": [
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/fix/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1337126912,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/base/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1336479744,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-XA-rproj-validator-guard/xa/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1336188928,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-release-ci/xa/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1335681024,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-MSA/xaas/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264205824,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/x/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264197632,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2/xa119/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264181248,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-unused-require/xa/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264181248,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-lane-wave-spec/xaas/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264181248,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-stop-court-registry-from-graph/xaas/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264181248,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-CE23-9/xaas/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264181248,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/x/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264181248,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-stale-evidence/xaas/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264181248,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-3-crown-coherence/xaas/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264168960,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/base/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264168960,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/fix/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264168960,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2/xa120/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264168960,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-XA-rproj-validator-guard/xa/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264168960,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-release-ci/xa/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264168960,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/coldA/xaas/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 1264164864,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CHATMAN/gh-clone/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 940363776,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-3-crown-coherence/xaas/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 828084224,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-4-postgres-typed-dependency/xaas/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 805806080,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/x/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 766685184,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-stop-court-registry-from-graph/xaas/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 765276160,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-lane-wave-spec/xaas/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 764846080,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-CE23-9/xaas/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 764698624,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-stale-evidence/xaas/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 764661760,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-MSA/xaas/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 764420096,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2/xa120/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 449155072,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-unused-require/xa/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 448827392,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2/xa119/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 403701760,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/x/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 403677184,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/g2/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372342784,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-MSA/gi/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-GI-fetch-depth-conserve/gfull/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/g/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/g-amb/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-cli-task-template/gi/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-court-projection/gi/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-lane-wave-spec/gi/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-pack-proof-tests/gi-clone/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GENERATORS/probe/gi/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/g/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-release-ci/gis/native/ggen_graph_nif/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 372334592,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/coldA/xaas/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 362622976,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/g2/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 358596608,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-cli-task-template/gi/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 357904384,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-pack-proof-tests/gi-clone/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 357904384,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-lane-wave-spec/gi/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 357892096,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GENERATORS/probe/gi/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 357892096,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-MSA/gi/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 341499904,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-court-projection/gi/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 340987904,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-GI-fetch-depth-conserve/gfull/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 324526080,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-release-ci/gis/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 324509696,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/g/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 176189440,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/g-amb/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 176189440,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/g/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 160473088,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-lane-wave-spec/gi/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119123968,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GENERATORS/probe/gi/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119123968,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/g/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119123968,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-MSA/gi/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119119872,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-GI-fetch-depth-conserve/gfull/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119119872,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/g/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119119872,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/g-amb/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119119872,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-cli-task-template/gi/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119119872,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-court-projection/gi/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119119872,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-pack-proof-tests/gi-clone/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119119872,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/g2/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119119872,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-release-ci/gis/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 119119872,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-wdcs2-assets/esb/node_modules",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 19877888,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__base/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_liba_with_transitive_libb/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_liba_with_transitive_libb__A/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_liba_with_transitive_libb__B/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_liba_with_transitive_libb__BAD/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_liba_with_transitive_libb__C/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_liba_with_transitive_libb__trial/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_libc/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_libc__A/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_libc__B/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_libc__BAD/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_libc__C/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_libc__trial/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_injected_stale_entry/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_injected_stale_entry__A/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_injected_stale_entry__B/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_injected_stale_entry__BAD/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_injected_stale_entry__C/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_injected_stale_entry__trial/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__nn_lock_requirement_mismatch/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__nn_new_dep_not_locked/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 417792,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/p1/fmt probe T+ short/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 135168,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/p1 long/deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /x/fmt probe T+ long/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 135168,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3-skeptic/p1 long/a path with spaces that is deliberately long to exceed two hundred bytes of total length for the probe xx/fmt probe S+ long/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 135168,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/p1/fmt probe T- short/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 118784,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/p1 long/deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /x/fmt probe T- long/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 118784,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/p1/fmt probe T27 short/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 106496,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/p1 long/deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /x/fmt probe T27 long/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 106496,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3-skeptic/p1/fmt probe S27 short/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 106496,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC24-release-pack-upstream/mp-lane/.agents",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 36864,
+        "reversibility": "unknown"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-9-base-repair/ce/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 20480,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-9-base-repair/replay/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 20480,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/base/.agents",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 8192,
+        "reversibility": "unknown"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/fix/.agents",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 8192,
+        "reversibility": "unknown"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2/xa119/.agents",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 8192,
+        "reversibility": "unknown"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2/xa120/.agents",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 8192,
+        "reversibility": "unknown"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-unused-require/xa/.agents",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 8192,
+        "reversibility": "unknown"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-CE23-9/xaas/.agents",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 8192,
+        "reversibility": "unknown"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-XA-rproj-validator-guard/xa/.agents",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 8192,
+        "reversibility": "unknown"
+      },
+      {
+        "path": "/private/tmp/claude-501/v23-scratch/SCAN-release-ci/xa/.agents",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 8192,
+        "reversibility": "unknown"
+      }
+    ],
+    "available_before": 30754222080,
+    "available_after": 27575959552
+  }
+}

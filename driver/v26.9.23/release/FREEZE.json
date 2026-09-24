@@ -1,0 +1,21 @@
+{
+  "xaas": {
+    "sha": "e999e62b63c680517b9a562cef877d8b09b0cfdd",
+    "branch": "friday/gc-fri-0800",
+    "worktree": "/Users/sac/wt/v26922/fri/xaas-int",
+    "tracked_clean": true,
+    "untracked": [],
+    "merge_lock_held": false
+  },
+  "ggen_igniter": {
+    "sha": "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+    "branch": "friday/gc-fri-0800",
+    "worktree": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+    "tracked_clean": true,
+    "untracked": [
+      ".oclnr-cache/"
+    ],
+    "merge_lock_held": false
+  },
+  "recorded_at": "2026-09-23T18:51:23Z"
+}

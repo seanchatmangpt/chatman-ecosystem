@@ -1,0 +1,37 @@
+# captured by the main session at 2026-09-23T19:58:34Z..20:00:28Z (13:00:28 PDT), before workflow wf_301c29f7-ec0 launched
+# source: session transcript 1fecd79a-9323-4b57-a949-d7892a3ea283.jsonl line 5364 (command) / 5368 (output)
+# command: cd /Users/sac/wt/v26922 && du -sh * 2>/dev/null | sort -h | tail -25; du -sh . 2>/dev/null; df -h / | tail -1; for r in xaas ggen_igniter ggen autofde-lab ash_a2a ggen-marketplace zcode-cli; do p=/Users/sac/$r; [ -d $p ] || p=/Users/sac/dev/$r; echo "$r: $(git -C $p worktree list 2>/dev/null | grep -c /wt/v26922) worktrees under v26922"; done
+ 17M	ggen-ecosystem
+ 26M	v26923
+ 60M	gitvan
+ 81M	ferroplan
+112M	zcode-cli
+114M	ash_surface
+115M	ash_atlassian
+536M	beam4pm
+685M	wo05
+1.4G	gymact
+1.8G	xaas
+2.1G	frozen-duckdb
+2.7G	ggen-marketplace
+2.7G	mp-wo10-release
+2.7G	mp-wo2-ci-debt
+2.7G	mp-wo3-sa2a-court
+2.7G	mp-wo4-life-loop
+2.7G	mp-wo7-wdfa
+2.9G	ash_a2a
+3.3G	ggen_igniter
+5.7G	fri
+ 12G	autofde-lab
+ 17G	ggen
+ 21G	wos
+ 32G	v23
+117G	.
+/dev/disk3s1s1   926Gi    11Gi    49Gi    20%    453k  510M    0%   /
+xaas: 31 worktrees under v26922
+ggen_igniter: 21 worktrees under v26922
+ggen: 6 worktrees under v26922
+autofde-lab: 16 worktrees under v26922
+ash_a2a: 3 worktrees under v26922
+ggen-marketplace: 6 worktrees under v26922
+zcode-cli: 2 worktrees under v26922

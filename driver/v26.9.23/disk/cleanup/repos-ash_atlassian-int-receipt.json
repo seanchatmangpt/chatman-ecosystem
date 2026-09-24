@@ -1,0 +1,28 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790195707,
+    "execution_started_unix": 1790195717,
+    "execution_completed_unix": 1790195718,
+    "results": [
+      {
+        "path": "/Users/sac/wt/v26922/ash_atlassian/int/_build",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 100384768,
+        "reversibility": "reversible"
+      },
+      {
+        "path": "/Users/sac/wt/v26922/ash_atlassian/int/deps",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 20115456,
+        "reversibility": "reversible"
+      }
+    ],
+    "available_before": 82088837120,
+    "available_after": 82188427264
+  }
+}

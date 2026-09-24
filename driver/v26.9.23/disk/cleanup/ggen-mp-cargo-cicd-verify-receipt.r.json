@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (1 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:098124e6c31620a4d7a8b0729023c0fab893a3a69ac34b5a614982ab8e0ff51a plan_hash:235fc824207b096e88317088d3f1e2cef1a35fc975a711554d906e44d1a58203 reason:ggen-mp group: ignored cargo target of ggen/int examples/cargo-cicd-verify; 0 files newer than 12h cutoff, 0 tracked, git check-ignore; no open files/cwd/argv; worktree stays ACTIVE; regenerable",
+    "actor": "claude:cleanup"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 1/1 plan items (20213760 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: -45056 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-receipt.json --yes",
+        "cwd": "/",
+        "exit": 0,
+        "summary": "deleted=1 skipped=0 failed=0 refused=0",
+        "output_sha256": "09d0936608011372d3115d9b64a4df37ffef34d3263b69772669d26da59eb886"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-cargo-cicd-verify-receipt.json (sha256 09d0936608011372d3115d9b64a4df37ffef34d3263b69772669d26da59eb886)"
+  }
+}

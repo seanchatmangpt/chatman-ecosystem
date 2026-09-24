@@ -1,0 +1,65 @@
+{
+  "subject": "cleanup-2/mp-wo2-ci-debt",
+  "date": "2026-09-23",
+  "worktree": "/Users/sac/wt/v26922/mp-wo2-ci-debt",
+  "repo": "ggen-marketplace",
+  "repo_common_dir": "/Users/sac/ggen-marketplace/.git",
+  "branch": "fix/ci-debt-26922",
+  "head": "46122984e0ecb8ca92feb89b7e68c16af24b0ec5",
+  "head_reachable_from": ["refs/heads/fix/ci-debt-26922", "refs/heads/main", "refs/heads/release/v26.9.22", "refs/remotes/origin/main", "refs/remotes/origin/release/v26.9.22"],
+  "decision": "Decision 1 (driver): per-checkout ggen signing keys are ephemeral credentials; evidence = receipts + verifying.key",
+  "prior_verdict": "cleanup-1 ggen-mp skeptic rejected removal over the signing.key question (SUMMARY.md); Decision 1 resolves it",
+  "observed_2026-09-23T14:31-07:00": {
+    "tracked_dirty": [],
+    "untracked_not_ignored": [],
+    "ignored": [
+      ".ggen-v2/receipt-log.jsonl",
+      ".ggen-v2/receipt.json",
+      ".ggen/keys/signing.key",
+      ".ggen/keys/verifying.key",
+      "packs/xaas-public-ash-projection-pack/.ggen-v2/receipt-log.jsonl",
+      "packs/xaas-public-ash-projection-pack/.ggen-v2/receipt.json",
+      "packs/xaas-public-ash-projection-pack/.ggen/keys/signing.key",
+      "packs/xaas-public-ash-projection-pack/.ggen/keys/verifying.key",
+      "scripts/__pycache__/check_source_correspondence.cpython-311.pyc",
+      "scripts/__pycache__/marketplace.cpython-311.pyc",
+      "scripts/__pycache__/marketplace_scope.cpython-311.pyc",
+      "scripts/__pycache__/qualify_packs.cpython-311.pyc"
+    ],
+    "newest_content_change": "2026-09-22T17:30:21-07:00 (commit 46122984e; .github/workflows/xaas-public-ash-projection.yml)",
+    "index_mtime_note": "gitdir index mtime 2026-09-23 10:04 = stat refresh by a read-only git status; git diff --cached HEAD empty, HEAD reflog last entry 2026-09-22 17:30",
+    "live_process_cwd": "none (lsof -a -d cwd -Fn)",
+    "live_process_argv": "none (ps -axww)",
+    "open_files": "none (lsof +D)",
+    "lock_files": "none (no uv.lock/mix.lock/Cargo.lock outside HEAD: working tree clean, no untracked)",
+    "du_kib": 2871772
+  },
+  "preserve": {
+    "ref": "refs/preserve/v26.9.23/cleanup/mp-wo2-ci-debt",
+    "parent": "46122984e0ecb8ca92feb89b7e68c16af24b0ec5",
+    "force_added_evidence": [
+      ".ggen-v2/receipt-log.jsonl",
+      ".ggen-v2/receipt.json",
+      ".ggen/keys/verifying.key",
+      "packs/xaas-public-ash-projection-pack/.ggen-v2/receipt-log.jsonl",
+      "packs/xaas-public-ash-projection-pack/.ggen-v2/receipt.json",
+      "packs/xaas-public-ash-projection-pack/.ggen/keys/verifying.key"
+    ],
+    "never_added": [".ggen/keys/signing.key", "packs/xaas-public-ash-projection-pack/.ggen/keys/signing.key"],
+    "signing_key_record": "sha256 of each signing.key file in the preserve commit message only",
+    "evidence_self_verification": "all 7 ggen.sync record signatures (receipt.json + receipt-log.jsonl, both checkouts) verify as Ed25519 over ascii(chain_hash_hex) with the preserved verifying.key; the signing key is not needed to verify"
+  },
+  "remove": {
+    "command": "git --git-dir=/Users/sac/ggen-marketplace/.git worktree remove --force /Users/sac/wt/v26922/mp-wo2-ci-debt",
+    "allowed_losses": ["2 private signing.key files (Decision 1)", "scripts/__pycache__ (4 regenerable .pyc)"],
+    "not_touched": ["branch fix/ci-debt-26922", "/Users/sac/ggen-marketplace main checkout working tree", "any other ref"]
+  },
+  "gates_before_remove": [
+    "re-check: no process cwd/argv, no mtime newer than now-12h, porcelain empty, ignored set equals the observed set",
+    "diff-tree HEAD..preserve == exactly the 6 force_added_evidence paths (all A)",
+    "for each evidence path: blob in preserve commit == git hash-object of the file",
+    "no *.key other than verifying.key and no *signing* path in the preserve tree",
+    "commit message carries the sha256 of both signing.key files",
+    "signatures verify from the preserve-ref blobs alone; mutated chain hash is refused (anti-vacuity)"
+  ]
+}

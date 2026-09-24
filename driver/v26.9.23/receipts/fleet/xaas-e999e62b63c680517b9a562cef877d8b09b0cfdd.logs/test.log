@@ -1,0 +1,1048 @@
+    warning: Application.get_env/2 is discouraged in the module body, use Application.compile_env/3 instead
+    │
+ 12 │   if is_nil(Application.get_env(:ash, :default_string_length_count)) do
+    │                         ~
+    │
+    └─ /Users/sac/wt/v26922/v23/rel-xaas-int/deps/ex4pm/mix.exs:12:25: Ex4pm.MixProject (module)
+
+11:54:03.091 [warning] [ex_money] Automatically starting the exchange rate service is deprecated. Set `auto_start_exchange_rate_service: false` and, if you use the service, add `Money.ExchangeRates.Retriever` to your supervision tree.
+11:54:09.554 [warning] Xaas.Sa2a.Bridge not started: "autofde" executable not found on PATH. sa2a-bridge-pack edges (validate/admit/plan/execute/replay) are unavailable until autofde-lab (https://github.com/seanchatmangpt/autofde-lab) is installed and its "autofde" console script is on PATH.
+11:54:09.825 [warning] node not running in distributed mode. When running outside of a release, you must start net_kernel manually with
+longnames.
+https://www.erlang.org/doc/man/net_kernel.html#start-2
+
+11:54:09.898 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+11:54:09.898 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/v23/rel-xaas-int/_build/test/lib/prom_ex/priv/application.json.eex to Grafana: :unkown
+11:54:09.911 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+11:54:09.911 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/v23/rel-xaas-int/_build/test/lib/prom_ex/priv/beam.json.eex to Grafana: :unkown
+11:54:09.922 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+11:54:09.922 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/v23/rel-xaas-int/_build/test/lib/prom_ex/priv/phoenix.json.eex to Grafana: :unkown
+11:54:09.933 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+11:54:09.933 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/v23/rel-xaas-int/_build/test/lib/prom_ex/priv/ecto.json.eex to Grafana: :unkown
+Running ExUnit with seed: 918352, max_cases: 32
+11:54:09.945 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+11:54:09.945 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/v23/rel-xaas-int/_build/test/lib/prom_ex/priv/phoenix_live_view.json.eex to Grafana: :unkown
+Excluding tags: [:stress, :kind, :requires_cnv_deploy, :external, :external_llm, :subprocess, :property, :castle_kernel]
+
+11:54:09.950 [warning] Received an unhandled response from Grafana because: {:error, %Finch.TransportError{reason: :nxdomain, source: %Mint.TransportError{reason: :nxdomain}}}
+11:54:09.950 [warning] PromEx.DashboardUploader failed to upload /Users/sac/wt/v26922/v23/rel-xaas-int/_build/test/lib/xaas/priv/grafana_dashboards/infrastructure.json to Grafana: :unkown
+............................    warning: unused alias ApprovalSubprocessorRegistryUpdate
+    │
+ 11 │   alias Xaas.Governance.ApprovalSubprocessorRegistryUpdate
+    │   ~
+    │
+    └─ test/xaas_web/controllers/approval_subprocessor_registry_update_controller_test.exs:11:3
+
+.............11:54:10.479 [warning] retry: got exception, will retry in 0ms, 3 attempts left
+..11:54:10.535 [warning] ** (Req.TransportError) connection refused
+11:54:10.535 [warning] retry: got exception, will retry in 0ms, 2 attempts left
+11:54:10.535 [warning] ** (Req.TransportError) connection refused
+11:54:10.536 [warning] retry: got exception, will retry in 0ms, 1 attempt left
+11:54:10.536 [warning] ** (Req.TransportError) connection refused
+.............11:54:10.694 [warning] retry: got exception, will retry in 0ms, 3 attempts left
+11:54:10.694 [warning] ** (Req.TransportError) connection refused
+11:54:10.695 [warning] retry: got exception, will retry in 0ms, 2 attempts left
+11:54:10.695 [warning] ** (Req.TransportError) connection refused
+11:54:10.695 [warning] retry: got exception, will retry in 0ms, 1 attempt left
+11:54:10.695 [warning] ** (Req.TransportError) connection refused
+..........................
+
+  1) test the committed projection is exactly what ggen sync renders from the ontology (Xaas.ZcodePlugin.ProjectionTest)
+     test/xaas/zcode_plugin/projection_test.exs:31
+     ** (MatchError) no match of right hand side value:
+
+         {"2026-09-23T18:54:11.014341Z  INFO ggen.cli{command=sync run version=\"26.9.18\"}:pipeline.load{operation.name=\"pipeline.load\" operation.type=\"pipeline\" pipeline.stage=\"load\"}: ggen_engine::sync: close time.busy=2.66ms time.idle=1.58µs\n2026-09-23T18:54:11.014391Z  INFO ggen.cli{command=sync run version=\"26.9.18\"}: ggen_cli_lib: close time.busy=4.00ms time.idle=3.17µs\nERROR: CLI execution failed: Command execution failed: validation error: [FM-PACK-008] pack `zcode_plugin` (source `path:packs/zcode-plugin-pack`) content hash mismatch: ggen.lock has `blake3:9a96572b470b547e447cc5d5bd028865e3f6f5903ee9603ff9af4af45526d150` but the pack on disk hashes to `blake3:ee49a36734a6771ba45875fb1badbf2c544031a0308039caf54933b4e52277ad`. Remediation: restore the pack, or delete ggen.lock to intentionally re-lock.\n",
+          1}
+
+     code: {_out, 0} = System.cmd("ggen", ["sync", "run"], cd: tmp, stderr_to_stdout: true)
+     stacktrace:
+       test/xaas/zcode_plugin/projection_test.exs:47: (test)
+
+.........................................................................................................    warning: unused alias Checkout
+    │
+ 36 │   alias Xaas.Library.{Book, Checkout, PersonaGrant}
+    │   ~
+    │
+    └─ test/xaas_web/a2a/vision_2030_avatars_test.exs:36:3
+
+........................................................................................................................................................................................................................11:54:13.426 [warning] [ultracode] epoch 40bc0647-68f1-4db8-9f11-569bbf4a6c5f (run 9339b522-5cce-4354-bab6-f8552a1e9b8e, cycle 0) expected_at=2026-09-23 18:53:12.636662Z exceeded epoch_timeout_seconds=1 -> marked :missed (receipt sealed)
+....................11:54:13.576 [warning] [ultracode] undo: refusing to compensate epoch c8687055-c41f-491b-8551-891d1d928c0e -- real row is :completed, not the :running state :construct left it in (a concurrent close/refuse/re-lease moved it); compensating would clobber a settled row
+.....    warning: unused alias ApprovalSsoRoleMappingUpdate
+    │
+ 11 │   alias Xaas.Governance.ApprovalSsoRoleMappingUpdate
+    │   ~
+    │
+    └─ test/xaas_web/controllers/approval_sso_role_mapping_update_controller_test.exs:11:3
+
+.    warning: unused alias ApprovalChangeOfControlNotify
+    │
+ 11 │   alias Xaas.Governance.ApprovalChangeOfControlNotify
+    │   ~
+    │
+    └─ test/xaas_web/controllers/approval_change_of_control_notify_controller_test.exs:11:3
+
+...........11:54:13.711 [error] [Reactor.Audit] Failed with errors: %Reactor.Error.Invalid{errors: [%Reactor.Error.Invalid.RunStepError{error: %Ash.Error.Invalid{bread_crumbs: ["Error returned from: Xaas.Operations.ActuationIntent.admit"],  changeset: "#Changeset<>",  errors: [%Ash.Error.Changes.InvalidAttribute{field: :authority, message: "unsupported causal identification strategy: \"magic\"", private_vars: nil, value: nil, has_value?: true, required?: false, splode: Ash.Error, bread_crumbs: ["Error returned from: Xaas.Operations.ActuationIntent.admit"], vars: [], path: [], stacktrace: #Splode.Stacktrace<>, class: :invalid}]}, step: %Reactor.Step{arguments: [%Reactor.Argument{description: nil, name: :idempotency_key, source: %Reactor.Template.Input{name: :idempotency_key, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :authority, source: %Reactor.Template.Input{name: :authority, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :authorize?, source: %Reactor.Template.Input{name: :authorize?, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :tenant, source: %Reactor.Template.Input{name: :tenant, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :actor, source: %Reactor.Template.Input{name: :actor, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :subject_id, source: %Reactor.Template.Input{name: :subject_id, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :input, source: %Reactor.Template.Input{name: :input, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :action, source: %Reactor.Template.Input{name: :action, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :resource, source: %Reactor.Template.Input{name: :resource, sub_path: []}, transform: nil}], async?: false, context: %{}, description: nil, impl: {Ash.Reactor.AshStep, [run: &Xaas.Actuation.Kernel.admit/2, compensate: nil, undo: nil, impl: nil]}, name: :admit, max_retries: :infinity, ref: :admit, transform: nil, guards: []}, splode: Reactor.Error, bread_crumbs: [], vars: [], path: [], stacktrace: #Splode.Stacktrace<>, class: :invalid}], splode: Reactor.Error, bread_crumbs: [], vars: [], path: [], stacktrace: #Splode.Stacktrace<>, class: :invalid}
+11:54:13.711 [error] [Reactor.Audit] Failed with errors: %Reactor.Error.Invalid{errors: [%Reactor.Error.Invalid.RunStepError{error: %Ash.Error.Invalid{bread_crumbs: ["Error returned from: Xaas.Operations.ActuationIntent.admit"],  changeset: "#Changeset<>",  errors: [%Ash.Error.Changes.InvalidAttribute{field: :authority, message: "causal supporting evidence hash does not match frontier evidence bundle", private_vars: nil, value: nil, has_value?: true, required?: false, splode: Ash.Error, bread_crumbs: ["Error returned from: Xaas.Operations.ActuationIntent.admit"], vars: [], path: [], stacktrace: #Splode.Stacktrace<>, class: :invalid}]}, step: %Reactor.Step{arguments: [%Reactor.Argument{description: nil, name: :idempotency_key, source: %Reactor.Template.Input{name: :idempotency_key, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :authority, source: %Reactor.Template.Input{name: :authority, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :authorize?, source: %Reactor.Template.Input{name: :authorize?, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :tenant, source: %Reactor.Template.Input{name: :tenant, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :actor, source: %Reactor.Template.Input{name: :actor, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :subject_id, source: %Reactor.Template.Input{name: :subject_id, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :input, source: %Reactor.Template.Input{name: :input, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :action, source: %Reactor.Template.Input{name: :action, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :resource, source: %Reactor.Template.Input{name: :resource, sub_path: []}, transform: nil}], async?: false, context: %{}, description: nil, impl: {Ash.Reactor.AshStep, [run: &Xaas.Actuation.Kernel.admit/2, compensate: nil, undo: nil, impl: nil]}, name: :admit, max_retries: :infinity, ref: :admit, transform: nil, guards: []}, splode: Reactor.Error, bread_crumbs: [], vars: [], path: [], stacktrace: #Splode.Stacktrace<>, class: :invalid}], splode: Reactor.Error, bread_crumbs: [], vars: [], path: [], stacktrace: #Splode.Stacktrace<>, class: :invalid}
+........11:54:13.741 [error] [Reactor.Audit] Failed with errors: %Reactor.Error.Invalid{errors: [%Reactor.Error.Invalid.RunStepError{error: %Ash.Error.Invalid{bread_crumbs: ["Error returned from: Xaas.Operations.ActuationIntent.admit"],  changeset: "#Changeset<>",  errors: [%Ash.Error.Changes.InvalidAttribute{field: :authority, message: "causal admission required but certificate status is not admitted", private_vars: nil, value: nil, has_value?: true, required?: false, splode: Ash.Error, bread_crumbs: ["Error returned from: Xaas.Operations.ActuationIntent.admit"], vars: [], path: [], stacktrace: #Splode.Stacktrace<>, class: :invalid}]}, step: %Reactor.Step{arguments: [%Reactor.Argument{description: nil, name: :idempotency_key, source: %Reactor.Template.Input{name: :idempotency_key, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :authority, source: %Reactor.Template.Input{name: :authority, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :authorize?, source: %Reactor.Template.Input{name: :authorize?, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :tenant, source: %Reactor.Template.Input{name: :tenant, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :actor, source: %Reactor.Template.Input{name: :actor, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :subject_id, source: %Reactor.Template.Input{name: :subject_id, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :input, source: %Reactor.Template.Input{name: :input, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :action, source: %Reactor.Template.Input{name: :action, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :resource, source: %Reactor.Template.Input{name: :resource, sub_path: []}, transform: nil}], async?: false, context: %{}, description: nil, impl: {Ash.Reactor.AshStep, [run: &Xaas.Actuation.Kernel.admit/2, compensate: nil, undo: nil, impl: nil]}, name: :admit, max_retries: :infinity, ref: :admit, transform: nil, guards: []}, splode: Reactor.Error, bread_crumbs: [], vars: [], path: [], stacktrace: #Splode.Stacktrace<>, class: :invalid}], splode: Reactor.Error, bread_crumbs: [], vars: [], path: [], stacktrace: #Splode.Stacktrace<>, class: :invalid}
+...................11:54:13.883 [warning] [ash_oban] capability_liveness_receipt.check_regressions: 1 real regression(s) detected: [%{now: %{status: "BLOCKED", subject: "commit-after"}, capability: "check-regressions-real-12870", was: %{status: "ALIVE", subject: "commit-before"}}]
+.................................................................11:54:14.185 [warning] [ultracode] epoch 4abfcb9d-1e51-499a-828e-467d473f25a6 (run 2be3275d-528d-48a2-a1d6-a334679c9e14, cycle 0) expected_at=2026-09-23 18:53:14.174321Z exceeded epoch_timeout_seconds=1 -> marked :missed (receipt sealed)
+............11:54:14.256 [warning] [ultracode] epoch ab16c95b-c205-4fa8-a1cf-d9ca695172c0 (run 3c77004f-e3ab-4856-a864-e61c87806882, cycle 0) expected_at=2026-09-23 18:53:14.219049Z exceeded epoch_timeout_seconds=1 -> marked :missed (receipt sealed)
+...11:54:14.267 [warning] [ultracode] epoch bc699f14-8103-4e75-83cc-0bc24b0d59bb (run e976cb2b-44e5-42a7-9fa8-d55486129c2e, cycle 0) expected_at=2026-09-23 18:53:14.233946Z exceeded epoch_timeout_seconds=1 -> marked :missed (receipt sealed)
+................................................................................11:54:14.412 [warning] Missed 1 notifications in action Xaas.Library.Checkout.borrow.
+
+This happens when the resources are in a transaction, and you did not pass
+`return_notifications?: true`. If you are in a changeset hook, you can
+return the notifications. If not, you can send the notifications using
+`Ash.Notifier.notify/1` once your resources are out of a transaction.
+
+    (elixir 1.19.5) lib/process.ex:900: Process.info/2
+    (ash 3.33.9) lib/ash/actions/helpers.ex:546: Ash.Actions.Helpers.warn_missed!/3
+    (ash 3.33.9) lib/ash/actions/helpers.ex:487: Ash.Actions.Helpers.notify/3
+    (ash 3.33.9) lib/ash/actions/create/create.ex:576: Ash.Actions.Create.commit/3
+    (ash 3.33.9) lib/ash/actions/create/create.ex:186: Ash.Actions.Create.do_run/4
+    (ash 3.33.9) lib/ash/actions/create/create.ex:89: Ash.Actions.Create.run/4
+    (xaas 26.9.22) lib/xaas/actuation.ex:367: Xaas.Actuation.Kernel.actuate/2
+    (ash 3.33.9) lib/ash/reactor/steps/ash_step.ex:58: Ash.Reactor.AshStep.run/3
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:169: Reactor.Executor.StepRunner.do_run/4
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:58: Reactor.Executor.StepRunner.run/4
+    (reactor 1.0.7) lib/reactor/executor/sync.ex:23: Reactor.Executor.Sync.run/3
+    (reactor 1.0.7) lib/reactor/executor.ex:110: Reactor.Executor.execute/2
+    (xaas 26.9.22) lib/xaas/actuation.ex:194: Xaas.Actuation.run_reactor_or_rollback/2
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+
+
+While you should likely leave this setting on, you can ignore these or turn them into errors.
+
+To ignore these in all cases:
+
+config :ash, :missed_notifications, :ignore
+
+To turn this into raised errors:
+
+config :ash, :missed_notifications, :raise
+
+11:54:14.415 [warning] Missed 2 notifications in action Xaas.Library.Checkout.borrow.
+
+This happens when the resources are in a transaction, and you did not pass
+`return_notifications?: true`. If you are in a changeset hook, you can
+return the notifications. If not, you can send the notifications using
+`Ash.Notifier.notify/1` once your resources are out of a transaction.
+
+    (elixir 1.19.5) lib/process.ex:900: Process.info/2
+    (ash 3.33.9) lib/ash/actions/helpers.ex:546: Ash.Actions.Helpers.warn_missed!/3
+    (ash 3.33.9) lib/ash/actions/create/create.ex:263: Ash.Actions.Create.add_notifications/5
+    (ash 3.33.9) lib/ash/actions/create/create.ex:187: Ash.Actions.Create.do_run/4
+    (ash 3.33.9) lib/ash/actions/create/create.ex:89: Ash.Actions.Create.run/4
+    (xaas 26.9.22) lib/xaas/actuation.ex:367: Xaas.Actuation.Kernel.actuate/2
+    (ash 3.33.9) lib/ash/reactor/steps/ash_step.ex:58: Ash.Reactor.AshStep.run/3
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:169: Reactor.Executor.StepRunner.do_run/4
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:58: Reactor.Executor.StepRunner.run/4
+    (reactor 1.0.7) lib/reactor/executor/sync.ex:23: Reactor.Executor.Sync.run/3
+    (reactor 1.0.7) lib/reactor/executor.ex:110: Reactor.Executor.execute/2
+    (xaas 26.9.22) lib/xaas/actuation.ex:194: Xaas.Actuation.run_reactor_or_rollback/2
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (xaas 26.9.22) lib/xaas/repo.ex:2: anonymous fn/1 in Xaas.Repo."transaction (overridable 1)"/2
+
+
+While you should likely leave this setting on, you can ignore these or turn them into errors.
+
+To ignore these in all cases:
+
+config :ash, :missed_notifications, :ignore
+
+To turn this into raised errors:
+
+config :ash, :missed_notifications, :raise
+
+..../Users/sac/.cache/tmp/xaas-ocel-mix-1790189654402-18628/7fa80c9f-209c-4c5e-af4a-92f5fd6a90eb.ocel.json
+...............................................................    warning: the Inspect protocol has already been consolidated, an implementation for Xaas.Semantics.AshR2RMLTest.GoodResource has no effect. If you want to implement protocols after compilation or during tests, check the "Consolidation" section in the Protocol module documentation
+    │
+  1 │ defmodule Xaas.Semantics.AshR2RMLTest.GoodResource do
+    │ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/xaas/semantics/ash_r2rml_test.exs:1: Xaas.Semantics.AshR2RMLTest.GoodResource (module)
+
+.....................11:54:14.763 [error] [Reactor.Audit] Failed with errors: %Reactor.Error.Invalid{errors: [%Reactor.Error.Invalid.RunStepError{error: {:idempotency_conflict, "test-provider-conflict-16584"}, step: %Reactor.Step{arguments: [%Reactor.Argument{description: nil, name: :idempotency_key, source: %Reactor.Template.Input{name: :idempotency_key, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :authority, source: %Reactor.Template.Input{name: :authority, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :authorize?, source: %Reactor.Template.Input{name: :authorize?, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :tenant, source: %Reactor.Template.Input{name: :tenant, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :actor, source: %Reactor.Template.Input{name: :actor, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :subject_id, source: %Reactor.Template.Input{name: :subject_id, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :input, source: %Reactor.Template.Input{name: :input, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :action, source: %Reactor.Template.Input{name: :action, sub_path: []}, transform: nil}, %Reactor.Argument{description: nil, name: :resource, source: %Reactor.Template.Input{name: :resource, sub_path: []}, transform: nil}], async?: false, context: %{}, description: nil, impl: {Ash.Reactor.AshStep, [run: &Xaas.Actuation.Kernel.admit/2, compensate: nil, undo: nil, impl: nil]}, name: :admit, max_retries: :infinity, ref: :admit, transform: nil, guards: []}, splode: Reactor.Error, bread_crumbs: [], vars: [], path: [], stacktrace: #Splode.Stacktrace<>, class: :invalid}], splode: Reactor.Error, bread_crumbs: [], vars: [], path: [], stacktrace: #Splode.Stacktrace<>, class: :invalid}
+........11:54:14.826 [warning] XAAS_LEASE_CLOSE head mismatch epoch=06d9bdc9-f205-4ae8-9014-22e0da679c33
+......11:54:14.861 [warning] [webhook] delivery bc2713a8-dec5-43b6-a367-425f699fd0e0 transport error: %Req.TransportError{reason: :econnrefused}
+.......    warning: the Inspect protocol has already been consolidated, an implementation for Xaas.Semantics.AshR2RMLTest.UnsupportedResource has no effect. If you want to implement protocols after compilation or during tests, check the "Consolidation" section in the Protocol module documentation
+    │
+ 32 │ defmodule Xaas.Semantics.AshR2RMLTest.UnsupportedResource do
+    │ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/xaas/semantics/ash_r2rml_test.exs:32: Xaas.Semantics.AshR2RMLTest.UnsupportedResource (module)
+
+.warning: Resource Xaas.Semantics.AshR2RMLTest.GoodResource is not present in any known Ash.Domain module.
+
+Domain modules checked: [Xaas.Billing, Xaas.Library, Xaas.Accounts, Xaas.Billing, Xaas.Coupling, Xaas.Generation, Xaas.Governance, Xaas.Ledger, Xaas.Marketplace, Xaas.Ocel, Xaas.Operations, Xaas.Platform, Xaas.TemporalMemory, Xaas.Ultracode]
+
+We check the following configuration for domain modules:
+
+   config :xaas, ash_domains: [Xaas.Billing, Xaas.Library, Xaas.Accounts, Xaas.Billing, Xaas.Coupling, Xaas.Generation, Xaas.Governance, Xaas.Ledger, Xaas.Marketplace, Xaas.Ocel, Xaas.Operations, Xaas.Platform, Xaas.TemporalMemory, Xaas.Ultracode]
+
+To resolve this warning, do one of the following.
+
+1. Add the resource to one of your configured domain modules.
+2. Add the option `validate_domain_inclusion?: false` to `use Ash.Resource`
+3. Configure all resources not to warn, with `config :ash, :validate_domain_resource_inclusion?, false`
+
+  test/xaas/semantics/ash_r2rml_test.exs:1: Xaas.Semantics.AshR2RMLTest.GoodResource.__verify_spark_dsl__/1
+  (elixir 1.19.5) lib/enum.ex:961: Enum."-each/2-lists^foreach/1-0-"/2
+  (elixir 1.19.5) lib/module/parallel_checker.ex:288: Module.ParallelChecker.check_module/3
+  (elixir 1.19.5) lib/module/parallel_checker.ex:125: anonymous fn/7 in Module.ParallelChecker.inner_spawn/6
+
+warning: Resource Xaas.Semantics.AshR2RMLTest.UnsupportedResource is not present in any known Ash.Domain module.
+
+Domain modules checked: [Xaas.Billing, Xaas.Library, Xaas.Accounts, Xaas.Billing, Xaas.Coupling, Xaas.Generation, Xaas.Governance, Xaas.Ledger, Xaas.Marketplace, Xaas.Ocel, Xaas.Operations, Xaas.Platform, Xaas.TemporalMemory, Xaas.Ultracode]
+
+We check the following configuration for domain modules:
+
+   config :xaas, ash_domains: [Xaas.Billing, Xaas.Library, Xaas.Accounts, Xaas.Billing, Xaas.Coupling, Xaas.Generation, Xaas.Governance, Xaas.Ledger, Xaas.Marketplace, Xaas.Ocel, Xaas.Operations, Xaas.Platform, Xaas.TemporalMemory, Xaas.Ultracode]
+
+To resolve this warning, do one of the following.
+
+1. Add the resource to one of your configured domain modules.
+2. Add the option `validate_domain_inclusion?: false` to `use Ash.Resource`
+3. Configure all resources not to warn, with `config :ash, :validate_domain_resource_inclusion?, false`
+
+  test/xaas/semantics/ash_r2rml_test.exs:32: Xaas.Semantics.AshR2RMLTest.UnsupportedResource.__verify_spark_dsl__/1
+  (elixir 1.19.5) lib/enum.ex:961: Enum."-each/2-lists^foreach/1-0-"/2
+  (elixir 1.19.5) lib/module/parallel_checker.ex:288: Module.ParallelChecker.check_module/3
+  (elixir 1.19.5) lib/module/parallel_checker.ex:125: anonymous fn/7 in Module.ParallelChecker.inner_spawn/6
+
+..........    warning: comparison between distinct types found:
+
+        left != right
+
+    given types:
+
+        dynamic(non_empty_list(binary())) != empty_list()
+
+    where "left" (context ExUnit.Assertions) was given the type:
+
+        # type: dynamic(non_empty_list(binary()))
+        # from: test/xaas/semantics/registry_test.exs:44
+        left = projection.classes
+
+    where "right" (context ExUnit.Assertions) was given the type:
+
+        # type: empty_list()
+        # from: test/xaas/semantics/registry_test.exs:44
+        right = []
+
+    While Elixir can compare across all types, you are comparing across types which are always disjoint, and the result is either always true or always false
+
+    typing violation found at:
+    │
+ 44 │       assert projection.classes != []
+    │                                 ~
+    │
+    └─ test/xaas/semantics/registry_test.exs:44:33: Xaas.Semantics.RegistryTest."test every configured Ash resource admits a public-ontology projection"/1
+
+....warning: Exception while verifying `Xaas.Semantics.AshR2RMLTest.GoodResource:`
+** (RuntimeError) Resource Xaas.Semantics.AshR2RMLTest.GoodResource declared that its domain is Xaas.Billing, but that
+domain does not accept this resource.
+
+The most likely cause for this is missing a call to `resource Xaas.Semantics.AshR2RMLTest.GoodResource`
+in the `resources` block of Xaas.Billing.
+
+    test/xaas/semantics/ash_r2rml_test.exs:1: Xaas.Semantics.AshR2RMLTest.GoodResource.__verify_spark_dsl__/1
+    (elixir 1.19.5) lib/enum.ex:961: Enum."-each/2-lists^foreach/1-0-"/2
+    (elixir 1.19.5) lib/module/parallel_checker.ex:288: Module.ParallelChecker.check_module/3
+    (elixir 1.19.5) lib/module/parallel_checker.ex:125: anonymous fn/7 in Module.ParallelChecker.inner_spawn/6
+
+
+  test/xaas/semantics/ash_r2rml_test.exs:1: Xaas.Semantics.AshR2RMLTest.GoodResource.__verify_spark_dsl__/1
+  (elixir 1.19.5) lib/enum.ex:961: Enum."-each/2-lists^foreach/1-0-"/2
+  (elixir 1.19.5) lib/module/parallel_checker.ex:288: Module.ParallelChecker.check_module/3
+  (elixir 1.19.5) lib/module/parallel_checker.ex:125: anonymous fn/7 in Module.ParallelChecker.inner_spawn/6
+
+warning: Exception while verifying `Xaas.Semantics.AshR2RMLTest.UnsupportedResource:`
+** (RuntimeError) Resource Xaas.Semantics.AshR2RMLTest.UnsupportedResource declared that its domain is Xaas.Billing, but that
+domain does not accept this resource.
+
+The most likely cause for this is missing a call to `resource Xaas.Semantics.AshR2RMLTest.UnsupportedResource`
+in the `resources` block of Xaas.Billing.
+
+    test/xaas/semantics/ash_r2rml_test.exs:32: Xaas.Semantics.AshR2RMLTest.UnsupportedResource.__verify_spark_dsl__/1
+    (elixir 1.19.5) lib/enum.ex:961: Enum."-each/2-lists^foreach/1-0-"/2
+    (elixir 1.19.5) lib/module/parallel_checker.ex:288: Module.ParallelChecker.check_module/3
+    (elixir 1.19.5) lib/module/parallel_checker.ex:125: anonymous fn/7 in Module.ParallelChecker.inner_spawn/6
+
+
+  test/xaas/semantics/ash_r2rml_test.exs:32: Xaas.Semantics.AshR2RMLTest.UnsupportedResource.__verify_spark_dsl__/1
+  (elixir 1.19.5) lib/enum.ex:961: Enum."-each/2-lists^foreach/1-0-"/2
+  (elixir 1.19.5) lib/module/parallel_checker.ex:288: Module.ParallelChecker.check_module/3
+  (elixir 1.19.5) lib/module/parallel_checker.ex:125: anonymous fn/7 in Module.ParallelChecker.inner_spawn/6
+
+...........................................................................................................
+
+  2) test SJ-001 flows admit -> materialize -> receipt -> replay; both falsifiers are refused (Xaas.Ultracode.SemanticJiraE2ETest)
+     test/xaas/ultracode/semantic_jira_e2e_test.exs:106
+     Assertion with == failed
+     code:  assert AdmissionBinding.snapshot_digest(descriptor["admitted_work_order"]) == digest
+     left:  "sha256:5a8d6d3039ad548c966e5e38024274b1cfdeaa7febea7d79cbd63c9954588697"
+     right: "sha256:2da4d98751fa9a9b9c263179d272bda822ff6bdd09b853f44249e651088910d7"
+     stacktrace:
+       test/xaas/ultracode/semantic_jira_e2e_test.exs:148: (test)
+
+...................................................................................................................................11:54:41.086 [warning] XAAS_LEASE_CLOSE head mismatch epoch=c45eafbd-14e0-4e4a-b3d1-c7f7ee66710e
+............................................................11:55:01.646 [warning] Missed 1 notifications in action Xaas.Library.Checkout.borrow.
+
+This happens when the resources are in a transaction, and you did not pass
+`return_notifications?: true`. If you are in a changeset hook, you can
+return the notifications. If not, you can send the notifications using
+`Ash.Notifier.notify/1` once your resources are out of a transaction.
+
+    (elixir 1.19.5) lib/process.ex:900: Process.info/2
+    (ash 3.33.9) lib/ash/actions/helpers.ex:546: Ash.Actions.Helpers.warn_missed!/3
+    (ash 3.33.9) lib/ash/actions/helpers.ex:487: Ash.Actions.Helpers.notify/3
+    (ash 3.33.9) lib/ash/actions/create/create.ex:576: Ash.Actions.Create.commit/3
+    (ash 3.33.9) lib/ash/actions/create/create.ex:186: Ash.Actions.Create.do_run/4
+    (ash 3.33.9) lib/ash/actions/create/create.ex:89: Ash.Actions.Create.run/4
+    (xaas 26.9.22) lib/xaas/actuation.ex:367: Xaas.Actuation.Kernel.actuate/2
+    (ash 3.33.9) lib/ash/reactor/steps/ash_step.ex:58: Ash.Reactor.AshStep.run/3
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:169: Reactor.Executor.StepRunner.do_run/4
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:58: Reactor.Executor.StepRunner.run/4
+    (reactor 1.0.7) lib/reactor/executor/sync.ex:23: Reactor.Executor.Sync.run/3
+    (reactor 1.0.7) lib/reactor/executor.ex:110: Reactor.Executor.execute/2
+    (xaas 26.9.22) lib/xaas/actuation.ex:194: Xaas.Actuation.run_reactor_or_rollback/2
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+
+
+While you should likely leave this setting on, you can ignore these or turn them into errors.
+
+To ignore these in all cases:
+
+config :ash, :missed_notifications, :ignore
+
+To turn this into raised errors:
+
+config :ash, :missed_notifications, :raise
+
+11:55:01.648 [warning] Missed 2 notifications in action Xaas.Library.Checkout.borrow.
+
+This happens when the resources are in a transaction, and you did not pass
+`return_notifications?: true`. If you are in a changeset hook, you can
+return the notifications. If not, you can send the notifications using
+`Ash.Notifier.notify/1` once your resources are out of a transaction.
+
+    (elixir 1.19.5) lib/process.ex:900: Process.info/2
+    (ash 3.33.9) lib/ash/actions/helpers.ex:546: Ash.Actions.Helpers.warn_missed!/3
+    (ash 3.33.9) lib/ash/actions/create/create.ex:263: Ash.Actions.Create.add_notifications/5
+    (ash 3.33.9) lib/ash/actions/create/create.ex:187: Ash.Actions.Create.do_run/4
+    (ash 3.33.9) lib/ash/actions/create/create.ex:89: Ash.Actions.Create.run/4
+    (xaas 26.9.22) lib/xaas/actuation.ex:367: Xaas.Actuation.Kernel.actuate/2
+    (ash 3.33.9) lib/ash/reactor/steps/ash_step.ex:58: Ash.Reactor.AshStep.run/3
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:169: Reactor.Executor.StepRunner.do_run/4
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:58: Reactor.Executor.StepRunner.run/4
+    (reactor 1.0.7) lib/reactor/executor/sync.ex:23: Reactor.Executor.Sync.run/3
+    (reactor 1.0.7) lib/reactor/executor.ex:110: Reactor.Executor.execute/2
+    (xaas 26.9.22) lib/xaas/actuation.ex:194: Xaas.Actuation.run_reactor_or_rollback/2
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (xaas 26.9.22) lib/xaas/repo.ex:2: anonymous fn/1 in Xaas.Repo."transaction (overridable 1)"/2
+
+
+While you should likely leave this setting on, you can ignore these or turn them into errors.
+
+To ignore these in all cases:
+
+config :ash, :missed_notifications, :ignore
+
+To turn this into raised errors:
+
+config :ash, :missed_notifications, :raise
+
+.11:55:01.685 [warning] Missed 1 notifications in action Xaas.Library.Checkout.borrow.
+
+This happens when the resources are in a transaction, and you did not pass
+`return_notifications?: true`. If you are in a changeset hook, you can
+return the notifications. If not, you can send the notifications using
+`Ash.Notifier.notify/1` once your resources are out of a transaction.
+
+    (elixir 1.19.5) lib/process.ex:900: Process.info/2
+    (ash 3.33.9) lib/ash/actions/helpers.ex:546: Ash.Actions.Helpers.warn_missed!/3
+    (ash 3.33.9) lib/ash/actions/helpers.ex:487: Ash.Actions.Helpers.notify/3
+    (ash 3.33.9) lib/ash/actions/create/create.ex:576: Ash.Actions.Create.commit/3
+    (ash 3.33.9) lib/ash/actions/create/create.ex:186: Ash.Actions.Create.do_run/4
+    (ash 3.33.9) lib/ash/actions/create/create.ex:89: Ash.Actions.Create.run/4
+    (xaas 26.9.22) lib/xaas/actuation.ex:367: Xaas.Actuation.Kernel.actuate/2
+    (ash 3.33.9) lib/ash/reactor/steps/ash_step.ex:58: Ash.Reactor.AshStep.run/3
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:169: Reactor.Executor.StepRunner.do_run/4
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:58: Reactor.Executor.StepRunner.run/4
+    (reactor 1.0.7) lib/reactor/executor/sync.ex:23: Reactor.Executor.Sync.run/3
+    (reactor 1.0.7) lib/reactor/executor.ex:110: Reactor.Executor.execute/2
+    (xaas 26.9.22) lib/xaas/actuation.ex:194: Xaas.Actuation.run_reactor_or_rollback/2
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+
+
+While you should likely leave this setting on, you can ignore these or turn them into errors.
+
+To ignore these in all cases:
+
+config :ash, :missed_notifications, :ignore
+
+To turn this into raised errors:
+
+config :ash, :missed_notifications, :raise
+
+11:55:01.688 [warning] Missed 2 notifications in action Xaas.Library.Checkout.borrow.
+
+This happens when the resources are in a transaction, and you did not pass
+`return_notifications?: true`. If you are in a changeset hook, you can
+return the notifications. If not, you can send the notifications using
+`Ash.Notifier.notify/1` once your resources are out of a transaction.
+
+    (elixir 1.19.5) lib/process.ex:900: Process.info/2
+    (ash 3.33.9) lib/ash/actions/helpers.ex:546: Ash.Actions.Helpers.warn_missed!/3
+    (ash 3.33.9) lib/ash/actions/create/create.ex:263: Ash.Actions.Create.add_notifications/5
+    (ash 3.33.9) lib/ash/actions/create/create.ex:187: Ash.Actions.Create.do_run/4
+    (ash 3.33.9) lib/ash/actions/create/create.ex:89: Ash.Actions.Create.run/4
+    (xaas 26.9.22) lib/xaas/actuation.ex:367: Xaas.Actuation.Kernel.actuate/2
+    (ash 3.33.9) lib/ash/reactor/steps/ash_step.ex:58: Ash.Reactor.AshStep.run/3
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:169: Reactor.Executor.StepRunner.do_run/4
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:58: Reactor.Executor.StepRunner.run/4
+    (reactor 1.0.7) lib/reactor/executor/sync.ex:23: Reactor.Executor.Sync.run/3
+    (reactor 1.0.7) lib/reactor/executor.ex:110: Reactor.Executor.execute/2
+    (xaas 26.9.22) lib/xaas/actuation.ex:194: Xaas.Actuation.run_reactor_or_rollback/2
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (xaas 26.9.22) lib/xaas/repo.ex:2: anonymous fn/1 in Xaas.Repo."transaction (overridable 1)"/2
+
+
+While you should likely leave this setting on, you can ignore these or turn them into errors.
+
+To ignore these in all cases:
+
+config :ash, :missed_notifications, :ignore
+
+To turn this into raised errors:
+
+config :ash, :missed_notifications, :raise
+
+11:55:01.703 [warning] Missed 1 notifications in action Xaas.Library.Checkout.borrow.
+
+This happens when the resources are in a transaction, and you did not pass
+`return_notifications?: true`. If you are in a changeset hook, you can
+return the notifications. If not, you can send the notifications using
+`Ash.Notifier.notify/1` once your resources are out of a transaction.
+
+    (elixir 1.19.5) lib/process.ex:900: Process.info/2
+    (ash 3.33.9) lib/ash/actions/helpers.ex:546: Ash.Actions.Helpers.warn_missed!/3
+    (ash 3.33.9) lib/ash/actions/helpers.ex:487: Ash.Actions.Helpers.notify/3
+    (ash 3.33.9) lib/ash/actions/create/create.ex:576: Ash.Actions.Create.commit/3
+    (ash 3.33.9) lib/ash/actions/create/create.ex:186: Ash.Actions.Create.do_run/4
+    (ash 3.33.9) lib/ash/actions/create/create.ex:89: Ash.Actions.Create.run/4
+    (xaas 26.9.22) lib/xaas/actuation.ex:367: Xaas.Actuation.Kernel.actuate/2
+    (ash 3.33.9) lib/ash/reactor/steps/ash_step.ex:58: Ash.Reactor.AshStep.run/3
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:169: Reactor.Executor.StepRunner.do_run/4
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:58: Reactor.Executor.StepRunner.run/4
+    (reactor 1.0.7) lib/reactor/executor/sync.ex:23: Reactor.Executor.Sync.run/3
+    (reactor 1.0.7) lib/reactor/executor.ex:110: Reactor.Executor.execute/2
+    (xaas 26.9.22) lib/xaas/actuation.ex:194: Xaas.Actuation.run_reactor_or_rollback/2
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+
+
+While you should likely leave this setting on, you can ignore these or turn them into errors.
+
+To ignore these in all cases:
+
+config :ash, :missed_notifications, :ignore
+
+To turn this into raised errors:
+
+config :ash, :missed_notifications, :raise
+
+11:55:01.705 [warning] Missed 2 notifications in action Xaas.Library.Checkout.borrow.
+
+This happens when the resources are in a transaction, and you did not pass
+`return_notifications?: true`. If you are in a changeset hook, you can
+return the notifications. If not, you can send the notifications using
+`Ash.Notifier.notify/1` once your resources are out of a transaction.
+
+    (elixir 1.19.5) lib/process.ex:900: Process.info/2
+    (ash 3.33.9) lib/ash/actions/helpers.ex:546: Ash.Actions.Helpers.warn_missed!/3
+    (ash 3.33.9) lib/ash/actions/create/create.ex:263: Ash.Actions.Create.add_notifications/5
+    (ash 3.33.9) lib/ash/actions/create/create.ex:187: Ash.Actions.Create.do_run/4
+    (ash 3.33.9) lib/ash/actions/create/create.ex:89: Ash.Actions.Create.run/4
+    (xaas 26.9.22) lib/xaas/actuation.ex:367: Xaas.Actuation.Kernel.actuate/2
+    (ash 3.33.9) lib/ash/reactor/steps/ash_step.ex:58: Ash.Reactor.AshStep.run/3
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:169: Reactor.Executor.StepRunner.do_run/4
+    (reactor 1.0.7) lib/reactor/executor/step_runner.ex:58: Reactor.Executor.StepRunner.run/4
+    (reactor 1.0.7) lib/reactor/executor/sync.ex:23: Reactor.Executor.Sync.run/3
+    (reactor 1.0.7) lib/reactor/executor.ex:110: Reactor.Executor.execute/2
+    (xaas 26.9.22) lib/xaas/actuation.ex:194: Xaas.Actuation.run_reactor_or_rollback/2
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:637: Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:603: anonymous fn/6 in Ash.DataLayer.transaction/5
+    (ash 3.33.9) lib/ash/data_layer/data_layer.ex:626: anonymous fn/3 in Ash.DataLayer.transaction/5
+    (xaas 26.9.22) lib/xaas/repo.ex:2: anonymous fn/1 in Xaas.Repo."transaction (overridable 1)"/2
+
+
+While you should likely leave this setting on, you can ignore these or turn them into errors.
+
+To ignore these in all cases:
+
+config :ash, :missed_notifications, :ignore
+
+To turn this into raised errors:
+
+config :ash, :missed_notifications, :raise
+
+......................................................................................................................................................
+
+  3) test a prepared episode drives EP-A to ALIVE: equal hop digests, sealed + independently verified receipt, admitted R, conformant OCEL, closed frontier (Xaas.Ultracode.SemanticDriveTest)
+     test/xaas/ultracode/semantic_drive_test.exs:107
+     Assertion with == failed
+     code:  assert git!(ctx.subject, ["diff", "--name-only", subject_sha, head]) == @drift
+     left:  "lib/ggen_igniter/semantic_jira/bootstrap.ex\nlib/ggen_igniter/semantic_jira/cli.ex"
+     right: "lib/ggen_igniter/semantic_jira/cli.ex"
+     stacktrace:
+       test/xaas/ultracode/semantic_drive_test.exs:214: (test)
+
+..
+
+  4) test a subject with no drift is REFUSED(no_delta) by the provider: no commit, no ledger change, EP-A stays on the frontier (Xaas.Ultracode.SemanticDriveTest)
+     test/xaas/ultracode/semantic_drive_test.exs:345
+     match (=) failed
+     code:  assert {:refused,
+             %{
+               "standing" => "REFUSED(no_delta)",
+               "broken_term" => "R_missing_consequence",
+               "hop" => "provider"
+             }} = drive(ctx, out, pin_ref: pin)
+     left:  {:refused,
+             %{
+               "standing" => "REFUSED(no_delta)",
+               "broken_term" => "R_missing_consequence",
+               "hop" => "provider"
+             }}
+     right: {:ok,
+             %{
+               "artifacts" => ["contract.json", "descriptor.json",
+                "drive.json", "frontier_after.json",
+                "frontier_before.json", "hops.json", "ocel.json",
+                "ocel2.json", "receipt.json", "receipt.r.json",
+                "reconciler_receipt.json", "sa2a_task.json",
+                "verification.json"],
+               "checkpoint" => "https://ggen-igniter.dev/sjira/v26.9.23#GC-26.9.23",
+               "dependents" => ["EP-B"],
+               "finished_at" => "2026-09-23T18:55:36.408535Z",
+               "frontier" => %{
+                 "entered" => ["EP-B"],
+                 "left" => ["EP-A"]
+               },
+               "graph_side" => %{
+                 "ggen_igniter_dir" => "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+                 "ggen_igniter_sha" => "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+                 "toolchain" => %{
+                   "build_compiler" => %{
+                     "elixir" => "1.19.5",
+                     "otp" => "28"
+                   },
+                   "build_manifest" => "/Users/sac/.cache/tmp/xaas-drive-drive-all-21394360130/build/test/lib/ggen_igniter/.mix/compile.elixir_scm",
+                   "elixir" => "1.19.5",
+                   "erlang" => "28",
+                   "erts" => "running node (/Users/sac/.erlmcp/otp-28.3.1/lib/erlang/bin)",
+                   "mix" => "/opt/homebrew/Cellar/elixir/1.19.5/lib/elixir/bin/mix",
+                   "source" => "build_manifest"
+                 }
+               },
+               "hops" => ["sjira", "sa2a", "xaas", "provider",
+                "receipt"],
+               "no_llm_guard" => "passed",
+               "ocel" => %{
+                 "equivalent" => true,
+                 "events" => 11,
+                 "not_reached" => ["MachineExperienceAdmitted"],
+                 "objects" => 11,
+                 "reached" => ["WorkOrderCreated",
+                  "CapabilityResolved", "LeaseAcquired",
+                  "ActuationStarted", "ActuationCompleted",
+                  "VerificationCompleted", "ReceiptSealed",
+                  "StandingChanged", "FrontierChanged"]
+               },
+               "order" => "EP-A",
+               "provider" => %{
+                 "capability" => "recipe:mix-format",
+                 "executor" => "recipe-worker",
+                 "provider" => "recipe"
+               },
+               "request_digest" => "sha256:f8ddfb2974d4f6f6221870ed234dbdf982dabac0ed798b88d90d588130fad091",
+               "schema" => "xaas/semantic-drive/v1",
+               "standing" => "ALIVE",
+               "started_at" => "2026-09-23T18:55:22.143957Z",
+               "subject" => %{
+                 "base_sha" => "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+                 "head" => "e208d9d8eaeffda2b2d5dae169f7f13e6d1cd1f5",
+                 "pinned" => "t-nodelta-pin-21394362114",
+                 "repo" => "/Users/sac/.cache/tmp/xaas-drive-drive-all-21394360130/subject",
+                 "repository" => "seanchatmangpt/ggen_igniter"
+               },
+               "transition" => %{
+                 "authority" => "NONE",
+                 "definition_digest" => "sha256:15a97a35a45c630b1fb30a0d321e4a93ce36693119d553633fac6cd8c84e41e0",
+                 "event_digest" => "sha256:84a9fc9fe7de79879dbf40ad028f8fa37d9dd1ed2d3442eccf07eda9bef1556f",
+                 "from" => "UNKNOWN",
+                 "identity" => "EP-A",
+                 "kind" => "standing_transition_event",
+                 "receipt_digest" => "sha256:90b0d39a9af05873421ab48a62e9ea1abca9b461152530e609f7a57b933847d2",
+                 "seq" => 1,
+                 "snapshot_digest" => "sha256:5cdd6cf752e1ca2b7cd92c7c0b9d7f6849d8be38ae159641bc1a08a47a6fbfca",
+                 "to" => "ALIVE",
+                 "transition_digest" => "sha256:4c7fd97fe78662a9e776f094b937d866f63840d0b21bb57a79f6cc421ef05e28"
+               },
+               "tuple_digest" => "sha256:5cba06b1e70d3636669909d831ac116d825a04140061081e856848d79405ae54"
+             }}
+     stacktrace:
+       test/xaas/ultracode/semantic_drive_test.exs:353: (test)
+
+....................................................11:56:37.525 [warning] Xaas.Telemetry.OcelForwarder: failed to forward OCEL event to http://127.0.0.1:1/api/v1/ocel/events: %Req.TransportError{reason: :econnrefused}
+...........11:56:37.657 [warning] [ultracode] run 1cef5bfe-70a2-4dc3-8241-2e808963d4c1 stopped: refused 1 live lease(s) (reason :run_stopped)
+11:56:37.667 [warning] [ultracode] run 1cef5bfe-70a2-4dc3-8241-2e808963d4c1 recovering from failed epoch 980030c9-efd7-4d18-a326-98cc7f9195a0: constructed replacement epoch cycle=1 (epoch_id=08f61cd7-3f9a-4b86-8492-91eb0f681ae5)
+....11:56:37.753 [warning] [ultracode] run 31b0d084-a86e-402c-aaa0-080b40b70ab9 stopped: refused 1 live lease(s) (reason :run_stopped)
+....11:56:37.841 [warning] [ultracode-engine] reaped epoch ee641fe5-37e0-4807-b6d3-f20f17816428 (worker ended without closing)
+.11:56:37.850 [warning] [ultracode-engine] reaped epoch 0366fa18-9480-436a-9117-e155582ffacc (worker ended without closing)
+....11:56:37.902 [warning] [ultracode] epoch 06657f70-d103-47c9-a7a7-388228d21d95 (run f62404d2-de5a-4dcd-a1fe-cb49a6d4cb49, cycle 0) expected_at=2026-09-23 18:55:37.891620Z exceeded epoch_timeout_seconds=1 -> marked :missed (receipt sealed)
+......................................................................................................................error: /Users/sac/.cache/tmp/profile-sense-c8f278e4/runs/fix-sense-95c44c has no contracts/ directory
+..error: /Users/sac/.cache/tmp/profile-sense-7705a45c/runs/fix-sense-218942 has no contracts/ directory
+..error: /Users/sac/.cache/tmp/profile-sense-70ace40c/runs/fix-sense-ad120e has no contracts/ directory
+.error: /Users/sac/.cache/tmp/profile-sense-543c8155/runs/fix-sense-817931 has no contracts/ directory
+.error: /Users/sac/.cache/tmp/profile-sense-6c45002d/runs/fix-sense-9774bc has no contracts/ directory
+...............................................................................................     warning: Detected a form with phx-change but missing id:
+
+         <form phx-change="change_grade" class="flex items-center gap-2"><select id="header-grade-select" name="grade" class="bg-[#17150F] text-[#F4EFE6] border border-[#F4EFE6]/30 text-xs font-mono rounded px-2.5 py-1 focus:ring-1 focus:ring-[#B5352A]"><option value="6" selected="">Grade 6</option><option value="7">Grade 7</option><option value="8">Grade 8</option></select></form>
+
+
+     Without an id, LiveView will not be able to perform form recovery,
+     for more information see:
+
+     https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+     You can change this warning by setting
+
+         config :phoenix_live_view, :test_warnings,
+           missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+     See the `Phoenix.LiveViewTest` documentation for more details.
+
+     │
+ 111 │         |> live(~p"/next-read")
+     │         ~~~~~~~~~~~~~~~~~~~~~~~
+     │
+     └─ test/xaas/library/next_read_live_test.exs:111: (file)
+
+     warning: Detected a form with phx-change but missing id:
+
+         <form phx-submit="ask_catalog" phx-change="update_ask_query" class="space-y-2"><textarea name="query" rows="2" class="w-full bg-white border border-[#23405F]/30 rounded p-2.5 text-xs text-[#17150F] font-sans focus:ring-1 focus:ring-[#23405F]" placeholder="Ask for recommendations, thematic alternatives, or grade fits..." data-testid="ask-input">Show accessible science-fiction alternatives for students who liked The Wildwater Signal.</textarea><div class="flex justify-between items-center"><span class="font-mono text-[10px] text-[#23405F]/70">Local Nx/Bumblebee Vector Index</span><button type="submit" class="bg-[#23405F] hover:bg-[#1A314A] text-white font-mono text-xs px-4 py-1.5 rounded transition-colors shadow-sm" data-testid="ask-button">
+                            Ask Catalog
+                          </button></div></form>
+
+
+     Without an id, LiveView will not be able to perform form recovery,
+     for more information see:
+
+     https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+     You can change this warning by setting
+
+         config :phoenix_live_view, :test_warnings,
+           missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+     See the `Phoenix.LiveViewTest` documentation for more details.
+
+     │
+ 111 │         |> live(~p"/next-read")
+     │         ~~~~~~~~~~~~~~~~~~~~~~~
+     │
+     └─ test/xaas/library/next_read_live_test.exs:111: (file)
+
+     warning: Detected a form with phx-change but missing id:
+
+         <form phx-change="change_grade" class="flex items-center gap-2"></form>
+
+
+     Without an id, LiveView will not be able to perform form recovery,
+     for more information see:
+
+     https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+     You can change this warning by setting
+
+         config :phoenix_live_view, :test_warnings,
+           missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+     See the `Phoenix.LiveViewTest` documentation for more details.
+
+     │
+ 111 │         |> live(~p"/next-read")
+     │         ~~~~~~~~~~~~~~~~~~~~~~~
+     │
+     └─ test/xaas/library/next_read_live_test.exs:111: (file)
+
+     warning: Detected a form with phx-change but missing id:
+
+         <form phx-submit="ask_catalog" phx-change="update_ask_query" class="space-y-2"></form>
+
+
+     Without an id, LiveView will not be able to perform form recovery,
+     for more information see:
+
+     https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+     You can change this warning by setting
+
+         config :phoenix_live_view, :test_warnings,
+           missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+     See the `Phoenix.LiveViewTest` documentation for more details.
+
+     │
+ 111 │         |> live(~p"/next-read")
+     │         ~~~~~~~~~~~~~~~~~~~~~~~
+     │
+     └─ test/xaas/library/next_read_live_test.exs:111: (file)
+
+.    warning: Detected a form with phx-change but missing id:
+
+        <form phx-change="change_grade" class="flex items-center gap-2"><select id="header-grade-select" name="grade" class="bg-[#17150F] text-[#F4EFE6] border border-[#F4EFE6]/30 text-xs font-mono rounded px-2.5 py-1 focus:ring-1 focus:ring-[#B5352A]"><option value="6" selected="">Grade 6</option><option value="7">Grade 7</option><option value="8">Grade 8</option></select></form>
+
+
+    Without an id, LiveView will not be able to perform form recovery,
+    for more information see:
+
+    https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+    You can change this warning by setting
+
+        config :phoenix_live_view, :test_warnings,
+          missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+    See the `Phoenix.LiveViewTest` documentation for more details.
+
+    │
+ 73 │         |> live(~p"/next-read")
+    │         ~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/xaas/library/next_read_live_test.exs:73: (file)
+
+    warning: Detected a form with phx-change but missing id:
+
+        <form phx-submit="ask_catalog" phx-change="update_ask_query" class="space-y-2"><textarea name="query" rows="2" class="w-full bg-white border border-[#23405F]/30 rounded p-2.5 text-xs text-[#17150F] font-sans focus:ring-1 focus:ring-[#23405F]" placeholder="Ask for recommendations, thematic alternatives, or grade fits..." data-testid="ask-input">Show accessible science-fiction alternatives for students who liked The Wildwater Signal.</textarea><div class="flex justify-between items-center"><span class="font-mono text-[10px] text-[#23405F]/70">Local Nx/Bumblebee Vector Index</span><button type="submit" class="bg-[#23405F] hover:bg-[#1A314A] text-white font-mono text-xs px-4 py-1.5 rounded transition-colors shadow-sm" data-testid="ask-button">
+                           Ask Catalog
+                         </button></div></form>
+
+
+    Without an id, LiveView will not be able to perform form recovery,
+    for more information see:
+
+    https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+    You can change this warning by setting
+
+        config :phoenix_live_view, :test_warnings,
+          missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+    See the `Phoenix.LiveViewTest` documentation for more details.
+
+    │
+ 73 │         |> live(~p"/next-read")
+    │         ~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/xaas/library/next_read_live_test.exs:73: (file)
+
+    warning: Detected a form with phx-change but missing id:
+
+        <form phx-change="change_grade" class="flex items-center gap-2"></form>
+
+
+    Without an id, LiveView will not be able to perform form recovery,
+    for more information see:
+
+    https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+    You can change this warning by setting
+
+        config :phoenix_live_view, :test_warnings,
+          missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+    See the `Phoenix.LiveViewTest` documentation for more details.
+
+    │
+ 73 │         |> live(~p"/next-read")
+    │         ~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/xaas/library/next_read_live_test.exs:73: (file)
+
+    warning: Detected a form with phx-change but missing id:
+
+        <form phx-submit="ask_catalog" phx-change="update_ask_query" class="space-y-2"></form>
+
+
+    Without an id, LiveView will not be able to perform form recovery,
+    for more information see:
+
+    https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+    You can change this warning by setting
+
+        config :phoenix_live_view, :test_warnings,
+          missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+    See the `Phoenix.LiveViewTest` documentation for more details.
+
+    │
+ 73 │         |> live(~p"/next-read")
+    │         ~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/xaas/library/next_read_live_test.exs:73: (file)
+
+.    warning: Detected a form with phx-change but missing id:
+
+        <form phx-change="change_grade" class="flex items-center gap-2"><select id="header-grade-select" name="grade" class="bg-[#17150F] text-[#F4EFE6] border border-[#F4EFE6]/30 text-xs font-mono rounded px-2.5 py-1 focus:ring-1 focus:ring-[#B5352A]"><option value="6" selected="">Grade 6</option><option value="7">Grade 7</option><option value="8">Grade 8</option></select></form>
+
+
+    Without an id, LiveView will not be able to perform form recovery,
+    for more information see:
+
+    https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+    You can change this warning by setting
+
+        config :phoenix_live_view, :test_warnings,
+          missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+    See the `Phoenix.LiveViewTest` documentation for more details.
+
+    │
+ 86 │         |> live(~p"/next-read")
+    │         ~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/xaas/library/next_read_live_test.exs:86: (file)
+
+    warning: Detected a form with phx-change but missing id:
+
+        <form phx-submit="ask_catalog" phx-change="update_ask_query" class="space-y-2"><textarea name="query" rows="2" class="w-full bg-white border border-[#23405F]/30 rounded p-2.5 text-xs text-[#17150F] font-sans focus:ring-1 focus:ring-[#23405F]" placeholder="Ask for recommendations, thematic alternatives, or grade fits..." data-testid="ask-input">Show accessible science-fiction alternatives for students who liked The Wildwater Signal.</textarea><div class="flex justify-between items-center"><span class="font-mono text-[10px] text-[#23405F]/70">Local Nx/Bumblebee Vector Index</span><button type="submit" class="bg-[#23405F] hover:bg-[#1A314A] text-white font-mono text-xs px-4 py-1.5 rounded transition-colors shadow-sm" data-testid="ask-button">
+                           Ask Catalog
+                         </button></div></form>
+
+
+    Without an id, LiveView will not be able to perform form recovery,
+    for more information see:
+
+    https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+    You can change this warning by setting
+
+        config :phoenix_live_view, :test_warnings,
+          missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+    See the `Phoenix.LiveViewTest` documentation for more details.
+
+    │
+ 86 │         |> live(~p"/next-read")
+    │         ~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/xaas/library/next_read_live_test.exs:86: (file)
+
+    warning: Detected a form with phx-change but missing id:
+
+        <form phx-change="change_grade" class="flex items-center gap-2"></form>
+
+
+    Without an id, LiveView will not be able to perform form recovery,
+    for more information see:
+
+    https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+    You can change this warning by setting
+
+        config :phoenix_live_view, :test_warnings,
+          missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+    See the `Phoenix.LiveViewTest` documentation for more details.
+
+    │
+ 86 │         |> live(~p"/next-read")
+    │         ~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/xaas/library/next_read_live_test.exs:86: (file)
+
+    warning: Detected a form with phx-change but missing id:
+
+        <form phx-submit="ask_catalog" phx-change="update_ask_query" class="space-y-2"></form>
+
+
+    Without an id, LiveView will not be able to perform form recovery,
+    for more information see:
+
+    https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+    You can change this warning by setting
+
+        config :phoenix_live_view, :test_warnings,
+          missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+    See the `Phoenix.LiveViewTest` documentation for more details.
+
+    │
+ 86 │         |> live(~p"/next-read")
+    │         ~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/xaas/library/next_read_live_test.exs:86: (file)
+
+    warning: Detected a form with phx-change but missing id:
+
+        <form phx-change="change_grade" class="flex items-center gap-2"></form>
+
+
+    Without an id, LiveView will not be able to perform form recovery,
+    for more information see:
+
+    https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+    You can change this warning by setting
+
+        config :phoenix_live_view, :test_warnings,
+          missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+    See the `Phoenix.LiveViewTest` documentation for more details.
+
+    │
+ 86 │         |> live(~p"/next-read")
+    │         ~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/xaas/library/next_read_live_test.exs:86: (file)
+
+    warning: Detected a form with phx-change but missing id:
+
+        <form phx-submit="ask_catalog" phx-change="update_ask_query" class="space-y-2"></form>
+
+
+    Without an id, LiveView will not be able to perform form recovery,
+    for more information see:
+
+    https://phoenix-live-view.hexdocs.pm/form-bindings.html#recovery-following-crashes-or-disconnects
+
+    You can change this warning by setting
+
+        config :phoenix_live_view, :test_warnings,
+          missing_form_id: :raise # can be one of :warn, :raise, or :ignore
+
+    See the `Phoenix.LiveViewTest` documentation for more details.
+
+    │
+ 86 │         |> live(~p"/next-read")
+    │         ~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/xaas/library/next_read_live_test.exs:86: (file)
+
+........11:57:48.930 [warning] [recipe-worker] target pins %{"elixir" => "0.0.0-absent"} not installed under /Users/sac/.cache/tmp/xaas-recipe-test-asdf-empty-1790189868871-21394389762; falling back to the running node's toolchain (/opt/homebrew/bin/mix)
+.............................11:57:52.928 request_id=GNgINF92hpFib9D7NIyB [warning] retry: got exception, will retry in 0ms, 3 attempts left
+11:57:52.928 request_id=GNgINF92hpFib9D7NIyB [warning] ** (Req.TransportError) connection refused
+11:57:52.928 request_id=GNgINF92hpFib9D7NIyB [warning] retry: got exception, will retry in 0ms, 2 attempts left
+11:57:52.928 request_id=GNgINF92hpFib9D7NIyB [warning] ** (Req.TransportError) connection refused
+11:57:52.929 request_id=GNgINF92hpFib9D7NIyB [warning] retry: got exception, will retry in 0ms, 1 attempt left
+11:57:52.929 request_id=GNgINF92hpFib9D7NIyB [warning] ** (Req.TransportError) connection refused
+..11:57:52.937 request_id=GNgINGDIZvD9OK_7NI2B [warning] retry: got exception, will retry in 0ms, 3 attempts left
+11:57:52.937 request_id=GNgINGDIZvD9OK_7NI2B [warning] ** (Req.TransportError) connection refused
+11:57:52.938 request_id=GNgINGDIZvD9OK_7NI2B [warning] retry: got exception, will retry in 0ms, 2 attempts left
+11:57:52.938 request_id=GNgINGDIZvD9OK_7NI2B [warning] ** (Req.TransportError) connection refused
+11:57:52.938 request_id=GNgINGDIZvD9OK_7NI2B [warning] retry: got exception, will retry in 0ms, 1 attempt left
+11:57:52.938 request_id=GNgINGDIZvD9OK_7NI2B [warning] ** (Req.TransportError) connection refused
+.............................................................11:57:58.028 [warning] XAAS_LEASE_CLOSE head mismatch epoch=6c20e7d1-8f12-4b30-8413-ea881a6765cd
+....warning: using map.field notation (without parentheses) to invoke function Stripe.Invoice.__struct__() is deprecated, you must add parentheses instead: remote.function()
+  (stripity_stripe 2.17.3) lib/stripe/converter.ex:143: Stripe.Converter.convert_stripe_object/1
+  (stripity_stripe 2.17.3) lib/stripe/converter.ex:136: anonymous fn/2 in Stripe.Converter.convert_map/1
+  (stdlib 7.2) maps.erl:894: :maps.fold_1/4
+  (stripity_stripe 2.17.3) lib/stripe/converter.ex:136: anonymous fn/2 in Stripe.Converter.convert_map/1
+  (stdlib 7.2) maps.erl:894: :maps.fold_1/4
+  (stripity_stripe 2.17.3) lib/stripe/webhook.ex:45: Stripe.Webhook.construct_event/4
+  (xaas 26.9.22) lib/xaas_web/controllers/stripe_webhook_controller.ex:56: XaasWeb.StripeWebhookController.receive/2
+  (xaas 26.9.22) lib/xaas_web/controllers/stripe_webhook_controller.ex:1: XaasWeb.StripeWebhookController.action/2
+  (xaas 26.9.22) lib/xaas_web/controllers/stripe_webhook_controller.ex:1: XaasWeb.StripeWebhookController.phoenix_controller_pipeline/2
+  (phoenix 1.7.24) lib/phoenix/router.ex:484: Phoenix.Router.__call__/5
+  (xaas 26.9.22) lib/xaas_web/endpoint.ex:11: XaasWeb.Endpoint.plug_builder_call/2
+  (xaas 26.9.22) lib/xaas_web/endpoint.ex:11: XaasWeb.Endpoint.call/2
+  (phoenix 1.7.24) lib/phoenix/test/conn_test.ex:225: Phoenix.ConnTest.dispatch/5
+  test/xaas_web/controllers/stripe_webhook_controller_test.exs:161: XaasWeb.StripeWebhookControllerTest."test invoice.payment_failed with a real valid signature sets the real Subscription row to :past_due"/1
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:528: ExUnit.Runner.exec_test/2
+  (stdlib 7.2) timer.erl:599: :timer.tc/2
+  (ex_unit 1.19.5) lib/ex_unit/runner.ex:450: anonymous fn/6 in ExUnit.Runner.spawn_test_monitor/4
+
+...............................................................12:00:09.737 [warning] [ultracode] epoch 35a9ea8d-4d82-43f6-ba92-5a9cc8823ad7 (run 8cc469bd-628b-482a-b96a-0a492521ce77, cycle 0) expected_at=2026-09-23 19:00:09.729046Z exceeded epoch_timeout_seconds=0 -> marked :missed (receipt sealed)
+...............12:00:10.087 [error] Xaas.Telemetry.OcelAshEmitter failed to append OCEL event: %Protocol.UndefinedError{protocol: Jason.Encoder, value: #PID<0.32527.0>, description: "Jason.Encoder protocol must always be explicitly implemented"}
+....................................................................................................12:00:24.597 [warning] [ultracode] dispatch failover-class outcome (attempt 1); retrying once after 10ms
+12:00:24.606 [warning] [ultracode] dispatch failover-class outcome (attempt 1); retrying once after 10ms
+..........12:00:28.902 [warning] [ultracode] dispatch failover-class outcome (attempt 1); retrying once after 10ms
+.......
+
+  5) test the hard timeout kills the whole process group and reports :timeout (Xaas.Ultracode.DispatchTest)
+     test/xaas/ultracode/dispatch_test.exs:600
+     dispatched process survived the timeout kill: 3175
+     3176
+     6055
+     6056
+     9671
+     9672
+     14042
+     14043
+     26864
+     26865
+     50853
+     50858
+     92189
+     92192
+
+     code: assert String.trim(out) == "", "dispatched process survived the timeout kill: #{out}"
+     stacktrace:
+       test/xaas/ultracode/dispatch_test.exs:629: (test)
+
+.12:00:34.662 [warning] [ultracode] dispatch failover-class outcome (attempt 1); retrying once after 10ms
+......................................................
+Finished in 406.8 seconds (10.1s async, 396.7s sync)
+1858 tests, 5 failures (76 excluded)

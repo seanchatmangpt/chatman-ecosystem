@@ -1,0 +1,578 @@
+{
+ "schema": "swarm-results/v1",
+ "workflow": "wf_2755fdff-28e (orthogonal swarm, operator 14:20 PT 'launch an orthogonal swarm to assist')",
+ "synthesized_at": "2026-09-24T01:38:35Z",
+ "launched_by_synth": "nothing (no lanes, workflows, dispatches, pushes, PRs or merges)",
+ "subjects_at_synth": {
+  "xaas": {
+   "int": "/Users/sac/wt/v26922/fri/xaas-int",
+   "branch": "friday/gc-fri-0800",
+   "int_head": "c68c74dcf4e405e4382d34d51288763afc5939b0",
+   "origin_friday": "c561d9fe160932f02cfbbe1d1061dff8c7f8eb9c",
+   "origin_main": "2fb10156c00a821a6915f239ace517bd860c1479",
+   "r1c_R1-X-PIN_branch": "v23/R1-X-PIN @3ea1cfc305f2 (60972f8 fix + 3ea1cfc cherry-pick of the R2-X-HOSTSKIP candidate f7dde47); in flight, not merged",
+   "probe_branch": "origin r2/ci-preflight-295e020 @c4106234aaa2 (not a release subject)"
+  },
+  "ggen_igniter": {
+   "int": "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+   "branch": "friday/gc-fri-0800",
+   "int_head": "d6a6e5bd8de1da426ddc26130edfa45bbaf24f61 (3ed6a7a + R1-GI-PIN merged)",
+   "origin_friday": "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+   "origin_main": "d84da1419a6945c6a8a64b8f6cdca9d0b2c9e0f3",
+   "probe_branches": [
+    "origin swarm/ci-preflight-gi-aa07ee7 @aa07ee76ba02",
+    "origin swarm/ci-preflight-gi-r2-all @794cb2a0538c"
+   ]
+  },
+  "chatman-ecosystem": {
+   "int": "/Users/sac/wt/v26922/fri/chatman-ecosystem-int",
+   "branch": "release/v26.9.23-int",
+   "int_head": "a896e16c68af1315be3492e39939c354ce46b10c",
+   "origin_main": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1"
+  }
+ },
+ "ci_preflight": {
+  "ggen_igniter": {
+   "head_sha": "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+   "runs": [
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35895255818",
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35315548332",
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35895256423",
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35895254817",
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35895254599",
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35895253295",
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35895253020",
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35912778852",
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35912800545",
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35682930334",
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35925710605",
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35933570910",
+    "https://github.com/seanchatmangpt/ggen_igniter/actions/runs/35938454860"
+   ],
+   "verified_by_synth": {
+    "35938454860": "success @794cb2a push",
+    "35933570910": "failure @f5a2652",
+    "35925710605": "failure @aa07ee7",
+    "35895255818": "failure @3937a4f"
+   },
+   "findings": [
+    {
+     "failure": "format step: bootstrap.ex:245 not formatted under 1.18.4 (masked every later step)",
+     "klass": "subject defect",
+     "disposition": "covered by R1-GI-FMT (8b9dcfb, merged 3ed6a7a)",
+     "lane": null
+    },
+    {
+     "failure": "3 git-ground-truth tests REFUSED:SEMANTIC_JIRA_BASE_SHA_UNVERIFIED on the depth-1 checkout",
+     "klass": "subject defect",
+     "disposition": "wave R2 lane R2-GI-CI (fetch-depth hunk)",
+     "lane": "R2-GI-CI"
+    },
+    {
+     "failure": "job cancelled at 30m0s (cold pre-test 14.5 min + suite 35-37 min; failed jobs never save caches)",
+     "klass": "subject defect (reclassified from the swarm's 'infrastructure')",
+     "disposition": "wave R2 lane R2-GI-CI (timeout hunk)",
+     "lane": "R2-GI-CI"
+    },
+    {
+     "failure": "plan_task_test.exs:91 leading 'Generated ggen_igniter app' (orphan dev beam from the end-user probe; seed 648358)",
+     "klass": "subject defect",
+     "disposition": "wave R2 lane R2-GI-PROBE-ISOLATION",
+     "lane": "R2-GI-PROBE-ISOLATION"
+    },
+    {
+     "failure": "bootstrap_test.exs:836 'observed' instead of 'unreadable' under a changed-path commit-graph (runner git 2.55.0)",
+     "klass": "subject defect",
+     "disposition": "wave R2 lane R2-GI-BLOOM",
+     "lane": "R2-GI-BLOOM"
+    },
+    {
+     "failure": "main d84da14: ggen_graph_nif.so missing from a restored _build (~60 UndefinedFunctionError) + 60 s ExUnit timeouts",
+     "klass": "pre-existing",
+     "disposition": "no lane: fixed on the release branch (c81f8dc, 1e4b95b, 300 s ExUnit timeout); main inherits at the Part B merge",
+     "lane": null
+    },
+    {
+     "failure": "none (preflight 35938454860 @794cb2a = 3ed6a7a + the four candidates): 20 doctests, 42 properties, 1350 tests, 0 failures",
+     "klass": "evidence",
+     "disposition": "combined witness of the fix set at one seed (157513); not proof of order-independence",
+     "lane": null
+    }
+   ]
+  },
+  "xaas": {
+   "head_sha": "295e0200a9f61b78d4a631c667e4851cff7b8bb1",
+   "runs": [
+    "https://github.com/seanchatmangpt/xaas/actions/runs/35922997741",
+    "https://github.com/seanchatmangpt/xaas/actions/runs/35923001574",
+    "https://github.com/seanchatmangpt/xaas/actions/runs/35923005133",
+    "https://github.com/seanchatmangpt/xaas/actions/runs/35924767606",
+    "https://github.com/seanchatmangpt/xaas/actions/runs/35928419752",
+    "https://github.com/seanchatmangpt/xaas/actions/runs/35928423483",
+    "https://github.com/seanchatmangpt/xaas/actions/runs/35930975356",
+    "https://github.com/seanchatmangpt/xaas/actions/runs/35810390156",
+    "https://github.com/seanchatmangpt/xaas/actions/runs/35826687758"
+   ],
+   "verified_by_synth": {
+    "35930975356": "success @c410623 dispatch CI/CD Elixir",
+    "35928423483": "success @0e2ec64 dispatch WD CS2",
+    "35928419752": "failure @0e2ec64",
+    "35924767606": "failure @295e020",
+    "35826687758": "failure @b9bf336 PR",
+    "35810390156": "cancelled @2fb1015 main push"
+   },
+   "findings": [
+    {
+     "failure": "Exact-head test court / Run tests: court_receipt_test.exs:306, semantic_receipt_test.exs:196, successor_test.exs:135 (host-coupled)",
+     "klass": "subject defect",
+     "disposition": "wave R2 lane R2-X-HOSTSKIP (conditional: in flight in R1-X-PIN 3ea1cfc)",
+     "lane": "R2-X-HOSTSKIP"
+    },
+    {
+     "failure": "r_projection_test.exs: 5 failures without the fleet validator",
+     "klass": "environment",
+     "disposition": "covered by R1c R1-X-PIN 60972f8 (per-test guard); swarm patch 0002 no longer applies on 60972f8",
+     "lane": null
+    },
+    {
+     "failure": "Dialyzer: machine_experience.ex:539/:1235 pattern_match, xaas.episode.ex:191 guard_fail",
+     "klass": "subject defect",
+     "disposition": "covered by R1c R1-X-PIN 60972f8 (all three); swarm patch 0005 no longer applies on 60972f8",
+     "lane": null
+    },
+    {
+     "failure": "Exact-head production compile court cancelled at 12m0s (main and release heads)",
+     "klass": "pre-existing",
+     "disposition": "wave R2 lane R2-X-PROD-TIMEOUT",
+     "lane": "R2-X-PROD-TIMEOUT"
+    },
+    {
+     "failure": "image-check (latent): builder has no cargo for ggen_igniter's Rustler NIF; 20-min budget below the 23m24s job",
+     "klass": "pre-existing",
+     "disposition": "wave R2 lane R2-X-IMAGE-CARGO",
+     "lane": "R2-X-IMAGE-CARGO"
+    },
+    {
+     "failure": "Bound CI receipt fails as a consequence of image-check",
+     "klass": "pre-existing",
+     "disposition": "closed by R2-X-PROD-TIMEOUT + R2-X-IMAGE-CARGO (probe run 35930975356 success)",
+     "lane": null
+    },
+    {
+     "failure": "WD CS2 Playwright: assets unbuilt (ESM topbar.js) + check_origin refuses 127.0.0.1",
+     "klass": "pre-existing",
+     "disposition": "wave R2 lane R2-X-WDCS2",
+     "lane": "R2-X-WDCS2"
+    },
+    {
+     "failure": "publish-image / deploy",
+     "klass": "",
+     "disposition": "skipped in every run; fenced by R1-X-FENCE (workflow_dispatch + expected_head_sha + reason)",
+     "lane": null
+    },
+    {
+     "failure": "verify_system_authority_exact_head.yaml",
+     "klass": "not applicable",
+     "disposition": "push trigger on verify/v26.9.15-system-authority only; cannot run on the release PR",
+     "lane": null
+    },
+    {
+     "failure": "r81-r75-realization.yml (PR path hit)",
+     "klass": "",
+     "disposition": "local run at 295e020: R81_R75_XAAS=ALIVE cases=17, exit 0",
+     "lane": null
+    }
+   ]
+  }
+ },
+ "wave_R2": {
+  "path": "/Users/sac/wt/v26922/v26923/lanes/wave-R2.json",
+  "sha256": "9ef075c7ac2fec0107db850bf24a166159ea134dd3aab98431992ab996d12316",
+  "shape": "sm-lane-wave {wave, repos, ints, base_branch, worktree_root, branch_prefix, receipts_dir, max_repairs, context, lanes[{id, repo, after, gate, task}]} + ignored annotations (defect_key, klass, swarm_ids, scan_plan_id, preconditions, after_wave_driver_steps, sources)",
+  "context": "wave-R1.json context verbatim + R2 addendum",
+  "lanes": [
+   {
+    "id": "R2-X-HOSTSKIP",
+    "repo": "xaas",
+    "after": [],
+    "defect_key": "xaas-ci-host-coupled-courts",
+    "klass": "subject defect",
+    "swarm_ids": [
+     "R2-X-HOSTSKIP"
+    ],
+    "scan_plan_id": null,
+    "gate": "sh /Users/sac/wt/v26922/v26923/lanes/r2/gates/r2-x-hostskip.sh \"$PWD\""
+   },
+   {
+    "id": "R2-X-WDCS2",
+    "repo": "xaas",
+    "after": [],
+    "defect_key": "xaas-wd-cs2-assets-origin",
+    "klass": "pre-existing",
+    "swarm_ids": [
+     "R2-X-WDCS2"
+    ],
+    "scan_plan_id": "R2-X-WDCS2",
+    "gate": "sh /Users/sac/wt/v26922/v26923/lanes/r2/gates/r2-x-wdcs2.sh \"$PWD\""
+   },
+   {
+    "id": "R2-X-PROD-TIMEOUT",
+    "repo": "xaas",
+    "after": [],
+    "defect_key": "xaas-ci-production-timeout",
+    "klass": "pre-existing",
+    "swarm_ids": [
+     "R2-X-PRODCOURT"
+    ],
+    "scan_plan_id": "R2-X-PROD-TIMEOUT",
+    "gate": "sh /Users/sac/wt/v26922/v26923/lanes/r2/gates/r2-x-prodcourt.sh \"$PWD\""
+   },
+   {
+    "id": "R2-X-IMAGE-CARGO",
+    "repo": "xaas",
+    "after": [
+     "R2-X-PROD-TIMEOUT"
+    ],
+    "defect_key": "xaas-image-rust-toolchain",
+    "klass": "pre-existing",
+    "swarm_ids": [
+     "R2-X-DOCKERRUST"
+    ],
+    "scan_plan_id": "R2-X-IMAGE-CARGO",
+    "gate": "sh /Users/sac/wt/v26922/v26923/lanes/r2/gates/r2-x-dockerrust.sh \"$PWD\""
+   },
+   {
+    "id": "R2-GI-CI",
+    "repo": "ggen_igniter",
+    "after": [],
+    "defect_key": "ggen_igniter-ci-fetch-depth+timeout",
+    "klass": "subject defect",
+    "swarm_ids": [
+     "R2-GI-DEPTH",
+     "R2-GI-TIMEOUT"
+    ],
+    "scan_plan_id": "R2-GI-CI",
+    "gate": "sh /Users/sac/wt/v26922/v26923/lanes/r2/gates/r2-gi-depth.sh \"$PWD\" && sh /Users/sac/wt/v26922/v26923/lanes/r2/gates/r2-gi-timeout.sh \"$PWD\""
+   },
+   {
+    "id": "R2-GI-PROBE-ISOLATION",
+    "repo": "ggen_igniter",
+    "after": [],
+    "defect_key": "ggen_igniter-test-orphan-dev-beam",
+    "klass": "subject defect",
+    "swarm_ids": [
+     "R2-GI-PROBE-ISOLATION"
+    ],
+    "scan_plan_id": null,
+    "gate": "sh /Users/sac/wt/v26922/v26923/lanes/r2/gates/r2-gi-probe-isolation.sh \"$PWD\""
+   },
+   {
+    "id": "R2-GI-BLOOM",
+    "repo": "ggen_igniter",
+    "after": [],
+    "defect_key": "ggen_igniter-test-bloom-commit-graph",
+    "klass": "subject defect",
+    "swarm_ids": [
+     "R2-GI-BLOOM"
+    ],
+    "scan_plan_id": null,
+    "gate": "sh /Users/sac/wt/v26922/v26923/lanes/r2/gates/r2-gi-bloom.sh \"$PWD\""
+   }
+  ],
+  "embed_check": "spec embedded into ~/.claude/workflows/sm-lane-wave.js in scratch; node --check exit 0 (function-wrapped); parsed back: R2 7 lanes, R2-X-IMAGE-CARGO<-R2-X-PROD-TIMEOUT",
+  "dropped": [
+   {
+    "swarm_lane": "R2-X-DIALYZER",
+    "reason": "covered by R1c R1-X-PIN 60972f8: machine_experience.ex :539/:1235 and xaas.episode.ex:191; `git apply --check` of patch 0005 on 60972f8 fails at both files (change already present)"
+   },
+   {
+    "swarm_lane": "r_projection guard (patch 0002, planned as part of R1-X-PIN)",
+    "reason": "covered by R1c R1-X-PIN 60972f8; `git apply --check` fails at r_projection_test.exs:17"
+   },
+   {
+    "swarm_lane": "R2-GI-CACHESEED",
+    "reason": "infrastructure accelerator that fixes no failure; listed in env_infra with its ready candidate and gate"
+   },
+   {
+    "swarm_lane": "(format step)",
+    "reason": "covered by R1-GI-FMT"
+   },
+   {
+    "swarm_lane": "(main NIF cache)",
+    "reason": "pre-existing on main, already fixed on the release branch"
+   }
+  ],
+  "merged_or_renamed": [
+   {
+    "wave_lane": "R2-GI-CI",
+    "from_swarm": [
+     "R2-GI-DEPTH",
+     "R2-GI-TIMEOUT"
+    ],
+    "why": "same file ci.yml; the scan-plan already combined them under defect_key ggen_igniter-ci-fetch-depth+timeout"
+   },
+   {
+    "wave_lane": "R2-X-PROD-TIMEOUT",
+    "from_swarm": [
+     "R2-X-PRODCOURT"
+    ],
+    "why": "scan-plan id for the shared defect_key"
+   },
+   {
+    "wave_lane": "R2-X-IMAGE-CARGO",
+    "from_swarm": [
+     "R2-X-DOCKERRUST"
+    ],
+    "why": "scan-plan id for the shared defect_key"
+   }
+  ],
+  "reclassified": [
+   {
+    "lane": "R2-GI-CI (timeout hunk)",
+    "swarm": "infrastructure",
+    "synth": "subject defect",
+    "evidence": "the budget is a tracked file of the subject; main fit it (29m48s, run 35315548332); the subject's growth (1109 -> 1350 tests, suite 35-37 min alone) broke it; 5/5 push runs cancelled at 30m0s; the xaas analogue (production 12-min budget) is classified pre-existing and kept as a lane"
+   }
+  ],
+  "conditional": [
+   {
+    "lane": "R2-X-HOSTSKIP",
+    "condition": "R1c R1-X-PIN branch carries 3ea1cfc (cherry-pick of f7dde47, committed 18:30 PT). If it merges, the lane stops at its coverage check with no diff; if the R1-X-PIN court drops it, the lane applies the candidate."
+   }
+  ],
+  "gate_conflicts_with_scan_plan": [
+   {
+    "defect_key": "xaas-ci-production-timeout",
+    "scan_gate": "production.timeout-minutes == 30",
+    "this_gate": ">= ceil(1.5 x 21m31s) = 33",
+    "evidence": "complete hosted production jobs 18m30s (35928419752) and 21m31s (35930975356); 30 is 1.39x the measured maximum",
+    "recommend": "reconciled gate accepts >= 33 (e.g. 45)"
+   },
+   {
+    "defect_key": "xaas-image-rust-toolchain",
+    "scan_gate": "image-check.timeout-minutes == 45; Rust 1.97.1; curl|sh or digest-pinned image allowed",
+    "this_gate": ">= 36 (1.5 x 23m24s); integrity-pinned toolchain only (digest-pinned image or sha256-checked rustup-init)",
+    "evidence": "swarm candidate (60, 1.97.0, unverified curl|sh) was hosted-green in 35930975356 but fails the scan gate (60 != 45) and this gate (integrity)",
+    "recommend": "45 + integrity-pinned 1.97.x"
+   },
+   {
+    "defect_key": "xaas-wd-cs2-assets-origin",
+    "scan_gate": "websocket probe with Origin http://127.0.0.1:4002 must get 101 (only the check_origin: false variant passes)",
+    "this_gate": "accepts either the workflow-localhost variant (hosted-witnessed 35928423483) or check_origin: false in config/test.exs",
+    "evidence": "/Users/sac/wt/v26922/v26923/lanes/r2/witness/x-wdcs2-static-variants.log",
+    "recommend": "reconciled gate accepts either; the lane records its choice"
+   },
+   {
+    "defect_key": "ggen_igniter-ci-fetch-depth+timeout",
+    "scan_gate": "verbatim a39921b replay; steps[0] 'Checkout' fetch-depth 0; timeout == 90; hosted Elixir-tests job not cancelled",
+    "this_gate": "depth-shaped clone + reachability probe + git-ground-truth tests; timeout >= 85 (1.5 x 56.5 min)",
+    "evidence": "compatible; the swarm candidate's extra restore comment is dropped for the verbatim replay",
+    "recommend": "no conflict"
+   },
+   {
+    "defect_key": "court-toolchain-closure (scan R2-X-TOOLCHAIN, not in this spec)",
+    "scan_gate": "gi_mix.sh and bootstrap_court.sh resolve the graph-side toolchain",
+    "this_gate": "n/a",
+    "evidence": "R1c R1-X-PIN 60972f8 already changed docs/sjira/v26.9.23/courts/gi_mix.sh (+47) to resolve the graph-side toolchain via mix xaas.episode --graph-toolchain",
+    "recommend": "narrow R2-X-TOOLCHAIN to bootstrap_court.sh + the cargo-on-no-LLM-PATH REFUSED after R1-X-PIN merges (same-file conflict risk on gi_mix.sh)"
+   }
+  ],
+  "after_wave_driver_steps": [
+   "combined exact-head CI witness at the post-R2 int heads, before REL-A3: push friday/gc-fri-0800 of both repos (fast-forward, never force); ggen_igniter: the push-event 'ggen_igniter CI' run at that exact SHA concludes success (the only whole-suite green on record is 35938454860 @794cb2a = 3ed6a7a + the four ggen_igniter candidates, seed 157513); xaas: after the FENCE YAML proof, dispatch ci_cd.yaml and wd-cs2-exact-head.yml at friday/gc-fri-0800 and require every job success except publish-image/deploy skipped",
+   "REL-A3: re-freeze S23 at the post-R2 heads, pinned qualification, 12/13 court, reseal, push, stage operator/ACCEPTED.proposed"
+  ]
+ },
+ "gate_witnesses": {
+  "dir": "/Users/sac/wt/v26922/v26923/lanes/r2/witness",
+  "scratch_subjects": {
+   "xaas": "shared clone at c68c74d, deps/_build APFS-cloned from R1-X-PIN",
+   "ggen_igniter": "shared clone at d6a6e5b, deps/_build/native target APFS-cloned from R1-GI-PIN"
+  },
+  "results": [
+   "r2-x-hostskip.sh base c68c74d => 1 (runner-shaped clause: 'Result: 48/51 passed, 2 skipped / Failed: 3 tests'); + candidate => 0 (host 'Result: 53 passed', 0 skipped; runner shape 'Result: 48 passed, 5 skipped')",
+   "r2-x-prodcourt.sh base => 1 (12 < 33); + candidate => 0 (45; publish/deploy if == R1-X-FENCE 6f59676; mix format ok)",
+   "r2-x-dockerrust.sh base => 1 (5 reasons); + swarm candidate => 1 (only: toolchain not integrity-pinned); sha256-checked rustup-init form (synthetic digest, gate-logic witness only) => 0",
+   "r2-x-wdcs2 static: base => 1; swarm localhost variant => 0; scan check_origin variant => 0; candidate without assets/package.json => 1 (the mix assets.setup/build tail was not run by the synth: it downloads esbuild/tailwind when missing)",
+   "r2-gi-timeout.sh base d6a6e5b => 1 (30 < 85, runs 35925710605/35933570910 measured live via gh); + candidate => 0 (90)",
+   "r2-gi-cacheseed.sh base => 1; + candidate => 0",
+   "r2-gi-probe-isolation.sh base => 2 (seed 0: '10 tests, 1 failure', Jason 0x47 'G'); + candidate => 0 (4 seeds x '10 tests, 0 failures', lib clean)",
+   "r2-gi-bloom.sh + candidate => 0 ('27 tests, 0 failures'); mutant without the 3 config lines: mix test => 2 ('27 tests, 1 failure', status 'observed')",
+   "r2-gi-depth.sh: not re-run by the synth (swarm witness: exit 1 at 3ed6a7a at the reachability probe, exit 0 at aa07ee7 with 72 tests, 0 failures, 61 excluded)"
+  ],
+  "gate_sha256": {
+   "r2-gi-bloom.sh": "26e091f29d53884a72584efb20ab1cdbb2465e12437dad998b49caefa7c3e1ff",
+   "r2-gi-cacheseed.sh": "b7fe15d1aacbbe26891b9a55b99140dea47d245fac4afa7513baed00dddfb078",
+   "r2-gi-depth.sh": "c3ade869b1a8b5861ecc3236fd60c5ad0cc9117a93ef99bd5da24b50cc7b9d96",
+   "r2-gi-probe-isolation.sh": "04b87f58eea52792270be4592b9deecdcf76e29d08ca1f3adb4dd1b555312946",
+   "r2-gi-timeout.sh": "20a074a2498ff3b54820eae1da9df6dc63b7a0d8f1302acabb12c2abf47dd99d",
+   "r2-x-dockerrust.sh": "8860bdb7b3e38bd5b2e24f69bfbbce844bb7793fd17e9b7d333b3de2b1adda2d",
+   "r2-x-hostskip.sh": "e2494ade0f53f3944e9b36e69b1f2cf016e239a651671ceb8c8e91e0f7c18c92",
+   "r2-x-prodcourt.sh": "55ab3721077ca608438dd16aab43ea6e44dc7fc0eb564204b8f0e6102530cda2",
+   "r2-x-wdcs2.sh": "fcf49f48a393d44a6b86fb87d23890e6022132faf509e520de747ec8b9a5a6c4"
+  },
+  "candidate_sha256": {
+   "r2-gi-bloom.patch": "9e491d8dccb9137f7931d3e89f3b177ef4501f702ad28c5c70f1493ae084ecb9",
+   "r2-gi-cacheseed.patch": "2860fb4ad5159ee6d1daf1d6835d4d596809deaa2e5fde2c18d176969798a9cc",
+   "r2-gi-depth-timeout.patch": "764e04f4b196354a817b68e807007aeccaa6016c03ce101f06a81aa7c533fd90",
+   "r2-gi-probe-isolation.patch": "6e61bfd4d92e812f3eba224bd922067d744ce7afb5f9bd24913ec935870e9513",
+   "r2-x-hostskip.patch": "1c1b7baa520e025958ddca55668020aca29ac45d4a88868b103359d514d97994",
+   "r2-x-prodcourt-dockerrust.patch": "539dd3abb48a8ec024f49e1f28c3613e7a6739bd79c12664d4875e0873d40492",
+   "r2-x-wdcs2.patch": "ff3ce3143bd95e75ab4f62fe7ca56c43f9787d7c5bd80e3cf9b158c0bdc9b944",
+   "superseded/r2-x-dialyzer.SUPERSEDED-by-R1-X-PIN-60972f8.patch": "8ee79782f83b69897002d723dfbd18616e97f6f92acb21e29e4ca9bcfaf85a61",
+   "superseded/r2-x-rprojection-guard.SUPERSEDED-by-R1-X-PIN-60972f8.patch": "71fbcc3130c960cd5aa00c308b0a1d47584ee16464545d6e3f38fe16aab5cf05"
+  },
+  "applies_cleanly": {
+   "xaas c68c74d": [
+    "r2-x-hostskip",
+    "r2-x-wdcs2",
+    "r2-x-prodcourt-dockerrust"
+   ],
+   "xaas 60972f8 (R1-X-PIN)": [
+    "r2-x-hostskip",
+    "r2-x-wdcs2",
+    "r2-x-prodcourt-dockerrust"
+   ],
+   "ggen_igniter d6a6e5b": [
+    "r2-gi-depth-timeout",
+    "r2-gi-probe-isolation",
+    "r2-gi-bloom",
+    "r2-gi-cacheseed"
+   ]
+  }
+ },
+ "env_infra": [
+  {
+   "item": "R2-GI-CACHESEED: deps and NIF caches never saved by a failed/timed-out job (actions/cache@0057852 post-if: success())",
+   "klass": "infrastructure",
+   "blocks_green": false,
+   "evidence": "every red/timed-out run logs 'Post Cache ...: skipped'; with the restore/save split, red run 35933570910 saved both caches (23:40:46Z/23:40:50Z) and 35938454860 hit both: pre-test 14.5 -> 6.4 min, 'mix compile (dev env)' 8.5 min -> 15 s",
+   "ready": {
+    "candidate": "/Users/sac/wt/v26922/v26923/lanes/r2/candidates/r2-gi-cacheseed.patch",
+    "gate": "/Users/sac/wt/v26922/v26923/lanes/r2/gates/r2-gi-cacheseed.sh",
+    "witness": "base => 1, candidate => 0"
+   },
+   "admission": "operator rule: Required_23 only if Part B's CI fix-forward rounds count as release consequence; otherwise Successor_24+"
+  },
+  {
+   "item": "xaas WD CS2 cold-cache duration vs the 35-min job budget",
+   "klass": "infrastructure (unmeasured)",
+   "blocks_green": "UNKNOWN",
+   "evidence": "the only green run (35928423483) had a warm cache; on main the cold compile took 22 of 35 min; R2-X-WDCS2 adds a deps/_build cache and must measure a cold run"
+  },
+  {
+   "item": "runner-side trigger that writes changed-path commit-graphs (git 2.55.0)",
+   "klass": "environment (UNVERIFIED)",
+   "blocks_green": false,
+   "evidence": "mechanism verified locally on git 2.51.2; R2-GI-BLOOM makes the fixture independent of it"
+  },
+  {
+   "item": "ggen_igniter main NIF-cache failure (run 35315548332)",
+   "klass": "pre-existing",
+   "blocks_green": "main only",
+   "evidence": "fixed on friday/gc-fri-0800 by c81f8dc + 1e4b95b; 0 'Failed to load NIF' lines in all branch runs"
+  },
+  {
+   "item": "Elixir 1.20.2 cannot compile ggen_igniter ('invalid line break character in string: \\u0085')",
+   "klass": "environment",
+   "blocks_green": false,
+   "evidence": "xaas swarm observation; relevant only if the graph side runs off its 1.18.4 pin (R1-X-PIN's gi_mix.sh resolves the graph-side toolchain)"
+  },
+  {
+   "item": "local Postgres databases left by probes: xaas_test_r2ci, xaas_test_r2ci2, xaas_test_r2wd, xaas_test_r2host",
+   "klass": "environment",
+   "blocks_green": false,
+   "evidence": "xaas swarm notes; the synth's hostskip witness reused partition _r2host (no new database)",
+   "action": "operator cleanup candidate; do not drop without request"
+  },
+  {
+   "item": "untracked .oclnr-cache/ in ggen_igniter-int",
+   "klass": "environment",
+   "blocks_green": false,
+   "evidence": "`git status --porcelain` in the int shows '?? .oclnr-cache/' (not created by the swarm); integrate steps must leave it"
+  },
+  {
+   "item": "remote probe branches (not release subjects)",
+   "klass": "infrastructure",
+   "blocks_green": false,
+   "evidence": "xaas origin r2/ci-preflight-295e020 @c4106234; ggen_igniter origin swarm/ci-preflight-gi-aa07ee7 @aa07ee76, swarm/ci-preflight-gi-r2-all @794cb2a0 (runs cite them)",
+   "action": "keep as evidence; delete only on operator request"
+  },
+  {
+   "item": "origin friday/gc-fri-0800 behind the int heads",
+   "klass": "infrastructure",
+   "blocks_green": "hosted witness at the exact int head needs a push",
+   "evidence": "xaas origin c561d9f vs int c68c74d; ggen_igniter origin 3937a4f vs int d6a6e5b"
+  },
+  {
+   "item": "disk",
+   "klass": "environment",
+   "blocks_green": false,
+   "evidence": "df -g /Users/sac: 30 GB free (97%) during the synth; os_mon disk_almost_full alarms in the ggen_igniter witness logs"
+  }
+ ],
+ "unresolved": [
+  "xaas semantic_drive_test.exs:105 failed once in a 3-file run and passes alone (possible order dependence); R1-X-PIN's two full-suite runs should show it: check its receipt",
+  "ggen_igniter whole-suite green exists at one seed (157513); order-dependent tests beyond R2-GI-PROBE-ISOLATION are not excluded",
+  "R1-X-PIN changes after 60972f8 (gi_mix.sh graph toolchain, court-copy fixtures, port 0, the 3ea1cfc cherry-pick) have no hosted witness yet: the post-wave combined witness covers them",
+  "xaas heads after 295e020 (FENCE, PGREP, DIGEST, LOCK, PIN) have no whole-workflow hosted run: covered by the post-wave combined witness",
+  "the synth's inputs were truncated: the ggen_igniter swarm notes end at 'the 30 min j' and the CE bootstrap notes at '(6'; the full texts are in the wf_2755fdff-28e journal"
+ ],
+ "ce": {
+  "CE23-0": {
+   "standing": "ALIVE (scoped to CE23-0 only; the root crown CE23-1..11 is not claimed)",
+   "receipt": "/Users/sac/wt/v26922/fri/chatman-ecosystem-int/receipts/v26.9.23/CE23-0.json",
+   "receipt_sha256": "420631dff1b25eff56d6c9e9369cbdeaaea4ec377c74f802335cab87e2c260e4",
+   "subject": "seanchatmangpt/chatman-ecosystem main c59596f5 (base = subject); int release/v26.9.23-int @a896e16c pushed as a new branch, no PR/tag/merge",
+   "lineage": "local checkout /Users/sac/chatman-ecosystem (HEAD 6c21e25, 0 remotes, clean) shares no ancestry with GitHub main (merge-base exit 1; 8 vs 4730 commits; roots 551cf5c vs 14cfd7b); 4 local refs pinned as refs/preserve/v26.9.23/local-checkout/* in the clone only (not pushed)",
+   "driver_decision": "DRIVER.md 15:05 PT: release subject = GitHub main; importing local-only content is successor GC-26.9.24; the local checkout is never modified",
+   "court": "pass (independent re-derivation of identity, lineage, preserve refs, untouched local checkout, receipt bytes)",
+   "court_limits": [
+    "validate_receipt.py is structural only: a forged lineage block (fake merge_base, verdict SHARED) was ADMITTED; lineage standing rests on the replay hashes, which the court re-ran (admission_vacuous for lineage claims at the validator)",
+    "replay #17 (`git rev-parse HEAD` in the int worktree) cannot reproduce after sealing: it prints a896e16c, not the sealed c59596f5 (partial R_missing_replay; composition C21 out-of-subject receipts is the structural fix)",
+    "wording: '7 GitHub branches' counted refs/remotes/origin/HEAD; 6 real heads at seal time"
+   ],
+   "hardening_available": "scan-plan CE0b: install /private/tmp/claude-501/v23-scratch/SCAN-CE23-0-identity/pre-push.fence as the clone's pre-push hook (refuses refs descending from local root 551cf5c)"
+  },
+  "CE0_wave": {
+   "CE-INTAKE": {
+    "status": "refuted by the runner; standing PARTIAL_ALIVE (broken_term R_missing_standing)",
+    "branch": "ce23/CE-INTAKE",
+    "worktree": "/Users/sac/wt/v26922/v23/CE-INTAKE",
+    "subject": "96fb0bfbb6aa10e5750fcd8942b46c68690620a2",
+    "receipt_commit": "f318fd24059d5d5162df8cb508bd7cad97fadadd",
+    "receipt": "receipts/v26.9.23/CE-INTAKE.json (ADMITTED; replay_court 22/22)",
+    "cause": "driver-owned gate-string defect: the first command `prose_spans.py check` runs without --namespace, so the frozen tool recomputes IRIs in https://ggen-igniter.dev/sjira/v26.9.23# while the task binds ce: = https://ggen-igniter.dev/sjira/chatman-26.9.23# (46 x iri_mismatch, exit 1 for any conforming subject)",
+    "corrected_gate": "append --namespace 'https://ggen-igniter.dev/sjira/chatman-26.9.23#' --prefix ce --require-gates 12 --gate-prefix CE23- to the first command, or run `sh release/v26.9.23/sjira/compile_check.sh` (equivalent; exit 0 at 96fb0bfb with both judges)",
+    "produced": "54 WorkOrders (21 + 9 + 24), byte-identical double compile; replay_court.py (record/log/receipt modes) + 5 Chicago tests; 35 tests OK; anti-vacuity: revert => 1, one-byte compiled drift => 1 (output_drift), disabled exit comparison => ReplayCourtTest 3/5 FAIL"
+   },
+   "CE-LANEPLAN": {
+    "status": "blocked-dep (CE-INTAKE not merged)"
+   },
+   "scan_plan_CE0b_reconciliation": "CE0b's CE-INTAKE-C gate assumes $S/NAMESPACE, units/<u>/{source.md,candidates.ttl,extract.json} and --prefix ce23; the CE-INTAKE subject 96fb0bfb has no NAMESPACE file, units/<name>.goal.ttl files, candidates/<name>.{ttl,extract.json} and --prefix ce. Either CE-INTAKE-C rebuilds in its own layout (the CE-INTAKE subject is preserved as an alternative) or CE0b's gate is re-derived from compile_check.sh to reuse 96fb0bfb."
+  }
+ },
+ "commands": [
+  "git -C xaas-int / ggen_igniter-int branch, rev-parse, log, status => 0 (c68c74d, d6a6e5b; '?? .oclnr-cache/' in ggen_igniter-int)",
+  "git ls-remote origin (xaas, ggen_igniter) => 0 (friday c561d9f / 3937a4f; main 2fb1015 / d84da14; probe branches listed)",
+  "gh run view (4 ggen_igniter + 6 xaas runs) => 0 (conclusions as in ci_preflight.*.verified_by_synth)",
+  "GIT_INDEX_FILE=<tmp> git read-tree <sha> && git apply --cached --check <patch> (xaas c561d9f/c68c74d/60972f8; ggen_igniter 3ed6a7a/d6a6e5b) => 0 except 0002 and 0005 on 60972f8 => 1 (already applied by R1-X-PIN)",
+  "git show 60972f8 / 3ea1cfc in R1-X-PIN (read-only) => 0",
+  "git -C ggen_igniter show a39921b|4ffa201|3ed6a7a|d6a6e5b:.github/workflows/ci.yml | grep fetch-depth => 1/0/0/0 matches; 4ffa201 parents 76279a9 a39921b",
+  "gate witnesses as listed in gate_witnesses.results",
+  "python3 build_wave_r2.py => 0 (7 lanes); shape check => 0 (no missing keys, unique ids, after resolves, context starts with wave-R1 context)",
+  "sm-lane-wave embed + node --check (function-wrapped) => 0"
+ ],
+ "no_writes_to": [
+  "/Users/sac/wt/v26922/fri/xaas-int",
+  "/Users/sac/wt/v26922/fri/ggen_igniter-int",
+  "/Users/sac/wt/v26922/v23/R1-*",
+  "/Users/sac/wt/v26922/v23/CE-INTAKE",
+  "/Users/sac/chatman-ecosystem"
+ ],
+ "files_written": [
+  "/Users/sac/wt/v26922/v26923/lanes/wave-R2.json",
+  "/Users/sac/wt/v26922/v26923/lanes/swarm-results.json",
+  "/Users/sac/wt/v26922/v26923/lanes/SWARM.md",
+  "/Users/sac/wt/v26922/v26923/lanes/r2/{gates,candidates,witness}/"
+ ]
+}

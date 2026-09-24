@@ -1,0 +1,80 @@
+[2026-09-23T14:35:03-0700] == re-check immediately before acting
+[2026-09-23T14:35:04-0700] re-check PASS: head=46122984e0ecb8ca92feb89b7e68c16af24b0ec5, no cwd/argv, no mtime < 12h, porcelain empty, ignored set = plan
+[2026-09-23T14:35:04-0700] == hash private signing keys (hash only)
+.ggen/keys/signing.key	355468b306f4ba8bcc359fd4ab9c6593d761a83a10e9fb6ef8d2a9716bbb3748
+packs/xaas-public-ash-projection-pack/.ggen/keys/signing.key	50327f2137a5e2645be7cd58edc448f5ab6a2d214a175651ebfce9f4977cc978
+[2026-09-23T14:35:04-0700] == snapshot without touching the worktree index
+[2026-09-23T14:35:14-0700] preserve commit abd9410e6a08099374c8bc1a3dac627e7e3ae413 tree 27324f9ae006e4198c888c02a2720de17270a8c8 -> refs/preserve/v26.9.23/cleanup/mp-wo2-ci-debt
+[2026-09-23T14:35:14-0700] == coverage proof (blob hash per evidence path)
+[2026-09-23T14:35:14-0700] covered .ggen-v2/receipt-log.jsonl blob=59e8aa63c93463ef7b4fc0f8499bbadf5e98666c
+[2026-09-23T14:35:14-0700] covered .ggen-v2/receipt.json blob=12376f1181ed188289cdf72b8b6c93c38e61d209
+[2026-09-23T14:35:14-0700] covered .ggen/keys/verifying.key blob=4fd5626498fced3bae2a605a33a5dacd0050a87a
+[2026-09-23T14:35:14-0700] covered packs/xaas-public-ash-projection-pack/.ggen-v2/receipt-log.jsonl blob=21b5a4f9ccd31995b41af598e2a1ce4f3fbb44a7
+[2026-09-23T14:35:14-0700] covered packs/xaas-public-ash-projection-pack/.ggen-v2/receipt.json blob=743ec87e416778e8d1e13fe5419a27c961e98f52
+[2026-09-23T14:35:14-0700] covered packs/xaas-public-ash-projection-pack/.ggen/keys/verifying.key blob=5d376566a3b80e2a329266e2d026cd1d855c0d87
+A	.ggen-v2/receipt-log.jsonl
+A	.ggen-v2/receipt.json
+A	.ggen/keys/verifying.key
+A	packs/xaas-public-ash-projection-pack/.ggen-v2/receipt-log.jsonl
+A	packs/xaas-public-ash-projection-pack/.ggen-v2/receipt.json
+A	packs/xaas-public-ash-projection-pack/.ggen/keys/verifying.key
+[2026-09-23T14:35:14-0700] == verify pre + anti-vacuity
+PASS ref_exists
+PASS parent_is_head
+PASS diff_is_exactly_evidence_added
+PASS evidence_rows_cover_all
+PASS blob:.ggen-v2/receipt-log.jsonl
+PASS blob:.ggen-v2/receipt.json
+PASS blob:.ggen/keys/verifying.key
+PASS blob:packs/xaas-public-ash-projection-pack/.ggen-v2/receipt-log.jsonl
+PASS blob:packs/xaas-public-ash-projection-pack/.ggen-v2/receipt.json
+PASS blob:packs/xaas-public-ash-projection-pack/.ggen/keys/verifying.key
+PASS no_private_key_in_tree
+PASS keyhash_in_message:.ggen/keys/signing.key
+PASS keyhash_in_message:packs/xaas-public-ash-projection-pack/.ggen/keys/signing.key
+PASS sig:./f93775d1c6e0
+PASS sig:./6c4435de851d
+PASS sig:./ce0ff87494f2
+PASS sig:./f93775d1c6e0
+PASS sig:packs/xaas-public-ash-projection-pack/4bf68c4275ed
+PASS sig:packs/xaas-public-ash-projection-pack/c8b65ea5bb9c
+PASS sig:packs/xaas-public-ash-projection-pack/4bf68c4275ed
+PASS sig_count
+PASS branch_unchanged
+PASS worktree_listed
+PASS worktree_dir_exists
+24/24 passed (phase=pre, mutate=None)
+[2026-09-23T14:35:15-0700] anti-vacuity mutate=blob -> refused (1 FAIL lines)
+[2026-09-23T14:35:15-0700] anti-vacuity mutate=sig -> refused (7 FAIL lines)
+[2026-09-23T14:35:16-0700] anti-vacuity mutate=keyhash -> refused (1 FAIL lines)
+[2026-09-23T14:35:16-0700] == remove
+du_kib_before 2871772
+[2026-09-23T14:35:18-0700] worktree removed
+[2026-09-23T14:35:18-0700] == verify post
+PASS ref_exists
+PASS parent_is_head
+PASS diff_is_exactly_evidence_added
+PASS evidence_rows_cover_all
+PASS blob:.ggen-v2/receipt-log.jsonl
+PASS blob:.ggen-v2/receipt.json
+PASS blob:.ggen/keys/verifying.key
+PASS blob:packs/xaas-public-ash-projection-pack/.ggen-v2/receipt-log.jsonl
+PASS blob:packs/xaas-public-ash-projection-pack/.ggen-v2/receipt.json
+PASS blob:packs/xaas-public-ash-projection-pack/.ggen/keys/verifying.key
+PASS no_private_key_in_tree
+PASS keyhash_in_message:.ggen/keys/signing.key
+PASS keyhash_in_message:packs/xaas-public-ash-projection-pack/.ggen/keys/signing.key
+PASS sig:./f93775d1c6e0
+PASS sig:./6c4435de851d
+PASS sig:./ce0ff87494f2
+PASS sig:./f93775d1c6e0
+PASS sig:packs/xaas-public-ash-projection-pack/4bf68c4275ed
+PASS sig:packs/xaas-public-ash-projection-pack/c8b65ea5bb9c
+PASS sig:packs/xaas-public-ash-projection-pack/4bf68c4275ed
+PASS sig_count
+PASS branch_unchanged
+PASS worktree_not_listed
+PASS worktree_dir_absent
+PASS admin_dir_absent
+25/25 passed (phase=post, mutate=None)
+[2026-09-23T14:35:19-0700] DONE preserve=abd9410e6a08099374c8bc1a3dac627e7e3ae413

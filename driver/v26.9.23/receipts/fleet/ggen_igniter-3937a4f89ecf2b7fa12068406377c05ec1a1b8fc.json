@@ -1,0 +1,113 @@
+{
+  "identity": {
+    "subject": "ggen_igniter",
+    "repo": "seanchatmangpt/ggen_igniter",
+    "subject_sha": "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+    "base_sha": "d84da1419a6945c6a8a64b8f6cdca9d0b2c9e0f3",
+    "branch": "friday/gc-fri-0800",
+    "worktree": "/Users/sac/wt/v26922/v23/rel-ggen_igniter-int",
+    "frozen_by": "/Users/sac/wt/v26922/v26923/release/FREEZE.json",
+    "base_ref": "origin/main (local ref, not fetched; merge-base HEAD origin/main)"
+  },
+  "authority": {
+    "ceiling": "OBSERVE",
+    "grant": "release lane exact-head qualification (GC23-11); no commits, pushes, tags or PRs",
+    "actor": "claude-opus-5-5 subagent (workflow release lane RELA ggen_igniter)"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": []
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "mix format --check-formatted",
+        "cwd": "/Users/sac/wt/v26922/v23/rel-ggen_igniter-int",
+        "exit": 0,
+        "summary": "[2026-09-23T18:52:53Z -> 2026-09-23T18:52:53Z]",
+        "output_sha256": "39b517c336cfc5f32f3ebb5f1eea2c9f8839526ecf4bd808f206ddff7c1a1c4c",
+        "log": "/Users/sac/wt/v26922/v26923/receipts/fleet/ggen_igniter-3937a4f89ecf2b7fa12068406377c05ec1a1b8fc.logs/01-format.log"
+      },
+      {
+        "cmd": "mix compile --warnings-as-errors --force",
+        "cwd": "/Users/sac/wt/v26922/v23/rel-ggen_igniter-int",
+        "exit": 0,
+        "summary": "Generated ggen_igniter app [2026-09-23T18:52:57Z -> 2026-09-23T18:53:02Z]",
+        "output_sha256": "5810538105675710e3d8c464f3bc371eb14ef0e2f9fc5bf372b52dc32f304ce5",
+        "log": "/Users/sac/wt/v26922/v26923/receipts/fleet/ggen_igniter-3937a4f89ecf2b7fa12068406377c05ec1a1b8fc.logs/02-compile.log"
+      },
+      {
+        "cmd": "mix credo",
+        "cwd": "/Users/sac/wt/v26922/v23/rel-ggen_igniter-int",
+        "exit": 0,
+        "summary": "2945 mods/funs, found no issues. [2026-09-23T18:53:06Z -> 2026-09-23T18:53:08Z]",
+        "output_sha256": "15cb1a02a2b799cfac86e1c75ed6d7f5eec0e21a741bc94484f09a22e1b34f57",
+        "log": "/Users/sac/wt/v26922/v26923/receipts/fleet/ggen_igniter-3937a4f89ecf2b7fa12068406377c05ec1a1b8fc.logs/03-credo.log"
+      },
+      {
+        "cmd": "mix test",
+        "cwd": "/Users/sac/wt/v26922/v23/rel-ggen_igniter-int",
+        "exit": 0,
+        "summary": "Finished in 1806.8 seconds (34.5s async, 1772.3s sync); 20 doctests, 42 properties, 1340 tests, 0 failures, 1 skipped (9 excluded) [2026-09-23T18:53:12Z -> 2026-09-23T19:23:21Z]",
+        "output_sha256": "9884c9c7c21dc932e6a541f1fdc58bc57d3091fea86f26fb0f85d0577ab9dcb7",
+        "log": "/Users/sac/wt/v26922/v26923/receipts/fleet/ggen_igniter-3937a4f89ecf2b7fa12068406377c05ec1a1b8fc.logs/04-test.log"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/receipts/fleet/ggen_igniter-3937a4f89ecf2b7fa12068406377c05ec1a1b8fc.logs",
+    "receipt_builder": {
+      "path": "/Users/sac/wt/v26922/v26923/receipts/fleet/ggen_igniter-3937a4f89ecf2b7fa12068406377c05ec1a1b8fc.logs/build_fleet_receipt.py",
+      "sha256": "a01265b21a34fc39a0cf50bf9d4382cc94c53303ed76c4f7226ce5800b02d85d",
+      "argv": [
+        "3937a4f89ecf2b7fa12068406377c05ec1a1b8fc",
+        "d84da1419a6945c6a8a64b8f6cdca9d0b2c9e0f3",
+        "/Users/sac/wt/v26922/v23/rel-ggen_igniter-int",
+        "/private/tmp/claude-501/v23-scratch/RELA-ggen_igniter-3937a4f",
+        "/Users/sac/wt/v26922/v26923/receipts/fleet"
+      ]
+    },
+    "provisioning": "deps/ and _build/ were already present in this lane's scratch worktree (mtime 2026-09-23T17:50Z, an earlier provisioning from /Users/sac/wt/v26922/fri/ggen_igniter-int); mix.lock sha256 identical to int (8fab32ffd8bd712698743b89048f164ea7ef10c02ed37fcae3289aa852e59966); diff -rq deps vs int deps: only 3 rebar3 source.dag files differ (idna, telemetry, yamerl; path-bound build metadata); diff -rq _build/test/lib vs int: no difference outside ggen_igniter itself; the project was recompiled by step 02 (--force)"
+  },
+  "toolchain": {
+    "elixir": [
+      "Erlang/OTP 28 [erts-16.2] [source] [64-bit] [smp:16:16] [ds:16:16:10] [async-threads:1] [jit]",
+      "Elixir 1.19.5 (compiled with Erlang/OTP 28)"
+    ],
+    "otp": "28.3.1",
+    "otp_root": "/Users/sac/.erlmcp/otp-28.3.1/lib/erlang",
+    "mix": "/opt/homebrew/bin/mix",
+    "rustc": "rustc 1.97.0 (2d8144b78 2026-07-07)",
+    "cargo": "cargo 1.97.0 (c980f4866 2026-06-30)"
+  },
+  "observations": [
+    {
+      "kind": "test_writes_tracked_file",
+      "pre_existing_at_subject": true,
+      "path": "receipts/v26.9.22/kernel-differential.json",
+      "writer": "test/ggen_igniter_semantic_jira_kernel_differential_test.exs (@report_path, File.write!)",
+      "finding": "the committed report is stale at this head: it records shapes sha256 68ca0399... and pack ontology sha256 152dafc3... while the head's files hash to 42572fa3... and 45296a20...; the rerun changed only sha256 fields (412 shapes_sha256, 4 sha256) and slice_count 200 -> 290; no verdict or classification line changed",
+      "evidence": [
+        "/Users/sac/wt/v26922/v26923/receipts/fleet/ggen_igniter-3937a4f89ecf2b7fa12068406377c05ec1a1b8fc.logs/post-test.tracked.diff",
+        "/Users/sac/wt/v26922/v26923/receipts/fleet/ggen_igniter-3937a4f89ecf2b7fa12068406377c05ec1a1b8fc.logs/post-test.kernel-differential.json"
+      ],
+      "diff_sha256": "0842ba86971c344379b97c22a1da93e4841e6184f02aa251e8a0630ae6d30976",
+      "disposition": "preserved in evidence, then `git restore` in the scratch worktree; not committed (release graph frozen, no successor work admitted)",
+      "standing_effect": "none: every gate step exited 0; recorded as a successor candidate"
+    },
+    {
+      "kind": "test_stderr_noise",
+      "pre_existing_at_subject": true,
+      "finding": "3 lines 'fatal: unable to read tree (17e2923d...)' printed during mix test (a git subprocess inside a test); no test failed",
+      "standing_effect": "none"
+    },
+    {
+      "kind": "host_contention",
+      "finding": "mix test wall time 1806.8 s (34.5 s async, 1772.3 s sync) under load average 36-61 from concurrent lanes; exceeds the ~20 min per-command guidance; run to a log file, exit captured",
+      "standing_effect": "none"
+    }
+  ],
+  "standing": {
+    "derived_from": "replay.commands[0..3] (format, compile --warnings-as-errors --force, credo, test) run in /Users/sac/wt/v26922/v23/rel-ggen_igniter-int with HEAD == 3937a4f89ecf2b7fa12068406377c05ec1a1b8fc; tracked tree clean before step 01 and after restoring the one test-written file (git status --porcelain now: empty); exits parsed from the step logs",
+    "value": "ALIVE"
+  }
+}

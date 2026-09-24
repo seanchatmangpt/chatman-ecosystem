@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (2 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:4e595f54ed644e6f6caeffa4af3e9f1c4c9885c4c3640f212ae35e0e289a65f8 plan_hash:bf18bd01c7b3679749b27f95e38d878d0b7a5667d335aa5661ca52a47395b5f0 reason:merged lane worktree FRI-T5 (HEAD ancestor of friday/gc-fri-0800); _build+deps regenerable; disk 20GiB before wave B1",
+    "actor": "claude:v23-driver"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 2/2 plan items (2027372544 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: 241905664 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/FRI-T5-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/FRI-T5-receipt.json --yes",
+        "cwd": "/Users/sac/wt/v26922/fri/FRI-T4",
+        "exit": 0,
+        "summary": "deleted=2 skipped=0 failed=0 refused=0",
+        "output_sha256": "f8cbc63f4089c149c4848f20c796ea6b13f8b4b3406ddfa4466afbf7957a84c6"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/FRI-T5-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/FRI-T5-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/FRI-T5-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/FRI-T5-receipt.json (sha256 f8cbc63f4089c149c4848f20c796ea6b13f8b4b3406ddfa4466afbf7957a84c6)"
+  }
+}

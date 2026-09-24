@@ -1,0 +1,36 @@
+{
+  "identity": {
+    "subject": "oclnr snapshot thin /",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "operator-invocation: `oclnr snapshot thin` run directly by its caller",
+    "actor": "oclnr"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "APFS local snapshots on /: thinned 3 (before 3, after 0), requested 5000000000 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr snapshot thin --bytes 5GB --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-snapshot-thin-receipt.json",
+        "cwd": "/",
+        "exit": 0,
+        "summary": "thinned=3",
+        "output_sha256": "8be8d33f28eccc0fd4cfacb507a486f43eec48f6e138053b8a9d13b80ec05f82"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-snapshot-thin-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr snapshot thin --bytes 5GB --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-snapshot-thin-receipt.json`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/cleanup/ggen-mp-snapshot-thin-receipt.json (sha256 8be8d33f28eccc0fd4cfacb507a486f43eec48f6e138053b8a9d13b80ec05f82)"
+  }
+}

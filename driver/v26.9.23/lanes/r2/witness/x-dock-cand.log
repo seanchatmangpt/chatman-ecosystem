@@ -1,0 +1,6 @@
+# subject=/private/tmp/claude-501/-Users-sac/1fecd79a-9323-4b57-a949-d7892a3ea283/scratchpad/r2w/xaas head=c68c74dcf4e405e4382d34d51288763afc5939b0 fence_ref=6f59676
+builder rust toolchains: [(1, 97)]
+pinned_image=False checked_rustup_init=False curl_pipe_sh=True
+image-check.timeout-minutes=60 required>=36
+DOCKERRUST FAIL: Rust toolchain is not an integrity-pinned input (digest-pinned image or sha256-checked rustup-init)
+DOCKERRUST_GATE FAIL

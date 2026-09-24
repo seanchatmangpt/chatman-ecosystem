@@ -1,0 +1,4 @@
+recorded: EP-A left (sha256:000000000000 -> sha256:41c2dd0faf87), EP-B entered
+graph-side toolchain: build_manifest elixir 1.18.4 (/Users/sac/.asdf/installs/elixir/1.18.4-otp-27/bin/mix)
+live: frontier_before and frontier_after recomputed identically from the ledger
+ALIVE: GC23-8 closed frontier on episode fmt-1 (EP-A left ALIVE, EP-B entered, recomputed live)

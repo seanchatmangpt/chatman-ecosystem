@@ -1,0 +1,19 @@
+== 2026-09-23T21:35:15Z rmdir gate re-check
+-- /Users/sac/wt/v26922/wo05
+files under: 0
+/Users/sac/wt/v26922/wo05
+-- /Users/sac/wt/v26922/zcode-cli/wo5
+files under: 0
+/Users/sac/wt/v26922/zcode-cli/wo5
+/Users/sac/wt/v26922/zcode-cli/wo5/vendor
+/Users/sac/wt/v26922/zcode-cli/wo5/vendor/provider
+worktree registrations (fresh, 393 gitdir files in /Users/sac/*/.git/worktrees):
+0
+== rmdir wo05
+rmdir wo05 exit=0
+== rmdir zcode-cli/wo5 per level bottom-up
+rmdir /Users/sac/wt/v26922/zcode-cli/wo5/vendor/provider exit=0
+rmdir /Users/sac/wt/v26922/zcode-cli/wo5/vendor exit=0
+rmdir /Users/sac/wt/v26922/zcode-cli/wo5 exit=0
+ls: /Users/sac/wt/v26922/wo05: No such file or directory
+ls: /Users/sac/wt/v26922/zcode-cli/wo5: No such file or directory

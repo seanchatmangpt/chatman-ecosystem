@@ -1,0 +1,77 @@
+From c4106234aaa2d9f5b378003ea6e8f06781028235 Mon Sep 17 00:00:00 2001
+From: Sean Chatman <136349053+seanchatmangpt@users.noreply.github.com>
+Date: Wed, 23 Sep 2026 15:55:42 -0700
+Subject: [PATCH 5/5] fix(r2-preflight): dialyzer-clean machine_experience and
+ xaas.episode (R2-X-DIALYZER candidate)
+
+CI's "Dialyzer static analysis" step (MIX_ENV=dev mix dialyzer --format
+github) fails with 3 unskipped warnings, identical on the hosted runner
+(probe run 35928419752: Total errors 32, Skipped 29) and under the local
+.tool-versions pin (Elixir 1.20.2-otp-28 / Erlang 28.5.0.2):
+
+- machine_experience.ex:539 and :1235 pattern_match: RDF.Graph.description/2
+  returns an empty %RDF.Description{} for an absent subject, never nil, so
+  the `nil -> []` branches are dead. Removed; an empty description already
+  yields [] from triples/1 and from get(_, _, []).
+- xaas.episode.ex:191 guard_fail (entered with R1-X-COURTS a4c2924): hops has
+  passed SemanticDrive.verify_hops/1 (spec map()) before hops_anchor/2, so
+  `is_map(hops) && ...` can never be false.
+
+Local, pinned: mix dialyzer exit 0 (Total errors 29, Skipped 29);
+format --check-formatted and compile --warnings-as-errors exit 0;
+semantic_drive_test.exs:105 passes with and without this change.
+---
+ lib/mix/tasks/xaas.episode.ex            |  3 ++-
+ lib/xaas/ultracode/machine_experience.ex | 15 +++++++--------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/lib/mix/tasks/xaas.episode.ex b/lib/mix/tasks/xaas.episode.ex
+index 572188c..a7e84ed 100644
+--- a/lib/mix/tasks/xaas.episode.ex
++++ b/lib/mix/tasks/xaas.episode.ex
+@@ -188,7 +188,8 @@ defmodule Mix.Tasks.Xaas.Episode do
+         SemanticDrive.anchor(
+           ggen_igniter_dir: dir,
+           work_graph: Path.expand(work),
+-          order: opts[:order] || (is_map(hops) && hops["work_order"]) || "EP-A",
++          # hops passed SemanticDrive.verify_hops/1, so it is a map here
++          order: opts[:order] || hops["work_order"] || "EP-A",
+           ggen_build_path: opts[:ggen_build_path] && Path.expand(opts[:ggen_build_path])
+         )
+ 
+diff --git a/lib/xaas/ultracode/machine_experience.ex b/lib/xaas/ultracode/machine_experience.ex
+index 65443ee..59ef396 100644
+--- a/lib/xaas/ultracode/machine_experience.ex
++++ b/lib/xaas/ultracode/machine_experience.ex
+@@ -535,10 +535,9 @@ defmodule Xaas.Ultracode.MachineExperience do
+     present =
+       [me, node]
+       |> Enum.flat_map(fn subject ->
+-        case RDF.Graph.description(graph, subject) do
+-          nil -> []
+-          description -> RDF.Description.triples(description)
+-        end
++        # RDF.Graph.description/2 returns an empty description (never nil)
++        # for an absent subject, whose triples are [].
++        graph |> RDF.Graph.description(subject) |> RDF.Description.triples()
+       end)
+       |> MapSet.new()
+ 
+@@ -1231,10 +1230,10 @@ defmodule Xaas.Ultracode.MachineExperience do
+   end
+ 
+   defp objects(graph, subject, property) do
+-    case RDF.Graph.description(graph, subject) do
+-      nil -> []
+-      description -> description |> RDF.Description.get(RDF.iri(property), []) |> Enum.sort()
+-    end
++    graph
++    |> RDF.Graph.description(subject)
++    |> RDF.Description.get(RDF.iri(property), [])
++    |> Enum.sort()
+   end
+ 
+   defp values(graph, subject, property) do
+-- 
+2.51.2
+

@@ -1,0 +1,14 @@
+{
+  "volume": "/",
+  "requested_bytes": 30000000000,
+  "timestamp_unix": 1790207281,
+  "snapshots_before": [
+    "com.apple.TimeMachine.2026-09-23-144416.local",
+    "com.apple.TimeMachine.2026-09-23-155147.local"
+  ],
+  "snapshots_after": [],
+  "snapshots_thinned": [
+    "com.apple.TimeMachine.2026-09-23-144416.local",
+    "com.apple.TimeMachine.2026-09-23-155147.local"
+  ]
+}

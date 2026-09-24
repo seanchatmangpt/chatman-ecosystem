@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "created_unix": 1790153122,
+  "roots": [
+    "/Users/sac/wt/v26922/v23/V23-P",
+    "/Users/sac/wt/v26922/v23/V23-X",
+    "/Users/sac/wt/v26922/v23/V23-F",
+    "/Users/sac/wt/v26922/fri/FRI-T1"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/v23/V23-X/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264201728,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/v23/V23-F/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/v23/V23-P/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/v23/V23-P/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 801939456,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/v23/V23-F/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 763195392,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/v23/V23-X/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 763195392,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/fri/FRI-T1/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372322304,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/fri/FRI-T1/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 356982784,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/Users/sac/wt/v26922/fri/FRI-T1/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119119872,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:v23-driver",
+    "approval_reason": "merged lane worktrees V23-P/X/F (B0) and FRI-T1 (via V23-T1R, 52798a0): HEAD ancestor of friday/gc-fri-0800, clean; build artifacts only; disk 16 GiB during B1",
+    "approved_at_unix": 1790153128,
+    "plan_hash": "8115b22008d20a5319ddae51d87a0dff31fe8b16649dd79dce3ab824b73b12a3",
+    "hmac_signature": "0e55e5be201434ac31d6eb12d38156f1d132bd239c62d3ae70be19572c7b5aa6"
+  }
+}

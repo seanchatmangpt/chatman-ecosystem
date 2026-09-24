@@ -1,0 +1,20 @@
+{
+  "execution_record": {
+    "version": 1,
+    "plan_created_unix": 1790195271,
+    "execution_started_unix": 1790195283,
+    "execution_completed_unix": 1790195283,
+    "results": [
+      {
+        "path": "/Users/sac/wt/v26922/ggen/int/examples/star-toml-verify/target",
+        "status": "deleted",
+        "error": null,
+        "blake3_hash": null,
+        "bytes_freed": 241377280,
+        "reversibility": "reversible"
+      }
+    ],
+    "available_before": 46197587968,
+    "available_after": 46197563392
+  }
+}

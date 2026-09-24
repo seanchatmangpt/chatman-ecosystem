@@ -1,0 +1,72 @@
+{
+  "identity": {
+    "subject": "cleanup-2/mp-wo2-ci-debt (preserve-then-remove worktree /Users/sac/wt/v26922/mp-wo2-ci-debt)",
+    "repo": "/Users/sac/ggen-marketplace",
+    "subject_sha": "abd9410e6a08099374c8bc1a3dac627e7e3ae413",
+    "base_sha": "46122984e0ecb8ca92feb89b7e68c16af24b0ec5"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "cleanup-2 task order 2026-09-23 + Decision 1 (driver): per-checkout ggen signing keys are ephemeral credentials; evidence = receipts + verifying.key",
+    "actor": "Claude subagent (cleanup-2 workflow lane mp-wo2-ci-debt)"
+  },
+  "consequence": {
+    "commits": [
+      "abd9410e6a08099374c8bc1a3dac627e7e3ae413"
+    ],
+    "files_changed": [
+      "ref created: /Users/sac/ggen-marketplace refs/preserve/v26.9.23/cleanup/mp-wo2-ci-debt -> abd9410e6a08099374c8bc1a3dac627e7e3ae413 (parent 46122984e = fix/ci-debt-26922 HEAD, unchanged)",
+      "preserved (force-added ignored evidence): .ggen-v2/receipt-log.jsonl, .ggen-v2/receipt.json, .ggen/keys/verifying.key, packs/xaas-public-ash-projection-pack/.ggen-v2/{receipt-log.jsonl,receipt.json}, packs/xaas-public-ash-projection-pack/.ggen/keys/verifying.key",
+      "not preserved by Decision 1 (sha256 in commit message only): .ggen/keys/signing.key sha256=355468b306f4ba8bcc359fd4ab9c6593d761a83a10e9fb6ef8d2a9716bbb3748; packs/xaas-public-ash-projection-pack/.ggen/keys/signing.key sha256=50327f2137a5e2645be7cd58edc448f5ab6a2d214a175651ebfce9f4977cc978",
+      "not preserved (regenerable build cache): scripts/__pycache__/*.cpython-311.pyc (4)",
+      "worktree removed: git --git-dir=/Users/sac/ggen-marketplace/.git worktree remove --force /Users/sac/wt/v26922/mp-wo2-ci-debt (du -sk before 2871772 KiB; admin dir .git/worktrees/mp-wo2-ci-debt gone)",
+      "no tracked-dirty or untracked-unignored paths existed (git status --porcelain -uall empty at 14:31 and 14:35); no uv/mix/cargo lock outside HEAD",
+      "branch fix/ci-debt-26922 kept at 46122984e (also reachable from main, release/v26.9.22, origin/main)"
+    ],
+    "remote_effects": []
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "bash mp-wo2-ci-debt.run.sh (re-check -> hash keys -> temp-index snapshot -> update-ref CAS -> blob coverage -> verify pre + 3 mutations -> worktree remove --force -> verify post)",
+        "cwd": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2",
+        "exit": 0,
+        "summary": "re-check PASS; preserve abd9410e; 6/6 blobs covered; pre 24/24; mutations blob/sig/keyhash refused; removed; post 25/25",
+        "output_sha256": "5d078e7f7aced02d5a13170f4e7b24e490f6cde9950e6702d4c27fe5db375b78"
+      },
+      {
+        "cmd": "python3 verify_mp-wo2-ci-debt.py --phase post",
+        "cwd": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2",
+        "exit": 0,
+        "summary": "25/25 passed: ref, parent=HEAD, diff == 6 added evidence paths, blob hashes, no private key in tree, key sha256 in message, 7/7 Ed25519 signatures verify from ref blobs, branch unchanged, worktree absent",
+        "output_sha256": "44cc576f7968e119301194214c4c2e563ae6f4e1bf6575e22b3fe1acfefbe23a"
+      },
+      {
+        "cmd": "bash -c '! python3 verify_mp-wo2-ci-debt.py --phase post --mutate blob'",
+        "cwd": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2",
+        "exit": 0,
+        "summary": "anti-vacuity: corrupted expected blob hash is refused (24/25, verifier exit 1, negated exit 0)",
+        "output_sha256": "8fca7618c18af85d32d0063875af38c129599799799d921d5d391d4801349d99"
+      },
+      {
+        "cmd": "bash -c '! python3 verify_mp-wo2-ci-debt.py --phase post --mutate sig'",
+        "cwd": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2",
+        "exit": 0,
+        "summary": "anti-vacuity: mutated chain hash fails 7/7 signature checks (18/25, verifier exit 1, negated exit 0)",
+        "output_sha256": "cf2e700760d0f5200e609575725b6ea550d65eb02f596dde89e1e3cd2df1aeb6"
+      },
+      {
+        "cmd": "bash -c '! python3 verify_mp-wo2-ci-debt.py --phase post --mutate keyhash'",
+        "cwd": "/Users/sac/wt/v26922/v26923/disk/cleanup/c2",
+        "exit": 0,
+        "summary": "anti-vacuity: wrong signing-key sha256 absent from commit message is refused (24/25, verifier exit 1, negated exit 0)",
+        "output_sha256": "6da1c683b878c2594787467b35282eac8c03000bbad49a68853cd6bc0c4844f0"
+      }
+    ],
+    "durable_location": "/Users/sac/ggen-marketplace refs/preserve/v26.9.23/cleanup/mp-wo2-ci-debt (content); /Users/sac/wt/v26922/v26923/disk/cleanup/c2/mp-wo2-ci-debt.* + verify_mp-wo2-ci-debt.py (plan/log/replay; directory is not a git repo)"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "verify_mp-wo2-ci-debt.py --phase post exit 0 (25/25) against subject abd9410e6a08099374c8bc1a3dac627e7e3ae413 at 2026-09-23T14:35-07:00; negated blob/sig/keyhash mutation runs exit 0 (each mutated verifier run refused)"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "created_unix": 1790195268,
+  "roots": [
+    "/Users/sac/wt/v26922/ggen/int/examples/receiptctl"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/Users/sac/wt/v26922/ggen/int/examples/receiptctl/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 847142912,
+      "reversibility": "reversible"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:cleanup",
+    "approval_reason": "ggen-mp group: ignored cargo target of ggen/int examples/receiptctl; 0 files newer than 12h cutoff, 0 tracked, git check-ignore; no open files/cwd/argv; worktree stays ACTIVE; regenerable",
+    "approved_at_unix": 1790195281,
+    "plan_hash": "b3d7d022fe319c546a7b0e6b91e133d339820a40add4a48b8e82d01b565cab7f",
+    "hmac_signature": "8407777a7cff2380a9e2f41bacf2a5b6643e3040b96ec9dab057c1c6600b267f"
+  }
+}

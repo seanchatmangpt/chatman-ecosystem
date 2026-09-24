@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "subject": "oclnr delete execute (10 items)",
+    "repo": "/Users/sac/osx-clnr",
+    "subject_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6",
+    "base_sha": "d5fb7839d866a6b5d8abfacc19a9ab65a2a64ac6"
+  },
+  "authority": {
+    "ceiling": "DO",
+    "grant": "plan-approval hmac:3bce9516e73cbb3a53e9e114b117af03c128dfba1570fc5148108ef11fb1c862 plan_hash:18f30a60de70fbf405e188c28ec73074799d794d7194e06d289ad1e15a9f8f35 reason:recency-eligible build/cache dirs (idle >12h per oclnr guard) in v26.9.22 successor int worktrees; regenerable; disk 33 GiB and falling during R1a/MP/swarm",
+    "actor": "claude:v23-driver"
+  },
+  "consequence": {
+    "commits": [],
+    "files_changed": [],
+    "remote_effects": [
+      "local filesystem: deleted 10/10 plan items (4391350272 bytes claimed), 0 already missing, 0 failed, 0 refused",
+      "volume free-space delta measured: -30388224 bytes"
+    ]
+  },
+  "replay": {
+    "commands": [
+      {
+        "cmd": "/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/late-1645-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/late-1645-receipt.json --yes",
+        "cwd": "/Users/sac",
+        "exit": 0,
+        "summary": "deleted=10 skipped=0 failed=0 refused=0",
+        "output_sha256": "3a689ee7afa959847a664972ec28d35ef2667a5f6ab200e35dca4012bf5d4193"
+      }
+    ],
+    "durable_location": "/Users/sac/wt/v26922/v26923/disk/cleanup/late-1645-receipt.json"
+  },
+  "standing": {
+    "value": "ALIVE",
+    "derived_from": "replay[0] (`/Users/sac/.oclnr/bin/oclnr delete execute --plan /Users/sac/wt/v26922/v26923/disk/cleanup/late-1645-plan.json --receipt /Users/sac/wt/v26922/v26923/disk/cleanup/late-1645-receipt.json --yes`, exit 0) at oclnr d5fb783; native receipt /Users/sac/wt/v26922/v26923/disk/cleanup/late-1645-receipt.json (sha256 3a689ee7afa959847a664972ec28d35ef2667a5f6ab200e35dca4012bf5d4193)"
+  }
+}

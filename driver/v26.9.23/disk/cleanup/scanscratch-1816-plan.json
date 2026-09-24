@@ -1,0 +1,890 @@
+{
+  "version": 1,
+  "created_unix": 1790212564,
+  "roots": [
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE-intake-A",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE-intake-B-ce23-12",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE-lane-plan-verify",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-0-identity",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-0-identity-int",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-0-root-identity",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-10-court-env",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-10-release-lane-seal",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-10-root-receipt",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-10-toolchain-pin",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-11-tag",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-2-crosswalk-gen",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-3-8-crown-import",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-3-crown-coherence",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-3-oos-seal-verify",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-3-R0-history-relabel",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-3-release-order-fixed-point",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-GI-fetch-depth-conserve",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-GI-format-recipe",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-GI-job-timeout",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-image-cargo",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-prod-timeout",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-unused-require",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-wdcs2-assets",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-7-version-fence",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-8-XA-publish-deploy-fence",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-9-base-repair",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-9-imported-receipt-validator",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-9-root-court",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-9-validator-durable-identity-profile",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-compile-prose",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CE23-P-compile-ce23",
+    "/private/tmp/claude-501/v23-scratch/SCAN-CHATMAN",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-linux-fence-verify",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC23-11-dep-closure",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC23-11-durable-fleet-receipts",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC23-4-postgres-typed-dependency",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC23-7-pm4py-court-lock",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC24-cargo-deny-policy",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC24-chatman-fleet-reobserve",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC24-CI-gha-pack-adoption",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC24-CI-runner-image-pin",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC24-CI-validator-vendor",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC24-errc-survey-keyerror",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC24-local-lineage-reconcile",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC24-release-pack-upstream",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC24-west-release-userdata",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC26924-runner-durable-location",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GC26924-sjira-receipt-notes-pack",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GEN-ash-attribute-from-shape",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GEN-cli-task-template",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GEN-court-projection",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GEN-fleet-observer-adopt",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GEN-handwritten-ledger-projection",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GEN-lane-wave-spec",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GEN-pack-proof-tests",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GEN-prose-bind-single-kernel",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GEN-stop-court-registry-from-graph",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GEN-wdfa-proposal-render",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GENERATORS",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GI-court-body-projection",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GI-delta-gate-placement",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GI-lane-plan-promotion",
+    "/private/tmp/claude-501/v23-scratch/SCAN-GI-multi-source-compile",
+    "/private/tmp/claude-501/v23-scratch/SCAN-open-remote-work",
+    "/private/tmp/claude-501/v23-scratch/SCAN-receipt-slug",
+    "/private/tmp/claude-501/v23-scratch/SCAN-release-ci",
+    "/private/tmp/claude-501/v23-scratch/SCAN-RUNNER-after-preconditions",
+    "/private/tmp/claude-501/v23-scratch/SCAN-selfhost",
+    "/private/tmp/claude-501/v23-scratch/SCAN-stale-evidence",
+    "/private/tmp/claude-501/v23-scratch/SCAN-synthesize",
+    "/private/tmp/claude-501/v23-scratch/SCAN-TRAVERSAL",
+    "/private/tmp/claude-501/v23-scratch/SCAN-V23-Q-ggi-pinned-format",
+    "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-CE23-1-2",
+    "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-CE23-9",
+    "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo",
+    "/private/tmp/claude-501/v23-scratch/SCAN-verify-GC24-open-remote-work-disposition",
+    "/private/tmp/claude-501/v23-scratch/SCAN-XA-rproj-validator-guard",
+    "/private/tmp/claude-501/v23-scratch/SCAN-XAAS-table-extractor",
+    "/private/tmp/claude-501/v23-scratch/BENCH-B3",
+    "/private/tmp/claude-501/v23-scratch/BENCH-B3-skeptic",
+    "/private/tmp/claude-501/v23-scratch/BENCH-define",
+    "/private/tmp/claude-501/v23-scratch/BENCH-define-classes",
+    "/private/tmp/claude-501/v23-scratch/BENCH-define-classes-skeptic",
+    "/private/tmp/claude-501/v23-scratch/BENCH-design",
+    "/private/tmp/claude-501/v23-scratch/BENCH-design-prior-art",
+    "/private/tmp/claude-501/v23-scratch/BENCH-executor-gaps",
+    "/private/tmp/claude-501/v23-scratch/BENCH-measure-B1B5",
+    "/private/tmp/claude-501/v23-scratch/BENCH-measure-corpus",
+    "/private/tmp/claude-501/v23-scratch/BENCH-MSA",
+    "/private/tmp/claude-501/v23-scratch/BENCH-skeptic-executor-gaps",
+    "/private/tmp/claude-501/v23-scratch/BENCH-stats"
+  ],
+  "deps": true,
+  "aggressive": true,
+  "items": [
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/fix/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 1337126912,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/base/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 1336479744,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-XA-rproj-validator-guard/xa/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 1336188928,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-release-ci/xa/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 1335681024,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-MSA/xaas/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264205824,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/x/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264197632,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2/xa119/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-unused-require/xa/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-lane-wave-spec/xaas/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-stop-court-registry-from-graph/xaas/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-CE23-9/xaas/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/x/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-stale-evidence/xaas/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264181248,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-3-crown-coherence/xaas/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264168960,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/base/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264168960,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/fix/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264168960,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2/xa120/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264168960,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-XA-rproj-validator-guard/xa/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264168960,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-release-ci/xa/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264168960,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/coldA/xaas/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 1264164864,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CHATMAN/gh-clone/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 940363776,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-3-crown-coherence/xaas/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 828084224,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-4-postgres-typed-dependency/xaas/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 805806080,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/x/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 766685184,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-stop-court-registry-from-graph/xaas/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 765276160,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-lane-wave-spec/xaas/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 764846080,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-CE23-9/xaas/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 764698624,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-stale-evidence/xaas/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 764661760,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-MSA/xaas/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 764420096,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2/xa120/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 449155072,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-unused-require/xa/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 448827392,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2/xa119/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 403701760,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/x/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 403677184,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/g2/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372342784,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-MSA/gi/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-GI-fetch-depth-conserve/gfull/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/g/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/g-amb/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-cli-task-template/gi/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-court-projection/gi/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-lane-wave-spec/gi/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-pack-proof-tests/gi-clone/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GENERATORS/probe/gi/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/g/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-release-ci/gis/native/ggen_graph_nif/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 372334592,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/coldA/xaas/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 362622976,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/g2/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 358596608,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-cli-task-template/gi/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 357904384,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-pack-proof-tests/gi-clone/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 357904384,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-lane-wave-spec/gi/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 357892096,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GENERATORS/probe/gi/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 357892096,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-MSA/gi/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 341499904,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-court-projection/gi/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 340987904,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-GI-fetch-depth-conserve/gfull/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 324526080,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-release-ci/gis/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 324509696,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/g/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 176189440,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/g-amb/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 176189440,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/g/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 160473088,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-lane-wave-spec/gi/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119123968,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GENERATORS/probe/gi/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119123968,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/g/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119123968,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-MSA/gi/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119119872,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-GI-fetch-depth-conserve/gfull/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119119872,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/g/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119119872,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC23-10-subject-ref/g-amb/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119119872,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-cli-task-template/gi/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119119872,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-court-projection/gi/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119119872,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GEN-pack-proof-tests/gi-clone/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119119872,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-GC23-10-cold-toolchain-cargo/g2/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119119872,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-release-ci/gis/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 119119872,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-wdcs2-assets/esb/node_modules",
+      "kind": "dir",
+      "reason": "node dependencies",
+      "bytes": 19877888,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__base/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_liba_with_transitive_libb/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_liba_with_transitive_libb__A/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_liba_with_transitive_libb__B/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_liba_with_transitive_libb__BAD/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_liba_with_transitive_libb__C/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_liba_with_transitive_libb__trial/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_libc/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_libc__A/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_libc__B/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_libc__BAD/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_libc__C/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_dep_removed_libc__trial/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_injected_stale_entry/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_injected_stale_entry__A/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_injected_stale_entry__B/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_injected_stale_entry__BAD/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_injected_stale_entry__C/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__m_injected_stale_entry__trial/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__nn_lock_requirement_mismatch/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-define-classes/work/mix_lock_unused_entries__nn_new_dep_not_locked/deps",
+      "kind": "dir",
+      "reason": "elixir dependencies",
+      "bytes": 417792,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/p1/fmt probe T+ short/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 135168,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/p1 long/deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /x/fmt probe T+ long/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 135168,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3-skeptic/p1 long/a path with spaces that is deliberately long to exceed two hundred bytes of total length for the probe xx/fmt probe S+ long/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 135168,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/p1/fmt probe T- short/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 118784,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/p1 long/deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /x/fmt probe T- long/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 118784,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/p1/fmt probe T27 short/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 106496,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3/p1 long/deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /deep segment with spaces /x/fmt probe T27 long/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 106496,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/BENCH-B3-skeptic/p1/fmt probe S27 short/_build",
+      "kind": "dir",
+      "reason": "elixir build",
+      "bytes": 106496,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-GC24-release-pack-upstream/mp-lane/.agents",
+      "kind": "dir",
+      "reason": "ai agents dir",
+      "bytes": 36864,
+      "reversibility": "unknown"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-9-base-repair/ce/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 20480,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-9-base-repair/replay/target",
+      "kind": "dir",
+      "reason": "rust target",
+      "bytes": 20480,
+      "reversibility": "reversible"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/base/.agents",
+      "kind": "dir",
+      "reason": "ai agents dir",
+      "bytes": 8192,
+      "reversibility": "unknown"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-dialyzer-dead-nil/fix/.agents",
+      "kind": "dir",
+      "reason": "ai agents dir",
+      "bytes": 8192,
+      "reversibility": "unknown"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2/xa119/.agents",
+      "kind": "dir",
+      "reason": "ai agents dir",
+      "bytes": 8192,
+      "reversibility": "unknown"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-elixir-scm-manifest-v2/xa120/.agents",
+      "kind": "dir",
+      "reason": "ai agents dir",
+      "bytes": 8192,
+      "reversibility": "unknown"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-CE23-5-XA-unused-require/xa/.agents",
+      "kind": "dir",
+      "reason": "ai agents dir",
+      "bytes": 8192,
+      "reversibility": "unknown"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-VERIFY-CE23-9/xaas/.agents",
+      "kind": "dir",
+      "reason": "ai agents dir",
+      "bytes": 8192,
+      "reversibility": "unknown"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-XA-rproj-validator-guard/xa/.agents",
+      "kind": "dir",
+      "reason": "ai agents dir",
+      "bytes": 8192,
+      "reversibility": "unknown"
+    },
+    {
+      "path": "/private/tmp/claude-501/v23-scratch/SCAN-release-ci/xa/.agents",
+      "kind": "dir",
+      "reason": "ai agents dir",
+      "bytes": 8192,
+      "reversibility": "unknown"
+    }
+  ],
+  "tool_roots": [],
+  "approval": {
+    "approver": "claude:v23-driver",
+    "approval_reason": "build artifacts inside scratch dirs of FINISHED workflows (loop scan, bench DMA); evidence files kept. The 9 unknown items are .agents dirs (8-37 KB) inside scratch copies of xaas/ggen-marketplace trees, reproducible from those repos' git history; no live process has files open under the plan roots (only R1c-R1-X-PIN, not in the plan)",
+    "approved_at_unix": 1790212651,
+    "plan_hash": "e13b0a8d33c17e99e9cf5273eab8c7ad0037bfe6b96e1b96948766c66e50a2d4",
+    "hmac_signature": "0c131ce26b47b2df7ee1e47b33a6beb8507b10a13828c91aeeadf3d496828ea4"
+  }
+}

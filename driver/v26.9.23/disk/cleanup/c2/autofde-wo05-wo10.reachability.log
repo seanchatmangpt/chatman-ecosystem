@@ -1,0 +1,24 @@
+### superproject /Users/sac/wt/v26922/autofde-lab/wo05-170
+candidate shas (worktree reflog+ORIG_HEAD+FETCH_HEAD):        4
+commits in those not reachable from any ref under refs/:        0
+sub cpp/sdk/Catch2 local_refs=[refs/heads/devel ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/PEGTL local_refs=[refs/heads/main ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/backward-cpp local_refs=[refs/heads/master ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/json local_refs=[refs/heads/develop ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/nng local_refs=[refs/heads/main ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/nng/extern/nng-wolfssl local_refs=[refs/heads/master ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/nngpp local_refs=[refs/heads/master ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/pybind11 local_refs=[refs/heads/master ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/spdlog local_refs=[refs/heads/v1.x ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+### superproject /Users/sac/wt/v26922/autofde-lab/wo10
+candidate shas (worktree reflog+ORIG_HEAD+FETCH_HEAD):        2
+commits in those not reachable from any ref under refs/:        0
+sub cpp/sdk/Catch2 local_refs=[refs/heads/devel ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/PEGTL local_refs=[refs/heads/main ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/backward-cpp local_refs=[refs/heads/master ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/json local_refs=[refs/heads/develop ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/nng local_refs=[refs/heads/main ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/nng/extern/nng-wolfssl local_refs=[refs/heads/master ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/nngpp local_refs=[refs/heads/master ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/pybind11 local_refs=[refs/heads/master ] commits(reflog+local refs+HEAD) not in remotes/tags:        0
+sub cpp/sdk/spdlog local_refs=[refs/heads/v1.x ] commits(reflog+local refs+HEAD) not in remotes/tags:        0

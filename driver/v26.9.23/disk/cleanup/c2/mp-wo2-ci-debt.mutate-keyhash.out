@@ -1,0 +1,25 @@
+PASS ref_exists
+PASS parent_is_head
+PASS diff_is_exactly_evidence_added
+PASS evidence_rows_cover_all
+PASS blob:.ggen-v2/receipt-log.jsonl
+PASS blob:.ggen-v2/receipt.json
+PASS blob:.ggen/keys/verifying.key
+PASS blob:packs/xaas-public-ash-projection-pack/.ggen-v2/receipt-log.jsonl
+PASS blob:packs/xaas-public-ash-projection-pack/.ggen-v2/receipt.json
+PASS blob:packs/xaas-public-ash-projection-pack/.ggen/keys/verifying.key
+PASS no_private_key_in_tree
+FAIL keyhash_in_message:.ggen/keys/signing.key  355468b306f4ba8bcc359fd4ab9c6593d761a83a10e9fb6ef8d2a9716bbb3740
+PASS keyhash_in_message:packs/xaas-public-ash-projection-pack/.ggen/keys/signing.key
+PASS sig:./f93775d1c6e0
+PASS sig:./6c4435de851d
+PASS sig:./ce0ff87494f2
+PASS sig:./f93775d1c6e0
+PASS sig:packs/xaas-public-ash-projection-pack/4bf68c4275ed
+PASS sig:packs/xaas-public-ash-projection-pack/c8b65ea5bb9c
+PASS sig:packs/xaas-public-ash-projection-pack/4bf68c4275ed
+PASS sig_count
+PASS branch_unchanged
+PASS worktree_listed
+PASS worktree_dir_exists
+23/24 passed (phase=pre, mutate=keyhash)
