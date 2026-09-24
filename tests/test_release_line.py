@@ -308,6 +308,8 @@ class StandingAndWestLineTests(unittest.TestCase):
         default, explicit = run("verify_standing_evidence.py"), run("verify_standing_evidence.py", "--release", pointer_line())
         self.assertEqual((default.returncode, default.stdout), (explicit.returncode, explicit.stdout))
 
+    @unittest.skipUnless(importlib.util.find_spec("west.manifest") and importlib.util.find_spec("yaml"),
+                         "west and PyYAML are dependencies of scripts/verify_west_workspace.py")
     def test_west_refuses_a_projection_sourced_from_another_line(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

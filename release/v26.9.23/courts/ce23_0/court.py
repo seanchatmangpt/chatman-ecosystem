@@ -776,7 +776,12 @@ def r1_receipt(g: Git, pins: dict, head: str, gh: dict | None, scratch: Path, va
                                                         "court did not emit is refused, never skipped")
         return record
     subject = record["subject_sha"]
-    if g.relation(subject, head) not in ON_LINE:
+    relation = g.relation(subject, head)
+    if relation is None:
+        j.unk("RECEIPT_SUBJECT_UNOBSERVABLE", "R1", f"{rel}: identity.subject_sha {subject!r} or the head is not an object "
+                                                     "of this clone (shallow history?): its line cannot be observed")
+        return record
+    if relation not in ON_LINE:
         j.refuse("RECEIPT_SUBJECT_FOREIGN", "R1", f"{rel}: identity.subject_sha {subject!r} is not the head or its ancestor")
         return record
     if validator.get("path") is None:

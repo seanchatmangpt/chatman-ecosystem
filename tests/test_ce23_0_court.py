@@ -39,7 +39,12 @@ class Scratch(unittest.TestCase):
     def git(self, repo: Path, *args: str) -> str:
         return court.sh_git(repo, self.env, *args)
 
+    def need_rdflib(self) -> None:
+        if importlib.util.find_spec("rdflib") is None:
+            self.skipTest("rdflib is a court dependency (the release graph and the compiled orders are parsed with it)")
+
     def world(self, archive: bool = True) -> tuple[Path, Path, dict]:
+        self.need_rdflib()
         d = self.base / ("open" if archive else "bare")
         d.mkdir(exist_ok=True)
         return court.build_world(d, self.env, ROOT, with_archive=archive)
@@ -196,6 +201,16 @@ class ReceiptCase(Scratch):
         self.forge(work, pins, lambda d: d["court"]["clauses"].append({"verdict": "REFUSED", "clause": "P1", "code": "X", "text": "t"}))
         self.assertEqual(self.judge(work, pins, gh).refused, ["RECEIPT_STANDING_UNDERIVED"])
 
+    def test_an_absent_subject_is_unknown_and_a_present_foreign_one_refused(self) -> None:
+        # a shallow clone lacks the subject object: its line cannot be observed, so R1 is UNKNOWN, never REFUSED;
+        # a present commit off the line (the local lineage head) stays REFUSED
+        work, gh, pins = self.sealed()
+        self.forge(work, pins, lambda d: d["identity"].update({"subject_sha": "0" * 40}))
+        j = self.judge(work, pins, gh)
+        self.assertEqual((j.refused, j.unknown), ([], ["RECEIPT_SUBJECT_UNOBSERVABLE"]), j.lines)
+        self.forge(work, pins, lambda d: d["identity"].update({"subject_sha": pins["local_lineage"]["heads"]["main"]}))
+        self.assertEqual(self.judge(work, pins, gh).refused, ["RECEIPT_SUBJECT_FOREIGN"])
+
     def test_the_superseded_record_is_recomputed_at_the_subject(self) -> None:
         work, gh, pins = self.sealed()
         doc = json.loads((work / pins["subject"]["receipt"]).read_text(encoding="utf-8"))
@@ -208,6 +223,7 @@ class OrderCase(Scratch):
     """O1 reads the goal and the compiled orders from HEAD's tree, never the working tree."""
 
     def test_an_untracked_orders_file_links_nothing(self) -> None:
+        self.need_rdflib()
         real = court.Git(ROOT, court.caller_env())
         law = self.base / "law"
         self.git(self.base, "init", "-q", "-b", "main", str(law))
@@ -256,6 +272,8 @@ class SubjectCase(unittest.TestCase):
         self.assertIsNotNone(record, "no committed CE23-0 receipt")
         if record["blob"] in court.PINS["receipt_history"]["superseded_blobs"]:
             self.skipTest("the committed CE23-0 receipt is the pinned pre-court receipt (identity.toml [receipt_history])")
+        if not g.has_commit(record["subject_sha"]):
+            self.skipTest(f"shallow checkout: the receipt subject {record['subject_sha'][:12]} is not in this clone's history")
         self.assertTrue(record["emitted_by_this_court"], f"the committed receipt {record} was not emitted by this court")
         text = (g.blob(f"HEAD:{court.SUBJ['receipt']}") or b"").decode("utf-8")
         self.assertIsNone(SHADOW_PATH.search(text), "the sealed receipt names a retired shadow path")

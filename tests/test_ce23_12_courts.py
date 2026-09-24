@@ -38,6 +38,9 @@ def load(name: str, path: Path):
     return module
 
 
+if importlib.util.find_spec("rdflib") is None:
+    raise unittest.SkipTest("rdflib is a dependency of the CE23-12 bench kernel (evidence_tiers.py imports it)")
+
 sys.path.insert(0, str(SCRIPTS))
 kernel = load("t_evidence_tiers", SCRIPTS / "evidence_tiers.py")
 doe = load("t_doe_verify", SCRIPTS / "doe_verify.py")
