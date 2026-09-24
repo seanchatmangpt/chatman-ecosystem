@@ -279,6 +279,13 @@ class GeneratedCourtCase(unittest.TestCase):
                          [("alive", "ALIVE", "court"), ("edge", "UNKNOWN", "court"), ("bad", "REFUSED", "continued")])
         self.assertIn("COURT_STOPPED order=2 name=edge", out.getvalue())
         self.assertEqual((judge.refused, judge.unknown), (["MEMBER:bad"], ["MEMBER:edge"]))
+        # the court's own R receipt of that run is valid under the vendored generated validator
+        receipt = Path(tmp.name) / "court-receipt.json"
+        court.write_receipt(receipt, ROOT, git(ROOT, "rev-parse", "HEAD"), "REFUSED", table, judge, 0.0)
+        check = subprocess.run([sys.executable, str(members.VALIDATOR_DIR / "unified_receipt_validator.py"), str(receipt),
+                                "--contract", "dfcm_fleet_v1"], capture_output=True, text=True)
+        self.assertEqual(check.returncode, 0, check.stdout + check.stderr)
+        self.assertEqual(json.loads(receipt.read_text())["standing"]["broken_term"], "mu_on_O")
 
 
 if __name__ == "__main__":

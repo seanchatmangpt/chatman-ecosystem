@@ -298,15 +298,16 @@ def write_receipt(path: Path, root: Path, head: str, verdict: str, table: list[d
         "identity": {"subject": "CE23-9/exact-head-root-court", "repo": SUBJ["repository"], "subject_sha": head,
                      "base_sha": SUBJ["base_commit"], "gate": "ce:CE23-9 (release/v26.9.23/sjira/goal.ttl)"},
         "authority": {"ceiling": "SELECT", "grant": "court run (read-only on the subject)", "actor": "release/v26.9.23/courts/CE23-9.sh"},
-        "consequence": {"commits": [], "files_changed": [], "members": table},
+        "consequence": {"commits": [], "files_changed": [], "remote_effects": [], "members": table},
         "replay": {"commands": [{"cmd": "sh release/v26.9.23/courts/CE23-9.sh", "cwd": str(root),
                                  "exit": {"ALIVE": 0, "REFUSED": 1, "UNKNOWN": 75}[verdict]}],
                    "durable_location": f"git:{SUBJ['repository']}@{head}:{SDIR}/courts/CE23-9.sh"},
         "standing": {"value": standing, "derived_from": f"CE23-9 court exit, {time.time() - started:.0f}s, refused={sorted(set(j.refused))}, "
                                                         f"unknown={sorted(set(j.unknown))}"},
     }
-    if standing != "ALIVE":
-        doc["standing"]["broken_term"] = "mu_on_O" if standing == "BLOCKED" else "admission_vacuous"
+    if standing == "BLOCKED":
+        # a refused member: the candidate is not admitted by this court (manufacture from unadmitted input)
+        doc["standing"]["broken_term"] = "mu_on_O"
     path.write_text(json.dumps(doc, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
