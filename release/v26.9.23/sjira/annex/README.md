@@ -10,3 +10,18 @@ candidates kept by the skeptics, grouped into 8 waves) with its `repo_map`, `ope
 record no longer depends on the shadow. It is recorded evidence (O), not a work graph: the CE23
 orders are compiler output of the prose in `../` (`goal.ttl`, `compiled/`), no court or generator
 reads this file, and the historical checkout paths inside it are evidence of the plan as written.
+
+## Scan-verified implementation specs (moved 2026-09-24)
+
+- `specs/` holds 47 files: 46 CE23-*, CE-*, GC23-* and GEN-* implementation specs that loop scan
+  `wf_cf07ec8e-051` kept, plus `plan.final.min.json`, the synthesized plan they belong to
+  (sha256 `03bf9cfc2efd572a...`).
+- `successor-specs/` holds the GC24-* and GC26924-* specs, which the plan assigns to successor GC-26.9.24,
+  plus the successor summary `succ.txt`.
+- Each file is a byte-identical copy (`cp -p`) of `SCAN-synthesize/specs/` in the driver's scratch
+  directory `/private/tmp/claude-501/v23-scratch/`. That directory is non-durable (see
+  `migration/v26923-single-repo/OWNERSHIP.json`, subject "CE23 scan-verified implementation specs").
+- They are recorded evidence (O). Commands inside them that name retired shadow paths or
+  worktree creation describe the plan as written; they are not procedures. Example:
+  `CE23-11-tag.txt` must be retargeted to a `git archive` export before CE23-11 runs.
+- The bench draft qualifier and extraction helper moved to `../../bench/tools/`.

@@ -1,0 +1,1 @@
+2650/2650 files byte-equal: git archive refs/archive/pre-single-repo-migration/20260924T0600Z/shadow-files (chatman-ecosystem) vs /Users/sac/wt/v26922 before retirement, 2026-09-24T20:1xZ

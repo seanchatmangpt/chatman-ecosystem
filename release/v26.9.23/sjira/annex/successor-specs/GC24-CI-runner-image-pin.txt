@@ -1,0 +1,46 @@
+ID GC24-CI-runner-image-pin dim=ci repo=seanchatmangpt/xaas + seanchatmangpt/ggen_igniter path=/Users/sac/wt/v26922/fri/xaas-int
+REQ successor GC-26.9.24
+req_now c=False v=False
+DEPENDS []
+TASK Successor GC-26.9.24. Branch off post-release main after V23-Q merges both repos; never touch the frozen friday/gc-fri-0800 subjects.
+
+(1) Pack capital, owned by github-actions-pack, bump to 0.3.3:
+- add gates/060_runner_pinned.rq, which refuses any gha:Job whose gha:runner matches '-latest$';
+- remove the default(value="ubuntu-latest") fallback at templates/workflow.yml.tmpl:147, since gate 010 already guarantees the runner is present;
+- add a qualification fixture (qualification/consumer.ttl:17 already admits "ubuntu-24.04").
+
+(2) Consumer residue, hand-written until the repos adopt github-actions-pack. Replace ubuntu-latest with ubuntu-24.04:
+- in 18 xaas jobs across 9 files;
+- in 4 ggen_igniter jobs across 4 files.
+Follow the existing xaas precedent in castle-paas-bridge.yml:28 and r79/r80/r84:11.
+
+(3) Optional, same order: add a workflow_dispatch matrix run on the Ubuntu 26 label to decide whether to requalify before the 24.04 lease ends. Whether that label exists is UNVERIFIED.
+GEN Pack side (exists, needs extending): /Users/sac/ggen-marketplace/packs/github-actions-pack.
+- gha:runner is defined at ontology.ttl:100.
+- gates/010_required.rq:24 requires that the runner be present.
+- templates/workflow.yml.tmpl:147 renders runs-on but defaults to ubuntu-latest.
+- Missing: gates/060_runner_pinned.rq to refuse floating labels, and removal of that default.
+
+Consumer side: NOT generator-owned today. xaas (ggen.toml packs: xaas_castle_bridge etc.) and ggen_igniter do not use github-actions-pack, and no workflow file carries a GENERATED header. The irreducible residue for this order is the 22 hand-written runs-on scalars.
+
+Full generator ownership needs a separate successor order: adopt github-actions-pack in xaas and ggen_igniter. That means gha:Workflow/Job/Step facts plus a per-file semantic-equivalence diff, using the pack's v0.2.0 method. After that the pins come from gha:runner facts and gate 060 enforces them.
+RESIDUE runs-on scalars.
+GATE Static check, run in each repo: `python3 /private/tmp/claude-501/v23-scratch/SCAN-GC24-CI-runner-image-pin/runner_pin_gate.py <repo>` exits 0 with floating=0. Today it exits 1: floating=18 for xaas and floating=4 for ggen_igniter. Promote the script into each repo's courts, or replace it with github-actions-pack gate 060 once the repos adopt the pack.
+
+Runtime check: one green exact-head run per repo in which every job log shows 'Image: ubuntu-24.04'. Check with `gh api repos/seanchatmangpt/<repo>/actions/jobs/<id>/logs | grep -A1 '##\[group\]Runner Image$'`.
+
+Falsifiers:
+- Revert mutation: re-insert 'runs-on: ubuntu-latest' into any one job. The gate must exit 1.
+- After 2026-10-19, a job declared as pinned logs an Image other than ubuntu-24.04.
+- Qualify option: a Ubuntu 26 matrix run fails where ubuntu-24.04 passes. Keep the pin.
+FALSIFIER A run on the new image fails where ubuntu-24.04 passes.
+REASONS
+- (a) EVIDENCE REAL, repo corrected: run 35810390156 belongs to seanchatmangpt/xaas, not ggen_igniter (ggen_igniter returns HTTP 404). It is 'CI/CD Elixir' on main at 2fb10156, conclusion cancelled. Check-run 107020707749 carries the notice: 'The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026' (links actions/runner-images#14748). The same notice appears on check-runs 107020707913, 107020707921 and 107020707922.
+- Runtime witness: the log of job 107020707749 ('Runner Image' group) shows 'Image: ubuntu-24.04' and 'Version: 20260920.314.1', OS Ubuntu 24.04.5 LTS. Today ubuntu-latest still resolves to 24.04. The jobs API labels field shows 'ubuntu-latest' for every job.
+- SCOPE MEASURED: xaas-int e999e62 has 18 floating jobs in 9 files: ci_cd.yaml (10 jobs), claude-daily-drain, fly_deploy, packer, project-measure-extension, r81-r75-realization, sa2a-computation-crown, verify_system_authority_exact_head, wd-cs2-exact-head. 4 xaas files are already pinned to ubuntu-24.04: castle-paas-bridge.yml:28, r79:11, r80:11, r84:11, so the repo already pins in places. ggen_igniter-int 3937a4f has 4 floating jobs in 4 files: ci.yml:16, forbid-generated-output-dir-once.yml:11, frontier-release-plan.yml:21, gall-002-receipt.yml:21.
+- (b) GENERATION PATH NEEDS CORRECTING. github-actions-pack v0.3.2 (ggen-marketplace 96feba8) has the gha:runner property (ontology.ttl:100). gates/010_required.rq:24 only requires that gha:runner be present. templates/workflow.yml.tmpl:147 renders `runs-on: {{ job.runner | default(value="ubuntu-latest") }}`, so the pack itself defaults to the floating label. No gate refuses a *-latest value. The sibling packs gh-actions-errc, github-controloutcome-observation, github-live-evidence-ingestion and gym-ci-toolchain-bblock have no runner-pin rule either.
+- Neither critical repo uses github-actions-pack. The xaas-int grep for github-actions-pack/gha:runner returns 0 hits, and no workflow file in either repo carries the pack's '# GENERATED by ggen' header. The only ggen_igniter hits are beam4pm fixtures under test/fixtures. 'once adopted' therefore names a generator that does not own these files today. Adopting it would mean modelling 22 jobs plus their steps as gha facts, which is a separate successor order.
+- (c) required_now=false CONFIRMED. The migration starts 2026-10-19, 26 days after the v26.9.23 release date. Release-lane exact-head CI runs today on ubuntu-24.04 (see the log above). The STOP court and cold replay run locally (mix xaas.stop_court), not on hosted runners. PRD §27 'toolchain identity' and CE23-10 'toolchain digests' are covered by the .tool-versions pins (R1-X-PIN/R1-GI-PIN), and the runner image can be recorded by observation without pinning. CE23-12 declares Factor(OS)=UNSUPPORTED on the macOS executor (chatman-ce23-12-standings.md:198-210). The pin falsifies no GC23 or CE23 proposition, so under PRD PR-017 and F8 it routes to GC-26.9.24.
+- Landing it now would do harm. DRIVER.md fixes the release subjects (xaas and ggen_igniter friday/gc-fri-0800) as FROZEN, and under the frozen-subject rule any SHA move forces a rerun of the 12/13 court. The lane must branch off main after the V23-Q merge.
+- (d) GATE IS RUNNABLE AND NON-VACUOUS. /private/tmp/claude-501/v23-scratch/SCAN-GC24-CI-runner-image-pin/runner_pin_gate.py exits 1 today, with floating=18 on xaas-int and floating=4 on ggen_igniter-int. The proposed falsifier ('a run on the new image fails where ubuntu-24.04 passes') tests the qualify-on-26 option, not the pin, and would never make the pin gate fail. It is replaced below with a revert-mutation falsifier and a runtime image falsifier.
+- (e) NO DUPLICATION. release.run.js, rel-a*.run.js, wave-R1a.json and wave-S.json contain no runs-on, ubuntu or runner-image text. R1-X-FENCE (wave-R1a.json:66-67) edits only the publish-image and deploy `if:` fences in ci_cd.yaml and says 'do not change any other job'. It does touch the same file, so this lane must merge after R1-X-FENCE.

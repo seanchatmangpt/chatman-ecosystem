@@ -1,0 +1,59 @@
+ID GC24-release-pack-upstream dim=chatman repo=ggen-marketplace path=/Users/sac/ggen-marketplace/packs/chatman-ecosystem-release-pack
+REQ successor GC-26.9.24 (ARD 4 pack promotion; ggen-marketplace is Successor-class)
+req_now c=False v=False
+DEPENDS ['CE23-1-2-release-graph']
+TASK Successor work for GC-26.9.24. Start only after CE23-11 tags chatman-ecosystem v26.9.23, so the vendored pack is final. Depends on CE23-1-2-release-graph, CE23-3-8-crown-import, CE23-9-root-court, CE23-10-root-receipt and CE23-11-tag. Mutually exclusive with CE23-2-crosswalk-gen's direct upstream edit.
+
+Work in a new ggen-marketplace worktree created from origin/main, for example /Users/sac/wt/v26924/ggen-marketplace/GC24-release-pack-upstream on branch gc24/release-pack-v0.2.0. Do not work in the dirty main checkout. Promote packs/chatman-ecosystem-release-pack to v0.2.0:
+
+1. Bring in the law surface (ontology.ttl, gates/, templates/) byte-identical to packs/chatman-ecosystem-release-pack at chatman tag v26.9.23. This includes the crosswalk vocabulary, gate 070 from CE23-1-2, gate 080 from CE23-3-8, and the manifest, crosswalk, requirements, imported-crown, court, receipt and tag-message templates.
+2. Make every template take the version as a parameter. Use fan-out `to: "release/v{{ row.version }}/..."` driven by er:Release/er:version, following packs/ash-extension-pack/templates/install.ex.tmpl. The predecessor release comes from facts, not a literal. Templates and gates must contain no literal release version, predecessor path or repo slug. The tag template renders only the message: the pack has zero ambient DO authority.
+3. Fix SPARQL scoping in gates 010 and 020 by binding ?release/?component inside every UNION branch (the proven patch is in the scratch diff). If CE23-1-2 did not already carry this fix in the vendored copy, that is a CE23 defect: report it there.
+4. Add gate-court.toml (schema ggen.semantic-gate-witness-court/1) with witnesses/pass and witnesses/fail per gate stem, one single-fact mutant each, following packs/semantic-gate-witness-court-pack.
+5. Extend qualification/consumer.ttl with synthetic crosswalk and imported-crown facts that exercise 070 and 080. Use no Chatman instance SHAs.
+6. Change pack.toml version from 0.1.0 to 0.2.0 and update the description. The profile becomes projection.
+7. Put the TOML-to-er: and receipt-to-observations lifters under lift/ as declared hand-written residue, with their own unit tests.
+8. If any law byte differs from the vendored copy, open a GC-26.9.24 chatman edge to re-vendor from the marketplace SHA.
+GEN ggen-marketplace pack capital. ggen 26.9.18 `ggen sync run` renders packs/chatman-ecosystem-release-pack/templates/*.tmpl through a consumer's [packs] entry, and native gates gates/*.rq refuse bad facts with FM-PACK-013. Output paths fan out from er:version (ggen-engine/src/sync.rs:877-888; pattern packs/ash-extension-pack/templates/install.ex.tmpl).
+
+Qualification:
+- scripts/qualify_packs.py::qualify_pack builds a projection consumer from qualification/consumer.ttl and requires two byte-identical passes.
+- scripts/check_gate_witness_courts.py checks gate-court.toml against witnesses/pass and witnesses/fail (pattern packs/semantic-gate-witness-court-pack, packs/semantic-manufacture-epoch-pack/gate-court.toml).
+- scripts/marketplace.py validate must pass.
+
+Irreducible hand-written residue, owned by this pack:
+- the template and gate sources;
+- the witness fixtures;
+- the consumer.ttl extension;
+- lift/ lifters of about 60 lines total (TOML-to-er: and receipt-to-observations); qualify_packs does not exercise these.
+
+No generator produces release-law SPARQL; `ggen pack new` only scaffolds and requires `ggen init self`.
+RESIDUE none beyond what CE23-1-2 already carries
+GATE Run /private/tmp/claude-501/v23-scratch/SCAN-GC24-release-pack-upstream/gc24_release_pack_gate.sh <mp-lane-worktree> <chatman-GitHub-bound-clone> v26.9.23. Commit a copy as the lane's gate script. It fails closed, in this order:
+
+1. templates/ is non-empty (FM-PACK-005).
+2. pack.toml has version "0.2.0".
+3. `grep -rnE '26\.9\.(1|23)\b|github\.com/seanchatmangpt|seanchatmangpt/chatman-ecosystem|"Chatman Ecosystem"' templates gates` returns nothing.
+4. `python3 scripts/marketplace.py validate` passes.
+5. gate-court.toml exists and `python3 scripts/check_gate_witness_courts.py --packs packs` passes.
+6. qualify_packs.qualify_pack on this pack returns ALIVE with profile projection.
+7. For each witnesses/pass/*.ttl, a [packs] consumer `ggen sync run` exits 0.
+8. For each witnesses/fail/<stem>.ttl, the sync exits non-zero and stderr names gate `<stem>.rq`.
+9. `git -C <chatman> archive v26.9.23 packs/chatman-ecosystem-release-pack` matches the lane pack under `diff -r` for ontology.ttl, gates and templates.
+
+Evidence it bites:
+- Current upstream: GATE_FAIL:no-templates(FM-PACK-005).
+- Scratch lane: GATE_PASS.
+- Anti-vacuity: restoring the unfixed upstream 020 or 010 gives GATE_FAIL:fail-witness-admitted:<gate>; adding the v26.9.23-literal crosswalk template gives GATE_FAIL:release-instance-literal-in-law.
+FALSIFIER The upstream pack and the vendored copy differ after promotion, or ggen still reports FM-PACK-005.
+REASONS
+- (a) Evidence 1 is real, and I reproduced it myself. A [packs] consumer of the unmodified upstream pack (with qualification/consumer.ttl as its ontology) ran `ggen sync run` (ggen 26.9.18) and exited 1 with '[FM-PACK-005] pack `chatman-ecosystem-release-pack`: zero templates'. Probe: /private/tmp/claude-501/v23-scratch/SCAN-GC24-release-pack-upstream/consumer. The same failure appears in the prior scan log SCAN-CHATMAN/gates-ok.err. The rule is ggen-engine/src/pack.rs:109.
+- (a) Evidence 2 is real. /Users/sac/ggen-marketplace/packs/chatman-ecosystem-v26-9-1-release-gate/pack.toml:4 says future release versions 'must be represented as consumer-owned release-instance facts/profiles under the generic release law rather than minting a new semantic pack per version'.
+- (a) Some facts in the candidate are wrong or missing. The vendored copy /Users/sac/wt/v26922/v23/CE23-R does not exist: CE23-1-2-release-graph has been proposed but not built. The upstream pack is currently ALIVE in the marketplace's own court as a semantic-profile pack. qualify_packs.qualify_pack returned status ALIVE, profile semantic, consequence sha 25268254..., because zero-template packs get a synthetic probe consumer (scripts/qualify_packs.py:268-298 and 425-426; scripts/marketplace.py:108-113). So FM-PACK-005 only affects consumers that use the pack through [packs]. Adding templates changes the pack's profile from semantic to projection.
+- (c) required_now=false is correct. fleet/matrix.md:25 and classification.ttl:96-104 in xaas-int classify ggen-marketplace as Successor (GC-26.9.24), with the reason 'Promoting repeated patterns into packs (ARD 4) is successor work'. ARD section 4 (prd-ard.md:1076-1087) makes the marketplace the owner of repeated patterns. No GC23 or CE23 proposition fails without the upstream copy: CE23-1/2/9 only need the pack bytes inside the chatman subject (the vendored copy). PR-017 (prd-ard.md:606-620) and F8 (prd-ard.md:1962-1968) send this to the successor checkpoint.
+- NEW DEFECT, with CE23 impact. Upstream gates 010 and 020 miss single-subject defects because of SPARQL bottom-up scoping: ?release/?component is bound outside the UNION branches that contain the FILTER NOT EXISTS. Consumer probes run with real `ggen sync run`: setting one component's commitSha to 'ZZZ' exited 0; giving one component the repo slug 'not a repo slug' exited 0; adding a second er:Release with no standing or authorityClass exited 0. Gate 020 fires only when every component is bad (the all-SHA-removed probe exited 1). CE23-1-2 vendors these gates and puts the v26.9.1 and v26.9.23 facts into one graph, so the fix is a required_now obligation inside the vendored copy in CE23-1-2, not in this lane. The fix: bind the subject inside each branch. Verified in the diff /private/tmp/claude-501/v23-scratch/SCAN-GC24-release-pack-upstream/gate-scope-fix-and-template-proto.diff: all three mutants are refused with FM-PACK-013 and the unmodified fixture still passes.
+- (b) The generation path exists, but its residue was understated. The pack's templates, gates, witnesses and qualification fixture are hand-written generation capital owned by the pack. No generator writes release-law SPARQL; `ggen pack new` needs `ggen init self` and only scaffolds a pack. Two more pieces are hand-written residue and go to lift/ in this pack: the TOML-to-er: lifter (~40 lines, CE23-1-2) and the receipt-to-observations lifter (~20 lines, CE23-3-8). qualify_packs.py only runs .rq and .py gates, so the lifters need their own tests. 'None beyond CE23-1-2' is wrong: the lane also depends on CE23-3-8 (gate 080 and the imported-crown template) and on CE23-9, CE23-10 and CE23-11 (the court, receipt and tag templates).
+- (b) The claim that later releases need no per-version pack only holds if the templates take the version as a parameter. The prior-scan prototype templates hard-code the version. SCAN-CHATMAN/genprobe-gates2/.../templates/crosswalk.toml.tmpl uses `to: out/release/v26.9.23/...` and `from = "release/v26.9.1/manifest.toml"`, and manifest.toml.tmpl hard-codes the repo slug. ggen supports fan-out output paths (ggen-engine/src/sync.rs:877-888; existing pattern packs/ash-extension-pack/templates/install.ex.tmpl). A prototype template with `to: "release/v{{ row.version }}/manifest.toml"` qualified as ALIVE projection v0.2.0 in the marketplace court (consequence sha c7481355...).
+- (d) The proposed gate is defective. `ggen pack doctor` exited 0 with healthy=true on the unmodified zero-template pack: it checks the project packs.lock and cache, not the pack's contents. So the FM-PACK-005 falsifier cannot fail that half of the gate. The diff target is an ephemeral lane worktree that does not exist. The gate also runs in /Users/sac/ggen-marketplace, which has 4 dirty paths and is 5 commits ahead of origin/main. Corrected gate: /private/tmp/claude-501/v23-scratch/SCAN-GC24-release-pack-upstream/gc24_release_pack_gate.sh. On the current upstream it fails with GATE_FAIL:no-templates(FM-PACK-005). On a scratch lane (origin/main archive plus the fixed pack, a gate-court.toml and pass/fail witnesses for 6 gates) it prints GATE_PASS. Revert mutations are caught: restoring upstream gate 020 gives fail-witness-admitted:020, restoring upstream gate 010 gives fail-witness-admitted:010, and adding the v26.9.23-literal template gives release-instance-literal-in-law.
+- (e) It does not duplicate the running V23-Q release lane. A grep of lanes/release.run.js, rel-a.run.js, rel-a2.run.js and wave-*.json finds no marketplace or release-pack references. No marketplace worktree has changed this pack since 0cb7a5cc9. It does overlap CE23-2-crosswalk-gen (scan wf_cf07ec8e-051), which edits /Users/sac/ggen-marketplace/packs/chatman-ecosystem-release-pack directly as required_now. That conflicts with matrix.md:25, and this lane plus CE23-1-2 conflict with it. The orchestrator must admit only one. The consistent choice is CE23-1-2 (vendor) now and this lane (promote) in GC-26.9.24; if CE23-2-crosswalk-gen is admitted as written, drop this lane as a duplicate.
+- Standing: UNKNOWN until built. A scratch prototype and gate exist; none of this is in the marketplace repo. The upstream pack was not modified: `git diff --quiet` on it is clean.

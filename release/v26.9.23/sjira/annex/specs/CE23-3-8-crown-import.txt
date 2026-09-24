@@ -1,0 +1,70 @@
+ID CE23-3-8-crown-import dim=chatman repo=chatman-ecosystem path=/Users/sac/wt/v26922/v23/CE23-R
+REQ CE23-3, CE23-8 (imported into the CE23-10 root receipt)
+req_now c=True v=True
+DEPENDS ['CE23-1-2-release-graph', 'CE23-9-imported-receipt-validator', 'V23-Q (CE23-5/GC23-11)', 'V23-H + operator ACCEPTED (CE23-4/GC23-12)', 'V23-S (derived counters)']
+TASK Target: a chatman-ecosystem lane worktree on the GitHub lineage (origin main c59596f5506e7a00ca4ed6b909ebf6d6659b74c1), created after CE23-0 identity repair. /Users/sac/wt/v26922/v23/CE23-R does not exist yet, and /Users/sac/chatman-ecosystem (6c21e25) is on another lineage with no remote.
+
+Step 0 runs now, in ggen-marketplace (generic law, fixture-tested). Extend /Users/sac/ggen-marketplace/packs/chatman-ecosystem-release-pack:
+- Ontology: er:ImportedCrown, er:crownComponent, er:pairedComponent, er:crownSubjectSha, er:stopStanding, er:hasGateReceipt, er:gateStanding, er:gateSubjectSha, er:pairedSubjectSha, er:requiredGateCount, er:llmInvocationsOnKnownReferencePath, er:unreceiptedActuation, er:stopReceiptSha256, er:receiptSha256.
+- gates/080_imported_crown.rq in the SELECT-violation style of 010-060.
+- ggen.toml and templates/imported-crown.toml.tmpl.
+- bin/import-crown-lift.py (receipt JSON to TTL).
+- bin/run-gates.py, reused from gym-autonomic-crown-pack.
+- bin/import-crown-generate.sh following gym crown-generate.sh: lift, then gates, then `ggen sync run`, then diff.
+- qualification fixtures: stale R_0, a positive fixture, and mutations.
+
+Steps 1-5 run in chatman, after V23-Q REL:final prints STOP=true at the merged main heads.
+(1) Copy verbatim, never edit, the 13 gate receipts and STOP-GC-26.9.23.json from the V23-Q main-head court (/Users/sac/wt/v26922/v26923/release/main-stop). Also copy the GC23-11 fleet qualification receipts for xaas and ggen_igniter at their main SHAs. The destination is release/v26.9.23/imported/receipts/. Do not read `git show <main>:docs/sjira/v26.9.23/receipts/*`: resealed in-tree receipts bind the parent (frozen) SHA and can never equal the main SHA they are committed in.
+(2) Build one observations JSON per subject for scripts/exact_subject_evidence_manifest.py:
+- xaas: one observation per gate or STOP receipt, with sensor = gate id, result PASS iff standing.value is ALIVE, evidence_id = sha256 of the receipt bytes, and sha = identity.subject_sha.
+- ggen_igniter: its fleet receipt, plus each gate receipt's gate.ggen_igniter_sha. ggen_igniter has no gate receipts of its own.
+Manufacture and commit <subject>.manifest.json.
+(3) Lift the files into release/v26.9.23/imported/crown.ttl with the pack's lift. The facts are the STOP digest, the 13 gate digests, the subject SHAs, and release_counters.LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH.value and UNRECEIPTED_ACTUATION.value.
+(4) Run gate 080 with the pack's run-gates. It refuses when:
+- STOP standing is not ALIVE;
+- fewer than 13 distinct ALIVE gate receipts have subject_sha equal to the crown subject;
+- the STOP subject_sha differs from the xaas component commitSha;
+- any gate.ggen_igniter_sha differs from the ggen_igniter component commitSha;
+- either counter is absent, null, or not 0.
+(5) Run `ggen sync run` inside release/v26.9.23/, a consumer ggen.toml that points at the pack, to render release/v26.9.23/imported-crown.toml. Commit it for the CE23-10 root receipt.
+GEN Owning generator: /Users/sac/ggen-marketplace/packs/chatman-ecosystem-release-pack, extended with the parts below. It verifiably has gates/010-060.rq, ontology.ttl and qualification/consumer.ttl today, and no templates, ggen.toml or bin/. The extension follows the verified precedent /Users/sac/ggen-marketplace/packs/gym-autonomic-crown-pack:
+- bin/crown-observe.py: --from-receipt lift.
+- bin/run-gates.py: generic gates/*.rq violation runner.
+- bin/crown-generate.sh: lift, then run-gates, then `ggen sync run`, then diff against the committed file.
+- ggen.toml and templates/*.tmpl with SPARQL frontmatter.
+
+New pack capital:
+- gates/080_imported_crown.rq: prototype tested at /private/tmp/claude-501/v23-scratch/SCAN-CE23-3-8-crown-import/proto/080_imported_crown.rq.
+- templates/imported-crown.toml.tmpl and ggen.toml.
+- bin/import-crown-lift.py.
+- bin/run-gates.py, reused.
+
+Consumer side (chatman):
+- release/v26.9.23/ggen.toml pointing at the pack, synced with `ggen sync run` from that directory. Not the root ggen.toml, which is the soc2 compliance project.
+- The existing scripts/exact_subject_evidence_manifest.py (chatman main c59596f5) for subject binding and replay.
+- `python3 ~/.claude/dfcm/validate_receipt.py` for receipt shape. The unified_receipt_validator 'dfcm_fleet_v1' contract does not exist; it is a CE23-9 dependency, called with the `--contract=KEY` form.
+
+Handwritten residue: bin/import-crown-lift.py, about 30-40 lines mapping receipt JSON to er: TTL (a 31-line prototype is at proto/lift_ttl.py). Its owner is chatman-ecosystem-release-pack bin/, not chatman scripts/. The lift's rules are generic (any upstream checkpoint crown). Only the observed receipt bytes are consumer-owned, per the deprecation note in chatman-ecosystem-v26-9-1-release-gate/pack.toml.
+RESIDUE A lift of about 20 lines from receipt JSON to observations JSON/TTL. Owner if promoted: chatman-ecosystem-release-pack lift/.
+GATE cd <CE23 lane worktree on c59596f5 lineage> && P=/Users/sac/ggen-marketplace/packs/chatman-ecosystem-release-pack && I=release/v26.9.23/imported && T=$(mktemp -d) && for s in xaas ggen_igniter; do python3 scripts/exact_subject_evidence_manifest.py $I/$s.observations.json > $T/$s.manifest.json && cmp $I/$s.manifest.json $T/$s.manifest.json && python3 scripts/exact_subject_evidence_manifest.py $I/$s.manifest.json --verify > /dev/null || exit 1; done && python3 $P/bin/import-crown-lift.py $I/receipts <xaas_main_sha> <ggen_igniter_main_sha> > $T/crown.ttl && cmp $I/crown.ttl $T/crown.ttl && python3 $P/bin/run-gates.py $I/crown.ttl $P/gates && (cd release/v26.9.23 && ggen sync run --format json > /dev/null) && git ls-files --error-unmatch release/v26.9.23/imported-crown.toml && git diff --exit-code -- release/v26.9.23/ && for r in $I/receipts/*.json; do python3 ~/.claude/dfcm/validate_receipt.py $r || exit 1; done
+
+Pack-side qualification, runnable now in ggen-marketplace:
+
+python3 $P/bin/run-gates.py $P/qualification/imported-crown.positive.ttl $P/gates && ! python3 $P/bin/run-gates.py $P/qualification/imported-crown.stale-r0.ttl $P/gates && ! python3 $P/bin/run-gates.py $P/qualification/imported-crown.llm1.ttl $P/gates && ! python3 $P/bin/run-gates.py $P/qualification/imported-crown.drop-gate.ttl $P/gates
+FALSIFIER Importing the currently pushed stale STOP receipt must be refused: in xaas 66b52e7 it has subject_sha 11a24fba..., standing UNKNOWN, '0/13 gates ALIVE; STOP=false'. A gate receipt whose subject_sha != xaas main SHA must be refused with STALE_OR_FOREIGN_SUBJECT. Setting a counter to 1 must be refused by gate 080.
+REASONS
+- KEEP, but only with the corrected fields. The three cited pieces of evidence are real. The generation path and the gate as written do not hold, and the receipt source is wrong. No other lane owns CE23-3 or CE23-8.
+- Evidence (a1) holds. xaas-int HEAD e999e62 (also origin/friday/gc-fri-0800 and 66b52e7) has docs/sjira/v26.9.23/receipts/STOP-GC-26.9.23.json with identity.subject_sha 11a24fba65c90b5c146cdd16d2328c64c647731c, standing.value UNKNOWN, and derived_from '...0/13 gates ALIVE; STOP=false'. 66b52e7 is the 'baseline observation R_0' commit.
+- Evidence (a2) holds. chatman GitHub main is c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 (git ls-remote). Its scripts/exact_subject_evidence_manifest.py has Refusal STALE_OR_FOREIGN_SUBJECT at line 50, REPLAY_MISMATCH at line 137 and claim_ceiling PARTIAL_ALIVE at line 120. Running it on a lift of the committed R_0 receipts against xaas main 2fb10156 printed {"refusal":"STALE_OR_FOREIGN_SUBJECT"} and exited 2. Output is in scratch proto/.
+- Evidence (a3) holds. chatman-ce23.md lines 69 and 74 are the CE23-3 and CE23-8 rows. docs/sjira/v26.9.23/successor/ACCEPTED is absent from xaas-int HEAD.
+- The repo path is wrong. /Users/sac/wt/v26922/v23/CE23-R does not exist. Both local chatman checkouts lack the lane's inputs: /Users/sac/chatman-ecosystem (main 6c21e25) and /Users/sac/wt/v26922/chatman-ecosystem/int (7ac66d8) have no git remote, no release/ directory and no exact_subject_evidence_manifest.py. The lane needs CE23-0 first: a worktree on the GitHub lineage at c59596f5.
+- The generation path is wrong as stated. chatman-ecosystem-release-pack is NOT vendored in chatman: c59596f5 has only a metadata stub at platform-console/.../bridged-packs/chatman-ecosystem-release-pack.toml. scripts/verify_release.py never loads the pack; its only 'release' string is a User-Agent at line 231. The chatman root ggen.toml is project 'chatman-ecosystem-compliance' with soc2-readiness-pack, so `ggen sync run` at the root cannot render imported-crown.toml. The pack at /Users/sac/ggen-marketplace/packs/chatman-ecosystem-release-pack has only gates/010-060.rq, ontology.ttl, qualification/consumer.ttl and pack.toml. It has no templates/, ggen.toml, bin/ or lift/. No release.ttl exists anywhere in chatman; v26.9.1 is TOML plus handwritten verify_release.py.
+- An existing precedent covers the corrected path. /Users/sac/ggen-marketplace/packs/gym-autonomic-crown-pack has bin/crown-observe.py (--from-receipt lift, line 157), bin/run-gates.py (generic gates/*.rq violation runner) and bin/crown-generate.sh (observe, then gates, then `ggen sync run`, then diff against the committed file), plus ggen.toml and templates/*.tmpl with sparql frontmatter. The deprecation note in packs/chatman-ecosystem-v26-9-1-release-gate/pack.toml supports this split: generic law goes in the pack, and release-instance facts stay consumer-owned.
+- The gate is broken in four ways. (1) `ggen sync run` does not execute pack gates/*.rq (ggen 26.9.18; ggen-graph's sparql_gate_check runs only a named subset), so gate 080 is never run and the 'counter=1' falsifier cannot fail the gate. (2) scripts/unified_receipt_validator.py is not in chatman; it exists only in ggen-marketplace receipt-provenance-unification-pack/generated/. Its CLI accepts only `--contract=KEY`, so `--contract dfcm_fleet_v1` gives a usage error (exit 2). No contract 'dfcm_fleet_v1' exists; the contracts are autofde_ledger, clean_session, ecosystem_bootstrap, ecosystem_sync and gym_autonomic_crown. (3) `git diff --exit-code` passes on an untracked first render, so the drift check proves nothing on first render. (4) Running --verify on a manifest manufactured by the same command is tautological.
+- The receipt source is wrong. RELA reseal (rel-a2.run.js:82-86 and :109) commits the court output as a CHILD of the frozen SHA, so in-tree receipts bind the parent SHA. `git show <main_sha>:docs/sjira/v26.9.23/receipts/*` can therefore never match the main SHA. The prototype gate refused exactly this case ('stop-subject-sha-differs-from-component-commit-sha'). The only receipts with subject_sha equal to the main SHA come from V23-Q REL:final (release.run.js:94), written outside any git repo to /Users/sac/wt/v26922/v26923/release/main-stop. Committing their bytes into chatman release/v26.9.23/imported/ makes them durable outside the subject, which is composition C21 in the DfCM catalog.
+- ggen_igniter has no gate or STOP receipts; ggen_igniter-int 3937a4f has only receipts/v26.9.23/V23-*.json. Per-subject step (1) fails for it as written. Bind ggen_igniter instead through gate.ggen_igniter_sha, which every xaas gate receipt carries, plus its GC23-11 fleet qualification receipt.
+- A prototype gate 080 was run with rdflib 7.6.0 over TTL lifted from real receipts, with falsifiers in both directions. The stale R_0 receipts were REFUSED with 18 rows: stop-not-alive, admitted-gates-0, subject SHA differs, 13 ggen_igniter mismatches, and both counters absent. A positive fixture passed: the real V23-S smoke STOP whose counters are 0, plus gates rewritten to ALIVE (synthetic). LLM=1 was REFUSED, UNRECEIPTED=1 was REFUSED, dropping GC23-12 was REFUSED (admitted-gates-12), and a moved ggen_igniter SHA was REFUSED. The artifacts are proto/080_imported_crown.rq (38 lines) and proto/lift_ttl.py (31 lines) under /private/tmp/claude-501/v23-scratch/SCAN-CE23-3-8-crown-import/.
+- Schema validation cannot decide STOP truth. `python3 ~/.claude/dfcm/validate_receipt.py` ADMITS the stale 0/13 STOP receipt (exit 0) because it checks shape only. The STOP=true and counter=0 refusals must come from gate 080.
+- The V23-S dependency is already satisfied. xaas-int e999e62 is 'Merge v23/V23-S'. lib/mix/tasks/xaas.stop_court.ex:1327 writes release_counters, and :1687-1705 derives LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH and UNRECEIPTED_ACTUATION, set to null with a reason when unreadable. Gate 080 must therefore refuse null or absent counters, not only values other than 0. The prototype does.
+- This does not duplicate V23-Q or RELA. release.run.js, rel-a.run.js and rel-a2.run.js mention 'chatman' only inside the slug 'seanchatmangpt' and never touch chatman-ecosystem. This lane consumes V23-Q's REL:final output. Side observation for the driver: release.run.js:100 tags xaas and ggen_igniter v26.9.23 on STOP=true, while CE23-11 and DRIVER say to tag last, on the chatman crowned subject.
+- required_now=true holds. Without this lane CE23-3 and CE23-8 are falsified: chatman main c59596f5 has only release/v26.8.23 and release/v26.9.1, so there is no v26.9.23 subject. Only the pack extension (step 0) can run now; the import is blocked on V23-Q reaching STOP=true at the merged main heads, which in turn needs the operator ACCEPTED file. Per DRIVER's 10:55 procedure, this should enter as a candidate through the CE23 prose-to-WorkOrder admission, not as a hand-authored backlog item.

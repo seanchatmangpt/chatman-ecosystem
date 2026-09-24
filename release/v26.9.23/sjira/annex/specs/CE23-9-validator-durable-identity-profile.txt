@@ -1,0 +1,63 @@
+ID CE23-9-validator-durable-identity-profile dim=evidence repo=ggen-marketplace (receipt-provenance-unification-pack) + ~/.claude/dfcm (unversioned) path=/Users/sac/ggen-marketplace/packs/receipt-provenance-unification-pack
+REQ CE23-9 (imported receipt validation + replay in the root court); PRD section 28 ('a named receipt without validated contents is not ALIVE')
+req_now c=True v=True
+DEPENDS ['CE23-3-out-of-subject-seal']
+TASK Add an opt-in profile to ~/.claude/dfcm/validate_receipt.py: `--require-durable [--repo-map owner/repo=path ...]`. With no flags, every verdict stays identical. Callers without flags today: xaas stop_court.ex:674, courts GC23-7.sh:26 and GC23-9.sh:71, and 5 xaas test files.
+
+Under the profile, refuse with a printed typed broken_term (a traceback never counts as a refusal):
+
+(a) R_missing_replay unless replay.durable_location is one of:
+- `git-notes:refs/notes/<ref>@<sha>`, where the note object exists in the mapped repo;
+- `git:<owner/repo>@<sha>:<path>`, where the blob exists at <sha> and identity.subject_sha is <sha> or an ancestor of it. This replaces 'tracked at the subject', which cannot be met: receipts are committed in a child of their subject.
+- an https URL.
+Refuse absolute local paths (/private/tmp, /tmp, /var/folders, non-git dirs such as /Users/sac/wt/v26922/v26923/...).
+
+(b) R_missing_identity when identity.repo is not an owner/repo slug, has no --repo-map entry, or `git -C <mapped> cat-file -e <subject_sha>^{commit}` fails. This replaces the silent skip at validate_receipt.py:20-25. That skip has made the subject_sha check dead for every slug receipt V23-S produces.
+
+Delegation: extend the sibling lane's rp:c_dfcm_fleet contract (SCAN-CE23-9-imported-receipt-validator) with the profile bindings instead of minting a second contract for https://chatmangpt.com/schema/receipt/v1. Import the generated module lazily, only under the profile. Pin its sha256 inside validate_receipt.py and refuse to run the profile on a mismatch, so V23-S's verifier.validator_sha256 transitively identifies the delegate (no xaas change; xaas is frozen).
+
+Adoption: the CE23-9 root court and the Part B (post-ACCEPTED) release script validating resealed and imported receipts. Not the running release.run.js REL:final/REL:verify.
+
+Timing: land before the Part B court run, never between REL:final and its reproducibility rerun.
+GEN Generator: /Users/sac/ggen-marketplace/packs/receipt-provenance-unification-pack. `ggen sync run` with ggen 26.9.18 at /Users/sac/.local/bin/ggen; ggen.toml sets ontology.ttl and the templates/ dir. Verified in a scratch copy: sync is drift-free, and a prototype regenerated generated/unified_receipt_validator.py with new value forms.
+
+Owned by ontology data: the owner/repo slug regex, the durable-location regex (alternatives git-notes | git:slug@sha:path | https, with absolute paths refused), and sha1. These go on the sibling lane's rp:c_dfcm_fleet contract, each individual carrying rp:sourceFile so gates/02_every_fact_cited.rq returns zero rows.
+
+Owned by a template extension (generator source, templates/unified_receipt_validator.py.tmpl plus new rp: properties):
+- a per-binding rp:brokenTerm, so output reads R_missing_identity / R_missing_replay instead of the generic value-form message;
+- rp:resolution kinds (subject_commit, notes_object, blob_at_commit, ancestor_of), rendered into a generated read-only `git cat-file -e` / `git merge-base --is-ancestor` resolver that takes a repo map.
+The pack.toml description and PROVENANCE.md must be updated from 'opens a file read-only' to 'read-only git probes'. gates/01_no_actuation.rq must stay at zero rows.
+
+Irreducible hand-written residue: about 25 lines in the unversioned ~/.claude/dfcm/validate_receipt.py (argv parsing for --require-durable/--repo-map, lazy import, sha256 pin of the generated module, exit mapping).
+
+Preferred alternative home: generate the same validator into the chatman-ecosystem root-court subject (versioned, bound to an exact SHA). The CE23-9 trust base then excludes the unversioned ~/.claude file, and ggen-marketplace, classified Successor at matrix.md:25, never becomes a runtime dependency of the root court.
+RESIDUE About 15 lines in validate_receipt.py. Pack ontology individuals are data, not code.
+GATE set -e; P=/Users/sac/ggen-marketplace/packs/receipt-provenance-unification-pack; S=/private/tmp/claude-501/v23-scratch/CE23-9-durable; V=$HOME/.claude/dfcm/validate_receipt.py; mkdir -p $S
+cd $P && ggen sync run && git -C /Users/sac/ggen-marketplace diff --exit-code -- packs/receipt-provenance-unification-pack/generated
+rm -rf $S/clone && git clone -q --no-local /Users/sac/wt/v26922/fri/xaas-int $S/clone && git -C $S/clone notes --ref=receipts add -m probe e999e62b63c680517b9a562cef877d8b09b0cfdd
+M="--repo-map seanchatmangpt/xaas=$S/clone"
+F1=/private/tmp/claude-501/v23-scratch/SCAN-stale-evidence/forged-GC23-4.json
+F2=/private/tmp/claude-501/v23-scratch/SCAN-CE23-9-validator-durable-identity-profile/forged-slug-notes-sha0.json
+POS=/private/tmp/claude-501/v23-scratch/SCAN-CE23-9-validator-durable-identity-profile/positive-slug-notes.json
+set +e
+python3 $V --require-durable $M $F1 >$S/n1 2>&1; e1=$?
+python3 $V --require-durable $M $F2 >$S/n2 2>&1; e2=$?
+python3 $V --require-durable $M $POS >$S/p 2>&1; ep=$?
+set -e
+test $e1 -eq 1 && grep -q R_missing_identity $S/n1 && grep -q R_missing_replay $S/n1 && ! grep -q Traceback $S/n1
+test $e2 -eq 1 && grep -q R_missing_identity $S/n2 && ! grep -q Traceback $S/n2
+test $ep -eq 0
+python3 $V /private/tmp/claude-501/v23-scratch/driver-stopcourt-1015/*.json | grep -c '^ADMITTED' | grep -qx 14
+cd /Users/sac/wt/v26922/fri/xaas-int && MIX_ENV=test mix test test/mix/tasks/xaas_stop_court_test.exs test/xaas/receipt/r_projection_test.exs
+
+Anti-vacuity: with validate_receipt.py reverted, the n1 grep for R_missing_identity must fail, because the old code prints only a FileNotFoundError traceback.
+FALSIFIER forged-GC23-4.json (subject_sha 000...0, identity.repo a deleted worktree, durable_location /private/tmp/does-not-exist) is ADMITTED under --require-durable. Or the default profile starts refusing current lane-court receipts.
+REASONS
+- Evidence checks out (commands run 2026-09-23, xaas-int HEAD e999e62). `validate_receipt.py forged-GC23-4.json` prints ADMITTED, exit 0. validate_receipt.py:20-25 checks subject_sha only when `Path(repo).is_dir()`. receipt.schema.json:55 says 'never gitignored tmp' only in a description. `git -C ~/.claude rev-parse` fails: not a git repository. The count cited in the candidate has drifted: 70 committed receipts at e999e62, 37 with a /private/tmp durable_location, 3 of those gone, 67 with an absolute identity.repo.
+- A stronger fact than the candidate cites: V23-S (merged at xaas-int e999e62, stop_court.ex:1447-1466) now writes identity.repo as the GitHub slug. For a slug, `Path('seanchatmangpt/xaas').is_dir()` is false, so no v26.9.23 gate receipt or fleet receipt ever has its subject_sha checked. Witnessed: forged-slug-xaas.json (the real fleet receipt with subject_sha set to 000…0) is ADMITTED, exit 0. The committed post-V23-S receipts receipts/v26.9.23/V23-S.gate/stop-court-*.receipt.json are ADMITTED with slug repos and /private/tmp durable locations.
+- Why it is required now: CE23-9 'imported receipt validation', CE23-3 'all 13 gate receipts admitted' and PRD §28 (prd-ard.md:2016, 'a named receipt without validated contents is not ALIVE') all rest on this validator. Its identity check can never refuse anything, so it is vacuous (admission_vacuous). GC23-7.sh:10 documents its witness (1) as 'subject_sha is a commit of identity.repo', which does not hold for slug or missing repos. The durable-location half is required only as the check that the CE23-3 out-of-subject seal must pass. If CE23-3 is ruled successor, that half moves to GC-26.9.24 and the identity half stays required.
+- The generation path exists and runs. ggen 26.9.18 `ggen sync run` in a scratch copy of the pack works: 3 outputs 'unchanged', graph_hash 8737195c, no drift against the committed generated/ files. In a scratch prototype, rp:vf_durable_location and rp:vf_repo_slug regenerate and lexically refuse both forged fixtures. But the pack template (templates/unified_receipt_validator.py.tmpl) only checks field shapes with regexes. A prototype receipt with a slug repo, a legal git-notes URI and subject_sha 000…0 is VALID under the generated validator (exit 0). So the git resolution checks (subject commit, note object, blob at commit) need a template extension or hand-written code. The candidate's '~15 lines of residue' understates this.
+- The gate is vacuous and must be replaced. On the unchanged validator, `validate_receipt.py --require-durable forged.json` crashes (FileNotFoundError: '--require-durable') with exit 1, which satisfies `test $? -eq 1`. The `;` also lets an exit 1 from a failed cd or `ggen sync run` satisfy the test. So the gate passes before any work is done, and a revert mutation cannot fail it. The stated falsifier only exercises the /tmp lexical case, never the identity-resolution case.
+- Criterion (a)'s option 'a path tracked in git at the subject' can never be met for a receipt stored in its own repo. A receipt is committed in a child of its subject: xaas-int docs/sjira/v26.9.23/receipts/GC23-4.json does not exist at its subject 11a24fb. Cross-repo receipts also exist: fmt-1 receipt.r.json has repo /Users/sac/ggen_igniter but durable_location is an xaas path. The profile must name repo and commit explicitly: git:<slug>@<sha>:<path>, with subject_sha an ancestor of <sha>.
+- Overlaps with other work. (1) The sibling scan SCAN-CE23-9-imported-receipt-validator/ontology.diff already adds rp:c_dfcm_fleet to this same pack for the same schema URI. Minting a second rp:c_dfcm_r would duplicate that contract, so this lane should extend rp:c_dfcm_fleet and run after it. (2) This lane does not duplicate V23-Q, which only uses the default profile. But the proposal to adopt the profile in release.run.js REL:final/REL:verify cannot work: that workflow is already compiled and running, and REL:verify writes its rerun receipts to /private/tmp/.../REL-verify by design, which the profile would refuse. Adoption belongs in the CE23-9 root court and the not-yet-written Part B release script.
+- Consequences the lane must handle. Changing validate_receipt.py changes the verifier.validator_sha256 that V23-S writes into every later stop-court receipt. Land it before the Part B court, never between REL:final and its reproducibility rerun, and pin the sha256 of the delegated generated module inside validate_receipt.py, because xaas is frozen and cannot record a second digest. Import the delegate lazily and only under the profile. Otherwise the GC23-7/GC23-9 courts, the stop court and 5 xaas test files would start depending on ggen-marketplace, which the fleet matrix classifies as Successor (matrix.md:25). If CE23-9 runs the module from ggen-marketplace, CE23-6 fleet typing must record that dependency, or the validator must be generated into the chatman-ecosystem root-court subject instead.

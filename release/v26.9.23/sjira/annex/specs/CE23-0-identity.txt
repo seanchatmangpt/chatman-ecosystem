@@ -1,0 +1,58 @@
+ID CE23-0-identity dim=chatman repo=chatman-ecosystem path=/Users/sac/chatman-ecosystem
+REQ CE23-0
+req_now c=True v=True
+DEPENDS []
+TASK R=/Users/sac/chatman-ecosystem, W=/Users/sac/wt/v26922/v23/CE23-R. Steps, in order:
+(1) git -C $R remote add origin https://github.com/seanchatmangpt/chatman-ecosystem.git
+(2) git -C $R fetch --no-prune --tags origin. This fetches 6 heads and tag v26.9.10 (about 140 MB) and creates refs/remotes/origin/HEAD.
+(3) Create 4 preserve refs, create-only (old value 0 x40): refs/preserve/v26.9.23/local-lineage/{main 6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d, exp/pr3-jurisdiction-refusal-contracts 5307ea79539d6739a60e4220a6b695e026a4211e, release/v26.9.22 7ac66d8c55ce4aba62cd6416e9f3eecd358700e4, preserve/v26.9.22/main 5cb279b4a444e9f87b9cd94ff2dbd617d4e2622c}.
+(3b) Install /private/tmp/claude-501/v23-scratch/SCAN-CE23-0-identity/pre-push.fence as $R/.git/hooks/pre-push (chmod +x). It refuses to push any ref descending from local root 551cf5c563d93356b261892dd787595872056753. Publishing the local lineage stays an operator decision.
+(4) GHMAIN=$(git ls-remote https://github.com/seanchatmangpt/chatman-ecosystem.git refs/heads/main | cut -f1). It was c59596f5 at 12:40 PT. Then run git -C $R worktree add $W -b v23/CE23-R $GHMAIN.
+(5) Write $W/receipts/v26.9.23/CE23-0.json in the fleet R schema.
+- identity: subject CE23-0, repo seanchatmangpt/chatman-ecosystem, subject_sha = base_sha = $GHMAIN, branch v23/CE23-R, worktree $W, local_lineage_head 6c21e25.
+- authority: ceiling DO, grant 'operator CE23-0 (chatman-ce23.md)'.
+- consequence: remote_effects [].
+- lineage: relation DISJOINT, merge_base NONE, pairs_checked 24 (4 local refs x 6 GitHub heads), shared_blob_ids 0, local_root 551cf5c563d93356b261892dd787595872056753, github_root 14cfd7b01aac25b3271963378d07357eb0c55af6, local_commits 9.
+- replay commands: write each one as an assertion that exits 0 when the fact holds, e.g. sh -c 'git -C R merge-base A B; test $? -eq 1'. validate_receipt.py refuses an ALIVE receipt that records a raw merge-base exit 1 (admission_vacuous).
+- Leave identity.work_order and tuple_digest out until compile_prose manufactures the CE23 orders, then relink.
+Commit the receipt with git commit -F as the only file in a single child commit of $GHMAIN on v23/CE23-R.
+Do not:
+- write the receipt to /Users/sac/wt/v26922/v26923/receipts/fleet (the GC23-11 court reads that directory);
+- merge the unrelated histories;
+- set upstream on local main;
+- push anything;
+- touch xaas or ggen_igniter (S23 is frozen).
+GEN No generator exists for the git actuation (remote add, fetch --no-prune, create-only update-ref, worktree add). These steps are irreducible. Existing capital that should own the adjacent parts:
+
+(a) Work order. The CE23 WorkOrder tuples come from ggen_igniter `mix semantic_jira.compile_prose` (/Users/sac/wt/v26922/fri/ggen_igniter-int/lib/mix/tasks/semantic_jira.compile_prose.ex) running over chatman-ce23.md. CE23-0 is that pipeline's bootstrap prerequisite: bench order BD-05 lands the prose in chatman-ecosystem and 'needs CE23-0 root identity'. So this lane is Bootstrap-class, and its receipt is relinked by tuple digest once the CE23 goal graph exists.
+
+(b) Identity binding. The binding is an er:RefObservation fact under /Users/sac/ggen-marketplace/packs/chatman-ecosystem-release-pack: ontology.ttl, admitted by gates/020_component_identity.rq and gates/050_ref_observation_law.rq. The pack keeps instance facts consumer-owned, so CE23-1 and CE23-10 should turn the receipt's binding into er:RefObservation facts rather than retype it.
+
+(c) Chatman-native receipts. The GitHub lineage has `ecosystem receipt seal|verify-all` (TOML receipts/*.toml, BLAKE3). This lane does not use it: the fleet R schema is the driver contract, and verify-all is non-recursive, so the JSON receipt does not disturb it.
+
+Handwritten residue: the CE23-0 receipt JSON, whose facts are all produced by commands, plus the tested pre-push fence script. No pack owns the lineage-disjointness observation. chatman-ecosystem-release-pack should gain an er:LineageObservation class and gate for it; that is successor work (GC-26.9.24).
+RESIDUE The CE23-0 receipt JSON (a few fields). No pack owns identity receipts. The facts in it are produced by commands (merge-base, ls-tree blob comparison).
+GATE R=/Users/sac/chatman-ecosystem W=/Users/sac/wt/v26922/v23/CE23-R sh /private/tmp/claude-501/v23-scratch/SCAN-CE23-0-identity/gate-corrected.sh
+
+The script, in order:
+1. GH=https://github.com/seanchatmangpt/chatman-ecosystem.git; P=refs/preserve/v26.9.23/local-lineage; F=receipts/v26.9.23/CE23-0.json.
+2. GHMAIN=$(git ls-remote $GH refs/heads/main | cut -f1) must be non-empty.
+3. `git -C $R remote get-url origin` = $GH.
+4. `rev-parse refs/heads/main` = 6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d.
+5. Each of the 4 $P refs resolves to its exact SHA, and the count under $P is 4.
+6. refs/remotes/origin/main resolves to $GHMAIN, and at least 6 non-HEAD refs/remotes/origin refs exist.
+7. For every pair of a $P ref and an origin head: `git merge-base l r; test $? -eq 1`. Exit 128 fails.
+8. C=$(git -C $W log -1 --format=%H -- $F) must be non-empty.
+9. $C^ = $GHMAIN, `git diff --name-only $C^ $C` = $F, and C is an ancestor of HEAD.
+10. `git show $C:$F` is ADMITTED by ~/.claude/dfcm/validate_receipt.py.
+11. A python check on the receipt: identity.subject_sha == $GHMAIN, repo == seanchatmangpt/chatman-ecosystem, lineage.merge_base == NONE, lineage.shared_blob_ids == 0, lineage.local_root == 551cf5c563d93356b261892dd787595872056753, standing ALIVE.
+
+Mutation-verified in the scratch simulation: baseline exit 0. Each of these 9 mutations gives exit 1: lying receipt (2 variants), origin/main absent, preserve ref repointed, main moved, remote branch pruned, 5cb279b made unreachable, receipt commit absent, histories merged.
+FALSIFIER Any of these kills the claim: local refs/heads/main moves off 6c21e25; any of the 8 local commits becomes unreachable from a ref; a remote-tracking ref is pruned; the receipt asserts shared ancestry while merge-base returns NONE; or the CE23-R worktree HEAD differs from GitHub main.
+REASONS
+- (a) The evidence citations check out, with three number corrections. /Users/sac/chatman-ecosystem/.git/config has only [core] and `git remote -v` prints nothing. STATUS.md:13 says 'This repo has two unrelated lineages'. The fleet matrix.md:19 and classification.ttl:244-253 rows for chatman-ecosystem say Unsupported, 'no git remote'. `gh api repos/seanchatmangpt/chatman-ecosystem` returns default_branch main, pushed_at 2026-09-22T01:10:35Z, and main is c59596f5. I recomputed merge-base in SCAN-CHATMAN/gh-clone and got NONE for all 24 pairs: 4 local refs x 6 GitHub branch heads. The candidate said '4x7', which counted origin/HEAD. Shared blob ids are 0: local main has 28 files and all 4 local refs have 38 unique blobs; GitHub main has 12313 files and 11894 unique blobs. The roots are 551cf5c (local) and 14cfd7b (GitHub). The local lineage has 9 commits (`rev-list --all --count` = 9), not the 8 the falsifier says.
+- (b) The generation path is right that the git steps have no generator; they are irreducible actuation. It misses existing capital. /Users/sac/ggen-marketplace/packs/chatman-ecosystem-release-pack/ontology.ttl already defines the identity binding as er:RefObservation (repository/ref/SHA/authority/observedAt). Its gates/020_component_identity.rq and 050_ref_observation_law.rq admit it, and the pack keeps instance facts consumer-owned. The chatman GitHub lineage has its own `ecosystem receipt seal|verify-all` (apps/ecosystem-cli/src/main.rs:100-107, crates/ecosystem-core/src/lib.rs:584-624). verify-all is non-recursive and reads only .toml, so a receipts/v26.9.23/*.json file does not disturb the chatman crown. No pack owns the lineage-disjointness facts (merge-base matrix, blob overlap, roots), so that receipt is the honest residue.
+- (c) required_now=true. The CE23-0 admission condition is falsified today because the checkout has no remote. CHATMAN_STOP has an Identity conjunct. CE23-1 and the 9 CE23-12 design orders in /Users/sac/wt/v26922/v26923/bench/orders.json have depends_on CE23-0. The lane does not move the frozen release subject S23: it does not touch xaas or ggen_igniter, and local main stays at 6c21e25. The GC23-11 court observes with --no-network from the committed universe.json, where chatman's default_remote is null. So adding a remote does not change any frozen court input.
+- (d) The gate as written is runnable but partly vacuous. I simulated it in scratch at SCAN-CE23-0-identity/sim (a copy of the local refs plus a real GitHub fetch; the real repo was not touched). (1) The validator refuses an ALIVE receipt whose replay records a raw `git merge-base` exit 1. The message is 'standing: ALIVE with a non-zero replay exit (admission_vacuous)'. So replay commands must be written as assertions that exit 0 when the fact holds. (2) `! git merge-base` passes on exit 128 when origin/main is absent. (3) Five of the falsifier cases still passed the original gate: a receipt that asserts shared ancestry, origin/main deleted, a preserve ref repointed, a remote branch pruned, and 5cb279b made unreachable while the preserve-ref count stays at 4. (4) The clause W HEAD == GitHub main forces the receipt to stay uncommitted, which is not durable (R_missing_replay). The corrected gate is saved at /private/tmp/claude-501/v23-scratch/SCAN-CE23-0-identity/gate-corrected.sh. It passes the baseline and fails all 9 mutations: lying receipt (twice), origin/main absent, preserve ref repointed, main moved, remote branch pruned, commit unreachable, receipt commit absent, and local/GitHub histories merged.
+- (e) The lane does not duplicate any other lane. lanes/release.run.js, rel-a.run.js and rel-a2.run.js only act on xaas and ggen_igniter and have no chatman-ecosystem step. The bench orders depend on CE23-0 but do not repeat it, and no other lane or scan creates CE23-R or local-lineage refs. The receipt must not go into /Users/sac/wt/v26922/v26923/receipts/fleet: GC23-11 check-standing reads that directory, and the extra file would change the frozen court's tally line.
+- Recommended additions. After `remote add`, any executor could publish the local lineage with `git push origin <local branch>`; that includes the v26.9.22 int worktree /Users/sac/wt/v26922/chatman-ecosystem/int, which shares hooks. A pre-push fence that refuses any ref descending from root 551cf5c makes 'do not push the local lineage' a mechanism instead of an instruction. It is tested at SCAN-CE23-0-identity/pre-push.fence: exit 1 for local main, exit 0 for the GitHub lineage. Separately, xaas scripts/sjira/fleet_matrix.py will report 9 ahead / 4730 behind instead of DISJOINT once a remote exists. That is a generator defect for CE23-6, or GC-26.9.24 successor work. It is not in this lane, because xaas is frozen and the GC23-11 court does not use that code path.

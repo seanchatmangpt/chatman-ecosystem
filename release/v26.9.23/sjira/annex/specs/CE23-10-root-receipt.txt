@@ -1,0 +1,59 @@
+ID CE23-10-root-receipt dim=chatman repo=chatman-ecosystem path=/Users/sac/wt/v26922/v23/CE23-R
+REQ CE23-10
+req_now c=True v=True
+DEPENDS ['CE23-9-root-court']
+TASK Target: chatman-ecosystem lane worktree /Users/sac/wt/v26922/v23/CE23-R. It is created by CE23-0 from github.com/seanchatmangpt/chatman-ecosystem main (c59596f5 or the CE23-9-repaired head), never from /Users/sac/chatman-ecosystem. Branch v23/CE23-R.
+
+depends_on: CE23-1/2 (release/v26.9.23 sub-project with ggen.toml, release.ttl and the vendored pack at release/v26.9.23/packs/chatman-ecosystem-release-pack), CE23-3 (imports), CE23-9-root-court, and V23-Q REL:final (STOP=true at the merged main heads plus /Users/sac/wt/v26922/v26923/release/release-receipt.json).
+
+Step (0), observe. The generated court script receipts/root-court.sh.tmpl writes release/v26.9.23/observed.ttl. It holds:
+- er:ImportedReceipt facts (importName, importPath, sha256 importDigest, ordinal) for the 13 GC23 receipts and STOP-GC-26.9.23.json, copied into release/v26.9.23/imports/ via `git show <xaas_main_sha>:docs/sjira/v26.9.23/receipts/...`;
+- V23-Q release-receipt.json and the regenerated fleet classification.ttl at the main heads;
+- the STOP counters extracted from the imported STOP receipt: LLM_INVOCATIONS_ON_KNOWN_REFERENCE_PATH, UNRECEIPTED_ACTUATION, REQUIRED_UNKNOWN, UNCLASSIFIED_REQUIRED_WORK, STOP;
+- the toolchain strings as printed by `rustc --version`, `ggen --version` and `python3 --version`;
+- the root-court replay command exit codes;
+- the court subject SHA (the commit under test; receipts land in a receipts-only child).
+The component SHAs come from release.ttl er:Component, which carries the xaas and ggen_igniter post-merge main SHAs.
+
+Step (1), render. `cd release/v26.9.23 && ggen sync run`, with observed.ttl unioned into the pack graph via extra_ontologies. The three new pack templates render:
+- (a) receipts/root-receipt.unsealed.toml, in the chatman Receipt shape: id receipt:release-v26-9-23, authority release, standing_before PARTIAL_ALIVE, standing_after ALIVE, and a timestamp taken from release.ttl. observed[] holds the component SHAs, chatman subject SHA, graph_hash, pack/ontology/schema digests, toolchain and the V23-Q release-receipt digest. verified[] holds the import name=sha256 pairs, the STOP counters and the fleet digest. excluded[] holds the successor/blocked/refused typing from the fleet classification. replay[] holds the court commands.
+- (b) receipts/ROOT.json, in the fleet R schema, with standing and exits taken from observed facts.
+- (c) receipts/IMPORTS.sha256.
+
+Step (2). Copy (a) to receipts/release-v26-9-23.toml at the repo root and run `ecosystem receipt seal`.
+
+Step (3). Commit receipts only with `git commit -F`, as the child of the subject SHA.
+
+Residue: the ~15-line observe/copy/seal step in the court script (ggen cannot hash files or run commands) plus the new er:RootReceipt/er:ImportedReceipt terms in the vendored pack ontology. The owning pack is chatman-ecosystem-release-pack; the upstream move is GC-26.9.24.
+GEN This path was proven in the prototype /private/tmp/claude-501/v23-scratch/SCAN-CE23-10-root-receipt/gen with ggen 26.9.18.
+
+Generation:
+- ggen sync of the release sub-project release/v26.9.23/ggen.toml, created by the CE23-1/2 lane. Its ontology is release.ttl. The vendored pack is `chatman-ecosystem-release-pack = { path = "packs/chatman-ecosystem-release-pack", extra_ontologies = ["observed.ttl"] }`, supported per /Users/sac/ggen/crates/ggen-engine/src/config.rs PackRef::Path.
+- Three NEW templates go into the vendored pack's templates/: root-receipt.toml.tmpl, root-receipt.json.tmpl and imports.sha256.tmpl. The CE23-1/2 lane also adds root-court.sh.tmpl there.
+- Pack ontology terms er:RootReceipt and er:ImportedReceipt (importName, importPath, importDigest, ordinal) plus receipt properties are added. None of these exist today: the marketplace pack has no templates/ directory.
+
+Sealing and admission use existing code, unchanged:
+- `ecosystem receipt seal`: apps/ecosystem-cli/src/main.rs:100-102 → crates/ecosystem-core/src/lib.rs:606.
+- `ecosystem receipt verify-all`: main.rs:104-106 → lib.rs:584.
+- the fleet validator ~/.claude/dfcm/validate_receipt.py.
+
+The script scripts/unified_receipt_validator.py is dropped. It does not exist in chatman, has no chatman contract, and is JSON-only. The TOML is checked instead with jsonschema against schemas/receipt.schema.json.
+
+Handwritten residue: the observe/copy/seal shell step and the ontology terms. The owning pack is ggen-marketplace chatman-ecosystem-release-pack; the upstream move is GC-26.9.24.
+RESIDUE none (a 2-line copy then seal step inside the generated court script)
+GATE cd /Users/sac/wt/v26922/v23/CE23-R/release/v26.9.23 && ggen sync run --format json >/dev/null && bash receipts/root-court.sh && cd /Users/sac/wt/v26922/v23/CE23-R && git diff --exit-code -- release/v26.9.23 receipts/release-v26-9-23.toml && cargo run --locked --quiet -p ecosystem-cli --bin ecosystem -- receipt verify-all | grep -qx 'RECEIPTS_ALIVE count=6' && python3 -c "import tomllib,json,jsonschema; jsonschema.validate(tomllib.load(open('receipts/release-v26-9-23.toml','rb')), json.load(open('schemas/receipt.schema.json')))" && python3 ~/.claude/dfcm/validate_receipt.py release/v26.9.23/receipts/ROOT.json && (cd release/v26.9.23/imports && shasum -a 256 -c --strict ../receipts/IMPORTS.sha256)
+FALSIFIER Tampering one byte of the sealed receipt body is not refused by verify-all (blake3). Or the receipt's xaas/ggen_igniter SHAs differ from release/v26.9.23/manifest.toml. Or a gate digest differs from sha256 of the imported file.
+REASONS
+- EVIDENCE HOLDS (checked at github chatman-ecosystem main c59596f5, clone /private/tmp/claude-501/v23-scratch/SCAN-CHATMAN/gh-clone). crates/ecosystem-core/src/lib.rs: Authority enum 238-251 includes Release; Receipt struct 471-487; receipt_paths 547-561 reads only receipts/*.toml, non-recursive; verify_all_receipts 584; seal_all_receipts 606; blake3 digest 500-504. schemas/receipt.schema.json:6-24 sets additionalProperties false and id pattern ^receipt:[a-z0-9_-]+$. receipts/bootstrap.toml has a blake3 digest. CLI: apps/ecosystem-cli/src/main.rs:100-106 prints RECEIPTS_SEALED/RECEIPTS_ALIVE count=N.
+- REPO_PATH DOES NOT EXIST: /Users/sac/wt/v26922/v23/CE23-R is absent. The local /Users/sac/chatman-ecosystem (main 6c21e25, no remote) has no crates/, schemas/ or release/. The lane worktree has to come from github main c59596f5, and establishing that is the CE23-0 identity lane's job.
+- GENERATION PATH AS CLAIMED DOES NOT EXIST: /Users/sac/ggen-marketplace/packs/chatman-ecosystem-release-pack has no templates/ directory. It contains only pack.toml, ontology.ttl, gates/010-060 and qualification/consumer.ttl. Its ontology has no receipt terms. The pack is not vendored at c59596f5. root-receipt.toml.tmpl and root-receipt.json.tmpl do not exist anywhere.
+- A CORRECTED GENERATION PATH WORKS (prototype in /private/tmp/claude-501/v23-scratch/SCAN-CE23-10-root-receipt/gen, built on the CE23-1/2 probe). The vendored pack plus 3 new templates, with observed.ttl unioned through extra_ontologies, ran under ggen 26.9.18. Two syncs were byte-identical: graph_hash fa1bae89... and the 2nd run reported 'unchanged: content identical' ×4. ecosystem receipt seal gave RECEIPTS_SEALED count=1, and reseal is byte-deterministic. verify-all gave RECEIPTS_ALIVE count=6. validate_receipt.py returned ADMITTED on ROOT.json. A pack edit without re-lock is refused with FM-PACK-008, so lock pinning holds.
+- GATE DEFECT 1: `ggen sync run` at the chatman root fails. The root ggen.toml is the soc2 compliance project with [templates] dir=templates, and that dir is missing: [FM-CONFIG-004] templates dir ... unreadable (reproduced on a copy of the root ggen.toml, exit 1). ggen sync run has no --manifest flag, so the gate must cd into the release sub-project.
+- GATE DEFECT 2: scripts/unified_receipt_validator.py is not in chatman scripts/. The pack copy (receipt-provenance-unification-pack/generated/) has no chatman_root_v1 contract; its contracts are autofde_ledger, clean_session, ecosystem_bootstrap, ecosystem_sync and gym_autonomic_crown. It json.load()s its input, so a TOML file fails. It parses only --contract=KEY, so `--contract chatman_root_v1` yields 2 positional args and the usage exit 2. Replace it with jsonschema validation of the TOML against schemas/receipt.schema.json. That check refused an injected extra field ('forged_extra' was unexpected).
+- GATE DEFECT 3 (vacuity): verify-all ignores unknown TOML fields. Appending forged_extra="STOP=true" to a sealed receipt still gave RECEIPTS_ALIVE count=6, because Receipt has no deny_unknown_fields. Tamper plus reseal also passes (verify=0): keyless blake3 checks integrity, not authenticity. A 1-byte value tamper without reseal is refused ('digest mismatch'). Only regenerate→reseal→compare catches tamper plus reseal (cmp=1 on tampered, cmp=0 on honest). The gate therefore needs git diff over receipts/release-v26-9-23.toml and the schema check.
+- GATE DEFECT 4: falsifier 3 (a gate digest differs from the sha256 of the imported file) could never fire, because no step recomputes import digests. Fixed with a generated IMPORTS.sha256 checked by `shasum -a 256 -c`. Flipping 1 byte in GC23-5.json gave 'FAILED' and exit 1; the honest tree gave exit 0.
+- STANDING TRANSITION: UNKNOWN→ALIVE is refused by seal and verify ('illegal receipt transition Unknown -> Alive', exit 1). The receipt needs PARTIAL_ALIVE→ALIVE (Standing::permits lib.rs:208-232).
+- LITERAL FACTS ARE STALE OR PREMATURE: xaas-int is now e999e62, not b4ef5d6 (the frozen-subject rule applies). CE23-5 requires post-merge main SHAs. The fleet digest sha256:d9e99f07... is real today (shasum of classification.ttl), but CE23-5/GC23-11 regenerate fleet receipts at the main heads. rustc 1.97.1 (rust-toolchain.toml), ggen 26.9.18 and Python 3.14.3 are observed today. All of these must be observed at court time into observed.ttl, never typed into the task or the template. Replay exit codes and standing likewise: the prototype's literal "exit": 0 would be admission_vacuous.
+- SELF-REFERENCE: a commit cannot contain its own SHA. The receipt must bind the root court's subject SHA, i.e. the commit carrying release/v26.9.23 minus receipts, and land in a receipts-only child commit. CE23-11 must tag knowing this.
+- PARTIAL OVERLAP WITH V23-Q: REL:final (lanes/release.run.js:92-99) already writes /Users/sac/wt/v26922/v26923/release/release-receipt.json per ARD §27. It covers graph digest, ontology digest, schema digest, toolchain, provider registry, gate receipts, LLM/UNRECEIPTED/REQUIRED_UNKNOWN counters and STOP, all at the main heads. CE23-10 must import that receipt and the main-head committed gate/STOP receipts by digest rather than recompute those digests; recomputing would create a second implementation that can drift. Imports come from `git show <xaas_main_sha>:docs/sjira/v26.9.23/receipts/*` (durable), not from scratch REL dirs.
+- SCOPE: CE23-10 is itself a CE23 proposition, and CHATMAN_STOP includes RootReceipt. CE23-8 also requires LLM=0 and UNRECEIPTED_ACTUATION=0 to be carried into the root receipt. Without this lane both are falsified, so required_now=true. It is not executable until V23-Q REL:final (STOP=true at main heads, which needs operator GC23-12 acceptance), CE23-1/2 (release subject, release.ttl, vendored pack), CE23-3 (crown import) and CE23-9 (root court) land. Upstreaming the templates and er: receipt terms to ggen-marketplace is successor GC-26.9.24.

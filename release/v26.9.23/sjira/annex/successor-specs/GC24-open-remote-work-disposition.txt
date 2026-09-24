@@ -1,0 +1,64 @@
+ID GC24-open-remote-work-disposition dim=fleetprs repo=xaas path=/Users/sac/wt/v26922/fri/xaas-int
+REQ successor GC-26.9.24 (F8: no GC23/CE23 proposition reads per-PR disposition; GC23-11 needs only one classification per repo)
+req_now c=False v=False
+DEPENDS None
+TASK Successor GC-26.9.24 lane. Do not start before the v26.9.23 tag, and never commit to friday/gc-fri-0800 or the xaas-int or ggen_igniter-int worktrees while V23-Q is running. Work in a fresh xaas worktree on a successor branch cut from post-release origin/main. Produce a typed disposition of open remote work on xaas, ggen_igniter and chatman-ecosystem.
+
+(1) Capture live evidence into a committed evidence file, then normalize every envelope through /Users/sac/ggen-marketplace/packs/github-live-evidence-ingestion-pack/runtime/normalize.py (kind=pull_request, head_sha=headRefOid) to get an exact_subject and digests. The captures are:
+- `gh pr list --state open --json number,headRefName,headRefOid,baseRefName,isDraft,mergeable`
+- `git ls-remote origin 'refs/heads/*'`
+
+(2) Per PR and per no-PR branch, record raw facts in fleet_matrix.py observe: is-ancestor of the release subject, `rev-list --count <release>..<head>`, and the conflict paths from `git merge-tree --write-tree --name-only`. Point GIT_OBJECT_DIRECTORY at a scratch directory, with the repo objects as an alternate, so nothing is written to an observed repo.
+
+(3) Derive the disposition with a SPARQL CONSTRUCT rule file run by rdflib, which fleet_matrix already uses. Do not use Python conditionals. The classes are Superseded, ContainedAutoMerge, Successor and ReceiptSubjectRef, over raw facts plus a hand-authored reservedSurface list and a hand-authored retirementWitness list. Seed the witnesses as #24 → bc8bf2f and #23 → c81f8dc.
+
+(4) Emit sj: triples next to fleet/matrix.ttl.
+
+Use dispositions.json (16 PRs at 11:06 PT) only as a regression oracle. It is stale: ggen_igniter #27 (aaf575b2) now exists. The operator, not the loop, closes the Superseded rows.
+GEN No existing generator owns per-PR disposition. I checked:
+- github-live-evidence-ingestion-pack: normalize.py is a passthrough envelope normalizer (exact_subject repo@sha40, raw_digest, receipt_digest), and its only ggen.toml rule renders a static ingestion-reference.json.
+- fleet_matrix.py: a hand-written V23-F projector.
+- grep across 326 marketplace packs: no merge-tree, is-ancestor or disposition logic.
+
+Reusable parts:
+- github-live-evidence-ingestion-pack normalize.py owns envelope normalization of the captured gh JSON.
+- fleet_matrix.py emit owns sorted, byte-stable TTL rendering.
+- rdflib owns running the disposition rule, written as a .rq CONSTRUCT. The rule is data, not code.
+
+Irreducible hand-written residue:
+(a) about 50-70 lines in fleet_matrix.py observe_repo: the extra gh fields, the ls-remote branch enumeration, and the is-ancestor, rev-list and merge-tree probes in a scratch object directory;
+(b) one CONSTRUCT rule file;
+(c) a hand-authored reservedSurface and retirementWitness TTL, because the reserved set exists only as prose in COORDINATION.md:46-48;
+(d) vocabulary terms in xaas docs/sjira fleet vocabulary.ttl.
+
+Owners:
+- The probe logic and a pull_request disposition CONSTRUCT plus template should move into github-live-evidence-ingestion-pack, as a new runtime/containment.py plus queries/ and templates/.
+- The sj: disposition vocabulary should be admitted into the ggen_igniter semantic-jira-pack ontology.ttl. That file is reserved, so the admission happens after the release.
+RESIDUE The containment and merge-tree predicate (~30 lines). If adopted as reusable law it belongs in github-live-evidence-ingestion-pack runtime/normalize.py, which the pack should own.
+GATE Run in the successor xaas worktree after the v26.9.23 tag. F = docs/sjira/v26.9.23/fleet.
+
+(1) Conservation twin: `python3 scripts/sjira/fleet_matrix.py emit --classification $F/classification.ttl --observations $F/observations.json --out-ttl /tmp/c.ttl --out-md /tmp/c.md`. /tmp/c.ttl must have sha256 fc30cfe036021d36… equal to the committed matrix.ttl. Old observations without headRefOid must add no triples, and GC23-11.sh output must stay unchanged.
+
+(2) Replay: run emit twice over the committed captured evidence file for the new observations (never over live observe). Both runs must be byte-identical.
+
+(3) Anti-vacuity, for every row typed Superseded or ContainedAutoMerge, one of these must hold:
+- `git merge-base --is-ancestor <pr_head> <release_head>` exits 0;
+- the row names a retirementWitness commit that is an ancestor of the release head.
+
+(4) Every v23/* ref is typed ReceiptSubjectRef, never mergeable work.
+
+(5) Every row's exact_subject passes pack gates/exact_subject.py semantics, repo@40-hex. Run the pack tests: `python3 tests/test_*.py` exit 0.
+
+(6) Mutation: drop the #24 → bc8bf2f witness. Gate (3) must then fail, since #24 has 1 unique commit and a crown.ex conflict. Separately, the live observation must include ggen_igniter #27, or the gate fails as a stale-seed guard.
+FALSIFIER A row typed Superseded or ContainedAutoMerge whose PR head has commits not reachable from the release subject and no retirement witness (e.g. #24 without bc8bf2f). Or a v23/episode-* receipt-subject branch typed as mergeable work.
+REASONS
+- (a) The citations check out. xaas-int e999e62 (friday/gc-fri-0800): scripts/sjira/fleet_matrix.py:495 runs `gh pr list ... --json number,title,headRefName`, and :762 emits sj:openPullRequestCount. goal.ttl:151 is the GC-26.9.24 description, which receives the WD FA and ZCode lanes. The scratch files merge-analysis.txt, fri-cmp-xaas.tsv, fri-cmp-ggen_igniter.tsv and dispositions.json all exist.
+- (a) I re-checked ggen_igniter against release head 3937a4f, using a scratch GIT_OBJECT_DIRECTORY so nothing was written to the repo. `merge-base --is-ancestor` exits 0 and `rev-list --count` gives 0 for #16, #18, #19, #21 and #22. `merge-tree --write-tree` exits 1 for #24 (lib/ggen_igniter/crown.ex), #23 (.github/workflows/ci.yml) and #20 (test/ggen_igniter_semantic_jira_pack_test.exs). ultracode/w9-crown2 exists remotely at 186c74cd. Its conflict is on priv/ggen/semantic-jira-pack/ontology.ttl, which COORDINATION.md:46-47 lists as reserved. For xaas against e999e62: #63 and #61 have 3 unique commits and no conflict; #62 has 28 unique commits and 3 conflicts. These match the seed.
+- (a) Retirement witnesses exist. bc8bf2f is an ancestor of the release head and deletes crown.ex (783 lines), so it witnesses #24. bba0592 is also an ancestor. #23 has 1 unique commit and the seed names no witness for it. A witness can be named: c81f8dc, 'force per-run NIF rebuild', is an ancestor of the release head. As written, the gate would fire on #23. That is correct behaviour, not a defect.
+- (a) The seed data is stale. A live `gh pr list` shows ggen_igniter #27 (aaf575b2, docs/brce-tla-adapter-v0.1-20260923, draft, created 19:57Z), opened after the 11:06 PT seed. There are now 17 PRs, not 16. Also, origin already has feat/zcode-ocel-pack, while the seed calls it LOCAL-only. The lane must re-observe live data and use the seed JSON only as an oracle, never as input.
+- (b) The generation path is overstated. fleet_matrix.py is a hand-written projector (V23-F commits fb0cff6, 5aba8d0, 6f4f280), not a ggen template, so extending observe_repo is hand-written code. In github-live-evidence-ingestion-pack, runtime/normalize.py (49 lines) only checks repository@sha40 and kind, passes the payload through, and adds raw and receipt digests. The base_sha and mergeable fields exist only in fixture payloads with dummy SHAs. gates/exact_subject.py (5 lines) regex-checks the fixtures. ggen.toml has one rule, which renders a static ingestion-reference.json. The pack's tests and gate exit 0, but it cannot compute containment or disposition and cannot emit sj: triples. No marketplace pack implements merge-tree, is-ancestor or disposition logic: grepping 326 packs finds only workflow pull_request triggers.
+- (b) The hand-written residue is larger than 30 lines. It covers: extending the gh fields (headRefOid, baseRefName, isDraft); per-PR is-ancestor, rev-list and merge-tree probes; a no-PR branch enumeration via ls-remote (v23/* has 8 remote refs); and new vocabulary terms. The sj pack declares no fleet terms (vocabulary.ttl:9-12). The reserved-surface set exists only as prose in COORDINATION.md:46-48, so a machine-readable list would have to be hand-authored. merge-tree also writes objects, which contradicts the fleet_matrix docstring promise that nothing is written to an observed repo except what fetch writes. It must use a scratch object directory.
+- (c) This belongs to successor GC-26.9.24. The GC23-11 court (courts/GC23-11.sh) runs observe with --no-network, so it never sees PRs. It checks one classification per repo plus a CriticalPath exact-head receipt (goal.ttl:372-374). CE23-5 needs only the two release PRs merged. CE23-6's UnclassifiedRequiredWork and the stop query's UNCLASSIFIED_REQUIRED_WORK count WorkOrders, not remote PRs. No GC23 or CE23 proposition is falsified without this lane, so F8 routes it to the successor.
+- (d) The gate as written cannot run. It has '...' placeholders, and 'run observe twice, byte-identical' is impossible because observe stamps --observed-at and reads live gh/network state. What is deterministic: I ran emit twice on the committed observations.json and got matrix.ttl sha256 fc30cfe036021d36 both times, identical to the committed fleet/matrix.ttl. matrix.md also matches (800b44b1fe416ba6). Byte-identity must therefore be measured on emit over captured evidence, with this committed digest as a conservation twin.
+- (e) This lane does not duplicate V23-Q. release.run.js only creates or reuses the release PR from release/v26.9.23, merges on green and verifies. It dispositions no other PR. The collision risk is real, though. xaas-int is moving (e999e62 merged V23-S 'release Part A' after b4ef5d6), and V23-Q pushes int HEAD and fixes forward under the int merge lock. Committing this lane to friday/gc-fri-0800 would move a qualified exact head and change GC23-11 court machinery during release. The lane must run on a successor branch and integrate only after the v26.9.23 tag.
+- Evidence written only to /private/tmp/claude-501/v23-scratch/SCAN-verify-GC24-open-remote-work-disposition/: pr-{ggen_igniter,xaas,chatman-ecosystem}.now.json (live gh), m1/m2.ttl and .md (emit replay), and gi-objects/ and xa-objects/ (scratch merge-tree objects).

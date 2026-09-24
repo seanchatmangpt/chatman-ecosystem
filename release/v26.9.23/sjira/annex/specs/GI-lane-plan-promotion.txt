@@ -1,0 +1,57 @@
+ID GI-lane-plan-promotion dim=selfhost repo=ggen_igniter path=/Users/sac/ggen_igniter (branch off main after the release merge)
+REQ successor GC-26.9.24 (HANDWRITTEN.md row 10 paydown; frozen subject until merge)
+req_now c=False v=False
+DEPENDS ['CE-lane-plan']
+TASK Successor GC-26.9.24, ggen_igniter only, on a branch off ggen_igniter main. It may be built after the release merge but must not merge to main until after tag v26.9.23, so it does not move the main head bound by CE23-5 and CE23-9.
+
+1. semantic-jira-pack: add runtime-templates/lane_wave.json.eex. runtime-templates/ already exists; the precedent is descriptor.json.eex, rendered by Descriptor.render (descriptor.ex:95-110). Do not use templates/, because pack sync renders templates/*.eex (pack.ex:449-450). Add a new lanes/ directory holding lanes.rq, edges.rq, repos.rq and exclusions.rq, ported from the CE-lane-plan pack. Do not use gates/, because gates/*.rq are executed as gates (pack.ex:401-410).
+
+2. One template only. Converge the CE lane-plan shape and the sibling GEN-lane-wave-spec sm-lane-wave spec into this single runtime template (mode-selected), not two.
+
+3. Library module GgenIgniter.SemanticJira.LanePlan:
+   - Kernel+tuple rows come from Bootstrap.Graph.orders/3 (graph.ex:129).
+   - Digests come from tuple_digest/1 (graph.ex:198).
+   - Refusals are typed REFUSED:SJIRA_LANE_PLAN, following the plan.hddl.eex:9-10 pattern: tuple_incomplete, capability_unassigned, gate_court_missing, repository_unregistered.
+
+4. Two thin `use Mix.Task` shells that delegate to SemanticJira.Cli:
+   - `mix semantic_jira.work_graph --goal --orders --out [--check]`. Output must be byte-equal to xaas scripts/successor_work_graph.exs on the same inputs.
+   - `mix semantic_jira.lane_plan --goal --orders --registry --out [--check]`.
+   Generate both from sj:CliTask facts if GEN-cli-task-template merged first; otherwise hand-write them and record them in ggen_igniter HANDWRITTEN.md.
+
+5. Consumer retirements are separate follow-on successor lanes:
+   - xaas: point the Xaas.Sjira.Successor :script default (successor.ex:431, and the provenance string at :258) at the mix task. Update GC23-12.sh:67-76, which requires scripts/successor_work_graph.exs to be committed. Update HANDWRITTEN.md line 10.
+   - chatman lane-plan: drop render.exs.
+GEN Owner: ggen_igniter priv/ggen/semantic-jira-pack. Verified on disk:
+- runtime-templates/descriptor.json.eex
+- bootstrap/work_orders.rq and bootstrap/dependencies.rq
+- templates/plan.hddl.eex (refuse pattern at lines 9-10)
+
+Render path: the existing library pipeline GgenIgniter.Ontology.load!/1 (ontology.ex:12) → Query.run/2 (query.ex:20) → Render.render/2 (render.ex:8). This is the same path Descriptor.render uses (descriptor.ex:95-110) and the CE probe's render.exs uses. Rows come from Bootstrap.Graph.orders/3 and tuple_digest/1 (graph.ex:129, 198).
+
+No marketplace pack owns a WorkOrder-to-lane-wave projection. I checked the 326 packs; repository-factory-scheduler-pack and dfcm-selection-frontier-execution-pack are Python PLAN_ONLY or SELECT schedulers.
+
+CLI shells: igniter.gen.task (deps/igniter/lib/mix/tasks/igniter.gen.task.ex) generates the wrong shape: `use Igniter.Mix.Task` plus igniter/1 plus test/mix/tasks/*_test.exs. The house shape for semantic_jira.* is a plain `use Mix.Task` shell that delegates to SemanticJira.Cli. The correct owner is sibling candidate GEN-cli-task-template (semantic-jira-pack cli_task.ex.eex plus sj:CliTask facts; scratch only, not merged).
+
+Hand-written residue:
+- If GEN-cli-task-template merges first: zero shell residue. What remains is the LanePlan registry join and refusal typing, owned by semantic-jira-pack.
+- Otherwise: the two ~25-line shells as well, recorded in ggen_igniter HANDWRITTEN.md with owner semantic-jira-pack.
+RESIDUE The CLI body of the two mix tasks (thin, like semantic_jira.frontier.ex).
+GATE cd <ggen_igniter successor worktree> && mix format --check-formatted && mix compile --warnings-as-errors --force && mix credo && mix test test/ggen_igniter_semantic_jira_lane_plan_test.exs test/ggen_igniter_semantic_jira_pack_health_test.exs test/ggen_igniter_semantic_jira_bootstrap_test.exs && T=$(mktemp -d) && mix semantic_jira.lane_plan --goal <CE goal.ttl> --orders <CE compiled/orders.ttl> --registry <CE registry.ttl> --out $T/lane.json && cmp $T/lane.json <committed CE-lane-plan render> && mix semantic_jira.lane_plan --goal <same> --orders <same> --registry <same> --out <committed CE-lane-plan render> --check && X=<xaas checkout at tag v26.9.23> && MIX_ENV=test mix run --no-start $X/scripts/successor_work_graph.exs $X/docs/sjira/v26.9.23/successor/goal.ttl $X/docs/sjira/v26.9.23/successor/compiled/orders.ttl $T/w_script.json && mix semantic_jira.work_graph --goal $X/docs/sjira/v26.9.23/successor/goal.ttl --orders $X/docs/sjira/v26.9.23/successor/compiled/orders.ttl --out $T/w_task.json && cmp $T/w_script.json $T/w_task.json && (cd $X && XAAS_DIR=$X GGEN_IGNITER_DIR=<ggen_igniter successor worktree> sh docs/sjira/v26.9.23/courts/GC23-0.sh && XAAS_DIR=$X GGEN_IGNITER_DIR=<ggen_igniter successor worktree> sh docs/sjira/v26.9.23/courts/GC23-2.sh)
+
+The lane_plan test must include a tuple-incomplete fixture that is REFUSED:SJIRA_LANE_PLAN tuple_incomplete with nothing written.
+
+Anti-vacuity check: removing a tuple field from lanes.rq, or reverting the template, must make both cmp checks fail.
+FALSIFIER Any of: the task output differs byte-wise from the CE-lane-plan render on the same inputs; a tuple-incomplete order produces a lane; the GC23 compiled outputs (compile_prose --check) drift after the change.
+REASONS
+- (a) Citation 1 is real. In xaas-int (e999e62), HANDWRITTEN.md line 10 is the first Active row. It names the owner as 'semantic-jira-pack (a `mix semantic_jira.work_graph` projection of compiled orders to kernel+tuple rows; then the script retires)'. The row covers work_graph only; it says nothing about a lane plan.
+- (a) Citation 2 is real but the conclusion drawn from it is overstated. ggen_igniter-int (3937a4f) prose.ex:620-627 defines admission_context, but inputs.queries is a fixed list of 5 files (prose.ex:89 @queries ~w(root foreign_requirements contradictions uncovered_gates delta.construct), read at prose.ex:219). A new .rq file in prose/ would not change the digest. The real placement hazards are elsewhere: gates/*.rq are globbed and executed as gates (pack.ex:401-410, gate_verify.ex:187-190), and templates/*.eex are rendered by pack sync (pack.ex:449-450, pack_health.ex:139-140).
+- (a) Citation 3 is real: reconcile_reactor.ex:1231-1233 has describe_failure({:refused_path_escapes_root, ...}). This refusal is why the CE probe needs a library-call render.exs (SCAN-selfhost/pack/render.exs header comment).
+- (b) The 'must be a new directory' claim is only half true. runtime-templates/ already exists: descriptor.json.eex, loaded by Descriptor.render at descriptor.ex:95-110, which is the precedent for this task. Only lanes/ would be new.
+- (b) These generation-path citations check out: Graph.orders/3 at graph.ex:129 and tuple_digest/1 at graph.ex:198. tuple_field halts on {:incomplete,_} and {:ambiguous,_} (graph.ex:285-289). The plan.hddl.eex refuse pattern is at lines 9-10. The library pipeline exists: Ontology.load! (ontology.ex:12), Query.run (query.ex:20), Render.render (render.ex:8).
+- (b) igniter.gen.task exists at deps/igniter/lib/mix/tasks/igniter.gen.task.ex, but it cannot own this artifact. It scaffolds `use Igniter.Mix.Task` plus igniter/1 plus test/mix/tasks/<name>_test.exs with a 'not yet implemented' warning test. All 8 lib/mix/tasks/semantic_jira.*.ex are plain `use Mix.Task` shells that delegate to SemanticJira.Cli. The faithful owner is the sibling scan candidate GEN-cli-task-template (cli_task.ex.eex plus sj:CliTask facts). It exists only in scratch and is not merged, so without it the residue is the two thin shells.
+- (b) No marketplace pack owns an sj:WorkOrder-to-lane-wave projection. I checked the 326 packs: repository-factory-scheduler-pack and dfcm-selection-frontier-execution-pack are Python PLAN_ONLY or SELECT schedulers. semantic-jira-pack is the right owner.
+- (c) Neither a GC23 nor a CE23 proposition is falsified without this work. The operator's 'generated lane plan' step is met by CE-lane-plan (the ggen_igniter library render; w1 and w2 in SCAN-CE-lane-plan-verify are byte-identical). By PRD PR-017 and F8, this is successor GC-26.9.24.
+- (c) Doing it now would actually break current gates. Release subjects are frozen (DRIVER.md). GC23-12.sh:67-76 refuses when scripts/successor_work_graph.exs is not committed or differs from HEAD, so retiring the script now makes GC23-12 refuse. Merging into ggen_igniter main before the tag would also move the main head that CE23-5 and CE23-9 bind. The branch must therefore merge after tag v26.9.23, not merely after the release merge.
+- (d) The proposed gate cannot run and would not catch its own falsifiers. The path test/ggen_igniter/semantic_jira/ does not exist; the repo convention is flat files named test/ggen_igniter_semantic_jira_*_test.exs. The ggen_igniter gate (release.run.js REPOS) is `mix compile --warnings-as-errors --force && mix credo && mix test`, not MIX_ENV=test with credo omitted. None of the three falsifiers is wired in: there is no cmp against the CE render, no work_graph equivalence check, and no GC23-0 or GC23-2 court rerun. The corrected gate adds all three.
+- (e) This does not duplicate V23-Q: release.run.js has no lane_plan or work_graph step, no ggen_igniter ref contains semantic_jira.lane_plan, semantic_jira.work_graph or semantic-jira-pack/lanes/, and the tasks are absent from lib/mix/tasks. It does overlap sibling candidate GEN-lane-wave-spec, a second lane_wave.json.eex with a different JSON shape rendered through mix ggen_igniter.sync --engine sparql (147 rows). The two templates must be merged into one runtime template, or N implementations will drift.
+- The dependency CE-lane-plan is real but not committed: it lives only in scratch (SCAN-selfhost/pack/*), and /Users/sac/chatman-ecosystem main 6c21e25 does not contain it. This lane cannot start until CE-lane-plan is committed.

@@ -1,0 +1,75 @@
+ID CE23-1-2-release-graph dim=chatman repo=chatman-ecosystem path=/Users/sac/wt/v26922/v23/CE23-R
+REQ CE23-1, CE23-2 (also feeds CE23-6)
+req_now c=True v=True
+DEPENDS ['CE23-0-identity', 'CE23-P-compile-ce23', 'V23-Q (post-merge main SHAs, CE23-5)']
+TASK Build chatman-ecosystem release/v26.9.23, generated from one graph. Base the worktree /Users/sac/wt/v26922/v23/CE23-R on GitHub main c59596f5 (the lineage CE23-0 establishes). Do not base it on the local /Users/sac/chatman-ecosystem at 6c21e25: it has no remote, no release/ directory, and is not an ancestor of c59596f5.
+
+(1) In ggen-marketplace, on branch ce23/release-pack-crosswalk (push, never force), extend packs/chatman-ecosystem-release-pack:
+- cw: vocabulary: RoleCrosswalk, legacyRole, legacyComponent, legacySha, legacyStanding, disposition, classificationSource, successorComponent, derivedBy, legacyRequiredRole, courtReferencesComponent.
+- gate 070_legacy_role_crosswalk.rq refuses: an untyped disposition; a row with zero or more than one disposition; duplicate rows for one role; any cw:legacyRequiredRole with no row; REQUIRED without a required successor component.
+- gate 080_critical_path_coverage.rq refuses any CriticalPath repository in the imported fleet classification that is not a required er:Component of the release.
+- Templates:
+  - release-manifest.toml.tmpl with every verify_release field (id, repository, ref, ref_check, sha, role, disposition, standing, required, depends_on).
+  - constitutional-role-crosswalk.toml.tmpl for the new roles (release_role, primary, capabilities, authority_ceiling), so survey_portfolio RELEASE_ROLE_UNMAPPED stays clean.
+  - legacy-role-crosswalk.toml.tmpl, using OPTIONAL plus the gate instead of an inner join on disposition.
+  - requirements.toml.tmpl, with rows from the CE23-P orders.
+  - disposition-rule template whose construct: derives disposition "SUCCESSOR" (derivedBy rule:no-GC23-court-reference) for rows with no disposition and no cw:courtReferencesComponent fact.
+- Add qualification fixtures and mutants inside the pack.
+
+(2) In chatman, release/v26.9.23/:
+- ggen.toml: frontmatter schema; pack via git+subdir pinned to the marketplace sha from (1); extra_ontologies = imports/*.ttl; tracked templates/.gitkeep.
+- release.ttl: consumer instance facts. xaas and ggen_igniter components at the post-merge main SHAs from CE23-5 (re-render when they land). Dispositions for the 5 in-universe legacy repos come from the imported classification (all Successor). The other 11 are derived by the construct rule.
+- imports/legacy-v26.9.1.ttl: produced by a deterministic lifter from release/v26.9.1/manifest.toml (16 components: role, id, sha, standing).
+- imports/fleet-classification.ttl: bytes of xaas classification.ttl at the pinned SHA.
+- imports/court-references.ttl: from a read-only run of xaas scripts/sjira/fleet_matrix.py court_references over the 16 legacy repos.
+- mutants/run.sh: anti-vacuity runner.
+
+(3) Run `(cd release/v26.9.23 && ggen sync run)` twice and commit the outputs. release/v26.9.1 stays byte-untouched (set PYTHONDONTWRITEBYTECODE=1). Upstream merge of the marketplace branch to marketplace main is GC-26.9.24. Validating the new manifest with verify_release.py waits for CE23-7 (version fence).
+GEN ggen 26.9.18 sync, run from a dedicated release/v26.9.23/ggen.toml (not the root: the root ggen.toml at c59596f5 fails with FM-CONFIG-004 and pulls soc2-readiness-pack by absolute path). The sub-manifest needs a tracked empty release/v26.9.23/templates/.gitkeep and [templates] dir="templates".
+
+Reusable law (gate 070, cw: vocabulary, templates, and the disposition rule as a template `construct:` frontmatter, since [[inference.rules]] is refused FM-CONFIG-101 in this schema) is authored in /Users/sac/ggen-marketplace/packs/chatman-ecosystem-release-pack on a pushed marketplace branch. The templates are release-manifest.toml.tmpl, constitutional-role-crosswalk.toml.tmpl, legacy-role-crosswalk.toml.tmpl and requirements.toml.tmpl. The existing pack has gates 010-060, ontology.ttl and qualification/consumer.ttl, and no templates, so it fails FM-PACK-005 today.
+
+Chatman consumes the pack as `[packs.chatman-ecosystem-release-pack] git="https://github.com/seanchatmangpt/ggen-marketplace.git" version="<exact marketplace sha>" subdir="packs/chatman-ecosystem-release-pack"`, following the xaas ggen.toml:7-22 precedent. Vendoring is allowed only as a byte-identical copy of that marketplace commit with its sha recorded, never a chatman-local fork (chatman's existing convention is bridged-packs/chatman-ecosystem-release-pack.toml).
+
+Independent inputs enter through the pack's `extra_ontologies` (verified to join the sync closure hash):
+- imports/legacy-v26.9.1.ttl (lifter output; use cw:LegacyRelease/cw:legacyRequiredRole so gates 010-060 do not re-judge the frozen v26.9.1 release);
+- imports/fleet-classification.ttl (bytes of xaas docs/sjira/v26.9.23/fleet/classification.ttl at the post-merge xaas SHA, with its sha256 recorded);
+- imports/court-references.ttl (cw:courtReferencesComponent facts).
+
+Template frontmatter follows /Users/sac/ggen-marketplace/packs/frontier-release-factory-pack/templates/acceptance-contract.toml.tmpl (exists). ggen.lock pins the pack content hash (FM-PACK-008 on drift).
+RESIDUE (a) release.ttl instance facts. The pack law makes these consumer-owned (chatman-ecosystem-v26-9-1-release-gate/pack.toml description).
+(b) A deterministic lifter from v26.9.1 manifest TOML to er: RDF, about 40 lines. No generator exists: render_capability_rdf.py only lifts capability catalogs. Owner if promoted: chatman-ecosystem-release-pack lift/.
+(c) The disposition CONSTRUCT rule (SPARQL, pack-owned).
+GATE cd /Users/sac/wt/v26922/v23/CE23-R && git merge-base --is-ancestor c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 HEAD && export PYTHONDONTWRITEBYTECODE=1 && (cd release/v26.9.23 && ggen sync run) && git diff --exit-code -- release/v26.9.23 && test -z "$(git status --porcelain -- release/v26.9.23)" && (cd release/v26.9.23 && ggen sync run) && git diff --exit-code -- release/v26.9.23 && git diff --exit-code c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 HEAD -- release/v26.9.1 && test "$(shasum -a 256 release/v26.9.1/manifest.toml | cut -d' ' -f1)" = 30b1d83ce544299557da50084ced696172d219f6790c2cfc5b78116902850949 && python3 -c "import tomllib as t;x=t.load(open('release/v26.9.23/legacy-role-crosswalk.toml','rb'));m=t.load(open('release/v26.9.1/manifest.toml','rb'));n=t.load(open('release/v26.9.23/manifest.toml','rb'));L={(c['role'],c['id'],c['sha']) for c in m['components']};X={(r['legacy_role'],r['legacy_component'],r['legacy_sha']) for r in x['role']};assert len(x['role'])==16 and X==L and sorted(r['legacy_role'] for r in x['role'])==sorted(m['release']['required_roles']) and all(r['disposition'] in {'REQUIRED','SUCCESSOR','BLOCKED','UNSUPPORTED','REFUSED'} for r in x['role']);C={c['repository']:c for c in n['components']};assert n['release']['version']=='26.9.23' and all(C[k]['required'] is True and len(C[k]['sha'])==40 and all(f in C[k] for f in ('id','ref','ref_check','role','disposition','standing','depends_on')) for k in ('seanchatmangpt/xaas','seanchatmangpt/ggen_igniter'))" && bash release/v26.9.23/mutants/run.sh
+
+mutants/run.sh copies release/v26.9.23 to a temp directory and asserts that `ggen sync run` exits non-zero with FM-PACK-013 for each of:
+- M1: drop one r23:xw-* row;
+- M2: set one disposition to UNCLASSIFIED;
+- M3: add a cw:courtReferencesComponent fact for one legacy component (the rule no longer fires, so that row has no disposition);
+- M4: drop ggen_igniter consistently (component, dependsOn edge and requiredRole).
+M1, M3 and M4 exit 0 under the current probe gates; I verified this. The runner must also show that a committed hand edit to a generated file produces a non-empty `git diff` after sync.
+FALSIFIER Any of these kills the claim: removing one r23:xw-* row, or setting a disposition to UNCLASSIFIED, still lets `ggen sync run` exit 0 (in the probe, gate 070 refused 11 untyped rows); dropping the ggen_igniter component is not refused by gate 030/040; a hand edit to a generated file survives sync without a diff; the release/v26.9.1 manifest sha256 changes.
+REASONS
+- KEEP, with corrections. All evidence below was re-run in /private/tmp/claude-501/v23-scratch/SCAN-VERIFY-CE23-1-2 using ggen 26.9.18. /Users/sac/.local/bin/ggen and /opt/homebrew/bin/ggen are the same binary (sha256 prefix 357cfd4e595c6f8a).
+- (a) Evidence 1 holds. GitHub main is c59596f5 (git ls-remote). release/v26.9.1/manifest.toml lines 11-28 list 16 roles. `git log` shows 15 commits, d6e08f15..0c904ac6. The file's sha256 is 30b1d83ce544299557da50084ced696172d219f6790c2cfc5b78116902850949.
+- (a) Evidence 2 holds. Syncing the unmodified /Users/sac/ggen-marketplace/packs/chatman-ecosystem-release-pack (marketplace HEAD 96feba8c) fails with FM-PACK-005 'zero templates'.
+- (a) Evidence 3 holds. I copied genprobe-gates2 and re-ran it. Typed input exits 0 with manifest b2146d2e..., crosswalk cf77ffdc... and graph_hash a1891749.... A row set to UNCLASSIFIED is refused by gate 070 with FM-PACK-013. Dropping the ggen_igniter component while xaas still depends on it is refused by gate 030 with FM-PACK-013.
+- (a) Evidence 4 holds. `fleet_matrix.py check-classification` with universe-plus-v2691.json returns REFUSED(unclassified) for 11 repos and 0 court_executes_nonrequired. The stock universe returns OK for 21 repos.
+- (a) Evidence 5 holds: survey_portfolio.py:262-268 emits RELEASE_ROLE_UNMAPPED as BLOCKING.
+- (a) One claim is false: 'the same pattern xaas uses for its packs'. xaas ggen.toml lines 7-22 say new capabilities MUST prefer locked marketplace packs over vendored copies, and pull them with git+subdir at an exact SHA. At c59596f5, chatman has no packs/ directory. It points at this pack through platform-console/services/ggen-marketplace/bridged-packs/chatman-ecosystem-release-pack.toml (bridged_from the marketplace). Adding gates and templates to a vendored copy inside chatman would fork the law.
+- (b) The generation path exists, but it must run from release/v26.9.23/ggen.toml, not the root. The root ggen.toml at c59596f5 fails in a clean checkout with FM-CONFIG-004 because templates/ is not tracked. It also loads soc2-readiness-pack from an absolute /Users/sac path.
+- (b) Checked: a sub-manifest that loads the pack from '../../packs/...' produces byte-identical outputs. An empty tracked templates/ directory is required: omitting [templates] fails with FM-CONFIG-002 and a missing directory fails with FM-CONFIG-004.
+- (b) The [[inference.rules]] CONSTRUCT is refused in this schema (FM-CONFIG-101). A CONSTRUCT in template frontmatter works: it runs in Stage 2 Enrich, before the gates. Verified: it derived the 11 SUCCESSOR rows and the crosswalk stayed byte-identical (cf77ffdc).
+- (b) `extra_ontologies` on a path pack unions extra TTL files and adds them to the closure hash (verified). This is the input channel for the lifted v26.9.1 roles and the imported fleet classification.
+- (b) Checked that no TOML-to-RDF lifter exists in the marketplace (star-toml-pack, ggen-legacy-ingestion-pack and cnv-any-manifest-pack do something else). render_capability_rdf.py only lifts capability catalogs. The lifter is therefore genuinely hand-written residue.
+- (c) required_now=true. At GitHub main c59596f5, release/ holds only v26.8.23 and v26.9.1, so CE23-1 and CE23-2 are falsified today. The 10:55 PT release-closure procedure in DRIVER.md names the 16-role crosswalk in the root crown.
+- (c) Sequencing: this lane runs after CE23-0 and after CE23-P produces orders for CE23-1 and CE23-2. The local /Users/sac/chatman-ecosystem (6c21e25) has no remote and no release/ directory, and 6c21e25 is not an ancestor of c59596f5, so the lane must be based on the GitHub lineage.
+- (c) Sequencing: xaas and ggen_igniter components move to post-merge SHAs after V23-Q (CE23-5). Only the crosswalk and pack half is independent of V23-Q. Merging the marketplace branch to marketplace main is successor GC-26.9.24.
+- (d) Falsifier failure 1: dropping ggen_igniter consistently (component, dependsOn edge and requiredRole together) passes sync with exit 0. Gates 030 and 040 only see the consumer's own release.ttl. The required set needs an independent source: the imported xaas classification.ttl, where CriticalPath is only xaas and ggen_igniter.
+- (d) Falsifier failure 2: dropping one xw row passes sync with exit 0, because the probe's gate 070 has no completeness clause. The gate's Python assertion does catch it (AssertionError).
+- (d) Falsifier failure 3: a row with no disposition (the rule does not fire when a court reference exists) passes sync with exit 0. The crosswalk template's inner join then silently drops the row (15 of 16 rendered). Gate 070 must refuse missing and multiple dispositions, and the template must not inner-join on disposition.
+- (d) The hand-edit check works as designed. A committed hand edit is reverted by sync, and `git diff` then exits 1.
+- (d) A second sync gives identical outputs. .ggen-v2/receipt.json changes between runs (f4238868 vs a06082f3) and .ggen/keys/signing.key is written next to the manifest. Both are already ignored by chatman .gitignore lines 16-19.
+- (d) Two tracked .pyc files under release/v26.9.1/qlever/__pycache__ get dirtied whenever Python runs there. Keep the committed-tree diff plus the sha check, and set PYTHONDONTWRITEBYTECODE=1.
+- (d) verify_release.py:79-80 hard-codes version '26.9.1'. The new manifest cannot be validated with it until CE23-7 lands.
+- (e) Not a duplicate. release.run.js, rel-a.run.js and rel-a2.run.js only touch the xaas and ggen_igniter int worktrees; a grep for chatman, crosswalk and CE23 finds nothing. No merged lane touches chatman-ecosystem.
