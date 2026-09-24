@@ -1,0 +1,24 @@
+# CE23-0 identity fact (court output of sh release/v26.9.23/courts/CE23-0.sh at subject b8332692beda6b8e4a2779f3162e8247b36c87cc; never hand-edited):
+# GitHub main of seanchatmangpt/chatman-ecosystem observed by `git ls-remote https://github.com/seanchatmangpt/chatman-ecosystem.git refs/heads/main refs/heads/release/v26.9.23-int` at 2026-09-24T18:36:57Z.
+@prefix er: <http://seanchatmangpt.github.io/packs/chatman-ecosystem-release#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.23/identity#chatman-ecosystem> a er:Component ;
+    er:branchRef "main" ;
+    er:commitSha "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1" ;
+    er:componentId "chatman-ecosystem" ;
+    er:disposition er:CROWN ;
+    er:hasRefObservation <https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.23/identity#github-main> ;
+    er:refCheckMode er:EXTERNAL_EXACT ;
+    er:repository "seanchatmangpt/chatman-ecosystem" ;
+    er:required true ;
+    er:role "release-root" ;
+    er:standing er:UNKNOWN .
+
+<https://github.com/seanchatmangpt/chatman-ecosystem/release/v26.9.23/identity#github-main> a er:RefObservation ;
+    er:observationAuthority "git ls-remote https://github.com/seanchatmangpt/chatman-ecosystem.git refs/heads/main" ;
+    er:observedAt "2026-09-24T18:36:57+00:00"^^xsd:dateTime ;
+    er:observedRef "main" ;
+    er:observedRepository "seanchatmangpt/chatman-ecosystem" ;
+    er:observedSha "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1" .
+

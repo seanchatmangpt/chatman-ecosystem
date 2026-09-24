@@ -1,0 +1,16 @@
+$ sh receipts/v26.9.23/CE23-0.gate/court_mutants.sh
+CAUGHT CM1-root-set:
+    REFUSED[AV_MUTANT_ADMITTED] AV M3 (the local lineage merged into the head) judged REFUSED ['LINEAGE_RELATION_CHANGED'], expected REFUSED ['FOREIGN_ROOT_IN_HEAD', 'LINEAGE_RELATION_CHANGED']
+    REFUSED[AV_MUTANT_ADMITTED] AV M7 (an orphan head) judged REFUSED ['BRANCH_DIVERGED', 'HEAD_NOT_ON_BASE', 'SHADOW_LINE_NOT_CONTINUED'], expected REFUSED ['HEAD_NOT_ON_BASE', 'FOREIGN_ROOT_IN_HEAD']
+CAUGHT CM2-publication:
+    REFUSED[AV_MUTANT_ADMITTED] AV M13 (the local lineage published) judged ALIVE [], expected REFUSED ['LINEAGE_PUBLICATION_CHANGED']
+CAUGHT CM3-receipt-claims:
+    REFUSED[AV_MUTANT_ADMITTED] AV M11 (the sealed receipt claims a descendant lineage) judged ALIVE [], expected REFUSED ['RECEIPT_CLAIM_MISMATCH']
+CAUGHT CM4-diverged-line:
+    REFUSED[AV_MUTANT_ADMITTED] AV M9 (the published line diverged from the head) judged ALIVE [], expected REFUSED ['BRANCH_DIVERGED']
+CAUGHT CM5-shadow-continuation:
+    REFUSED[AV_MUTANT_ADMITTED] AV M18 (the int rebuilt on the base, dropping the shadow-era line) judged REFUSED ['BRANCH_DIVERGED'], expected REFUSED ['SHADOW_LINE_NOT_CONTINUED']
+CAUGHT CM6-evidence-rule:
+    REFUSED[AV_MUTANT_ADMITTED] AV M6r (every archive ref dropped while the commits are still in the object store (the twin of M6)) judged REFUSED ['SHADOW_LINEAGE_UNPRESERVED'], expected REFUSED ['LINEAGE_UNPRESERVED', 'SHADOW_LINEAGE_UNPRESERVED']
+COURT_MUTANTS CAUGHT 6/6
+exit=0
