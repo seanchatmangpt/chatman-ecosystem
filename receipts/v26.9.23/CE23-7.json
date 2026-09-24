@@ -1,0 +1,132 @@
+{
+ "identity": {
+  "subject": "CE23-7/version-fence-chatman-tooling",
+  "repo": "seanchatmangpt/chatman-ecosystem",
+  "subject_sha": "e3a51dc5a06a8f9bad4764269f8ef8f76f0e3a32",
+  "base_sha": "aa4e3873b40c3406378800ca82facc366293b564",
+  "branch": "release/v26.9.23-int",
+  "checkout": "/Users/sac/chatman-ecosystem",
+  "gate": "ce:CE23-7 (release/v26.9.23/sjira/goal.ttl), sj:courtCommand 'sh release/v26.9.23/courts/CE23-7.sh'",
+  "work_order": "WO-E4849CA80DD47CB7 (release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl; subject P-56e51d07af69f595)",
+  "spec": "/private/tmp/claude-501/v23-scratch/SCAN-synthesize/specs/CE23-7-version-fence.txt (scan-verified; prototype ce23-7-proto.diff ported and extended)"
+ },
+ "authority": {
+  "ceiling": "CONSTRUCT",
+  "grant": "workflow step CE23-7 (operator directives 2026-09-23/24: one canonical checkout per repository, commits with git commit -F, no push/rebase/reset/force); WO-E4849CA80DD47CB7 sj:authorityCeiling CONSTRUCT",
+  "actor": "claude-code subagent, workflow step CE23-7"
+ },
+ "consequence": {
+  "commits": [
+   "e3a51dc5a06a8f9bad4764269f8ef8f76f0e3a32"
+  ],
+  "files_changed": [
+   "HANDWRITTEN.md",
+   "release/v26.9.23/courts/CE23-7.sh",
+   "release/v26.9.23/courts/ce23_7/audit_run.py",
+   "release/v26.9.23/courts/ce23_7/court.py",
+   "release/v26.9.23/courts/ce23_7/fence.toml",
+   "scripts/plan_completion.py",
+   "scripts/release_line.py",
+   "scripts/survey_portfolio.py",
+   "scripts/verify_release.py",
+   "scripts/verify_standing_evidence.py",
+   "scripts/verify_west_workspace.py",
+   "tests/test_release_line.py"
+  ],
+  "remote_effects": [],
+  "local_effects": [
+   "scratch only under /private/tmp/claude-501/v23-scratch/FIN2-CE23-7/ (baselines, mutant archive repos)",
+   "the court's own temp trees under $TMPDIR/ce23-7-court.* (removed on exit)"
+  ],
+  "unchanged_by_design": [
+   "release/v26.9.1/** (git tree 7e0feef1b137bea72fe1cf22a599636f77b0e47c, court F1)",
+   "catalog/west.toml pointer (flip belongs to the root-crown lane)",
+   "verify_calendar_release.py REQUIRED_GATES (self-sourcing it is vacuous)",
+   "verify_platform_reconstitution.py:177 (v1 benchmark fixture pin, CHESTERTON_FENCE ledger row)",
+   "Cargo.toml / VERSION (verify_v26_8_23 pins 26.8.23)"
+  ],
+  "post_seal": "this receipt and its gate logs are committed after sealing on top of the subject; a commit cannot carry its own hash"
+ },
+ "replay": {
+  "commands": [
+   {
+    "cmd": "git rev-parse HEAD",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "4f9ec1e7d59af83dd923d7ef80e5dd925089a92a8d611f2254b32f56d0df2345",
+    "log": "receipts/v26.9.23/CE23-7.gate/00-subject.log",
+    "summary": "HEAD = e3a51dc5a06a8f9bad4764269f8ef8f76f0e3a32 (clean tree before the receipt files)"
+   },
+   {
+    "cmd": "sh release/v26.9.23/courts/CE23-7.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "77495eff8393b96500c321bbef8b744171a9eb2ccf3acfa185c311595a95e505",
+    "log": "receipts/v26.9.23/CE23-7.gate/01-gate-court.log",
+    "summary": "sh release/v26.9.23/courts/CE23-7.sh: 52 OK clauses F1-F8, CE23-7 ALIVE"
+   },
+   {
+    "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_*.py'",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "1b015e8f44d63207cdc6813d4484b69ba5671d66ad040a7d426d0bafb024a5c6",
+    "log": "receipts/v26.9.23/CE23-7.gate/02-unittest.log",
+    "summary": "Ran 453 tests OK (434 at base aa4e3873 + 19 in tests/test_release_line.py)"
+   },
+   {
+    "cmd": "ruff check --no-cache scripts/release_line.py scripts/verify_release.py scripts/plan_completion.py scripts/survey_portfolio.py scripts/verify_standing_evidence.py scripts/verify_west_workspace.py tests/test_release_line.py release/v26.9.23/courts/ce23_7/court.py release/v26.9.23/courts/ce23_7/audit_run.py",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "62cc34f1d3804c124054c064a05fc60e7dd7642743304f83035aad89827c939d",
+    "log": "receipts/v26.9.23/CE23-7.gate/03-ruff.log",
+    "summary": "ruff: All checks passed on the 9 changed/new Python files"
+   },
+   {
+    "cmd": "pyright scripts/release_line.py scripts/verify_release.py scripts/plan_completion.py scripts/survey_portfolio.py scripts/verify_standing_evidence.py scripts/verify_west_workspace.py tests/test_release_line.py release/v26.9.23/courts/ce23_7/court.py release/v26.9.23/courts/ce23_7/audit_run.py",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "b5b07f19836d25aa7735adc8652aa5e2f352ec5418cc6249307827e57e4a759c",
+    "log": "receipts/v26.9.23/CE23-7.gate/04-pyright.log",
+    "summary": "pyright: 0 errors on the 9 changed/new Python files (base versions of the 5 tools: 0 errors)"
+   },
+   {
+    "cmd": "sh release/v26.9.23/sjira/compile_check.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "f140b9f319aa48d85fca6612a56ae421e5c906a32a89b5ba3bcae7655139ad17",
+    "log": "receipts/v26.9.23/CE23-7.gate/05-compile-check.log",
+    "summary": "CE-INTAKE court compile_check.sh: COMPILE_CHECK OK, 16 gate courts sh -n clean and named by goal.ttl"
+   },
+   {
+    "cmd": "bash receipts/v26.9.23/CE23-7.gate/mutate.sh",
+    "cwd": "/Users/sac/chatman-ecosystem",
+    "exit": 0,
+    "output_sha256": "4e2e80842d4597f02d603d812f1a01d5f532ee9022983e6e1d3ab9792aec72d3",
+    "log": "receipts/v26.9.23/CE23-7.gate/06-mutants.log",
+    "summary": "anti-vacuity: M0 unmutated archive ALIVE; M1-M8 refused typed (base tools restored; version-path law off; planner prefix v26.9.1 without literal; hidden v26.9.1 read in the standing verifier; West source check off; new unledgered v26.9.1 script; release/v26.9.1 byte touched; survey scope v26.9.1 without literal)"
+   }
+  ],
+  "durable_location": "receipts/v26.9.23/CE23-7.json and receipts/v26.9.23/CE23-7.gate/ on branch release/v26.9.23-int",
+  "replay_court": "python3 release/v26.9.23/sjira/replay_court.py receipt --receipt receipts/v26.9.23/CE23-7.json"
+ },
+ "v26_9_1_identity_pins": {
+  "verify_release": "b9228c037729eb9f7ba51456547121c74b3039b635863a4d6223d84f221e6c88",
+  "plan_completion --release-only": "9964d23e2cb7040d588df7bce82095df3c21d0c0194172ac146898d76c55e05e",
+  "plan_completion": "e19fe0040b989b3a81cb99330df77c7577317b121dc24756db608111696be27c",
+  "verify_standing_evidence": "5f01cc9d7222907240d8fd5f6149c5cc90ab4803a0d7a3063d8d0ff3240e5925",
+  "verify_west_workspace --json": "fe0993e63c4d34c98dbb74f1eb41cebcb88c37d5ba9bc3cacbbe07e47d24eb32",
+  "survey_portfolio (SHA256SUMS, local fixture)": "2958a08ef27fc9235a24a4a3dd35358e798c76a6d574f53821651728a9384b8d",
+  "measured_by": "court.py --measure-base: the pre-fence tools materialized from aa4e3873b40c3406378800ca82facc366293b564"
+ },
+ "open_edges": [
+  "release/v26.9.23/{manifest,fleet-policy,fanout-bootstrap,constitutional-role-crosswalk}.toml do not exist at the subject: every tool run with --release v26.9.23 on the subject refuses typed RELEASE_INPUT_MISSING (court F6); the real v26.9.23 manifest is CE23-1/CE23-2 (release graph) work, after which F6 judges it",
+  "catalog/west.toml still points at release/v26.9.1 and west.yml is the v26.9.1 projection; the pointer flip + West re-projection is the root-crown lane's (after it, F2's West identity clause reports N/A and F3 follows the new pointer)",
+  "successor GC-CE-26.9.24: 8 tools with v26.9.1-only instance-artifact defaults, typed in release/v26.9.23/courts/ce23_7/fence.toml [[ledger]]",
+  "generation: chatman-ecosystem-release-pack has no version-path gate and no release_line.py template (HANDWRITTEN.md rows)",
+  "pre-existing, not introduced: tests/test_release_control.py uses mock.patch (9 sites at base aa4e3873)"
+ ],
+ "standing": {
+  "value": "ALIVE",
+  "derived_from": "01-gate-court.log: sh release/v26.9.23/courts/CE23-7.sh exit 0 (CE23-7 ALIVE, 52 OK clauses) on the committed clean subject e3a51dc5a06a8f9bad4764269f8ef8f76f0e3a32; non-vacuity from 06-mutants.log (control ALIVE, 8/8 mutants refused typed) and 05-compile-check.log exit 0. Scope: the CE23-7 gate only; no other CE23 gate, STOP or GC23-12 standing is implied (STOP stays false until the operator's GC23-12 acceptance)"
+ }
+}
