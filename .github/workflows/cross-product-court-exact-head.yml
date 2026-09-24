@@ -1,0 +1,65 @@
+name: Cross-Product Court Exact Head
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/cross_product_court/**'
+      - 'tests/release_train/cross_product_court/**'
+      - 'docs/jira/v26.9.24/CHATMAN-ECOSYSTEM-CROSS-PRODUCT-COURT.md'
+      - '.github/workflows/cross-product-court-exact-head.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cross-product-court-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Assert exact subject identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          actual="$(git rev-parse HEAD)"
+          printf 'cross_product_subject=%s\n' "$actual"
+          test "$actual" = "$expected"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile court
+        run: >-
+          python3 -m compileall -q
+          scripts/release_train/cross_product_court
+          tests/release_train/cross_product_court
+
+      - name: Execute XPROD courts
+        env:
+          PYTHONPATH: .
+        run: >-
+          python3 -m unittest discover
+          -s tests/release_train/cross_product_court
+          -p 'test_*.py'
+          -v
+
+      - name: Refuse ambient consequence surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -REn \
+            'requests\.(post|put|patch|delete)|httpx|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|socket\.|boto3|azure\.|google\.cloud|kubectl|terraform|git push|gh pr merge' \
+            scripts/release_train/cross_product_court \
+            tests/release_train/cross_product_court
