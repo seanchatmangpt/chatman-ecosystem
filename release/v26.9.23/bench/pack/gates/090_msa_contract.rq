@@ -1,0 +1,15 @@
+# MESSAGE: The MSA contract covers every MSA property with at least one MSA court that has a command
+# and a status for today; the executor's MSA courts never claim ALIVE by design.
+PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+SELECT ?node ?reason WHERE {
+  {
+    ?node a nlb:MSAProperty .
+    FILTER NOT EXISTS { ?m a nlb:MSACourt ; nlb:msaProperty ?node ; nlb:statusToday ?s ; nlb:verifierCommand ?cmd }
+    BIND("msa-property-without-court" AS ?reason)
+  } UNION {
+    ?node a nlb:MSACourt ; nlb:statusToday ?s .
+    FILTER(!(?s IN ("HOLDS_OBSERVED_DOMAIN", "FAILS", "FAILS_CLOSED", "UNMEASURED")))
+    BIND("msa-status-outside-closed-set" AS ?reason)
+  }
+}
+ORDER BY ?node ?reason

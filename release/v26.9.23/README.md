@@ -20,7 +20,7 @@ the committed lift of the manifest blob at the base commit (CE23-2).
 | `manifest.toml`, `constitutional-role-crosswalk.toml` | symlinks to `out/`, so `scripts/release_line.py` resolves the line | pointer |
 | `sjira/` | CE23 governing graph, prose and compiled work orders | CE-INTAKE |
 | `courts/` | gate courts named by `sjira/goal.ttl` | per gate |
-| `bench/` | CE23-12 benchmark design capital | CE23-12 |
+| `bench/` | CE23-12 benchmark design: capital (`DESIGN.md`, `ontology-draft.ttl`, `orders.json`), the in-repo `nonllm-class-qualification-pack` (`bench/pack/`), the design graph `design.ttl` and its ggen projections (`bench/out/`) | CE23-12 |
 
 ## Regenerate
 
@@ -58,6 +58,19 @@ provenance; both imports are re-derived byte for byte; the render reproduces twi
 ```bash
 cd release/v26.9.23 && python3 courts/ce23_2/observe_court_refs.py --subject . > imports/court-references.ttl
 ```
+
+The CE23-12 courts judge the benchmark design (standing BENCHMARK_DESIGN_ALIVE on exit 0;
+NON_LLM_OPERATIONAL_ALIVE stays UNKNOWN for every class, n = 0):
+
+```bash
+sh release/v26.9.23/courts/CE23-12.sh                              # crown: runs the three below
+sh release/v26.9.23/courts/CE23-12-BenchmarkDesign.sh              # D and M: ontology, classes, trace
+sh release/v26.9.23/courts/CE23-12-MSAContract.sh                  # MSA contract + MSA of the design
+sh release/v26.9.23/courts/CE23-12-GeneratedQualificationPlan.sh   # DOE, statistics, generated orders
+```
+
+Clauses, the anti-vacuity corpora and the pins are in `courts/ce23_12/` (`court.py`, `mutations.toml`,
+`pins.toml`); the design itself is documented in `bench/README.md`.
 
 ## See also
 

@@ -1,0 +1,21 @@
+# MESSAGE: The measurement model defines seven RTY stages, each with an OCEL event type, covered
+# morphisms and an instrumented-today flag, and a receipt field set naming uname_sm,
+# actuator_toolchain and factor_levels.
+PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+SELECT ?node ?reason WHERE {
+  {
+    ?node a nlb:Stage .
+    FILTER NOT EXISTS { ?node nlb:ocelEventType ?e ; nlb:coversMorphism ?m ; nlb:instrumentedToday ?i ; nlb:stageOrder ?o }
+    BIND("stage-without-measurement" AS ?reason)
+  } UNION {
+    { SELECT (COUNT(DISTINCT ?s) AS ?k) WHERE { ?s a nlb:Stage ; nlb:ocelEventType ?e ; nlb:coversMorphism ?m ; nlb:instrumentedToday ?i } }
+    FILTER(?k != 7)
+    BIND(<https://ggen.dev/nonllm-bench#Stage> AS ?node)
+    BIND("rty-stages-are-not-seven" AS ?reason)
+  } UNION {
+    FILTER NOT EXISTS { ?r a nlb:ReceiptFieldSet ; nlb:requiredField "uname_sm" , "actuator_toolchain" , "factor_levels" }
+    BIND(<https://ggen.dev/nonllm-bench#ReceiptFieldSet> AS ?node)
+    BIND("receipt-field-set-incomplete" AS ?reason)
+  }
+}
+ORDER BY ?node ?reason

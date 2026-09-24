@@ -1,0 +1,45 @@
+# MESSAGE: A class standing is typed by evidence volume: it needs the full tuple, its claimed upper
+# failure bound is never below the exact Clopper-Pearson BoundRow for (n, defects) (a missing row is a
+# refusal), n reaches its tier's N with the exact bound inside the tier's zero-defect bound, n never
+# exceeds the distinct subject digests of its unseen-execution receipts, and no operational or
+# qualified standing is ALIVE without unseen-execution receipts, DISCOVERY-tier evidence, MSA ALIVE,
+# zero LLM invocations, zero replay divergence and no UNSUPPORTED varied factor.
+PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+PREFIX es: <https://ggen.dev/ontology/evidence-standing#>
+SELECT ?node ?reason WHERE {
+  {
+    ?node nlb:standingKind ?k . FILTER(?k != nlb:BENCHMARK_DESIGN_ALIVE)
+    FILTER NOT EXISTS { ?node nlb:forClass ?c ; nlb:tier ?t ; nlb:n ?n ; nlb:defects ?d ; nlb:confidence ?cf ;
+      nlb:upperFailureBound ?u ; nlb:boundMethod ?m ; nlb:environmentScope ?e }
+    BIND("incomplete-evidence-tuple" AS ?reason)
+  } UNION {
+    ?node nlb:n ?n ; nlb:defects ?d ; nlb:upperFailureBound ?u .
+    OPTIONAL { ?row a nlb:BoundRow ; nlb:boundN ?n ; nlb:boundDefects ?d ; nlb:exactUpperBound ?x }
+    FILTER(!BOUND(?x) || ?u < ?x)
+    BIND("bound-overclaim-or-no-generated-bound-row" AS ?reason)
+  } UNION {
+    ?node nlb:n ?n ; nlb:defects ?d ; nlb:tier ?t . ?t nlb:tierN ?tn .
+    OPTIONAL { ?t nlb:zeroDefectUpperBound ?tb . ?row a nlb:BoundRow ; nlb:boundN ?n ; nlb:boundDefects ?d ; nlb:exactUpperBound ?x }
+    FILTER(?n < ?tn || (BOUND(?tb) && BOUND(?x) && ?x > ?tb))
+    BIND("tier-overclaim" AS ?reason)
+  } UNION {
+    ?node nlb:n ?n . FILTER(?n > 0)
+    OPTIONAL { SELECT ?node (COUNT(DISTINCT ?dg) AS ?k) WHERE { ?node nlb:unseenExecutionReceipt ?r . ?r nlb:subjectDigest ?dg } GROUP BY ?node }
+    FILTER(!BOUND(?k) || ?k < ?n)
+    BIND("pseudo-replication" AS ?reason)
+  } UNION {
+    ?node nlb:standingKind ?k ; es:standingState es:ALIVE .
+    FILTER(?k IN (nlb:NON_LLM_OPERATIONAL_ALIVE, nlb:BENCHMARK_QUALIFIED))
+    FILTER NOT EXISTS { ?node nlb:unseenExecutionReceipt ?r }
+    BIND("operational-alive-without-unseen-execution-receipts" AS ?reason)
+  } UNION {
+    ?node nlb:standingKind nlb:NON_LLM_OPERATIONAL_ALIVE ; es:standingState es:ALIVE .
+    FILTER ( NOT EXISTS { ?node nlb:tier ?t . ?t nlb:tierRank ?r . FILTER(?r >= 1) }
+      || NOT EXISTS { ?node nlb:msaStanding es:ALIVE }
+      || NOT EXISTS { ?node nlb:llmInvocations 0 }
+      || NOT EXISTS { ?node nlb:replayDivergence 0 }
+      || EXISTS { ?node nlb:variedFactor ?f . ?f nlb:support "UNSUPPORTED" } )
+    BIND("operational-alive-without-qualification" AS ?reason)
+  }
+}
+ORDER BY ?node ?reason

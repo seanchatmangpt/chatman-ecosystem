@@ -1,0 +1,31 @@
+# MESSAGE: A B6 near-miss expects UNKNOWN with a typed reason and is never a class member; a B2
+# negative control expects REFUSED with a typed reason (FalseAccept = 0).
+PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+PREFIX es: <https://ggen.dev/ontology/evidence-standing#>
+SELECT ?node ?reason WHERE {
+  {
+    ?node a nlb:NearMissCase .
+    FILTER NOT EXISTS { ?node nlb:expectedStanding es:UNKNOWN }
+    BIND("near-miss-not-expecting-unknown" AS ?reason)
+  } UNION {
+    ?node a nlb:NearMissCase ; nlb:expectedStanding ?s .
+    FILTER(?s != es:UNKNOWN)
+    BIND("near-miss-expects-a-non-unknown-standing" AS ?reason)
+  } UNION {
+    ?node a nlb:NearMissCase .
+    FILTER NOT EXISTS { ?node nlb:expectedReason ?r }
+    BIND("near-miss-without-typed-reason" AS ?reason)
+  } UNION {
+    ?node a nlb:NearMissCase ; nlb:inClass ?c .
+    BIND("near-miss-counted-as-class-member" AS ?reason)
+  } UNION {
+    ?node a nlb:NegativeControlCase .
+    FILTER NOT EXISTS { ?node nlb:expectedStanding es:REFUSED ; nlb:expectedReason ?r }
+    BIND("negative-control-not-refused-with-reason" AS ?reason)
+  } UNION {
+    ?node a nlb:NegativeControlCase ; nlb:expectedStanding ?s .
+    FILTER(?s != es:REFUSED)
+    BIND("negative-control-expects-a-non-refused-standing" AS ?reason)
+  }
+}
+ORDER BY ?node ?reason

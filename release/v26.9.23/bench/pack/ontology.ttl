@@ -1,0 +1,407 @@
+# nonllm-class-qualification-pack 0.1.0 -- vocabulary (nlb:) for DfLSS non-LLM class qualification.
+#
+# Home for Chatman Ecosystem v26.9.23: in-repo at release/v26.9.23/bench/pack (operator directive
+# 2026-09-23/24: the reusable nlb: vocabulary may stay in-repo for v26.9.23). Successor home:
+# ggen-marketplace/packs/nonllm-class-qualification-pack (order CE23-12-BD-02), with the generic
+# DfLSS terms of the "DOE / MSA / SPC / capability" block upstreamed to dflss-pack 0.3.0 (order
+# CE23-12-BD-01); see README.md "Successor". Derived from the CE23-12 design draft
+# (release/v26.9.23/bench/ontology-draft.ttl PART 1-3 and PART 6, DESIGN.md section 11 crosswalk).
+#
+# Consumer-neutral: nothing here names a CE23 proposition. Trace edges (prov:wasDerivedFrom) from
+# the pack's individuals to operator prose are consumer facts (release/v26.9.23/bench/design.ttl).
+# Computed statistics (tier bounds, BoundRows) are never written here: scripts/evidence_tiers.py
+# (the single mu) writes them to the consumer's generated/ directory.
+#
+# Reused vocabularies (IRIs only; not vendored): dflss: (ggen-marketplace packs/dflss-pack), req:
+# (open-ontologies requirements.ttl), cmd: (ggen-combinatorial-maximalism-pack), es:
+# (evidence-standing-pack), sj: (ggen_igniter semantic-jira-pack), xme: (xaas machine experience,
+# HANDWRITTEN there), obo: (STATO/OBI), sosa, prov, dqv, earl, mls, skos.
+
+@prefix nlb:     <https://ggen.dev/nonllm-bench#> .
+@prefix dflss:   <https://ggen.dev/dflss#> .
+@prefix req:     <https://ggen.io/onto/requirements/> .
+@prefix cmd:     <https://chatmangpt.com/ontology/cmd#> .
+@prefix es:      <https://ggen.dev/ontology/evidence-standing#> .
+@prefix sj:      <https://ggen-igniter.dev/ontology/semantic-jira#> .
+@prefix xme:     <https://xaas.dev/ontology/machine-experience#> .
+@prefix sosa:    <http://www.w3.org/ns/sosa/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix dqv:     <http://www.w3.org/ns/dqv#> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix mls:     <http://www.w3.org/ns/mls#> .
+@prefix obo:     <http://purl.obolibrary.org/obo/> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+nlb: a owl:Ontology ;
+  rdfs:label "Non-LLM class qualification vocabulary" ;
+  owl:versionInfo "0.1.0" .
+
+#################################################################################################
+# PART 1 -- VOCABULARY (nlb:)
+#################################################################################################
+
+# -- Suite, class, case ------------------------------------------------------------------------
+nlb:BenchmarkSuite a rdfs:Class ; rdfs:subClassOf dflss:DFLSSProject , mls:Study ;
+  rdfs:comment "A CE23-12 qualification study (DMADV). Its crown predicate is a sj:GoalCheckpoint whose sj:stopQuery is an ASK." .
+nlb:BenchmarkClass a rdfs:Class ; rdfs:subClassOf skos:Concept , mls:Task ;
+  rdfs:comment "A work class claimed (or refused) KNOWN. Node identity carries tools, verifiers, membership, split, CTQs and standing. GAP: xme:problemClass is a literal." .
+nlb:claimStatus a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "Closed set: KNOWN_CANDIDATE | PRESERVED | BLOCKED | NOT_KNOWN | OUTSIDE_BOUNDARY. Only KNOWN_CANDIDATE classes count toward N_classes." .
+nlb:readiness a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string .
+nlb:repairTool a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range nlb:ToolIdentity .
+nlb:repairArgv a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string .
+nlb:verifierArgv a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "The class verifier (often shares the repair engine: common-mode risk for formattedness)." .
+nlb:independentVerifier a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range nlb:Verifier ;
+  rdfs:comment "A verifier of a different implementation, mechanism or generator identity (nlb:independenceBasis)." .
+nlb:classToolchain a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "Toolchain identity bound into class membership and every receipt. Part of class identity, NOT a DOE factor: the same ggen_igniter@3937a4f tree is MEMBER under Elixir 1.18.4 and clean under 1.19.5." .
+nlb:canonicalScope a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "Declared path scope whose bytes the class may rewrite; paths outside route UNKNOWN(not_in_declared_canonical_scope)." .
+nlb:workerStatus a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range es:Standing .
+nlb:devRepo a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "Dev(C): repos whose subjects built, tuned or admitted the class machinery; never Test (split rule R2)." .
+nlb:freezeInstant a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:dateTime ;
+  rdfs:comment "T_freeze(C): commit time of the machinery freeze; later non-Dev members are Test (R4, lower precedence than R2)." .
+nlb:realUnseenObserved a rdf:Property ; rdfs:range xsd:integer ;
+  rdfs:comment "Count of real, membership-verified, not-yet-executed Test members observed by the corpus scan (O, not n)." .
+nlb:syntheticCapacity a rdf:Property ; rdfs:range xsd:integer .
+nlb:clusterCount a rdf:Property ; rdfs:range xsd:integer ; rdfs:comment "Distinct repositories (independence clusters)." .
+nlb:reachableTier a rdf:Property ; rdfs:range nlb:EvidenceTier .
+nlb:reachableTierWithSynthetic a rdf:Property ; rdfs:range nlb:EvidenceTier .
+
+nlb:ToolIdentity a rdfs:Class ; rdfs:subClassOf prov:SoftwareAgent .
+nlb:toolName a rdf:Property ; rdfs:domain nlb:ToolIdentity ; rdfs:range xsd:string .
+nlb:toolVersion a rdf:Property ; rdfs:domain nlb:ToolIdentity ; rdfs:range xsd:string .
+nlb:toolPath a rdf:Property ; rdfs:domain nlb:ToolIdentity ; rdfs:range xsd:string .
+nlb:implementationFamily a rdf:Property ; rdfs:range xsd:string ;
+  rdfs:comment "Implementation identity used by the independence check (nlbsh:KnownClassShape)." .
+
+nlb:membershipPredicate a rdf:Property ; rdfs:subPropertyOf xme:applicabilityPredicate ;
+  rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "Membership computed from observations (typed output, trial repair, independent semantic check, scope, config, environment), conjoined with the xme router predicate." .
+nlb:membershipClause a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range nlb:MembershipClause .
+nlb:MembershipClause a rdfs:Class ;
+  rdfs:comment "One conjunct of a membership test. nlb:clauseBasis says what it observes." .
+nlb:clauseBasis a rdf:Property ; rdfs:domain nlb:MembershipClause ; rdfs:range xsd:string ;
+  rdfs:comment "Closed set: TYPED_OUTPUT | TRIAL_REPAIR | INDEPENDENT_SEMANTIC | PATH_SCOPE | CONFIG_BASE_EQUAL | NOT_GENERATED | ENV_PRECONDITION | DECLARED_LABEL. A class whose clauses are all DECLARED_LABEL is refused (MSA P7a: route/2 membership is a declared label)." .
+nlb:clauseText a rdf:Property ; rdfs:domain nlb:MembershipClause ; rdfs:range xsd:string .
+
+nlb:BenchmarkCase a rdfs:Class ; rdfs:subClassOf sosa:Sample , earl:TestCase .
+nlb:NearMissCase a rdfs:Class ; rdfs:subClassOf nlb:BenchmarkCase ;
+  rdfs:comment "B6: x' approx C but x' not in C. Expected standing UNKNOWN before any lease (pre-actuation), with a typed reason." .
+nlb:NegativeControlCase a rdfs:Class ; rdfs:subClassOf nlb:BenchmarkCase ;
+  rdfs:comment "B2: deliberately invalid work; expected standing REFUSED with a typed reason; FalseAccept = 0." .
+nlb:FaultInjectionCase a rdfs:Class ; rdfs:subClassOf nlb:BenchmarkCase ;
+  rdfs:comment "B4: one fault at one morphism; expected a typed state, never uncontrolled continuation." .
+nlb:inClass a rdf:Property ; rdfs:domain nlb:BenchmarkCase ; rdfs:range nlb:BenchmarkClass .
+nlb:nearClass a rdf:Property ; rdfs:domain nlb:NearMissCase ; rdfs:range nlb:BenchmarkClass .
+nlb:split a rdf:Property ; rdfs:domain nlb:BenchmarkCase ; rdfs:range nlb:Split .
+nlb:executesAs a rdf:Property ; rdfs:domain nlb:BenchmarkCase ; rdfs:range sj:WorkOrder .
+nlb:expectedStanding a rdf:Property ; rdfs:domain nlb:BenchmarkCase ; rdfs:range es:Standing .
+nlb:expectedReason a rdf:Property ; rdfs:range xsd:string .
+nlb:memberOrigin a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "REAL | SYNTHETIC. Counted separately in every standing tuple." .
+nlb:mutationOperator a rdf:Property ; rdfs:range xsd:string .
+nlb:subjectDigest a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "sha256 of sorted path:P-blob-oid (content identity, split rule R1)." .
+nlb:patchId a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "git patch-id of the repair (second identity for R1 dedupe)." .
+nlb:cluster a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "Repository of origin (independence cluster)." .
+
+nlb:Split a rdfs:Class ; rdfs:subClassOf skos:Concept ;
+  rdfs:comment "Closed scheme {Train, Validation, Test}. Train(C) and Test(C) are disjoint by subject digest AND patch-id. Validation is usable for MSA, never counted in n." .
+nlb:Train a nlb:Split ; skos:prefLabel "train" .
+nlb:Validation a nlb:Split ; skos:prefLabel "validation (MSA only, never counted)" .
+nlb:Test a nlb:Split ; skos:prefLabel "test (unseen)" .
+
+# -- Morphisms, stages, faults ------------------------------------------------------------------
+nlb:Morphism a rdfs:Class ; rdfs:subClassOf skos:Concept .
+nlb:Observe a nlb:Morphism . nlb:Admit a nlb:Morphism . nlb:Select a nlb:Morphism .
+nlb:Construct a nlb:Morphism . nlb:Authorize a nlb:Morphism . nlb:DO a nlb:Morphism .
+nlb:ReceiptEdge a nlb:Morphism . nlb:ReplayEdge a nlb:Morphism .
+nlb:Stage a rdfs:Class ; rdfs:comment "An RTY stage Y_j; each needs an OCEL event type that is emitted on success AND on refusal." .
+nlb:coversMorphism a rdf:Property ; rdfs:domain nlb:Stage ; rdfs:range nlb:Morphism .
+nlb:ocelEventType a rdf:Property ; rdfs:domain nlb:Stage ; rdfs:range xsd:string .
+nlb:instrumentedToday a rdf:Property ; rdfs:domain nlb:Stage ; rdfs:range xsd:boolean .
+nlb:stageOrder a rdf:Property ; rdfs:range xsd:integer .
+nlb:FaultInjectionPoint a rdfs:Class .
+nlb:atMorphism a rdf:Property ; rdfs:range nlb:Morphism .
+nlb:fault a rdf:Property ; rdfs:range xsd:string .
+nlb:expectedTypedState a rdf:Property ; rdfs:range xsd:string .
+nlb:existingTyping a rdf:Property ; rdfs:range xsd:string .
+nlb:seamStatus a rdf:Property ; rdfs:range es:Standing .
+
+# -- Capability, verifier, falsifier, execution, observation, defect ---------------------------
+nlb:WorkerCapability a rdfs:Class ; rdfs:subClassOf sj:Capability .
+nlb:Verifier a rdfs:Class ; rdfs:subClassOf sj:Court , sosa:Procedure , earl:Assertor .
+nlb:verifierCommand a rdf:Property ; rdfs:domain nlb:Verifier ; rdfs:range xsd:string .
+nlb:independenceBasis a rdf:Property ; rdfs:domain nlb:Verifier ; rdfs:range xsd:string ;
+  rdfs:comment "DIFFERENT_IMPLEMENTATION | DIFFERENT_MECHANISM | DIFFERENT_GENERATOR_IDENTITY (C20 diverse double-compiling)." .
+nlb:Falsifier a rdfs:Class ; rdfs:subClassOf sj:Falsifier .
+nlb:Execution a rdfs:Class ; rdfs:subClassOf mls:Run , prov:Activity .
+nlb:Observation a rdfs:Class ; rdfs:subClassOf sosa:Observation , dqv:QualityMeasurement .
+nlb:Defect a rdfs:Class ; rdfs:subClassOf prov:Entity ;
+  rdfs:comment "A CTQ nonconformance typed by a Chatman broken_term (~/.claude/rules/chatman-equation.md)." .
+nlb:brokenTerm a rdf:Property ; rdfs:range xsd:string .
+nlb:violatesCtq a rdf:Property ; rdfs:domain nlb:Defect ; rdfs:range dflss:CTQ .
+nlb:groundedBy a rdf:Property ; rdfs:subPropertyOf es:groundedBy ; rdfs:range sj:Receipt .
+nlb:unseenExecutionReceipt a rdf:Property ; rdfs:subPropertyOf nlb:groundedBy ;
+  rdfs:comment "Receipt of one executed Test-split member. n counts DISTINCT subject digests over these, never executions." .
+
+# -- CTQ extension (dflss:CTQ is reused; these carry the operator's table + req 5 fields) --------
+nlb:operationalMeasure a rdf:Property ; rdfs:domain dflss:CTQ ; rdfs:range xsd:string .
+nlb:requiredResult a rdf:Property ; rdfs:domain dflss:CTQ ; rdfs:range xsd:string .
+nlb:verificationMethod a rdf:Property ; rdfs:domain dflss:CTQ ; rdfs:range xsd:string .
+nlb:negativeCase a rdf:Property ; rdfs:domain dflss:CTQ ; rdfs:range xsd:string .
+nlb:controlChart a rdf:Property ; rdfs:domain dflss:CTQ ; rdfs:range xsd:string ;
+  rdfs:comment "p | np | c | u | g | I-MR (control plan field of req:AdmittedCtq)." .
+nlb:safetyCritical a rdf:Property ; rdfs:domain dflss:CTQ ; rdfs:range xsd:boolean .
+
+# -- DOE ------------------------------------------------------------------------------------------
+nlb:FractionalFactorialDesign a rdfs:Class ; rdfs:subClassOf dflss:DOEExperiment , obo:OBI_0500016 .
+nlb:Factor a rdfs:Class ; rdfs:subClassOf dflss:DOEFactor , cmd:Dimension , obo:OBI_0000750 .
+nlb:Level a rdfs:Class ; rdfs:subClassOf cmd:Option , obo:STATO_0000265 .
+nlb:DesignRun a rdfs:Class ; rdfs:subClassOf cmd:Candidate ;
+  rdfs:comment "One treatment combination; projected by a CONSTRUCT over bit weights, never hand-listed." .
+nlb:support a rdf:Property ; rdfs:domain nlb:Factor ; rdfs:range xsd:string ;
+  rdfs:comment "Closed set VARIED | FIXED | PARTIAL | UNSUPPORTED (absorbs dflssx:support SUPPORTED/PARTIAL/UNSUPPORTED and the candidate's VARIED/FIXED/UNSUPPORTED). UNSUPPORTED = outside the evidence ceiling; never in a run." .
+nlb:supportReason a rdf:Property ; rdfs:range xsd:string .
+nlb:column a rdf:Property ; rdfs:domain nlb:Factor ; rdfs:range xsd:string .
+nlb:bitWeight a rdf:Property ; rdfs:domain nlb:Factor ; rdfs:range xsd:integer .
+nlb:generatedBy a rdf:Property ; rdfs:domain nlb:Factor ; rdfs:range nlb:Factor .
+nlb:reservedGeneratedBy a rdf:Property ; rdfs:domain nlb:Factor ; rdfs:range nlb:Factor ;
+  rdfs:comment "Generator reserved for a PARTIAL factor; activates only on promotion to VARIED." .
+nlb:lowRealization a rdf:Property ; rdfs:range xsd:string .
+nlb:highRealization a rdf:Property ; rdfs:range xsd:string .
+nlb:hasFactor a rdf:Property ; rdfs:subPropertyOf dflss:hasFactor .
+nlb:runCount a rdf:Property ; rdfs:range xsd:integer .
+nlb:resolution a rdf:Property ; rdfs:range xsd:integer .
+nlb:definingRelation a rdf:Property ; rdfs:range xsd:string .
+nlb:replicationForTier a rdf:Property ; rdfs:range xsd:string .
+
+# -- Statistics: tiers, bounds, the standing tuple ----------------------------------------------
+nlb:EvidenceTier a rdfs:Class ; rdfs:subClassOf skos:Concept ;
+  rdfs:comment "N_discovery < N_qualification < N_operational < N_scale. Bounds are exact one-sided Clopper-Pearson at confidence 0.95." .
+nlb:tierN a rdf:Property ; rdfs:domain nlb:EvidenceTier ; rdfs:range xsd:integer .
+nlb:tierRank a rdf:Property ; rdfs:domain nlb:EvidenceTier ; rdfs:range xsd:integer .
+nlb:confidence a rdf:Property ; rdfs:subPropertyOf obo:STATO_0000561 ; rdfs:range xsd:decimal .
+nlb:zeroDefectUpperBound a rdf:Property ; rdfs:range xsd:decimal .
+nlb:oneDefectUpperBound a rdf:Property ; rdfs:range xsd:decimal .
+nlb:ruleOfThreeBound a rdf:Property ; rdfs:range xsd:decimal .
+nlb:nominalFailureBound a rdf:Property ; rdfs:range xsd:decimal ;
+  rdfs:comment "The operator's tier label (~10%, ~3%, ~1%, ~0.1%)." .
+nlb:minNZeroDefect a rdf:Property ; rdfs:range xsd:integer ;
+  rdfs:comment "Smallest n with 0 defects whose exact bound is <= the nominal bound: ceil(ln(alpha)/ln(1-p*))." .
+
+nlb:BoundRow a rdfs:Class ;
+  rdfs:comment "Exact bound for one (n, x): p_U = BetaInv(0.95; x+1, n-x); x=0: 1-0.05^(1/n); n=0: 1. GENERATED by the single-mu kernel, cross-checked by a second implementation (scipy/statsmodels) to 1e-9. SPARQL 1.1 has no pow/log (ggen FM-GRAPH-003), so rows are data, not query-computed." .
+nlb:boundN a rdf:Property ; rdfs:domain nlb:BoundRow ; rdfs:range xsd:integer .
+nlb:boundDefects a rdf:Property ; rdfs:domain nlb:BoundRow ; rdfs:range xsd:integer .
+nlb:exactUpperBound a rdf:Property ; rdfs:domain nlb:BoundRow ; rdfs:range xsd:decimal .
+
+nlb:StandingKind a rdfs:Class ; rdfs:subClassOf skos:Concept ;
+  rdfs:comment "Typed standings for CE23-12. Individuals are also es:Standing states." .
+nlb:requiresStanding a rdf:Property ; rdfs:domain nlb:StandingKind ; rdfs:range nlb:StandingKind .
+nlb:doesNotImply a rdf:Property ; rdfs:domain nlb:StandingKind ; rdfs:range nlb:StandingKind ;
+  rdfs:comment "Explicit non-implication: holding the subject never establishes the object." .
+nlb:acceptancePredicate a rdf:Property ; rdfs:domain nlb:StandingKind ; rdfs:range nlb:AcceptancePredicate .
+nlb:AcceptancePredicate a rdfs:Class ; rdfs:subClassOf sj:AcceptanceCriterion .
+nlb:predicateId a rdf:Property ; rdfs:range xsd:string .
+nlb:conjunct a rdf:Property ; rdfs:range xsd:string ;
+  rdfs:comment "D | M | A | MSA_CONTRACT | PLAN | NON_IMPLICATION for the design; DESIGN | MSA | UNSEEN | STAT | ZERO_LLM | REPLAY for operational." .
+nlb:askQuery a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "SPARQL ASK over the design graph; true = holds." .
+nlb:checkCommand a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "Command whose exit 0 witnesses the predicate." .
+nlb:refusalMutation a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "Anti-vacuity: the mutation that must make the predicate false." .
+nlb:ownerOrder a rdf:Property ; rdfs:range xsd:string .
+
+nlb:ClassStanding a rdfs:Class ; rdfs:subClassOf es:Standing ;
+  rdfs:comment "Standing(C) = (C, kind, tier, n, n_real, n_synthetic, clusters, operators, defects, confidence, upper failure bound, bound method, environment scope, varied factors, unsupported factors, receipts)." .
+nlb:forClass a rdf:Property ; rdfs:domain nlb:ClassStanding ; rdfs:range nlb:BenchmarkClass .
+nlb:standingKind a rdf:Property ; rdfs:range nlb:StandingKind .
+nlb:tier a rdf:Property ; rdfs:range nlb:EvidenceTier .
+nlb:n a rdf:Property ; rdfs:range xsd:integer ; rdfs:comment "COUNT(DISTINCT subject digest) of executed Test members; repeated executions feed MSA, not n." .
+nlb:nReal a rdf:Property ; rdfs:range xsd:integer .
+nlb:nSynthetic a rdf:Property ; rdfs:range xsd:integer .
+nlb:operatorCount a rdf:Property ; rdfs:range xsd:integer .
+nlb:defects a rdf:Property ; rdfs:range xsd:integer .
+nlb:upperFailureBound a rdf:Property ; rdfs:subPropertyOf obo:STATO_0000314 ; rdfs:range xsd:decimal .
+nlb:boundMethod a rdf:Property ; rdfs:range xsd:string .
+nlb:environmentScope a rdf:Property ; rdfs:range xsd:string .
+nlb:variedFactor a rdf:Property ; rdfs:range nlb:Factor .
+nlb:unsupportedFactor a rdf:Property ; rdfs:range nlb:Factor .
+nlb:msaStanding a rdf:Property ; rdfs:range es:Standing .
+nlb:llmInvocations a rdf:Property ; rdfs:range xsd:integer .
+nlb:replayDivergence a rdf:Property ; rdfs:range xsd:integer .
+nlb:standingReason a rdf:Property ; rdfs:range xsd:string .
+
+# -- MSA, SPC, capability ------------------------------------------------------------------------
+nlb:MSAStudy a rdfs:Class ; rdfs:subClassOf dflss:PhaseActivity .
+nlb:MSAProperty a rdfs:Class ; rdfs:subClassOf skos:Concept .
+nlb:MSACourt a rdfs:Class ; rdfs:subClassOf nlb:Verifier ;
+  rdfs:comment "A generated court measuring one MSA property; standing from its own receipts with (n, defects, bound, scope)." .
+nlb:msaProperty a rdf:Property ; rdfs:domain nlb:MSACourt ; rdfs:range nlb:MSAProperty .
+nlb:statusToday a rdf:Property ; rdfs:range xsd:string ;
+  rdfs:comment "HOLDS_OBSERVED_DOMAIN | FAILS | FAILS_CLOSED | UNMEASURED, from the MSA scanner + skeptic (scratch O)." .
+nlb:evidenceNote a rdf:Property ; rdfs:range xsd:string .
+nlb:ControlChart a rdfs:Class ; rdfs:subClassOf prov:Entity .
+nlb:chartType a rdf:Property ; rdfs:range xsd:string .
+nlb:ControlLimit a rdfs:Class ; rdfs:subClassOf dqv:QualityMeasurement ;
+  rdfs:comment "Center line and UCL/LCL from a declared baseline window; distinct from obo:STATO_0000314 (a confidence limit)." .
+nlb:CapabilityResult a rdfs:Class ; rdfs:subClassOf dqv:QualityMeasurement .
+
+nlb:ReceiptFieldSet a rdfs:Class ; rdfs:comment "The receipt fields every executed benchmark receipt must carry." .
+nlb:requiredField a rdf:Property ; rdfs:domain nlb:ReceiptFieldSet ; rdfs:range xsd:string .
+
+#################################################################################################
+# PART 2 -- STANDING KINDS (the design standing, the per-class evidence record, the operational standing)
+#################################################################################################
+
+nlb:BENCHMARK_DESIGN_ALIVE a nlb:StandingKind , es:Standing ;
+  skos:prefLabel "BENCHMARK_DESIGN_ALIVE" ;
+  rdfs:comment "BenchmarkDesign AND MSAContract AND GeneratedQualificationPlan (D AND M AND A): a standing of a DESIGN. It certifies no execution." ;
+  nlb:doesNotImply nlb:NON_LLM_OPERATIONAL_ALIVE , nlb:BENCHMARK_QUALIFIED .
+
+nlb:BENCHMARK_QUALIFIED a nlb:StandingKind , es:Standing ;
+  skos:prefLabel "BENCHMARK_QUALIFIED" ;
+  rdfs:comment "Per-class evidence-volume record BenchmarkQualified(class, n, defects, confidence, bound, scope) at a stated tier." ;
+  nlb:requiresStanding nlb:BENCHMARK_DESIGN_ALIVE ;
+  nlb:doesNotImply nlb:NON_LLM_OPERATIONAL_ALIVE .
+
+nlb:NON_LLM_OPERATIONAL_ALIVE a nlb:StandingKind , es:Standing ;
+  skos:prefLabel "NON_LLM_OPERATIONAL_ALIVE" ;
+  rdfs:comment "NonLLMOperational(C) = BenchmarkDesign AND MSA_ALIVE AND UnseenExecution(C) AND StatisticalQualification(C) AND ZeroLLM(C) AND Replay(C). Always carried with its evidence tuple and tier; never promoted by design." ;
+  nlb:requiresStanding nlb:BENCHMARK_DESIGN_ALIVE , nlb:BENCHMARK_QUALIFIED .
+
+#################################################################################################
+# PART 3 -- EVIDENCE TIERS: inputs only (N, rank, nominal bound, confidence). The exact bounds
+# (zeroDefectUpperBound, oneDefectUpperBound, ruleOfThreeBound, minNZeroDefect) are written by
+# scripts/evidence_tiers.py into the consumer's generated/evidence-tiers.ttl; never hand-entered.
+#################################################################################################
+
+nlb:tier-below-discovery a nlb:EvidenceTier ; skos:prefLabel "BELOW_DISCOVERY" ; nlb:tierRank 0 ; nlb:tierN 0 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:nominalFailureBound "1.0"^^xsd:decimal ;
+  rdfs:comment "Fewer than N_discovery distinct unseen members: no falsification-grade statement is made." .
+nlb:tier-discovery a nlb:EvidenceTier ; skos:prefLabel "DISCOVERY" ; nlb:tierRank 1 ; nlb:tierN 30 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:nominalFailureBound "0.10"^^xsd:decimal ;
+  rdfs:comment "First falsification: 0 failures in 30 bounds p_f only below about 0.10." .
+nlb:tier-qualification a nlb:EvidenceTier ; skos:prefLabel "QUALIFICATION" ; nlb:tierRank 2 ; nlb:tierN 100 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:nominalFailureBound "0.03"^^xsd:decimal ;
+  rdfs:comment "Stronger qualification: 0 failures in 100 bounds p_f below about 0.03." .
+nlb:tier-operational a nlb:EvidenceTier ; skos:prefLabel "OPERATIONAL" ; nlb:tierRank 3 ; nlb:tierN 300 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:nominalFailureBound "0.01"^^xsd:decimal ;
+  rdfs:comment "About 99% reliability evidence: 0 failures in 300 bounds p_f below about 0.01." .
+nlb:tier-scale a nlb:EvidenceTier ; skos:prefLabel "SCALE_3000" ; nlb:tierRank 4 ; nlb:tierN 3000 ;
+  nlb:confidence "0.95"^^xsd:decimal ; nlb:nominalFailureBound "0.001"^^xsd:decimal ;
+  rdfs:comment "About 99.9% scale: 0 failures in 3000 bounds p_f below about 0.001." .
+
+nlb:BoundRequest a rdfs:Class ;
+  rdfs:comment "A consumer's request for one exact BoundRow (n, x) beyond the rows implied by its tiers and class standings (the kernel emits one BoundRow per distinct requested pair)." .
+nlb:requestN a rdf:Property ; rdfs:domain nlb:BoundRequest ; rdfs:range xsd:integer .
+nlb:requestDefects a rdf:Property ; rdfs:domain nlb:BoundRequest ; rdfs:range xsd:integer .
+nlb:computedBy a rdf:Property ; rdfs:range xsd:string ; rdfs:comment "Name and source digest of the kernel that wrote a computed node (single mu)." .
+
+#################################################################################################
+# PART 4 -- QUALIFICATION PLAN (the generated benchmark work orders; CE23-12 GeneratedQualificationPlan)
+#################################################################################################
+
+nlb:BenchmarkFamily a rdfs:Class ; rdfs:subClassOf skos:Concept ;
+  rdfs:comment "One of the six benchmark courts B1..B6. Each KNOWN_CANDIDATE class receives one generated qualification order per family and next tier." .
+nlb:familyCode a rdf:Property ; rdfs:domain nlb:BenchmarkFamily ; rdfs:range xsd:string .
+nlb:familyOrder a rdf:Property ; rdfs:domain nlb:BenchmarkFamily ; rdfs:range xsd:integer .
+nlb:familyAcceptance a rdf:Property ; rdfs:domain nlb:BenchmarkFamily ; rdfs:range xsd:string ;
+  rdfs:comment "Family-specific acceptance clause appended to the tier predicate of a generated order." .
+nlb:familyFalsifier a rdf:Property ; rdfs:domain nlb:BenchmarkFamily ; rdfs:range xsd:string .
+nlb:B1 a nlb:BenchmarkFamily ; nlb:familyCode "B1" ; nlb:familyOrder 1 ; skos:prefLabel "B1 golden known-class corpus" ;
+  nlb:familyAcceptance "the golden corpus holds at least the tier's N distinct, membership-verified members of the class (subject digest and patch-id deduplicated; real and synthetic counted separately)" ;
+  nlb:familyFalsifier "a corpus member is a duplicate by subject digest or patch-id, or a member fails the class membership predicate" .
+nlb:B2 a nlb:BenchmarkFamily ; nlb:familyCode "B2" ; nlb:familyOrder 2 ; skos:prefLabel "B2 negative-control court" ;
+  nlb:familyAcceptance "every paired negative control (changed outcome, malformed digest, missing capability, authority escalation, unverifiable consequence, wrong generated file, corrupted receipt, stale subject SHA, hidden LLM provider) ends REFUSED with its typed reason: FalseAccept = 0" ;
+  nlb:familyFalsifier "any negative control is accepted, or refused without its typed reason" .
+nlb:B3 a nlb:BenchmarkFamily ; nlb:familyCode "B3" ; nlb:familyOrder 3 ; skos:prefLabel "B3 variation / robustness court (designed experiment)" ;
+  nlb:familyAcceptance "every run of the generated fractional factorial design executes with every factor level recorded in its receipt, with zero defects, and no UNSUPPORTED factor appears as a varied level" ;
+  nlb:familyFalsifier "a run's receipt lacks a factor level, an UNSUPPORTED factor (OS) is credited as varied, or a factor level changes a verdict" .
+nlb:B4 a nlb:BenchmarkFamily ; nlb:familyCode "B4" ; nlb:familyOrder 4 ; skos:prefLabel "B4 fault-injection court" ;
+  nlb:familyAcceptance "every fault-injection point (Observe, Admit, Select, Construct, Authorize, DO, Receipt, Replay, LLM fallback) ends in its declared typed state with no standing promotion and no second consequence" ;
+  nlb:familyFalsifier "any injected edge failure continues to DO, promotes standing, or duplicates a consequence" .
+nlb:B5 a nlb:BenchmarkFamily ; nlb:familyCode "B5" ; nlb:familyOrder 5 ; skos:prefLabel "B5 novel-member transfer benchmark" ;
+  nlb:familyAcceptance "class machinery is frozen before execution; the tier's N distinct unseen Test members (outside Dev(C), disjoint from Train by subject digest and patch-id) execute through the generated executor under env -i, fresh HOME, a clean exact-SHA checkout, no transcript and no LLM credential, with zero defects" ;
+  nlb:familyFalsifier "a Test member shares a subject digest or patch-id with Train or Dev, or n counts executions instead of distinct subject digests" .
+nlb:B6 a nlb:BenchmarkFamily ; nlb:familyCode "B6" ; nlb:familyOrder 6 ; skos:prefLabel "B6 unknown-boundary benchmark" ;
+  nlb:familyAcceptance "at least the tier's N near-neighbour non-members route UNKNOWN with their typed reason before any lease is claimed: P(false-KNOWN) = 0" ;
+  nlb:familyFalsifier "a near-miss routes KNOWN, acquires a lease, or is refused only after DO" .
+
+nlb:classCode a rdf:Property ; rdfs:domain nlb:BenchmarkClass ; rdfs:range xsd:string ;
+  rdfs:comment "Upper-case code used in generated order identifiers (sj:WorkOrder dcterms:identifier pattern ^[A-Z][A-Z0-9-]{1,63}$)." .
+nlb:courtCode a rdf:Property ; rdfs:domain nlb:MSACourt ; rdfs:range xsd:string .
+
+nlb:ReferenceOrder a rdfs:Class ;
+  rdfs:comment "A hand-assembled reference order (candidate design capital, O) lifted from a consumer's orders.json by scripts/lift_reference_orders.py. The generated plan must cover every reference order of the successor scope; a reference order is never itself a work order." .
+nlb:referenceId a rdf:Property ; rdfs:domain nlb:ReferenceOrder ; rdfs:range xsd:string .
+nlb:referenceRepo a rdf:Property ; rdfs:domain nlb:ReferenceOrder ; rdfs:range xsd:string .
+nlb:referenceRequirement a rdf:Property ; rdfs:domain nlb:ReferenceOrder ; rdfs:range xsd:string .
+nlb:referenceTask a rdf:Property ; rdfs:domain nlb:ReferenceOrder ; rdfs:range xsd:string .
+nlb:referenceGate a rdf:Property ; rdfs:domain nlb:ReferenceOrder ; rdfs:range xsd:string .
+nlb:referenceFalsifier a rdf:Property ; rdfs:domain nlb:ReferenceOrder ; rdfs:range xsd:string .
+nlb:referenceDependsOn a rdf:Property ; rdfs:domain nlb:ReferenceOrder ; rdfs:range xsd:string .
+nlb:referenceOrder a rdf:Property ; rdfs:range nlb:ReferenceOrder ;
+  rdfs:comment "Links a plan source (family, MSA court, capability gap) to the reference order(s) its generated order covers." .
+
+nlb:CapabilityGap a rdfs:Class ;
+  rdfs:comment "An executor, generator, kernel or instrument capability that operational qualification needs and that does not exist yet (typed UNSUPPORTED or BLOCKED today). The plan emits one generated order per gap." .
+nlb:gapCode a rdf:Property ; rdfs:domain nlb:CapabilityGap ; rdfs:range xsd:string .
+nlb:gapStatus a rdf:Property ; rdfs:domain nlb:CapabilityGap ; rdfs:range xsd:string ;
+  rdfs:comment "UNSUPPORTED | BLOCKED | PARTIAL, the typed standing of the capability today." .
+
+nlb:QualificationPlan a rdfs:Class ;
+  rdfs:comment "The consumer's plan node: the checkpoint, repository, base SHA and capabilities its generated orders bind." .
+nlb:planCheckpoint a rdf:Property ; rdfs:domain nlb:QualificationPlan ; rdfs:range sj:GoalCheckpoint .
+nlb:planRoot a rdf:Property ; rdfs:domain nlb:QualificationPlan ; rdfs:range sj:GoalCheckpoint ;
+  rdfs:comment "The goal root whose sj:repository and sj:baseSha every generated order carries." .
+nlb:planCapability a rdf:Property ; rdfs:domain nlb:QualificationPlan ; rdfs:range sj:Capability .
+nlb:PlanEntry a rdfs:Class ;
+  rdfs:comment "Generated (CONSTRUCT) provenance of one generated sj:WorkOrder: its source node, family, class, target tier and reference orders. Kept off the order node because sj:WorkOrderShape is closed." .
+nlb:planOrder a rdf:Property ; rdfs:domain nlb:PlanEntry ; rdfs:range sj:WorkOrder .
+nlb:planSource a rdf:Property ; rdfs:domain nlb:PlanEntry .
+nlb:planFamily a rdf:Property ; rdfs:domain nlb:PlanEntry ; rdfs:range nlb:BenchmarkFamily .
+nlb:planClass a rdf:Property ; rdfs:domain nlb:PlanEntry ; rdfs:range nlb:BenchmarkClass .
+nlb:planTier a rdf:Property ; rdfs:domain nlb:PlanEntry ; rdfs:range nlb:EvidenceTier .
+nlb:planKind a rdf:Property ; rdfs:domain nlb:PlanEntry ; rdfs:range xsd:string ;
+  rdfs:comment "CLASS_FAMILY_TIER | MSA_COURT | CAPABILITY_GAP." .
+
+nlb:CrownThreshold a rdfs:Class ;
+  rdfs:comment "One first-crown threshold of the operational benchmark crown (an initial engineering threshold, later replaced by control limits from the observed process)." .
+nlb:thresholdMetric a rdf:Property ; rdfs:domain nlb:CrownThreshold ; rdfs:range xsd:string .
+nlb:thresholdComparator a rdf:Property ; rdfs:domain nlb:CrownThreshold ; rdfs:range xsd:string ;
+  rdfs:comment ">= | = | <=." .
+nlb:thresholdValue a rdf:Property ; rdfs:domain nlb:CrownThreshold ; rdfs:range xsd:decimal .
+nlb:thresholdOrder a rdf:Property ; rdfs:domain nlb:CrownThreshold ; rdfs:range xsd:integer .
+nlb:yieldLowerBound a rdf:Property ; rdfs:domain nlb:CrownThreshold ; rdfs:range xsd:boolean ;
+  rdfs:comment "True when the threshold is a yield whose 95% lower bound the kernel sizes (minNForLowerBound)." .
+nlb:minNForLowerBound a rdf:Property ; rdfs:domain nlb:CrownThreshold ; rdfs:range xsd:integer ;
+  rdfs:comment "Computed by the kernel: smallest n at 0 defects whose exact 95% lower yield bound meets the threshold." .
+
+nlb:StatisticDefinition a rdfs:Class ; rdfs:subClassOf skos:Concept ;
+  rdfs:comment "A statistics definition of the qualification system (FTY, RTY, DPMO, P(false-KNOWN), CP bound, CPU, I-MR, p, c/u, g, MSA agreement)." .
+nlb:statisticSymbol a rdf:Property ; rdfs:domain nlb:StatisticDefinition ; rdfs:range xsd:string .
+nlb:statisticDefinition a rdf:Property ; rdfs:domain nlb:StatisticDefinition ; rdfs:range xsd:string .
+nlb:statisticOrder a rdf:Property ; rdfs:domain nlb:StatisticDefinition ; rdfs:range xsd:integer .
+
+nlb:executorStatus a rdf:Property ; rdfs:range xsd:string ;
+  rdfs:comment "Typed standing of the executor path a case manifest would run on (UNSUPPORTED(executor) until the successor runner exists)." .
+nlb:ownerRepository a rdf:Property ; rdfs:range xsd:string .
+nlb:caseCode a rdf:Property ; rdfs:range xsd:string .
+nlb:familyCapability a rdf:Property ; rdfs:domain nlb:BenchmarkFamily ; rdfs:range sj:Capability .
+nlb:msaCapability a rdf:Property ; rdfs:domain nlb:QualificationPlan ; rdfs:range sj:Capability .
+nlb:gapCapability a rdf:Property ; rdfs:domain nlb:QualificationPlan ; rdfs:range sj:Capability .
+nlb:planNamespace a rdf:Property ; rdfs:domain nlb:QualificationPlan ; rdfs:range xsd:string ;
+  rdfs:comment "IRI namespace of the generated orders (consumer-owned; keeps the pack's CONSTRUCT consumer-neutral)." .
+nlb:planIdPrefix a rdf:Property ; rdfs:domain nlb:QualificationPlan ; rdfs:range xsd:string .
+nlb:planReplayPrefix a rdf:Property ; rdfs:domain nlb:QualificationPlan ; rdfs:range xsd:string .
+nlb:targetRepository a rdf:Property ; rdfs:range xsd:string ;
+  rdfs:comment "Repository whose successor branch carries the work of a generated order (the order itself is admitted in the plan's goal repository)." .
+nlb:runnerLabel a rdf:Property ; rdfs:domain nlb:FractionalFactorialDesign ; rdfs:range xsd:string ;
+  rdfs:comment "CI runner label of the one supported executor OS (the OS factor is not varied)." .
+nlb:runOrderSeed a rdf:Property ; rdfs:domain nlb:FractionalFactorialDesign ; rdfs:range xsd:string .

@@ -1,0 +1,25 @@
+# MESSAGE: Only VARIED factors enter a designed experiment: a factor that is UNSUPPORTED (OS on a
+# macOS-only executor), PARTIAL or FIXED has no column, bit weight or generator and is listed by no
+# design (no synthesized cross-platform evidence); every VARIED factor in a design has a column.
+PREFIX nlb: <https://ggen.dev/nonllm-bench#>
+SELECT ?node ?reason WHERE {
+  {
+    ?node a nlb:Factor ; nlb:support ?s . FILTER(?s != "VARIED")
+    FILTER(EXISTS { ?node nlb:column ?c } || EXISTS { ?node nlb:bitWeight ?w } || EXISTS { ?node nlb:generatedBy ?g } || EXISTS { ?d nlb:hasFactor ?node })
+    BIND(CONCAT("non-varied-factor-in-design:", ?s) AS ?reason)
+  } UNION {
+    ?d nlb:hasFactor ?node .
+    FILTER NOT EXISTS { ?node nlb:support "VARIED" ; nlb:column ?c }
+    BIND("design-factor-without-varied-column" AS ?reason)
+  } UNION {
+    ?node a nlb:Factor .
+    FILTER NOT EXISTS { ?node nlb:support ?s . FILTER(?s IN ("VARIED", "FIXED", "PARTIAL", "UNSUPPORTED")) }
+    BIND("factor-support-outside-closed-set" AS ?reason)
+  } UNION {
+    ?node a nlb:Factor ; nlb:support "VARIED" .
+    FILTER NOT EXISTS { ?node nlb:bitWeight ?w }
+    FILTER NOT EXISTS { ?node nlb:generatedBy ?g }
+    BIND("varied-factor-neither-base-nor-generated" AS ?reason)
+  }
+}
+ORDER BY ?node ?reason

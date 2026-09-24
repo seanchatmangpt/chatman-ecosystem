@@ -1,0 +1,196 @@
+# CE23-12 anti-vacuity corpus over the benchmark design graph (release/v26.9.23/bench/design.ttl and
+# its union inputs), judged by bench/pack/scripts/verify.py with every instrument (SHACL, SPARQL on
+# rdflib, SPARQL on pyoxigraph, the native evaluator and ggen's own gates). Good fixtures must be
+# admitted by every instrument; every mutant must be refused by every instrument under its registered
+# law. G0 (the committed design, unmutated) is implicit. Origins: the 16 draft mutations of
+# bench/DESIGN.md section 12 (M1-M16) and the court's extensions (M17-M29).
+# remove: [subject, predicate, object] patterns ("*" = any; '"text"' = literal); add: Turtle with the
+# prefixes nlb ce23 ce es sj prov rdfs rdf dflss skos xsd dcterms; standing: a class-standing fixture.
+
+[[fixture]]
+id = "G1"
+description = "lawful DISCOVERY operational tuple: n=30 distinct unseen receipts, 0 defects, u=0.095034 (exact), MSA ALIVE, zero LLM, zero replay divergence"
+standing = { n = 30, x = 0, u = "0.095034", receipts = 30 }
+
+[[fixture]]
+id = "G2"
+description = "lawful QUALIFICATION operational tuple: n=100, 0 defects, u=0.029513 (exact)"
+standing = { n = 100, x = 0, u = "0.029513", receipts = 100, tier = "nlb:tier-qualification" }
+
+[[mutation]]
+id = "M1"
+law = "BOUNDARY"
+description = "a near-miss expects ALIVE instead of UNKNOWN"
+remove = [["ce23:nm-ex-syntax", "nlb:expectedStanding", "es:UNKNOWN"]]
+add = "ce23:nm-ex-syntax nlb:expectedStanding es:ALIVE ."
+
+[[mutation]]
+id = "M2"
+law = "STANDING"
+description = "overclaim: n=31, 0 defects, claimed bound 0.05 (exact 0.092114)"
+standing = { n = 31, x = 0, u = "0.05", receipts = 31 }
+
+[[mutation]]
+id = "M3"
+law = "STANDING"
+description = "overclaim with a defect: n=30, 1 defect, claimed bound 0.01 (exact 0.148596)"
+standing = { n = 30, x = 1, u = "0.01", receipts = 30 }
+
+[[mutation]]
+id = "M4"
+law = "STANDING"
+description = "pseudo-replication: n=30 claimed from one distinct subject digest"
+standing = { n = 30, x = 0, u = "0.095034", receipts = 1 }
+
+[[mutation]]
+id = "M5"
+law = "STANDING"
+description = "tier overclaim: n=20 claimed at DISCOVERY (N=30; exact bound 0.139108 above 0.095034)"
+standing = { n = 20, x = 0, u = "0.139108", receipts = 20 }
+
+[[mutation]]
+id = "M6"
+law = "STANDING"
+description = "no generated BoundRow for the claimed (n=45, x=0)"
+standing = { n = 45, x = 0, u = "0.07", receipts = 45 }
+
+[[mutation]]
+id = "M7"
+law = "FACTOR"
+description = "the UNSUPPORTED OS factor is given a column (synthesized cross-platform evidence)"
+add = 'ce23:factor-os nlb:column "G" .'
+
+[[mutation]]
+id = "M8"
+law = "CLASS"
+description = "the python independent verifier is relabelled into the repair tool's family"
+remove = [["ce23:ver-cpython-ast", "nlb:implementationFamily", '"cpython-ast"']]
+add = 'ce23:ver-cpython-ast nlb:implementationFamily "ruff-rust" .'
+
+[[mutation]]
+id = "M9"
+law = "TRACE"
+description = "a CTQ loses its trace to operator prose"
+remove = [["ce23:ctq-human", "prov:wasDerivedFrom", "ce:P-631296cc71d3da82"]]
+
+[[mutation]]
+id = "M10"
+law = "STANDING"
+description = "a class's NON_LLM_OPERATIONAL_ALIVE tuple is set ALIVE at n=0 without receipts"
+remove = [["ce23:standing-elixir-format", "es:standingState", "es:UNKNOWN"]]
+add = "ce23:standing-elixir-format es:standingState es:ALIVE ."
+
+[[mutation]]
+id = "M11"
+law = "CLASS"
+description = "the ggen class loses its typed-output membership clause"
+remove = [["ce23:class-ggen-projection", "nlb:membershipClause", "ce23:mc-gg-1"]]
+
+[[mutation]]
+id = "M12"
+law = "CLASS"
+description = "json canonical is demoted to PRESERVED: four KNOWN_CANDIDATE classes"
+remove = [["ce23:class-json-canonical", "nlb:claimStatus", '"KNOWN_CANDIDATE"']]
+add = 'ce23:class-json-canonical nlb:claimStatus "PRESERVED" .'
+
+[[mutation]]
+id = "M13"
+law = "SPLIT"
+description = "a Test member shares a patch-id with a Train member (the xaas b6fbdc21 pair)"
+add = """ce23:fx-a a nlb:BenchmarkCase ; nlb:inClass ce23:class-elixir-format ; nlb:split nlb:Train ; nlb:patchId "b6fbdc214847" .
+ce23:fx-b a nlb:BenchmarkCase ; nlb:inClass ce23:class-elixir-format ; nlb:split nlb:Test ; nlb:patchId "b6fbdc214847" ."""
+
+[[mutation]]
+id = "M14"
+law = "MEASURE"
+description = "the Admit RTY stage loses its OCEL event type"
+remove = [["ce23:stage-admit", "nlb:ocelEventType", "*"]]
+
+[[mutation]]
+id = "M15"
+law = "MSA"
+description = "the receipt-currency MSA court M2 is deleted: stale-receipt detection uncovered"
+remove = [["ce23:M2", "*", "*"]]
+
+[[mutation]]
+id = "M16"
+law = "CLASS"
+description = "the rust class keeps only two near-misses"
+remove = [["ce23:nm-rs-edition", "*", "*"], ["ce23:nm-rs-config", "*", "*"]]
+
+[[mutation]]
+id = "M17"
+law = "BOUNDARY"
+description = "a near-miss is counted as a member of its class"
+add = "ce23:nm-py-lint nlb:inClass ce23:class-python-format ."
+
+[[mutation]]
+id = "M18"
+law = "BOUNDARY"
+description = "the hidden-LLM-provider negative control expects ALIVE (a false accept)"
+remove = [["ce23:nc-hidden-llm-provider", "nlb:expectedStanding", "es:REFUSED"]]
+add = "ce23:nc-hidden-llm-provider nlb:expectedStanding es:ALIVE ."
+
+[[mutation]]
+id = "M19"
+law = "FACTOR"
+description = "the designed experiment lists the UNSUPPORTED OS factor"
+add = "ce23:doe-B3 nlb:hasFactor ce23:factor-os ."
+
+[[mutation]]
+id = "M21"
+law = "CTQ"
+description = "a CTQ names a control chart outside the closed set"
+remove = [["ce23:ctq-routing", "nlb:controlChart", '"p"']]
+add = 'ce23:ctq-routing nlb:controlChart "pie" .'
+
+[[mutation]]
+id = "M22"
+law = "CLASS"
+description = "a class status outside the closed set (KNOWN) drops the candidates to four"
+remove = [["ce23:class-rust-format", "nlb:claimStatus", '"KNOWN_CANDIDATE"']]
+add = 'ce23:class-rust-format nlb:claimStatus "KNOWN" .'
+
+[[mutation]]
+id = "M23"
+law = "TRACE"
+description = "a factor traces to a node that is not an operator-prose proposition"
+add = "ce23:factor-path prov:wasDerivedFrom ce23:not-a-proposition ."
+
+[[mutation]]
+id = "M24"
+law = "CLASS"
+description = "the elixir class's membership is a declared label only (the xme route/2 behaviour)"
+remove = [["ce23:class-elixir-format", "nlb:membershipClause", "*"]]
+add = """ce23:class-elixir-format nlb:membershipClause ce23:mc-label .
+ce23:mc-label a nlb:MembershipClause ; nlb:clauseBasis "DECLARED_LABEL" ; nlb:clauseText "route/2 declared label" ."""
+
+[[mutation]]
+id = "M25"
+law = "STANDING"
+description = "a BENCHMARK_QUALIFIED standing is asserted ALIVE with no unseen-execution receipt"
+standing = { n = 0, x = 0, u = "1.0", receipts = 0, kind = "nlb:BENCHMARK_QUALIFIED", tier = "nlb:tier-below-discovery" }
+
+[[mutation]]
+id = "M26"
+law = "FACTOR"
+description = "the PARTIAL repo-size factor is given a bit weight (activated without promotion)"
+add = "ce23:factor-reposize nlb:bitWeight 64 ."
+
+[[mutation]]
+id = "M27"
+law = "PLAN"
+description = "the OS capability gap loses its reference order (plan coverage of CE23-12-OP-24 lost)"
+remove = [["ce23:gap-os-factor", "nlb:referenceOrder", "*"]]
+
+[[mutation]]
+id = "M28"
+law = "PLAN"
+description = "the plan loses its MSA capability: no MSA court order can be generated"
+remove = [["ce23:plan-CE23-12", "nlb:msaCapability", "*"]]
+
+[[mutation]]
+id = "M29"
+law = "PLAN"
+description = "benchmark family B3 loses its capability: no B3 order can be generated"
+remove = [["nlb:B3", "nlb:familyCapability", "*"]]
