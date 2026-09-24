@@ -1,0 +1,10 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 receipts/v26.9.23/CE23-12.gate/probe_q3_blinded_kernel.py --court-rev ee1ca97e46117338186468f2199be18da8b4dc0d; test $? -eq 3
+COURT ee1ca97e46117338186468f2199be18da8b4dc0d = ee1ca97e4611 release/v26.9.23/courts/ce23_12/court.py
+SUBJECT 6fc8990395fa6ecd6e1841e5f7ece8059fb21f33 = HEAD 2d734c047e49 with K1 blinded (changed: release/v26.9.23/bench/ggen.lock, release/v26.9.23/bench/pack/scripts/evidence_tiers.py)
+OK E0 no-LLM environment: env -i, PATH=/tmp/ce23-12-q3-probe-4ndwkz09/judge/bin:/usr/bin:/bin (python3, git, ggen only), no LLM client reachable
+OK S0 subject 6fc8990395fa6ecd6e1841e5f7ece8059fb21f33 clean over ['release/v26.9.23/bench', 'release/v26.9.23/courts', 'release/v26.9.23/sjira']; bench tree 15db4b5e5144f58b16be203dff40186a5ff1d20d
+OK G1 two fresh `ggen sync run` renders of the committed bench tree (ggen.lock pins the pack and every input; every pack gate admitted) are byte-identical to each other and to the committed out/ (43 files)
+OK Q3 mutation sensitivity: 175/175 intentionally corrupted outputs fail (28 design mutants each refused by all 5 instruments, 43 projection corruptions, kernel literal perturbations, DOE flips incl. E=AB and an OS column, 58 deleted plan orders); 0 escapes (95% upper bound 0.016973, tier QUALIFICATION)
+ROW n=175 defects=0 upper_bound_95=0.016973 tier=QUALIFICATION kernel=None
+PROBE: Q3 admitted a subject whose K1 is blind (28 kernel-literal corruptions undetected by K1): the count does not follow the instrument
+exit=0

@@ -1,0 +1,28 @@
+$ sh release/v26.9.23/courts/CE23-12-BenchmarkDesign.sh
+OK E0 no-LLM environment: env -i, PATH=/tmp/ce23-12-bd-stfwj7ke/bin:/usr/bin:/bin (python3, git, ggen only), no LLM client reachable
+OK S0 subject 2d734c047e49a3254c45d189ece02ab13c659110 clean over ['release/v26.9.23/bench', 'release/v26.9.23/courts', 'release/v26.9.23/sjira']; bench tree dee59fef7fac2ab39ced5f67635a0cbab4b956d4
+OK K0 DESIGN.md, ontology-draft.ttl and orders.json equal their goal.ttl pins (design capital unedited)
+OK P1 both CE23-12 prose units byte-equal their pins and goal.ttl's sj:sourceSha256 (4146d688.., 80091c45..)
+OK P2 release/v26.9.23/sjira/chatman-ce23-12-bench.md: CHECK OK: 19 candidates bound to release/v26.9.23/sjira/chatman-ce23-12-bench.md sha256:4146d688c21db6e1af51a2187df8056b1a0f977001c817d64fbde0547029b485
+OK P2 release/v26.9.23/sjira/chatman-ce23-12-standings.md: CHECK OK: 30 candidates bound to release/v26.9.23/sjira/chatman-ce23-12-standings.md sha256:80091c45b16d6afbf0bfa5717726c9221f35905f5650fad03b8cd81cbcb5b2d2
+OK I1 imports/ are byte copies of the committed sjira candidates, goal graph and compiled orders | IMPORT OK imports/goal.ttl = ../sjira/goal.ttl sha256:eaee5dff5d754d1597e002f4f29e1fb199b02bfc3db6e0b573ab66bf0fa8c6a8
+OK K1 generated tiers and bound rows equal the kernel (scipy/statsmodels agree to 1e-9) | KERNEL OK: 14 bound rows, 4 tiers strictly ordered (30 < 100 < 300 < 3000), max |kernel - scipy/statsmodels| = 1.240e-15
+OK L1 generated/reference-orders.ttl equals the lift of orders.json | LIFT OK generated/reference-orders.ttl (33 reference orders)
+OK G0 ggen 26.9.18 at /opt/homebrew/Cellar/ggen/26.9.18/bin/ggen (sha256 357cfd4e595c6f8a)
+OK G1 two fresh `ggen sync run` renders of the committed bench tree (ggen.lock pins the pack and every input; every pack gate admitted) are byte-identical to each other and to the committed out/ (43 files)
+OK G2 every benchmark artifact (43 out/ projections, 3 generated/ graphs) names its generator (GENERATED header); none is hand-written
+OK T1 all 8 committed propositions required by ce:CE23-12-BenchmarkDesign are traced by 25 design nodes; every cited proposition is a committed, span-verified candidate
+OK D2 design ASK predicates true on rdflib and pyoxigraph: BD-D2=True/True BD-D3=True/True BD-D4=True/True BD-D5=True/True BD-D6=True/True BD-M1=True/True BD-M2=True/True BD-A3=True/True BD-X1=True/True
+OK D1 benchmark ontology admitted: the in-repo nonllm-class-qualification-pack (pack/) admits 3 good artifacts and refuses 28 registered mutants under their registered law on 5 instruments (pyshacl, SPARQL on rdflib, SPARQL on pyoxigraph, native evaluator, ggen's own gates)
+OK X2 BENCHMARK_DESIGN_ALIVE does not imply NON_LLM_OPERATIONAL_ALIVE: all 5 KNOWN_CANDIDATE tuples are UNKNOWN at n = 0, no ALIVE standing exists in the design graph, the report projects every class UNKNOWN
+OK AV:control control in a synthetic git repository -> ALIVE
+OK AV:dirty mutant in a synthetic git repository -> REFUSED[dirty_subject]
+OK AV:prose-byte mutant in a synthetic git repository -> REFUSED[prose_span]
+OK AV:untraced-ctq mutant in a synthetic git repository -> REFUSED[pack_qualification]
+OK AV:label-only-membership mutant in a synthetic git repository -> REFUSED[pack_qualification]
+OK AV:hand-edited-projection mutant in a synthetic git repository -> REFUSED[projection_drift]
+OK AV:import-drift mutant in a synthetic git repository -> REFUSED[import_drift]
+OK AV:trace-foreign mutant in a synthetic git repository -> REFUSED[trace_to_uncommitted_proposition]
+OK AV anti-vacuity: control ALIVE and 7 mutants in synthetic git repositories refused with their expected codes
+CE23-12-BenchmarkDesign ALIVE: 25 OK, 0 REFUSED, 0 UNKNOWN in 105.5s; conjunct of BENCHMARK_DESIGN_ALIVE; NON_LLM_OPERATIONAL_ALIVE UNKNOWN for every class (n = 0)
+exit=0

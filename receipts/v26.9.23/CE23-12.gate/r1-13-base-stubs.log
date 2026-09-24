@@ -1,0 +1,11 @@
+$ for f in CE23-12 CE23-12-BenchmarkDesign CE23-12-MSAContract CE23-12-GeneratedQualificationPlan; do git show origin/release/v26.9.23-int:release/v26.9.23/courts/$f.sh | sh; echo "$f base exit=$?"; done; git rev-parse origin/release/v26.9.23-int
+UNKNOWN: CE23-12 machinery lands in a generated CE23 lane
+CE23-12 base exit=75
+UNKNOWN: CE23-12-BenchmarkDesign machinery lands in a generated CE23 lane
+CE23-12-BenchmarkDesign base exit=75
+UNKNOWN: CE23-12-MSAContract machinery lands in a generated CE23 lane
+CE23-12-MSAContract base exit=75
+UNKNOWN: CE23-12-GeneratedQualificationPlan machinery lands in a generated CE23 lane
+CE23-12-GeneratedQualificationPlan base exit=75
+717d52cd78d8936c6b8b2e102dc348cccf6262c4
+exit=0

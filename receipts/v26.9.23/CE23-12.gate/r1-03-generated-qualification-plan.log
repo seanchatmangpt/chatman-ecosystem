@@ -1,0 +1,29 @@
+$ sh release/v26.9.23/courts/CE23-12-GeneratedQualificationPlan.sh
+OK E0 no-LLM environment: env -i, PATH=/tmp/ce23-12-gqp-9imbpyar/bin:/usr/bin:/bin (python3, git, ggen only), no LLM client reachable
+OK S0 subject 2d734c047e49a3254c45d189ece02ab13c659110 clean over ['release/v26.9.23/bench', 'release/v26.9.23/courts', 'release/v26.9.23/sjira']; bench tree dee59fef7fac2ab39ced5f67635a0cbab4b956d4
+OK P1 both CE23-12 prose units byte-equal their pins and goal.ttl's sj:sourceSha256 (4146d688.., 80091c45..)
+OK I1 imports/ are byte copies of the committed sjira candidates, goal graph and compiled orders | IMPORT OK imports/goal.ttl = ../sjira/goal.ttl sha256:eaee5dff5d754d1597e002f4f29e1fb199b02bfc3db6e0b573ab66bf0fa8c6a8
+OK K1 generated tiers and bound rows equal the kernel (scipy/statsmodels agree to 1e-9) | KERNEL OK: 14 bound rows, 4 tiers strictly ordered (30 < 100 < 300 < 3000), max |kernel - scipy/statsmodels| = 1.240e-15
+OK L1 generated/reference-orders.ttl equals the lift of orders.json | LIFT OK generated/reference-orders.ttl (33 reference orders)
+OK G0 ggen 26.9.18 at /opt/homebrew/Cellar/ggen/26.9.18/bin/ggen (sha256 357cfd4e595c6f8a)
+OK G1 two fresh `ggen sync run` renders of the committed bench tree (ggen.lock pins the pack and every input; every pack gate admitted) are byte-identical to each other and to the committed out/ (43 files)
+OK G2 every benchmark artifact (43 out/ projections, 3 generated/ graphs) names its generator (GENERATED header); none is hand-written
+OK T1 all 8 committed propositions required by ce:CE23-12-GeneratedQualificationPlan are traced by 34 design nodes; every cited proposition is a committed, span-verified candidate
+OK A1 DOE support matrix generated: 16-run 2^(6-2) over the VARIED factors, computed I=ABCE=ADEF=BCDF resolution 4 = declared, balanced and orthogonal; OS UNSUPPORTED (no column, in not_varied, one macOS runner); CI matrix = the same design
+OK A2 statistical acceptance rules generated from the kernel: tiers 30 < 100 < 300 < 3000 with exact 0-defect bounds 0.095034 / 0.029513 / 0.009936 / 0.000998; a zero-failure run is read only to its tier bound (overclaim fixtures n=31 u=0.05, n=30 x=1 u=0.01, 30 observations on 1 subject, n=20 at DISCOVERY, no BoundRow refused; lawful DISCOVERY and QUALIFICATION tuples admitted)
+OK A4 benchmark work orders generated (plan CONSTRUCT, out/plan/orders.ttl): 58 tuple-complete orders = 5 classes x 6 families (next tier DISCOVERY) + 12 MSA courts + 16 capability gaps; every successor reference order (24) covered; design.ttl holds 0 work orders
+OK A4s all 58 generated orders conform to the semantic-jira-pack work-order shapes at ggen_igniter 6e7834ee68b6 (closed WorkOrderShape, Friday tuple, GoalCheckpoint, Capability)
+OK A4p prose-derived CE23-12 orders (compile_prose over both units: 9 bench + 24 standings) recompute byte-identically: COMPILE_CHECK OK: 3 units (chatman-ce23, chatman-ce23-12-bench, chatman-ce23-12-standings): corrections, candidates (ce: namespace, CE23 gate coverage per unit 
+OK O1 the generated artifacts state that cross-OS robustness remains outside the demonstrated evidence ceiling (4 files); no OS level appears in any run
+OK X2 BENCHMARK_DESIGN_ALIVE does not imply NON_LLM_OPERATIONAL_ALIVE: all 5 KNOWN_CANDIDATE tuples are UNKNOWN at n = 0, no ALIVE standing exists in the design graph, the report projects every class UNKNOWN
+OK AV:control control in a synthetic git repository -> ALIVE
+OK AV:os-column mutant in a synthetic git repository -> REFUSED[ggen_gate_refused]
+OK AV:matrix-cell-flipped mutant in a synthetic git repository -> REFUSED[doe_refused]
+OK AV:toolchain-E-AB mutant in a synthetic git repository -> REFUSED[doe_refused]
+OK AV:b5-order-deleted mutant in a synthetic git repository -> REFUSED[projection_drift]
+OK AV:handwritten-order mutant in a synthetic git repository -> REFUSED[handwritten_work_order]
+OK AV:tier-tampered mutant in a synthetic git repository -> REFUSED[kernel_drift]
+OK AV:gap-dropped mutant in a synthetic git repository -> REFUSED[plan_incomplete]
+OK AV anti-vacuity: control ALIVE and 7 mutants in synthetic git repositories refused with their expected codes
+CE23-12-GeneratedQualificationPlan ALIVE: 26 OK, 0 REFUSED, 0 UNKNOWN in 62.8s; conjunct of BENCHMARK_DESIGN_ALIVE; NON_LLM_OPERATIONAL_ALIVE UNKNOWN for every class (n = 0)
+exit=0

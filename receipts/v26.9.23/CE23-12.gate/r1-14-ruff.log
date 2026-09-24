@@ -1,0 +1,3 @@
+$ ruff check --no-cache release/v26.9.23/bench/pack/scripts release/v26.9.23/courts/ce23_12 tests/test_ce23_12_courts.py receipts/v26.9.23/CE23-12.gate/probe_q3_blinded_kernel.py
+All checks passed!
+exit=0
