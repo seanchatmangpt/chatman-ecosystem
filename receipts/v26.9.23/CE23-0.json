@@ -198,7 +198,8 @@
         },
         {
           "codes": [
-            "RECEIPT_CLAIM_MISMATCH"
+            "RECEIPT_CLAIM_MISMATCH",
+            "RECEIPT_STANDING_UNDERIVED"
           ],
           "expected": "REFUSED",
           "expected_codes": [
@@ -352,9 +353,100 @@
           "id": "M21",
           "verdict": "REFUSED",
           "why": "the pre-migration checkout HEAD ref repointed"
+        },
+        {
+          "codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "held": true,
+          "id": "M22",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt claims a descendant lineage and its court marker is rewritten (M11 without the marker)"
+        },
+        {
+          "codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "held": true,
+          "id": "M23",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt claims a descendant lineage and its court block is deleted"
+        },
+        {
+          "codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "held": true,
+          "id": "M24",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt's subject is a local-lineage commit and its court marker is rewritten (M19 without the marker)"
+        },
+        {
+          "codes": [
+            "RECEIPT_COURT_MISMATCH"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_COURT_MISMATCH"
+          ],
+          "held": true,
+          "id": "M25",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt names a court.py that is not the court committed at its subject"
+        },
+        {
+          "codes": [
+            "RECEIPT_STANDING_UNDERIVED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_STANDING_UNDERIVED"
+          ],
+          "held": true,
+          "id": "M26",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt records a refused clause and keeps its ALIVE standing"
+        },
+        {
+          "codes": [
+            "RECEIPT_CLAIM_MISMATCH"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_CLAIM_MISMATCH"
+          ],
+          "held": true,
+          "id": "M27",
+          "verdict": "REFUSED",
+          "why": "the sealed receipt claims to supersede a receipt that was not at its subject"
+        },
+        {
+          "codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "expected": "REFUSED",
+          "expected_codes": [
+            "RECEIPT_NOT_COURT_EMITTED"
+          ],
+          "held": true,
+          "id": "M28",
+          "verdict": "REFUSED",
+          "why": "a hand-written ALIVE receipt replaces the pinned pre-court receipt"
         }
       ],
-      "summary": "26/26 corpus cases held (3 controls ALIVE, 2 edges UNKNOWN, 21 mutants refused)"
+      "summary": "33/33 corpus cases held (3 controls ALIVE, 2 edges UNKNOWN, 28 mutants refused)"
     },
     "clauses": [
       {
@@ -378,19 +470,19 @@
       {
         "clause": "I2",
         "code": "",
-        "text": "GitHub main = c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 (2026-09-24T18:36:57Z, live ls-remote); the release base c59596f5506e is equal to it",
+        "text": "GitHub main = c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 (2026-09-24T19:24:19Z, live ls-remote); the release base c59596f5506e is equal to it",
         "verdict": "OK"
       },
       {
         "clause": "I4",
         "code": "",
-        "text": "the head fast-forwards GitHub release/v26.9.23-int (717d52cd78d8) by 36 commits: publication pending, a plain push",
+        "text": "the head fast-forwards GitHub release/v26.9.23-int (717d52cd78d8) by 39 commits: publication pending, a plain push",
         "verdict": "OK"
       },
       {
         "clause": "I3",
         "code": "",
-        "text": "the head b8332692beda6b8e4a2779f3162e8247b36c87cc descends from the release base c59596f5506e (ancestor) and its only root is the GitHub root 14cfd7b01aac (4777 commits)",
+        "text": "the head 9af94f93ece575acda2fa80374e272bc376d513b descends from the release base c59596f5506e (ancestor) and its only root is the GitHub root 14cfd7b01aac (4780 commits)",
         "verdict": "OK"
       },
       {
@@ -402,7 +494,7 @@
       {
         "clause": "K1",
         "code": "",
-        "text": "no committed identity fact at HEAD (receipts/v26.9.23/CE23-0.identity.ttl): sealed by --identity-out",
+        "text": "committed receipts/v26.9.23/CE23-0.identity.ttl passes the pack gates; its GitHub main c59596f5506e is on the published line (base equal, live main equal)",
         "verdict": "OK"
       },
       {
@@ -450,7 +542,7 @@
       {
         "clause": "R1",
         "code": "",
-        "text": "receipts/v26.9.23/CE23-0.json at HEAD (blob 19373ddc5021, commit a896e16c68af, subject c59596f5506e) was not emitted by this court: superseded by the next seal, not judged",
+        "text": "receipts/v26.9.23/CE23-0.json (court-emitted, subject b8332692beda, standing ALIVE derived from its 42 clause lines, court = the court at its subject): every recorded claim equals the recomputation at its subject",
         "verdict": "OK"
       },
       {
@@ -540,7 +632,7 @@
       {
         "clause": "AV",
         "code": "",
-        "text": "M11 REFUSED ['RECEIPT_CLAIM_MISMATCH'] as expected: the sealed receipt claims a descendant lineage",
+        "text": "M11 REFUSED ['RECEIPT_CLAIM_MISMATCH', 'RECEIPT_STANDING_UNDERIVED'] as expected: the sealed receipt claims a descendant lineage",
         "verdict": "OK"
       },
       {
@@ -608,13 +700,55 @@
         "code": "",
         "text": "M21 REFUSED ['LINEAGE_UNPRESERVED'] as expected: the pre-migration checkout HEAD ref repointed",
         "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M22 REFUSED ['RECEIPT_NOT_COURT_EMITTED'] as expected: the sealed receipt claims a descendant lineage and its court marker is rewritten (M11 without the marker)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M23 REFUSED ['RECEIPT_NOT_COURT_EMITTED'] as expected: the sealed receipt claims a descendant lineage and its court block is deleted",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M24 REFUSED ['RECEIPT_NOT_COURT_EMITTED'] as expected: the sealed receipt's subject is a local-lineage commit and its court marker is rewritten (M19 without the marker)",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M25 REFUSED ['RECEIPT_COURT_MISMATCH'] as expected: the sealed receipt names a court.py that is not the court committed at its subject",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M26 REFUSED ['RECEIPT_STANDING_UNDERIVED'] as expected: the sealed receipt records a refused clause and keeps its ALIVE standing",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M27 REFUSED ['RECEIPT_CLAIM_MISMATCH'] as expected: the sealed receipt claims to supersede a receipt that was not at its subject",
+        "verdict": "OK"
+      },
+      {
+        "clause": "AV",
+        "code": "",
+        "text": "M28 REFUSED ['RECEIPT_NOT_COURT_EMITTED'] as expected: a hand-written ALIVE receipt replaces the pinned pre-court receipt",
+        "verdict": "OK"
       }
     ],
     "emitted_by": "release/v26.9.23/courts/CE23-0.sh",
     "loaded_sha256": {
       "release/v26.9.23/courts/CE23-0.sh": "8b7b0e1bfa0a70912f68bb39b311f2ca90e72b10587c494c25da4c21053db20a",
-      "release/v26.9.23/courts/ce23_0/court.py": "3e49d95add7c26837292db10c49aabfca70dcad24dcd7becb7e954da82691452",
-      "release/v26.9.23/courts/ce23_0/identity.toml": "fbe73b4e1556b1fd9919b8cd9fe4e76c1a0d08f2b8f34e0319a065b5e3980360"
+      "release/v26.9.23/courts/ce23_0/court.py": "ba4a6e2b10a3b7cd086d93265d41a550022aff3175109ba369fce513202002a0",
+      "release/v26.9.23/courts/ce23_0/identity.toml": "99f06ab2c1c76ff34f87243a9d0c590465dff0b94b060a77fb1484f7e22e8dd9"
     },
     "pins": "release/v26.9.23/courts/ce23_0/identity.toml"
   },
@@ -624,7 +758,7 @@
     "branch_sha": "717d52cd78d8936c6b8b2e102dc348cccf6262c4",
     "line": "publication-pending",
     "main": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1",
-    "observed_at": "2026-09-24T18:36:57Z",
+    "observed_at": "2026-09-24T19:24:19Z",
     "output_sha256": "a9539a98fc2c454d53e8d0280827a85d387e4373e965f580fed66a10b5731b5f",
     "remote_url": "https://github.com/seanchatmangpt/chatman-ecosystem.git",
     "subject_relation_to_branch_source": "ancestor"
@@ -636,7 +770,7 @@
     "gate": "ce:CE23-0 (release/v26.9.23/sjira/goal.ttl), sj:courtCommand 'sh release/v26.9.23/courts/CE23-0.sh'",
     "repo": "seanchatmangpt/chatman-ecosystem",
     "subject": "CE23-0/root-identity",
-    "subject_sha": "b8332692beda6b8e4a2779f3162e8247b36c87cc",
+    "subject_sha": "9af94f93ece575acda2fa80374e272bc376d513b",
     "work_orders": [
       "WO-68A1431B9FE77A26 (release/v26.9.23/sjira/compiled/chatman-ce23/orders.ttl; subject P-d8bfcebe5fa3a084)"
     ]
@@ -701,17 +835,17 @@
         "cmd": "sh release/v26.9.23/courts/CE23-0.sh",
         "cwd": "/Users/sac/chatman-ecosystem",
         "exit": 0,
-        "summary": "CE23-0 ALIVE at b8332692beda6b8e4a2779f3162e8247b36c87cc"
+        "summary": "CE23-0 ALIVE at 9af94f93ece575acda2fa80374e272bc376d513b"
       },
       {
-        "cmd": "git merge-base --is-ancestor c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 b8332692beda6b8e4a2779f3162e8247b36c87cc",
+        "cmd": "git merge-base --is-ancestor c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 9af94f93ece575acda2fa80374e272bc376d513b",
         "cwd": "/Users/sac/chatman-ecosystem",
         "exit": 0,
         "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "summary": "the release base is an ancestor of the subject"
       },
       {
-        "cmd": "sh -c 'test \"$(git rev-list --max-parents=0 b8332692beda6b8e4a2779f3162e8247b36c87cc)\" = 14cfd7b01aac25b3271963378d07357eb0c55af6'",
+        "cmd": "sh -c 'test \"$(git rev-list --max-parents=0 9af94f93ece575acda2fa80374e272bc376d513b)\" = 14cfd7b01aac25b3271963378d07357eb0c55af6'",
         "cwd": "/Users/sac/chatman-ecosystem",
         "exit": 0,
         "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -795,7 +929,7 @@
         "summary": "local main and the base share no ancestor"
       },
       {
-        "cmd": "sh -c 'git merge-base 6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d b8332692beda6b8e4a2779f3162e8247b36c87cc >/dev/null; test $? -eq 1'",
+        "cmd": "sh -c 'git merge-base 6c21e2527a5cb67e8fdd3fc3bb049f8bbf776d7d 9af94f93ece575acda2fa80374e272bc376d513b >/dev/null; test $? -eq 1'",
         "cwd": "/Users/sac/chatman-ecosystem",
         "exit": 0,
         "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -816,14 +950,14 @@
         "summary": "no remote-tracking ref reaches the local root"
       },
       {
-        "cmd": "git merge-base --is-ancestor a896e16c68af1315be3492e39939c354ce46b10c b8332692beda6b8e4a2779f3162e8247b36c87cc",
+        "cmd": "git merge-base --is-ancestor a896e16c68af1315be3492e39939c354ce46b10c 9af94f93ece575acda2fa80374e272bc376d513b",
         "cwd": "/Users/sac/chatman-ecosystem",
         "exit": 0,
         "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "summary": "the shadow-era CE23-0 commit is an ancestor of the subject"
       },
       {
-        "cmd": "git merge-base --is-ancestor 717d52cd78d8936c6b8b2e102dc348cccf6262c4 b8332692beda6b8e4a2779f3162e8247b36c87cc",
+        "cmd": "git merge-base --is-ancestor 717d52cd78d8936c6b8b2e102dc348cccf6262c4 9af94f93ece575acda2fa80374e272bc376d513b",
         "cwd": "/Users/sac/chatman-ecosystem",
         "exit": 0,
         "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -858,14 +992,14 @@
         "summary": "shadow ref remotes/origin/release/v26.9.23-int preserved"
       },
       {
-        "cmd": "sh -c 'test \"$(git rev-parse b8332692beda6b8e4a2779f3162e8247b36c87cc:release/v26.9.1)\" = 7e0feef1b137bea72fe1cf22a599636f77b0e47c'",
+        "cmd": "sh -c 'test \"$(git rev-parse 9af94f93ece575acda2fa80374e272bc376d513b:release/v26.9.1)\" = 7e0feef1b137bea72fe1cf22a599636f77b0e47c'",
         "cwd": "/Users/sac/chatman-ecosystem",
         "exit": 0,
         "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "summary": "release/v26.9.1 untouched"
       }
     ],
-    "durable_location": "git:seanchatmangpt/chatman-ecosystem@b8332692beda6b8e4a2779f3162e8247b36c87cc:release/v26.9.23/courts/CE23-0.sh"
+    "durable_location": "git:seanchatmangpt/chatman-ecosystem@9af94f93ece575acda2fa80374e272bc376d513b:release/v26.9.23/courts/CE23-0.sh"
   },
   "shadow_clone": {
     "identity_commit": {
@@ -897,15 +1031,15 @@
     }
   },
   "standing": {
-    "derived_from": "sh release/v26.9.23/courts/CE23-0.sh exit 0 at b8332692beda6b8e4a2779f3162e8247b36c87cc (42 OK, 0 REFUSED, 0 UNKNOWN; refused=[], unknown=[]; AV 26/26 corpus cases held (3 controls ALIVE, 2 edges UNKNOWN, 21 mutants refused); 20s)",
+    "derived_from": "sh release/v26.9.23/courts/CE23-0.sh exit 0 at 9af94f93ece575acda2fa80374e272bc376d513b (49 OK, 0 REFUSED, 0 UNKNOWN; refused=[], unknown=[]; AV 33/33 corpus cases held (3 controls ALIVE, 2 edges UNKNOWN, 28 mutants refused); 30s)",
     "value": "ALIVE"
   },
   "supersedes": {
-    "blob": "19373ddc50219b638bda5e0c4ce47382c48da51b",
-    "commit": "a896e16c68af1315be3492e39939c354ce46b10c",
-    "emitted_by_this_court": false,
+    "blob": "9c2cbec24739ee7038ae7e90634a5214081d8e39",
+    "commit": "1c7f0433fb888e34903528d9caa7b9a1d6d39a70",
+    "emitted_by_this_court": true,
     "path": "receipts/v26.9.23/CE23-0.json",
     "standing": "ALIVE",
-    "subject_sha": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1"
+    "subject_sha": "b8332692beda6b8e4a2779f3162e8247b36c87cc"
   }
 }

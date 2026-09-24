@@ -1,0 +1,30 @@
+$ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_ce23_9_court.py -v
+test_failing_step_refuses (test_ce23_9_court.CiJobCase.test_failing_step_refuses) ... ok
+test_github_rate_limit_is_an_infrastructure_edge_not_a_verdict (test_ce23_9_court.CiJobCase.test_github_rate_limit_is_an_infrastructure_edge_not_a_verdict) ... ok
+test_invalid_workflow_yaml_is_a_typed_usage_error (test_ce23_9_court.CiJobCase.test_invalid_workflow_yaml_is_a_typed_usage_error) ... ok
+test_job_if_false_in_pull_request_context (test_ce23_9_court.CiJobCase.test_job_if_false_in_pull_request_context) ... ok
+test_runs_steps_at_head_with_context_and_env_file (test_ce23_9_court.CiJobCase.test_runs_steps_at_head_with_context_and_env_file) ... ok
+test_secret_expression_is_unsupported_not_guessed (test_ce23_9_court.CiJobCase.test_secret_expression_is_unsupported_not_guessed) ... ok
+test_skip_step_must_name_a_step_and_is_printed (test_ce23_9_court.CiJobCase.test_skip_step_must_name_a_step_and_is_printed) ... ok
+test_tracked_mutation_refuses (test_ce23_9_court.CiJobCase.test_tracked_mutation_refuses) ... ok
+test_judge_types_each_member_and_continues_after_the_stop (test_ce23_9_court.GeneratedCourtCase.test_judge_types_each_member_and_continues_after_the_stop) ... ok
+test_disposition_law (test_ce23_9_court.LawCase.test_disposition_law) ... ok
+test_exact_head_law_on_the_real_base_checkruns (test_ce23_9_court.LawCase.test_exact_head_law_on_the_real_base_checkruns) ... ok
+test_receipt_projection_names_gates_and_orders (test_ce23_9_court.LawCase.test_receipt_projection_names_gates_and_orders) ... ok
+test_stub_court_gets_no_gate_standing_from_its_receipt (test_ce23_9_court.LawCase.test_stub_court_gets_no_gate_standing_from_its_receipt) ... ok
+test_untyped_failure_pending_and_missing (test_ce23_9_court.LawCase.test_untyped_failure_pending_and_missing) ... ok
+test_300_file_window_is_uncertain_not_dropped (test_ce23_9_court.UniverseCase.test_300_file_window_is_uncertain_not_dropped) ... ok
+test_glob_semantics (test_ce23_9_court.UniverseCase.test_glob_semantics) ... ok
+test_trigger_semantics (test_ce23_9_court.UniverseCase.test_trigger_semantics) ... ok
+test_judging_court_names_no_shadow_tree_path (test_ce23_9_court.ValidatorPinCase.test_judging_court_names_no_shadow_tree_path) ... ok
+test_pending_publication_is_an_edge_not_a_counterexample (test_ce23_9_court.ValidatorPinCase.test_pending_publication_is_an_edge_not_a_counterexample) ... ok
+test_pin_off_the_line_is_refused (test_ce23_9_court.ValidatorPinCase.test_pin_off_the_line_is_refused) ... ok
+test_published_pin_is_admitted_and_written (test_ce23_9_court.ValidatorPinCase.test_published_pin_is_admitted_and_written) ... ok
+test_real_pin_reads_the_published_marketplace_blob (test_ce23_9_court.ValidatorPinCase.test_real_pin_reads_the_published_marketplace_blob) ... ok
+test_unobserved_ref_absent_commit_and_digest_mismatch (test_ce23_9_court.ValidatorPinCase.test_unobserved_ref_absent_commit_and_digest_mismatch) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 4.843s
+
+OK
+exit=0
