@@ -276,6 +276,19 @@ The repository coordinates independently releasable systems including ggen, ggen
 
 Those systems retain their own identities and evidence boundaries.
 
+### Repository Nexus
+
+This repository is also the **Nexus** of the whole portfolio: `catalog/nexus.toml` indexes every public repository the owner holds (326 of 406 observed on 2026-09-24; the 80 private repositories are counted, never named), groups them into constellations, and joins them against every other registry here — `catalog/repositories.toml`, the West manifests, and the release manifests. The browsable projection is [`views/generated/nexus.md`](views/generated/nexus.md).
+
+```bash
+make nexus                                             # verify the index and that the projection is current
+python3 scripts/nexus.py verify --inventory inv.json   # detect drift against a fresh inventory observation
+python3 scripts/nexus.py refresh --inventory inv.json --observed-at YYYY-MM-DD --source "..."
+python3 scripts/nexus.py render                        # regenerate the projection
+```
+
+The Nexus is `OBSERVE_ONLY`: it indexes identity, refuses any member standing, and never actuates a repository. A repository named by another registry must be indexed or carry a reasoned `[[exclusion]]`; drift against a live inventory is always reported.
+
 ---
 
 ## Ecosystem manufacturing model

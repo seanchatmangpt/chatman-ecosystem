@@ -1,4 +1,4 @@
-.PHONY: verify test survey survey-check crown audit-stubs west-check west-plan
+.PHONY: verify test survey survey-check crown audit-stubs west-check west-plan nexus nexus-render
 
 verify:
 	python3 scripts/verify_release.py --check-refs
@@ -24,3 +24,10 @@ west-check:
 
 west-plan:
 	west dfcm-plan --all --json
+
+nexus:
+	python3 scripts/nexus.py verify
+	python3 scripts/nexus.py render --check
+
+nexus-render:
+	python3 scripts/nexus.py render

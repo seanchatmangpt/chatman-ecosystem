@@ -1,0 +1,2041 @@
+# Repository Nexus: the single index of every repository the owner holds.
+# Canonical source. Membership is re-observed with `scripts/nexus.py refresh`;
+# constellation rules, notes, and exclusions are curated by hand.
+# views/generated/nexus.md is a projection of this file and must not be edited.
+
+[nexus]
+schema = "chatman.nexus/1"
+hub = "seanchatmangpt/chatman-ecosystem"
+owners = ["seanchatmangpt", "chatmangpt-org"]
+authority = "OBSERVE_ONLY"
+private_policy = "count-only-never-publish-by-observation"
+view = "views/generated/nexus.md"
+
+[observation]
+observed_at = "2026-09-24"
+source = "claude-code-remote list_repos, authenticated, 39 name-prefix partitions, none truncated"
+total = 406
+public = 326
+private = 80
+forks = 176
+public_names_sha256 = "b2cf070e480151ed5c02b68bd14f2143232f0ef2dc32b0bded9fcc72632f19ed"
+
+[[constellation]]
+id = "chatman-core"
+title = "Chatman constitutional core"
+match = ["^chatman", "^autofde", "^gymact$", "^affidavit$", "^mfact", "^mfw$", "^bcinr$", "^praxis$", "^xaas$", "^star-toml$", "^open-ontologies$", "^dsrust$", "^fdegym$"]
+
+[[constellation]]
+id = "ggen"
+title = "ggen manufacturing"
+match = ["ggen", "^unjucks$", "^gencli$", "^fgn$", "gen$"]
+
+[[constellation]]
+id = "process-intelligence"
+title = "Process mining and process intelligence"
+match = ["4pm", "^pm4", "^process-", "^powl$", "^yawl$", "^ex4pm", "^cre$", "bpm", "workflow", "wkflo", "^wf-", "pmax", "promoai", "^val$", "n8n", "^spiff"]
+
+[[constellation]]
+id = "gyms"
+title = "Gyms and executable worlds"
+match = ["gym"]
+
+[[constellation]]
+id = "ash-elixir"
+title = "Ash, Elixir, and BEAM"
+match = ["^ash", "elixir", "^reactor$", "^live_vue$", "^petal", "^tunez$", "^commanded", "^espec$", "^erlang", "^avmnif", "^beam", "^igniter", "oban", "live_view", "membrane", "^jotp$"]
+
+[[constellation]]
+id = "agents"
+title = "Agents, A2A, MCP, and LLM systems"
+match = ["a2a", "mcp", "agent", "swarm", "hybridagi", "^dspy", "dsl", "llm", "^ai-", "ollama", "sparsepriming", "^claude", "^zcode", "^hive$", "^speckit", "gpt", "aider", "^ai$", "^ax$", "pydantic-ai", "librechat", "^bolt", "openevolve", "bmad", "muscle-mem", "^rig$", "chat-with", "^codev$", "become-ai", "^osa$", "businessos", "^canopy$", "tokenforge", "^swrm$", "^autotel$", "codebase-context", "^rdddy$"]
+
+[[constellation]]
+id = "planning"
+title = "Planning and reasoning"
+match = ["plan", "^aries$", "^koala", "^tcps$", "^corl$", "^tcps"]
+
+[[constellation]]
+id = "semantic"
+title = "Semantic web, RDF, and knowledge graphs"
+match = ["ontolog", "rdf", "qlever", "^knowd$", "r2rml", "sparql", "hypergraph", "^wiki", "deepwiki", "^gno$", "duckdb", "oxigraph", "^kgc", "^kgn$", "semantic", "schemaorg", "^roxi$", "knowtro"]
+
+[[constellation]]
+id = "devtools"
+title = "Developer tooling, CLIs, LSPs, and CI"
+match = ["lsp", "cli", "^clap", "^cargo", "tdd", "^homebrew", "^uvmgr", "clnrm", "^gitvan", "^weaver$", "^dtr$", "^dteam$", "^mmdio$", "cleaner", "^rename_project$", "moduleimporter", "^gvisor$", "^dapr", "^docs", "^engineering-standards$", "anti-", "^lsp", "^act$", "citty", "test-utils", "^typer$", "pytest", "cookiecutter", "redbaron", "shipit", "release-demos", "proxyable", "simdjson", "^jxa$", "slidev", "zod", "^unmq$", "^puya$", "algokit", "arazzo", "openapi", "diagram", "capability-map", "agile-protocol", "pqclean"]
+
+[[constellation]]
+id = "apps-templates"
+title = "Apps, templates, and boilerplates"
+match = ["next", "nuxt", "flask", "boilerplate", "template", "^realworld$", "^hello", "dash", "^streamlit", "^unovis", "^ember$", "^twitter$", "^helpdesk$", "^kanban$", "^castle$", "^rocket", "^zoe", "^glass$", "^figex$", "^fast", "^ui", "starter", "supabase", "strapi", "landing", "^pro-docs$", "^myapp$", "webgl", "boombox", "file-organizer", "basecamp", "^bc3", "clentportal", "signalbot"]
+
+[[constellation]]
+id = "learning"
+title = "Books, courses, and study material"
+match = ["book", "handbook", "python", "ctci", "workshop", "rubric", "canon", "prereqs", "learn", "examples", "talks", "tutorial"]
+
+[[constellation]]
+id = "other"
+title = "Everything else"
+match = [".*"]
+
+[[exclusion]]
+full_name = "seanchatmangpt/mfw"
+reason = "private repository; named by catalog/repositories.toml, west.yml, and release v26.9.1 before the Nexus existed, so it is counted in observation.private rather than indexed"
+
+[[member]]
+full_name = "chatmangpt-org/angular-boilerplate"
+visibility = "public"
+fork = false
+pushed_at = "2024-06-18T04:32:59Z"
+
+[[member]]
+full_name = "chatmangpt-org/ash_ai"
+visibility = "public"
+fork = true
+pushed_at = "2025-02-18T23:40:25Z"
+
+[[member]]
+full_name = "chatmangpt-org/aspdr"
+visibility = "public"
+fork = false
+pushed_at = "2024-06-13T16:25:56Z"
+
+[[member]]
+full_name = "chatmangpt-org/castle"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-18T22:43:53Z"
+
+[[member]]
+full_name = "chatmangpt-org/daprgen"
+visibility = "public"
+fork = false
+pushed_at = "2024-07-02T16:13:45Z"
+
+[[member]]
+full_name = "chatmangpt-org/ggen"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-18T16:55:47Z"
+
+[[member]]
+full_name = "chatmangpt-org/ngbpm"
+visibility = "public"
+fork = false
+pushed_at = "2024-03-12T04:26:46Z"
+
+[[member]]
+full_name = "chatmangpt-org/sungen"
+visibility = "public"
+fork = false
+pushed_at = "2024-10-16T01:53:07Z"
+
+[[member]]
+full_name = "chatmangpt-org/wasm4pm"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-18T21:23:15Z"
+
+[[member]]
+full_name = "seanchatmangpt/-nitrouse"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T17:45:45Z"
+
+[[member]]
+full_name = "seanchatmangpt/A2A"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:19:26Z"
+
+[[member]]
+full_name = "seanchatmangpt/a2a-rs"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-28T08:46:10Z"
+
+[[member]]
+full_name = "seanchatmangpt/act"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-09T22:50:11Z"
+
+[[member]]
+full_name = "seanchatmangpt/affidavit"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T22:57:19Z"
+
+[[member]]
+full_name = "seanchatmangpt/agent-guides"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:00:17Z"
+
+[[member]]
+full_name = "seanchatmangpt/agent-lightning"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T17:49:51Z"
+
+[[member]]
+full_name = "seanchatmangpt/agent-zero"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T17:50:18Z"
+
+[[member]]
+full_name = "seanchatmangpt/agile-protocol-specification"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-22T01:02:39Z"
+
+[[member]]
+full_name = "seanchatmangpt/AgileGen"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T17:51:07Z"
+
+[[member]]
+full_name = "seanchatmangpt/ai"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T17:52:09Z"
+
+[[member]]
+full_name = "seanchatmangpt/ai-elements"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:20:59Z"
+
+[[member]]
+full_name = "seanchatmangpt/ai-self-sustaining-system"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T17:52:55Z"
+
+[[member]]
+full_name = "seanchatmangpt/aider"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T17:53:14Z"
+
+[[member]]
+full_name = "seanchatmangpt/aismt"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T17:53:36Z"
+
+[[member]]
+full_name = "seanchatmangpt/algokit-core"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T17:53:55Z"
+
+[[member]]
+full_name = "seanchatmangpt/anti-cheat-scorecard"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-30T00:52:25Z"
+
+[[member]]
+full_name = "seanchatmangpt/anti-llm-cheat-lsp"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-26T09:44:25Z"
+
+[[member]]
+full_name = "seanchatmangpt/arazzo-ai"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T17:54:33Z"
+
+[[member]]
+full_name = "seanchatmangpt/Arazzo-Specification"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T17:54:56Z"
+
+[[member]]
+full_name = "seanchatmangpt/aries"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-16T08:54:40Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:36:41Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash-book-prereqs"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T03:35:02Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_a2a"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T22:59:44Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_admin"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-16T17:53:04Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_ai"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T17:56:50Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_archival"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:29:39Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_blog"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:22:26Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_cloak"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:29:57Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_commanded"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T12:00:44Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_csv"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:28:56Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_double_entry"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:35:23Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_events"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T12:02:43Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_ex4pm"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-17T19:51:33Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_expo"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-13T09:10:49Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_json_api"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:36:21Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_json_api_wrapper"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T12:03:24Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_n8n"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T12:03:58Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_oban"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:29:19Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_paper_trail"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:35:45Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_planning_center"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-22T04:00:50Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_postgres"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:36:03Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_pplan"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-13T12:03:00Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_r2rml"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-22T01:08:53Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_state_machine"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:30:15Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_supabase"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-07T01:03:40Z"
+
+[[member]]
+full_name = "seanchatmangpt/ash_surface"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-23T09:09:45Z"
+
+[[member]]
+full_name = "seanchatmangpt/autofde"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-28T08:49:19Z"
+
+[[member]]
+full_name = "seanchatmangpt/autofde-lab"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T23:00:55Z"
+
+[[member]]
+full_name = "seanchatmangpt/AutoGPT"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T13:05:22Z"
+
+[[member]]
+full_name = "seanchatmangpt/autotel"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T13:05:36Z"
+
+[[member]]
+full_name = "seanchatmangpt/avmnif-rs"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-11T19:58:46Z"
+
+[[member]]
+full_name = "seanchatmangpt/awesome-ai-gyms"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-18T02:03:58Z"
+
+[[member]]
+full_name = "seanchatmangpt/ax"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T13:06:34Z"
+
+[[member]]
+full_name = "seanchatmangpt/basecampapi"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T13:06:48Z"
+
+[[member]]
+full_name = "seanchatmangpt/bc3-api"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T14:54:47Z"
+
+[[member]]
+full_name = "seanchatmangpt/bcinr"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T23:01:17Z"
+
+[[member]]
+full_name = "seanchatmangpt/beam4pm"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-23T09:50:59Z"
+
+[[member]]
+full_name = "seanchatmangpt/become-ai-first"
+visibility = "public"
+fork = false
+pushed_at = "2024-11-27T19:57:01Z"
+
+[[member]]
+full_name = "seanchatmangpt/biblegym"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-19T17:23:56Z"
+
+[[member]]
+full_name = "seanchatmangpt/bkgn"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T14:55:27Z"
+
+[[member]]
+full_name = "seanchatmangpt/BMAD-METHOD"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T14:55:39Z"
+
+[[member]]
+full_name = "seanchatmangpt/bolt.new"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T14:55:51Z"
+
+[[member]]
+full_name = "seanchatmangpt/boombox"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T14:56:45Z"
+
+[[member]]
+full_name = "seanchatmangpt/bullet_train"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T14:58:41Z"
+
+[[member]]
+full_name = "seanchatmangpt/BusinessOS"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T11:00:25Z"
+
+[[member]]
+full_name = "seanchatmangpt/canopy"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T14:58:54Z"
+
+[[member]]
+full_name = "seanchatmangpt/capability-map"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-20T05:17:31Z"
+
+[[member]]
+full_name = "seanchatmangpt/cargo-cicd"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T21:46:38Z"
+
+[[member]]
+full_name = "seanchatmangpt/castle"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-27T07:10:52Z"
+
+[[member]]
+full_name = "seanchatmangpt/chat-with-pdf"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T14:59:06Z"
+
+[[member]]
+full_name = "seanchatmangpt/chatgpt-cloud-elixir"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T23:33:03Z"
+
+[[member]]
+full_name = "seanchatmangpt/chatgptgym"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-14T18:49:41Z"
+
+[[member]]
+full_name = "seanchatmangpt/chatman-ecosystem"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T23:30:03Z"
+
+[[member]]
+full_name = "seanchatmangpt/chatmangpt-extension"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T15:58:29Z"
+
+[[member]]
+full_name = "seanchatmangpt/chicago-tdd-tools"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T21:46:42Z"
+
+[[member]]
+full_name = "seanchatmangpt/chiefofstaffgpt"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T15:58:37Z"
+
+[[member]]
+full_name = "seanchatmangpt/citty"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T15:58:56Z"
+
+[[member]]
+full_name = "seanchatmangpt/citty-test-utils"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T15:59:05Z"
+
+[[member]]
+full_name = "seanchatmangpt/clap-noun-verb"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-26T14:58:31Z"
+
+[[member]]
+full_name = "seanchatmangpt/claude-code-base-action"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T16:54:48Z"
+
+[[member]]
+full_name = "seanchatmangpt/claude-code-config-lsp"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T21:46:46Z"
+
+[[member]]
+full_name = "seanchatmangpt/claude-desktop-context"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T16:55:10Z"
+
+[[member]]
+full_name = "seanchatmangpt/claude-flow"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T16:55:30Z"
+
+[[member]]
+full_name = "seanchatmangpt/claude-squad"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T16:55:53Z"
+
+[[member]]
+full_name = "seanchatmangpt/claudecodegym"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-14T18:30:59Z"
+
+[[member]]
+full_name = "seanchatmangpt/clentportal-settings"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T16:56:16Z"
+
+[[member]]
+full_name = "seanchatmangpt/clnrm"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T17:00:33Z"
+
+[[member]]
+full_name = "seanchatmangpt/clnrm_prototype"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T09:10:52Z"
+
+[[member]]
+full_name = "seanchatmangpt/codebase-context-spec"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T16:56:37Z"
+
+[[member]]
+full_name = "seanchatmangpt/CodeV"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T17:01:18Z"
+
+[[member]]
+full_name = "seanchatmangpt/commanded"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T17:01:35Z"
+
+[[member]]
+full_name = "seanchatmangpt/commanded-generator"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T19:56:51Z"
+
+[[member]]
+full_name = "seanchatmangpt/CoRL"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T19:57:12Z"
+
+[[member]]
+full_name = "seanchatmangpt/cre"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T19:02:05Z"
+
+[[member]]
+full_name = "seanchatmangpt/CtCI-6th-Edition-Python"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T19:58:41Z"
+
+[[member]]
+full_name = "seanchatmangpt/dapr-python-sdk"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T19:59:03Z"
+
+[[member]]
+full_name = "seanchatmangpt/dapr-workshop"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T19:59:24Z"
+
+[[member]]
+full_name = "seanchatmangpt/dashboard"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T18:09:38Z"
+
+[[member]]
+full_name = "seanchatmangpt/deepwiki-rs"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-14T19:09:49Z"
+
+[[member]]
+full_name = "seanchatmangpt/DesktopCommanderMCP"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T20:03:00Z"
+
+[[member]]
+full_name = "seanchatmangpt/diagram-design"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-21T18:40:16Z"
+
+[[member]]
+full_name = "seanchatmangpt/docs"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T20:15:43Z"
+
+[[member]]
+full_name = "seanchatmangpt/docs2cli"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T20:00:38Z"
+
+[[member]]
+full_name = "seanchatmangpt/dogwood"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-21T18:42:34Z"
+
+[[member]]
+full_name = "seanchatmangpt/dpgjs"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T20:01:06Z"
+
+[[member]]
+full_name = "seanchatmangpt/dslmodel"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T04:16:47Z"
+
+[[member]]
+full_name = "seanchatmangpt/dspy-swe-agent"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T21:06:15Z"
+
+[[member]]
+full_name = "seanchatmangpt/dspyfun"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T21:07:28Z"
+
+[[member]]
+full_name = "seanchatmangpt/dspygen"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-31T23:56:38Z"
+
+[[member]]
+full_name = "seanchatmangpt/dsrust"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T07:25:35Z"
+
+[[member]]
+full_name = "seanchatmangpt/dteam"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T21:59:45Z"
+
+[[member]]
+full_name = "seanchatmangpt/dtr"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T22:00:51Z"
+
+[[member]]
+full_name = "seanchatmangpt/dynamo"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T21:11:43Z"
+
+[[member]]
+full_name = "seanchatmangpt/eDiscovery-Hypergraph"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T21:12:42Z"
+
+[[member]]
+full_name = "seanchatmangpt/ember"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T21:13:33Z"
+
+[[member]]
+full_name = "seanchatmangpt/engineering-standards"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-24T23:02:35Z"
+
+[[member]]
+full_name = "seanchatmangpt/erlang-pqclean-osx"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T22:01:52Z"
+
+[[member]]
+full_name = "seanchatmangpt/erlmcp"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T10:00:54Z"
+
+[[member]]
+full_name = "seanchatmangpt/espec"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T22:02:45Z"
+
+[[member]]
+full_name = "seanchatmangpt/ex4pm"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-20T06:56:00Z"
+
+[[member]]
+full_name = "seanchatmangpt/ex4pm-plan"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-11T05:56:25Z"
+
+[[member]]
+full_name = "seanchatmangpt/expo-supabase-ai-template"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-20T05:20:20Z"
+
+[[member]]
+full_name = "seanchatmangpt/fabric-samples"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T22:04:48Z"
+
+[[member]]
+full_name = "seanchatmangpt/fastmcp"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T22:05:37Z"
+
+[[member]]
+full_name = "seanchatmangpt/FastUINuxt"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T23:02:17Z"
+
+[[member]]
+full_name = "seanchatmangpt/fdegym"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-28T08:10:40Z"
+
+[[member]]
+full_name = "seanchatmangpt/ferroplan"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-23T00:42:58Z"
+
+[[member]]
+full_name = "seanchatmangpt/fgn"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T18:12:24Z"
+
+[[member]]
+full_name = "seanchatmangpt/file-organizer-2000"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T23:04:52Z"
+
+[[member]]
+full_name = "seanchatmangpt/flask-hello-world"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T23:05:25Z"
+
+[[member]]
+full_name = "seanchatmangpt/fluent-python-2"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-23T23:06:04Z"
+
+[[member]]
+full_name = "seanchatmangpt/frozen-duckdb"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-23T08:41:19Z"
+
+[[member]]
+full_name = "seanchatmangpt/full-stack-rubric"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T23:13:02Z"
+
+[[member]]
+full_name = "seanchatmangpt/gencli"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T23:13:52Z"
+
+[[member]]
+full_name = "seanchatmangpt/ggen"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T22:23:49Z"
+
+[[member]]
+full_name = "seanchatmangpt/ggen-create"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T03:28:04Z"
+
+[[member]]
+full_name = "seanchatmangpt/ggen-ecosystem"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T22:14:31Z"
+
+[[member]]
+full_name = "seanchatmangpt/ggen-legacy"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-17T19:49:11Z"
+
+[[member]]
+full_name = "seanchatmangpt/ggen-marketplace"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T22:56:44Z"
+
+[[member]]
+full_name = "seanchatmangpt/ggen-mcp"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-28T04:51:05Z"
+
+[[member]]
+full_name = "seanchatmangpt/ggen-remote-templates-test"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T23:58:24Z"
+
+[[member]]
+full_name = "seanchatmangpt/ggen-skills"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-01T22:08:19Z"
+
+[[member]]
+full_name = "seanchatmangpt/ggen-spec-kit"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-23T23:59:38Z"
+
+[[member]]
+full_name = "seanchatmangpt/ggen-ui"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-27T18:00:31Z"
+
+[[member]]
+full_name = "seanchatmangpt/ggen_igniter"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T22:59:39Z"
+
+[[member]]
+full_name = "seanchatmangpt/ghl-marketplace-app-template"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T00:00:50Z"
+
+[[member]]
+full_name = "seanchatmangpt/gitgym"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T00:02:18Z"
+
+[[member]]
+full_name = "seanchatmangpt/gitvan"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-23T07:22:54Z"
+
+[[member]]
+full_name = "seanchatmangpt/gitvan-nextjs-pack"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T01:58:53Z"
+
+[[member]]
+full_name = "seanchatmangpt/gno"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-15T18:30:15Z"
+
+[[member]]
+full_name = "seanchatmangpt/gusty-demo-lite"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T01:59:22Z"
+
+[[member]]
+full_name = "seanchatmangpt/gvisor"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T01:59:37Z"
+
+[[member]]
+full_name = "seanchatmangpt/gym-ecosystem"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T22:35:34Z"
+
+[[member]]
+full_name = "seanchatmangpt/gymact"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T23:01:37Z"
+
+[[member]]
+full_name = "seanchatmangpt/Hands-On-Python-for-DevOps"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T01:59:52Z"
+
+[[member]]
+full_name = "seanchatmangpt/healgen"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T02:08:02Z"
+
+[[member]]
+full_name = "seanchatmangpt/hello_youtube_chat"
+visibility = "public"
+fork = false
+pushed_at = "2025-03-12T23:15:30Z"
+
+[[member]]
+full_name = "seanchatmangpt/helpdesk"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T01:03:47Z"
+
+[[member]]
+full_name = "seanchatmangpt/helpgen"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T01:00:06Z"
+
+[[member]]
+full_name = "seanchatmangpt/herdr"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-02T09:36:13Z"
+
+[[member]]
+full_name = "seanchatmangpt/homebrew-clnrm"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T02:02:39Z"
+
+[[member]]
+full_name = "seanchatmangpt/homebrew-ggen"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T02:13:30Z"
+
+[[member]]
+full_name = "seanchatmangpt/homebrew-tap"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T22:33:01Z"
+
+[[member]]
+full_name = "seanchatmangpt/HybridAGI"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T02:02:56Z"
+
+[[member]]
+full_name = "seanchatmangpt/hygen"
+visibility = "public"
+fork = true
+pushed_at = "2024-07-09T11:40:47Z"
+
+[[member]]
+full_name = "seanchatmangpt/hygen-nuxt-module"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:07:25Z"
+
+[[member]]
+full_name = "seanchatmangpt/hyperdrive"
+visibility = "public"
+fork = true
+pushed_at = "2025-05-29T08:02:22Z"
+
+[[member]]
+full_name = "seanchatmangpt/hypergraph_agents_umbrella"
+visibility = "public"
+fork = true
+pushed_at = "2025-04-20T23:04:32Z"
+
+[[member]]
+full_name = "seanchatmangpt/infinite-agentic-loop"
+visibility = "public"
+fork = true
+pushed_at = "2025-06-09T18:03:16Z"
+
+[[member]]
+full_name = "seanchatmangpt/intvw"
+visibility = "public"
+fork = false
+pushed_at = "2025-11-13T22:27:52Z"
+
+[[member]]
+full_name = "seanchatmangpt/java-maven-template"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T04:06:08Z"
+
+[[member]]
+full_name = "seanchatmangpt/jotp"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-05T06:19:24Z"
+
+[[member]]
+full_name = "seanchatmangpt/JXA"
+visibility = "public"
+fork = true
+pushed_at = "2024-02-28T03:26:33Z"
+
+[[member]]
+full_name = "seanchatmangpt/kgcl"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-01T19:59:28Z"
+
+[[member]]
+full_name = "seanchatmangpt/kgn"
+visibility = "public"
+fork = false
+pushed_at = "2025-12-04T19:39:13Z"
+
+[[member]]
+full_name = "seanchatmangpt/kino_live_view_native"
+visibility = "public"
+fork = true
+pushed_at = "2024-08-25T05:36:34Z"
+
+[[member]]
+full_name = "seanchatmangpt/knowtro"
+visibility = "public"
+fork = true
+pushed_at = "2025-09-26T17:54:07Z"
+
+[[member]]
+full_name = "seanchatmangpt/koala-planner"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-09T21:35:58Z"
+
+[[member]]
+full_name = "seanchatmangpt/lchop"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T03:09:34Z"
+
+[[member]]
+full_name = "seanchatmangpt/Learn-Ansible-Second-Edition"
+visibility = "public"
+fork = true
+pushed_at = "2024-06-29T15:08:21Z"
+
+[[member]]
+full_name = "seanchatmangpt/LibreChat"
+visibility = "public"
+fork = true
+pushed_at = "2023-06-13T16:43:45Z"
+
+[[member]]
+full_name = "seanchatmangpt/lifegym"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-02T20:02:39Z"
+
+[[member]]
+full_name = "seanchatmangpt/live_vue"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-28T05:53:39Z"
+
+[[member]]
+full_name = "seanchatmangpt/lively"
+visibility = "public"
+fork = true
+pushed_at = "2023-11-04T15:38:21Z"
+
+[[member]]
+full_name = "seanchatmangpt/LLM-First-Search"
+visibility = "public"
+fork = true
+pushed_at = "2025-06-03T16:06:52Z"
+
+[[member]]
+full_name = "seanchatmangpt/lsp-max"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-15T18:13:43Z"
+
+[[member]]
+full_name = "seanchatmangpt/lsp-types-max"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-01T02:42:40Z"
+
+[[member]]
+full_name = "seanchatmangpt/mac-artifact-cleaner"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T06:40:08Z"
+
+[[member]]
+full_name = "seanchatmangpt/mdBook"
+visibility = "public"
+fork = true
+pushed_at = "2025-12-29T00:46:32Z"
+
+[[member]]
+full_name = "seanchatmangpt/membrane_demo"
+visibility = "public"
+fork = true
+pushed_at = "2025-04-04T08:00:23Z"
+
+[[member]]
+full_name = "seanchatmangpt/mfact"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-28T08:17:14Z"
+
+[[member]]
+full_name = "seanchatmangpt/mfact-command-center"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-17T19:58:22Z"
+
+[[member]]
+full_name = "seanchatmangpt/miniml"
+visibility = "public"
+fork = false
+pushed_at = "2026-04-08T22:17:39Z"
+
+[[member]]
+full_name = "seanchatmangpt/mmdio"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T21:46:50Z"
+
+[[member]]
+full_name = "seanchatmangpt/moduleimporter_python"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:03:32Z"
+
+[[member]]
+full_name = "seanchatmangpt/muscle-mem"
+visibility = "public"
+fork = true
+pushed_at = "2025-05-25T16:18:48Z"
+
+[[member]]
+full_name = "seanchatmangpt/myapp"
+visibility = "public"
+fork = false
+pushed_at = "2025-01-21T23:57:34Z"
+
+[[member]]
+full_name = "seanchatmangpt/n8n-nodes-helpdesk"
+visibility = "public"
+fork = true
+pushed_at = "2024-09-22T07:55:58Z"
+
+[[member]]
+full_name = "seanchatmangpt/naut"
+visibility = "public"
+fork = false
+pushed_at = "2025-06-07T03:49:15Z"
+
+[[member]]
+full_name = "seanchatmangpt/nautilus_trader"
+visibility = "public"
+fork = true
+pushed_at = "2025-06-02T16:51:28Z"
+
+[[member]]
+full_name = "seanchatmangpt/nextjs-dashboard"
+visibility = "public"
+fork = false
+pushed_at = "2024-03-21T20:03:02Z"
+
+[[member]]
+full_name = "seanchatmangpt/nextjs-hello-world"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:08:54Z"
+
+[[member]]
+full_name = "seanchatmangpt/node-calls-python"
+visibility = "public"
+fork = true
+pushed_at = "2024-09-15T17:11:39Z"
+
+[[member]]
+full_name = "seanchatmangpt/nuxt-ai-chatbot"
+visibility = "public"
+fork = false
+pushed_at = "2024-06-18T04:25:29Z"
+
+[[member]]
+full_name = "seanchatmangpt/nuxt-open-fetch"
+visibility = "public"
+fork = true
+pushed_at = "2024-11-01T00:29:50Z"
+
+[[member]]
+full_name = "seanchatmangpt/nuxt-pro-all"
+visibility = "public"
+fork = false
+pushed_at = "2024-12-11T02:01:46Z"
+
+[[member]]
+full_name = "seanchatmangpt/nuxt-ui"
+visibility = "public"
+fork = true
+pushed_at = "2024-11-15T19:34:45Z"
+
+[[member]]
+full_name = "seanchatmangpt/oban_web"
+visibility = "public"
+fork = true
+pushed_at = "2025-01-28T16:31:09Z"
+
+[[member]]
+full_name = "seanchatmangpt/ollama-ai-provider-v2"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-16T21:08:40Z"
+
+[[member]]
+full_name = "seanchatmangpt/open-ontologies"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-24T23:01:25Z"
+
+[[member]]
+full_name = "seanchatmangpt/openevolve"
+visibility = "public"
+fork = true
+pushed_at = "2025-05-28T06:48:52Z"
+
+[[member]]
+full_name = "seanchatmangpt/OSA"
+visibility = "public"
+fork = true
+pushed_at = "2026-03-29T05:03:50Z"
+
+[[member]]
+full_name = "seanchatmangpt/oxigraph"
+visibility = "public"
+fork = true
+pushed_at = "2025-12-26T05:35:34Z"
+
+[[member]]
+full_name = "seanchatmangpt/parseltongue"
+visibility = "public"
+fork = true
+pushed_at = "2025-10-22T03:23:19Z"
+
+[[member]]
+full_name = "seanchatmangpt/pcp"
+visibility = "public"
+fork = false
+pushed_at = "2026-06-03T01:25:06Z"
+
+[[member]]
+full_name = "seanchatmangpt/planning-as-a-service"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-27T21:46:36Z"
+
+[[member]]
+full_name = "seanchatmangpt/Platform-Engineer-s-Handbook"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T05:04:16Z"
+
+[[member]]
+full_name = "seanchatmangpt/pm4py"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-27T23:47:19Z"
+
+[[member]]
+full_name = "seanchatmangpt/pm4py-mcp"
+visibility = "public"
+fork = false
+pushed_at = "2026-04-12T01:18:23Z"
+
+[[member]]
+full_name = "seanchatmangpt/pm4py-rs"
+visibility = "public"
+fork = false
+pushed_at = "2026-03-29T07:11:37Z"
+
+[[member]]
+full_name = "seanchatmangpt/pm4wasm"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-28T08:07:42Z"
+
+[[member]]
+full_name = "seanchatmangpt/PMAx-evaluation"
+visibility = "public"
+fork = true
+pushed_at = "2026-03-14T12:59:02Z"
+
+[[member]]
+full_name = "seanchatmangpt/poetry-cookiecutter"
+visibility = "public"
+fork = true
+pushed_at = "2024-10-09T18:50:21Z"
+
+[[member]]
+full_name = "seanchatmangpt/POWL"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-28T08:07:46Z"
+
+[[member]]
+full_name = "seanchatmangpt/PQClean"
+visibility = "public"
+fork = true
+pushed_at = "2025-04-14T11:45:34Z"
+
+[[member]]
+full_name = "seanchatmangpt/praxis"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T21:46:54Z"
+
+[[member]]
+full_name = "seanchatmangpt/private-blockchain"
+visibility = "public"
+fork = true
+pushed_at = "2023-09-12T15:56:08Z"
+
+[[member]]
+full_name = "seanchatmangpt/private-blockchain-ova"
+visibility = "public"
+fork = true
+pushed_at = "2023-09-12T15:34:04Z"
+
+[[member]]
+full_name = "seanchatmangpt/pro-dashboard"
+visibility = "public"
+fork = true
+pushed_at = "2024-12-09T14:50:22Z"
+
+[[member]]
+full_name = "seanchatmangpt/pro-docs"
+visibility = "public"
+fork = true
+pushed_at = "2024-12-09T14:24:41Z"
+
+[[member]]
+full_name = "seanchatmangpt/pro-landing"
+visibility = "public"
+fork = true
+pushed_at = "2024-12-09T14:04:55Z"
+
+[[member]]
+full_name = "seanchatmangpt/process-intelligence"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T21:46:58Z"
+
+[[member]]
+full_name = "seanchatmangpt/ProMoAI"
+visibility = "public"
+fork = true
+pushed_at = "2026-05-11T15:16:29Z"
+
+[[member]]
+full_name = "seanchatmangpt/proxyable"
+visibility = "public"
+fork = true
+pushed_at = "2025-12-27T23:27:27Z"
+
+[[member]]
+full_name = "seanchatmangpt/puya"
+visibility = "public"
+fork = true
+pushed_at = "2025-05-16T04:53:38Z"
+
+[[member]]
+full_name = "seanchatmangpt/pydantic-ai"
+visibility = "public"
+fork = true
+pushed_at = "2024-12-03T18:20:37Z"
+
+[[member]]
+full_name = "seanchatmangpt/pydantic-all-in-one"
+visibility = "public"
+fork = false
+pushed_at = "2024-11-03T03:33:00Z"
+
+[[member]]
+full_name = "seanchatmangpt/pydantic_schemaorg"
+visibility = "public"
+fork = true
+pushed_at = "2022-12-12T20:58:08Z"
+
+[[member]]
+full_name = "seanchatmangpt/pyn8n"
+visibility = "public"
+fork = false
+pushed_at = "2025-01-29T02:19:31Z"
+
+[[member]]
+full_name = "seanchatmangpt/pytest-bdd"
+visibility = "public"
+fork = true
+pushed_at = "2024-08-13T14:13:47Z"
+
+[[member]]
+full_name = "seanchatmangpt/qlever"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T04:12:40Z"
+
+[[member]]
+full_name = "seanchatmangpt/qlever_poc"
+visibility = "public"
+fork = false
+pushed_at = "2026-01-07T01:43:50Z"
+
+[[member]]
+full_name = "seanchatmangpt/rdddy"
+visibility = "public"
+fork = false
+pushed_at = "2024-02-24T17:50:11Z"
+
+[[member]]
+full_name = "seanchatmangpt/react-tutorial"
+visibility = "public"
+fork = false
+pushed_at = "2025-01-18T18:21:19Z"
+
+[[member]]
+full_name = "seanchatmangpt/reactor"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-06T05:57:39Z"
+
+[[member]]
+full_name = "seanchatmangpt/realworld"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:07:53Z"
+
+[[member]]
+full_name = "seanchatmangpt/redbaron"
+visibility = "public"
+fork = true
+pushed_at = "2022-01-29T21:54:37Z"
+
+[[member]]
+full_name = "seanchatmangpt/release-demos"
+visibility = "public"
+fork = true
+pushed_at = "2024-04-25T15:33:43Z"
+
+[[member]]
+full_name = "seanchatmangpt/relive"
+visibility = "public"
+fork = true
+pushed_at = "2025-04-07T12:11:36Z"
+
+[[member]]
+full_name = "seanchatmangpt/rename_project"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:06:03Z"
+
+[[member]]
+full_name = "seanchatmangpt/reti"
+visibility = "public"
+fork = true
+pushed_at = "2025-05-16T15:55:56Z"
+
+[[member]]
+full_name = "seanchatmangpt/rig"
+visibility = "public"
+fork = true
+pushed_at = "2025-10-11T23:35:03Z"
+
+[[member]]
+full_name = "seanchatmangpt/rocket-craft"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-24T23:01:21Z"
+
+[[member]]
+full_name = "seanchatmangpt/roxi"
+visibility = "public"
+fork = true
+pushed_at = "2026-07-06T05:46:59Z"
+
+[[member]]
+full_name = "seanchatmangpt/rrgym"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-19T17:24:17Z"
+
+[[member]]
+full_name = "seanchatmangpt/rust-programming-examples"
+visibility = "public"
+fork = true
+pushed_at = "2025-12-29T02:39:13Z"
+
+[[member]]
+full_name = "seanchatmangpt/rust4pm"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-11T07:13:10Z"
+
+[[member]]
+full_name = "seanchatmangpt/sdk-python"
+visibility = "public"
+fork = true
+pushed_at = "2024-10-22T00:15:53Z"
+
+[[member]]
+full_name = "seanchatmangpt/semantic_bit"
+visibility = "public"
+fork = false
+pushed_at = "2026-07-02T07:28:02Z"
+
+[[member]]
+full_name = "seanchatmangpt/semantica"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-21T18:35:30Z"
+
+[[member]]
+full_name = "seanchatmangpt/shipit"
+visibility = "public"
+fork = false
+pushed_at = "2023-12-20T23:39:33Z"
+
+[[member]]
+full_name = "seanchatmangpt/signalbot"
+visibility = "public"
+fork = true
+pushed_at = "2025-05-12T12:46:08Z"
+
+[[member]]
+full_name = "seanchatmangpt/simdjson"
+visibility = "public"
+fork = true
+pushed_at = "2026-01-01T20:46:00Z"
+
+[[member]]
+full_name = "seanchatmangpt/slidev"
+visibility = "public"
+fork = true
+pushed_at = "2024-11-23T07:49:43Z"
+
+[[member]]
+full_name = "seanchatmangpt/spark"
+visibility = "public"
+fork = true
+pushed_at = "2025-06-13T17:38:33Z"
+
+[[member]]
+full_name = "seanchatmangpt/SparsePrimingRepresentations"
+visibility = "public"
+fork = true
+pushed_at = "2026-09-16T08:34:03Z"
+
+[[member]]
+full_name = "seanchatmangpt/SpiffWorkflow"
+visibility = "public"
+fork = true
+pushed_at = "2025-04-02T17:49:10Z"
+
+[[member]]
+full_name = "seanchatmangpt/SREGym"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-28T08:07:36Z"
+
+[[member]]
+full_name = "seanchatmangpt/st_pages"
+visibility = "public"
+fork = true
+pushed_at = "2024-04-16T05:13:16Z"
+
+[[member]]
+full_name = "seanchatmangpt/star-toml"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-19T16:48:54Z"
+
+[[member]]
+full_name = "seanchatmangpt/starter"
+visibility = "public"
+fork = false
+pushed_at = "2024-11-25T18:39:27Z"
+
+[[member]]
+full_name = "seanchatmangpt/strapi-sqlite"
+visibility = "public"
+fork = true
+pushed_at = "2023-09-06T00:04:09Z"
+
+[[member]]
+full_name = "seanchatmangpt/streamlitgen"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T03:18:05Z"
+
+[[member]]
+full_name = "seanchatmangpt/supabase"
+visibility = "public"
+fork = true
+pushed_at = "2025-02-05T20:05:56Z"
+
+[[member]]
+full_name = "seanchatmangpt/swarmsh"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-25T06:49:00Z"
+
+[[member]]
+full_name = "seanchatmangpt/swarmsh-v2"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-28T07:12:44Z"
+
+[[member]]
+full_name = "seanchatmangpt/swotdash"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T03:10:47Z"
+
+[[member]]
+full_name = "seanchatmangpt/swrm"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-08T23:14:44Z"
+
+[[member]]
+full_name = "seanchatmangpt/tcps"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-27T05:56:16Z"
+
+[[member]]
+full_name = "seanchatmangpt/tcps-accept-test-2-sandbox"
+visibility = "public"
+fork = false
+pushed_at = "2026-07-20T23:20:49Z"
+
+[[member]]
+full_name = "seanchatmangpt/tcps-accept-test-sandbox"
+visibility = "public"
+fork = false
+pushed_at = "2026-07-20T23:05:18Z"
+
+[[member]]
+full_name = "seanchatmangpt/terragoat"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-07T23:32:10Z"
+
+[[member]]
+full_name = "seanchatmangpt/tokenforge"
+visibility = "public"
+fork = true
+pushed_at = "2025-05-24T16:47:03Z"
+
+[[member]]
+full_name = "seanchatmangpt/truex"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-17T19:50:07Z"
+
+[[member]]
+full_name = "seanchatmangpt/tunez"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:17:30Z"
+
+[[member]]
+full_name = "seanchatmangpt/turbo-fieldfare"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-02T00:17:11Z"
+
+[[member]]
+full_name = "seanchatmangpt/tv"
+visibility = "public"
+fork = true
+pushed_at = "2024-12-18T17:54:52Z"
+
+[[member]]
+full_name = "seanchatmangpt/twitter"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-24T03:02:51Z"
+
+[[member]]
+full_name = "seanchatmangpt/typer"
+visibility = "public"
+fork = true
+pushed_at = "2024-09-09T18:21:00Z"
+
+[[member]]
+full_name = "seanchatmangpt/typescript-lightning-talks"
+visibility = "public"
+fork = true
+pushed_at = "2024-12-02T13:28:48Z"
+
+[[member]]
+full_name = "seanchatmangpt/un-test-utils"
+visibility = "public"
+fork = false
+pushed_at = "2026-06-16T23:22:49Z"
+
+[[member]]
+full_name = "seanchatmangpt/unjucks"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-25T21:39:16Z"
+
+[[member]]
+full_name = "seanchatmangpt/unmq"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-08T23:21:35Z"
+
+[[member]]
+full_name = "seanchatmangpt/unovis_live_demo"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T03:15:28Z"
+
+[[member]]
+full_name = "seanchatmangpt/unrdf"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-20T06:39:59Z"
+
+[[member]]
+full_name = "seanchatmangpt/unrdf-experiments"
+visibility = "public"
+fork = false
+pushed_at = "2026-04-07T20:10:06Z"
+
+[[member]]
+full_name = "seanchatmangpt/unrdf-kgc"
+visibility = "public"
+fork = false
+pushed_at = "2026-04-07T20:10:31Z"
+
+[[member]]
+full_name = "seanchatmangpt/unrdf-yawl"
+visibility = "public"
+fork = false
+pushed_at = "2026-04-07T20:10:26Z"
+
+[[member]]
+full_name = "seanchatmangpt/uvmgr"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-01T02:50:32Z"
+
+[[member]]
+full_name = "seanchatmangpt/VAL"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-05T05:28:29Z"
+
+[[member]]
+full_name = "seanchatmangpt/vantageadapt"
+visibility = "public"
+fork = true
+pushed_at = "2025-03-18T01:56:29Z"
+
+[[member]]
+full_name = "seanchatmangpt/vue-openapi"
+visibility = "public"
+fork = true
+pushed_at = "2023-12-06T10:40:42Z"
+
+[[member]]
+full_name = "seanchatmangpt/wasm4games"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-20T05:33:06Z"
+
+[[member]]
+full_name = "seanchatmangpt/wasm4pm"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T23:01:30Z"
+
+[[member]]
+full_name = "seanchatmangpt/wasm4pm-compat"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T21:47:12Z"
+
+[[member]]
+full_name = "seanchatmangpt/weaver"
+visibility = "public"
+fork = true
+pushed_at = "2026-08-28T01:49:56Z"
+
+[[member]]
+full_name = "seanchatmangpt/weavergen"
+visibility = "public"
+fork = false
+pushed_at = "2025-07-03T05:05:07Z"
+
+[[member]]
+full_name = "seanchatmangpt/webgl-globe"
+visibility = "public"
+fork = true
+pushed_at = "2020-09-04T17:30:33Z"
+
+[[member]]
+full_name = "seanchatmangpt/wf-substrate"
+visibility = "public"
+fork = true
+pushed_at = "2026-02-14T05:29:56Z"
+
+[[member]]
+full_name = "seanchatmangpt/wkflo"
+visibility = "public"
+fork = false
+pushed_at = "2024-11-24T04:12:22Z"
+
+[[member]]
+full_name = "seanchatmangpt/ww3gym"
+visibility = "public"
+fork = false
+pushed_at = "2026-08-24T07:28:00Z"
+
+[[member]]
+full_name = "seanchatmangpt/xaas"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T23:00:52Z"
+
+[[member]]
+full_name = "seanchatmangpt/zcode-cli"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-24T00:01:17Z"
+
+[[member]]
+full_name = "seanchatmangpt/zen"
+visibility = "public"
+fork = true
+pushed_at = "2025-05-23T09:51:15Z"
+
+[[member]]
+full_name = "seanchatmangpt/zod-to-from"
+visibility = "public"
+fork = false
+pushed_at = "2025-12-28T00:21:51Z"
+
+[[member]]
+full_name = "seanchatmangpt/zoeapp"
+visibility = "public"
+fork = false
+pushed_at = "2026-09-17T19:54:32Z"
