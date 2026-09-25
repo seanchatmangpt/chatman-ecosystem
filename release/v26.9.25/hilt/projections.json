@@ -1,0 +1,101 @@
+{
+  "schema": "chatman.hilt.projections.v1",
+  "release": "v26.9.25",
+  "source": "arXiv:2609.29901",
+  "authority": "NONE",
+  "claim_ceiling": "PROJECTION_REQUIREMENTS_ONLY",
+  "canonical_owner": "seanchatmangpt/chatman-ecosystem",
+  "laws": [
+    "CAPABILITY != AUTHORITY != AGENCY != RESPONSIBILITY != STANDING",
+    "READ != DISCLOSE",
+    "MEMBERSHIP != NOTIFY_AUTHORITY",
+    "RESPONSE != RESPONSIBILITY_CLAIM",
+    "HILT_ALIVE != DO"
+  ],
+  "observed_heads": {
+    "seanchatmangpt/chatman-ecosystem": "81b42dd543a2580c5da92b5a95eeae76a2d9f6a8",
+    "seanchatmangpt/ash_a2a": "8877c599312150569e42cedf50d4473d84a7be05",
+    "seanchatmangpt/ash_atlassian": "0338b9ba169e93d0f5df91f175ef2e62e668fa97",
+    "seanchatmangpt/ggen-marketplace": "81e2919c4caa972a3237cd79b9c23d8c3fc5892e",
+    "seanchatmangpt/autofde-lab": "9085c45a3d28df48635656ad9e2aa76dcaac06d4",
+    "seanchatmangpt/gymact": "eeb0c2b97cfa55210f26bb7365989a739b3cb113",
+    "seanchatmangpt/xaas": "e039967dac9f88961873b6a958f3979a106854f2"
+  },
+  "projections": [
+    {
+      "capability": "SA2A",
+      "repository": "seanchatmangpt/ash_a2a",
+      "owns": [
+        "HILT envelope transport",
+        "actor/exact-subject binding preservation"
+      ],
+      "must_not": [
+        "increase agency",
+        "create authority",
+        "infer relation grants",
+        "erase human reservations"
+      ]
+    },
+    {
+      "capability": "sJira",
+      "repository": "seanchatmangpt/ash_atlassian",
+      "owns": [
+        "artifact standing",
+        "institutional obligations",
+        "relation contracts",
+        "human reservations",
+        "accountability assignments"
+      ],
+      "must_not": [
+        "treat visibility as responsibility",
+        "treat existence as standing"
+      ]
+    },
+    {
+      "capability": "HILT generators",
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "owns": [
+        "reusable schema/template/court projection packs"
+      ],
+      "must_not": [
+        "make handwritten consumer policy canonical"
+      ]
+    },
+    {
+      "capability": "qualification",
+      "repository": "seanchatmangpt/autofde-lab",
+      "owns": [
+        "agency qualification evidence",
+        "paper-derived falsifier courts"
+      ],
+      "must_not": [
+        "emit global trust scores",
+        "transfer qualification across capabilities"
+      ]
+    },
+    {
+      "capability": "organizational worlds",
+      "repository": "seanchatmangpt/gymact",
+      "owns": [
+        "fault worlds",
+        "information partitions",
+        "OCEL observations"
+      ],
+      "must_not": [
+        "promote simulation to authority or production standing"
+      ]
+    },
+    {
+      "capability": "agency lease manufacture",
+      "repository": "seanchatmangpt/xaas",
+      "owns": [
+        "bounded actor+capability+context leases"
+      ],
+      "must_not": [
+        "derive authority from capability",
+        "bypass BRCE"
+      ]
+    }
+  ],
+  "downstream_do_owner": "BRCE"
+}
