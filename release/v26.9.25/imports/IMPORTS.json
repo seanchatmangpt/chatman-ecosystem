@@ -1,0 +1,14 @@
+{
+  "imports": [
+    {
+      "path": "imports/RFC-0004.md",
+      "source_repo": "seanchatmangpt/engineering-standards",
+      "source_sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+      "source_path": "docs/engineering/rfc/0004-v26.9.25-self-closing-release.md",
+      "source_blob_sha1": "0268efc98144853d17d6a2c84e864939cbf73943",
+      "sha256": "cefb3ab55e4afa25f7b107b5e73400036051b006231a9aea31ab7ea2aa50ed32",
+      "standing": "NOT_A_SPEC",
+      "owner": "seanchatmangpt/engineering-standards (PR #7, FINAL_SPEC)"
+    }
+  ]
+}

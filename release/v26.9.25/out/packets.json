@@ -1,0 +1,554 @@
+{
+  "packets": [
+    {
+      "acceptance": [
+        "AC-08: The BRCE zero-unreceipted-actuation court passes: every DO-class action in the ledger carries a durable receipt digest (receipt ALIVE on a merged affidavit SHA).",
+        "F-05: Refuse if a consequential action lacks a durable receipt."
+      ],
+      "action": "CONSTRUCT evidence satisfying the listed requirements; no actuation",
+      "authority": "CONSTRUCT",
+      "authority_ceiling": "CONSTRUCT",
+      "changed_edge": [
+        "premise:RFC-0004#\u00a716->req:AC-08",
+        "premise:RFC-0004#\u00a717->req:AC-08",
+        "premise:RFC-0004#\u00a717->req:F-05",
+        "premise:RFC-0004#\u00a73->req:AC-08",
+        "premise:RFC-0004#\u00a73->req:F-05"
+      ],
+      "dependencies": [],
+      "exact_subject": "seanchatmangpt/affidavit@f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+      "falsifier": [
+        "F-05"
+      ],
+      "mode": "normal",
+      "preserved_invariants": [
+        "authority ceiling CONSTRUCT",
+        "SELECT != DECOMPOSE != DO"
+      ],
+      "receipt_requirement": "root-crown receipt with every listed requirement PASS on a merged SHA",
+      "required_capability": [
+        "AC-08",
+        "F-05"
+      ],
+      "strategic_delta": [
+        "premise:RFC-0004#\u00a716",
+        "premise:RFC-0004#\u00a717",
+        "premise:RFC-0004#\u00a73",
+        "req:AC-08",
+        "req:F-05"
+      ],
+      "subject": {
+        "ref": "main",
+        "repository": "seanchatmangpt/affidavit",
+        "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030"
+      },
+      "successor": null,
+      "verification": [
+        "receipt_artifact@seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json"
+      ]
+    },
+    {
+      "acceptance": [
+        "AC-07: A pinned TLA+ runtime (tla2tools.jar sha256 pinned) executes TLC and its court receipt is ALIVE on a merged autofde-lab SHA.",
+        "F-08: Refuse if a TLA+ claim exists without actual pinned runtime execution."
+      ],
+      "action": "CONSTRUCT evidence satisfying the listed requirements; no actuation",
+      "authority": "CONSTRUCT",
+      "authority_ceiling": "CONSTRUCT",
+      "changed_edge": [
+        "premise:RFC-0004#\u00a712->req:AC-07",
+        "premise:RFC-0004#\u00a712->req:F-08",
+        "premise:RFC-0004#\u00a713->req:AC-07",
+        "premise:RFC-0004#\u00a713->req:F-08",
+        "premise:RFC-0004#\u00a73->req:AC-07",
+        "premise:RFC-0004#\u00a73->req:F-08"
+      ],
+      "dependencies": [],
+      "exact_subject": "seanchatmangpt/autofde-lab@72900f03cf9772d84d0bace1e35e86eb6b077b92",
+      "falsifier": [
+        "F-08"
+      ],
+      "mode": "normal",
+      "preserved_invariants": [
+        "authority ceiling CONSTRUCT",
+        "SELECT != DECOMPOSE != DO"
+      ],
+      "receipt_requirement": "root-crown receipt with every listed requirement PASS on a merged SHA",
+      "required_capability": [
+        "AC-07",
+        "F-08"
+      ],
+      "strategic_delta": [
+        "premise:RFC-0004#\u00a712",
+        "premise:RFC-0004#\u00a713",
+        "premise:RFC-0004#\u00a73",
+        "req:AC-07",
+        "req:F-08"
+      ],
+      "subject": {
+        "ref": "master",
+        "repository": "seanchatmangpt/autofde-lab",
+        "sha": "72900f03cf9772d84d0bace1e35e86eb6b077b92"
+      },
+      "successor": null,
+      "verification": [
+        "receipt_artifact@seanchatmangpt/autofde-lab:release/v26.9.25/receipts/tlc-court.json"
+      ]
+    },
+    {
+      "acceptance": [
+        "AC-01: The generated root manifest release/v26.9.25/manifest.toml parses and verify_release.validate_manifest returns no findings (RFC \u00a737 ReleaseSubject per in-scope repository).",
+        "AC-02: Every required subject in release/v26.9.25/closure.json is terminal and the release closure court evaluates ALIVE (RFC \u00a738 dispositions; omission is never success).",
+        "AC-05: The Berthier propagation court passes: no stale projection, packets exactly cover the impact set, and the RFC \u00a79 crown test (mutate one premise section, exactly the dependents refuse, re-project to ALIVE with ManualRestatementCount = 0) runs green in the crown.",
+        "AC-06: XPROD-001 evaluates ALIVE in the cross-product court against real producer artifacts bound to merged SHAs.",
+        "AC-09: The canonical-checkout court reports zero unauthorized worktrees: a fresh operator-local observation whose worktree list is a subset of worktrees-allow.json.",
+        "AC-10: The reversible migration court passes: the committed topology receipt is ALIVE (preserve -> map -> reproduce -> verify -> rollback-qualify before retire).",
+        "AC-11: The durable dependency court passes: no pin is a transient PR head and every pin is observed on its default-branch lineage.",
+        "AC-12: Cold reconstruction succeeds: on a clean runner the projector --check reproduces every generated artifact byte-identically from repositories, exact identities, manifests and generators.",
+        "AC-17: Every pinned subject is an exact merged SHA: identical to or an ancestor of its observed default-branch head.",
+        "AC-18: The root crown passes: every other required requirement is PASS in the same evaluation.",
+        "AC-19: Release tags equal the crown SHA: no v26.9.25 tag exists on a SHA other than crown_sha (the tag job creates it only at crown_sha, after an ALIVE receipt).",
+        "F-03: Refuse if a required subject remains UNKNOWN.",
+        "F-04: Refuse if a release dependency resolves only to a transient PR head.",
+        "F-06: Refuse if the same strategic change must be manually restated across dependent repositories.",
+        "F-07: Refuse if a cross-product artifact remains valid after a mutation that should violate its semantics.",
+        "F-10: Refuse if a shadow/worktree copy acts as an alternate source of truth.",
+        "F-11: Refuse if cleanup occurs before rollback qualification.",
+        "F-14: Refuse if a release tag identifies a SHA different from the crown SHA."
+      ],
+      "action": "CONSTRUCT evidence satisfying the listed requirements; no actuation",
+      "authority": "CONSTRUCT",
+      "authority_ceiling": "CONSTRUCT",
+      "changed_edge": [
+        "premise:RFC-0004#\u00a710->req:AC-06",
+        "premise:RFC-0004#\u00a710->req:F-07",
+        "premise:RFC-0004#\u00a711->req:AC-06",
+        "premise:RFC-0004#\u00a718->req:AC-09",
+        "premise:RFC-0004#\u00a718->req:F-10",
+        "premise:RFC-0004#\u00a719->req:AC-10",
+        "premise:RFC-0004#\u00a719->req:F-11",
+        "premise:RFC-0004#\u00a720->req:AC-11",
+        "premise:RFC-0004#\u00a720->req:F-04",
+        "premise:RFC-0004#\u00a73->req:AC-01",
+        "premise:RFC-0004#\u00a73->req:AC-02",
+        "premise:RFC-0004#\u00a73->req:AC-05",
+        "premise:RFC-0004#\u00a73->req:AC-06",
+        "premise:RFC-0004#\u00a73->req:AC-09",
+        "premise:RFC-0004#\u00a73->req:AC-10",
+        "premise:RFC-0004#\u00a73->req:AC-11",
+        "premise:RFC-0004#\u00a73->req:AC-12",
+        "premise:RFC-0004#\u00a73->req:AC-17",
+        "premise:RFC-0004#\u00a73->req:AC-18",
+        "premise:RFC-0004#\u00a73->req:AC-19",
+        "premise:RFC-0004#\u00a73->req:F-03",
+        "premise:RFC-0004#\u00a73->req:F-04",
+        "premise:RFC-0004#\u00a73->req:F-06",
+        "premise:RFC-0004#\u00a73->req:F-07",
+        "premise:RFC-0004#\u00a73->req:F-10",
+        "premise:RFC-0004#\u00a73->req:F-11",
+        "premise:RFC-0004#\u00a73->req:F-14",
+        "premise:RFC-0004#\u00a737->req:AC-01",
+        "premise:RFC-0004#\u00a737->req:AC-02",
+        "premise:RFC-0004#\u00a738->req:AC-02",
+        "premise:RFC-0004#\u00a738->req:F-03",
+        "premise:RFC-0004#\u00a742->req:AC-12",
+        "premise:RFC-0004#\u00a743->req:AC-12",
+        "premise:RFC-0004#\u00a744->req:AC-18",
+        "premise:RFC-0004#\u00a745->req:AC-17",
+        "premise:RFC-0004#\u00a745->req:AC-19",
+        "premise:RFC-0004#\u00a745->req:F-14",
+        "premise:RFC-0004#\u00a755->req:AC-01",
+        "premise:RFC-0004#\u00a755->req:AC-18",
+        "premise:RFC-0004#\u00a76->req:AC-17",
+        "premise:RFC-0004#\u00a78->req:AC-05",
+        "premise:RFC-0004#\u00a79->req:AC-05",
+        "premise:RFC-0004#\u00a79->req:F-06"
+      ],
+      "dependencies": [
+        "AC-18"
+      ],
+      "exact_subject": "seanchatmangpt/chatman-ecosystem@49745eeb234317d619f965240dc7f0e23fcfef5d",
+      "falsifier": [
+        "F-03",
+        "F-04",
+        "F-06",
+        "F-07",
+        "F-10",
+        "F-11",
+        "F-14"
+      ],
+      "mode": "normal",
+      "preserved_invariants": [
+        "authority ceiling CONSTRUCT",
+        "SELECT != DECOMPOSE != DO"
+      ],
+      "receipt_requirement": "root-crown receipt with every listed requirement PASS on a merged SHA",
+      "required_capability": [
+        "AC-01",
+        "AC-02",
+        "AC-05",
+        "AC-06",
+        "AC-09",
+        "AC-10",
+        "AC-11",
+        "AC-12",
+        "AC-17",
+        "AC-18",
+        "AC-19",
+        "F-03",
+        "F-04",
+        "F-06",
+        "F-07",
+        "F-10",
+        "F-11",
+        "F-14"
+      ],
+      "strategic_delta": [
+        "premise:RFC-0004#\u00a710",
+        "premise:RFC-0004#\u00a711",
+        "premise:RFC-0004#\u00a718",
+        "premise:RFC-0004#\u00a719",
+        "premise:RFC-0004#\u00a720",
+        "premise:RFC-0004#\u00a73",
+        "premise:RFC-0004#\u00a737",
+        "premise:RFC-0004#\u00a738",
+        "premise:RFC-0004#\u00a742",
+        "premise:RFC-0004#\u00a743",
+        "premise:RFC-0004#\u00a744",
+        "premise:RFC-0004#\u00a745",
+        "premise:RFC-0004#\u00a755",
+        "premise:RFC-0004#\u00a76",
+        "premise:RFC-0004#\u00a78",
+        "premise:RFC-0004#\u00a79",
+        "req:AC-01",
+        "req:AC-02",
+        "req:AC-05",
+        "req:AC-06",
+        "req:AC-09",
+        "req:AC-10",
+        "req:AC-11",
+        "req:AC-12",
+        "req:AC-17",
+        "req:AC-18",
+        "req:AC-19",
+        "req:F-03",
+        "req:F-04",
+        "req:F-06",
+        "req:F-07",
+        "req:F-10",
+        "req:F-11",
+        "req:F-14"
+      ],
+      "subject": {
+        "ref": "main",
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "49745eeb234317d619f965240dc7f0e23fcfef5d"
+      },
+      "successor": null,
+      "verification": [
+        "berthier_court@local:release/v26.9.25/berthier.json",
+        "closure_terminal@local:release/v26.9.25/closure.json",
+        "cold_reconstruction@local:release/v26.9.25/manifest.toml",
+        "crown_self@local:release/v26.9.25/manifest.toml",
+        "durable_pins@local:release/v26.9.25/pins.json",
+        "manifest_valid@local:release/v26.9.25/manifest.toml",
+        "merged_sha@local:release/v26.9.25/pins.json",
+        "receipt_artifact@local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+        "tag_binding@local:release/v26.9.25/manifest.toml",
+        "worktree_observation@local:release/v26.9.25/observations/local-worktrees.json",
+        "xprod_case@local:docs/jira/v26.9.25/xprod-cases/XPROD-001.json"
+      ]
+    },
+    {
+      "acceptance": [
+        "AC-03: The imported premise has exactly one FINAL_SPEC owner with a byte-identical import, and every executable sJira WorkOrder has exactly one admitted sj:originAuthority (receipt standing ALIVE, bound to a merged ggen_igniter SHA).",
+        "AC-04: A prose-only candidate cannot reach the executable frontier: the sJira frontier inertness court receipt is ALIVE on a merged SHA.",
+        "F-01: Refuse if a prose observation directly creates executable work without admitted authority.",
+        "F-02: Refuse if a WorkOrder has zero or multiple origin authorities."
+      ],
+      "action": "CONSTRUCT evidence satisfying the listed requirements; no actuation",
+      "authority": "CONSTRUCT",
+      "authority_ceiling": "CONSTRUCT",
+      "changed_edge": [
+        "premise:RFC-0004#\u00a73->req:AC-03",
+        "premise:RFC-0004#\u00a73->req:AC-04",
+        "premise:RFC-0004#\u00a73->req:F-01",
+        "premise:RFC-0004#\u00a73->req:F-02",
+        "premise:RFC-0004#\u00a77.1->req:AC-04",
+        "premise:RFC-0004#\u00a77.2->req:AC-03",
+        "premise:RFC-0004#\u00a77.2->req:F-02",
+        "premise:RFC-0004#\u00a77.3->req:AC-04",
+        "premise:RFC-0004#\u00a77.3->req:F-01",
+        "premise:RFC-0004#\u00a77.4->req:AC-03"
+      ],
+      "dependencies": [],
+      "exact_subject": "seanchatmangpt/ggen_igniter@780a81d81c6e579084ba3048037419aab7d7386e",
+      "falsifier": [
+        "F-01",
+        "F-02"
+      ],
+      "mode": "normal",
+      "preserved_invariants": [
+        "authority ceiling CONSTRUCT",
+        "SELECT != DECOMPOSE != DO"
+      ],
+      "receipt_requirement": "root-crown receipt with every listed requirement PASS on a merged SHA",
+      "required_capability": [
+        "AC-03",
+        "AC-04",
+        "F-01",
+        "F-02"
+      ],
+      "strategic_delta": [
+        "premise:RFC-0004#\u00a73",
+        "premise:RFC-0004#\u00a77.1",
+        "premise:RFC-0004#\u00a77.2",
+        "premise:RFC-0004#\u00a77.3",
+        "premise:RFC-0004#\u00a77.4",
+        "req:AC-03",
+        "req:AC-04",
+        "req:F-01",
+        "req:F-02"
+      ],
+      "subject": {
+        "ref": "main",
+        "repository": "seanchatmangpt/ggen_igniter",
+        "sha": "780a81d81c6e579084ba3048037419aab7d7386e"
+      },
+      "successor": null,
+      "verification": [
+        "origin_authority@seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/sjira-origin-authority.json",
+        "receipt_artifact@seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/prose-inert.json"
+      ]
+    },
+    {
+      "acceptance": [
+        "AC-13: The Semantic Case Study schema validates for the Western Digital instance (receipt ALIVE on a merged xaas SHA).",
+        "AC-14: The Western Digital evidence ceiling (REPO_LOCAL_FIXTURE, SELECT_CONSTRUCT_ONLY, engineer disposition) remains enforced and no prohibited claim is made (receipt ALIVE on a merged xaas SHA).",
+        "F-09: Refuse if cloud-to-ZCode execution is claimed without a successful live transport and execution receipt (a typed blocker is lawful, RFC \u00a755).",
+        "F-12: Refuse if Western Digital external standing exceeds available evidence."
+      ],
+      "action": "CONSTRUCT evidence satisfying the listed requirements; no actuation",
+      "authority": "CONSTRUCT",
+      "authority_ceiling": "CONSTRUCT",
+      "changed_edge": [
+        "premise:RFC-0004#\u00a714->req:F-09",
+        "premise:RFC-0004#\u00a715->req:F-09",
+        "premise:RFC-0004#\u00a721->req:AC-13",
+        "premise:RFC-0004#\u00a722->req:AC-14",
+        "premise:RFC-0004#\u00a722->req:F-12",
+        "premise:RFC-0004#\u00a723->req:AC-14",
+        "premise:RFC-0004#\u00a723->req:F-12",
+        "premise:RFC-0004#\u00a724->req:AC-13",
+        "premise:RFC-0004#\u00a73->req:AC-13",
+        "premise:RFC-0004#\u00a73->req:AC-14",
+        "premise:RFC-0004#\u00a73->req:F-09",
+        "premise:RFC-0004#\u00a73->req:F-12"
+      ],
+      "dependencies": [],
+      "exact_subject": "seanchatmangpt/xaas@70f7ea75df1d20a37666cd09050d5ec10a237892",
+      "falsifier": [
+        "F-09",
+        "F-12"
+      ],
+      "mode": "normal",
+      "preserved_invariants": [
+        "authority ceiling CONSTRUCT",
+        "SELECT != DECOMPOSE != DO"
+      ],
+      "receipt_requirement": "root-crown receipt with every listed requirement PASS on a merged SHA",
+      "required_capability": [
+        "AC-13",
+        "AC-14",
+        "F-09",
+        "F-12"
+      ],
+      "strategic_delta": [
+        "premise:RFC-0004#\u00a714",
+        "premise:RFC-0004#\u00a715",
+        "premise:RFC-0004#\u00a721",
+        "premise:RFC-0004#\u00a722",
+        "premise:RFC-0004#\u00a723",
+        "premise:RFC-0004#\u00a724",
+        "premise:RFC-0004#\u00a73",
+        "req:AC-13",
+        "req:AC-14",
+        "req:F-09",
+        "req:F-12"
+      ],
+      "subject": {
+        "ref": "main",
+        "repository": "seanchatmangpt/xaas",
+        "sha": "70f7ea75df1d20a37666cd09050d5ec10a237892"
+      },
+      "successor": null,
+      "verification": [
+        "receipt_artifact@seanchatmangpt/xaas:release/v26.9.25/receipts/case-study-schema.json",
+        "receipt_artifact@seanchatmangpt/xaas:release/v26.9.25/receipts/wd-evidence-ceiling.json",
+        "typed_blocker_allowed@seanchatmangpt/xaas:release/v26.9.25/receipts/cloud-runtime.json"
+      ]
+    },
+    {
+      "acceptance": [
+        "AC-15: The GodsLaw semantic migration has a terminal standing (receipt with terminal standing on a merged zoela SHA).",
+        "AC-16: Vision 2027 has an admitted machine-readable strategic representation (admission receipt ALIVE on a merged zoela SHA).",
+        "F-13: Refuse if GodsLaw collapses differing doctrinal interpretations into an unproven universal platform assertion."
+      ],
+      "action": "CONSTRUCT evidence satisfying the listed requirements; no actuation",
+      "authority": "CONSTRUCT",
+      "authority_ceiling": "CONSTRUCT",
+      "changed_edge": [
+        "premise:RFC-0004#\u00a725->req:AC-15",
+        "premise:RFC-0004#\u00a726->req:AC-15",
+        "premise:RFC-0004#\u00a726->req:F-13",
+        "premise:RFC-0004#\u00a727->req:AC-15",
+        "premise:RFC-0004#\u00a728->req:AC-16",
+        "premise:RFC-0004#\u00a729->req:AC-16",
+        "premise:RFC-0004#\u00a73->req:AC-15",
+        "premise:RFC-0004#\u00a73->req:AC-16",
+        "premise:RFC-0004#\u00a73->req:F-13"
+      ],
+      "dependencies": [],
+      "exact_subject": "seanchatmangpt/zoela@f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+      "falsifier": [
+        "F-13"
+      ],
+      "mode": "normal",
+      "preserved_invariants": [
+        "authority ceiling CONSTRUCT",
+        "SELECT != DECOMPOSE != DO"
+      ],
+      "receipt_requirement": "root-crown receipt with every listed requirement PASS on a merged SHA",
+      "required_capability": [
+        "AC-15",
+        "AC-16",
+        "F-13"
+      ],
+      "strategic_delta": [
+        "premise:RFC-0004#\u00a725",
+        "premise:RFC-0004#\u00a726",
+        "premise:RFC-0004#\u00a727",
+        "premise:RFC-0004#\u00a728",
+        "premise:RFC-0004#\u00a729",
+        "premise:RFC-0004#\u00a73",
+        "req:AC-15",
+        "req:AC-16",
+        "req:F-13"
+      ],
+      "subject": {
+        "ref": "main",
+        "repository": "seanchatmangpt/zoela",
+        "sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d"
+      },
+      "successor": null,
+      "verification": [
+        "receipt_artifact@seanchatmangpt/zoela:release/v26.9.25/receipts/godslaw-interpretation.json",
+        "receipt_artifact@seanchatmangpt/zoela:release/v26.9.25/receipts/godslaw-migration.json",
+        "receipt_artifact@seanchatmangpt/zoela:release/v26.9.25/receipts/vision2027-admission.json"
+      ]
+    }
+  ],
+  "premise": "RFC-0004",
+  "release": "v26.9.25",
+  "strategic_delta": [
+    "premise:RFC-0004#\u00a71",
+    "premise:RFC-0004#\u00a710",
+    "premise:RFC-0004#\u00a711",
+    "premise:RFC-0004#\u00a712",
+    "premise:RFC-0004#\u00a713",
+    "premise:RFC-0004#\u00a714",
+    "premise:RFC-0004#\u00a715",
+    "premise:RFC-0004#\u00a716",
+    "premise:RFC-0004#\u00a717",
+    "premise:RFC-0004#\u00a718",
+    "premise:RFC-0004#\u00a719",
+    "premise:RFC-0004#\u00a72",
+    "premise:RFC-0004#\u00a720",
+    "premise:RFC-0004#\u00a721",
+    "premise:RFC-0004#\u00a722",
+    "premise:RFC-0004#\u00a723",
+    "premise:RFC-0004#\u00a724",
+    "premise:RFC-0004#\u00a725",
+    "premise:RFC-0004#\u00a726",
+    "premise:RFC-0004#\u00a727",
+    "premise:RFC-0004#\u00a728",
+    "premise:RFC-0004#\u00a729",
+    "premise:RFC-0004#\u00a73",
+    "premise:RFC-0004#\u00a730",
+    "premise:RFC-0004#\u00a731",
+    "premise:RFC-0004#\u00a732",
+    "premise:RFC-0004#\u00a733",
+    "premise:RFC-0004#\u00a734",
+    "premise:RFC-0004#\u00a735",
+    "premise:RFC-0004#\u00a736",
+    "premise:RFC-0004#\u00a737",
+    "premise:RFC-0004#\u00a738",
+    "premise:RFC-0004#\u00a739",
+    "premise:RFC-0004#\u00a74",
+    "premise:RFC-0004#\u00a74.1",
+    "premise:RFC-0004#\u00a74.2",
+    "premise:RFC-0004#\u00a74.3",
+    "premise:RFC-0004#\u00a74.4",
+    "premise:RFC-0004#\u00a740",
+    "premise:RFC-0004#\u00a741",
+    "premise:RFC-0004#\u00a742",
+    "premise:RFC-0004#\u00a743",
+    "premise:RFC-0004#\u00a744",
+    "premise:RFC-0004#\u00a745",
+    "premise:RFC-0004#\u00a746",
+    "premise:RFC-0004#\u00a747",
+    "premise:RFC-0004#\u00a748",
+    "premise:RFC-0004#\u00a749",
+    "premise:RFC-0004#\u00a75",
+    "premise:RFC-0004#\u00a750",
+    "premise:RFC-0004#\u00a751",
+    "premise:RFC-0004#\u00a752",
+    "premise:RFC-0004#\u00a753",
+    "premise:RFC-0004#\u00a754",
+    "premise:RFC-0004#\u00a755",
+    "premise:RFC-0004#\u00a756",
+    "premise:RFC-0004#\u00a757",
+    "premise:RFC-0004#\u00a758",
+    "premise:RFC-0004#\u00a76",
+    "premise:RFC-0004#\u00a77",
+    "premise:RFC-0004#\u00a77.1",
+    "premise:RFC-0004#\u00a77.2",
+    "premise:RFC-0004#\u00a77.3",
+    "premise:RFC-0004#\u00a77.4",
+    "premise:RFC-0004#\u00a78",
+    "premise:RFC-0004#\u00a79",
+    "req:AC-01",
+    "req:AC-02",
+    "req:AC-03",
+    "req:AC-04",
+    "req:AC-05",
+    "req:AC-06",
+    "req:AC-07",
+    "req:AC-08",
+    "req:AC-09",
+    "req:AC-10",
+    "req:AC-11",
+    "req:AC-12",
+    "req:AC-13",
+    "req:AC-14",
+    "req:AC-15",
+    "req:AC-16",
+    "req:AC-17",
+    "req:AC-18",
+    "req:AC-19",
+    "req:F-01",
+    "req:F-02",
+    "req:F-03",
+    "req:F-04",
+    "req:F-05",
+    "req:F-06",
+    "req:F-07",
+    "req:F-08",
+    "req:F-09",
+    "req:F-10",
+    "req:F-11",
+    "req:F-12",
+    "req:F-13",
+    "req:F-14"
+  ]
+}

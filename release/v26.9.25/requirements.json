@@ -1,0 +1,534 @@
+{
+  "release": "v26.9.25",
+  "premise": {
+    "import": "imports/RFC-0004.md",
+    "rfc_id": "RFC-0004"
+  },
+  "terms": {
+    "C": "NoRequiredUnknown AND TerminalNormativeArtifacts AND ExactSubjects",
+    "A": "AuthorityConserved AND ProseInert AND OneOriginAuthority",
+    "R": "ZeroUnreceiptedActuation AND DurableReceipts AND ReplayableEvidence",
+    "X": "CrossRepoCompositionCourt AND ProducerBinding",
+    "F": "FormalRuntimeCourt AND RecurrentReasoningFormalized",
+    "M": "CanonicalCheckout AND ReversibleMigration AND DurableDependencyClosure"
+  },
+  "_provenance": "Transcribed from RFC-0004 §48 (AC-01..19) and §47 (falsifiers 1..14 -> F-01..F-14); term assignment re-derived from the §3 expansions; owners from §36. Remote evidence locators (owner/name:path) are the receipt paths the root crown observes at each owner's default-branch head; changing a locator is a data change, not a code change.",
+  "requirements": [
+    {
+      "id": "AC-01",
+      "kind": "AC",
+      "term": "C",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "The generated root manifest release/v26.9.25/manifest.toml parses and verify_release.validate_manifest returns no findings (RFC §37 ReleaseSubject per in-scope repository).",
+      "evidence_kind": "manifest_valid",
+      "evidence_locator": "local:release/v26.9.25/manifest.toml",
+      "premise_refs": [
+        "§3",
+        "§37",
+        "§55"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-02",
+      "kind": "AC",
+      "term": "C",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "Every required subject in release/v26.9.25/closure.json is terminal and the release closure court evaluates ALIVE (RFC §38 dispositions; omission is never success).",
+      "evidence_kind": "closure_terminal",
+      "evidence_locator": "local:release/v26.9.25/closure.json",
+      "premise_refs": [
+        "§3",
+        "§38",
+        "§37"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-03",
+      "kind": "AC",
+      "term": "A",
+      "owner_repo": "seanchatmangpt/ggen_igniter",
+      "acceptance": "The imported premise has exactly one FINAL_SPEC owner with a byte-identical import, and every executable sJira WorkOrder has exactly one admitted sj:originAuthority (receipt standing ALIVE, bound to a merged ggen_igniter SHA).",
+      "evidence_kind": "origin_authority",
+      "evidence_locator": "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/sjira-origin-authority.json",
+      "premise_refs": [
+        "§3",
+        "§7.2",
+        "§7.4"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-04",
+      "kind": "AC",
+      "term": "A",
+      "owner_repo": "seanchatmangpt/ggen_igniter",
+      "acceptance": "A prose-only candidate cannot reach the executable frontier: the sJira frontier inertness court receipt is ALIVE on a merged SHA.",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/prose-inert.json",
+      "premise_refs": [
+        "§3",
+        "§7.1",
+        "§7.3"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-05",
+      "kind": "AC",
+      "term": "F",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "The Berthier propagation court passes: no stale projection, packets exactly cover the impact set, and the RFC §9 crown test (mutate one premise section, exactly the dependents refuse, re-project to ALIVE with ManualRestatementCount = 0) runs green in the crown.",
+      "evidence_kind": "berthier_court",
+      "evidence_locator": "local:release/v26.9.25/berthier.json",
+      "premise_refs": [
+        "§3",
+        "§8",
+        "§9"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-06",
+      "kind": "AC",
+      "term": "X",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "XPROD-001 evaluates ALIVE in the cross-product court against real producer artifacts bound to merged SHAs.",
+      "evidence_kind": "xprod_case",
+      "evidence_locator": "local:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+      "premise_refs": [
+        "§3",
+        "§10",
+        "§11"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-07",
+      "kind": "AC",
+      "term": "F",
+      "owner_repo": "seanchatmangpt/autofde-lab",
+      "acceptance": "A pinned TLA+ runtime (tla2tools.jar sha256 pinned) executes TLC and its court receipt is ALIVE on a merged autofde-lab SHA.",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "seanchatmangpt/autofde-lab:release/v26.9.25/receipts/tlc-court.json",
+      "premise_refs": [
+        "§3",
+        "§12",
+        "§13"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-08",
+      "kind": "AC",
+      "term": "R",
+      "owner_repo": "seanchatmangpt/affidavit",
+      "acceptance": "The BRCE zero-unreceipted-actuation court passes: every DO-class action in the ledger carries a durable receipt digest (receipt ALIVE on a merged affidavit SHA).",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json",
+      "premise_refs": [
+        "§3",
+        "§16",
+        "§17"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-09",
+      "kind": "AC",
+      "term": "M",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "The canonical-checkout court reports zero unauthorized worktrees: a fresh operator-local observation whose worktree list is a subset of worktrees-allow.json.",
+      "evidence_kind": "worktree_observation",
+      "evidence_locator": "local:release/v26.9.25/observations/local-worktrees.json",
+      "premise_refs": [
+        "§3",
+        "§18"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-10",
+      "kind": "AC",
+      "term": "M",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "The reversible migration court passes: the committed topology receipt is ALIVE (preserve -> map -> reproduce -> verify -> rollback-qualify before retire).",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+      "premise_refs": [
+        "§3",
+        "§19"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-11",
+      "kind": "AC",
+      "term": "M",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "The durable dependency court passes: no pin is a transient PR head and every pin is observed on its default-branch lineage.",
+      "evidence_kind": "durable_pins",
+      "evidence_locator": "local:release/v26.9.25/pins.json",
+      "premise_refs": [
+        "§3",
+        "§20"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-12",
+      "kind": "AC",
+      "term": "R",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "Cold reconstruction succeeds: on a clean runner the projector --check reproduces every generated artifact byte-identically from repositories, exact identities, manifests and generators.",
+      "evidence_kind": "cold_reconstruction",
+      "evidence_locator": "local:release/v26.9.25/manifest.toml",
+      "premise_refs": [
+        "§3",
+        "§42",
+        "§43"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-13",
+      "kind": "AC",
+      "term": "X",
+      "owner_repo": "seanchatmangpt/xaas",
+      "acceptance": "The Semantic Case Study schema validates for the Western Digital instance (receipt ALIVE on a merged xaas SHA).",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "seanchatmangpt/xaas:release/v26.9.25/receipts/case-study-schema.json",
+      "premise_refs": [
+        "§3",
+        "§21",
+        "§24"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-14",
+      "kind": "AC",
+      "term": "A",
+      "owner_repo": "seanchatmangpt/xaas",
+      "acceptance": "The Western Digital evidence ceiling (REPO_LOCAL_FIXTURE, SELECT_CONSTRUCT_ONLY, engineer disposition) remains enforced and no prohibited claim is made (receipt ALIVE on a merged xaas SHA).",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "seanchatmangpt/xaas:release/v26.9.25/receipts/wd-evidence-ceiling.json",
+      "premise_refs": [
+        "§3",
+        "§22",
+        "§23"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-15",
+      "kind": "AC",
+      "term": "C",
+      "owner_repo": "seanchatmangpt/zoela",
+      "acceptance": "The GodsLaw semantic migration has a terminal standing (receipt with terminal standing on a merged zoela SHA).",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "seanchatmangpt/zoela:release/v26.9.25/receipts/godslaw-migration.json",
+      "premise_refs": [
+        "§3",
+        "§25",
+        "§26",
+        "§27"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-16",
+      "kind": "AC",
+      "term": "A",
+      "owner_repo": "seanchatmangpt/zoela",
+      "acceptance": "Vision 2027 has an admitted machine-readable strategic representation (admission receipt ALIVE on a merged zoela SHA).",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "seanchatmangpt/zoela:release/v26.9.25/receipts/vision2027-admission.json",
+      "premise_refs": [
+        "§3",
+        "§28",
+        "§29"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-17",
+      "kind": "AC",
+      "term": "C",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "Every pinned subject is an exact merged SHA: identical to or an ancestor of its observed default-branch head.",
+      "evidence_kind": "merged_sha",
+      "evidence_locator": "local:release/v26.9.25/pins.json",
+      "premise_refs": [
+        "§3",
+        "§6",
+        "§45"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-18",
+      "kind": "AC",
+      "term": "C",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "The root crown passes: every other required requirement is PASS in the same evaluation.",
+      "evidence_kind": "crown_self",
+      "evidence_locator": "local:release/v26.9.25/manifest.toml",
+      "premise_refs": [
+        "§3",
+        "§44",
+        "§55"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "AC-19",
+      "kind": "AC",
+      "term": "C",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "Release tags equal the crown SHA: no v26.9.25 tag exists on a SHA other than crown_sha (the tag job creates it only at crown_sha, after an ALIVE receipt).",
+      "evidence_kind": "tag_binding",
+      "evidence_locator": "local:release/v26.9.25/manifest.toml",
+      "premise_refs": [
+        "§3",
+        "§45"
+      ],
+      "depends_on": [
+        "AC-18"
+      ],
+      "required": true
+    },
+    {
+      "id": "F-01",
+      "kind": "FALSIFIER",
+      "term": "A",
+      "owner_repo": "seanchatmangpt/ggen_igniter",
+      "acceptance": "Refuse if a prose observation directly creates executable work without admitted authority.",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/prose-inert.json",
+      "premise_refs": [
+        "§3",
+        "§7.3"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-02",
+      "kind": "FALSIFIER",
+      "term": "A",
+      "owner_repo": "seanchatmangpt/ggen_igniter",
+      "acceptance": "Refuse if a WorkOrder has zero or multiple origin authorities.",
+      "evidence_kind": "origin_authority",
+      "evidence_locator": "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/sjira-origin-authority.json",
+      "premise_refs": [
+        "§3",
+        "§7.2"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-03",
+      "kind": "FALSIFIER",
+      "term": "C",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "Refuse if a required subject remains UNKNOWN.",
+      "evidence_kind": "closure_terminal",
+      "evidence_locator": "local:release/v26.9.25/closure.json",
+      "premise_refs": [
+        "§3",
+        "§38"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-04",
+      "kind": "FALSIFIER",
+      "term": "M",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "Refuse if a release dependency resolves only to a transient PR head.",
+      "evidence_kind": "durable_pins",
+      "evidence_locator": "local:release/v26.9.25/pins.json",
+      "premise_refs": [
+        "§3",
+        "§20"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-05",
+      "kind": "FALSIFIER",
+      "term": "R",
+      "owner_repo": "seanchatmangpt/affidavit",
+      "acceptance": "Refuse if a consequential action lacks a durable receipt.",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json",
+      "premise_refs": [
+        "§3",
+        "§17"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-06",
+      "kind": "FALSIFIER",
+      "term": "F",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "Refuse if the same strategic change must be manually restated across dependent repositories.",
+      "evidence_kind": "berthier_court",
+      "evidence_locator": "local:release/v26.9.25/berthier.json",
+      "premise_refs": [
+        "§3",
+        "§9"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-07",
+      "kind": "FALSIFIER",
+      "term": "X",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "Refuse if a cross-product artifact remains valid after a mutation that should violate its semantics.",
+      "evidence_kind": "xprod_case",
+      "evidence_locator": "local:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+      "premise_refs": [
+        "§3",
+        "§10"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-08",
+      "kind": "FALSIFIER",
+      "term": "F",
+      "owner_repo": "seanchatmangpt/autofde-lab",
+      "acceptance": "Refuse if a TLA+ claim exists without actual pinned runtime execution.",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "seanchatmangpt/autofde-lab:release/v26.9.25/receipts/tlc-court.json",
+      "premise_refs": [
+        "§3",
+        "§12",
+        "§13"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-09",
+      "kind": "FALSIFIER",
+      "term": "R",
+      "owner_repo": "seanchatmangpt/xaas",
+      "acceptance": "Refuse if cloud-to-ZCode execution is claimed without a successful live transport and execution receipt (a typed blocker is lawful, RFC §55).",
+      "evidence_kind": "typed_blocker_allowed",
+      "evidence_locator": "seanchatmangpt/xaas:release/v26.9.25/receipts/cloud-runtime.json",
+      "premise_refs": [
+        "§3",
+        "§14",
+        "§15"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-10",
+      "kind": "FALSIFIER",
+      "term": "M",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "Refuse if a shadow/worktree copy acts as an alternate source of truth.",
+      "evidence_kind": "worktree_observation",
+      "evidence_locator": "local:release/v26.9.25/observations/local-worktrees.json",
+      "premise_refs": [
+        "§3",
+        "§18"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-11",
+      "kind": "FALSIFIER",
+      "term": "M",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "Refuse if cleanup occurs before rollback qualification.",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+      "premise_refs": [
+        "§3",
+        "§19"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-12",
+      "kind": "FALSIFIER",
+      "term": "A",
+      "owner_repo": "seanchatmangpt/xaas",
+      "acceptance": "Refuse if Western Digital external standing exceeds available evidence.",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "seanchatmangpt/xaas:release/v26.9.25/receipts/wd-evidence-ceiling.json",
+      "premise_refs": [
+        "§3",
+        "§22",
+        "§23"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-13",
+      "kind": "FALSIFIER",
+      "term": "A",
+      "owner_repo": "seanchatmangpt/zoela",
+      "acceptance": "Refuse if GodsLaw collapses differing doctrinal interpretations into an unproven universal platform assertion.",
+      "evidence_kind": "receipt_artifact",
+      "evidence_locator": "seanchatmangpt/zoela:release/v26.9.25/receipts/godslaw-interpretation.json",
+      "premise_refs": [
+        "§3",
+        "§26"
+      ],
+      "depends_on": [],
+      "required": true
+    },
+    {
+      "id": "F-14",
+      "kind": "FALSIFIER",
+      "term": "C",
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "acceptance": "Refuse if a release tag identifies a SHA different from the crown SHA.",
+      "evidence_kind": "tag_binding",
+      "evidence_locator": "local:release/v26.9.25/manifest.toml",
+      "premise_refs": [
+        "§3",
+        "§45"
+      ],
+      "depends_on": [],
+      "required": true
+    }
+  ]
+}
