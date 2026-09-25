@@ -1,0 +1,43 @@
+{
+  "GENERATED": "scripts/release_train/root_crown/hardening.py -- do not edit; run --write",
+  "authority": "NONE",
+  "historical": {
+    "blockers": [],
+    "hardened": {
+      "refusals": [],
+      "remaining": [],
+      "standing": "ALIVE"
+    },
+    "observations": {
+      "digest": "sha256:c4a4355e75c70b033dcb682693b9b59b4e95264a9780906a26a094b637fe6757",
+      "path": "receipts/run-36161744816/observations.json"
+    },
+    "previous": {
+      "path": "receipts/run-36160116076/crown-receipt.json",
+      "receipt_digest": "sha256:1842e92881f1a576e0e0c00e7b3102ae755f3cc2c187ea7d61b17d5b3aa2594f"
+    },
+    "refusals": [],
+    "replay": {
+      "detail": "byte-identical receipt digest",
+      "exact": true,
+      "expected_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c",
+      "replayed_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c",
+      "replayed_standing": "ALIVE"
+    },
+    "replay_standing": "HISTORICAL_RELEASE_REPLAY_EXACT",
+    "standing": "ALIVE",
+    "standing_ceiling": "ALIVE",
+    "tag_receipt": {
+      "path": "receipts/run-36161744816/crown-receipt.json",
+      "receipt_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c"
+    }
+  },
+  "release": "v26.9.25",
+  "schema": "https://chatman.dev/root-crown/hardening/replay/v1",
+  "subject": {
+    "commit_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+    "tag": "v26.9.25",
+    "tag_object_sha": "337e839937c247de4ee58b744c8b8e43950d18e3",
+    "tree_sha": "8553eb9ea7ab45227169eec1f57204f2ff12ad53"
+  }
+}

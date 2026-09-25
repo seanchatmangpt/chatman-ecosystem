@@ -84,6 +84,40 @@ class ObserverTest(unittest.TestCase):
         )
         self.assertEqual(obs.observe_tag(api, "o/r", "v26.9.25")["sha"], HEAD)
 
+    def test_tag_observation_records_the_tag_object_identity(self):
+        annotated = FixtureApi(
+            {
+                f"{API}/repos/o/r/git/ref/tags/v26.9.25": {"object": {"type": "tag", "sha": "d" * 40}},
+                f"{API}/repos/o/r/git/tags/{'d' * 40}": {"object": {"sha": HEAD}},
+            }
+        )
+        self.assertEqual(
+            obs.observe_tag(annotated, "o/r", "v26.9.25"),
+            {"name": "v26.9.25", "sha": HEAD, "object_sha": "d" * 40, "object_type": "tag"},
+        )
+        lightweight = FixtureApi(
+            {f"{API}/repos/o/r/git/ref/tags/v26.9.25": {"object": {"type": "commit", "sha": HEAD}}}
+        )
+        self.assertEqual(
+            obs.observe_tag(lightweight, "o/r", "v26.9.25"),
+            {"name": "v26.9.25", "sha": HEAD, "object_sha": HEAD, "object_type": "commit"},
+        )
+
+    def test_subject_delta_lists_paths_changed_since_the_tag(self):
+        api = FixtureApi(
+            {
+                f"{API}/repos/o/r/compare/{PIN}...{HEAD}": {
+                    "status": "ahead",
+                    "files": [{"filename": "b.py"}, {"filename": "a.py"}],
+                }
+            }
+        )
+        delta = obs.observe_subject_delta(api, "o/r", {"sha": PIN}, HEAD)
+        self.assertEqual((delta["status"], delta["paths"]), ("ahead", ["a.py", "b.py"]))
+        self.assertEqual(obs.observe_subject_delta(api, "o/r", {"sha": HEAD}, HEAD)["paths"], [])
+        self.assertIsNone(obs.observe_subject_delta(api, "o/r", {"sha": None}, HEAD)["paths"])
+        self.assertEqual(obs.observe_subject_delta(FixtureApi({}), "o/r", {"sha": PIN}, HEAD)["error"], "HTTP404")
+
     def test_local_topology_receipt_projects_violations(self):
         import tempfile
 
