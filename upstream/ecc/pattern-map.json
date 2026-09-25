@@ -120,6 +120,21 @@
         "capability:enforce-authority-ceiling",
         "capability:broker-consequential-do"
       ]
+    },
+    {
+      "id": "ecc.native-workflows",
+      "source_paths": [
+        "workflows/"
+      ],
+      "disposition": "REPLACE",
+      "reason": "Retain ECC's deterministic multi-agent workflow and review/verify barrier patterns while replacing harness-specific agent orchestration with admitted SA2A/planner/GALL machinery where applicable.",
+      "chatman_target": "SA2A + formal planning + GALL workflow realization",
+      "authority": "SELECT_CONSTRUCT_ONLY",
+      "target_capabilities": [
+        "capability:plan-decision-frontier",
+        "capability:orchestrate-manufacturing-work",
+        "capability:observe-exact-head-workflows"
+      ]
     }
   ]
 }
