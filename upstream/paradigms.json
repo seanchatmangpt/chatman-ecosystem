@@ -1,0 +1,23 @@
+{
+  "schema": "chatman.external-paradigms.v1",
+  "policy": {
+    "invent_only_when": "ExistingQualifiedCapabilities does not satisfy RequiredSemantics",
+    "mutable_refs_forbidden": true,
+    "allowed_dispositions": ["VENDOR", "WRAP", "REPLACE", "NOVEL_GAP"]
+  },
+  "suppliers": [
+    {
+      "id": "ecc",
+      "repository": "affaan-m/ECC",
+      "source_url": "https://github.com/affaan-m/ECC",
+      "license": "MIT",
+      "role": "upstream-paradigm-concentrator",
+      "pin": {
+        "sha": "e482e579415fde18357cafce70f177ae19fd7f03",
+        "observed_at": "2026-09-24T16:52:47Z"
+      },
+      "pattern_map": "upstream/ecc/pattern-map.json",
+      "standing": "CANDIDATE"
+    }
+  ]
+}
