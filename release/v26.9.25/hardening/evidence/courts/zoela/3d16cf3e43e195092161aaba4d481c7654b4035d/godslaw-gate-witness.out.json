@@ -1,0 +1,325 @@
+{
+  "digest_tamper": {
+    "iri": "https://zoela.org/ontology/objective-planning-center-compatibility",
+    "recomputed_after_title_edit": "sha256:15586bb0e84ba49ffa7f79fd12213870c5f6b6a129dcb3bac81c84a0b7eaf52d",
+    "refused": true,
+    "stated": "sha256:9aa9c7edebff98b399f96426776e177ee042e61620dad2ee99ffdc260b5507b1"
+  },
+  "gates": {
+    "010_ggen_binding_complete.rq": [],
+    "015_ggen_binding_cardinality.rq": [],
+    "020_ggen_binding_exact.rq": [],
+    "030_bblock_plan_only.rq": [],
+    "035_bblock_intent_cardinality.rq": [],
+    "040_bblock_identity_complete.rq": [],
+    "050_namespace_canonical.rq": [],
+    "060_product_law_complete.rq": [],
+    "070_avatar_jtbd_complete.rq": [],
+    "070_kingdom_capability_public_semantics.rq": [],
+    "080_zoe_recovers_complete.rq": [],
+    "090_design_closure_program_complete.rq": [],
+    "095_design_closure_traceability.rq": [],
+    "100_design_closure_evidence_boundary.rq": [],
+    "105_ground_network_laws.rq": [],
+    "120_godslaw_domain_topology.rq": [],
+    "125_doctrine_layer_distinct.rq": [],
+    "130_interpretation_provenance.rq": [],
+    "135_disagreement_preserved.rq": [],
+    "140_strategic_objective_admission.rq": [],
+    "145_vision_loop_complete.rq": [],
+    "150_provider_substitutability.rq": [],
+    "155_activation_outcome_semantics.rq": []
+  },
+  "migration_steps": [
+    {
+      "blocked_by": null,
+      "constitutes_migration": null,
+      "kind": "SEMANTIC",
+      "ordinal": 1,
+      "state": "ADMITTED",
+      "step": "https://zoela.org/ontology/godslaw-migration-step-1"
+    },
+    {
+      "blocked_by": null,
+      "constitutes_migration": null,
+      "kind": "DEPENDENCY_CONSUMER_ANALYSIS",
+      "ordinal": 2,
+      "state": "UNKNOWN",
+      "step": "https://zoela.org/ontology/godslaw-migration-step-2"
+    },
+    {
+      "blocked_by": null,
+      "constitutes_migration": null,
+      "kind": "COMPATIBILITY_LAYER",
+      "ordinal": 3,
+      "state": "UNKNOWN",
+      "step": "https://zoela.org/ontology/godslaw-migration-step-3"
+    },
+    {
+      "blocked_by": null,
+      "constitutes_migration": null,
+      "kind": "DATA_CONFIGURATION_PRESERVATION",
+      "ordinal": 4,
+      "state": "UNKNOWN",
+      "step": "https://zoela.org/ontology/godslaw-migration-step-4"
+    },
+    {
+      "blocked_by": null,
+      "constitutes_migration": null,
+      "kind": "GENERATED_ARTIFACTS",
+      "ordinal": 5,
+      "state": "UNKNOWN",
+      "step": "https://zoela.org/ontology/godslaw-migration-step-5"
+    },
+    {
+      "blocked_by": null,
+      "constitutes_migration": null,
+      "kind": "RUNTIME_VERIFICATION",
+      "ordinal": 6,
+      "state": "UNKNOWN",
+      "step": "https://zoela.org/ontology/godslaw-migration-step-6"
+    },
+    {
+      "blocked_by": "authority:operator-repo-rename",
+      "constitutes_migration": "false",
+      "kind": "REPOSITORY_RENAME",
+      "ordinal": 7,
+      "state": "BLOCKED",
+      "step": "https://zoela.org/ontology/godslaw-migration-step-7"
+    },
+    {
+      "blocked_by": null,
+      "constitutes_migration": null,
+      "kind": "ROLLBACK_QUALIFICATION",
+      "ordinal": 8,
+      "state": "UNKNOWN",
+      "step": "https://zoela.org/ontology/godslaw-migration-step-8"
+    }
+  ],
+  "mutants": [
+    {
+      "falsifier_group": "F-13",
+      "first_row": "layer-collapse:https://zoela.org/ontology/witness-interpretation-a",
+      "gate": "125_doctrine_layer_distinct.rq",
+      "mutant": "interpretation double-typed as Doctrine (layer collapse)",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "F-13",
+      "first_row": "class-collapse:https://zoela.org/ontology/Interpretation",
+      "gate": "125_doctrine_layer_distinct.rq",
+      "mutant": "Interpretation made a subclass of Doctrine (class collapse)",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "F-13",
+      "first_row": "layer-collapse:https://zoela.org/ontology/witness-community-policy",
+      "gate": "125_doctrine_layer_distinct.rq",
+      "mutant": "community policy asserted as Scripture (universal assertion)",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "F-13",
+      "first_row": "interpretation-unattributed:https://zoela.org/ontology/witness-interpretation-b",
+      "gate": "130_interpretation_provenance.rq",
+      "mutant": "interpretation stripped of attribution",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "F-13",
+      "first_row": "interpretation-without-attributed-profile:https://zoela.org/ontology/witness-interpretation-b",
+      "gate": "130_interpretation_provenance.rq",
+      "mutant": "interpretation with no interpretive profile",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "F-13",
+      "first_row": "doctrine-without-profile:https://zoela.org/ontology/universal-doctrine",
+      "gate": "130_interpretation_provenance.rq",
+      "mutant": "doctrine asserted without a profile (unproven universal)",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "F-13",
+      "first_row": "community-policy-unscoped:https://zoela.org/ontology/witness-community-policy",
+      "gate": "130_interpretation_provenance.rq",
+      "mutant": "community policy not tenant-scoped (platform-wide)",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "F-13",
+      "first_row": "disagreement-resolved:https://zoela.org/ontology/witness-disagreement-1",
+      "gate": "135_disagreement_preserved.rq",
+      "mutant": "platform resolves the disagreement",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "F-13",
+      "first_row": "disagreement-under-two-positions:https://zoela.org/ontology/witness-disagreement-1",
+      "gate": "135_disagreement_preserved.rq",
+      "mutant": "disagreement collapsed to one position",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "F-13",
+      "first_row": "disagreement-not-preserved:https://zoela.org/ontology/witness-disagreement-1",
+      "gate": "135_disagreement_preserved.rq",
+      "mutant": "disagreement state not PRESERVED",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "F-13",
+      "first_row": "disagreement-under-two-positions:https://zoela.org/ontology/witness-disagreement-1",
+      "gate": "135_disagreement_preserved.rq",
+      "mutant": "both positions under one profile",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "AC-15",
+      "first_row": "rename-step-not-blocked-after-semantic",
+      "gate": "120_godslaw_domain_topology.rq",
+      "mutant": "rename step unblocked",
+      "rows": 2,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "AC-15",
+      "first_row": "rename-step-not-blocked-after-semantic",
+      "gate": "120_godslaw_domain_topology.rq",
+      "mutant": "rename recorded as the migration itself",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "AC-15",
+      "first_row": "rename-step-not-blocked-after-semantic",
+      "gate": "120_godslaw_domain_topology.rq",
+      "mutant": "rename ordered before semantic migration",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "AC-15",
+      "first_row": "canonical-domain-count:2",
+      "gate": "120_godslaw_domain_topology.rq",
+      "mutant": "second canonical domain",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "AC-16",
+      "first_row": "objective-without-falsifier:https://zoela.org/ontology/objective-provider-substitutability",
+      "gate": "140_strategic_objective_admission.rq",
+      "mutant": "objective without falsifier",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "AC-16",
+      "first_row": "objective-authority-granted:https://zoela.org/ontology/objective-godslaw-canonical-domain",
+      "gate": "140_strategic_objective_admission.rq",
+      "mutant": "objective granted execution authority",
+      "rows": 2,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "AC-16",
+      "first_row": "objective-digest-count:https://zoela.org/ontology/objective-planning-center-compatibility",
+      "gate": "140_strategic_objective_admission.rq",
+      "mutant": "second admission digest",
+      "rows": 1,
+      "verdict": "REFUSED"
+    },
+    {
+      "falsifier_group": "AC-16",
+      "first_row": "objective-digest-malformed:https://zoela.org/ontology/objective-ecosystem-activation-loop",
+      "gate": "140_strategic_objective_admission.rq",
+      "mutant": "malformed admission digest",
+      "rows": 1,
+      "verdict": "REFUSED"
+    }
+  ],
+  "objectives": [
+    {
+      "iri": "https://zoela.org/ontology/objective-christchella-broadcast-to-actuation",
+      "recomputed_digest": "sha256:f94aac1479457ab64dc249f31def8816196755b09cfaa00d41d974b92adc9c00",
+      "recomputes": true,
+      "stated_digest": [
+        "sha256:f94aac1479457ab64dc249f31def8816196755b09cfaa00d41d974b92adc9c00"
+      ],
+      "title": "Christchella: broadcast produces verified local actuation, not viewership"
+    },
+    {
+      "iri": "https://zoela.org/ontology/objective-ecosystem-activation-loop",
+      "recomputed_digest": "sha256:eaa55accdd22e992d313d49ce9e6a73827312dfb881d6907af53b9d077485efb",
+      "recomputes": true,
+      "stated_digest": [
+        "sha256:eaa55accdd22e992d313d49ce9e6a73827312dfb881d6907af53b9d077485efb"
+      ],
+      "title": "Repeated ZOE activations run the Observe-Nucleate-Genesis-Match-Activate-Receipt loop"
+    },
+    {
+      "iri": "https://zoela.org/ontology/objective-godslaw-canonical-domain",
+      "recomputed_digest": "sha256:e856c92c2e20a72973dd0cf146f8a9ec5a85b69eede42f4f6cca020c3e7a6777",
+      "recomputes": true,
+      "stated_digest": [
+        "sha256:e856c92c2e20a72973dd0cf146f8a9ec5a85b69eede42f4f6cca020c3e7a6777"
+      ],
+      "title": "GodsLaw is the canonical domain; ZOELA is its community configuration"
+    },
+    {
+      "iri": "https://zoela.org/ontology/objective-planning-center-compatibility",
+      "recomputed_digest": "sha256:9aa9c7edebff98b399f96426776e177ee042e61620dad2ee99ffdc260b5507b1",
+      "recomputes": true,
+      "stated_digest": [
+        "sha256:9aa9c7edebff98b399f96426776e177ee042e61620dad2ee99ffdc260b5507b1"
+      ],
+      "title": "Planning Center compatibility with parity, shadow execution, and reversible cutover"
+    },
+    {
+      "iri": "https://zoela.org/ontology/objective-provider-substitutability",
+      "recomputed_digest": "sha256:f3101f9b1b5efdcbf87872f2da9d30ebd15a77984ca01b6b904205da4466fc7c",
+      "recomputes": true,
+      "stated_digest": [
+        "sha256:f3101f9b1b5efdcbf87872f2da9d30ebd15a77984ca01b6b904205da4466fc7c"
+      ],
+      "title": "Remove(provider) does not imply Stop(system)"
+    }
+  ],
+  "ontologies": [
+    "ontology/zoela.ttl",
+    "packs/zoela-ggen-pack/ontology.ttl",
+    "ontology/zoe-recovers.ttl",
+    "ontology/kingdom-capability.ttl",
+    "ontology/design-closure.ttl",
+    "ontology/planning-center-surface.ttl",
+    "ontology/ground-network.ttl",
+    "ontology/godslaw.ttl",
+    "ontology/vision-2027.ttl",
+    "ontology/gall/foundation.ttl",
+    "ontology/gall/dependency.ttl",
+    "ontology/gall/projection.ttl",
+    "ontology/gall/planning.ttl",
+    "ontology/gall/evidence.ttl"
+  ],
+  "subject_sha": "3d16cf3e43e195092161aaba4d481c7654b4035d",
+  "triples": 2157,
+  "vision_doc_pin": {
+    "matches": true,
+    "observed_blob": "ec032bc1540b37bf438c52543b4e24764341d461",
+    "observed_content_sha256": "sha256:6f06b7d6ffea0899210bf4d3789bd1ee49040f5330a994993e7fe5c828fa8fd0",
+    "stated_blob": "ec032bc1540b37bf438c52543b4e24764341d461",
+    "stated_content_sha256": "sha256:6f06b7d6ffea0899210bf4d3789bd1ee49040f5330a994993e7fe5c828fa8fd0"
+  }
+}

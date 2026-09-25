@@ -1,0 +1,5 @@
+{"schema":"v26.9.25/act-ci-receipt/1","repository":"seanchatmangpt/engineering-standards","subject_sha":"7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+ "workflow":".github/workflows/docs.yml","workflow_sha256":"sha256:db16dc600320c3c0bd1622fa6a7c8576711c7f49ec4afaf670d9fee86cfe40d4","event":"push","job":"",
+ "runner":"act 0.2.87 on colima default (DOCKER_HOST=unix:///Users/sac/.colima/default/docker.sock)",
+ "exit_code":0,"result":"PASS","log":"/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/act/receipts/engineering-standards-7e8d4c5cb5ae-docs.log","log_sha256":"sha256:dd88bec364313dc9a741a467a0d4c54311ea482d8b01795d9f9359127014f6e5",
+ "evidence_ceiling":"LOCAL_ACT_RUN","authority":"NONE"}

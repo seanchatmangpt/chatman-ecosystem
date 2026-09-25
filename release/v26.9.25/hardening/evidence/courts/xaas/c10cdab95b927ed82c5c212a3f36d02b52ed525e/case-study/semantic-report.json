@@ -1,0 +1,85 @@
+{
+  "data_triples": 1542,
+  "evidence_ceiling": "REPO_LOCAL_FIXTURE",
+  "gate_count": 9,
+  "gates": [
+    {
+      "gate": "010_architecture_episode_complete.rq",
+      "refusal_rows": 0,
+      "rows": []
+    },
+    {
+      "gate": "020_authority_ceiling.rq",
+      "refusal_rows": 0,
+      "rows": []
+    },
+    {
+      "gate": "030_view_projection.rq",
+      "refusal_rows": 0,
+      "rows": []
+    },
+    {
+      "gate": "040_machine_experience.rq",
+      "refusal_rows": 0,
+      "rows": []
+    },
+    {
+      "gate": "050_requirement_traceability.rq",
+      "refusal_rows": 0,
+      "rows": []
+    },
+    {
+      "gate": "060_claim_ceiling.rq",
+      "refusal_rows": 0,
+      "rows": []
+    },
+    {
+      "gate": "070_claim_evidence.rq",
+      "refusal_rows": 0,
+      "rows": []
+    },
+    {
+      "gate": "080_deck_projection.rq",
+      "refusal_rows": 0,
+      "rows": []
+    },
+    {
+      "gate": "090_deck_block_integrity.rq",
+      "refusal_rows": 0,
+      "rows": []
+    }
+  ],
+  "inputs_sha256": {
+    "deck/deck.ttl": "5babe3f19e98e3d68c4e7214417e182607780789823f6e5d2c67c6646719a190",
+    "deck/slides-01-04.ttl": "b93c9de2f1355ecd1f712adccd36d04cf556980f8acae5aacd9b4022548ec04b",
+    "deck/slides-05-08.ttl": "8ce150d3fc3a260f4030e894455342f28639586b6ebdc7d337f31bb4a2fb3867",
+    "deck/slides-09-12.ttl": "7806ad2544402ad9644979040ee5d010487dc6d59202787c6d1fad7b2fab5032",
+    "deck/slides-13-14.ttl": "6b3dadaecf2e7a80abcb8e7781c488dc7f649a5f97688a966c76a9e4ee56b0e6",
+    "gates/010_architecture_episode_complete.rq": "4020eb2ce23d2bff0b2c84674d49c80b41406154a0d01a2da66afca93877c78c",
+    "gates/020_authority_ceiling.rq": "3a7e4e079a070b05662445a88206a166a4fb9a123ec1816bbf2920547ddfca71",
+    "gates/030_view_projection.rq": "f0749e45e6aaa7be6b4a561accc0d2b6d422c99cd3245817e36f9252522602c6",
+    "gates/040_machine_experience.rq": "d64684ac650fda5297a3f590c0a81bc38c3b0596fc47d704cb914c3fd924ede3",
+    "gates/050_requirement_traceability.rq": "8247622887a0d38fb8b1786ac325600ea62473ebaae649a3cc48ed030eba0b56",
+    "gates/060_claim_ceiling.rq": "c3c89a5171779397fc7452e09afd250163a01d62be8ee43f09f9c809db1007e0",
+    "gates/070_claim_evidence.rq": "336293475ae1b722cf12c8b78a556f5d41e42a0fc7647d18891f180afbd05a99",
+    "gates/080_deck_projection.rq": "a18300ebcd0c21568ee74334cff76f8515c2341bfa05303c8c22040b9091c3b1",
+    "gates/090_deck_block_integrity.rq": "e18c61a26d9777f84ceedd3d129b20c182e18d22afec54f60bf768b91bab25bf",
+    "pack/case-study-shapes.ttl": "50868ea528617f3155f169e46e6108abc08f3e5247fe52fefb7b35ebfcc2a3b3",
+    "pack/case-study.ttl": "dbcfe7e50c1976345143a7601bc508b07a00b69e9e4212b5bb912aa9de2ada65",
+    "pack/claims.ttl": "137a254090158d600b42e0ad0f620899c444fa6a326721cc4ec23214092a06e6",
+    "pack/ontology.ttl": "41255e9c1834c46dbc352b6d21992766b3781b730ede581f63671e067b9d7e6c",
+    "pack/stogaf-core.ttl": "c2e2f81969181d97afaeb45acd5130faf87f028fe1ce0978a0d2367ed957932e",
+    "pack/stogaf-shapes.ttl": "93e34fb9a6b45fec51a1d68304ee0c41eec8f716ad84b9cf715a787541503609",
+    "pack/stogaf-wd-instance.ttl": "9183ce3aa62bcaa472d97ce63693f8fd2385e448bb73ce57076de9c010da13b9",
+    "pack/stogaf.ttl": "9076d4711375c133b265ac7fdb28cae7894d9efa533dfe19d73d0741bdece6a0"
+  },
+  "refusal_rows": 0,
+  "report_sha256": "eb552608c37b93e1d8cb5b2963551f948392dae39ff448c8ead02a75184bffde",
+  "schema": "STOGAF_SEMANTIC_COURT_V2",
+  "shacl": {
+    "conforms": true,
+    "results_text": "Validation Report\nConforms: True\n",
+    "results_triples": 2
+  },
+  "standing": "ALIVE"
+}

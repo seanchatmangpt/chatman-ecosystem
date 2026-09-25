@@ -1,0 +1,5 @@
+{"schema":"v26.9.25/act-ci-receipt/1","repository":"seanchatmangpt/zoela","subject_sha":"0aad42580458f36c298c92b13ba0961a7023ef7a",
+ "workflow":".github/workflows/zoela-admission.yml","workflow_sha256":"sha256:b25f0a2e2401c29e5537cd6cbcff486ca6837b0389bea82777fe60b8f5127905","event":"push","job":"",
+ "runner":"act 0.2.87 on colima default (DOCKER_HOST=unix:///Users/sac/.colima/default/docker.sock)",
+ "exit_code":1,"result":"FAIL","log":"/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/act/receipts/zoela-0aad42580458-zoela-admission.log","log_sha256":"sha256:ff0f01850beadfba7d084fbdf27f3f1cd5fe0f14e790e10578ab48adee217abb",
+ "evidence_ceiling":"LOCAL_ACT_RUN","authority":"NONE"}
