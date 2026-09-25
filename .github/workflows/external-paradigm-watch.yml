@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  ecc-delta:
+  ecc-paradigm-intake:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,25 +17,77 @@ jobs:
       - name: Verify supplier registry
         run: python3 scripts/verify_external_paradigms.py --json
 
-      - name: Discover ECC exact-head delta
+      - name: Extract pinned ECC inventory
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           mkdir -p target/external-paradigms
-          python3 scripts/detect_external_paradigm_delta.py             --supplier ecc             --discovery-ref main             --json-out target/external-paradigms/ecc-delta.json
+          python3 scripts/extract_external_paradigm_units.py \
+            --supplier ecc \
+            --json-out target/external-paradigms/ecc-inventory.json
+
+      - name: Project candidate capability graph
+        run: |
+          python3 scripts/project_external_paradigm_graph.py \
+            --inventory target/external-paradigms/ecc-inventory.json \
+            --cross-product-out target/external-paradigms/ecc-cross-product.json \
+            --ttl-out target/external-paradigms/ecc-capabilities.ttl
+
+      - name: Discover ECC exact-head delta
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/detect_external_paradigm_delta.py \
+            --supplier ecc \
+            --discovery-ref main \
+            --json-out target/external-paradigms/ecc-delta.json
 
       - name: Publish candidate summary
         run: |
           {
             echo "## ECC paradigm supplier"
             echo
+            echo "Pinned inventory:"
+            echo '~~~json'
+            python3 - <<'PY'
+          import json
+          p = json.load(open("target/external-paradigms/ecc-inventory.json"))
+          print(json.dumps({
+              "subject_sha": p["subject_sha"],
+              "unit_count": p["unit_count"],
+              "counts": p["counts"],
+              "classified_count": p["classified_count"],
+              "unmapped_count": p["unmapped_count"],
+              "standing": p["standing"],
+          }, indent=2, sort_keys=True))
+          PY
+            echo '~~~'
+            echo
+            echo "Cross-product:"
+            echo '~~~json'
+            python3 - <<'PY'
+          import json
+          p = json.load(open("target/external-paradigms/ecc-cross-product.json"))
+          print(json.dumps({
+              "edge_count": p["edge_count"],
+              "unresolved_count": p["unresolved_count"],
+              "standing": p["standing"],
+          }, indent=2, sort_keys=True))
+          PY
+            echo '~~~'
+            echo
+            echo "Upstream delta:"
             echo '~~~json'
             cat target/external-paradigms/ecc-delta.json
             echo '~~~'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Preserve delta evidence
+      - name: Preserve paradigm evidence
         uses: actions/upload-artifact@v4
         with:
-          name: ecc-paradigm-delta
-          path: target/external-paradigms/ecc-delta.json
+          name: ecc-paradigm-intake
+          path: |
+            target/external-paradigms/ecc-inventory.json
+            target/external-paradigms/ecc-cross-product.json
+            target/external-paradigms/ecc-capabilities.ttl
+            target/external-paradigms/ecc-delta.json
