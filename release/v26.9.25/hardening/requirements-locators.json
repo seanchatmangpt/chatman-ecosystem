@@ -1,5 +1,5 @@
 {
-  "GENERATED": "scripts/release_train/durable_locator/durable_locator.py requirements-locators -- do not edit; run --write",
+  "GENERATED": "scripts/durable_locator/durable_locator.py requirements-locators -- do not edit; run --write",
   "inputs": [
     "release/v26.9.25/requirements.json",
     "release/v26.9.25/pins.json",

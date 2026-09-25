@@ -1,5 +1,5 @@
 {
-  "GENERATED": "scripts/release_train/durable_locator/durable_locator.py index -- do not edit; run --write",
+  "GENERATED": "scripts/durable_locator/durable_locator.py index -- do not edit; run --write",
   "e1": {
     "branch": "hardening/v26.9.25-evidence-durable",
     "commit": "c599667a84ec79d832bb779bce1730b33b43fdd4",

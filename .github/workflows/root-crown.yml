@@ -28,7 +28,7 @@ on:
     paths:
       - 'release/v26.9.25/**'
       - 'scripts/release_train/root_crown/**'
-      - 'scripts/release_train/durable_locator/**'
+      - 'scripts/durable_locator/**'
       - 'scripts/observe_release_heads.py'
       - '.github/workflows/root-crown.yml'
   pull_request:
@@ -37,8 +37,8 @@ on:
       - 'scripts/release_train/root_crown/**'
       - 'scripts/observe_release_heads.py'
       - 'tests/release_train/root_crown/**'
-      - 'scripts/release_train/durable_locator/**'
-      - 'tests/release_train/durable_locator/**'
+      - 'scripts/durable_locator/**'
+      - 'tests/durable_locator/**'
       - 'tests/test_observe_release_heads.py'
       - '.github/workflows/root-crown.yml'
 
@@ -160,9 +160,9 @@ jobs:
           repos="${RUNNER_TEMP:-/tmp}/durable-locator-repos"
           mkdir -p "$repos" && ln -sfn "$GITHUB_WORKSPACE" "$repos/chatman-ecosystem"
           export DURABLE_LOCATOR_REPOS_ROOT="$repos"
-          python3 -m unittest discover -s tests/release_train/durable_locator -p 'test_*.py' -v
-          python3 scripts/release_train/durable_locator/durable_locator.py --no-network verify release/v26.9.25/hardening/evidence/INDEX.json
-          python3 scripts/release_train/durable_locator/durable_locator.py requirements-locators --release v26.9.25 --check
+          python3 -m unittest discover -s tests/durable_locator -p 'test_*.py' -v
+          python3 scripts/durable_locator/durable_locator.py --no-network verify release/v26.9.25/hardening/evidence/INDEX.json
+          python3 scripts/durable_locator/durable_locator.py requirements-locators --release v26.9.25 --check
 
       - name: Refuse ambient consequence surfaces in the court
         shell: bash

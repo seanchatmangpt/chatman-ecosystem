@@ -17,9 +17,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.release_train.durable_locator import durable_locator as dl
+from scripts.durable_locator import durable_locator as dl
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = Path(__file__).resolve().parents[2]
 RELEASE = "v26.9.25"
 SCRATCH = "scratchpad/v26925/lanes/x/courts.json"
 

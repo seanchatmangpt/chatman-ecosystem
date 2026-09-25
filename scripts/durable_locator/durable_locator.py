@@ -15,8 +15,10 @@ Refused locators (typed REFUSED[<code>], broken_term R_missing_replay, EVIDENCE_
 Resolution reads the canonical object database of ``<repos-root>/<repo>`` with
 ``git cat-file`` (read-only; never touches a working tree) and falls back to
 ``gh api`` for a repository with no local checkout. This module is deliberately
-outside ``scripts/release_train/root_crown`` because it spawns ``git``/``gh``;
-root_crown stays subprocess-free.
+outside ``scripts/release_train`` (not only root_crown) because it spawns
+``git``/``gh``: release-train.yml's static no-DO boundary greps the whole
+``scripts/release_train`` tree for ``subprocess.``, and root_crown stays
+subprocess-free.
 
 Subcommands:
     parse <locator>                        print the parsed locator or the refusal
@@ -45,9 +47,9 @@ from typing import Any, Iterator
 
 SCHEMA_INDEX = "https://chatman.dev/root-crown/hardening/evidence-index/v1"
 SCHEMA_REQ = "https://chatman.dev/root-crown/hardening/requirements-locators/v1"
-GENERATED_INDEX = "scripts/release_train/durable_locator/durable_locator.py index -- do not edit; run --write"
+GENERATED_INDEX = "scripts/durable_locator/durable_locator.py index -- do not edit; run --write"
 GENERATED_REQ = (
-    "scripts/release_train/durable_locator/durable_locator.py requirements-locators -- do not edit; run --write"
+    "scripts/durable_locator/durable_locator.py requirements-locators -- do not edit; run --write"
 )
 
 HEX40 = r"[0-9a-f]{40}"
