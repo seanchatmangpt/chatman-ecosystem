@@ -1,14 +1,14 @@
 {
   "release": "v26.9.25",
   "root_repository": "seanchatmangpt/chatman-ecosystem",
-  "observed_at": "2026-09-25T12:57:00Z",
-  "authority": "github-api:gh-cli-operator-token:read (lane chatman-final)",
+  "observed_at": "2026-09-25T13:33:49Z",
+  "authority": "github-api:gh-cli-operator-token:read (lane crown-refresh)",
   "_provenance": "Only hand-written SHAs of the release: default-branch heads resolved with gh api repos/<r>/commits/<default_branch> at observed_at. The root repository's own subject is the runtime crown_sha, never this pin.",
   "repos": {
     "chatman-ecosystem": {
       "repository": "seanchatmangpt/chatman-ecosystem",
       "ref": "main",
-      "sha": "4d05717e361ffefa1049885519e7b1606933cc50",
+      "sha": "fb54a2f5727385ef89ba15151d09c303487873b2",
       "role": "root",
       "disposition": "CROWN",
       "required": true,
@@ -31,7 +31,7 @@
     "ggen_igniter": {
       "repository": "seanchatmangpt/ggen_igniter",
       "ref": "main",
-      "sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+      "sha": "9639198b5c3e0e25906acc5b36dd9eb17bd592be",
       "role": "sjira-authority",
       "disposition": "REQUIRED",
       "required": true,
@@ -42,7 +42,7 @@
     "xaas": {
       "repository": "seanchatmangpt/xaas",
       "ref": "main",
-      "sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "sha": "e039967dac9f88961873b6a958f3979a106854f2",
       "role": "runtime-fabric",
       "disposition": "REQUIRED",
       "required": true,
@@ -75,7 +75,7 @@
     "autofde-lab": {
       "repository": "seanchatmangpt/autofde-lab",
       "ref": "master",
-      "sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "sha": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0",
       "role": "formal-courts",
       "disposition": "REQUIRED",
       "required": true,
@@ -97,7 +97,7 @@
     "affidavit": {
       "repository": "seanchatmangpt/affidavit",
       "ref": "main",
-      "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+      "sha": "cc1577a8de1e4e92625386ebbecb0c6df9abd66a",
       "role": "receipt-persistence",
       "disposition": "REQUIRED",
       "required": true,
@@ -130,7 +130,7 @@
     "zoela": {
       "repository": "seanchatmangpt/zoela",
       "ref": "main",
-      "sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+      "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d",
       "role": "godslaw-domain",
       "disposition": "REQUIRED",
       "required": true,

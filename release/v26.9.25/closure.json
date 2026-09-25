@@ -15,7 +15,7 @@
       "proof": "PR #484 head -> merge"
     }
   ],
-  "_provenance": "Initial v26.9.25 subject rows written by lane chatman-crown at 2026-09-25T08:40Z. Every repository is terminal as typed BLOCKED until its lane lands evidence; the final lane re-harvests courts and updates rows (pins-only PR + projector --write). | final lane (chatman-final) 2026-09-25: shas = pins.json observed_at; impl_type carries typed terminal disposition from lane reports with broken_term;class. No row claims ALIVE: courts[] unharvested by this lane.",
+  "_provenance": "Initial v26.9.25 subject rows written by lane chatman-crown at 2026-09-25T08:40Z. Every repository is terminal as typed BLOCKED until its lane lands evidence; the final lane re-harvests courts and updates rows (pins-only PR + projector --write). | final lane (chatman-final) 2026-09-25: shas = pins.json observed_at; impl_type carries typed terminal disposition from lane reports with broken_term;class. No row claims ALIVE: courts[] unharvested by this lane. | lane crown-refresh 2026-09-25T13:33:49Z: row shas = pins.json heads; courts[] harvested from producer receipts (PR #34/#73/#180/#82/#34), act receipts and a local zoela witness on the exact head; impl_standing promoted only on a PASS court at the exact row sha (ENGINEERING_STANDARDS).",
   "subjects": [
     {
       "subject_id": "RFC-0004",
@@ -35,11 +35,11 @@
       "subject_id": "CHATMAN_ECOSYSTEM",
       "repository": "seanchatmangpt/chatman-ecosystem",
       "artifact": "default-branch head",
-      "sha": "4d05717e361ffefa1049885519e7b1606933cc50",
+      "sha": "fb54a2f5727385ef89ba15151d09c303487873b2",
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "crown:BLOCKED(genesis,producer-receipts-absent);R_missing_consequence;EVIDENCE_FAILURE",
+      "impl_type": "crown:REFUSED@4d05717e(F-10 UNAUTHORIZED_WORKTREE);root-subject-is-runtime-crown_sha;R_missing_standing;VERIFICATION_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -51,37 +51,86 @@
       "sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
       "required": true,
       "spec_standing": "NOT_A_SPEC",
-      "impl_standing": "BLOCKED",
-      "impl_type": "lane-es:ALIVE(repository-semantic-conformance@7e8d4c5c,run36101146601,artifact10850572678);RFC-impl-open-at-crown;R_missing_standing;VERIFICATION_FAILURE",
+      "impl_standing": "ALIVE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
-      "courts": []
+      "courts": [
+        {
+          "court": "act:docs.yml(push)",
+          "kind": "implementation",
+          "sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+          "result": "PASS",
+          "required": true,
+          "exit_code": 0,
+          "evidence": "scratchpad/v26925/act/receipts/engineering-standards-7e8d4c5cb5ae-docs.receipt.json",
+          "log_sha256": "sha256:dd88bec364313dc9a741a467a0d4c54311ea482d8b01795d9f9359127014f6e5",
+          "evidence_ceiling": "LOCAL_ACT_RUN"
+        },
+        {
+          "court": "github:repository-semantic-conformance",
+          "kind": "implementation",
+          "sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+          "result": "PASS",
+          "required": true,
+          "run_id": 36101146601,
+          "artifact_id": 10850572678
+        }
+      ]
     },
     {
       "subject_id": "GGEN_IGNITER",
       "repository": "seanchatmangpt/ggen_igniter",
       "artifact": "default-branch head",
-      "sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+      "sha": "9639198b5c3e0e25906acc5b36dd9eb17bd592be",
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "lane-sjira:head-dbeb62a-ALIVE(run36101098365);merge-full-suite-unobserved;xaas-origin_authority-successor;mu_on_O;DEPENDENCY_FAILURE",
+      "impl_type": "receipts:AC-03/AC-04-ALIVE@780a81d8(PR#34->9639198b);exact-head-court-unobserved;merge-full-suite-unobserved;R_missing_identity;VERIFICATION_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
-      "courts": []
+      "courts": [
+        {
+          "court": "receipts:sjira-origin-authority+prose-inert(PR#34)",
+          "kind": "implementation",
+          "sha": "9639198b5c3e0e25906acc5b36dd9eb17bd592be",
+          "result": "BLOCKED",
+          "required": true,
+          "evidence_subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+          "evidence": [
+            "release/v26.9.25/receipts/sjira-origin-authority.json",
+            "release/v26.9.25/receipts/prose-inert.json"
+          ],
+          "detail": "AC-03/F-02 ALIVE (origin_probe exit 0) and AC-04/F-01 ALIVE (mix test 56/0 exit 0); head differs from subject 780a81d8 by receipt-only paths (gh compare ahead_by 2); no court run observed on the exact head sha -> not PASS (R_missing_identity)"
+        }
+      ]
     },
     {
       "subject_id": "XAAS",
       "repository": "seanchatmangpt/xaas",
       "artifact": "default-branch head",
-      "sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "sha": "e039967dac9f88961873b6a958f3979a106854f2",
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "lane-wd+fabric:ALIVE@LOCAL_LOOPBACK(c10cdab9);deploy/token/egress-operator-gated;R_missing_authority;AUTHORITY_FAILURE",
+      "impl_type": "receipts:AC-13/AC-14-ALIVE@c10cdab9(PR#73->e039967d);F-09-cloud-legs-typed-BLOCKED;deploy/token/egress-operator-gated;R_missing_authority;AUTHORITY_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
-      "courts": []
+      "courts": [
+        {
+          "court": "receipts:case-study-schema+wd-evidence-ceiling+cloud-runtime(PR#73)",
+          "kind": "implementation",
+          "sha": "e039967dac9f88961873b6a958f3979a106854f2",
+          "result": "BLOCKED",
+          "required": true,
+          "evidence_subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+          "evidence": [
+            "release/v26.9.25/receipts/case-study-schema.json",
+            "release/v26.9.25/receipts/wd-evidence-ceiling.json",
+            "release/v26.9.25/receipts/cloud-runtime.json"
+          ],
+          "detail": "AC-13 ALIVE, AC-14/F-12 ALIVE, F-09 typed BLOCKED TRANSPORT_FAILURE:cloud-to-zcode-leg-unreceipted; head differs from subject c10cdab9 by receipt-only paths (gh compare ahead_by 2); no court run observed on the exact head sha -> not PASS (R_missing_identity)"
+        }
+      ]
     },
     {
       "subject_id": "ZCODE_CLI",
@@ -113,14 +162,27 @@
       "subject_id": "AUTOFDE_LAB",
       "repository": "seanchatmangpt/autofde-lab",
       "artifact": "default-branch head",
-      "sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "sha": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0",
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "lane-tla:TLC/planning/POWL-ALIVE;full-qualification-baseline-ray-rllib;mu_on_O;DEPENDENCY_FAILURE",
+      "impl_type": "receipts:AC-07/F-08-ALIVE@6fbe1807(PR#180->98b6cc9b);full-qualification-baseline-ray-rllib;mu_on_O;DEPENDENCY_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
-      "courts": []
+      "courts": [
+        {
+          "court": "receipts:tlc-court(PR#180)",
+          "kind": "implementation",
+          "sha": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0",
+          "result": "BLOCKED",
+          "required": true,
+          "evidence_subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+          "evidence": [
+            "release/v26.9.25/receipts/tlc-court.json"
+          ],
+          "detail": "AC-07/F-08 ALIVE (TLC 5 models exit 0, 4/4 mutants killed, 54 court tests); head differs from subject 6fbe1807 by receipt-only paths (gh compare ahead_by 2); no court run observed on the exact head sha -> not PASS (R_missing_identity)"
+        }
+      ]
     },
     {
       "subject_id": "ASH_A2A",
@@ -139,14 +201,37 @@
       "subject_id": "AFFIDAVIT",
       "repository": "seanchatmangpt/affidavit",
       "artifact": "default-branch head",
-      "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+      "sha": "cc1577a8de1e4e92625386ebbecb0c6df9abd66a",
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "capability:brce-ledger-unbuilt(XPROD-BRCE-UNSUPPORTED);R_missing_consequence;CAPABILITY_GAP",
+      "impl_type": "receipts:brce-ledger-BLOCKED@f3b01d77(PR#82->cc1577a8);CAPABILITY_GAP:BRCE_LEDGER_ADAPTER_NOT_IMPLEMENTED;R_missing_consequence;CAPABILITY_GAP",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
-      "courts": []
+      "courts": [
+        {
+          "court": "receipts:brce-ledger(PR#82)",
+          "kind": "implementation",
+          "sha": "cc1577a8de1e4e92625386ebbecb0c6df9abd66a",
+          "result": "BLOCKED",
+          "required": true,
+          "evidence_subject_sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+          "evidence": [
+            "release/v26.9.25/receipts/brce-ledger.json"
+          ],
+          "detail": "AC-08/F-05 BLOCKED CAPABILITY_GAP:BRCE_LEDGER_ADAPTER_NOT_IMPLEMENTED (probe exit 3); head differs from subject f3b01d77 by receipt-only paths (gh compare ahead_by 2); no court run observed on the exact head sha -> not PASS (R_missing_identity)"
+        },
+        {
+          "court": "act:errc.yml(pull_request)",
+          "kind": "implementation",
+          "sha": "cc1577a8de1e4e92625386ebbecb0c6df9abd66a",
+          "result": "BLOCKED",
+          "required": true,
+          "evidence_subject_sha": "17ccc31aec8d4f05f93be75a0da1f5c4ea907876",
+          "evidence": "scratchpad/v26925/act/receipts/affidavit-17ccc31aec8d-errc.receipt.json",
+          "detail": "act exit 1: TRANSPORT_FAILURE:act-unsupported (actions/checkout 'not our ref' in single-commit sandbox); PR head 17ccc31, not the merge head"
+        }
+      ]
     },
     {
       "subject_id": "GGEN_MARKETPLACE",
@@ -178,14 +263,38 @@
       "subject_id": "ZOELA",
       "repository": "seanchatmangpt/zoela",
       "artifact": "default-branch head",
-      "sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+      "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d",
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "lane-zoela:merged-no-CI(github-billing);R_missing_replay;TRANSPORT_FAILURE",
+      "impl_type": "receipts:AC-16/F-13-ALIVE,AC-15-BLOCKED@f1313f1c(PR#34->3d16cf3e);witness-PASS@3d16cf3e;AUTHORITY_FAILURE:operator-repo-rename(terminal);R_missing_authority;AUTHORITY_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
-      "courts": []
+      "courts": [
+        {
+          "court": "local:godslaw-gate-witness.py(git archive of head)",
+          "kind": "implementation",
+          "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d",
+          "result": "PASS",
+          "required": true,
+          "exit_code": 0,
+          "command": "python3 release/v26.9.25/receipts/godslaw-gate-witness.py <archive> 3d16cf3e /Users/sac/zoela out.json",
+          "output_sha256": "sha256:17a3a42965c3610cecd9843aa173422bf127296d389c6b8ac7a0956cea090d55",
+          "log_sha256": "sha256:d08cce3fe251a5e86cd2a9be977e984e0c7c6e6ebd551940b3060ea852ca2c91",
+          "summary": "TRIPLES 2157 GATES 23 NONZERO {} MUTANTS 19 VACUOUS 0; OBJ True x5; TAMPER_REFUSED True PIN True",
+          "evidence_ceiling": "LOCAL_RUN"
+        },
+        {
+          "court": "act:zoela-admission.yml(push)",
+          "kind": "implementation",
+          "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d",
+          "result": "BLOCKED",
+          "required": true,
+          "evidence_subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+          "evidence": "scratchpad/v26925/act/receipts/zoela-f1313f1c1462-zoela-admission.receipt.json",
+          "detail": "act exit 1 at f1313f1c: BASELINE stale v26.8.23 release verifier + TRANSPORT_FAILURE act-image-missing-libclang; not run on head 3d16cf3e"
+        }
+      ]
     },
     {
       "subject_id": "BEAM4PM",
