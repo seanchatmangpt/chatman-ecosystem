@@ -83,6 +83,10 @@ jobs:
           WEAVER_RECEIPT_DIR: target/weaver-live
           WEAVER_DO_AUTHORITY_SUBJECT: ${{ env.CANDIDATE_SHA }}
           WEAVER_DO_AUTHORITY_SCOPE: weaver.loopback
+          # verify_release.py --check-refs resolves 13 GitHub refs; unauthenticated
+          # calls share the runner IP's 60/h budget and failed with HTTP 403 rate
+          # limit on run 36187262460. The read-only job token lifts that budget.
+          GITHUB_TOKEN: ${{ github.token }}
         run: mix weaver.crown --root "${GITHUB_WORKSPACE}"
 
       - name: Verify Ash owns canonical live-check receipt edges
