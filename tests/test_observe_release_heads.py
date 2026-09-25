@@ -108,6 +108,32 @@ class ObserverTest(unittest.TestCase):
         self.assertEqual(local["observed_at"], "2026-09-25T07:00:00Z")
         self.assertFalse(local["holds"])
 
+    def test_newest_topology_receipt_wins_over_lexically_last_stage(self):
+        """``TOPOLOGY-RECEIPT.stage1.json`` sorts after ``TOPOLOGY-RECEIPT.json`` but is older:
+        the observer must ingest the newest m_term observation, not the last file name."""
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "TOPOLOGY-RECEIPT.json").write_text(
+                json.dumps({"m_term": {"observed_at": "2026-09-25T16:18:10Z", "holds": True, "violations": []}})
+            )
+            (Path(tmp) / "TOPOLOGY-RECEIPT.stage1.json").write_text(
+                json.dumps(
+                    {
+                        "m_term": {
+                            "observed_at": "2026-09-25T07:14:00Z",
+                            "holds": False,
+                            "violations": [{"repo_id": "unibit", "path": "/x", "class": "ORPHAN_WORKTREE"}],
+                        }
+                    }
+                )
+            )
+            local = obs.observe_local_worktrees(str(Path(tmp) / "TOPOLOGY-RECEIPT*.json"))
+        self.assertEqual(local["source"], "TOPOLOGY-RECEIPT.json")
+        self.assertEqual(local["observed_at"], "2026-09-25T16:18:10Z")
+        self.assertTrue(local["holds"])
+        self.assertEqual(local["worktrees"], [])
+
     def test_private_local_records_bytes_digests_blob_sha_and_check_runs(self):
         import hashlib
         import tempfile

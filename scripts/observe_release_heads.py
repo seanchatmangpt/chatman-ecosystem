@@ -257,9 +257,17 @@ def observe_local_worktrees(pattern: str = TOPOLOGY_GLOB) -> dict[str, Any] | No
     paths = sorted(glob.glob(os.path.expanduser(pattern)))
     if not paths:
         return None
-    path = Path(paths[-1])
-    raw = path.read_bytes()
-    receipt = json.loads(raw)
+    # Newest observation wins, never the lexically last name: ``TOPOLOGY-RECEIPT.stage1.json``
+    # sorts after ``TOPOLOGY-RECEIPT.json`` but is an older stage.
+    candidates = []
+    for name in paths:
+        raw_candidate = Path(name).read_bytes()
+        parsed = json.loads(raw_candidate)
+        m = parsed.get("m_term") if isinstance(parsed.get("m_term"), dict) else {}
+        stamp = str(m.get("observed_at") or parsed.get("observed_at") or parsed.get("generated_at") or "")
+        candidates.append((stamp, name, raw_candidate, parsed))
+    _, chosen, raw, receipt = max(candidates, key=lambda c: (c[0], c[1]))
+    path = Path(chosen)
     m_term = receipt.get("m_term")
     worktrees = None
     observed_at = receipt.get("observed_at") or receipt.get("generated_at")

@@ -1,0 +1,9 @@
+{
+  "authority": "operator-local:TOPOLOGY-RECEIPT",
+  "holds": true,
+  "observed_at": "2026-09-25T16:18:10Z",
+  "sha256": "32bbd585a5c4d1fdebfb232bdec48811b2cf20466fef07f1930e01ac9baf5e52",
+  "source": "TOPOLOGY-RECEIPT.json",
+  "unauthorized_worktrees": 0,
+  "worktrees": []
+}

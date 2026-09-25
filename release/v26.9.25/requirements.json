@@ -35,7 +35,7 @@
       "kind": "AC",
       "term": "C",
       "owner_repo": "seanchatmangpt/chatman-ecosystem",
-      "acceptance": "Every required subject in release/v26.9.25/closure.json is terminal and the release closure court evaluates ALIVE (RFC §38 dispositions; omission is never success).",
+      "acceptance": "Every required subject in release/v26.9.25/closure.json has a terminal disposition: ALIVE/FINAL, or a typed SUPERSEDED/BLOCKED/UNSUPPORTED/REFUSED row (type + broken_term + RFC §39 class + owner); UNKNOWN or untyped is refused (RFC §5, §38; omission is never success).",
       "evidence_kind": "closure_terminal",
       "evidence_locator": "local:release/v26.9.25/closure.json",
       "premise_refs": [
