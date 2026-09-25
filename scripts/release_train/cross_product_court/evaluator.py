@@ -23,6 +23,61 @@ def _index(case: CrossProductCase) -> dict[tuple[Formalism, str], list]:
     return result
 
 
+def _by_digest(evidence) -> dict[str, list]:
+    groups: dict[str, list] = {}
+    for item in evidence:
+        groups.setdefault(item.artifact_digest, []).append(item)
+    return groups
+
+
+def _independence_refusals(case: CrossProductCase) -> list[str]:
+    """One artifact may witness several formalisms only as a relation.
+
+    An artifact digest shared by evidence of two or more formalisms is
+    admitted only when every sharing item carries the same claim_id and that
+    claim_id is the claim of a declared relation between every pair of
+    sharing formalisms. Anything else is one observation counted as two dimensions.
+    """
+    refusals: list[str] = []
+    for digest, items in sorted(_by_digest(case.evidence).items()):
+        formalisms = {item.formalism for item in items}
+        if len(formalisms) < 2:
+            continue
+        claims = {item.claim_id for item in items}
+        admitted = False
+        if len(claims) == 1:
+            claim = next(iter(claims))
+            declared = {
+                frozenset((relation.left, relation.right))
+                for relation in case.relations
+                if relation.claim_id == claim
+            }
+            admitted = all(
+                frozenset((left, right)) in declared
+                for left in formalisms
+                for right in formalisms
+                if left.value < right.value
+            )
+        if not admitted:
+            refusals.append(
+                "REFUSED:NON_INDEPENDENT_EVIDENCE:"
+                + digest
+                + ":"
+                + ",".join(sorted(item.evidence_id for item in items))
+            )
+    return refusals
+
+
+def _independent_formalisms(evidence) -> set[Formalism]:
+    """Dimensions witnessed by an artifact no other formalism shares."""
+    present: set[Formalism] = set()
+    for items in _by_digest(evidence).values():
+        formalisms = {item.formalism for item in items}
+        if len(formalisms) == 1:
+            present.update(formalisms)
+    return present
+
+
 def evaluate(case: CrossProductCase) -> CrossProductReceipt:
     refusals: list[str] = []
     evidence_ids = tuple(sorted(item.evidence_id for item in case.evidence))
@@ -50,7 +105,15 @@ def evaluate(case: CrossProductCase) -> CrossProductReceipt:
         for item in case.evidence
         if admitted_subjects.get(item.repository) == item.subject_sha
     )
-    present = {item.formalism for item in valid_evidence}
+    refusals.extend(_independence_refusals(case))
+    present = _independent_formalisms(valid_evidence)
+    for formalism in sorted(
+        {item.formalism for item in valid_evidence} - present,
+        key=lambda value: value.value,
+    ):
+        refusals.append(
+            f"BLOCKED:DIMENSION_NOT_INDEPENDENT:{formalism.value}"
+        )
     missing = tuple(
         sorted(f.value for f in set(case.required_formalisms) - present)
     )

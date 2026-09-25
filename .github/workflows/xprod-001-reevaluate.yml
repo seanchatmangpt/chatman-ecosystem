@@ -1,0 +1,136 @@
+name: XPROD-001 Re-evaluate
+
+# Re-evaluates the committed cross-product case XPROD-001 (v26.9.25).
+# offline (gating): court replay == committed receipt, every committed
+#   evidence/validator byte re-hashed, all four case mutants killed.
+# online (provenance): producer runs re-fetched from GitHub (head_sha ==
+#   subject_sha, path == validator, conclusion == success), artifact API
+#   digests and zip bytes re-compared, validator workflow re-hashed at the
+#   subject. Retention expiry reports BLOCKED:PROVENANCE_EXPIRED; a digest
+#   mismatch fails.
+
+on:
+  pull_request:
+    paths:
+      - 'docs/jira/v26.9.25/xprod-cases/**'
+      - 'scripts/release_train/cross_product_court/**'
+      - 'scripts/release_train/xprod_reeval/**'
+      - 'tests/release_train/cross_product_court/**'
+      - 'tests/release_train/xprod_reeval/**'
+      - '.github/workflows/xprod-001-reevaluate.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: xprod-001-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  CASE: docs/jira/v26.9.25/xprod-cases/XPROD-001.json
+  RECEIPT: docs/jira/v26.9.25/xprod-cases/receipts/XPROD-001.receipt.json
+
+jobs:
+  offline:
+    name: XPROD-001 offline re-evaluation (gating)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Assert exact subject identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          actual="$(git rev-parse HEAD)"
+          printf 'xprod_subject=%s\n' "$actual"
+          test "$actual" = "$expected"
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+
+      - name: Court replay equals committed receipt
+        env:
+          PYTHONPATH: .
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -m scripts.release_train.cross_product_court "$CASE" > recomputed.json
+          code=$?
+          standing="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["standing"])' "$RECEIPT")"
+          printf 'court_exit=%s committed_standing=%s\n' "$code" "$standing"
+          if [ "$standing" = "ALIVE" ]; then test "$code" -eq 0; else test "$code" -eq 2; fi
+          python3 - <<'PY'
+          import json, os
+          a = json.load(open("recomputed.json"))
+          b = json.load(open(os.environ["RECEIPT"]))
+          assert a == b, "REFUSED:RECEIPT_REPLAY_MISMATCH"
+          print("receipt_digest=" + b["receipt_digest"], "standing=" + b["standing"])
+          PY
+
+      - name: Recompute every evidence and validator digest
+        env:
+          PYTHONPATH: .
+        run: python3 -m scripts.release_train.xprod_reeval.provenance offline "$CASE" --receipt "$RECEIPT"
+
+      - name: Kill all four case mutants
+        env:
+          PYTHONPATH: .
+        run: python3 -m scripts.release_train.xprod_reeval.mutate "$CASE"
+
+      - name: Court and re-evaluation unit courts
+        env:
+          PYTHONPATH: .
+        run: |
+          python3 -m unittest discover -s tests/release_train/cross_product_court -p 'test_*.py' -v
+          python3 -m unittest discover -s tests/release_train/xprod_reeval -p 'test_*.py' -v
+
+      - name: Refuse ambient consequence surfaces in the court
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -REn \
+            'requests\.(post|put|patch|delete)|httpx|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|socket\.|boto3|azure\.|google\.cloud|kubectl|terraform|git push|gh pr merge' \
+            scripts/release_train/cross_product_court \
+            tests/release_train/cross_product_court
+
+  online:
+    name: XPROD-001 online provenance
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: offline
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+
+      - name: Re-fetch producer runs, artifacts and validators
+        env:
+          PYTHONPATH: .
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -m scripts.release_train.xprod_reeval.provenance online "$CASE" --download > online.json
+          code=$?
+          cat online.json
+          if grep -q '"BLOCKED:' online.json; then
+            echo "::warning title=XPROD-001 provenance::$(python3 -c 'import json;print(" ".join(x for x in json.load(open("online.json"))["refusals"] if x.startswith("BLOCKED:")))')"
+          fi
+          exit "$code"
