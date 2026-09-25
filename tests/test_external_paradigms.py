@@ -1,5 +1,7 @@
 import json
 import tempfile
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 
@@ -231,6 +233,39 @@ class ExternalParadigmProjectionTest(unittest.TestCase):
         }
         with self.assertRaisesRegex(ProjectionRefusal, "DANGLING_TARGET_CAPABILITY"):
             project_inventory(inventory, set())
+
+
+class ExternalParadigmEntrypointTest(unittest.TestCase):
+    def test_direct_script_entrypoints_import_from_repo_layout(self):
+        for script in (
+            "scripts/extract_external_paradigm_units.py",
+            "scripts/detect_external_paradigm_delta.py",
+        ):
+            completed = subprocess.run(
+                [sys.executable, script, "--help"],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(
+                completed.returncode,
+                0,
+                msg=f"{script}: {completed.stderr}",
+            )
+
+    def test_epr_capabilities_are_repository_native(self):
+        from scripts.project_external_paradigm_graph import load_capability_ids
+
+        capability_ids = load_capability_ids(ROOT / "catalog")
+        expected = {
+            "capability:observe-external-paradigm-subject",
+            "capability:extract-external-paradigm-units",
+            "capability:classify-external-paradigm",
+            "capability:project-external-paradigm-cross-product",
+            "capability:detect-external-paradigm-delta",
+        }
+        self.assertTrue(expected.issubset(capability_ids))
 
 
 if __name__ == "__main__":
