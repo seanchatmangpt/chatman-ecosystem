@@ -112,10 +112,9 @@ def evaluate(
     if root_obs.get("head_sha") and root_obs["head_sha"] != crown_sha:
         refusals.append(f"REFUSED:CROWN_SHA_SPLIT:observed={root_obs['head_sha']}:crown={crown_sha}")
 
-    heads = {
-        repo: obs["head_sha"] for repo, obs in sorted(observations.get("repos", {}).items()) if obs.get("head_sha")
-    }
     ctx = Context(root=root, release_dir=release_dir, observations=observations, crown_sha=crown_sha, inputs=inputs)
+    # Heads include admitted operator-local private observations (NEW_HEAD cascade covers them too).
+    heads = {repo: obs["head_sha"] for repo, obs in sorted(ctx.repos.items()) if obs.get("head_sha")}
     states: dict[str, ReqState] = {}
     ordered = [r for r in reqs if r.evidence_kind not in DEFERRED] + [r for r in reqs if r.evidence_kind in DEFERRED]
     impacts = _new_head_impacts(reqs, previous, heads)

@@ -188,6 +188,21 @@ class CrownTest(unittest.TestCase):
         del registry["xprod_case"]
         return self.run_crown(evaluators=registry)
 
+    def m_private_digest(self):
+        from test_private_observation import private_obs
+
+        obs = private_obs(self.obs)
+        receipt = obs["private_repos"]["repos"]["seanchatmangpt/zoela"]["receipts"][0]
+        receipt["sha256"] = "0" * 64
+        return self.run_crown(obs=obs)
+
+    def m_private_split(self):
+        from test_private_observation import private_obs
+
+        obs = private_obs(self.obs)
+        obs["private_public_compare"] = {"seanchatmangpt/zoela": "diverged"}
+        return self.run_crown(obs=obs)
+
     def test_one_refusing_mutant_per_crown_rule(self):
         table = {
             "MANIFEST_INVALID": self.m_manifest,
@@ -207,6 +222,8 @@ class CrownTest(unittest.TestCase):
             "CROWN_SHA_SPLIT": self.m_crown_split,
             "BLOCKED_WITHOUT_TYPE": self.m_untyped,
             "UNKNOWN_EVIDENCE_KIND": self.m_unknown_kind,
+            "PRIVATE_OBSERVATION_DIGEST_MISMATCH": self.m_private_digest,
+            "PRIVATE_HEAD_SPLIT": self.m_private_split,
         }
         self.assertEqual(set(table), set(CROWN_RULES))
         for rule, mutant in table.items():
