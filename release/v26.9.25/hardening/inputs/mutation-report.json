@@ -1,0 +1,468 @@
+{
+  "GENERATED": "scripts/release_train/root_crown/mutate.py -- do not edit; run --write-report",
+  "all_killed": true,
+  "authority": "NONE",
+  "baseline": {
+    "errors": 0,
+    "failures": 0,
+    "ok": true,
+    "skipped": 4,
+    "tests_run": 134
+  },
+  "killed": 46,
+  "mutants": {
+    "blocked_without_type_off": {
+      "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='BLOCKED_WITHOUT_TYPE'),test_crown.CrownTest.test_typed_blocked_is_lawful_untyped_is_refused",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_crown"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(crown)"
+    },
+    "broken_term_off": {
+      "detail": "killed by 2 test(s): test_terminal_alignment.TerminalAlignmentTest.test_untyped_blocked_closure_row_is_refused,test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='broken_term')",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment",
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(missing=broken_term)"
+    },
+    "chain_digest_unchecked": {
+      "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='RECEIPT_CHAIN_BROKEN'),test_loop.LoopTest.test_broken_chain_refuses",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_crown",
+        "test_loop"
+      ],
+      "kind": "source",
+      "rule": "RECEIPT_CHAIN_BROKEN(previous digest)"
+    },
+    "crown_sha_split_off": {
+      "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='CROWN_SHA_SPLIT'),test_post_tag.PostTagTest.test_pre_tag_semantics_refuse_every_post_tag_commit",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_crown",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "CROWN_SHA_SPLIT"
+    },
+    "dm_expired_current_as_historical": {
+      "detail": "court emitted 'REFUSED:HISTORICAL_OBSERVATION_SPLIT'; control clean",
+      "expected": "REFUSED:HISTORICAL_OBSERVATION_SPLIT",
+      "killed": true,
+      "kind": "data",
+      "rule": "HISTORICAL_OBSERVATION_SPLIT"
+    },
+    "dm_mutable_tag": {
+      "detail": "court emitted 'REFUSED:TAG_MUTATED'; control clean",
+      "expected": "REFUSED:TAG_MUTATED",
+      "killed": true,
+      "kind": "data",
+      "rule": "TAG_MUTATED"
+    },
+    "dm_payload_mutated_post_tag": {
+      "detail": "court emitted 'REFUSED:PAYLOAD_MUTATED_POST_TAG'; control clean",
+      "expected": "REFUSED:PAYLOAD_MUTATED_POST_TAG",
+      "killed": true,
+      "kind": "data",
+      "rule": "PAYLOAD_MUTATED_POST_TAG"
+    },
+    "dm_replay_mismatch": {
+      "detail": "court emitted 'BLOCKED:REPLAY_DIVERGED'; control clean",
+      "expected": "BLOCKED:REPLAY_DIVERGED",
+      "killed": true,
+      "kind": "data",
+      "rule": "REPLAY_DIVERGED"
+    },
+    "dm_stale_observation": {
+      "detail": "court emitted 'BLOCKED:OBSERVATION_STALE:AC-09'; control clean",
+      "expected": "BLOCKED:OBSERVATION_STALE:AC-09",
+      "killed": true,
+      "kind": "data",
+      "rule": "OBSERVATION_STALE"
+    },
+    "dm_subject_container_conflation": {
+      "detail": "court emitted 'REFUSED:ARTIFACT_SUBJECT_SPLIT:AC-07'; control clean",
+      "expected": "REFUSED:ARTIFACT_SUBJECT_SPLIT:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "ARTIFACT_SUBJECT_SPLIT"
+    },
+    "dm_success_replaced_by_blocker": {
+      "detail": "court emitted 'BLOCKED:ARTIFACT_BLOCKED:AC-07'; control clean",
+      "expected": "BLOCKED:ARTIFACT_BLOCKED:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "ARTIFACT_BLOCKED"
+    },
+    "dm_tag_not_subject": {
+      "detail": "court emitted 'REFUSED:TAG_SUBJECT_SPLIT'; control clean",
+      "expected": "REFUSED:TAG_SUBJECT_SPLIT",
+      "killed": true,
+      "kind": "data",
+      "rule": "TAG_SUBJECT_SPLIT"
+    },
+    "dm_terminal_blocker_without_owner": {
+      "detail": "court emitted 'missing=owner'; control clean",
+      "expected": "missing=owner",
+      "killed": true,
+      "kind": "data",
+      "rule": "BLOCKED_WITHOUT_TYPE"
+    },
+    "dm_terminal_blocker_without_reason": {
+      "detail": "court emitted 'missing=broken_term+failure_class'; control clean",
+      "expected": "missing=broken_term+failure_class",
+      "killed": true,
+      "kind": "data",
+      "rule": "BLOCKED_WITHOUT_TYPE"
+    },
+    "dm_terminal_blocker_without_type": {
+      "detail": "court emitted 'REFUSED:BLOCKED_WITHOUT_TYPE:AC-15'; control clean",
+      "expected": "REFUSED:BLOCKED_WITHOUT_TYPE:AC-15",
+      "killed": true,
+      "kind": "data",
+      "rule": "BLOCKED_WITHOUT_TYPE"
+    },
+    "f09_type_off": {
+      "detail": "killed by 1 test(s): test_falsifiers.FalsifierTableTest.test_f09_typed_blocker_is_lawful",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_falsifiers",
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(F-09)"
+    },
+    "failure_class_off": {
+      "detail": "killed by 2 test(s): test_terminal_alignment.TerminalAlignmentTest.test_untyped_blocked_closure_row_is_refused,test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='failure_class')",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment",
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(missing=failure_class)"
+    },
+    "gitobj_exec_bit_off": {
+      "detail": "killed by 1 test(s): test_gitobj.SyntheticTreeTest.test_matches_real_git_write_tree",
+      "file": "scripts/release_train/root_crown/gitobj.py",
+      "killed": true,
+      "killers": [
+        "test_gitobj"
+      ],
+      "kind": "source",
+      "rule": "git tree mode 100755"
+    },
+    "historical_observation_split_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_one_refusing_mutant_per_post_tag_rule (rule='HISTORICAL_OBSERVATION_SPLIT')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "HISTORICAL_OBSERVATION_SPLIT"
+    },
+    "historical_receipt_digest_off": {
+      "detail": "killed by 1 test(s): test_typed_terminal.RecordBindingTest.test_historical_replay_refuses_a_record_naming_another_receipt",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_RECEIPT_SPLIT(historical)"
+    },
+    "lineage_bad_accepted": {
+      "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='ARTIFACT_SUBJECT_SPLIT'),test_terminal_alignment.TerminalAlignmentTest.test_terminal_receipt_still_needs_a_merged_subject",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment",
+        "test_crown"
+      ],
+      "kind": "source",
+      "rule": "ARTIFACT_SUBJECT_SPLIT"
+    },
+    "non_terminal_impl_accepted": {
+      "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_partial_alive_row_is_not_terminal",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "CLOSURE_PARTIAL"
+    },
+    "owner_off": {
+      "detail": "killed by 4 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_local_terminal_receipt_without_owner_is_refused,test_typed_terminal.TypedTerminalReceiptTest.test_typing_gaps_names_a_blank_owner (owner='  '),test_typed_terminal.TypedTerminalReceiptTest.test_typing_gaps_names_a_blank_owner (owner=''),test_typed_terminal.TypedTerminalReceiptTest.test_typing_gaps_names_a_blank_owner (owner=None)",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(missing=owner)"
+    },
+    "parent_digest_off": {
+      "detail": "killed by 1 test(s): test_chain.ChainTest.test_parent_digest",
+      "file": "scripts/release_train/root_crown/chain.py",
+      "killed": true,
+      "killers": [
+        "test_chain"
+      ],
+      "kind": "source",
+      "rule": "RECEIPT_CHAIN_BROKEN:PARENT_DIGEST"
+    },
+    "parent_not_ancestor_off": {
+      "detail": "killed by 1 test(s): test_chain.ChainTest.test_parent_not_ancestor",
+      "file": "scripts/release_train/root_crown/chain.py",
+      "killed": true,
+      "killers": [
+        "test_chain"
+      ],
+      "kind": "source",
+      "rule": "RECEIPT_CHAIN_BROKEN:PARENT_NOT_ANCESTOR"
+    },
+    "parent_refused_off": {
+      "detail": "killed by 1 test(s): test_chain.ChainTest.test_parent_refused",
+      "file": "scripts/release_train/root_crown/chain.py",
+      "killed": true,
+      "killers": [
+        "test_chain"
+      ],
+      "kind": "source",
+      "rule": "RECEIPT_CHAIN_BROKEN:PARENT_REFUSED"
+    },
+    "parent_untyped_blocked_off": {
+      "detail": "killed by 1 test(s): test_chain.ChainTest.test_parent_untyped_blocked",
+      "file": "scripts/release_train/root_crown/chain.py",
+      "killed": true,
+      "killers": [
+        "test_chain"
+      ],
+      "kind": "source",
+      "rule": "RECEIPT_CHAIN_BROKEN:PARENT_UNTYPED_BLOCKED"
+    },
+    "payload_mutated_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_one_refusing_mutant_per_post_tag_rule (rule='PAYLOAD_MUTATED_POST_TAG')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "PAYLOAD_MUTATED_POST_TAG"
+    },
+    "record_section_unchecked": {
+      "detail": "killed by 3 test(s): test_typed_terminal.RecordBindingTest.test_edited_record_sections_are_refused (code='TAG_MUTATED'),test_typed_terminal.RecordBindingTest.test_edited_record_sections_are_refused (code='TAG_RECEIPT_SPLIT'),test_typed_terminal.RecordBindingTest.test_edited_record_sections_are_refused (code='TAG_SUBJECT_SPLIT')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_RECEIPT_SPLIT/TAG_SUBJECT_SPLIT(record vs raw objects)"
+    },
+    "replay_diverged_off": {
+      "detail": "killed by 1 test(s): test_replay.IsolationTest.test_divergent_digest_is_typed_replay_diverged",
+      "file": "scripts/release_train/root_crown/replay.py",
+      "killed": true,
+      "killers": [
+        "test_replay"
+      ],
+      "kind": "source",
+      "rule": "REPLAY_DIVERGED"
+    },
+    "required_unknown_off": {
+      "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='REQUIRED_UNKNOWN'),test_terminal_alignment.TerminalAlignmentTest.test_unknown_terminal_receipt_is_refused",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment",
+        "test_crown"
+      ],
+      "kind": "source",
+      "rule": "REQUIRED_UNKNOWN"
+    },
+    "subject_tree_off": {
+      "detail": "killed by 2 test(s): test_post_tag.PostTagTest.test_one_refusing_mutant_per_post_tag_rule (rule='SUBJECT_TREE_MISMATCH'),test_typed_terminal.SubjectTreeTest.test_one_changed_byte_is_subject_tree_mismatch",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag",
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "SUBJECT_TREE_MISMATCH"
+    },
+    "successor_off": {
+      "detail": "killed by 1 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_superseded_without_successor_is_refused",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(missing=successor)"
+    },
+    "tag_binding_mutated_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_post_tag_binding_requirement_refuses_on_its_own (expected='TAG_MUTATED')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_MUTATED(post-tag binding)"
+    },
+    "tag_binding_subject_split_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_post_tag_binding_requirement_refuses_on_its_own (expected='TAG_SUBJECT_SPLIT')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_SUBJECT_SPLIT(post-tag binding)"
+    },
+    "tag_deleted_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_verify_tag_subject_refuses_each_observation_breach_independently",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_MUTATED(deleted)"
+    },
+    "tag_mutated_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_verify_tag_subject_refuses_each_observation_breach_independently",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_MUTATED(object)"
+    },
+    "tag_object_digest_off": {
+      "detail": "killed by 1 test(s): test_gitobj.TagObjectsTest.test_flipped_raw_byte_is_a_recorded_mismatch",
+      "file": "scripts/release_train/root_crown/gitobj.py",
+      "killed": true,
+      "killers": [
+        "test_gitobj",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_OBJECT_DIGEST_MISMATCH"
+    },
+    "tag_split_off": {
+      "detail": "killed by 3 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='TAG_SHA_SPLIT'),test_falsifiers.FalsifierTableTest.test_each_falsifier_passes_alive_and_refuses_its_mutant (falsifier='F-14'),test_post_tag.PostTagTest.test_pre_tag_semantics_refuse_every_post_tag_commit",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_crown",
+        "test_falsifiers",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_SHA_SPLIT"
+    },
+    "tag_subject_split_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_verify_tag_subject_refuses_each_observation_breach_independently",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_SUBJECT_SPLIT"
+    },
+    "terminal_accepts_partial": {
+      "detail": "killed by 1 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_partial_alive_receipt_is_not_terminal",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "AC-15 PARTIAL_ALIVE is not terminal (ARTIFACT_BLOCKED)"
+    },
+    "type_off": {
+      "detail": "killed by 1 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_typed_row_without_type_text_is_refused",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(missing=type)"
+    },
+    "typed_terminal_blocked_as_capability": {
+      "detail": "killed by 2 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_partial_alive_receipt_is_not_terminal,test_typed_terminal.TypedTerminalReceiptTest.test_typed_planned_receipt_is_not_terminal",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "AC-15 typed PLANNED is not a terminal disposition (ARTIFACT_BLOCKED)"
+    },
+    "untyped_closure_accepted": {
+      "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_untyped_blocked_closure_row_is_refused",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "SUBJECT_NOT_TERMINAL(untyped)"
+    },
+    "verifier_crashed_off": {
+      "detail": "killed by 2 test(s): test_crown.CrownTest.test_evaluator_crash_is_contained_and_other_requirements_still_evaluate,test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='VERIFIER_CRASHED')",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_crown"
+      ],
+      "kind": "source",
+      "rule": "VERIFIER_CRASHED"
+    },
+    "worktree_stale_off": {
+      "detail": "killed by 1 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_stale_worktree_observation_is_typed_blocked",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal",
+        "test_crown"
+      ],
+      "kind": "source",
+      "rule": "OBSERVATION_STALE(AC-09)"
+    }
+  },
+  "release": "v26.9.25",
+  "schema": "https://chatman.dev/root-crown/hardening/mutation-report/v1",
+  "source_digests": {
+    "scripts/release_train/root_crown/chain.py": "sha256:3039484a9b8f992aa6c5ee72989af86570afe5c1ab4e45f177597e4714009253",
+    "scripts/release_train/root_crown/crown.py": "sha256:4cff749bee28acd43631208dde4983b4d89de693881681a34b7cc6d5cfb45f2e",
+    "scripts/release_train/root_crown/evidence.py": "sha256:91b396563832bb311572aa389f9bbb26d1b0ffb5bc5b314d072e9e2fb7f5fa88",
+    "scripts/release_train/root_crown/gitobj.py": "sha256:191690fafbc380bef695eee9beee8563d123cecc6beab89ac99a2898830979a2",
+    "scripts/release_train/root_crown/posttag.py": "sha256:9a7d1b157f21787cbf19c3b610ebf7ce5e45d9cdf0bba7107e8e975f4b05bb5c",
+    "scripts/release_train/root_crown/replay.py": "sha256:c3610676203a00d48a00a50af3c70f59eaf5d7608a95a7390947bc32332b6a2d"
+  },
+  "survivors": [],
+  "total": 46
+}

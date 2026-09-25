@@ -147,6 +147,15 @@ jobs:
           done
           python3 -m unittest discover -s tests -p 'test_observe_release_heads.py' -v
 
+      - name: Mutation harness (--check-report; survivors must be 0)
+        env:
+          PYTHONPATH: .
+          PYTHONDONTWRITEBYTECODE: '1'
+        # In-process source + data mutants over a temp copy; exit 0 all killed, 1 survivor,
+        # 2 ANCHOR_DRIFT / BASELINE_RED / MUTATION_REPORT_DRIFT. The committed report
+        # (release/v26.9.25/hardening/inputs/mutation-report.json) must recompute byte-identically.
+        run: python3 -m scripts.release_train.root_crown.mutate --check-report
+
       - name: Durable evidence locators (CE23-9; read-only git cat-file on this checkout)
         env:
           PYTHONPATH: .
