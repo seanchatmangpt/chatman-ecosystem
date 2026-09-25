@@ -81,5 +81,145 @@ class ExternalParadigmDeltaTest(unittest.TestCase):
         )
 
 
+class ExternalParadigmInventoryTest(unittest.TestCase):
+    def test_specific_pattern_overrides_generic_skill_mapping(self):
+        from scripts.extract_external_paradigm_units import inventory_from_surfaces
+
+        pattern_map = json.loads(
+            (ROOT / "upstream" / "ecc" / "pattern-map.json").read_text(encoding="utf-8")
+        )
+        surfaces = {
+            "skills": [
+                {
+                    "name": "continuous-learning-v2",
+                    "path": "skills/continuous-learning-v2",
+                    "sha": "a" * 40,
+                    "type": "dir",
+                },
+                {
+                    "name": "api-design",
+                    "path": "skills/api-design",
+                    "sha": "b" * 40,
+                    "type": "dir",
+                },
+            ],
+            "agents": [],
+            "commands": [],
+            "hooks": [],
+            "workflows": [],
+        }
+        inventory = inventory_from_surfaces(
+            "ecc",
+            "affaan-m/ECC",
+            "e482e579415fde18357cafce70f177ae19fd7f03",
+            surfaces,
+            pattern_map,
+        )
+        by_name = {unit["name"]: unit for unit in inventory["units"]}
+        self.assertEqual(
+            by_name["continuous-learning-v2"]["classification"]["pattern_id"],
+            "ecc.continuous-learning-v2",
+        )
+        self.assertEqual(
+            by_name["continuous-learning-v2"]["classification"]["disposition"],
+            "REPLACE",
+        )
+        self.assertEqual(
+            by_name["api-design"]["classification"]["pattern_id"],
+            "ecc.skills-agents-commands",
+        )
+        self.assertEqual(inventory["standing"], "NONE")
+
+    def test_inventory_count_is_derived_from_surfaces(self):
+        from scripts.extract_external_paradigm_units import inventory_from_surfaces
+
+        pattern_map = {"entries": []}
+        surfaces = {
+            "skills": [{"name": "x", "path": "skills/x", "sha": "a" * 40, "type": "dir"}],
+            "agents": [{"name": "a.md", "path": "agents/a.md", "sha": "b" * 40, "type": "file"}],
+            "commands": [],
+            "hooks": [],
+            "workflows": [],
+        }
+        inventory = inventory_from_surfaces(
+            "ecc",
+            "affaan-m/ECC",
+            "e482e579415fde18357cafce70f177ae19fd7f03",
+            surfaces,
+            pattern_map,
+        )
+        self.assertEqual(inventory["unit_count"], 2)
+        self.assertEqual(inventory["counts"]["skill"], 1)
+        self.assertEqual(inventory["counts"]["agent"], 1)
+        self.assertEqual(inventory["unmapped_count"], 2)
+
+
+class ExternalParadigmProjectionTest(unittest.TestCase):
+    def test_declared_target_is_not_semantic_equivalence(self):
+        from scripts.project_external_paradigm_graph import project_inventory
+
+        inventory = {
+            "schema": "chatman.external-paradigm-inventory.v1",
+            "supplier": "ecc",
+            "repository": "affaan-m/ECC",
+            "subject_sha": "e482e579415fde18357cafce70f177ae19fd7f03",
+            "standing": "NONE",
+            "units": [
+                {
+                    "id": "ecc:skill:api-design",
+                    "kind": "skill",
+                    "name": "api-design",
+                    "source_path": "skills/api-design/SKILL.md",
+                    "state": "CANDIDATE",
+                    "standing": "NONE",
+                    "classification": {
+                        "pattern_id": "ecc.skills-agents-commands",
+                        "disposition": "WRAP",
+                        "target_capabilities": ["capability:distribute-ggen-pack"],
+                    },
+                }
+            ],
+        }
+        graph, ttl = project_inventory(
+            inventory,
+            {"capability:distribute-ggen-pack"},
+        )
+        self.assertEqual(graph["edge_count"], 1)
+        self.assertEqual(graph["edges"][0]["semantic_equivalence"], "UNCLAIMED")
+        self.assertEqual(graph["standing"], "NONE")
+        self.assertIn("prov:wasDerivedFrom", ttl)
+
+    def test_dangling_internal_target_is_refused(self):
+        from scripts.project_external_paradigm_graph import (
+            ProjectionRefusal,
+            project_inventory,
+        )
+
+        inventory = {
+            "schema": "chatman.external-paradigm-inventory.v1",
+            "supplier": "ecc",
+            "repository": "affaan-m/ECC",
+            "subject_sha": "e482e579415fde18357cafce70f177ae19fd7f03",
+            "standing": "NONE",
+            "units": [
+                {
+                    "id": "ecc:skill:x",
+                    "kind": "skill",
+                    "name": "x",
+                    "source_path": "skills/x/SKILL.md",
+                    "state": "CANDIDATE",
+                    "standing": "NONE",
+                    "classification": {
+                        "pattern_id": "ecc.skills-agents-commands",
+                        "disposition": "WRAP",
+                        "target_capabilities": ["capability:does-not-exist"],
+                    },
+                }
+            ],
+        }
+        with self.assertRaisesRegex(ProjectionRefusal, "DANGLING_TARGET_CAPABILITY"):
+            project_inventory(inventory, set())
+
+
 if __name__ == "__main__":
     unittest.main()
