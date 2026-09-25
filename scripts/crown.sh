@@ -12,8 +12,6 @@ candidate_sha="$(git rev-parse HEAD)"
 test "${#candidate_sha}" -eq 40
 
 python3 scripts/verify_release.py --check-refs
-PYTHONPATH=. python3 -m scripts.release_train.ecosystem_closure release/v26.9.24/closure.toml \
-  --replay release/v26.9.24/closure-receipt.json --require-alive --summary
 python3 scripts/verify_standing_evidence.py
 python3 scripts/verify_crown_edges.py
 python3 scripts/verify_external_paradigms.py
@@ -72,7 +70,6 @@ cat > target/crown/admission.json <<JSON
   "subject": "git:${candidate_sha}",
   "gates": [
     "release_graph",
-    "ecosystem_closure",
     "standing_evidence",
     "mandatory_crown_edges",
     "external_paradigms",

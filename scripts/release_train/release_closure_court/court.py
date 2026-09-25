@@ -29,6 +29,9 @@ IMPL_TERMINAL = frozenset(
 )
 COURT_RESULTS = frozenset({"PASS", "FAIL", "BASELINE_BLOCKER", "BLOCKED"})
 AUTHORITY_RANK = {"NONE": 0, "SELECT": 1, "CONSTRUCT": 2, "DO": 3}
+LINEAGE_STATES = frozenset({"OPEN", "MERGED", "CLOSED_UNMERGED"})
+LINEAGE_DISPOSITIONS = frozenset({"CANONICAL", "SUPERSEDED", "UNRESOLVED", "ZOMBIE", "CLOSED"})
+_NON_TERMINAL = {"BLOCKED", "UNSUPPORTED", "REFUSED"}
 
 RULES = (
     "REFUSED:MALFORMED_ROW",
@@ -44,6 +47,15 @@ RULES = (
     "REFUSED:TRANSIENT_PIN",
     "REFUSED:DUPLICATE_CANONICAL_OWNER",
     "REFUSED:BLOCKED_WITHOUT_TYPE",
+    # Lineage laws (optional row ``lineage`` / ``depends_on``, closure ``max_canonical_additions``):
+    # exactly one admitted head per subject, no open alternative realities.
+    "REFUSED:SUCCESSOR_AMBIGUOUS",
+    "REFUSED:CANONICAL_SUBJECT_SPLIT",
+    "REFUSED:SUPERSEDED_LINEAGE_OPEN",
+    "REFUSED:ALIVE_ON_NON_FINAL_HEAD",
+    "REFUSED:SCOPE_EXCEEDS_BOUND",
+    "REFUSED:DEPENDENCY_NOT_ADMITTED",
+    "REFUSED:DEPENDENCY_CYCLE",
 )
 
 
@@ -105,6 +117,129 @@ def _row_refusals(row: dict[str, Any]) -> list[str]:
     return out
 
 
+def _lineage_refusals(row: dict[str, Any], bound: int | None) -> list[str]:
+    """PR lineage of a row: one CANONICAL head at the row sha, no open alternatives.
+
+    Each entry: {pr, sha, state, draft, mergeable, disposition, additions?}. A row
+    without ``lineage`` is unaffected.
+    """
+    sid = row.get("subject_id", "?")
+    lineage = row.get("lineage")
+    if lineage is None:
+        return []
+    if not isinstance(lineage, list):
+        return [f"REFUSED:MALFORMED_ROW:{sid}:lineage"]
+    out: list[str] = []
+    canonical = []
+    for pos, pr in enumerate(lineage):
+        if (
+            not isinstance(pr, dict)
+            or not isinstance(pr.get("pr"), int)
+            or isinstance(pr.get("pr"), bool)
+            or not _SHA40.fullmatch(str(pr.get("sha", "")))
+            or pr.get("state") not in LINEAGE_STATES
+            or pr.get("disposition") not in LINEAGE_DISPOSITIONS
+        ):
+            out.append(f"REFUSED:MALFORMED_ROW:{sid}:lineage[{pos}]")
+            continue
+        n = pr["pr"]
+        if pr["disposition"] == "CANONICAL":
+            canonical.append(pr)
+            if pr["sha"] != row.get("sha"):
+                out.append(f"REFUSED:CANONICAL_SUBJECT_SPLIT:{sid}:pr={n}")
+            additions = pr.get("additions", 0)
+            if bound is not None and isinstance(additions, int) and additions > bound:
+                out.append(f"REFUSED:SCOPE_EXCEEDS_BOUND:{sid}:pr={n}:additions={additions}>{bound}")
+        elif pr["state"] == "OPEN":
+            if pr["disposition"] in {"SUPERSEDED", "ZOMBIE"}:
+                out.append(f"REFUSED:SUPERSEDED_LINEAGE_OPEN:{sid}:pr={n}")
+            else:
+                out.append(f"REFUSED:SUCCESSOR_AMBIGUOUS:{sid}:pr={n}")
+    if len(canonical) > 1:
+        out.append(f"REFUSED:SUCCESSOR_AMBIGUOUS:{sid}:canonical={len(canonical)}")
+    if row.get("impl_standing") == "ALIVE":
+        for pr in canonical:
+            if pr["state"] != "MERGED":
+                out.append(
+                    f"REFUSED:ALIVE_ON_NON_FINAL_HEAD:{sid}:pr={pr['pr']}:state={pr['state']}"
+                    f":draft={bool(pr.get('draft'))}:mergeable={pr.get('mergeable', 'UNKNOWN')}"
+                )
+    return out
+
+
+def _dependency_refusals(rows: list[dict[str, Any]]) -> list[str]:
+    ids = {r.get("subject_id") for r in rows}
+    out: list[str] = []
+    graph: dict[str, list[str]] = {}
+    for row in rows:
+        sid = row.get("subject_id")
+        deps = row.get("depends_on", [])
+        if not isinstance(deps, list) or not all(isinstance(d, str) for d in deps):
+            out.append(f"REFUSED:MALFORMED_ROW:{sid}:depends_on")
+            continue
+        for dep in deps:
+            if dep not in ids or dep == sid:
+                out.append(f"REFUSED:DEPENDENCY_NOT_ADMITTED:{sid}:{dep}")
+        graph[sid] = [d for d in deps if d in ids and d != sid]
+    state: dict[str, int] = {}
+
+    def visit(node: str) -> None:
+        state[node] = 1
+        for dep in graph.get(node, []):
+            if state.get(dep) == 1:
+                out.append(f"REFUSED:DEPENDENCY_CYCLE:{node}->{dep}")
+            elif dep not in state:
+                visit(dep)
+        state[node] = 2
+
+    for node in sorted(graph, key=str):
+        if node not in state:
+            visit(node)
+    return out
+
+
+def repair_order(rows: list[dict[str, Any]], remaining_ids: set[str]) -> list[str]:
+    """Rows that still carry a typed blocker, dependencies first.
+
+    Ties break by criticality: the subject that more rows (transitively) depend on
+    is repaired first, then by subject_id.
+    """
+    graph: dict[str, list[str]] = {}
+    for r in rows:
+        deps = r.get("depends_on", [])
+        graph[r.get("subject_id")] = [d for d in deps if isinstance(d, str)] if isinstance(deps, list) else []
+    dependents: dict[str, set[str]] = {}
+    for sid, deps in graph.items():
+        for dep in deps:
+            dependents.setdefault(dep, set()).add(sid)
+
+    def reach(sid: str) -> int:
+        seen: set[str] = set()
+        stack = list(dependents.get(sid, ()))
+        while stack:
+            node = stack.pop()
+            if node not in seen:
+                seen.add(node)
+                stack.extend(dependents.get(node, ()))
+        return len(seen)
+
+    weight = {sid: reach(sid) for sid in remaining_ids}
+    order: list[str] = []
+    done: set[str] = set()
+    while len(done) < len(remaining_ids):
+        ready = [
+            sid
+            for sid in remaining_ids
+            if sid not in done and all(d in done or d not in remaining_ids for d in graph.get(sid, []))
+        ]
+        if not ready:  # a cycle is refused elsewhere; emit the rest deterministically
+            ready = [sid for sid in remaining_ids if sid not in done]
+        nxt = min(ready, key=lambda sid: (-weight[sid], str(sid)))
+        order.append(nxt)
+        done.add(nxt)
+    return order
+
+
 def evaluate(closure: dict[str, Any]) -> Verdict:
     rows = closure.get("subjects", [])
     refusals: list[str] = []
@@ -113,8 +248,14 @@ def evaluate(closure: dict[str, Any]) -> Verdict:
     ids = [r.get("subject_id") for r in rows]
     for dup in sorted({i for i in ids if ids.count(i) > 1}, key=str):
         refusals.append(f"REFUSED:DUPLICATE_SUBJECT_ID:{dup}")
+    bound = closure.get("max_canonical_additions")
+    if bound is not None and (not isinstance(bound, int) or isinstance(bound, bool) or bound < 0):
+        refusals.append("REFUSED:MALFORMED_ROW:closure:max_canonical_additions")
+        bound = None
     for row in rows:
         refusals.extend(_row_refusals(row))
+        refusals.extend(_lineage_refusals(row, bound))
+    refusals.extend(_dependency_refusals(rows))
 
     transient = {t["sha"]: t for t in closure.get("transient_heads", [])}
     for row in rows:
@@ -163,6 +304,13 @@ def evaluate(closure: dict[str, Any]) -> Verdict:
         ),
         "authority": "NONE",
     }
+    if any("depends_on" in r for r in rows):
+        # Present only when the closure declares edges, so existing receipts keep their digest.
+        payload["repair_order"] = repair_order(rows, {
+            r.get("subject_id")
+            for r in rows
+            if r.get("spec_standing") in _NON_TERMINAL or r.get("impl_standing") in _NON_TERMINAL
+        })
     payload["receipt_digest"] = canonical_digest(payload)
     return Verdict(standing, tuple(refusals), remaining, payload)
 
