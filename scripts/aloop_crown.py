@@ -117,6 +117,11 @@ def validate_record(raw: Any, lane: str) -> Dict[str, Any]:
         for commit in commits:
             if not isinstance(commit, str) or not SHA40.fullmatch(commit):
                 raise Refusal("INVALID_RECORD", f"{lane}: commit {commit!r} must be a sha40")
+        read_only = repo.get("read_only", False)
+        if not isinstance(read_only, bool):
+            raise Refusal(
+                "INVALID_RECORD", f"{lane}: read_only must be a boolean when present"
+            )
 
     for list_field in ("commands", "tests", "falsifiers"):
         entries = raw.get(list_field)
@@ -389,11 +394,16 @@ def evaluate(records: Dict[str, Optional[Dict[str, Any]]]) -> Dict[str, Any]:
         for repo in rec.get("repos", []):
             if not isinstance(repo, dict):
                 continue
-            if repo.get("start_sha") == repo.get("final_sha") and not repo.get("commits"):
+            if (
+                repo.get("start_sha") == repo.get("final_sha")
+                and not repo.get("commits")
+                and not repo.get("read_only", False)
+            ):
                 fail(
                     "PROCESS",
                     f"{lane}: {repo.get('repo')}: start==final with no commits "
-                    "(read-only objectives must be declared in the record)",
+                    "and read_only not declared (R008: declare read_only for "
+                    "verification-only objectives)",
                 )
         if rec.get("stress", {}).get("result") == "PASS":
             stress_pass = True

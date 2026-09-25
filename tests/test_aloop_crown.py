@@ -230,6 +230,26 @@ class AutonomousLoopCrownTests(unittest.TestCase):
             mod.load_lane_records(root)
         self.assertEqual("INVALID_RECORD", caught.exception.code)
 
+    def test_undeclared_read_only_repo_fails_process(self):
+        """R008: start==final with no commits and no read_only declaration fails PROCESS."""
+        record = alive_lane_one()
+        record["repos"][0]["final_sha"] = SHA_A
+        record["repos"][0]["commits"] = []
+        root = write_corpus({"lane-1": record})
+        result = mod.verdict(mod.load_lane_records(root), "E", root)
+        self.assertIn("PROCESS", result["missing_terms"])
+        self.assertTrue(any("read_only not declared" in m for m in result["terms"]["PROCESS"]["missing"]))
+
+    def test_declared_read_only_repo_passes_process(self):
+        """R008: an honest verification-only lane declares read_only and PROCESS admits it."""
+        record = alive_lane_one()
+        record["repos"][0]["final_sha"] = SHA_A
+        record["repos"][0]["commits"] = []
+        record["repos"][0]["read_only"] = True
+        root = write_corpus({"lane-1": record})
+        result = mod.verdict(mod.load_lane_records(root), "E", root)
+        self.assertNotIn("PROCESS", result["missing_terms"])
+
     def test_empty_corpus_fails_all_terms(self):
         """Anti-vacuity: a gate with no witnessed evidence admits nothing (zero bits)."""
         root = write_corpus({"lane-1": None, "lane-2": None})
