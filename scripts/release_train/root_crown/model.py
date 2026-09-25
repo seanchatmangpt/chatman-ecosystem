@@ -70,7 +70,7 @@ REQ_RULES = (
 # Projection (projector.py).
 PROJECTOR_RULES = ("PROJECTION_DRIFT", "PROJECTION_INPUT_MISSING")
 # Berthier recompile court (berthier.py).
-BERTHIER_RULES = (
+BERTHIER_RECOMPILE_RULES = (
     "STALE_PROJECTION",
     "ARTIFACT_DIGEST_MISMATCH",
     "OMITTED_SUBJECT",
@@ -81,6 +81,12 @@ BERTHIER_RULES = (
     "DEPENDENCY_CYCLE",
     "NO_RENEWAL_DELTA",
 )
+BERTHIER_CAMPAIGN_RULES = (
+    "CONSTRAINT_WEAKENING",
+    "CROSS_PARTITION_CONTAMINATION",
+    "STRATEGY_UNBOUNDED",
+)
+BERTHIER_RULES = BERTHIER_RECOMPILE_RULES + BERTHIER_CAMPAIGN_RULES
 # Crown refusals (crown.py + evidence.py): each one makes the release REFUSED.
 CROWN_RULES = (
     "MANIFEST_INVALID",
@@ -170,6 +176,9 @@ FAILURE_CLASS: dict[str, tuple[str, str]] = {
     "PREMISE_UNBOUND": ("AUTHORITY_FAILURE", "mu_on_O"),
     "DEPENDENCY_CYCLE": ("DEPENDENCY_FAILURE", "mu_unlawful"),
     "NO_RENEWAL_DELTA": ("VERIFICATION_FAILURE", "admission_vacuous"),
+    "CONSTRAINT_WEAKENING": ("MODEL_COUNTEREXAMPLE", "mu_unlawful"),
+    "CROSS_PARTITION_CONTAMINATION": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    "STRATEGY_UNBOUNDED": ("CAPABILITY_GAP", "admission_vacuous"),
     # crown refusals
     "MANIFEST_INVALID": ("VERIFICATION_FAILURE", "mu_unlawful"),
     "SUBJECT_NOT_TERMINAL": ("SUBJECT_FAILURE", "R_missing_standing"),
