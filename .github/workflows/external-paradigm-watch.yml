@@ -1,0 +1,41 @@
+name: external-paradigm-watch
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 13 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  ecc-delta:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify supplier registry
+        run: python3 scripts/verify_external_paradigms.py --json
+
+      - name: Discover ECC exact-head delta
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p target/external-paradigms
+          python3 scripts/detect_external_paradigm_delta.py             --supplier ecc             --discovery-ref main             --json-out target/external-paradigms/ecc-delta.json
+
+      - name: Publish candidate summary
+        run: |
+          {
+            echo "## ECC paradigm supplier"
+            echo
+            echo '~~~json'
+            cat target/external-paradigms/ecc-delta.json
+            echo '~~~'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Preserve delta evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecc-paradigm-delta
+          path: target/external-paradigms/ecc-delta.json
