@@ -28,7 +28,7 @@ class CapabilityRdfTests(unittest.TestCase):
         first = rdf.render(self.items)
         second = rdf.render(self.items)
         self.assertEqual(first, second)
-        self.assertEqual(first.count(" a ce:Capability ;"), 39)
+        self.assertEqual(first.count(" a ce:Capability ;"), 44)
         for item in self.items:
             self.assertIn(f'dcterms:identifier "{item["id"]}"', first)
         self.assertIn("ce:capability-broker-consequential-do a ce:Capability", first)
