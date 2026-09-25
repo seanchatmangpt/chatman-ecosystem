@@ -1,0 +1,248 @@
+{
+  "authority": "NONE (decision only; tagging requires the release-crown environment approval)",
+  "crown_sha": "4d05717e361ffefa1049885519e7b1606933cc50",
+  "decision": "ILLEGAL",
+  "existing_tag_sha": null,
+  "head_sha": "4d05717e361ffefa1049885519e7b1606933cc50",
+  "reasons": [
+    "TAG_ILLEGAL:CROWN_NOT_ALIVE:REFUSED:terms=A,C,F,M,R,X"
+  ],
+  "receipt_digest": "sha256:f2227dc4546dba4a577bf8afdb9c4a924e519b66095dd77b4c16e78a778b6c47",
+  "remaining": [
+    {
+      "broken_term": "R_missing_standing",
+      "code": "CLOSURE_PARTIAL",
+      "detail": "closure PARTIAL_ALIVE; remaining=19; receipt=sha256:b0e7c33f387d1d31444e99fba19481744391557c743b6a13320115a4a3f073d2",
+      "failure_class": "DEPENDENCY_FAILURE",
+      "id": "AC-02",
+      "state": "BLOCKED",
+      "term": "C"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/sjira-origin-authority.json:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-03",
+      "state": "BLOCKED",
+      "term": "A"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/prose-inert.json:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-04",
+      "state": "BLOCKED",
+      "term": "A"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/autofde-lab:release/v26.9.25/receipts/tlc-court.json:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-07",
+      "state": "BLOCKED",
+      "term": "F"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-08",
+      "state": "BLOCKED",
+      "term": "R"
+    },
+    {
+      "broken_term": "mu_on_O",
+      "code": "UNAUTHORIZED_WORKTREE",
+      "detail": "3: autofde-lab:/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab,unibit:/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab316fa1,unibit:/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab9779ba",
+      "failure_class": "SUBJECT_FAILURE",
+      "id": "AC-09",
+      "state": "REFUSED",
+      "term": "M"
+    },
+    {
+      "broken_term": "R_missing_standing",
+      "code": "ARTIFACT_BLOCKED",
+      "detail": "local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json:{'broken_term': 'R_missing_authority', 'derived_from': 'replay commands above at subject_sha (git blob id of INVENTORY.json); gate PASS + byte-exact drill PASS for every retired inventory copy; verify exit 1 with only typed violations (owner sign-off / secret-unpreservable / embedded-in-foreign-repo / declared submodule)', 'value': 'PARTIAL_ALIVE'}(untyped)",
+      "failure_class": "DEPENDENCY_FAILURE",
+      "id": "AC-10",
+      "state": "BLOCKED",
+      "term": "M"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "OBSERVATION_MISSING",
+      "detail": "pins unobserved: seanchatmangpt/zoela",
+      "failure_class": "TRANSPORT_FAILURE",
+      "id": "AC-11",
+      "state": "BLOCKED",
+      "term": "M"
+    },
+    {
+      "broken_term": "R_missing_replay",
+      "code": "NOT_COLD",
+      "detail": "projection current but evaluation environment not declared cold (clean runner)",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-12",
+      "state": "BLOCKED",
+      "term": "R"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/xaas:release/v26.9.25/receipts/case-study-schema.json:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-13",
+      "state": "BLOCKED",
+      "term": "X"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/xaas:release/v26.9.25/receipts/wd-evidence-ceiling.json:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-14",
+      "state": "BLOCKED",
+      "term": "A"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/zoela:release/v26.9.25/receipts/godslaw-migration.json:repo-unobserved:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-15",
+      "state": "BLOCKED",
+      "term": "C"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/zoela:release/v26.9.25/receipts/vision2027-admission.json:repo-unobserved:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-16",
+      "state": "BLOCKED",
+      "term": "A"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "OBSERVATION_MISSING",
+      "detail": "seanchatmangpt/zoela:HTTP404",
+      "failure_class": "TRANSPORT_FAILURE",
+      "id": "AC-17",
+      "state": "BLOCKED",
+      "term": "C"
+    },
+    {
+      "broken_term": "R_missing_standing",
+      "code": "CROWN_DEPENDENCIES_OPEN",
+      "detail": "AC-02,AC-03,AC-04,AC-07,AC-08,AC-09,AC-10,AC-11,AC-12,AC-13,AC-14,AC-15,AC-16,AC-17,F-01,F-02,F-03,F-04,F-05,F-08,F-09,F-10,F-11,F-12,F-13",
+      "failure_class": "DEPENDENCY_FAILURE",
+      "id": "AC-18",
+      "state": "BLOCKED",
+      "term": "C"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/prose-inert.json:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-01",
+      "state": "BLOCKED",
+      "term": "A"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/sjira-origin-authority.json:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-02",
+      "state": "BLOCKED",
+      "term": "A"
+    },
+    {
+      "broken_term": "R_missing_standing",
+      "code": "CLOSURE_PARTIAL",
+      "detail": "closure PARTIAL_ALIVE; remaining=19; receipt=sha256:b0e7c33f387d1d31444e99fba19481744391557c743b6a13320115a4a3f073d2",
+      "failure_class": "DEPENDENCY_FAILURE",
+      "id": "F-03",
+      "state": "BLOCKED",
+      "term": "C"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "OBSERVATION_MISSING",
+      "detail": "pins unobserved: seanchatmangpt/zoela",
+      "failure_class": "TRANSPORT_FAILURE",
+      "id": "F-04",
+      "state": "BLOCKED",
+      "term": "M"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-05",
+      "state": "BLOCKED",
+      "term": "R"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/autofde-lab:release/v26.9.25/receipts/tlc-court.json:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-08",
+      "state": "BLOCKED",
+      "term": "F"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/xaas:release/v26.9.25/receipts/cloud-runtime.json:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-09",
+      "state": "BLOCKED",
+      "term": "R"
+    },
+    {
+      "broken_term": "mu_on_O",
+      "code": "UNAUTHORIZED_WORKTREE",
+      "detail": "3: autofde-lab:/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab,unibit:/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab316fa1,unibit:/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab9779ba",
+      "failure_class": "SUBJECT_FAILURE",
+      "id": "F-10",
+      "state": "REFUSED",
+      "term": "M"
+    },
+    {
+      "broken_term": "R_missing_standing",
+      "code": "ARTIFACT_BLOCKED",
+      "detail": "local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json:{'broken_term': 'R_missing_authority', 'derived_from': 'replay commands above at subject_sha (git blob id of INVENTORY.json); gate PASS + byte-exact drill PASS for every retired inventory copy; verify exit 1 with only typed violations (owner sign-off / secret-unpreservable / embedded-in-foreign-repo / declared submodule)', 'value': 'PARTIAL_ALIVE'}(untyped)",
+      "failure_class": "DEPENDENCY_FAILURE",
+      "id": "F-11",
+      "state": "BLOCKED",
+      "term": "M"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/xaas:release/v26.9.25/receipts/wd-evidence-ceiling.json:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-12",
+      "state": "BLOCKED",
+      "term": "A"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "code": "EVIDENCE_ABSENT",
+      "detail": "seanchatmangpt/zoela:release/v26.9.25/receipts/godslaw-interpretation.json:repo-unobserved:HTTP404",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-13",
+      "state": "BLOCKED",
+      "term": "A"
+    }
+  ],
+  "tag": "v26.9.25"
+}

@@ -64,7 +64,7 @@
         "premise:RFC-0004#\u00a73->req:F-08"
       ],
       "dependencies": [],
-      "exact_subject": "seanchatmangpt/autofde-lab@72900f03cf9772d84d0bace1e35e86eb6b077b92",
+      "exact_subject": "seanchatmangpt/autofde-lab@6fbe1807388e8c44ae5d5f75455a082a745055c7",
       "falsifier": [
         "F-08"
       ],
@@ -88,7 +88,7 @@
       "subject": {
         "ref": "master",
         "repository": "seanchatmangpt/autofde-lab",
-        "sha": "72900f03cf9772d84d0bace1e35e86eb6b077b92"
+        "sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7"
       },
       "successor": null,
       "verification": [
@@ -167,7 +167,7 @@
       "dependencies": [
         "AC-18"
       ],
-      "exact_subject": "seanchatmangpt/chatman-ecosystem@49745eeb234317d619f965240dc7f0e23fcfef5d",
+      "exact_subject": "seanchatmangpt/chatman-ecosystem@4d05717e361ffefa1049885519e7b1606933cc50",
       "falsifier": [
         "F-03",
         "F-04",
@@ -242,7 +242,7 @@
       "subject": {
         "ref": "main",
         "repository": "seanchatmangpt/chatman-ecosystem",
-        "sha": "49745eeb234317d619f965240dc7f0e23fcfef5d"
+        "sha": "4d05717e361ffefa1049885519e7b1606933cc50"
       },
       "successor": null,
       "verification": [
@@ -346,7 +346,7 @@
         "premise:RFC-0004#\u00a73->req:F-12"
       ],
       "dependencies": [],
-      "exact_subject": "seanchatmangpt/xaas@70f7ea75df1d20a37666cd09050d5ec10a237892",
+      "exact_subject": "seanchatmangpt/xaas@c10cdab95b927ed82c5c212a3f36d02b52ed525e",
       "falsifier": [
         "F-09",
         "F-12"
@@ -379,7 +379,7 @@
       "subject": {
         "ref": "main",
         "repository": "seanchatmangpt/xaas",
-        "sha": "70f7ea75df1d20a37666cd09050d5ec10a237892"
+        "sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
       },
       "successor": null,
       "verification": [
