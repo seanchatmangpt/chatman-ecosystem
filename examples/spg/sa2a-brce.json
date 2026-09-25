@@ -1,0 +1,93 @@
+{
+  "schema": "chatman.spg.v1",
+  "id": "spg:sa2a-brce-first-court",
+  "version": "26.9.25",
+  "state": "CANDIDATE",
+  "standing": "NONE",
+  "nodes": [
+    {"id": "observe-request", "class": "OBSERVE", "capability": "sa2a.request.observe"},
+    {"id": "select-capability", "class": "SELECT", "capability": "sa2a.capability.select"},
+    {"id": "construct-command", "class": "CONSTRUCT", "capability": "sa2a.command.construct"},
+    {"id": "admit-command", "class": "SELECT", "capability": "brce.command.admit"},
+    {"id": "actuate", "class": "DO", "capability": "brce.command.do"},
+    {"id": "verify", "class": "OBSERVE", "capability": "gall.result.verify"},
+    {"id": "receipt", "class": "OBSERVE", "capability": "brce.receipt.observe"}
+  ],
+  "edges": [
+    {
+      "id": "e1", "from": "observe-request", "to": "select-capability", "relation": "LEADS_TO",
+      "guard": "request.observed", "evidence_required": ["request"], "authority_required": "NONE",
+      "consequence": "observational", "receipt_required": false
+    },
+    {
+      "id": "e2", "from": "select-capability", "to": "construct-command", "relation": "LEADS_TO",
+      "guard": "capability.selected", "evidence_required": ["capability-contract"], "authority_required": "NONE",
+      "consequence": "constructive", "receipt_required": false
+    },
+    {
+      "id": "e3", "from": "construct-command", "to": "admit-command", "relation": "PROVIDES_INPUT_FOR",
+      "guard": "command.constructed", "evidence_required": ["command-descriptor"], "authority_required": "NONE",
+      "consequence": "constructive", "receipt_required": false
+    },
+    {
+      "id": "e4", "from": "admit-command", "to": "actuate", "relation": "TRIGGERS",
+      "guard": "command.admitted", "evidence_required": ["admission-receipt", "authority-grant"],
+      "authority_required": "BRCE_GRANT", "consequence": "consequential", "receipt_required": true,
+      "falsifier": "actuation occurs without admitted authority or consequence receipt"
+    },
+    {
+      "id": "e5", "from": "actuate", "to": "verify", "relation": "LEADS_TO",
+      "guard": "execution.receipt.exists", "evidence_required": ["execution-receipt"], "authority_required": "NONE",
+      "consequence": "observational", "receipt_required": false
+    },
+    {
+      "id": "e6", "from": "verify", "to": "receipt", "relation": "CONVERGES_TO",
+      "guard": "verification.complete", "evidence_required": ["verification-result"], "authority_required": "NONE",
+      "consequence": "observational", "receipt_required": false
+    }
+  ],
+  "projections": {
+    "hddl": {"observe-request": "observe_request", "select-capability": "select_capability", "construct-command": "construct_command", "admit-command": "admit_command", "actuate": "actuate", "verify": "verify_result", "receipt": "observe_receipt"},
+    "tla_plus": {"actuate": "Actuate", "verify": "Verify", "receipt": "Receipt"},
+    "ocel2": {"observe-request": "sa2a_request_observed", "actuate": "brce_actuation", "verify": "gall_verify", "receipt": "brce_receipt"},
+    "sa2a": {"observe-request": "request.observe", "select-capability": "capability.select", "construct-command": "command.construct"},
+    "brce": {"admit-command": "command.admit", "actuate": "command.do", "receipt": "receipt.observe"}
+  },
+  "prior_art": [
+    {
+      "required_semantics": ["hierarchical-planning", "task-decomposition"],
+      "searched": ["prior:hddl", "prior:pddl"],
+      "disposition": "REUSE",
+      "selected": ["prior:hddl"],
+      "falsifier": "HDDL cannot encode the selected court decomposition under the admitted boundary"
+    },
+    {
+      "required_semantics": ["nondeterministic-planning"],
+      "searched": ["prior:fond"],
+      "disposition": "REUSE",
+      "selected": ["prior:fond"],
+      "falsifier": "FOND cannot represent the relevant nondeterministic action outcomes"
+    },
+    {
+      "required_semantics": ["transition-system", "safety", "liveness"],
+      "searched": ["prior:tla-plus"],
+      "disposition": "REUSE",
+      "selected": ["prior:tla-plus"],
+      "falsifier": "TLA+ cannot represent the selected transition invariants"
+    },
+    {
+      "required_semantics": ["object-centric-events", "execution-observation"],
+      "searched": ["prior:ocel2"],
+      "disposition": "REUSE",
+      "selected": ["prior:ocel2"],
+      "falsifier": "OCEL 2.0 cannot preserve the selected execution identities"
+    },
+    {
+      "required_semantics": ["graph-constraints", "admission"],
+      "searched": ["prior:shacl", "prior:owl2"],
+      "disposition": "COMPOSE",
+      "selected": ["prior:shacl", "prior:owl2"],
+      "falsifier": "OWL/SHACL composition cannot express the selected graph admission constraints"
+    }
+  ]
+}
