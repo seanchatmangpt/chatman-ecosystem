@@ -28,6 +28,7 @@ on:
     paths:
       - 'release/v26.9.25/**'
       - 'scripts/release_train/root_crown/**'
+      - 'scripts/durable_locator/**'
       - 'scripts/observe_release_heads.py'
       - '.github/workflows/root-crown.yml'
   pull_request:
@@ -36,6 +37,8 @@ on:
       - 'scripts/release_train/root_crown/**'
       - 'scripts/observe_release_heads.py'
       - 'tests/release_train/root_crown/**'
+      - 'scripts/durable_locator/**'
+      - 'tests/durable_locator/**'
       - 'tests/test_observe_release_heads.py'
       - '.github/workflows/root-crown.yml'
 
@@ -143,6 +146,23 @@ jobs:
             echo "::endgroup::"
           done
           python3 -m unittest discover -s tests -p 'test_observe_release_heads.py' -v
+
+      - name: Durable evidence locators (CE23-9; read-only git cat-file on this checkout)
+        env:
+          PYTHONPATH: .
+          PYTHONDONTWRITEBYTECODE: '1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          # This checkout's object DB is the DB for seanchatmangpt/chatman-ecosystem locators
+          # (fetch-depth 0 keeps E1 c599667a reachable); the other repos are absent here, so
+          # completeness (which rescans them) is a local gate, not this job's.
+          repos="${RUNNER_TEMP:-/tmp}/durable-locator-repos"
+          mkdir -p "$repos" && ln -sfn "$GITHUB_WORKSPACE" "$repos/chatman-ecosystem"
+          export DURABLE_LOCATOR_REPOS_ROOT="$repos"
+          python3 -m unittest discover -s tests/durable_locator -p 'test_*.py' -v
+          python3 scripts/durable_locator/durable_locator.py --no-network verify release/v26.9.25/hardening/evidence/INDEX.json
+          python3 scripts/durable_locator/durable_locator.py requirements-locators --release v26.9.25 --check
 
       - name: Refuse ambient consequence surfaces in the court
         shell: bash

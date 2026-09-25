@@ -1,0 +1,289 @@
+{
+  "schema": "https://chatman.dev/root-crown/hardening/locator-rules/v1",
+  "release": "v26.9.25",
+  "_about": "Hand-written input of durable_locator.py index (HANDWRITTEN.md row). sources: where scratch/tmp/.claude/migration locators are scanned mechanically (tagged payload at the tag commit; v26.9.25 receipts of six repos at their default-branch heads observed 2026-09-25). rules: first match wins; durable = path under e1.root at e1.commit; residue = typed non-durable disposition. Every scanned locator must match a rule, or it is listed as unmatched (REFUSED[UNINDEXED_SCRATCH_LOCATOR]).",
+  "e1": {
+    "repository": "seanchatmangpt/chatman-ecosystem",
+    "commit": "c599667a84ec79d832bb779bce1730b33b43fdd4",
+    "branch": "hardening/v26.9.25-evidence-durable",
+    "root": "release/v26.9.25/hardening/evidence/courts"
+  },
+  "sources": [
+    {
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "prefix": "release/v26.9.25",
+      "role": "tagged payload (v26.9.25^{commit})"
+    },
+    {
+      "repository": "seanchatmangpt/affidavit",
+      "sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+      "prefix": "release/v26.9.25",
+      "role": "default-branch head main"
+    },
+    {
+      "repository": "seanchatmangpt/ggen_igniter",
+      "sha": "9639198b5c3e0e25906acc5b36dd9eb17bd592be",
+      "prefix": "release/v26.9.25",
+      "role": "default-branch head main"
+    },
+    {
+      "repository": "seanchatmangpt/xaas",
+      "sha": "e039967dac9f88961873b6a958f3979a106854f2",
+      "prefix": "release/v26.9.25",
+      "role": "default-branch head main"
+    },
+    {
+      "repository": "seanchatmangpt/autofde-lab",
+      "sha": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0",
+      "prefix": "release/v26.9.25",
+      "role": "default-branch head master"
+    },
+    {
+      "repository": "seanchatmangpt/zoela",
+      "sha": "89745f2fa4f7f438749ef61b638d17739ef11630",
+      "prefix": "release/v26.9.25",
+      "role": "default-branch head main"
+    },
+    {
+      "repository": "seanchatmangpt/engineering-standards",
+      "sha": "71a6f607074b0f8d1b23855c11f10557a545b655",
+      "prefix": "docs/engineering/rfc",
+      "match": "v26\\.9\\.25",
+      "role": "default-branch head main (no release/v26.9.25 tree; the v26.9.25 RFCs)"
+    }
+  ],
+  "rules": [
+    {
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "path": "/closure\\.json$",
+      "locator": "^scratchpad/v26925/lanes/crown-final/affidavit-d70b0e40-courts\\.json$",
+      "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+      "recorded_field": null,
+      "id": "affidavit-courts-harvest-brce_court",
+      "pointer": "^/subjects/9/courts/0/evidence$",
+      "companions": [
+        {
+          "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/court.out",
+          "recorded_field": "output_sha256"
+        },
+        {
+          "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/court.exit"
+        }
+      ]
+    },
+    {
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "path": "/closure\\.json$",
+      "locator": "^scratchpad/v26925/lanes/crown-final/affidavit-d70b0e40-courts\\.json$",
+      "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+      "recorded_field": null,
+      "id": "affidavit-courts-harvest-fmt",
+      "pointer": "^/subjects/9/courts/1/evidence$",
+      "companions": [
+        {
+          "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/fmt.log",
+          "recorded_by": {
+            "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+            "pointer": "/courts/fmt/log_sha256"
+          }
+        }
+      ]
+    },
+    {
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "path": "/closure\\.json$",
+      "locator": "^scratchpad/v26925/lanes/crown-final/affidavit-d70b0e40-courts\\.json$",
+      "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+      "recorded_field": null,
+      "id": "affidavit-courts-harvest-clippy",
+      "pointer": "^/subjects/9/courts/2/evidence$",
+      "companions": [
+        {
+          "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/clippy.log",
+          "recorded_by": {
+            "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+            "pointer": "/courts/clippy/log_sha256"
+          }
+        }
+      ]
+    },
+    {
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "path": "/closure\\.json$",
+      "locator": "^scratchpad/v26925/lanes/crown-final/affidavit-d70b0e40-courts\\.json$",
+      "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+      "recorded_field": null,
+      "id": "affidavit-courts-harvest-test",
+      "pointer": "^/subjects/9/courts/3/evidence$",
+      "companions": [
+        {
+          "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/test.log",
+          "recorded_by": {
+            "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+            "pointer": "/courts/test/log_sha256"
+          }
+        }
+      ]
+    },
+    {
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "path": "/closure\\.json$",
+      "locator": "^scratchpad/v26925/lanes/crown-final/affidavit-d70b0e40-courts\\.json$",
+      "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+      "recorded_field": null,
+      "id": "affidavit-courts-harvest-doctest",
+      "pointer": "^/subjects/9/courts/4/evidence$",
+      "companions": [
+        {
+          "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/doctest.log",
+          "recorded_by": {
+            "durable": "affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+            "pointer": "/courts/doctest/log_sha256"
+          }
+        }
+      ]
+    },
+    {
+      "id": "engineering-standards-act-docs-receipt",
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "path": "/closure\\.json$",
+      "locator": "^scratchpad/v26925/act/receipts/engineering-standards-7e8d4c5cb5ae-docs\\.receipt\\.json$",
+      "durable": "engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/docs.receipt.json",
+      "companions": [
+        {
+          "durable": "engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/docs.log",
+          "recorded_field": "log_sha256"
+        },
+        {
+          "durable": "engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/docs.log",
+          "recorded_by": {
+            "durable": "engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/docs.receipt.json",
+            "pointer": "/log_sha256"
+          }
+        }
+      ]
+    },
+    {
+      "id": "zoela-act-admission-receipt-f1313f1c",
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "path": "/closure\\.json$",
+      "locator": "^scratchpad/v26925/act/receipts/zoela-f1313f1c1462-zoela-admission\\.receipt\\.json$",
+      "durable": "zoela/f1313f1c1462b9d2f4dd3cb010dbe5921f53185d/zoela-admission.receipt.json",
+      "companions": [
+        {
+          "durable": "zoela/f1313f1c1462b9d2f4dd3cb010dbe5921f53185d/zoela-admission.log",
+          "recorded_by": {
+            "durable": "zoela/f1313f1c1462b9d2f4dd3cb010dbe5921f53185d/zoela-admission.receipt.json",
+            "pointer": "/log_sha256"
+          }
+        }
+      ]
+    },
+    {
+      "id": "xaas-case-study-semantic-report-output",
+      "repository": "seanchatmangpt/xaas",
+      "path": "release/v26\\.9\\.25/receipts/case-study-schema\\.json$",
+      "pointer": "^/commands/0/command$",
+      "locator": "--output \\S*scratchpad/v26925/lanes/receipts-xaas/out/receipts/work/semantic-report\\.json",
+      "durable": "xaas/c10cdab95b927ed82c5c212a3f36d02b52ed525e/case-study/semantic-report.json",
+      "recorded_field": "report_file_sha256",
+      "companions": [
+        {
+          "durable": "xaas/c10cdab95b927ed82c5c212a3f36d02b52ed525e/case-study/court.stdout",
+          "recorded_field": "output_sha256"
+        }
+      ]
+    },
+    {
+      "id": "xaas-case-study-interpreter-path",
+      "repository": "seanchatmangpt/xaas",
+      "path": "release/v26\\.9\\.25/receipts/case-study-schema\\.json$",
+      "pointer": "^/commands/1/command$",
+      "locator": "scratchpad/v26925/lanes/receipts-xaas/venv/bin/python ",
+      "residue": "INTERPRETER_PATH(scratch venv interpreter named in the command line; not an evidence file; the command's output is bound by output_sha256)",
+      "standing": "NOT_EVIDENCE",
+      "rfc_class": "EVIDENCE_FAILURE",
+      "broken_term": "R_missing_replay",
+      "edge": "xaas manufacture.py records the interpreter as a toolchain identity (name + version), not a scratch venv path",
+      "companions": [
+        {
+          "durable": "xaas/c10cdab95b927ed82c5c212a3f36d02b52ed525e/case-study/wd-deck.stdout",
+          "recorded_field": "output_sha256",
+          "divergence": {
+            "type": "BLOCKED(EVIDENCE_FAILURE:recorded-output-not-durable)",
+            "broken_term": "R_missing_replay",
+            "rfc_class": "EVIDENCE_FAILURE",
+            "detail": "the receipt records wd_deck output_sha256 b4cea3df over stdout+stderr (manufacture.py L56-61); the E1 wd-deck.stdout (+ empty wd-deck.stderr) hashes 7214617a, so the E1 bytes are a different run and the recorded output is not durably witnessed",
+            "edge": "replay tools/wd_deck/wd_deck.py case-study --check on an archive of xaas c10cdab9 and commit the exact stdout+stderr bytes"
+          }
+        }
+      ]
+    },
+    {
+      "id": "topology-preserved-bundle",
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "path": "/observations/TOPOLOGY-RECEIPT\\.json$",
+      "pointer": "^/migration_receipt/preserved_refs/\\d+/(bundle|ignored_bundle)/path$",
+      "residue": "DEFERRED_H2(topology bundle bytes under the agent-home migration dir; made durable by PR-H2 hardening/v26.9.25-topology-durable)",
+      "recorded_field": "sha256",
+      "standing": "BLOCKED(EVIDENCE_FAILURE:non-durable-bundle)",
+      "rfc_class": "EVIDENCE_FAILURE",
+      "broken_term": "R_missing_replay",
+      "edge": "PR-H2 copies each bundle whose recorded sha256 matches into a durable store and cites it with a git: or git-notes: locator"
+    },
+    {
+      "id": "topology-replay-dir",
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "path": "/observations/TOPOLOGY-RECEIPT\\.json$",
+      "pointer": "^/replay/(durable_location|commands/\\d+/cwd)$",
+      "residue": "DEFERRED_H2(topology replay directory under the agent-home migration dir; made durable by PR-H2)",
+      "standing": "BLOCKED(EVIDENCE_FAILURE:non-durable-replay-dir)",
+      "rfc_class": "EVIDENCE_FAILURE",
+      "broken_term": "R_missing_replay",
+      "edge": "PR-H2 commits topology.py, its tests and replay_guard.py and rewrites the replay cwd as a git: locator"
+    },
+    {
+      "id": "topology-retired-subject-path",
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "path": "/observations/TOPOLOGY-RECEIPT\\.json$",
+      "pointer": "^/(consequence/files_changed/\\d+|migration_receipt/(deleted_artifacts/\\d+/(path|rollback|moved/\\d+/from)|source_state/copies/\\d+/path|target_state/quarantine/\\d+/path|verification/gate/per_copy/\\d+/path|rollback_procedure/\\d+/commands/\\d+))$",
+      "residue": "SUBJECT_PATH(a retired shadow-copy location that the migration acted on; it names the subject, not evidence bytes)",
+      "standing": "NOT_EVIDENCE"
+    }
+  ],
+  "supplemental": [
+    {
+      "source": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/closure.json",
+      "json_pointer": "/subjects/12/courts/0",
+      "reason": "zoela godslaw witness court: no evidence locator at all in the tagged closure; bound by its recorded output digest",
+      "durable": "zoela/3d16cf3e43e195092161aaba4d481c7654b4035d/godslaw-gate-witness.out.json",
+      "recorded_field": "output_sha256"
+    },
+    {
+      "source": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/closure.json",
+      "json_pointer": "/subjects/12/courts/0",
+      "reason": "zoela godslaw witness court log, bound by its recorded log digest",
+      "durable": "zoela/3d16cf3e43e195092161aaba4d481c7654b4035d/godslaw-gate-witness.log",
+      "recorded_field": "log_sha256"
+    }
+  ],
+  "replays": [
+    {
+      "court": "affidavit:brce_court(AC-08/F-05)",
+      "closure_pointer": "/subjects/9/courts/0",
+      "subject": "git:seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2:examples/brce_court.rs",
+      "materialization": "git archive d70b0e40f9920136510cb0f7f24bf9720feeb4f2 | tar -x (canonical object DB, no clone)",
+      "toolchain": "nightly-2026-08-12 (rustc 1.99.0-nightly 3d6c19bb9 2026-08-11), aarch64-apple-darwin; CARGO_TARGET_DIR in session scratch",
+      "command": "cargo run -q --example brce_court -- <work> d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+      "observed_at": "2026-09-25",
+      "exit": 0,
+      "stderr_bytes": 0,
+      "stdout_sha256": "cf1e5804588d5a2e6980a1566c635532ab37d1fd4291d67888bb7c2a1415a2c0",
+      "recorded_output_sha256": "cf1e5804588d5a2e6980a1566c635532ab37d1fd4291d67888bb7c2a1415a2c0",
+      "durable_output": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/court.out",
+      "result": "LOCAL_EXACT_SHA_REPLAYED",
+      "note": "replayed stdout is byte-identical to the E1 court.out; the scratch replay tree is not evidence and was deleted"
+    }
+  ]
+}
