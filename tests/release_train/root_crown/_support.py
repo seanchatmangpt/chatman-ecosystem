@@ -70,7 +70,7 @@ def alive_case(pins: dict[str, Any]) -> dict[str, Any]:
             "subject_sha": s["subject_sha"],
             "formalism": formalism,
             "claim_id": "CLAIM-1",
-            "artifact_digest": DIGEST,
+            "artifact_digest": "sha256:" + "bc"[i] * 64,  # independent per formalism (XPROD independence law, #269)
             "validator": "fixture-validator",
             "validator_digest": DIGEST,
             "result": "PASS",

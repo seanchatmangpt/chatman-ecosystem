@@ -15,7 +15,7 @@
       "proof": "PR #484 head -> merge"
     }
   ],
-  "_provenance": "Initial v26.9.25 subject rows written by lane chatman-crown at 2026-09-25T08:40Z. Every repository is terminal as typed BLOCKED until its lane lands evidence; the final lane re-harvests courts and updates rows (pins-only PR + projector --write).",
+  "_provenance": "Initial v26.9.25 subject rows written by lane chatman-crown at 2026-09-25T08:40Z. Every repository is terminal as typed BLOCKED until its lane lands evidence; the final lane re-harvests courts and updates rows (pins-only PR + projector --write). | final lane (chatman-final) 2026-09-25: shas = pins.json observed_at; impl_type carries typed terminal disposition from lane reports with broken_term;class. No row claims ALIVE: courts[] unharvested by this lane.",
   "subjects": [
     {
       "subject_id": "RFC-0004",
@@ -26,7 +26,7 @@
       "required": true,
       "spec_standing": "FINAL_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "evaluated-by:root-crown(AC-18):not-yet-ALIVE",
+      "impl_type": "crown:root-crown-not-ALIVE(AC-18);R_missing_standing;VERIFICATION_FAILURE",
       "authority_ceiling": "NONE",
       "authority_claimed": "NONE",
       "courts": []
@@ -35,11 +35,11 @@
       "subject_id": "CHATMAN_ECOSYSTEM",
       "repository": "seanchatmangpt/chatman-ecosystem",
       "artifact": "default-branch head",
-      "sha": "49745eeb234317d619f965240dc7f0e23fcfef5d",
+      "sha": "4d05717e361ffefa1049885519e7b1606933cc50",
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "lane:chatman-crown-running:M_C-pending;evaluated-by:root-crown(AC-18)",
+      "impl_type": "crown:BLOCKED(genesis,producer-receipts-absent);R_missing_consequence;EVIDENCE_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -52,7 +52,7 @@
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "evidence:RFC-0004-implementation-evaluated-by-root-crown",
+      "impl_type": "lane-es:ALIVE(repository-semantic-conformance@7e8d4c5c,run36101146601,artifact10850572678);RFC-impl-open-at-crown;R_missing_standing;VERIFICATION_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -65,7 +65,7 @@
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "lane:L-SJIRA-running:evidence-pending",
+      "impl_type": "lane-sjira:head-dbeb62a-ALIVE(run36101098365);merge-full-suite-unobserved;xaas-origin_authority-successor;mu_on_O;DEPENDENCY_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -74,11 +74,11 @@
       "subject_id": "XAAS",
       "repository": "seanchatmangpt/xaas",
       "artifact": "default-branch head",
-      "sha": "70f7ea75df1d20a37666cd09050d5ec10a237892",
+      "sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "lane:L-WD+L-FABRIC-running:evidence-pending",
+      "impl_type": "lane-wd+fabric:ALIVE@LOCAL_LOOPBACK(c10cdab9);deploy/token/egress-operator-gated;R_missing_authority;AUTHORITY_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -91,7 +91,7 @@
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "evidence:default-branch-courts-unharvested-at-pin",
+      "impl_type": "lane-zcode:CI-ALIVE@d1abfbe(run36113964377);pkg-pr-new-app-not-installed;R_missing_authority;AUTHORITY_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -100,11 +100,11 @@
       "subject_id": "CHATGPT_CLOUD_ELIXIR",
       "repository": "seanchatmangpt/chatgpt-cloud-elixir",
       "artifact": "default-branch head",
-      "sha": "08722697df7df53b0697ad70eeb839b898d14b4b",
+      "sha": "d6727fef06b170bc6c3839bbf2a9456e33111920",
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "lane:L-FABRIC-running:evidence-pending",
+      "impl_type": "lane-cloud+fabric:PARTIAL_ALIVE@d6727fef(loopback-live-leg);cloud-transport-not-claimed;R_missing_consequence;TRANSPORT_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -113,11 +113,11 @@
       "subject_id": "AUTOFDE_LAB",
       "repository": "seanchatmangpt/autofde-lab",
       "artifact": "default-branch head",
-      "sha": "72900f03cf9772d84d0bace1e35e86eb6b077b92",
+      "sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "lane:L-TLA-running:evidence-pending",
+      "impl_type": "lane-tla:TLC/planning/POWL-ALIVE;full-qualification-baseline-ray-rllib;mu_on_O;DEPENDENCY_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -130,7 +130,7 @@
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "evidence:default-branch-courts-unharvested-at-pin",
+      "impl_type": "evidence:default-branch-courts-unharvested-by-final-lane;R_missing_consequence;EVIDENCE_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -143,7 +143,7 @@
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "capability:brce-ledger-unbuilt",
+      "impl_type": "capability:brce-ledger-unbuilt(XPROD-BRCE-UNSUPPORTED);R_missing_consequence;CAPABILITY_GAP",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -156,7 +156,7 @@
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "evidence:default-branch-courts-unharvested-at-pin",
+      "impl_type": "lane-marketplace:PARTIAL_ALIVE@1f4abc53;R51/R52-baseline;GM-2-publish-unobserved;mu_unlawful;SUBJECT_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -169,7 +169,7 @@
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "evidence:default-branch-courts-unharvested-at-pin",
+      "impl_type": "evidence:XPROD-producer-v2691-ALIVE(run36111936727);full-courts-unharvested;R_missing_consequence;EVIDENCE_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -182,7 +182,7 @@
       "required": true,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "lane:L-GODSLAW-running:evidence-pending;transport:github-billing",
+      "impl_type": "lane-zoela:merged-no-CI(github-billing);R_missing_replay;TRANSPORT_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -195,7 +195,7 @@
       "required": false,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "evidence:default-branch-courts-unharvested-at-pin",
+      "impl_type": "lane-beam4pm:determinism-court-runner-drift;R_missing_replay;DEPENDENCY_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -208,7 +208,7 @@
       "required": false,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "evidence:default-branch-courts-unharvested-at-pin",
+      "impl_type": "lane-wasm4pm:rust-green@ef418eb;WASM-step-baseline;admission_vacuous;VERIFICATION_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -217,11 +217,11 @@
       "subject_id": "ASH_R2RML",
       "repository": "seanchatmangpt/ash_r2rml",
       "artifact": "default-branch head",
-      "sha": "89a1f154e78da2c2cc16076ee5b131275ef927bc",
+      "sha": "901bfb8a08dac5ea30ad77f0bb6de7a29eb8cd34",
       "required": false,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "evidence:default-branch-courts-unharvested-at-pin",
+      "impl_type": "lane-ash_r2rml:ALIVE@901bfb8a(run36115423274);hex-publish-key-revoked;R_missing_authority;AUTHORITY_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -234,7 +234,7 @@
       "required": false,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "evidence:default-branch-courts-unharvested-at-pin",
+      "impl_type": "lane-ex4pm:ALIVE@b53d29a(tree-ca3b6ba);formatter-inputs-vacuous;admission_vacuous;VERIFICATION_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -247,7 +247,7 @@
       "required": false,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "evidence:default-branch-courts-unharvested-at-pin",
+      "impl_type": "lane-closures:#3-reopened-pending-#7(red-checks);mu_unlawful;DEPENDENCY_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []
@@ -256,11 +256,11 @@
       "subject_id": "GGEN_ECOSYSTEM",
       "repository": "seanchatmangpt/ggen-ecosystem",
       "artifact": "default-branch head",
-      "sha": "5542c9fec6c9fb4e8ae5d7c5622bbbf24a1c9660",
+      "sha": "f3cc60f8b65a57980455e93c026176bd446f3f3d",
       "required": false,
       "spec_standing": "NOT_A_SPEC",
       "impl_standing": "BLOCKED",
-      "impl_type": "evidence:default-branch-courts-unharvested-at-pin",
+      "impl_type": "evidence:crown-roller-BLOCKED(LFS-budget);courts-unharvested;R_missing_consequence;DEPENDENCY_FAILURE",
       "authority_ceiling": "CONSTRUCT",
       "authority_claimed": "NONE",
       "courts": []

@@ -1,14 +1,14 @@
 {
   "release": "v26.9.25",
   "root_repository": "seanchatmangpt/chatman-ecosystem",
-  "observed_at": "2026-09-25T08:39:41Z",
-  "authority": "github-api:gh-cli-operator-token:read (lane chatman-crown)",
+  "observed_at": "2026-09-25T12:57:00Z",
+  "authority": "github-api:gh-cli-operator-token:read (lane chatman-final)",
   "_provenance": "Only hand-written SHAs of the release: default-branch heads resolved with gh api repos/<r>/commits/<default_branch> at observed_at. The root repository's own subject is the runtime crown_sha, never this pin.",
   "repos": {
     "chatman-ecosystem": {
       "repository": "seanchatmangpt/chatman-ecosystem",
       "ref": "main",
-      "sha": "49745eeb234317d619f965240dc7f0e23fcfef5d",
+      "sha": "4d05717e361ffefa1049885519e7b1606933cc50",
       "role": "root",
       "disposition": "CROWN",
       "required": true,
@@ -42,7 +42,7 @@
     "xaas": {
       "repository": "seanchatmangpt/xaas",
       "ref": "main",
-      "sha": "70f7ea75df1d20a37666cd09050d5ec10a237892",
+      "sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
       "role": "runtime-fabric",
       "disposition": "REQUIRED",
       "required": true,
@@ -64,7 +64,7 @@
     "chatgpt-cloud-elixir": {
       "repository": "seanchatmangpt/chatgpt-cloud-elixir",
       "ref": "main",
-      "sha": "08722697df7df53b0697ad70eeb839b898d14b4b",
+      "sha": "d6727fef06b170bc6c3839bbf2a9456e33111920",
       "role": "cloud-runtime",
       "disposition": "REQUIRED",
       "required": true,
@@ -75,7 +75,7 @@
     "autofde-lab": {
       "repository": "seanchatmangpt/autofde-lab",
       "ref": "master",
-      "sha": "72900f03cf9772d84d0bace1e35e86eb6b077b92",
+      "sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
       "role": "formal-courts",
       "disposition": "REQUIRED",
       "required": true,
@@ -163,7 +163,7 @@
     "ash_r2rml": {
       "repository": "seanchatmangpt/ash_r2rml",
       "ref": "main",
-      "sha": "89a1f154e78da2c2cc16076ee5b131275ef927bc",
+      "sha": "901bfb8a08dac5ea30ad77f0bb6de7a29eb8cd34",
       "role": "r2rml-projection",
       "disposition": "ADAPTER",
       "required": false,
@@ -196,7 +196,7 @@
     "ggen-ecosystem": {
       "repository": "seanchatmangpt/ggen-ecosystem",
       "ref": "main",
-      "sha": "5542c9fec6c9fb4e8ae5d7c5622bbbf24a1c9660",
+      "sha": "f3cc60f8b65a57980455e93c026176bd446f3f3d",
       "role": "ggen-composition-root",
       "disposition": "ADAPTER",
       "required": false,
