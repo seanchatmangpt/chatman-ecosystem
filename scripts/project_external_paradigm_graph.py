@@ -92,9 +92,14 @@ def project_inventory(inventory: dict, capability_ids: set[str]) -> tuple[dict, 
         kind = unit.get("kind")
         name = unit.get("name")
         source_path = unit.get("source_path")
+        object_sha = unit.get("upstream_object_sha")
+        object_type = unit.get("upstream_object_type")
         state = unit.get("state")
         standing = unit.get("standing")
-        if not all(isinstance(v, str) and v for v in (uid, kind, name, source_path)):
+        if not all(
+            isinstance(v, str) and v
+            for v in (uid, kind, name, source_path, object_sha, object_type)
+        ):
             raise ProjectionRefusal(f"REFUSED:MALFORMED_UNIT:{unit!r}")
         if state != "CANDIDATE" or standing != "NONE":
             raise ProjectionRefusal(f"REFUSED:UNIT_STANDING:{uid}")
@@ -111,14 +116,15 @@ def project_inventory(inventory: dict, capability_ids: set[str]) -> tuple[dict, 
                 raise ProjectionRefusal(f"REFUSED:TARGET_CAPABILITIES:{uid}")
 
         unit_iri = _unit_iri(supplier, subject_sha, kind, name)
+        github_kind = "tree" if object_type == "dir" else "blob"
         source_url = (
-            f"https://github.com/{repository}/blob/{subject_sha}/{source_path}"
+            f"https://github.com/{repository}/{github_kind}/{subject_sha}/{source_path}"
         )
 
         lines.extend(
             [
                 f"{_iri(unit_iri)} a prov:Entity ;",
-                f"  dcterms:identifier {_literal(uid)} ;",
+                f"  dcterms:identifier {_literal(uid)}, {_literal(object_sha)} ;",
                 f"  dcterms:type {_literal(kind)} ;",
                 f"  dcterms:title {_literal(name)} ;",
                 f"  dcterms:source {_literal(source_url)} ;",
