@@ -52,7 +52,7 @@ depends_on = []
 allowed_authorities = ["persist_control_plane"]
 simulation_only = false
 do_mode = "none"
-owned_capabilities = ["capability:manufacture-with-ggen"]
+owned_capabilities = ["capability:manufacture-with-ggen", "capability:project-retired-generation"]
 
 [[component]]
 id = "ggen-marketplace"
@@ -62,7 +62,7 @@ depends_on = ["ggen"]
 allowed_authorities = ["persist_control_plane"]
 simulation_only = false
 do_mode = "none"
-owned_capabilities = ["capability:distribute-ggen-pack"]
+owned_capabilities = ["capability:distribute-ggen-pack", "capability:package-retired-capability"]
 
 [[component]]
 id = "mfact"
@@ -102,7 +102,7 @@ depends_on = ["ggen", "open-ontologies"]
 allowed_authorities = ["persist_control_plane"]
 simulation_only = false
 do_mode = "none"
-owned_capabilities = ["capability:execute-gym-world", "capability:execute-bounded-domain-gym"]
+owned_capabilities = ["capability:execute-gym-world", "capability:execute-bounded-domain-gym", "capability:mine-llm-recurrence"]
 
 [[component]]
 id = "autofde-lab"
@@ -112,7 +112,7 @@ depends_on = ["bcinr", "gymact"]
 allowed_authorities = ["classify"]
 simulation_only = false
 do_mode = "none"
-owned_capabilities = ["capability:admit-planner-policy-role-separation", "capability:plan-decision-frontier", "capability:falsify-candidate-plan", "capability:admit-capability-plan"]
+owned_capabilities = ["capability:admit-planner-policy-role-separation", "capability:plan-decision-frontier", "capability:falsify-candidate-plan", "capability:admit-capability-plan", "capability:court-llm-machine-equivalence"]
 
 [[component]]
 id = "wasm4pm"

@@ -211,6 +211,20 @@ falsifier_tests = ["tests/test_release_control.py"]
 notes = "Deterministic today but implemented in Python, not projected from shapes; no replay receipt."
 
 [[edge]]
+id = "edge:hardcoded-catalog-counts"
+title = "Hand-edit the capability count pinned in tests, the CLI test and the capabilities workflow"
+residue_class = "repeated-generation"
+mechanism = "ggen"
+owner = "repository:chatman-ecosystem"
+retirement_state = "LLM_ONLY"
+frequency = 3
+llm_cost = 2
+reuse = 3
+formalizability = 5
+score_basis = "ESTIMATED"
+notes = "Adding 8 capabilities (44 -> 52) required editing 6 literals across tests/test_capabilities.py, tests/test_capability_rdf.py, tests/test_dfcm_capabilities.py, apps/ecosystem-cli/tests/capabilities.rs and .github/workflows/capabilities.yml (twice-plus). One projected count removes the edit."
+
+[[edge]]
 id = "edge:semantic-unknown-frontier"
 title = "Produce candidates for genuinely unknown semantics (formal-discovery-loop semantic-unknown route)"
 residue_class = "semantic-unknown"
