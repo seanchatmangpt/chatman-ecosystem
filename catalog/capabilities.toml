@@ -420,12 +420,12 @@ broker_required = false
 receipt_required = true
 reversible = true
 standing = "CANDIDATE"
-inputs = ["candidate external units", "pattern policy", "internal capability catalog"]
+inputs = ["candidate external units", "pattern policy", "internal capability catalog", "preserved candidate frontier", "bounded comparison dimensions", "explicit falsifier for any eliminated option or NOVEL_GAP", "DfCM extension order reuse -> compose -> extend -> invent"]
 outputs = ["VENDOR", "WRAP", "REPLACE", "NOVEL_GAP", "unresolved candidate"]
 depends_on = ["capability:extract-external-paradigm-units", "capability:enforce-authority-ceiling"]
 interfaces = ["cli", "api", "mcp", "a2a"]
 source_repositories = ["chatman-ecosystem"]
-refusals = ["REFUSED:DANGLING_TARGET_CAPABILITY", "REFUSED:CAPABILITY_AS_AUTHORITY", "REFUSED:NOVELTY_WITHOUT_FALSIFIER"]
+refusals = ["REFUSED:DANGLING_TARGET_CAPABILITY", "REFUSED:CAPABILITY_AS_AUTHORITY", "REFUSED:NOVELTY_WITHOUT_FALSIFIER", "REFUSED:PREMATURE_SELECTION", "REFUSED:UNBOUNDED_OPTION_GRAPH", "REFUSED:FALSIFIER_MISSING", "REFUSED:EXTENSION_ORDER_VIOLATION"]
 
 [[capability]]
 id = "capability:project-external-paradigm-cross-product"
