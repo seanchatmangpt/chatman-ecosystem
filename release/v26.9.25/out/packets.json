@@ -16,7 +16,7 @@
         "premise:RFC-0004#\u00a73->req:F-05"
       ],
       "dependencies": [],
-      "exact_subject": "seanchatmangpt/affidavit@f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+      "exact_subject": "seanchatmangpt/affidavit@cc1577a8de1e4e92625386ebbecb0c6df9abd66a",
       "falsifier": [
         "F-05"
       ],
@@ -40,7 +40,7 @@
       "subject": {
         "ref": "main",
         "repository": "seanchatmangpt/affidavit",
-        "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030"
+        "sha": "cc1577a8de1e4e92625386ebbecb0c6df9abd66a"
       },
       "successor": null,
       "verification": [
@@ -64,7 +64,7 @@
         "premise:RFC-0004#\u00a73->req:F-08"
       ],
       "dependencies": [],
-      "exact_subject": "seanchatmangpt/autofde-lab@6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "exact_subject": "seanchatmangpt/autofde-lab@98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0",
       "falsifier": [
         "F-08"
       ],
@@ -88,7 +88,7 @@
       "subject": {
         "ref": "master",
         "repository": "seanchatmangpt/autofde-lab",
-        "sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7"
+        "sha": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0"
       },
       "successor": null,
       "verification": [
@@ -167,7 +167,7 @@
       "dependencies": [
         "AC-18"
       ],
-      "exact_subject": "seanchatmangpt/chatman-ecosystem@4d05717e361ffefa1049885519e7b1606933cc50",
+      "exact_subject": "seanchatmangpt/chatman-ecosystem@fb54a2f5727385ef89ba15151d09c303487873b2",
       "falsifier": [
         "F-03",
         "F-04",
@@ -242,7 +242,7 @@
       "subject": {
         "ref": "main",
         "repository": "seanchatmangpt/chatman-ecosystem",
-        "sha": "4d05717e361ffefa1049885519e7b1606933cc50"
+        "sha": "fb54a2f5727385ef89ba15151d09c303487873b2"
       },
       "successor": null,
       "verification": [
@@ -282,7 +282,7 @@
         "premise:RFC-0004#\u00a77.4->req:AC-03"
       ],
       "dependencies": [],
-      "exact_subject": "seanchatmangpt/ggen_igniter@780a81d81c6e579084ba3048037419aab7d7386e",
+      "exact_subject": "seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be",
       "falsifier": [
         "F-01",
         "F-02"
@@ -313,7 +313,7 @@
       "subject": {
         "ref": "main",
         "repository": "seanchatmangpt/ggen_igniter",
-        "sha": "780a81d81c6e579084ba3048037419aab7d7386e"
+        "sha": "9639198b5c3e0e25906acc5b36dd9eb17bd592be"
       },
       "successor": null,
       "verification": [
@@ -346,7 +346,7 @@
         "premise:RFC-0004#\u00a73->req:F-12"
       ],
       "dependencies": [],
-      "exact_subject": "seanchatmangpt/xaas@c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "exact_subject": "seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2",
       "falsifier": [
         "F-09",
         "F-12"
@@ -379,7 +379,7 @@
       "subject": {
         "ref": "main",
         "repository": "seanchatmangpt/xaas",
-        "sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+        "sha": "e039967dac9f88961873b6a958f3979a106854f2"
       },
       "successor": null,
       "verification": [
@@ -409,7 +409,7 @@
         "premise:RFC-0004#\u00a73->req:F-13"
       ],
       "dependencies": [],
-      "exact_subject": "seanchatmangpt/zoela@f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+      "exact_subject": "seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d",
       "falsifier": [
         "F-13"
       ],
@@ -438,7 +438,7 @@
       "subject": {
         "ref": "main",
         "repository": "seanchatmangpt/zoela",
-        "sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d"
+        "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d"
       },
       "successor": null,
       "verification": [
