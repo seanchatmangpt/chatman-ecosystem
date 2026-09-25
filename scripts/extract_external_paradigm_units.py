@@ -64,7 +64,7 @@ def _load_pattern_map(root: Path, supplier: dict) -> dict:
     return json.loads((root / rel).read_text(encoding="utf-8"))
 
 
-def _source_path(kind: str, item: dict) -> str:
+def _classification_path(kind: str, item: dict) -> str:
     path = item["path"]
     if kind == "skill" and item.get("type") == "dir":
         return f"{path}/SKILL.md"
@@ -123,8 +123,8 @@ def inventory_from_surfaces(
                     f"REFUSED:MALFORMED_UPSTREAM_UNIT:{root_name}:{item!r}"
                 )
 
-            source_path = _source_path(kind, item)
-            cls = _classification(source_path, pattern_map)
+            classification_path = _classification_path(kind, item)
+            cls = _classification(classification_path, pattern_map)
             if cls is not None:
                 classified += 1
 
@@ -134,7 +134,8 @@ def inventory_from_surfaces(
                     "kind": kind,
                     "name": name,
                     "path": path,
-                    "source_path": source_path,
+                    "source_path": path,
+                    "classification_path": classification_path,
                     "upstream_object_sha": blob_sha,
                     "upstream_object_type": item_type,
                     "state": "CANDIDATE",
