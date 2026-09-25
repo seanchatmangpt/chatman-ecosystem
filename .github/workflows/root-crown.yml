@@ -132,7 +132,9 @@ jobs:
           PYTHONPATH: .
         shell: bash
         run: |
-          set -uo pipefail
+          # GitHub/act run `shell: bash` as `bash -eo pipefail`: without +e a lawful typed
+          # BLOCKED (exit 3) would abort the step before the receipt, outputs and summary exist.
+          set +e -uo pipefail
           python3 -m scripts.release_train.root_crown \
             --release "$RELEASE" \
             --observations .artifacts/observations.json \
@@ -141,6 +143,7 @@ jobs:
             --out .artifacts/receipt/crown-receipt.json \
             --tag-decision .artifacts/receipt/tag-decision.json
           code=$?
+          set -e
           standing="$(python3 -c 'import json;print(json.load(open(".artifacts/receipt/crown-receipt.json"))["standing"])')"
           digest="$(python3 -c 'import json;print(json.load(open(".artifacts/receipt/crown-receipt.json"))["receipt_digest"])')"
           cp .artifacts/observations.json .artifacts/receipt/observations.json
