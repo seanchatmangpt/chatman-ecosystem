@@ -6,12 +6,19 @@ court recomputes it. Per court:
 
 * ``evidence_locator`` is a CE23-9 durable locator (``git:<owner/repo>@<40hex>:<path>`` |
   ``git-notes:refs/notes/<ref>@<40hex>`` | ``https://``), else ``EVIDENCE_NOT_DURABLE``; a
-  ``git:`` locator resolves under the evidence root (``<root>/<owner>/<repo>/<sha>/<path>``,
-  then ``<root>/<path>``), unresolvable bytes are ``EVIDENCE_NOT_DURABLE`` too;
+  ``git:`` locator resolves ONLY at ``<root>/<owner>/<repo>/<sha>/<path>`` (the layout a
+  ``git archive <sha>`` materializer writes, so the bytes are bound to the locator's
+  repository and commit; no repository/SHA-blind fallback), unresolvable bytes are
+  ``EVIDENCE_NOT_DURABLE:unresolved``;
+* a PASS whose digest cannot be recomputed offline (an ``https://`` or ``git-notes:``
+  evidence locator, or such a ``log_locator`` / ``output_locator`` backing a recorded
+  ``log_sha256`` / ``output_sha256``) is ``EVIDENCE_NOT_DURABLE:unrecomputable``;
 * ``evidence_digest`` recomputes over those bytes, and ``log_sha256`` / ``output_sha256``
   recompute over ``log_locator`` / ``output_locator``, else ``EVIDENCE_DIGEST_MISMATCH``;
 * ``evidence_subject_sha`` (when present) is an exact commit (``EVIDENCE_SUBJECT_MUTABLE``),
-  is not the container commit of its own evidence (``EVIDENCE_CONTAINER_CLAIMS_SUBJECT``),
+  is not the container commit of its own evidence (``EVIDENCE_CONTAINER_CLAIMS_SUBJECT``;
+  no field of the judged row can exempt it: a closure cannot name its own commit, so
+  in-tree derivation is never verifiable here),
   and when it differs from the court ``sha`` carries ``lineage_proof{status, delta_paths,
   delta_class}`` (``EVIDENCE_LINEAGE_MISSING``, ``EVIDENCE_SUBJECT_SPLIT``); the claimed
   class must equal ``classify_delta`` (``EVIDENCE_DELTA_MISCLAIMED``), and a PASS across an
@@ -151,9 +158,12 @@ def _resolve(locator: str, evidence_root: Path | None) -> bytes | None:
     path = match["path"]
     if path.startswith("/") or ".." in path.split("/"):
         return None
-    for candidate in (evidence_root / match["repo"] / match["sha"] / path, evidence_root / path):
-        if candidate.is_file():
-            return candidate.read_bytes()
+    if any(part in {".", ".."} for part in match["repo"].split("/")):
+        return None
+    # Only the (repository, commit)-addressed layout binds bytes to the locator's identity.
+    candidate = evidence_root / match["repo"] / match["sha"] / path
+    if candidate.is_file() and candidate.resolve().is_relative_to(evidence_root.resolve()):
+        return candidate.read_bytes()
     return None
 
 
@@ -188,6 +198,9 @@ def durable_refusals(
                 continue
             match = _GIT_LOCATOR.fullmatch(locator)
             container_sha = match["sha"] if match else None
+            if match is None and passed:
+                refusals.append(f"REFUSED:EVIDENCE_NOT_DURABLE:{where}:unrecomputable:{locator}")
+                continue
             if match is not None:
                 raw = _resolve(locator, evidence_root)
                 if raw is None:
@@ -202,10 +215,14 @@ def durable_refusals(
                 if not binding.is_durable(companion):
                     refusals.append(f"REFUSED:EVIDENCE_NOT_DURABLE:{where}:{loc_field}")
                     continue
-                raw = _resolve(companion, evidence_root) if companion.startswith("git:") else None
-                if companion.startswith("git:") and raw is None:
+                if not companion.startswith("git:"):
+                    if passed:
+                        refusals.append(f"REFUSED:EVIDENCE_NOT_DURABLE:{where}:unrecomputable:{companion}")
+                    continue
+                raw = _resolve(companion, evidence_root)
+                if raw is None:
                     refusals.append(f"REFUSED:EVIDENCE_NOT_DURABLE:{where}:unresolved:{companion}")
-                elif raw is not None and _norm(court.get(field)) != _sha256(raw):
+                elif _norm(court.get(field)) != _sha256(raw):
                     refusals.append(f"REFUSED:EVIDENCE_DIGEST_MISMATCH:{where}:{field}")
         subject = court.get("evidence_subject_sha")
         if subject is None:
@@ -213,7 +230,7 @@ def durable_refusals(
         if not _SHA40.fullmatch(str(subject)):
             refusals.append(f"REFUSED:EVIDENCE_SUBJECT_MUTABLE:{where}:{subject}")
             continue
-        if container_sha is not None and subject == container_sha and court.get("binding_kind") != "IN_TREE_DERIVED":
+        if container_sha is not None and subject == container_sha:
             refusals.append(f"REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:{where}:{subject}")
             continue
         if subject == court.get("sha"):

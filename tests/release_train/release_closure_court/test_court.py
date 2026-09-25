@@ -259,6 +259,82 @@ class DurableProfileTests(unittest.TestCase):
                 closure.pop("evidence_profile")
                 self.assertNotIn(rule, {":".join(r.split(":")[:2]) for r in evaluate(closure, self.root).refusals})
 
+    def test_court_row_cannot_self_declare_in_tree_derivation(self) -> None:
+        # binding_kind is a field of the row being judged: it never exempts a subject that is
+        # its own evidence container (admission_vacuous otherwise).
+        c = self.closure()
+        court = c["subjects"][1]["courts"][0]
+        court.update(evidence_subject_sha=D, binding_kind="IN_TREE_DERIVED")
+        verdict = evaluate(c, self.root)
+        self.assertEqual(verdict.standing, "REFUSED")
+        self.assertIn(f"REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:IMPL:ci:{D}", verdict.refusals)
+
+    def _flat_copies(self) -> None:
+        # The same bytes at the repository/SHA-blind <root>/<path>.
+        for rel, data in (("ci/receipt.json", self.receipt), ("ci/run.log", self.log)):
+            (self.root / rel).parent.mkdir(parents=True, exist_ok=True)
+            (self.root / rel).write_bytes(data)
+
+    def _forge(self, c: dict, sha: str) -> None:
+        for court in (c["subjects"][0]["courts"][0], c["subjects"][1]["courts"][0]):
+            for key in ("evidence_locator", "log_locator"):
+                if key in court:
+                    court[key] = court[key].replace(D, sha)
+
+    def test_forged_locator_sha_does_not_resolve_to_flat_bytes(self) -> None:
+        self._flat_copies()
+        control = evaluate(self.closure(), self.root)
+        self.assertEqual((control.standing, control.refusals), ("ALIVE", ()))
+        c = self.closure()
+        self._forge(c, "f" * 40)
+        verdict = evaluate(c, self.root)
+        self.assertEqual(verdict.standing, "REFUSED")
+        self.assertIn(f"REFUSED:EVIDENCE_NOT_DURABLE:IMPL:ci:unresolved:git:o/evidence@{'f' * 40}:ci/receipt.json", verdict.refusals)
+
+    def test_forged_locator_sha_cannot_dodge_container_claims_subject(self) -> None:
+        self._flat_copies()
+        c = self.closure()
+        c["subjects"][1]["courts"][0]["evidence_subject_sha"] = D
+        self.assertIn(f"REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:IMPL:ci:{D}", evaluate(c, self.root).refusals)
+        self._forge(c, "f" * 40)
+        verdict = evaluate(c, self.root)
+        self.assertEqual(verdict.standing, "REFUSED")
+        self.assertIn(f"REFUSED:EVIDENCE_NOT_DURABLE:IMPL:ci:unresolved:git:o/evidence@{'f' * 40}:ci/receipt.json", verdict.refusals)
+
+    def test_locator_repository_cannot_escape_the_root(self) -> None:
+        # ``../..`` as <owner/repo> would climb out of the evidence root to real bytes.
+        inner = self.root / "a" / "b"
+        inner.mkdir(parents=True)
+        outside = self.root / D / "ci" / "receipt.json"
+        outside.parent.mkdir(parents=True)
+        outside.write_bytes(self.receipt)
+        self.assertTrue((inner / ".." / ".." / D / "ci" / "receipt.json").is_file())  # the climb is real
+        c = self.closure()
+        c["subjects"][1]["courts"][0]["evidence_locator"] = f"git:../..@{D}:ci/receipt.json"
+        verdict = evaluate(c, inner)
+        self.assertEqual(verdict.standing, "REFUSED")
+        self.assertIn(f"REFUSED:EVIDENCE_NOT_DURABLE:IMPL:ci:unresolved:git:../..@{D}:ci/receipt.json", verdict.refusals)
+
+    def test_unrecomputable_pass_evidence_is_refused(self) -> None:
+        for locator in ("https://example.invalid/r.json", f"git-notes:refs/notes/ci@{D}"):
+            with self.subTest(locator=locator):
+                c = self.closure()
+                c["subjects"][1]["courts"][0].update(evidence_locator=locator, evidence_digest="sha256:" + "0" * 64)
+                verdict = evaluate(c, self.root)
+                self.assertEqual(verdict.standing, "REFUSED")
+                self.assertIn(f"REFUSED:EVIDENCE_NOT_DURABLE:IMPL:ci:unrecomputable:{locator}", verdict.refusals)
+
+    def test_unrecomputable_pass_companion_is_refused(self) -> None:
+        for field in ("log", "output"):
+            with self.subTest(field=field):
+                c = self.closure()
+                c["subjects"][1]["courts"][0].update(
+                    {f"{field}_locator": "https://example.invalid/log", f"{field}_sha256": "sha256:" + "1" * 64}
+                )
+                verdict = evaluate(c, self.root)
+                self.assertEqual(verdict.standing, "REFUSED")
+                self.assertIn("REFUSED:EVIDENCE_NOT_DURABLE:IMPL:ci:unrecomputable:https://example.invalid/log", verdict.refusals)
+
     def test_evidence_bytes_changed_is_digest_mismatch(self) -> None:
         (self.root / "o/evidence" / D / "ci/receipt.json").write_bytes(b'{"standing": "FINAL"}\n')
         verdict = evaluate(self.closure(), self.root)

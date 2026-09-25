@@ -7,9 +7,9 @@
     "failures": 0,
     "ok": true,
     "skipped": 4,
-    "tests_run": 203
+    "tests_run": 208
   },
-  "killed": 101,
+  "killed": 109,
   "mutants": {
     "acceptance_drift_off": {
       "detail": "killed by 2 test(s): test_policy.PolicyRefusalTest.test_acceptance_drift,test_policy.PolicyRefusalTest.test_every_terminality_code_is_typed_and_emitted",
@@ -252,6 +252,26 @@
       "kind": "source",
       "rule": "RECEIPT_CHAIN_BROKEN(previous digest)"
     },
+    "closure_flat_fallback": {
+      "detail": "killed by 2 test(s): test_binding.DurableClosureTest.test_forged_locator_sha_is_unresolved_even_with_flat_bytes,test_binding.DurableClosureTest.test_repository_tree_is_not_an_evidence_root",
+      "file": "scripts/release_train/release_closure_court/court.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "git: locators resolve only at the (repository, commit)-addressed layout"
+    },
+    "closure_in_tree_self_declared": {
+      "detail": "killed by 1 test(s): test_binding.DurableClosureTest.test_self_declared_in_tree_binding_is_refused",
+      "file": "scripts/release_train/release_closure_court/court.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_CONTAINER_CLAIMS_SUBJECT is not exempted by a field of the judged row"
+    },
     "closure_owner_split_off": {
       "detail": "killed by 1 test(s): test_policy.OwnerRuleTest.test_closure_row_owner_split_and_container_default",
       "file": "scripts/release_train/root_crown/evidence.py",
@@ -271,6 +291,26 @@
       ],
       "kind": "source",
       "rule": "CLOSURE_PARTIAL(not-admitted-by-policy)"
+    },
+    "closure_unrecomputable_companion_admitted": {
+      "detail": "killed by 1 test(s): test_binding.DurableClosureTest.test_unrecomputable_companion_is_refused",
+      "file": "scripts/release_train/release_closure_court/court.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "a PASS whose log/output digest cannot be recomputed offline is EVIDENCE_NOT_DURABLE"
+    },
+    "closure_unrecomputable_evidence_admitted": {
+      "detail": "killed by 2 test(s): test_binding.DurableClosureTest.test_unrecomputable_evidence_is_refused (locator='git-notes:refs/notes/ci@1111111111111111111111111111111111111111'),test_binding.DurableClosureTest.test_unrecomputable_evidence_is_refused (locator='https://example.invalid/r.json')",
+      "file": "scripts/release_train/release_closure_court/court.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "a PASS whose evidence digest cannot be recomputed offline is EVIDENCE_NOT_DURABLE"
     },
     "crown_policy_validation_off": {
       "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_coverage_gap_on_a_non_consulting_requirement_still_refuses_the_crown",
@@ -307,6 +347,13 @@
       "kind": "data",
       "rule": "EVIDENCE_DELTA_UNBOUNDED"
     },
+    "dm_companion_unrecomputable": {
+      "detail": "court emitted 'unrecomputable:https://example.invalid/out'; control clean",
+      "expected": "unrecomputable:https://example.invalid/out",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_NOT_DURABLE"
+    },
     "dm_delta_misclaimed": {
       "detail": "court emitted 'REFUSED:EVIDENCE_DELTA_MISCLAIMED:AC-07'; control clean",
       "expected": "REFUSED:EVIDENCE_DELTA_MISCLAIMED:AC-07",
@@ -335,9 +382,30 @@
       "kind": "data",
       "rule": "EVIDENCE_DIGEST_MISMATCH"
     },
+    "dm_evidence_locator_sha_forged": {
+      "detail": "court emitted 'unresolved:git:seanchatmangpt/chatman-ecosystem@ffffffffffffffffffffffffffffffffffffffff:'; control clean",
+      "expected": "unresolved:git:seanchatmangpt/chatman-ecosystem@ffffffffffffffffffffffffffffffffffffffff:",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_NOT_DURABLE"
+    },
     "dm_evidence_not_durable": {
       "detail": "court emitted 'REFUSED:EVIDENCE_NOT_DURABLE:AFFIDAVIT:affidavit:brce_court'; control clean",
       "expected": "REFUSED:EVIDENCE_NOT_DURABLE:AFFIDAVIT:affidavit:brce_court",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_NOT_DURABLE"
+    },
+    "dm_evidence_self_declared_in_tree": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AFFIDAVIT'; control clean",
+      "expected": "REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AFFIDAVIT",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_CONTAINER_CLAIMS_SUBJECT"
+    },
+    "dm_evidence_unrecomputable": {
+      "detail": "court emitted 'unrecomputable:https://example.invalid/r.json'; control clean",
+      "expected": "unrecomputable:https://example.invalid/r.json",
       "killed": true,
       "kind": "data",
       "rule": "EVIDENCE_NOT_DURABLE"
@@ -976,6 +1044,7 @@
   "schema": "https://chatman.dev/root-crown/hardening/mutation-report/v1",
   "source_digests": {
     "scripts/observe_release_heads.py": "sha256:22d7008c0ad662bb9378bb7806ee90f155aa58e784ce2ec567cf5b8239e9dcfb",
+    "scripts/release_train/release_closure_court/court.py": "sha256:b8df6b4ba774f1dd2824d9be4ebc0afdc598b6de7312ada7405f898e075eb9e0",
     "scripts/release_train/root_crown/binding.py": "sha256:51dda4ae530be25f952f9b0603c4e81f293a82f64faabb45bbc05dd08a913b72",
     "scripts/release_train/root_crown/chain.py": "sha256:3039484a9b8f992aa6c5ee72989af86570afe5c1ab4e45f177597e4714009253",
     "scripts/release_train/root_crown/crown.py": "sha256:8f72a974df9a62f85a7ce2527556ce96194b4ea7cb8b28b042c3c6a7c1d3b3e8",
@@ -987,5 +1056,5 @@
     "scripts/release_train/root_crown/replay.py": "sha256:c3610676203a00d48a00a50af3c70f59eaf5d7608a95a7390947bc32332b6a2d"
   },
   "survivors": [],
-  "total": 101
+  "total": 109
 }

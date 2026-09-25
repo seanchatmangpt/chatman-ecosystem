@@ -169,3 +169,30 @@ def alive_observations(tree: Tree, crown_sha: str = CROWN_SHA) -> dict[str, Any]
         "tag": {"name": RELEASE, "sha": None},
         "local_worktrees": {"observed_at": "2026-09-25T12:00:00Z", "source": "fixture", "worktrees": []},
     }
+
+
+def stage_evidence_root(index: dict[str, Any], source_root: Path, dest: Path) -> Path:
+    """Lay the E1 evidence bytes out at ``<dest>/<owner>/<repo>/<sha>/<path>``.
+
+    The durable/v1 closure court resolves a ``git:<owner/repo>@<sha>:<path>`` locator only
+    at that (repository, commit)-addressed layout, which a ``git archive <sha>`` materializer
+    writes. Here the bytes come from ``source_root`` (the tree under test, a descendant of the
+    E1 container commit); the court still recomputes every digest recorded in the index, so a
+    byte that differs from the container's is refused, not admitted.
+    """
+    import re
+
+    grammar = re.compile(r"^git:(?P<repo>[^@]+)@(?P<sha>[0-9a-f]{40}):(?P<path>\S+)$")
+    locators = set()
+    for row in index.get("rows", []):
+        locators.add(row.get("durable_locator"))
+        locators.update(c.get("durable_locator") for c in row.get("companions", []))
+    for locator in sorted(filter(None, locators)):
+        match = grammar.fullmatch(locator)
+        src = source_root / match["path"] if match else None
+        if src is None or not src.is_file():
+            continue
+        target = dest / match["repo"] / match["sha"] / match["path"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(src, target)
+    return dest

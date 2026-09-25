@@ -304,6 +304,7 @@ POLICY = "scripts/release_train/root_crown/policy.py"
 BINDING = "scripts/release_train/root_crown/binding.py"
 MODEL = "scripts/release_train/root_crown/model.py"
 OBSERVER = "scripts/observe_release_heads.py"
+CLOSURE_COURT = "scripts/release_train/release_closure_court/court.py"
 
 T_TYPED = "test_typed_terminal"
 T_ALIGN = "test_terminal_alignment"
@@ -930,6 +931,43 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
         (T_POST,),
         "committed delta observations reach the current evaluation",
     ),
+    # --- durable/v1 closure court: the three bypasses found on 7f3c46f0 -----------------------
+    SourceMutant(
+        "closure_in_tree_self_declared",
+        CLOSURE_COURT,
+        "        if container_sha is not None and subject == container_sha:\n",
+        '        if container_sha is not None and subject == container_sha and court.get("binding_kind") != "IN_TREE_DERIVED":\n',
+        (T_BINDING,),
+        "EVIDENCE_CONTAINER_CLAIMS_SUBJECT is not exempted by a field of the judged row",
+    ),
+    SourceMutant(
+        "closure_flat_fallback",
+        CLOSURE_COURT,
+        '    candidate = evidence_root / match["repo"] / match["sha"] / path\n'
+        "    if candidate.is_file() and candidate.resolve().is_relative_to(evidence_root.resolve()):\n"
+        "        return candidate.read_bytes()\n",
+        '    for candidate in (evidence_root / match["repo"] / match["sha"] / path, evidence_root / path):\n'
+        "        if candidate.is_file():\n"
+        "            return candidate.read_bytes()\n",
+        (T_BINDING,),
+        "git: locators resolve only at the (repository, commit)-addressed layout",
+    ),
+    SourceMutant(
+        "closure_unrecomputable_evidence_admitted",
+        CLOSURE_COURT,
+        "            if match is None and passed:\n",
+        "            if False:\n",
+        (T_BINDING,),
+        "a PASS whose evidence digest cannot be recomputed offline is EVIDENCE_NOT_DURABLE",
+    ),
+    SourceMutant(
+        "closure_unrecomputable_companion_admitted",
+        CLOSURE_COURT,
+        '                        refusals.append(f"REFUSED:EVIDENCE_NOT_DURABLE:{where}:unrecomputable:{companion}")\n',
+        "                        pass\n",
+        (T_BINDING,),
+        "a PASS whose log/output digest cannot be recomputed offline is EVIDENCE_NOT_DURABLE",
+    ),
 )
 
 
@@ -1259,31 +1297,78 @@ def dm_code_renamed_into_receipts(env: Env) -> tuple[list[str], list[str]]:
     return classify(f"release/{RELEASE}/receipts/old-gate.json"), classify("scripts/release_gate.py")
 
 
-def dm_evidence_not_durable(env: Env) -> tuple[list[str], list[str]]:
-    """A PASS court under durable/v1 citing a scratch path (the tag-time closure's form)."""
+def _durable_case(env: Env, edit: Callable[[dict[str, Any], Path], None]) -> tuple[list[str], list[str]]:
+    """The tagged closure bound to the E1 index, judged over the (repository, commit)-addressed
+    evidence root (``_support.stage_evidence_root``): clean control vs one edit of the affidavit
+    court (``edit(court, root)``). Only AFFIDAVIT refusals are compared."""
     closure = json.loads((env.root / f"release/{RELEASE}/closure.json").read_text(encoding="utf-8"))
     index = json.loads((env.root / f"release/{RELEASE}/hardening/evidence/INDEX.json").read_text(encoding="utf-8"))
-    bound = env.court.bind_index(closure, index)
-    control = list(env.court.evaluate(bound, env.root).refusals)
-    court = bound["subjects"][9]["courts"][0]
-    court["evidence_locator"] = court["evidence"]  # scratchpad/v26925/lanes/... (not durable)
-    return [r for r in control if ":AFFIDAVIT:" in r], list(env.court.evaluate(bound, env.root).refusals)
+    with tempfile.TemporaryDirectory() as tmp:
+        root = env._support.stage_evidence_root(index, env.root, Path(tmp))
+        bound = env.court.bind_index(closure, index)
+        control = [r for r in env.court.evaluate(bound, root).refusals if ":AFFIDAVIT:" in r]
+        edit(bound["subjects"][9]["courts"][0], root)
+        return control, [r for r in env.court.evaluate(bound, root).refusals if ":AFFIDAVIT:" in r]
+
+
+def dm_evidence_not_durable(env: Env) -> tuple[list[str], list[str]]:
+    """A PASS court under durable/v1 citing a scratch path (the tag-time closure's form)."""
+    return _durable_case(env, lambda court, root: court.update(evidence_locator=court["evidence"]))
 
 
 def dm_evidence_digest_mismatch(env: Env) -> tuple[list[str], list[str]]:
     """The E1 affidavit court output with one byte flipped: the recorded output_sha256 no longer recomputes."""
-    closure = json.loads((env.root / f"release/{RELEASE}/closure.json").read_text(encoding="utf-8"))
-    index = json.loads((env.root / f"release/{RELEASE}/hardening/evidence/INDEX.json").read_text(encoding="utf-8"))
-    bound = env.court.bind_index(closure, index)
-    control = list(env.court.evaluate(bound, env.root).refusals)
-    rel = f"release/{RELEASE}/hardening/evidence"
-    with tempfile.TemporaryDirectory() as tmp:
-        shutil.copytree(env.root / rel, Path(tmp) / rel)
-        target = next((Path(tmp) / rel / "courts/affidavit").glob("*/court.out"))
+
+    def flip(court: dict[str, Any], root: Path) -> None:
+        target = next(root.rglob("courts/affidavit/*/court.out"))
         data = bytearray(target.read_bytes())
         data[0] ^= 1
         target.write_bytes(bytes(data))
-        return control, list(env.court.evaluate(bound, Path(tmp)).refusals)
+
+    return _durable_case(env, flip)
+
+
+def dm_evidence_self_declared_in_tree(env: Env) -> tuple[list[str], list[str]]:
+    """The affidavit court names its own evidence container as subject and self-declares IN_TREE_DERIVED."""
+
+    def edit(court: dict[str, Any], root: Path) -> None:
+        court.update(evidence_subject_sha=court["evidence_locator"].split("@")[1][:40], binding_kind="IN_TREE_DERIVED")
+
+    return _durable_case(env, edit)
+
+
+def dm_evidence_locator_sha_forged(env: Env) -> tuple[list[str], list[str]]:
+    """The affidavit locators' container SHA forged while the bytes also sit at <root>/<path>."""
+
+    def edit(court: dict[str, Any], root: Path) -> None:
+        real = court["evidence_locator"].split("@")[1][:40]
+        for key in ("evidence_locator", "log_locator", "output_locator"):
+            if court.get(key):
+                path = court[key].split(":", 2)[2]
+                (root / path).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(env.root / path, root / path)
+                court[key] = court[key].replace(real, "f" * 40)
+        court["evidence_subject_sha"] = real
+
+    return _durable_case(env, edit)
+
+
+def dm_evidence_unrecomputable(env: Env) -> tuple[list[str], list[str]]:
+    """The affidavit PASS cites an https evidence locator with a fabricated digest."""
+
+    def edit(court: dict[str, Any], root: Path) -> None:
+        court.update(evidence_locator="https://example.invalid/r.json", evidence_digest="sha256:" + "0" * 64)
+
+    return _durable_case(env, edit)
+
+
+def dm_companion_unrecomputable(env: Env) -> tuple[list[str], list[str]]:
+    """The affidavit PASS backs its output_sha256 with an https companion and a fabricated digest."""
+
+    def edit(court: dict[str, Any], root: Path) -> None:
+        court.update(output_locator="https://example.invalid/out", output_sha256="sha256:" + "1" * 64)
+
+    return _durable_case(env, edit)
 
 
 DATA_MUTANTS: tuple[DataMutant, ...] = (
@@ -1360,6 +1445,30 @@ DATA_MUTANTS: tuple[DataMutant, ...] = (
         dm_evidence_digest_mismatch,
         "REFUSED:EVIDENCE_DIGEST_MISMATCH:AFFIDAVIT",
         "EVIDENCE_DIGEST_MISMATCH",
+    ),
+    DataMutant(
+        "dm_evidence_self_declared_in_tree",
+        dm_evidence_self_declared_in_tree,
+        "REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AFFIDAVIT",
+        "EVIDENCE_CONTAINER_CLAIMS_SUBJECT",
+    ),
+    DataMutant(
+        "dm_evidence_locator_sha_forged",
+        dm_evidence_locator_sha_forged,
+        f"unresolved:git:seanchatmangpt/chatman-ecosystem@{'f' * 40}:",
+        "EVIDENCE_NOT_DURABLE",
+    ),
+    DataMutant(
+        "dm_evidence_unrecomputable",
+        dm_evidence_unrecomputable,
+        "unrecomputable:https://example.invalid/r.json",
+        "EVIDENCE_NOT_DURABLE",
+    ),
+    DataMutant(
+        "dm_companion_unrecomputable",
+        dm_companion_unrecomputable,
+        "unrecomputable:https://example.invalid/out",
+        "EVIDENCE_NOT_DURABLE",
     ),
 )
 

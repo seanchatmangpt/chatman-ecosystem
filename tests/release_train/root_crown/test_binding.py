@@ -352,21 +352,41 @@ CLOSURE = REPO / "release" / RELEASE / "closure.json"
 @unittest.skipUnless(INDEX.is_file() and DELTAS.is_file(), "E1 index / delta observations not committed")
 class DurableClosureTest(unittest.TestCase):
     """The tagged closure bound to the committed E1 evidence (durable/v1): the court recomputes
-    every evidence, log and output digest from the committed bytes."""
+    every evidence, log and output digest from the E1 bytes laid out at the
+    (repository, commit)-addressed evidence root."""
+
+    def setUp(self):
+        import tempfile
+        from pathlib import Path
+
+        from _support import stage_evidence_root
+
+        self._tmp = tempfile.TemporaryDirectory()
+        self.index = json.loads(INDEX.read_text(encoding="utf-8"))
+        self.root = stage_evidence_root(self.index, REPO, Path(self._tmp.name))
+
+    def tearDown(self):
+        self._tmp.cleanup()
 
     def bound(self):
         from scripts.release_train.release_closure_court.court import bind_index
 
         return bind_index(
             json.loads(CLOSURE.read_text(encoding="utf-8")),
-            json.loads(INDEX.read_text(encoding="utf-8")),
+            self.index,
             json.loads(DELTAS.read_text(encoding="utf-8")),
         )
 
-    def test_committed_evidence_recomputes(self):
+    def affidavit(self, closure):
+        return closure["subjects"][9]["courts"][0]
+
+    def evaluate(self, closure, root=None):
         from scripts.release_train.release_closure_court.court import evaluate
 
-        verdict = evaluate(self.bound(), REPO)
+        return evaluate(closure, self.root if root is None else root)
+
+    def test_committed_evidence_recomputes(self):
+        verdict = self.evaluate(self.bound())
         # Two PASS courts carry no durable evidence yet (a github run court with no locator;
         # the zoela witness court with no INDEX row): typed findings for the hardening outputs.
         self.assertEqual(
@@ -376,22 +396,71 @@ class DurableClosureTest(unittest.TestCase):
         unbounded = {r.split(":")[0] for r in verdict.remaining if r.endswith(":EVIDENCE_DELTA_UNBOUNDED")}
         self.assertEqual(unbounded, {"AUTOFDE_LAB", "GGEN_IGNITER", "XAAS", "ZOELA"})
 
+    def test_repository_tree_is_not_an_evidence_root(self):
+        # The working tree holds the bytes at <root>/<path> but does not bind them to the
+        # locator's (repository, commit): every git: locator is unresolved there.
+        refusals = self.evaluate(self.bound(), REPO).refusals
+        self.assertTrue(any(":unresolved:git:seanchatmangpt/chatman-ecosystem@" in r for r in refusals), refusals)
+        self.assertTrue(any(r.startswith("REFUSED:EVIDENCE_NOT_DURABLE:AFFIDAVIT:") for r in refusals))
+
     def test_tampered_evidence_byte_is_digest_mismatch(self):
-        import shutil
-        import tempfile
-
-        from scripts.release_train.release_closure_court.court import evaluate
-
-        rel = "release/v26.9.25/hardening/evidence"
-        with tempfile.TemporaryDirectory() as tmp:
-            shutil.copytree(REPO / rel, f"{tmp}/{rel}")
-            out = next((REPO / rel / "courts/affidavit").glob("*/court.out")).relative_to(REPO)
-            target = f"{tmp}/{out}"
-            data = bytearray(open(target, "rb").read())
-            data[0] ^= 1
-            open(target, "wb").write(bytes(data))
-            refusals = evaluate(self.bound(), __import__("pathlib").Path(tmp)).refusals
+        out = next(self.root.rglob("courts/affidavit/*/court.out"))
+        data = bytearray(out.read_bytes())
+        data[0] ^= 1
+        out.write_bytes(bytes(data))
+        refusals = self.evaluate(self.bound()).refusals
         self.assertIn("REFUSED:EVIDENCE_DIGEST_MISMATCH:AFFIDAVIT:affidavit:brce_court(AC-08/F-05):output_sha256", refusals)
+
+    def test_forged_locator_sha_is_unresolved_even_with_flat_bytes(self):
+        # Bytes also sit at the repository/SHA-blind <root>/<path>; the forged container SHA
+        # must not resolve to them (and so cannot dodge EVIDENCE_CONTAINER_CLAIMS_SUBJECT).
+        import shutil
+
+        closure = self.bound()
+        court = self.affidavit(closure)
+        real = court["evidence_locator"].split("@")[1][:40]
+        for loc_field in ("evidence_locator", "log_locator", "output_locator"):
+            if court.get(loc_field):
+                path = court[loc_field].split(":", 2)[2]
+                (self.root / path).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(REPO / path, self.root / path)
+                court[loc_field] = court[loc_field].replace(real, "f" * 40)
+        court["evidence_subject_sha"] = real
+        refusals = self.evaluate(closure).refusals
+        self.assertTrue(
+            any(r.startswith("REFUSED:EVIDENCE_NOT_DURABLE:AFFIDAVIT:") and ":unresolved:" in r and "f" * 40 in r
+                for r in refusals),
+            refusals,
+        )  # fmt: skip
+
+    def test_self_declared_in_tree_binding_is_refused(self):
+        closure = self.bound()
+        court = self.affidavit(closure)
+        court["evidence_subject_sha"] = court["evidence_locator"].split("@")[1][:40]
+        court["binding_kind"] = "IN_TREE_DERIVED"
+        refusals = self.evaluate(closure).refusals
+        self.assertTrue(any(r.startswith("REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AFFIDAVIT:") for r in refusals), refusals)
+
+    def test_unrecomputable_evidence_is_refused(self):
+        for locator in ("https://example.invalid/r.json", "git-notes:refs/notes/ci@" + "1" * 40):
+            with self.subTest(locator=locator):
+                closure = self.bound()
+                court = self.affidavit(closure)
+                court["evidence_locator"] = locator
+                court["evidence_digest"] = "sha256:" + "0" * 64
+                refusals = self.evaluate(closure).refusals
+                self.assertIn(f"REFUSED:EVIDENCE_NOT_DURABLE:AFFIDAVIT:{court['court']}:unrecomputable:{locator}", refusals)
+
+    def test_unrecomputable_companion_is_refused(self):
+        closure = self.bound()
+        court = self.affidavit(closure)
+        field = "output" if court.get("output_sha256") else "log"
+        court[f"{field}_locator"] = "https://example.invalid/log"
+        court[f"{field}_sha256"] = "sha256:" + "1" * 64
+        refusals = self.evaluate(closure).refusals
+        self.assertIn(
+            f"REFUSED:EVIDENCE_NOT_DURABLE:AFFIDAVIT:{court['court']}:unrecomputable:https://example.invalid/log", refusals
+        )
 
 
 class ContextAllowlistTest(unittest.TestCase):
