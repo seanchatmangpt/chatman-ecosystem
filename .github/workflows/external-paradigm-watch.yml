@@ -1,0 +1,102 @@
+name: external-paradigm-watch
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 13 * * *"
+  pull_request:
+    paths:
+      - ".github/workflows/external-paradigm-watch.yml"
+      - "scripts/*external_paradigm*.py"
+      - "tests/test_external_paradigms.py"
+      - "upstream/**"
+
+permissions:
+  contents: read
+
+jobs:
+  ecc-paradigm-intake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify supplier registry
+        run: python3 scripts/verify_external_paradigms.py --json
+
+      - name: Run local EPR courts
+        run: python3 -m unittest tests.test_external_paradigms -v
+
+      - name: Extract pinned ECC inventory
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p target/external-paradigms
+          python3 scripts/extract_external_paradigm_units.py \
+            --supplier ecc \
+            --json-out target/external-paradigms/ecc-inventory.json
+
+      - name: Project candidate capability graph
+        run: |
+          python3 scripts/project_external_paradigm_graph.py \
+            --inventory target/external-paradigms/ecc-inventory.json \
+            --cross-product-out target/external-paradigms/ecc-cross-product.json \
+            --ttl-out target/external-paradigms/ecc-capabilities.ttl
+
+      - name: Assert pinned baseline
+        run: |
+          python3 - <<'PY'
+          import json
+          p = json.load(open("target/external-paradigms/ecc-inventory.json"))
+          expected = {"skill": 292, "agent": 68, "command": 94, "hook": 5, "workflow": 2}
+          assert p["subject_sha"] == "e482e579415fde18357cafce70f177ae19fd7f03"
+          assert p["counts"] == expected, (p["counts"], expected)
+          assert p["unit_count"] == 461
+          assert p["classified_count"] == 461
+          assert p["unmapped_count"] == 0
+          assert p["standing"] == "NONE"
+          x = json.load(open("target/external-paradigms/ecc-cross-product.json"))
+          assert x["standing"] == "NONE"
+          assert x["edge_count"] == 926
+          assert x["unresolved_count"] == 0
+          assert all(edge["semantic_equivalence"] == "UNCLAIMED" for edge in x["edges"])
+          PY
+
+      - name: Discover ECC exact-head delta
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/detect_external_paradigm_delta.py \
+            --supplier ecc \
+            --discovery-ref main \
+            --json-out target/external-paradigms/ecc-delta.json
+
+      - name: Publish candidate summary
+        run: |
+          {
+            echo "## ECC paradigm supplier"
+            echo
+            echo "Pinned inventory:"
+            echo '~~~json'
+            python3 -c 'import json; p=json.load(open("target/external-paradigms/ecc-inventory.json")); print(json.dumps({k:p[k] for k in ("subject_sha","unit_count","counts","classified_count","unmapped_count","standing")}, indent=2, sort_keys=True))'
+            echo '~~~'
+            echo
+            echo "Cross-product:"
+            echo '~~~json'
+            python3 -c 'import json; p=json.load(open("target/external-paradigms/ecc-cross-product.json")); print(json.dumps({k:p[k] for k in ("edge_count","unresolved_count","standing")}, indent=2, sort_keys=True))'
+            echo '~~~'
+            echo
+            echo "Upstream delta:"
+            echo '~~~json'
+            cat target/external-paradigms/ecc-delta.json
+            echo '~~~'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Preserve paradigm evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecc-paradigm-intake
+          path: |
+            target/external-paradigms/ecc-inventory.json
+            target/external-paradigms/ecc-cross-product.json
+            target/external-paradigms/ecc-capabilities.ttl
+            target/external-paradigms/ecc-delta.json

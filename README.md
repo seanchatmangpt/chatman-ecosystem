@@ -278,6 +278,63 @@ Those systems retain their own identities and evidence boundaries.
 
 ---
 
+## External paradigm supply chain
+
+The composition root may consume independently maintained repositories as
+**paradigm suppliers**. Their job is to discover and maintain useful patterns;
+this repository's job is to bind those patterns to exact subjects, compare
+them against admitted capabilities, and classify each delta as:
+
+```text
+VENDOR | WRAP | REPLACE | NOVEL_GAP
+```
+
+External popularity, tests, confidence, or release status do not confer local
+authority or standing. Suppliers enter as `CANDIDATE`; consequential DO still
+routes through BRCE.
+
+The first reference supplier is ECC, pinned by exact SHA in
+[`upstream/paradigms.json`](upstream/paradigms.json). Its current mapping is
+[`upstream/ecc/pattern-map.json`](upstream/ecc/pattern-map.json), with the
+governing architecture in
+[`docs/architecture/external-paradigm-supply-chain.md`](docs/architecture/external-paradigm-supply-chain.md).
+
+The design objective is to outsource **novel pattern discovery** without
+outsourcing semantic authority:
+
+```text
+upstream novelty
+→ exact-SHA observation
+→ capability normalization
+→ deduplication
+→ qualification
+→ deterministic manufacture
+→ admission
+```
+
+Local invention is the residual path, not the default.
+
+The current ECC pin compiles 461 watched donor units (292 skills, 68 agents,
+94 commands, 5 hook surfaces, 2 workflow surfaces). The intake is executable:
+
+```bash
+python3 scripts/verify_external_paradigms.py --json
+python3 scripts/extract_external_paradigm_units.py \
+  --supplier ecc \
+  --json-out target/ecc-inventory.json
+python3 scripts/project_external_paradigm_graph.py \
+  --inventory target/ecc-inventory.json \
+  --cross-product-out target/ecc-cross-product.json \
+  --ttl-out target/ecc-capabilities.ttl
+```
+
+Generated cross-product edges are integration targets only; they explicitly do
+**not** assert semantic equivalence. At the pinned ECC subject all 461 watched
+units have a structural disposition, producing 926 declared target edges; this
+still leaves semantic qualification downstream. Future unmapped or newly added
+units remain candidates rather than proof of novelty.
+
+
 ## Ecosystem manufacturing model
 
 The research program treats the ecosystem as a set of bounded manufacturing roles rather than one giant runtime.
