@@ -214,3 +214,109 @@ name = "agent-lightning"
 url = "https://github.com/seanchatmangpt/agent-lightning"
 role = "external-agentic-rl-commercial-workload"
 standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ash_a2a"
+name = "ash_a2a"
+url = "https://github.com/seanchatmangpt/ash_a2a"
+role = "a2a-capability-projection-and-receipted-agent-runtime"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:xaas"
+name = "xaas"
+url = "https://github.com/seanchatmangpt/xaas"
+role = "semantic-xaas-control-plane-and-execution-fabric"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ggen_igniter"
+name = "ggen_igniter"
+url = "https://github.com/seanchatmangpt/ggen_igniter"
+role = "rdf-to-elixir-semantic-manufacture-and-reconciliation"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:beam4pm"
+name = "beam4pm"
+url = "https://github.com/seanchatmangpt/beam4pm"
+role = "process-mining-semantic-substrate"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:wasm4pm"
+name = "wasm4pm"
+url = "https://github.com/seanchatmangpt/wasm4pm"
+role = "wasm-process-mining-evidence-runtime"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ash_surface"
+name = "ash_surface"
+url = "https://github.com/seanchatmangpt/ash_surface"
+role = "ash-consumer-surface-projection"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ash_r2rml"
+name = "ash_r2rml"
+url = "https://github.com/seanchatmangpt/ash_r2rml"
+role = "ash-relational-to-rdf-semantic-projection"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ggen-ecosystem"
+name = "ggen-ecosystem"
+url = "https://github.com/seanchatmangpt/ggen-ecosystem"
+role = "ggen-composition-and-release-standing"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:zcode-cli"
+name = "zcode-cli"
+url = "https://github.com/seanchatmangpt/zcode-cli"
+role = "zcode-runtime-host-and-xaas-worker-client"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ferroplan"
+name = "ferroplan"
+url = "https://github.com/seanchatmangpt/ferroplan"
+role = "deterministic-planning-engine"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:chatgpt-cloud-elixir"
+name = "chatgpt-cloud-elixir"
+url = "https://github.com/seanchatmangpt/chatgpt-cloud-elixir"
+role = "cloud-runtime-capsule-and-xaas-bridge"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ash_kudzu"
+name = "ash_kudzu"
+url = "https://github.com/seanchatmangpt/ash_kudzu"
+role = "ash-ontology-introspection-and-shacl-admission"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ash_atlassian"
+name = "ash_atlassian"
+url = "https://github.com/seanchatmangpt/ash_atlassian"
+role = "generated-atlassian-ash-model"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ash_expo"
+name = "ash_expo"
+url = "https://github.com/seanchatmangpt/ash_expo"
+role = "expo-consumer-projection"
+standing = "OBSERVED"
+
+[[repository]]
+id = "repository:ash_planning_center"
+name = "ash_planning_center"
+url = "https://github.com/seanchatmangpt/ash_planning_center"
+role = "planning-center-ash-read-integration"
+standing = "OBSERVED"
+

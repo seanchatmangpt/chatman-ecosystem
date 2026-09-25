@@ -1,0 +1,667 @@
+schema = "chatman.capability-catalog.v1"
+version = "26.9.1"
+subject = "SELF"
+
+[[capability]]
+id = "capability:certify-formal-mathematics"
+title = "Certify bounded formal mathematics with receipted evidence"
+class = "CONSTRUCT"
+owner = "repository:mfact"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted mathematical subject", "formal proof/check result", "exact producer identity", "replay boundary"]
+outputs = ["bounded certification artifact", "producer/verifier receipt"]
+depends_on = ["capability:admit-public-custom-ontology", "capability:replay-manufacture"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["mfact"]
+refusals = ["REFUSED:PROOF_AS_AUTHORITY", "REFUSED:CERTIFICATION_WITHOUT_EXACT_SUBJECT"]
+
+[[capability]]
+id = "capability:execute-rr-domain-gym"
+title = "Execute the RR bounded domain gym"
+class = "CONSTRUCT"
+owner = "repository:rrgym"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["RR domain ontology", "GymAct world contract", "bounded scenario corpus"]
+outputs = ["RR evaluation episodes", "receipts", "counterexamples"]
+depends_on = ["capability:execute-bounded-domain-gym"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["rrgym", "gymact"]
+refusals = ["REFUSED:RR_GYM_AS_REAL_WORLD_AUTHORITY", "REFUSED:SIMULATION_AS_PRODUCTION_EVIDENCE"]
+
+[[capability]]
+id = "capability:execute-life-domain-gym"
+title = "Execute the LifeGym bounded domain gym"
+class = "CONSTRUCT"
+owner = "repository:lifegym"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["LifeGym domain ontology", "GymAct world contract", "bounded scenario corpus"]
+outputs = ["life-domain evaluation episodes", "receipts", "counterexamples"]
+depends_on = ["capability:execute-bounded-domain-gym"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["lifegym", "gymact"]
+refusals = ["REFUSED:LIFEGYM_AS_REAL_WORLD_AUTHORITY", "REFUSED:SIMULATION_AS_PRODUCTION_EVIDENCE"]
+
+[[capability]]
+id = "capability:execute-bible-domain-gym"
+title = "Execute the BibleGym bounded domain gym"
+class = "CONSTRUCT"
+owner = "repository:biblegym"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["BibleGym domain ontology", "GymAct world contract", "bounded scenario corpus"]
+outputs = ["Bible-domain evaluation episodes", "receipts", "counterexamples"]
+depends_on = ["capability:execute-bounded-domain-gym"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["biblegym", "gymact"]
+refusals = ["REFUSED:BIBLEGYM_AS_DOCTRINAL_AUTHORITY", "REFUSED:SIMULATION_AS_PRODUCTION_EVIDENCE"]
+
+[[capability]]
+id = "capability:evaluate-agentic-rl-workload"
+title = "Evaluate an agentic reinforcement-learning workload under bounded authority"
+class = "CONSTRUCT"
+owner = "repository:agent-lightning"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["candidate policy", "bounded workload", "evaluation objective", "authority ceiling"]
+outputs = ["evaluation episodes", "reward/evidence trace", "candidate improvements"]
+depends_on = ["capability:plan-decision-frontier", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["agent-lightning"]
+refusals = ["REFUSED:REWARD_AS_STANDING", "REFUSED:TRAINING_AS_AUTHORITY"]
+
+[[capability]]
+id = "capability:project-ash-actions-to-sa2a"
+title = "Project public Ash actions into SA2A capabilities"
+class = "CONSTRUCT"
+owner = "repository:ash_a2a"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["Ash resource/domain public action graph", "A2A protocol profile", "projection metadata"]
+outputs = ["verified SA2A capability index", "A2A AgentCard projection"]
+depends_on = ["capability:project-interface-surfaces"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_a2a"]
+refusals = ["REFUSED:ACTION_NOT_FOUND", "REFUSED:DUPLICATE_SKILL_NAME", "REFUSED:PRIVATE_ACTION_EXPOSURE"]
+
+[[capability]]
+id = "capability:construct-sa2a-dispatch-intent"
+title = "Construct an authority-bounded SA2A dispatch intent"
+class = "CONSTRUCT"
+owner = "repository:ash_a2a"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["verified SA2A capability", "transport-verified identity", "request payload", "authority ceiling"]
+outputs = ["Ash action dispatch intent", "CommandBus intent for consequence-bearing actions"]
+depends_on = ["capability:project-ash-actions-to-sa2a", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_a2a"]
+refusals = ["REFUSED:MESSAGE_METADATA_AS_IDENTITY", "REFUSED:SA2A_CAPABILITY_AS_AUTHORITY", "REFUSED:UNBOUND_CONSEQUENCE"]
+
+[[capability]]
+id = "capability:orchestrate-xaas-ultracode-campaign"
+title = "Orchestrate a bounded XaaS Ultracode campaign"
+class = "CONSTRUCT"
+owner = "repository:xaas"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted work graph", "registered repositories", "campaign budget", "lease policy"]
+outputs = ["epochs", "leases", "construction intents", "campaign audit inputs"]
+depends_on = ["capability:orchestrate-manufacturing-work", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["xaas"]
+refusals = ["REFUSED:CAMPAIGN_WITHOUT_BUDGET", "REFUSED:LEASE_AS_AUTHORITY", "REFUSED:ORCHESTRATOR_AS_DO"]
+
+[[capability]]
+id = "capability:emit-xaas-ocel2-telemetry"
+title = "Emit OCEL 2.0 evidence for XaaS actions and campaigns"
+class = "OBSERVE"
+owner = "repository:xaas"
+required_authority = "observe"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["executed Ash action or campaign event", "OpenTelemetry correlation identity"]
+outputs = ["OCEL 2.0 event evidence", "rotation-bounded NDJSON"]
+depends_on = ["capability:orchestrate-xaas-ultracode-campaign"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["xaas"]
+refusals = ["REFUSED:TELEMETRY_AS_CAUSAL_TRUTH", "REFUSED:UNCORRELATED_EVENT"]
+
+[[capability]]
+id = "capability:compile-sjira-control-graph"
+title = "Compile semantic Jira work and checkpoint control graphs"
+class = "CONSTRUCT"
+owner = "repository:xaas"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted work orders", "goal graph", "capability/authority constraints"]
+outputs = ["semantic work graph", "checkpoint/court projections", "typed stop conditions"]
+depends_on = ["capability:orchestrate-xaas-ultracode-campaign", "capability:manufacture-with-ggen"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["xaas", "ggen-marketplace"]
+refusals = ["REFUSED:WORK_ITEM_AS_AUTHORITY", "REFUSED:CHECKPOINT_AS_CROWN", "REFUSED:UNBOUND_WORK_SUBJECT"]
+
+[[capability]]
+id = "capability:compile-stogaf-architecture"
+title = "Compile STOGAF architecture evidence from admitted enterprise subjects"
+class = "CONSTRUCT"
+owner = "repository:xaas"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted enterprise observations", "public ontology mappings", "architecture constraints"]
+outputs = ["STOGAF architecture graph", "bounded views", "assumption ledger"]
+depends_on = ["capability:admit-public-custom-ontology", "capability:manufacture-with-ggen"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["xaas", "ggen-marketplace"]
+refusals = ["REFUSED:ASSUMPTION_AS_OBSERVED_FACT", "REFUSED:ARCHITECTURE_AS_DEPLOYMENT_AUTHORITY"]
+
+[[capability]]
+id = "capability:run-xaas-receipted-actuation"
+title = "Execute XaaS consequence through the receipted actuation kernel"
+class = "DO"
+owner = "repository:xaas"
+required_authority = "modify_external_object"
+broker_required = true
+receipt_required = true
+reversible = false
+standing = "CANDIDATE"
+inputs = ["admitted XaaS intent", "exact authority", "idempotency key", "expected postcondition"]
+outputs = ["consequence", "durable receipt", "replay identity"]
+depends_on = ["capability:broker-consequential-do", "capability:emit-xaas-ocel2-telemetry"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["xaas", "autofde"]
+refusals = ["REFUSED:XAAS_ACTUATION_WITHOUT_AUTHORITY", "REFUSED:IDEMPOTENCY_COLLISION", "REFUSED:UNRECEIPTED_ACTUATION"]
+
+[[capability]]
+id = "capability:sync-rdf-to-elixir"
+title = "Manufacture Elixir artifacts from admitted RDF/SPARQL/EEx inputs"
+class = "CONSTRUCT"
+owner = "repository:ggen_igniter"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted RDF ontology", "named SPARQL queries", "EEx templates", "write policy"]
+outputs = ["manufactured Elixir artifacts", "reconciliation manifest", "manufacture receipt"]
+depends_on = ["capability:manufacture-with-ggen", "capability:admit-public-custom-ontology"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen_igniter", "ggen"]
+refusals = ["REFUSED:ONTOLOGY_NOT_ADMITTED", "REFUSED:UNTRACKED_GENERATED_WRITE"]
+
+[[capability]]
+id = "capability:reconcile-generated-elixir"
+title = "Reconcile generated Elixir against ontology evolution"
+class = "CONSTRUCT"
+owner = "repository:ggen_igniter"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["prior reconciliation manifest", "current admitted ontology", "stale-output policy"]
+outputs = ["converged projection", "typed stale disposition", "reconciliation receipt"]
+depends_on = ["capability:sync-rdf-to-elixir", "capability:replay-manufacture"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen_igniter"]
+refusals = ["REFUSED:STALE_OUTPUT_UNDISPOSED", "REFUSED:GENERATED_HAND_EDIT"]
+
+[[capability]]
+id = "capability:apply-igniter-ast-repair"
+title = "Apply bounded Igniter/Sourceror AST repair"
+class = "CONSTRUCT"
+owner = "repository:ggen_igniter"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["typed diagnostic", "bounded repair rule", "exact source subject"]
+outputs = ["AST repair candidate", "new exact subject", "repair evidence"]
+depends_on = ["capability:reconcile-generated-elixir", "capability:bounded-compatibility-repair"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen_igniter"]
+refusals = ["REFUSED:AST_REPAIR_OUTSIDE_RULE", "REFUSED:AUTHORITY_WIDENING"]
+
+[[capability]]
+id = "capability:model-ocel-process-types"
+title = "Manufacture BEAM process and OCEL type projections"
+class = "CONSTRUCT"
+owner = "repository:beam4pm"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted process ontology", "ggen process-model pack"]
+outputs = ["Erlang/Elixir/Gleam/Ash process types", "reflection manifest", "JSON Schema"]
+depends_on = ["capability:manufacture-with-ggen", "capability:admit-public-custom-ontology"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["beam4pm", "ggen-marketplace"]
+refusals = ["REFUSED:HAND_EDITED_GENERATED_PROCESS_TYPE", "REFUSED:TYPE_WITHOUT_ONTOLOGY_IDENTITY"]
+
+[[capability]]
+id = "capability:discover-process-model"
+title = "Discover process structure from admitted event evidence"
+class = "CONSTRUCT"
+owner = "repository:beam4pm"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["event traces", "object/event identity", "discovery parameters"]
+outputs = ["DFG/process model candidate", "discovery evidence"]
+depends_on = ["capability:model-ocel-process-types"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["beam4pm"]
+refusals = ["REFUSED:EVENT_IDENTITY_UNBOUND", "REFUSED:DISCOVERY_AS_CONFORMANCE"]
+
+[[capability]]
+id = "capability:measure-process-conformance"
+title = "Measure process conformance and precision"
+class = "CONSTRUCT"
+owner = "repository:beam4pm"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted event traces", "process model", "conformance metric contract"]
+outputs = ["conformance result", "precision evidence", "deviation observations"]
+depends_on = ["capability:discover-process-model"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["beam4pm"]
+refusals = ["REFUSED:MODEL_WITHOUT_TRACE_IDENTITY", "REFUSED:CONFORMANCE_AS_CAUSAL_TRUTH"]
+
+[[capability]]
+id = "capability:execute-powl-wasm-session"
+title = "Execute a replayable POWL/OCEL WebAssembly session"
+class = "CONSTRUCT"
+owner = "repository:wasm4pm"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["exact OCEL 2.0 subject", "POWL route", "WASM export identity", "session mode"]
+outputs = ["transition-hash chain", "session evidence", "replay fixture"]
+depends_on = ["capability:measure-process-conformance", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["wasm4pm"]
+refusals = ["REFUSED:WASM_EXPORT_IDENTITY_DRIFT", "REFUSED:UNSUPPORTED_OCEL_VARIANT", "REFUSED:SESSION_AS_PRODUCTION_DO"]
+
+[[capability]]
+id = "capability:manufacture-process-evidence"
+title = "Manufacture signed process-mining evidence bundles"
+class = "CONSTRUCT"
+owner = "repository:wasm4pm"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["replayable process session", "validator identities", "release identities"]
+outputs = ["process evidence bundle", "bounded passport candidate", "replay evidence"]
+depends_on = ["capability:execute-powl-wasm-session", "capability:attest-affidavit-standing"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["wasm4pm", "affidavit"]
+refusals = ["REFUSED:EVIDENCE_BUNDLE_WITHOUT_REPLAY", "REFUSED:PASSPORT_AS_UNIVERSAL_STANDING"]
+
+[[capability]]
+id = "capability:repair-wasm4pm-runtime"
+title = "Apply a receipted wasm4pm doctor repair"
+class = "DO"
+owner = "repository:wasm4pm"
+required_authority = "modify_external_object"
+broker_required = true
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["typed doctor finding", "explicit repair authority", "pending receipt", "expected postcondition"]
+outputs = ["bounded repair consequence", "outcome receipt"]
+depends_on = ["capability:broker-consequential-do", "capability:localize-ci-failure"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["wasm4pm", "autofde"]
+refusals = ["REFUSED:DOCTOR_FIX_WITHOUT_AUTHORITY", "REFUSED:REPAIR_WITHOUT_PENDING_RECEIPT"]
+
+[[capability]]
+id = "capability:project-ash-consumer-surface"
+title = "Project one Ash manifest into consumer-facing runtime contracts"
+class = "CONSTRUCT"
+owner = "repository:ash_surface"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["Ash.Info.Manifest", "consumer projection profile", "public action set"]
+outputs = ["AshSurface contract", "stable content digest", "consumer runtime projection"]
+depends_on = ["capability:project-interface-surfaces"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_surface"]
+refusals = ["REFUSED:UNKNOWN_ACTION_METADATA", "REFUSED:SECOND_DOMAIN_MODEL", "REFUSED:PROJECTION_IDENTITY_DRIFT"]
+
+[[capability]]
+id = "capability:select-ash-consumer-transport"
+title = "Select a lawful Ash consumer transport before dispatch"
+class = "SELECT"
+owner = "repository:ash_surface"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["preserved transport frontier", "bounded transport availability", "explicit falsifier for eliminated transport", "Ash action identity"]
+outputs = ["selected admitted transport or typed refusal"]
+depends_on = ["capability:project-ash-consumer-surface", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_surface"]
+refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:TRANSPORT_IDENTITY_AS_ACTION_IDENTITY", "REFUSED:REPLAY_AFTER_UNKNOWN_DISPATCH"]
+
+[[capability]]
+id = "capability:compile-ash-r2rml-mapping"
+title = "Compile Ash resource semantics into a deterministic R2RML mapping"
+class = "CONSTRUCT"
+owner = "repository:ash_r2rml"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["Ash resource metadata", "relational data-layer metadata", "public RDF mappings"]
+outputs = ["normalized R2RML mapping IR", "triples-map candidate"]
+depends_on = ["capability:admit-public-custom-ontology"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_r2rml"]
+refusals = ["REFUSED:UNMAPPED_TYPE_COERCION", "REFUSED:AMBIGUOUS_SUBJECT_IDENTITY", "REFUSED:INVENTED_RELATIONSHIP_SEMANTICS"]
+
+[[capability]]
+id = "capability:project-relational-state-as-rdf"
+title = "Project one relational subject as a virtual RDF graph"
+class = "CONSTRUCT"
+owner = "repository:ash_r2rml"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted R2RML mapping", "exact relational schema subject", "OBDA boundary"]
+outputs = ["virtual RDF graph contract", "SQL/Ash/SPARQL correspondence evidence"]
+depends_on = ["capability:compile-ash-r2rml-mapping", "capability:verify-source-correspondence"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_r2rml"]
+refusals = ["REFUSED:RDF_AS_SECOND_SYSTEM_OF_RECORD", "REFUSED:MODEL_SOURCE_DRIFT"]
+
+[[capability]]
+id = "capability:compose-ggen-ecosystem-release"
+title = "Compose pinned ggen and marketplace subjects into a governed release"
+class = "CONSTRUCT"
+owner = "repository:ggen-ecosystem"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["exact ggen subject", "exact marketplace subject", "composition ontology", "release policy"]
+outputs = ["composed container/release candidate", "composition manifest", "qualification inputs"]
+depends_on = ["capability:manufacture-with-ggen", "capability:distribute-ggen-pack"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen-ecosystem", "ggen", "ggen-marketplace"]
+refusals = ["REFUSED:UNPINNED_PRODUCER", "REFUSED:COMPOSITION_AS_COMPONENT_STANDING"]
+
+[[capability]]
+id = "capability:qualify-ggen-ecosystem-release"
+title = "Qualify a composed ggen ecosystem release under DfCM"
+class = "SELECT"
+owner = "repository:ggen-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["preserved qualification frontier", "bounded evidence dimensions", "explicit falsifier for any eliminated release candidate", "composed release candidate"]
+outputs = ["qualified release candidate or typed refusal"]
+depends_on = ["capability:compose-ggen-ecosystem-release", "capability:replay-manufacture"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen-ecosystem"]
+refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:FALSIFIER_MISSING", "REFUSED:COMPONENT_STANDING_TRANSFER"]
+
+[[capability]]
+id = "capability:host-zcode-runtime"
+title = "Host the pinned ZCode runtime through the terminal client"
+class = "CONSTRUCT"
+owner = "repository:zcode-cli"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["pinned ZCode runtime", "terminal host contract", "provider configuration"]
+outputs = ["hosted runtime process", "exit/cancellation evidence", "compatibility surface"]
+depends_on = ["capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["zcode-cli"]
+refusals = ["REFUSED:UPSTREAM_RUNTIME_UNPINNED", "REFUSED:HOST_AS_RUNTIME_AUTHORITY"]
+
+[[capability]]
+id = "capability:dispatch-zcode-gall-work"
+title = "Dispatch bounded gall-work from ZCode into the XaaS fabric"
+class = "CONSTRUCT"
+owner = "repository:zcode-cli"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["hosted ZCode runtime", "XaaS lease", "bounded work request", "authority ceiling"]
+outputs = ["provider work intent", "lease-bound execution request"]
+depends_on = ["capability:host-zcode-runtime", "capability:orchestrate-xaas-ultracode-campaign"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["zcode-cli", "xaas"]
+refusals = ["REFUSED:GALL_WORK_WITHOUT_LEASE", "REFUSED:ZCODE_AS_DO_AUTHORITY"]
+
+[[capability]]
+id = "capability:solve-pddl-plan"
+title = "Solve an admitted PDDL planning problem deterministically"
+class = "CONSTRUCT"
+owner = "repository:ferroplan"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admitted PDDL domain", "admitted PDDL problem", "planner budget"]
+outputs = ["candidate plan", "planner evidence", "bounded failure class"]
+depends_on = ["capability:admit-capability-plan"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ferroplan"]
+refusals = ["REFUSED:PLANNER_AS_AUTHORITY", "REFUSED:PLAN_AS_EXECUTION", "REFUSED:UNADMITTED_PDDL"]
+
+[[capability]]
+id = "capability:materialize-cloud-runtime-capsule"
+title = "Materialize a digest-pinned BEAM/Ash runtime capsule for restricted cloud execution"
+class = "CONSTRUCT"
+owner = "repository:chatgpt-cloud-elixir"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["pinned source and versions", "runtime closure", "artifact digests"]
+outputs = ["portable runtime capsule", "manifest", "checksums", "construction receipt"]
+depends_on = ["capability:manufacture-with-ggen", "capability:replay-manufacture"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatgpt-cloud-elixir"]
+refusals = ["REFUSED:CAPSULE_WITHOUT_DIGEST", "REFUSED:ARTIFACT_EXISTENCE_AS_EXECUTION"]
+
+[[capability]]
+id = "capability:bridge-cloud-runtime-to-xaas"
+title = "Bridge a restricted cloud runtime to the XaaS execution fabric"
+class = "CONSTRUCT"
+owner = "repository:chatgpt-cloud-elixir"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["verified cloud runtime", "XaaS endpoint identity", "bounded run request", "authority ceiling"]
+outputs = ["XaaS run submission intent", "receipt query path", "typed transport block"]
+depends_on = ["capability:materialize-cloud-runtime-capsule", "capability:orchestrate-xaas-ultracode-campaign"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatgpt-cloud-elixir", "xaas"]
+refusals = ["REFUSED:LOCALHOST_FALLBACK_FOR_CLOUD", "REFUSED:CLOUD_BRIDGE_AS_DO_AUTHORITY", "BLOCKED:TRANSPORT"]
+
+[[capability]]
+id = "capability:introspect-ash-ontology"
+title = "Introspect compiled Ash resources into a candidate ontology projection"
+class = "CONSTRUCT"
+owner = "repository:ash_kudzu"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["exact compiled Ash resource/domain", "Ash reflection API", "public ontology mapping table"]
+outputs = ["candidate Turtle ontology", "resource/action correspondence evidence"]
+depends_on = ["capability:observe-exact-github-subject"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_kudzu"]
+refusals = ["REFUSED:NON_ASH_MODULE", "REFUSED:SOURCE_TEXT_GUESSING", "REFUSED:UNMAPPED_TYPE_AS_EXACT_SEMANTICS"]
+
+[[capability]]
+id = "capability:admit-ash-shacl-projection"
+title = "Admit an Ash Kudzu ontology projection through SHACL"
+class = "SELECT"
+owner = "repository:ash_kudzu"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["preserved projection frontier", "bounded SHACL/public-ontology constraints", "explicit falsifier", "candidate Ash ontology projection"]
+outputs = ["admitted ontology projection or typed SHACL refusal"]
+depends_on = ["capability:introspect-ash-ontology", "capability:admit-public-custom-ontology"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_kudzu"]
+refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:FALSIFIER_MISSING", "REFUSED:SHACL_ADMISSION_FAILURE"]
+
+[[capability]]
+id = "capability:manufacture-atlassian-ash-model"
+title = "Manufacture bounded Jira/Confluence Ash models from a public-ontology SHACL profile"
+class = "CONSTRUCT"
+owner = "repository:ash_atlassian"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["hash-pinned public ontology profile", "SHACL application profile", "ggen/Igniter manufacturer"]
+outputs = ["generated Ash resources/domains", "semantic map", "qualification evidence"]
+depends_on = ["capability:sync-rdf-to-elixir", "capability:admit-public-custom-ontology"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_atlassian", "ggen_igniter"]
+refusals = ["REFUSED:LOCAL_PUBLIC_TERM_REINVENTION", "REFUSED:GENERATED_HAND_EDIT", "REFUSED:UNMODELED_OBJECT_EDGE_INVENTION"]
+
+[[capability]]
+id = "capability:project-ash-expo-runtime"
+title = "Project admitted Ash actions into an Expo mobile runtime manifest"
+class = "CONSTRUCT"
+owner = "repository:ash_expo"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["Ash public action graph", "mobile projection metadata", "transport capabilities"]
+outputs = ["Expo capability manifest", "mobile runtime projection", "staleness-checkable artifacts"]
+depends_on = ["capability:project-interface-surfaces"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_expo"]
+refusals = ["REFUSED:MISSING_ASH_TYPESCRIPT_CONTRACT", "REFUSED:PRIVATE_ACTION_PROJECTION", "REFUSED:TRANSPORT_MODE_MISMATCH"]
+
+[[capability]]
+id = "capability:admit-ash-expo-offline-policy"
+title = "Admit bounded offline behavior for an Ash Expo action"
+class = "SELECT"
+owner = "repository:ash_expo"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["preserved offline-policy frontier", "bounded action/transport semantics", "explicit falsifier", "requested offline class"]
+outputs = ["admitted offline class or typed refusal"]
+depends_on = ["capability:project-ash-expo-runtime", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_expo"]
+refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:ONLINE_ONLY_QUEUE", "REFUSED:REPLAY_WITHOUT_IDEMPOTENCY_CONTRACT"]
+
+[[capability]]
+id = "capability:read-planning-center-through-ash"
+title = "Read a bounded Planning Center subject through Ash"
+class = "OBSERVE"
+owner = "repository:ash_planning_center"
+required_authority = "observe"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["Planning Center endpoint identity", "admitted credential type", "bounded read/query", "remote result"]
+outputs = ["Ash resource observations", "bounded remote-read evidence"]
+depends_on = ["capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_planning_center"]
+refusals = ["REFUSED:LIVE_ACCOUNT_UNVERIFIED_AS_ALIVE", "REFUSED:UNBOUNDED_REMOTE_SCAN", "REFUSED:WRITE_ON_READ_SURFACE"]
+
+[[capability]]
+id = "capability:bound-planning-center-write-authority"
+title = "Fence Planning Center write capability until explicit authority is modeled"
+class = "SELECT"
+owner = "repository:ash_planning_center"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["preserved action frontier", "bounded remote semantics", "explicit falsifier", "requested consequence class"]
+outputs = ["UNSUPPORTED write or exact future authority requirement"]
+depends_on = ["capability:read-planning-center-through-ash", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ash_planning_center"]
+refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:OBSERVED_REMOTE_OBJECT_AS_WRITE_AUTHORITY", "REFUSED:WRITE_WITHOUT_RECEIPT_REPLAY"]
+

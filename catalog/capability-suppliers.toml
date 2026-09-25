@@ -1,0 +1,283 @@
+schema = "chatman.capability-supplier-registry.v1"
+version = "26.9.25"
+control_plane = "repository:chatman-ecosystem"
+
+[[supplier]]
+id = "repository:affidavit"
+repository = "seanchatmangpt/affidavit"
+discovery_ref = "main"
+subject_sha = "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030"
+mode = "owner"
+capabilities = ["capability:attest-affidavit-standing"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:agent-lightning"
+repository = "seanchatmangpt/agent-lightning"
+discovery_ref = "main"
+subject_sha = "bd80905120affc576eb383f3b4bcc35cacc0e1d0"
+mode = "owner"
+capabilities = ["capability:evaluate-agentic-rl-workload"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ash_a2a"
+repository = "seanchatmangpt/ash_a2a"
+discovery_ref = "main"
+subject_sha = "7999524d0b98aa5dc650a0538c1be5ec8b867477"
+mode = "owner"
+capabilities = ["capability:construct-sa2a-dispatch-intent", "capability:project-ash-actions-to-sa2a"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ash_atlassian"
+repository = "seanchatmangpt/ash_atlassian"
+discovery_ref = "main"
+subject_sha = "0338b9ba169e93d0f5df91f175ef2e62e668fa97"
+mode = "owner"
+capabilities = ["capability:manufacture-atlassian-ash-model"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ash_expo"
+repository = "seanchatmangpt/ash_expo"
+discovery_ref = "main"
+subject_sha = "3430fbd862555b598befe7b0f72b9afc1a7bfa12"
+mode = "owner"
+capabilities = ["capability:admit-ash-expo-offline-policy", "capability:project-ash-expo-runtime"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ash_kudzu"
+repository = "seanchatmangpt/ash_kudzu"
+discovery_ref = "feat/shacl-admission-gate"
+subject_sha = "dd182bba9ed5ce252fe997b987415ed69742208a"
+mode = "owner"
+capabilities = ["capability:admit-ash-shacl-projection", "capability:introspect-ash-ontology"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ash_planning_center"
+repository = "seanchatmangpt/ash_planning_center"
+discovery_ref = "main"
+subject_sha = "5ee26cbdc8fef26c92c7691355c76f5aed2e7b2c"
+mode = "owner"
+capabilities = ["capability:bound-planning-center-write-authority", "capability:read-planning-center-through-ash"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ash_r2rml"
+repository = "seanchatmangpt/ash_r2rml"
+discovery_ref = "main"
+subject_sha = "89a1f154e78da2c2cc16076ee5b131275ef927bc"
+mode = "owner"
+capabilities = ["capability:compile-ash-r2rml-mapping", "capability:project-relational-state-as-rdf"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ash_surface"
+repository = "seanchatmangpt/ash_surface"
+discovery_ref = "main"
+subject_sha = "7d5492795d9b9a0956f51545ed1ad1932768b77e"
+mode = "owner"
+capabilities = ["capability:project-ash-consumer-surface", "capability:select-ash-consumer-transport"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:autofde"
+repository = "seanchatmangpt/autofde"
+discovery_ref = "main"
+subject_sha = "f8e2d477dcb3e5084c341779f275505debd49c00"
+mode = "owner"
+capabilities = ["capability:broker-consequential-do", "capability:persist-autofde-runtime"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:autofde-lab"
+repository = "seanchatmangpt/autofde-lab"
+discovery_ref = "master"
+subject_sha = "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7"
+mode = "owner"
+capabilities = ["capability:admit-capability-plan", "capability:admit-planner-policy-role-separation", "capability:falsify-candidate-plan", "capability:plan-decision-frontier"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:bcinr"
+repository = "seanchatmangpt/bcinr"
+discovery_ref = "main"
+subject_sha = "ebb469f798b95ff8a8c2c3fddd34af3bce242381"
+mode = "owner"
+capabilities = ["capability:compute-bounded-cmca"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:beam4pm"
+repository = "seanchatmangpt/beam4pm"
+discovery_ref = "main"
+subject_sha = "8c3f5e09c297023059ad384629a55ddb2ac785b1"
+mode = "owner"
+capabilities = ["capability:discover-process-model", "capability:measure-process-conformance", "capability:model-ocel-process-types"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:biblegym"
+repository = "seanchatmangpt/biblegym"
+discovery_ref = "main"
+subject_sha = "c0a13ea67e6a9e31c2d07f06565ea2b8acfcd8f7"
+mode = "owner"
+capabilities = ["capability:execute-bible-domain-gym"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:chatgpt-cloud-elixir"
+repository = "seanchatmangpt/chatgpt-cloud-elixir"
+discovery_ref = "main"
+subject_sha = "a28e2fd0b57dd4a1ff279cf98450930877f0f8b2"
+mode = "owner"
+capabilities = ["capability:bridge-cloud-runtime-to-xaas", "capability:materialize-cloud-runtime-capsule"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:dsrust"
+repository = "seanchatmangpt/dsrust"
+discovery_ref = "main"
+subject_sha = "a1ea189d37d829a894f59d33db254d18ec815ae7"
+mode = "owner"
+capabilities = ["capability:compile-bounded-oracle"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ferroplan"
+repository = "seanchatmangpt/ferroplan"
+discovery_ref = "main"
+subject_sha = "9c872ceef75d03e33a323fbd0bac5ae22ece725c"
+mode = "owner"
+capabilities = ["capability:solve-pddl-plan"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ggen"
+repository = "seanchatmangpt/ggen"
+discovery_ref = "main"
+subject_sha = "cc0cd3cb3ea1794e22e9331f2514dfccffa0cf2b"
+mode = "owner"
+capabilities = ["capability:manufacture-with-ggen"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ggen-ecosystem"
+repository = "seanchatmangpt/ggen-ecosystem"
+discovery_ref = "main"
+subject_sha = "ae41386c6e597bedb3137fa5e32fbef2c73d409a"
+mode = "owner"
+capabilities = ["capability:compose-ggen-ecosystem-release", "capability:qualify-ggen-ecosystem-release"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ggen-legacy"
+repository = "seanchatmangpt/ggen-legacy"
+discovery_ref = "main"
+subject_sha = "16a5c4f1051ecb0a98b06897e89e4e956be4d9b0"
+mode = "owner"
+capabilities = ["capability:reconstitute-project-protocol-suite"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ggen-marketplace"
+repository = "seanchatmangpt/ggen-marketplace"
+discovery_ref = "main"
+subject_sha = "5eb71f7ed947f705a8d6b145cb9b0be82855d793"
+mode = "owner"
+capabilities = ["capability:distribute-ggen-pack"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ggen_igniter"
+repository = "seanchatmangpt/ggen_igniter"
+discovery_ref = "main"
+subject_sha = "7d53cb3b3ffe0a32f0e4b5f1365b9e1adff82d44"
+mode = "owner"
+capabilities = ["capability:apply-igniter-ast-repair", "capability:reconcile-generated-elixir", "capability:sync-rdf-to-elixir"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:gymact"
+repository = "seanchatmangpt/gymact"
+discovery_ref = "main"
+subject_sha = "44361f674af463c0eb35d3ce4677e2bcb9c31443"
+mode = "owner"
+capabilities = ["capability:execute-bounded-domain-gym", "capability:execute-gym-world"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:lifegym"
+repository = "seanchatmangpt/lifegym"
+discovery_ref = "main"
+subject_sha = "4dffff1f81b83593220c787c08cb6622e3c749ee"
+mode = "owner"
+capabilities = ["capability:execute-life-domain-gym"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:mfact"
+repository = "seanchatmangpt/mfact"
+discovery_ref = "main"
+subject_sha = "8a62a7c28e935b9afd05c68f455f475423ec0a7a"
+mode = "owner"
+capabilities = ["capability:certify-formal-mathematics"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:mfw"
+repository = "seanchatmangpt/mfw"
+discovery_ref = "main"
+subject_sha = "c5a10b00bc8cbc27052840c0b9b51607c2ff85b1"
+mode = "owner"
+capabilities = ["capability:orchestrate-manufacturing-work"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:rrgym"
+repository = "seanchatmangpt/rrgym"
+discovery_ref = "main"
+subject_sha = "9f3128ae2b5b752c0f5bb091b433231d226a3585"
+mode = "owner"
+capabilities = ["capability:execute-rr-domain-gym"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:wasm4pm"
+repository = "seanchatmangpt/wasm4pm"
+discovery_ref = "main"
+subject_sha = "dd31b48531dd9a97a2af3d468e1eca946ff49481"
+mode = "owner"
+capabilities = ["capability:execute-powl-wasm-session", "capability:manufacture-process-evidence", "capability:repair-wasm4pm-runtime"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:ww3gym"
+repository = "seanchatmangpt/ww3gym"
+discovery_ref = "main"
+subject_sha = "0f539e75c772978fe8d1ebd897789649f5785bf2"
+mode = "owner"
+capabilities = ["capability:bound-ww3gym-simulation"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:xaas"
+repository = "seanchatmangpt/xaas"
+discovery_ref = "main"
+subject_sha = "f9670f446537ddb882edf9cd7e0b6519de557e60"
+mode = "owner"
+capabilities = ["capability:compile-sjira-control-graph", "capability:compile-stogaf-architecture", "capability:emit-xaas-ocel2-telemetry", "capability:orchestrate-xaas-ultracode-campaign", "capability:run-xaas-receipted-actuation"]
+standing = "CANDIDATE"
+
+[[supplier]]
+id = "repository:zcode-cli"
+repository = "seanchatmangpt/zcode-cli"
+discovery_ref = "main"
+subject_sha = "32093eafc2f1cc202ace2cded38b72ec1f81e4ba"
+mode = "owner"
+capabilities = ["capability:dispatch-zcode-gall-work", "capability:host-zcode-runtime"]
+standing = "CANDIDATE"
+
