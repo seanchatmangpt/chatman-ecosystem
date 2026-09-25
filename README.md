@@ -329,8 +329,10 @@ python3 scripts/project_external_paradigm_graph.py \
 ```
 
 Generated cross-product edges are integration targets only; they explicitly do
-**not** assert semantic equivalence. Unmapped donor units remain unresolved
-candidates rather than being treated as proof of novelty.
+**not** assert semantic equivalence. At the pinned ECC subject all 461 watched
+units have a structural disposition, producing 926 declared target edges; this
+still leaves semantic qualification downstream. Future unmapped or newly added
+units remain candidates rather than proof of novelty.
 
 
 ## Ecosystem manufacturing model
