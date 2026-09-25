@@ -10,15 +10,27 @@ Version: `0.1.0`
 | `repository:agent-lightning` | external-agentic-rl-commercial-workload | `Observed` |
 | `repository:agent-scaffold` | doctrine-projection-tool | `Candidate` |
 | `repository:ai-agent-boilerplate` | behavioral-fixture | `Candidate` |
+| `repository:ash_a2a` | a2a-capability-projection-and-receipted-agent-runtime | `Observed` |
+| `repository:ash_atlassian` | generated-atlassian-ash-model | `Observed` |
+| `repository:ash_expo` | expo-consumer-projection | `Observed` |
+| `repository:ash_kudzu` | ash-ontology-introspection-and-shacl-admission | `Observed` |
+| `repository:ash_planning_center` | planning-center-ash-read-integration | `Observed` |
+| `repository:ash_r2rml` | ash-relational-to-rdf-semantic-projection | `Observed` |
+| `repository:ash_surface` | ash-consumer-surface-projection | `Observed` |
 | `repository:autofde` | persistent-runtime-and-brce-boundary | `Observed` |
 | `repository:autofde-lab` | planning-reasoning-falsification-capability-admission | `Observed` |
 | `repository:bcinr` | bounded-cmca | `Observed` |
+| `repository:beam4pm` | process-mining-semantic-substrate | `Observed` |
 | `repository:better-fullstack` | gall-checkpoint | `Candidate` |
 | `repository:biblegym` | bounded-domain-gym | `Observed` |
+| `repository:chatgpt-cloud-elixir` | cloud-runtime-capsule-and-xaas-bridge | `Observed` |
 | `repository:chatman-ecosystem` | constitutional-control-plane | `Alive` |
 | `repository:dsrust` | optional-bounded-compiler-oracle | `Observed` |
 | `repository:entity-derive` | generated-adapter-experiment | `Candidate` |
+| `repository:ferroplan` | deterministic-planning-engine | `Observed` |
 | `repository:ggen` | deterministic-manufacturer | `Observed` |
+| `repository:ggen_igniter` | rdf-to-elixir-semantic-manufacture-and-reconciliation | `Observed` |
+| `repository:ggen-ecosystem` | ggen-composition-and-release-standing | `Observed` |
 | `repository:ggen-legacy` | bounded-reconstitution | `Observed` |
 | `repository:ggen-marketplace` | executable-knowledge-distribution | `Observed` |
 | `repository:goat-billing-proxy` | rejected-code-fixture-only | `Rejected` |
@@ -36,7 +48,10 @@ Version: `0.1.0`
 | `repository:systemprompt-template` | governance-benchmark | `Candidate` |
 | `repository:uniplate` | bounded-tree-rewrite-experiment | `Candidate` |
 | `repository:vk-bot-api` | deferred-connector | `Unsupported` |
+| `repository:wasm4pm` | wasm-process-mining-evidence-runtime | `Observed` |
 | `repository:ww3gym` | simulation-evaluation-only-gym | `Observed` |
+| `repository:xaas` | semantic-xaas-control-plane-and-execution-fabric | `Observed` |
+| `repository:zcode-cli` | zcode-runtime-host-and-xaas-worker-client | `Observed` |
 
 ## Documents
 

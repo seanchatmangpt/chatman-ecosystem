@@ -391,7 +391,7 @@ outputs = ["selected admitted transport or typed refusal"]
 depends_on = ["capability:project-ash-consumer-surface", "capability:enforce-authority-ceiling"]
 interfaces = ["cli", "api", "mcp", "a2a"]
 source_repositories = ["ash_surface"]
-refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:TRANSPORT_IDENTITY_AS_ACTION_IDENTITY", "REFUSED:REPLAY_AFTER_UNKNOWN_DISPATCH"]
+refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:TRANSPORT_IDENTITY_AS_ACTION_IDENTITY", "REFUSED:REPLAY_AFTER_UNKNOWN_DISPATCH", "REFUSED:FALSIFIER_MISSING", "REFUSED:UNBOUNDED_OPTION_GRAPH"]
 
 [[capability]]
 id = "capability:compile-ash-r2rml-mapping"
@@ -459,7 +459,7 @@ outputs = ["qualified release candidate or typed refusal"]
 depends_on = ["capability:compose-ggen-ecosystem-release", "capability:replay-manufacture"]
 interfaces = ["cli", "api", "mcp", "a2a"]
 source_repositories = ["ggen-ecosystem"]
-refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:FALSIFIER_MISSING", "REFUSED:COMPONENT_STANDING_TRANSFER"]
+refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:FALSIFIER_MISSING", "REFUSED:COMPONENT_STANDING_TRANSFER", "REFUSED:UNBOUNDED_OPTION_GRAPH"]
 
 [[capability]]
 id = "capability:host-zcode-runtime"
@@ -578,7 +578,7 @@ outputs = ["admitted ontology projection or typed SHACL refusal"]
 depends_on = ["capability:introspect-ash-ontology", "capability:admit-public-custom-ontology"]
 interfaces = ["cli", "api", "mcp", "a2a"]
 source_repositories = ["ash_kudzu"]
-refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:FALSIFIER_MISSING", "REFUSED:SHACL_ADMISSION_FAILURE"]
+refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:FALSIFIER_MISSING", "REFUSED:SHACL_ADMISSION_FAILURE", "REFUSED:UNBOUNDED_OPTION_GRAPH"]
 
 [[capability]]
 id = "capability:manufacture-atlassian-ash-model"
@@ -629,7 +629,7 @@ outputs = ["admitted offline class or typed refusal"]
 depends_on = ["capability:project-ash-expo-runtime", "capability:enforce-authority-ceiling"]
 interfaces = ["cli", "api", "mcp", "a2a"]
 source_repositories = ["ash_expo"]
-refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:ONLINE_ONLY_QUEUE", "REFUSED:REPLAY_WITHOUT_IDEMPOTENCY_CONTRACT"]
+refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:ONLINE_ONLY_QUEUE", "REFUSED:REPLAY_WITHOUT_IDEMPOTENCY_CONTRACT", "REFUSED:FALSIFIER_MISSING", "REFUSED:UNBOUNDED_OPTION_GRAPH"]
 
 [[capability]]
 id = "capability:read-planning-center-through-ash"
@@ -663,5 +663,5 @@ outputs = ["UNSUPPORTED write or exact future authority requirement"]
 depends_on = ["capability:read-planning-center-through-ash", "capability:enforce-authority-ceiling"]
 interfaces = ["cli", "api", "mcp", "a2a"]
 source_repositories = ["ash_planning_center"]
-refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:OBSERVED_REMOTE_OBJECT_AS_WRITE_AUTHORITY", "REFUSED:WRITE_WITHOUT_RECEIPT_REPLAY"]
+refusals = ["REFUSED:PREMATURE_SELECTION", "REFUSED:OBSERVED_REMOTE_OBJECT_AS_WRITE_AUTHORITY", "REFUSED:WRITE_WITHOUT_RECEIPT_REPLAY", "REFUSED:FALSIFIER_MISSING", "REFUSED:UNBOUNDED_OPTION_GRAPH"]
 

@@ -18,6 +18,7 @@ from typing import Any
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 DFCM = ROOT / "catalog" / "dfcm.toml"
 CAPABILITY_VERIFIER = ROOT / "scripts" / "verify_capabilities.py"
+FLEET_CATALOG = ROOT / "catalog" / "capabilities-fleet.toml"
 
 SPEC = importlib.util.spec_from_file_location("verify_capabilities", CAPABILITY_VERIFIER)
 if SPEC is None or SPEC.loader is None:
@@ -151,6 +152,60 @@ def validate_all_capabilities(
                 f"REFUSED:DFCM_NON_DO_IRREVERSIBLE:{cid}",
             )
 
+    fleet_payload = verify_capabilities.load(FLEET_CATALOG)
+    fleet_ids = {
+        item.get("id")
+        for item in fleet_payload.get("capability", [])
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+    _require(
+        len(fleet_ids) == len(fleet_payload.get("capability", [])),
+        "REFUSED:FLEET_CAPABILITY_IDENTITY",
+    )
+    missing_fleet = sorted(fleet_ids - set(index))
+    _require(
+        not missing_fleet,
+        f"REFUSED:FLEET_CAPABILITY_MISSING:{','.join(missing_fleet)}",
+    )
+    fleet = {cid: index[cid] for cid in sorted(fleet_ids)}
+
+    _require(
+        all(item["standing"] == "CANDIDATE" for item in fleet.values()),
+        "REFUSED:FLEET_CAPABILITY_SELF_STANDING",
+    )
+
+    fleet_select = [item for item in fleet.values() if item["class"] == "SELECT"]
+    for item in fleet_select:
+        cid = item["id"]
+        _require(
+            item["required_authority"] == "classify",
+            f"REFUSED:DFCM_SELECT_AUTHORITY:{cid}",
+        )
+        _require(
+            _contains_all(item["inputs"], {"preserved", "bounded", "falsifier"}),
+            f"REFUSED:DFCM_SELECT_INPUTS:{cid}",
+        )
+        _require(
+            {
+                "REFUSED:PREMATURE_SELECTION",
+                "REFUSED:FALSIFIER_MISSING",
+                "REFUSED:UNBOUNDED_OPTION_GRAPH",
+            }.issubset(set(item["refusals"])),
+            f"REFUSED:DFCM_SELECT_REFUSALS:{cid}",
+        )
+
+    fleet_do = [item for item in fleet.values() if item["class"] == "DO"]
+    for item in fleet_do:
+        cid = item["id"]
+        _require(
+            "capability:broker-consequential-do" in item.get("depends_on", []),
+            f"REFUSED:DFCM_FLEET_DO_BYPASSES_BRCE:{cid}",
+        )
+        _require(
+            item["required_authority"] in verify_capabilities.MUTATING_AUTHORITIES,
+            f"REFUSED:DFCM_FLEET_DO_AUTHORITY:{cid}",
+        )
+
     missing = sorted(EPR_IDS - set(index))
     _require(not missing, f"REFUSED:EPR_CAPABILITY_MISSING:{','.join(missing)}")
 
@@ -262,6 +317,9 @@ def validate_all_capabilities(
         "capability_count": len(items),
         "epr_capability_count": len(epr),
         "epr_do_count": sum(1 for item in epr.values() if item["class"] == "DO"),
+        "fleet_capability_count": len(fleet),
+        "fleet_select_count": len(fleet_select),
+        "fleet_do_count": len(fleet_do),
         "extension_order": EXPECTED_EXTENSION_ORDER,
         "standing": "NONE",
         "state": "ADMITTED_STRUCTURE",
@@ -285,6 +343,9 @@ def main() -> int:
         f"count={result['capability_count']} "
         f"epr={result['epr_capability_count']} "
         f"epr_do={result['epr_do_count']} "
+        f"fleet={result['fleet_capability_count']} "
+        f"fleet_select={result['fleet_select_count']} "
+        f"fleet_do={result['fleet_do_count']} "
         "standing=NONE"
     )
     return 0

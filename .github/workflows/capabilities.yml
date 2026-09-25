@@ -5,16 +5,20 @@ on:
     paths:
       - 'catalog/capabilities.toml'
       - 'catalog/capabilities-decision-graph.toml'
+      - 'catalog/capabilities-fleet.toml'
+      - 'catalog/capability-suppliers.toml'
       - 'catalog/repositories.toml'
       - 'catalog/dfcm.toml'
       - 'ontology/capabilities.ttl'
       - 'scripts/verify_capabilities.py'
       - 'scripts/verify_dfcm_capabilities.py'
+      - 'scripts/verify_capability_suppliers.py'
       - 'scripts/verify_capability_ontology.py'
       - 'scripts/render_capability_rdf.py'
       - 'scripts/capability_control.py'
       - 'tests/test_capabilities.py'
       - 'tests/test_dfcm_capabilities.py'
+      - 'tests/test_capability_suppliers.py'
       - 'tests/test_capability_control.py'
       - 'tests/test_capability_ontology.py'
       - 'tests/test_capability_rdf.py'
@@ -22,6 +26,7 @@ on:
       - 'apps/ecosystem-cli/tests/capabilities.rs'
       - 'views/generated/capabilities.md'
       - 'views/generated/capabilities-decision-graph.md'
+      - 'views/generated/capabilities-fleet.md'
       - 'views/generated/portfolio.md'
       - '.github/workflows/capabilities.yml'
   workflow_dispatch:
@@ -51,8 +56,10 @@ jobs:
         run: python3 scripts/verify_capability_ontology.py
       - name: Verify DfCM capability contracts
         run: python3 scripts/verify_dfcm_capabilities.py
+      - name: Verify exact-SHA fleet capability suppliers
+        run: python3 scripts/verify_capability_suppliers.py
       - name: Run capability, ontology, RDF and DfCM refusal courts
-        run: python3 -m unittest tests.test_capabilities tests.test_capability_control tests.test_capability_ontology tests.test_capability_rdf tests.test_dfcm_capabilities -v
+        run: python3 -m unittest tests.test_capabilities tests.test_capability_control tests.test_capability_ontology tests.test_capability_rdf tests.test_dfcm_capabilities tests.test_capability_suppliers -v
       - name: Execute SHACL admission over generated capability RDF
         shell: bash
         run: |
@@ -60,7 +67,7 @@ jobs:
           python3 -m pip install --disable-pip-version-check 'pyshacl==0.40.1'
           python3 scripts/render_capability_rdf.py /tmp/capabilities.ttl
           pyshacl -s ontology/capabilities.ttl /tmp/capabilities.ttl
-          echo 'CAPABILITY_SHACL_ALIVE engine=pyshacl@0.40.1 instances=44'
+          echo 'CAPABILITY_SHACL_ALIVE engine=pyshacl@0.40.1 instances=83'
       - name: Execute all interface projections
         shell: bash
         run: |
@@ -74,13 +81,13 @@ jobs:
           import json
           from pathlib import Path
           ids = [item['id'] for item in json.loads(Path('/tmp/capabilities-list.json').read_text())]
-          assert len(ids) == 44 and len(ids) == len(set(ids))
+          assert len(ids) == 83 and len(ids) == len(set(ids))
           for surface in ('cli', 'api', 'mcp', 'a2a'):
               payload = json.loads(Path(f'/tmp/capabilities-{surface}.json').read_text())
               assert payload['consequential_do_claimed'] is False
               assert [item['id'] for item in payload['capabilities']] == ids
               assert all(item['authority_from_surface'] is False for item in payload['capabilities'])
-          print('CAPABILITY_SURFACES_ALIVE count=44 surfaces=4 do=false')
+          print('CAPABILITY_SURFACES_ALIVE count=83 surfaces=4 do=false')
           PY
       - name: Execute DfCM reversible frontier and DO refusal
         shell: bash
@@ -110,9 +117,11 @@ jobs:
           set -euo pipefail
           cp views/generated/capabilities.md /tmp/capabilities.before
           cp views/generated/capabilities-decision-graph.md /tmp/decision-capabilities.before
+          cp views/generated/capabilities-fleet.md /tmp/fleet-capabilities.before
           python3 scripts/verify_capabilities.py --write
           cmp /tmp/capabilities.before views/generated/capabilities.md
           cmp /tmp/decision-capabilities.before views/generated/capabilities-decision-graph.md
+          cmp /tmp/fleet-capabilities.before views/generated/capabilities-fleet.md
       - name: Authority ceiling
         shell: bash
         run: |

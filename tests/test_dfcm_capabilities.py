@@ -23,9 +23,12 @@ class DfcmCapabilityTests(unittest.TestCase):
 
     def test_repository_capabilities_satisfy_dfcm_profile(self):
         result = module.validate_all_capabilities(self.items, self.profile)
-        self.assertEqual(result["capability_count"], 44)
+        self.assertEqual(result["capability_count"], 83)
         self.assertEqual(result["epr_capability_count"], 5)
         self.assertEqual(result["epr_do_count"], 0)
+        self.assertEqual(result["fleet_capability_count"], 39)
+        self.assertEqual(result["fleet_select_count"], 5)
+        self.assertEqual(result["fleet_do_count"], 2)
         self.assertEqual(result["standing"], "NONE")
 
     def test_epr_select_refuses_missing_falsifier_contract(self):
@@ -74,6 +77,38 @@ class DfcmCapabilityTests(unittest.TestCase):
         observe["receipt_required"] = True
         with self.assertRaisesRegex(
             module.DfcmCapabilityError, "REFUSED:EPR_CONSEQUENTIAL_DO"
+        ):
+            module.validate_all_capabilities(items, self.profile)
+
+    def test_fleet_select_requires_bound_and_falsifier(self):
+        items = copy.deepcopy(self.items)
+        select = next(
+            item
+            for item in items
+            if item["id"] == "capability:select-ash-consumer-transport"
+        )
+        select["inputs"] = [
+            value for value in select["inputs"] if "bounded" not in value
+        ]
+        with self.assertRaisesRegex(
+            module.DfcmCapabilityError, "REFUSED:DFCM_SELECT_INPUTS"
+        ):
+            module.validate_all_capabilities(items, self.profile)
+
+    def test_fleet_do_must_route_through_brce(self):
+        items = copy.deepcopy(self.items)
+        do_cap = next(
+            item
+            for item in items
+            if item["id"] == "capability:run-xaas-receipted-actuation"
+        )
+        do_cap["depends_on"] = [
+            dep
+            for dep in do_cap["depends_on"]
+            if dep != "capability:broker-consequential-do"
+        ]
+        with self.assertRaisesRegex(
+            module.DfcmCapabilityError, "REFUSED:DFCM_FLEET_DO_BYPASSES_BRCE"
         ):
             module.validate_all_capabilities(items, self.profile)
 

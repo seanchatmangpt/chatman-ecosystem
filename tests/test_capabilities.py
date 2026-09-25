@@ -18,13 +18,14 @@ class CapabilityCatalogTests(unittest.TestCase):
     def setUpClass(cls):
         cls.base = module.load(ROOT / "catalog" / "capabilities.toml")
         cls.extension = module.load(ROOT / "catalog" / "capabilities-decision-graph.toml")
-        cls.catalog = module.combine([cls.base, cls.extension])
+        cls.fleet = module.load(ROOT / "catalog" / "capabilities-fleet.toml")
+        cls.catalog = module.combine([cls.base, cls.extension, cls.fleet])
         cls.repositories = module.load(ROOT / "catalog" / "repositories.toml")
 
     def test_catalogs_and_projections_are_exact(self):
         items = module.verify(self.catalog)
         module.verify_repository_owners(items, self.repositories)
-        self.assertEqual(len(items), 44)
+        self.assertEqual(len(items), 83)
 
         base_items = module.verify(self.base)
         base_expected = module.render(base_items, "catalog/capabilities.toml")
@@ -40,6 +41,16 @@ class CapabilityCatalogTests(unittest.TestCase):
             ROOT / "views" / "generated" / "capabilities-decision-graph.md"
         ).read_text()
         self.assertEqual(extension_actual, extension_expected)
+
+        fleet_ids = {item["id"] for item in self.fleet["capability"]}
+        fleet_items = [item for item in items if item["id"] in fleet_ids]
+        fleet_expected = module.render(
+            fleet_items, "catalog/capabilities-fleet.toml"
+        )
+        fleet_actual = (
+            ROOT / "views" / "generated" / "capabilities-fleet.md"
+        ).read_text()
+        self.assertEqual(fleet_actual, fleet_expected)
 
     def test_do_requires_broker_and_receipt(self):
         candidate = copy.deepcopy(self.catalog)

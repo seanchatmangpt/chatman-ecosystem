@@ -1,11 +1,12 @@
 # Capability Control Plane
 
-The v26.9.1 decision-manufacturing graph has two canonical source catalogs:
+The capability graph has three canonical source catalogs:
 
 - `catalog/capabilities.toml` — 27 repository-control/reconstitution/EPR capabilities;
-- `catalog/capabilities-decision-graph.toml` — 17 ownership-bounded ecosystem capabilities.
+- `catalog/capabilities-decision-graph.toml` — 17 ownership-bounded ecosystem capabilities;
+- `catalog/capabilities-fleet.toml` — 39 fleet-owned capabilities discovered across the active ecosystem.
 
-Together they form one dependency-closed graph of **44 capabilities**. `catalog/repositories.toml` is the canonical owner registry; capability admission refuses an owner not declared there. Repository registration is identity/role evidence only and does not promote a repository to runtime `ALIVE`.
+Together they form one dependency-closed graph of **83 capabilities**. `catalog/repositories.toml` is the canonical owner registry; capability admission refuses an owner not declared there. Repository registration is identity/role evidence only and does not promote a repository to runtime `ALIVE`. `catalog/capability-suppliers.toml` binds every owned non-control-plane repository to an exact 40-hex subject and to the complete set of canonical capabilities it owns. An owned repository with zero canonical capabilities is refused rather than silently disappearing from the graph.
 
 The graph preserves the constitutional distinction:
 
@@ -33,7 +34,17 @@ The extension makes the ecosystem boundaries executable catalog law:
 - **AutoFDE** owns persistent runtime state and the BRCE consequential boundary.
 - **Affidavit** owns evidence/standing attestation only; it cannot manufacture DO authority.
 - **ggen-legacy** owns bounded predecessor/project reconstitution, including public/custom ontology and protocol-surface correspondence.
-- **Chatman Ecosystem** owns cross-repository identity, standing, authority ceilings, exact-subject evidence, and the composition graph.
+- **AshA2A / SA2A** owns Ash-action capability projection and bounded A2A dispatch construction.
+- **XaaS** owns Ultracode campaign orchestration, sJira/STOGAF control graphs, OCEL evidence, and its receipted actuation specialization.
+- **ggen_igniter** owns RDF/SPARQL/EEx-to-Elixir manufacture, reconciliation, and bounded Igniter AST repair.
+- **beam4pm / wasm4pm** own process-model discovery/conformance and replayable WASM process evidence respectively.
+- **AshSurface / AshR2RML / AshExpo** own consumer, semantic-relational, and mobile projections of admitted Ash models.
+- **ggen-ecosystem** owns ggen-family composition and release qualification.
+- **Ferroplan** owns deterministic PDDL planning.
+- **ZCode CLI** owns the pinned ZCode runtime host and lease-bound XaaS worker construction.
+- **chatgpt-cloud-elixir** owns portable cloud runtime capsules and the bounded cloud→XaaS bridge.
+- **AshKudzu / AshAtlassian / AshPlanningCenter** own bounded ontology introspection/admission, generated Atlassian models, and read-bounded Planning Center integration.
+- **Chatman Ecosystem** owns cross-repository identity, standing, authority ceilings, exact-subject evidence, supplier closure, and the composition graph.
 
 ## Surfaces
 
@@ -108,6 +119,8 @@ The `ce:` namespace contains only the Chatman Ecosystem remainder: capability cl
 ```bash
 python3 scripts/verify_capabilities.py
 python3 scripts/verify_capability_ontology.py
+python3 scripts/verify_dfcm_capabilities.py
+python3 scripts/verify_capability_suppliers.py
 python3 -m unittest \
   tests.test_capabilities \
   tests.test_capability_control \
@@ -119,9 +132,9 @@ for surface in cli api mcp a2a; do
 done
 ```
 
-`python3 scripts/verify_capabilities.py --write` manufactures both generated capability Markdown projections; admission requires the second manufacture to be byte-identical. The ordinary ecosystem projection court separately binds `catalog/repositories.toml` to `views/generated/portfolio.md`.
+`python3 scripts/verify_capabilities.py --write` manufactures all three generated capability Markdown projections; admission requires the second manufacture to be byte-identical. The ordinary ecosystem projection court separately binds `catalog/repositories.toml` to `views/generated/portfolio.md`.
 
-The capability court proves stable identities, 44-node dependency closure and acyclicity, declared repository ownership, exact CLI/API/MCP/A2A semantic closure, complete input/output/refusal contracts, DO broker/receipt law, public/custom namespace fencing, DfCM dependency gating, default DO refusal, exact-authority refusal, and no-actuation output.
+The capability court proves stable identities, 83-node dependency closure and acyclicity, exact-SHA closure over 31 non-control-plane owned suppliers, declared repository ownership, exact CLI/API/MCP/A2A semantic closure, complete input/output/refusal contracts, DO broker/receipt law, public/custom namespace fencing, DfCM dependency gating, default DO refusal, exact-authority refusal, and no-actuation output.
 
 ## Reconstitution closure
 
