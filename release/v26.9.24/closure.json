@@ -1,0 +1,515 @@
+{
+  "release": "v26.9.24",
+  "normative_ledger": {
+    "repository": "seanchatmangpt/engineering-standards",
+    "sha": "440797509502ecf93b0772453299e716dc049aca",
+    "artifact": "docs/engineering/rfc/0002-v26.9.24-semantic-release-closure.md"
+  },
+  "transient_heads": [
+    {
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "sha": "76774bbaf83ec92e6e52b81ceb6a165b00de8b93"
+    },
+    {
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "sha": "02c13c468892c040c8abfd5023db4c1a19fa4820"
+    }
+  ],
+  "subjects": [
+    {
+      "subject_id": "ENG-ROOT",
+      "repository": "seanchatmangpt/engineering-standards",
+      "sha": "440797509502ecf93b0772453299e716dc049aca",
+      "artifact": "docs/engineering/README.md",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "BRCE",
+      "repository": "seanchatmangpt/engineering-standards",
+      "sha": "440797509502ecf93b0772453299e716dc049aca",
+      "artifact": "docs/engineering/rfc/0001-brce-protocol.md",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "SEMANTIC-CASE-STUDY",
+      "repository": "seanchatmangpt/engineering-standards",
+      "sha": "440797509502ecf93b0772453299e716dc049aca",
+      "artifact": "docs/engineering/rfc/0003-semantic-case-study.md",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "PLANNED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "SA2A",
+      "repository": "seanchatmangpt/ash_a2a",
+      "sha": "12f98f816d5eda50f0aebbb43c21cf1a9f580352",
+      "artifact": "docs/rfc/RFC-SA2A-001-v26.9.16.md",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "SJIRA",
+      "repository": "seanchatmangpt/ggen_igniter",
+      "sha": "8e1bf89bd0e717ec8eb393d2a4f096c939a6a4fd",
+      "artifact": "docs/rfc/RFC-SEMANTIC-JIRA-v26.9.19.md",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "BRCE-TLA",
+      "repository": "seanchatmangpt/ggen_igniter",
+      "sha": "7d53cb3b3ffe0a32f0e4b5f1365b9e1adff82d44",
+      "artifact": "docs/integrations/brce/tla-plus-adapter.md",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "PLANNED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "BRCE-AFFIDAVIT",
+      "repository": "seanchatmangpt/affidavit",
+      "sha": "7b85a782cf669ace2d81c2d0664521e1fc0c80e9",
+      "artifact": "docs/integrations/BRCE_RECEIPT_ADAPTER_V0_1.md",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "GALL-007",
+      "repository": "seanchatmangpt/affidavit",
+      "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+      "artifact": "docs",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "GALL-004-024-028",
+      "repository": "seanchatmangpt/beam4pm",
+      "sha": "be43246cc39a6fde9d86b31214a0177c71e6206f",
+      "artifact": "docs",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "PLANNED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "GALL-015-020",
+      "repository": "seanchatmangpt/ex4pm",
+      "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+      "artifact": "docs",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "GALL-021-023",
+      "repository": "seanchatmangpt/wasm4pm",
+      "sha": "552f15ecba00f75a5866dfc3e7565ef2fe629341",
+      "artifact": "docs",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "PLANNED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "GALL-009",
+      "repository": "seanchatmangpt/ash_r2rml",
+      "sha": "76cc5204f3e20370fd1593af31f237a2bbb4caeb",
+      "artifact": "docs",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "PLANNED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "STOGAF",
+      "repository": "seanchatmangpt/xaas",
+      "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+      "artifact": "docs/rfc/RFC-STOGAF-v26.9.22.md",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "PPTX-PACK",
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "sha": "05011be534f647d1b5aef18a2080cb61bfcf7951",
+      "artifact": "packs/pptx-presentation-pack",
+      "spec_standing": "EXECUTABLE_CONTRACT",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "COLLECTIVE-SKILL-PACK",
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+      "artifact": "packs/collective-skill-court-pack",
+      "spec_standing": "EXECUTABLE_CONTRACT",
+      "impl_standing": "ALIVE",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "name": "marketplace-publish",
+          "result": "PASS",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793"
+        }
+      ],
+      "distribution": {
+        "state": "PUBLISHED",
+        "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+        "ref": "v26.9.24"
+      }
+    },
+    {
+      "subject_id": "COLLECTIVE-SKILL-COURT",
+      "repository": "seanchatmangpt/autofde-lab",
+      "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+      "artifact": "docs/rfcs/RFC-COLLECTIVE-SKILL-COURT-v26.9.24.md",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "GYMACT-CONSUMER",
+      "repository": "seanchatmangpt/gymact",
+      "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+      "artifact": "repo",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "IEC",
+      "repository": "seanchatmangpt/autofde-lab",
+      "sha": "29ffb8f9749b0b693579bc68c7f61ac15b16841f",
+      "artifact": "docs",
+      "spec_standing": "CLOSED_DESIGN",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "XPROD",
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "sha": "4f68287a5d8b6ea1c423dd5e2a32fe815c9ecb63",
+      "artifact": "docs/jira/v26.9.24/CHATMAN-ECOSYSTEM-CROSS-PRODUCT-COURT.md",
+      "spec_standing": "IMPLEMENTED_CANDIDATE",
+      "impl_standing": "BLOCKED",
+      "impl_type": "evidence:TLA+|POWL|BRCE-execution",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "BERTHIER",
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "sha": "d1be9fb60148fd01dde2c1f2f14c184302f1276b",
+      "artifact": "docs/jira/v26.9.24/RFC-BERTHIER-STRATEGIC-RECOMPILATION.md",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "PLANNED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "ZOE-VISION-2027",
+      "repository": "seanchatmangpt/zoela",
+      "sha": "5d4eb42aa7d49ea331c85338422531d9a05a75be",
+      "artifact": "docs/vision/VISION-2027-ZOE-ECOSYSTEM-ACTIVATION-v26.9.24.md",
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "PLANNED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "subject_id": "DIST-ASH-A2A",
+      "repository": "seanchatmangpt/ash_a2a",
+      "sha": "967d7f7d97132424ed37f943dd27b134e9bed405",
+      "artifact": "release/v26.9.24",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "BLOCKED",
+        "type": "release-train-in-flight",
+        "candidate": "hex+tag"
+      }
+    },
+    {
+      "subject_id": "DIST-GGEN-IGNITER",
+      "repository": "seanchatmangpt/ggen_igniter",
+      "sha": "00b69b1d060fe74f5f5258bd4f3fc00f1ddd6457",
+      "artifact": "release/v26.9.24",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "BLOCKED",
+        "type": "release-train-in-flight",
+        "candidate": "hex+tag"
+      }
+    },
+    {
+      "subject_id": "DIST-ASH-R2RML",
+      "repository": "seanchatmangpt/ash_r2rml",
+      "sha": "95799fa20b3a18f359359f3478e8da41c10a1a8d",
+      "artifact": "release/v26.9.24",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "BLOCKED",
+        "type": "release-train-in-flight",
+        "candidate": "hex+tag"
+      }
+    },
+    {
+      "subject_id": "DIST-BEAM4PM",
+      "repository": "seanchatmangpt/beam4pm",
+      "sha": "4425a7d9b45ece7fb44359f0db78e014ce01d136",
+      "artifact": "release/v26.9.24",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "BLOCKED",
+        "type": "release-train-in-flight",
+        "candidate": "hex+tag"
+      }
+    },
+    {
+      "subject_id": "DIST-EX4PM",
+      "repository": "seanchatmangpt/ex4pm",
+      "sha": "925244684ba950130ba9c6a1c624405739c1edb6",
+      "artifact": "release/v26.9.24",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "BLOCKED",
+        "type": "release-train-in-flight",
+        "candidate": "hex+tag"
+      }
+    },
+    {
+      "subject_id": "DIST-GYMACT",
+      "repository": "seanchatmangpt/gymact",
+      "sha": "7f81da46498b377313efcf82c75e50157e6c435f",
+      "artifact": "release/v26.9.24",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "BLOCKED",
+        "type": "release-train-in-flight",
+        "candidate": "pypi+tag"
+      }
+    },
+    {
+      "subject_id": "DIST-ENGINEERING-STANDARDS",
+      "repository": "seanchatmangpt/engineering-standards",
+      "sha": "089d5cc320bbd2d2e7c1bffdf85fabafebbf272d",
+      "artifact": "release/v26.9.24",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "BLOCKED",
+        "type": "release-train-in-flight",
+        "candidate": "tag"
+      }
+    },
+    {
+      "subject_id": "DIST-ZOELA",
+      "repository": "seanchatmangpt/zoela",
+      "sha": "8a881f85b88c68bbc554a272f900c88028ad1077",
+      "artifact": "release/v26.9.24",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "BLOCKED",
+        "type": "release-train-in-flight",
+        "candidate": "tag"
+      }
+    },
+    {
+      "subject_id": "DIST-AFFIDAVIT",
+      "repository": "seanchatmangpt/affidavit",
+      "sha": "b36c4598016c7b0b50b889dbaeb6a9759d09001b",
+      "artifact": "release/v26.9.24",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "BLOCKED",
+        "type": "release-train-in-flight",
+        "candidate": "tag/crate-publish-review"
+      }
+    },
+    {
+      "subject_id": "DIST-WASM4PM",
+      "repository": "seanchatmangpt/wasm4pm",
+      "sha": "b317c06329202599f1f9e3bd70def6995827b3ad",
+      "artifact": "release/v26.9.24",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "BLOCKED",
+        "type": "release-train-in-flight",
+        "candidate": "tag"
+      }
+    },
+    {
+      "subject_id": "DIST-XAAS",
+      "repository": "seanchatmangpt/xaas",
+      "sha": "a46729df7658dea67ae31a62aa6ae4a86cf23822",
+      "artifact": "release/v26.9.24",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "BLOCKED",
+        "type": "release-train-in-flight",
+        "candidate": "tag"
+      }
+    },
+    {
+      "subject_id": "DIST-AUTOFDE",
+      "repository": "seanchatmangpt/autofde-lab",
+      "sha": "7da5f49120fb08cf7ca46316ba098671361cc740",
+      "artifact": "release/v26.9.24",
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "distribution": {
+        "state": "BLOCKED",
+        "type": "release-train-in-flight",
+        "candidate": "tag"
+      }
+    }
+  ]
+}

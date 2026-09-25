@@ -1,0 +1,39 @@
+{
+  "case_id": "v26.9.24-closure",
+  "release": "v26.9.24",
+  "subject": {
+    "repository": "seanchatmangpt/chatman-ecosystem",
+    "closure": "release/v26.9.24/closure.json"
+  },
+  "authority": "NONE",
+  "claim_ceiling": "COMPOSITIONAL_CORRESPONDENCE_ONLY",
+  "dimensions": [
+    {
+      "name": "HDDL/FOND",
+      "standing": "ALIVE",
+      "evidence": "repository-local cross-product relation verified"
+    },
+    {
+      "name": "TLA+",
+      "standing": "BLOCKED",
+      "type": "evidence:executed-formal-court-not-bound-to-closure-subject"
+    },
+    {
+      "name": "POWL",
+      "standing": "BLOCKED",
+      "type": "evidence:executed-process-court-not-bound-to-closure-subject"
+    },
+    {
+      "name": "BRCE",
+      "standing": "BLOCKED",
+      "type": "evidence:executed-actuation-court-not-bound-to-closure-subject"
+    },
+    {
+      "name": "OCEL",
+      "standing": "BLOCKED",
+      "type": "evidence:nondeterministic-ocel-sha256-observed-across-replays"
+    }
+  ],
+  "standing": "BLOCKED",
+  "falsifier": "Any projection that upgrades a blocked dimension to PASS without new exact-subject evidence."
+}
