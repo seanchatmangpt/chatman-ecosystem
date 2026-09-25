@@ -300,6 +300,7 @@ POSTTAG = "scripts/release_train/root_crown/posttag.py"
 CHAIN = "scripts/release_train/root_crown/chain.py"
 REPLAY = "scripts/release_train/root_crown/replay.py"
 GITOBJ = "scripts/release_train/root_crown/gitobj.py"
+POLICY = "scripts/release_train/root_crown/policy.py"
 
 T_TYPED = "test_typed_terminal"
 T_ALIGN = "test_terminal_alignment"
@@ -309,6 +310,7 @@ T_POST = "test_post_tag"
 T_CHAIN = "test_chain"
 T_REPLAY = "test_replay"
 T_GITOBJ = "test_gitobj"
+T_POLICY = "test_policy"
 
 SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
     # --- the five audit survivors (each killed by a new test in test_typed_terminal) ---------
@@ -339,16 +341,16 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
     SourceMutant(
         "terminal_accepts_partial",
         EVIDENCE,
-        "        if standing in SUCCESS_TERMINAL:",
-        '        if standing in SUCCESS_TERMINAL | {"PARTIAL_ALIVE"}:',
+        "    if standing in SUCCESS_TERMINAL and policy_row.admits(standing):",
+        '    if standing in SUCCESS_TERMINAL | {"PARTIAL_ALIVE"}:',
         (T_TYPED,),
         "AC-15 PARTIAL_ALIVE is not terminal (ARTIFACT_BLOCKED)",
     ),
     SourceMutant(
         "typed_terminal_blocked_as_capability",
         EVIDENCE,
-        "        if standing in TYPED_TERMINAL:",
-        "        if standing in TYPED_TERMINAL | NON_TERMINAL_IMPL:",
+        "    if standing in TYPED_TERMINAL and policy_row.admits(standing):",
+        "    if standing in NON_TERMINAL_IMPL or (standing in TYPED_TERMINAL and policy_row.admits(standing)):",
         (T_TYPED,),
         "AC-15 typed PLANNED is not a terminal disposition (ARTIFACT_BLOCKED)",
     ),
@@ -581,9 +583,9 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
     SourceMutant(
         "f09_type_off",
         EVIDENCE,
-        '        if not str(data.get("type", "")).strip():',
-        "        if False:",
-        (T_FALS, T_TYPED),
+        '        return _typed_terminal(req, ctx, data, is_local, standing, (inline_type, inline_term), f09_row, "RFC §55")',
+        '        return PASS(f"typed blocker {data.get(\'type\')} (RFC §55)", data.get("subject_sha"))',
+        (T_FALS, T_ALIGN),
         "BLOCKED_WITHOUT_TYPE(F-09)",
     ),
     SourceMutant(
@@ -593,6 +595,183 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
         "    if False:",
         (T_TYPED, T_CROWN),
         "OBSERVATION_STALE(AC-09)",
+    ),
+    # --- PR-3 terminality policy + owner rule: one disable-mutant per rule ---------------------
+    SourceMutant(
+        "policy_admission_ignored",
+        EVIDENCE,
+        "    if standing in TYPED_TERMINAL and policy_row.admits(standing):",
+        "    if standing in TYPED_TERMINAL:",
+        (T_ALIGN,),
+        "capability ACs admit ALIVE only (ARTIFACT_BLOCKED)",
+    ),
+    SourceMutant(
+        "f09_required_unknown_off",
+        EVIDENCE,
+        '    if req.required and standing == "UNKNOWN":',
+        "    if False:",
+        (T_ALIGN,),
+        "REQUIRED_UNKNOWN(F-09)",
+    ),
+    SourceMutant(
+        "f09_policy_ignored",
+        EVIDENCE,
+        "    if standing in TYPED_TERMINAL and f09_row.admits(standing):",
+        "    if standing in TYPED_TERMINAL:",
+        (T_ALIGN,),
+        "F-09 admits BLOCKED/UNSUPPORTED only (ARTIFACT_BLOCKED)",
+    ),
+    SourceMutant(
+        "closure_policy_ignored",
+        EVIDENCE,
+        "                if not policy_row.admits(state):",
+        "                if False:",
+        (T_ALIGN,),
+        "CLOSURE_PARTIAL(not-admitted-by-policy)",
+    ),
+    SourceMutant(
+        "receipt_policy_refusal_dropped",
+        EVIDENCE,
+        "    if refusal is not None:\n        return refusal\n    assert policy_row is not None\n    data, blocker",
+        "    if False:\n        return refusal\n    assert policy_row is not None\n    data, blocker",
+        (T_POLICY,),
+        "TERMINALITY_POLICY_MISSING / ACCEPTANCE_DRIFT (receipt_artifact)",
+    ),
+    SourceMutant(
+        "closure_owner_split_off",
+        EVIDENCE,
+        '    if splits:\n        return REFUSED("OWNER_SPLIT"',
+        '    if False:\n        return REFUSED("OWNER_SPLIT"',
+        (T_POLICY,),
+        "OWNER_SPLIT(closure row)",
+    ),
+    SourceMutant(
+        "owner_split_off",
+        EVIDENCE,
+        "        if wrong:\n",
+        "        if False:\n",
+        (T_POLICY, T_TYPED),
+        "OWNER_SPLIT(receipt)",
+    ),
+    SourceMutant(
+        "owner_container_default_off",
+        EVIDENCE,
+        '        return container, "container", None',
+        '        return None, "absent", None',
+        (T_POLICY, T_TYPED),
+        "owner_source=container",
+    ),
+    SourceMutant(
+        "bound_detail_says_alive",
+        EVIDENCE,
+        '    return PASS(f"{req.evidence_locator} {standing} at {subject} ({status})", subject)',
+        '    return PASS(f"{req.evidence_locator} ALIVE at {subject} ({status})", subject)',
+        (T_ALIGN, T_POLICY),
+        "_bound detail names the receipt standing",
+    ),
+    SourceMutant(
+        "crown_policy_validation_off",
+        CROWN,
+        "    refusals += ctx.policy_refusals()",
+        "    pass",
+        (T_POLICY,),
+        "POLICY_COVERAGE_GAP(crown, non-consulting requirement)",
+    ),
+    SourceMutant(
+        "policy_release_unchecked",
+        POLICY,
+        '    if doc.get("release") != release:',
+        "    if False:",
+        (T_POLICY,),
+        "TERMINALITY_POLICY_MISSING(other release)",
+    ),
+    SourceMutant(
+        "acceptance_drift_off",
+        POLICY,
+        "    if sha256_text(acceptance) != row.acceptance_sha256:",
+        "    if False:",
+        (T_POLICY,),
+        "ACCEPTANCE_DRIFT",
+    ),
+    SourceMutant(
+        "relaxation_phrase_unchecked",
+        POLICY,
+        "        elif row.rfc_phrase not in section:",
+        "        elif False:",
+        (T_POLICY,),
+        "POLICY_RELAXATION_UNGROUNDED(phrase not in anchor)",
+    ),
+    SourceMutant(
+        "relaxation_own_line_unchecked",
+        POLICY,
+        "        elif (line := own_line(rid, row.rfc_anchor, section)) is not None and row.rfc_phrase not in line:",
+        "        elif False:",
+        (T_POLICY,),
+        "POLICY_RELAXATION_UNGROUNDED(borrowed phrase)",
+    ),
+    SourceMutant(
+        "relaxation_marker_off",
+        POLICY,
+        "        if not any(marker in row.rfc_phrase for marker in RELAXATION_MARKERS):",
+        "        if False:",
+        (T_POLICY,),
+        "POLICY_RELAXATION_UNGROUNDED(no terminality marker)",
+    ),
+    SourceMutant(
+        "relaxation_ceiling_off",
+        POLICY,
+        '        if row.standing_ceiling != "TERMINAL":',
+        "        if False:",
+        (T_POLICY,),
+        "POLICY_RELAXATION_UNGROUNDED(ceiling ALIVE)",
+    ),
+    SourceMutant(
+        "success_ceiling_off",
+        POLICY,
+        '    elif row.standing_ceiling != "ALIVE":',
+        "    elif False:",
+        (T_POLICY,),
+        "POLICY_RELAXATION_UNGROUNDED(success row ceiling)",
+    ),
+    SourceMutant(
+        "rfc_import_digest_off",
+        POLICY,
+        "        if text_sha != policy.rfc_import_sha256 or (import_sha256 is not None and import_sha256 != text_sha):",
+        "        if False:",
+        (T_POLICY,),
+        "POLICY_RELAXATION_UNGROUNDED(rfc import digest)",
+    ),
+    SourceMutant(
+        "non_terminal_state_admitted",
+        POLICY,
+        "    if foreign:",
+        "    if False:",
+        (T_POLICY,),
+        "POLICY_RELAXATION_UNGROUNDED(non-terminal state)",
+    ),
+    SourceMutant(
+        "missing_row_unreported",
+        POLICY,
+        '            refusals.append(f"REFUSED:POLICY_COVERAGE_GAP:{req[\'id\']}:no-policy-row")',
+        "            pass",
+        (T_POLICY,),
+        "POLICY_COVERAGE_GAP(no row)",
+    ),
+    SourceMutant(
+        "duplicate_row_admitted",
+        POLICY,
+        "    if len(raws) != 1:",
+        "    if not raws:",
+        (T_POLICY,),
+        "POLICY_COVERAGE_GAP(duplicate row)",
+    ),
+    SourceMutant(
+        "shared_grounding_admitted",
+        POLICY,
+        "        if len(cited_by) > 1:",
+        "        if False:",
+        (T_POLICY,),
+        "POLICY_RELAXATION_UNGROUNDED(one grounding, several relaxations)",
     ),
 )
 
@@ -605,6 +784,7 @@ DATA_ENV_MODULES = (
     "scripts.release_train.root_crown.posttag",
     "scripts.release_train.root_crown.replay",
     "scripts.release_train.root_crown.model",
+    "scripts.release_train.root_crown.policy",
 )
 TAG_OBJECT = "337e839937c247de4ee58b744c8b8e43950d18e3"
 TAG_COMMIT = "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
@@ -677,24 +857,98 @@ def dm_terminal_blocker_without_reason(env: Env) -> tuple[list[str], list[str]]:
 
 
 def dm_terminal_blocker_without_owner(env: Env) -> tuple[list[str], list[str]]:
+    """A typed disposition with no owner at all (no explicit owner, no container repository).
+
+    Since PR-3 a receipt's container repository is its owner, so every real locator yields
+    one; the typing court still names an absent owner.
+    """
+
+    def gaps(owner: Any) -> list[str]:
+        return ["missing=" + "+".join(env.evidence.typing_gaps({}, "BLOCKED", type_text=TYPED, owner=owner))]
+
+    return gaps("seanchatmangpt/zoela"), gaps(None)
+
+
+def dm_terminal_blocker_foreign_owner(env: Env) -> tuple[list[str], list[str]]:
+    """A terminal receipt in zoela claiming xaas as its owner (owner != container)."""
+
+    def mutate(tree: Any, obs: dict[str, Any]) -> None:
+        loc = _req(tree, "AC-15").evidence_locator
+        obs["artifacts"][loc]["json"].update(standing="BLOCKED", type=TYPED, owner="seanchatmangpt/xaas")
+
+    return _crown_eval(env, mutate)
+
+
+def dm_f09_superseded_as_blocker(env: Env) -> tuple[list[str], list[str]]:
+    """RFC §55 admits a typed blocker, not a SUPERSEDED disposition, for the cloud runtime."""
+
+    def mutate(tree: Any, obs: dict[str, Any]) -> None:
+        loc = _req(tree, "F-09").evidence_locator
+        obs["artifacts"][loc]["json"].update(standing="SUPERSEDED", type=TYPED, successor="f" * 40)
+
+    return _crown_eval(env, mutate)
+
+
+def _crown_policy(env: Env, edit: Callable[[Any, dict[str, Any]], None]) -> tuple[list[str], list[str]]:
+    """Crown over the ALIVE tree with the committed policy (control) and an edited copy (mutant)."""
     tree, obs = _alive(env)
+    committed = json.loads(
+        (env.root / "scripts/release_train/root_crown/policy" / RELEASE / "terminality.json").read_text(encoding="utf-8")
+    )
     try:
-        rel = f"release/{RELEASE}/observations/terminal-disposition.json"
-        req = env.model.Requirement(
-            "AC-15", "AC", "C", "", "has a terminal standing", "receipt_artifact", f"local:{rel}", ()
-        )
-        receipt = {
-            "standing": "BLOCKED",
-            "type": TYPED,
-            "failure_class": "AUTHORITY_FAILURE",
-            "broken_term": "R_missing_authority",
-        }
-        env._support.dump(tree.root / rel, receipt | {"owner": "seanchatmangpt/zoela"})
-        control = _state(env.evidence.receipt_artifact(req, _ctx(env, tree, obs)))
-        env._support.dump(tree.root / rel, receipt)
-        return control, _state(env.evidence.receipt_artifact(req, _ctx(env, tree, obs)))
+        with tempfile.TemporaryDirectory() as tmp:
+            control_root, mutant_root = Path(tmp) / "control", Path(tmp) / "mutant"
+            env._support.dump(control_root / RELEASE / "terminality.json", committed)
+            control = _verdict(
+                env.crown.evaluate(
+                    tree.release_dir, obs, None, env._support.CROWN_SHA, root=tree.root, policy_root=control_root
+                )
+            )
+            doc = copy.deepcopy(committed)
+            edit(tree, doc)
+            if doc:
+                env._support.dump(mutant_root / RELEASE / "terminality.json", doc)
+            mutated = _verdict(
+                env.crown.evaluate(
+                    tree.release_dir, obs, None, env._support.CROWN_SHA, root=tree.root, policy_root=mutant_root
+                )
+            )
+            return control, mutated
     finally:
         tree.cleanup()
+
+
+def dm_policy_missing(env: Env) -> tuple[list[str], list[str]]:
+    return _crown_policy(env, lambda tree, doc: doc.clear())
+
+
+def dm_policy_coverage_gap(env: Env) -> tuple[list[str], list[str]]:
+    def edit(tree: Any, doc: dict[str, Any]) -> None:
+        doc["rows"] = [r for r in doc["rows"] if r["id"] != "F-09"]
+
+    return _crown_policy(env, edit)
+
+
+def dm_relaxation_ungrounded(env: Env) -> tuple[list[str], list[str]]:
+    """AC-07 (a capability court) relaxed to admit a typed BLOCKED, grounded by its own line."""
+
+    def edit(tree: Any, doc: dict[str, Any]) -> None:
+        row = next(r for r in doc["rows"] if r["id"] == "AC-07")
+        row.update(allowed_terminal_states=["ALIVE", "BLOCKED"], standing_ceiling="TERMINAL")
+
+    return _crown_policy(env, edit)
+
+
+def dm_acceptance_drift(env: Env) -> tuple[list[str], list[str]]:
+    """AC-15's acceptance text restated without moving the policy."""
+
+    def edit(tree: Any, doc: dict[str, Any]) -> None:
+        path = tree.release_dir / "requirements.json"
+        reqs = json.loads(path.read_text(encoding="utf-8"))
+        next(r for r in reqs["requirements"] if r["id"] == "AC-15")["acceptance"] += " (restated)"
+        env._support.dump(path, reqs)
+
+    return _crown_policy(env, edit)
 
 
 def dm_success_replaced_by_blocker(env: Env) -> tuple[list[str], list[str]]:
@@ -800,6 +1054,21 @@ DATA_MUTANTS: tuple[DataMutant, ...] = (
         "BLOCKED_WITHOUT_TYPE",
     ),
     DataMutant("dm_terminal_blocker_without_owner", dm_terminal_blocker_without_owner, "missing=owner", "BLOCKED_WITHOUT_TYPE"),
+    DataMutant(
+        "dm_terminal_blocker_foreign_owner", dm_terminal_blocker_foreign_owner, "REFUSED:OWNER_SPLIT:AC-15", "OWNER_SPLIT"
+    ),
+    DataMutant(
+        "dm_f09_superseded_as_blocker", dm_f09_superseded_as_blocker, "BLOCKED:ARTIFACT_BLOCKED:F-09", "ARTIFACT_BLOCKED"
+    ),
+    DataMutant("dm_policy_missing", dm_policy_missing, "REFUSED:TERMINALITY_POLICY_MISSING", "TERMINALITY_POLICY_MISSING"),
+    DataMutant("dm_policy_coverage_gap", dm_policy_coverage_gap, "REFUSED:POLICY_COVERAGE_GAP:F-09", "POLICY_COVERAGE_GAP"),
+    DataMutant(
+        "dm_relaxation_ungrounded",
+        dm_relaxation_ungrounded,
+        "REFUSED:POLICY_RELAXATION_UNGROUNDED:AC-07",
+        "POLICY_RELAXATION_UNGROUNDED",
+    ),
+    DataMutant("dm_acceptance_drift", dm_acceptance_drift, "REFUSED:ACCEPTANCE_DRIFT:AC-15", "ACCEPTANCE_DRIFT"),
     DataMutant("dm_success_replaced_by_blocker", dm_success_replaced_by_blocker, "BLOCKED:ARTIFACT_BLOCKED:AC-07", "ARTIFACT_BLOCKED"),
     DataMutant(
         "dm_subject_container_conflation",

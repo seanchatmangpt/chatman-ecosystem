@@ -7,10 +7,20 @@
     "failures": 0,
     "ok": true,
     "skipped": 4,
-    "tests_run": 134
+    "tests_run": 177
   },
-  "killed": 46,
+  "killed": 74,
   "mutants": {
+    "acceptance_drift_off": {
+      "detail": "killed by 2 test(s): test_policy.PolicyRefusalTest.test_acceptance_drift,test_policy.PolicyRefusalTest.test_every_terminality_code_is_typed_and_emitted",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "ACCEPTANCE_DRIFT"
+    },
     "blocked_without_type_off": {
       "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='BLOCKED_WITHOUT_TYPE'),test_crown.CrownTest.test_typed_blocked_is_lawful_untyped_is_refused",
       "file": "scripts/release_train/root_crown/crown.py",
@@ -20,6 +30,17 @@
       ],
       "kind": "source",
       "rule": "BLOCKED_WITHOUT_TYPE(crown)"
+    },
+    "bound_detail_says_alive": {
+      "detail": "killed by 2 test(s): test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_stay_alive_under_the_policy,test_terminal_alignment.TerminalAlignmentTest.test_bound_detail_names_the_receipt_standing",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment",
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "_bound detail names the receipt standing"
     },
     "broken_term_off": {
       "detail": "killed by 2 test(s): test_terminal_alignment.TerminalAlignmentTest.test_untyped_blocked_closure_row_is_refused,test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='broken_term')",
@@ -43,6 +64,36 @@
       "kind": "source",
       "rule": "RECEIPT_CHAIN_BROKEN(previous digest)"
     },
+    "closure_owner_split_off": {
+      "detail": "killed by 1 test(s): test_policy.OwnerRuleTest.test_closure_row_owner_split_and_container_default",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "OWNER_SPLIT(closure row)"
+    },
+    "closure_policy_ignored": {
+      "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_closure_typed_rows_follow_the_policy_row",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "CLOSURE_PARTIAL(not-admitted-by-policy)"
+    },
+    "crown_policy_validation_off": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_coverage_gap_on_a_non_consulting_requirement_still_refuses_the_crown",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_COVERAGE_GAP(crown, non-consulting requirement)"
+    },
     "crown_sha_split_off": {
       "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='CROWN_SHA_SPLIT'),test_post_tag.PostTagTest.test_pre_tag_semantics_refuse_every_post_tag_commit",
       "file": "scripts/release_train/root_crown/crown.py",
@@ -54,12 +105,26 @@
       "kind": "source",
       "rule": "CROWN_SHA_SPLIT"
     },
+    "dm_acceptance_drift": {
+      "detail": "court emitted 'REFUSED:ACCEPTANCE_DRIFT:AC-15'; control clean",
+      "expected": "REFUSED:ACCEPTANCE_DRIFT:AC-15",
+      "killed": true,
+      "kind": "data",
+      "rule": "ACCEPTANCE_DRIFT"
+    },
     "dm_expired_current_as_historical": {
       "detail": "court emitted 'REFUSED:HISTORICAL_OBSERVATION_SPLIT'; control clean",
       "expected": "REFUSED:HISTORICAL_OBSERVATION_SPLIT",
       "killed": true,
       "kind": "data",
       "rule": "HISTORICAL_OBSERVATION_SPLIT"
+    },
+    "dm_f09_superseded_as_blocker": {
+      "detail": "court emitted 'BLOCKED:ARTIFACT_BLOCKED:F-09'; control clean",
+      "expected": "BLOCKED:ARTIFACT_BLOCKED:F-09",
+      "killed": true,
+      "kind": "data",
+      "rule": "ARTIFACT_BLOCKED"
     },
     "dm_mutable_tag": {
       "detail": "court emitted 'REFUSED:TAG_MUTATED'; control clean",
@@ -74,6 +139,27 @@
       "killed": true,
       "kind": "data",
       "rule": "PAYLOAD_MUTATED_POST_TAG"
+    },
+    "dm_policy_coverage_gap": {
+      "detail": "court emitted 'REFUSED:POLICY_COVERAGE_GAP:F-09'; control clean",
+      "expected": "REFUSED:POLICY_COVERAGE_GAP:F-09",
+      "killed": true,
+      "kind": "data",
+      "rule": "POLICY_COVERAGE_GAP"
+    },
+    "dm_policy_missing": {
+      "detail": "court emitted 'REFUSED:TERMINALITY_POLICY_MISSING'; control clean",
+      "expected": "REFUSED:TERMINALITY_POLICY_MISSING",
+      "killed": true,
+      "kind": "data",
+      "rule": "TERMINALITY_POLICY_MISSING"
+    },
+    "dm_relaxation_ungrounded": {
+      "detail": "court emitted 'REFUSED:POLICY_RELAXATION_UNGROUNDED:AC-07'; control clean",
+      "expected": "REFUSED:POLICY_RELAXATION_UNGROUNDED:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "POLICY_RELAXATION_UNGROUNDED"
     },
     "dm_replay_mismatch": {
       "detail": "court emitted 'BLOCKED:REPLAY_DIVERGED'; control clean",
@@ -110,6 +196,13 @@
       "kind": "data",
       "rule": "TAG_SUBJECT_SPLIT"
     },
+    "dm_terminal_blocker_foreign_owner": {
+      "detail": "court emitted 'REFUSED:OWNER_SPLIT:AC-15'; control clean",
+      "expected": "REFUSED:OWNER_SPLIT:AC-15",
+      "killed": true,
+      "kind": "data",
+      "rule": "OWNER_SPLIT"
+    },
     "dm_terminal_blocker_without_owner": {
       "detail": "court emitted 'missing=owner'; control clean",
       "expected": "missing=owner",
@@ -131,13 +224,43 @@
       "kind": "data",
       "rule": "BLOCKED_WITHOUT_TYPE"
     },
+    "duplicate_row_admitted": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_coverage_gap_duplicate_extra_and_malformed_rows",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_COVERAGE_GAP(duplicate row)"
+    },
+    "f09_policy_ignored": {
+      "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_f09_admits_only_blocked_and_unsupported",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "F-09 admits BLOCKED/UNSUPPORTED only (ARTIFACT_BLOCKED)"
+    },
+    "f09_required_unknown_off": {
+      "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_f09_unknown_is_refused",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "REQUIRED_UNKNOWN(F-09)"
+    },
     "f09_type_off": {
-      "detail": "killed by 1 test(s): test_falsifiers.FalsifierTableTest.test_f09_typed_blocker_is_lawful",
+      "detail": "killed by 3 test(s): test_falsifiers.FalsifierTableTest.test_f09_typed_blocker_is_lawful,test_terminal_alignment.TerminalAlignmentTest.test_f09_typed_blocker_must_be_bound_to_a_merged_subject,test_terminal_alignment.TerminalAlignmentTest.test_unsupported_is_terminal_where_the_policy_admits_it (rid='F-09')",
       "file": "scripts/release_train/root_crown/evidence.py",
       "killed": true,
       "killers": [
         "test_falsifiers",
-        "test_typed_terminal"
+        "test_terminal_alignment"
       ],
       "kind": "source",
       "rule": "BLOCKED_WITHOUT_TYPE(F-09)"
@@ -185,7 +308,7 @@
       "rule": "TAG_RECEIPT_SPLIT(historical)"
     },
     "lineage_bad_accepted": {
-      "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='ARTIFACT_SUBJECT_SPLIT'),test_terminal_alignment.TerminalAlignmentTest.test_terminal_receipt_still_needs_a_merged_subject",
+      "detail": "killed by 3 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='ARTIFACT_SUBJECT_SPLIT'),test_terminal_alignment.TerminalAlignmentTest.test_f09_typed_blocker_must_be_bound_to_a_merged_subject,test_terminal_alignment.TerminalAlignmentTest.test_terminal_receipt_still_needs_a_merged_subject",
       "file": "scripts/release_train/root_crown/evidence.py",
       "killed": true,
       "killers": [
@@ -194,6 +317,16 @@
       ],
       "kind": "source",
       "rule": "ARTIFACT_SUBJECT_SPLIT"
+    },
+    "missing_row_unreported": {
+      "detail": "killed by 3 test(s): test_policy.PolicyRefusalTest.test_coverage_gap_missing_row,test_policy.PolicyRefusalTest.test_coverage_gap_on_a_non_consulting_requirement_still_refuses_the_crown,test_policy.PolicyRefusalTest.test_every_terminality_code_is_typed_and_emitted",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_COVERAGE_GAP(no row)"
     },
     "non_terminal_impl_accepted": {
       "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_partial_alive_row_is_not_terminal",
@@ -205,8 +338,29 @@
       "kind": "source",
       "rule": "CLOSURE_PARTIAL"
     },
+    "non_terminal_state_admitted": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_non_terminal_state_is_never_admissible",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(non-terminal state)"
+    },
+    "owner_container_default_off": {
+      "detail": "killed by 9 test(s): test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_stay_alive_under_the_policy,test_policy.OwnerRuleTest.test_absent_owner_is_the_container,test_policy.OwnerRuleTest.test_closure_row_owner_split_and_container_default,test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='broken_term'),test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='failure_class'),test_typed_terminal.TypedTerminalReceiptTest.test_local_terminal_receipt_without_owner_is_owned_by_its_container",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_policy",
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "owner_source=container"
+    },
     "owner_off": {
-      "detail": "killed by 4 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_local_terminal_receipt_without_owner_is_refused,test_typed_terminal.TypedTerminalReceiptTest.test_typing_gaps_names_a_blank_owner (owner='  '),test_typed_terminal.TypedTerminalReceiptTest.test_typing_gaps_names_a_blank_owner (owner=''),test_typed_terminal.TypedTerminalReceiptTest.test_typing_gaps_names_a_blank_owner (owner=None)",
+      "detail": "killed by 3 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_typing_gaps_names_a_blank_owner (owner='  '),test_typed_terminal.TypedTerminalReceiptTest.test_typing_gaps_names_a_blank_owner (owner=''),test_typed_terminal.TypedTerminalReceiptTest.test_typing_gaps_names_a_blank_owner (owner=None)",
       "file": "scripts/release_train/root_crown/evidence.py",
       "killed": true,
       "killers": [
@@ -214,6 +368,17 @@
       ],
       "kind": "source",
       "rule": "BLOCKED_WITHOUT_TYPE(missing=owner)"
+    },
+    "owner_split_off": {
+      "detail": "killed by 8 test(s): test_policy.OwnerRuleTest.test_closure_row_owner_split_and_container_default,test_policy.OwnerRuleTest.test_explicit_owner_of_another_repository_is_owner_split (key='owner'),test_policy.OwnerRuleTest.test_explicit_owner_of_another_repository_is_owner_split (key='owner_repo'),test_policy.OwnerRuleTest.test_explicit_owner_of_another_repository_is_owner_split (key='repo'),test_policy.OwnerRuleTest.test_explicit_owner_of_another_repository_is_owner_split (key='repository'),test_policy.OwnerRuleTest.test_f09_owner_split",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_policy",
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "OWNER_SPLIT(receipt)"
     },
     "parent_digest_off": {
       "detail": "killed by 1 test(s): test_chain.ChainTest.test_parent_digest",
@@ -265,6 +430,36 @@
       "kind": "source",
       "rule": "PAYLOAD_MUTATED_POST_TAG"
     },
+    "policy_admission_ignored": {
+      "detail": "killed by 9 test(s): test_terminal_alignment.TerminalAlignmentTest.test_capability_ac_crown_is_blocked_not_alive,test_terminal_alignment.TerminalAlignmentTest.test_structured_local_receipt_standing,test_terminal_alignment.TerminalAlignmentTest.test_typed_blocked_on_capability_ac_stays_blocked (rid='AC-07'),test_terminal_alignment.TerminalAlignmentTest.test_typed_blocked_on_capability_ac_stays_blocked (rid='AC-08'),test_terminal_alignment.TerminalAlignmentTest.test_typed_blocked_on_capability_ac_stays_blocked (rid='AC-13'),test_terminal_alignment.TerminalAlignmentTest.test_typed_blocked_on_capability_ac_stays_blocked (rid='AC-14')",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "capability ACs admit ALIVE only (ARTIFACT_BLOCKED)"
+    },
+    "policy_release_unchecked": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_policy_for_another_release_or_unreadable_is_missing",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "TERMINALITY_POLICY_MISSING(other release)"
+    },
+    "receipt_policy_refusal_dropped": {
+      "detail": "killed by 11 test(s): test_policy.PolicyRefusalTest.test_absent_anchor_is_ungrounded,test_policy.PolicyRefusalTest.test_acceptance_drift,test_policy.PolicyRefusalTest.test_borrowing_another_requirements_terminal_phrase_is_ungrounded,test_policy.PolicyRefusalTest.test_coverage_gap_duplicate_extra_and_malformed_rows,test_policy.PolicyRefusalTest.test_missing_policy (rid='AC-07'),test_policy.PolicyRefusalTest.test_missing_policy (rid='AC-15')",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "TERMINALITY_POLICY_MISSING / ACCEPTANCE_DRIFT (receipt_artifact)"
+    },
     "record_section_unchecked": {
       "detail": "killed by 3 test(s): test_typed_terminal.RecordBindingTest.test_edited_record_sections_are_refused (code='TAG_MUTATED'),test_typed_terminal.RecordBindingTest.test_edited_record_sections_are_refused (code='TAG_RECEIPT_SPLIT'),test_typed_terminal.RecordBindingTest.test_edited_record_sections_are_refused (code='TAG_SUBJECT_SPLIT')",
       "file": "scripts/release_train/root_crown/posttag.py",
@@ -275,6 +470,46 @@
       ],
       "kind": "source",
       "rule": "TAG_RECEIPT_SPLIT/TAG_SUBJECT_SPLIT(record vs raw objects)"
+    },
+    "relaxation_ceiling_off": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_relaxation_claiming_an_alive_ceiling_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(ceiling ALIVE)"
+    },
+    "relaxation_marker_off": {
+      "detail": "killed by 2 test(s): test_policy.PolicyRefusalTest.test_every_terminality_code_is_typed_and_emitted,test_policy.PolicyRefusalTest.test_relaxing_a_capability_row_with_its_own_phrase_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(no terminality marker)"
+    },
+    "relaxation_own_line_unchecked": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_borrowing_another_requirements_terminal_phrase_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(borrowed phrase)"
+    },
+    "relaxation_phrase_unchecked": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_phrase_absent_from_the_anchor_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(phrase not in anchor)"
     },
     "replay_diverged_off": {
       "detail": "killed by 1 test(s): test_replay.IsolationTest.test_divergent_digest_is_typed_replay_diverged",
@@ -297,6 +532,26 @@
       "kind": "source",
       "rule": "REQUIRED_UNKNOWN"
     },
+    "rfc_import_digest_off": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_rfc_import_digest_mismatch_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(rfc import digest)"
+    },
+    "shared_grounding_admitted": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_one_grounding_cited_by_two_relaxations_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(one grounding, several relaxations)"
+    },
     "subject_tree_off": {
       "detail": "killed by 2 test(s): test_post_tag.PostTagTest.test_one_refusing_mutant_per_post_tag_rule (rule='SUBJECT_TREE_MISMATCH'),test_typed_terminal.SubjectTreeTest.test_one_changed_byte_is_subject_tree_mismatch",
       "file": "scripts/release_train/root_crown/posttag.py",
@@ -307,6 +562,16 @@
       ],
       "kind": "source",
       "rule": "SUBJECT_TREE_MISMATCH"
+    },
+    "success_ceiling_off": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_success_row_claiming_a_terminal_ceiling_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(success row ceiling)"
     },
     "successor_off": {
       "detail": "killed by 1 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_superseded_without_successor_is_refused",
@@ -457,12 +722,13 @@
   "schema": "https://chatman.dev/root-crown/hardening/mutation-report/v1",
   "source_digests": {
     "scripts/release_train/root_crown/chain.py": "sha256:3039484a9b8f992aa6c5ee72989af86570afe5c1ab4e45f177597e4714009253",
-    "scripts/release_train/root_crown/crown.py": "sha256:4cff749bee28acd43631208dde4983b4d89de693881681a34b7cc6d5cfb45f2e",
-    "scripts/release_train/root_crown/evidence.py": "sha256:91b396563832bb311572aa389f9bbb26d1b0ffb5bc5b314d072e9e2fb7f5fa88",
+    "scripts/release_train/root_crown/crown.py": "sha256:722ae65389787ec428da97a5d7fb5749673d6a0fa21f8f36f990c8e6f5f97932",
+    "scripts/release_train/root_crown/evidence.py": "sha256:4b58c6efec9f68593675ec26d959dd9256006d2c179e0a4064e6b569f095d76e",
     "scripts/release_train/root_crown/gitobj.py": "sha256:191690fafbc380bef695eee9beee8563d123cecc6beab89ac99a2898830979a2",
+    "scripts/release_train/root_crown/policy.py": "sha256:f3d0c0d2b60e1fbae321145877f1fb20333e8336c4330926c2937aa7299e0a5d",
     "scripts/release_train/root_crown/posttag.py": "sha256:9a7d1b157f21787cbf19c3b610ebf7ce5e45d9cdf0bba7107e8e975f4b05bb5c",
     "scripts/release_train/root_crown/replay.py": "sha256:c3610676203a00d48a00a50af3c70f59eaf5d7608a95a7390947bc32332b6a2d"
   },
   "survivors": [],
-  "total": 46
+  "total": 74
 }

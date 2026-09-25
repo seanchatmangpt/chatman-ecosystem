@@ -110,12 +110,18 @@ def evaluate(
     root: Path = Path("."),
     evaluators: dict[str, Evaluator] | None = None,
     mode: str = "PRE_TAG",
+    policy_root: Path | None = None,
 ) -> Verdict:
     """Evaluate one release tree at ``crown_sha`` (the core receipt, schema v1).
 
     ``mode`` PRE_TAG binds the observed root head to crown_sha (``CROWN_SHA_SPLIT``);
     POST_TAG does not (after the tag, the observed head legitimately moves on and the
     tag binding is the post-tag evaluator supplied by ``posttag``).
+
+    The terminality policy (``policy.py``) is admitted as a whole before any requirement is
+    evaluated: a missing policy, a coverage gap, an ungrounded relaxation or acceptance drift
+    is a global refusal even for requirements whose evaluator never consults the policy.
+    ``policy_root`` overrides the committed policy directory (tests, mutants).
     """
     if mode not in MODES:
         raise ValueError(f"mode {mode!r} not in {MODES}")
@@ -138,7 +144,15 @@ def evaluate(
     if mode == "PRE_TAG" and root_obs.get("head_sha") and root_obs["head_sha"] != crown_sha:
         refusals.append(f"REFUSED:CROWN_SHA_SPLIT:observed={root_obs['head_sha']}:crown={crown_sha}")
 
-    ctx = Context(root=root, release_dir=release_dir, observations=observations, crown_sha=crown_sha, inputs=inputs)
+    ctx = Context(
+        root=root,
+        release_dir=release_dir,
+        observations=observations,
+        crown_sha=crown_sha,
+        inputs=inputs,
+        **({} if policy_root is None else {"policy_root": policy_root}),
+    )
+    refusals += ctx.policy_refusals()
     # Heads include admitted operator-local private observations (NEW_HEAD cascade covers them too).
     heads = {repo: obs["head_sha"] for repo, obs in sorted(ctx.repos.items()) if obs.get("head_sha")}
     states: dict[str, ReqState] = {}

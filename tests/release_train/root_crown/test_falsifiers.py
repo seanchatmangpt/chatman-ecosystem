@@ -121,26 +121,32 @@ class FalsifierTableTest(unittest.TestCase):
                     tree.cleanup()
 
     def test_f09_typed_blocker_is_lawful(self):
+        """RFC §55 "cloud_runtime_alive_or_typed_blocker": a typed (type + broken_term + §39 class
+        + owner) BLOCKED receipt bound to a merged subject is lawful; a type without a Chatman
+        broken_term is not typed (RFC §39 "Failure SHALL be typed"), and no type at all is refused."""
         tree = alive_tree()
         try:
             obs = alive_observations(tree)
             req = next(r for r in tree.inputs().requirements if r.id == "F-09")
-            obs["artifacts"][req.evidence_locator]["json"] = {
-                "standing": "BLOCKED",
-                "type": "TRANSPORT_FAILURE:live-cloud-leg",
-            }
-            state = evidence.typed_blocker_allowed(
-                req, evidence.Context(tree.root, tree.release_dir, obs, CROWN_SHA, tree.inputs())
-            )
-            self.assertEqual(state.state, "PASS")
-            obs["artifacts"][req.evidence_locator]["json"] = {"standing": "BLOCKED"}
-            state = evidence.typed_blocker_allowed(
-                req, evidence.Context(tree.root, tree.release_dir, obs, CROWN_SHA, tree.inputs())
-            )
+            subject = obs["artifacts"][req.evidence_locator]["json"]["subject_sha"]
+
+            def evaluate(receipt):
+                obs["artifacts"][req.evidence_locator]["json"] = receipt
+                return evidence.typed_blocker_allowed(
+                    req, evidence.Context(tree.root, tree.release_dir, obs, CROWN_SHA, tree.inputs())
+                )
+
+            typed = {"standing": "BLOCKED", "type": "TRANSPORT_FAILURE:live-cloud-leg", "subject_sha": subject}
+            state = evaluate(typed | {"broken_term": "R_missing_consequence"})
+            self.assertEqual(state.state, "PASS", state.detail)
+            self.assertIn("terminal BLOCKED(TRANSPORT_FAILURE:live-cloud-leg) (RFC §55", state.detail)
+            state = evaluate(typed)
+            self.assertEqual((state.state, state.code), ("REFUSED", "BLOCKED_WITHOUT_TYPE"))
+            self.assertTrue(state.detail.endswith(":BLOCKED:missing=broken_term"), state.detail)
+            state = evaluate({"standing": "BLOCKED"})
             self.assertEqual((state.state, state.code), ("REFUSED", "BLOCKED_WITHOUT_TYPE"))
         finally:
             tree.cleanup()
-
 
 if __name__ == "__main__":
     unittest.main()

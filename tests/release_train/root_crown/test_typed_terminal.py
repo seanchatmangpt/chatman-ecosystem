@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import copy
 import json
+from dataclasses import replace
 import shutil
 import tempfile
 import unittest
@@ -25,11 +26,12 @@ from pathlib import Path
 from _support import CROWN_SHA, REPO, RELEASE, alive_observations, alive_tree, committed_tree, dump
 
 from scripts.release_train.root_crown import evidence, gitobj, posttag
-from scripts.release_train.root_crown.model import Requirement, code_of
+from scripts.release_train.root_crown.model import code_of
 
 TYPED = "AUTHORITY_FAILURE:operator-repo-rename;R_missing_authority"
 HARDENING = REPO / "release" / RELEASE / "hardening"
 LOCAL_RECEIPT = f"release/{RELEASE}/observations/terminal-disposition.json"
+ROOT_REPO = "seanchatmangpt/chatman-ecosystem"
 
 
 class TypedTerminalReceiptTest(unittest.TestCase):
@@ -60,22 +62,33 @@ class TypedTerminalReceiptTest(unittest.TestCase):
                 artifact[key] = value
         return evidence.receipt_artifact(req, self.ctx(obs))
 
-    # --- owner_off ---------------------------------------------------------------------------
+    # --- owner_off / owner rule ------------------------------------------------------------
     def local_terminal(self, **fields):
-        """A terminal AC whose receipt lives in the crown tree and whose row names no owner repo."""
-        req = Requirement("AC-15", "AC", "C", "", "has a terminal standing", "receipt_artifact", f"local:{LOCAL_RECEIPT}", ())
+        """AC-15 re-pointed at a receipt inside the crown tree (container = the root repository)."""
+        req = replace(
+            next(r for r in self.tree.inputs().requirements if r.id == "AC-15"),
+            owner_repo="",
+            evidence_locator=f"local:{LOCAL_RECEIPT}",
+        )
         dump(self.tree.root / LOCAL_RECEIPT, {"standing": "BLOCKED", "type": TYPED} | fields)
         return evidence.receipt_artifact(req, self.ctx())
 
-    def test_local_terminal_receipt_without_owner_is_refused(self):
+    def test_local_terminal_receipt_without_owner_is_owned_by_its_container(self):
+        """No explicit owner: the repository containing the receipt owns it (owner_source=container)."""
         state = self.local_terminal()
-        self.assertEqual((state.state, state.code), ("REFUSED", "BLOCKED_WITHOUT_TYPE"))
-        self.assertTrue(state.detail.endswith(":BLOCKED:missing=owner"), state.detail)
+        self.assertEqual(state.state, "PASS", state.detail)
+        self.assertIn(f"owner={ROOT_REPO} owner_source=container", state.detail)
 
-    def test_local_terminal_receipt_with_owner_is_terminal(self):
+    def test_local_terminal_receipt_owned_by_another_repo_is_owner_split(self):
         state = self.local_terminal(owner="seanchatmangpt/zoela")
+        self.assertEqual((state.state, state.code), ("REFUSED", "OWNER_SPLIT"))
+        self.assertIn(f"owner=seanchatmangpt/zoela container={ROOT_REPO}", state.detail)
+
+    def test_local_terminal_receipt_with_container_owner_is_terminal(self):
+        state = self.local_terminal(owner=ROOT_REPO)
         self.assertEqual(state.state, "PASS", state.detail)
         self.assertIn("terminal BLOCKED", state.detail)
+        self.assertIn("owner_source=explicit", state.detail)
 
     def test_typing_gaps_names_a_blank_owner(self):
         for owner in (None, "", "  "):

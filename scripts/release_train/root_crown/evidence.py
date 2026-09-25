@@ -21,6 +21,7 @@ from scripts.release_train.cross_product_court.io import load_case, receipt_dict
 from scripts.release_train.release_closure_court.court import evaluate as closure_evaluate
 
 from . import berthier, projector
+from . import policy as terminality
 from .model import BLOCKED, BROKEN_TERMS, FAILURE_CLASSES, PASS, REFUSED, ReqState, Requirement, sha256_bytes
 from .requirements import premise_sections
 
@@ -195,9 +196,30 @@ def typing_gaps(
     return gaps
 
 
-def terminal_requirement(req: Requirement) -> bool:
-    """RFC §48 AC-02 / AC-15 ask for *terminal* standing, not a passing capability court."""
-    return req.kind == "AC" and "terminal" in req.acceptance.lower()
+# Receipt fields that may name an owner explicitly (RFC §36). The owner of a receipt is the
+# repository that contains it (the container); an explicit owner must equal the container.
+OWNER_KEYS = ("owner", "owner_repo", "repo", "repository")
+
+
+def resolve_owner(
+    data: dict[str, Any], container: str | None, keys: tuple[str, ...] = OWNER_KEYS
+) -> tuple[str | None, str, ReqState | None]:
+    """(owner, owner_source, OWNER_SPLIT refusal | None).
+
+    An explicit owner field must equal the container repository, else REFUSED OWNER_SPLIT
+    (a receipt cannot speak for a repository it does not live in). Without an explicit
+    owner the container repository is the owner (``owner_source=container``); with no
+    container either, the owner is absent and ``typing_gaps`` names it.
+    """
+    explicit = sorted({str(data[k]).strip() for k in keys if isinstance(data.get(k), str) and str(data[k]).strip()})
+    if explicit:
+        wrong = [e for e in explicit if e != container]
+        if wrong:
+            return None, "explicit", REFUSED("OWNER_SPLIT", f"owner={','.join(wrong)} container={container}")
+        return container, "explicit", None
+    if isinstance(container, str) and container.strip():
+        return container, "container", None
+    return None, "absent", None
 
 
 @dataclass
@@ -209,7 +231,10 @@ class Context:
     inputs: projector.Inputs
     premise_text: str | None = None  # in-memory override (crown test)
     extra: dict[str, Any] = field(default_factory=dict)
+    policy_root: Path = terminality.POLICY_ROOT
     private_failures: dict[str, ReqState] = field(init=False)
+    policy: terminality.Policy | None = field(init=False, default=None)
+    policy_missing: str | None = field(init=False, default=None)
     _repos: dict[str, Any] = field(init=False, repr=False)
     _artifacts: dict[str, Any] = field(init=False, repr=False)
 
@@ -217,6 +242,35 @@ class Context:
         repos, artifacts, self.private_failures = admit_private(self.observations)
         self._repos = dict(self.observations.get("repos", {})) | repos
         self._artifacts = dict(self.observations.get("artifacts", {})) | artifacts
+        try:
+            self.policy = terminality.load_policy(self.release_dir.name, self.policy_root)
+        except terminality.PolicyMissing as exc:
+            self.policy, self.policy_missing = None, str(exc)
+
+    @property
+    def import_sha256(self) -> str | None:
+        """sha256 IMPORTS.json records for the pinned RFC-0004 import (None when not exactly one)."""
+        rfc = [i for i in self.inputs.imports.get("imports", []) if i.get("path") == "imports/RFC-0004.md"]
+        return str(rfc[0].get("sha256")) if len(rfc) == 1 else None
+
+    @property
+    def container_repo(self) -> str | None:
+        """The repository that contains local (``local:``) evidence: the crown's root repository."""
+        return self.inputs.pins.get("root_repository")
+
+    def policy_row(self, req: Requirement) -> tuple[terminality.Row | None, ReqState | None]:
+        return terminality.admit(
+            self.policy, self.policy_missing, req.id, req.acceptance, self.inputs.rfc_text, self.import_sha256
+        )
+
+    def policy_refusals(self) -> list[str]:
+        return terminality.validate(
+            self.policy,
+            self.policy_missing,
+            self.inputs.requirements_doc.get("requirements", []),
+            self.inputs.rfc_text,
+            self.import_sha256,
+        )
 
     @property
     def repos(self) -> dict[str, Any]:
@@ -253,17 +307,24 @@ def manifest_valid(req: Requirement, ctx: Context) -> ReqState:
 def closure_terminal(req: Requirement, ctx: Context) -> ReqState:
     """AC-02 / F-03: every required subject has a terminal disposition (RFC §5, §37, §38, §47.3).
 
-    Terminal = ALIVE/FINAL, or a typed SUPERSEDED/BLOCKED/UNSUPPORTED/REFUSED row (type +
-    broken_term + §39 class + owner). A typed BLOCKED row is terminal; it is not a passing
-    capability court, and capability requirements keep their own PASS evidence. UNKNOWN or an
-    untyped row is REFUSED; a lawful-but-non-terminal row (PARTIAL_ALIVE, PLANNED,
-    NOT_CLAIMED) keeps the closure BLOCKED.
+    The admitted terminal states come from the terminality policy row of ``req`` (AC-02 and
+    F-03 admit ALIVE/FINAL and typed SUPERSEDED/BLOCKED/UNSUPPORTED/REFUSED, grounded by RFC
+    §48 "all required subjects terminal" and §47 "A required subject remains UNKNOWN"). A
+    typed row carries type + broken_term + §39 class + owner, and its owner is its
+    ``repository`` (an explicit ``owner`` naming another repository is OWNER_SPLIT). UNKNOWN
+    or an untyped row is REFUSED; a lawful-but-non-terminal row (PARTIAL_ALIVE, PLANNED,
+    NOT_CLAIMED) or a typed state the policy does not admit keeps the closure BLOCKED.
     """
+    policy_row, refusal = ctx.policy_row(req)
+    if refusal is not None:
+        return refusal
+    assert policy_row is not None
     verdict = closure_evaluate(ctx.inputs.closure)
     receipt = verdict.receipt["receipt_digest"]
     if verdict.standing == "REFUSED":
         return REFUSED("SUBJECT_NOT_TERMINAL", ";".join(verdict.refusals))
     untyped: list[str] = []
+    splits: list[str] = []
     open_rows: list[str] = []
     typed = 0
     required = [r for r in ctx.inputs.closure.get("subjects", []) if r.get("required", True)]
@@ -274,12 +335,19 @@ def closure_terminal(req: Requirement, ctx: Context) -> ReqState:
             if label == "impl" and state in NON_TERMINAL_IMPL:
                 open_rows.append(f"{sid}:{label}={state}")
             elif state in TYPED_TERMINAL:
+                if not policy_row.admits(state):
+                    open_rows.append(f"{sid}:{label}={state}:not-admitted-by-policy({req.id})")
+                    continue
+                owner, _, split = resolve_owner(row, row.get("repository"), ("owner",))
+                if split is not None:
+                    splits.append(f"{sid}:{split.detail}")
+                    continue
                 gaps = typing_gaps(
                     row,
                     state,
                     type_text=str(row.get(f"{label}_type", "")),
                     broken_term=row.get(f"{label}_broken_term"),
-                    owner=row.get("owner") or row.get("repository"),
+                    owner=owner,
                 )
                 if gaps:
                     untyped.append(f"{sid}:{label}={state}:missing={'+'.join(gaps)}")
@@ -287,6 +355,8 @@ def closure_terminal(req: Requirement, ctx: Context) -> ReqState:
                     typed += 1
     if untyped:
         return REFUSED("SUBJECT_NOT_TERMINAL", "untyped terminal disposition: " + ",".join(sorted(untyped)))
+    if splits:
+        return REFUSED("OWNER_SPLIT", ",".join(sorted(splits)))
     if open_rows:
         return BLOCKED(
             "CLOSURE_PARTIAL",
@@ -294,7 +364,7 @@ def closure_terminal(req: Requirement, ctx: Context) -> ReqState:
         )
     return PASS(
         f"{len(required)} required subjects terminal ({typed} typed non-ALIVE dispositions); "
-        f"closure court {verdict.standing}; receipt={receipt}",
+        f"closure court {verdict.standing}; receipt={receipt}; policy {req.id} ceiling={policy_row.standing_ceiling}",
         ctx.crown_sha,
     )
 
@@ -359,10 +429,14 @@ def _artifact(req: Requirement, ctx: Context) -> tuple[dict[str, Any] | None, Re
     return data, None, False
 
 
-def _bound(req: Requirement, ctx: Context, data: dict[str, Any], is_local: bool) -> ReqState:
-    """PASS only when the artifact names its subject and that subject is on the owner's lineage."""
+def _bound(req: Requirement, ctx: Context, data: dict[str, Any], is_local: bool, standing: str | None) -> ReqState:
+    """PASS only when the artifact names its subject and that subject is on the owner's lineage.
+
+    The detail names the receipt's own standing (a typed BLOCKED receipt is "BLOCKED at
+    <subject>", never "ALIVE at").
+    """
     if is_local:
-        return PASS(f"local artifact {req.evidence_locator}", ctx.crown_sha)
+        return PASS(f"local artifact {req.evidence_locator} ({standing})", ctx.crown_sha)
     subject = data.get("subject_sha")
     if not subject and isinstance(data.get("subject"), dict):
         subject = data["subject"].get("sha")
@@ -373,16 +447,52 @@ def _bound(req: Requirement, ctx: Context, data: dict[str, Any], is_local: bool)
         return REFUSED("ARTIFACT_SUBJECT_SPLIT", f"{req.evidence_locator}:{subject}:{status}", subject)
     if status not in LINEAGE_OK:
         return BLOCKED("OBSERVATION_MISSING", f"{req.evidence_locator}: subject lineage unobserved", subject)
-    return PASS(f"{req.evidence_locator} ALIVE at {subject} ({status})", subject)
+    return PASS(f"{req.evidence_locator} {standing} at {subject} ({status})", subject)
+
+
+def _typed_terminal(
+    req: Requirement,
+    ctx: Context,
+    data: dict[str, Any],
+    is_local: bool,
+    standing: str,
+    inline: tuple[str, Any],
+    row: terminality.Row,
+    anchor: str,
+) -> ReqState:
+    """A typed RFC §38 disposition admitted by the policy row: typed, owned by its container, bound."""
+    container = ctx.container_repo if is_local else req.locator_repo
+    owner, source, split = resolve_owner(data, container)
+    if split is not None:
+        return REFUSED("OWNER_SPLIT", f"{req.evidence_locator}:{split.detail}")
+    inline_type, inline_term = inline
+    type_text = " ".join(str(x) for x in (data.get("type") or data.get("blocked_type"), inline_type) if x)
+    gaps = typing_gaps(data, standing, type_text=type_text, broken_term=inline_term, owner=owner)
+    if gaps:
+        return REFUSED("BLOCKED_WITHOUT_TYPE", f"{req.evidence_locator}:{standing}:missing={'+'.join(gaps)}")
+    bound = _bound(req, ctx, data, is_local, standing)
+    if bound.state != "PASS":
+        return bound
+    kind = data.get("type") or data.get("blocked_type") or inline_type
+    return PASS(
+        f"terminal {standing}({kind}) ({anchor}; policy {req.id} ceiling={row.standing_ceiling}); "
+        f"owner={owner} owner_source={source}; {bound.detail}",
+        bound.subject_sha,
+    )
 
 
 def receipt_artifact(req: Requirement, ctx: Context) -> ReqState:
-    """Capability requirements need an ALIVE receipt bound to a merged SHA; terminal ones
-    (``terminal_requirement``) accept a typed RFC §38 disposition bound the same way.
+    """The requirement's terminality policy row decides which receipt standings are terminal.
 
-    A required receipt that is UNKNOWN is REFUSED (RFC §5: a required release subject MUST NOT
-    remain UNKNOWN; §47 falsifier 3).
+    Capability rows admit ALIVE only: the receipt must be ALIVE and bound to a merged SHA.
+    Relaxed rows (AC-15) also admit a typed SUPERSEDED/BLOCKED/UNSUPPORTED/REFUSED
+    disposition bound the same way. A required receipt that is UNKNOWN is REFUSED (RFC §5:
+    a required release subject MUST NOT remain UNKNOWN; §47 falsifier 3).
     """
+    policy_row, refusal = ctx.policy_row(req)
+    if refusal is not None:
+        return refusal
+    assert policy_row is not None
     data, blocker, is_local = _artifact(req, ctx)
     if blocker is not None:
         return blocker
@@ -391,50 +501,53 @@ def receipt_artifact(req: Requirement, ctx: Context) -> ReqState:
     if standing == "UNKNOWN" and req.required:
         return REFUSED("REQUIRED_UNKNOWN", f"{req.evidence_locator}: standing UNKNOWN")
     kind = data.get("type") or data.get("blocked_type") or inline_type or "untyped"
-    if terminal_requirement(req):
-        if standing in SUCCESS_TERMINAL:
-            return _bound(req, ctx, data, is_local)
-        if standing in TYPED_TERMINAL:
-            owner = next(
-                (data.get(k) for k in ("owner", "owner_repo", "repo", "repository") if isinstance(data.get(k), str)),
-                req.locator_repo or req.owner_repo,
-            )
-            type_text = " ".join(str(x) for x in (data.get("type") or data.get("blocked_type"), inline_type) if x)
-            gaps = typing_gaps(data, standing, type_text=type_text, broken_term=inline_term, owner=owner)
-            if gaps:
-                return REFUSED("BLOCKED_WITHOUT_TYPE", f"{req.evidence_locator}:{standing}:missing={'+'.join(gaps)}")
-            bound = _bound(req, ctx, data, is_local)
-            if bound.state != "PASS":
-                return bound
-            return PASS(f"terminal {standing}({kind}) (RFC §38); {bound.detail}", bound.subject_sha)
-        return BLOCKED("ARTIFACT_BLOCKED", f"{req.evidence_locator}:{standing}({kind}) not terminal")
+    if standing in SUCCESS_TERMINAL and policy_row.admits(standing):
+        return _bound(req, ctx, data, is_local, standing)
+    if standing in TYPED_TERMINAL and policy_row.admits(standing):
+        return _typed_terminal(req, ctx, data, is_local, standing, (inline_type, inline_term), policy_row, "RFC §38")
     if standing == "REFUSED":
         return REFUSED("ARTIFACT_REFUSED", f"{req.evidence_locator}:{data.get('refusals') or kind}")
-    if standing != "ALIVE":
-        return BLOCKED("ARTIFACT_BLOCKED", f"{req.evidence_locator}:{standing}({kind})")
-    return _bound(req, ctx, data, is_local)
+    return BLOCKED(
+        "ARTIFACT_BLOCKED",
+        f"{req.evidence_locator}:{standing}({kind}) not terminal for {req.id} "
+        f"(policy admits {'|'.join(policy_row.allowed_terminal_states)})",
+    )
 
 
 def typed_blocker_allowed(req: Requirement, ctx: Context) -> ReqState:
-    """RFC §55 cloud_runtime_alive_or_typed_blocker: a typed blocker is lawful; an ALIVE claim needs a receipt."""
+    """RFC §55 cloud_runtime_alive_or_typed_blocker (F-09).
+
+    An ALIVE claim needs a transport and an execution receipt and a merged subject. A
+    non-success standing is lawful only when the policy row admits it (F-09: BLOCKED,
+    UNSUPPORTED) and it is typed (type + broken_term + §39 class + owner = container repo)
+    and bound to a merged subject; anything else is REFUSED or stays BLOCKED.
+    """
+    f09_row, refusal = ctx.policy_row(req)
+    if refusal is not None:
+        return refusal
+    assert f09_row is not None
     data, blocker, is_local = _artifact(req, ctx)
     if blocker is not None:
         return blocker
     assert data is not None
-    standing, _, _ = standing_of(data)
-    if standing == "REFUSED":
-        return REFUSED("ARTIFACT_REFUSED", f"{req.evidence_locator}")
-    if standing == "BLOCKED":
-        if not str(data.get("type", "")).strip():
-            return REFUSED("BLOCKED_WITHOUT_TYPE", req.evidence_locator)
-        return PASS(f"typed blocker {data['type']} (RFC §55)", data.get("subject_sha"))
-    if standing == "ALIVE":
+    standing, inline_type, inline_term = standing_of(data)
+    if req.required and standing == "UNKNOWN":
+        return REFUSED("REQUIRED_UNKNOWN", f"{req.evidence_locator}: standing UNKNOWN")
+    if standing == "ALIVE" and f09_row.admits(standing):
         if not data.get("transport_receipt") or not data.get("execution_receipt"):
             return REFUSED(
                 "CLAIM_WITHOUT_RECEIPT", f"{req.evidence_locator}: ALIVE without transport+execution receipt"
             )
-        return _bound(req, ctx, data, is_local)
-    return BLOCKED("ARTIFACT_BLOCKED", f"{req.evidence_locator}:{standing}")
+        return _bound(req, ctx, data, is_local, standing)
+    if standing in TYPED_TERMINAL and f09_row.admits(standing):
+        return _typed_terminal(req, ctx, data, is_local, standing, (inline_type, inline_term), f09_row, "RFC §55")
+    if standing == "REFUSED":
+        return REFUSED("ARTIFACT_REFUSED", f"{req.evidence_locator}")
+    return BLOCKED(
+        "ARTIFACT_BLOCKED",
+        f"{req.evidence_locator}:{standing} not admitted for {req.id} "
+        f"(policy admits {'|'.join(f09_row.allowed_terminal_states)})",
+    )
 
 
 def berthier_court(req: Requirement, ctx: Context) -> ReqState:
