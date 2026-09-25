@@ -238,6 +238,40 @@ class DeltaObserverTest(unittest.TestCase):
         self.assertEqual(out["subject_compare"], "ahead")
         self.assertEqual(out["subject_delta_paths"], ["release/v26.9.25/receipts/x.json", "scripts/gen.py"])
 
+    def test_rename_keeps_its_source_path_in_the_delta(self):
+        """compare files[] ``previous_filename`` is part of the delta: a code file renamed into
+        receipts/ must not look receipt-only (it removed code from the subject)."""
+        from scripts.release_train.root_crown import binding
+
+        payload = {
+            "status": "ahead",
+            "files": [
+                {"filename": "release/v26.9.25/receipts/gate.json", "previous_filename": "scripts/release_gate.py", "status": "renamed"},
+                {"filename": "release/v26.9.25/receipts/b.json", "previous_filename": "release/v26.9.25/receipts/a.json", "status": "copied"},
+            ],
+        }  # fmt: skip
+        api = FixtureApi({f"{API}/repos/o/r/compare/{PIN}...{HEAD}": payload})
+        delta = obs.compare_delta(api, "o/r", PIN, HEAD)
+        self.assertEqual(
+            delta["delta_paths"],
+            [
+                "release/v26.9.25/receipts/a.json",
+                "release/v26.9.25/receipts/b.json",
+                "release/v26.9.25/receipts/gate.json",
+                "scripts/release_gate.py",
+            ],
+        )
+        self.assertEqual(
+            [f.get("previous_filename") for f in delta["files"]],
+            ["release/v26.9.25/receipts/a.json", "scripts/release_gate.py"],
+        )
+        allowlist = binding.load_allowlist("v26.9.25")
+        self.assertEqual(binding.classify_delta(delta["delta_paths"], allowlist), ("UNBOUNDED", ["scripts/release_gate.py"]))
+        # the artifact path records the same union
+        api.routes[f"{API}/repos/o/r/contents/release/v26.9.25/receipts/gate.json?ref={HEAD}"] = content({"subject_sha": PIN})
+        out = obs.observe_artifact(api, "o/r:release/v26.9.25/receipts/gate.json", {"head_sha": HEAD})
+        self.assertIn("scripts/release_gate.py", out["subject_delta_paths"])
+
     def test_full_compare_page_is_not_a_lineage_proof(self):
         files = [{"filename": f"release/v26.9.25/receipts/{i}.json", "status": "added"} for i in range(300)]
         api = FixtureApi({f"{API}/repos/o/r/compare/{PIN}...{HEAD}": {"status": "ahead", "files": files}})

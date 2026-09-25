@@ -7,9 +7,9 @@
     "failures": 0,
     "ok": true,
     "skipped": 4,
-    "tests_run": 202
+    "tests_run": 203
   },
-  "killed": 99,
+  "killed": 101,
   "mutants": {
     "acceptance_drift_off": {
       "detail": "killed by 2 test(s): test_policy.PolicyRefusalTest.test_acceptance_drift,test_policy.PolicyRefusalTest.test_every_terminality_code_is_typed_and_emitted",
@@ -300,6 +300,13 @@
       "kind": "data",
       "rule": "ACCEPTANCE_DRIFT"
     },
+    "dm_code_renamed_into_receipts": {
+      "detail": "court emitted 'UNBOUNDED:scripts/release_gate.py'; control clean",
+      "expected": "UNBOUNDED:scripts/release_gate.py",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_DELTA_UNBOUNDED"
+    },
     "dm_delta_misclaimed": {
       "detail": "court emitted 'REFUSED:EVIDENCE_DELTA_MISCLAIMED:AC-07'; control clean",
       "expected": "REFUSED:EVIDENCE_DELTA_MISCLAIMED:AC-07",
@@ -584,6 +591,16 @@
       ],
       "kind": "source",
       "rule": "POLICY_RELAXATION_UNGROUNDED(non-terminal state)"
+    },
+    "observer_rename_source_dropped": {
+      "detail": "killed by 1 test(s): test_binding.ClassifyDeltaTest.test_code_renamed_into_receipts_is_unbounded",
+      "file": "scripts/observe_release_heads.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "compare_delta keeps previous_filename of renames/copies"
     },
     "owner_container_default_off": {
       "detail": "killed by 10 test(s): test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_refuse_only_unproven_lineage,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_with_observed_deltas,test_policy.OwnerRuleTest.test_absent_owner_is_the_container,test_policy.OwnerRuleTest.test_closure_row_owner_split_and_container_default,test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='broken_term'),test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='failure_class')",
@@ -958,6 +975,7 @@
   "release": "v26.9.25",
   "schema": "https://chatman.dev/root-crown/hardening/mutation-report/v1",
   "source_digests": {
+    "scripts/observe_release_heads.py": "sha256:22d7008c0ad662bb9378bb7806ee90f155aa58e784ce2ec567cf5b8239e9dcfb",
     "scripts/release_train/root_crown/binding.py": "sha256:51dda4ae530be25f952f9b0603c4e81f293a82f64faabb45bbc05dd08a913b72",
     "scripts/release_train/root_crown/chain.py": "sha256:3039484a9b8f992aa6c5ee72989af86570afe5c1ab4e45f177597e4714009253",
     "scripts/release_train/root_crown/crown.py": "sha256:8f72a974df9a62f85a7ce2527556ce96194b4ea7cb8b28b042c3c6a7c1d3b3e8",
@@ -969,5 +987,5 @@
     "scripts/release_train/root_crown/replay.py": "sha256:c3610676203a00d48a00a50af3c70f59eaf5d7608a95a7390947bc32332b6a2d"
   },
   "survivors": [],
-  "total": 99
+  "total": 101
 }

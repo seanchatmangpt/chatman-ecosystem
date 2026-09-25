@@ -81,6 +81,8 @@ def _compare(fetch: Fetch, repository: str, base: str, head: str) -> str | None:
 def compare_delta(fetch: Fetch, repository: str, base: str, head: str) -> dict[str, Any]:
     """``{status, ahead_by, files, delta_paths}`` of base...head (compare API ``files[]``).
 
+    ``delta_paths`` is every touched path: ``filename`` plus ``previous_filename`` of renames/copies.
+
     ``delta_paths`` is None when the listing may be truncated (``COMPARE_FILE_LIMIT``): an
     incomplete listing is not a lineage proof.
     """
@@ -89,16 +91,28 @@ def compare_delta(fetch: Fetch, repository: str, base: str, head: str) -> dict[s
     payload = fetch(f"{API}/repos/{repository}/compare/{base}...{urllib.parse.quote(head, safe='')}")
     status = payload.get("status")
     files = sorted(
-        ({"filename": f.get("filename"), "status": f.get("status")} for f in payload.get("files", []) if f.get("filename")),
+        (_delta_file(f) for f in payload.get("files", []) if f.get("filename")),
         key=lambda f: str(f["filename"]),
     )
     complete = len(files) < COMPARE_FILE_LIMIT
+    touched = {f["filename"] for f in files} | {f["previous_filename"] for f in files if "previous_filename" in f}
     return {
         "status": status if status in {"identical", "ahead", "behind", "diverged"} else None,
         "ahead_by": payload.get("ahead_by"),
         "files": files,
-        "delta_paths": sorted({f["filename"] for f in files}) if complete else None,
+        "delta_paths": sorted(touched) if complete else None,
     }
+
+
+def _delta_file(f: dict[str, Any]) -> dict[str, Any]:
+    """One compare ``files[]`` entry. A rename/copy keeps ``previous_filename``: the source path is
+    part of the delta (a code file renamed into ``receipts/`` removes code from the subject), so it
+    lands in ``delta_paths`` and is classified like any other touched path."""
+    out = {"filename": f.get("filename"), "status": f.get("status")}
+    prev = f.get("previous_filename")
+    if isinstance(prev, str) and prev and prev != f.get("filename"):
+        out["previous_filename"] = prev
+    return out
 
 
 def gh_fetch(url: str) -> dict[str, Any]:

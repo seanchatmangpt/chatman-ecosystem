@@ -16,6 +16,7 @@ from __future__ import annotations
 import ast
 import copy
 import hashlib
+import importlib
 import json
 import unittest
 from dataclasses import replace
@@ -140,6 +141,30 @@ class ClassifyDeltaTest(unittest.TestCase):
     def test_empty_allowlist_fails_closed(self):
         self.assertEqual(binding.classify_delta(["release/v26.9.25/receipts/a.json"], {})[0], "UNBOUNDED")
 
+    def test_code_renamed_into_receipts_is_unbounded(self):
+        """A rename keeps its source path in the delta: code moved into receipts/ removed code."""
+        observer = importlib.import_module("scripts.observe_release_heads")
+        payload = {
+            "status": "ahead",
+            "files": [
+                {
+                    "filename": "release/v26.9.25/receipts/gate.json",
+                    "previous_filename": "scripts/release_gate.py",
+                    "status": "renamed",
+                }
+            ],
+        }
+        delta = observer.compare_delta(lambda url: payload, "o/r", P, H)
+        self.assertEqual(delta["delta_paths"], ["release/v26.9.25/receipts/gate.json", "scripts/release_gate.py"])
+        self.assertEqual(delta["files"][0]["previous_filename"], "scripts/release_gate.py")
+        self.assertEqual(
+            binding.classify_delta(delta["delta_paths"], ALLOWLIST), ("UNBOUNDED", ["scripts/release_gate.py"])
+        )
+        # control: a receipt renamed within receipts/ stays receipt-only
+        payload["files"][0]["previous_filename"] = "release/v26.9.25/receipts/old-gate.json"
+        delta = observer.compare_delta(lambda url: payload, "o/r", P, H)
+        self.assertEqual(binding.classify_delta(delta["delta_paths"], ALLOWLIST)[0], "RECEIPT_ONLY")
+
 
 @unittest.skipUnless(DELTAS.is_file(), "delta observations not committed")
 class DeltaObservationsTest(unittest.TestCase):
@@ -155,7 +180,10 @@ class DeltaObservationsTest(unittest.TestCase):
             with self.subTest(repo=pair["repository"]):
                 cls, offending = binding.classify_delta(pair["delta_paths"], ALLOWLIST)
                 self.assertEqual((pair["delta_class"], pair["offending_paths"]), (cls, offending))
-                self.assertEqual(pair["delta_paths"], sorted(f["filename"] for f in pair["files"]))
+                touched = {f["filename"] for f in pair["files"]} | {
+                    f["previous_filename"] for f in pair["files"] if "previous_filename" in f
+                }
+                self.assertEqual(pair["delta_paths"], sorted(touched))
 
     def test_falsifier_pairs_are_unbounded_and_affidavit_is_admitted(self):
         by_repo = {p["repository"]: p for p in self.doc["pairs"]}

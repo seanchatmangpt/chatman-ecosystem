@@ -303,6 +303,7 @@ GITOBJ = "scripts/release_train/root_crown/gitobj.py"
 POLICY = "scripts/release_train/root_crown/policy.py"
 BINDING = "scripts/release_train/root_crown/binding.py"
 MODEL = "scripts/release_train/root_crown/model.py"
+OBSERVER = "scripts/observe_release_heads.py"
 
 T_TYPED = "test_typed_terminal"
 T_ALIGN = "test_terminal_alignment"
@@ -914,6 +915,14 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
         "ReqState.binding in as_dict v2",
     ),
     SourceMutant(
+        "observer_rename_source_dropped",
+        OBSERVER,
+        '    touched = {f["filename"] for f in files} | {f["previous_filename"] for f in files if "previous_filename" in f}',
+        '    touched = {f["filename"] for f in files}',
+        (T_BINDING,),
+        "compare_delta keeps previous_filename of renames/copies",
+    ),
+    SourceMutant(
         "binding_post_tag_deltas_ignored",
         POSTTAG,
         "        with_deltas(observations, hardening)",
@@ -935,6 +944,7 @@ DATA_ENV_MODULES = (
     "scripts.release_train.root_crown.policy",
     "scripts.release_train.root_crown.binding",
     "scripts.release_train.release_closure_court.court",
+    "scripts.observe_release_heads",
 )
 TAG_OBJECT = "337e839937c247de4ee58b744c8b8e43950d18e3"
 TAG_COMMIT = "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
@@ -1232,6 +1242,23 @@ def dm_mutable_subject(env: Env) -> tuple[list[str], list[str]]:
     return _artifact_eval(env, "AC-07", lambda art, data: data.update(subject_sha="master"))
 
 
+def dm_code_renamed_into_receipts(env: Env) -> tuple[list[str], list[str]]:
+    """The observer + delta law over a compare payload renaming code into receipts/ (control: a
+    receipt renamed within receipts/). The rename source is part of the delta."""
+    allowlist = env.binding.load_allowlist(RELEASE)
+
+    def classify(previous: str) -> list[str]:
+        payload = {
+            "status": "ahead",
+            "files": [{"filename": f"release/{RELEASE}/receipts/gate.json", "previous_filename": previous, "status": "renamed"}],
+        }
+        delta = env.observe_release_heads.compare_delta(lambda url: payload, "o/r", "1" * 40, "2" * 40)
+        cls, offending = env.binding.classify_delta(delta["delta_paths"], allowlist)
+        return [f"{cls}:{','.join(offending)}"]
+
+    return classify(f"release/{RELEASE}/receipts/old-gate.json"), classify("scripts/release_gate.py")
+
+
 def dm_evidence_not_durable(env: Env) -> tuple[list[str], list[str]]:
     """A PASS court under durable/v1 citing a scratch path (the tag-time closure's form)."""
     closure = json.loads((env.root / f"release/{RELEASE}/closure.json").read_text(encoding="utf-8"))
@@ -1316,6 +1343,12 @@ DATA_MUTANTS: tuple[DataMutant, ...] = (
         "EVIDENCE_CONTAINER_CLAIMS_SUBJECT",
     ),
     DataMutant("dm_mutable_subject", dm_mutable_subject, "REFUSED:EVIDENCE_SUBJECT_MUTABLE:AC-07", "EVIDENCE_SUBJECT_MUTABLE"),
+    DataMutant(
+        "dm_code_renamed_into_receipts",
+        dm_code_renamed_into_receipts,
+        "UNBOUNDED:scripts/release_gate.py",
+        "EVIDENCE_DELTA_UNBOUNDED",
+    ),
     DataMutant(
         "dm_evidence_not_durable",
         dm_evidence_not_durable,
