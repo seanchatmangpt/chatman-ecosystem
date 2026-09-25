@@ -1,0 +1,33 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.0.3, pluggy-1.6.0 -- /opt/homebrew/opt/python@3.14/bin/python3.14
+rootdir: /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src
+plugins: Faker-40.15.0, anyio-4.13.0
+collecting ... collected 25 items
+
+test/wd_case_study_court_test.py::test_projections_share_one_case_revision PASSED [  4%]
+test/wd_case_study_court_test.py::test_ledger_is_a_subset_of_the_case PASSED [  8%]
+test/wd_case_study_court_test.py::test_deck_is_a_subset_of_the_ledger PASSED [ 12%]
+test/wd_case_study_court_test.py::test_ledger_evidence_is_carried_by_the_rendering_slide PASSED [ 16%]
+test/wd_case_study_court_test.py::test_map_covers_all_fourteen_slides PASSED [ 20%]
+test/wd_case_study_court_test.py::test_every_evidence_path_exists_at_its_exact_subject PASSED [ 24%]
+test/wd_case_study_court_test.py::test_no_unknown_claim_is_rendered_as_supported PASSED [ 28%]
+test/wd_case_study_court_test.py::test_every_non_claim_is_stated_in_the_non_claims_document PASSED [ 32%]
+test/wd_case_study_court_test.py::test_assumptions_are_unanswered_questions_sent_via_the_named_contact PASSED [ 36%]
+test/wd_case_study_court_test.py::test_current_conformance_is_below_the_autonomic_target PASSED [ 40%]
+test/wd_case_study_court_test.py::test_court_admits_the_committed_case PASSED [ 44%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[authority_drift] PASSED [ 48%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[claim_at_st6] PASSED [ 52%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[claim_at_st7] PASSED [ 56%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[claim_rendered_by_undeclared_slide] PASSED [ 60%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[claim_text_autonomic] PASSED [ 64%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[claim_text_mttr] PASSED [ 68%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[claim_without_falsifier] PASSED [ 72%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[current_conformance_st6] PASSED [ 76%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[current_conformance_st7] PASSED [ 80%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[evidence_on_foreign_subject] PASSED [ 84%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[lockOf_block] PASSED [ 88%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[machine_experience_without_receipt] PASSED [ 92%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[requirement_without_standing] PASSED [ 96%]
+test/wd_case_study_court_test.py::test_negative_control_is_refused_by_its_gate[slide_without_claim] PASSED [100%]
+
+============================= 25 passed in 16.68s ==============================

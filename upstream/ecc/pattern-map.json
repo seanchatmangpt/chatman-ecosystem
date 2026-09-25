@@ -1,0 +1,140 @@
+{
+  "schema": "chatman.external-pattern-map.v1",
+  "supplier": "ecc",
+  "supplier_sha": "e482e579415fde18357cafce70f177ae19fd7f03",
+  "entries": [
+    {
+      "id": "ecc.cross-harness-adapters",
+      "source_paths": [
+        "docs/architecture/cross-harness.md",
+        "docs/architecture/harness-adapter-compliance.md"
+      ],
+      "disposition": "VENDOR",
+      "reason": "Harness compatibility is externally maintained commodity infrastructure.",
+      "chatman_target": "SA2A provider adapters",
+      "authority": "NONE",
+      "target_capabilities": [
+        "capability:project-interface-surfaces"
+      ]
+    },
+    {
+      "id": "ecc.agentshield",
+      "source_paths": [
+        "skills/security-scan/SKILL.md",
+        "docs/architecture/agentshield-enterprise-research-roadmap.md"
+      ],
+      "disposition": "VENDOR",
+      "reason": "Retain the maintained scanner and consume its findings as evidence rather than reimplementing its rule corpus.",
+      "chatman_target": "admission evidence / GALL security court",
+      "authority": "OBSERVE",
+      "target_capabilities": [
+        "capability:enforce-authority-ceiling",
+        "capability:audit-vacuity"
+      ]
+    },
+    {
+      "id": "ecc.skills-agents-commands",
+      "source_paths": [
+        "skills/",
+        "agents/",
+        "commands/"
+      ],
+      "disposition": "WRAP",
+      "reason": "Treat reusable upstream behaviors as candidate capabilities; normalize and qualify before ecosystem admission.",
+      "chatman_target": "ggen-marketplace capability packs",
+      "authority": "SELECT_CONSTRUCT_ONLY",
+      "target_capabilities": [
+        "capability:manufacture-with-ggen",
+        "capability:distribute-ggen-pack"
+      ]
+    },
+    {
+      "id": "ecc.continuous-learning-v2",
+      "source_paths": [
+        "skills/continuous-learning-v2/SKILL.md"
+      ],
+      "disposition": "REPLACE",
+      "reason": "Keep observation and candidate extraction; replace confidence-based promotion with provenance, falsification, qualification, generation, and admission.",
+      "chatman_target": "AutoFDE + GymAct + ggen-marketplace",
+      "authority": "OBSERVE",
+      "target_capabilities": [
+        "capability:falsify-candidate-plan",
+        "capability:execute-bounded-domain-gym",
+        "capability:distribute-ggen-pack"
+      ]
+    },
+    {
+      "id": "ecc.autonomous-loops",
+      "source_paths": [
+        "skills/autonomous-loops/SKILL.md"
+      ],
+      "disposition": "REPLACE",
+      "reason": "Retain donor workflow patterns while replacing prompt-selected orchestration with formal planning where the domain admits it.",
+      "chatman_target": "HDDL/FOND + sJira",
+      "authority": "SELECT",
+      "target_capabilities": [
+        "capability:plan-decision-frontier",
+        "capability:admit-capability-plan",
+        "capability:orchestrate-manufacturing-work"
+      ]
+    },
+    {
+      "id": "ecc.verification-loop",
+      "source_paths": [
+        "skills/verification-loop/SKILL.md"
+      ],
+      "disposition": "REPLACE",
+      "reason": "Replace narrative READY state with exact-subject courts, receipts, replay, and typed standing.",
+      "chatman_target": "GALL + affidavit + receipts/replay",
+      "authority": "OBSERVE",
+      "target_capabilities": [
+        "capability:observe-exact-head-workflows",
+        "capability:attest-affidavit-standing"
+      ]
+    },
+    {
+      "id": "ecc.unified-memory",
+      "source_paths": [
+        "skills/unified-memory/SKILL.md"
+      ],
+      "disposition": "WRAP",
+      "reason": "Preserve portable handoff UX while binding recalled state to provenance and preventing memory from granting authority.",
+      "chatman_target": "provenance-bound observation graph",
+      "authority": "OBSERVE",
+      "target_capabilities": [
+        "capability:persist-autofde-runtime",
+        "capability:attest-affidavit-standing"
+      ]
+    },
+    {
+      "id": "ecc.hooks-runtime",
+      "source_paths": [
+        "hooks/",
+        "scripts/hooks/"
+      ],
+      "disposition": "WRAP",
+      "reason": "Hooks remain deterministic observation/interception surfaces; consequential mutation routes through BRCE.",
+      "chatman_target": "OCEL observation + BRCE intent boundary",
+      "authority": "OBSERVE_SELECT",
+      "target_capabilities": [
+        "capability:enforce-authority-ceiling",
+        "capability:broker-consequential-do"
+      ]
+    },
+    {
+      "id": "ecc.native-workflows",
+      "source_paths": [
+        "workflows/"
+      ],
+      "disposition": "REPLACE",
+      "reason": "Retain ECC's deterministic multi-agent workflow and review/verify barrier patterns while replacing harness-specific agent orchestration with admitted SA2A/planner/GALL machinery where applicable.",
+      "chatman_target": "SA2A + formal planning + GALL workflow realization",
+      "authority": "SELECT_CONSTRUCT_ONLY",
+      "target_capabilities": [
+        "capability:plan-decision-frontier",
+        "capability:orchestrate-manufacturing-work",
+        "capability:observe-exact-head-workflows"
+      ]
+    }
+  ]
+}

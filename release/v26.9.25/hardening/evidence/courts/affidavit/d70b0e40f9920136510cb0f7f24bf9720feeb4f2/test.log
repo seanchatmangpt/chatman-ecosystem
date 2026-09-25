@@ -1,0 +1,1943 @@
+   Compiling affidavit v26.6.22 (/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/crown-final/aff-d70b/tree)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.58s
+     Running unittests src/lib.rs (target/debug/build/affidavit/f6094885b0822f4b/out/affidavit-f6094885b0822f4b)
+
+running 328 tests
+test chain::tests::chain_empty_equals_genesis ... ok
+test diag::tests::all_error_codes_have_message ... ok
+test diag::tests::diag_new_sets_code_and_message ... ok
+test diag::tests::diag_from_error_attaches_generic_hint ... ok
+test diag::tests::diag_with_hint_chains ... ok
+test diag::tests::diag_with_span_chains ... ok
+test diag::tests::error_code_discriminants_are_stable ... ok
+test diag::tests::exit_code_catalog_values ... ok
+test diag::tests::exit_codes_are_correct ... ok
+test diag::tests::diag_is_serializable ... ok
+test chain::tests::from_events_reconstructs_running_hash ... ok
+test chain::tests::chain_order_matters ... ok
+test chain::tests::chain_is_deterministic ... ok
+test chain::tests::content_address_is_stable ... ok
+test chain::tests::chain_tamper_changes_hash ... ok
+test chain::tests::chain_append_matches_recompute ... ok
+test admission::tests::forged_receipt_cannot_be_admitted ... ok
+test admission::tests::honest_receipt_is_admitted ... ok
+test admission::tests::empty_object_links_refused_by_ocel_court ... ok
+test chain::tests::receipt_round_trips ... ok
+test errc::tests::duplicate_claim_id_is_typed ... ok
+test errc::tests::duplicate_factor_coordinate_is_refused ... ok
+test ecosystem::tests::zero_quorum_is_refused_instead_of_becoming_vacuous_success ... ok
+test errc::tests::certification_canonicalizes_claim_set_order ... ok
+test ecosystem::tests::duplicate_exact_member_is_typed_refusal ... ok
+test errc::tests::all_four_disjoint_relations_certify ... ok
+test errc::tests::preservation_fence_is_mandatory ... ok
+test errc::tests::eliminate_must_reach_zero ... ok
+test ecosystem::tests::missing_required_role_is_partial_topology_not_global_failure ... ok
+test errc::tests::raise_requires_an_existing_factor ... ok
+test errc::tests::reduce_must_remain_present ... ok
+test errc::tests::source_lineage_is_exact ... ok
+test ecosystem::tests::optional_build_broken_edge_does_not_collapse_satisfied_crown ... ok
+test ecosystem::tests::required_alive_roles_crown_the_exact_federation ... ok
+test ecosystem::tests::input_order_does_not_change_federation_identity ... ok
+test errc::tests::tampered_serialized_receipt_is_rejected ... ok
+test errc_claim_assurance::tests::missing_witness_is_refused ... ok
+test errc_claim_assurance::tests::ggen_claims_register_lineage_is_exact ... ok
+test errc_claim_assurance::tests::exclusions_are_mandatory ... ok
+test errc_claim_assurance::tests::exact_one_to_one_claim_witness_bijection_certifies ... ok
+test gall::tests::all_twelve_pass_issues_alive_receipt ... ok
+test errc_claim_assurance::tests::unexpected_witness_is_refused ... ok
+test gall::tests::moved_composition_subject_is_refused ... ok
+test gall::tests::missing_required_falsifier_is_refused ... ok
+test errc_claim_assurance::tests::tampered_serialized_assurance_is_rejected ... ok
+test gall::tests::vacuous_pass_is_refused ... ok
+test errc_claim_assurance::tests::assurance_is_bound_to_the_exact_parent_receipt ... ok
+test handlers::ocel_quality_tests::test_affected_objects_mapping ... ok
+test handlers::ocel_quality_tests::test_emit_ocel_quality_measurement_format ... ok
+test handlers::ocel_quality_tests::test_causal_chain_event_structure ... ok
+test handlers::ocel_quality_tests::test_ocel_violation_payload_structure ... ok
+test handlers::ocel_quality_tests::test_quality_event_type_convention ... ok
+test ecosystem::tests::tampered_serialized_federation_is_rejected ... ok
+test errc_claim_assurance::tests::canonicalization_makes_input_order_irrelevant ... ok
+test handlers::ocel_quality_tests::test_remediate_payload_includes_causal_chain ... ok
+test handlers::ocel_quality_tests::test_violation_rules_map_to_severity ... ok
+test ocel::tests::build_event_yields_stable_commitment_for_fixed_bytes ... ok
+test ocel::tests::parse_object_ref_handles_qualifier_and_errors ... ok
+test ocel::tests::seq_counter_is_monotonic_and_deterministic ... ok
+test gall::tests::open_gate_11_caps_standing_at_partial_alive ... ok
+test ocel::tests::validation_catches_empty_event_type ... ok
+test ocel::tests::validation_catches_empty_object_fields ... ok
+test output::tests::data_human_uses_display ... ok
+test output::tests::data_json_emits_pretty_json ... ok
+test output::tests::diag_suppressed_when_quiet ... ok
+test output::tests::diag_writes_code_and_message_to_stderr ... ok
+test output::tests::diag_writes_hint_when_present ... ok
+test output::tests::diag_writes_nothing_to_stdout ... ok
+test output::tests::format_default_is_human ... ok
+test output::tests::format_from_str_falls_back_to_human ... ok
+test output::tests::format_from_str_parses_known_values ... ok
+test output::tests::info_only_emits_when_verbose ... ok
+test output::tests::info_suppressed_when_quiet_and_verbose ... ok
+test output::tests::json_writes_to_stdout ... ok
+test output::tests::no_color_sets_color_false ... ok
+test output::tests::warn_suppressed_when_quiet ... ok
+test output::tests::warn_writes_to_stderr ... ok
+test quality::tests::test_analyzer_with_large_baseline_mean ... ok
+test quality::tests::test_analyzer_with_negative_mean_and_values ... ok
+test quality::tests::test_analyzer_with_zero_stddev_no_violations ... ok
+test quality::tests::test_baseline_bootstrap_control_limits ... ok
+test quality::tests::test_baseline_bootstrap_mean_calculation ... ok
+test quality::tests::test_baseline_bootstrap_fills_window_gradually ... ok
+test quality::tests::test_baseline_bootstrap_stddev_calculation ... ok
+test quality::tests::test_code_quality_metrics_default_values ... ok
+test quality::tests::test_baseline_bootstrap_window_size_respected ... ok
+test quality::tests::test_multiple_violations_accumulate ... ok
+test quality::tests::test_quality_violation_severity_accessors ... ok
+test quality::tests::test_rule_15_in_row_breaks_with_outlier ... ok
+test quality::tests::test_rule_15_in_row_with_14_measurements ... ok
+test quality::tests::test_rule_15_in_row_within_1_sigma ... ok
+test quality::tests::test_rule_1_sigma ... ok
+test quality::tests::test_rule_2_of_3_all_three_beyond_2_sigma ... ok
+test quality::tests::test_rule_2_of_3_beyond_2_sigma ... ok
+test quality::tests::test_rule_2_of_3_only_one_beyond_threshold ... ok
+test quality::tests::test_rule_4_of_5_all_five_beyond_1_sigma ... ok
+test quality::tests::test_rule_4_of_5_beyond_1_sigma ... ok
+test quality::tests::test_rule_4_of_5_only_three_beyond_threshold ... ok
+test quality::tests::test_rule_9_in_a_row ... ok
+test quality::tests::test_rule_alternating ... ok
+test quality::tests::test_rule_trend ... ok
+test quality::tests::test_violation_description_contains_metric_name ... ok
+test quality::tests::test_violation_metric_accessor_all_types ... ok
+test quality_correlation::tests::test_amplify_severity_caps_at_10 ... ok
+test quality_correlation::tests::test_amplify_severity_no_violations ... ok
+test fixture_db::tests::test_fixture_db_basic_ops ... ok
+test quality_correlation::tests::test_amplify_severity_single_violation ... ok
+test quality_correlation::tests::test_amplify_severity_with_correlated_violations ... ok
+test quality_correlation::tests::test_analyze_correlations_full_workflow ... ok
+test quality_correlation::tests::test_compute_metric_correlations_multiple_history ... ok
+test quality_correlation::tests::test_compute_metric_correlations_single_history ... ok
+test quality_correlation::tests::test_correlation_direction ... ok
+test quality_correlation::tests::test_correlation_significance ... ok
+test quality_correlation::tests::test_correlation_strength_interpretation ... ok
+test quality_correlation::tests::test_detect_simultaneous_violations_empty ... ok
+test quality_correlation::tests::test_detect_simultaneous_violations_multiple ... ok
+test quality_correlation::tests::test_detect_simultaneous_violations_single ... ok
+test quality_correlation::tests::test_infer_root_cause_insufficient_history ... ok
+test quality_correlation::tests::test_infer_root_cause_with_correlation ... ok
+test quality_correlation::tests::test_pearson_insufficient_data ... ok
+test quality_correlation::tests::test_pearson_no_correlation ... ok
+test quality_correlation::tests::test_pearson_perfect_negative_correlation ... ok
+test quality_correlation::tests::test_pearson_perfect_positive_correlation ... ok
+test quality_correlation::tests::test_root_cause_actionability ... ok
+test quality_correlation::tests::test_simultaneous_violation_creation ... ok
+test quality_correlation::tests::test_simultaneous_violation_is_compound ... ok
+test quality_correlation::tests::test_simultaneous_violation_max_severity ... ok
+test quality_extended::tests::test_aggregated_severity_empty ... ok
+test quality_extended::tests::test_aggregated_severity_mixed ... ok
+test quality_extended::tests::test_config_default ... ok
+test quality_extended::tests::test_config_with_custom_threshold ... ok
+test quality_extended::tests::test_config_with_sigmas ... ok
+test quality_extended::tests::test_detect_rule_storm_2_rules ... ok
+test quality_extended::tests::test_detect_rule_storm_3_rules ... ok
+test quality_extended::tests::test_enhanced_analyzer_finalize ... ok
+test quality_extended::tests::test_rule1_sigma_at_1 ... ok
+test quality_extended::tests::test_rule1_sigma_at_2 ... ok
+test quality_extended::tests::test_rule1_sigma_at_3 ... ok
+test quality_extended::tests::test_rule1_sigma_at_custom ... ok
+test quality_extended::tests::test_rule3_trend_window_6 ... ok
+test quality_extended::tests::test_rule6_3_of_5_beyond_1_sigma ... ok
+test quality_extended::tests::test_rule3_trend_window_9 ... ok
+test quality_extended::tests::test_rule5_2_of_3_beyond_1_sigma ... ok
+test quality_extended::tests::test_rule5_2_of_3_beyond_2_sigma ... ok
+test quality_extended::tests::test_rule5_3_of_3_beyond_2_sigma ... ok
+test quality_extended::tests::test_rule6_4_of_5_beyond_1_sigma ... ok
+test quality_extended::tests::test_rule2_window_6 ... ok
+test quality_extended::tests::test_rule4_alternating ... ok
+test quality_extended::tests::test_rule7_10_in_row_within_1_sigma ... ok
+test quality_extended::tests::test_rule7_15_in_row_within_1_sigma ... ok
+test quality_extended::tests::test_rule7_20_in_row_within_1_sigma ... ok
+test quality_extended::tests::test_rule6_5_of_5_beyond_1_sigma ... ok
+test quality_extended::tests::test_rule_storm_summary ... ok
+test quality_extended::tests::test_rule_variant_descriptions ... ok
+test quality_extended::tests::test_rule_variant_metric_extraction ... ok
+test quality_extended::tests::test_rule_variant_severity_levels ... ok
+test quality_object_level::tests::test_aggregate_module_metrics_multiple_files ... ok
+test quality_object_level::tests::test_aggregate_module_metrics_single_file ... ok
+test quality_object_level::tests::test_aggregate_module_stddev_calculation ... ok
+test quality_object_level::tests::test_api_breaking_change_violation ... ok
+test quality_extended::tests::test_rule2_window_9 ... ok
+test quality_object_level::tests::test_compute_package_health_from_modules ... ok
+test quality_object_level::tests::test_dependency_violation ... ok
+test quality_object_level::tests::test_detect_high_complexity_violation ... ok
+test quality_object_level::tests::test_detect_high_stub_ratio_violation ... ok
+test quality_object_level::tests::test_detect_low_doc_coverage_violation ... ok
+test quality_extended::tests::test_rule3_trend_window_15 ... ok
+test quality_object_level::tests::test_detect_low_type_coverage_violation ... ok
+test quality_object_level::tests::test_file_quality_metrics_maintainability_index ... ok
+test quality_extended::tests::test_rule2_window_15 ... ok
+test quality_object_level::tests::test_object_violation_severity_and_description ... ok
+test quality_object_level::tests::test_package_health_score_new ... ok
+test quality_object_level::tests::test_package_health_score_update ... ok
+test quality_ocel::tests::test_build_causal_chain_rejects_missing_measurement ... ok
+test quality_extended::tests::test_rule3_trend_window_20 ... ok
+test quality_ocel::tests::test_build_causal_chain_rejects_non_violation_event ... ok
+test quality_ocel::tests::test_build_causal_chain_traces_violation_to_measurement ... ok
+test quality_ocel::tests::test_correlate_violations_across_objects ... ok
+test quality_ocel::tests::test_correlate_violations_groups_by_metric_and_severity ... ok
+test quality_extended::tests::test_rule2_window_20 ... ok
+test quality_ocel::tests::test_measure_to_ocel_event_rejects_empty_event_id ... ok
+test quality_ocel::tests::test_measure_to_ocel_event_creates_valid_event ... ok
+test quality_ocel::tests::test_measure_to_ocel_event_rejects_no_objects ... ok
+test quality_ocel::tests::test_object_quality_record_from_metrics ... ok
+test quality_ocel::tests::test_measure_to_ocel_event_commitment_is_deterministic ... ok
+test quality_ocel::tests::test_ocel_quality_log_add_event ... ok
+test quality_ocel::tests::test_violation_to_ocel_event_creates_valid_event ... ok
+test quality_ocel::tests::test_ocel_quality_log_violations_helper ... ok
+test quality_ocel::tests::test_ocel_quality_log_events_by_type ... ok
+test quality_ocel::tests::test_violation_to_ocel_event_preserves_severity ... ok
+test registry::tests::all_entries_have_non_empty_fields ... ok
+test quality_ocel::tests::test_violation_to_ocel_event_rejects_empty_triggering_id ... ok
+test registry::tests::all_groups_have_at_least_one_entry ... ok
+test registry::tests::by_group_returns_correct_group ... ok
+test registry::tests::did_you_mean_returns_suggestions ... ok
+test registry::tests::lookup_core_verbs ... ok
+test registry::tests::lookup_missing_returns_none ... ok
+test registry::tests::did_you_mean_max_five_results ... ok
+test registry::tests::registry_entry_count_matches_constant ... ok
+test quality_extended::tests::test_rule2_window_30 ... ok
+test sbom::tests::component_type_parse_is_total ... ok
+test registry::tests::search_finds_verify_for_certify ... ok
+test sbom::tests::hash_normalizes_algorithm_and_casing ... ok
+test sbom::tests::iso8601_parses_known_epoch ... ok
+test sbom::tests::detects_cyclonedx_and_spdx ... ok
+test sbom::tests::auto_parse_dispatches_by_format ... ok
+test sbom::tests::ntia_flags_missing_elements ... ok
+test sbom::tests::license_labels_aggregate_distinct ... ok
+test sbom::tests::parses_cyclonedx_components_and_deps ... ok
+test sbom::tests::parses_spdx_packages_and_relationships ... ok
+test sbom::tests::content_address_is_format_independent_and_deterministic ... ok
+test sbom::tests::ntia_minimum_elements_conformant_sbom ... ok
+test sbom_compliance::tests::assess_all_errors_on_empty_sbom ... ok
+test sbom::tests::transitive_dependencies_walks_the_graph ... ok
+test sbom_compliance::tests::assess_all_runs_every_framework_in_order ... ok
+test sbom_compliance::tests::cisa_recommended_passes_at_full_coverage ... ok
+test sbom_compliance::tests::assess_all_is_deterministic ... ok
+test sbom_compliance::tests::cscrm_fails_below_supplier_threshold ... ok
+test sbom_compliance::tests::cisa_reports_coverage_ratios ... ok
+test sbom_compliance::tests::cscrm_passes_with_full_supplier_coverage ... ok
+test sbom_compliance::tests::eo_14028_fails_without_tools ... ok
+test sbom_compliance::tests::eo_14028_passes_on_full_sbom ... ok
+test sbom_compliance::tests::framework_tags_are_stable_and_distinct ... ok
+test sbom_compliance::tests::in_toto_fails_without_primary_component ... ok
+test sbom_compliance::tests::in_toto_passes_with_tools_primary_and_deps ... ok
+test sbom_compliance::tests::iso_and_soc2_pass_on_full_sbom ... ok
+test sbom_compliance::tests::iso_fails_without_author ... ok
+test sbom_compliance::tests::ntia_errors_on_empty_sbom ... ok
+test sbom_compliance::tests::ntia_fails_when_versions_missing ... ok
+test sbom_artifacts::tests::test_artifact_guard ... ok
+test sbom_artifacts::tests::test_bundle_creation ... ok
+test sbom_compliance::tests::ntia_passes_on_full_sbom ... ok
+test sbom_artifacts::tests::test_sensitive_redaction ... ok
+test sbom_compliance::tests::score_is_satisfied_fraction ... ok
+test sbom_compliance::tests::score_is_zero_for_no_requirements ... ok
+test sbom_artifacts::tests::test_bundle_serialization ... ok
+test sbom_compliance::tests::slsa_drops_to_l1_without_serial ... ok
+test sbom_compliance::tests::slsa_is_l0_without_tools ... ok
+test sbom_compliance::tests::slsa_l2_sbom_is_exactly_l2_not_l3 ... ok
+test sbom_compliance::tests::slsa_l3_without_deps_is_not_l4 ... ok
+test sbom_compliance::tests::slsa_reaches_l4_on_full_sbom ... ok
+test sbom_compliance::tests::supported_frameworks_match_enum_tags ... ok
+test sbom_compliance::tests::vex_readiness_fails_below_threshold ... ok
+test sbom_compliance::tests::vex_readiness_passes_at_full_identifier_coverage ... ok
+test sbom_ocel::tests::catalogue_event_includes_license_and_supplier_objects ... ok
+test sbom_ocel::tests::causal_chain_rejects_unknown_root ... ok
+test sbom_ocel::tests::causal_chain_links_document_component_and_deps ... ok
+test sbom_ocel::tests::empty_document_is_rejected ... ok
+test sbom_ocel::tests::dependency_event_uses_depends_on_qualifier ... ok
+test sbom_ocel::tests::component_object_carries_typed_tag ... ok
+test sbom_ocel::tests::commitments_are_deterministic_across_runs ... ok
+test sbom_ocel::tests::supported_event_types_is_non_empty_and_well_formed ... ok
+test sbom_ocel::tests::causal_chain_transitive_count_matches ... ok
+test sbom_ocel::tests::license_correlation_groups_shared_licenses ... ok
+test sbom_ocel::tests::import_event_commits_to_format_payload ... ok
+test sbom_ocel::tests::license_correlation_is_deterministically_ordered ... ok
+test sbom_ocel::tests::object_type_helpers_format_tags ... ok
+test sbom_ocel::tests::import_event_references_document_and_primary ... ok
+test sbom_ocel::tests::projection_event_count_matches_taxonomy ... ok
+test sbom_ocel::tests::projection_event_ordering_is_deterministic ... ok
+test sbom_supply_chain::tests::blast_radius_of_leaf_includes_all_ancestors ... ok
+test sbom_supply_chain::tests::attest_provenance_address_is_deterministic ... ok
+test sbom_supply_chain::tests::acyclic_graphs_report_no_cycle ... ok
+test sbom_supply_chain::tests::cycle_detection_finds_a_b_a ... ok
+test sbom_supply_chain::tests::attest_provenance_normalizes_blank_receipt_and_missing_fields ... ok
+test sbom_supply_chain::tests::blast_radius_rejects_unknown_component ... ok
+test sbom_supply_chain::tests::depth_terminates_on_cycle ... ok
+test sbom_supply_chain::tests::depth_counts_longest_path_in_edges ... ok
+test sbom_supply_chain::tests::direct_dependents_walk_reverse_edges ... ok
+test sbom_supply_chain::tests::attest_provenance_carries_address_builder_supplier ... ok
+test sbom_supply_chain::tests::direct_dependencies_are_sorted ... ok
+test sbom_supply_chain::tests::graph_builds_nodes_and_edges ... ok
+test sbom_supply_chain::tests::report_summarizes_diamond ... ok
+test sbom_supply_chain::tests::report_flags_cyclic_graph ... ok
+test sbom_supply_chain::tests::supplier_concentration_empty_sbom_is_empty ... ok
+test sbom_supply_chain::tests::spof_detection_respects_threshold_and_order ... ok
+test sbom_supply_chain::tests::supplier_concentration_buckets_unknown ... ok
+test sbom_supply_chain::tests::supplier_concentration_groups_and_orders ... ok
+test sbom_supply_chain::tests::transitive_dependencies_reach_the_leaf ... ok
+test sbom_supply_chain::tests::transitive_dependents_handles_cycle ... ok
+test sbom_supply_chain::tests::transitive_dependents_is_blast_radius ... ok
+test sbom_vulnerability::tests::cvss_band_free_function_matches_enum ... ok
+test sbom_vulnerability::tests::cvss_banding_at_boundaries ... ok
+test sbom_vulnerability::tests::cvss_validate_accepts_in_range ... ok
+test sbom_vulnerability::tests::cvss_validate_rejects_out_of_range ... ok
+test sbom_vulnerability::tests::cvss_vector_severity_and_clamping ... ok
+test sbom_vulnerability::tests::matches_are_sorted_deterministically ... ok
+test sbom_vulnerability::tests::matches_by_exact_cpe_when_no_purl ... ok
+test sbom_vulnerability::tests::matches_by_exact_purl ... ok
+test sbom_vulnerability::tests::matches_by_name_substring_fallback ... ok
+test sbom_vulnerability::tests::no_match_yields_empty ... ok
+test sbom_vulnerability::tests::purl_match_takes_priority_over_name ... ok
+test sbom_vulnerability::tests::report_aggregates_counts_and_max_severity ... ok
+test sbom_vulnerability::tests::report_empty_sbom_and_vulns ... ok
+test sbom_vulnerability::tests::report_reflects_vex_suppression_in_exploitable_count ... ok
+test sbom_vulnerability::tests::risk_propagates_through_three_level_chain ... ok
+test sbom_vulnerability::tests::risk_does_not_propagate_to_unrelated_components ... ok
+test sbom_vulnerability::tests::risk_propagation_empty_when_no_matches ... ok
+test sbom_vulnerability::tests::severity_ordering_is_monotonic ... ok
+test sbom_vulnerability::tests::risk_propagation_is_sorted_and_deduplicated ... ok
+test sbom_vulnerability::tests::unknown_component_error_displays ... ok
+test sbom_vulnerability::tests::vex_affected_and_under_investigation_kept ... ok
+test sbom_vulnerability::tests::vex_fixed_suppresses_match ... ok
+test sbom_vulnerability::tests::vex_not_affected_suppresses_match ... ok
+test sbom_vulnerability::tests::vex_only_suppresses_matching_pair ... ok
+test sbom_vulnerability::tests::vex_status_tags_and_suppression ... ok
+test standing::tests::alive_without_execution_is_refused_by_name ... ok
+test standing::tests::alive_requires_execution_verification_and_replay ... ok
+test tracing::tests::no_span_recorded_without_a_traced_operation ... ok
+test tracing::tests::trace_verify_emits_an_observable_span ... ok
+test standing::tests::unbounded_authority_is_refused_before_certification ... ok
+test standing::tests::deserialization_rejects_tampered_subject ... ok
+test standing::tests::same_admitted_inputs_produce_same_receipt_hash ... ok
+test types::tests::deserialize_accepts_honest_receipt ... ok
+test standing::tests::failed_verifier_cannot_crown_alive ... ok
+test types::tests::deserialize_rejects_forged_receipt ... ok
+test verifier::tests::verif_flipped_commitment_breaks_chain_integrity ... ok
+test standing::tests::previous_receipt_changes_receipt_identity ... ok
+test verifier::tests::verif_duplicate_id_fails_continuity ... ok
+test verifier::tests::verif_pure_deterministic ... ok
+test verifier::tests::verif_seq_gap_fails_continuity ... ok
+test verifier::tests::verif_valid_receipt_accepts ... ok
+test verifier::tests::verif_wrong_format_fails_check_format ... ok
+test quality_object_level::tests::test_measure_file_quality_basic ... ok
+test quality_object_level::tests::test_measure_file_quality_doc_coverage ... ok
+test quality_object_level::tests::test_measure_file_quality_type_coverage ... ok
+test quality_object_level::tests::test_measure_file_quality_with_complex_function ... ok
+test quality::tests::test_measure_code_quality_with_stubs ... ok
+
+test result: ok. 328 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running unittests src/bin/affi.rs (target/debug/build/affidavit/76c5cc7a23d6edeb/out/affi-76c5cc7a23d6edeb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/adversarial.rs (target/debug/build/affidavit/0b5c23665a8154a7/out/adversarial-0b5c23665a8154a7)
+
+running 6 tests
+test golden_honest_receipt_accepts ... ok
+test tamper_inject_rejects_at_chain_integrity ... ok
+test wrong_version_rejects_at_check_format ... ok
+test tamper_reorder_rejects ... ok
+test tamper_commitment_rejects_at_chain_integrity ... ok
+test determinism_identical_verdict_bytes ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/brce_ledger.rs (target/debug/build/affidavit/b15ffb3502f48fd8/out/brce_ledger-b15ffb3502f48fd8)
+
+running 12 tests
+test crash_before_consequence_reconciles_to_no_effect ... ok
+test unadmitted_work_has_distinct_terminal_states ... ok
+test do_without_valid_authority_is_refused_with_zero_consequence ... ok
+test crash_between_actuator_and_done_record_reconciles_from_construct ... ok
+test persisted_ledger_tamper_is_refused_after_reload ... ok
+test idempotent_retry_executes_without_change ... ok
+test every_rule_has_a_killed_refusing_mutant ... ok
+test lawful_actuation_is_receipted_and_admitted ... ok
+test unobservable_crash_window_stays_refused ... ok
+test single_use_grant_and_non_idempotent_retry_are_at_most_once ... ok
+test crash_after_do_before_receipt_reconciles_to_receipt ... ok
+test replay_is_consequence_free_and_digest_equal ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+
+     Running tests/catalog_tests.rs (target/debug/build/affidavit/494ea4d2be6992b8/out/catalog_tests-494ea4d2be6992b8)
+
+running 10 tests
+test unit_tests::test_filter_fixtures_all_none_returns_all ... ok
+test unit_tests::test_filter_fixtures_by_events_exact ... ok
+test unit_tests::test_filter_fixtures_no_results ... ok
+test unit_tests::test_filter_fixtures_by_name_case_insensitive ... ok
+test e2e_catalog_help_mentions_filter_flags ... ok
+test e2e_catalog_filter_by_events ... ok
+test e2e_catalog_path_is_inspectable ... ok
+test e2e_catalog_lists_available_fixtures ... ok
+test e2e_catalog_filter_no_match_exits_zero ... ok
+test e2e_catalog_filter_by_name ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.57s
+
+     Running tests/chicago_tdd_witness.rs (target/debug/build/affidavit/5dc2afa2503e5fc2/out/chicago_tdd_witness-5dc2afa2503e5fc2)
+
+running 2 tests
+test chicago_tdd_asserts_forged_receipt_is_refused ... ok
+test chicago_tdd_asserts_honest_receipt_is_admitted ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/cli_dispatch.rs (target/debug/build/affidavit/95999a2bb19c125a/out/cli_dispatch-95999a2bb19c125a)
+
+running 6 tests
+test dispatch_emit_first ... ok
+test dispatch_emit_second ... ok
+test dispatch_assemble ... ok
+test dispatch_verify_tampered_reject ... ok
+test dispatch_show_is_not_verify ... ok
+test dispatch_verify_honest_accept ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/clnrm_witness.rs (target/debug/build/affidavit/28693a654d06d4a5/out/clnrm_witness-28693a654d06d4a5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/court_law_witness.rs (target/debug/build/affidavit/8bb79c883cb1be70/out/court_law_witness-8bb79c883cb1be70)
+
+running 45 tests
+test bpmn_court_refuses_empty_process ... ok
+test bpmn_court_refuses_dangling_edge ... ok
+test bpmn_court_refuses_missing_end_event ... ok
+test bpmn_court_refuses_duplicate_node_id ... ok
+test bpmn_court_admits_well_formed_process ... ok
+test bpmn_court_admits_lane_with_declared_nodes ... ok
+test bpmn_court_refuses_lane_node_not_declared ... ok
+test bpmn_court_refuses_missing_start_event ... ok
+test court_admits_a_well_formed_log ... ok
+test court_refuses_empty_event_object_links_by_name ... ok
+test court_refuses_dangling_event_object_link_by_name ... ok
+test declare_court_admits_well_formed_constraint ... ok
+test declare_court_refuses_empty_object_scope ... ok
+test declare_court_refuses_invalid_template_arity ... ok
+test declare_court_refuses_missing_activation ... ok
+test declare_court_refuses_missing_target ... ok
+test declare_court_refuses_synchronization_violation ... ok
+test dfg_court_admits_a_well_formed_graph ... ok
+test dfg_court_refuses_dangling_edge_by_name ... ok
+test dfg_court_refuses_empty_graph_by_name ... ok
+test eventlog_court_admits_monotonic_trace ... ok
+test eventlog_court_refuses_empty_trace ... ok
+test eventlog_court_refuses_non_monotonic_trace ... ok
+test interop_court_admits_grounded_flat_artifact ... ok
+test interop_court_refuses_dimension_shape_mismatch ... ok
+test interop_court_refuses_flat_claim_over_object_centric ... ok
+test interop_court_refuses_ungrounded_artifact ... ok
+test petri_court_admits_net_with_final_marking ... ok
+test petri_court_refuses_missing_final_marking ... ok
+test petrinet_court_refuses_empty_net ... ok
+test powl_court_admits_well_formed_choice ... ok
+test powl_court_refuses_invalid_choice_arity ... ok
+test process_tree_court_admits_well_formed_sequence ... ok
+test process_tree_court_refuses_below_minimum_arity ... ok
+test process_tree_court_refuses_cycle_detected ... ok
+test process_tree_court_refuses_dangling_node_reference ... ok
+test process_tree_court_refuses_loop_invalid_arity ... ok
+test process_tree_court_refuses_missing_root ... ok
+test process_tree_court_refuses_tau_leaf_with_children ... ok
+test receipt_court_admits_well_shaped_chain ... ok
+test receipt_court_refuses_empty_chain ... ok
+test receipt_court_refuses_missing_digest ... ok
+test receipt_court_refuses_missing_replay_hint ... ok
+test receipt_court_refuses_missing_subject ... ok
+test receipt_court_refuses_missing_witness ... ok
+
+test result: ok. 45 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/dx_full_pipeline_e2e.rs (target/debug/build/affidavit/dd1eff17d74dec93/out/dx_full_pipeline_e2e-dd1eff17d74dec93)
+
+running 1 test
+test full_dx_pipeline_through_the_binary ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/dx_introspect_e2e.rs (target/debug/build/affidavit/3112ff2d4af7d642/out/dx_introspect_e2e-3112ff2d4af7d642)
+
+running 1 test
+test introspect_emits_valid_schema_for_all_verbs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/dx_verbs_e2e.rs (target/debug/build/affidavit/4fc04148cb03fa54/out/dx_verbs_e2e-4fc04148cb03fa54)
+
+running 7 tests
+test graph_verb_discovers_directly_follows_graph ... ok
+test stats_verb_aggregates_all_surfaces ... ok
+test diagnose_verb_reports_clean_for_honest_receipt ... ok
+test inspect_verb_reports_event_distribution ... ok
+test model_verb_discovers_a_process_model ... ok
+test conformance_verb_reports_fitness_and_metrics ... ok
+test replay_verb_shows_steps_in_seq_order ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/e2e.rs (target/debug/build/affidavit/ea1443ee94fe3683/out/e2e-ea1443ee94fe3683)
+
+running 5 tests
+test e2e_objectless_receipt_rejected_by_ocel_court ... ok
+test e2e_qualified_objects ... ok
+test e2e_tamper_detection ... ok
+test e2e_stdin_payload ... ok
+test e2e_complete_lifecycle_honest ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/ghost_variant_findings.rs (target/debug/build/affidavit/6adbf563e6916cce/out/ghost_variant_findings-6adbf563e6916cce)
+
+running 2 tests
+test conformance_refusal_variants_are_values_but_not_laws ... ok
+test prediction_refusal_variants_are_values_but_not_laws ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/global_e2e_maximalist.rs (target/debug/build/affidavit/c0403fcef0b752d0/out/global_e2e_maximalist-c0403fcef0b752d0)
+
+running 5 tests
+test suite_6_cli::shell_presence_witness ... ok
+test suite_5_observability::observability_maximalist_witness ... ok
+test suite_4_mutation::mutation_maximalist_witness ... ok
+test suite_6_cli::cli_ergonomics_maximalist_witness ... ok
+test suite_2_discovery::discovery_maximalist_witness ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/maximalist_tracing.rs (target/debug/build/affidavit/c67770e2cdb2b2fb/out/maximalist_tracing-c67770e2cdb2b2fb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/ocel_quality_integration.rs (target/debug/build/affidavit/07867a095e93acc0/out/ocel_quality_integration-07867a095e93acc0)
+
+running 5 tests
+test test_violation_causality_chain ... ok
+test test_quality_measurement_event_structure ... ok
+test test_receipt_determinism_across_rebuilds ... ok
+test test_measurement_with_escalating_violations ... ok
+test e2e_ocel_quality_integration_full_lifecycle ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/otel_all_spans.rs (target/debug/build/affidavit/dd3570969e8441f9/out/otel_all_spans-dd3570969e8441f9)
+
+running 2 tests
+test span_wrappers_return_the_inner_result ... ok
+test all_four_operation_wrappers_emit_named_spans ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/otel_weaver_registry.rs (target/debug/build/affidavit/9d2cf664787418a1/out/otel_weaver_registry-9d2cf664787418a1)
+
+running 1 test
+test weaver_semconv_registry_is_closed_and_coherent ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running tests/otel_witness.rs (target/debug/build/affidavit/584f3a19782d3b0e/out/otel_witness-584f3a19782d3b0e)
+
+running 1 test
+test verify_emits_an_observable_span ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/property_based.rs (target/debug/build/affidavit/6f7b53d34eaaadd8/out/property_based-6f7b53d34eaaadd8)
+
+running 8 tests
+test prop_decidability_valid_receipts_always_accepted ... ok
+test prop_tamper_detection_event_type_mutation_breaks_chain ... ok
+test prop_format_version_enforcement ... ok
+test prop_tamper_detection_commitment_flip_breaks_chain ... ok
+test prop_empty_event_type_rejected ... ok
+test prop_duplicate_ids_are_rejected ... ok
+test prop_verdict_determinism ... ok
+test prop_continuity_gap_is_rejected ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/quality_monitor.rs (target/debug/build/affidavit/f8a118cc9f93fe6b/out/quality_monitor-f8a118cc9f93fe6b)
+
+running 33 tests
+test test_analyzer_with_large_values ... ok
+test test_baseline_bootstrap_control_limits_computation ... ok
+test test_analyzer_with_zero_stddev ... ok
+test test_baseline_bootstrap_calculates_mean_and_stddev ... ok
+test test_analyzer_with_negative_values ... ok
+test test_measure_code_quality_nonexistent_path ... ok
+test test_quality_violation_metric_accessor ... ok
+test test_quality_violation_description_formatting ... ok
+test test_rule_15_in_row_severity_info ... ok
+test test_multiple_rules_triggered_simultaneously ... ok
+test test_rule_15_in_row_within_1_sigma ... ok
+test test_rule_15_in_row_requires_exactly_15 ... ok
+test test_baseline_bootstrap_20_measurements ... ok
+test test_rolling_window_respects_size_limit ... ok
+test test_rule_1_sigma_below_mean ... ok
+test test_rule_1_sigma_detects_spike ... ok
+test test_rule_1_sigma_severity_critical ... ok
+test test_rule_2_of_3_all_three_beyond_2_sigma ... ok
+test test_rule_2_of_3_beyond_2_sigma ... ok
+test test_rule_2_of_3_severity_high ... ok
+test test_rule_4_of_5_all_five_beyond_1_sigma ... ok
+test test_rule_4_of_5_beyond_1_sigma ... ok
+test test_rule_4_of_5_severity_medium ... ok
+test test_rule_9_in_a_row_detects_zombie_code ... ok
+test test_rule_9_in_a_row_requires_exactly_9 ... ok
+test test_rule_9_in_a_row_severity_critical ... ok
+test test_rule_alternating_detects_oscillations ... ok
+test test_rule_alternating_severity_high ... ok
+test test_rule_trend_severity_high ... ok
+test test_violations_accumulate ... ok
+test test_measure_code_quality_empty_directory ... ok
+test test_measure_code_quality_scans_directory ... ok
+test test_measure_code_quality_detects_stubs ... ok
+
+test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/reference_admission_carrier.rs (target/debug/build/affidavit/5c74265c87365d3f/out/reference_admission_carrier-5c74265c87365d3f)
+
+running 2 tests
+test admission_carries_value_and_mints_admitted_evidence ... ok
+test refusal_carries_a_named_reason ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_arc_direction.rs (target/debug/build/affidavit/b22878ca0b429e1b/out/reference_arc_direction-b22878ca0b429e1b)
+
+running 2 tests
+test plain_arc_has_no_object_type ... ok
+test arc_direction_classifies_bipartite_edges ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_between01.rs (target/debug/build/affidavit/373e0deb8aba66b7/out/reference_between01-373e0deb8aba66b7)
+
+running 1 test
+test valid_fractions_construct_and_report_num_den ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_bipartite_arc.rs (target/debug/build/affidavit/9c6c57b944ed3486/out/reference_bipartite_arc-9c6c57b944ed3486)
+
+running 1 test
+test bipartite_arc_encodes_direction_in_the_type ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_bipartite_typestate.rs (target/debug/build/affidavit/e868afc0349740e0/out/reference_bipartite_typestate-e868afc0349740e0)
+
+running 1 test
+test both_arc_directions_carry_weight_and_are_valid_arcs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_bpmn_build.rs (target/debug/build/affidavit/a4f3478410879032/out/reference_bpmn_build-a4f3478410879032)
+
+running 2 tests
+test lane_over_declared_nodes_validates ... ok
+test well_formed_process_validates_and_exposes_structure ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_bpmn_components.rs (target/debug/build/affidavit/62da081cfc54b33a/out/reference_bpmn_components-62da081cfc54b33a)
+
+running 3 tests
+test bpmn_edge_carries_source_and_target ... ok
+test bpmn_node_id_is_recoverable_for_each_kind ... ok
+test bpmn_task_carries_its_name ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_bpmn_kinds.rs (target/debug/build/affidavit/70de15ebc5e32304/out/reference_bpmn_kinds-70de15ebc5e32304)
+
+running 2 tests
+test all_four_bpmn_event_kinds_construct ... ok
+test node_kind_discriminates_task_gateway_event ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_bpmn_pool.rs (target/debug/build/affidavit/9684eb811f55662e/out/reference_bpmn_pool-9684eb811f55662e)
+
+running 1 test
+test pool_holds_process_and_lanes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_cancellation_region.rs (target/debug/build/affidavit/25c4c02edffeb59a/out/reference_cancellation_region-25c4c02edffeb59a)
+
+running 2 tests
+test empty_cancellation_region_has_no_members ... ok
+test cancellation_region_collects_members_from_str_iter ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_cardinality.rs (target/debug/build/affidavit/5bc7a1b8c03009f0/out/reference_cardinality-5bc7a1b8c03009f0)
+
+running 3 tests
+test cardinality_admits_within_window_and_refuses_outside ... ok
+test cardinality_unbounded_sides_are_open ... ok
+test cardinality_carries_lifecycle_event_types ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_causal_bindings.rs (target/debug/build/affidavit/924e3f2cb8b5e100/out/reference_causal_bindings-924e3f2cb8b5e100)
+
+running 2 tests
+test typed_binding_pairs_and_dependency_measure ... ok
+test causal_bindings_and_measures_construct ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_causal_correlation.rs (target/debug/build/affidavit/804b070725f3ae05/out/reference_causal_correlation-804b070725f3ae05)
+
+running 2 tests
+test causal_link_and_chain_are_type_level_constructible ... ok
+test correlation_key_carries_its_schema_const ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_causal_net.rs (target/debug/build/affidavit/3561d9e4629f9197/out/reference_causal_net-3561d9e4629f9197)
+
+running 4 tests
+test causal_net_refuses_missing_activity ... ok
+test causal_net_admits_well_formed_net ... ok
+test causal_net_refuses_disconnected_graph ... ok
+test causal_net_refuses_invalid_dependency_score ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_choice_graph.rs (target/debug/build/affidavit/d10aba169dc24718/out/reference_choice_graph-d10aba169dc24718)
+
+running 2 tests
+test choice_graph_node_taxonomy_and_graph_queries ... ok
+test choice_graph_node_variants_construct ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_condition_cell.rs (target/debug/build/affidavit/558da200f9bd3970/out/reference_condition_cell-558da200f9bd3970)
+
+running 1 test
+test condition_cells_within_eight_bits_construct ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_conformance_carrier.rs (target/debug/build/affidavit/7c97ca51cb151b93/out/reference_conformance_carrier-7c97ca51cb151b93)
+
+running 2 tests
+test metric_newtypes_enforce_zero_one_bound ... ok
+test conformance_result_accumulates_a_verdict ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_conformance_clamp.rs (target/debug/build/affidavit/d995befa1113b97a/out/reference_conformance_clamp-d995befa1113b97a)
+
+running 2 tests
+test builder_clamps_out_of_range_into_unit_interval ... ok
+test builder_coerces_nan_to_low_bound ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_conformance_rate.rs (target/debug/build/affidavit/79aaaf320ad6016f/out/reference_conformance_rate-79aaaf320ad6016f)
+
+running 2 tests
+test conformance_rate_is_fitting_over_total ... ok
+test empty_log_rate_is_guarded_to_zero_not_nan ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_conformance_verdict.rs (target/debug/build/affidavit/24efd40b1b0c8673/out/reference_conformance_verdict-24efd40b1b0c8673)
+
+running 3 tests
+test a_deviation_breaks_perfection_and_localises_the_problem ... ok
+test imperfect_fitness_is_not_perfect_even_without_deviations ... ok
+test perfect_verdict_requires_full_fitness_and_no_deviations ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_consistency_verified.rs (target/debug/build/affidavit/5bcbc64789e91452/out/reference_consistency_verified-5bcbc64789e91452)
+
+running 2 tests
+test causally_ordered_evidence_wraps_its_payload ... ok
+test the_only_path_to_a_verdict_is_running_a_verifier ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_correlated_log.rs (target/debug/build/affidavit/ed378b2d0ab9c051/out/reference_correlated_log-ed378b2d0ab9c051)
+
+running 1 test
+test correlated_log_carries_its_schema_const ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_cube_modes.rs (target/debug/build/affidavit/a5d4294cdd4f4445/out/reference_cube_modes-a5d4294cdd4f4445)
+
+running 3 tests
+test process_cube_dimensions_are_constructed ... ok
+test object_centricity_axis_is_constructed ... ok
+test evidence_lifecycle_modes_are_constructed ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_declare_components.rs (target/debug/build/affidavit/44d497c4192e7935/out/reference_declare_components-44d497c4192e7935)
+
+running 3 tests
+test activity_carries_its_name ... ok
+test unary_constraint_has_no_target ... ok
+test binary_constraint_carries_a_target ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_declare_template_census.rs (target/debug/build/affidavit/c771151bc4c334e0/out/reference_declare_template_census-c771151bc4c334e0)
+
+running 3 tests
+test all_22_templates_are_distinct ... ok
+test every_declare_template_has_a_lawful_arity_and_taxonomy ... ok
+test negative_and_chain_taxonomies_match_the_library_contract ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_declare_templates.rs (target/debug/build/affidavit/a0cffffb46e99482/out/reference_declare_templates-a0cffffb46e99482)
+
+running 2 tests
+test all_twentytwo_declare_templates_are_constructed ... ok
+test template_arity_matches_the_crates_own_arity_law ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_dfg_advanced.rs (target/debug/build/affidavit/3c6179641d5a6020/out/reference_dfg_advanced-3c6179641d5a6020)
+
+running 2 tests
+test performance_dfg_edge_carries_frequency_and_duration ... ok
+test object_centric_dfg_holds_per_type_dfgs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_dfg_build.rs (target/debug/build/affidavit/5f5fc472a8ed756e/out/reference_dfg_build-5f5fc472a8ed756e)
+
+running 1 test
+test well_formed_dfg_validates_and_exposes_structure ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_diagnostic_severity.rs (target/debug/build/affidavit/8f981afd111967cb/out/reference_diagnostic_severity-8f981afd111967cb)
+
+running 2 tests
+test defects_are_errors_advice_is_info ... ok
+test severity_counts_are_eight_errors_one_info ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_diagnostics.rs (target/debug/build/affidavit/cdcfa1e671c8cd53/out/reference_diagnostics-cdcfa1e671c8cd53)
+
+running 2 tests
+test hidden_flattening_diagnostic_points_at_the_lossreport_remedy ... ok
+test compat_diagnostics_render_severity_and_message ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_event_optionals.rs (target/debug/build/affidavit/a9dbdc051691a798/out/reference_event_optionals-a9dbdc051691a798)
+
+running 2 tests
+test partial_perspective_sets_are_honoured ... ok
+test unset_perspectives_are_none_not_fabricated ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_event_stream.rs (target/debug/build/affidavit/7e9addbabdd87a60/out/reference_event_stream-7e9addbabdd87a60)
+
+running 1 test
+test event_stream_accumulates_incrementally ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_eventlog_build.rs (target/debug/build/affidavit/4ea1eba5fa7a3f01/out/reference_eventlog_build-4ea1eba5fa7a3f01)
+
+running 2 tests
+test event_carries_all_perspectives ... ok
+test well_formed_log_validates_and_counts_correctly ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_eventlog_validate.rs (target/debug/build/affidavit/6244e70f4a0e662b/out/reference_eventlog_validate-6244e70f4a0e662b)
+
+running 3 tests
+test log_with_all_well_formed_traces_admits ... ok
+test non_monotonic_trace_refuses_the_log ... ok
+test one_malformed_trace_refuses_the_whole_log ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_evidence_lifecycle.rs (target/debug/build/affidavit/49815632fb35bc6b/out/reference_evidence_lifecycle-49815632fb35bc6b)
+
+running 2 tests
+test raw_evidence_parses_and_value_is_recoverable ... ok
+test admitted_receipt_transitions_to_projected_exportable_receipted ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_filter_matrix.rs (target/debug/build/affidavit/9e83bc9f6ef62a23/out/reference_filter_matrix-9e83bc9f6ef62a23)
+
+running 2 tests
+test non_object_type_filters_are_valid_on_any_artifact ... ok
+test object_type_filter_requires_object_centric_artifact ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_get_activities.rs (target/debug/build/affidavit/884cedaf7ac6e900/out/reference_get_activities-884cedaf7ac6e900)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_graduation_formats.rs (target/debug/build/affidavit/a990967716ebf2ec/out/reference_graduation_formats-a990967716ebf2ec)
+
+running 4 tests
+test powl_projection_states_are_constructed ... ok
+test format_kinds_are_constructed ... ok
+test relation_laws_are_constructed ... ok
+test summary_shapes_are_constructed ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_interop_projection.rs (target/debug/build/affidavit/8a5827c23c64c049/out/reference_interop_projection-8a5827c23c64c049)
+
+running 2 tests
+test pm4py_shape_classifies_object_centric_vs_flat ... ok
+test artifact_grounding_distinguishes_grounded_from_ungrounded ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_interop_shapes.rs (target/debug/build/affidavit/c23a707b89599c8b/out/reference_interop_shapes-c23a707b89599c8b)
+
+running 3 tests
+test pm4py_shapes_are_constructed ... ok
+test ocpq_scope_kinds_are_constructed ... ok
+test pm4py_filter_shapes_are_constructed ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_lifecycle.rs (target/debug/build/affidavit/097cde42880abed4/out/reference_lifecycle-097cde42880abed4)
+
+running 3 tests
+test causal_consistency_verdicts_are_constructed ... ok
+test object_lifecycle_phases_are_constructed ... ok
+test temporal_orders_are_constructed ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_lifting_loss.rs (target/debug/build/affidavit/510d656fcfdebeea/out/reference_lifting_loss-510d656fcfdebeea)
+
+running 2 tests
+test ocel_admission_refuses_empty_event_object_links ... ok
+test ocel_admission_refuses_dangling_event_object_link ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_loss_chain.rs (target/debug/build/affidavit/2cbebbbd286c9769/out/reference_loss_chain-2cbebbbd286c9769)
+
+running 2 tests
+test loss_chain_tracks_lossless_then_lossy ... ok
+test loss_report_reports_lossless_vs_lossy ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_lsp_real_reject.rs (target/debug/build/affidavit/044afe52cad34aab/out/reference_lsp_real_reject-044afe52cad34aab)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_marking.rs (target/debug/build/affidavit/b0a170df0f67260c/out/reference_marking-b0a170df0f67260c)
+
+running 2 tests
+test empty_marking_has_no_tokens ... ok
+test marking_records_per_place_token_counts ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_metric.rs (target/debug/build/affidavit/69d0e8830c11f3c3/out/reference_metric-69d0e8830c11f3c3)
+
+running 1 test
+test typed_metrics_carry_dimension_and_bounded_value ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_multi_instance_runtime.rs (target/debug/build/affidavit/5208d0e40d71b96b/out/reference_multi_instance_runtime-5208d0e40d71b96b)
+
+running 2 tests
+test unbounded_max_is_lawful_and_creation_kinds_are_distinct ... ok
+test valid_runtime_spec_passes_validation_and_keeps_its_fields ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_multi_instance_spec.rs (target/debug/build/affidavit/57d553a59db261f5/out/reference_multi_instance_spec-57d553a59db261f5)
+
+running 1 test
+test valid_multiplicity_spec_constructs_and_reads_back ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_multiperspective.rs (target/debug/build/affidavit/7442a119e03b98ff/out/reference_multiperspective-7442a119e03b98ff)
+
+running 2 tests
+test a_value_can_be_tagged_with_a_single_perspective ... ok
+test perspectives_compose_at_the_type_level ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_oc_declare.rs (target/debug/build/affidavit/a35336103a439c8c/out/reference_oc_declare-a35336103a439c8c)
+
+running 4 tests
+test oc_declare_admits_well_formed_constraint ... ok
+test oc_declare_refuses_scope_mismatch ... ok
+test oc_declare_refuses_empty_object_type_list ... ok
+test oc_declare_refuses_synchronization_with_single_type ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel2.rs (target/debug/build/affidavit/30864d5da402816a/out/reference_ocel2-30864d5da402816a)
+
+running 2 tests
+test ocel2_event_and_object_carry_their_identity ... ok
+test ocel2_log_is_constructed_and_queryable ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel2_attrs.rs (target/debug/build/affidavit/357d8c5d834a9e36/out/reference_ocel2_attrs-357d8c5d834a9e36)
+
+running 2 tests
+test ocel2_event_attribute_builders_map_to_value_variants ... ok
+test ocel2_attribute_value_union_is_constructible ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel2_queries.rs (target/debug/build/affidavit/74ded35d6d20b3f8/out/reference_ocel2_queries-74ded35d6d20b3f8)
+
+running 2 tests
+test o2o_returns_constructed_object_object_links ... ok
+test e2o_returns_constructed_event_object_links ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel_attr_value_vocab.rs (target/debug/build/affidavit/88f11ed7a0b3929a/out/reference_ocel_attr_value_vocab-88f11ed7a0b3929a)
+
+running 3 tests
+test ocel_attribute_value_null_is_distinct ... ok
+test ocel_event_attribute_builders_map_to_value_variants ... ok
+test ocel_attribute_value_union_is_constructible_and_tagged ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel_attribute.rs (target/debug/build/affidavit/7151b1507d535102/out/reference_ocel_attribute-7151b1507d535102)
+
+running 2 tests
+test generic_new_carries_arbitrary_value ... ok
+test typed_attribute_builders_produce_correct_variants ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel_builders.rs (target/debug/build/affidavit/b2e95af7ecc28a09/out/reference_ocel_builders-b2e95af7ecc28a09)
+
+running 2 tests
+test ocel_event_builder_carries_activity_time_and_attributes ... ok
+test ocel_object_builder_carries_type_and_attributes ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel_eval.rs (target/debug/build/affidavit/70d35de4a93184fb/out/reference_ocel_eval-70d35de4a93184fb)
+
+running 2 tests
+test eval_returns_none_for_unknown_event ... ok
+test eval_returns_constructed_event_attribute_valuation ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel_event.rs (target/debug/build/affidavit/2a12507c41db8129/out/reference_ocel_event-2a12507c41db8129)
+
+running 2 tests
+test ocel_event_attribute_typed_values ... ok
+test ocel_event_carries_id_and_type ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel_full_log.rs (target/debug/build/affidavit/a04fb5cc1695394d/out/reference_ocel_full_log-a04fb5cc1695394d)
+
+running 1 test
+test complete_ocel_log_queries_compose ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel_links.rs (target/debug/build/affidavit/16c550afbf5f5510/out/reference_ocel_links-16c550afbf5f5510)
+
+running 3 tests
+test event_object_link_carries_ids_and_optional_qualifier ... ok
+test object_change_carries_attribute_value_and_optional_time ... ok
+test object_object_link_carries_source_target_qualifier ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel_log.rs (target/debug/build/affidavit/7ab9cade444f6bda/out/reference_ocel_log-7ab9cade444f6bda)
+
+running 2 tests
+test ocel_log_exposes_event_and_object_sets ... ok
+test ocel_log_event_links_objects_via_relationships ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel_nested_values.rs (target/debug/build/affidavit/16d5f94484c0503c/out/reference_ocel_nested_values-16d5f94484c0503c)
+
+running 2 tests
+test deeply_nested_lists ... ok
+test nested_list_and_map_values_compose ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel_object_node.rs (target/debug/build/affidavit/a8a2bbd1812a880d/out/reference_ocel_object_node-a8a2bbd1812a880d)
+
+running 2 tests
+test bare_object_has_no_attributes_or_relationships ... ok
+test ocel_object_carries_type_attributes_and_relationships ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel_type_attrs.rs (target/debug/build/affidavit/5aee70601d803e52/out/reference_ocel_type_attrs-5aee70601d803e52)
+
+running 2 tests
+test ocel_attribute_builders_round_trip ... ok
+test ocel_type_declares_attribute_schema ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocel_type_schema.rs (target/debug/build/affidavit/cf64b20303a3c560/out/reference_ocel_type_schema-cf64b20303a3c560)
+
+running 2 tests
+test ocel_type_declares_attribute_schema ... ok
+test type_with_no_attributes_is_valid ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocellog_accessors.rs (target/debug/build/affidavit/6a8fcd1da1a98f86/out/reference_ocellog_accessors-6a8fcd1da1a98f86)
+
+running 1 test
+test ocel_log_accessors_return_constructed_structure ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocpq_const_query.rs (target/debug/build/affidavit/bb66b684037a655c/out/reference_ocpq_const_query-bb66b684037a655c)
+
+running 1 test
+test const_scoped_queries_are_distinct_by_scope_kind ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocpq_predicates.rs (target/debug/build/affidavit/07bdeca48a86327b/out/reference_ocpq_predicates-07bdeca48a86327b)
+
+running 2 tests
+test predicates_construct_across_the_kind_families ... ok
+test simple_predicate_kinds_carry_their_expression ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_ocpq_query.rs (target/debug/build/affidavit/8c8ec46cab96c54c/out/reference_ocpq_query-8c8ec46cab96c54c)
+
+running 2 tests
+test object_scope_binds_types ... ok
+test query_carries_scope_predicates_and_subqueries ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_operators.rs (target/debug/build/affidavit/b1647dfcc4e800eb/out/reference_operators-b1647dfcc4e800eb)
+
+running 2 tests
+test correlation_schemas_are_constructed ... ok
+test process_tree_operators_are_constructed ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_parity_comparer.rs (target/debug/build/affidavit/7ffc8080bcb0aa26/out/reference_parity_comparer-7ffc8080bcb0aa26)
+
+running 2 tests
+test parity_accepts_values_within_epsilon ... ok
+test parity_rejects_divergent_values ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_patterns.rs (target/debug/build/affidavit/791d3c731391b385/out/reference_patterns-791d3c731391b385)
+
+running 2 tests
+test patterns_are_witness_distinct_not_just_named ... ok
+test all_twenty_basic_workflow_patterns_are_constructed ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_perspectives.rs (target/debug/build/affidavit/d26832b36ec08ad8/out/reference_perspectives-d26832b36ec08ad8)
+
+running 2 tests
+test the_four_process_perspectives_are_constructed ... ok
+test the_quality_metric_vocabulary_is_constructed ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_petri_build.rs (target/debug/build/affidavit/ea2480cb7575685b/out/reference_petri_build-ea2480cb7575685b)
+
+running 3 tests
+test petri_net_accessors_reflect_construction ... ok
+test silent_and_visible_transitions_are_distinguished ... ok
+test marking_token_queries ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_petri_object_type.rs (target/debug/build/affidavit/a4e99e3892e5633f/out/reference_petri_object_type-a4e99e3892e5633f)
+
+running 2 tests
+test arc_with_undeclared_object_type_is_refused ... ok
+test arc_with_declared_object_type_admits ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_petri_refusals.rs (target/debug/build/affidavit/638ab03e53dc2e50/out/reference_petri_refusals-638ab03e53dc2e50)
+
+running 2 tests
+test degenerate_instance_bounds_are_invalid ... ok
+test token_in_both_initial_and_final_is_unsafe ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_pipeline.rs (target/debug/build/affidavit/214be2ab392777ab/out/reference_pipeline-214be2ab392777ab)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_powl8_op.rs (target/debug/build/affidavit/4ee761ceb9ff4abf/out/reference_powl8_op-4ee761ceb9ff4abf)
+
+running 2 tests
+test out_of_range_byte_is_refused_by_name ... ok
+test valid_discriminants_decode_and_round_trip ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_powl_attrs.rs (target/debug/build/affidavit/f27d4a8027425875/out/reference_powl_attrs-f27d4a8027425875)
+
+running 2 tests
+test ocel_attribute_values_are_constructed_including_nested ... ok
+test powl_node_kinds_are_constructed_with_payloads ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_powl_build.rs (target/debug/build/affidavit/220e9b38f29b48ea/out/reference_powl_build-220e9b38f29b48ea)
+
+running 2 tests
+test connected_choice_graph_cycle_admits_as_powl2_loop_shape ... ok
+test connected_choice_graph_with_two_branches_admits ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_powl_composition_depth.rs (target/debug/build/affidavit/7072b50b4b18040d/out/reference_powl_composition_depth-7072b50b4b18040d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_powl_invalid_loop.rs (target/debug/build/affidavit/f08e1177f3ed8423/out/reference_powl_invalid_loop-f08e1177f3ed8423)
+
+running 2 tests
+test choice_graph_edge_outside_declared_node_set_is_refused ... ok
+test choice_graph_without_path_to_end_is_refused ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_powl_loop_law.rs (target/debug/build/affidavit/7b6bf2a2ef0e0f02/out/reference_powl_loop_law-7b6bf2a2ef0e0f02)
+
+running 2 tests
+test typed_loop_node_admits_exactly_arity_two ... ok
+test dynamic_powl_loop_is_a_choice_graph_cycle ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_powl_partial_order.rs (target/debug/build/affidavit/17770f502309359e/out/reference_powl_partial_order-17770f502309359e)
+
+running 2 tests
+test order_edge_carries_from_and_to ... ok
+test valid_partial_order_admits ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_powl_refusals.rs (target/debug/build/affidavit/2f1cfac42853a70c/out/reference_powl_refusals-2f1cfac42853a70c)
+
+running 2 tests
+test choice_graph_with_one_node_is_disconnected ... ok
+test cyclic_partial_order_is_refused ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_prediction.rs (target/debug/build/affidavit/0263ed104afa3441/out/reference_prediction-0263ed104afa3441)
+
+running 4 tests
+test diagnostic_severities_are_constructed ... ok
+test compliance_kinds_are_constructed ... ok
+test prediction_horizons_are_constructed ... ok
+test the_six_prediction_targets_are_constructed ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_process_tree_build.rs (target/debug/build/affidavit/f3669529657d1015/out/reference_process_tree_build-f3669529657d1015)
+
+running 2 tests
+test empty_tree_is_vacuously_admissible ... ok
+test nested_well_formed_tree_admits_and_exposes_structure ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_pt_node.rs (target/debug/build/affidavit/59fa3d3d8a9a2aa5/out/reference_pt_node-59fa3d3d8a9a2aa5)
+
+running 2 tests
+test activity_leaf_carries_its_label ... ok
+test operator_node_carries_operator_and_children ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_quality_const_aliases.rs (target/debug/build/affidavit/00e2f2fb5c44ca02/out/reference_quality_const_aliases-00e2f2fb5c44ca02)
+
+running 1 test
+test quality_const_aliases_construct_and_read_back ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_quality_loss.rs (target/debug/build/affidavit/59c8325e17d782af/out/reference_quality_loss-59c8325e17d782af)
+
+running 4 tests
+test refuse_loss_policy_is_distinct_from_allow ... ok
+test ocel_projection_loss_is_named_not_silent ... ok
+test soundness_lattice_progresses_unknown_to_witnessed ... ok
+test four_quality_dimensions_are_constructed_and_distinct ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_quality_profile.rs (target/debug/build/affidavit/99a3830fe99f3aa4/out/reference_quality_profile-99a3830fe99f3aa4)
+
+running 1 test
+test valid_quality_profile_constructs_and_reads_back_every_dimension ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_receipt_chain.rs (target/debug/build/affidavit/7030e86fbe28ac47/out/reference_receipt_chain-7030e86fbe28ac47)
+
+running 2 tests
+test empty_chain_is_refused_at_seed ... ok
+test chain_grows_with_extend_with ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_receipt_chain_const.rs (target/debug/build/affidavit/fc7082497d3f1964/out/reference_receipt_chain_const-fc7082497d3f1964)
+
+running 3 tests
+test empty_chain_is_refused_at_zero_arity ... ok
+test ill_shaped_link_is_refused_by_index ... ok
+test valid_two_link_chain_exposes_arity_root_tip_iter ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_receipt_shape.rs (target/debug/build/affidavit/361090b764770967/out/reference_receipt_shape-361090b764770967)
+
+running 2 tests
+test digest_and_replay_hint_carry_their_strings ... ok
+test well_formed_envelope_is_well_shaped ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_runtime_marking.rs (target/debug/build/affidavit/d5e7c9b56a53ebba/out/reference_runtime_marking-d5e7c9b56a53ebba)
+
+running 1 test
+test runtime_marking_reads_tokens_placed_on_the_net ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_separable_wfnet.rs (target/debug/build/affidavit/90d64c5a32f0da80/out/reference_separable_wfnet-90d64c5a32f0da80)
+
+running 2 tests
+test declaring_separable_preserves_a_claimed_state ... ok
+test declaring_separable_preserves_the_unknown_soundness_state ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_shape_classification.rs (target/debug/build/affidavit/ef448bf8c5a36ac2/out/reference_shape_classification-ef448bf8c5a36ac2)
+
+running 2 tests
+test exactly_object_centric_log_is_object_centric ... ok
+test exactly_one_of_seven_shapes_is_object_centric ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_shapes.rs (target/debug/build/affidavit/6c348d58cc006c0d/out/reference_shapes-6c348d58cc006c0d)
+
+running 3 tests
+test bpmn_gateway_kinds_are_constructed ... ok
+test conformance_and_receipt_verdicts_are_constructed ... ok
+test the_process_shape_taxonomy_is_constructed ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_trace_accessors.rs (target/debug/build/affidavit/b0f8e94f78c77104/out/reference_trace_accessors-b0f8e94f78c77104)
+
+running 2 tests
+test empty_from_events_trace_is_empty ... ok
+test trace_with_explicit_case_id_exposes_identity_and_events ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_typed_event_predicate.rs (target/debug/build/affidavit/74833296ae90b544/out/reference_typed_event_predicate-74833296ae90b544)
+
+running 3 tests
+test activity_equals_witnesses_expression_and_kind ... ok
+test timestamp_in_range_witnesses_expression_and_kind ... ok
+test attribute_equals_witnesses_expression_and_kind ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_typed_ids.rs (target/debug/build/affidavit/bcd25b53f2339762/out/reference_typed_ids-bcd25b53f2339762)
+
+running 2 tests
+test event_type_names_construct_and_recover_label ... ok
+test object_type_names_construct_and_recover_label ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_typed_loop_node.rs (target/debug/build/affidavit/a2d10a8a905056e8/out/reference_typed_loop_node-a2d10a8a905056e8)
+
+running 1 test
+test loop_node_with_arity_two_constructs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_typed_object_predicate.rs (target/debug/build/affidavit/53665e051c6a7db8/out/reference_typed_object_predicate-53665e051c6a7db8)
+
+running 2 tests
+test attribute_equals_witnesses_expression_and_kind ... ok
+test type_equals_witnesses_expression_and_kind ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_typed_operators.rs (target/debug/build/affidavit/c170924916f2fbfd/out/reference_typed_operators-c170924916f2fbfd)
+
+running 1 test
+test typed_process_tree_operators_enforce_their_arity_laws ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_typed_relation_predicate.rs (target/debug/build/affidavit/b4eaceb38087dec8/out/reference_typed_relation_predicate-b4eaceb38087dec8)
+
+running 3 tests
+test e2o_witnesses_expression_and_kind ... ok
+test time_between_events_witnesses_expression_and_kind ... ok
+test o2o_witnesses_expression_and_kind ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_wasm4pm_attrs.rs (target/debug/build/affidavit/7dbf40c9ff89ea3f/out/reference_wasm4pm_attrs-7dbf40c9ff89ea3f)
+
+running 1 test
+test event_attribute_bag_holds_each_value_kind ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_wasm4pm_dfg.rs (target/debug/build/affidavit/0e643b9a7ad81e9d/out/reference_wasm4pm_dfg-0e643b9a7ad81e9d)
+
+running 2 tests
+test dfg_node_and_relation_carry_frequencies ... ok
+test dfg_assembles_nodes_edges_and_endpoints ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_wfnet_soundness.rs (target/debug/build/affidavit/b99d5eba9fa5a5ce/out/reference_wfnet_soundness-b99d5eba9fa5a5ce)
+
+running 2 tests
+test soundness_typestate_advances_unknown_to_claimed ... ok
+test witnessed_soundness_is_non_forgeable_from_outside ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_wfnet_value.rs (target/debug/build/affidavit/e674bc48df54b283/out/reference_wfnet_value-e674bc48df54b283)
+
+running 2 tests
+test wfnet_exposes_net_and_final_marking ... ok
+test claim_sound_advances_value_level_soundness ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference_witness_family.rs (target/debug/build/affidavit/2ec3b037d77fb4e7/out/reference_witness_family-2ec3b037d77fb4e7)
+
+running 2 tests
+test family_classification_distinguishes_marker_kinds ... ok
+test standard_family_markers_carry_correct_metadata ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/sbom_integration.rs (target/debug/build/affidavit/02c313f4eb4330ce/out/sbom_integration-02c313f4eb4330ce)
+
+running 11 tests
+test cyclonedx_fixture_ingests_with_expected_shape ... ok
+test both_formats_are_ntia_conformant ... ok
+test supplier_concentration_is_reported ... ok
+test blast_radius_identifies_transitive_dependents ... ok
+test spdx_fixture_ingests_and_resolves_relationships ... ok
+test compliance_assessment_runs_all_frameworks ... ok
+test provenance_attestation_binds_address_and_receipt ... ok
+test vulnerability_scan_matches_and_vex_suppresses ... ok
+test ocel_event_stream_is_deterministic_and_nonempty ... ok
+test risk_propagates_along_the_dependency_chain ... ok
+test content_address_is_format_stable_within_a_format ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/throughput_tests.rs (target/debug/build/affidavit/648ad2de7dd6c78b/out/throughput_tests-648ad2de7dd6c78b)
+
+running 2 tests
+test test_throughput_harness_execution ... ok
+test test_emit_scaling_harness ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/ui.rs (target/debug/build/affidavit/d2144f0c444a9445/out/ui-d2144f0c444a9445)
+
+running 1 test
+   Compiling proc-macro2 v1.0.106
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.45
+   Compiling libc v0.2.186
+    Checking memchr v2.8.2
+    Checking cfg-if v1.0.4
+   Compiling serde_core v1.0.228
+   Compiling serde v1.0.228
+   Compiling version_check v0.9.5
+    Checking stable_deref_trait v1.2.1
+   Compiling zmij v1.0.21
+   Compiling autocfg v1.5.1
+   Compiling serde_json v1.0.150
+   Compiling crossbeam-utils v0.8.21
+    Checking regex-syntax v0.8.11
+    Checking smallvec v1.15.2
+    Checking writeable v0.6.3
+    Checking foldhash v0.2.0
+    Checking allocator-api2 v0.2.21
+   Compiling getrandom v0.4.2
+    Checking litemap v0.8.2
+    Checking equivalent v1.0.2
+    Checking itoa v1.0.18
+    Checking rand_core v0.10.1
+   Compiling icu_normalizer_data v2.2.0
+    Checking hashbrown v0.17.1
+   Compiling icu_properties_data v2.2.0
+    Checking aho-corasick v1.1.4
+    Checking utf8_iter v1.0.4
+   Compiling num-traits v0.2.19
+    Checking anstyle v1.0.14
+   Compiling generic-array v0.14.7
+    Checking pin-project-lite v0.2.17
+   Compiling linkme v0.3.36
+    Checking utf8parse v0.2.2
+    Checking log v0.4.32
+   Compiling linkme-impl v0.3.36
+   Compiling parking_lot_core v0.9.12
+    Checking anstyle-parse v1.0.0
+    Checking regex-automata v0.4.14
+    Checking indexmap v2.14.0
+   Compiling proc-macro-error-attr v1.0.4
+    Checking anstyle-query v1.1.5
+    Checking typenum v1.20.1
+   Compiling deunicode v1.6.2
+   Compiling syn v2.0.117
+   Compiling zerocopy v0.8.52
+   Compiling shlex v2.0.1
+   Compiling syn v1.0.109
+    Checking scopeguard v1.2.0
+    Checking is_terminal_polyfill v1.70.2
+    Checking core-foundation-sys v0.8.7
+   Compiling find-msvc-tools v0.1.9
+    Checking errno v0.3.14
+    Checking colorchoice v1.0.5
+    Checking regex v1.12.4
+    Checking anstream v1.0.0
+    Checking iana-time-zone v0.1.65
+   Compiling cc v1.2.64
+    Checking lock_api v0.4.14
+   Compiling slug v0.1.6
+   Compiling proc-macro-error v1.0.4
+    Checking clap_lex v1.1.0
+   Compiling heck v0.5.0
+    Checking same-file v1.0.6
+    Checking bitflags v2.13.0
+    Checking futures-sink v0.3.32
+    Checking winnow v0.7.15
+    Checking strsim v0.11.1
+    Checking futures-core v0.3.32
+    Checking toml_write v0.1.2
+    Checking clap_builder v4.6.0
+    Checking futures-channel v0.3.32
+    Checking walkdir v2.5.0
+    Checking signal-hook-registry v1.4.8
+    Checking socket2 v0.6.4
+    Checking mio v1.2.1
+   Compiling blake3 v1.8.5
+    Checking crossbeam-epoch v0.9.18
+   Compiling rayon-core v1.13.0
+    Checking unsafe-libyaml v0.2.11
+    Checking slab v0.4.12
+    Checking ryu v1.0.23
+   Compiling synstructure v0.13.2
+    Checking bytes v1.11.1
+   Compiling thiserror v1.0.69
+    Checking either v1.16.0
+   Compiling thiserror v2.0.18
+    Checking futures-io v0.3.32
+    Checking once_cell v1.21.4
+   Compiling anyhow v1.0.102
+    Checking percent-encoding v2.3.2
+    Checking futures-task v0.3.32
+    Checking form_urlencoded v1.2.2
+    Checking crossbeam-deque v0.8.6
+    Checking uuid v1.23.3
+    Checking fsevent-sys v4.1.0
+    Checking filetime v0.2.29
+    Checking crypto-common v0.1.7
+    Checking block-buffer v0.10.4
+    Checking crossbeam-channel v0.5.15
+    Checking lazy_static v1.5.0
+    Checking constant_time_eq v0.4.2
+    Checking arrayref v0.3.9
+    Checking predicates-core v1.0.10
+    Checking plotters-backend v0.3.7
+    Checking parking_lot v0.12.5
+    Checking ciborium-io v0.2.2
+   Compiling rustix v1.1.4
+    Checking arrayvec v0.7.6
+    Checking plotters-svg v0.3.7
+    Checking notify v6.1.1
+    Checking digest v0.10.7
+    Checking float-cmp v0.10.0
+    Checking itertools v0.10.5
+    Checking env_filter v1.0.1
+    Checking atty v0.2.14
+    Checking cpufeatures v0.2.17
+    Checking quick-xml v0.41.0
+    Checking difflib v0.4.0
+    Checking normalize-line-endings v0.3.0
+    Checking leb128fmt v0.1.0
+   Compiling chicago-tdd-tools v26.6.121
+    Checking termtree v0.5.1
+   Compiling assert_cmd v2.2.2
+    Checking rustc-hash v2.1.2
+   Compiling jmespath v0.3.0
+   Compiling zerofrom-derive v0.1.7
+   Compiling serde_derive v1.0.228
+   Compiling yoke-derive v0.8.2
+   Compiling zerovec-derive v0.11.3
+   Compiling displaydoc v0.2.6
+   Compiling zerocopy-derive v0.8.52
+   Compiling futures-macro v0.3.32
+   Compiling clap_derive v4.6.1
+   Compiling tokio-macros v2.7.0
+    Checking futures-util v0.3.32
+   Compiling thiserror-impl v1.0.69
+    Checking tokio v1.52.3
+   Compiling thiserror-impl v2.0.18
+    Checking zerofrom v0.1.8
+    Checking cast v0.3.0
+    Checking criterion-plot v0.5.0
+    Checking rayon v1.12.0
+    Checking clap v4.6.1
+   Compiling chicago-tdd-tools-proc-macros v26.6.121
+    Checking predicates-tree v1.0.13
+    Checking wasm-encoder v0.252.0
+    Checking predicates v3.1.4
+    Checking sha2 v0.10.9
+   Compiling clap-noun-verb-macros v26.6.2
+    Checking env_logger v0.11.10
+    Checking plotters v0.3.7
+    Checking rand v0.10.1
+    Checking bstr v1.12.1
+    Checking wait-timeout v0.2.1
+    Checking is-terminal v0.4.17
+    Checking fastrand v2.4.1
+    Checking anes v0.1.6
+    Checking hex v0.4.3
+    Checking oorandom v11.1.5
+    Checking tempfile v3.27.0
+    Checking quickcheck v1.1.0
+   Compiling quickcheck_macros v1.2.0
+    Checking clnrm-core v1.3.0 (/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/crown-final/aff-d70b/tree/stubs/clnrm-core)
+    Checking yoke v0.8.3
+    Checking futures-executor v0.3.32
+    Checking futures v0.3.32
+    Checking toml_datetime v0.6.11
+    Checking serde_spanned v0.6.9
+    Checking chrono v0.4.45
+    Checking serde_yaml v0.9.34+deprecated
+    Checking tinytemplate v1.2.1
+    Checking wasm4pm v26.6.13 (/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/crown-final/aff-d70b/tree/stubs/wasm4pm)
+    Checking toml_edit v0.22.27
+    Checking half v2.7.1
+    Checking ciborium-ll v0.2.2
+    Checking zerovec v0.11.6
+    Checking zerotrie v0.2.4
+    Checking ciborium v0.2.2
+    Checking wasm4pm-compat v26.8.7
+    Checking criterion v0.5.1
+    Checking toml v0.8.23
+    Checking tinystr v0.8.3
+    Checking potential_utf v0.1.5
+    Checking icu_collections v2.2.0
+    Checking icu_locale_core v2.2.0
+    Checking icu_provider v2.2.0
+    Checking icu_properties v2.2.0
+    Checking icu_normalizer v2.2.0
+    Checking idna_adapter v1.2.2
+    Checking idna v1.1.0
+    Checking url v2.5.8
+    Checking clap-noun-verb v26.6.2
+    Checking affidavit v26.6.22 (/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/crown-final/aff-d70b/tree)
+    Checking affidavit-tests v0.0.0 (/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/crown-final/aff-d70b/tree/target/tests/trybuild/affidavit)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 18.31s
+
+
+test [0m[1mtests/ui/compile_fail/condition_cell_nine.rs[0m ... [0m[32mok
+[0mtest [0m[1mtests/ui/compile_fail/fitness_const_num_gt_den.rs[0m ... [0m[32mok
+[0mtest [0m[1mtests/ui/compile_fail/multi_instance_min_gt_max.rs[0m ... [0m[32mok
+[0mtest [0m[1mtests/ui/compile_fail/multi_instance_min_zero.rs[0m ... [0m[32mok
+[0mtest [0m[1mtests/ui/compile_fail/powl_composition_depth_nine.rs[0m ... [0m[32mok
+[0mtest [0m[1mtests/ui/compile_fail/powl_loop_arity_three.rs[0m ... [0m[32mok
+[0mtest [0m[1mtests/ui/compile_fail/quality_profile_bad_precision.rs[0m ... [0m[32mok
+[0mtest [0m[1mtests/ui/compile_fail/receipt_private_seal.rs[0m ... [0m[32mok
+[0mtest [0m[1mtests/ui/compile_fail/typed_xor_arity_one.rs[0m ... [0m[32mok
+[0m
+
+test ui_tests ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 29.59s
+
+     Running tests/visualize_tests.rs (target/debug/build/affidavit/7f051fa6fe3d1ae8/out/visualize_tests-7f051fa6fe3d1ae8)
+
+running 8 tests
+test e2e_visualize_success_json ... ignored, Skip until 'visualize' is implemented in the binary
+test unit_tests::test_visualize_single_event_ac9 ... ok
+test unit_tests::test_visualize_repeated_event_types_ac8 ... ok
+test unit_tests::test_visualize_dot_format_ac4_ac5 ... ok
+test unit_tests::test_visualize_json_structure_ac1_ac2_ac3 ... ok
+test e2e_visualize_rejects_missing_format_ac6 ... ok
+test e2e_visualize_rejects_invalid_format_ac7 ... ok
+test e2e_visualize_rejects_tampered_receipt_ac10 ... ok
+
+test result: ok. 7 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/western_electric_comprehensive.rs (target/debug/build/affidavit/21e9fae262b2236e/out/western_electric_comprehensive-21e9fae262b2236e)
+
+running 86 tests
+test test_combined_rule_descriptions ... ok
+test test_data_generator_spike ... ok
+test test_data_generator_alternating ... ok
+test test_data_generator_trend ... ok
+test test_combined_2_of_3_beyond_2_sigma ... ok
+test test_combined_spike_then_trend ... ok
+test test_combined_rule_trend_and_alternating_no_trigger ... ok
+test test_combined_4_of_5_beyond_1_sigma ... ok
+test test_combined_rule_1_sigma_and_9_in_row ... ok
+test test_edge_case_empty_window ... ok
+test test_combined_all_7_rules_in_extended_sequence ... ok
+test test_edge_case_exact_boundary_3_sigma ... ok
+test test_combined_15_in_row_within_1_sigma ... ok
+test test_combined_severity_levels ... ok
+test test_edge_case_floating_point_precision ... ok
+test test_combined_multiple_metrics_independent ... ok
+test test_edge_case_infinity_values ... ok
+test test_comprehensive_integration_all_rules ... ok
+test test_edge_case_just_past_3_sigma_boundary ... ok
+test test_edge_case_metric_name_empty ... ok
+test test_edge_case_nan_behavior ... ok
+test test_edge_case_negative_baseline_mean ... ok
+test test_edge_case_negative_infinity ... ok
+test test_edge_case_single_measurement ... ok
+test test_edge_case_small_window_size ... ok
+test test_edge_case_very_large_baseline_mean ... ok
+test test_edge_case_very_long_metric_name ... ok
+test test_edge_case_very_small_stddev ... ok
+test test_edge_case_zero_stddev ... ok
+test test_edge_case_large_window_size ... ok
+test test_multi_object_3_files_independent_violations ... ok
+test test_multi_object_10_modules_stress ... ok
+test test_multi_object_cascading_failures ... ok
+test test_multi_object_5_modules_varying_health ... ok
+test test_multi_object_correlation_check ... ok
+test test_multi_object_isolation_no_crosstalk ... ok
+test test_multi_object_metric_names_collection ... ok
+test test_multi_object_same_metric_different_files ... ok
+test test_multi_object_synchronization_point ... ok
+test test_ocel_causal_chain_propagation ... ok
+test test_ocel_event_attribute_enrichment ... ok
+test test_multi_object_shared_baseline_different_windows ... ok
+test test_ocel_missing_optional_attributes ... ok
+test test_ocel_multiple_object_interaction ... ok
+test test_ocel_object_correlation_matrix ... ok
+test test_ocel_object_qualifier_tracking ... ok
+test test_ocel_object_type_segregation ... ok
+test test_ocel_single_object_lifecycle ... ok
+test test_ocel_trace_level_analysis ... ok
+test test_rule_1_sigma_1_sigma_threshold ... ok
+test test_rule_1_sigma_2_sigma_threshold ... ok
+test test_rule_1_sigma_3_5_sigma_threshold ... ok
+test test_rule_1_sigma_extreme_negative_spike ... ok
+test test_rule_1_sigma_extreme_positive_spike ... ok
+test test_rule_1_sigma_just_above_3_sigma ... ok
+test test_rule_1_sigma_multiple_spikes_distinct ... ok
+test test_rule_1_sigma_negative_spike_above_threshold ... ok
+test test_rule_1_sigma_recovery_after_spike ... ok
+test test_rule_1_sigma_with_large_stddev ... ok
+test test_rule_9_in_a_row_10_consecutive ... ok
+test test_rule_9_in_a_row_15_consecutive ... ok
+test test_rule_9_in_a_row_both_sides_of_mean ... ok
+test test_rule_9_in_a_row_broken_by_single_control_point ... ok
+test test_rule_9_in_a_row_does_not_trigger_at_8 ... ok
+test test_rule_9_in_a_row_exactly_9_consecutive ... ok
+test test_rule_9_in_a_row_severity_critical ... ok
+test test_rule_alternating_10_oscillations ... ok
+test test_rule_alternating_12_oscillations ... ok
+test test_rule_alternating_8_oscillations ... ok
+test test_rule_alternating_less_than_7_no_trigger ... ok
+test test_rule_alternating_severity_high ... ok
+test test_rule_alternating_symmetric_around_mean ... ok
+test test_rule_alternating_with_plateau ... ok
+test test_rule_trend_broken_by_plateau ... ok
+test test_rule_trend_decreasing_6_points ... ok
+test test_rule_trend_does_not_trigger_at_5_points ... ok
+test test_rule_trend_increasing_6_points ... ok
+test test_rule_trend_increasing_7_points ... ok
+test test_rule_trend_increasing_8_points ... ok
+test test_rule_trend_mixed_directions_no_trigger ... ok
+test test_rule_trend_severity_high ... ok
+test test_rule_trend_with_small_increments ... ok
+test test_stress_alternating_violation_patterns ... ok
+test test_stress_rapid_fire_spikes ... ok
+test test_stress_1000_point_history ... ok
+test test_stress_10000_measurements_multiple_metrics ... ok
+
+test result: ok. 86 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running benches/profile.rs (target/debug/build/affidavit/7eb32ca505771de8/out/profile-7eb32ca505771de8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running benches/throughput.rs (target/debug/build/affidavit/a54856929277e14d/out/throughput-a54856929277e14d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/admission_gate.rs (target/debug/build/affidavit/eb99975bc3896c3a/out/admission_gate-eb99975bc3896c3a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/b1_throughput_tests.rs (target/debug/build/affidavit/d6bfd5d56536bd9c/out/b1_throughput_tests-d6bfd5d56536bd9c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/brce_court.rs (target/debug/build/affidavit/006fd26d3f6f6b49/out/brce_court-006fd26d3f6f6b49)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/chain_build.rs (target/debug/build/affidavit/dfe6d4dcada9da27/out/chain_build-dfe6d4dcada9da27)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/codegen_maximalist_verbs.rs (target/debug/build/affidavit/dcb729569c42990b/out/codegen_maximalist_verbs-dcb729569c42990b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/observable_spans.rs (target/debug/build/affidavit/8ab5eed961b712fb/out/observable_spans-8ab5eed961b712fb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/ocel_events.rs (target/debug/build/affidavit/cf1add1831d8cb70/out/ocel_events-cf1add1831d8cb70)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/ocel_western_electric_demo.rs (target/debug/build/affidavit/314ef3bdf6b418cf/out/ocel_western_electric_demo-314ef3bdf6b418cf)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/portfolio_monitor_simulation.rs (target/debug/build/affidavit/3633fdbdf61cfb10/out/portfolio_monitor_simulation-3633fdbdf61cfb10)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/receipt_determinism.rs (target/debug/build/affidavit/3a5c42a895f6562a/out/receipt_determinism-3a5c42a895f6562a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/sbom_supply_chain_demo.rs (target/debug/build/affidavit/4364afeae2e4140f/out/sbom_supply_chain_demo-4364afeae2e4140f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/swarm_monitor.rs (target/debug/build/affidavit/80ffed151d47fea1/out/swarm_monitor-80ffed151d47fea1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/verify_stages.rs (target/debug/build/affidavit/eb37bc29c4a5e538/out/verify_stages-eb37bc29c4a5e538)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/webhook_slack_integration.rs (target/debug/build/affidavit/25be8c80ebfb1534/out/webhook_slack_integration-25be8c80ebfb1534)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples/western_electric_extended.rs (target/debug/build/affidavit/5cf86baeb0ae8373/out/western_electric_extended-5cf86baeb0ae8373)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

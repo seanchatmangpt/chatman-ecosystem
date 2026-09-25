@@ -1,0 +1,1296 @@
+@prefix cs: <urn:xaas:case-study:> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Semantic Case Study vocabulary (RFC-0003 instance for WD Case Study 2).
+# A case study is a bounded set of claims, each bound to evidence on an exact
+# subject and to at least one falsifier. Projections (deck, ledger, evidence
+# map) may omit claims; they may never add one.
+
+cs:CaseStudy a rdfs:Class ; rdfs:label "Case study" .
+cs:Claim a rdfs:Class ; rdfs:label "Claim" .
+cs:NonClaim a rdfs:Class ; rdfs:label "Explicit non-claim" .
+cs:Evidence a rdfs:Class ; rdfs:label "Evidence bound to an exact subject" .
+cs:Assumption a rdfs:Class ; rdfs:label "Interim assumption pending a stakeholder answer" .
+cs:Falsifier a rdfs:Class ; rdfs:label "Observation that refutes a claim" .
+cs:Projection a rdfs:Class ; rdfs:label "Generated projection of the case" .
+
+cs:caseId a rdf:Property ; rdfs:domain cs:CaseStudy ; rdfs:range xsd:string .
+cs:title a rdf:Property ; rdfs:range xsd:string .
+cs:boundSubject a rdf:Property ; rdfs:domain cs:CaseStudy ; rdfs:range xsd:string .
+cs:treeIdenticalSubject a rdf:Property ; rdfs:domain cs:CaseStudy ; rdfs:range xsd:string .
+cs:humanGate a rdf:Property ; rdfs:range xsd:string .
+cs:currentConformance a rdf:Property ; rdfs:domain cs:CaseStudy .
+cs:targetConformance a rdf:Property ; rdfs:domain cs:CaseStudy .
+cs:episode a rdf:Property ; rdfs:domain cs:CaseStudy .
+
+cs:claimOf a rdf:Property ; rdfs:range cs:CaseStudy .
+cs:claimId a rdf:Property ; rdfs:range xsd:string .
+cs:claimText a rdf:Property ; rdfs:range xsd:string .
+cs:claimedLevel a rdf:Property ; rdfs:domain cs:Claim .
+cs:standing a rdf:Property ; rdfs:range xsd:string .
+cs:evidenceCeiling a rdf:Property ; rdfs:range xsd:string .
+cs:authorityCeiling a rdf:Property ; rdfs:range xsd:string .
+cs:supportedBy a rdf:Property ; rdfs:domain cs:Claim ; rdfs:range cs:Evidence .
+cs:dependsOn a rdf:Property ; rdfs:domain cs:Claim ; rdfs:range cs:Assumption .
+cs:falsifiedBy a rdf:Property ; rdfs:domain cs:Claim ; rdfs:range cs:Falsifier .
+cs:renderedBy a rdf:Property ; rdfs:domain cs:Claim .
+cs:noClaimReason a rdf:Property ; rdfs:range xsd:string .
+
+cs:evidenceId a rdf:Property ; rdfs:domain cs:Evidence ; rdfs:range xsd:string .
+cs:evidencePath a rdf:Property ; rdfs:domain cs:Evidence ; rdfs:range xsd:string .
+cs:exactSubject a rdf:Property ; rdfs:domain cs:Evidence ; rdfs:range xsd:string .
+cs:validator a rdf:Property ; rdfs:domain cs:Evidence ; rdfs:range xsd:string .
+cs:result a rdf:Property ; rdfs:domain cs:Evidence ; rdfs:range xsd:string .
+
+cs:falsifierId a rdf:Property ; rdfs:domain cs:Falsifier ; rdfs:range xsd:string .
+cs:falsifierCommand a rdf:Property ; rdfs:domain cs:Falsifier ; rdfs:range xsd:string .
+cs:falsifierObservation a rdf:Property ; rdfs:domain cs:Falsifier ; rdfs:range xsd:string .
+
+cs:nonClaimOf a rdf:Property ; rdfs:domain cs:NonClaim ; rdfs:range cs:CaseStudy .
+cs:nonClaimId a rdf:Property ; rdfs:domain cs:NonClaim ; rdfs:range xsd:string .
+cs:nonClaimLabel a rdf:Property ; rdfs:domain cs:NonClaim ; rdfs:range xsd:string .
+
+cs:assumptionOf a rdf:Property ; rdfs:domain cs:Assumption ; rdfs:range cs:CaseStudy .
+cs:assumptionId a rdf:Property ; rdfs:domain cs:Assumption ; rdfs:range xsd:string .
+cs:question a rdf:Property ; rdfs:domain cs:Assumption ; rdfs:range xsd:string .
+cs:unknown a rdf:Property ; rdfs:domain cs:Assumption ; rdfs:range xsd:string .
+cs:interimAssumption a rdf:Property ; rdfs:domain cs:Assumption ; rdfs:range xsd:string .
+cs:changeIfDifferent a rdf:Property ; rdfs:domain cs:Assumption ; rdfs:range xsd:string .
+cs:askedOn a rdf:Property ; rdfs:domain cs:Assumption ; rdfs:range xsd:date .
+cs:askedVia a rdf:Property ; rdfs:domain cs:Assumption ; rdfs:range xsd:string .
+cs:answerStatus a rdf:Property ; rdfs:domain cs:Assumption ; rdfs:range xsd:string .
+
+@prefix cs: <urn:xaas:case-study:> .
+@prefix stogaf: <urn:xaas:stogaf:> .
+@prefix wdcs2: <urn:xaas:wd-cs2:> .
+@prefix wdc: <urn:xaas:wd-cs2:claim:> .
+@prefix wde: <urn:xaas:wd-cs2:evidence:> .
+@prefix wdf: <urn:xaas:wd-cs2:falsifier:> .
+@prefix wdn: <urn:xaas:wd-cs2:non-claim:> .
+@prefix wda: <urn:xaas:wd-cs2:assumption:> .
+@prefix wddeck: <urn:wd:case-study-2:deck:> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# WD Case Study 2 claims ledger source. No blank nodes: the canonical
+# N-Triples digest of this file is stable. Every claim is bound to evidence on
+# the frozen subject and to at least one falsifier. Standing vocabulary:
+# ALIVE_FIXTURE (observed on repository fixtures at the subject), DESIGN
+# (argued in the design documents, not executed), UNKNOWN.
+
+wdcs2:case a cs:CaseStudy ;
+  cs:caseId "wd-cs2" ;
+  cs:title "Western Digital Case Study 2 - HDD Failure Analysis AI Agent" ;
+  cs:boundSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:treeIdenticalSubject "seanchatmangpt/xaas@7c457827dcfdb3e4809395df67f09611bbff37c8" ;
+  cs:authorityCeiling "CONSTRUCT" ;
+  cs:evidenceCeiling "REPO_LOCAL_FIXTURE" ;
+  cs:humanGate "ENGINEER_DISPOSITION_REQUIRED" ;
+  cs:currentConformance stogaf:ST4 ;
+  cs:targetConformance stogaf:ST6 ;
+  cs:episode wdcs2:architectureEpisode .
+
+# ---------------------------------------------------------------- evidence
+
+wde:E01 a cs:Evidence ; cs:evidenceId "E01" ;
+  cs:evidencePath "docs/case-studies/wd-fa/19-SEPTEMBER-25-SUBMISSION.md" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "design review" ; cs:result "DESIGN_DOCUMENT" .
+wde:E02 a cs:Evidence ; cs:evidenceId "E02" ;
+  cs:evidencePath "docs/case-studies/wd-fa/02-BASELINE-TARGET-GAP.md" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "design review" ; cs:result "DESIGN_DOCUMENT" .
+wde:E03 a cs:Evidence ; cs:evidenceId "E03" ;
+  cs:evidencePath "test/xaas/case_studies/wd_fa_chicago_test.exs" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "mix test test/xaas/case_studies/wd_fa_chicago_test.exs" ;
+  cs:result "PASS in STOGAF court run 36082037670 on tree-identical head 7c457827" .
+wde:E04 a cs:Evidence ; cs:evidenceId "E04" ;
+  cs:evidencePath "priv/packs/wd_cs2_pack/gates/020_authority_ceiling.rq" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "python3 scripts/stogaf_semantic_court.py" ;
+  cs:result "0 refusal rows; court standing ALIVE (local replay on git archive f9670f44)" .
+wde:E05 a cs:Evidence ; cs:evidenceId "E05" ;
+  cs:evidencePath "priv/packs/wd_cs2_pack/gates/030_view_projection.rq" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "python3 scripts/stogaf_semantic_court.py" ;
+  cs:result "0 refusal rows; court standing ALIVE (local replay on git archive f9670f44)" .
+wde:E06 a cs:Evidence ; cs:evidenceId "E06" ;
+  cs:evidencePath "test/xaas/case_studies/wd_fa_evidence_policy_test.exs" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "mix test test/xaas/case_studies/wd_fa_evidence_policy_test.exs" ;
+  cs:result "PASS in STOGAF court run 36082037670 on tree-identical head 7c457827" .
+wde:E07 a cs:Evidence ; cs:evidenceId "E07" ;
+  cs:evidencePath "test/xaas/case_studies/wd_fa_learning_ocel_test.exs" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "mix test test/xaas/case_studies/wd_fa_learning_ocel_test.exs" ;
+  cs:result "PASS in STOGAF court run 36082037670 on tree-identical head 7c457827" .
+wde:E08 a cs:Evidence ; cs:evidenceId "E08" ;
+  cs:evidencePath "docs/case-studies/wd-fa/04-DATA-ARCHITECTURE.md" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "design review" ; cs:result "DESIGN_DOCUMENT" .
+wde:E09 a cs:Evidence ; cs:evidenceId "E09" ;
+  cs:evidencePath "docs/case-studies/wd-fa/CONTEXT-ENVELOPE.md" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "design review" ; cs:result "DESIGN_DOCUMENT" .
+wde:E10 a cs:Evidence ; cs:evidenceId "E10" ;
+  cs:evidencePath "docs/case-studies/wd-fa/07-SECURITY-GOVERNANCE.md" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "design review" ; cs:result "DESIGN_DOCUMENT" .
+wde:E11 a cs:Evidence ; cs:evidenceId "E11" ;
+  cs:evidencePath "test/xaas/case_studies/wd_fa_evaluation_test.exs" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "mix test test/xaas/case_studies/wd_fa_evaluation_test.exs" ;
+  cs:result "PASS in STOGAF court run 36082037670 on tree-identical head 7c457827" .
+wde:E12 a cs:Evidence ; cs:evidenceId "E12" ;
+  cs:evidencePath "lib/mix/tasks/xaas.wd.fa_eval.ex" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "mix xaas.wd.fa_eval wd-cs2-evaluation.json" ;
+  cs:result "controls_passed 7; mttr UNMEASURED (STOGAF court run 36082037670)" .
+wde:E13 a cs:Evidence ; cs:evidenceId "E13" ;
+  cs:evidencePath "docs/case-studies/wd-fa/09-MIGRATION-30-60-90.md" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "design review" ; cs:result "DESIGN_DOCUMENT" .
+wde:E14 a cs:Evidence ; cs:evidenceId "E14" ;
+  cs:evidencePath "test/xaas/case_studies/wd_fa_learning_loop_test.exs" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "mix test test/xaas/case_studies/wd_fa_learning_loop_test.exs" ;
+  cs:result "PASS in STOGAF court run 36082037670 on tree-identical head 7c457827" .
+wde:E15 a cs:Evidence ; cs:evidenceId "E15" ;
+  cs:evidencePath "scripts/stogaf_semantic_court.py" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "python3 scripts/stogaf_semantic_court.py --pack priv/packs/wd_cs2_pack" ;
+  cs:result "standing ALIVE, 5 gates, 0 refusal rows; report sha256 e65aed338f6fc187f4e94303f1dc47bb330a90172a211a7b810353499a26a52c" .
+wde:E16 a cs:Evidence ; cs:evidenceId "E16" ;
+  cs:evidencePath "priv/packs/wd_cs2_pack/stogaf-wd-instance.ttl" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "python3 scripts/stogaf_semantic_court.py --pack priv/packs/wd_cs2_pack" ;
+  cs:result "currentConformance ST-4 CONSTRAINED admitted by gate 020" .
+wde:E17 a cs:Evidence ; cs:evidenceId "E17" ;
+  cs:evidencePath "docs/case-studies/wd-fa/03-BUSINESS-ARCHITECTURE.md" ;
+  cs:exactSubject "seanchatmangpt/xaas@f9670f446537ddb882edf9cd7e0b6519de557e60" ;
+  cs:validator "design review" ; cs:result "DESIGN_DOCUMENT" .
+
+# ---------------------------------------------------------------- falsifiers
+
+wdf:F01 a cs:Falsifier ; cs:falsifierId "F01" ;
+  cs:falsifierObservation "The submission recommends free-form chat answers over a vector index as the primary interface." .
+wdf:F02 a cs:Falsifier ; cs:falsifierId "F02" ;
+  cs:falsifierObservation "WD's answer to assumption A1 names a dominant bottleneck other than context reconstruction and prior-art retrieval." .
+wdf:F03 a cs:Falsifier ; cs:falsifierId "F03" ;
+  cs:falsifierCommand "mix test test/xaas/case_studies/wd_fa_chicago_test.exs" ;
+  cs:falsifierObservation "A high-scoring novel candidate is admitted as KNOWN, or the test fails." .
+wdf:F04 a cs:Falsifier ; cs:falsifierId "F04" ;
+  cs:falsifierCommand "python3 scripts/stogaf_semantic_court.py --pack priv/packs/wd_cs2_pack" ;
+  cs:falsifierObservation "Gate 020 returns a refusal row (authority other than SELECT_CONSTRUCT_ONLY, or human gate drift)." .
+wdf:F05 a cs:Falsifier ; cs:falsifierId "F05" ;
+  cs:falsifierCommand "python3 scripts/stogaf_semantic_court.py --pack priv/packs/wd_cs2_pack" ;
+  cs:falsifierObservation "Gate 030 returns a view that is not derived from the architecture episode." .
+wdf:F06 a cs:Falsifier ; cs:falsifierId "F06" ;
+  cs:falsifierCommand "mix test test/xaas/case_studies/wd_fa_chicago_test.exs" ;
+  cs:falsifierObservation "A case lacking required waveform evidence is returned as KNOWN instead of PARTIAL." .
+wdf:F07 a cs:Falsifier ; cs:falsifierId "F07" ;
+  cs:falsifierCommand "mix test test/xaas/case_studies/wd_fa_learning_ocel_test.exs" ;
+  cs:falsifierObservation "The learning episode persists without binding work, disposition, receipt and experience objects." .
+wdf:F08 a cs:Falsifier ; cs:falsifierId "F08" ;
+  cs:falsifierObservation "A recommendation is produced from evidence retrieved outside the current case's fact envelope." .
+wdf:F09 a cs:Falsifier ; cs:falsifierId "F09" ;
+  cs:falsifierCommand "mix test test/xaas/case_studies/wd_fa_evidence_policy_test.exs" ;
+  cs:falsifierObservation "Classification or purpose mismatch, or private evidence without clearance, is admitted." .
+wdf:F10 a cs:Falsifier ; cs:falsifierId "F10" ;
+  cs:falsifierCommand "mix xaas.wd.fa_eval wd-cs2-evaluation.json" ;
+  cs:falsifierObservation "controls_passed is not 7, or mttr is reported as anything other than UNMEASURED." .
+wdf:F11 a cs:Falsifier ; cs:falsifierId "F11" ;
+  cs:falsifierObservation "The 30/60/90 plan starts outside a bounded, shadow-only vertical slice." .
+wdf:F12 a cs:Falsifier ; cs:falsifierId "F12" ;
+  cs:falsifierCommand "mix test test/xaas/case_studies/wd_fa_learning_loop_test.exs" ;
+  cs:falsifierObservation "An UNKNOWN fixture becomes reusable experience without independent verification, or a disposition mismatch compiles." .
+wdf:F13 a cs:Falsifier ; cs:falsifierId "F13" ;
+  cs:falsifierCommand "python3 scripts/stogaf_semantic_court.py --pack priv/packs/wd_cs2_pack" ;
+  cs:falsifierObservation "The court standing is not ALIVE, or currentConformance is anything other than ST-4 CONSTRAINED." .
+
+# ---------------------------------------------------------------- claims
+
+wdc:C01 a cs:Claim ; cs:claimId "C01" ; cs:claimOf wdcs2:case ;
+  cs:claimText "The HDD failure-analysis agent is designed as a governed quality loop, not a chatbot in front of a vector database." ;
+  cs:standing "DESIGN" ; cs:evidenceCeiling "DESIGN_DOCUMENT" ; cs:authorityCeiling "NONE" ;
+  cs:supportedBy wde:E01 ; cs:falsifiedBy wdf:F01 ; cs:renderedBy wddeck:slide-01 .
+
+wdc:C02 a cs:Claim ; cs:claimId "C02" ; cs:claimOf wdcs2:case ;
+  cs:claimText "The dominant FA cost is repeated human reconstruction of a failed drive's context, pending WD's answer to assumption A1." ;
+  cs:standing "DESIGN" ; cs:evidenceCeiling "DESIGN_DOCUMENT" ; cs:authorityCeiling "NONE" ;
+  cs:supportedBy wde:E02, wde:E17 ; cs:dependsOn wda:A1 ; cs:falsifiedBy wdf:F02 ;
+  cs:renderedBy wddeck:slide-03 .
+
+wdc:C03 a cs:Claim ; cs:claimId "C03" ; cs:claimOf wdcs2:case ;
+  cs:claimText "A candidate is not an admission and an admission is not authority: a high-scoring candidate cannot become KNOWN, and consequential disposition stays with an engineer." ;
+  cs:standing "ALIVE_FIXTURE" ; cs:evidenceCeiling "REPO_LOCAL_FIXTURE" ; cs:authorityCeiling "CONSTRUCT" ;
+  cs:supportedBy wde:E03, wde:E04 ; cs:dependsOn wda:A2 ; cs:falsifiedBy wdf:F03, wdf:F04 ;
+  cs:renderedBy wddeck:slide-04 .
+
+wdc:C04 a cs:Claim ; cs:claimId "C04" ; cs:claimOf wdcs2:case ;
+  cs:claimText "One evidence state is projected into several views; every declared view is derived from the architecture episode." ;
+  cs:standing "ALIVE_FIXTURE" ; cs:evidenceCeiling "REPO_LOCAL_FIXTURE" ; cs:authorityCeiling "CONSTRUCT" ;
+  cs:supportedBy wde:E05, wde:E15 ; cs:falsifiedBy wdf:F05 ;
+  cs:renderedBy wddeck:slide-05 .
+
+wdc:C05 a cs:Claim ; cs:claimId "C05" ; cs:claimOf wdcs2:case ;
+  cs:claimText "For a failed drive the agent returns KNOWN only on deterministic evidence closure, PARTIAL when required evidence is missing, and UNKNOWN otherwise." ;
+  cs:standing "ALIVE_FIXTURE" ; cs:evidenceCeiling "REPO_LOCAL_FIXTURE" ; cs:authorityCeiling "CONSTRUCT" ;
+  cs:supportedBy wde:E03 ; cs:falsifiedBy wdf:F06 ;
+  cs:renderedBy wddeck:slide-06 .
+
+wdc:C06 a cs:Claim ; cs:claimId "C06" ; cs:claimOf wdcs2:case ;
+  cs:claimText "The data model is object-centric: a learning episode binds work, disposition, receipt and MachineExperience objects with provenance." ;
+  cs:standing "ALIVE_FIXTURE" ; cs:evidenceCeiling "REPO_LOCAL_FIXTURE" ; cs:authorityCeiling "CONSTRUCT" ;
+  cs:supportedBy wde:E07, wde:E08 ; cs:falsifiedBy wdf:F07 ;
+  cs:renderedBy wddeck:slide-07 .
+
+wdc:C07 a cs:Claim ; cs:claimId "C07" ; cs:claimOf wdcs2:case ;
+  cs:claimText "Corpus understanding is precomputed; the decision for a case is made on that case's current facts." ;
+  cs:standing "DESIGN" ; cs:evidenceCeiling "DESIGN_DOCUMENT" ; cs:authorityCeiling "NONE" ;
+  cs:supportedBy wde:E09 ; cs:falsifiedBy wdf:F08 ;
+  cs:renderedBy wddeck:slide-08 .
+
+wdc:C08 a cs:Claim ; cs:claimId "C08" ; cs:claimOf wdcs2:case ;
+  cs:claimText "Evidence admission fails closed on classification or purpose mismatch and on private evidence without explicit clearance." ;
+  cs:standing "ALIVE_FIXTURE" ; cs:evidenceCeiling "REPO_LOCAL_FIXTURE" ; cs:authorityCeiling "CONSTRUCT" ;
+  cs:supportedBy wde:E06, wde:E10 ; cs:dependsOn wda:A3 ; cs:falsifiedBy wdf:F09 ;
+  cs:renderedBy wddeck:slide-09 .
+
+wdc:C09 a cs:Claim ; cs:claimId "C09" ; cs:claimOf wdcs2:case ;
+  cs:claimText "The offline evaluation executes seven negative and positive controls on repository fixtures and reports MTTR as UNMEASURED." ;
+  cs:standing "ALIVE_FIXTURE" ; cs:evidenceCeiling "REPO_LOCAL_FIXTURE" ; cs:authorityCeiling "CONSTRUCT" ;
+  cs:supportedBy wde:E11, wde:E12 ; cs:falsifiedBy wdf:F10 ;
+  cs:renderedBy wddeck:slide-10 .
+
+wdc:C10 a cs:Claim ; cs:claimId "C10" ; cs:claimOf wdcs2:case ;
+  cs:claimText "Delivery starts with a bounded 30-day vertical slice in shadow mode, sized to the access WD can authorize." ;
+  cs:standing "DESIGN" ; cs:evidenceCeiling "DESIGN_DOCUMENT" ; cs:authorityCeiling "NONE" ;
+  cs:supportedBy wde:E13 ; cs:dependsOn wda:A3 ; cs:falsifiedBy wdf:F11 ;
+  cs:renderedBy wddeck:slide-11 .
+
+wdc:C11 a cs:Claim ; cs:claimId "C11" ; cs:claimOf wdcs2:case ;
+  cs:claimText "An UNKNOWN fixture becomes reusable MachineExperience only after independent verification of the engineer disposition." ;
+  cs:standing "ALIVE_FIXTURE" ; cs:evidenceCeiling "REPO_LOCAL_FIXTURE" ; cs:authorityCeiling "CONSTRUCT" ;
+  cs:supportedBy wde:E14 ; cs:falsifiedBy wdf:F12 ;
+  cs:renderedBy wddeck:slide-12 .
+
+wdc:C12 a cs:Claim ; cs:claimId "C12" ; cs:claimOf wdcs2:case ;
+  cs:claimText "The architecture episode's current STOGAF conformance is ST-4 CONSTRAINED." ;
+  cs:claimedLevel stogaf:ST4 ;
+  cs:standing "ALIVE_FIXTURE" ; cs:evidenceCeiling "REPO_LOCAL_FIXTURE" ; cs:authorityCeiling "SELECT" ;
+  cs:supportedBy wde:E15, wde:E16 ; cs:falsifiedBy wdf:F13 .
+
+# ---------------------------------------------------------------- slides without claims
+
+wddeck:slide-02 cs:noClaimReason "Agenda slide: lists what the talk covers; asserts nothing beyond the claims on later slides." .
+wddeck:slide-13 cs:noClaimReason "Internal presenter prep (audience internal): not shown to WD." .
+wddeck:slide-14 cs:noClaimReason "Internal presenter prep (audience internal): not shown to WD." .
+
+# ---------------------------------------------------------------- non-claims
+
+wdn:N01 a cs:NonClaim ; cs:nonClaimId "N01" ; cs:nonClaimOf wdcs2:case ;
+  cs:nonClaimLabel "ST-6 AUTONOMIC" .
+wdn:N02 a cs:NonClaim ; cs:nonClaimId "N02" ; cs:nonClaimOf wdcs2:case ;
+  cs:nonClaimLabel "ST-7 ACTUATED" .
+wdn:N03 a cs:NonClaim ; cs:nonClaimId "N03" ; cs:nonClaimOf wdcs2:case ;
+  cs:nonClaimLabel "ST-8 CLOSED_LOOP" .
+wdn:N04 a cs:NonClaim ; cs:nonClaimId "N04" ; cs:nonClaimOf wdcs2:case ;
+  cs:nonClaimLabel "ST-9 LEARNING" .
+wdn:N05 a cs:NonClaim ; cs:nonClaimId "N05" ; cs:nonClaimOf wdcs2:case ;
+  cs:nonClaimLabel "production deployment" .
+wdn:N06 a cs:NonClaim ; cs:nonClaimId "N06" ; cs:nonClaimOf wdcs2:case ;
+  cs:nonClaimLabel "measured WD MTTR reduction" .
+wdn:N07 a cs:NonClaim ; cs:nonClaimId "N07" ; cs:nonClaimOf wdcs2:case ;
+  cs:nonClaimLabel "WD acceptance" .
+
+# ---------------------------------------------------------------- assumptions
+# Source: 19-SEPTEMBER-25-SUBMISSION.md "Questions already sent to WD and
+# interim assumptions". Forwarding confirmation is not an answer.
+
+wda:A1 a cs:Assumption ; cs:assumptionId "A1" ; cs:assumptionOf wdcs2:case ;
+  cs:question "When a failed drive comes in, what does the engineer actually do today, and where does the process usually get stuck?" ;
+  cs:unknown "Exact current workflow, handoffs, wait states and dominant bottleneck" ;
+  cs:interimAssumption "Engineers spend material time reconstructing context and finding applicable prior art before selecting the next diagnostic step" ;
+  cs:changeIfDifferent "I would remap the first vertical slice around the measured bottleneck rather than preserve my assumed workflow" ;
+  cs:askedOn "2026-09-23"^^xsd:date ; cs:askedVia "Pradyot Kar" ; cs:answerStatus "UNANSWERED" .
+
+wda:A2 a cs:Assumption ; cs:assumptionId "A2" ; cs:assumptionOf wdcs2:case ;
+  cs:question "When evidence disagrees — prior FA history, build data, current test results and engineer judgment — what is authoritative?" ;
+  cs:unknown "WD's precedence, escalation and ground-truth policy" ;
+  cs:interimAssumption "No source is allowed to silently dominate; contradictions remain visible and consequential disposition stays with an engineer" ;
+  cs:changeIfDifferent "Admission rules, evidence precedence and escalation policy would be revised to WD's actual governance model" ;
+  cs:askedOn "2026-09-23"^^xsd:date ; cs:askedVia "Pradyot Kar" ; cs:answerStatus "UNANSWERED" .
+
+wda:A3 a cs:Assumption ; cs:assumptionId "A3" ; cs:assumptionOf wdcs2:case ;
+  cs:question "If I had 30 days to prove usefulness, what data and systems would I realistically have access to, and what result would the team want to see first?" ;
+  cs:unknown "Accessible sources, security constraints, representative corpus and first success metric" ;
+  cs:interimAssumption "Start with a bounded historical/redacted corpus plus whatever structured build facts WD can authorize; use shadow-only recommendations" ;
+  cs:changeIfDifferent "The first 30-day slice and measurement plan would be narrowed or expanded around the actual access envelope" ;
+  cs:askedOn "2026-09-23"^^xsd:date ; cs:askedVia "Pradyot Kar" ; cs:answerStatus "UNANSWERED" .
+
+@prefix stogaf: <urn:xaas:stogaf:> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+stogaf:ArchitectureEpisode a skos:Concept ; skos:prefLabel "Architecture Episode" .
+stogaf:ArchitectureState a skos:Concept ; skos:prefLabel "Architecture State" .
+stogaf:Requirement a skos:Concept ; skos:prefLabel "Requirement" .
+stogaf:Constraint a skos:Concept ; skos:prefLabel "Constraint" .
+stogaf:BuildingBlock a skos:Concept ; skos:prefLabel "Architecture Building Block" .
+stogaf:Viewpoint a skos:Concept ; skos:prefLabel "Viewpoint" .
+stogaf:View a skos:Concept ; skos:prefLabel "View" .
+stogaf:Gap a skos:Concept ; skos:prefLabel "Gap" .
+stogaf:Transition a skos:Concept ; skos:prefLabel "Transition" .
+stogaf:Evidence a skos:Concept ; skos:prefLabel "Evidence" .
+stogaf:Authority a skos:Concept ; skos:prefLabel "Authority" .
+stogaf:Verification a skos:Concept ; skos:prefLabel "Verification" .
+stogaf:ConformanceLevel a skos:Concept ; skos:prefLabel "Conformance Level" .
+stogaf:MachineExperience a skos:Concept ; skos:prefLabel "MachineExperience" .
+
+stogaf:subject a rdf:Property .
+stogaf:baseline a rdf:Property .
+stogaf:target a rdf:Property .
+stogaf:gap a rdf:Property .
+stogaf:currentConformance a rdf:Property .
+stogaf:targetConformance a rdf:Property .
+stogaf:evidenceCeiling a rdf:Property .
+stogaf:authority a rdf:Property .
+stogaf:humanGate a rdf:Property .
+stogaf:currentAdmPhase a rdf:Property .
+stogaf:nextAdmPhase a rdf:Property .
+stogaf:projectsTo a rdf:Property .
+stogaf:satisfiesRequirement a rdf:Property .
+stogaf:requiresEvidence a rdf:Property .
+stogaf:verifiedBy a rdf:Property .
+stogaf:standing a rdf:Property .
+stogaf:levelNumber a rdf:Property .
+stogaf:cumulative a rdf:Property .
+stogaf:applicability a rdf:Property .
+stogaf:replayIdentity a rdf:Property .
+stogaf:receiptIdentity a rdf:Property .
+
+stogaf:ST0 a stogaf:ConformanceLevel ; stogaf:levelNumber 0 ; skos:prefLabel "ST-0 DOCUMENTED" .
+stogaf:ST1 a stogaf:ConformanceLevel ; stogaf:levelNumber 1 ; skos:prefLabel "ST-1 ADDRESSABLE" .
+stogaf:ST2 a stogaf:ConformanceLevel ; stogaf:levelNumber 2 ; skos:prefLabel "ST-2 LINKED" .
+stogaf:ST3 a stogaf:ConformanceLevel ; stogaf:levelNumber 3 ; skos:prefLabel "ST-3 PROVENANCED" .
+stogaf:ST4 a stogaf:ConformanceLevel ; stogaf:levelNumber 4 ; skos:prefLabel "ST-4 CONSTRAINED" .
+stogaf:ST5 a stogaf:ConformanceLevel ; stogaf:levelNumber 5 ; skos:prefLabel "ST-5 GENERATED" .
+stogaf:ST6 a stogaf:ConformanceLevel ; stogaf:levelNumber 6 ; skos:prefLabel "ST-6 AUTONOMIC" .
+stogaf:ST7 a stogaf:ConformanceLevel ; stogaf:levelNumber 7 ; skos:prefLabel "ST-7 ACTUATED" .
+stogaf:ST8 a stogaf:ConformanceLevel ; stogaf:levelNumber 8 ; skos:prefLabel "ST-8 CLOSED_LOOP" .
+stogaf:ST9 a stogaf:ConformanceLevel ; stogaf:levelNumber 9 ; skos:prefLabel "ST-9 LEARNING" .
+
+@prefix pres: <https://ggen.dev/ns/presentation#> .
+@prefix wddeck: <urn:wd:case-study-2:deck:> .
+
+wddeck:deck a pres:Presentation ;
+  pres:id "wd-case-study-2" ;
+  pres:title "Western Digital Case Study 2 — HDD Failure Analysis AI Agent" ;
+  pres:author "Sean Chatman" ;
+  pres:company "XaaS" ;
+  pres:subject "WD Senior Forward Deployed Engineer case study" ;
+  pres:footer "Sean Chatman  /  Western Digital  /  September 2026" .
+
+@prefix pres: <https://ggen.dev/ns/presentation#> .
+@prefix wddeck: <urn:wd:case-study-2:deck:> .
+
+wddeck:slide-01 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-01" ;
+  pres:order 1 ;
+  pres:layout "hero_flow" ;
+  pres:audience "interview" ;
+  pres:kicker "Western Digital Case Study 2" ;
+  pres:title "HDD Failure Analysis\nAI Agent" ;
+  pres:subtitle "A governed quality loop — not a chatbot in front of a vector database." ;
+  pres:footer "Sean Chatman · September 2026" ;
+  pres:notes "Open with the frame: this is a 20-minute design walk-through. The answer is not \"use an LLM\"; the answer is an operating loop that makes prior failure-analysis work reusable while keeping engineering authority explicit. Say: I chose Case Study 2 and interpreted the ask as engineering judgment under incomplete information. I asked clarifying questions, continued in parallel, and kept assumptions explicit." .
+
+wddeck:slide-01-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-01 ;
+  pres:order 1 ;
+  pres:role "stage" ;
+  pres:title "OBSERVE" ;
+  pres:tone "blue" .
+
+wddeck:slide-01-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-01 ;
+  pres:order 2 ;
+  pres:role "stage" ;
+  pres:title "ADMIT" ;
+  pres:tone "green" .
+
+wddeck:slide-01-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-01 ;
+  pres:order 3 ;
+  pres:role "stage" ;
+  pres:title "WORK" ;
+  pres:tone "gold" .
+
+wddeck:slide-01-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-01 ;
+  pres:order 4 ;
+  pres:role "stage" ;
+  pres:title "VERIFY" ;
+  pres:tone "red" .
+
+wddeck:slide-01-block-05 a pres:Block ;
+  pres:blockOf wddeck:slide-01 ;
+  pres:order 5 ;
+  pres:role "stage" ;
+  pres:title "LEARN" ;
+  pres:tone "stone" .
+
+wddeck:slide-02 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-02" ;
+  pres:order 2 ;
+  pres:layout "agenda" ;
+  pres:audience "interview" ;
+  pres:title "What I will prove in 20 minutes" ;
+  pres:notes "Say this slide as a contract: I will not spend the time narrating every document. I will make the selection function clear. First, the bottleneck. Second, the architecture. Third, the safety/trust boundary. Fourth, the delivery plan. Emphasize the evidence ceiling: the prototype is useful because it makes the architecture falsifiable, but code is optional and does not substitute for design narrative." .
+
+wddeck:slide-02-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-02 ;
+  pres:order 1 ;
+  pres:role "step" ;
+  pres:title "1\nFrame the real bottleneck" ;
+  pres:tone "blue" .
+
+wddeck:slide-02-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-02 ;
+  pres:order 2 ;
+  pres:role "step" ;
+  pres:title "2\nShow the governed architecture" ;
+  pres:tone "green" .
+
+wddeck:slide-02-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-02 ;
+  pres:order 3 ;
+  pres:role "step" ;
+  pres:title "3\nSeparate ranking from authority" ;
+  pres:tone "gold" .
+
+wddeck:slide-02-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-02 ;
+  pres:order 4 ;
+  pres:role "step" ;
+  pres:title "4\nDefine measurable delivery" ;
+  pres:tone "stone" .
+
+wddeck:slide-02-block-05 a pres:Block ;
+  pres:blockOf wddeck:slide-02 ;
+  pres:order 5 ;
+  pres:role "callout" ;
+  pres:body "Success is not a persuasive demo. Success is a system that tells the engineer what is known, what is missing, what is novel, and what action is justified next." ;
+  pres:tone "stone" .
+
+wddeck:slide-02-block-06 a pres:Block ;
+  pres:blockOf wddeck:slide-02 ;
+  pres:order 6 ;
+  pres:role "boundary" ;
+  pres:body "Main evidence boundary: repository-local proposal + prototype fixtures, not WD production proof." ;
+  pres:tone "red" .
+
+wddeck:slide-03 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-03" ;
+  pres:order 3 ;
+  pres:layout "source_chain" ;
+  pres:audience "interview" ;
+  pres:title "The problem is repeated context reconstruction" ;
+  pres:notes "Use WD's own problem framing: the evidence is fragmented across prior FA reports, image-heavy presentations, Confluence, Excel and structured build data. The workflow cost is not only search latency. It is repeated human reconstruction of the failed drive's context. So the agent's value is not \"answer generation\"; it is retiring repeated investigation steps. This is where MTTR and corrective-action quality become measurable." .
+
+wddeck:slide-03-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-03 ;
+  pres:order 1 ;
+  pres:role "source" ;
+  pres:title "Historical FA\nPowerPoint" ;
+  pres:tone "blue" .
+
+wddeck:slide-03-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-03 ;
+  pres:order 2 ;
+  pres:role "source" ;
+  pres:title "Images / SEM\nplots / waveforms" ;
+  pres:tone "blue" .
+
+wddeck:slide-03-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-03 ;
+  pres:order 3 ;
+  pres:role "source" ;
+  pres:title "Confluence\nknown issues" ;
+  pres:tone "blue" .
+
+wddeck:slide-03-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-03 ;
+  pres:order 4 ;
+  pres:role "source" ;
+  pres:title "Excel\ntrackers" ;
+  pres:tone "blue" .
+
+wddeck:slide-03-block-05 a pres:Block ;
+  pres:blockOf wddeck:slide-03 ;
+  pres:order 5 ;
+  pres:role "source" ;
+  pres:title "Data lake\nbuild facts" ;
+  pres:tone "blue" .
+
+wddeck:slide-03-block-06 a pres:Block ;
+  pres:blockOf wddeck:slide-03 ;
+  pres:order 6 ;
+  pres:role "source" ;
+  pres:title "Engineer\njudgment" ;
+  pres:tone "green" .
+
+wddeck:slide-03-block-07 a pres:Block ;
+  pres:blockOf wddeck:slide-03 ;
+  pres:order 7 ;
+  pres:role "center" ;
+  pres:title "Reconstruct context\nbefore deciding the next action" ;
+  pres:tone "gold" .
+
+wddeck:slide-03-block-08 a pres:Block ;
+  pres:blockOf wddeck:slide-03 ;
+  pres:order 8 ;
+  pres:role "outcome" ;
+  pres:title "Slow MTTR + repeated investigative work + weaker corrective actions" ;
+  pres:tone "red" .
+
+wddeck:slide-03-block-09 a pres:Block ;
+  pres:blockOf wddeck:slide-03 ;
+  pres:order 9 ;
+  pres:role "callout" ;
+  pres:body "The first product promise: start the engineer at judgment, not at document archaeology." ;
+  pres:tone "stone" .
+
+wddeck:slide-04 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-04" ;
+  pres:order 4 ;
+  pres:layout "triad" ;
+  pres:audience "interview" ;
+  pres:title "Core design rule: candidate ≠ admission ≠ authority" ;
+  pres:notes "This is the most important slide. Say it slowly. A model can nominate plausible failure modes, but plausibility is not engineering knowledge. Admission needs required evidence and applicability constraints. Authority remains with the engineer for consequential disposition. This prevents the system from turning a confident-looking nearest neighbor into a false root cause." .
+
+wddeck:slide-04-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-04 ;
+  pres:order 1 ;
+  pres:role "stage" ;
+  pres:title "Candidate" ;
+  pres:tone "blue" .
+
+wddeck:slide-04-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-04 ;
+  pres:order 2 ;
+  pres:role "stage" ;
+  pres:title "Admission" ;
+  pres:tone "gold" .
+
+wddeck:slide-04-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-04 ;
+  pres:order 3 ;
+  pres:role "stage" ;
+  pres:title "Authority" ;
+  pres:tone "green" .
+
+wddeck:slide-04-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-04 ;
+  pres:order 4 ;
+  pres:role "detail" ;
+  pres:body "Model / retrieval may nominate" ;
+  pres:tone "stone" .
+
+wddeck:slide-04-block-05 a pres:Block ;
+  pres:blockOf wddeck:slide-04 ;
+  pres:order 5 ;
+  pres:role "detail" ;
+  pres:body "Evidence + applicability decide" ;
+  pres:tone "stone" .
+
+wddeck:slide-04-block-06 a pres:Block ;
+  pres:blockOf wddeck:slide-04 ;
+  pres:order 6 ;
+  pres:role "detail" ;
+  pres:body "Engineer owns consequence" ;
+  pres:tone "stone" .
+
+wddeck:slide-04-block-07 a pres:Block ;
+  pres:blockOf wddeck:slide-04 ;
+  pres:order 7 ;
+  pres:role "callout" ;
+  pres:body "Similarity can rank a prior case. Similarity cannot make it true." ;
+  pres:tone "stone" .
+
+wddeck:slide-04-block-08 a pres:Block ;
+  pres:blockOf wddeck:slide-04 ;
+  pres:order 8 ;
+  pres:role "status" ;
+  pres:title "KNOWN" ;
+  pres:tone "green" .
+
+wddeck:slide-04-block-09 a pres:Block ;
+  pres:blockOf wddeck:slide-04 ;
+  pres:order 9 ;
+  pres:role "status" ;
+  pres:title "PARTIAL" ;
+  pres:tone "gold" .
+
+wddeck:slide-04-block-10 a pres:Block ;
+  pres:blockOf wddeck:slide-04 ;
+  pres:order 10 ;
+  pres:role "status" ;
+  pres:title "UNKNOWN" ;
+  pres:tone "red" .
+
+
+@prefix pres: <https://ggen.dev/ns/presentation#> .
+@prefix wddeck: <urn:wd:case-study-2:deck:> .
+
+wddeck:slide-05 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-05" ;
+  pres:order 5 ;
+  pres:layout "pipeline" ;
+  pres:audience "interview" ;
+  pres:title "Architecture: one evidence state, many projections" ;
+  pres:notes "Walk left to right. Sources remain sources. Ingestion creates normalized evidence but also quarantines failures. The canonical evidence plane binds identity, provenance, source ACLs and applicability rules. The triage plane uses retrieval and ranking, but admission is deterministic. Downstream artifacts are projections; we avoid each dashboard or work queue becoming a separate truth source." .
+
+wddeck:slide-05-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-05 ;
+  pres:order 1 ;
+  pres:role "stage" ;
+  pres:title "Source systems\nPPT · images · Confluence · Excel · data lake" ;
+  pres:tone "blue" .
+
+wddeck:slide-05-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-05 ;
+  pres:order 2 ;
+  pres:role "stage" ;
+  pres:title "Ingestion boundary\nextract · normalize · quarantine failures" ;
+  pres:tone "gold" .
+
+wddeck:slide-05-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-05 ;
+  pres:order 3 ;
+  pres:role "stage" ;
+  pres:title "Canonical FA evidence plane\nidentity · provenance · graph · rules" ;
+  pres:tone "green" .
+
+wddeck:slide-05-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-05 ;
+  pres:order 4 ;
+  pres:role "stage" ;
+  pres:title "Triage plane\nretrieve · rank · admit · construct work" ;
+  pres:tone "stone" .
+
+wddeck:slide-05-block-05 a pres:Block ;
+  pres:blockOf wddeck:slide-05 ;
+  pres:order 5 ;
+  pres:role "projection" ;
+  pres:title "Engineer view" ;
+  pres:tone "white" .
+
+wddeck:slide-05-block-06 a pres:Block ;
+  pres:blockOf wddeck:slide-05 ;
+  pres:order 6 ;
+  pres:role "projection" ;
+  pres:title "sJira work" ;
+  pres:tone "white" .
+
+wddeck:slide-05-block-07 a pres:Block ;
+  pres:blockOf wddeck:slide-05 ;
+  pres:order 7 ;
+  pres:role "projection" ;
+  pres:title "Audit receipt" ;
+  pres:tone "white" .
+
+wddeck:slide-05-block-08 a pres:Block ;
+  pres:blockOf wddeck:slide-05 ;
+  pres:order 8 ;
+  pres:role "projection" ;
+  pres:title "Manager view" ;
+  pres:tone "white" .
+
+wddeck:slide-05-block-09 a pres:Block ;
+  pres:blockOf wddeck:slide-05 ;
+  pres:order 9 ;
+  pres:role "projection" ;
+  pres:title "Evaluation" ;
+  pres:tone "white" .
+
+wddeck:slide-05-block-10 a pres:Block ;
+  pres:blockOf wddeck:slide-05 ;
+  pres:order 10 ;
+  pres:role "callout" ;
+  pres:body "The graph is canonical. Views, work items, receipts and demos are projections." ;
+  pres:tone "stone" .
+
+wddeck:slide-06 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-06" ;
+  pres:order 6 ;
+  pres:layout "pairs" ;
+  pres:audience "interview" ;
+  pres:title "What the agent returns for a failed drive" ;
+  pres:notes "Use a concrete example verbally: for a failed drive with a reported timeout symptom, the system might surface two probable known modes, show lot and firmware applicability, link to prior cases, indicate missing station retest evidence, and recommend a named diagnostic action. The important part: it also states whether the evidence is sufficient for KNOWN, only PARTIAL, or truly UNKNOWN." .
+
+wddeck:slide-06-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-06 ;
+  pres:order 1 ;
+  pres:role "pair" ;
+  pres:title "Ranked candidates" ;
+  pres:body "probable failure modes + why ranked" ;
+  pres:tone "blue" .
+
+wddeck:slide-06-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-06 ;
+  pres:order 2 ;
+  pres:role "pair" ;
+  pres:title "Evidence packet" ;
+  pres:body "supporting, contradicting and missing evidence" ;
+  pres:tone "green" .
+
+wddeck:slide-06-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-06 ;
+  pres:order 3 ;
+  pres:role "pair" ;
+  pres:title "Closest prior cases" ;
+  pres:body "applicable prior art, not merely similar text" ;
+  pres:tone "blue" .
+
+wddeck:slide-06-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-06 ;
+  pres:order 4 ;
+  pres:role "pair" ;
+  pres:title "Next action" ;
+  pres:body "named test, teardown step, route, closure or escalation" ;
+  pres:tone "green" .
+
+wddeck:slide-06-block-05 a pres:Block ;
+  pres:blockOf wddeck:slide-06 ;
+  pres:order 5 ;
+  pres:role "pair" ;
+  pres:title "Standing" ;
+  pres:body "KNOWN · PARTIAL · UNKNOWN" ;
+  pres:tone "blue" .
+
+wddeck:slide-06-block-06 a pres:Block ;
+  pres:blockOf wddeck:slide-06 ;
+  pres:order 6 ;
+  pres:role "pair" ;
+  pres:title "Authority" ;
+  pres:body "what the system constructed vs what engineer must decide" ;
+  pres:tone "green" .
+
+wddeck:slide-06-block-07 a pres:Block ;
+  pres:blockOf wddeck:slide-06 ;
+  pres:order 7 ;
+  pres:role "callout" ;
+  pres:body "The output is a triage packet. It should reduce search, expose uncertainty and construct the next bounded action." ;
+  pres:tone "stone" .
+
+wddeck:slide-07 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-07" ;
+  pres:order 7 ;
+  pres:layout "graph" ;
+  pres:audience "interview" ;
+  pres:title "Data model: object-centric, provenance-bound" ;
+  pres:notes "Explain the data stance. A failed drive is not a blob of text. It is related to drive identity, build, lot, supplier, BOM revision, firmware, station, tests, rework, evidence artifacts, observations, failure modes, actions, dispositions and reusable experience. Provenance is carried with each assertion. This lets the engineer ask: what is observed, what was derived, and where did it come from?" .
+
+wddeck:slide-07-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-07 ;
+  pres:order 1 ;
+  pres:role "node" ;
+  pres:title "FailureCase" ;
+  pres:tone "gold" .
+
+wddeck:slide-07-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-07 ;
+  pres:order 2 ;
+  pres:role "node" ;
+  pres:title "Drive" ;
+  pres:tone "blue" .
+
+wddeck:slide-07-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-07 ;
+  pres:order 3 ;
+  pres:role "node" ;
+  pres:title "Build" ;
+  pres:tone "blue" .
+
+wddeck:slide-07-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-07 ;
+  pres:order 4 ;
+  pres:role "node" ;
+  pres:title "EvidenceArtifact" ;
+  pres:tone "blue" .
+
+wddeck:slide-07-block-05 a pres:Block ;
+  pres:blockOf wddeck:slide-07 ;
+  pres:order 5 ;
+  pres:role "node" ;
+  pres:title "FailureMode" ;
+  pres:tone "green" .
+
+wddeck:slide-07-block-06 a pres:Block ;
+  pres:blockOf wddeck:slide-07 ;
+  pres:order 6 ;
+  pres:role "node" ;
+  pres:title "DiagnosticAction" ;
+  pres:tone "green" .
+
+wddeck:slide-07-block-07 a pres:Block ;
+  pres:blockOf wddeck:slide-07 ;
+  pres:order 7 ;
+  pres:role "node" ;
+  pres:title "MachineExperience" ;
+  pres:tone "green" .
+
+wddeck:slide-07-block-08 a pres:Block ;
+  pres:blockOf wddeck:slide-07 ;
+  pres:order 8 ;
+  pres:role "callout" ;
+  pres:body "Observed ≠ derived ≠ inferred." ;
+  pres:tone "stone" .
+
+wddeck:slide-07-block-09 a pres:Block ;
+  pres:blockOf wddeck:slide-07 ;
+  pres:order 9 ;
+  pres:role "callout" ;
+  pres:body "Vector index is disposable; evidence record is not." ;
+  pres:tone "stone" .
+
+wddeck:slide-07-block-10 a pres:Block ;
+  pres:blockOf wddeck:slide-07 ;
+  pres:order 10 ;
+  pres:role "callout" ;
+  pres:body "Source ACLs travel with evidence." ;
+  pres:tone "stone" .
+
+wddeck:slide-08 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-08" ;
+  pres:order 8 ;
+  pres:layout "split" ;
+  pres:audience "interview" ;
+  pres:title "Reasoning design: precompute corpus, decide on current facts" ;
+  pres:notes "This is the cost and latency answer. I would not retrieve the last 200 documents into context. Corpus normalization, embeddings, image observations and known-case metadata are precomputed. Query time reconstructs the current failed drive, filters by ACL, retrieves candidate prior art, ranks hypotheses and then applies admission rules. For structured data, I prefer purpose-built tools over unrestricted text-to-SQL because the tool contract controls cost, joins, permissions and auditability." .
+
+wddeck:slide-08-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-08 ;
+  pres:order 1 ;
+  pres:role "section" ;
+  pres:title "Offline / precomputed" ;
+  pres:tone "blue" .
+
+wddeck:slide-08-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-08 ;
+  pres:order 2 ;
+  pres:role "section" ;
+  pres:title "Query time" ;
+  pres:tone "green" .
+
+wddeck:slide-08-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-08 ;
+  pres:order 3 ;
+  pres:role "left" ;
+  pres:body "Normalize documents, images, plots" ;
+  pres:tone "stone" .
+
+wddeck:slide-08-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-08 ;
+  pres:order 4 ;
+  pres:role "left" ;
+  pres:body "Embeddings + lexical indexes" ;
+  pres:tone "stone" .
+
+wddeck:slide-08-block-05 a pres:Block ;
+  pres:blockOf wddeck:slide-08 ;
+  pres:order 5 ;
+  pres:role "left" ;
+  pres:body "Prior-case metadata" ;
+  pres:tone "stone" .
+
+wddeck:slide-08-block-06 a pres:Block ;
+  pres:blockOf wddeck:slide-08 ;
+  pres:order 6 ;
+  pres:role "left" ;
+  pres:body "Applicability definitions" ;
+  pres:tone "stone" .
+
+wddeck:slide-08-block-07 a pres:Block ;
+  pres:blockOf wddeck:slide-08 ;
+  pres:order 7 ;
+  pres:role "right" ;
+  pres:body "Resolve drive/build facts" ;
+  pres:tone "stone" .
+
+wddeck:slide-08-block-08 a pres:Block ;
+  pres:blockOf wddeck:slide-08 ;
+  pres:order 8 ;
+  pres:role "right" ;
+  pres:body "ACL-filter retrieval" ;
+  pres:tone "stone" .
+
+wddeck:slide-08-block-09 a pres:Block ;
+  pres:blockOf wddeck:slide-08 ;
+  pres:order 9 ;
+  pres:role "right" ;
+  pres:body "Rank candidates" ;
+  pres:tone "stone" .
+
+wddeck:slide-08-block-10 a pres:Block ;
+  pres:blockOf wddeck:slide-08 ;
+  pres:order 10 ;
+  pres:role "right" ;
+  pres:body "Admit KNOWN/PARTIAL/UNKNOWN" ;
+  pres:tone "stone" .
+
+wddeck:slide-08-block-11 a pres:Block ;
+  pres:blockOf wddeck:slide-08 ;
+  pres:order 11 ;
+  pres:role "center" ;
+  pres:title "Curated semantic tools\nnot unrestricted text-to-SQL" ;
+  pres:tone "stone" .
+
+wddeck:slide-08-block-12 a pres:Block ;
+  pres:blockOf wddeck:slide-08 ;
+  pres:order 12 ;
+  pres:role "callout" ;
+  pres:body "Expensive corpus work stays offline; current drive facts stay current." ;
+  pres:tone "stone" .
+
+
+@prefix pres: <https://ggen.dev/ns/presentation#> .
+@prefix wddeck: <urn:wd:case-study-2:deck:> .
+
+wddeck:slide-09 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-09" ;
+  pres:order 9 ;
+  pres:layout "chain" ;
+  pres:audience "interview" ;
+  pres:title "Security and governance are first-class design constraints" ;
+  pres:notes "Tie directly to WD's rubric. ACL propagation, IP handling and auditability are not a final deployment checklist. They are part of the state machine. If a derived artifact combines multiple restricted sources, use the most restrictive applicable policy until WD defines a declassification rule. Every candidate and recommendation should be replayable from subject identity, source versions, tool/model versions and admission rules." .
+
+wddeck:slide-09-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-09 ;
+  pres:order 1 ;
+  pres:role "stage" ;
+  pres:title "Source ACL" ;
+  pres:tone "blue" .
+
+wddeck:slide-09-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-09 ;
+  pres:order 2 ;
+  pres:role "stage" ;
+  pres:title "Derived evidence" ;
+  pres:tone "gold" .
+
+wddeck:slide-09-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-09 ;
+  pres:order 3 ;
+  pres:role "stage" ;
+  pres:title "Recommendation" ;
+  pres:tone "stone" .
+
+wddeck:slide-09-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-09 ;
+  pres:order 4 ;
+  pres:role "stage" ;
+  pres:title "Engineer disposition" ;
+  pres:tone "green" .
+
+wddeck:slide-09-block-05 a pres:Block ;
+  pres:blockOf wddeck:slide-09 ;
+  pres:order 5 ;
+  pres:role "line" ;
+  pres:body "Authorization before retrieval, not retrieve-then-redact." ;
+  pres:tone "stone" .
+
+wddeck:slide-09-block-06 a pres:Block ;
+  pres:blockOf wddeck:slide-09 ;
+  pres:order 6 ;
+  pres:role "line" ;
+  pres:body "Every recommendation replayable from source versions, model/tool versions and admission rules." ;
+  pres:tone "stone" .
+
+wddeck:slide-09-block-07 a pres:Block ;
+  pres:blockOf wddeck:slide-09 ;
+  pres:order 7 ;
+  pres:role "line" ;
+  pres:body "Phase-one authority: SELECT + CONSTRUCT only. Consequence stays human-gated." ;
+  pres:tone "stone" .
+
+wddeck:slide-09-block-08 a pres:Block ;
+  pres:blockOf wddeck:slide-09 ;
+  pres:order 8 ;
+  pres:role "callout" ;
+  pres:body "Security is not a later hardening pass; it is part of the evidence model." ;
+  pres:tone "stone" .
+
+wddeck:slide-10 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-10" ;
+  pres:order 10 ;
+  pres:layout "stages" ;
+  pres:audience "interview" ;
+  pres:title "Evaluation: prove trust before claiming MTTR" ;
+  pres:notes "Make this very sober. Start with offline controls, especially false-KNOWN negative controls. Then shadow evaluation against historical or parallel cases. Only after that does a bounded pilot measure MTTR and repeated work. Say: false-KNOWN is the trust metric. MTTR is the business metric. Both matter, but one prevents the system from being dangerous and the other proves business value." .
+
+wddeck:slide-10-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-10 ;
+  pres:order 1 ;
+  pres:role "stage" ;
+  pres:title "Offline court" ;
+  pres:body "positive · partial · novel · misleading-similarity · tamper" ;
+  pres:tone "blue" .
+
+wddeck:slide-10-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-10 ;
+  pres:order 2 ;
+  pres:role "stage" ;
+  pres:title "Shadow evaluation" ;
+  pres:body "compare with current FA process, no automatic consequence" ;
+  pres:tone "gold" .
+
+wddeck:slide-10-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-10 ;
+  pres:order 3 ;
+  pres:role "stage" ;
+  pres:title "Bounded pilot" ;
+  pres:body "measured value with human-gated production-adjacent workflow" ;
+  pres:tone "green" .
+
+wddeck:slide-10-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-10 ;
+  pres:order 4 ;
+  pres:role "guardrail" ;
+  pres:title "Critical guardrail: false-KNOWN" ;
+  pres:tone "red" .
+
+wddeck:slide-10-block-05 a pres:Block ;
+  pres:blockOf wddeck:slide-10 ;
+  pres:order 5 ;
+  pres:role "metrics" ;
+  pres:title "Business metrics: MTTR · time to action · engineer touches · repeated work avoided" ;
+  pres:tone "stone" .
+
+wddeck:slide-10-block-06 a pres:Block ;
+  pres:blockOf wddeck:slide-10 ;
+  pres:order 6 ;
+  pres:role "callout" ;
+  pres:body "A lower MTTR after rollout is not automatically causal proof. Define baseline and comparison before claiming improvement." ;
+  pres:tone "stone" .
+
+wddeck:slide-11 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-11" ;
+  pres:order 11 ;
+  pres:layout "timeline" ;
+  pres:audience "interview" ;
+  pres:title "30 / 60 / 90 delivery plan" ;
+  pres:notes "This is the pragmatism slide. In 30 days: one failure family, evidence reconstruction, known/partial/unknown triage and offline/shadow proof. In 60: authorized real sources and shadow comparison. In 90: bounded pilot with human-gated consequence. State clearly what you would cut: broad corpus coverage, polished dashboards, fine-tuning experiments. Do not cut provenance, negative controls, ACLs, human authority or baseline measurement." .
+
+wddeck:slide-11-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-11 ;
+  pres:order 1 ;
+  pres:role "stage" ;
+  pres:title "0–30\nBounded vertical slice" ;
+  pres:body "One failure family, source map, sample corpus, structured join, triage packet." ;
+  pres:tone "blue" .
+
+wddeck:slide-11-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-11 ;
+  pres:order 2 ;
+  pres:role "stage" ;
+  pres:title "31–60\nReal-source shadow" ;
+  pres:body "Authorized connectors, ACL propagation, disposition capture, evaluation dashboard." ;
+  pres:tone "gold" .
+
+wddeck:slide-11-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-11 ;
+  pres:order 3 ;
+  pres:role "stage" ;
+  pres:title "61–90\nBounded pilot" ;
+  pres:body "Human-gated workflow, MachineExperience admission, process-delta review." ;
+  pres:tone "green" .
+
+wddeck:slide-11-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-11 ;
+  pres:order 4 ;
+  pres:role "callout" ;
+  pres:body "Cut broad corpus coverage, polish and autonomy before cutting provenance, negative controls or human authority." ;
+  pres:tone "stone" .
+
+wddeck:slide-12 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-12" ;
+  pres:order 12 ;
+  pres:layout "flow" ;
+  pres:audience "interview" ;
+  pres:title "Close: the long-term compounding loop" ;
+  pres:notes "Close with the compounding value: if the system helps one case become verified prior art, future applicable cases get cheaper and safer. The first decision I would ask for is not autonomy. It is a bounded shadow slice with representative data, an agreed ground-truth policy, and a measured baseline. Then stop and invite questions." .
+
+wddeck:slide-12-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-12 ;
+  pres:order 1 ;
+  pres:role "stage" ;
+  pres:title "UNKNOWN" ;
+  pres:tone "red" .
+
+wddeck:slide-12-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-12 ;
+  pres:order 2 ;
+  pres:role "stage" ;
+  pres:title "Bounded\ninvestigation" ;
+  pres:tone "gold" .
+
+wddeck:slide-12-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-12 ;
+  pres:order 3 ;
+  pres:role "stage" ;
+  pres:title "Verified\ndisposition" ;
+  pres:tone "green" .
+
+wddeck:slide-12-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-12 ;
+  pres:order 4 ;
+  pres:role "stage" ;
+  pres:title "Machine\nExperience" ;
+  pres:tone "blue" .
+
+wddeck:slide-12-block-05 a pres:Block ;
+  pres:blockOf wddeck:slide-12 ;
+  pres:order 5 ;
+  pres:role "stage" ;
+  pres:title "Future case\nKNOWN" ;
+  pres:tone "green" .
+
+wddeck:slide-12-block-06 a pres:Block ;
+  pres:blockOf wddeck:slide-12 ;
+  pres:order 6 ;
+  pres:role "callout" ;
+  pres:body "The system gets better because verified engineering work becomes reusable prior art — not because the model is allowed to guess harder." ;
+  pres:tone "stone" .
+
+wddeck:slide-12-block-07 a pres:Block ;
+  pres:blockOf wddeck:slide-12 ;
+  pres:order 7 ;
+  pres:role "decision" ;
+  pres:body "My proposed first decision: authorize a bounded shadow slice, not production actuation." ;
+  pres:tone "stone" .
+
+
+@prefix pres: <https://ggen.dev/ns/presentation#> .
+@prefix wddeck: <urn:wd:case-study-2:deck:> .
+
+wddeck:slide-13 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-13" ;
+  pres:order 13 ;
+  pres:layout "bullets" ;
+  pres:audience "internal" ;
+  pres:kicker "PRESENTER PREP" ;
+  pres:title "Appendix: ideal hiring feedback to earn" ;
+  pres:footer "internal prep / do not present unless asked" ;
+  pres:notes "This is not for the main presentation. It is the interviewer-lens target. The ideal feedback is not \"cool demo\"; it is that you are the person who can own ambiguous agentic solution delivery end-to-end while preserving evidence, governance and measurable delivery. That matches their evaluation rubric: system design depth, data/context engineering, tradeoff reasoning, security/governance, evaluation rigor, pragmatism and communication." .
+
+wddeck:slide-13-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-13 ;
+  pres:order 1 ;
+  pres:role "bullet" ;
+  pres:body "“He understood this as a production quality system, not a prompt-engineering exercise.”" ;
+  pres:tone "stone" .
+
+wddeck:slide-13-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-13 ;
+  pres:order 2 ;
+  pres:role "bullet" ;
+  pres:body "“He separated retrieval, ranking, admission, authority and measurement.”" ;
+  pres:tone "stone" .
+
+wddeck:slide-13-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-13 ;
+  pres:order 3 ;
+  pres:role "bullet" ;
+  pres:body "“He was explicit about assumptions and asked the right questions without blocking progress.”" ;
+  pres:tone "stone" .
+
+wddeck:slide-13-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-13 ;
+  pres:order 4 ;
+  pres:role "bullet" ;
+  pres:body "“He could ship a 30-day slice while preserving security, provenance and evaluation rigor.”" ;
+  pres:tone "stone" .
+
+wddeck:slide-13-block-05 a pres:Block ;
+  pres:blockOf wddeck:slide-13 ;
+  pres:order 5 ;
+  pres:role "bullet" ;
+  pres:body "“He did not overclaim the prototype; he used it to make the architecture falsifiable.”" ;
+  pres:tone "stone" .
+
+wddeck:slide-13-block-06 a pres:Block ;
+  pres:blockOf wddeck:slide-13 ;
+  pres:order 6 ;
+  pres:role "conclusion" ;
+  pres:body "Hiring conclusion you want: strong FDE signal — ambiguous problem, executable architecture, sober evidence boundaries, credible delivery path." ;
+  pres:tone "stone" .
+
+wddeck:slide-14 a pres:Slide ;
+  pres:slideOf wddeck:deck ;
+  pres:id "slide-14" ;
+  pres:order 14 ;
+  pres:layout "three_part" ;
+  pres:audience "internal" ;
+  pres:kicker "PRESENTER PREP" ;
+  pres:title "Appendix: reading the reschedule signal" ;
+  pres:footer "internal prep / process signal only" ;
+  pres:notes "Your read is useful but should stay bounded. A reschedule is better than a cancellation because it preserves the meeting and implies stakeholder time is still being coordinated. The lack of a canned answer to the three questions can be read as a positive process signal: they may prefer to discuss them live with the right people. But do not convert it into certainty. In the interview, do not say \"you did not just use ChatGPT.\" Instead, say: I sent those questions because the prompt explicitly values the questions, and I continued with reversible assumptions so we can adjust the architecture to the real workflow." .
+
+wddeck:slide-14-block-01 a pres:Block ;
+  pres:blockOf wddeck:slide-14 ;
+  pres:order 1 ;
+  pres:role "part" ;
+  pres:title "Observed signal" ;
+  pres:body "They rescheduled because someone needed to reschedule; they did not simply cancel or send a generic written response." ;
+  pres:tone "stone" .
+
+wddeck:slide-14-block-02 a pres:Block ;
+  pres:blockOf wddeck:slide-14 ;
+  pres:order 2 ;
+  pres:role "part" ;
+  pres:title "Reasonable read" ;
+  pres:body "Modestly positive: the live session still matters, and the questions likely remain part of the conversation rather than being disposed of with canned text." ;
+  pres:tone "stone" .
+
+wddeck:slide-14-block-03 a pres:Block ;
+  pres:blockOf wddeck:slide-14 ;
+  pres:order 3 ;
+  pres:role "part" ;
+  pres:title "Boundary" ;
+  pres:body "Not outcome evidence. Treat it as a cue to prepare for a serious discussion, not as proof of intent to hire." ;
+  pres:tone "stone" .
+
+wddeck:slide-14-block-04 a pres:Block ;
+  pres:blockOf wddeck:slide-14 ;
+  pres:order 4 ;
+  pres:role "conclusion" ;
+  pres:body "In the interview: treat the reschedule as process evidence only; keep the architectural assumptions explicit and reversible." ;
+  pres:tone "stone" .
+
+
+@prefix cs: <urn:xaas:case-study:> .
+
+<urn:xaas:wd-cs2:case> cs:caseRevisionDigest "6bd9762edbdf7c8f2a267106343601c60eef8c5cf32f52e183b963cc6453806f" ;
+  cs:generatorIdentity "ggen_igniter@26.9.15+engine=sparql;wd_cs2_case_study_pack=sha256:32704e04ec1ea4fc15eebb00a73678eabb0feac1720c8ad8ebb64b57c8a07693" .

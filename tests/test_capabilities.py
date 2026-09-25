@@ -24,7 +24,7 @@ class CapabilityCatalogTests(unittest.TestCase):
     def test_catalogs_and_projections_are_exact(self):
         items = module.verify(self.catalog)
         module.verify_repository_owners(items, self.repositories)
-        self.assertEqual(len(items), 39)
+        self.assertEqual(len(items), 44)
 
         base_items = module.verify(self.base)
         base_expected = module.render(base_items, "catalog/capabilities.toml")

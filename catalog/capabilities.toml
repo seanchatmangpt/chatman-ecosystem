@@ -375,3 +375,89 @@ depends_on = ["capability:classify-branch-standing", "capability:recompose-curre
 interfaces = ["cli", "api", "mcp", "a2a"]
 source_repositories = ["ggen", "ggen-marketplace", "ggen-legacy"]
 refusals = ["REFUSED:UNPROVEN_DELTA_DROP", "REFUSED:COMPONENT_STANDING_TRANSFER"]
+
+[[capability]]
+id = "capability:observe-external-paradigm-subject"
+title = "Observe an exact external paradigm supplier subject"
+class = "OBSERVE"
+owner = "repository:chatman-ecosystem"
+required_authority = "observe"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["supplier registry", "exact upstream SHA"]
+outputs = ["pinned external subject identity", "transport-blocked observation"]
+depends_on = ["capability:observe-exact-github-subject"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem"]
+refusals = ["REFUSED:MUTABLE_OR_INVALID_SHA", "REFUSED:SUPPLIER_SELF_STANDING", "BLOCKED:TRANSPORT"]
+
+[[capability]]
+id = "capability:extract-external-paradigm-units"
+title = "Extract durable candidate units from an external paradigm supplier"
+class = "OBSERVE"
+owner = "repository:chatman-ecosystem"
+required_authority = "observe"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["exact external supplier subject", "watched supplier surfaces"]
+outputs = ["candidate unit inventory", "exact upstream object identities"]
+depends_on = ["capability:observe-external-paradigm-subject"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem"]
+refusals = ["REFUSED:MALFORMED_UPSTREAM_UNIT", "REFUSED:UPSTREAM_SURFACE"]
+
+[[capability]]
+id = "capability:classify-external-paradigm"
+title = "Classify external paradigm units without granting equivalence"
+class = "SELECT"
+owner = "repository:chatman-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["candidate external units", "pattern policy", "internal capability catalog", "preserved candidate frontier", "bounded comparison dimensions", "explicit falsifier for any eliminated option or NOVEL_GAP", "DfCM extension order reuse -> compose -> extend -> invent"]
+outputs = ["VENDOR", "WRAP", "REPLACE", "NOVEL_GAP", "unresolved candidate"]
+depends_on = ["capability:extract-external-paradigm-units", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem"]
+refusals = ["REFUSED:DANGLING_TARGET_CAPABILITY", "REFUSED:CAPABILITY_AS_AUTHORITY", "REFUSED:NOVELTY_WITHOUT_FALSIFIER", "REFUSED:PREMATURE_SELECTION", "REFUSED:UNBOUNDED_OPTION_GRAPH", "REFUSED:FALSIFIER_MISSING", "REFUSED:EXTENSION_ORDER_VIOLATION"]
+
+[[capability]]
+id = "capability:project-external-paradigm-cross-product"
+title = "Project external paradigm units against internal capabilities"
+class = "CONSTRUCT"
+owner = "repository:chatman-ecosystem"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["classified external units", "repository capability catalog"]
+outputs = ["PROV/DCTERMS/SKOS candidate graph", "declared target edges", "unresolved semantic frontier"]
+depends_on = ["capability:classify-external-paradigm", "capability:manufacture-deterministic-projection"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem", "ggen"]
+refusals = ["REFUSED:DANGLING_TARGET_CAPABILITY", "REFUSED:INVENTORY_SELF_STANDING", "REFUSED:UNIT_STANDING"]
+
+[[capability]]
+id = "capability:detect-external-paradigm-delta"
+title = "Detect a new exact candidate subject from an external paradigm supplier"
+class = "OBSERVE"
+owner = "repository:chatman-ecosystem"
+required_authority = "observe"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["pinned supplier SHA", "mutable discovery ref"]
+outputs = ["CURRENT", "CANDIDATE_DELTA", "new exact candidate SHA", "changed supplier surfaces"]
+depends_on = ["capability:observe-external-paradigm-subject"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem"]
+refusals = ["REFUSED:DISCOVERED_SUBJECT", "BLOCKED:TRANSPORT"]
+

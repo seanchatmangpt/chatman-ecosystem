@@ -1,0 +1,44 @@
+{
+  "packets": [
+    {
+      "acceptance": [
+        "AC-02: Every required subject in release/v26.9.25/closure.json has a terminal disposition: ALIVE/FINAL, or a typed SUPERSEDED/BLOCKED/UNSUPPORTED/REFUSED row (type + broken_term + RFC \u00a739 class + owner); UNKNOWN or untyped is refused (RFC \u00a75, \u00a738; omission is never success)."
+      ],
+      "action": "CONSTRUCT evidence satisfying the listed requirements; no actuation",
+      "authority": "CONSTRUCT",
+      "authority_ceiling": "CONSTRUCT",
+      "changed_edge": [],
+      "dependencies": [],
+      "exact_subject": "seanchatmangpt/chatman-ecosystem@8321663d02b849cbb7879b3eaf548d5bdca7a7e9",
+      "falsifier": [
+        "root crown refuses the requirement state"
+      ],
+      "mode": "normal",
+      "preserved_invariants": [
+        "authority ceiling CONSTRUCT",
+        "SELECT != DECOMPOSE != DO"
+      ],
+      "receipt_requirement": "root-crown receipt with every listed requirement PASS on a merged SHA",
+      "required_capability": [
+        "AC-02"
+      ],
+      "strategic_delta": [
+        "req:AC-02"
+      ],
+      "subject": {
+        "ref": "main",
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "8321663d02b849cbb7879b3eaf548d5bdca7a7e9"
+      },
+      "successor": null,
+      "verification": [
+        "closure_terminal@local:release/v26.9.25/closure.json"
+      ]
+    }
+  ],
+  "premise": "RFC-0004",
+  "release": "v26.9.25",
+  "strategic_delta": [
+    "req:AC-02"
+  ]
+}

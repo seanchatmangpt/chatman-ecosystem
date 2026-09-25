@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import hashlib
 import unittest
+from dataclasses import replace
 
 from scripts.release_train.cross_product_court import (
     CrossProductCase,
@@ -26,6 +28,11 @@ VALIDATOR = "sha256:" + "2" * 64
 CE = "sha256:" + "3" * 64
 
 
+def independent_digest(evidence_id: str) -> str:
+    """Each producer artifact is its own observation (distinct bytes)."""
+    return "sha256:" + hashlib.sha256(evidence_id.encode()).hexdigest()
+
+
 def ev(
     repo: str,
     formalism: Formalism,
@@ -33,14 +40,16 @@ def ev(
     *,
     result: EvidenceResult = EvidenceResult.PASS,
     suffix: str = "",
+    artifact_digest: str | None = None,
 ) -> EvidenceRecord:
+    evidence_id = f"{formalism.value}:{claim}:{repo}:{suffix or result.value}"
     return EvidenceRecord(
-        evidence_id=f"{formalism.value}:{claim}:{repo}:{suffix or result.value}",
+        evidence_id=evidence_id,
         repository=repo,
         subject_sha=SUBJECTS[repo],
         formalism=formalism,
         claim_id=claim,
-        artifact_digest=DIGEST,
+        artifact_digest=artifact_digest or independent_digest(evidence_id),
         validator=f"validator-{formalism.value}",
         validator_digest=VALIDATOR,
         result=result,
@@ -310,6 +319,120 @@ class CrossProductCourtTests(unittest.TestCase):
                 )
                 for x in receipt.refusals
             )
+        )
+
+    def with_evidence(self, evidence, relations=None) -> CrossProductCase:
+        case = healthy_case()
+        return CrossProductCase(
+            case.case_id,
+            case.semantic_subject_id,
+            case.subjects,
+            case.required_formalisms,
+            evidence,
+            case.relations if relations is None else relations,
+            case.mutants,
+        )
+
+    def test_one_artifact_counted_as_two_dimensions_is_refused(self) -> None:
+        case = healthy_case()
+        shared = "sha256:" + "7" * 64
+        evidence = tuple(
+            replace(item, artifact_digest=shared)
+            if item.formalism in {Formalism.HDDL, Formalism.FOND}
+            else item
+            for item in case.evidence
+        )
+        receipt = evaluate(self.with_evidence(evidence))
+        self.assertEqual(receipt.standing, Standing.REFUSED)
+        self.assertTrue(
+            any(
+                x.startswith("REFUSED:NON_INDEPENDENT_EVIDENCE:" + shared)
+                for x in receipt.refusals
+            )
+        )
+        self.assertIn(
+            "BLOCKED:DIMENSION_NOT_INDEPENDENT:FOND", receipt.refusals
+        )
+        self.assertIn(
+            "BLOCKED:DIMENSION_NOT_INDEPENDENT:HDDL", receipt.refusals
+        )
+
+    def test_shared_artifact_is_admitted_only_as_relation_witness(
+        self,
+    ) -> None:
+        case = healthy_case()
+        frontier = "sha256:" + "8" * 64
+        witnesses = (
+            ev(
+                "seanchatmangpt/autofde-lab",
+                Formalism.HDDL,
+                "hddl-fond-frontier",
+                suffix="frontier",
+                artifact_digest=frontier,
+            ),
+            ev(
+                "seanchatmangpt/autofde-lab",
+                Formalism.FOND,
+                "hddl-fond-frontier",
+                suffix="frontier",
+                artifact_digest=frontier,
+            ),
+        )
+        relation = RelationRequirement(
+            "HDDLxFOND",
+            Formalism.HDDL,
+            Formalism.FOND,
+            "hddl-fond-frontier",
+        )
+        receipt = evaluate(
+            self.with_evidence(
+                case.evidence + witnesses, case.relations + (relation,)
+            )
+        )
+        self.assertEqual(receipt.standing, Standing.ALIVE)
+        self.assertIn("HDDLxFOND", receipt.relations_checked)
+
+        # The same shared artifact without its declared relation is refused.
+        receipt = evaluate(self.with_evidence(case.evidence + witnesses))
+        self.assertEqual(receipt.standing, Standing.REFUSED)
+
+    def test_relation_witness_alone_does_not_make_a_dimension_present(
+        self,
+    ) -> None:
+        case = healthy_case()
+        frontier = "sha256:" + "8" * 64
+        evidence = tuple(
+            item for item in case.evidence
+            if item.formalism is not Formalism.FOND
+        ) + (
+            ev(
+                "seanchatmangpt/autofde-lab",
+                Formalism.HDDL,
+                "hddl-fond-frontier",
+                suffix="frontier",
+                artifact_digest=frontier,
+            ),
+            ev(
+                "seanchatmangpt/autofde-lab",
+                Formalism.FOND,
+                "hddl-fond-frontier",
+                suffix="frontier",
+                artifact_digest=frontier,
+            ),
+        )
+        relations = (
+            RelationRequirement(
+                "HDDLxFOND",
+                Formalism.HDDL,
+                Formalism.FOND,
+                "hddl-fond-frontier",
+            ),
+        )
+        receipt = evaluate(self.with_evidence(evidence, relations))
+        self.assertEqual(receipt.standing, Standing.BLOCKED)
+        self.assertIn("BLOCKED:MISSING_DIMENSION:FOND", receipt.refusals)
+        self.assertIn(
+            "BLOCKED:DIMENSION_NOT_INDEPENDENT:FOND", receipt.refusals
         )
 
 

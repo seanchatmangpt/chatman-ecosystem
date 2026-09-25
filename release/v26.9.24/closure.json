@@ -1,0 +1,1160 @@
+{
+  "release": "v26.9.24",
+  "normative_ledger": "seanchatmangpt/engineering-standards:RFC-0002@440797509502ecf93b0772453299e716dc049aca",
+  "transient_heads": [
+    {
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "sha": "76774bbaf83ec92e6e52b81ceb6a165b00de8b93",
+      "replaced_by": "05011be534f647d1b5aef18a2080cb61bfcf7951",
+      "proof": "PR #482 head -> merge"
+    },
+    {
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "sha": "02c13c468892c040c8abfd5023db4c1a19fa4820",
+      "replaced_by": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+      "proof": "PR #484 head -> merge"
+    }
+  ],
+  "subjects": [
+    {
+      "subject_id": "RFC-0001-BRCE",
+      "rfc_id": "RFC-0001",
+      "repository": "seanchatmangpt/engineering-standards",
+      "artifact": "docs/engineering/rfc/0001-brce-protocol.md",
+      "sha": "440797509502ecf93b0772453299e716dc049aca",
+      "required": true,
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": []
+    },
+    {
+      "subject_id": "RFC-0002-CLOSURE",
+      "rfc_id": "RFC-0002",
+      "repository": "seanchatmangpt/engineering-standards",
+      "artifact": "docs/engineering/rfc/0002-v26.9.24-semantic-release-closure.md",
+      "sha": "440797509502ecf93b0772453299e716dc049aca",
+      "required": true,
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "NOT_CLAIMED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "implemented_by": "RFC-0002-CLOSURE-IMPL"
+    },
+    {
+      "subject_id": "RFC-0003-CASE-STUDY",
+      "rfc_id": "RFC-0003",
+      "repository": "seanchatmangpt/engineering-standards",
+      "artifact": "docs/engineering/rfc/0003-semantic-case-study.md",
+      "sha": "440797509502ecf93b0772453299e716dc049aca",
+      "required": true,
+      "spec_standing": "FINAL_SPEC",
+      "impl_standing": "PLANNED",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": []
+    },
+    {
+      "subject_id": "RFC-0002-CLOSURE-IMPL",
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "artifact": "scripts/release_train/release_closure_court/court.py",
+      "sha": "a4d5a2b12e455cf15f23a0f20b1895f575e1e765",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "ALIVE",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "exact-head (Release Closure Court Exact Head)",
+          "sha": "a4d5a2b12e455cf15f23a0f20b1895f575e1e765",
+          "check_run_id": 107975449601,
+          "conclusion": "success",
+          "result": "PASS",
+          "required": true
+        }
+      ]
+    },
+    {
+      "subject_id": "ES-PR2",
+      "repository": "seanchatmangpt/engineering-standards",
+      "artifact": "pull/2 (head 846f6c50f894d106b491eed250f8cac9982c34a1, closed unmerged)",
+      "sha": "846f6c50f894d106b491eed250f8cac9982c34a1",
+      "required": false,
+      "spec_standing": "SUPERSEDED",
+      "impl_standing": "SUPERSEDED",
+      "successor": {
+        "repository": "seanchatmangpt/engineering-standards",
+        "sha": "440797509502ecf93b0772453299e716dc049aca"
+      },
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": []
+    },
+    {
+      "subject_id": "BERTHIER",
+      "rfc_id": "RFC-BERTHIER",
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "artifact": "docs/jira/v26.9.24/RFC-BERTHIER-STRATEGIC-RECOMPILATION.md",
+      "sha": "d1be9fb60148fd01dde2c1f2f14c184302f1276b",
+      "required": true,
+      "spec_standing": "MERGED",
+      "impl_standing": "PLANNED",
+      "successor_release": "v26.9.25",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": []
+    },
+    {
+      "subject_id": "XPROD-COURT",
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "artifact": "scripts/release_train/cross_product_court/evaluator.py",
+      "sha": "a4d5a2b12e455cf15f23a0f20b1895f575e1e765",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "impl_standing": "PARTIAL_ALIVE",
+      "impl_note": "implementation court PASS at M_A; XPROD case v26.9.24-closure is BLOCKED:MISSING_DIMENSION:BRCE,POWL,TLA+",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "exact-head (Cross-Product Court Exact Head)",
+          "sha": "a4d5a2b12e455cf15f23a0f20b1895f575e1e765",
+          "check_run_id": 107975456061,
+          "conclusion": "success",
+          "result": "PASS",
+          "required": true
+        }
+      ]
+    },
+    {
+      "subject_id": "MARKETPLACE",
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "artifact": "registry snapshot v26.9.24 (PR #484 merge)",
+      "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "courts": [
+        {
+          "court": "Admit and prepare immutable package contexts",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107890355644,
+          "conclusion": "success",
+          "attempts": 2,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Build archives and catalog",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107889969829,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Deploy catalog index to GitHub Pages",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107890063600,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Publish Marketplace snapshot and factory",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107895068467,
+          "conclusion": "success",
+          "attempts": 2,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Publish pack shard 0/8",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107895068652,
+          "conclusion": "success",
+          "attempts": 2,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Publish pack shard 1/8",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107895068629,
+          "conclusion": "success",
+          "attempts": 2,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Publish pack shard 2/8",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107895068634,
+          "conclusion": "success",
+          "attempts": 2,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Publish pack shard 3/8",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107895068693,
+          "conclusion": "success",
+          "attempts": 2,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Publish pack shard 4/8",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107895068671,
+          "conclusion": "success",
+          "attempts": 2,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Publish pack shard 5/8",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107895068679,
+          "conclusion": "success",
+          "attempts": 2,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Publish pack shard 6/8",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107895068716,
+          "conclusion": "success",
+          "attempts": 2,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Publish pack shard 7/8",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107895068781,
+          "conclusion": "success",
+          "attempts": 2,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Publish packs release",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107890063700,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Scorecard analysis",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107889753809,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Verify exact packaged factory",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107902106015,
+          "conclusion": "failure",
+          "attempts": 2,
+          "result": "FAIL",
+          "required": false,
+          "row_blocked": true,
+          "parent_conclusion": null
+        },
+        {
+          "court": "Verify the live registry end-to-end",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107890128682,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "qualify",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107889754910,
+          "conclusion": "success",
+          "attempts": 3,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "semantic-subject",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "check_run_id": 107964037577,
+          "conclusion": "cancelled",
+          "attempts": 2,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        }
+      ],
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "impl_standing": "BLOCKED",
+      "impl_type": "court:Verify exact packaged factory@5eb71f7ed947f705a8d6b145cb9b0be82855d793:failure(no-parent-failure-proof);court:semantic-subject@5eb71f7ed947f705a8d6b145cb9b0be82855d793:cancelled(no-observed-execution)",
+      "pins": [
+        {
+          "repository": "seanchatmangpt/ggen-marketplace",
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793"
+        }
+      ]
+    },
+    {
+      "subject_id": "BEAM4PM",
+      "repository": "seanchatmangpt/beam4pm",
+      "artifact": "default-branch head",
+      "sha": "be43246cc39a6fde9d86b31214a0177c71e6206f",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "courts": [
+        {
+          "court": "Analyze (actions)",
+          "sha": "be43246cc39a6fde9d86b31214a0177c71e6206f",
+          "check_run_id": 107946687035,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Analyze (rust)",
+          "sha": "be43246cc39a6fde9d86b31214a0177c71e6206f",
+          "check_run_id": 107946686832,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Build and push linux/amd64 image",
+          "sha": "be43246cc39a6fde9d86b31214a0177c71e6206f",
+          "check_run_id": 107946687136,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Build and push linux/arm64 image",
+          "sha": "be43246cc39a6fde9d86b31214a0177c71e6206f",
+          "check_run_id": 107946687008,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Erlang/Elixir/Gleam tests + determinism check",
+          "sha": "be43246cc39a6fde9d86b31214a0177c71e6206f",
+          "check_run_id": 107946687192,
+          "conclusion": "cancelled",
+          "attempts": 1,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "Merge into one multi-arch manifest, sign, scan",
+          "sha": "be43246cc39a6fde9d86b31214a0177c71e6206f",
+          "check_run_id": 107951457209,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Scorecard analysis",
+          "sha": "be43246cc39a6fde9d86b31214a0177c71e6206f",
+          "check_run_id": 107946687360,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        }
+      ],
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "impl_standing": "BLOCKED",
+      "impl_type": "court:Erlang/Elixir/Gleam tests + determinism check@be43246cc39a6fde9d86b31214a0177c71e6206f:cancelled(no-observed-execution)"
+    },
+    {
+      "subject_id": "XAAS",
+      "repository": "seanchatmangpt/xaas",
+      "artifact": "default-branch head",
+      "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "courts": [
+        {
+          "court": "Bound CI receipt",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107966991949,
+          "conclusion": "failure",
+          "attempts": 3,
+          "result": "FAIL",
+          "required": false,
+          "row_blocked": true,
+          "parent_conclusion": "success"
+        },
+        {
+          "court": "Build container without publication",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107966993169,
+          "conclusion": "cancelled",
+          "attempts": 3,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "Compile with mix test, format, dialyzer & unused deps check",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107916879163,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Deploy application",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107966993285,
+          "conclusion": "cancelled",
+          "attempts": 3,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "Exact-head autonomic-wave contract",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107966992564,
+          "conclusion": "cancelled",
+          "attempts": 3,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "Exact-head production compile court",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107966947309,
+          "conclusion": "cancelled",
+          "attempts": 3,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "Exact-head test court",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107966947232,
+          "conclusion": "cancelled",
+          "attempts": 3,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "Publish main image",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107966992628,
+          "conclusion": "cancelled",
+          "attempts": 3,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "Validate AsyncAPI 3.1 contract",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107966947185,
+          "conclusion": "cancelled",
+          "attempts": 3,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "Verify pinned GGen workbench image",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107966946961,
+          "conclusion": "cancelled",
+          "attempts": 3,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "Warm exact test dependency graph",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107966947136,
+          "conclusion": "cancelled",
+          "attempts": 3,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "drain",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107965102243,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "FAIL",
+          "required": false,
+          "row_blocked": true,
+          "parent_conclusion": null
+        },
+        {
+          "court": "manufacture",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107976002214,
+          "conclusion": null,
+          "attempts": 1,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "stogaf",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107975988736,
+          "conclusion": null,
+          "attempts": 1,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "wd-cs2",
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "check_run_id": 107975995919,
+          "conclusion": null,
+          "attempts": 1,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        }
+      ],
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "impl_standing": "BLOCKED",
+      "impl_type": "court:Bound CI receipt@f9670f446537ddb882edf9cd7e0b6519de557e60:failure(no-parent-failure-proof);court:Build container without publication@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Deploy application@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Exact-head autonomic-wave contract@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Exact-head production compile court@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Exact-head test court@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Publish main image@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Validate AsyncAPI 3.1 contract@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Verify pinned GGen workbench image@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Warm exact test dependency graph@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:drain@f9670f446537ddb882edf9cd7e0b6519de557e60:failure(no-parent-failure-proof);court:manufacture@f9670f446537ddb882edf9cd7e0b6519de557e60:queued(no-observed-execution);court:stogaf@f9670f446537ddb882edf9cd7e0b6519de557e60:queued(no-observed-execution);court:wd-cs2@f9670f446537ddb882edf9cd7e0b6519de557e60:queued(no-observed-execution)"
+    },
+    {
+      "subject_id": "AUTOFDE",
+      "repository": "seanchatmangpt/autofde-lab",
+      "artifact": "default-branch head",
+      "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "courts": [
+        {
+          "court": "Cache qualification / Python 3.12",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107895008560,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Cache qualification / Python 3.13",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107895008582,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Challenger 8x8 value proof",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107971303761,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Deploy qualified documentation",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107904029212,
+          "conclusion": "skipped",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Deterministic quality",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107895008576,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "29ffb8f9749b0b693579bc68c7f61ac15b16841f"
+        },
+        {
+          "court": "Documentation qualification",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107902300512,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "29ffb8f9749b0b693579bc68c7f61ac15b16841f"
+        },
+        {
+          "court": "Exact-head qualification",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107971303958,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "29ffb8f9749b0b693579bc68c7f61ac15b16841f"
+        },
+        {
+          "court": "Full qualification gate",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107904010519,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "29ffb8f9749b0b693579bc68c7f61ac15b16841f"
+        },
+        {
+          "court": "Linux integration authority",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107902300490,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "29ffb8f9749b0b693579bc68c7f61ac15b16841f"
+        },
+        {
+          "court": "Publish tagged release",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107904028952,
+          "conclusion": "skipped",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Source distribution",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107895008318,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Wheel / macos-latest / Python 3.12",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107895008707,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Wheel / ubuntu-latest / Python 3.12",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107895008497,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Wheel / windows-latest / Python 3.12",
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "check_run_id": 107895008831,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        }
+      ],
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "baseline_blockers": [
+        "Deterministic quality",
+        "Documentation qualification",
+        "Exact-head qualification",
+        "Full qualification gate",
+        "Linux integration authority"
+      ],
+      "impl_standing": "PARTIAL_ALIVE"
+    },
+    {
+      "subject_id": "GYMACT",
+      "repository": "seanchatmangpt/gymact",
+      "artifact": "default-branch head",
+      "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "courts": [
+        {
+          "court": "Exact-head scalar manufacture + falsifier court",
+          "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+          "check_run_id": 107901151123,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "GitHub Pages consequence",
+          "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+          "check_run_id": 107907395185,
+          "conclusion": "skipped",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "GymAct domain world / OCEL / replay",
+          "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+          "check_run_id": 107901150893,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Live Discovery + googleapis + Cloud docs census",
+          "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+          "check_run_id": 107901151274,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "PyPI and GitHub Release consequence",
+          "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+          "check_run_id": 107907358860,
+          "conclusion": "skipped",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Python 3.11 semantic/runtime",
+          "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+          "check_run_id": 107901151668,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "6e8ef5e3f9aafb39500b6ae75d5c2a2000880ee8"
+        },
+        {
+          "court": "Python 3.12 semantic/runtime",
+          "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+          "check_run_id": 107901151622,
+          "conclusion": "cancelled",
+          "attempts": 1,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "Python 3.13 semantic/runtime",
+          "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+          "check_run_id": 107901151566,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "6e8ef5e3f9aafb39500b6ae75d5c2a2000880ee8"
+        },
+        {
+          "court": "Zero-live-cloud AWS/Azure/GCP simulation",
+          "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+          "check_run_id": 107901151389,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "wheel/docs/container consequence",
+          "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+          "check_run_id": 107907349058,
+          "conclusion": "skipped",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        }
+      ],
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "baseline_blockers": [
+        "Python 3.11 semantic/runtime",
+        "Python 3.13 semantic/runtime"
+      ],
+      "impl_standing": "BLOCKED",
+      "impl_type": "court:Python 3.12 semantic/runtime@3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01:cancelled(no-observed-execution)"
+    },
+    {
+      "subject_id": "ASH_A2A",
+      "repository": "seanchatmangpt/ash_a2a",
+      "artifact": "default-branch head",
+      "sha": "12f98f816d5eda50f0aebbb43c21cf1a9f580352",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "courts": [
+        {
+          "court": "process-intervention",
+          "sha": "12f98f816d5eda50f0aebbb43c21cf1a9f580352",
+          "check_run_id": 107917810662,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "receipts",
+          "sha": "12f98f816d5eda50f0aebbb43c21cf1a9f580352",
+          "check_run_id": 107893139673,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "test",
+          "sha": "12f98f816d5eda50f0aebbb43c21cf1a9f580352",
+          "check_run_id": 107893139472,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        }
+      ],
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "impl_standing": "ALIVE"
+    },
+    {
+      "subject_id": "GGEN_IGNITER",
+      "repository": "seanchatmangpt/ggen_igniter",
+      "artifact": "TLA+ adapter (BRCE.tla)",
+      "sha": "7d53cb3b3ffe0a32f0e4b5f1365b9e1adff82d44",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "courts": [
+        {
+          "court": "Elixir tests (mix credo + mix test)",
+          "sha": "7d53cb3b3ffe0a32f0e4b5f1365b9e1adff82d44",
+          "check_run_id": 107949597882,
+          "conclusion": "cancelled",
+          "attempts": 2,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        }
+      ],
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "impl_standing": "BLOCKED",
+      "impl_type": "evidence:no-TLC-run;court:Elixir tests (mix credo + mix test)@7d53cb3b3ffe0a32f0e4b5f1365b9e1adff82d44:cancelled(no-observed-execution)"
+    },
+    {
+      "subject_id": "AFFIDAVIT",
+      "repository": "seanchatmangpt/affidavit",
+      "artifact": "BRCE receipt adapter",
+      "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "courts": [
+        {
+          "court": "build-and-test",
+          "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+          "check_run_id": 107899214630,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "clippy (cargo clippy --all-targets -D warnings)",
+          "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+          "check_run_id": 107899214472,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "exact-head ERRC fast court",
+          "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+          "check_run_id": 107899214497,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "rustfmt (cargo fmt --check)",
+          "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+          "check_run_id": 107899214704,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        }
+      ],
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "impl_standing": "NOT_CLAIMED"
+    },
+    {
+      "subject_id": "WASM4PM",
+      "repository": "seanchatmangpt/wasm4pm",
+      "artifact": "default-branch head",
+      "sha": "552f15ecba00f75a5866dfc3e7565ef2fe629341",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "courts": [
+        {
+          "court": "exact-subject Rust/WASM/TypeScript/CLI",
+          "sha": "552f15ecba00f75a5866dfc3e7565ef2fe629341",
+          "check_run_id": 107895783353,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "24ec377c9c2a9be98989e88c8539a8facac62de4"
+        }
+      ],
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "baseline_blockers": [
+        "exact-subject Rust/WASM/TypeScript/CLI"
+      ],
+      "impl_standing": "BLOCKED",
+      "impl_type": "baseline-only:exact-subject Rust/WASM/TypeScript/CLI@24ec377c9c2a9be98989e88c8539a8facac62de4"
+    },
+    {
+      "subject_id": "ASH_R2RML",
+      "repository": "seanchatmangpt/ash_r2rml",
+      "artifact": "default-branch head",
+      "sha": "76cc5204f3e20370fd1593af31f237a2bbb4caeb",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "courts": [
+        {
+          "court": "graphql",
+          "sha": "76cc5204f3e20370fd1593af31f237a2bbb4caeb",
+          "check_run_id": 107949700761,
+          "conclusion": "cancelled",
+          "attempts": 2,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "obda",
+          "sha": "76cc5204f3e20370fd1593af31f237a2bbb4caeb",
+          "check_run_id": 107949700953,
+          "conclusion": "cancelled",
+          "attempts": 2,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "production",
+          "sha": "76cc5204f3e20370fd1593af31f237a2bbb4caeb",
+          "check_run_id": 107949701005,
+          "conclusion": "cancelled",
+          "attempts": 2,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "qualify",
+          "sha": "76cc5204f3e20370fd1593af31f237a2bbb4caeb",
+          "check_run_id": 107898214219,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "release-security",
+          "sha": "76cc5204f3e20370fd1593af31f237a2bbb4caeb",
+          "check_run_id": 107949700946,
+          "conclusion": "cancelled",
+          "attempts": 2,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "test",
+          "sha": "76cc5204f3e20370fd1593af31f237a2bbb4caeb",
+          "check_run_id": 107949700925,
+          "conclusion": "cancelled",
+          "attempts": 4,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        },
+        {
+          "court": "types",
+          "sha": "76cc5204f3e20370fd1593af31f237a2bbb4caeb",
+          "check_run_id": 107949700760,
+          "conclusion": "cancelled",
+          "attempts": 2,
+          "result": "BLOCKED",
+          "required": false,
+          "row_blocked": true
+        }
+      ],
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "impl_standing": "BLOCKED",
+      "impl_type": "court:graphql@76cc5204f3e20370fd1593af31f237a2bbb4caeb:cancelled(no-observed-execution);court:obda@76cc5204f3e20370fd1593af31f237a2bbb4caeb:cancelled(no-observed-execution);court:production@76cc5204f3e20370fd1593af31f237a2bbb4caeb:cancelled(no-observed-execution);court:release-security@76cc5204f3e20370fd1593af31f237a2bbb4caeb:cancelled(no-observed-execution);court:test@76cc5204f3e20370fd1593af31f237a2bbb4caeb:cancelled(no-observed-execution);court:types@76cc5204f3e20370fd1593af31f237a2bbb4caeb:cancelled(no-observed-execution)"
+    },
+    {
+      "subject_id": "EX4PM",
+      "repository": "seanchatmangpt/ex4pm",
+      "artifact": "default-branch head",
+      "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+      "required": true,
+      "spec_standing": "NOT_A_SPEC",
+      "courts": [
+        {
+          "court": "Deploy to Fly.io",
+          "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+          "check_run_id": 107899661974,
+          "conclusion": "skipped",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "Verify & Test",
+          "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+          "check_run_id": 107896831264,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "426455b6dfaf3931f85cc05b612ff73759766267"
+        },
+        {
+          "court": "chicago",
+          "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+          "check_run_id": 107896831632,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "426455b6dfaf3931f85cc05b612ff73759766267"
+        },
+        {
+          "court": "chicago-tls-distribution",
+          "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+          "check_run_id": 107896831427,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "426455b6dfaf3931f85cc05b612ff73759766267"
+        },
+        {
+          "court": "format-capsule",
+          "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+          "check_run_id": 107949894434,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "FAIL",
+          "required": false,
+          "row_blocked": true,
+          "parent_conclusion": null
+        },
+        {
+          "court": "lean",
+          "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+          "check_run_id": 107949894405,
+          "conclusion": "success",
+          "attempts": 2,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "qualify",
+          "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+          "check_run_id": 107896831465,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "426455b6dfaf3931f85cc05b612ff73759766267"
+        },
+        {
+          "court": "source-capsule",
+          "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+          "check_run_id": 107949894297,
+          "conclusion": "success",
+          "attempts": 1,
+          "result": "PASS",
+          "required": true
+        },
+        {
+          "court": "verify",
+          "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+          "check_run_id": 107896831315,
+          "conclusion": "failure",
+          "attempts": 1,
+          "result": "BASELINE_BLOCKER",
+          "required": false,
+          "baseline_parent": "426455b6dfaf3931f85cc05b612ff73759766267"
+        }
+      ],
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "baseline_blockers": [
+        "Verify & Test",
+        "chicago",
+        "chicago-tls-distribution",
+        "qualify",
+        "verify"
+      ],
+      "impl_standing": "BLOCKED",
+      "impl_type": "court:format-capsule@7a79d137c356247400bc6bd7ba1cd5bbf2433bbc:failure(no-parent-failure-proof)"
+    }
+  ],
+  "_provenance": {
+    "harvest": "gh api repos/<repo>/commits/<sha>/check-runs (lane chatman-closure)",
+    "classification": "per check name, latest completed check-run (GitHub rollup semantics); PASS=success|skipped|neutral; BASELINE_BLOCKER=failure at subject AND same-name failure at first parent (required:false, row not ALIVE); any other non-success (failure without parent proof, cancelled, no run) => court result FAIL/BLOCKED required:false with row impl BLOCKED typed court:<name>@<sha>; row ALIVE only if all checks PASS; PARTIAL_ALIVE if all non-PASS are BASELINE_BLOCKER and >=1 PASS",
+    "ecosystem_courts_at": "a4d5a2b12e455cf15f23a0f20b1895f575e1e765"
+  }
+}

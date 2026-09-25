@@ -1,0 +1,45 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.20s
+   Doc-tests affidavit
+
+running 38 tests
+test src/doctor_check.rs - doctor_check (line 9) ... ignored
+test src/doctor_check.rs - doctor_check::DOCTOR_CHECKS (line 140) ... ignored
+test src/lib.rs - (line 26) - compile ... ok
+test src/error.rs - error::AffidavitError (line 173) ... ok
+test src/quality_ocel.rs - quality_ocel::build_causal_chain (line 385) ... ignored
+test src/quality_ocel.rs - quality_ocel::correlate_violations_across_objects (line 495) ... ignored
+test src/quality_ocel.rs - quality_ocel::measure_to_ocel_event (line 233) ... ignored
+test src/quality_ocel.rs - quality_ocel::violation_to_ocel_event (line 315) ... ignored
+test src/diag.rs - diag::ErrorCode::exit_code (line 136) ... ok
+test src/output.rs - output (line 13) ... ok
+test src/diag.rs - diag (line 19) ... ok
+test src/diag.rs - diag::ErrorCode::code (line 123) ... ok
+test src/output.rs - output::Format::from_str (line 53) ... ok
+test src/error.rs - error::Result (line 257) ... ok
+test src/ocel.rs - ocel::emit (line 53) ... ok
+test src/diag.rs - diag::Diag (line 278) ... ok
+test src/output.rs - output::Out::new (line 134) ... ok
+test src/diag.rs - diag::Diag::from_error (line 348) ... ok
+test src/output.rs - output::Out (line 102) ... ok
+test src/diag.rs - diag::Diag::new (line 307) ... ok
+test src/output.rs - output::Out::with_sinks (line 167) ... ok
+test src/output.rs - output::Out::with_format (line 153) ... ok
+test src/error.rs - error::OcelError (line 7) ... ok
+test src/registry.rs - registry (line 8) ... ok
+test src/types.rs - types::Blake3Hash (line 21) ... ok
+test src/types.rs - types::Blake3Hash::as_hex (line 60) ... ok
+test src/types.rs - types::Blake3Hash::from_bytes (line 34) ... ok
+test src/types.rs - types::Blake3Hash::from_hex (line 48) ... ok
+test src/types.rs - types::CheckOutcome (line 264) ... ok
+test src/types.rs - types::ObjectRef (line 150) ... ok
+test src/types.rs - types::OperationEvent (line 175) ... ok
+test src/types.rs - types::ProfileId (line 233) ... ok
+test src/types.rs - types::ProfileId::as_str (line 249) ... ok
+test src/types.rs - types::QualityMeasurement (line 410) ... ok
+test src/types.rs - types::QualityMetricValue (line 387) ... ok
+test src/types.rs - types::QualityViolationEvent (line 496) ... ok
+test src/types.rs - types::Verdict (line 286) ... ok
+test src/types.rs - types::canonical_bytes (line 538) ... ok
+
+test result: ok. 32 passed; 0 failed; 6 ignored; 0 measured; 0 filtered out; finished in 12.54s
+

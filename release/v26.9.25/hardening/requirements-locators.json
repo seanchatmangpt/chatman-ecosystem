@@ -1,0 +1,243 @@
+{
+  "GENERATED": "scripts/durable_locator/durable_locator.py requirements-locators -- do not edit; run --write",
+  "inputs": [
+    "release/v26.9.25/requirements.json",
+    "release/v26.9.25/pins.json",
+    "release/v26.9.25/hardening/TAG-SUBJECT.json"
+  ],
+  "release": "v26.9.25",
+  "rows": [
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml",
+      "id": "AC-01",
+      "json_pointer": "/requirements/0/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/manifest.toml"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/closure.json",
+      "id": "AC-02",
+      "json_pointer": "/requirements/1/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/closure.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/sjira-origin-authority.json",
+      "id": "AC-03",
+      "json_pointer": "/requirements/2/evidence_locator",
+      "tagged_locator": "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/sjira-origin-authority.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/prose-inert.json",
+      "id": "AC-04",
+      "json_pointer": "/requirements/3/evidence_locator",
+      "tagged_locator": "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/prose-inert.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/berthier.json",
+      "id": "AC-05",
+      "json_pointer": "/requirements/4/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/berthier.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+      "id": "AC-06",
+      "json_pointer": "/requirements/5/evidence_locator",
+      "tagged_locator": "local:docs/jira/v26.9.25/xprod-cases/XPROD-001.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/autofde-lab@98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0:release/v26.9.25/receipts/tlc-court.json",
+      "id": "AC-07",
+      "json_pointer": "/requirements/6/evidence_locator",
+      "tagged_locator": "seanchatmangpt/autofde-lab:release/v26.9.25/receipts/tlc-court.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2:release/v26.9.25/receipts/brce-ledger.json",
+      "id": "AC-08",
+      "json_pointer": "/requirements/7/evidence_locator",
+      "tagged_locator": "seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/local-worktrees.json",
+      "id": "AC-09",
+      "json_pointer": "/requirements/8/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/observations/local-worktrees.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+      "id": "AC-10",
+      "json_pointer": "/requirements/9/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/pins.json",
+      "id": "AC-11",
+      "json_pointer": "/requirements/10/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/pins.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml",
+      "id": "AC-12",
+      "json_pointer": "/requirements/11/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/manifest.toml"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/case-study-schema.json",
+      "id": "AC-13",
+      "json_pointer": "/requirements/12/evidence_locator",
+      "tagged_locator": "seanchatmangpt/xaas:release/v26.9.25/receipts/case-study-schema.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/wd-evidence-ceiling.json",
+      "id": "AC-14",
+      "json_pointer": "/requirements/13/evidence_locator",
+      "tagged_locator": "seanchatmangpt/xaas:release/v26.9.25/receipts/wd-evidence-ceiling.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d:release/v26.9.25/receipts/godslaw-migration.json",
+      "id": "AC-15",
+      "json_pointer": "/requirements/14/evidence_locator",
+      "tagged_locator": "seanchatmangpt/zoela:release/v26.9.25/receipts/godslaw-migration.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d:release/v26.9.25/receipts/vision2027-admission.json",
+      "id": "AC-16",
+      "json_pointer": "/requirements/15/evidence_locator",
+      "tagged_locator": "seanchatmangpt/zoela:release/v26.9.25/receipts/vision2027-admission.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/pins.json",
+      "id": "AC-17",
+      "json_pointer": "/requirements/16/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/pins.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml",
+      "id": "AC-18",
+      "json_pointer": "/requirements/17/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/manifest.toml"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml",
+      "id": "AC-19",
+      "json_pointer": "/requirements/18/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/manifest.toml"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/prose-inert.json",
+      "id": "F-01",
+      "json_pointer": "/requirements/19/evidence_locator",
+      "tagged_locator": "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/prose-inert.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/sjira-origin-authority.json",
+      "id": "F-02",
+      "json_pointer": "/requirements/20/evidence_locator",
+      "tagged_locator": "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/sjira-origin-authority.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/closure.json",
+      "id": "F-03",
+      "json_pointer": "/requirements/21/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/closure.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/pins.json",
+      "id": "F-04",
+      "json_pointer": "/requirements/22/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/pins.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2:release/v26.9.25/receipts/brce-ledger.json",
+      "id": "F-05",
+      "json_pointer": "/requirements/23/evidence_locator",
+      "tagged_locator": "seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/berthier.json",
+      "id": "F-06",
+      "json_pointer": "/requirements/24/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/berthier.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+      "id": "F-07",
+      "json_pointer": "/requirements/25/evidence_locator",
+      "tagged_locator": "local:docs/jira/v26.9.25/xprod-cases/XPROD-001.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/autofde-lab@98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0:release/v26.9.25/receipts/tlc-court.json",
+      "id": "F-08",
+      "json_pointer": "/requirements/26/evidence_locator",
+      "tagged_locator": "seanchatmangpt/autofde-lab:release/v26.9.25/receipts/tlc-court.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/cloud-runtime.json",
+      "id": "F-09",
+      "json_pointer": "/requirements/27/evidence_locator",
+      "tagged_locator": "seanchatmangpt/xaas:release/v26.9.25/receipts/cloud-runtime.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/local-worktrees.json",
+      "id": "F-10",
+      "json_pointer": "/requirements/28/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/observations/local-worktrees.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+      "id": "F-11",
+      "json_pointer": "/requirements/29/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/wd-evidence-ceiling.json",
+      "id": "F-12",
+      "json_pointer": "/requirements/30/evidence_locator",
+      "tagged_locator": "seanchatmangpt/xaas:release/v26.9.25/receipts/wd-evidence-ceiling.json"
+    },
+    {
+      "binding": "pins.json repos[*].sha (tag-time default-branch head)",
+      "durable_locator": "git:seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d:release/v26.9.25/receipts/godslaw-interpretation.json",
+      "id": "F-13",
+      "json_pointer": "/requirements/31/evidence_locator",
+      "tagged_locator": "seanchatmangpt/zoela:release/v26.9.25/receipts/godslaw-interpretation.json"
+    },
+    {
+      "binding": "tag-commit (v26.9.25^{commit}, TAG-SUBJECT.json subject.commit_sha)",
+      "durable_locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml",
+      "id": "F-14",
+      "json_pointer": "/requirements/32/evidence_locator",
+      "tagged_locator": "local:release/v26.9.25/manifest.toml"
+    }
+  ],
+  "schema": "https://chatman.dev/root-crown/hardening/requirements-locators/v1"
+}

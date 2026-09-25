@@ -1,0 +1,204 @@
+name: WD CS2 STOGAF court
+
+on:
+  push:
+    branches:
+      - main
+      - feat/stogaf-wd-cs2-v26.9.22
+  pull_request:
+    paths:
+      - "docs/rfc/RFC-STOGAF-v26.9.22.md"
+      - "docs/case-studies/wd-fa/**"
+      - "docs/sjira/v26.9.22/**"
+      - "priv/packs/wd_cs2_pack/**"
+      - "priv/packs/wd_cs2_case_study_pack/**"
+      - "scripts/stogaf_semantic_court.py"
+      - "test/*.py"
+      - "tools/wd_deck/**"
+      - "lib/xaas/case_studies/wd_fa/**"
+      - "lib/xaas_web/live/wd_fa/**"
+      - "lib/xaas_web/controllers/wd_fa_stogaf_controller.ex"
+      - "lib/mix/tasks/xaas.wd.*"
+      - "test/xaas/case_studies/**"
+      - "test/xaas_web/controllers/wd_fa_stogaf_controller_test.exs"
+      - "e2e/wd-fa-cs2.spec.cjs"
+      - ".github/workflows/stogaf-wd-cs2-court.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wd-cs2-stogaf-${{ github.event.pull_request.head.ref || github.ref_name }}
+  # Main-push runs are evidence for the frozen subject; never cancel them.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  SUBJECT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  MIX_ENV: test
+  DEV_DB_USERNAME: postgres
+  DEV_DB_PASSWORD: postgres
+  DEV_DB_HOSTNAME: localhost
+  DEV_DB_PORT: "5432"
+
+jobs:
+  stogaf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.0-pg15
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.SUBJECT_SHA }}
+          persist-credentials: false
+          # Full history: the freeze and case-study courts replay the frozen
+          # subject with git archive and check evidence paths at it.
+          fetch-depth: 0
+
+      - name: Assert exact subject
+        run: test "$(git rev-parse HEAD)" = "$SUBJECT_SHA"
+
+      - uses: erlef/setup-beam@v1.24.1
+        with:
+          version-file: .tool-versions
+          version-type: strict
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Resolve dependencies
+        run: |
+          mix deps.get --check-locked
+          npm ci
+
+      - name: Prepare database
+        run: mix ecto.create && mix ecto.migrate
+
+      - name: Install semantic court dependencies
+        run: python -m pip install "rdflib>=7,<8" "pyshacl>=0.30,<1" pytest
+
+      - name: Execute RDF / SHACL / SPARQL court
+        run: |
+          python scripts/stogaf_semantic_court.py             --pack priv/packs/wd_cs2_pack             --output wd-cs2-stogaf-semantic-report.json
+          python - <<'PY'
+          import json
+          report = json.load(open("wd-cs2-stogaf-semantic-report.json"))
+          assert report["standing"] == "ALIVE", report
+          assert report["shacl"]["conforms"] is True, report
+          assert report["refusal_rows"] == 0, report
+          assert report["gate_count"] >= 9, report
+          assert report["schema"] == "STOGAF_SEMANTIC_COURT_V2", report
+          PY
+          sha256sum wd-cs2-stogaf-semantic-report.json
+
+      - name: Case-study, freeze and court Python tests
+        run: python -m pytest -q test/stogaf_semantic_court_test.py test/wd_case_study_court_test.py test/wd_submission_freeze_test.py
+
+      - name: Compile exact subject
+        run: mix compile --force --warnings-as-errors
+
+      - name: Run complete WD / STOGAF court
+        run: |
+          mix test test/xaas/case_studies/wd_fa*.exs --trace
+          mix test test/xaas_web/controllers/wd_fa_stogaf_controller_test.exs --trace
+
+      - name: Assert semantic profile files
+        run: |
+          test -s docs/rfc/RFC-STOGAF-v26.9.22.md
+          test -s docs/case-studies/wd-fa/STOGAF-CONFORMANCE.md
+          test -s docs/case-studies/wd-fa/STOGAF-DEMO-VIEWPOINTS.md
+          test -s docs/sjira/v26.9.22/stogaf-wd-cs2/011-stogaf-wd-cs2.md
+          test -s priv/packs/wd_cs2_pack/stogaf.ttl
+          test -s priv/packs/wd_cs2_pack/stogaf-core.ttl
+          test -s priv/packs/wd_cs2_pack/stogaf-shapes.ttl
+          test -s docs/case-studies/wd-fa/architecture-episode.json
+          test -s docs/case-studies/wd-fa/requirements.json
+          test -s docs/case-studies/wd-fa/conformance.json
+          test -s docs/case-studies/wd-fa/viewpoints.json
+          test -s docs/case-studies/wd-fa/adm.json
+          test -s docs/sjira/v26.9.22/stogaf-wd-cs2/index.json
+          grep -q "ST-4 CONSTRAINED" docs/case-studies/wd-fa/STOGAF-CONFORMANCE.md
+          grep -q "ST-6 AUTONOMIC" docs/case-studies/wd-fa/STOGAF-CONFORMANCE.md
+          ! grep -q "Current cumulative level: ST-7" docs/case-studies/wd-fa/STOGAF-CONFORMANCE.md
+
+      - name: No owned-collaborator mock audit
+        run: |
+          set -euo pipefail
+          ! grep -rnE 'unittest\.mock|Mock\(|MagicMock|monkeypatch|Mox\b|:meck|meck\.' \
+            lib/xaas/case_studies/wd_fa test/xaas/case_studies e2e/wd-fa-cs2.spec.cjs
+
+      - name: Build LiveView assets (priv/static/assets is untracked)
+        run: mix assets.setup && mix assets.build
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start Phoenix
+        env:
+          PHX_SERVER: "true"
+        run: |
+          MIX_ENV=test mix phx.server > /tmp/stogaf-wd.log 2>&1 &
+          for i in $(seq 1 45); do
+            if curl -fsS http://localhost:4002/case-studies/wd-fa >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/stogaf-wd.log
+          exit 1
+
+      - name: Run browser court
+        env:
+          # The test endpoint's url host is localhost; a 127.0.0.1 origin is
+          # refused by Phoenix check_origin, so LiveView would never connect
+          # (same fix as wd-cs2-exact-head.yml).
+          PLAYWRIGHT_BASE_URL: http://localhost:4002
+        run: npx playwright test e2e/wd-fa-cs2.spec.cjs
+
+      - name: Manufacture WD offline evaluation report
+        run: |
+          mix xaas.wd.fa_eval wd-cs2-evaluation.json
+          test -s wd-cs2-evaluation.json
+          grep -q '"controls_passed": 7' wd-cs2-evaluation.json
+          grep -q '"mttr": "UNMEASURED"' wd-cs2-evaluation.json
+
+      - name: Manufacture exact-head STOGAF receipt
+        env:
+          STOGAF_SUBJECT_SHA: ${{ env.SUBJECT_SHA }}
+        run: |
+          mix xaas.wd.stogaf_receipt wd-cs2-stogaf-receipt.json
+          test -s wd-cs2-stogaf-receipt.json
+          grep -q '"current_conformance": "ST-4 CONSTRAINED"' wd-cs2-stogaf-receipt.json
+          grep -q '"friday_do_capabilities": 0' wd-cs2-stogaf-receipt.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wd-cs2-stogaf-receipt-${{ env.SUBJECT_SHA }}
+          path: |
+            wd-cs2-stogaf-receipt.json
+            wd-cs2-evaluation.json
+            wd-cs2-stogaf-semantic-report.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Print bounded standing
+        run: |
+          echo "STOGAF_CURRENT=ST-4_CONSTRAINED"
+          echo "STOGAF_TARGET=ST-6_AUTONOMIC"
+          echo "AUTHORITY=SELECT_CONSTRUCT_ONLY"
+          echo "ST7_PLUS=UNCLAIMED"

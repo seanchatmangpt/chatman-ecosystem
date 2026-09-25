@@ -1,0 +1,1510 @@
+{
+  "baseline": {
+    "premise:RFC-0004#\u00a71": "99aae868200e2c9cdc1f7dd8d0d2fb71c6b021d5ecd63a0f1448773993807783",
+    "premise:RFC-0004#\u00a710": "382fd503094608e4df4501e79ad33dd5b3e6fd92a7e04e00dfeefac94c23f739",
+    "premise:RFC-0004#\u00a711": "2167426dd55fe282d04b38c72956fa80cd6345cd7136018d60fb5eb7200fb8db",
+    "premise:RFC-0004#\u00a712": "195439c5b59d4c34041c3cf8915a10bb849c4bf1f26b6ca0a90171fb43550563",
+    "premise:RFC-0004#\u00a713": "8a277dc76623bc4cde85ef1e100dee92812b99028d8f23ac23059df85e74f491",
+    "premise:RFC-0004#\u00a714": "e85254e5a171c88af1d20b1e696d5e1dc968a1b7f91bb1451bd95a810fedbb98",
+    "premise:RFC-0004#\u00a715": "92b06f5e28c6b46d8bbbc3f54749417462d641180ce51253e8dfb9c3068bb875",
+    "premise:RFC-0004#\u00a716": "5aaa304e5526036e6caee38799b748416672e066e8b0223997b4a6744412c79e",
+    "premise:RFC-0004#\u00a717": "889fda00908c6cfc9df1556971b222775b61a166539df50f8899e4afc731fc8c",
+    "premise:RFC-0004#\u00a718": "b22d84b50597fb5d7dab9113021745be8341f5b3c1915fddbc38bcc246fbacb8",
+    "premise:RFC-0004#\u00a719": "f5714bf9fcc32515717d58f00155cb0d16c3fd242b94513aafd6d5da0a92e60e",
+    "premise:RFC-0004#\u00a72": "72ba1a3562e15cec977193337dcaafb9848cd539f842c6402628890b4f89e0bf",
+    "premise:RFC-0004#\u00a720": "33e9dc4ada3e738312c1babbe2ff9756b8e1b6ae162b2bf1454ad6bcd569f90e",
+    "premise:RFC-0004#\u00a721": "0b6e948befad3d7345fdaecba170c74736db744d7aeccba056199adc1bdfcbdd",
+    "premise:RFC-0004#\u00a722": "c0722ab5191536e665ed60387fd15fd885ac7ffc6a814499039b92709c6b7d03",
+    "premise:RFC-0004#\u00a723": "13535a82ebfd057e70ae36ea393b4fb70c34cee32bffff9325346da892256796",
+    "premise:RFC-0004#\u00a724": "10c7967d3eeb458422cde61213c053029c3db727985c867c981ffa3752e1d183",
+    "premise:RFC-0004#\u00a725": "55c275665954338a55b6bd168a05cfd2ac454cf90c648695649927b5b70cd67f",
+    "premise:RFC-0004#\u00a726": "1e2ab5965a92747dce24fa9032450e171735a7edaa962e0d7cfb6221548e3013",
+    "premise:RFC-0004#\u00a727": "0903de216eb82393f51d26e545d85ff66ee42298b4b1a6c453e9f207801d511b",
+    "premise:RFC-0004#\u00a728": "a4151ccae002b526aa3f82ea2b47a6ce35688b63922e7b7dc20b9a1e6a5ac921",
+    "premise:RFC-0004#\u00a729": "7f3948d6b41e3983ad161ff70d241dcc255cd8c46d6552898bbace34c494d566",
+    "premise:RFC-0004#\u00a73": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+    "premise:RFC-0004#\u00a730": "b710da61c69d788cb52669edb1c0540ec4b64937ba92be60a575ba8e966b1f50",
+    "premise:RFC-0004#\u00a731": "7b4b3e7ab1b31f4f902e3152c9aa99e7cf28c9817332b0c0fdd0e7d7c6c6f3a3",
+    "premise:RFC-0004#\u00a732": "392a2c6432880ff7733c0e66f01cc18490c53162a113b75d1482995264461c5c",
+    "premise:RFC-0004#\u00a733": "58f0fd2043f827a796028bccedaacf25b62f6315a54dac0ff5fa581e357d2bdb",
+    "premise:RFC-0004#\u00a734": "4c2db7ebab594f6df5dbc5e63faf76f5d9bb194611dfa4c72b141047b0f5a993",
+    "premise:RFC-0004#\u00a735": "2d38b8ba1985109c94943527ac18ea30bdf188d9e656b33af5ace745bba74865",
+    "premise:RFC-0004#\u00a736": "ea5df3f5ddf468dc8ad9da482e0a8263ae788f34fab40db9246ff925b760695d",
+    "premise:RFC-0004#\u00a737": "782d25d9e39547972f68c8b8af26fe77243479aebd5f41c229b414f2bf8297bd",
+    "premise:RFC-0004#\u00a738": "01a0286dfeb4e1d061e9d3f4497d587cfc3e49ea2c01e94921d016f17289720f",
+    "premise:RFC-0004#\u00a739": "eb9e64b6298f398d7b0e7fe7ef47e8b3b2e8ab961882caefb8f904893ea25b45",
+    "premise:RFC-0004#\u00a74": "230614229d3d34065b8374fa44d47de490292c5ee6e963ec7d0fda9a735ccb0e",
+    "premise:RFC-0004#\u00a74.1": "003addbd0fe804325235a42a47eb1fe4d19c57fa419479635369a6e311943658",
+    "premise:RFC-0004#\u00a74.2": "b5fd0dc1c961a4977c85f2dd353071f34f583720600f5616adf68b6e1167e168",
+    "premise:RFC-0004#\u00a74.3": "baf88555ec5418b8e10cc6fdc16a0474c347f93ed865a1f9d50aad830f69a8a1",
+    "premise:RFC-0004#\u00a74.4": "707a9d2778fa89babebebad2b2c5f16036ab4c76affb1e693f0a9d99fe2a26d4",
+    "premise:RFC-0004#\u00a740": "41c6908692a620e143cb4095873ecee6bffa783c900f74b8b2176bb9fedddd58",
+    "premise:RFC-0004#\u00a741": "6d95a2db890ea3993777e0de8e1db7814990f81fdf0f96025fc1f70282fb366c",
+    "premise:RFC-0004#\u00a742": "a7272146772b186941b8d456c827e86c54caa76a2015359f535ee57c97f30bc4",
+    "premise:RFC-0004#\u00a743": "c721335532f7a38e1b4b2136abb3cb8f276bc2ac552671d43d0e56780fbae205",
+    "premise:RFC-0004#\u00a744": "6ee41fbb5e38f9c5983b435a07e170bf466cdced0553fe127fe66d15f756c2ce",
+    "premise:RFC-0004#\u00a745": "c212a85390c61d02517e83fdcf62c6b3e9de8a0ab4005be7a72bc1d9714b051a",
+    "premise:RFC-0004#\u00a746": "430ea16e9011506cc92de918f06e6f282163ef7b376a109e7f3c7e678be52337",
+    "premise:RFC-0004#\u00a747": "0ccdaf9638b82707765e9212633bb745a22e61c15b61965efabcea153f132586",
+    "premise:RFC-0004#\u00a748": "461647767bd27111e188dfcadf863bb8c24bf05aae7feb81d6f0811c4502d751",
+    "premise:RFC-0004#\u00a749": "f2eda3c40e543cc8a57b7804dfb67e9b5ecf4969e0e8a4f1ca6e1e120ccd10db",
+    "premise:RFC-0004#\u00a75": "e055ba18ddd02d3e0c0121c9d27c930846181e221b8790d6e434a9094c139ad8",
+    "premise:RFC-0004#\u00a750": "b90635992e17165c97cc1f6d59ed21fb90561cd309c8394e6d8e51cfabfbdef3",
+    "premise:RFC-0004#\u00a751": "7ea187884551068e6ea28eb3c6ce4f74ef167179e55bc5638d5283a5725ec5d2",
+    "premise:RFC-0004#\u00a752": "26fc07120196aa3092cc9c07b19a75e9d84a8d1fe79dcd485f5917fbf2bea3a0",
+    "premise:RFC-0004#\u00a753": "44b4968db50f1a5e02293ed2c77ed2d46ac7a86e9fe0c820020ac09c16555a36",
+    "premise:RFC-0004#\u00a754": "c83d5dd279ccef1737f62dcbdd9b088b665bbb66642cd22c26b5d1c81d7b7195",
+    "premise:RFC-0004#\u00a755": "f696a243b943063e642461bc1d0390b39bbd47af66bd6ffd814409f619e03c42",
+    "premise:RFC-0004#\u00a756": "42ab20804312fbc333e59ff27fd1b4515edb5b09033668ed2310eb8a181c2ed7",
+    "premise:RFC-0004#\u00a757": "fe15a87cc9dca5458f2c5a369a5bd66b9a911dd84ef6f5caa3400dd65912c6c9",
+    "premise:RFC-0004#\u00a758": "91d2c697c2d2b0c309a2a125da64b5f38844d424c81033ac2048841973defa97",
+    "premise:RFC-0004#\u00a76": "496402cd02cf946fabdaf11f9dd11274e2c0d88b6c3e5d95c528374b7e2b6f02",
+    "premise:RFC-0004#\u00a77": "9b1cea5d587f6d901d08785b2ff9ec1402060ea3f4842fa7273095a6c677ec36",
+    "premise:RFC-0004#\u00a77.1": "f0c2ee663eb71fda5a1c04544fc7ba085f2cf3dd60f5d643919db433e23155c3",
+    "premise:RFC-0004#\u00a77.2": "755a0c41d651de6c6a654c7e617ed0131b61deedef92eb79f0044959688dc7da",
+    "premise:RFC-0004#\u00a77.3": "1e08473db5b7b8eafcdc386fcdcf0d3a7b1a7f7d79f6cd4e541480a22ae4b2b8",
+    "premise:RFC-0004#\u00a77.4": "353f4eb5e43494453d4235d2701eea79b940e73134055d0b0b235a81e475579a",
+    "premise:RFC-0004#\u00a78": "39d3be511cac8995a543e59fed37282ca31a0c04dcc96cc9c1791de356f9eea4",
+    "premise:RFC-0004#\u00a79": "afa40991ac48cc01021072b854b097b7fd9faa80391e2ce12fe5b1ba9f6fc421",
+    "req:AC-01": "sha256:efdd290594cb46476c00a7359e3a9adbb216f0063c0a185195db214b992619bc",
+    "req:AC-02": "sha256:b4211fba65f6c10cc5481fe021667f89e39b69a82fbeb4df7c738dfb82aae4b6",
+    "req:AC-03": "sha256:05b7514680606080c3ae6565c8c798e7cd987d4199932b36d16457cbd4977ee1",
+    "req:AC-04": "sha256:2c4baa751eb2ede910eb407308fdcbf218fad9064a8dc915c363d323192a09cd",
+    "req:AC-05": "sha256:5087ec3c27d2409d8be0059d5747edbbac478c43e45e9753c64b75e91447296b",
+    "req:AC-06": "sha256:3d9510dea5d6585a6c5791c3bdd714a8d4519410d238ac0a481a087c8736b0e3",
+    "req:AC-07": "sha256:7a2dbd12aa217a3160040d3202ef950551d14f095cd9ea17ad8d28899e29a48d",
+    "req:AC-08": "sha256:fbc9ad36b59082cee6a76b1ff29e0cf8cf407779b5df0f8187622a42eaeda1cb",
+    "req:AC-09": "sha256:3f66d5a597fd48286fe285ec691b175805c80f2847bc84c8fa51f2b39bbb9755",
+    "req:AC-10": "sha256:daaad6d105d70d655b899bc20f8ac07ca80e06b9eec2e5d28c7cb2ef16605180",
+    "req:AC-11": "sha256:63bfea9b4021390ebbbb87a98ec17e8d27be90eee78ff4e68edec31ec29a4e30",
+    "req:AC-12": "sha256:83aa063fbc90c9d74d92a31706117b49211e59aea473ee7cda30941663d32214",
+    "req:AC-13": "sha256:a939f87e34913328c0b8b97ac1fb295803db0efc93785f4b6fcd58c95f1f9149",
+    "req:AC-14": "sha256:ca79161b7b7726cbc1cc70c0bcfa2933592c6abec4fc162501a30bb03792ba86",
+    "req:AC-15": "sha256:351c6555bd6938e35e1d6d65b39116f9926544dd82954e0b73cc1d577f1fd1bb",
+    "req:AC-16": "sha256:a6a6d01ce4046602e77737dc06bae51f0fa62ffd556c29134c5e2b5300d2c623",
+    "req:AC-17": "sha256:70523a2112f4289a426f57515151a41c71311e5f9f4e4e2eab14bc284d82ea56",
+    "req:AC-18": "sha256:dbf53871dbf62c113a39d3f75d014c5a20fa8b2cd8c65f8946a9d8b1794df8ff",
+    "req:AC-19": "sha256:4963d8c95d98efdc6039d31313cb30e0036b6be0dc138242ef269563d1ec9f8f",
+    "req:F-01": "sha256:7f786cc2bcf61970398be3b418890e53789165ea4249a081682221b649d331bd",
+    "req:F-02": "sha256:723f7609f321e553a0c3c897b0dcb6a9940f2b6c15252a8413b6f7953242ce9c",
+    "req:F-03": "sha256:ab4bce6b6d8d15285c0bcf39e002b950c7185df107c07a70ae7c50bf31597090",
+    "req:F-04": "sha256:eb800a2213a28bfa7ea670caba82b8cc88750c3bf449fd90428edb563eb56f3a",
+    "req:F-05": "sha256:1319c57a7949d5f07ab058bbecc0ec4cf988f58a85e906a6f37b63c31c18ef95",
+    "req:F-06": "sha256:8e3f7dfa212f8b9de603c0f17c6db526629c62fbba42858bacc314aaeef84dcc",
+    "req:F-07": "sha256:68f1f2c1e011a9aacef7b0bb62f5ca6eff6699471b5b2e2187634206ac128a81",
+    "req:F-08": "sha256:6617ce9432388ca458eb23447d55c2af694fdf1ecfb6325c52b7c89238df8937",
+    "req:F-09": "sha256:58826b1866a7df55fcfd44fec248c2a3cc7930ff5237060b311ec50a343ab8e9",
+    "req:F-10": "sha256:cf99b285355494b136d3d5c322c1136140c75678f404255bc6a79f40577dc6c1",
+    "req:F-11": "sha256:c9a44a03fabbab7615c422a5bad7f4868f651a291222007486c8810e154c188c",
+    "req:F-12": "sha256:0be3e9c2c75b2db1b9bd6e3fc4ff8f2bdc42707a3e94e2de3eacd56535367d08",
+    "req:F-13": "sha256:4d3ed29f8c6d23a2ea0abe96cbc0f03fff2faf6dc3f26f86886c35a4c3ad9526",
+    "req:F-14": "sha256:07e903b52d876df40892077c39914a5cc3542b95ff4187fdce442d8c7853f397"
+  },
+  "compiled": {
+    "premise:RFC-0004#\u00a71": "99aae868200e2c9cdc1f7dd8d0d2fb71c6b021d5ecd63a0f1448773993807783",
+    "premise:RFC-0004#\u00a710": "382fd503094608e4df4501e79ad33dd5b3e6fd92a7e04e00dfeefac94c23f739",
+    "premise:RFC-0004#\u00a711": "2167426dd55fe282d04b38c72956fa80cd6345cd7136018d60fb5eb7200fb8db",
+    "premise:RFC-0004#\u00a712": "195439c5b59d4c34041c3cf8915a10bb849c4bf1f26b6ca0a90171fb43550563",
+    "premise:RFC-0004#\u00a713": "8a277dc76623bc4cde85ef1e100dee92812b99028d8f23ac23059df85e74f491",
+    "premise:RFC-0004#\u00a714": "e85254e5a171c88af1d20b1e696d5e1dc968a1b7f91bb1451bd95a810fedbb98",
+    "premise:RFC-0004#\u00a715": "92b06f5e28c6b46d8bbbc3f54749417462d641180ce51253e8dfb9c3068bb875",
+    "premise:RFC-0004#\u00a716": "5aaa304e5526036e6caee38799b748416672e066e8b0223997b4a6744412c79e",
+    "premise:RFC-0004#\u00a717": "889fda00908c6cfc9df1556971b222775b61a166539df50f8899e4afc731fc8c",
+    "premise:RFC-0004#\u00a718": "b22d84b50597fb5d7dab9113021745be8341f5b3c1915fddbc38bcc246fbacb8",
+    "premise:RFC-0004#\u00a719": "f5714bf9fcc32515717d58f00155cb0d16c3fd242b94513aafd6d5da0a92e60e",
+    "premise:RFC-0004#\u00a72": "72ba1a3562e15cec977193337dcaafb9848cd539f842c6402628890b4f89e0bf",
+    "premise:RFC-0004#\u00a720": "33e9dc4ada3e738312c1babbe2ff9756b8e1b6ae162b2bf1454ad6bcd569f90e",
+    "premise:RFC-0004#\u00a721": "0b6e948befad3d7345fdaecba170c74736db744d7aeccba056199adc1bdfcbdd",
+    "premise:RFC-0004#\u00a722": "c0722ab5191536e665ed60387fd15fd885ac7ffc6a814499039b92709c6b7d03",
+    "premise:RFC-0004#\u00a723": "13535a82ebfd057e70ae36ea393b4fb70c34cee32bffff9325346da892256796",
+    "premise:RFC-0004#\u00a724": "10c7967d3eeb458422cde61213c053029c3db727985c867c981ffa3752e1d183",
+    "premise:RFC-0004#\u00a725": "55c275665954338a55b6bd168a05cfd2ac454cf90c648695649927b5b70cd67f",
+    "premise:RFC-0004#\u00a726": "1e2ab5965a92747dce24fa9032450e171735a7edaa962e0d7cfb6221548e3013",
+    "premise:RFC-0004#\u00a727": "0903de216eb82393f51d26e545d85ff66ee42298b4b1a6c453e9f207801d511b",
+    "premise:RFC-0004#\u00a728": "a4151ccae002b526aa3f82ea2b47a6ce35688b63922e7b7dc20b9a1e6a5ac921",
+    "premise:RFC-0004#\u00a729": "7f3948d6b41e3983ad161ff70d241dcc255cd8c46d6552898bbace34c494d566",
+    "premise:RFC-0004#\u00a73": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+    "premise:RFC-0004#\u00a730": "b710da61c69d788cb52669edb1c0540ec4b64937ba92be60a575ba8e966b1f50",
+    "premise:RFC-0004#\u00a731": "7b4b3e7ab1b31f4f902e3152c9aa99e7cf28c9817332b0c0fdd0e7d7c6c6f3a3",
+    "premise:RFC-0004#\u00a732": "392a2c6432880ff7733c0e66f01cc18490c53162a113b75d1482995264461c5c",
+    "premise:RFC-0004#\u00a733": "58f0fd2043f827a796028bccedaacf25b62f6315a54dac0ff5fa581e357d2bdb",
+    "premise:RFC-0004#\u00a734": "4c2db7ebab594f6df5dbc5e63faf76f5d9bb194611dfa4c72b141047b0f5a993",
+    "premise:RFC-0004#\u00a735": "2d38b8ba1985109c94943527ac18ea30bdf188d9e656b33af5ace745bba74865",
+    "premise:RFC-0004#\u00a736": "ea5df3f5ddf468dc8ad9da482e0a8263ae788f34fab40db9246ff925b760695d",
+    "premise:RFC-0004#\u00a737": "782d25d9e39547972f68c8b8af26fe77243479aebd5f41c229b414f2bf8297bd",
+    "premise:RFC-0004#\u00a738": "01a0286dfeb4e1d061e9d3f4497d587cfc3e49ea2c01e94921d016f17289720f",
+    "premise:RFC-0004#\u00a739": "eb9e64b6298f398d7b0e7fe7ef47e8b3b2e8ab961882caefb8f904893ea25b45",
+    "premise:RFC-0004#\u00a74": "230614229d3d34065b8374fa44d47de490292c5ee6e963ec7d0fda9a735ccb0e",
+    "premise:RFC-0004#\u00a74.1": "003addbd0fe804325235a42a47eb1fe4d19c57fa419479635369a6e311943658",
+    "premise:RFC-0004#\u00a74.2": "b5fd0dc1c961a4977c85f2dd353071f34f583720600f5616adf68b6e1167e168",
+    "premise:RFC-0004#\u00a74.3": "baf88555ec5418b8e10cc6fdc16a0474c347f93ed865a1f9d50aad830f69a8a1",
+    "premise:RFC-0004#\u00a74.4": "707a9d2778fa89babebebad2b2c5f16036ab4c76affb1e693f0a9d99fe2a26d4",
+    "premise:RFC-0004#\u00a740": "41c6908692a620e143cb4095873ecee6bffa783c900f74b8b2176bb9fedddd58",
+    "premise:RFC-0004#\u00a741": "6d95a2db890ea3993777e0de8e1db7814990f81fdf0f96025fc1f70282fb366c",
+    "premise:RFC-0004#\u00a742": "a7272146772b186941b8d456c827e86c54caa76a2015359f535ee57c97f30bc4",
+    "premise:RFC-0004#\u00a743": "c721335532f7a38e1b4b2136abb3cb8f276bc2ac552671d43d0e56780fbae205",
+    "premise:RFC-0004#\u00a744": "6ee41fbb5e38f9c5983b435a07e170bf466cdced0553fe127fe66d15f756c2ce",
+    "premise:RFC-0004#\u00a745": "c212a85390c61d02517e83fdcf62c6b3e9de8a0ab4005be7a72bc1d9714b051a",
+    "premise:RFC-0004#\u00a746": "430ea16e9011506cc92de918f06e6f282163ef7b376a109e7f3c7e678be52337",
+    "premise:RFC-0004#\u00a747": "0ccdaf9638b82707765e9212633bb745a22e61c15b61965efabcea153f132586",
+    "premise:RFC-0004#\u00a748": "461647767bd27111e188dfcadf863bb8c24bf05aae7feb81d6f0811c4502d751",
+    "premise:RFC-0004#\u00a749": "f2eda3c40e543cc8a57b7804dfb67e9b5ecf4969e0e8a4f1ca6e1e120ccd10db",
+    "premise:RFC-0004#\u00a75": "e055ba18ddd02d3e0c0121c9d27c930846181e221b8790d6e434a9094c139ad8",
+    "premise:RFC-0004#\u00a750": "b90635992e17165c97cc1f6d59ed21fb90561cd309c8394e6d8e51cfabfbdef3",
+    "premise:RFC-0004#\u00a751": "7ea187884551068e6ea28eb3c6ce4f74ef167179e55bc5638d5283a5725ec5d2",
+    "premise:RFC-0004#\u00a752": "26fc07120196aa3092cc9c07b19a75e9d84a8d1fe79dcd485f5917fbf2bea3a0",
+    "premise:RFC-0004#\u00a753": "44b4968db50f1a5e02293ed2c77ed2d46ac7a86e9fe0c820020ac09c16555a36",
+    "premise:RFC-0004#\u00a754": "c83d5dd279ccef1737f62dcbdd9b088b665bbb66642cd22c26b5d1c81d7b7195",
+    "premise:RFC-0004#\u00a755": "f696a243b943063e642461bc1d0390b39bbd47af66bd6ffd814409f619e03c42",
+    "premise:RFC-0004#\u00a756": "42ab20804312fbc333e59ff27fd1b4515edb5b09033668ed2310eb8a181c2ed7",
+    "premise:RFC-0004#\u00a757": "fe15a87cc9dca5458f2c5a369a5bd66b9a911dd84ef6f5caa3400dd65912c6c9",
+    "premise:RFC-0004#\u00a758": "91d2c697c2d2b0c309a2a125da64b5f38844d424c81033ac2048841973defa97",
+    "premise:RFC-0004#\u00a76": "496402cd02cf946fabdaf11f9dd11274e2c0d88b6c3e5d95c528374b7e2b6f02",
+    "premise:RFC-0004#\u00a77": "9b1cea5d587f6d901d08785b2ff9ec1402060ea3f4842fa7273095a6c677ec36",
+    "premise:RFC-0004#\u00a77.1": "f0c2ee663eb71fda5a1c04544fc7ba085f2cf3dd60f5d643919db433e23155c3",
+    "premise:RFC-0004#\u00a77.2": "755a0c41d651de6c6a654c7e617ed0131b61deedef92eb79f0044959688dc7da",
+    "premise:RFC-0004#\u00a77.3": "1e08473db5b7b8eafcdc386fcdcf0d3a7b1a7f7d79f6cd4e541480a22ae4b2b8",
+    "premise:RFC-0004#\u00a77.4": "353f4eb5e43494453d4235d2701eea79b940e73134055d0b0b235a81e475579a",
+    "premise:RFC-0004#\u00a78": "39d3be511cac8995a543e59fed37282ca31a0c04dcc96cc9c1791de356f9eea4",
+    "premise:RFC-0004#\u00a79": "afa40991ac48cc01021072b854b097b7fd9faa80391e2ce12fe5b1ba9f6fc421",
+    "req:AC-01": "sha256:efdd290594cb46476c00a7359e3a9adbb216f0063c0a185195db214b992619bc",
+    "req:AC-02": "sha256:7db843106340d43f236d21ae13edaa65950123866d8062db9ba2a3b023447b74",
+    "req:AC-03": "sha256:05b7514680606080c3ae6565c8c798e7cd987d4199932b36d16457cbd4977ee1",
+    "req:AC-04": "sha256:2c4baa751eb2ede910eb407308fdcbf218fad9064a8dc915c363d323192a09cd",
+    "req:AC-05": "sha256:5087ec3c27d2409d8be0059d5747edbbac478c43e45e9753c64b75e91447296b",
+    "req:AC-06": "sha256:3d9510dea5d6585a6c5791c3bdd714a8d4519410d238ac0a481a087c8736b0e3",
+    "req:AC-07": "sha256:7a2dbd12aa217a3160040d3202ef950551d14f095cd9ea17ad8d28899e29a48d",
+    "req:AC-08": "sha256:fbc9ad36b59082cee6a76b1ff29e0cf8cf407779b5df0f8187622a42eaeda1cb",
+    "req:AC-09": "sha256:3f66d5a597fd48286fe285ec691b175805c80f2847bc84c8fa51f2b39bbb9755",
+    "req:AC-10": "sha256:daaad6d105d70d655b899bc20f8ac07ca80e06b9eec2e5d28c7cb2ef16605180",
+    "req:AC-11": "sha256:63bfea9b4021390ebbbb87a98ec17e8d27be90eee78ff4e68edec31ec29a4e30",
+    "req:AC-12": "sha256:83aa063fbc90c9d74d92a31706117b49211e59aea473ee7cda30941663d32214",
+    "req:AC-13": "sha256:a939f87e34913328c0b8b97ac1fb295803db0efc93785f4b6fcd58c95f1f9149",
+    "req:AC-14": "sha256:ca79161b7b7726cbc1cc70c0bcfa2933592c6abec4fc162501a30bb03792ba86",
+    "req:AC-15": "sha256:351c6555bd6938e35e1d6d65b39116f9926544dd82954e0b73cc1d577f1fd1bb",
+    "req:AC-16": "sha256:a6a6d01ce4046602e77737dc06bae51f0fa62ffd556c29134c5e2b5300d2c623",
+    "req:AC-17": "sha256:70523a2112f4289a426f57515151a41c71311e5f9f4e4e2eab14bc284d82ea56",
+    "req:AC-18": "sha256:dbf53871dbf62c113a39d3f75d014c5a20fa8b2cd8c65f8946a9d8b1794df8ff",
+    "req:AC-19": "sha256:4963d8c95d98efdc6039d31313cb30e0036b6be0dc138242ef269563d1ec9f8f",
+    "req:F-01": "sha256:7f786cc2bcf61970398be3b418890e53789165ea4249a081682221b649d331bd",
+    "req:F-02": "sha256:723f7609f321e553a0c3c897b0dcb6a9940f2b6c15252a8413b6f7953242ce9c",
+    "req:F-03": "sha256:ab4bce6b6d8d15285c0bcf39e002b950c7185df107c07a70ae7c50bf31597090",
+    "req:F-04": "sha256:eb800a2213a28bfa7ea670caba82b8cc88750c3bf449fd90428edb563eb56f3a",
+    "req:F-05": "sha256:1319c57a7949d5f07ab058bbecc0ec4cf988f58a85e906a6f37b63c31c18ef95",
+    "req:F-06": "sha256:8e3f7dfa212f8b9de603c0f17c6db526629c62fbba42858bacc314aaeef84dcc",
+    "req:F-07": "sha256:68f1f2c1e011a9aacef7b0bb62f5ca6eff6699471b5b2e2187634206ac128a81",
+    "req:F-08": "sha256:6617ce9432388ca458eb23447d55c2af694fdf1ecfb6325c52b7c89238df8937",
+    "req:F-09": "sha256:58826b1866a7df55fcfd44fec248c2a3cc7930ff5237060b311ec50a343ab8e9",
+    "req:F-10": "sha256:cf99b285355494b136d3d5c322c1136140c75678f404255bc6a79f40577dc6c1",
+    "req:F-11": "sha256:c9a44a03fabbab7615c422a5bad7f4868f651a291222007486c8810e154c188c",
+    "req:F-12": "sha256:0be3e9c2c75b2db1b9bd6e3fc4ff8f2bdc42707a3e94e2de3eacd56535367d08",
+    "req:F-13": "sha256:4d3ed29f8c6d23a2ea0abe96cbc0f03fff2faf6dc3f26f86886c35a4c3ad9526",
+    "req:F-14": "sha256:07e903b52d876df40892077c39914a5cc3542b95ff4187fdce442d8c7853f397"
+  },
+  "edges": [
+    {
+      "compiled_from": "382fd503094608e4df4501e79ad33dd5b3e6fd92a7e04e00dfeefac94c23f739",
+      "consumer": "req:AC-06",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a710"
+    },
+    {
+      "compiled_from": "382fd503094608e4df4501e79ad33dd5b3e6fd92a7e04e00dfeefac94c23f739",
+      "consumer": "req:F-07",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a710"
+    },
+    {
+      "compiled_from": "2167426dd55fe282d04b38c72956fa80cd6345cd7136018d60fb5eb7200fb8db",
+      "consumer": "req:AC-06",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a711"
+    },
+    {
+      "compiled_from": "195439c5b59d4c34041c3cf8915a10bb849c4bf1f26b6ca0a90171fb43550563",
+      "consumer": "req:AC-07",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a712"
+    },
+    {
+      "compiled_from": "195439c5b59d4c34041c3cf8915a10bb849c4bf1f26b6ca0a90171fb43550563",
+      "consumer": "req:F-08",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a712"
+    },
+    {
+      "compiled_from": "8a277dc76623bc4cde85ef1e100dee92812b99028d8f23ac23059df85e74f491",
+      "consumer": "req:AC-07",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a713"
+    },
+    {
+      "compiled_from": "8a277dc76623bc4cde85ef1e100dee92812b99028d8f23ac23059df85e74f491",
+      "consumer": "req:F-08",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a713"
+    },
+    {
+      "compiled_from": "e85254e5a171c88af1d20b1e696d5e1dc968a1b7f91bb1451bd95a810fedbb98",
+      "consumer": "req:F-09",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a714"
+    },
+    {
+      "compiled_from": "92b06f5e28c6b46d8bbbc3f54749417462d641180ce51253e8dfb9c3068bb875",
+      "consumer": "req:F-09",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a715"
+    },
+    {
+      "compiled_from": "5aaa304e5526036e6caee38799b748416672e066e8b0223997b4a6744412c79e",
+      "consumer": "req:AC-08",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a716"
+    },
+    {
+      "compiled_from": "889fda00908c6cfc9df1556971b222775b61a166539df50f8899e4afc731fc8c",
+      "consumer": "req:AC-08",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a717"
+    },
+    {
+      "compiled_from": "889fda00908c6cfc9df1556971b222775b61a166539df50f8899e4afc731fc8c",
+      "consumer": "req:F-05",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a717"
+    },
+    {
+      "compiled_from": "b22d84b50597fb5d7dab9113021745be8341f5b3c1915fddbc38bcc246fbacb8",
+      "consumer": "req:AC-09",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a718"
+    },
+    {
+      "compiled_from": "b22d84b50597fb5d7dab9113021745be8341f5b3c1915fddbc38bcc246fbacb8",
+      "consumer": "req:F-10",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a718"
+    },
+    {
+      "compiled_from": "f5714bf9fcc32515717d58f00155cb0d16c3fd242b94513aafd6d5da0a92e60e",
+      "consumer": "req:AC-10",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a719"
+    },
+    {
+      "compiled_from": "f5714bf9fcc32515717d58f00155cb0d16c3fd242b94513aafd6d5da0a92e60e",
+      "consumer": "req:F-11",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a719"
+    },
+    {
+      "compiled_from": "33e9dc4ada3e738312c1babbe2ff9756b8e1b6ae162b2bf1454ad6bcd569f90e",
+      "consumer": "req:AC-11",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a720"
+    },
+    {
+      "compiled_from": "33e9dc4ada3e738312c1babbe2ff9756b8e1b6ae162b2bf1454ad6bcd569f90e",
+      "consumer": "req:F-04",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a720"
+    },
+    {
+      "compiled_from": "0b6e948befad3d7345fdaecba170c74736db744d7aeccba056199adc1bdfcbdd",
+      "consumer": "req:AC-13",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a721"
+    },
+    {
+      "compiled_from": "c0722ab5191536e665ed60387fd15fd885ac7ffc6a814499039b92709c6b7d03",
+      "consumer": "req:AC-14",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a722"
+    },
+    {
+      "compiled_from": "c0722ab5191536e665ed60387fd15fd885ac7ffc6a814499039b92709c6b7d03",
+      "consumer": "req:F-12",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a722"
+    },
+    {
+      "compiled_from": "13535a82ebfd057e70ae36ea393b4fb70c34cee32bffff9325346da892256796",
+      "consumer": "req:AC-14",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a723"
+    },
+    {
+      "compiled_from": "13535a82ebfd057e70ae36ea393b4fb70c34cee32bffff9325346da892256796",
+      "consumer": "req:F-12",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a723"
+    },
+    {
+      "compiled_from": "10c7967d3eeb458422cde61213c053029c3db727985c867c981ffa3752e1d183",
+      "consumer": "req:AC-13",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a724"
+    },
+    {
+      "compiled_from": "55c275665954338a55b6bd168a05cfd2ac454cf90c648695649927b5b70cd67f",
+      "consumer": "req:AC-15",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a725"
+    },
+    {
+      "compiled_from": "1e2ab5965a92747dce24fa9032450e171735a7edaa962e0d7cfb6221548e3013",
+      "consumer": "req:AC-15",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a726"
+    },
+    {
+      "compiled_from": "1e2ab5965a92747dce24fa9032450e171735a7edaa962e0d7cfb6221548e3013",
+      "consumer": "req:F-13",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a726"
+    },
+    {
+      "compiled_from": "0903de216eb82393f51d26e545d85ff66ee42298b4b1a6c453e9f207801d511b",
+      "consumer": "req:AC-15",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a727"
+    },
+    {
+      "compiled_from": "a4151ccae002b526aa3f82ea2b47a6ce35688b63922e7b7dc20b9a1e6a5ac921",
+      "consumer": "req:AC-16",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a728"
+    },
+    {
+      "compiled_from": "7f3948d6b41e3983ad161ff70d241dcc255cd8c46d6552898bbace34c494d566",
+      "consumer": "req:AC-16",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a729"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-01",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-02",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-03",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-04",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-05",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-06",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-07",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-08",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-09",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-10",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-11",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-12",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-13",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-14",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-15",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-16",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-17",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-18",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:AC-19",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-01",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-02",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-03",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-04",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-05",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-06",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-07",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-08",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-09",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-10",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-11",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-12",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-13",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "c92e95390b11924a286447dfcfb362d4421a9e019fad0aa5ec2ab09fd0659283",
+      "consumer": "req:F-14",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a73"
+    },
+    {
+      "compiled_from": "782d25d9e39547972f68c8b8af26fe77243479aebd5f41c229b414f2bf8297bd",
+      "consumer": "req:AC-01",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a737"
+    },
+    {
+      "compiled_from": "782d25d9e39547972f68c8b8af26fe77243479aebd5f41c229b414f2bf8297bd",
+      "consumer": "req:AC-02",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a737"
+    },
+    {
+      "compiled_from": "01a0286dfeb4e1d061e9d3f4497d587cfc3e49ea2c01e94921d016f17289720f",
+      "consumer": "req:AC-02",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a738"
+    },
+    {
+      "compiled_from": "01a0286dfeb4e1d061e9d3f4497d587cfc3e49ea2c01e94921d016f17289720f",
+      "consumer": "req:F-03",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a738"
+    },
+    {
+      "compiled_from": "a7272146772b186941b8d456c827e86c54caa76a2015359f535ee57c97f30bc4",
+      "consumer": "req:AC-12",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a742"
+    },
+    {
+      "compiled_from": "c721335532f7a38e1b4b2136abb3cb8f276bc2ac552671d43d0e56780fbae205",
+      "consumer": "req:AC-12",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a743"
+    },
+    {
+      "compiled_from": "6ee41fbb5e38f9c5983b435a07e170bf466cdced0553fe127fe66d15f756c2ce",
+      "consumer": "req:AC-18",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a744"
+    },
+    {
+      "compiled_from": "c212a85390c61d02517e83fdcf62c6b3e9de8a0ab4005be7a72bc1d9714b051a",
+      "consumer": "req:AC-17",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a745"
+    },
+    {
+      "compiled_from": "c212a85390c61d02517e83fdcf62c6b3e9de8a0ab4005be7a72bc1d9714b051a",
+      "consumer": "req:AC-19",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a745"
+    },
+    {
+      "compiled_from": "c212a85390c61d02517e83fdcf62c6b3e9de8a0ab4005be7a72bc1d9714b051a",
+      "consumer": "req:F-14",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a745"
+    },
+    {
+      "compiled_from": "f696a243b943063e642461bc1d0390b39bbd47af66bd6ffd814409f619e03c42",
+      "consumer": "req:AC-01",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a755"
+    },
+    {
+      "compiled_from": "f696a243b943063e642461bc1d0390b39bbd47af66bd6ffd814409f619e03c42",
+      "consumer": "req:AC-18",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a755"
+    },
+    {
+      "compiled_from": "496402cd02cf946fabdaf11f9dd11274e2c0d88b6c3e5d95c528374b7e2b6f02",
+      "consumer": "req:AC-17",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a76"
+    },
+    {
+      "compiled_from": "f0c2ee663eb71fda5a1c04544fc7ba085f2cf3dd60f5d643919db433e23155c3",
+      "consumer": "req:AC-04",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a77.1"
+    },
+    {
+      "compiled_from": "755a0c41d651de6c6a654c7e617ed0131b61deedef92eb79f0044959688dc7da",
+      "consumer": "req:AC-03",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a77.2"
+    },
+    {
+      "compiled_from": "755a0c41d651de6c6a654c7e617ed0131b61deedef92eb79f0044959688dc7da",
+      "consumer": "req:F-02",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a77.2"
+    },
+    {
+      "compiled_from": "1e08473db5b7b8eafcdc386fcdcf0d3a7b1a7f7d79f6cd4e541480a22ae4b2b8",
+      "consumer": "req:AC-04",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a77.3"
+    },
+    {
+      "compiled_from": "1e08473db5b7b8eafcdc386fcdcf0d3a7b1a7f7d79f6cd4e541480a22ae4b2b8",
+      "consumer": "req:F-01",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a77.3"
+    },
+    {
+      "compiled_from": "353f4eb5e43494453d4235d2701eea79b940e73134055d0b0b235a81e475579a",
+      "consumer": "req:AC-03",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a77.4"
+    },
+    {
+      "compiled_from": "39d3be511cac8995a543e59fed37282ca31a0c04dcc96cc9c1791de356f9eea4",
+      "consumer": "req:AC-05",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a78"
+    },
+    {
+      "compiled_from": "afa40991ac48cc01021072b854b097b7fd9faa80391e2ce12fe5b1ba9f6fc421",
+      "consumer": "req:AC-05",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a79"
+    },
+    {
+      "compiled_from": "afa40991ac48cc01021072b854b097b7fd9faa80391e2ce12fe5b1ba9f6fc421",
+      "consumer": "req:F-06",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "premise:RFC-0004#\u00a79"
+    },
+    {
+      "compiled_from": "sha256:efdd290594cb46476c00a7359e3a9adbb216f0063c0a185195db214b992619bc",
+      "consumer": "artifact:local:release/v26.9.25/manifest.toml",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-01"
+    },
+    {
+      "compiled_from": "sha256:efdd290594cb46476c00a7359e3a9adbb216f0063c0a185195db214b992619bc",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:AC-01"
+    },
+    {
+      "compiled_from": "sha256:efdd290594cb46476c00a7359e3a9adbb216f0063c0a185195db214b992619bc",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-01"
+    },
+    {
+      "compiled_from": "sha256:efdd290594cb46476c00a7359e3a9adbb216f0063c0a185195db214b992619bc",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-01"
+    },
+    {
+      "compiled_from": "sha256:7db843106340d43f236d21ae13edaa65950123866d8062db9ba2a3b023447b74",
+      "consumer": "artifact:local:release/v26.9.25/closure.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-02"
+    },
+    {
+      "compiled_from": "sha256:7db843106340d43f236d21ae13edaa65950123866d8062db9ba2a3b023447b74",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:AC-02"
+    },
+    {
+      "compiled_from": "sha256:7db843106340d43f236d21ae13edaa65950123866d8062db9ba2a3b023447b74",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-02"
+    },
+    {
+      "compiled_from": "sha256:7db843106340d43f236d21ae13edaa65950123866d8062db9ba2a3b023447b74",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-02"
+    },
+    {
+      "compiled_from": "sha256:05b7514680606080c3ae6565c8c798e7cd987d4199932b36d16457cbd4977ee1",
+      "consumer": "artifact:seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/sjira-origin-authority.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-03"
+    },
+    {
+      "compiled_from": "sha256:05b7514680606080c3ae6565c8c798e7cd987d4199932b36d16457cbd4977ee1",
+      "consumer": "packet:seanchatmangpt/ggen_igniter",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-03"
+    },
+    {
+      "compiled_from": "sha256:05b7514680606080c3ae6565c8c798e7cd987d4199932b36d16457cbd4977ee1",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-03"
+    },
+    {
+      "compiled_from": "sha256:05b7514680606080c3ae6565c8c798e7cd987d4199932b36d16457cbd4977ee1",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-03"
+    },
+    {
+      "compiled_from": "sha256:2c4baa751eb2ede910eb407308fdcbf218fad9064a8dc915c363d323192a09cd",
+      "consumer": "artifact:seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/prose-inert.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-04"
+    },
+    {
+      "compiled_from": "sha256:2c4baa751eb2ede910eb407308fdcbf218fad9064a8dc915c363d323192a09cd",
+      "consumer": "packet:seanchatmangpt/ggen_igniter",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-04"
+    },
+    {
+      "compiled_from": "sha256:2c4baa751eb2ede910eb407308fdcbf218fad9064a8dc915c363d323192a09cd",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-04"
+    },
+    {
+      "compiled_from": "sha256:2c4baa751eb2ede910eb407308fdcbf218fad9064a8dc915c363d323192a09cd",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-04"
+    },
+    {
+      "compiled_from": "sha256:5087ec3c27d2409d8be0059d5747edbbac478c43e45e9753c64b75e91447296b",
+      "consumer": "artifact:local:release/v26.9.25/berthier.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-05"
+    },
+    {
+      "compiled_from": "sha256:5087ec3c27d2409d8be0059d5747edbbac478c43e45e9753c64b75e91447296b",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:AC-05"
+    },
+    {
+      "compiled_from": "sha256:5087ec3c27d2409d8be0059d5747edbbac478c43e45e9753c64b75e91447296b",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-05"
+    },
+    {
+      "compiled_from": "sha256:5087ec3c27d2409d8be0059d5747edbbac478c43e45e9753c64b75e91447296b",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-05"
+    },
+    {
+      "compiled_from": "sha256:3d9510dea5d6585a6c5791c3bdd714a8d4519410d238ac0a481a087c8736b0e3",
+      "consumer": "artifact:local:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-06"
+    },
+    {
+      "compiled_from": "sha256:3d9510dea5d6585a6c5791c3bdd714a8d4519410d238ac0a481a087c8736b0e3",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:AC-06"
+    },
+    {
+      "compiled_from": "sha256:3d9510dea5d6585a6c5791c3bdd714a8d4519410d238ac0a481a087c8736b0e3",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-06"
+    },
+    {
+      "compiled_from": "sha256:3d9510dea5d6585a6c5791c3bdd714a8d4519410d238ac0a481a087c8736b0e3",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-06"
+    },
+    {
+      "compiled_from": "sha256:7a2dbd12aa217a3160040d3202ef950551d14f095cd9ea17ad8d28899e29a48d",
+      "consumer": "artifact:seanchatmangpt/autofde-lab:release/v26.9.25/receipts/tlc-court.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-07"
+    },
+    {
+      "compiled_from": "sha256:7a2dbd12aa217a3160040d3202ef950551d14f095cd9ea17ad8d28899e29a48d",
+      "consumer": "packet:seanchatmangpt/autofde-lab",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-07"
+    },
+    {
+      "compiled_from": "sha256:7a2dbd12aa217a3160040d3202ef950551d14f095cd9ea17ad8d28899e29a48d",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-07"
+    },
+    {
+      "compiled_from": "sha256:7a2dbd12aa217a3160040d3202ef950551d14f095cd9ea17ad8d28899e29a48d",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-07"
+    },
+    {
+      "compiled_from": "sha256:fbc9ad36b59082cee6a76b1ff29e0cf8cf407779b5df0f8187622a42eaeda1cb",
+      "consumer": "artifact:seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-08"
+    },
+    {
+      "compiled_from": "sha256:fbc9ad36b59082cee6a76b1ff29e0cf8cf407779b5df0f8187622a42eaeda1cb",
+      "consumer": "packet:seanchatmangpt/affidavit",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-08"
+    },
+    {
+      "compiled_from": "sha256:fbc9ad36b59082cee6a76b1ff29e0cf8cf407779b5df0f8187622a42eaeda1cb",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-08"
+    },
+    {
+      "compiled_from": "sha256:fbc9ad36b59082cee6a76b1ff29e0cf8cf407779b5df0f8187622a42eaeda1cb",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-08"
+    },
+    {
+      "compiled_from": "sha256:3f66d5a597fd48286fe285ec691b175805c80f2847bc84c8fa51f2b39bbb9755",
+      "consumer": "artifact:local:release/v26.9.25/observations/local-worktrees.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-09"
+    },
+    {
+      "compiled_from": "sha256:3f66d5a597fd48286fe285ec691b175805c80f2847bc84c8fa51f2b39bbb9755",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:AC-09"
+    },
+    {
+      "compiled_from": "sha256:3f66d5a597fd48286fe285ec691b175805c80f2847bc84c8fa51f2b39bbb9755",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-09"
+    },
+    {
+      "compiled_from": "sha256:3f66d5a597fd48286fe285ec691b175805c80f2847bc84c8fa51f2b39bbb9755",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-09"
+    },
+    {
+      "compiled_from": "sha256:daaad6d105d70d655b899bc20f8ac07ca80e06b9eec2e5d28c7cb2ef16605180",
+      "consumer": "artifact:local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-10"
+    },
+    {
+      "compiled_from": "sha256:daaad6d105d70d655b899bc20f8ac07ca80e06b9eec2e5d28c7cb2ef16605180",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:AC-10"
+    },
+    {
+      "compiled_from": "sha256:daaad6d105d70d655b899bc20f8ac07ca80e06b9eec2e5d28c7cb2ef16605180",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-10"
+    },
+    {
+      "compiled_from": "sha256:daaad6d105d70d655b899bc20f8ac07ca80e06b9eec2e5d28c7cb2ef16605180",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-10"
+    },
+    {
+      "compiled_from": "sha256:63bfea9b4021390ebbbb87a98ec17e8d27be90eee78ff4e68edec31ec29a4e30",
+      "consumer": "artifact:local:release/v26.9.25/pins.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-11"
+    },
+    {
+      "compiled_from": "sha256:63bfea9b4021390ebbbb87a98ec17e8d27be90eee78ff4e68edec31ec29a4e30",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:AC-11"
+    },
+    {
+      "compiled_from": "sha256:63bfea9b4021390ebbbb87a98ec17e8d27be90eee78ff4e68edec31ec29a4e30",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-11"
+    },
+    {
+      "compiled_from": "sha256:63bfea9b4021390ebbbb87a98ec17e8d27be90eee78ff4e68edec31ec29a4e30",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-11"
+    },
+    {
+      "compiled_from": "sha256:83aa063fbc90c9d74d92a31706117b49211e59aea473ee7cda30941663d32214",
+      "consumer": "artifact:local:release/v26.9.25/manifest.toml",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-12"
+    },
+    {
+      "compiled_from": "sha256:83aa063fbc90c9d74d92a31706117b49211e59aea473ee7cda30941663d32214",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:AC-12"
+    },
+    {
+      "compiled_from": "sha256:83aa063fbc90c9d74d92a31706117b49211e59aea473ee7cda30941663d32214",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-12"
+    },
+    {
+      "compiled_from": "sha256:83aa063fbc90c9d74d92a31706117b49211e59aea473ee7cda30941663d32214",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-12"
+    },
+    {
+      "compiled_from": "sha256:a939f87e34913328c0b8b97ac1fb295803db0efc93785f4b6fcd58c95f1f9149",
+      "consumer": "artifact:seanchatmangpt/xaas:release/v26.9.25/receipts/case-study-schema.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-13"
+    },
+    {
+      "compiled_from": "sha256:a939f87e34913328c0b8b97ac1fb295803db0efc93785f4b6fcd58c95f1f9149",
+      "consumer": "packet:seanchatmangpt/xaas",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-13"
+    },
+    {
+      "compiled_from": "sha256:a939f87e34913328c0b8b97ac1fb295803db0efc93785f4b6fcd58c95f1f9149",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-13"
+    },
+    {
+      "compiled_from": "sha256:a939f87e34913328c0b8b97ac1fb295803db0efc93785f4b6fcd58c95f1f9149",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-13"
+    },
+    {
+      "compiled_from": "sha256:ca79161b7b7726cbc1cc70c0bcfa2933592c6abec4fc162501a30bb03792ba86",
+      "consumer": "artifact:seanchatmangpt/xaas:release/v26.9.25/receipts/wd-evidence-ceiling.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-14"
+    },
+    {
+      "compiled_from": "sha256:ca79161b7b7726cbc1cc70c0bcfa2933592c6abec4fc162501a30bb03792ba86",
+      "consumer": "packet:seanchatmangpt/xaas",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-14"
+    },
+    {
+      "compiled_from": "sha256:ca79161b7b7726cbc1cc70c0bcfa2933592c6abec4fc162501a30bb03792ba86",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-14"
+    },
+    {
+      "compiled_from": "sha256:ca79161b7b7726cbc1cc70c0bcfa2933592c6abec4fc162501a30bb03792ba86",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-14"
+    },
+    {
+      "compiled_from": "sha256:351c6555bd6938e35e1d6d65b39116f9926544dd82954e0b73cc1d577f1fd1bb",
+      "consumer": "artifact:seanchatmangpt/zoela:release/v26.9.25/receipts/godslaw-migration.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-15"
+    },
+    {
+      "compiled_from": "sha256:351c6555bd6938e35e1d6d65b39116f9926544dd82954e0b73cc1d577f1fd1bb",
+      "consumer": "packet:seanchatmangpt/zoela",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-15"
+    },
+    {
+      "compiled_from": "sha256:351c6555bd6938e35e1d6d65b39116f9926544dd82954e0b73cc1d577f1fd1bb",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-15"
+    },
+    {
+      "compiled_from": "sha256:351c6555bd6938e35e1d6d65b39116f9926544dd82954e0b73cc1d577f1fd1bb",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-15"
+    },
+    {
+      "compiled_from": "sha256:a6a6d01ce4046602e77737dc06bae51f0fa62ffd556c29134c5e2b5300d2c623",
+      "consumer": "artifact:seanchatmangpt/zoela:release/v26.9.25/receipts/vision2027-admission.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-16"
+    },
+    {
+      "compiled_from": "sha256:a6a6d01ce4046602e77737dc06bae51f0fa62ffd556c29134c5e2b5300d2c623",
+      "consumer": "packet:seanchatmangpt/zoela",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-16"
+    },
+    {
+      "compiled_from": "sha256:a6a6d01ce4046602e77737dc06bae51f0fa62ffd556c29134c5e2b5300d2c623",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-16"
+    },
+    {
+      "compiled_from": "sha256:a6a6d01ce4046602e77737dc06bae51f0fa62ffd556c29134c5e2b5300d2c623",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-16"
+    },
+    {
+      "compiled_from": "sha256:70523a2112f4289a426f57515151a41c71311e5f9f4e4e2eab14bc284d82ea56",
+      "consumer": "artifact:local:release/v26.9.25/pins.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-17"
+    },
+    {
+      "compiled_from": "sha256:70523a2112f4289a426f57515151a41c71311e5f9f4e4e2eab14bc284d82ea56",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:AC-17"
+    },
+    {
+      "compiled_from": "sha256:70523a2112f4289a426f57515151a41c71311e5f9f4e4e2eab14bc284d82ea56",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-17"
+    },
+    {
+      "compiled_from": "sha256:70523a2112f4289a426f57515151a41c71311e5f9f4e4e2eab14bc284d82ea56",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-17"
+    },
+    {
+      "compiled_from": "sha256:dbf53871dbf62c113a39d3f75d014c5a20fa8b2cd8c65f8946a9d8b1794df8ff",
+      "consumer": "artifact:local:release/v26.9.25/manifest.toml",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-18"
+    },
+    {
+      "compiled_from": "sha256:dbf53871dbf62c113a39d3f75d014c5a20fa8b2cd8c65f8946a9d8b1794df8ff",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:AC-18"
+    },
+    {
+      "compiled_from": "sha256:dbf53871dbf62c113a39d3f75d014c5a20fa8b2cd8c65f8946a9d8b1794df8ff",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-18"
+    },
+    {
+      "compiled_from": "sha256:dbf53871dbf62c113a39d3f75d014c5a20fa8b2cd8c65f8946a9d8b1794df8ff",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-18"
+    },
+    {
+      "compiled_from": "sha256:4963d8c95d98efdc6039d31313cb30e0036b6be0dc138242ef269563d1ec9f8f",
+      "consumer": "artifact:local:release/v26.9.25/manifest.toml",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:AC-19"
+    },
+    {
+      "compiled_from": "sha256:4963d8c95d98efdc6039d31313cb30e0036b6be0dc138242ef269563d1ec9f8f",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:AC-19"
+    },
+    {
+      "compiled_from": "sha256:4963d8c95d98efdc6039d31313cb30e0036b6be0dc138242ef269563d1ec9f8f",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:AC-19"
+    },
+    {
+      "compiled_from": "sha256:4963d8c95d98efdc6039d31313cb30e0036b6be0dc138242ef269563d1ec9f8f",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:AC-19"
+    },
+    {
+      "compiled_from": "sha256:7f786cc2bcf61970398be3b418890e53789165ea4249a081682221b649d331bd",
+      "consumer": "artifact:seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/prose-inert.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-01"
+    },
+    {
+      "compiled_from": "sha256:7f786cc2bcf61970398be3b418890e53789165ea4249a081682221b649d331bd",
+      "consumer": "packet:seanchatmangpt/ggen_igniter",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-01"
+    },
+    {
+      "compiled_from": "sha256:7f786cc2bcf61970398be3b418890e53789165ea4249a081682221b649d331bd",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-01"
+    },
+    {
+      "compiled_from": "sha256:7f786cc2bcf61970398be3b418890e53789165ea4249a081682221b649d331bd",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-01"
+    },
+    {
+      "compiled_from": "sha256:723f7609f321e553a0c3c897b0dcb6a9940f2b6c15252a8413b6f7953242ce9c",
+      "consumer": "artifact:seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/sjira-origin-authority.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-02"
+    },
+    {
+      "compiled_from": "sha256:723f7609f321e553a0c3c897b0dcb6a9940f2b6c15252a8413b6f7953242ce9c",
+      "consumer": "packet:seanchatmangpt/ggen_igniter",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-02"
+    },
+    {
+      "compiled_from": "sha256:723f7609f321e553a0c3c897b0dcb6a9940f2b6c15252a8413b6f7953242ce9c",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-02"
+    },
+    {
+      "compiled_from": "sha256:723f7609f321e553a0c3c897b0dcb6a9940f2b6c15252a8413b6f7953242ce9c",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-02"
+    },
+    {
+      "compiled_from": "sha256:ab4bce6b6d8d15285c0bcf39e002b950c7185df107c07a70ae7c50bf31597090",
+      "consumer": "artifact:local:release/v26.9.25/closure.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-03"
+    },
+    {
+      "compiled_from": "sha256:ab4bce6b6d8d15285c0bcf39e002b950c7185df107c07a70ae7c50bf31597090",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:F-03"
+    },
+    {
+      "compiled_from": "sha256:ab4bce6b6d8d15285c0bcf39e002b950c7185df107c07a70ae7c50bf31597090",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-03"
+    },
+    {
+      "compiled_from": "sha256:ab4bce6b6d8d15285c0bcf39e002b950c7185df107c07a70ae7c50bf31597090",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-03"
+    },
+    {
+      "compiled_from": "sha256:eb800a2213a28bfa7ea670caba82b8cc88750c3bf449fd90428edb563eb56f3a",
+      "consumer": "artifact:local:release/v26.9.25/pins.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-04"
+    },
+    {
+      "compiled_from": "sha256:eb800a2213a28bfa7ea670caba82b8cc88750c3bf449fd90428edb563eb56f3a",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:F-04"
+    },
+    {
+      "compiled_from": "sha256:eb800a2213a28bfa7ea670caba82b8cc88750c3bf449fd90428edb563eb56f3a",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-04"
+    },
+    {
+      "compiled_from": "sha256:eb800a2213a28bfa7ea670caba82b8cc88750c3bf449fd90428edb563eb56f3a",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-04"
+    },
+    {
+      "compiled_from": "sha256:1319c57a7949d5f07ab058bbecc0ec4cf988f58a85e906a6f37b63c31c18ef95",
+      "consumer": "artifact:seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-05"
+    },
+    {
+      "compiled_from": "sha256:1319c57a7949d5f07ab058bbecc0ec4cf988f58a85e906a6f37b63c31c18ef95",
+      "consumer": "packet:seanchatmangpt/affidavit",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-05"
+    },
+    {
+      "compiled_from": "sha256:1319c57a7949d5f07ab058bbecc0ec4cf988f58a85e906a6f37b63c31c18ef95",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-05"
+    },
+    {
+      "compiled_from": "sha256:1319c57a7949d5f07ab058bbecc0ec4cf988f58a85e906a6f37b63c31c18ef95",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-05"
+    },
+    {
+      "compiled_from": "sha256:8e3f7dfa212f8b9de603c0f17c6db526629c62fbba42858bacc314aaeef84dcc",
+      "consumer": "artifact:local:release/v26.9.25/berthier.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-06"
+    },
+    {
+      "compiled_from": "sha256:8e3f7dfa212f8b9de603c0f17c6db526629c62fbba42858bacc314aaeef84dcc",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:F-06"
+    },
+    {
+      "compiled_from": "sha256:8e3f7dfa212f8b9de603c0f17c6db526629c62fbba42858bacc314aaeef84dcc",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-06"
+    },
+    {
+      "compiled_from": "sha256:8e3f7dfa212f8b9de603c0f17c6db526629c62fbba42858bacc314aaeef84dcc",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-06"
+    },
+    {
+      "compiled_from": "sha256:68f1f2c1e011a9aacef7b0bb62f5ca6eff6699471b5b2e2187634206ac128a81",
+      "consumer": "artifact:local:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-07"
+    },
+    {
+      "compiled_from": "sha256:68f1f2c1e011a9aacef7b0bb62f5ca6eff6699471b5b2e2187634206ac128a81",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:F-07"
+    },
+    {
+      "compiled_from": "sha256:68f1f2c1e011a9aacef7b0bb62f5ca6eff6699471b5b2e2187634206ac128a81",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-07"
+    },
+    {
+      "compiled_from": "sha256:68f1f2c1e011a9aacef7b0bb62f5ca6eff6699471b5b2e2187634206ac128a81",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-07"
+    },
+    {
+      "compiled_from": "sha256:6617ce9432388ca458eb23447d55c2af694fdf1ecfb6325c52b7c89238df8937",
+      "consumer": "artifact:seanchatmangpt/autofde-lab:release/v26.9.25/receipts/tlc-court.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-08"
+    },
+    {
+      "compiled_from": "sha256:6617ce9432388ca458eb23447d55c2af694fdf1ecfb6325c52b7c89238df8937",
+      "consumer": "packet:seanchatmangpt/autofde-lab",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-08"
+    },
+    {
+      "compiled_from": "sha256:6617ce9432388ca458eb23447d55c2af694fdf1ecfb6325c52b7c89238df8937",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-08"
+    },
+    {
+      "compiled_from": "sha256:6617ce9432388ca458eb23447d55c2af694fdf1ecfb6325c52b7c89238df8937",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-08"
+    },
+    {
+      "compiled_from": "sha256:58826b1866a7df55fcfd44fec248c2a3cc7930ff5237060b311ec50a343ab8e9",
+      "consumer": "artifact:seanchatmangpt/xaas:release/v26.9.25/receipts/cloud-runtime.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-09"
+    },
+    {
+      "compiled_from": "sha256:58826b1866a7df55fcfd44fec248c2a3cc7930ff5237060b311ec50a343ab8e9",
+      "consumer": "packet:seanchatmangpt/xaas",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-09"
+    },
+    {
+      "compiled_from": "sha256:58826b1866a7df55fcfd44fec248c2a3cc7930ff5237060b311ec50a343ab8e9",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-09"
+    },
+    {
+      "compiled_from": "sha256:58826b1866a7df55fcfd44fec248c2a3cc7930ff5237060b311ec50a343ab8e9",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-09"
+    },
+    {
+      "compiled_from": "sha256:cf99b285355494b136d3d5c322c1136140c75678f404255bc6a79f40577dc6c1",
+      "consumer": "artifact:local:release/v26.9.25/observations/local-worktrees.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-10"
+    },
+    {
+      "compiled_from": "sha256:cf99b285355494b136d3d5c322c1136140c75678f404255bc6a79f40577dc6c1",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:F-10"
+    },
+    {
+      "compiled_from": "sha256:cf99b285355494b136d3d5c322c1136140c75678f404255bc6a79f40577dc6c1",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-10"
+    },
+    {
+      "compiled_from": "sha256:cf99b285355494b136d3d5c322c1136140c75678f404255bc6a79f40577dc6c1",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-10"
+    },
+    {
+      "compiled_from": "sha256:c9a44a03fabbab7615c422a5bad7f4868f651a291222007486c8810e154c188c",
+      "consumer": "artifact:local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-11"
+    },
+    {
+      "compiled_from": "sha256:c9a44a03fabbab7615c422a5bad7f4868f651a291222007486c8810e154c188c",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:F-11"
+    },
+    {
+      "compiled_from": "sha256:c9a44a03fabbab7615c422a5bad7f4868f651a291222007486c8810e154c188c",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-11"
+    },
+    {
+      "compiled_from": "sha256:c9a44a03fabbab7615c422a5bad7f4868f651a291222007486c8810e154c188c",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-11"
+    },
+    {
+      "compiled_from": "sha256:0be3e9c2c75b2db1b9bd6e3fc4ff8f2bdc42707a3e94e2de3eacd56535367d08",
+      "consumer": "artifact:seanchatmangpt/xaas:release/v26.9.25/receipts/wd-evidence-ceiling.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-12"
+    },
+    {
+      "compiled_from": "sha256:0be3e9c2c75b2db1b9bd6e3fc4ff8f2bdc42707a3e94e2de3eacd56535367d08",
+      "consumer": "packet:seanchatmangpt/xaas",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-12"
+    },
+    {
+      "compiled_from": "sha256:0be3e9c2c75b2db1b9bd6e3fc4ff8f2bdc42707a3e94e2de3eacd56535367d08",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-12"
+    },
+    {
+      "compiled_from": "sha256:0be3e9c2c75b2db1b9bd6e3fc4ff8f2bdc42707a3e94e2de3eacd56535367d08",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-12"
+    },
+    {
+      "compiled_from": "sha256:4d3ed29f8c6d23a2ea0abe96cbc0f03fff2faf6dc3f26f86886c35a4c3ad9526",
+      "consumer": "artifact:seanchatmangpt/zoela:release/v26.9.25/receipts/godslaw-interpretation.json",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-13"
+    },
+    {
+      "compiled_from": "sha256:4d3ed29f8c6d23a2ea0abe96cbc0f03fff2faf6dc3f26f86886c35a4c3ad9526",
+      "consumer": "packet:seanchatmangpt/zoela",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-13"
+    },
+    {
+      "compiled_from": "sha256:4d3ed29f8c6d23a2ea0abe96cbc0f03fff2faf6dc3f26f86886c35a4c3ad9526",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-13"
+    },
+    {
+      "compiled_from": "sha256:4d3ed29f8c6d23a2ea0abe96cbc0f03fff2faf6dc3f26f86886c35a4c3ad9526",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-13"
+    },
+    {
+      "compiled_from": "sha256:07e903b52d876df40892077c39914a5cc3542b95ff4187fdce442d8c7853f397",
+      "consumer": "artifact:local:release/v26.9.25/manifest.toml",
+      "consumer_digest": "UNOBSERVED",
+      "producer": "req:F-14"
+    },
+    {
+      "compiled_from": "sha256:07e903b52d876df40892077c39914a5cc3542b95ff4187fdce442d8c7853f397",
+      "consumer": "packet:seanchatmangpt/chatman-ecosystem",
+      "consumer_digest": "284ba0a037a91fcf3cb6d8b125afaffb8e059829480ce01a5ab036301ce0de0a",
+      "producer": "req:F-14"
+    },
+    {
+      "compiled_from": "sha256:07e903b52d876df40892077c39914a5cc3542b95ff4187fdce442d8c7853f397",
+      "consumer": "proj:out/packets.json",
+      "consumer_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "producer": "req:F-14"
+    },
+    {
+      "compiled_from": "sha256:07e903b52d876df40892077c39914a5cc3542b95ff4187fdce442d8c7853f397",
+      "consumer": "proj:out/requirements.ttl",
+      "consumer_digest": "82d58bab7ce8edb65e6120cd679a0598954eb4c14c2a9af5d04872c749859077",
+      "producer": "req:F-14"
+    }
+  ],
+  "premise": "RFC-0004",
+  "schema": "https://chatman.dev/root-crown/berthier/v1"
+}

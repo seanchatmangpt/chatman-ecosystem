@@ -1,0 +1,118 @@
+{
+  "release": "v26.9.24",
+  "tag": "v26.9.24",
+  "decision": "ILLEGAL",
+  "reasons": [
+    "TAG_ILLEGAL:CROWN_NOT_ALIVE"
+  ],
+  "closure_standing": "PARTIAL_ALIVE",
+  "closure_receipt_digest": "sha256:22d7a64c3d54e75411f9b78a53edc42d14f197ee5815d4e16479e074bc06fda8",
+  "rule": "RFC v26.9.25 \u00a745 Tagging Rule: tagSHA = crownSHA; a tag on an unverified SHA has no release standing. Closure standing is not ALIVE, so no crown SHA exists for v26.9.24",
+  "remaining": [
+    {
+      "subject_id": "MARKETPLACE",
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+      "standing": "BLOCKED(court:Verify exact packaged factory@5eb71f7ed947f705a8d6b145cb9b0be82855d793:failure(no-parent-failure-proof);court:semantic-subject@5eb71f7ed947f705a8d6b145cb9b0be82855d793:cancelled(no-observed-execution))",
+      "class": "SUBJECT_FAILURE",
+      "broken_term": "admission_vacuous"
+    },
+    {
+      "subject_id": "BEAM4PM",
+      "repository": "seanchatmangpt/beam4pm",
+      "sha": "be43246cc39a6fde9d86b31214a0177c71e6206f",
+      "standing": "BLOCKED(court:Erlang/Elixir/Gleam tests + determinism check@be43246cc39a6fde9d86b31214a0177c71e6206f:cancelled(no-observed-execution))",
+      "class": "VERIFICATION_FAILURE",
+      "broken_term": "R_missing_consequence"
+    },
+    {
+      "subject_id": "XAAS",
+      "repository": "seanchatmangpt/xaas",
+      "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+      "standing": "BLOCKED(court:Bound CI receipt@f9670f446537ddb882edf9cd7e0b6519de557e60:failure(no-parent-failure-proof);court:Build container without publication@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Deploy application@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Exact-head autonomic-wave contract@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Exact-head production compile court@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Exact-head test court@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Publish main image@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Validate AsyncAPI 3.1 contract@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Verify pinned GGen workbench image@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:Warm exact test dependency graph@f9670f446537ddb882edf9cd7e0b6519de557e60:cancelled(no-observed-execution);court:drain@f9670f446537ddb882edf9cd7e0b6519de557e60:failure(no-parent-failure-proof);court:manufacture@f9670f446537ddb882edf9cd7e0b6519de557e60:queued(no-observed-execution);court:stogaf@f9670f446537ddb882edf9cd7e0b6519de557e60:queued(no-observed-execution);court:wd-cs2@f9670f446537ddb882edf9cd7e0b6519de557e60:queued(no-observed-execution))",
+      "class": "SUBJECT_FAILURE",
+      "broken_term": "admission_vacuous"
+    },
+    {
+      "subject_id": "GYMACT",
+      "repository": "seanchatmangpt/gymact",
+      "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+      "standing": "BLOCKED(court:Python 3.12 semantic/runtime@3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01:cancelled(no-observed-execution))",
+      "class": "VERIFICATION_FAILURE",
+      "broken_term": "R_missing_consequence"
+    },
+    {
+      "subject_id": "GGEN_IGNITER",
+      "repository": "seanchatmangpt/ggen_igniter",
+      "sha": "7d53cb3b3ffe0a32f0e4b5f1365b9e1adff82d44",
+      "standing": "BLOCKED(evidence:no-TLC-run;court:Elixir tests (mix credo + mix test)@7d53cb3b3ffe0a32f0e4b5f1365b9e1adff82d44:cancelled(no-observed-execution))",
+      "class": "EVIDENCE_FAILURE",
+      "broken_term": "R_missing_consequence"
+    },
+    {
+      "subject_id": "WASM4PM",
+      "repository": "seanchatmangpt/wasm4pm",
+      "sha": "552f15ecba00f75a5866dfc3e7565ef2fe629341",
+      "standing": "BLOCKED(baseline-only:exact-subject Rust/WASM/TypeScript/CLI@24ec377c9c2a9be98989e88c8539a8facac62de4)",
+      "class": "VERIFICATION_FAILURE",
+      "broken_term": "admission_vacuous"
+    },
+    {
+      "subject_id": "ASH_R2RML",
+      "repository": "seanchatmangpt/ash_r2rml",
+      "sha": "76cc5204f3e20370fd1593af31f237a2bbb4caeb",
+      "standing": "BLOCKED(court:graphql@76cc5204f3e20370fd1593af31f237a2bbb4caeb:cancelled(no-observed-execution);court:obda@76cc5204f3e20370fd1593af31f237a2bbb4caeb:cancelled(no-observed-execution);court:production@76cc5204f3e20370fd1593af31f237a2bbb4caeb:cancelled(no-observed-execution);court:release-security@76cc5204f3e20370fd1593af31f237a2bbb4caeb:cancelled(no-observed-execution);court:test@76cc5204f3e20370fd1593af31f237a2bbb4caeb:cancelled(no-observed-execution);court:types@76cc5204f3e20370fd1593af31f237a2bbb4caeb:cancelled(no-observed-execution))",
+      "class": "VERIFICATION_FAILURE",
+      "broken_term": "R_missing_consequence"
+    },
+    {
+      "subject_id": "EX4PM",
+      "repository": "seanchatmangpt/ex4pm",
+      "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+      "standing": "BLOCKED(court:format-capsule@7a79d137c356247400bc6bd7ba1cd5bbf2433bbc:failure(no-parent-failure-proof))",
+      "class": "SUBJECT_FAILURE",
+      "broken_term": "admission_vacuous"
+    }
+  ],
+  "baseline_blockers": [
+    {
+      "subject_id": "AUTOFDE",
+      "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+      "checks": [
+        "Deterministic quality",
+        "Documentation qualification",
+        "Exact-head qualification",
+        "Full qualification gate",
+        "Linux integration authority"
+      ]
+    },
+    {
+      "subject_id": "GYMACT",
+      "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+      "checks": [
+        "Python 3.11 semantic/runtime",
+        "Python 3.13 semantic/runtime"
+      ]
+    },
+    {
+      "subject_id": "WASM4PM",
+      "sha": "552f15ecba00f75a5866dfc3e7565ef2fe629341",
+      "checks": [
+        "exact-subject Rust/WASM/TypeScript/CLI"
+      ]
+    },
+    {
+      "subject_id": "EX4PM",
+      "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+      "checks": [
+        "Verify & Test",
+        "chicago",
+        "chicago-tls-distribution",
+        "qualify",
+        "verify"
+      ]
+    }
+  ],
+  "authority": "NONE",
+  "tag_push": "not performed (operator-only)"
+}

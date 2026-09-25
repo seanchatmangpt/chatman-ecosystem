@@ -1,0 +1,79 @@
+{
+  "case": {
+    "case_iri": "urn:xaas:wd-cs2:case",
+    "case_revision_digest": "6bd9762edbdf7c8f2a267106343601c60eef8c5cf32f52e183b963cc6453806f",
+    "generator_identity": "ggen_igniter@26.9.15+engine=sparql;wd_cs2_case_study_pack=sha256:32704e04ec1ea4fc15eebb00a73678eabb0feac1720c8ad8ebb64b57c8a07693",
+    "projections_sha256": {
+      "SLIDE-EVIDENCE-MAP.json": "75718e877208625f67ef54d6b6957a4da304c097e4da782a131b754d3a3bfb80",
+      "case-study.json": "301906a8cdc1db0847e0b9e2f2733736b1a5905bdee1ac73cf9e6648b930f883",
+      "claims-ledger.json": "c0bb3d8afea7cea6c6cc82a09e2a3343e9dfdb2afc820812e8dfa2b76aa04cc3"
+    }
+  },
+  "checks": {
+    "court_exit_0": true,
+    "court_schema_v2": true,
+    "court_standing_alive": true,
+    "gate_count_ge_9": true,
+    "pytest_exit_0": true,
+    "pytest_no_skips": true,
+    "refusal_rows_0": true,
+    "shacl_conforms": true,
+    "wd_deck_check_exit_0": true,
+    "wd_deck_no_projection_drift": true
+  },
+  "commands": [
+    {
+      "command": "/opt/homebrew/opt/python@3.14/bin/python3.14 scripts/stogaf_semantic_court.py --pack priv/packs/wd_cs2_pack --output /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/out/receipts/work/semantic-report.json",
+      "cwd": "<subject-dir>",
+      "exit_code": 0,
+      "output_sha256": "4fd863f520737165f75d1c68292f805f2ba6c9d1f52a2eae8148f41a523da105",
+      "report_file_sha256": "7e25a5869bcd9e7aa1335d04ccd356e9b4fc8d7eca0a7f7bfc94f67a15fe7ff1"
+    },
+    {
+      "command": "/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/venv/bin/python tools/wd_deck/wd_deck.py case-study --check --build-dir tmp/wd-case-study",
+      "cwd": "<subject-dir>",
+      "exit_code": 0,
+      "output_sha256": "b4cea3df28ff3a183af3adf1b9701a81642ee5c10c99ca77c8b05e69039fcc14"
+    },
+    {
+      "command": "/opt/homebrew/opt/python@3.14/bin/python3.14 -m pytest -v -p no:cacheprovider test/wd_case_study_court_test.py",
+      "cwd": "<subject-dir>",
+      "exit_code": 0,
+      "output_sha256": "164072230ddd83180c4544a6c9c5b2b9a73b381708131386d6474d4635cab32d",
+      "summary": "25 passed"
+    }
+  ],
+  "court_report": {
+    "data_triples": 1542,
+    "gate_count": 9,
+    "inputs_sha256_digest": "55523efd594d6fe9ef793f24df472bc33066ccd2a1ce95227ddd1944becd166e",
+    "refusal_rows": 0,
+    "report_sha256": "eb552608c37b93e1d8cb5b2963551f948392dae39ff448c8ead02a75184bffde",
+    "schema": "STOGAF_SEMANTIC_COURT_V2",
+    "shacl_conforms": true
+  },
+  "evidence_ceiling": "REPO_LOCAL_FIXTURE",
+  "manufactured_at": "2026-09-25T13:27:50Z",
+  "manufacturer": "release/v26.9.25/receipts/manufacture.py",
+  "name": "case-study-schema",
+  "non_claims": [
+    "EXTERNAL_STANDING",
+    "WD_ACCEPTANCE",
+    "ST-6 AUTONOMIC",
+    "ST-7 ACTUATED"
+  ],
+  "receipt_sha256": "d32afca859a3b633584532c40be44a46a5343c68516fc292f508862a538f6d40",
+  "refusals": [],
+  "repository": "seanchatmangpt/xaas",
+  "requirement_ids": [
+    "AC-13"
+  ],
+  "schema": "xaas.release-receipt/v26.9.25",
+  "standing": "ALIVE",
+  "subject": {
+    "materialization": "git archive <subject_sha> (plain dir)",
+    "repository": "seanchatmangpt/xaas",
+    "sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+  },
+  "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+}
