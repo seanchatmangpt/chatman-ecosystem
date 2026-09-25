@@ -1,0 +1,99 @@
+{
+  "case_id": "XPROD-v26.9.24-CLOSURE",
+  "semantic_subject_id": "urn:chatman:release:v26.9.24:semantic-closure",
+  "_provenance": {
+    "note": "artifact_digest = sha256 of the GitHub Actions job log (gh api repos/<r>/actions/jobs/<job>/logs); validator_digest = sha256 of the workflow file at the exact subject. Subjects are the exact PR heads the courts ran on; their merge commits are recorded in release/v26.9.24/closure.json.",
+    "jobs": {
+      "HDDL/FOND": "autofde-lab job 107890309808 (run 36076991674, .github/workflows/planning-formalism-court.yml, 13 tests passed)",
+      "OCEL2": "gymact job 107892327687 (run 36077633442, .github/workflows/v2691-world-execution.yml, standing ALIVE, replay_conformant true)",
+      "RECEIPT": "xaas job 107906110426 (run 36082037670, .github/workflows/stogaf-wd-cs2-court.yml, standing ALIVE, refusal_rows 0, report sha256:e65aed338f6fc187f4e94303f1dc47bb330a90172a211a7b810353499a26a52c)"
+    },
+    "missing": {
+      "TLA+": "BLOCKED(evidence:ggen_igniter BRCE->TLA+ adapter is FINAL_SPEC with implementation PLANNED; no model-check run exists)",
+      "POWL": "BLOCKED(evidence:no v26.9.24 exact-head POWL court run bound to a closure subject)",
+      "BRCE": "BLOCKED(evidence:affidavit BRCE receipt adapter implementation NOT_CLAIMED; RFC-0001 is a spec, not an execution)"
+    },
+    "counterexample_observed": "gymact OCEL export is not byte-deterministic across two runs on the same subject (ocel_sha256 e44a1232... vs 45d61039... in job 107892327687); replay conformance holds, byte identity does not."
+  },
+  "subjects": [
+    {
+      "repository": "seanchatmangpt/autofde-lab",
+      "subject_sha": "ec633a0b916ce4ea2364461119d00e354549bc24"
+    },
+    {
+      "repository": "seanchatmangpt/gymact",
+      "subject_sha": "2edc4839aa2535aa0102b849544bf7b35d889fcd"
+    },
+    {
+      "repository": "seanchatmangpt/xaas",
+      "subject_sha": "7c457827dcfdb3e4809395df67f09611bbff37c8"
+    }
+  ],
+  "required_formalisms": [
+    "HDDL",
+    "FOND",
+    "TLA+",
+    "POWL",
+    "OCEL2",
+    "BRCE",
+    "RECEIPT"
+  ],
+  "evidence": [
+    {
+      "evidence_id": "E-HDDL-autofde",
+      "repository": "seanchatmangpt/autofde-lab",
+      "subject_sha": "ec633a0b916ce4ea2364461119d00e354549bc24",
+      "formalism": "HDDL",
+      "claim_id": "planning:hddl-fond-frontier",
+      "artifact_digest": "sha256:9d2bb30f2e01855a311d17082148903ce6c312189f52c73cbebfa70bb14b4af9",
+      "validator": ".github/workflows/planning-formalism-court.yml",
+      "validator_digest": "sha256:d623853cb696786876db76ae27b45e79b09a60d5562fdee3e11bfca4ec88302a",
+      "result": "PASS",
+      "authority": "NONE"
+    },
+    {
+      "evidence_id": "E-FOND-autofde",
+      "repository": "seanchatmangpt/autofde-lab",
+      "subject_sha": "ec633a0b916ce4ea2364461119d00e354549bc24",
+      "formalism": "FOND",
+      "claim_id": "planning:hddl-fond-frontier",
+      "artifact_digest": "sha256:9d2bb30f2e01855a311d17082148903ce6c312189f52c73cbebfa70bb14b4af9",
+      "validator": ".github/workflows/planning-formalism-court.yml",
+      "validator_digest": "sha256:d623853cb696786876db76ae27b45e79b09a60d5562fdee3e11bfca4ec88302a",
+      "result": "PASS",
+      "authority": "NONE"
+    },
+    {
+      "evidence_id": "E-OCEL2-gymact",
+      "repository": "seanchatmangpt/gymact",
+      "subject_sha": "2edc4839aa2535aa0102b849544bf7b35d889fcd",
+      "formalism": "OCEL2",
+      "claim_id": "gymact:domain-world-ocel-replay",
+      "artifact_digest": "sha256:85e5326868be31c463de1d38d853e73d162fd370fc481a027a4bf92f9a83fc88",
+      "validator": ".github/workflows/v2691-world-execution.yml",
+      "validator_digest": "sha256:6616f4146e707381a8b0e6a29b0777ca2860dff8c627291085611c2aec495de9",
+      "result": "PASS",
+      "authority": "NONE"
+    },
+    {
+      "evidence_id": "E-RECEIPT-xaas-stogaf",
+      "repository": "seanchatmangpt/xaas",
+      "subject_sha": "7c457827dcfdb3e4809395df67f09611bbff37c8",
+      "formalism": "RECEIPT",
+      "claim_id": "xaas:stogaf-wd-cs2-receipt",
+      "artifact_digest": "sha256:9f00dc0821c2c2f959ec3db832f05248b89afd743d6c7e000561e9c3beac7b94",
+      "validator": ".github/workflows/stogaf-wd-cs2-court.yml",
+      "validator_digest": "sha256:0c5e2dea62bc51d9b28d38c51e65e28bcb6df84c49cc99d3c9e5e6c8d054d7e0",
+      "result": "PASS",
+      "authority": "NONE"
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "R-HDDL-FOND-frontier",
+      "left": "HDDL",
+      "right": "FOND",
+      "claim_id": "planning:hddl-fond-frontier"
+    }
+  ]
+}

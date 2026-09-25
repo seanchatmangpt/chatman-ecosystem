@@ -1,0 +1,96 @@
+name: Release Closure Court Exact Head
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_train/release_closure_court/**'
+      - 'scripts/release_train/cross_product_court/**'
+      - 'tests/release_train/release_closure_court/**'
+      - 'release/v26.9.24/**'
+      - 'docs/jira/v26.9.24/xprod-cases/**'
+      - '.github/workflows/release-closure-court.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'release/v26.9.24/**'
+      - 'docs/jira/v26.9.24/xprod-cases/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-closure-court-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  exact-head:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Assert exact subject identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$expected"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Execute release closure court tests (one refusing mutant per rule)
+        env:
+          PYTHONPATH: .
+        run: >-
+          python3 -m unittest discover
+          -s tests/release_train/release_closure_court
+          -p 'test_*.py'
+          -v
+
+      - name: Evaluate committed release closure (fails closed)
+        env:
+          PYTHONPATH: .
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in release/*/closure.json; do
+            [ -f "$f" ] || continue
+            echo "::group::$f"
+            python3 -m scripts.release_train.release_closure_court "$f"
+            echo "::endgroup::"
+          done
+
+      - name: Evaluate committed XPROD cases (typed BLOCKED is terminal, REFUSED fails)
+        env:
+          PYTHONPATH: .
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in docs/jira/*/xprod-cases/*.json; do
+            [ -f "$f" ] || continue
+            echo "::group::$f"
+            python3 - "$f" <<'PY'
+          import json, sys
+          from scripts.release_train.cross_product_court.io import load_case, receipt_dict
+          receipt = receipt_dict(load_case(sys.argv[1]))
+          print(json.dumps(receipt, indent=2, sort_keys=True))
+          assert receipt["standing"] != "REFUSED", receipt["refusals"]
+          PY
+            echo "::endgroup::"
+          done
+
+      - name: Refuse ambient consequence surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -REn \
+            'requests\.(post|put|patch|delete)|httpx|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|socket\.|boto3|azure\.|google\.cloud|kubectl|terraform|git push|gh pr merge' \
+            scripts/release_train/release_closure_court \
+            tests/release_train/release_closure_court
