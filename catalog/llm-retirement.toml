@@ -1,0 +1,226 @@
+schema = "chateco.llm-retirement-map.v1"
+subject = "SELF"
+observed_at = "2026-09-25"
+
+# The global LLM retirement map.
+#
+#   Claude Cloud = LLM Retirement Foundry.
+#   A session's objective is not LOC or tasks; it is
+#     max  delta(future work no longer requiring an LLM) / usage window.
+#
+# Each [[edge]] is one reachable production edge that today needs (or needed)
+# open-ended LLM reasoning, generation, routing, verification, or planning.
+# `retirement_state` is its own axis. It never substitutes for, or implies,
+# component standing (UNKNOWN != ALIVE still holds).
+#
+#   LLMResidue(E) = #{edges not in MACHINE_VERIFIED or LLM_RETIRED}
+#   LDR           = LLMResidue(E) / #E                        (drive -> 0)
+#   IRR           = delta(closed edges) / delta(days)         (drive up)
+#
+# Discovering residue is progress: adding an edge raises LLMResidue honestly.
+# Deleting an edge or moving one down the ladder without a regression_reason
+# is refused by `verify_llm_retirement.py --baseline-ref`.
+#
+# Scores are integers 1..5. score_basis = "ESTIMATED" marks an opinion, not a
+# measurement; the frontier output carries that label through.
+
+[ladder]
+# Ordered; each state requires every evidence field of the states before it.
+states = [
+  "UNKNOWN",
+  "LLM_ONLY",
+  "FORMALIZATION_CANDIDATE",
+  "MACHINE_CANDIDATE",
+  "MACHINE_PARTIAL",
+  "MACHINE_VERIFIED",
+  "LLM_RETIRED",
+]
+closed = ["MACHINE_VERIFIED", "LLM_RETIRED"]
+
+[ladder.requires]
+FORMALIZATION_CANDIDATE = ["prior_art", "admitted_domain"]
+MACHINE_CANDIDATE = ["machine", "smallest_falsifier"]
+MACHINE_PARTIAL = ["falsifier_tests"]
+MACHINE_VERIFIED = ["replay_evidence", "equivalence_corpus"]
+LLM_RETIRED = ["fence", "receipt"]
+
+[ladder.path_fields]
+# Evidence fields that must name files present at the exact subject.
+fields = [
+  "machine",
+  "falsifier_tests",
+  "replay_evidence",
+  "equivalence_corpus",
+  "fence",
+  "receipt",
+]
+
+# Residue class -> retirement mechanism. Only the residual
+# ExistingMachinery |/= RequiredSemantics routes to another LLM.
+[mechanisms]
+repeated-generation = "ggen"
+repeated-classification = "ontology+SPARQL/Datalog"
+repeated-planning = "HDDL/PDDL/FOND"
+constraint-decision = "SAT/SMT/CP"
+state-concurrency-reasoning = "TLA+"
+process-reasoning = "OCEL+conformance"
+recurring-statistical-decision = "SPC"
+optimization = "OR"
+semantic-validation = "SHACL"
+proof-obligation = "Lean"
+repeated-workflow = "deterministic-automation"
+cross-repo-recipe = "ggen-marketplace"
+runtime-actuation = "BRCE"
+evidence-judgment = "affidavit/GALL"
+repeated-routing = "deterministic-selection"
+semantic-unknown = "LLM"
+
+[refusals]
+terminal = [
+  "EVIDENCE_PATH_MISSING",
+  "STATE_EVIDENCE_INSUFFICIENT",
+  "LLM_MECHANISM_CLOSED",
+  "TERMINAL_RESIDUAL_ADVANCED",
+  "SELF_EVIDENCE",
+  "LADDER_REGRESSION",
+  "EDGE_DELETED",
+]
+
+[[edge]]
+id = "edge:session-work-selection"
+title = "Choose the next unit of work for a Claude Cloud session"
+residue_class = "repeated-routing"
+mechanism = "deterministic-selection"
+owner = "repository:chatman-ecosystem"
+retirement_state = "MACHINE_PARTIAL"
+frequency = 5
+llm_cost = 4
+reuse = 5
+formalizability = 4
+score_basis = "ESTIMATED"
+prior_art = ["WSJF (cost of delay / job size)", "weighted shortest processing time", "RICE scoring"]
+admitted_domain = "edges declared in catalog/llm-retirement.toml that are neither closed, blocked, nor terminal residual"
+machine = ["scripts/verify_llm_retirement.py"]
+smallest_falsifier = "a closed, blocked, or terminal-residual edge appears in --frontier output, or two runs over the same map disagree"
+falsifier_tests = ["tests/test_llm_retirement.py"]
+notes = "Selection is deterministic (argmax frequency*llm_cost*reuse*formalizability, id tiebreak). Scores are still LLM-estimated, so the edge is PARTIAL until scores are measured from telemetry."
+
+[[edge]]
+id = "edge:ce23-prose-extraction"
+title = "Extract candidate propositions from operator prose (sjira extract step)"
+residue_class = "repeated-classification"
+mechanism = "ontology+SPARQL/Datalog"
+owner = "repository:chatman-ecosystem"
+retirement_state = "FORMALIZATION_CANDIDATE"
+frequency = 4
+llm_cost = 5
+reuse = 5
+formalizability = 3
+score_basis = "ESTIMATED"
+prior_art = ["Attempto Controlled English", "SHACL shape-directed extraction", "frozen xaas prose_spans.py check"]
+admitted_domain = "CE-series operator prose units compiled by release/v26.9.23/sjira (gates, required_by, boundary_class)"
+equivalence_corpus = [
+  "release/v26.9.23/sjira/candidates/raw/chatman-ce23.extract.json",
+  "release/v26.9.23/sjira/candidates/raw/chatman-ce23-12-bench.extract.json",
+  "release/v26.9.23/sjira/candidates/raw/chatman-ce23-12-standings.extract.json",
+  "release/v26.9.23/sjira/candidates/corrections.json",
+]
+notes = "README names this 'the one LLM edge'. The 24 recorded corrections are a measured LLM error set on required_by/boundary_class and are the first falsifier corpus for a machine extractor."
+
+[[edge]]
+id = "edge:handwritten-product-surface"
+title = "Hand-write product artifacts that no pack yet projects (HANDWRITTEN.md Active)"
+residue_class = "repeated-generation"
+mechanism = "ggen"
+owner = "repository:chatman-ecosystem"
+retirement_state = "FORMALIZATION_CANDIDATE"
+frequency = 5
+llm_cost = 4
+reuse = 4
+formalizability = 3
+score_basis = "ESTIMATED"
+prior_art = ["ggen ontology projection", "ggen-marketplace packs", "xaas and ggen_igniter handwritten ledgers"]
+admitted_domain = "rows under HANDWRITTEN.md '## Active', each already naming its missing capability and intended owner pack"
+notes = "The ledger already names the generator gap per row; the next step is clustering rows into shared packs (N rows -> k transformations)."
+
+[[edge]]
+id = "edge:ce23-machinery-absent-courts"
+title = "Judge CE23 gates whose courts are stubs (CE23-3,4,5,6,8,10,11 print UNKNOWN)"
+residue_class = "evidence-judgment"
+mechanism = "affidavit/GALL"
+owner = "repository:chatman-ecosystem"
+retirement_state = "UNKNOWN"
+frequency = 3
+llm_cost = 4
+reuse = 3
+formalizability = 4
+score_basis = "ESTIMATED"
+notes = "Stub courts exit 75 with UNKNOWN; any standing claimed for these gates today would rest on agent judgment."
+
+[[edge]]
+id = "edge:pr-ci-stewardship"
+title = "Diagnose red CI and answer review threads on ecosystem PRs"
+residue_class = "process-reasoning"
+mechanism = "OCEL+conformance"
+owner = "repository:chatman-ecosystem"
+retirement_state = "LLM_ONLY"
+frequency = 5
+llm_cost = 5
+reuse = 4
+formalizability = 2
+score_basis = "ESTIMATED"
+notes = "Failure classes (base-red, flake, lockfile drift, fmt/clippy) recur; each class split out becomes its own edge."
+
+[[edge]]
+id = "edge:test-adequacy-judgment"
+title = "Judge whether a verifier's tests actually constrain it"
+residue_class = "evidence-judgment"
+mechanism = "affidavit/GALL"
+owner = "repository:chatman-ecosystem"
+retirement_state = "MACHINE_PARTIAL"
+frequency = 3
+llm_cost = 3
+reuse = 4
+formalizability = 5
+score_basis = "ESTIMATED"
+prior_art = ["mutation testing (mutmut, PIT, cargo-mutants)"]
+admitted_domain = "scripts/release_train/root_crown under its anchored mutation operators"
+machine = ["scripts/release_train/root_crown/mutate.py"]
+smallest_falsifier = "a surviving mutant in the admitted domain"
+falsifier_tests = ["tests/release_train/root_crown/test_mutate.py"]
+replay_evidence = ["release/v26.9.25/hardening/inputs/mutation-report.json"]
+notes = "46/46 mutants killed for root_crown only. No equivalence corpus of prior agent adequacy judgments exists, so not MACHINE_VERIFIED."
+
+[[edge]]
+id = "edge:release-graph-admission"
+title = "Check the release component graph (ids, SHAs, deps, cycles)"
+residue_class = "semantic-validation"
+mechanism = "SHACL"
+owner = "repository:chatman-ecosystem"
+retirement_state = "MACHINE_PARTIAL"
+frequency = 4
+llm_cost = 2
+reuse = 3
+formalizability = 5
+score_basis = "ESTIMATED"
+prior_art = ["SHACL", "JSON Schema", "topological sort"]
+admitted_domain = "release/*/manifest.toml graphs checked by scripts/verify_release.py"
+machine = ["scripts/verify_release.py"]
+smallest_falsifier = "a manifest with an implicit dependency or cycle that verify_release.py admits"
+falsifier_tests = ["tests/test_release_control.py"]
+notes = "Deterministic today but implemented in Python, not projected from shapes; no replay receipt."
+
+[[edge]]
+id = "edge:semantic-unknown-frontier"
+title = "Produce candidates for genuinely unknown semantics (formal-discovery-loop semantic-unknown route)"
+residue_class = "semantic-unknown"
+mechanism = "LLM"
+owner = "repository:chatman-ecosystem"
+retirement_state = "LLM_ONLY"
+terminal_residual = true
+frequency = 2
+llm_cost = 5
+reuse = 1
+formalizability = 1
+score_basis = "ESTIMATED"
+notes = "The admitted residual: candidate_only, never DO. Counted in LDR, never selected for retirement. Recurrences observed here are split out as new edges."

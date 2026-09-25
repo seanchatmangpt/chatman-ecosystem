@@ -17,6 +17,7 @@ python3 scripts/verify_crown_edges.py
 python3 scripts/verify_external_paradigms.py
 python3 scripts/verify_dfcm_capabilities.py
 python3 scripts/verify_live_azure_authority.py
+python3 scripts/verify_llm_retirement.py
 python3 scripts/v2030_definition_of_done.py --self-test
 python3 -m unittest discover -s tests -p 'test_*.py' -v
 
@@ -74,6 +75,7 @@ cat > target/crown/admission.json <<JSON
     "mandatory_crown_edges",
     "external_paradigms",
     "live_azure_authority_admission",
+    "llm_retirement_map",
     "v2030_definition_of_done",
     "format",
     "clippy",
