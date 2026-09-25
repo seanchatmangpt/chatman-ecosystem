@@ -1,6 +1,9 @@
 [advisories]
 version = 2
 yanked = "deny"
+ignore = [
+  { id = "RUSTSEC-2024-0370", reason = "proc-macro-error is unmaintained (not a vulnerability); pulled transitively at build time only via clap-noun-verb macros; no safe upgrade exists upstream. Revisit when clap-noun-verb drops it." },
+]
 
 [bans]
 multiple-versions = "warn"
@@ -17,9 +20,11 @@ allow = [
   "CDLA-Permissive-2.0",
   "ISC",
   "Zlib",
+  "CC0-1.0",
 ]
 
 [sources]
 unknown-registry = "deny"
 unknown-git = "deny"
 allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = ["https://github.com/seanchatmangpt/clap-noun-verb.git"]
