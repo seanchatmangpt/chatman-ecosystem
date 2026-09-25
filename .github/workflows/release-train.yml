@@ -5,6 +5,8 @@ on:
       - "scripts/release_train/**"
       - "tests/release_train/**"
       - ".github/workflows/release-train.yml"
+      - "release/v26.9.24/**"
+      - "docs/jira/v26.9.24/xprod-cases/**"
 permissions:
   contents: read
 jobs:
@@ -24,6 +26,8 @@ jobs:
         run: python -m py_compile scripts/release_train/*.py tests/release_train/*.py
       - name: Narrow and integration courts
         run: python -m unittest discover -s tests/release_train -p 'test_*.py' -v
+      - name: v26.9.24 release closure court
+        run: python scripts/release_train/closure_court.py release/v26.9.24/closure.json
       - name: Static no-DO boundary
         run: |
           ! grep -RInE 'requests\.(post|put|patch|delete)|subprocess\.|os\.system|azure|boto3|google\.cloud' scripts/release_train
