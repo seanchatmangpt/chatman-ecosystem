@@ -40,5 +40,46 @@ class ExternalParadigmsTest(unittest.TestCase):
                 validate_registry(bad, tmp_root)
 
 
+class ExternalParadigmDeltaTest(unittest.TestCase):
+    def test_added_skill_is_candidate_unit(self):
+        from scripts.detect_external_paradigm_delta import classify_compare
+
+        pattern_map = json.loads(
+            (ROOT / "upstream" / "ecc" / "pattern-map.json").read_text(encoding="utf-8")
+        )
+        result = classify_compare(
+            [
+                {
+                    "filename": "skills/new-paradigm/SKILL.md",
+                    "status": "added",
+                }
+            ],
+            pattern_map,
+        )
+        self.assertIn("skills/new-paradigm/", result["new_units"])
+        self.assertIn(
+            "ecc.skills-agents-commands",
+            result["matched_patterns"],
+        )
+
+    def test_unmapped_architecture_file_is_visible(self):
+        from scripts.detect_external_paradigm_delta import classify_compare
+
+        pattern_map = {"entries": []}
+        result = classify_compare(
+            [
+                {
+                    "filename": "docs/architecture/new-control-plane.md",
+                    "status": "added",
+                }
+            ],
+            pattern_map,
+        )
+        self.assertEqual(
+            result["unmapped_files"],
+            ["docs/architecture/new-control-plane.md"],
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
