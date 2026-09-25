@@ -1,0 +1,457 @@
+{
+  "schema": "https://chatman.dev/root-crown/policy/terminality/v1",
+  "release": "v26.9.25",
+  "rfc_import": {
+    "path": "release/v26.9.25/imports/RFC-0004.md",
+    "sha256": "cefb3ab55e4afa25f7b107b5e73400036051b006231a9aea31ab7ea2aa50ed32"
+  },
+  "rows": [
+    {
+      "id": "AC-01",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "manifest.toml parses and verify_release.validate_manifest returns no findings",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-01 root manifest parses",
+      "acceptance_sha256": "93b77dedc9f4f18ed505cc3d7178bfefbdfeaaccb1de61437bee7111e5781b96"
+    },
+    {
+      "id": "AC-02",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE",
+        "FINAL",
+        "SUPERSEDED",
+        "BLOCKED",
+        "UNSUPPORTED",
+        "REFUSED"
+      ],
+      "evidence_required": "every required closure.json row ALIVE/FINAL or typed (type + broken_term + RFC \u00a739 class + owner = row repository); closure court not REFUSED",
+      "authority_required": "NONE",
+      "standing_ceiling": "TERMINAL",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "all required subjects terminal",
+      "acceptance_sha256": "ab9951b1115d477ba6d4df9d5428073f7f78562533634279c708e55d449977bf"
+    },
+    {
+      "id": "AC-03",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "unique FINAL_SPEC owner with byte-identical import, and the origin-authority receipt admitted like receipt_artifact",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-03 all executable WorkOrders have one admitted originAuthority",
+      "acceptance_sha256": "0eb2f1ca12d3f6be86bfe263c7e7b3110c81351d45923cefc3b9f9b67f4155ab"
+    },
+    {
+      "id": "AC-04",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-04 prose-only candidate cannot reach executable frontier",
+      "acceptance_sha256": "2613441cc63c71cbc7aa71229a8779f23c60dbfcaee806be8ee9c57b7d7bbf8d"
+    },
+    {
+      "id": "AC-05",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "Berthier court without refusals and the RFC \u00a79 crown test (ManualRestatementCount=0)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-05 Berthier propagation court passes",
+      "acceptance_sha256": "0bf09c41ffaaa8674b73c23c8f555b1698187df9670a68e98cd6757fd67f4fc8"
+    },
+    {
+      "id": "AC-06",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "XPROD-001 cross-product receipt ALIVE with every producer subject merged",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-06 XPROD-001 passes against real producer artifacts",
+      "acceptance_sha256": "1c6ee21706cd2895cebe3cd3c0d7c5f11b20191e42715afd43658d8db4b2c81d"
+    },
+    {
+      "id": "AC-07",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-07 pinned TLA+ runtime court executes",
+      "acceptance_sha256": "f41e8ff22d49fe9544585ae2e70409c47af3cc22f5b797492d6314fc68e46f57"
+    },
+    {
+      "id": "AC-08",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-08 BRCE zero-unreceipted-actuation court passes",
+      "acceptance_sha256": "3c831f3c2d3fa6f988d38099b812a8e08ae90ea4d11dda3ea0df0a412d180159"
+    },
+    {
+      "id": "AC-09",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "fresh operator-local observation (<= 12h) with zero unauthorized worktrees",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-09 canonical checkout court reports zero unauthorized worktrees",
+      "acceptance_sha256": "7c0eb2e7f696c54e9f4a4728fa8734137d73ee48e5f7dd29cea186cb39f2296b"
+    },
+    {
+      "id": "AC-10",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-10 reversible migration court passes",
+      "acceptance_sha256": "96b68110743696f13defdabac11dd5501551ebeeea2c78d85f21d85a972c2d92"
+    },
+    {
+      "id": "AC-11",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "no pin is a transient head; every pin observed on its default-branch lineage",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-11 durable dependency court passes",
+      "acceptance_sha256": "94962ca416b00e7c6add5e7b5f435b9289dbe7cb7c5da98669966a161ba0a510"
+    },
+    {
+      "id": "AC-12",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "projector --check current on a declared cold runner",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-12 cold reconstruction succeeds",
+      "acceptance_sha256": "1649a877c6527ae57b1c76b0621f169b34df8ef0dd801753ce005eb32d2521d2"
+    },
+    {
+      "id": "AC-13",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-13 Semantic Case Study schema validates",
+      "acceptance_sha256": "bcfa387fcef0fc28977adc2f97be2e0acb4e08bceffa466b7407302b058a33d7"
+    },
+    {
+      "id": "AC-14",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-14 Western Digital evidence ceiling remains enforced",
+      "acceptance_sha256": "35518b29964a1d9093228ab6829356fca908a5fad6ab3612382d0829d9cc8b30"
+    },
+    {
+      "id": "AC-15",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE",
+        "FINAL",
+        "SUPERSEDED",
+        "BLOCKED",
+        "UNSUPPORTED",
+        "REFUSED"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "TERMINAL",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "has terminal standing",
+      "acceptance_sha256": "120dfa44a5fcb5a29b148a5f0cdf82f5fe64310f3ef4cbd6b31f6c3d4f73bc9f"
+    },
+    {
+      "id": "AC-16",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-16 Vision 2027 has admitted machine-readable strategic representation",
+      "acceptance_sha256": "28ba9bb83733003e31ad329808569d9c8a98c52e66df275e3aec2d73312edae0"
+    },
+    {
+      "id": "AC-17",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "every pin identical to or an ancestor of its observed default-branch head",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-17 exact merged SHAs verified",
+      "acceptance_sha256": "ecd2e898979fcf34cb55f7d2329249c8eb552e172204aaff7aaacf4eb352e864"
+    },
+    {
+      "id": "AC-18",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "every other requirement PASS in the same evaluation",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-18 root crown passes",
+      "acceptance_sha256": "cdd4aaf4359db81620e6c77091d6d024b7fe0b2c26e2961b1ac0ce9229870276"
+    },
+    {
+      "id": "AC-19",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "PRE_TAG: tag absent or equal to crown_sha; POST_TAG: tag equals its committed record and targets the recorded subject",
+      "authority_required": "release-crown-environment",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a748",
+      "rfc_phrase": "AC-19 release tags equal crown SHA",
+      "acceptance_sha256": "a4cfafd706f7b72334545f7d535cf8e93748d3d0530018fffe4784992c1046c4"
+    },
+    {
+      "id": "F-01",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "A prose observation directly creates executable work without admitted authority.",
+      "acceptance_sha256": "bf1cda486d1333c7bf3ec806a15cfc8d1d352464152715030416c9c0f6e50889"
+    },
+    {
+      "id": "F-02",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "unique FINAL_SPEC owner with byte-identical import, and the origin-authority receipt admitted like receipt_artifact",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "A WorkOrder has zero or multiple origin authorities.",
+      "acceptance_sha256": "a2c4688a2337afbdde2d3be65a10bcc8a764803b1a7c57560dae00c1ab6da518"
+    },
+    {
+      "id": "F-03",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE",
+        "FINAL",
+        "SUPERSEDED",
+        "BLOCKED",
+        "UNSUPPORTED",
+        "REFUSED"
+      ],
+      "evidence_required": "every required closure.json row ALIVE/FINAL or typed (type + broken_term + RFC \u00a739 class + owner = row repository); closure court not REFUSED",
+      "authority_required": "NONE",
+      "standing_ceiling": "TERMINAL",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "A required subject remains UNKNOWN",
+      "acceptance_sha256": "f2445fd4cd26e7a9925fc97606159b52e951aaf570bd59e35c2ca33d915e39e3"
+    },
+    {
+      "id": "F-04",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "no pin is a transient head; every pin observed on its default-branch lineage",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "A release dependency resolves only to a transient PR head.",
+      "acceptance_sha256": "688ac9c31a1d4cb29439debb648c268721536a52d7ad5b7613ff96acef3055c2"
+    },
+    {
+      "id": "F-05",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "A consequential action lacks a durable receipt.",
+      "acceptance_sha256": "24f7e36382cbf38b464a262ca0704f4c6b109bce95695a742905a5721158c8cf"
+    },
+    {
+      "id": "F-06",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "Berthier court without refusals and the RFC \u00a79 crown test (ManualRestatementCount=0)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "The same strategic change must be manually restated across dependent repositories.",
+      "acceptance_sha256": "2aee289cf388a01f22d079ddacb6d4f9884f27d536fa43cddebe9fbd556b1590"
+    },
+    {
+      "id": "F-07",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "XPROD-001 cross-product receipt ALIVE with every producer subject merged",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "A cross-product artifact remains valid after a mutation that should violate its semantics.",
+      "acceptance_sha256": "e966aeb32139b16b391a8002dd9273575f47845673184915c2954303b33d8c76"
+    },
+    {
+      "id": "F-08",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "A TLA+ claim exists without actual pinned runtime execution.",
+      "acceptance_sha256": "d80af3f9e3fdbab7777d588fa5156cf24fbaa05fa6123e8c3b379afc30aa002c"
+    },
+    {
+      "id": "F-09",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE",
+        "BLOCKED",
+        "UNSUPPORTED"
+      ],
+      "evidence_required": "ALIVE with transport_receipt + execution_receipt bound to a merged subject_sha, or a typed BLOCKED/UNSUPPORTED (type + broken_term + RFC \u00a739 class + owner = container repo) bound to a merged subject_sha",
+      "authority_required": "NONE",
+      "standing_ceiling": "TERMINAL",
+      "rfc_anchor": "\u00a755",
+      "rfc_phrase": "cloud_runtime_alive_or_typed_blocker",
+      "acceptance_sha256": "c464f962fe58e2f1edb0c8f2eccca65f0c74ead8b2717fd91523e649a4a15c59"
+    },
+    {
+      "id": "F-10",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "fresh operator-local observation (<= 12h) with zero unauthorized worktrees",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "A shadow/worktree copy acts as an alternate source of truth.",
+      "acceptance_sha256": "1409952abe07f5f9d6c85f477b3e8b8b3209a652e0f1cedb35b5090d0649aabb"
+    },
+    {
+      "id": "F-11",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "Cleanup occurs before rollback qualification.",
+      "acceptance_sha256": "5d97008d489881ba2dd795ce79c57ce054a9a884205e905be0d2f175057170c6"
+    },
+    {
+      "id": "F-12",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "Western Digital external standing exceeds available evidence.",
+      "acceptance_sha256": "e30e7f58e2c5c02c44b3d23a3e4a569ddf77ff8270ca64e463506f2d4cf53545"
+    },
+    {
+      "id": "F-13",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead)",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "GodsLaw collapses differing doctrinal interpretations into an unproven universal platform assertion.",
+      "acceptance_sha256": "617f0ce99c6f91aed926aaebe0dc76de72d8b08b1cbc85194dc2f05d0a029cd6"
+    },
+    {
+      "id": "F-14",
+      "required_success_state": "ALIVE",
+      "allowed_terminal_states": [
+        "ALIVE"
+      ],
+      "evidence_required": "PRE_TAG: tag absent or equal to crown_sha; POST_TAG: tag equals its committed record and targets the recorded subject",
+      "authority_required": "NONE",
+      "standing_ceiling": "ALIVE",
+      "rfc_anchor": "\u00a747",
+      "rfc_phrase": "A release tag identifies a SHA different from the crown SHA.",
+      "acceptance_sha256": "7fd21e6cb78b22fa69ce7d947479489cb480fddf04d4598bbfe66e2b0099e400"
+    }
+  ],
+  "authority": "NONE"
+}

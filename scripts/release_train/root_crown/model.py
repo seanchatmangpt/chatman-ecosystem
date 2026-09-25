@@ -116,6 +116,15 @@ POST_TAG_RULES = (
     "HISTORICAL_OBSERVATION_SPLIT",
     "PAYLOAD_MUTATED_POST_TAG",
 )
+# Terminality policy refusals (policy.py + evidence.py owner rule): the per-requirement
+# admitted terminal states, their RFC grounding, and the receipt owner.
+TERMINALITY_RULES = (
+    "TERMINALITY_POLICY_MISSING",
+    "POLICY_COVERAGE_GAP",
+    "POLICY_RELAXATION_UNGROUNDED",
+    "ACCEPTANCE_DRIFT",
+    "OWNER_SPLIT",
+)
 # Post-tag typed blockers (lawful, non-ALIVE).
 POST_TAG_BLOCKERS = ("TAG_UNRECORDED", "REPLAY_DIVERGED", "SUBJECT_ABSENT")
 # RECEIPT_CHAIN_BROKEN detail tokens (chain.py).
@@ -191,6 +200,12 @@ FAILURE_CLASS: dict[str, tuple[str, str]] = {
     "SUBJECT_TREE_MISMATCH": ("SUBJECT_FAILURE", "R_missing_replay"),
     "HISTORICAL_OBSERVATION_SPLIT": ("EVIDENCE_FAILURE", "mu_on_O"),
     "PAYLOAD_MUTATED_POST_TAG": ("SUBJECT_FAILURE", "mu_unlawful"),
+    # terminality policy
+    "TERMINALITY_POLICY_MISSING": ("EVIDENCE_FAILURE", "admission_vacuous"),
+    "POLICY_COVERAGE_GAP": ("EVIDENCE_FAILURE", "admission_vacuous"),
+    "POLICY_RELAXATION_UNGROUNDED": ("AUTHORITY_FAILURE", "mu_on_O"),
+    "ACCEPTANCE_DRIFT": ("VERIFICATION_FAILURE", "R_not_fed_back"),
+    "OWNER_SPLIT": ("AUTHORITY_FAILURE", "R_missing_authority"),
     # post-tag typed blockers
     "TAG_UNRECORDED": ("EVIDENCE_FAILURE", "R_missing_identity"),
     "REPLAY_DIVERGED": ("VERIFICATION_FAILURE", "R_missing_replay"),
@@ -220,6 +235,7 @@ ALL_CODES = (
     + BERTHIER_RULES
     + CROWN_RULES
     + POST_TAG_RULES
+    + TERMINALITY_RULES
     + POST_TAG_BLOCKERS
     + BLOCKER_CODES
     + TAG_RULES

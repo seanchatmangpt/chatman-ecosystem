@@ -177,6 +177,85 @@ class TerminalAlignmentTest(unittest.TestCase):
         state = self.evaluate("AC-10")
         self.assertEqual((state.state, state.code), ("BLOCKED", "ARTIFACT_BLOCKED"))
 
+    # --- terminality policy (policy/v26.9.25/terminality.json) ---------------------------
+    def test_unsupported_is_terminal_where_the_policy_admits_it(self):
+        """RFC §38 "UNSUPPORTED(capability_gap)": AC-15 and F-09 admit a typed UNSUPPORTED."""
+        subject = self.obs["artifacts"][
+            next(r for r in self.tree.inputs().requirements if r.id == "F-09").evidence_locator
+        ]["json"]["subject_sha"]
+        for rid in ("AC-15", "F-09"):
+            with self.subTest(rid=rid):
+                obs = self.remote(rid, standing="UNSUPPORTED", type=TYPED, subject_sha=subject)
+                state = self.evaluate(rid, obs)
+                self.assertEqual(state.state, "PASS", state.detail)
+                self.assertIn("terminal UNSUPPORTED", state.detail)
+                self.assertIn(f"policy {rid} ceiling=TERMINAL", state.detail)
+
+    def test_unsupported_on_a_capability_ac_stays_blocked(self):
+        obs = self.remote("AC-07", standing="UNSUPPORTED", type=TYPED)
+        state = self.evaluate("AC-07", obs)
+        self.assertEqual((state.state, state.code), ("BLOCKED", "ARTIFACT_BLOCKED"))
+        self.assertIn("policy admits ALIVE)", state.detail)
+
+    def test_f09_admits_only_blocked_and_unsupported(self):
+        """RFC §55 names a typed *blocker*: a typed SUPERSEDED is not admitted, REFUSED is refused."""
+        state = self.evaluate("F-09", self.remote("F-09", standing="SUPERSEDED", type=TYPED, successor="x"))
+        self.assertEqual((state.state, state.code), ("BLOCKED", "ARTIFACT_BLOCKED"))
+        self.assertIn("policy admits ALIVE|BLOCKED|UNSUPPORTED", state.detail)
+        state = self.evaluate("F-09", self.remote("F-09", standing="REFUSED", type=TYPED))
+        self.assertEqual((state.state, state.code), ("REFUSED", "ARTIFACT_REFUSED"))
+
+    def test_f09_unknown_is_refused(self):
+        state = self.evaluate("F-09", self.remote("F-09", standing="UNKNOWN"))
+        self.assertEqual((state.state, state.code), ("REFUSED", "REQUIRED_UNKNOWN"))
+
+    def test_f09_typed_blocker_must_be_bound_to_a_merged_subject(self):
+        obs = self.remote("F-09", standing="BLOCKED", type=TYPED)
+        locator = next(r for r in self.tree.inputs().requirements if r.id == "F-09").evidence_locator
+        obs["artifacts"][locator]["subject_compare"] = "behind"
+        state = self.evaluate("F-09", obs)
+        self.assertEqual((state.state, state.code), ("REFUSED", "ARTIFACT_SUBJECT_SPLIT"))
+        del obs["artifacts"][locator]["json"]["subject_sha"]
+        state = self.evaluate("F-09", obs)
+        self.assertEqual((state.state, state.code), ("BLOCKED", "ARTIFACT_UNBOUND"))
+
+    def test_bound_detail_names_the_receipt_standing(self):
+        """A typed BLOCKED receipt is "BLOCKED at <subject>", never "ALIVE at <subject>"."""
+        state = self.evaluate("AC-15", self.remote("AC-15", standing="BLOCKED", type=TYPED))
+        self.assertEqual(state.state, "PASS", state.detail)
+        self.assertIn(f"BLOCKED at {state.subject_sha} (identical)", state.detail)
+        self.assertNotIn("ALIVE at", state.detail)
+        alive = self.evaluate("AC-07")
+        self.assertIn(f"ALIVE at {alive.subject_sha} (identical)", alive.detail)
+
+    def test_closure_typed_rows_follow_the_policy_row(self):
+        """With an AC-02 row that admits success only, a typed BLOCKED closure row is not terminal."""
+        import tempfile
+        from pathlib import Path
+
+        self.closure_row(impl_standing="BLOCKED", impl_type=TYPED, courts=[])
+        doc = load(REPO / "scripts/release_train/root_crown/policy/v26.9.25/terminality.json")
+        row = next(r for r in doc["rows"] if r["id"] == "AC-02")
+        row.update(allowed_terminal_states=["ALIVE", "FINAL"], standing_ceiling="ALIVE")
+        with tempfile.TemporaryDirectory() as tmp:
+            dump(Path(tmp) / "v26.9.25/terminality.json", doc)
+            req = next(r for r in self.tree.inputs().requirements if r.id == "AC-02")
+            ctx = evidence.Context(
+                self.tree.root, self.tree.release_dir, self.obs, CROWN_SHA, self.tree.inputs(), policy_root=Path(tmp)
+            )
+            state = evidence.closure_terminal(req, ctx)
+        self.assertEqual((state.state, state.code), ("BLOCKED", "CLOSURE_PARTIAL"))
+        self.assertIn("AFFIDAVIT:impl=BLOCKED:not-admitted-by-policy(AC-02)", state.detail)
+        self.assertEqual(self.evaluate("AC-02").state, "PASS")
+
+    def test_closure_row_without_a_container_repository_is_refused(self):
+        """A closure row's owner is its repository; without one the release closure court
+        refuses the row before any owner can be derived."""
+        self.closure_row(impl_standing="BLOCKED", impl_type=TYPED, courts=[], repository=None)
+        state = self.evaluate("AC-02")
+        self.assertEqual((state.state, state.code), ("REFUSED", "SUBJECT_NOT_TERMINAL"), state.detail)
+        self.assertIn("MALFORMED_ROW:AFFIDAVIT:repository", state.detail)
+
 
 if __name__ == "__main__":
     unittest.main()
