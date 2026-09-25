@@ -24,9 +24,11 @@ MUTATING_AUTHORITIES = {
 }
 DEFAULT_BASE = pathlib.Path("catalog/capabilities.toml")
 DEFAULT_EXTENSION = pathlib.Path("catalog/capabilities-decision-graph.toml")
+DEFAULT_FLEET = pathlib.Path("catalog/capabilities-fleet.toml")
 DEFAULT_REPOSITORIES = pathlib.Path("catalog/repositories.toml")
 DEFAULT_BASE_PROJECTION = pathlib.Path("views/generated/capabilities.md")
 DEFAULT_EXTENSION_PROJECTION = pathlib.Path("views/generated/capabilities-decision-graph.md")
+DEFAULT_FLEET_PROJECTION = pathlib.Path("views/generated/capabilities-fleet.md")
 
 
 class CapabilityError(RuntimeError):
@@ -59,9 +61,9 @@ def load_default(root: pathlib.Path, base: pathlib.Path | None = None) -> dict:
     if not base_path.is_absolute():
         base_path = root / base_path
     catalogs = [load(base_path)]
-    extension = root / DEFAULT_EXTENSION
-    if extension.exists() and extension.resolve() != base_path.resolve():
-        catalogs.append(load(extension))
+    for extra in (root / DEFAULT_EXTENSION, root / DEFAULT_FLEET):
+        if extra.exists() and extra.resolve() != base_path.resolve():
+            catalogs.append(load(extra))
     return combine(catalogs)
 
 
@@ -171,18 +173,25 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--catalog", type=pathlib.Path, default=DEFAULT_BASE)
     parser.add_argument("--extension", type=pathlib.Path, default=DEFAULT_EXTENSION)
+    parser.add_argument("--fleet", type=pathlib.Path, default=DEFAULT_FLEET)
     parser.add_argument("--repositories", type=pathlib.Path, default=DEFAULT_REPOSITORIES)
     parser.add_argument("--projection", type=pathlib.Path, default=DEFAULT_BASE_PROJECTION)
     parser.add_argument("--extension-projection", type=pathlib.Path, default=DEFAULT_EXTENSION_PROJECTION)
+    parser.add_argument("--fleet-projection", type=pathlib.Path, default=DEFAULT_FLEET_PROJECTION)
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
 
     base = load(args.catalog)
     catalogs = [base]
     extension = None
+    fleet = None
     if args.extension.exists() and args.extension.resolve() != args.catalog.resolve():
         extension = load(args.extension)
         catalogs.append(extension)
+    if args.fleet.exists() and args.fleet.resolve() != args.catalog.resolve():
+        fleet = load(args.fleet)
+        catalogs.append(fleet)
+
     items = verify(combine(catalogs))
     verify_repository_owners(items, load(args.repositories))
     base_items = verify(base)
@@ -195,13 +204,26 @@ def main() -> int:
         extension_items = [item for item in items if item["id"] in extension_ids]
         extension_expected = render(extension_items, args.extension.as_posix())
 
+    fleet_expected = None
+    fleet_items: list[dict] = []
+    if fleet is not None:
+        fleet_ids = {item["id"] for item in fleet.get("capability", [])}
+        fleet_items = [item for item in items if item["id"] in fleet_ids]
+        fleet_expected = render(fleet_items, args.fleet.as_posix())
+
     if args.write:
         args.projection.parent.mkdir(parents=True, exist_ok=True)
         args.projection.write_text(base_expected, encoding="utf-8")
         if extension_expected is not None:
             args.extension_projection.parent.mkdir(parents=True, exist_ok=True)
             args.extension_projection.write_text(extension_expected, encoding="utf-8")
-        print(f"CAPABILITIES_RENDERED count={len(items)} base={len(base_items)} extension={len(extension_items)}")
+        if fleet_expected is not None:
+            args.fleet_projection.parent.mkdir(parents=True, exist_ok=True)
+            args.fleet_projection.write_text(fleet_expected, encoding="utf-8")
+        print(
+            f"CAPABILITIES_RENDERED count={len(items)} base={len(base_items)} "
+            f"extension={len(extension_items)} fleet={len(fleet_items)}"
+        )
         return 0
 
     if args.projection.read_text(encoding="utf-8") != base_expected:
@@ -211,7 +233,15 @@ def main() -> int:
             raise CapabilityError("REFUSED:CAPABILITY_EXTENSION_PROJECTION_MISSING")
         if args.extension_projection.read_text(encoding="utf-8") != extension_expected:
             raise CapabilityError("REFUSED:CAPABILITY_EXTENSION_PROJECTION_DRIFT")
-    print(f"CAPABILITIES_ALIVE count={len(items)} base={len(base_items)} extension={len(extension_items)}")
+    if fleet_expected is not None:
+        if not args.fleet_projection.exists():
+            raise CapabilityError("REFUSED:CAPABILITY_FLEET_PROJECTION_MISSING")
+        if args.fleet_projection.read_text(encoding="utf-8") != fleet_expected:
+            raise CapabilityError("REFUSED:CAPABILITY_FLEET_PROJECTION_DRIFT")
+    print(
+        f"CAPABILITIES_ALIVE count={len(items)} base={len(base_items)} "
+        f"extension={len(extension_items)} fleet={len(fleet_items)}"
+    )
     return 0
 
 
