@@ -1,0 +1,24 @@
+{
+  "schema": "https://chatman.dev/release/closure-ledger/v1",
+  "release": "v26.9.25",
+  "observed_at": "2026-09-25T16:40:16Z",
+  "root_subject": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+  "standing": "PARTIAL_ALIVE",
+  "law": "Blocked edges are local. Exact executable standing is not inherited across descendants without a content-type admission court.",
+  "frontier": {
+    "id": "RECEIPT_DESCENDANT_ADMISSION",
+    "requirement": "Admit inert evidence descendants only to EVIDENCE_IDENTITY_ONLY; executable scripts, generators, dependencies, workflows, manifests, schemas, path traversal and unknown artifacts invalidate executable-subject inheritance.",
+    "falsifiers": [
+      "ggen_igniter receipts/replay/origin_probe.exs",
+      "xaas receipts/manufacture.py",
+      "autofde-lab scripts/release_tlc_court_receipt.py"
+    ]
+  },
+  "subjects": [
+    {"repository":"seanchatmangpt/chatman-ecosystem","sha":"68bacd8dcc9ae12e4e97727a284c14abdc7520c5","state":"PARTIAL_ALIVE","detail":"new crown descendant requires exact-head execution"},
+    {"repository":"seanchatmangpt/ggen-ecosystem","sha":"8bf231242b5fa30587a3d7357c8aaa57905ccfdf","state":"PARTIAL_ALIVE","detail":"composition present; exact-head crown unobserved"},
+    {"repository":"seanchatmangpt/ash_a2a","sha":"4e83c8194d56109d7985fbbfdabe75ecbe952e9e","state":"PARTIAL_ALIVE","detail":"2153/2155 tests"},
+    {"repository":"seanchatmangpt/wasm4pm","sha":"9fc4f1ae3cc99cf65a5f014580db8e1ea3d08b55","state":"PARTIAL_ALIVE","detail":"native bounded; wasm/cross-job contract unresolved"},
+    {"repository":"seanchatmangpt/xaas","sha":"e039967dac9f88961873b6a958f3979a106854f2","state":"PARTIAL_ALIVE","detail":"cloud-to-zcode consequence remains typed blocked"}
+  ]
+}
