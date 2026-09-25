@@ -8,6 +8,7 @@ own tree (``context.root``). No evaluator touches the network or spawns a proces
 
 from __future__ import annotations
 
+import hashlib
 import json
 import tomllib
 from dataclasses import dataclass, field
@@ -27,6 +28,104 @@ LINEAGE_OK = {"identical", "ahead"}
 LINEAGE_BAD = {"behind", "diverged"}
 TERMINAL_ARTIFACT = {"FINAL", "SUPERSEDED", "BLOCKED", "UNSUPPORTED", "REFUSED", "ALIVE"}
 WORKTREE_FRESHNESS = timedelta(hours=12)
+# Operator-local observations (AC-09 worktrees, private repos) share one freshness bound.
+OPERATOR_LOCAL_FRESHNESS = WORKTREE_FRESHNESS
+
+
+def _parse_time(value: Any) -> datetime:
+    return datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+
+
+def _blob_sha(raw: bytes) -> str:
+    return hashlib.sha1(b"blob %d\0" % len(raw) + raw).hexdigest()
+
+
+def admit_private(observations: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any], dict[str, ReqState]]:
+    """Admit operator-local private-repo observations (``observations/private-repos.json``).
+
+    Returns (repo overlays, artifact overlays, typed failures per repository). A record is
+    admitted only when the publicly scoped observation of its repository failed, it is no
+    older than OPERATOR_LOCAL_FRESHNESS (else BLOCKED OBSERVATION_STALE), every recorded
+    receipt's bytes recompute to its sha256 and git blob sha (else REFUSED
+    PRIVATE_OBSERVATION_DIGEST_MISMATCH), and the recorded head is identical-to or an
+    ancestor-of any publicly observed head (else REFUSED PRIVATE_HEAD_SPLIT).
+    """
+    private = observations.get("private_repos")
+    if not isinstance(private, dict):
+        return {}, {}, {}
+    public = observations.get("repos", {})
+    compare = observations.get("private_public_compare", {}) or {}
+    repos: dict[str, Any] = {}
+    artifacts: dict[str, Any] = {}
+    failures: dict[str, ReqState] = {}
+    for repository, record in sorted(private.get("repos", {}).items()):
+        if not isinstance(record, dict):
+            continue
+        head = record.get("head_sha")
+        status = compare.get(repository)
+        if status in LINEAGE_BAD:
+            failures[repository] = REFUSED(
+                "PRIVATE_HEAD_SPLIT", f"{repository}: recorded head {head} is {status} of the public head", head
+            )
+            continue
+        mismatched = []
+        for receipt in record.get("receipts", []):
+            if "content" not in receipt:
+                continue
+            raw = str(receipt["content"]).encode("utf-8")
+            if hashlib.sha256(raw).hexdigest() != receipt.get("sha256") or _blob_sha(raw) != receipt.get("blob_sha"):
+                mismatched.append(str(receipt.get("path")))
+        if mismatched:
+            failures[repository] = REFUSED(
+                "PRIVATE_OBSERVATION_DIGEST_MISMATCH", f"{repository}: " + ",".join(sorted(mismatched)), head
+            )
+            continue
+        try:
+            age = _parse_time(observations.get("observed_at")) - _parse_time(
+                record.get("observed_at") or private.get("observed_at")
+            )
+        except ValueError:
+            failures[repository] = BLOCKED("OBSERVATION_STALE", f"{repository}: unparseable observed_at")
+            continue
+        if age > OPERATOR_LOCAL_FRESHNESS:
+            failures[repository] = BLOCKED(
+                "OBSERVATION_STALE",
+                f"{repository}: operator-local observation {record.get('observed_at')} older than {OPERATOR_LOCAL_FRESHNESS}",
+            )
+            continue
+        if (
+            record.get("observer") != "operator-local"
+            or record.get("error")
+            or not (isinstance(head, str) and len(head) == 40)
+        ):
+            failures[repository] = BLOCKED(
+                "OBSERVATION_MISSING", f"{repository}: operator-local record unusable ({record.get('error')})"
+            )
+            continue
+        if not public.get(repository, {}).get("error") and public.get(repository, {}).get("head_sha"):
+            continue  # publicly observable: the public observation stays primary
+        repos[repository] = {
+            key: record.get(key) for key in ("pin_sha", "default_branch", "head_sha", "compare_status", "visibility")
+        } | {"source": "operator-local"}
+        for receipt in record.get("receipts", []):
+            locator = f"{repository}:{receipt.get('path')}"
+            if receipt.get("error"):
+                artifacts[locator] = {"error": receipt["error"], "head_sha": head}
+                continue
+            entry: dict[str, Any] = {
+                "sha256": receipt.get("sha256"),
+                "blob_sha": receipt.get("blob_sha"),
+                "head_sha": head,
+                "source": "operator-local",
+            }
+            try:
+                entry["json"] = json.loads(receipt["content"])
+            except (KeyError, json.JSONDecodeError):
+                pass
+            if receipt.get("subject_compare"):
+                entry["subject_compare"] = receipt["subject_compare"]
+            artifacts[locator] = entry
+    return repos, artifacts, failures
 
 
 @dataclass
@@ -38,14 +137,27 @@ class Context:
     inputs: projector.Inputs
     premise_text: str | None = None  # in-memory override (crown test)
     extra: dict[str, Any] = field(default_factory=dict)
+    private_failures: dict[str, ReqState] = field(init=False)
+    _repos: dict[str, Any] = field(init=False, repr=False)
+    _artifacts: dict[str, Any] = field(init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        repos, artifacts, self.private_failures = admit_private(self.observations)
+        self._repos = dict(self.observations.get("repos", {})) | repos
+        self._artifacts = dict(self.observations.get("artifacts", {})) | artifacts
 
     @property
     def repos(self) -> dict[str, Any]:
-        return self.observations.get("repos", {})
+        return self._repos
 
     @property
     def artifacts(self) -> dict[str, Any]:
-        return self.observations.get("artifacts", {})
+        return self._artifacts
+
+    def private_failure(self, repositories: Any) -> ReqState | None:
+        """First typed private-observation failure among ``repositories`` (refusals first)."""
+        hits = [self.private_failures[r] for r in sorted(set(repositories)) if r in self.private_failures]
+        return next((h for h in hits if h.state == "REFUSED"), hits[0] if hits else None)
 
 
 def _local_path(ctx: Context, req: Requirement) -> Path:
@@ -120,6 +232,9 @@ def _artifact(req: Requirement, ctx: Context) -> tuple[dict[str, Any] | None, Re
             return None, BLOCKED("ARTIFACT_NOT_JSON", req.evidence_locator), True
         return data, None, True
     repo = req.locator_repo
+    failure = ctx.private_failure([repo])
+    if failure is not None:
+        return None, failure, False
     observed = ctx.artifacts.get(req.evidence_locator)
     if observed is None:
         repo_obs = ctx.repos.get(repo or "", {})
@@ -333,6 +448,9 @@ def _transient_shas(ctx: Context) -> set[str]:
 
 
 def durable_pins(req: Requirement, ctx: Context) -> ReqState:
+    failure = ctx.private_failure(p["repository"] for p in ctx.inputs.pins["repos"].values())
+    if failure is not None:
+        return failure
     transient = _transient_shas(ctx)
     hits = sorted(f"{p['repository']}@{p['sha']}" for p in ctx.inputs.pins["repos"].values() if p["sha"] in transient)
     if hits:
@@ -349,6 +467,9 @@ def durable_pins(req: Requirement, ctx: Context) -> ReqState:
 
 
 def merged_sha(req: Requirement, ctx: Context) -> ReqState:
+    failure = ctx.private_failure(p["repository"] for p in ctx.inputs.pins["repos"].values())
+    if failure is not None:
+        return failure
     bad, missing = [], []
     for pin in ctx.inputs.pins["repos"].values():
         if pin.get("root"):
@@ -386,8 +507,8 @@ def worktree_observation(req: Requirement, ctx: Context) -> ReqState:
     if not isinstance(worktrees, list):
         return BLOCKED("EVIDENCE_ABSENT", f"local observation lacks a worktree list ({local.get('source')})")
     try:
-        seen = datetime.fromisoformat(str(local.get("observed_at")).replace("Z", "+00:00"))
-        now = datetime.fromisoformat(str(ctx.observations.get("observed_at")).replace("Z", "+00:00"))
+        seen = _parse_time(local.get("observed_at"))
+        now = _parse_time(ctx.observations.get("observed_at"))
     except ValueError:
         return BLOCKED("OBSERVATION_STALE", "unparseable observed_at")
     if now - seen > WORKTREE_FRESHNESS:

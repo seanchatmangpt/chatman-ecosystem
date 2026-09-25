@@ -10,6 +10,11 @@ This observer produces its ``observations.json``:
              and compare_status of the artifact's own subject_sha...head
   tag        the release tag's commit SHA or null
   local_worktrees (``--local-worktrees``) operator-local topology receipt m_term
+  private_repos  committed ``observations/private-repos.json`` (written by
+             ``--private-local <repo...>`` on the operator's machine with the operator's
+             ``gh`` auth, because the repo-scoped CI token cannot read private repos) plus
+             ``public_compare`` of the recorded head against a publicly observed head,
+             where one is observable. The court re-verifies digests and freshness.
 
 Authority: ``github-api:<token-env>:read``. It never writes to GitHub. Every failed
 call is recorded as a typed ``error`` string, never raised past the repository.
@@ -23,6 +28,7 @@ import glob
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import urllib.error
 import urllib.parse
@@ -37,6 +43,8 @@ import verify_release  # noqa: E402
 API = "https://api.github.com"
 Fetch = Callable[[str], dict[str, Any]]
 TOPOLOGY_GLOB = "~/.claude/migration/v26925-topology/TOPOLOGY-RECEIPT*.json"
+PRIVATE_FILE = "observations/private-repos.json"
+PRIVATE_SCHEMA = "https://chatman.dev/root-crown/private-observations/v1"
 
 
 def github_fetch(url: str) -> dict[str, Any]:
@@ -53,6 +61,135 @@ def _compare(fetch: Fetch, repository: str, base: str, head: str) -> str | None:
     payload = fetch(f"{API}/repos/{repository}/compare/{base}...{urllib.parse.quote(head, safe='')}")
     status = payload.get("status")
     return status if status in {"identical", "ahead", "behind", "diverged"} else None
+
+
+def gh_fetch(url: str) -> dict[str, Any]:
+    """Operator-local transport: ``gh api`` with the operator's own auth (the token never leaves gh)."""
+    path = url[len(API) + 1 :] if url.startswith(API) else url
+    proc = subprocess.run(["gh", "api", path], capture_output=True, text=True, timeout=30, check=False)
+    if proc.returncode != 0:
+        code = 404 if "HTTP 404" in proc.stderr else 403 if "HTTP 403" in proc.stderr else 500
+        raise urllib.error.HTTPError(url, code, proc.stderr.strip()[:200], {}, None)  # type: ignore[arg-type]
+    payload = json.loads(proc.stdout or "{}")
+    if isinstance(payload, list):
+        return {"items": payload}
+    return payload
+
+
+def git_blob_sha(raw: bytes) -> str:
+    return hashlib.sha1(b"blob %d\0" % len(raw) + raw).hexdigest()
+
+
+def observe_private_repo(
+    fetch: Fetch, repository: str, pin_sha: str | None, paths: list[str], observed_at: str
+) -> dict[str, Any]:
+    """One private repository observed with operator authority; receipts carry their bytes."""
+    out: dict[str, Any] = {"repository": repository, "observer": "operator-local", "observed_at": observed_at}
+    if pin_sha:
+        out["pin_sha"] = pin_sha
+    try:
+        meta = fetch(f"{API}/repos/{repository}")
+        branch = meta["default_branch"]
+        out["default_branch"] = branch
+        out["visibility"] = meta.get("visibility")
+        head = fetch(f"{API}/repos/{repository}/commits/{urllib.parse.quote(branch, safe='')}")["sha"]
+        out["head_sha"] = head
+        if pin_sha:
+            out["compare_status"] = "identical" if head == pin_sha else _compare(fetch, repository, pin_sha, head)
+    except (urllib.error.URLError, TimeoutError, ValueError, KeyError) as exc:
+        out["error"] = _err(exc)
+        return out
+    receipts = []
+    for path in sorted(set(paths)):
+        entry: dict[str, Any] = {"path": path}
+        try:
+            payload = fetch(f"{API}/repos/{repository}/contents/{urllib.parse.quote(path)}?ref={head}")
+            raw = base64.b64decode(payload.get("content", ""))
+        except (urllib.error.URLError, TimeoutError, ValueError, KeyError) as exc:
+            entry["error"] = _err(exc)
+            receipts.append(entry)
+            continue
+        entry.update(
+            {
+                "blob_sha": payload.get("sha"),
+                "sha256": hashlib.sha256(raw).hexdigest(),
+                "content": raw.decode("utf-8", errors="replace"),
+            }
+        )
+        try:
+            data = json.loads(raw.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            data = None
+        subject = data.get("subject_sha") if isinstance(data, dict) else None
+        if isinstance(subject, str) and len(subject) == 40:
+            try:
+                entry["subject_compare"] = (
+                    "identical" if subject == head else _compare(fetch, repository, subject, head)
+                )
+            except (urllib.error.URLError, TimeoutError, ValueError, KeyError) as exc:
+                entry["subject_compare_error"] = _err(exc)
+        receipts.append(entry)
+    out["receipts"] = receipts
+    try:
+        runs = fetch(f"{API}/repos/{repository}/commits/{head}/check-runs?per_page=100").get("check_runs", [])
+        out["check_runs"] = sorted(
+            (
+                {
+                    "name": r.get("name"),
+                    "status": r.get("status"),
+                    "conclusion": r.get("conclusion"),
+                    "head_sha": r.get("head_sha"),
+                }
+                for r in runs
+            ),
+            key=lambda r: (str(r["name"]), str(r["conclusion"])),
+        )
+    except (urllib.error.URLError, TimeoutError, ValueError, KeyError) as exc:
+        out["check_runs_error"] = _err(exc)
+    return out
+
+
+def observe_private_local(
+    release_dir: Path, repositories: list[str], fetch: Fetch = gh_fetch, *, now: str | None = None
+) -> dict[str, Any]:
+    """``--private-local``: the lawful local-observation path (same shape of authority as AC-09)."""
+    observed_at = now or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    pins = json.loads((release_dir / "pins.json").read_text(encoding="utf-8"))
+    requirements = json.loads((release_dir / "requirements.json").read_text(encoding="utf-8"))["requirements"]
+    pin_of = {p["repository"]: p["sha"] for p in pins["repos"].values()}
+    repos: dict[str, Any] = {}
+    for repository in sorted(set(repositories)):
+        paths = [
+            r["evidence_locator"].partition(":")[2]
+            for r in requirements
+            if r["evidence_locator"].partition(":")[0] == repository
+        ]
+        repos[repository] = observe_private_repo(fetch, repository, pin_of.get(repository), paths, observed_at)
+    return {
+        "schema": PRIVATE_SCHEMA,
+        "release": release_dir.name,
+        "observed_at": observed_at,
+        "observer": "operator-local",
+        "authority": "gh-cli:operator:read",
+        "repos": repos,
+    }
+
+
+def public_compare(fetch: Fetch, private: dict[str, Any], repos: dict[str, Any]) -> dict[str, str | None]:
+    """Recorded private head vs the publicly observed head, where the public side is observable."""
+    out: dict[str, str | None] = {}
+    for repository, record in sorted(private.get("repos", {}).items()):
+        public_head = repos.get(repository, {}).get("head_sha")
+        recorded = record.get("head_sha") if isinstance(record, dict) else None
+        if not public_head or not recorded:
+            continue
+        try:
+            out[repository] = (
+                "identical" if recorded == public_head else _compare(fetch, repository, recorded, public_head)
+            )
+        except (urllib.error.URLError, TimeoutError, ValueError, KeyError):
+            out[repository] = None
+    return out
 
 
 def observe_repo(fetch: Fetch, repository: str, pin_sha: str) -> dict[str, Any]:
@@ -213,13 +350,24 @@ def observe(
     committed = release_dir / "observations/local-worktrees.json"
     if committed.is_file():
         observations["local_worktrees"] = json.loads(committed.read_text(encoding="utf-8"))
+    private_path = release_dir / PRIVATE_FILE
+    if private_path.is_file():
+        private = json.loads(private_path.read_text(encoding="utf-8"))
+        observations["private_repos"] = private
+        observations["private_public_compare"] = public_compare(fetch, private, repos)
     return observations
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--release", required=True)
-    parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--out", type=Path)
+    parser.add_argument(
+        "--private-local",
+        nargs="+",
+        metavar="REPO",
+        help="operator-local: observe these private repos with gh auth into observations/private-repos.json",
+    )
     parser.add_argument(
         "--local-worktrees", action="store_true", help="ingest the operator-local topology receipt m_term"
     )
@@ -227,6 +375,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--run-id")
     args = parser.parse_args(argv)
     release_dir = release_line.release_dir(args.release)
+    if args.private_local:
+        private = observe_private_local(release_dir, args.private_local)
+        target = args.out or release_dir / PRIVATE_FILE
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(private, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        summary = {
+            repo: {
+                "head_sha": rec.get("head_sha"),
+                "error": rec.get("error"),
+                "receipts": [(r["path"], r.get("sha256") or r.get("error")) for r in rec.get("receipts", [])],
+            }
+            for repo, rec in private["repos"].items()
+        }
+        print(json.dumps({"observed_at": private["observed_at"], "out": str(target), "repos": summary}, sort_keys=True))
+        return 1 if any(rec.get("error") for rec in private["repos"].values()) else 0
+    if args.out is None:
+        parser.error("--out is required unless --private-local")
     token_env = "GITHUB_TOKEN" if os.environ.get("GITHUB_TOKEN") else "GH_TOKEN"
     observations = observe(release_dir, cold=args.cold, run_id=args.run_id, token_env=token_env)
     if args.local_worktrees:

@@ -108,6 +108,54 @@ class ObserverTest(unittest.TestCase):
         self.assertEqual(local["observed_at"], "2026-09-25T07:00:00Z")
         self.assertFalse(local["holds"])
 
+    def test_private_local_records_bytes_digests_blob_sha_and_check_runs(self):
+        import hashlib
+        import tempfile
+
+        receipt = {"standing": "ALIVE", "subject_sha": PIN}
+        raw = json.dumps(receipt).encode()
+        api = FixtureApi(
+            {
+                f"{API}/repos/o/z": {"default_branch": "main", "visibility": "private"},
+                f"{API}/repos/o/z/commits/main": {"sha": HEAD},
+                f"{API}/repos/o/z/compare/{PIN}...{HEAD}": {"status": "ahead"},
+                f"{API}/repos/o/z/contents/release/v26.9.25/receipts/x.json?ref={HEAD}": {
+                    "content": base64.b64encode(raw).decode(),
+                    "sha": obs.git_blob_sha(raw),
+                },
+                f"{API}/repos/o/z/commits/{HEAD}/check-runs?per_page=100": {
+                    "check_runs": [{"name": "ci", "status": "completed", "conclusion": "success", "head_sha": HEAD}]
+                },
+            }
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            release = Path(tmp) / "v26.9.25"
+            release.mkdir()
+            (release / "pins.json").write_text(json.dumps({"repos": {"z": {"repository": "o/z", "sha": PIN}}}))
+            (release / "requirements.json").write_text(
+                json.dumps({"requirements": [{"evidence_locator": "o/z:release/v26.9.25/receipts/x.json"}]})
+            )
+            out = obs.observe_private_local(release, ["o/z"], api, now="2026-09-25T16:00:00Z")
+        record = out["repos"]["o/z"]
+        self.assertEqual((out["observer"], record["observer"]), ("operator-local", "operator-local"))
+        self.assertEqual((record["head_sha"], record["compare_status"]), (HEAD, "ahead"))
+        [entry] = record["receipts"]
+        self.assertEqual(entry["content"].encode(), raw)
+        self.assertEqual(entry["sha256"], hashlib.sha256(raw).hexdigest())
+        self.assertEqual(entry["blob_sha"], obs.git_blob_sha(raw))
+        self.assertEqual(entry["subject_compare"], "ahead")
+        self.assertEqual(record["check_runs"][0]["conclusion"], "success")
+
+    def test_git_blob_sha_matches_git(self):
+        # `printf 'hello\n' | git hash-object --stdin`
+        self.assertEqual(obs.git_blob_sha(b"hello\n"), "ce013625030ba8dba906f756967f9e9ca394464a")
+
+    def test_public_compare_only_where_the_public_head_is_observable(self):
+        private = {"repos": {"o/z": {"head_sha": PIN}, "o/hidden": {"head_sha": PIN}}}
+        api = FixtureApi({f"{API}/repos/o/z/compare/{PIN}...{HEAD}": {"status": "diverged"}})
+        out = obs.public_compare(api, private, {"o/z": {"head_sha": HEAD}, "o/hidden": {"error": "HTTP404"}})
+        self.assertEqual(out, {"o/z": "diverged"})
+
 
 if __name__ == "__main__":
     unittest.main()
