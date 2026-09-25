@@ -56,6 +56,7 @@ jobs:
           assert p["standing"] == "NONE"
           x = json.load(open("target/external-paradigms/ecc-cross-product.json"))
           assert x["standing"] == "NONE"
+          assert x["edge_count"] == 920
           assert x["unresolved_count"] == 2
           assert all(edge["semantic_equivalence"] == "UNCLAIMED" for edge in x["edges"])
           PY
