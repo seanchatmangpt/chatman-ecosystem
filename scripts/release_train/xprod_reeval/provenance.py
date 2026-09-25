@@ -10,7 +10,8 @@ Offline mode (gating, no network):
   * a ``--receipt`` file, when given, equals the court receipt recomputed
     from the case -> otherwise ``REFUSED:RECEIPT_REPLAY_MISMATCH``.
 
-Online mode (additionally, through ``gh api``):
+Online mode (additionally, read-only GETs against the GitHub REST API with
+GH_TOKEN or GITHUB_TOKEN):
   * the producer run has ``head_sha == subject_sha``, ``path == workflow``
     and ``conclusion == success``;
   * the artifact still exists and its API digest equals ``artifact_digest``
@@ -28,7 +29,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import subprocess
+import os
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 from typing import Any, Callable
 
@@ -98,17 +102,41 @@ def verify_offline(
     }
 
 
+_API = "https://api.github.com/"
+
+
+class _DropAuthOnHostChange(urllib.request.HTTPRedirectHandler):
+    """Artifact zips redirect to signed storage URLs; never forward the token."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        new = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if new is not None and (
+            urllib.parse.urlparse(newurl).netloc
+            != urllib.parse.urlparse(req.full_url).netloc
+        ):
+            new.remove_header("Authorization")
+        return new
+
+
 def gh_fetch(endpoint: str, raw: bool) -> bytes:
-    argv = ["gh", "api", endpoint]
-    if raw:
-        argv += ["-H", "Accept: application/vnd.github.raw"]
-    done = subprocess.run(argv, capture_output=True, check=False)
-    if done.returncode != 0:
-        raise LookupError(
-            f"gh api {endpoint} exit={done.returncode}: "
-            + done.stderr.decode("utf-8", "replace").strip()[:300]
-        )
-    return done.stdout
+    """Read-only GET against the GitHub REST API (GH_TOKEN/GITHUB_TOKEN)."""
+    request = urllib.request.Request(_API + endpoint, method="GET")
+    request.add_header(
+        "Accept",
+        "application/vnd.github.raw" if raw else "application/vnd.github+json",
+    )
+    request.add_header("X-GitHub-Api-Version", "2022-11-28")
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    if token:
+        request.add_header("Authorization", f"Bearer {token}")
+    opener = urllib.request.build_opener(_DropAuthOnHostChange())
+    try:
+        with opener.open(request, timeout=60) as response:
+            return response.read()
+    except urllib.error.HTTPError as exc:
+        raise LookupError(f"GET {endpoint} http {exc.code}: {exc.reason}") from exc
+    except urllib.error.URLError as exc:
+        raise LookupError(f"GET {endpoint} unreachable: {exc.reason}") from exc
 
 
 def verify_online(
@@ -181,7 +209,7 @@ def verify_online(
             refusals.append(f"REFUSED:PROVENANCE_MALFORMED:{eid}:{exc}")
         except LookupError as exc:
             message = str(exc)
-            if " 410" in message or "expired" in message.lower():
+            if "http 410" in message or "expired" in message.lower():
                 refusals.append(f"BLOCKED:PROVENANCE_EXPIRED:{eid}")
             else:
                 refusals.append(f"BLOCKED:PROVENANCE_UNREACHABLE:{eid}:{message[:120]}")

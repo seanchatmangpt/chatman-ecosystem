@@ -3,7 +3,7 @@
 Every test runs the real court, the real provenance checker and the real
 committed evidence bytes. Tampering is done on real copies in a temporary
 directory. The online test calls the real GitHub API through ``gh`` and is a
-named skip when ``gh`` is not authenticated; nothing is faked.
+named skip without a GitHub token; nothing is faked.
 """
 
 from __future__ import annotations
@@ -27,14 +27,11 @@ from scripts.release_train.xprod_reeval.provenance import (
 ROOT = Path(__file__).resolve().parents[3]
 CASE_DIR = ROOT / "docs" / "jira" / "v26.9.25" / "xprod-cases"
 CASE = CASE_DIR / "XPROD-001.json"
-RECEIPT = CASE_DIR / "XPROD-001.receipt.json"
+RECEIPT = CASE_DIR / "receipts" / "XPROD-001.receipt.json"
 
 
-def _gh_ready() -> bool:
-    if shutil.which("gh") is None:
-        return False
-    done = subprocess.run(["gh", "auth", "status"], capture_output=True, check=False)
-    return done.returncode == 0 or bool(os.environ.get("GH_TOKEN"))
+def _token_ready() -> bool:
+    return bool(os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN"))
 
 
 class Xprod001Tests(unittest.TestCase):
@@ -128,8 +125,8 @@ class Xprod001Tests(unittest.TestCase):
         self.assertNotIn("Traceback", done.stderr)
 
     @unittest.skipUnless(
-        _gh_ready() and os.environ.get("XPROD_ONLINE") == "1",
-        "online provenance needs an authenticated gh and XPROD_ONLINE=1",
+        _token_ready() and os.environ.get("XPROD_ONLINE") == "1",
+        "online provenance needs GH_TOKEN/GITHUB_TOKEN and XPROD_ONLINE=1",
     )
     def test_online_provenance_against_real_producer_runs(self) -> None:
         report = verify_online(CASE)

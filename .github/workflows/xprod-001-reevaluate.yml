@@ -32,7 +32,7 @@ concurrency:
 
 env:
   CASE: docs/jira/v26.9.25/xprod-cases/XPROD-001.json
-  RECEIPT: docs/jira/v26.9.25/xprod-cases/XPROD-001.receipt.json
+  RECEIPT: docs/jira/v26.9.25/xprod-cases/receipts/XPROD-001.receipt.json
 
 jobs:
   offline:
