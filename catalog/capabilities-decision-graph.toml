@@ -290,3 +290,143 @@ depends_on = ["capability:reconstitute-with-ggen-legacy", "capability:project-in
 interfaces = ["cli", "api", "mcp", "a2a"]
 source_repositories = ["ggen-legacy", "ggen", "ggen-marketplace", "autofde-lab", "gymact", "autofde", "dsrust", "bcinr", "mfw", "Affidavit", "rrgym", "LifeGym", "WW3Gym"]
 refusals = ["REFUSED:PROJECT_WITHOUT_PUBLIC_ONTOLOGY_BOUNDARY", "REFUSED:SURFACE_WITHOUT_SEMANTIC_IDENTITY", "REFUSED:RECONSTITUTION_WITHOUT_REPLAY"]
+
+# LLM retirement foundry: Find -> Fence -> Reuse/Compose -> Falsify -> Verify ->
+# Formalize -> Automate -> Receipt -> Replay -> Retire. Edge state lives in
+# catalog/llm-retirement.toml; these rows name who owns each step.
+
+[[capability]]
+id = "capability:map-llm-residue"
+title = "Map reachable edges that still require open-ended LLM reasoning"
+class = "OBSERVE"
+owner = "repository:chatman-ecosystem"
+required_authority = "observe"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["catalog/llm-retirement.toml", "exact repository subject"]
+outputs = ["LLMResidue(E)", "LDR", "retirement-state histogram", "typed evidence refusals"]
+depends_on = []
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem"]
+refusals = ["REFUSED:EVIDENCE_PATH_MISSING", "REFUSED:STATE_EVIDENCE_INSUFFICIENT", "REFUSED:SELF_EVIDENCE", "REFUSED:LLM_MECHANISM_CLOSED"]
+
+[[capability]]
+id = "capability:mine-llm-recurrence"
+title = "Mine repeated LLM reasoning across worlds and tasks into residue edge candidates"
+class = "CONSTRUCT"
+owner = "repository:gymact"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "UNKNOWN"
+inputs = ["gym world traces", "session transcripts", "residue class vocabulary"]
+outputs = ["recurrence clusters", "candidate residue edges with measured frequency"]
+depends_on = ["capability:execute-gym-world", "capability:map-llm-residue"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["gymact", "chatman-ecosystem"]
+refusals = ["REFUSED:RECURRENCE_WITHOUT_TRACE", "REFUSED:ESTIMATE_PRESENTED_AS_MEASUREMENT"]
+
+[[capability]]
+id = "capability:select-retirement-frontier"
+title = "Select the next LLM edge worth retiring (argmax frequency*llm_cost*reuse*formalizability)"
+class = "SELECT"
+owner = "repository:chatman-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["admissible retirement map", "blocked edge reasons"]
+outputs = ["ranked frontier", "score basis ESTIMATED|MEASURED"]
+depends_on = ["capability:map-llm-residue"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem", "ggen_igniter"]
+refusals = ["REFUSED:CLOSED_EDGE_SELECTED", "REFUSED:TERMINAL_RESIDUAL_SELECTED"]
+
+[[capability]]
+id = "capability:court-llm-machine-equivalence"
+title = "Court the hypothesis LLM_f == M_f over an admitted domain with its smallest falsifier"
+class = "SELECT"
+owner = "repository:autofde-lab"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "UNKNOWN"
+inputs = ["residue edge", "historical LLM outputs (equivalence corpus)", "candidate machine", "admitted domain"]
+outputs = ["EQUIVALENT", "DIVERGENT with counterexample", "equivalence receipt"]
+depends_on = ["capability:select-retirement-frontier", "capability:falsify-candidate-plan"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["autofde-lab", "chatman-ecosystem"]
+refusals = ["REFUSED:EQUIVALENCE_WITHOUT_CORPUS", "REFUSED:DOMAIN_UNBOUNDED", "REFUSED:FALSIFIER_ABSENT"]
+
+[[capability]]
+id = "capability:project-retired-generation"
+title = "Replace repeated LLM generation with a ggen ontology projection"
+class = "CONSTRUCT"
+owner = "repository:ggen"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "UNKNOWN"
+inputs = ["repeated-generation residue edge", "ontology", "equivalence corpus"]
+outputs = ["templates", "deterministic projection", "byte-equality replay against prior hand-written outputs"]
+depends_on = ["capability:court-llm-machine-equivalence", "capability:manufacture-with-ggen"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen", "chatman-ecosystem"]
+refusals = ["REFUSED:PROJECTION_DIVERGES_FROM_CORPUS", "REFUSED:GENERATED_ARTIFACT_EDITED_AS_SOURCE"]
+
+[[capability]]
+id = "capability:package-retired-capability"
+title = "Package verified retirement machinery as a reusable marketplace pack"
+class = "CONSTRUCT"
+owner = "repository:ggen-marketplace"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "UNKNOWN"
+inputs = ["MACHINE_VERIFIED edge", "machine", "falsifier tests", "replay evidence"]
+outputs = ["marketplace pack", "consumer repositories", "reuse count"]
+depends_on = ["capability:project-retired-generation", "capability:distribute-ggen-pack"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["ggen-marketplace", "ggen"]
+refusals = ["REFUSED:PACK_WITHOUT_FALSIFIERS", "REFUSED:PACK_FROM_UNVERIFIED_EDGE"]
+
+[[capability]]
+id = "capability:fence-superseded-llm-path"
+title = "Fence or remove the superseded LLM path once machinery is verified"
+class = "CONSTRUCT"
+owner = "repository:chatman-ecosystem"
+required_authority = "persist_control_plane"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["MACHINE_VERIFIED edge", "equivalence receipt", "LLM invocation sites"]
+outputs = ["fence evidence", "retirement receipt", "LLM_RETIRED state"]
+depends_on = ["capability:court-llm-machine-equivalence", "capability:attest-affidavit-standing"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem", "affidavit"]
+refusals = ["REFUSED:RETIRED_WITHOUT_FENCE", "REFUSED:RETIRED_WITHOUT_RECEIPT", "REFUSED:TERMINAL_RESIDUAL_ADVANCED"]
+
+[[capability]]
+id = "capability:ratchet-llm-residue"
+title = "Ratchet the retirement map against a baseline and measure intelligence retirement rate"
+class = "SELECT"
+owner = "repository:chatman-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["retirement map at exact subject", "retirement map at baseline ref"]
+outputs = ["IRR per day", "delta LDR", "discovered and advanced edges"]
+depends_on = ["capability:map-llm-residue", "capability:fence-superseded-llm-path"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem"]
+refusals = ["REFUSED:EDGE_DELETED", "REFUSED:LADDER_REGRESSION", "REFUSED:BASELINE_UNRESOLVED"]

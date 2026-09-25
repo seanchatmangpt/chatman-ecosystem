@@ -60,7 +60,7 @@ jobs:
           python3 -m pip install --disable-pip-version-check 'pyshacl==0.40.1'
           python3 scripts/render_capability_rdf.py /tmp/capabilities.ttl
           pyshacl -s ontology/capabilities.ttl /tmp/capabilities.ttl
-          echo 'CAPABILITY_SHACL_ALIVE engine=pyshacl@0.40.1 instances=44'
+          echo 'CAPABILITY_SHACL_ALIVE engine=pyshacl@0.40.1 instances=52'
       - name: Execute all interface projections
         shell: bash
         run: |
@@ -74,13 +74,13 @@ jobs:
           import json
           from pathlib import Path
           ids = [item['id'] for item in json.loads(Path('/tmp/capabilities-list.json').read_text())]
-          assert len(ids) == 44 and len(ids) == len(set(ids))
+          assert len(ids) == 52 and len(ids) == len(set(ids))
           for surface in ('cli', 'api', 'mcp', 'a2a'):
               payload = json.loads(Path(f'/tmp/capabilities-{surface}.json').read_text())
               assert payload['consequential_do_claimed'] is False
               assert [item['id'] for item in payload['capabilities']] == ids
               assert all(item['authority_from_surface'] is False for item in payload['capabilities'])
-          print('CAPABILITY_SURFACES_ALIVE count=44 surfaces=4 do=false')
+          print('CAPABILITY_SURFACES_ALIVE count=52 surfaces=4 do=false')
           PY
       - name: Execute DfCM reversible frontier and DO refusal
         shell: bash

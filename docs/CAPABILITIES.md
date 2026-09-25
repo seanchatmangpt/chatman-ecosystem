@@ -3,9 +3,9 @@
 The v26.9.1 decision-manufacturing graph has two canonical source catalogs:
 
 - `catalog/capabilities.toml` — 27 repository-control/reconstitution/EPR capabilities;
-- `catalog/capabilities-decision-graph.toml` — 17 ownership-bounded ecosystem capabilities.
+- `catalog/capabilities-decision-graph.toml` — 25 ownership-bounded ecosystem capabilities (17 decision-graph plus 8 LLM-retirement).
 
-Together they form one dependency-closed graph of **44 capabilities**. `catalog/repositories.toml` is the canonical owner registry; capability admission refuses an owner not declared there. Repository registration is identity/role evidence only and does not promote a repository to runtime `ALIVE`.
+Together they form one dependency-closed graph of **52 capabilities**. `catalog/repositories.toml` is the canonical owner registry; capability admission refuses an owner not declared there. Repository registration is identity/role evidence only and does not promote a repository to runtime `ALIVE`.
 
 The graph preserves the constitutional distinction:
 
@@ -34,6 +34,18 @@ The extension makes the ecosystem boundaries executable catalog law:
 - **Affidavit** owns evidence/standing attestation only; it cannot manufacture DO authority.
 - **ggen-legacy** owns bounded predecessor/project reconstitution, including public/custom ontology and protocol-surface correspondence.
 - **Chatman Ecosystem** owns cross-repository identity, standing, authority ceilings, exact-subject evidence, and the composition graph.
+
+## LLM retirement
+
+Eight capabilities own the retirement loop `Find -> Fence -> Reuse/Compose -> Falsify -> Verify -> Formalize -> Automate -> Receipt -> Replay -> Retire`. The per-edge state lives in `catalog/llm-retirement.toml` and is checked by `scripts/verify_llm_retirement.py`:
+
+- **chatman-ecosystem** maps LLM residue (`map-llm-residue`), selects the next edge to retire (`select-retirement-frontier`), fences the superseded LLM path (`fence-superseded-llm-path`) and ratchets residue against a baseline (`ratchet-llm-residue`).
+- **GymAct** mines recurring LLM reasoning across worlds (`mine-llm-recurrence`).
+- **AutoFDE Lab** courts `LLM_f == M_f` over an admitted domain (`court-llm-machine-equivalence`).
+- **ggen** replaces repeated generation with a projection (`project-retired-generation`).
+- **ggen-marketplace** packages verified machinery for reuse (`package-retired-capability`).
+
+The rows owned by other repositories are `UNKNOWN`: this catalog names the owner and contract, not an implementation.
 
 ## Surfaces
 
