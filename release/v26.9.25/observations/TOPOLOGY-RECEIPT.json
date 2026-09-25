@@ -5,71 +5,7 @@
   "ceiling": "DO",
   "grant": "operator order v26.9.25 (mass topology cleanup in scope; RFC-v26.9.25 + approved plan)"
  },
- "blocked": [
-  {
-   "broken_term": "R_missing_authority",
-   "class": "AUTHORITY_FAILURE",
-   "item": "/Users/sac/work/zoela, /Users/sac/zv_regen (untracked .ggen/keys/signing.key); /Users/sac/zoela-wt/w30-jtbd-decouple, w45-pqc-receipt-signature (.env)",
-   "note": "gate R16: secret files not byte-identical in canonical zoela and not archivable; everything else preserved (refs + backup branches); operator decides per key",
-   "type": "BLOCKED(SECRET_UNPRESERVABLE)"
-  },
-  {
-   "broken_term": "R_missing_authority",
-   "class": "AUTHORITY_FAILURE",
-   "item": "/Users/sac/chatmangpt/wasm4pm, /Users/sac/unrdf/packages/wasm4pm",
-   "note": "wasm4pm clones embedded in chatmangpt (tracked content) and unrdf (gitlink path); preserved into wasm4pm refs + drill PASS; retiring would mutate foreign repos",
-   "type": "BLOCKED(EMBEDDED_IN_FOREIGN_REPO)"
-  },
-  {
-   "broken_term": "R_missing_authority",
-   "class": "AUTHORITY_FAILURE",
-   "item": "/Users/sac/xaas/worktrees/runs/* (20 orphan run worktrees)",
-   "note": "lane order retires ~/xaas/worktrees/runs only 'if registered'; not registered (gitdirs pointed at retired xaas-worktrees/repos); preserved + drill PASS",
-   "type": "BLOCKED(OWNER_SIGNOFF)"
-  },
-  {
-   "broken_term": "R_missing_authority",
-   "class": "AUTHORITY_FAILURE",
-   "item": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab316fa1, agent-ab9779ba",
-   "note": "carried from stage 1",
-   "type": "BLOCKED(OWNER_SIGNOFF)"
-  },
-  {
-   "broken_term": "R_missing_authority",
-   "class": "AUTHORITY_FAILURE",
-   "item": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
-   "note": "carried from stage 1",
-   "type": "BLOCKED(SUBMODULE_OWNER_DECISION)"
-  },
-  {
-   "broken_term": "R_missing_authority",
-   "class": "AUTHORITY_FAILURE",
-   "item": "/Users/sac/autofde-lab/vendor/gyms/{enterprisebench,sregym}",
-   "note": "declared+active third-party submodules surfaced by promoting autofde-lab to a scanned canonical; counted by m_term class SUBMODULE_ACTIVE but not copies to retire",
-   "type": "UNSUPPORTED(DECLARED_SUBMODULE)"
-  },
-  {
-   "broken_term": "R_missing_consequence",
-   "class": "DEPENDENCY_FAILURE",
-   "item": "/Users/sac/zoela-wt (holds w30, w45) and /Users/sac/work (holds work/zoela)",
-   "note": "roots retire only once their SECRET_UNPRESERVABLE children are resolved",
-   "type": "BLOCKED(DEPENDENCY)"
-  },
-  {
-   "broken_term": "R_missing_authority",
-   "class": "AUTHORITY_FAILURE",
-   "item": "/Users/sac/chatmangpt/pictl (wasm4pm clone as declared chatmangpt submodule, 291 dirty)",
-   "note": "not inventoried as a copy (declared submodule of an out-of-scope repo); not preserved by this lane",
-   "type": "BLOCKED(SUBMODULE_OWNER_DECISION)"
-  },
-  {
-   "broken_term": "R_missing_replay",
-   "class": "DEPENDENCY_FAILURE",
-   "item": "commit TOPOLOGY-RECEIPT to chatman-ecosystem (design P8)",
-   "note": "chatman-ecosystem lane still writing; receipt durable only at ~/.claude/migration/v26925-topology (not a git repo)",
-   "type": "BLOCKED(LANE_OCCUPIED)"
-  }
- ],
+ "blocked": [],
  "consequence": {
   "commits": [
    "000e6491181b280facf4acce0d33893011ec2261",
@@ -105,6 +41,7 @@
    "0800921a7d222b6b3d072119ff5b634a8c2ee2b1",
    "08270cbba32066199721c62120ef2aa9e3a4715f",
    "088b613362f69b1fec0aca9a0066d97718026be1",
+   "090fec59138fa1a5fd93ff187907b046d0c31202",
    "0993003cd6750d3e6fb4cc593eb869800e4d2a5e",
    "099fe0b276a5c85c97854fa1b3b86a259456580c",
    "0a20cf7a904914adb7a3ec29af7d6d7e35dfb1d9",
@@ -463,6 +400,7 @@
    "5d0269c1806181f909860f9dda5b811c71e9e41b",
    "5d793a2c5bf8e60f5b5c9c9489b694b404be2be5",
    "5d8106e2319699be261b53f5a9e78b6fb97e9f33",
+   "5dabf8ed162f8237751e660fc4034237b094cb7c",
    "5dfcdaf362ad3937a46f81f5cb6415aa067eeb56",
    "5eba76823442cce1feebda35fe801cbe5bb6c2ba",
    "5f28c9098324fb7a1c97f5cf3e13dd738f7fdd34",
@@ -478,6 +416,7 @@
    "61d7a39852cb4ab010851874b0dd6defb9169be5",
    "62155cc045bd6d454cd76ea4f16e5d120948adb0",
    "6274023e668d95cfd4f3ebba88b3cd345e0af46c",
+   "62880115d1b521b84fd45bc3a61bff6593ca814c",
    "6289779830818f83b615f8061c6d3dc97c21f1ae",
    "6310aed1d8e0d1b1ad6c4fb7835d37fea0ab3e93",
    "632e06f331d2e19f4969c46c680e151933095348",
@@ -568,10 +507,7 @@
    "784de664535015625322be010a64f7c160486c90",
    "792c8c01433bd38042854f8e581fa206c11f7410",
    "79a6956fef661de67e854b1a2c68a11084b44228",
-   "79ab25f450f49e5329cbfc7e8687a22f35a175f5",
-   "79c9160b65cb21fb10b43cecc691399f371638b9",
-   "79d62d02a3fc76a6551c6031b813aa690733dc35",
-   "79e4ca1b4eddcb1d223f65eed004f77beae86da6"
+   "79ab25f450f49e5329cbfc7e8687a22f35a175f5"
   ],
   "files_changed": [
    "/Users/sac/ggen-legacy/.claude/worktrees/wf_14d41261-3fe-1",
@@ -879,7 +815,37 @@
    "/Users/sac/zoela-wt/w46-jest-surface-setup",
    "/Users/sac/zoela-wt/w47-justfile-gates",
    "/Users/sac/zoela-wt/w48-supabase-ts-deprecation",
-   "/Users/sac/zoela-wt/w49-gall-workorder-mapping"
+   "/Users/sac/zoela-wt/w49-gall-workorder-mapping",
+   "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab316fa1",
+   "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab9779ba",
+   "/Users/sac/xaas/worktrees/runs/eds-7cb2468d8031d93203ef",
+   "/Users/sac/xaas/worktrees/runs/gall-eds-20e653c3aab9ab69547a",
+   "/Users/sac/xaas/worktrees/runs/gall-eds-3a15a67c08b948dded97",
+   "/Users/sac/xaas/worktrees/runs/gall-eds-3a22a4d49164658f3ff7",
+   "/Users/sac/xaas/worktrees/runs/nounverb-a21561df1e41b17453a8",
+   "/Users/sac/xaas/worktrees/runs/nounverb-integration-bc04aa",
+   "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-0461b6",
+   "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-bc04aa",
+   "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-0461b6",
+   "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-bc04aa",
+   "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
+   "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-contains-bc04aa",
+   "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-count-bc04aa",
+   "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-empty-bc04aa",
+   "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-packages-bc04aa",
+   "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
+   "/Users/sac/xaas/worktrees/runs/spr-integration-dbe115",
+   "/Users/sac/xaas/worktrees/runs/spr-spr-neg-load-dbe115",
+   "/Users/sac/xaas/worktrees/runs/spr-spr-neg-main-dbe115",
+   "/Users/sac/xaas/worktrees/runs/spr-spr-neg-render-dbe115",
+   "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+   "/Users/sac/chatmangpt/pictl",
+   "/Users/sac/zoela-wt/w30-jtbd-decouple",
+   "/Users/sac/zoela-wt/w45-pqc-receipt-signature",
+   "/Users/sac/zv_regen",
+   "/Users/sac/work/zoela",
+   "/Users/sac/zoela-wt",
+   "/Users/sac/work"
   ],
   "remote_effects": [
    "ash_a2a:refs/heads/backup/v26.9.25/ash_a2a-wt@441324dbd9c7b31ac9a1a9e642f901c2ad03fe02",
@@ -1023,28 +989,32 @@
    "zoela:refs/heads/backup/v26.9.25/zoela-wt_w48-supabase-ts-deprecation@50d58c7911c76896148e4089575d9f67884f5771",
    "zoela:refs/heads/backup/v26.9.25/zoela-wt_w49-gall-workorder-mapping@c8d109b4b8c7b99124e1a9945f8500489a694819",
    "zoela:refs/heads/backup/v26.9.25/zoela-wt_w50-migration-ledger@04a40aad31f48f60a18471fb0e7d41093519fbe3",
-   "zoela:refs/heads/backup/v26.9.25/zv_regen@50281bce93c647907471286084b30c19484d332b"
+   "zoela:refs/heads/backup/v26.9.25/zv_regen@50281bce93c647907471286084b30c19484d332b",
+   "wasm4pm:refs/heads/backup/v26.9.25/chatmangpt_pictl@090fec59138fa1a5fd93ff187907b046d0c31202"
   ]
  },
  "findings": [
-  "xaas/.claude/worktrees/ex4pm and ex4pm/ex4pm are symlinks to /Users/sac/ex4pm (aliases, not copies); the xaas alias was moved to Trash (ledger step 'retire symlink ...'); ex4pm/ex4pm left.",
-  "zoela_phx (root 2189c151), dev-fresh/xaas (root c73cae83), ash_autofde, dev/zcode-cli (kingsword09 upstream), wasm4pm-compat: distinct repositories, not copies; untouched.",
-  "~/wt holds mixed-owner v26922 logs + zcode-gall-shim + zocel-runs (non-git); owner unresolved, untouched.",
-  "Canonical dirty state snapshotted to refs only (refs/preserve/v26.9.25/canonical-<repo>/{dirty,index,worktree-head}) for zoela(982) ex4pm(38) wasm4pm(197) ash_r2rml(15) xaas(4) autofde-lab(9) ggen_igniter(2) ggen-marketplace(14) chatgpt-cloud-elixir(111); see verify/canonical-snapshots.stage2.json.",
-  "topology.py fixes this stage: per-file HEAD-blob subprocess only for redaction candidates (snapshot perf); drill re-extracts LFS pointer files with smudge disabled (byte-exact, never waived); drill skips retired copies; part ids from --only paths are slugged (a path part id had escaped HOME into /Users/sac/*.json, relocated to lane scratch/stray); manual retire evidence shape; receipt supersedes stale gate REFUSED parts with the retirement PASS.",
-  "Rebaseline: work_zoela_ggen-v2_git-packs_github-actions-pack R1 drift was an index stat-cache rewrite by a lane diagnostic `git status`; index tree == HEAD tree verified before rebaseline (ledger step 'rebaseline ...')."
+  "finish signoffs (operator order 'finish' 2026-09-25 09:05 PT) applied as ledgered INVENTORY transitions (steps.jsonl 'signoff <action> <copy>'); the gate R1-R17 still decided every retirement.",
+  "ostar: CANONICAL_MAP ostar -> /Users/sac/chatmangpt/ostar signed off (host_signoff); unibit/ostar_ref/.claude/worktrees/agent-ab316fa1, agent-ab9779ba retired; the one R16 file (vendors/pictl/packages/testing/src/redaction.ts, blob 9cd80df7) is present in the ostar canonical object store (dedup via identity_canonical).",
+  "xaas/worktrees/runs: 20 orphan run dirs retired (preserved in xaas refs/preserve/v26.9.25/* + remote backup branches, drill PASS); FOREIGN_CLONE siblings there are not counted and untouched.",
+  "Rule V1/V4 reclassification (classify_nested): chatmangpt/wasm4pm -> VENDORED_BUILD_INPUT (manifest_ref); unrdf/packages/wasm4pm -> EMBEDDED_UNDECLARED (gitlink not in .gitmodules); both not counted, untouched.",
+  "chatmangpt/pictl (declared submodule, origin wasm4pm, 291 dirty) -> V1 SUBMODULE_ACTIVE: preserved into wasm4pm refs/preserve/v26.9.25/chatmangpt_pictl/* + backup/v26.9.25/chatmangpt_pictl, drill PASS, retired in deinit shape (checkout in Trash, empty gitlink dir; chatmangpt status for pictl went from ' M pictl' to clean).",
+  "clap-noun-verb playground/autofde-lab (declared submodule, 1 deleted file, not pinned+clean) -> preserved (autofde-lab refs + verified bundle), its 8 nested cpp/sdk submodules inventoried (SUBMODULE), drill PASS, retired in deinit shape (clap-noun-verb status for the path went from ' M' to clean).",
+  "zoela SECRET_UNPRESERVABLE copies (work/zoela, zv_regen, zoela-wt/w30-jtbd-decouple, zoela-wt/w45-pqc-receipt-signature): non-secret content archived in zoela refs/preserve (gate R4/R5/R7 PASS); whole copies moved to ~/.Trash with secrets inside (reversible); secrets recorded as {path_sha256, content_sha256} only in steps.jsonl retire entries. Empty roots /Users/sac/zoela-wt and /Users/sac/work moved to Trash (ledger).",
+  "m_term fix: out-of-scope identities are keyed by normalized origin instead of one '_unowned' bucket that summed distinct repos; autofde-lab/vendor/gyms/enterprisebench and sregym are each the sole checkout of their identity (M<=1 holds); a second copy of one identity, or a copy with no identity, is still a violation (tests/test_topology.py TestFinishSignoffs).",
+  "Nothing deleted: every retirement is a mv into ~/.Trash (rollback commands in migration_receipt.rollback_procedure); Trash never emptied."
  ],
  "identity": {
-  "base_sha": "36cd2914748f6dc731e2ded530eda0e95ac0251b",
-  "graph_hash": "sha256:db734e2f9395153cdeefedaad5109ae65592441a507175bf92235e0f1803c5c4",
-  "repo": "fleet:v26.9.25-topology-stage2",
-  "subject": "v26.9.25 topology cleanup stage2",
-  "subject_sha": "1045b16bf80c0315760723705b768dbf1f71137b"
+  "base_sha": "1045b16bf80c0315760723705b768dbf1f71137b",
+  "graph_hash": "sha256:d2a46c444cc0d2829e76537dec21d6ce19d2066adb5e42ec9b753fe9c4c27e14",
+  "repo": "fleet:v26.9.25-topology-finish",
+  "subject": "v26.9.25 topology cleanup finish",
+  "subject_sha": "4c38b3cdac6b3661e5ee0025968daf74354272af"
  },
  "m_term": {
-  "definition": "AuthoritativeWorkingCopy(r) = |{w : identity(w)=r and counted(class(w))}|; counted = CANONICAL, LINKED_WORKTREE, PRUNABLE_RECORD, ORPHAN_WORKTREE, CLONE, NESTED_SELF_CLONE, SUBMODULE_ACTIVE, NONGIT_RESIDUE",
-  "holds": false,
-  "observed_at": "2026-09-25T12:52:06Z",
+  "definition": "AuthoritativeWorkingCopy(r) = |{w : identity(w)=r and counted(class(w))}|; counted = CANONICAL, LINKED_WORKTREE, PRUNABLE_RECORD, ORPHAN_WORKTREE, CLONE, NESTED_SELF_CLONE, SUBMODULE_ACTIVE, NONGIT_RESIDUE; holds iff every in-scope r has no counted non-canonical copy and every out-of-scope identity (no owner; keyed by normalized origin, None never admitted) has <= 1",
+  "holds": true,
+  "observed_at": "2026-09-25T16:18:10Z",
   "per_repo": [
    {
     "authoritative_working_copies": 0,
@@ -1055,45 +1025,9 @@
     "repo_id": "SparsePrimingRepresentations"
    },
    {
-    "authoritative_working_copies": 2,
+    "authoritative_working_copies": 0,
     "canonical_path": null,
     "excluded": [
-     {
-      "class": "SUBMODULE",
-      "path": "/Users/sac/autofde-lab/cpp/sdk/Catch2"
-     },
-     {
-      "class": "SUBMODULE",
-      "path": "/Users/sac/autofde-lab/cpp/sdk/PEGTL"
-     },
-     {
-      "class": "SUBMODULE",
-      "path": "/Users/sac/autofde-lab/cpp/sdk/backward-cpp"
-     },
-     {
-      "class": "SUBMODULE",
-      "path": "/Users/sac/autofde-lab/cpp/sdk/json"
-     },
-     {
-      "class": "SUBMODULE",
-      "path": "/Users/sac/autofde-lab/cpp/sdk/nng"
-     },
-     {
-      "class": "SUBMODULE",
-      "path": "/Users/sac/autofde-lab/cpp/sdk/nngpp"
-     },
-     {
-      "class": "SUBMODULE",
-      "path": "/Users/sac/autofde-lab/cpp/sdk/pybind11"
-     },
-     {
-      "class": "SUBMODULE",
-      "path": "/Users/sac/autofde-lab/cpp/sdk/spdlog"
-     },
-     {
-      "class": "SUBMODULE",
-      "path": "/Users/sac/autofde-lab/cpp/tests/data/pddl"
-     },
      {
       "class": "FIXTURE",
       "path": "/Users/sac/autofde-lab/.pytest_temp/test_full_gate1_adjudication_a0/git_repo"
@@ -1111,206 +1045,6 @@
       "path": "/Users/sac/autofde-lab/.pytest_temp/test_git_sha_live_repo_mismatc0/real_git_repo"
      },
      {
-      "class": "SUBMODULE",
-      "path": "/Users/sac/autofde-lab/vendor/gyms/terragoat"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/bcinr/oracles/vendor/powl"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/bcinr/oracles/vendor/val"
-     },
-     {
-      "class": "SUBMODULE",
-      "path": "/Users/sac/beam4pm/vendor/rust4pm-powl"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/chatgpt-cloud-elixir/vendors/swarmsh"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/chatgpt-cloud-elixir/vendors/swarmsh-v2"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/chicago-tdd-tools/registry"
-     },
-     {
-      "class": "EMBEDDED_UNDECLARED",
-      "path": "/Users/sac/knhk/spec-kit"
-     },
-     {
-      "class": "EMBEDDED_UNDECLARED",
-      "path": "/Users/sac/knhk/vendors/simdjson"
-     },
-     {
-      "class": "EMBEDDED_UNDECLARED",
-      "path": "/Users/sac/knhk/vendors/weaver"
-     },
-     {
-      "class": "EMBEDDED_UNDECLARED",
-      "path": "/Users/sac/knhk/vendors/yawl"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/lsp-max/scratch/lsif-node"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/lsp-max/vendors/lsif-node"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/lsp-max/vendors/vscode-languageserver-node"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/batteries"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/mathlib-temp"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/mathlib_temp"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/Cli"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/LeanSearchClient"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/Qq"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/aesop"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/batteries"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/importGraph"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/plausible"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/proofwidgets"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/LeanSearchClient"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/Qq"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/aesop"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/batteries"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/importGraph"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/plausible"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/proofwidgets"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_old/packages/mathlib"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfact/web/mfact-ui"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/VAL"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/aries"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/ferroplan"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/miniplan"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/pddl-rs"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/mfw/mfw-planner/.vendor-aries"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/mfw/mfw-planner/.vendor-val"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/mfw/scratch/agile-protocol-specification"
-     },
-     {
-      "class": "EMBEDDED_UNDECLARED",
-      "path": "/Users/sac/truex/vendors/POWL"
-     },
-     {
-      "class": "EMBEDDED_UNDECLARED",
-      "path": "/Users/sac/truex/vendors/ReactiveMessagingPatterns_ActorModel"
-     },
-     {
-      "class": "EMBEDDED_UNDECLARED",
-      "path": "/Users/sac/truex/vendors/antigravity-cli"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/unibit/ostar_ref/unibit_ref/ostar_ref/vendors/open-ontologies"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/unibit/ostar_ref/vendors/open-ontologies"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/wasm4pm/vendors/POWL"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/wasm4pm/vendors/pm4py"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/wasm4pm/vendors/proxyable"
-     },
-     {
       "class": "FIXTURE",
       "path": "/Users/sac/xaas/tmp_out/failover-verify-epoch1"
      },
@@ -1323,52 +1057,633 @@
       "path": "/Users/sac/xaas/tmp_out/subagent-b7d87048-glm-failover"
      },
      {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_exact_head_receipt_is_det0/subject"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_expected_sha_mismatch_ref0/subject"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_local_snapshot_does_not_c0/healthy-repo"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_new_commit_invalidates_ol0/subject"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_real_git_provider_revisio0"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_real_git_provider_write_t0"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_repo_flags0/corrupted-repo"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_repo_healt0/healthy"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_state_repo0/clean-repo"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_state_repo0/dirty-repo"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_tracked_worktree_edit_ref0/subject"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_verify_fails_on_a_wrong_e0/dirty-repo"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_exact_head_receipt_is_det0/subject"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_expected_sha_mismatch_ref0/subject"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_local_snapshot_does_not_c0/healthy-repo"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_new_commit_invalidates_ol0/subject"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_real_git_provider_revisio0"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_real_git_provider_write_t0"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_repo_flags0/corrupted-repo"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_repo_healt0/healthy"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_state_repo0/clean-repo"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_state_repo0/dirty-repo"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_tracked_worktree_edit_ref0/subject"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_verify_fails_on_a_wrong_e0/dirty-repo"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/10b19470e20e1c76"
+     },
+     {
       "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/xaas/worktrees/repos/affidavit"
+      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/493adc6df749ae80"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/516315b750782a45"
+     },
+     {
+      "class": "FIXTURE",
+      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/sdists-v9"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:None"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/bcinr/oracles/vendor/val"
+     },
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/VAL"
+     },
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/mfw/mfw-planner/.vendor-val"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/KCL-Planning/VAL"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/lsp-max/vendors/vscode-languageserver-node"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/Microsoft/vscode-languageserver-node"
+   },
+   {
+    "authoritative_working_copies": 1,
+    "canonical_path": null,
+    "excluded": [],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/SREGym/SREGym",
+    "sole_working_copy": "/Users/sac/autofde-lab/vendor/gyms/sregym"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "EMBEDDED_UNDECLARED",
+      "path": "/Users/sac/truex/vendors/ReactiveMessagingPatterns_ActorModel"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/VaughnVernon/ReactiveMessagingPatterns_ActorModel"
+   },
+   {
+    "authoritative_working_copies": 1,
+    "canonical_path": null,
+    "excluded": [],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/ast-fri/EnterpriseBench",
+    "sole_working_copy": "/Users/sac/autofde-lab/vendor/gyms/enterprisebench"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/autofde-lab/cpp/sdk/backward-cpp"
+     },
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/backward-cpp"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/bombela/backward-cpp"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/autofde-lab/cpp/sdk/Catch2"
+     },
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/Catch2"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/catchorg/Catch2"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/autofde-lab/cpp/sdk/nngpp"
+     },
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/nngpp"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/cwzx/nngpp"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/unibit/ostar_ref/unibit_ref/ostar_ref/vendors/open-ontologies"
+     },
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/unibit/ostar_ref/vendors/open-ontologies"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/fabio-rovai/open-ontologies"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "EMBEDDED_UNDECLARED",
+      "path": "/Users/sac/truex/vendors/POWL"
+     },
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/wasm4pm/vendors/POWL"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/fit-process-mining/POWL"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/autofde-lab/cpp/tests/data/pddl"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/fteicht/pddl-instances"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/autofde-lab/cpp/sdk/spdlog"
+     },
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/spdlog"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/gabime/spdlog"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "EMBEDDED_UNDECLARED",
+      "path": "/Users/sac/truex/vendors/antigravity-cli"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/google-antigravity/antigravity-cli"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/ferroplan"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/hhh42/ferroplan"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/LeanSearchClient"
+     },
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/LeanSearchClient"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/leanprover-community/LeanSearchClient"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/proofwidgets"
+     },
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/proofwidgets"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/leanprover-community/ProofWidgets4"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/aesop"
+     },
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/aesop"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/leanprover-community/aesop"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/batteries"
+     },
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/batteries"
+     },
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/batteries"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/leanprover-community/batteries"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/importGraph"
+     },
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/importGraph"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/leanprover-community/import-graph"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/mathlib-temp"
+     },
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/mathlib_temp"
+     },
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_old/packages/mathlib"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/leanprover-community/mathlib4"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/plausible"
+     },
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/plausible"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/leanprover-community/plausible"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/Qq"
+     },
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/Qq"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/leanprover-community/quote4"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/Cli"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/leanprover/lean4-cli"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/lsp-max/scratch/lsif-node"
+     },
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/lsp-max/vendors/lsif-node"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/microsoft/lsif-node"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/autofde-lab/cpp/sdk/nng"
+     },
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/nng"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/nanomsg/nng"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/autofde-lab/cpp/sdk/json"
+     },
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/json"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/nlohmann/json"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/chicago-tdd-tools/registry"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/open-telemetry/semantic-conventions"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "EMBEDDED_UNDECLARED",
+      "path": "/Users/sac/knhk/vendors/weaver"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/open-telemetry/weaver"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/aries"
+     },
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/mfw/mfw-planner/.vendor-aries"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/plaans/aries"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/wasm4pm/vendors/pm4py"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/process-intelligence-solutions/pm4py"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/autofde-lab/cpp/sdk/pybind11"
+     },
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/pybind11"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/pybind/pybind11"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/bcinr/oracles/vendor/powl"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/seanchatmangpt/POWL"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfw/scratch/agile-protocol-specification"
      },
      {
       "class": "VENDORED_BUILD_INPUT",
       "path": "/Users/sac/xaas/worktrees/repos/aps"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/xaas/worktrees/repos/autofde-lab"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/xaas/worktrees/repos/bitstar"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/xaas/worktrees/repos/eds"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/xaas/worktrees/repos/ggen-igniter"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/xaas/worktrees/repos/gymact"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/xaas/worktrees/repos/infinite-agentic-cli"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/xaas/worktrees/repos/mmdio"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/xaas/worktrees/repos/nounverb"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/xaas/worktrees/repos/spr"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/xaas/worktrees/repos/xaas"
      },
      {
       "class": "FOREIGN_CLONE",
@@ -2712,6 +3027,256 @@
      },
      {
       "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/xaas/worktrees/runs/gall-89dfe67d7c1d86c10a99"
+     },
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/xaas/worktrees/runs/gall-f99fbf061a7e3b77c933"
+     },
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/xaas/worktrees/runs/w3-live-1789896182"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/seanchatmangpt/agile-protocol-specification"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/mfact/web/mfact-ui"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/seanchatmangpt/mfact-command-center"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/wasm4pm/vendors/proxyable"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/seanchatmangpt/proxyable"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/beam4pm/vendor/rust4pm-powl"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/seanchatmangpt/rust4pm"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "EMBEDDED_UNDECLARED",
+      "path": "/Users/sac/knhk/spec-kit"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/seanchatmangpt/spec-kit"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/chatgpt-cloud-elixir/vendors/swarmsh"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/seanchatmangpt/swarmsh"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/chatgpt-cloud-elixir/vendors/swarmsh-v2"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/seanchatmangpt/swarmsh-v2"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/autofde-lab/vendor/gyms/terragoat"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/seanchatmangpt/terragoat"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "EMBEDDED_UNDECLARED",
+      "path": "/Users/sac/knhk/vendors/simdjson"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/simdjson/simdjson"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/miniplan"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/sunsided/miniplan"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/pddl-rs"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/sunsided/pddl-rs"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/autofde-lab/cpp/sdk/PEGTL"
+     },
+     {
+      "class": "SUBMODULE",
+      "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/PEGTL"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/taocpp/PEGTL"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "EMBEDDED_UNDECLARED",
+      "path": "/Users/sac/knhk/vendors/yawl"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:github.com/yawlfoundation/yawl"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/xaas/worktrees/repos/spr"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/SparsePrimingRepresentations"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/xaas/worktrees/repos/affidavit"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/affidavit"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/xaas/worktrees/repos/autofde-lab"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/autofde-lab"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/xaas/worktrees/repos/bitstar"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/bitstar"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/xaas/worktrees/repos/infinite-agentic-cli"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/dev/infinite-agentic-cli"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/xaas/worktrees/repos/eds"
+     },
+     {
+      "class": "FOREIGN_CLONE",
       "path": "/Users/sac/xaas/worktrees/runs/eds-eds-neg-cli-build_parser-0a5132"
      },
      {
@@ -2997,14 +3562,19 @@
      {
       "class": "FOREIGN_CLONE",
       "path": "/Users/sac/xaas/worktrees/runs/eds-eds-neg-cli-main-c58a0a"
-     },
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/eds"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
      {
       "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/xaas/worktrees/runs/gall-89dfe67d7c1d86c10a99"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/xaas/worktrees/runs/gall-f99fbf061a7e3b77c933"
+      "path": "/Users/sac/xaas/worktrees/repos/nounverb"
      },
      {
       "class": "FOREIGN_CLONE",
@@ -3297,139 +3867,102 @@
      {
       "class": "FOREIGN_CLONE",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-remove_package-c58a0a"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/xaas/worktrees/runs/w3-live-1789896182"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_exact_head_receipt_is_det0/subject"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_expected_sha_mismatch_ref0/subject"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_local_snapshot_does_not_c0/healthy-repo"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_new_commit_invalidates_ol0/subject"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_real_git_provider_revisio0"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_real_git_provider_write_t0"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_repo_flags0/corrupted-repo"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_repo_healt0/healthy"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_state_repo0/clean-repo"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_state_repo0/dirty-repo"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_tracked_worktree_edit_ref0/subject"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_verify_fails_on_a_wrong_e0/dirty-repo"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_exact_head_receipt_is_det0/subject"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_expected_sha_mismatch_ref0/subject"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_local_snapshot_does_not_c0/healthy-repo"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_new_commit_invalidates_ol0/subject"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_real_git_provider_revisio0"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_real_git_provider_write_t0"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_repo_flags0/corrupted-repo"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_repo_healt0/healthy"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_state_repo0/clean-repo"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_state_repo0/dirty-repo"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_tracked_worktree_edit_ref0/subject"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_verify_fails_on_a_wrong_e0/dirty-repo"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/checkouts/10b19470e20e1c76/9ca7c06"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/checkouts/493adc6df749ae80/524d0bc"
-     },
-     {
-      "class": "VENDORED_BUILD_INPUT",
-      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/checkouts/516315b750782a45/577e2d1"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/10b19470e20e1c76"
-     },
-     {
-      "class": "FOREIGN_CLONE",
-      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/493adc6df749ae80"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/516315b750782a45"
-     },
-     {
-      "class": "FIXTURE",
-      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/sdists-v9"
      }
     ],
     "linked_worktrees": 0,
     "prunable_records": 0,
-    "repo_id": "_unowned"
+    "repo_id": "_unowned:local:/Users/sac/ex_noun_verb_cli"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/xaas/worktrees/repos/ggen-igniter"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/ggen_igniter"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/xaas/worktrees/repos/gymact"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/gymact"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "FOREIGN_CLONE",
+      "path": "/Users/sac/xaas/worktrees/repos/mmdio"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/mmdio"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/xaas/worktrees/repos/xaas"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/xaas"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/checkouts/10b19470e20e1c76/9ca7c06"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/10b19470e20e1c76"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/checkouts/493adc6df749ae80/524d0bc"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/493adc6df749ae80"
+   },
+   {
+    "authoritative_working_copies": 0,
+    "canonical_path": null,
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/checkouts/516315b750782a45/577e2d1"
+     }
+    ],
+    "linked_worktrees": 0,
+    "prunable_records": 0,
+    "repo_id": "_unowned:local:/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/516315b750782a45"
    },
    {
     "authoritative_working_copies": 0,
@@ -3464,7 +3997,7 @@
     "repo_id": "ash_r2rml"
    },
    {
-    "authoritative_working_copies": 2,
+    "authoritative_working_copies": 1,
     "canonical_path": "/Users/sac/autofde-lab",
     "excluded": [
      {
@@ -3717,7 +4250,7 @@
     "repo_id": "truex"
    },
    {
-    "authoritative_working_copies": 3,
+    "authoritative_working_copies": 1,
     "canonical_path": "/Users/sac/unibit",
     "excluded": [],
     "linked_worktrees": 0,
@@ -3733,15 +4266,24 @@
     "repo_id": "unjucks"
    },
    {
-    "authoritative_working_copies": 3,
+    "authoritative_working_copies": 1,
     "canonical_path": "/Users/sac/wasm4pm",
-    "excluded": [],
+    "excluded": [
+     {
+      "class": "VENDORED_BUILD_INPUT",
+      "path": "/Users/sac/chatmangpt/wasm4pm"
+     },
+     {
+      "class": "EMBEDDED_UNDECLARED",
+      "path": "/Users/sac/unrdf/packages/wasm4pm"
+     }
+    ],
     "linked_worktrees": 0,
     "prunable_records": 0,
     "repo_id": "wasm4pm"
    },
    {
-    "authoritative_working_copies": 21,
+    "authoritative_working_copies": 1,
     "canonical_path": "/Users/sac/xaas",
     "excluded": [],
     "linked_worktrees": 0,
@@ -3757,205 +4299,18 @@
     "repo_id": "zcode-cli"
    },
    {
-    "authoritative_working_copies": 5,
+    "authoritative_working_copies": 1,
     "canonical_path": "/Users/sac/zoela",
     "excluded": [],
-    "linked_worktrees": 2,
+    "linked_worktrees": 0,
     "prunable_records": 0,
     "repo_id": "zoela"
    }
   ],
   "recompute": "python3 topology.py verify --json",
-  "shadow_copies": 4,
-  "unauthorized_worktrees": 24,
-  "violations": [
-   {
-    "blocked": "declared+active submodule of autofde-lab (third-party gym, no canonical in scope); not a copy to retire",
-    "class": "SUBMODULE_ACTIVE",
-    "path": "/Users/sac/autofde-lab/vendor/gyms/enterprisebench",
-    "repo_id": "_unowned"
-   },
-   {
-    "blocked": "declared+active submodule of autofde-lab (third-party gym, no canonical in scope); not a copy to retire",
-    "class": "SUBMODULE_ACTIVE",
-    "path": "/Users/sac/autofde-lab/vendor/gyms/sregym",
-    "repo_id": "_unowned"
-   },
-   {
-    "blocked": "wasm4pm clone whose files are tracked content of /Users/sac/chatmangpt (410 dirty); retiring would mutate chatmangpt's tree; needs chatmangpt owner decision; preserved, not retired",
-    "class": "CLONE",
-    "path": "/Users/sac/chatmangpt/wasm4pm",
-    "repo_id": "wasm4pm"
-   },
-   {
-    "blocked": "declared submodule with 1 uncommitted change; preserved in autofde-lab refs/preserve + verified bundle (stage 1); owner commits or discards",
-    "class": "SUBMODULE_ACTIVE",
-    "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
-    "repo_id": "autofde-lab"
-   },
-   {
-    "blocked": "ostar CANONICAL_MAP (/Users/sac/chatmangpt/ostar) needs operator sign-off; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab316fa1",
-    "repo_id": "unibit"
-   },
-   {
-    "blocked": "ostar CANONICAL_MAP (/Users/sac/chatmangpt/ostar) needs operator sign-off; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab9779ba",
-    "repo_id": "unibit"
-   },
-   {
-    "blocked": "wasm4pm clone recorded as a gitlink path in /Users/sac/unrdf (1449 dirty); retiring would mutate unrdf; needs unrdf owner decision; preserved, not retired",
-    "class": "CLONE",
-    "path": "/Users/sac/unrdf/packages/wasm4pm",
-    "repo_id": "wasm4pm"
-   },
-   {
-    "blocked": "untracked .ggen/keys/signing.key (x2 paths) not byte-identical in canonical zoela and not archivable; retiring would destroy a private key; operator decides (copy key into canonical or discard)",
-    "class": "CLONE",
-    "path": "/Users/sac/work/zoela",
-    "repo_id": "zoela"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/eds-7cb2468d8031d93203ef",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/gall-eds-20e653c3aab9ab69547a",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/gall-eds-3a15a67c08b948dded97",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/gall-eds-3a22a4d49164658f3ff7",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/nounverb-a21561df1e41b17453a8",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/nounverb-integration-bc04aa",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-0461b6",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-bc04aa",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-0461b6",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-bc04aa",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-contains-bc04aa",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-count-bc04aa",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-empty-bc04aa",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-packages-bc04aa",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/spr-integration-dbe115",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-load-dbe115",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-main-dbe115",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired",
-    "class": "ORPHAN_WORKTREE",
-    "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-render-dbe115",
-    "repo_id": "xaas"
-   },
-   {
-    "blocked": ".env (secret) not byte-identical in canonical zoela and not archivable; operator decides",
-    "class": "LINKED_WORKTREE",
-    "path": "/Users/sac/zoela-wt/w30-jtbd-decouple",
-    "repo_id": "zoela"
-   },
-   {
-    "blocked": ".env (secret) not byte-identical in canonical zoela and not archivable; operator decides",
-    "class": "LINKED_WORKTREE",
-    "path": "/Users/sac/zoela-wt/w45-pqc-receipt-signature",
-    "repo_id": "zoela"
-   },
-   {
-    "blocked": "untracked .ggen/keys/signing.key not byte-identical in canonical zoela and not archivable; operator decides",
-    "class": "CLONE",
-    "path": "/Users/sac/zv_regen",
-    "repo_id": "zoela"
-   }
-  ]
+  "shadow_copies": 0,
+  "unauthorized_worktrees": 0,
+  "violations": []
  },
  "migration_receipt": {
   "deduplicated_artifacts": [],
@@ -9979,6 +10334,554 @@
     "repo": "zoela",
     "rollback": "mv /Users/sac/.Trash/zoela-wt_w49-gall-workorder-mapping-retired-20260925T0500Z /Users/sac/zoela-wt/w49-gall-workorder-mapping ; mv /Users/sac/.Trash/zoela-wt_w49-gall-workorder-mapping-admin-retired-20260925T0500Z /Users/sac/zoela/.git/worktrees/w49-gall-workorder-mapping",
     "rollback_subject": "c8d109b4b8c7b99124e1a9945f8500489a694819"
+   },
+   {
+    "at": "2026-09-25T16:14:13Z",
+    "copy_id": "unibit_ostar_ref_claude_worktrees_agent-ab316fa1",
+    "fingerprint": "2a313bf1a7f6331a0f26cd7c509645c018eddb2ea32af0a26639de99581a9728",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab316fa1",
+      "to": "/Users/sac/.Trash/unibit_ostar_ref_claude_worktrees_agent-ab316fa1-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab316fa1",
+    "repo": "unibit",
+    "rollback": "mv /Users/sac/.Trash/unibit_ostar_ref_claude_worktrees_agent-ab316fa1-retired-20260925T0500Z /Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab316fa1",
+    "rollback_subject": "c045408d5c11f681131f323801a1e6ab4e02fb83"
+   },
+   {
+    "at": "2026-09-25T16:14:16Z",
+    "copy_id": "unibit_ostar_ref_claude_worktrees_agent-ab9779ba",
+    "fingerprint": "250b1ab94fcfea9e3fc70fa60d30b1735a7f061feb5e6e257c04a7a6c9a8f2ca",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab9779ba",
+      "to": "/Users/sac/.Trash/unibit_ostar_ref_claude_worktrees_agent-ab9779ba-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab9779ba",
+    "repo": "unibit",
+    "rollback": "mv /Users/sac/.Trash/unibit_ostar_ref_claude_worktrees_agent-ab9779ba-retired-20260925T0500Z /Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab9779ba",
+    "rollback_subject": "11fa9e81c037046f3707437343e942e12cfbd5ab"
+   },
+   {
+    "at": "2026-09-25T16:14:17Z",
+    "copy_id": "xaas_worktrees_runs_eds-7cb2468d8031d93203ef",
+    "fingerprint": "12f246cc83fb9d5a3f6f09596ff53ca561f7446c76202412e4e360c7797e7e52",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/eds-7cb2468d8031d93203ef",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_eds-7cb2468d8031d93203ef-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/eds-7cb2468d8031d93203ef",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_eds-7cb2468d8031d93203ef-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/eds-7cb2468d8031d93203ef",
+    "rollback_subject": "6a131cc1bd897687737c78992301ef66adc174e9"
+   },
+   {
+    "at": "2026-09-25T16:14:18Z",
+    "copy_id": "xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a",
+    "fingerprint": "dbcb803d19c175d2d122cea7832fd91af770569cfacdcd9efe50f8ed1f7bf0b4",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/gall-eds-20e653c3aab9ab69547a",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/gall-eds-20e653c3aab9ab69547a",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/gall-eds-20e653c3aab9ab69547a",
+    "rollback_subject": "a73af3ef9b627ba76acc3d65ba7244159e070f5e"
+   },
+   {
+    "at": "2026-09-25T16:14:18Z",
+    "copy_id": "xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97",
+    "fingerprint": "7c0b3ff7ed965fceb39bf62645050fa511a5a7629cb555ed21f299aa5a1e1e7e",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/gall-eds-3a15a67c08b948dded97",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/gall-eds-3a15a67c08b948dded97",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/gall-eds-3a15a67c08b948dded97",
+    "rollback_subject": "5d793a2c5bf8e60f5b5c9c9489b694b404be2be5"
+   },
+   {
+    "at": "2026-09-25T16:14:19Z",
+    "copy_id": "xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7",
+    "fingerprint": "d0e52bcb0ca7bf3aef479dc28aed9caa7921e3f9eb692fbd03d725d963f78ac1",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/gall-eds-3a22a4d49164658f3ff7",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/gall-eds-3a22a4d49164658f3ff7",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/gall-eds-3a22a4d49164658f3ff7",
+    "rollback_subject": "8a11dbdd8490705c66024198e0b1bd39f846588a"
+   },
+   {
+    "at": "2026-09-25T16:14:20Z",
+    "copy_id": "xaas_worktrees_runs_nounverb-a21561df1e41b17453a8",
+    "fingerprint": "023633eb60ff873119be852f33a408de30b170dea6741345f73f8eede92ad0a7",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/nounverb-a21561df1e41b17453a8",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-a21561df1e41b17453a8-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/nounverb-a21561df1e41b17453a8",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_nounverb-a21561df1e41b17453a8-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/nounverb-a21561df1e41b17453a8",
+    "rollback_subject": "e7fc3cf0065a8f37ac300be08023c844a944dba8"
+   },
+   {
+    "at": "2026-09-25T16:14:21Z",
+    "copy_id": "xaas_worktrees_runs_nounverb-integration-bc04aa",
+    "fingerprint": "130adc371efe1f1f8800649bbf0752d585938c5924b33953859f8da82fda89be",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/nounverb-integration-bc04aa",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-integration-bc04aa-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/nounverb-integration-bc04aa",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_nounverb-integration-bc04aa-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/nounverb-integration-bc04aa",
+    "rollback_subject": "ffb11078ce9b901043a18665bc30c5db6d049815"
+   },
+   {
+    "at": "2026-09-25T16:14:21Z",
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6",
+    "fingerprint": "976b5cbfa691d840d3741a795bd9740d3ed82cb2053cce5b0a9abd9e348d67ef",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-0461b6",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-0461b6",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-0461b6",
+    "rollback_subject": "a2436ec47d6bf1da896917a93fd612b5694172d0"
+   },
+   {
+    "at": "2026-09-25T16:14:22Z",
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa",
+    "fingerprint": "e61c58a08ece45d1c32367a197cc775936805153bceeb9d7d13fe1b88afe1b6d",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-bc04aa",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-bc04aa",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-bc04aa",
+    "rollback_subject": "cbe6afe16b34bf5141a20e4246fa496fa1d152c7"
+   },
+   {
+    "at": "2026-09-25T16:14:22Z",
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6",
+    "fingerprint": "976b5cbfa691d840d3741a795bd9740d3ed82cb2053cce5b0a9abd9e348d67ef",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-0461b6",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-0461b6",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-0461b6",
+    "rollback_subject": "ff17dfa4935f4b9594ca4e8479fbd40960261d3d"
+   },
+   {
+    "at": "2026-09-25T16:14:23Z",
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa",
+    "fingerprint": "60fc9fc2508f08950ec651300a86b6f9f110116105c729b1b63356cf015c6edd",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-bc04aa",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-bc04aa",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-bc04aa",
+    "rollback_subject": "8d8a5a6483355a4b2f5b61df2489515096c2cc64"
+   },
+   {
+    "at": "2026-09-25T16:14:24Z",
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
+    "fingerprint": "264f0927cb3230bbfd247b71a2dc819ccc8edd236324ef6eb18e63fe6d4732dd",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
+    "rollback_subject": "5d8106e2319699be261b53f5a9e78b6fb97e9f33"
+   },
+   {
+    "at": "2026-09-25T16:14:24Z",
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa",
+    "fingerprint": "e52ff22596ed0e489593675ae2e8804e9cd0e7f5971c2ee58283f197db81014e",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-contains-bc04aa",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-contains-bc04aa",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-contains-bc04aa",
+    "rollback_subject": "3e15f244990ca6af262554dd0e15c40a976ce9e7"
+   },
+   {
+    "at": "2026-09-25T16:14:25Z",
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa",
+    "fingerprint": "16a8ca2829ede8b5242868b3edb0355840dccdb7ec926e5b5de1823a943baeaa",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-count-bc04aa",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-count-bc04aa",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-count-bc04aa",
+    "rollback_subject": "4cc2f22d574bb1debfec1377eea556dc56003636"
+   },
+   {
+    "at": "2026-09-25T16:14:26Z",
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa",
+    "fingerprint": "54270181a3f694100e1ca16d9715a6e1c4208ecb715af74f67f63cc7a33e09c7",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-empty-bc04aa",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-empty-bc04aa",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-empty-bc04aa",
+    "rollback_subject": "1dff3f8b90e2f55dda5a4bd23274978bf288d1e8"
+   },
+   {
+    "at": "2026-09-25T16:14:27Z",
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa",
+    "fingerprint": "72ede8bced6cb9cdbafbbed4d2d2d9b359a76fcbef0e52348f11f188fcc0ebc0",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-packages-bc04aa",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-packages-bc04aa",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-packages-bc04aa",
+    "rollback_subject": "a6aadcafe1d61e6b32da122448f50c4e45af1185"
+   },
+   {
+    "at": "2026-09-25T16:14:27Z",
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
+    "fingerprint": "5ef3be913d471b6acd05dec27fa12c9386449d65c45d8372a2851403bc7dd1df",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
+    "rollback_subject": "0a5bb0054739ffaa977fa4b04036ec008976b48f"
+   },
+   {
+    "at": "2026-09-25T16:14:28Z",
+    "copy_id": "xaas_worktrees_runs_spr-integration-dbe115",
+    "fingerprint": "e3dfe6c0cf49aade312d65c394aa10b8393616fc2464fb88add46ce148bbfb4c",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/spr-integration-dbe115",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_spr-integration-dbe115-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/spr-integration-dbe115",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_spr-integration-dbe115-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/spr-integration-dbe115",
+    "rollback_subject": "87af34b900f63d586e1c3fa14f627d1eb812d98b"
+   },
+   {
+    "at": "2026-09-25T16:14:29Z",
+    "copy_id": "xaas_worktrees_runs_spr-spr-neg-load-dbe115",
+    "fingerprint": "a21cdd406a810c1196983d4bfb4f79758b59bbe750f08222152c1cf088728aae",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-load-dbe115",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_spr-spr-neg-load-dbe115-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-load-dbe115",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_spr-spr-neg-load-dbe115-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/spr-spr-neg-load-dbe115",
+    "rollback_subject": "41e85f96a183fcc7251fd5f24298e6229e5ea1ba"
+   },
+   {
+    "at": "2026-09-25T16:14:29Z",
+    "copy_id": "xaas_worktrees_runs_spr-spr-neg-main-dbe115",
+    "fingerprint": "a21cdd406a810c1196983d4bfb4f79758b59bbe750f08222152c1cf088728aae",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-main-dbe115",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_spr-spr-neg-main-dbe115-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-main-dbe115",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_spr-spr-neg-main-dbe115-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/spr-spr-neg-main-dbe115",
+    "rollback_subject": "f93e091048a87b14c07cd86ebbbc4ff6df099c50"
+   },
+   {
+    "at": "2026-09-25T16:14:30Z",
+    "copy_id": "xaas_worktrees_runs_spr-spr-neg-render-dbe115",
+    "fingerprint": "c98c6554a2412511428de002ae3816d8e1582f8250af6fba98fb08e7552f285b",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-render-dbe115",
+      "to": "/Users/sac/.Trash/xaas_worktrees_runs_spr-spr-neg-render-dbe115-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-render-dbe115",
+    "repo": "xaas",
+    "rollback": "mv /Users/sac/.Trash/xaas_worktrees_runs_spr-spr-neg-render-dbe115-retired-20260925T0500Z /Users/sac/xaas/worktrees/runs/spr-spr-neg-render-dbe115",
+    "rollback_subject": "9046a2fecb1348b2624d7e7c03ae4e2ff79e8638"
+   },
+   {
+    "at": "2026-09-25T16:14:31Z",
+    "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab",
+    "fingerprint": "d889165dcb3a866c7ca5f3d004ae557709cd364c838090b29869eb9996216741",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+      "to": "/Users/sac/.Trash/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+    "repo": "autofde-lab",
+    "rollback": "mv /Users/sac/.Trash/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab-retired-20260925T0500Z /Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+    "rollback_subject": "184ea9570f08a14e60204569604866f9c7df8b6f"
+   },
+   {
+    "at": "2026-09-25T16:14:33Z",
+    "copy_id": "chatmangpt_pictl",
+    "fingerprint": "d6a1e0249a94cc10af5338360cdf00a5d1224ba2289b8663b90883b542d35386",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/chatmangpt/pictl",
+      "to": "/Users/sac/.Trash/chatmangpt_pictl-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/chatmangpt/pictl",
+    "repo": "wasm4pm",
+    "rollback": "mv /Users/sac/.Trash/chatmangpt_pictl-retired-20260925T0500Z /Users/sac/chatmangpt/pictl",
+    "rollback_subject": "090fec59138fa1a5fd93ff187907b046d0c31202"
+   },
+   {
+    "at": "2026-09-25T16:14:37Z",
+    "copy_id": "zoela-wt_w30-jtbd-decouple",
+    "fingerprint": "256e7c9cec10396037e8ea4261689c33c3e3070cab2e0c5f080e7165b9ec98a4",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/zoela-wt/w30-jtbd-decouple",
+      "to": "/Users/sac/.Trash/zoela-wt_w30-jtbd-decouple-retired-20260925T0500Z"
+     },
+     {
+      "from": "/Users/sac/zoela/.git/worktrees/w30-jtbd-decouple",
+      "to": "/Users/sac/.Trash/zoela-wt_w30-jtbd-decouple-admin-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/zoela-wt/w30-jtbd-decouple",
+    "repo": "zoela",
+    "rollback": "mv /Users/sac/.Trash/zoela-wt_w30-jtbd-decouple-retired-20260925T0500Z /Users/sac/zoela-wt/w30-jtbd-decouple ; mv /Users/sac/.Trash/zoela-wt_w30-jtbd-decouple-admin-retired-20260925T0500Z /Users/sac/zoela/.git/worktrees/w30-jtbd-decouple",
+    "rollback_subject": "2a4d30d746e1aa65e5dcc1bd31c955e68313fc30"
+   },
+   {
+    "at": "2026-09-25T16:14:40Z",
+    "copy_id": "zoela-wt_w45-pqc-receipt-signature",
+    "fingerprint": "479f1c10b33cb22ae4b6e1241513b044a1a2f11614ced624f62a9c4d5546522e",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/zoela-wt/w45-pqc-receipt-signature",
+      "to": "/Users/sac/.Trash/zoela-wt_w45-pqc-receipt-signature-retired-20260925T0500Z"
+     },
+     {
+      "from": "/Users/sac/zoela/.git/worktrees/w45-pqc-receipt-signature",
+      "to": "/Users/sac/.Trash/zoela-wt_w45-pqc-receipt-signature-admin-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/zoela-wt/w45-pqc-receipt-signature",
+    "repo": "zoela",
+    "rollback": "mv /Users/sac/.Trash/zoela-wt_w45-pqc-receipt-signature-retired-20260925T0500Z /Users/sac/zoela-wt/w45-pqc-receipt-signature ; mv /Users/sac/.Trash/zoela-wt_w45-pqc-receipt-signature-admin-retired-20260925T0500Z /Users/sac/zoela/.git/worktrees/w45-pqc-receipt-signature",
+    "rollback_subject": "374432eb5d9d5a653ba2577a993a4cf74a74c496"
+   },
+   {
+    "at": "2026-09-25T16:14:45Z",
+    "copy_id": "zv_regen",
+    "fingerprint": "c8cf7fb272ac87ce042cc3832b702dd3243eca53b2b006c92cc5c551560483c5",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/zv_regen",
+      "to": "/Users/sac/.Trash/zv_regen-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/zv_regen",
+    "repo": "zoela",
+    "rollback": "mv /Users/sac/.Trash/zv_regen-retired-20260925T0500Z /Users/sac/zv_regen",
+    "rollback_subject": "50281bce93c647907471286084b30c19484d332b"
+   },
+   {
+    "at": "2026-09-25T16:14:48Z",
+    "copy_id": "work_zoela",
+    "fingerprint": "8cb2f0c5b0724f036cbf66ebbf0e52908403e4c74fe18a3e231a4b0c29ce92ee",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": true,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/work/zoela",
+      "to": "/Users/sac/.Trash/work_zoela-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/work/zoela",
+    "repo": "zoela",
+    "rollback": "mv /Users/sac/.Trash/work_zoela-retired-20260925T0500Z /Users/sac/work/zoela",
+    "rollback_subject": "3832c31d8765ba852f87bbd00a47c03fee0c5e17"
+   },
+   {
+    "at": "2026-09-25T16:15:04Z",
+    "copy_id": "zoela-wt",
+    "fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": false,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/zoela-wt",
+      "to": "/Users/sac/.Trash/zoela-wt-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/zoela-wt",
+    "repo": "zoela",
+    "rollback": "mv /Users/sac/.Trash/zoela-wt-retired-20260925T0500Z /Users/sac/zoela-wt",
+    "rollback_subject": null
+   },
+   {
+    "at": "2026-09-25T16:15:04Z",
+    "copy_id": "work",
+    "fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "gate_run_id": "topo-20260925T0500Z-7908",
+    "inventory_copy": false,
+    "method": "trash-move",
+    "moved": [
+     {
+      "from": "/Users/sac/work",
+      "to": "/Users/sac/.Trash/work-retired-20260925T0500Z"
+     }
+    ],
+    "path": "/Users/sac/work",
+    "repo": "zoela",
+    "rollback": "mv /Users/sac/.Trash/work-retired-20260925T0500Z /Users/sac/work",
+    "rollback_subject": null
    }
   ],
   "moved_artifacts": [],
@@ -15097,6 +16000,24 @@
     "remote_verified_sha": "50281bce93c647907471286084b30c19484d332b",
     "sha": "50281bce93c647907471286084b30c19484d332b",
     "wip_branch": null
+   },
+   {
+    "bundle": null,
+    "copy_id": "chatmangpt_pictl",
+    "error": null,
+    "ignored_bundle": {
+     "path": "/Users/sac/.claude/migration/v26925-topology/bundles/chatmangpt_pictl-ignored.bundle",
+     "sha256": "e453954c4c90fd152273ed81854fa04ce6726d0a12c26c2b37958c8931549a53",
+     "size": 948287,
+     "verified": true
+    },
+    "local_only_reason": null,
+    "local_ref": "refs/preserve/v26.9.25/chatmangpt_pictl/anchor",
+    "redacted": [],
+    "remote_ref": "backup/v26.9.25/chatmangpt_pictl",
+    "remote_verified_sha": "090fec59138fa1a5fd93ff187907b046d0c31202",
+    "sha": "090fec59138fa1a5fd93ff187907b046d0c31202",
+    "wip_branch": null
    }
   ],
   "rollback_procedure": [
@@ -17368,6 +18289,218 @@
      "mv '/Users/sac/.Trash/zoela-wt_w49-gall-workorder-mapping-admin-retired-20260925T0500Z' '/Users/sac/zoela/.git/worktrees/w49-gall-workorder-mapping'"
     ],
     "copy_id": "zoela-wt_w49-gall-workorder-mapping",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/unibit_ostar_ref_claude_worktrees_agent-ab316fa1-retired-20260925T0500Z' '/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab316fa1'"
+    ],
+    "copy_id": "unibit_ostar_ref_claude_worktrees_agent-ab316fa1",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/unibit_ostar_ref_claude_worktrees_agent-ab9779ba-retired-20260925T0500Z' '/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab9779ba'"
+    ],
+    "copy_id": "unibit_ostar_ref_claude_worktrees_agent-ab9779ba",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_eds-7cb2468d8031d93203ef-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/eds-7cb2468d8031d93203ef'"
+    ],
+    "copy_id": "xaas_worktrees_runs_eds-7cb2468d8031d93203ef",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/gall-eds-20e653c3aab9ab69547a'"
+    ],
+    "copy_id": "xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/gall-eds-3a15a67c08b948dded97'"
+    ],
+    "copy_id": "xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/gall-eds-3a22a4d49164658f3ff7'"
+    ],
+    "copy_id": "xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_nounverb-a21561df1e41b17453a8-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/nounverb-a21561df1e41b17453a8'"
+    ],
+    "copy_id": "xaas_worktrees_runs_nounverb-a21561df1e41b17453a8",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_nounverb-integration-bc04aa-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/nounverb-integration-bc04aa'"
+    ],
+    "copy_id": "xaas_worktrees_runs_nounverb-integration-bc04aa",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-0461b6'"
+    ],
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-bc04aa'"
+    ],
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-0461b6'"
+    ],
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-bc04aa'"
+    ],
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-with_default_verb-bc04aa'"
+    ],
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-contains-bc04aa'"
+    ],
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-count-bc04aa'"
+    ],
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-empty-bc04aa'"
+    ],
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-packages-bc04aa'"
+    ],
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-remove_package-bc04aa'"
+    ],
+    "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_spr-integration-dbe115-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/spr-integration-dbe115'"
+    ],
+    "copy_id": "xaas_worktrees_runs_spr-integration-dbe115",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_spr-spr-neg-load-dbe115-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/spr-spr-neg-load-dbe115'"
+    ],
+    "copy_id": "xaas_worktrees_runs_spr-spr-neg-load-dbe115",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_spr-spr-neg-main-dbe115-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/spr-spr-neg-main-dbe115'"
+    ],
+    "copy_id": "xaas_worktrees_runs_spr-spr-neg-main-dbe115",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/xaas_worktrees_runs_spr-spr-neg-render-dbe115-retired-20260925T0500Z' '/Users/sac/xaas/worktrees/runs/spr-spr-neg-render-dbe115'"
+    ],
+    "copy_id": "xaas_worktrees_runs_spr-spr-neg-render-dbe115",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab-retired-20260925T0500Z' '/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab'"
+    ],
+    "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/chatmangpt_pictl-retired-20260925T0500Z' '/Users/sac/chatmangpt/pictl'"
+    ],
+    "copy_id": "chatmangpt_pictl",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/zoela-wt_w30-jtbd-decouple-retired-20260925T0500Z' '/Users/sac/zoela-wt/w30-jtbd-decouple'",
+     "mv '/Users/sac/.Trash/zoela-wt_w30-jtbd-decouple-admin-retired-20260925T0500Z' '/Users/sac/zoela/.git/worktrees/w30-jtbd-decouple'"
+    ],
+    "copy_id": "zoela-wt_w30-jtbd-decouple",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/zoela-wt_w45-pqc-receipt-signature-retired-20260925T0500Z' '/Users/sac/zoela-wt/w45-pqc-receipt-signature'",
+     "mv '/Users/sac/.Trash/zoela-wt_w45-pqc-receipt-signature-admin-retired-20260925T0500Z' '/Users/sac/zoela/.git/worktrees/w45-pqc-receipt-signature'"
+    ],
+    "copy_id": "zoela-wt_w45-pqc-receipt-signature",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/zv_regen-retired-20260925T0500Z' '/Users/sac/zv_regen'"
+    ],
+    "copy_id": "zv_regen",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/work_zoela-retired-20260925T0500Z' '/Users/sac/work/zoela'"
+    ],
+    "copy_id": "work_zoela",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/zoela-wt-retired-20260925T0500Z' '/Users/sac/zoela-wt'"
+    ],
+    "copy_id": "zoela-wt",
+    "tier": 2
+   },
+   {
+    "commands": [
+     "mv '/Users/sac/.Trash/work-retired-20260925T0500Z' '/Users/sac/work'"
+    ],
+    "copy_id": "work",
     "tier": 2
    },
    {
@@ -19721,6 +20854,13 @@
     ],
     "copy_id": "zv_regen",
     "tier": 1
+   },
+   {
+    "commands": [
+     "git -C /Users/sac/wasm4pm branch restore/chatmangpt_pictl refs/preserve/v26.9.25/chatmangpt_pictl/anchor"
+    ],
+    "copy_id": "chatmangpt_pictl",
+    "tier": 1
    }
   ],
   "source_state": {
@@ -20447,10 +21587,19 @@
     },
     {
      "class": null,
+     "copy_id": "chatmangpt_pictl",
+     "dirty_count": 291,
+     "head": "62880115d1b521b84fd45bc3a61bff6593ca814c",
+     "kind": "SUBMODULE_ACTIVE",
+     "path": "/Users/sac/chatmangpt/pictl",
+     "size_bytes": 450351104
+    },
+    {
+     "class": null,
      "copy_id": "chatmangpt_wasm4pm",
      "dirty_count": 1005,
      "head": "01d24454ebe5bc79d14bb368e5c523d5a623b981",
-     "kind": "CLONE",
+     "kind": "VENDORED_BUILD_INPUT",
      "path": "/Users/sac/chatmangpt/wasm4pm",
      "size_bytes": 1067991040
     },
@@ -20516,6 +21665,78 @@
      "kind": "SUBMODULE_ACTIVE",
      "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
      "size_bytes": 359309312
+    },
+    {
+     "class": null,
+     "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab_cpp_sdk_Catch2",
+     "dirty_count": 0,
+     "head": "6e79e682b726f524310d55dec8ddac4e9c52fb5f",
+     "kind": "SUBMODULE",
+     "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/Catch2",
+     "size_bytes": 9338880
+    },
+    {
+     "class": null,
+     "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab_cpp_sdk_PEGTL",
+     "dirty_count": 0,
+     "head": "708de300144de0ec8bd58491facfc5f34d0d0559",
+     "kind": "SUBMODULE",
+     "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/PEGTL",
+     "size_bytes": 4653056
+    },
+    {
+     "class": null,
+     "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab_cpp_sdk_backward-cpp",
+     "dirty_count": 0,
+     "head": "3bb9240cb15459768adb3e7d963a20e1523a6294",
+     "kind": "SUBMODULE",
+     "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/backward-cpp",
+     "size_bytes": 417792
+    },
+    {
+     "class": null,
+     "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab_cpp_sdk_json",
+     "dirty_count": 0,
+     "head": "55f93686c01528224f448c19128836e7df245f72",
+     "kind": "SUBMODULE",
+     "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/json",
+     "size_bytes": 19509248
+    },
+    {
+     "class": null,
+     "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab_cpp_sdk_nng",
+     "dirty_count": 0,
+     "head": "a6de76c0b1e08ceba5c3e47dd1107f1a09490b0d",
+     "kind": "SUBMODULE",
+     "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/nng",
+     "size_bytes": 5140480
+    },
+    {
+     "class": null,
+     "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab_cpp_sdk_nngpp",
+     "dirty_count": 0,
+     "head": "cc5d2641babab165d8a9943817c46d36c6dc17c2",
+     "kind": "SUBMODULE",
+     "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/nngpp",
+     "size_bytes": 823296
+    },
+    {
+     "class": null,
+     "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab_cpp_sdk_pybind11",
+     "dirty_count": 0,
+     "head": "d03662f0984f652b60e7ddce53d3868002275197",
+     "kind": "SUBMODULE",
+     "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/pybind11",
+     "size_bytes": 4444160
+    },
+    {
+     "class": null,
+     "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab_cpp_sdk_spdlog",
+     "dirty_count": 0,
+     "head": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+     "kind": "SUBMODULE",
+     "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/spdlog",
+     "size_bytes": 1634304
     },
     {
      "class": null,
@@ -22664,7 +23885,7 @@
      "copy_id": "unrdf_packages_wasm4pm",
      "dirty_count": 1875,
      "head": "d3b2eb462462ad0832e168f1de5ee9b85e0159d0",
-     "kind": "CLONE",
+     "kind": "EMBEDDED_UNDECLARED",
      "path": "/Users/sac/unrdf/packages/wasm4pm",
      "size_bytes": 443371520
     },
@@ -28420,11 +29641,11 @@
      "size_bytes": 388997120
     }
    ],
-   "inventory_sha256": "db734e2f9395153cdeefedaad5109ae65592441a507175bf92235e0f1803c5c4",
+   "inventory_sha256": "d2a46c444cc0d2829e76537dec21d6ce19d2066adb5e42ec9b753fe9c4c27e14",
    "observed_at": "2026-09-25T12:39:06Z"
   },
   "target_state": {
-   "observed_at": "2026-09-25T12:52:06Z",
+   "observed_at": "2026-09-25T16:18:10Z",
    "per_repo": [
     {
      "authoritative_working_copies": 0,
@@ -28435,45 +29656,9 @@
      "repo_id": "SparsePrimingRepresentations"
     },
     {
-     "authoritative_working_copies": 2,
+     "authoritative_working_copies": 0,
      "canonical_path": null,
      "excluded": [
-      {
-       "class": "SUBMODULE",
-       "path": "/Users/sac/autofde-lab/cpp/sdk/Catch2"
-      },
-      {
-       "class": "SUBMODULE",
-       "path": "/Users/sac/autofde-lab/cpp/sdk/PEGTL"
-      },
-      {
-       "class": "SUBMODULE",
-       "path": "/Users/sac/autofde-lab/cpp/sdk/backward-cpp"
-      },
-      {
-       "class": "SUBMODULE",
-       "path": "/Users/sac/autofde-lab/cpp/sdk/json"
-      },
-      {
-       "class": "SUBMODULE",
-       "path": "/Users/sac/autofde-lab/cpp/sdk/nng"
-      },
-      {
-       "class": "SUBMODULE",
-       "path": "/Users/sac/autofde-lab/cpp/sdk/nngpp"
-      },
-      {
-       "class": "SUBMODULE",
-       "path": "/Users/sac/autofde-lab/cpp/sdk/pybind11"
-      },
-      {
-       "class": "SUBMODULE",
-       "path": "/Users/sac/autofde-lab/cpp/sdk/spdlog"
-      },
-      {
-       "class": "SUBMODULE",
-       "path": "/Users/sac/autofde-lab/cpp/tests/data/pddl"
-      },
       {
        "class": "FIXTURE",
        "path": "/Users/sac/autofde-lab/.pytest_temp/test_full_gate1_adjudication_a0/git_repo"
@@ -28491,206 +29676,6 @@
        "path": "/Users/sac/autofde-lab/.pytest_temp/test_git_sha_live_repo_mismatc0/real_git_repo"
       },
       {
-       "class": "SUBMODULE",
-       "path": "/Users/sac/autofde-lab/vendor/gyms/terragoat"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/bcinr/oracles/vendor/powl"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/bcinr/oracles/vendor/val"
-      },
-      {
-       "class": "SUBMODULE",
-       "path": "/Users/sac/beam4pm/vendor/rust4pm-powl"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/chatgpt-cloud-elixir/vendors/swarmsh"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/chatgpt-cloud-elixir/vendors/swarmsh-v2"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/chicago-tdd-tools/registry"
-      },
-      {
-       "class": "EMBEDDED_UNDECLARED",
-       "path": "/Users/sac/knhk/spec-kit"
-      },
-      {
-       "class": "EMBEDDED_UNDECLARED",
-       "path": "/Users/sac/knhk/vendors/simdjson"
-      },
-      {
-       "class": "EMBEDDED_UNDECLARED",
-       "path": "/Users/sac/knhk/vendors/weaver"
-      },
-      {
-       "class": "EMBEDDED_UNDECLARED",
-       "path": "/Users/sac/knhk/vendors/yawl"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/lsp-max/scratch/lsif-node"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/lsp-max/vendors/lsif-node"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/lsp-max/vendors/vscode-languageserver-node"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/batteries"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/mathlib-temp"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/mathlib_temp"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/Cli"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/LeanSearchClient"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/Qq"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/aesop"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/batteries"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/importGraph"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/plausible"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/proofwidgets"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/LeanSearchClient"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/Qq"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/aesop"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/batteries"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/importGraph"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/plausible"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/proofwidgets"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_old/packages/mathlib"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfact/web/mfact-ui"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/VAL"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/aries"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/ferroplan"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/miniplan"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/pddl-rs"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/mfw/mfw-planner/.vendor-aries"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/mfw/mfw-planner/.vendor-val"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/mfw/scratch/agile-protocol-specification"
-      },
-      {
-       "class": "EMBEDDED_UNDECLARED",
-       "path": "/Users/sac/truex/vendors/POWL"
-      },
-      {
-       "class": "EMBEDDED_UNDECLARED",
-       "path": "/Users/sac/truex/vendors/ReactiveMessagingPatterns_ActorModel"
-      },
-      {
-       "class": "EMBEDDED_UNDECLARED",
-       "path": "/Users/sac/truex/vendors/antigravity-cli"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/unibit/ostar_ref/unibit_ref/ostar_ref/vendors/open-ontologies"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/unibit/ostar_ref/vendors/open-ontologies"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/wasm4pm/vendors/POWL"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/wasm4pm/vendors/pm4py"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/wasm4pm/vendors/proxyable"
-      },
-      {
        "class": "FIXTURE",
        "path": "/Users/sac/xaas/tmp_out/failover-verify-epoch1"
       },
@@ -28703,52 +29688,633 @@
        "path": "/Users/sac/xaas/tmp_out/subagent-b7d87048-glm-failover"
       },
       {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_exact_head_receipt_is_det0/subject"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_expected_sha_mismatch_ref0/subject"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_local_snapshot_does_not_c0/healthy-repo"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_new_commit_invalidates_ol0/subject"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_real_git_provider_revisio0"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_real_git_provider_write_t0"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_repo_flags0/corrupted-repo"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_repo_healt0/healthy"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_state_repo0/clean-repo"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_state_repo0/dirty-repo"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_tracked_worktree_edit_ref0/subject"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_verify_fails_on_a_wrong_e0/dirty-repo"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_exact_head_receipt_is_det0/subject"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_expected_sha_mismatch_ref0/subject"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_local_snapshot_does_not_c0/healthy-repo"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_new_commit_invalidates_ol0/subject"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_real_git_provider_revisio0"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_real_git_provider_write_t0"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_repo_flags0/corrupted-repo"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_repo_healt0/healthy"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_state_repo0/clean-repo"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_state_repo0/dirty-repo"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_tracked_worktree_edit_ref0/subject"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_verify_fails_on_a_wrong_e0/dirty-repo"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/10b19470e20e1c76"
+      },
+      {
        "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/xaas/worktrees/repos/affidavit"
+       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/493adc6df749ae80"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/516315b750782a45"
+      },
+      {
+       "class": "FIXTURE",
+       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/sdists-v9"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:None"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/bcinr/oracles/vendor/val"
+      },
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/VAL"
+      },
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/mfw/mfw-planner/.vendor-val"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/KCL-Planning/VAL"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/lsp-max/vendors/vscode-languageserver-node"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/Microsoft/vscode-languageserver-node"
+    },
+    {
+     "authoritative_working_copies": 1,
+     "canonical_path": null,
+     "excluded": [],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/SREGym/SREGym",
+     "sole_working_copy": "/Users/sac/autofde-lab/vendor/gyms/sregym"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "EMBEDDED_UNDECLARED",
+       "path": "/Users/sac/truex/vendors/ReactiveMessagingPatterns_ActorModel"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/VaughnVernon/ReactiveMessagingPatterns_ActorModel"
+    },
+    {
+     "authoritative_working_copies": 1,
+     "canonical_path": null,
+     "excluded": [],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/ast-fri/EnterpriseBench",
+     "sole_working_copy": "/Users/sac/autofde-lab/vendor/gyms/enterprisebench"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/autofde-lab/cpp/sdk/backward-cpp"
+      },
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/backward-cpp"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/bombela/backward-cpp"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/autofde-lab/cpp/sdk/Catch2"
+      },
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/Catch2"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/catchorg/Catch2"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/autofde-lab/cpp/sdk/nngpp"
+      },
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/nngpp"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/cwzx/nngpp"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/unibit/ostar_ref/unibit_ref/ostar_ref/vendors/open-ontologies"
+      },
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/unibit/ostar_ref/vendors/open-ontologies"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/fabio-rovai/open-ontologies"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "EMBEDDED_UNDECLARED",
+       "path": "/Users/sac/truex/vendors/POWL"
+      },
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/wasm4pm/vendors/POWL"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/fit-process-mining/POWL"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/autofde-lab/cpp/tests/data/pddl"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/fteicht/pddl-instances"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/autofde-lab/cpp/sdk/spdlog"
+      },
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/spdlog"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/gabime/spdlog"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "EMBEDDED_UNDECLARED",
+       "path": "/Users/sac/truex/vendors/antigravity-cli"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/google-antigravity/antigravity-cli"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/ferroplan"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/hhh42/ferroplan"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/LeanSearchClient"
+      },
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/LeanSearchClient"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/leanprover-community/LeanSearchClient"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/proofwidgets"
+      },
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/proofwidgets"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/leanprover-community/ProofWidgets4"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/aesop"
+      },
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/aesop"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/leanprover-community/aesop"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/batteries"
+      },
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/batteries"
+      },
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/batteries"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/leanprover-community/batteries"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/importGraph"
+      },
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/importGraph"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/leanprover-community/import-graph"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/mathlib-temp"
+      },
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/mathlib_temp"
+      },
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_old/packages/mathlib"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/leanprover-community/mathlib4"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/plausible"
+      },
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/plausible"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/leanprover-community/plausible"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/Qq"
+      },
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_4/packages/Qq"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/leanprover-community/quote4"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/research-papers/_archive/mfsca/.lake_bad_2/packages/Cli"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/leanprover/lean4-cli"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/lsp-max/scratch/lsif-node"
+      },
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/lsp-max/vendors/lsif-node"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/microsoft/lsif-node"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/autofde-lab/cpp/sdk/nng"
+      },
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/nng"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/nanomsg/nng"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/autofde-lab/cpp/sdk/json"
+      },
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/json"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/nlohmann/json"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/chicago-tdd-tools/registry"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/open-telemetry/semantic-conventions"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "EMBEDDED_UNDECLARED",
+       "path": "/Users/sac/knhk/vendors/weaver"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/open-telemetry/weaver"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/aries"
+      },
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/mfw/mfw-planner/.vendor-aries"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/plaans/aries"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/wasm4pm/vendors/pm4py"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/process-intelligence-solutions/pm4py"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/autofde-lab/cpp/sdk/pybind11"
+      },
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/pybind11"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/pybind/pybind11"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/bcinr/oracles/vendor/powl"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/seanchatmangpt/POWL"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfw/scratch/agile-protocol-specification"
       },
       {
        "class": "VENDORED_BUILD_INPUT",
        "path": "/Users/sac/xaas/worktrees/repos/aps"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/xaas/worktrees/repos/autofde-lab"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/xaas/worktrees/repos/bitstar"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/xaas/worktrees/repos/eds"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/xaas/worktrees/repos/ggen-igniter"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/xaas/worktrees/repos/gymact"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/xaas/worktrees/repos/infinite-agentic-cli"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/xaas/worktrees/repos/mmdio"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/xaas/worktrees/repos/nounverb"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/xaas/worktrees/repos/spr"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/xaas/worktrees/repos/xaas"
       },
       {
        "class": "FOREIGN_CLONE",
@@ -30092,6 +31658,256 @@
       },
       {
        "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/xaas/worktrees/runs/gall-89dfe67d7c1d86c10a99"
+      },
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/xaas/worktrees/runs/gall-f99fbf061a7e3b77c933"
+      },
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/xaas/worktrees/runs/w3-live-1789896182"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/seanchatmangpt/agile-protocol-specification"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/mfact/web/mfact-ui"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/seanchatmangpt/mfact-command-center"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/wasm4pm/vendors/proxyable"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/seanchatmangpt/proxyable"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/beam4pm/vendor/rust4pm-powl"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/seanchatmangpt/rust4pm"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "EMBEDDED_UNDECLARED",
+       "path": "/Users/sac/knhk/spec-kit"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/seanchatmangpt/spec-kit"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/chatgpt-cloud-elixir/vendors/swarmsh"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/seanchatmangpt/swarmsh"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/chatgpt-cloud-elixir/vendors/swarmsh-v2"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/seanchatmangpt/swarmsh-v2"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/autofde-lab/vendor/gyms/terragoat"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/seanchatmangpt/terragoat"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "EMBEDDED_UNDECLARED",
+       "path": "/Users/sac/knhk/vendors/simdjson"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/simdjson/simdjson"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/miniplan"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/sunsided/miniplan"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/mfw/mfw-pddl-exploration/upstream/pddl-rs"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/sunsided/pddl-rs"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/autofde-lab/cpp/sdk/PEGTL"
+      },
+      {
+       "class": "SUBMODULE",
+       "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/PEGTL"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/taocpp/PEGTL"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "EMBEDDED_UNDECLARED",
+       "path": "/Users/sac/knhk/vendors/yawl"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:github.com/yawlfoundation/yawl"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/xaas/worktrees/repos/spr"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/SparsePrimingRepresentations"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/xaas/worktrees/repos/affidavit"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/affidavit"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/xaas/worktrees/repos/autofde-lab"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/autofde-lab"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/xaas/worktrees/repos/bitstar"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/bitstar"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/xaas/worktrees/repos/infinite-agentic-cli"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/dev/infinite-agentic-cli"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/xaas/worktrees/repos/eds"
+      },
+      {
+       "class": "FOREIGN_CLONE",
        "path": "/Users/sac/xaas/worktrees/runs/eds-eds-neg-cli-build_parser-0a5132"
       },
       {
@@ -30377,14 +32193,19 @@
       {
        "class": "FOREIGN_CLONE",
        "path": "/Users/sac/xaas/worktrees/runs/eds-eds-neg-cli-main-c58a0a"
-      },
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/eds"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
       {
        "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/xaas/worktrees/runs/gall-89dfe67d7c1d86c10a99"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/xaas/worktrees/runs/gall-f99fbf061a7e3b77c933"
+       "path": "/Users/sac/xaas/worktrees/repos/nounverb"
       },
       {
        "class": "FOREIGN_CLONE",
@@ -30677,139 +32498,102 @@
       {
        "class": "FOREIGN_CLONE",
        "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-remove_package-c58a0a"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/xaas/worktrees/runs/w3-live-1789896182"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_exact_head_receipt_is_det0/subject"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_expected_sha_mismatch_ref0/subject"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_local_snapshot_does_not_c0/healthy-repo"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_new_commit_invalidates_ol0/subject"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_real_git_provider_revisio0"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_real_git_provider_write_t0"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_repo_flags0/corrupted-repo"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_repo_healt0/healthy"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_state_repo0/clean-repo"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_snapshot_local_state_repo0/dirty-repo"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_tracked_worktree_edit_ref0/subject"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp7/test_verify_fails_on_a_wrong_e0/dirty-repo"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_exact_head_receipt_is_det0/subject"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_expected_sha_mismatch_ref0/subject"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_local_snapshot_does_not_c0/healthy-repo"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_new_commit_invalidates_ol0/subject"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_real_git_provider_revisio0"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_real_git_provider_write_t0"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_repo_flags0/corrupted-repo"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_repo_healt0/healthy"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_state_repo0/clean-repo"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_snapshot_local_state_repo0/dirty-repo"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_tracked_worktree_edit_ref0/subject"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/sjira/sj-008.basetemp8/test_verify_fails_on_a_wrong_e0/dirty-repo"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/checkouts/10b19470e20e1c76/9ca7c06"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/checkouts/493adc6df749ae80/524d0bc"
-      },
-      {
-       "class": "VENDORED_BUILD_INPUT",
-       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/checkouts/516315b750782a45/577e2d1"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/10b19470e20e1c76"
-      },
-      {
-       "class": "FOREIGN_CLONE",
-       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/493adc6df749ae80"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/516315b750782a45"
-      },
-      {
-       "class": "FIXTURE",
-       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/sdists-v9"
       }
      ],
      "linked_worktrees": 0,
      "prunable_records": 0,
-     "repo_id": "_unowned"
+     "repo_id": "_unowned:local:/Users/sac/ex_noun_verb_cli"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/xaas/worktrees/repos/ggen-igniter"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/ggen_igniter"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/xaas/worktrees/repos/gymact"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/gymact"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "FOREIGN_CLONE",
+       "path": "/Users/sac/xaas/worktrees/repos/mmdio"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/mmdio"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/xaas/worktrees/repos/xaas"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/xaas"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/checkouts/10b19470e20e1c76/9ca7c06"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/10b19470e20e1c76"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/checkouts/493adc6df749ae80/524d0bc"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/493adc6df749ae80"
+    },
+    {
+     "authoritative_working_copies": 0,
+     "canonical_path": null,
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/checkouts/516315b750782a45/577e2d1"
+      }
+     ],
+     "linked_worktrees": 0,
+     "prunable_records": 0,
+     "repo_id": "_unowned:local:/Users/sac/xaas/worktrees/toolchain/uv-cache/git-v0/db/516315b750782a45"
     },
     {
      "authoritative_working_copies": 0,
@@ -30844,7 +32628,7 @@
      "repo_id": "ash_r2rml"
     },
     {
-     "authoritative_working_copies": 2,
+     "authoritative_working_copies": 1,
      "canonical_path": "/Users/sac/autofde-lab",
      "excluded": [
       {
@@ -31097,7 +32881,7 @@
      "repo_id": "truex"
     },
     {
-     "authoritative_working_copies": 3,
+     "authoritative_working_copies": 1,
      "canonical_path": "/Users/sac/unibit",
      "excluded": [],
      "linked_worktrees": 0,
@@ -31113,15 +32897,24 @@
      "repo_id": "unjucks"
     },
     {
-     "authoritative_working_copies": 3,
+     "authoritative_working_copies": 1,
      "canonical_path": "/Users/sac/wasm4pm",
-     "excluded": [],
+     "excluded": [
+      {
+       "class": "VENDORED_BUILD_INPUT",
+       "path": "/Users/sac/chatmangpt/wasm4pm"
+      },
+      {
+       "class": "EMBEDDED_UNDECLARED",
+       "path": "/Users/sac/unrdf/packages/wasm4pm"
+      }
+     ],
      "linked_worktrees": 0,
      "prunable_records": 0,
      "repo_id": "wasm4pm"
     },
     {
-     "authoritative_working_copies": 21,
+     "authoritative_working_copies": 1,
      "canonical_path": "/Users/sac/xaas",
      "excluded": [],
      "linked_worktrees": 0,
@@ -31137,10 +32930,10 @@
      "repo_id": "zcode-cli"
     },
     {
-     "authoritative_working_copies": 5,
+     "authoritative_working_copies": 1,
      "canonical_path": "/Users/sac/zoela",
      "excluded": [],
-     "linked_worktrees": 2,
+     "linked_worktrees": 0,
      "prunable_records": 0,
      "repo_id": "zoela"
     }
@@ -32881,6 +34674,134 @@
     {
      "path": "/Users/sac/zoela/.git/worktrees/w49-gall-workorder-mapping",
      "trash_path": "/Users/sac/.Trash/zoela-wt_w49-gall-workorder-mapping-admin-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab316fa1",
+     "trash_path": "/Users/sac/.Trash/unibit_ostar_ref_claude_worktrees_agent-ab316fa1-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab9779ba",
+     "trash_path": "/Users/sac/.Trash/unibit_ostar_ref_claude_worktrees_agent-ab9779ba-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/eds-7cb2468d8031d93203ef",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_eds-7cb2468d8031d93203ef-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/gall-eds-20e653c3aab9ab69547a",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/gall-eds-3a15a67c08b948dded97",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/gall-eds-3a22a4d49164658f3ff7",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/nounverb-a21561df1e41b17453a8",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-a21561df1e41b17453a8-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/nounverb-integration-bc04aa",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-integration-bc04aa-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-0461b6",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-bc04aa",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-0461b6",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-bc04aa",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-contains-bc04aa",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-count-bc04aa",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-empty-bc04aa",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-packages-bc04aa",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/spr-integration-dbe115",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_spr-integration-dbe115-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-load-dbe115",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_spr-spr-neg-load-dbe115-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-main-dbe115",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_spr-spr-neg-main-dbe115-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-render-dbe115",
+     "trash_path": "/Users/sac/.Trash/xaas_worktrees_runs_spr-spr-neg-render-dbe115-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+     "trash_path": "/Users/sac/.Trash/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/chatmangpt/pictl",
+     "trash_path": "/Users/sac/.Trash/chatmangpt_pictl-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/zoela-wt/w30-jtbd-decouple",
+     "trash_path": "/Users/sac/.Trash/zoela-wt_w30-jtbd-decouple-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/zoela/.git/worktrees/w30-jtbd-decouple",
+     "trash_path": "/Users/sac/.Trash/zoela-wt_w30-jtbd-decouple-admin-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/zoela-wt/w45-pqc-receipt-signature",
+     "trash_path": "/Users/sac/.Trash/zoela-wt_w45-pqc-receipt-signature-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/zoela/.git/worktrees/w45-pqc-receipt-signature",
+     "trash_path": "/Users/sac/.Trash/zoela-wt_w45-pqc-receipt-signature-admin-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/zv_regen",
+     "trash_path": "/Users/sac/.Trash/zv_regen-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/work/zoela",
+     "trash_path": "/Users/sac/.Trash/work_zoela-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/zoela-wt",
+     "trash_path": "/Users/sac/.Trash/zoela-wt-retired-20260925T0500Z"
+    },
+    {
+     "path": "/Users/sac/work",
+     "trash_path": "/Users/sac/.Trash/work-retired-20260925T0500Z"
     }
    ]
   },
@@ -33548,6 +35469,17 @@
       "run_id": "topo-20260925T0500Z-7908"
      },
      {
+      "at": "2026-09-25T16:12:52Z",
+      "copy_id": "chatmangpt_pictl",
+      "extra": [],
+      "files": 2985,
+      "mismatch": [],
+      "missing": [],
+      "ok": true,
+      "redacted": [],
+      "run_id": "topo-20260925T0500Z-7908"
+     },
+     {
       "at": "2026-09-25T05:54:56Z",
       "copy_id": "gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Application-Guide-Writer-self-30036e45",
       "files": 0,
@@ -33591,6 +35523,17 @@
       "files": 0,
       "mode": "admin-index tree equality",
       "ok": true,
+      "run_id": "topo-20260925T0500Z-7908"
+     },
+     {
+      "at": "2026-09-25T16:12:55Z",
+      "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab",
+      "extra": [],
+      "files": 3177,
+      "mismatch": [],
+      "missing": [],
+      "ok": true,
+      "redacted": [],
       "run_id": "topo-20260925T0500Z-7908"
      },
      {
@@ -36217,37 +38160,21 @@
     "per_copy": [
      {
       "copy_id": "unibit_ostar_ref_claude_worktrees_agent-ab316fa1",
-      "evidence": {
-       "R16_SECRET_UNPRESERVABLE": [
-        "vendors/pictl/packages/testing/src/redaction.ts"
-       ],
-       "R17_OWNER_RESOLVED": "ostar CANONICAL_MAP (/Users/sac/chatmangpt/ostar) needs operator sign-off; preserved, not retired"
-      },
-      "failed_rules": [
-       "R16",
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "2a313bf1a7f6331a0f26cd7c509645c018eddb2ea32af0a26639de99581a9728",
       "path": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab316fa1",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R16,R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "unibit_ostar_ref_claude_worktrees_agent-ab9779ba",
-      "evidence": {
-       "R16_SECRET_UNPRESERVABLE": [
-        "vendors/pictl/packages/testing/src/redaction.ts"
-       ],
-       "R17_OWNER_RESOLVED": "ostar CANONICAL_MAP (/Users/sac/chatmangpt/ostar) needs operator sign-off; preserved, not retired"
-      },
-      "failed_rules": [
-       "R16",
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "250b1ab94fcfea9e3fc70fa60d30b1735a7f061feb5e6e257c04a7a6c9a8f2ca",
       "path": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab9779ba",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R16,R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "tmp_xaas-w9-sweep-ash_r2rml",
@@ -36255,6 +38182,24 @@
       "failed_rules": [],
       "fingerprint_at_gate": "1966a90b9617e538099166c1e18a28ab862247c9b9012923c7f6c8e438710566",
       "path": "/private/tmp/xaas-w9-sweep-ash_r2rml",
+      "refusal": null,
+      "verdict": "PASS"
+     },
+     {
+      "copy_id": "chatmangpt_pictl",
+      "evidence": {},
+      "failed_rules": [],
+      "fingerprint_at_gate": "d6a1e0249a94cc10af5338360cdf00a5d1224ba2289b8663b90883b542d35386",
+      "path": "/Users/sac/chatmangpt/pictl",
+      "refusal": null,
+      "verdict": "PASS"
+     },
+     {
+      "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab",
+      "evidence": {},
+      "failed_rules": [],
+      "fingerprint_at_gate": "d889165dcb3a866c7ca5f3d004ae557709cd364c838090b29869eb9996216741",
+      "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
       "refusal": null,
       "verdict": "PASS"
      },
@@ -36619,330 +38564,202 @@
      },
      {
       "copy_id": "xaas_worktrees_runs_eds-7cb2468d8031d93203ef",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "12f246cc83fb9d5a3f6f09596ff53ca561f7446c76202412e4e360c7797e7e52",
       "path": "/Users/sac/xaas/worktrees/runs/eds-7cb2468d8031d93203ef",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "dbcb803d19c175d2d122cea7832fd91af770569cfacdcd9efe50f8ed1f7bf0b4",
       "path": "/Users/sac/xaas/worktrees/runs/gall-eds-20e653c3aab9ab69547a",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "7c0b3ff7ed965fceb39bf62645050fa511a5a7629cb555ed21f299aa5a1e1e7e",
       "path": "/Users/sac/xaas/worktrees/runs/gall-eds-3a15a67c08b948dded97",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "d0e52bcb0ca7bf3aef479dc28aed9caa7921e3f9eb692fbd03d725d963f78ac1",
       "path": "/Users/sac/xaas/worktrees/runs/gall-eds-3a22a4d49164658f3ff7",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_nounverb-a21561df1e41b17453a8",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "023633eb60ff873119be852f33a408de30b170dea6741345f73f8eede92ad0a7",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-a21561df1e41b17453a8",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_nounverb-integration-bc04aa",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "130adc371efe1f1f8800649bbf0752d585938c5924b33953859f8da82fda89be",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-integration-bc04aa",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "976b5cbfa691d840d3741a795bd9740d3ed82cb2053cce5b0a9abd9e348d67ef",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-0461b6",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "e61c58a08ece45d1c32367a197cc775936805153bceeb9d7d13fe1b88afe1b6d",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-bc04aa",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "976b5cbfa691d840d3741a795bd9740d3ed82cb2053cce5b0a9abd9e348d67ef",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-0461b6",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "60fc9fc2508f08950ec651300a86b6f9f110116105c729b1b63356cf015c6edd",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-bc04aa",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "264f0927cb3230bbfd247b71a2dc819ccc8edd236324ef6eb18e63fe6d4732dd",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "e52ff22596ed0e489593675ae2e8804e9cd0e7f5971c2ee58283f197db81014e",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-contains-bc04aa",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "16a8ca2829ede8b5242868b3edb0355840dccdb7ec926e5b5de1823a943baeaa",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-count-bc04aa",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "54270181a3f694100e1ca16d9715a6e1c4208ecb715af74f67f63cc7a33e09c7",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-empty-bc04aa",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "72ede8bced6cb9cdbafbbed4d2d2d9b359a76fcbef0e52348f11f188fcc0ebc0",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-packages-bc04aa",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "5ef3be913d471b6acd05dec27fa12c9386449d65c45d8372a2851403bc7dd1df",
       "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_spr-integration-dbe115",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "e3dfe6c0cf49aade312d65c394aa10b8393616fc2464fb88add46ce148bbfb4c",
       "path": "/Users/sac/xaas/worktrees/runs/spr-integration-dbe115",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_spr-spr-neg-load-dbe115",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "a21cdd406a810c1196983d4bfb4f79758b59bbe750f08222152c1cf088728aae",
       "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-load-dbe115",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_spr-spr-neg-main-dbe115",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "a21cdd406a810c1196983d4bfb4f79758b59bbe750f08222152c1cf088728aae",
       "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-main-dbe115",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "xaas_worktrees_runs_spr-spr-neg-render-dbe115",
-      "evidence": {
-       "R17_OWNER_RESOLVED": "xaas runtime run dirs (gitignored /worktrees/ in xaas; gitdirs pointed at retired /Users/sac/xaas-worktrees/repos/*); lane order retires ~/xaas/worktrees/runs only 'if registered' and they are not registered; preserved, not retired"
-      },
-      "failed_rules": [
-       "R17"
-      ],
+      "evidence": {},
+      "failed_rules": [],
       "fingerprint_at_gate": "c98c6554a2412511428de002ae3816d8e1582f8250af6fba98fb08e7552f285b",
       "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-render-dbe115",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R17)",
-      "verdict": "REFUSED"
-     },
-     {
-      "copy_id": "work_zoela",
-      "evidence": {
-       "R16_SECRET_UNPRESERVABLE": [
-        ".ggen/keys/signing.key",
-        ".ggen/keys/signing.key",
-        ".ggen/keys/signing.key",
-        "packs/github-actions-pack/examples/consume-github-actions-pack/.ggen/keys/signing.key",
-        "packs/github-actions-pack/examples/consume-github-actions-pack/.ggen/keys/signing.key",
-        "packs/github-actions-pack/examples/consume-github-actions-pack/.ggen/keys/signing.key"
-       ]
-      },
-      "failed_rules": [
-       "R16"
-      ],
-      "fingerprint_at_gate": "8cb2f0c5b0724f036cbf66ebbf0e52908403e4c74fe18a3e231a4b0c29ce92ee",
-      "path": "/Users/sac/work/zoela",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R16)",
-      "verdict": "REFUSED"
-     },
-     {
-      "copy_id": "zoela-wt_w30-jtbd-decouple",
-      "evidence": {
-       "R16_SECRET_UNPRESERVABLE": [
-        ".env"
-       ]
-      },
-      "failed_rules": [
-       "R16"
-      ],
-      "fingerprint_at_gate": "256e7c9cec10396037e8ea4261689c33c3e3070cab2e0c5f080e7165b9ec98a4",
-      "path": "/Users/sac/zoela-wt/w30-jtbd-decouple",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R16)",
-      "verdict": "REFUSED"
-     },
-     {
-      "copy_id": "zoela-wt_w45-pqc-receipt-signature",
-      "evidence": {
-       "R16_SECRET_UNPRESERVABLE": [
-        ".env"
-       ]
-      },
-      "failed_rules": [
-       "R16"
-      ],
-      "fingerprint_at_gate": "479f1c10b33cb22ae4b6e1241513b044a1a2f11614ced624f62a9c4d5546522e",
-      "path": "/Users/sac/zoela-wt/w45-pqc-receipt-signature",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R16)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "copy_id": "zv_regen",
       "evidence": {
-       "R16_SECRET_UNPRESERVABLE": [
-        ".ggen/keys/signing.key",
-        ".ggen/keys/signing.key",
-        ".ggen/keys/signing.key"
-       ]
+       "R16_SECRET_UNPRESERVABLE": {
+        "secret_trash": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): archive non-secret content into zoela refs/preserve (redacted), move whole copy to ~/.Trash, secrets recorded by sha256 only",
+        "secrets": [
+         {
+          "content_sha256": "3c4ad0536d46d197bd36d8250ae79f225d546a4e68219437a75edcf2d3d7d0ef",
+          "path_sha256": "70d5ed35e8fbfab0dfca9aaee99c60d16213b7e3a6d9f801b465d47457babb61"
+         }
+        ]
+       }
       },
-      "failed_rules": [
-       "R16"
-      ],
+      "failed_rules": [],
       "fingerprint_at_gate": "c8cf7fb272ac87ce042cc3832b702dd3243eca53b2b006c92cc5c551560483c5",
       "path": "/Users/sac/zv_regen",
-      "refusal": "REFUSED(UNREVERSIBLE_CLEANUP:R16)",
-      "verdict": "REFUSED"
+      "refusal": null,
+      "verdict": "PASS"
      },
      {
       "at": "2026-09-25T05:59:12Z",
@@ -39087,6 +40904,46 @@
       "fingerprint_at_gate": "80a04f8e1871b463cd0ba697b9955f8dcee35f9f56667fd069e5c8041af0bb59",
       "source": "steps.jsonl retire entry",
       "verdict": "PASS"
+     },
+     {
+      "at": "2026-09-25T16:14:37Z",
+      "copy_id": "zoela-wt_w30-jtbd-decouple",
+      "failed_rules": [],
+      "fingerprint_at_gate": "256e7c9cec10396037e8ea4261689c33c3e3070cab2e0c5f080e7165b9ec98a4",
+      "source": "steps.jsonl retire entry",
+      "verdict": "PASS"
+     },
+     {
+      "at": "2026-09-25T16:14:40Z",
+      "copy_id": "zoela-wt_w45-pqc-receipt-signature",
+      "failed_rules": [],
+      "fingerprint_at_gate": "479f1c10b33cb22ae4b6e1241513b044a1a2f11614ced624f62a9c4d5546522e",
+      "source": "steps.jsonl retire entry",
+      "verdict": "PASS"
+     },
+     {
+      "at": "2026-09-25T16:14:48Z",
+      "copy_id": "work_zoela",
+      "failed_rules": [],
+      "fingerprint_at_gate": "8cb2f0c5b0724f036cbf66ebbf0e52908403e4c74fe18a3e231a4b0c29ce92ee",
+      "source": "steps.jsonl retire entry",
+      "verdict": "PASS"
+     },
+     {
+      "at": "2026-09-25T16:15:04Z",
+      "copy_id": "zoela-wt",
+      "failed_rules": [],
+      "fingerprint_at_gate": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "steps.jsonl retire entry",
+      "verdict": "PASS"
+     },
+     {
+      "at": "2026-09-25T16:15:04Z",
+      "copy_id": "work",
+      "failed_rules": [],
+      "fingerprint_at_gate": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "steps.jsonl retire entry",
+      "verdict": "PASS"
      }
     ]
    },
@@ -39103,8 +40960,8 @@
     "cmd": "cd tests && python3 test_topology.py",
     "cwd": "/Users/sac/.claude/migration/v26925-topology",
     "exit": 0,
-    "output_sha256": "721876aa468c2bcb0e3ccf3eeff8f5328a06f481091244db097dc3009bc5ed3a",
-    "summary": "27 tests OK"
+    "output_sha256": "d81fb302261d75c4ada8c360d616c539610be6537dae9d75133a5cddf681b6bd",
+    "summary": "30 tests OK"
    },
    {
     "cmd": "python3 replay_guard.py",
@@ -39114,31 +40971,151 @@
     "summary": "40 cases, 0 failures"
    },
    {
-    "cmd": "grep -rnE 'unittest.mock|Mock\\(|MagicMock|patch\\(|monkeypatch|Mox|Mimic|:meck' tests/",
-    "cwd": "/Users/sac/.claude/migration/v26925-topology",
-    "exit": 1,
-    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "summary": "exit 1 = zero matches"
-   },
-   {
-    "cmd": "ruff check --select E9,F . && ruff format --check .",
+    "cmd": "! grep -rnE 'unittest.mock|Mock\\(|MagicMock|patch\\(|monkeypatch|Mox|Mimic|:meck' tests/",
     "cwd": "/Users/sac/.claude/migration/v26925-topology",
     "exit": 0,
-    "output_sha256": "4bd8248f4985e327cd636d5b563aa46d1d34db2021498c8d8b37613b35f181d1"
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "summary": "exit 0 = zero matches (negated grep)"
    },
    {
-    "cmd": "python3 topology.py verify --scope scope.merged.json --json",
+    "cmd": "ruff check --select E9,F topology.py tests/ && ruff format --check topology.py tests/",
     "cwd": "/Users/sac/.claude/migration/v26925-topology",
-    "exit": 1,
-    "output_sha256": "73e1ed270f27c31f0f653959226dcb4a6f55504803d9d5a9be1d7c36eb63ffe1",
-    "summary": "m_term.holds=false; every violation carries a typed blocked reason"
+    "exit": 0,
+    "output_sha256": "afa20b27dacc9bf0aba3c1d265964c21e04ab42f6e39e2dd4769718ceded003a"
+   },
+   {
+    "cmd": "python3 topology.py verify --scope scope.finish.json --json",
+    "cwd": "/Users/sac/.claude/migration/v26925-topology",
+    "exit": 0,
+    "output_sha256": "2aa2853166114793a77a0a31b5b94d14210f1d5cd282e250c41514f52d58f519",
+    "summary": "m_term.holds computed by topology.py m_term() over INVENTORY.json + steps.jsonl + live filesystem presence"
    }
   ],
   "durable_location": "/Users/sac/.claude/migration/v26925-topology"
  },
+ "signoffs": [
+  {
+   "action": "unblock",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): CANONICAL_MAP ostar -> /Users/sac/chatmangpt/ostar",
+   "identity_canonical": "/Users/sac/chatmangpt/ostar",
+   "path": "/Users/sac/unibit/ostar_ref/.claude/worktrees"
+  },
+  {
+   "action": "unblock",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): xaas/worktrees/runs/* preserve into xaas refs/preserve and retire",
+   "path": "/Users/sac/xaas/worktrees/runs"
+  },
+  {
+   "action": "reclassify",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): classify by rule V1/V4",
+   "parent": "/Users/sac/chatmangpt",
+   "path": "/Users/sac/chatmangpt/wasm4pm"
+  },
+  {
+   "action": "reclassify",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): classify by rule V1/V4",
+   "parent": "/Users/sac/unrdf",
+   "path": "/Users/sac/unrdf/packages/wasm4pm"
+  },
+  {
+   "action": "add",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): classify by rule V1/V4 else preserve+retire",
+   "host_repo": "chatmangpt",
+   "owner": "wasm4pm",
+   "parent": "/Users/sac/chatmangpt",
+   "path": "/Users/sac/chatmangpt/pictl",
+   "retire_mode": "deinit"
+  },
+  {
+   "action": "reclassify",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): declared submodule not pinned+clean -> preserve into autofde-lab refs/preserve and retire",
+   "parent": "/Users/sac/clap-noun-verb",
+   "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+   "retire_mode": "deinit"
+  },
+  {
+   "action": "reclassify",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): re-apply V1 (declared third-party submodule; sole checkout of its identity)",
+   "parent": "/Users/sac/autofde-lab",
+   "path": "/Users/sac/autofde-lab/vendor/gyms/enterprisebench"
+  },
+  {
+   "action": "reclassify",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): re-apply V1 (declared third-party submodule; sole checkout of its identity)",
+   "parent": "/Users/sac/autofde-lab",
+   "path": "/Users/sac/autofde-lab/vendor/gyms/sregym"
+  },
+  {
+   "action": "secret_trash",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): archive non-secret content into zoela refs/preserve (redacted), move whole copy to ~/.Trash, secrets recorded by sha256 only",
+   "path": "/Users/sac/work/zoela"
+  },
+  {
+   "action": "secret_trash",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): archive non-secret content into zoela refs/preserve (redacted), move whole copy to ~/.Trash, secrets recorded by sha256 only",
+   "path": "/Users/sac/zv_regen"
+  },
+  {
+   "action": "secret_trash",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): archive non-secret content into zoela refs/preserve (redacted), move whole copy to ~/.Trash, secrets recorded by sha256 only",
+   "path": "/Users/sac/zoela-wt/w30-jtbd-decouple"
+  },
+  {
+   "action": "secret_trash",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): archive non-secret content into zoela refs/preserve (redacted), move whole copy to ~/.Trash, secrets recorded by sha256 only",
+   "path": "/Users/sac/zoela-wt/w45-pqc-receipt-signature"
+  },
+  {
+   "action": "add",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): inventory nested submodules of the retiring playground/autofde-lab (R11)",
+   "parent": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+   "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/pybind11"
+  },
+  {
+   "action": "add",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): inventory nested submodules of the retiring playground/autofde-lab (R11)",
+   "parent": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+   "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/PEGTL"
+  },
+  {
+   "action": "add",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): inventory nested submodules of the retiring playground/autofde-lab (R11)",
+   "parent": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+   "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/spdlog"
+  },
+  {
+   "action": "add",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): inventory nested submodules of the retiring playground/autofde-lab (R11)",
+   "parent": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+   "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/nngpp"
+  },
+  {
+   "action": "add",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): inventory nested submodules of the retiring playground/autofde-lab (R11)",
+   "parent": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+   "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/json"
+  },
+  {
+   "action": "add",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): inventory nested submodules of the retiring playground/autofde-lab (R11)",
+   "parent": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+   "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/Catch2"
+  },
+  {
+   "action": "add",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): inventory nested submodules of the retiring playground/autofde-lab (R11)",
+   "parent": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+   "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/nng"
+  },
+  {
+   "action": "add",
+   "grant": "operator order 'finish' 2026-09-25 09:05 PT (lane topology-finish): inventory nested submodules of the retiring playground/autofde-lab (R11)",
+   "parent": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+   "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab/cpp/sdk/backward-cpp"
+  }
+ ],
  "standing": {
-  "broken_term": "R_missing_authority",
-  "derived_from": "replay commands above at subject_sha (git blob id of INVENTORY.json); gate PASS + byte-exact drill PASS for every retired inventory copy; verify exit 1 with only typed violations (owner sign-off / secret-unpreservable / embedded-in-foreign-repo / declared submodule)",
-  "value": "PARTIAL_ALIVE"
+  "derived_from": "replay commands above at subject_sha (git blob id of INVENTORY.json); gate PASS + byte-exact drill PASS for every retired inventory copy; m_term.holds recomputed by verify (exit 0 iff holds)",
+  "value": "ALIVE"
  }
 }
