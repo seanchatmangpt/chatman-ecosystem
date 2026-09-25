@@ -4,6 +4,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "17 13 * * *"
+  pull_request:
+    paths:
+      - ".github/workflows/external-paradigm-watch.yml"
+      - "scripts/*external_paradigm*.py"
+      - "tests/test_external_paradigms.py"
+      - "upstream/**"
 
 permissions:
   contents: read
@@ -16,6 +22,9 @@ jobs:
 
       - name: Verify supplier registry
         run: python3 scripts/verify_external_paradigms.py --json
+
+      - name: Run local EPR courts
+        run: python3 -m unittest tests.test_external_paradigms -v
 
       - name: Extract pinned ECC inventory
         env:
@@ -33,6 +42,24 @@ jobs:
             --cross-product-out target/external-paradigms/ecc-cross-product.json \
             --ttl-out target/external-paradigms/ecc-capabilities.ttl
 
+      - name: Assert pinned baseline
+        run: |
+          python3 - <<'PY'
+          import json
+          p = json.load(open("target/external-paradigms/ecc-inventory.json"))
+          expected = {"skill": 292, "agent": 68, "command": 94, "hook": 5, "workflow": 2}
+          assert p["subject_sha"] == "e482e579415fde18357cafce70f177ae19fd7f03"
+          assert p["counts"] == expected, (p["counts"], expected)
+          assert p["unit_count"] == 461
+          assert p["classified_count"] == 459
+          assert p["unmapped_count"] == 2
+          assert p["standing"] == "NONE"
+          x = json.load(open("target/external-paradigms/ecc-cross-product.json"))
+          assert x["standing"] == "NONE"
+          assert x["unresolved_count"] == 2
+          assert all(edge["semantic_equivalence"] == "UNCLAIMED" for edge in x["edges"])
+          PY
+
       - name: Discover ECC exact-head delta
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -49,31 +76,12 @@ jobs:
             echo
             echo "Pinned inventory:"
             echo '~~~json'
-            python3 - <<'PY'
-          import json
-          p = json.load(open("target/external-paradigms/ecc-inventory.json"))
-          print(json.dumps({
-              "subject_sha": p["subject_sha"],
-              "unit_count": p["unit_count"],
-              "counts": p["counts"],
-              "classified_count": p["classified_count"],
-              "unmapped_count": p["unmapped_count"],
-              "standing": p["standing"],
-          }, indent=2, sort_keys=True))
-          PY
+            python3 -c 'import json; p=json.load(open("target/external-paradigms/ecc-inventory.json")); print(json.dumps({k:p[k] for k in ("subject_sha","unit_count","counts","classified_count","unmapped_count","standing")}, indent=2, sort_keys=True))'
             echo '~~~'
             echo
             echo "Cross-product:"
             echo '~~~json'
-            python3 - <<'PY'
-          import json
-          p = json.load(open("target/external-paradigms/ecc-cross-product.json"))
-          print(json.dumps({
-              "edge_count": p["edge_count"],
-              "unresolved_count": p["unresolved_count"],
-              "standing": p["standing"],
-          }, indent=2, sort_keys=True))
-          PY
+            python3 -c 'import json; p=json.load(open("target/external-paradigms/ecc-cross-product.json")); print(json.dumps({k:p[k] for k in ("edge_count","unresolved_count","standing")}, indent=2, sort_keys=True))'
             echo '~~~'
             echo
             echo "Upstream delta:"
