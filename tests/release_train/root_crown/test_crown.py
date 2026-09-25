@@ -203,6 +203,9 @@ class CrownTest(unittest.TestCase):
         obs["private_public_compare"] = {"seanchatmangpt/zoela": "diverged"}
         return self.run_crown(obs=obs)
 
+    def m_required_unknown(self):
+        return self.evaluate("AC-07", self.remote("AC-07", standing="UNKNOWN"))
+
     def test_one_refusing_mutant_per_crown_rule(self):
         table = {
             "MANIFEST_INVALID": self.m_manifest,
@@ -224,6 +227,7 @@ class CrownTest(unittest.TestCase):
             "UNKNOWN_EVIDENCE_KIND": self.m_unknown_kind,
             "PRIVATE_OBSERVATION_DIGEST_MISMATCH": self.m_private_digest,
             "PRIVATE_HEAD_SPLIT": self.m_private_split,
+            "REQUIRED_UNKNOWN": self.m_required_unknown,
         }
         self.assertEqual(set(table), set(CROWN_RULES))
         for rule, mutant in table.items():

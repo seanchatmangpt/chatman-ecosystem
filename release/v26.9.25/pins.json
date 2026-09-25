@@ -1,14 +1,14 @@
 {
   "release": "v26.9.25",
   "root_repository": "seanchatmangpt/chatman-ecosystem",
-  "observed_at": "2026-09-25T13:33:49Z",
-  "authority": "github-api:gh-cli-operator-token:read (lane crown-refresh)",
-  "_provenance": "Only hand-written SHAs of the release: default-branch heads resolved with gh api repos/<r>/commits/<default_branch> at observed_at. The root repository's own subject is the runtime crown_sha, never this pin.",
+  "observed_at": "2026-09-25T16:31:32Z",
+  "authority": "github-api:gh-cli-operator-token:read (lane crown-final)",
+  "_provenance": "Only hand-written SHAs of the release: default-branch heads resolved with gh api repos/<r>/commits/<default_branch> at observed_at. The root repository's own subject is the runtime crown_sha, never this pin. | lane crown-final 2026-09-25T16:31:32Z: default-branch heads re-observed via gh api (affidavit d70b0e40 = PR#84 merge, ggen-ecosystem 8bf23124, root 8321663d); other pins unchanged (heads identical).",
   "repos": {
     "chatman-ecosystem": {
       "repository": "seanchatmangpt/chatman-ecosystem",
       "ref": "main",
-      "sha": "fb54a2f5727385ef89ba15151d09c303487873b2",
+      "sha": "8321663d02b849cbb7879b3eaf548d5bdca7a7e9",
       "role": "root",
       "disposition": "CROWN",
       "required": true,
@@ -97,7 +97,7 @@
     "affidavit": {
       "repository": "seanchatmangpt/affidavit",
       "ref": "main",
-      "sha": "cc1577a8de1e4e92625386ebbecb0c6df9abd66a",
+      "sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
       "role": "receipt-persistence",
       "disposition": "REQUIRED",
       "required": true,
@@ -196,7 +196,7 @@
     "ggen-ecosystem": {
       "repository": "seanchatmangpt/ggen-ecosystem",
       "ref": "main",
-      "sha": "f3cc60f8b65a57980455e93c026176bd446f3f3d",
+      "sha": "8bf231242b5fa30587a3d7357c8aaa57905ccfdf",
       "role": "ggen-composition-root",
       "disposition": "ADAPTER",
       "required": false,

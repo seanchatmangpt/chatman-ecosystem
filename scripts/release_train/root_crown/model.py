@@ -97,6 +97,7 @@ CROWN_RULES = (
     "UNKNOWN_EVIDENCE_KIND",
     "PRIVATE_OBSERVATION_DIGEST_MISMATCH",
     "PRIVATE_HEAD_SPLIT",
+    "REQUIRED_UNKNOWN",
 )
 # Typed blockers: lawful, terminal, non-ALIVE.
 BLOCKER_CODES = (
@@ -159,6 +160,7 @@ FAILURE_CLASS: dict[str, tuple[str, str]] = {
     "UNKNOWN_EVIDENCE_KIND": ("CAPABILITY_GAP", "admission_vacuous"),
     "PRIVATE_OBSERVATION_DIGEST_MISMATCH": ("EVIDENCE_FAILURE", "R_missing_identity"),
     "PRIVATE_HEAD_SPLIT": ("SUBJECT_FAILURE", "R_missing_identity"),
+    "REQUIRED_UNKNOWN": ("EVIDENCE_FAILURE", "R_missing_standing"),
     # typed blockers
     "EVIDENCE_ABSENT": ("EVIDENCE_FAILURE", "R_missing_consequence"),
     "OBSERVATION_MISSING": ("TRANSPORT_FAILURE", "R_missing_identity"),

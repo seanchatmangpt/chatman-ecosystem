@@ -41,9 +41,25 @@ class BerthierTest(unittest.TestCase):
         )
 
     def test_committed_graph_is_alive(self):
+        """RFC §8: packets cover exactly the owners the committed strategic delta reaches.
+
+        Genesis (every premise section in the delta) reaches every owner; a renewal that
+        changes one requirement row reaches only that row's owner. The expected owner set
+        is computed here from the delta keys and the requirement rows, not by the projector.
+        """
         verdict = self.judge()
         self.assertEqual((verdict.standing, verdict.refusals), ("ALIVE", ()))
-        owners = sorted({r.owner_repo for r in self.inputs.requirements})
+        doc = json.loads((self.tree.release_dir / "out/packets.json").read_text())
+        changed = set(doc["strategic_delta"])
+        self.assertTrue(changed, "committed packets carry no strategic delta")
+        owners = sorted(
+            {
+                r.owner_repo
+                for r in self.inputs.requirements
+                if f"req:{r.id}" in changed or any(f"premise:RFC-0004#{ref}" in changed for ref in r.premise_refs)
+            }
+        )
+        self.assertTrue(owners)
         self.assertEqual(list(verdict.required_owners), owners)
         self.assertEqual(sorted(p["subject"]["repository"] for p in self.packets), owners)
 

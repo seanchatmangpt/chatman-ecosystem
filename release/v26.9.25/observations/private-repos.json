@@ -1,6 +1,6 @@
 {
   "authority": "gh-cli:operator:read",
-  "observed_at": "2026-09-25T16:09:43Z",
+  "observed_at": "2026-09-25T16:31:58Z",
   "observer": "operator-local",
   "release": "v26.9.25",
   "repos": {
@@ -22,7 +22,7 @@
       "compare_status": "identical",
       "default_branch": "main",
       "head_sha": "3d16cf3e43e195092161aaba4d481c7654b4035d",
-      "observed_at": "2026-09-25T16:09:43Z",
+      "observed_at": "2026-09-25T16:31:58Z",
       "observer": "operator-local",
       "pin_sha": "3d16cf3e43e195092161aaba4d481c7654b4035d",
       "receipts": [
