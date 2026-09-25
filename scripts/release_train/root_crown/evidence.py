@@ -280,7 +280,13 @@ class Context:
 
     def policy_row(self, req: Requirement) -> tuple[terminality.Row | None, ReqState | None]:
         return terminality.admit(
-            self.policy, self.policy_missing, req.id, req.acceptance, self.inputs.rfc_text, self.import_sha256
+            self.policy,
+            self.policy_missing,
+            req.id,
+            req.acceptance,
+            self.inputs.rfc_text,
+            self.import_sha256,
+            req.evidence_kind,
         )
 
     def policy_refusals(self) -> list[str]:

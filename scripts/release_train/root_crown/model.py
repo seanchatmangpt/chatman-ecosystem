@@ -143,7 +143,9 @@ BINDING_BLOCKERS = ("EVIDENCE_DELTA_UNBOUNDED",)
 BINDING_KINDS = ("IN_TREE_DERIVED", "REMOTE_RECEIPT", "OPERATOR_LOCAL", "LOCAL_RECEIPT")
 SCHEMA_BINDING = "https://chatman.dev/root-crown/evidence-binding/v1"
 # Post-tag typed blockers (lawful, non-ALIVE).
-POST_TAG_BLOCKERS = ("TAG_UNRECORDED", "REPLAY_DIVERGED", "SUBJECT_ABSENT")
+# CURRENT_HEAD_UNATTESTED: the observed root head is not the attested head, so the current
+# conformance section describes a head nobody observed (never affects historical standing).
+POST_TAG_BLOCKERS = ("TAG_UNRECORDED", "REPLAY_DIVERGED", "SUBJECT_ABSENT", "CURRENT_HEAD_UNATTESTED")
 # RECEIPT_CHAIN_BROKEN detail tokens (chain.py).
 CHAIN_TOKENS = ("PARENT_DIGEST", "PARENT_REFUSED", "PARENT_UNTYPED_BLOCKED", "PARENT_NOT_ANCESTOR")
 # Typed blockers: lawful, terminal, non-ALIVE.
@@ -236,6 +238,7 @@ FAILURE_CLASS: dict[str, tuple[str, str]] = {
     "TAG_UNRECORDED": ("EVIDENCE_FAILURE", "R_missing_identity"),
     "REPLAY_DIVERGED": ("VERIFICATION_FAILURE", "R_missing_replay"),
     "SUBJECT_ABSENT": ("EVIDENCE_FAILURE", "R_missing_replay"),
+    "CURRENT_HEAD_UNATTESTED": ("SUBJECT_FAILURE", "R_missing_identity"),
     # typed blockers
     "EVIDENCE_ABSENT": ("EVIDENCE_FAILURE", "R_missing_consequence"),
     "OBSERVATION_MISSING": ("TRANSPORT_FAILURE", "R_missing_identity"),

@@ -18,7 +18,8 @@ report does not depend on whether a tag subject happens to be materialized.
 
 Output: ``{schema, baseline, mutants{name:{kind,killed,detail,...}}, all_killed, survivors}``.
 Exit 0 every mutant killed, 1 a survivor, 2 refusal (ANCHOR_DRIFT, BASELINE_RED,
-MUTATION_REPORT_DRIFT, usage). ``--write-report`` writes the canonical report;
+HARNESS_LOAD_ERROR, MUTATION_REPORT_DRIFT, usage). A killer module that fails to import, on
+the pristine copy or under a mutant, is ``REFUSED:HARNESS_LOAD_ERROR`` -- never a kill. ``--write-report`` writes the canonical report;
 ``--check-report`` recomputes it and refuses any byte difference.
 """
 
@@ -58,6 +59,10 @@ HARNESS_CODES = {
     "ANCHOR_DRIFT": ("VERIFICATION_FAILURE", "admission_vacuous"),
     "BASELINE_RED": ("VERIFICATION_FAILURE", "admission_vacuous"),
     "MUTATION_REPORT_DRIFT": ("EVIDENCE_FAILURE", "R_missing_replay"),
+    # A killer module that does not import (unittest.loader._FailedTest / ImportError) or
+    # loads zero tests is a harness defect, never a kill: counting it would admit a mutant
+    # as killed with no court ever judging it.
+    "HARNESS_LOAD_ERROR": ("VERIFICATION_FAILURE", "admission_vacuous"),
 }
 MAX_DETAIL_TESTS = 6
 
@@ -161,9 +166,32 @@ def _copy(root: Path, dest: Path, paths: tuple[str, ...]) -> None:
             shutil.copy2(src, dest / rel)
 
 
+def _is_load_error(test: Any, trace: str) -> bool:
+    """A loader placeholder (``unittest.loader._FailedTest``) or an import-time error."""
+    if isinstance(test, getattr(unittest.loader, "_FailedTest", ())):
+        return True
+    if type(test).__name__ in ("_FailedTest", "ModuleImportFailure"):
+        return True
+    return test.id().startswith("unittest.loader.") and ("ImportError" in trace or "ModuleNotFoundError" in trace)
+
+
+def _walk(suite: unittest.TestSuite) -> Iterator[unittest.TestCase]:
+    for t in suite:
+        if isinstance(t, unittest.TestSuite):
+            yield from _walk(t)
+        else:
+            yield t
+
+
+def _load_errors(suite: unittest.TestSuite) -> list[str]:
+    """Loader placeholders in a not-yet-run suite (killer names that do not import)."""
+    return sorted(t.id() for t in _walk(suite) if _is_load_error(t, ""))
+
+
 def _run_tests(suite: unittest.TestSuite) -> dict[str, Any]:
     stream = io.StringIO()
     result = unittest.TextTestRunner(stream=stream, verbosity=0).run(suite)
+    load_errors = sorted({t.id() for t, tb in result.errors if _is_load_error(t, tb)})
     failed = sorted({t.id() for t, _ in result.failures + result.errors})
     return {
         "tests_run": result.testsRun,
@@ -172,6 +200,7 @@ def _run_tests(suite: unittest.TestSuite) -> dict[str, Any]:
         "skipped": len(result.skipped),
         "ok": result.wasSuccessful(),
         "failed_tests": failed,
+        "load_errors": load_errors,
     }
 
 
@@ -179,9 +208,15 @@ def _discover(test_dir: Path) -> unittest.TestSuite:
     return unittest.TestLoader().discover(str(test_dir), pattern="test_*.py", top_level_dir=str(test_dir))
 
 
-def _load(modules: tuple[str, ...]) -> unittest.TestSuite:
+def _load(modules: tuple[str, ...], label: str = "") -> unittest.TestSuite:
+    """Load killer modules. ``loadTestsFromName`` wraps only ImportError in a _FailedTest;
+    any other import-time exception (SyntaxError, NameError, ...) escapes: that is a load
+    error too, refused typed instead of crashing the harness or counting as a kill."""
     loader = unittest.TestLoader()
-    return unittest.TestSuite(loader.loadTestsFromName(m) for m in modules)
+    try:
+        return unittest.TestSuite([loader.loadTestsFromName(m) for m in modules])
+    except Exception as exc:  # noqa: BLE001 -- typed below
+        raise HarnessRefusal("HARNESS_LOAD_ERROR", f"{label}:{type(exc).__name__}:{','.join(modules)}") from exc
 
 
 def anchor_refusals(root: Path, mutants: tuple[SourceMutant, ...]) -> list[str]:
@@ -225,8 +260,20 @@ def run(
         tests = copy_root / test_dir
         with isolated(copy_root, tests, tops):
             baseline = _run_tests(_discover(tests))
+        if baseline["load_errors"]:
+            raise HarnessRefusal("HARNESS_LOAD_ERROR", "baseline:" + ",".join(baseline["load_errors"][:MAX_DETAIL_TESTS]))
         if not baseline["ok"]:
             raise HarnessRefusal("BASELINE_RED", ",".join(baseline["failed_tests"][:MAX_DETAIL_TESTS]))
+        # Every killer must import and load >= 1 test on the pristine copy before any mutant.
+        with isolated(copy_root, tests, tops):
+            for m in source:
+                suite = _load(m.killers, m.name)
+                bad = _load_errors(suite)
+                if bad or suite.countTestCases() == 0:
+                    raise HarnessRefusal(
+                        "HARNESS_LOAD_ERROR",
+                        f"{m.name}:" + (",".join(bad[:MAX_DETAIL_TESTS]) if bad else "0 killer tests loaded"),
+                    )
         for m in source:
             target = copy_root / m.file
             original = target.read_bytes()
@@ -234,9 +281,13 @@ def run(
             target.write_text(text.replace(m.anchor, m.replacement, 1), encoding="utf-8")
             try:
                 with isolated(copy_root, tests, tops):
-                    outcome = _run_tests(_load(m.killers))
+                    outcome = _run_tests(_load(m.killers, m.name))
             finally:
                 target.write_bytes(original)
+            if outcome["load_errors"]:
+                raise HarnessRefusal(
+                    "HARNESS_LOAD_ERROR", f"{m.name}:" + ",".join(outcome["load_errors"][:MAX_DETAIL_TESTS])
+                )
             killed = not outcome["ok"]
             failed = outcome["failed_tests"]
             detail = (
@@ -278,7 +329,7 @@ def run(
         "schema": SCHEMA_REPORT,
         "release": RELEASE,
         "source_digests": {f: "sha256:" + hashlib.sha256((root / f).read_bytes()).hexdigest() for f in files},
-        "baseline": {k: v for k, v in baseline.items() if k != "failed_tests"},
+        "baseline": {k: v for k, v in baseline.items() if k not in ("failed_tests", "load_errors")},
         "mutants": dict(sorted(mutants.items())),
         "total": len(mutants),
         "killed": len(mutants) - len(survivors),
@@ -305,6 +356,7 @@ BINDING = "scripts/release_train/root_crown/binding.py"
 MODEL = "scripts/release_train/root_crown/model.py"
 OBSERVER = "scripts/observe_release_heads.py"
 CLOSURE_COURT = "scripts/release_train/release_closure_court/court.py"
+MUTATE = "scripts/release_train/root_crown/mutate.py"
 
 T_TYPED = "test_typed_terminal"
 T_ALIGN = "test_terminal_alignment"
@@ -316,6 +368,7 @@ T_REPLAY = "test_replay"
 T_GITOBJ = "test_gitobj"
 T_POLICY = "test_policy"
 T_BINDING = "test_binding"
+T_MUTATE = "test_mutate"
 
 SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
     # --- the five audit survivors (each killed by a new test in test_typed_terminal) ---------
@@ -521,6 +574,127 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
         (T_POST,),
         "PAYLOAD_MUTATED_POST_TAG",
     ),
+    # --- PR-M: verify_tag_subject recompute, one mutant per dropped clause --------------------
+    SourceMutant(
+        "tag_subject_recompute_drops_tag",
+        POSTTAG,
+        '        ("tag", "TAG_MUTATED"),\n',
+        "",
+        (T_POST,),
+        "TAG_MUTATED(record.tag vs raw objects)",
+    ),
+    SourceMutant(
+        "tag_subject_recompute_drops_subject",
+        POSTTAG,
+        '        ("subject", "TAG_SUBJECT_SPLIT"),\n',
+        "",
+        (T_POST,),
+        "TAG_SUBJECT_SPLIT(record.subject vs raw objects)",
+    ),
+    SourceMutant(
+        "tag_subject_recompute_drops_payload",
+        POSTTAG,
+        '        ("payload", "TAG_SUBJECT_SPLIT"),\n',
+        "",
+        (T_POST,),
+        "TAG_SUBJECT_SPLIT(record.payload vs raw objects)",
+    ),
+    SourceMutant(
+        "tag_subject_recompute_drops_tag_receipt",
+        POSTTAG,
+        '        ("tag_receipt", "TAG_RECEIPT_SPLIT"),\n',
+        "",
+        (T_POST,),
+        "TAG_RECEIPT_SPLIT(record.tag_receipt vs raw objects)",
+    ),
+    SourceMutant(
+        "tag_subject_recompute_drops_raw_objects",
+        POSTTAG,
+        '        ("raw_objects", "TAG_OBJECT_DIGEST_MISMATCH"),\n',
+        "",
+        (T_POST,),
+        "TAG_OBJECT_DIGEST_MISMATCH(record.raw_objects vs raw objects)",
+    ),
+    SourceMutant(
+        "tag_receipt_self_digest_unchecked",
+        POSTTAG,
+        '        receipt_digest_of(receipt) != receipt.get("receipt_digest")\n        or ',
+        "        ",
+        (T_POST,),
+        "TAG_RECEIPT_SPLIT(receipt self digest)",
+    ),
+    SourceMutant(
+        "tag_receipt_crown_sha_unchecked",
+        POSTTAG,
+        '    if receipt.get("crown_sha") != recomputed["subject"]["commit_sha"] or receipt.get("standing") != "ALIVE":',
+        '    if receipt.get("standing") != "ALIVE":',
+        (T_POST,),
+        "TAG_RECEIPT_SPLIT(receipt crown_sha)",
+    ),
+    SourceMutant(
+        "tag_receipt_standing_unchecked",
+        POSTTAG,
+        '    if receipt.get("crown_sha") != recomputed["subject"]["commit_sha"] or receipt.get("standing") != "ALIVE":',
+        '    if receipt.get("crown_sha") != recomputed["subject"]["commit_sha"]:',
+        (T_POST,),
+        "TAG_RECEIPT_SPLIT(receipt standing)",
+    ),
+    SourceMutant(
+        "current_head_unattested_off",
+        POSTTAG,
+        "    if observed_root and observed_root != head_sha:\n        blockers.append(",
+        "    if False:\n        blockers.append(",
+        (T_POST,),
+        "CURRENT_HEAD_UNATTESTED",
+    ),
+    SourceMutant(
+        "current_head_unattested_not_blocking",
+        POSTTAG,
+        '    if blockers and standing != "REFUSED":\n        standing = "BLOCKED"',
+        '    if False:\n        standing = "BLOCKED"',
+        (T_POST,),
+        "CURRENT_HEAD_UNATTESTED(current standing)",
+    ),
+    SourceMutant(
+        "current_blockers_dropped_by_attest",
+        CROWN,
+        '            + list(current.get("blockers", []))\n',
+        "",
+        (T_POST,),
+        "CURRENT_HEAD_UNATTESTED(attest receipt blockers)",
+    ),
+    SourceMutant(
+        "own_lines_ignore_evaluator_class",
+        POLICY,
+        "        patterns.append(_token(term))",
+        "        pass",
+        (T_POLICY,),
+        "POLICY_RELAXATION_UNGROUNDED(evaluator-class line)",
+    ),
+    SourceMutant(
+        "own_lines_ignore_row_id_token",
+        POLICY,
+        "    patterns = [_token(rid)]",
+        "    patterns = []",
+        (T_POLICY,),
+        "POLICY_RELAXATION_UNGROUNDED(id-named line)",
+    ),
+    SourceMutant(
+        "harness_load_error_counted_as_kill",
+        MUTATE,
+        '            if outcome["load_errors"]:\n                raise HarnessRefusal(',
+        '            if False:\n                raise HarnessRefusal(',
+        (T_MUTATE,),
+        "HARNESS_LOAD_ERROR(under mutant)",
+    ),
+    SourceMutant(
+        "harness_killer_preflight_off",
+        MUTATE,
+        "                if bad or suite.countTestCases() == 0:\n                    raise HarnessRefusal(",
+        "                if False:\n                    raise HarnessRefusal(",
+        (T_MUTATE,),
+        "HARNESS_LOAD_ERROR(pristine killer preflight)",
+    ),
     SourceMutant(
         "replay_diverged_off",
         REPLAY,
@@ -709,7 +883,7 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
     SourceMutant(
         "relaxation_own_line_unchecked",
         POLICY,
-        "        elif (line := own_line(rid, row.rfc_anchor, section)) is not None and row.rfc_phrase not in line:",
+        "        elif not any(row.rfc_phrase in line for line in own_lines(rid, row.rfc_anchor, section, evidence_kind)):",
         "        elif False:",
         (T_POLICY,),
         "POLICY_RELAXATION_UNGROUNDED(borrowed phrase)",

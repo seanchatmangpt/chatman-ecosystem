@@ -211,6 +211,44 @@ class PolicyRefusalTest(unittest.TestCase):
         self.relax("AC-07", rfc_phrase="has terminal standing")
         self.assert_ungrounded("AC-07", "not on AC-07's own §48 line")
 
+    def test_section55_relaxation_not_naming_the_row_is_ungrounded(self):
+        """§55 "normative_artifacts_terminal" carries a marker but its line names neither
+        AC-07 nor AC-07's evaluator class (receipt_artifact): previously admitted."""
+        self.relax("AC-07", rfc_anchor="§55", rfc_phrase="normative_artifacts_terminal")
+        self.assert_ungrounded("AC-07", "no line names AC-07 or evaluator class receipt_artifact")
+
+    def test_section38_relaxation_not_naming_the_row_is_ungrounded(self):
+        """§38 closure rules name no requirement; a relaxation there cannot cite its own line."""
+        self.relax("F-13", rfc_anchor="§38", rfc_phrase="BLOCKED(reason)")
+        self.assert_ungrounded("F-13", "not on F-13's own §38 line")
+
+    def test_f09_line_is_bound_through_its_evaluator_class_only(self):
+        """F-09's §55 term is its own only via typed_blocker_allowed; another F row with a
+        different evaluator borrowing the term alone (F-09 relaxed elsewhere) is ungrounded."""
+        self.row("F-09")["rfc_phrase"] = "godslaw_migration_terminal"
+        self.assert_ungrounded("F-09", "no line names F-09 or evaluator class typed_blocker_allowed")
+        self.doc = load(POLICY)
+        self.relax("F-13", rfc_anchor="§55", rfc_phrase="cloud_runtime_alive_or_typed_blocker")
+        self.write()
+        refusals = self.ctx().policy_refusals()
+        self.assertTrue(any(r.startswith("REFUSED:POLICY_RELAXATION_UNGROUNDED:F-13:") and "own §55 line" in r
+                            for r in refusals), refusals)
+        self.assertFalse(any(r.startswith("REFUSED:POLICY_RELAXATION_UNGROUNDED:F-09:") for r in refusals), refusals)
+
+    def test_own_lines_cover_every_anchor(self):
+        section = "# 55. X\n  AND a_terminal\n  AND cloud_runtime_alive_or_typed_blocker\nAC-07 names it\n3. third\n"
+        self.assertEqual(policy.own_lines("AC-07", "§55", section), ["AC-07 names it"])
+        self.assertEqual(
+            policy.own_lines("F-09", "§55", section, "typed_blocker_allowed"),
+            ["  AND cloud_runtime_alive_or_typed_blocker"],
+        )
+        self.assertEqual(policy.own_lines("F-09", "§55", section, "receipt_artifact"), [])
+        self.assertEqual(policy.own_lines("F-3", "§47", section), ["3. third"])
+        self.assertEqual(policy.own_lines("AC-0", "§55", section), [], "AC-0 is not a token of AC-07")
+        named = section + "  AND see F-13 here_terminal\n"
+        self.assertEqual(policy.own_lines("F-13", "§55", named), ["  AND see F-13 here_terminal"])
+        self.assertEqual(policy.own_lines("F-1", "§55", named), [], "F-1 is not a token of F-13")
+
     def test_phrase_absent_from_the_anchor_is_ungrounded(self):
         self.row("F-09")["rfc_phrase"] = "cloud_runtime_alive_or_any_blocker"
         self.assert_ungrounded("F-09", "not in §55")

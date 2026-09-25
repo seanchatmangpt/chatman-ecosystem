@@ -14,7 +14,9 @@ REFUSED). Instead it reports two separate standings:
 * ``current`` — the attested head: the frozen payload still hashes to the tagged tree
   (else ``PAYLOAD_MUTATED_POST_TAG``), the tag still names the recorded object and
   subject (``TAG_MUTATED`` / ``TAG_SUBJECT_SPLIT``), and the head is evaluated with the
-  post-tag tag binding. Drift is reported, never used to refuse history.
+  post-tag tag binding. Drift is reported, never used to refuse history; an observed root
+  head that is not the attested head is the typed current-section blocker
+  ``CURRENT_HEAD_UNATTESTED`` (the current section then describes an unobserved head).
 """
 
 from __future__ import annotations
@@ -327,5 +329,12 @@ def current_conformance(
     observed_root = (obs.get("repos", {}).get(root_repo) or {}).get("head_sha")
     drift["root_observed_head"] = observed_root
     drift["root_observed_head_is_attested"] = observed_root == head_sha if observed_root else None
+    blockers: list[str] = []
+    if observed_root and observed_root != head_sha:
+        blockers.append(
+            f"BLOCKED:CURRENT_HEAD_UNATTESTED:{root_repo} observed head {observed_root} is not the attested head {head_sha}"
+        )
     standing = "REFUSED" if refusals else verdict.standing
-    return {"standing": standing, "refusals": refusals, "drift": drift, "receipt": verdict.receipt}
+    if blockers and standing != "REFUSED":
+        standing = "BLOCKED"
+    return {"standing": standing, "refusals": refusals, "blockers": blockers, "drift": drift, "receipt": verdict.receipt}

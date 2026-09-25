@@ -42,11 +42,15 @@ def git(repo: Path, *args: str) -> str:
     return out.stdout.decode().strip()
 
 
-def make_repo(root: Path, name: str, files: dict[str, bytes]) -> str:
+def make_repo(root: Path, name: str, files: dict[str, bytes], origin: str | None = "default") -> str:
+    """A real repo at root/name. ``origin`` defaults to https://github.com/o/<name>.git
+    (the owner the fixtures' ``git:o/<name>@...`` locators name); None leaves no origin."""
     repo = root / name
     repo.mkdir(parents=True, exist_ok=True)
     if not (repo / ".git").exists():
         git(repo, "init", "-q", "-b", "main")
+        if origin is not None:
+            git(repo, "remote", "add", "origin", f"https://github.com/o/{name}.git" if origin == "default" else origin)
     for rel, data in files.items():
         p = repo / rel
         p.parent.mkdir(parents=True, exist_ok=True)
@@ -132,6 +136,63 @@ class ResolverTest(unittest.TestCase):
         with self.assertRaises(dl.Refused) as ctx:
             self.resolver.resolve(dl.parse("git:o/absent@" + "a" * 40 + ":x"))
         self.assertEqual(ctx.exception.code, "REPOSITORY_UNAVAILABLE")
+
+
+class OwnerBindingTest(unittest.TestCase):
+    """The local checkout is keyed by repo name only; its origin remote must name the
+    locator's full owner/repo, else git:attacker/<repo>@... would resolve ALIVE locally."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.body = b"canonical bytes\n"
+        self.sha = make_repo(self.root, "r", {"ev/court.out": self.body}, origin="git@github.com:canon/r.git")
+        self.resolver = dl.Resolver(self.root, allow_network=False)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_matching_owner_resolves_ssh_and_https_forms(self):
+        self.assertEqual(self.resolver.resolve(dl.parse(f"git:canon/r@{self.sha}:ev/court.out")), self.body)
+        self.assertEqual(self.resolver.resolve(dl.parse(f"git:CANON/r@{self.sha}:ev/court.out")), self.body)
+        git(self.root / "r", "remote", "set-url", "origin", "https://github.com/canon/r")
+        self.assertEqual(self.resolver.resolve(dl.parse(f"git:canon/r@{self.sha}:ev/court.out")), self.body)
+
+    def test_attacker_owner_refused_not_resolved_locally(self):
+        with self.assertRaises(dl.Refused) as ctx:
+            self.resolver.resolve(dl.parse(f"git:attacker/r@{self.sha}:ev/court.out"))
+        self.assertEqual(ctx.exception.code, "OWNER_MISMATCH")
+        self.assertIn("origin is canon/r", ctx.exception.detail)
+        with self.assertRaises(dl.Refused) as ctx:
+            self.resolver.tree_paths("attacker/r", self.sha, "ev")
+        self.assertEqual(ctx.exception.code, "OWNER_MISMATCH")
+
+    def test_attacker_row_refuses_the_index(self):
+        row = {"durable_locator": f"git:attacker/r@{self.sha}:ev/court.out", "sha256": sha256(self.body)}
+        out = dl.verify_index(self.resolver, {"rows": [row]})
+        self.assertEqual(len(out), 1)
+        self.assertTrue(out[0].startswith("REFUSED[OWNER_MISMATCH]"), out)
+
+    def test_checkout_without_origin_is_not_trusted(self):
+        sha = make_repo(self.root, "bare-origin", {"x": b"x\n"}, origin=None)
+        with self.assertRaises(dl.Refused) as ctx:
+            self.resolver.resolve(dl.parse(f"git:canon/bare-origin@{sha}:x"))
+        self.assertEqual(ctx.exception.code, "OWNER_MISMATCH")
+
+    def test_remote_slug_normalization(self):
+        cases = {
+            "https://github.com/o/r.git": "o/r",
+            "https://github.com/o/r": "o/r",
+            "https://github.com/o/r/": "o/r",
+            "git@github.com:o/r.git": "o/r",
+            "ssh://git@github.com/o/r.git": "o/r",
+            "file:///tmp/r": None,
+            "/tmp/r": None,
+            "https://github.com/o/r/extra": None,
+        }
+        for url, want in cases.items():
+            with self.subTest(url=url):
+                self.assertEqual(dl.remote_slug(url), want)
 
 
 class VerifyIndexTest(unittest.TestCase):
