@@ -10,6 +10,7 @@ breaks exactly one thing.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import shutil
 import tempfile
@@ -111,6 +112,11 @@ def alive_tree() -> Tree:
     return tree
 
 
+def producer_sha(repository: str) -> str:
+    """Deterministic producer-subject commit of ``repository`` in the ALIVE fixture."""
+    return hashlib.sha1(f"producer:{repository}".encode("utf-8")).hexdigest()
+
+
 def alive_observations(tree: Tree, crown_sha: str = CROWN_SHA) -> dict[str, Any]:
     pins = load(tree.release_dir / "pins.json")
     reqs = load(tree.release_dir / "requirements.json")["requirements"]
@@ -129,15 +135,22 @@ def alive_observations(tree: Tree, crown_sha: str = CROWN_SHA) -> dict[str, Any]
         locator = req["evidence_locator"]
         if locator.startswith("local:"):
             continue
-        repo = locator.partition(":")[0]
+        repo, _, path = locator.partition(":")
         head = repos[repo]["head_sha"]
+        # A receipt never names the commit that contains it: the producer subject is the
+        # parent of the receipt commit (the observed head), and the delta between them is
+        # exactly the receipt paths of that repository (receipt-only, admitted).
+        receipt_paths = sorted(
+            r["evidence_locator"].partition(":")[2] for r in reqs if r["evidence_locator"].partition(":")[0] == repo
+        )
         artifacts[locator] = {
             "sha256": "b" * 64,
             "head_sha": head,
-            "subject_compare": "identical",
+            "subject_compare": "ahead",
+            "subject_delta_paths": receipt_paths,
             "json": {
                 "standing": "ALIVE",
-                "subject_sha": head,
+                "subject_sha": producer_sha(repo),
                 "transport_receipt": DIGEST,
                 "execution_receipt": DIGEST,
             },

@@ -20,9 +20,19 @@ from scripts import verify_release  # type: ignore[attr-defined]
 from scripts.release_train.cross_product_court.io import load_case, receipt_dict
 from scripts.release_train.release_closure_court.court import evaluate as closure_evaluate
 
-from . import berthier, projector
+from . import berthier, binding, projector
 from . import policy as terminality
-from .model import BLOCKED, BROKEN_TERMS, FAILURE_CLASSES, PASS, REFUSED, ReqState, Requirement, sha256_bytes
+from .model import (
+    BLOCKED,
+    BROKEN_TERMS,
+    FAILURE_CLASSES,
+    PASS,
+    REFUSED,
+    EvidenceBinding,
+    ReqState,
+    Requirement,
+    sha256_bytes,
+)
 from .requirements import premise_sections
 
 LINEAGE_OK = {"identical", "ahead"}
@@ -132,6 +142,8 @@ def admit_private(observations: dict[str, Any]) -> tuple[dict[str, Any], dict[st
                 pass
             if receipt.get("subject_compare"):
                 entry["subject_compare"] = receipt["subject_compare"]
+            if isinstance(receipt.get("subject_delta_paths"), list):
+                entry["subject_delta_paths"] = receipt["subject_delta_paths"]
             artifacts[locator] = entry
     return repos, artifacts, failures
 
@@ -232,9 +244,13 @@ class Context:
     premise_text: str | None = None  # in-memory override (crown test)
     extra: dict[str, Any] = field(default_factory=dict)
     policy_root: Path = terminality.POLICY_ROOT
+    allowlist_root: Path = binding.POLICY_ROOT
     private_failures: dict[str, ReqState] = field(init=False)
     policy: terminality.Policy | None = field(init=False, default=None)
     policy_missing: str | None = field(init=False, default=None)
+    # Delta allowlist (binding.classify_delta). Absent/unreadable -> {} (fail closed: every
+    # non-empty delta is UNBOUNDED).
+    allowlist: dict[str, Any] = field(init=False, default_factory=dict)
     _repos: dict[str, Any] = field(init=False, repr=False)
     _artifacts: dict[str, Any] = field(init=False, repr=False)
 
@@ -246,6 +262,10 @@ class Context:
             self.policy = terminality.load_policy(self.release_dir.name, self.policy_root)
         except terminality.PolicyMissing as exc:
             self.policy, self.policy_missing = None, str(exc)
+        try:
+            self.allowlist = binding.load_allowlist(self.release_dir.name, self.allowlist_root)
+        except (OSError, json.JSONDecodeError):
+            self.allowlist = {}
 
     @property
     def import_sha256(self) -> str | None:
@@ -290,6 +310,30 @@ def _local_path(ctx: Context, req: Requirement) -> Path:
     return ctx.root / req.evidence_locator[len("local:") :]
 
 
+def _admitted(ctx: Context, bound: EvidenceBinding, detail: str, subject: str | None) -> ReqState:
+    """PASS carrying ``bound`` when ``binding.admit`` admits it, else its typed refusal/blocker."""
+    refusal = binding.admit(bound, crown_sha=ctx.crown_sha, root_repository=ctx.container_repo, allowlist=ctx.allowlist)
+    if refusal is not None:
+        return refusal
+    return PASS(detail, subject, bound)
+
+
+def in_tree_pass(req: Requirement, ctx: Context, detail: str, court: str | None = None) -> ReqState:
+    """PASS derived by the crown from its own tree at ``crown_sha`` (IN_TREE_DERIVED binding).
+
+    The evidence is the file the requirement's ``local:`` locator names when it exists (its
+    bytes are digested), else the derivation record (``detail``).
+    """
+    local = req.evidence_locator.startswith("local:")
+    path = req.evidence_locator[len("local:") :] if local else f"release/{ctx.release_dir.name}/requirements.json"
+    target = ctx.root / path
+    raw = target.read_bytes() if target.is_file() else None
+    bound = binding.bind_in_tree(
+        req, ctx.crown_sha, ctx.container_repo, path, raw, court=court or req.evidence_kind, derivation=detail
+    )
+    return _admitted(ctx, bound, detail, ctx.crown_sha)
+
+
 def manifest_valid(req: Requirement, ctx: Context) -> ReqState:
     path = ctx.release_dir / "manifest.toml"
     if not path.is_file():
@@ -301,7 +345,7 @@ def manifest_valid(req: Requirement, ctx: Context) -> ReqState:
     findings = verify_release.validate_manifest(data, Path("release") / ctx.release_dir.name / "manifest.toml")
     if findings:
         return REFUSED("MANIFEST_INVALID", ";".join(f"{f.code}:{f.subject}" for f in findings))
-    return PASS(f"manifest sha256={sha256_bytes(path.read_bytes())}", ctx.crown_sha)
+    return in_tree_pass(req, ctx, f"manifest sha256={sha256_bytes(path.read_bytes())}")
 
 
 def closure_terminal(req: Requirement, ctx: Context) -> ReqState:
@@ -362,10 +406,12 @@ def closure_terminal(req: Requirement, ctx: Context) -> ReqState:
             "CLOSURE_PARTIAL",
             f"closure {verdict.standing}; non-terminal={','.join(sorted(open_rows))}; receipt={receipt}",
         )
-    return PASS(
+    return in_tree_pass(
+        req,
+        ctx,
         f"{len(required)} required subjects terminal ({typed} typed non-ALIVE dispositions); "
         f"closure court {verdict.standing}; receipt={receipt}; policy {req.id} ceiling={policy_row.standing_ceiling}",
-        ctx.crown_sha,
+        "release_closure_court",
     )
 
 
@@ -436,18 +482,48 @@ def _bound(req: Requirement, ctx: Context, data: dict[str, Any], is_local: bool,
     <subject>", never "ALIVE at").
     """
     if is_local:
-        return PASS(f"local artifact {req.evidence_locator} ({standing})", ctx.crown_sha)
+        path = req.evidence_locator[len("local:") :]
+        bound = binding.bind_local(
+            req,
+            ctx.crown_sha,
+            ctx.container_repo,
+            path,
+            _local_path(ctx, req).read_bytes(),
+            data,
+            standing,
+            ctx.allowlist,
+        )
+        return _admitted(ctx, bound, f"local artifact {req.evidence_locator} ({standing})", bound.evaluated_subject_sha)
     subject = data.get("subject_sha")
     if not subject and isinstance(data.get("subject"), dict):
         subject = data["subject"].get("sha")
-    if not isinstance(subject, str) or len(subject) != 40:
+    if not isinstance(subject, str) or not subject.strip():
         return BLOCKED("ARTIFACT_UNBOUND", f"{req.evidence_locator}: no subject_sha")
-    status = ctx.artifacts.get(req.evidence_locator, {}).get("subject_compare")
+    observed = ctx.artifacts.get(req.evidence_locator, {})
+    status = observed.get("subject_compare")
     if status in LINEAGE_BAD:
         return REFUSED("ARTIFACT_SUBJECT_SPLIT", f"{req.evidence_locator}:{subject}:{status}", subject)
     if status not in LINEAGE_OK:
         return BLOCKED("OBSERVATION_MISSING", f"{req.evidence_locator}: subject lineage unobserved", subject)
-    return PASS(f"{req.evidence_locator} {standing} at {subject} ({status})", subject)
+    repository, _, path = req.evidence_locator.partition(":")
+    owner, source, split = resolve_owner(data, repository)
+    bound = binding.bind_remote(
+        req,
+        repository=repository,
+        path=path,
+        subject_sha=subject,
+        container_sha=observed.get("head_sha"),
+        evidence_digest=observed.get("sha256"),
+        compare_status=status,
+        delta_paths=observed.get("subject_delta_paths"),
+        allowlist=ctx.allowlist,
+        data=data,
+        standing=standing,
+        owner=repository if split is not None else owner,
+        owner_source="container" if split is not None else source,
+        kind="OPERATOR_LOCAL" if observed.get("source") == "operator-local" else "REMOTE_RECEIPT",
+    )
+    return _admitted(ctx, bound, f"{req.evidence_locator} {standing} at {subject} ({status})", subject)
 
 
 def _typed_terminal(
@@ -478,6 +554,7 @@ def _typed_terminal(
         f"terminal {standing}({kind}) ({anchor}; policy {req.id} ceiling={row.standing_ceiling}); "
         f"owner={owner} owner_source={source}; {bound.detail}",
         bound.subject_sha,
+        bound.binding,
     )
 
 
@@ -557,7 +634,7 @@ def berthier_court(req: Requirement, ctx: Context) -> ReqState:
     ok, detail = crown_test(ctx.inputs)
     if not ok:
         return REFUSED("BERTHIER_COURT_FAILED", f"RFC §9 crown test: {detail}")
-    return PASS(f"berthier ALIVE; RFC §9 crown test: {detail}", ctx.crown_sha)
+    return in_tree_pass(req, ctx, f"berthier ALIVE; RFC §9 crown test: {detail}", "berthier_court")
 
 
 def judge_committed(ctx: Context, rfc_text: str | None = None) -> berthier.BerthierVerdict:
@@ -679,7 +756,7 @@ def xprod_case(req: Requirement, ctx: Context) -> ReqState:
         return REFUSED("XPROD_REFUSED", "producer subject not merged: " + ",".join(split))
     if unobserved:
         return BLOCKED("OBSERVATION_MISSING", "producer subject lineage unobserved: " + ",".join(unobserved))
-    return PASS(f"XPROD ALIVE receipt={receipt.get('receipt_digest')}", ctx.crown_sha)
+    return in_tree_pass(req, ctx, f"XPROD ALIVE receipt={receipt.get('receipt_digest')}", "cross_product_court")
 
 
 def _transient_shas(ctx: Context) -> set[str]:
@@ -709,7 +786,7 @@ def durable_pins(req: Requirement, ctx: Context) -> ReqState:
     )
     if unobserved:
         return BLOCKED("OBSERVATION_MISSING", "pins unobserved: " + ",".join(unobserved))
-    return PASS(f"{len(ctx.inputs.pins['repos'])} pins durable", ctx.crown_sha)
+    return in_tree_pass(req, ctx, f"{len(ctx.inputs.pins['repos'])} pins durable")
 
 
 def merged_sha(req: Requirement, ctx: Context) -> ReqState:
@@ -732,7 +809,7 @@ def merged_sha(req: Requirement, ctx: Context) -> ReqState:
         return REFUSED("SHA_NOT_MERGED", ",".join(sorted(bad)))
     if missing:
         return BLOCKED("OBSERVATION_MISSING", ",".join(sorted(missing)))
-    return PASS("every pin identical-to or ancestor-of its default-branch head", ctx.crown_sha)
+    return in_tree_pass(req, ctx, "every pin identical-to or ancestor-of its default-branch head")
 
 
 def cold_reconstruction(req: Requirement, ctx: Context) -> ReqState:
@@ -742,7 +819,7 @@ def cold_reconstruction(req: Requirement, ctx: Context) -> ReqState:
     env = ctx.observations.get("environment", {})
     if not env.get("cold"):
         return BLOCKED("NOT_COLD", "projection current but evaluation environment not declared cold (clean runner)")
-    return PASS(f"cold projector --check current (run {env.get('run_id')})", ctx.crown_sha)
+    return in_tree_pass(req, ctx, f"cold projector --check current (run {env.get('run_id')})", "projector --check")
 
 
 def worktree_observation(req: Requirement, ctx: Context) -> ReqState:
@@ -767,7 +844,25 @@ def worktree_observation(req: Requirement, ctx: Context) -> ReqState:
     )
     if unauthorized:
         return REFUSED("UNAUTHORIZED_WORKTREE", f"{len(unauthorized)}: " + ",".join(unauthorized[:10]))
-    return PASS(f"0 unauthorized worktrees ({local.get('source')})", ctx.crown_sha)
+    path = req.evidence_locator[len("local:") :] if req.evidence_locator.startswith("local:") else ""
+    committed = ctx.root / path if path else None
+    raw = (
+        committed.read_bytes()
+        if committed is not None and committed.is_file()
+        else json.dumps(local, sort_keys=True).encode("utf-8")
+    )
+    bound = binding.bind_local(
+        req,
+        ctx.crown_sha,
+        ctx.container_repo,
+        path or f"release/{ctx.release_dir.name}/observations/local-worktrees.json",
+        raw,
+        {"producer": local.get("authority") or "operator-local", "court": "topology-receipt"},
+        "PASS",
+        ctx.allowlist,
+        kind="OPERATOR_LOCAL",
+    )
+    return _admitted(ctx, bound, f"0 unauthorized worktrees ({local.get('source')})", ctx.crown_sha)
 
 
 def tag_binding(req: Requirement, ctx: Context) -> ReqState:
@@ -775,10 +870,10 @@ def tag_binding(req: Requirement, ctx: Context) -> ReqState:
     if not isinstance(tag, dict) or "sha" not in tag:
         return BLOCKED("OBSERVATION_MISSING", "tag not observed")
     if tag["sha"] is None:
-        return PASS(f"{tag.get('name')} absent; tag job binds it to crown_sha only after ALIVE", ctx.crown_sha)
+        return in_tree_pass(req, ctx, f"{tag.get('name')} absent; tag job binds it to crown_sha only after ALIVE")
     if tag["sha"] != ctx.crown_sha:
         return REFUSED("TAG_SHA_SPLIT", f"{tag.get('name')}={tag['sha']} crown={ctx.crown_sha}")
-    return PASS(f"{tag.get('name')}={tag['sha']} == crown_sha", ctx.crown_sha)
+    return in_tree_pass(req, ctx, f"{tag.get('name')}={tag['sha']} == crown_sha")
 
 
 def crown_self(req: Requirement, ctx: Context) -> ReqState:
@@ -787,7 +882,7 @@ def crown_self(req: Requirement, ctx: Context) -> ReqState:
     open_ids = sorted(k for k, v in states.items() if k != req.id and v.state != "PASS")
     if open_ids:
         return BLOCKED("CROWN_DEPENDENCIES_OPEN", ",".join(open_ids))
-    return PASS("every other requirement PASS", ctx.crown_sha)
+    return in_tree_pass(req, ctx, "every other requirement PASS", "crown_self")
 
 
 Evaluator = Callable[[Requirement, Context], ReqState]

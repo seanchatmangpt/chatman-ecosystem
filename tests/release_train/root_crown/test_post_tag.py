@@ -16,7 +16,7 @@ from pathlib import Path
 
 from _support import REPO, RELEASE, committed_tree
 
-from scripts.release_train.root_crown import crown, posttag
+from scripts.release_train.root_crown import crown, evidence, posttag
 from scripts.release_train.root_crown.model import POST_TAG_BLOCKERS, POST_TAG_RULES, code_of
 
 HARDENING = REPO / "release" / RELEASE / "hardening"
@@ -27,8 +27,14 @@ TAG_OBJECT = "337e839937c247de4ee58b744c8b8e43950d18e3"
 TAG_COMMIT = "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
 
 
-class _Ctx:
-    crown_sha = HEAD
+# Evidence binding (PR-4): the tag-time producer receipts were read at container heads that
+# add non-receipt paths (observed in hardening/inputs/delta-observations.json), so their
+# standing is not inherited: typed BLOCKED EVIDENCE_DELTA_UNBOUNDED; affidavit's delta is
+# receipt-only and stays PASS.
+UNBOUNDED_IDS = {
+    "AC-03", "AC-04", "AC-07", "AC-13", "AC-14", "AC-15", "AC-16",
+    "F-01", "F-02", "F-08", "F-09", "F-12", "F-13",
+}  # fmt: skip
 
 
 def local_tag(**fields):
@@ -85,8 +91,14 @@ class PostTagTest(unittest.TestCase):
         receipt = verdict.receipt
         self.assertEqual(receipt["mode"], "POST_TAG")
         self.assertEqual(receipt["refusals"], [])
-        self.assertEqual(receipt["current"]["standing"], "ALIVE", receipt["current"]["core"]["remaining"])
-        self.assertEqual(receipt["current"]["core"]["requirements"]["AC-19"]["state"], "PASS")
+        core = receipt["current"]["core"]
+        self.assertEqual(receipt["current"]["standing"], "BLOCKED", core["remaining"])
+        unbounded = {r["id"] for r in core["remaining"] if r["code"] == "EVIDENCE_DELTA_UNBOUNDED"}
+        self.assertEqual(unbounded, UNBOUNDED_IDS)
+        self.assertEqual({r["id"] for r in core["remaining"]} - unbounded, {"AC-18"})
+        self.assertEqual(core["requirements"]["AC-08"]["binding"]["lineage_proof"]["delta_class"], "RECEIPT_ONLY")
+        self.assertEqual(core["requirements"]["AC-19"]["state"], "PASS")
+        self.assertEqual(core["requirements"]["AC-19"]["binding"]["kind"], "IN_TREE_DERIVED")
         self.assertEqual(receipt["subject"], {
             "tag": RELEASE, "tag_object_sha": TAG_OBJECT, "commit_sha": TAG_COMMIT,
             "tree_sha": "8553eb9ea7ab45227169eec1f57204f2ff12ad53",
@@ -98,12 +110,20 @@ class PostTagTest(unittest.TestCase):
         )
         self.assertTrue(crown.verify_receipt(receipt))
         if HAVE_SUBJECT:
-            self.assertEqual(verdict.standing, "ALIVE")
+            self.assertEqual(verdict.standing, "BLOCKED")
             self.assertTrue(receipt["historical"]["replay"]["exact"])
-            self.assertEqual(receipt["historical"]["standing_ceiling"], "ALIVE")
+            self.assertEqual(receipt["historical"]["standing"], "ALIVE")
+            self.assertEqual(receipt["historical"]["standing_ceiling"], "BLOCKED")
         else:
             self.assertEqual(verdict.standing, "BLOCKED")
             self.assertIn("SUBJECT_ABSENT", {b["code"] for b in receipt["blockers"]})
+
+    def test_without_delta_observations_inheritance_is_refused(self):
+        """No lineage proof -> every producer receipt read at a descendant head is REFUSED."""
+        (self.hardening / posttag.DELTA_OBSERVATIONS).unlink()
+        verdict = self.attest()
+        missing = {r.split(":")[2] for r in verdict.receipt["current"]["refusals"] if "EVIDENCE_LINEAGE_MISSING" in r}
+        self.assertEqual(missing, UNBOUNDED_IDS | {"AC-08", "F-05"})
 
     def test_subject_absent_is_typed_blocked(self):
         verdict = self.attest(subject=None)
@@ -216,8 +236,17 @@ class PostTagTest(unittest.TestCase):
         }
         for expected, tags in table.items():
             with self.subTest(expected=expected):
-                state = posttag.tag_binding_post(record, tags)(tag_reqs[0], None if expected != "PASS" else _Ctx())
+                ctx = evidence.Context(
+                    root=self.tree.root,
+                    release_dir=self.tree.release_dir,
+                    observations=self.obs,
+                    crown_sha=HEAD,
+                    inputs=self.tree.inputs(),
+                )
+                state = posttag.tag_binding_post(record, tags)(tag_reqs[0], None if expected != "PASS" else ctx)
                 self.assertEqual(state.state if expected == "PASS" else state.code, expected)
+                if expected == "PASS":
+                    self.assertEqual(state.binding.kind, "IN_TREE_DERIVED")
         self.assertEqual(posttag.tag_binding_post(None, [local_tag()])(tag_reqs[0], None).code, "TAG_UNRECORDED")
 
     def test_deleted_tag_is_tag_mutated(self):

@@ -7,9 +7,9 @@
     "failures": 0,
     "ok": true,
     "skipped": 4,
-    "tests_run": 177
+    "tests_run": 202
   },
-  "killed": 74,
+  "killed": 99,
   "mutants": {
     "acceptance_drift_off": {
       "detail": "killed by 2 test(s): test_policy.PolicyRefusalTest.test_acceptance_drift,test_policy.PolicyRefusalTest.test_every_terminality_code_is_typed_and_emitted",
@@ -20,6 +20,194 @@
       ],
       "kind": "source",
       "rule": "ACCEPTANCE_DRIFT"
+    },
+    "binding_admission_bypassed": {
+      "detail": "killed by 7 test(s): test_binding.ContextAllowlistTest.test_missing_allowlist_fails_closed,test_binding.CrownBindingTest.test_falsifier_delta_blocks_the_requirement,test_binding.CrownBindingTest.test_mutable_subject_is_refused,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_refuse_only_unproven_lineage,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_with_observed_deltas,test_post_tag.PostTagTest.test_post_tag_head_is_attested_not_refused",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_binding",
+        "test_post_tag",
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "admit wired into every PASS"
+    },
+    "binding_container_claims_subject_admitted": {
+      "detail": "killed by 2 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule (code='EVIDENCE_CONTAINER_CLAIMS_SUBJECT'),test_binding.AdmitTest.test_receipt_naming_its_own_container_is_refused",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_CONTAINER_CLAIMS_SUBJECT"
+    },
+    "binding_content_digest_unchecked": {
+      "detail": "killed by 1 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_DIGEST_MISMATCH(bytes)"
+    },
+    "binding_deny_extension_ignored": {
+      "detail": "killed by 2 test(s): test_binding.ClassifyDeltaTest.test_deny_lists_outrank_a_broadened_allow_glob (path='release/v26.9.25/receipts/manufacture.py'),test_binding.ClassifyDeltaTest.test_deny_lists_outrank_a_broadened_allow_glob (path='release/v26.9.25/receipts/replay/origin_probe.exs')",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "classify_delta(deny_extensions)"
+    },
+    "binding_deny_segment_ignored": {
+      "detail": "killed by 1 test(s): test_binding.ClassifyDeltaTest.test_classes (paths=['release/v26.9.25/receipts/schemas/a.json'])",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "classify_delta(deny_segments)"
+    },
+    "binding_dropped_from_receipt": {
+      "detail": "killed by 35 test(s): test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-01'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-02'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-03'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-04'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-05'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-06')",
+      "file": "scripts/release_train/root_crown/model.py",
+      "killed": true,
+      "killers": [
+        "test_binding",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "ReqState.binding in as_dict v2"
+    },
+    "binding_glob_star_crosses_segments": {
+      "detail": "killed by 1 test(s): test_binding.ClassifyDeltaTest.test_classes (paths=['release/v26.9.25/nested/receipts/a.json'])",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "classify_delta(* is one segment)"
+    },
+    "binding_lineage_missing_admitted": {
+      "detail": "killed by 2 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule (code='EVIDENCE_LINEAGE_MISSING'),test_post_tag.PostTagTest.test_without_delta_observations_inheritance_is_refused",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_LINEAGE_MISSING"
+    },
+    "binding_misclaim_admitted": {
+      "detail": "killed by 1 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule (code='EVIDENCE_DELTA_MISCLAIMED')",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_DELTA_MISCLAIMED"
+    },
+    "binding_mutable_subject_admitted": {
+      "detail": "killed by 3 test(s): test_binding.AdmitTest.test_in_tree_binding_must_evaluate_its_container,test_binding.AdmitTest.test_one_refusing_mutant_per_rule (code='EVIDENCE_SUBJECT_MUTABLE'),test_binding.CrownBindingTest.test_mutable_subject_is_refused",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_SUBJECT_MUTABLE"
+    },
+    "binding_new_head_exemption_widened": {
+      "detail": "killed by 1 test(s): test_binding.CrownBindingTest.test_new_head_exemption_is_only_for_in_tree_derived",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "NEW_HEAD exemption only for IN_TREE_DERIVED"
+    },
+    "binding_not_durable_admitted": {
+      "detail": "killed by 1 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule (code='EVIDENCE_NOT_DURABLE')",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_NOT_DURABLE"
+    },
+    "binding_post_tag_deltas_ignored": {
+      "detail": "killed by 2 test(s): test_post_tag.PostTagTest.test_post_tag_head_is_attested_not_refused,test_post_tag.PostTagTest.test_subject_absent_is_typed_blocked",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "committed delta observations reach the current evaluation"
+    },
+    "binding_remote_delta_dropped": {
+      "detail": "killed by 21 test(s): test_binding.ContextAllowlistTest.test_missing_allowlist_fails_closed,test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-03'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-04'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-07'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-08'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-13')",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_binding",
+        "test_post_tag",
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "observed delta reaches the binding"
+    },
+    "binding_self_digest_unchecked": {
+      "detail": "killed by 1 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_DIGEST_MISMATCH(binding)"
+    },
+    "binding_split_admitted": {
+      "detail": "killed by 1 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule (code='EVIDENCE_SUBJECT_SPLIT')",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_SUBJECT_SPLIT"
+    },
+    "binding_traversal_admitted": {
+      "detail": "killed by 1 test(s): test_binding.ClassifyDeltaTest.test_classes (paths=['release/v26.9.25/receipts/../../ci/x.json'])",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "classify_delta(traversal)"
+    },
+    "binding_unbounded_inherited": {
+      "detail": "killed by 5 test(s): test_binding.AdmitTest.test_unbounded_delta_is_a_typed_blocker,test_binding.ContextAllowlistTest.test_missing_allowlist_fails_closed,test_binding.CrownBindingTest.test_falsifier_delta_blocks_the_requirement,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_with_observed_deltas,test_post_tag.PostTagTest.test_post_tag_head_is_attested_not_refused",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding",
+        "test_post_tag",
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_DELTA_UNBOUNDED"
     },
     "blocked_without_type_off": {
       "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='BLOCKED_WITHOUT_TYPE'),test_crown.CrownTest.test_typed_blocked_is_lawful_untyped_is_refused",
@@ -32,7 +220,7 @@
       "rule": "BLOCKED_WITHOUT_TYPE(crown)"
     },
     "bound_detail_says_alive": {
-      "detail": "killed by 2 test(s): test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_stay_alive_under_the_policy,test_terminal_alignment.TerminalAlignmentTest.test_bound_detail_names_the_receipt_standing",
+      "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_bound_detail_names_the_receipt_standing",
       "file": "scripts/release_train/root_crown/evidence.py",
       "killed": true,
       "killers": [
@@ -112,6 +300,41 @@
       "kind": "data",
       "rule": "ACCEPTANCE_DRIFT"
     },
+    "dm_delta_misclaimed": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_DELTA_MISCLAIMED:AC-07'; control clean",
+      "expected": "REFUSED:EVIDENCE_DELTA_MISCLAIMED:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_DELTA_MISCLAIMED"
+    },
+    "dm_delta_unbounded": {
+      "detail": "court emitted 'BLOCKED:EVIDENCE_DELTA_UNBOUNDED:AC-07'; control clean",
+      "expected": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_DELTA_UNBOUNDED"
+    },
+    "dm_delta_unobserved": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_LINEAGE_MISSING:AC-07'; control clean",
+      "expected": "REFUSED:EVIDENCE_LINEAGE_MISSING:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_LINEAGE_MISSING"
+    },
+    "dm_evidence_digest_mismatch": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_DIGEST_MISMATCH:AFFIDAVIT'; control clean",
+      "expected": "REFUSED:EVIDENCE_DIGEST_MISMATCH:AFFIDAVIT",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_DIGEST_MISMATCH"
+    },
+    "dm_evidence_not_durable": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_NOT_DURABLE:AFFIDAVIT:affidavit:brce_court'; control clean",
+      "expected": "REFUSED:EVIDENCE_NOT_DURABLE:AFFIDAVIT:affidavit:brce_court",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_NOT_DURABLE"
+    },
     "dm_expired_current_as_historical": {
       "detail": "court emitted 'REFUSED:HISTORICAL_OBSERVATION_SPLIT'; control clean",
       "expected": "REFUSED:HISTORICAL_OBSERVATION_SPLIT",
@@ -125,6 +348,13 @@
       "killed": true,
       "kind": "data",
       "rule": "ARTIFACT_BLOCKED"
+    },
+    "dm_mutable_subject": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_SUBJECT_MUTABLE:AC-07'; control clean",
+      "expected": "REFUSED:EVIDENCE_SUBJECT_MUTABLE:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_SUBJECT_MUTABLE"
     },
     "dm_mutable_tag": {
       "detail": "court emitted 'REFUSED:TAG_MUTATED'; control clean",
@@ -153,6 +383,13 @@
       "killed": true,
       "kind": "data",
       "rule": "TERMINALITY_POLICY_MISSING"
+    },
+    "dm_receipt_names_its_container": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AC-07'; control clean",
+      "expected": "REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_CONTAINER_CLAIMS_SUBJECT"
     },
     "dm_relaxation_ungrounded": {
       "detail": "court emitted 'REFUSED:POLICY_RELAXATION_UNGROUNDED:AC-07'; control clean",
@@ -349,7 +586,7 @@
       "rule": "POLICY_RELAXATION_UNGROUNDED(non-terminal state)"
     },
     "owner_container_default_off": {
-      "detail": "killed by 9 test(s): test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_stay_alive_under_the_policy,test_policy.OwnerRuleTest.test_absent_owner_is_the_container,test_policy.OwnerRuleTest.test_closure_row_owner_split_and_container_default,test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='broken_term'),test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='failure_class'),test_typed_terminal.TypedTerminalReceiptTest.test_local_terminal_receipt_without_owner_is_owned_by_its_container",
+      "detail": "killed by 10 test(s): test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_refuse_only_unproven_lineage,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_with_observed_deltas,test_policy.OwnerRuleTest.test_absent_owner_is_the_container,test_policy.OwnerRuleTest.test_closure_row_owner_split_and_container_default,test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='broken_term'),test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='failure_class')",
       "file": "scripts/release_train/root_crown/evidence.py",
       "killed": true,
       "killers": [
@@ -721,14 +958,16 @@
   "release": "v26.9.25",
   "schema": "https://chatman.dev/root-crown/hardening/mutation-report/v1",
   "source_digests": {
+    "scripts/release_train/root_crown/binding.py": "sha256:51dda4ae530be25f952f9b0603c4e81f293a82f64faabb45bbc05dd08a913b72",
     "scripts/release_train/root_crown/chain.py": "sha256:3039484a9b8f992aa6c5ee72989af86570afe5c1ab4e45f177597e4714009253",
-    "scripts/release_train/root_crown/crown.py": "sha256:722ae65389787ec428da97a5d7fb5749673d6a0fa21f8f36f990c8e6f5f97932",
-    "scripts/release_train/root_crown/evidence.py": "sha256:4b58c6efec9f68593675ec26d959dd9256006d2c179e0a4064e6b569f095d76e",
+    "scripts/release_train/root_crown/crown.py": "sha256:8f72a974df9a62f85a7ce2527556ce96194b4ea7cb8b28b042c3c6a7c1d3b3e8",
+    "scripts/release_train/root_crown/evidence.py": "sha256:ce2080191087b639b79b3a4ed69b83ceea40503c053f38b7abd8c63ca585415c",
     "scripts/release_train/root_crown/gitobj.py": "sha256:191690fafbc380bef695eee9beee8563d123cecc6beab89ac99a2898830979a2",
+    "scripts/release_train/root_crown/model.py": "sha256:d6c72717c405aa73dd741eeedf56bbdbab0dbf98a479ef5f573d2517aa46fb25",
     "scripts/release_train/root_crown/policy.py": "sha256:f3d0c0d2b60e1fbae321145877f1fb20333e8336c4330926c2937aa7299e0a5d",
-    "scripts/release_train/root_crown/posttag.py": "sha256:9a7d1b157f21787cbf19c3b610ebf7ce5e45d9cdf0bba7107e8e975f4b05bb5c",
+    "scripts/release_train/root_crown/posttag.py": "sha256:7a60f56d4e1d17619a1213c3cb93dcf7ffeb32d09b01067dac13cf8958b942fe",
     "scripts/release_train/root_crown/replay.py": "sha256:c3610676203a00d48a00a50af3c70f59eaf5d7608a95a7390947bc32332b6a2d"
   },
   "survivors": [],
-  "total": 74
+  "total": 99
 }

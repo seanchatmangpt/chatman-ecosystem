@@ -31,7 +31,8 @@ def private_obs(obs: dict, observed_at: str = "2026-09-25T12:30:00Z") -> dict:
     head, pin = public["head_sha"], public["pin_sha"]
     receipts = []
     for locator in [k for k in obs["artifacts"] if k.startswith(ZOELA + ":")]:
-        content = json.dumps(obs["artifacts"].pop(locator)["json"], indent=2) + "\n"
+        artifact = obs["artifacts"].pop(locator)
+        content = json.dumps(artifact["json"], indent=2) + "\n"
         raw = content.encode("utf-8")
         receipts.append(
             {
@@ -39,7 +40,8 @@ def private_obs(obs: dict, observed_at: str = "2026-09-25T12:30:00Z") -> dict:
                 "blob_sha": blob_sha(raw),
                 "sha256": hashlib.sha256(raw).hexdigest(),
                 "content": content,
-                "subject_compare": "identical",
+                "subject_compare": artifact["subject_compare"],
+                "subject_delta_paths": artifact["subject_delta_paths"],
             }
         )
     obs["repos"][ZOELA] = {"pin_sha": pin, "error": "HTTP404"}

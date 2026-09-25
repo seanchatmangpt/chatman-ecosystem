@@ -301,6 +301,8 @@ CHAIN = "scripts/release_train/root_crown/chain.py"
 REPLAY = "scripts/release_train/root_crown/replay.py"
 GITOBJ = "scripts/release_train/root_crown/gitobj.py"
 POLICY = "scripts/release_train/root_crown/policy.py"
+BINDING = "scripts/release_train/root_crown/binding.py"
+MODEL = "scripts/release_train/root_crown/model.py"
 
 T_TYPED = "test_typed_terminal"
 T_ALIGN = "test_terminal_alignment"
@@ -311,6 +313,7 @@ T_CHAIN = "test_chain"
 T_REPLAY = "test_replay"
 T_GITOBJ = "test_gitobj"
 T_POLICY = "test_policy"
+T_BINDING = "test_binding"
 
 SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
     # --- the five audit survivors (each killed by a new test in test_typed_terminal) ---------
@@ -664,8 +667,8 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
     SourceMutant(
         "bound_detail_says_alive",
         EVIDENCE,
-        '    return PASS(f"{req.evidence_locator} {standing} at {subject} ({status})", subject)',
-        '    return PASS(f"{req.evidence_locator} ALIVE at {subject} ({status})", subject)',
+        '    return _admitted(ctx, bound, f"{req.evidence_locator} {standing} at {subject} ({status})", subject)',
+        '    return _admitted(ctx, bound, f"{req.evidence_locator} ALIVE at {subject} ({status})", subject)',
         (T_ALIGN, T_POLICY),
         "_bound detail names the receipt standing",
     ),
@@ -773,6 +776,151 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
         (T_POLICY,),
         "POLICY_RELAXATION_UNGROUNDED(one grounding, several relaxations)",
     ),
+    # --- evidence binding (PR-4): one disable-mutant per binding rule + the wiring sites
+    SourceMutant(
+        "binding_not_durable_admitted",
+        BINDING,
+        "    if not is_durable(binding.evidence_locator):",
+        "    if False:",
+        (T_BINDING,),
+        "EVIDENCE_NOT_DURABLE",
+    ),
+    SourceMutant(
+        "binding_mutable_subject_admitted",
+        BINDING,
+        "        if not (isinstance(value, str) and HEX40.fullmatch(value)):",
+        "        if False:",
+        (T_BINDING,),
+        "EVIDENCE_SUBJECT_MUTABLE",
+    ),
+    SourceMutant(
+        "binding_container_claims_subject_admitted",
+        BINDING,
+        "        if subject == container or (foreign and subject == crown_sha):",
+        "        if False:",
+        (T_BINDING,),
+        "EVIDENCE_CONTAINER_CLAIMS_SUBJECT",
+    ),
+    SourceMutant(
+        "binding_split_admitted",
+        BINDING,
+        "    if status in LINEAGE_BAD:",
+        "    if False:",
+        (T_BINDING,),
+        "EVIDENCE_SUBJECT_SPLIT",
+    ),
+    SourceMutant(
+        "binding_lineage_missing_admitted",
+        BINDING,
+        '    if status not in LINEAGE_OK or proof.get("delta_paths") is None:',
+        "    if False:",
+        (T_BINDING, T_POST),
+        "EVIDENCE_LINEAGE_MISSING",
+    ),
+    SourceMutant(
+        "binding_misclaim_admitted",
+        BINDING,
+        '    if proof.get("delta_class") != computed:',
+        "    if False:",
+        (T_BINDING,),
+        "EVIDENCE_DELTA_MISCLAIMED",
+    ),
+    SourceMutant(
+        "binding_unbounded_inherited",
+        BINDING,
+        '    if computed == "UNBOUNDED":',
+        "    if False:",
+        (T_BINDING, T_POST, T_POLICY),
+        "EVIDENCE_DELTA_UNBOUNDED",
+    ),
+    SourceMutant(
+        "binding_content_digest_unchecked",
+        BINDING,
+        "    if content is not None and binding.evidence_digest != sha256_tag(content):",
+        "    if False:",
+        (T_BINDING,),
+        "EVIDENCE_DIGEST_MISMATCH(bytes)",
+    ),
+    SourceMutant(
+        "binding_self_digest_unchecked",
+        BINDING,
+        "    if binding.binding_digest != binding.computed_digest():",
+        "    if False:",
+        (T_BINDING,),
+        "EVIDENCE_DIGEST_MISMATCH(binding)",
+    ),
+    SourceMutant(
+        "binding_traversal_admitted",
+        BINDING,
+        '    if any(s in ("", ".", "..") for s in segments):',
+        "    if False:",
+        (T_BINDING,),
+        "classify_delta(traversal)",
+    ),
+    SourceMutant(
+        "binding_deny_extension_ignored",
+        BINDING,
+        '    if any(lowered.endswith(ext) for ext in allowlist.get("deny_extensions", [])):',
+        "    if False:",
+        (T_BINDING,),
+        "classify_delta(deny_extensions)",
+    ),
+    SourceMutant(
+        "binding_deny_segment_ignored",
+        BINDING,
+        '    if set(segments) & set(allowlist.get("deny_segments", [])):',
+        "    if False:",
+        (T_BINDING,),
+        "classify_delta(deny_segments)",
+    ),
+    SourceMutant(
+        "binding_glob_star_crosses_segments",
+        BINDING,
+        '            out.append("[^/]*")',
+        '            out.append(".*")',
+        (T_BINDING,),
+        "classify_delta(* is one segment)",
+    ),
+    SourceMutant(
+        "binding_admission_bypassed",
+        EVIDENCE,
+        "    refusal = binding.admit(bound, crown_sha=ctx.crown_sha, root_repository=ctx.container_repo, allowlist=ctx.allowlist)",
+        "    refusal = None",
+        (T_BINDING, T_POST, T_POLICY),
+        "admit wired into every PASS",
+    ),
+    SourceMutant(
+        "binding_remote_delta_dropped",
+        EVIDENCE,
+        '        delta_paths=observed.get("subject_delta_paths"),',
+        "        delta_paths=[],",
+        (T_BINDING, T_POST, T_POLICY),
+        "observed delta reaches the binding",
+    ),
+    SourceMutant(
+        "binding_new_head_exemption_widened",
+        CROWN,
+        '            in_tree = bound is not None and bound.kind == "IN_TREE_DERIVED" and state.subject_sha == crown_sha',
+        "            in_tree = state.subject_sha == crown_sha",
+        (T_BINDING,),
+        "NEW_HEAD exemption only for IN_TREE_DERIVED",
+    ),
+    SourceMutant(
+        "binding_dropped_from_receipt",
+        MODEL,
+        '            "binding": None if self.binding is None else self.binding.as_dict(),',
+        '            "binding": None,',
+        (T_BINDING, T_POST),
+        "ReqState.binding in as_dict v2",
+    ),
+    SourceMutant(
+        "binding_post_tag_deltas_ignored",
+        POSTTAG,
+        "        with_deltas(observations, hardening)",
+        "        observations",
+        (T_POST,),
+        "committed delta observations reach the current evaluation",
+    ),
 )
 
 
@@ -785,6 +933,8 @@ DATA_ENV_MODULES = (
     "scripts.release_train.root_crown.replay",
     "scripts.release_train.root_crown.model",
     "scripts.release_train.root_crown.policy",
+    "scripts.release_train.root_crown.binding",
+    "scripts.release_train.release_closure_court.court",
 )
 TAG_OBJECT = "337e839937c247de4ee58b744c8b8e43950d18e3"
 TAG_COMMIT = "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
@@ -1045,6 +1195,70 @@ def dm_replay_mismatch(env: Env) -> tuple[list[str], list[str]]:
     return [str(control.refusal())], [str(mutated.refusal())]
 
 
+def _artifact_eval(env: Env, rid: str, edit: Callable[[dict[str, Any], dict[str, Any]], None]) -> tuple[list[str], list[str]]:
+    """Crown over the ALIVE tree; ``edit(artifact_entry, receipt_json)`` breaks one producer receipt."""
+
+    def mutate(tree: Any, obs: dict[str, Any]) -> None:
+        art = obs["artifacts"][_req(tree, rid).evidence_locator]
+        edit(art, art["json"])
+
+    return _crown_eval(env, mutate)
+
+
+AUTOFDE_FALSIFIER = "scripts/release_tlc_court_receipt.py"  # beb7bc2d frontier falsifier
+
+
+def dm_delta_unbounded(env: Env) -> tuple[list[str], list[str]]:
+    return _artifact_eval(env, "AC-07", lambda art, data: art["subject_delta_paths"].append(AUTOFDE_FALSIFIER))
+
+
+def dm_delta_unobserved(env: Env) -> tuple[list[str], list[str]]:
+    return _artifact_eval(env, "AC-07", lambda art, data: art.pop("subject_delta_paths"))
+
+
+def dm_delta_misclaimed(env: Env) -> tuple[list[str], list[str]]:
+    def edit(art: dict[str, Any], data: dict[str, Any]) -> None:
+        art["subject_delta_paths"].append(AUTOFDE_FALSIFIER)
+        data["subject_delta_class"] = "RECEIPT_ONLY"  # the receipt-only claim the delta refutes
+
+    return _artifact_eval(env, "AC-07", edit)
+
+
+def dm_receipt_names_its_container(env: Env) -> tuple[list[str], list[str]]:
+    return _artifact_eval(env, "AC-07", lambda art, data: data.update(subject_sha=art["head_sha"]))
+
+
+def dm_mutable_subject(env: Env) -> tuple[list[str], list[str]]:
+    return _artifact_eval(env, "AC-07", lambda art, data: data.update(subject_sha="master"))
+
+
+def dm_evidence_not_durable(env: Env) -> tuple[list[str], list[str]]:
+    """A PASS court under durable/v1 citing a scratch path (the tag-time closure's form)."""
+    closure = json.loads((env.root / f"release/{RELEASE}/closure.json").read_text(encoding="utf-8"))
+    index = json.loads((env.root / f"release/{RELEASE}/hardening/evidence/INDEX.json").read_text(encoding="utf-8"))
+    bound = env.court.bind_index(closure, index)
+    control = list(env.court.evaluate(bound, env.root).refusals)
+    court = bound["subjects"][9]["courts"][0]
+    court["evidence_locator"] = court["evidence"]  # scratchpad/v26925/lanes/... (not durable)
+    return [r for r in control if ":AFFIDAVIT:" in r], list(env.court.evaluate(bound, env.root).refusals)
+
+
+def dm_evidence_digest_mismatch(env: Env) -> tuple[list[str], list[str]]:
+    """The E1 affidavit court output with one byte flipped: the recorded output_sha256 no longer recomputes."""
+    closure = json.loads((env.root / f"release/{RELEASE}/closure.json").read_text(encoding="utf-8"))
+    index = json.loads((env.root / f"release/{RELEASE}/hardening/evidence/INDEX.json").read_text(encoding="utf-8"))
+    bound = env.court.bind_index(closure, index)
+    control = list(env.court.evaluate(bound, env.root).refusals)
+    rel = f"release/{RELEASE}/hardening/evidence"
+    with tempfile.TemporaryDirectory() as tmp:
+        shutil.copytree(env.root / rel, Path(tmp) / rel)
+        target = next((Path(tmp) / rel / "courts/affidavit").glob("*/court.out"))
+        data = bytearray(target.read_bytes())
+        data[0] ^= 1
+        target.write_bytes(bytes(data))
+        return control, list(env.court.evaluate(bound, Path(tmp)).refusals)
+
+
 DATA_MUTANTS: tuple[DataMutant, ...] = (
     DataMutant("dm_terminal_blocker_without_type", dm_terminal_blocker_without_type, "REFUSED:BLOCKED_WITHOUT_TYPE:AC-15", "BLOCKED_WITHOUT_TYPE"),
     DataMutant(
@@ -1092,6 +1306,28 @@ DATA_MUTANTS: tuple[DataMutant, ...] = (
         "PAYLOAD_MUTATED_POST_TAG",
     ),
     DataMutant("dm_replay_mismatch", dm_replay_mismatch, "BLOCKED:REPLAY_DIVERGED", "REPLAY_DIVERGED"),
+    DataMutant("dm_delta_unbounded", dm_delta_unbounded, "BLOCKED:EVIDENCE_DELTA_UNBOUNDED:AC-07", "EVIDENCE_DELTA_UNBOUNDED"),
+    DataMutant("dm_delta_unobserved", dm_delta_unobserved, "REFUSED:EVIDENCE_LINEAGE_MISSING:AC-07", "EVIDENCE_LINEAGE_MISSING"),
+    DataMutant("dm_delta_misclaimed", dm_delta_misclaimed, "REFUSED:EVIDENCE_DELTA_MISCLAIMED:AC-07", "EVIDENCE_DELTA_MISCLAIMED"),
+    DataMutant(
+        "dm_receipt_names_its_container",
+        dm_receipt_names_its_container,
+        "REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AC-07",
+        "EVIDENCE_CONTAINER_CLAIMS_SUBJECT",
+    ),
+    DataMutant("dm_mutable_subject", dm_mutable_subject, "REFUSED:EVIDENCE_SUBJECT_MUTABLE:AC-07", "EVIDENCE_SUBJECT_MUTABLE"),
+    DataMutant(
+        "dm_evidence_not_durable",
+        dm_evidence_not_durable,
+        "REFUSED:EVIDENCE_NOT_DURABLE:AFFIDAVIT:affidavit:brce_court",
+        "EVIDENCE_NOT_DURABLE",
+    ),
+    DataMutant(
+        "dm_evidence_digest_mismatch",
+        dm_evidence_digest_mismatch,
+        "REFUSED:EVIDENCE_DIGEST_MISMATCH:AFFIDAVIT",
+        "EVIDENCE_DIGEST_MISMATCH",
+    ),
 )
 
 

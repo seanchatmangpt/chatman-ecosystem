@@ -1,0 +1,18 @@
+{
+  "schema": "https://chatman.dev/root-crown/policy/delta-allowlist/v1",
+  "release": "v26.9.25",
+  "law": "A producer subject's standing is inherited by a descendant container head only when every path changed between them is an inert receipt: a .json file under release/<version>/receipts/. Code, configuration, schemas, workflows, manifests, lockfiles, path traversal and anything unlisted invalidate the inheritance (EVIDENCE_DELTA_UNBOUNDED).",
+  "provenance": "falsifier corpus: origin/feat/v26.9.25-receipt-descendant-admission (beb7bc2dc3891544889314d39db302bdff8068d4) release/v26.9.25/observations/ecosystem-closure-ledger.json frontier.falsifiers",
+  "allow": [
+    "release/*/receipts/**.json"
+  ],
+  "deny_extensions": [
+    ".bash", ".c", ".cfg", ".cjs", ".conf", ".cpp", ".erl", ".ex", ".exs", ".go", ".h", ".hrl",
+    ".ini", ".java", ".js", ".jsx", ".lock", ".lua", ".mjs", ".nix", ".pl", ".py", ".rb", ".rs",
+    ".sh", ".shacl", ".sparql", ".rq", ".sql", ".tla", ".toml", ".ts", ".tsx", ".ttl", ".wasm",
+    ".xml", ".yaml", ".yml", ".zsh"
+  ],
+  "deny_segments": [
+    ".github", "config", "deps", "lib", "mix.exs", "node_modules", "priv", "schemas", "scripts", "src", "vendor"
+  ]
+}
