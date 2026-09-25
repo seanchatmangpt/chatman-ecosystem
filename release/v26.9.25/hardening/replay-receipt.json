@@ -5,8 +5,23 @@
     "blockers": [],
     "hardened": {
       "refusals": [],
-      "remaining": [],
-      "standing": "ALIVE"
+      "remaining": [
+        "AC-03:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-04:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-07:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-13:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-14:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-15:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-16:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-18:BLOCKED:CROWN_DEPENDENCIES_OPEN",
+        "F-01:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "F-02:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "F-08:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "F-09:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "F-12:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "F-13:BLOCKED:EVIDENCE_DELTA_UNBOUNDED"
+      ],
+      "standing": "BLOCKED"
     },
     "observations": {
       "digest": "sha256:c4a4355e75c70b033dcb682693b9b59b4e95264a9780906a26a094b637fe6757",
@@ -26,7 +41,7 @@
     },
     "replay_standing": "HISTORICAL_RELEASE_REPLAY_EXACT",
     "standing": "ALIVE",
-    "standing_ceiling": "ALIVE",
+    "standing_ceiling": "BLOCKED",
     "tag_receipt": {
       "path": "receipts/run-36161744816/crown-receipt.json",
       "receipt_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c"

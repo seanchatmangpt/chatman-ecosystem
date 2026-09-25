@@ -1,7 +1,9 @@
 """Deterministic projector for ``release/<v>/hardening/`` (stdlib only, no network).
 
 Inputs (committed bytes, E1): raw git objects ``inputs/objects/<sha>.<type>.raw`` and
-crown run receipts ``receipts/run-*/{crown-receipt,observations}.json``.
+crown run receipts ``receipts/run-*/{crown-receipt,observations}.json``; the hardened
+ceiling also reads ``inputs/delta-observations.json`` (observed subject->container deltas,
+``observe_release_heads.py --post-tag-bindings``), never the exact replay.
 
 Outputs (GENERATED, never hand-edited):
   TAG-SUBJECT.json     the tag object, its commit/tree, the subject path trees and the

@@ -10,6 +10,7 @@ breaks exactly one thing.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import shutil
 import tempfile
@@ -111,6 +112,11 @@ def alive_tree() -> Tree:
     return tree
 
 
+def producer_sha(repository: str) -> str:
+    """Deterministic producer-subject commit of ``repository`` in the ALIVE fixture."""
+    return hashlib.sha1(f"producer:{repository}".encode("utf-8")).hexdigest()
+
+
 def alive_observations(tree: Tree, crown_sha: str = CROWN_SHA) -> dict[str, Any]:
     pins = load(tree.release_dir / "pins.json")
     reqs = load(tree.release_dir / "requirements.json")["requirements"]
@@ -129,15 +135,22 @@ def alive_observations(tree: Tree, crown_sha: str = CROWN_SHA) -> dict[str, Any]
         locator = req["evidence_locator"]
         if locator.startswith("local:"):
             continue
-        repo = locator.partition(":")[0]
+        repo, _, path = locator.partition(":")
         head = repos[repo]["head_sha"]
+        # A receipt never names the commit that contains it: the producer subject is the
+        # parent of the receipt commit (the observed head), and the delta between them is
+        # exactly the receipt paths of that repository (receipt-only, admitted).
+        receipt_paths = sorted(
+            r["evidence_locator"].partition(":")[2] for r in reqs if r["evidence_locator"].partition(":")[0] == repo
+        )
         artifacts[locator] = {
             "sha256": "b" * 64,
             "head_sha": head,
-            "subject_compare": "identical",
+            "subject_compare": "ahead",
+            "subject_delta_paths": receipt_paths,
             "json": {
                 "standing": "ALIVE",
-                "subject_sha": head,
+                "subject_sha": producer_sha(repo),
                 "transport_receipt": DIGEST,
                 "execution_receipt": DIGEST,
             },
@@ -156,3 +169,30 @@ def alive_observations(tree: Tree, crown_sha: str = CROWN_SHA) -> dict[str, Any]
         "tag": {"name": RELEASE, "sha": None},
         "local_worktrees": {"observed_at": "2026-09-25T12:00:00Z", "source": "fixture", "worktrees": []},
     }
+
+
+def stage_evidence_root(index: dict[str, Any], source_root: Path, dest: Path) -> Path:
+    """Lay the E1 evidence bytes out at ``<dest>/<owner>/<repo>/<sha>/<path>``.
+
+    The durable/v1 closure court resolves a ``git:<owner/repo>@<sha>:<path>`` locator only
+    at that (repository, commit)-addressed layout, which a ``git archive <sha>`` materializer
+    writes. Here the bytes come from ``source_root`` (the tree under test, a descendant of the
+    E1 container commit); the court still recomputes every digest recorded in the index, so a
+    byte that differs from the container's is refused, not admitted.
+    """
+    import re
+
+    grammar = re.compile(r"^git:(?P<repo>[^@]+)@(?P<sha>[0-9a-f]{40}):(?P<path>\S+)$")
+    locators = set()
+    for row in index.get("rows", []):
+        locators.add(row.get("durable_locator"))
+        locators.update(c.get("durable_locator") for c in row.get("companions", []))
+    for locator in sorted(filter(None, locators)):
+        match = grammar.fullmatch(locator)
+        src = source_root / match["path"] if match else None
+        if src is None or not src.is_file():
+            continue
+        target = dest / match["repo"] / match["sha"] / match["path"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(src, target)
+    return dest

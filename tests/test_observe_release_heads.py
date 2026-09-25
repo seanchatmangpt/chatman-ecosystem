@@ -217,5 +217,104 @@ class ObserverTest(unittest.TestCase):
         self.assertEqual(out, {"o/z": "diverged"})
 
 
+REPO = Path(__file__).resolve().parents[1]
+RELEASE_DIR = REPO / "release" / "v26.9.25"
+DELTAS = RELEASE_DIR / "hardening/inputs/delta-observations.json"
+
+
+class DeltaObserverTest(unittest.TestCase):
+    def test_artifact_records_subject_delta_paths(self):
+        api = FixtureApi(
+            {
+                f"{API}/repos/o/r/contents/release/v26.9.25/receipts/x.json?ref={HEAD}": content({"subject_sha": PIN}),
+                f"{API}/repos/o/r/compare/{PIN}...{HEAD}": {
+                    "status": "ahead",
+                    "files": [{"filename": "scripts/gen.py", "status": "added"},
+                              {"filename": "release/v26.9.25/receipts/x.json", "status": "added"}],
+                },
+            }
+        )  # fmt: skip
+        out = obs.observe_artifact(api, "o/r:release/v26.9.25/receipts/x.json", {"head_sha": HEAD})
+        self.assertEqual(out["subject_compare"], "ahead")
+        self.assertEqual(out["subject_delta_paths"], ["release/v26.9.25/receipts/x.json", "scripts/gen.py"])
+
+    def test_rename_keeps_its_source_path_in_the_delta(self):
+        """compare files[] ``previous_filename`` is part of the delta: a code file renamed into
+        receipts/ must not look receipt-only (it removed code from the subject)."""
+        from scripts.release_train.root_crown import binding
+
+        payload = {
+            "status": "ahead",
+            "files": [
+                {"filename": "release/v26.9.25/receipts/gate.json", "previous_filename": "scripts/release_gate.py", "status": "renamed"},
+                {"filename": "release/v26.9.25/receipts/b.json", "previous_filename": "release/v26.9.25/receipts/a.json", "status": "copied"},
+            ],
+        }  # fmt: skip
+        api = FixtureApi({f"{API}/repos/o/r/compare/{PIN}...{HEAD}": payload})
+        delta = obs.compare_delta(api, "o/r", PIN, HEAD)
+        self.assertEqual(
+            delta["delta_paths"],
+            [
+                "release/v26.9.25/receipts/a.json",
+                "release/v26.9.25/receipts/b.json",
+                "release/v26.9.25/receipts/gate.json",
+                "scripts/release_gate.py",
+            ],
+        )
+        self.assertEqual(
+            [f.get("previous_filename") for f in delta["files"]],
+            ["release/v26.9.25/receipts/a.json", "scripts/release_gate.py"],
+        )
+        allowlist = binding.load_allowlist("v26.9.25")
+        self.assertEqual(binding.classify_delta(delta["delta_paths"], allowlist), ("UNBOUNDED", ["scripts/release_gate.py"]))
+        # the artifact path records the same union
+        api.routes[f"{API}/repos/o/r/contents/release/v26.9.25/receipts/gate.json?ref={HEAD}"] = content({"subject_sha": PIN})
+        out = obs.observe_artifact(api, "o/r:release/v26.9.25/receipts/gate.json", {"head_sha": HEAD})
+        self.assertIn("scripts/release_gate.py", out["subject_delta_paths"])
+
+    def test_full_compare_page_is_not_a_lineage_proof(self):
+        files = [{"filename": f"release/v26.9.25/receipts/{i}.json", "status": "added"} for i in range(300)]
+        api = FixtureApi({f"{API}/repos/o/r/compare/{PIN}...{HEAD}": {"status": "ahead", "files": files}})
+        delta = obs.compare_delta(api, "o/r", PIN, HEAD)
+        self.assertIsNone(delta["delta_paths"])
+        self.assertEqual(obs.compare_delta(FixtureApi({}), "o/r", PIN, PIN)["delta_paths"], [])
+
+    def test_immutable_pairs_come_from_closure_and_the_tag_named_observations(self):
+        pairs = {(p["repository"], p["base"][:8], p["head"][:8]) for p in obs.immutable_pairs(RELEASE_DIR)}
+        self.assertLessEqual(
+            {
+                ("seanchatmangpt/autofde-lab", "6fbe1807", "98b6cc9b"),
+                ("seanchatmangpt/ggen_igniter", "780a81d8", "9639198b"),
+                ("seanchatmangpt/xaas", "c10cdab9", "e039967d"),
+                ("seanchatmangpt/affidavit", "9d158477", "d70b0e40"),
+            },
+            pairs,
+        )
+
+    @unittest.skipUnless(DELTAS.is_file(), "delta observations not committed")
+    def test_post_tag_bindings_replay_from_the_recorded_compare_files(self):
+        """Re-running the observer over an API that serves the recorded files reproduces the doc."""
+        recorded = json.loads(DELTAS.read_text(encoding="utf-8"))
+        routes = {
+            f"{API}/repos/{p['repository']}/compare/{p['base']}...{p['head']}": {
+                "status": p["status"],
+                "ahead_by": p["ahead_by"],
+                "files": p["files"],
+            }
+            for p in recorded["pairs"]
+        }
+        replayed = obs.observe_post_tag_bindings(RELEASE_DIR, FixtureApi(routes), now=recorded["observed_at"])
+        self.assertEqual(replayed, recorded)
+        classes = {p["repository"]: p["binding"] for p in replayed["pairs"]}
+        self.assertEqual(classes["seanchatmangpt/autofde-lab"], "BLOCKED(EVIDENCE_DELTA_UNBOUNDED)")
+        self.assertEqual(classes["seanchatmangpt/affidavit"], "ADMITTED")
+
+    def test_unreachable_compare_is_lineage_missing_not_an_exception(self):
+        doc = obs.observe_post_tag_bindings(RELEASE_DIR, FixtureApi({}), now="2026-09-25T00:00:00Z")
+        self.assertTrue(doc["pairs"])
+        self.assertEqual({p["binding"] for p in doc["pairs"]}, {"REFUSED(EVIDENCE_LINEAGE_MISSING)"})
+        self.assertEqual({p["error"] for p in doc["pairs"]}, {"HTTP404"})
+
+
 if __name__ == "__main__":
     unittest.main()

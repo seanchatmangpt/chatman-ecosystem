@@ -23,13 +23,27 @@ import json
 from pathlib import Path
 from typing import Any
 
-from . import gitobj
-from .evidence import EVALUATORS, Context, Evaluator
+from . import binding, gitobj
+from .evidence import EVALUATORS, Context, Evaluator, in_tree_pass
 from .model import BLOCKED, PASS, REFUSED, ReqState, Requirement, code_of, digest
 from .hardening import OBJECTS, POST_TAG_EXCLUDES, TAG_SUBJECT, HardeningError, project_tag_subject
 
 HISTORICAL_EXACT = "HISTORICAL_RELEASE_REPLAY_EXACT"
 HISTORICAL_DIVERGED = "HISTORICAL_RELEASE_REPLAY_DIVERGED"
+# Observed subject->container deltas of the immutable pairs (observe_release_heads.py
+# --post-tag-bindings). Consumed by the hardened ceiling and the current evaluation, never by
+# the exact replay (tag-time code, tag-time inputs).
+DELTA_OBSERVATIONS = "inputs/delta-observations.json"
+
+
+def with_deltas(observations: dict[str, Any] | None, hardening_dir: Path | None) -> dict[str, Any] | None:
+    """``observations`` with the committed delta observations overlaid (binding.overlay_deltas)."""
+    if not isinstance(observations, dict) or hardening_dir is None:
+        return observations
+    path = hardening_dir / DELTA_OBSERVATIONS
+    if not path.is_file():
+        return observations
+    return binding.overlay_deltas(observations, json.loads(path.read_text(encoding="utf-8")))
 
 
 def load_record(hardening_dir: Path | None) -> dict[str, Any] | None:
@@ -221,7 +235,7 @@ def historical_standing(
                 blockers.append(str(result.refusal()))
             hardened = crown.evaluate(
                 subject_dir / "release" / record["release"],
-                observations,
+                with_deltas(observations, hardening_dir),
                 previous,
                 commit,
                 root=subject_dir,
@@ -255,9 +269,11 @@ def tag_binding_post(record: dict[str, Any] | None, tags: list[dict[str, Any]]) 
                 return REFUSED("TAG_MUTATED", f"{tag.get('source')}:{name}={tag.get('object_sha')}/{tag.get('sha')}")
             if tag.get("sha") != record["subject"]["commit_sha"]:
                 return REFUSED("TAG_SUBJECT_SPLIT", f"{tag.get('source')}:{name}^{{commit}}={tag.get('sha')}")
-        return PASS(
+        return in_tree_pass(
+            req,
+            ctx,
             f"post-tag: {name}={record['tag']['object_sha']} -> {record['subject']['commit_sha']} (recorded, immutable)",
-            ctx.crown_sha,
+            "post-tag tag binding",
         )
 
     return evaluate
@@ -289,7 +305,11 @@ def current_conformance(
 
     registry = dict(EVALUATORS if evaluators is None else evaluators)
     registry["tag_binding"] = tag_binding_post(record, tags)
-    obs = observations if isinstance(observations, dict) else {"authority": "none (no observer run)", "repos": {}}
+    obs = (
+        with_deltas(observations, hardening)
+        if isinstance(observations, dict)
+        else {"authority": "none (no observer run)", "repos": {}}
+    )
     verdict = crown.evaluate(release_dir, obs, parent, head_sha, root=root, evaluators=registry, mode="POST_TAG")
     refusals = list(verdict.refusals)
     if record is not None:
