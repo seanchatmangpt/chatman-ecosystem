@@ -128,6 +128,14 @@ class ExternalParadigmInventoryTest(unittest.TestCase):
             by_name["api-design"]["classification"]["pattern_id"],
             "ecc.skills-agents-commands",
         )
+        self.assertEqual(
+            by_name["continuous-learning-v2"]["source_path"],
+            "skills/continuous-learning-v2",
+        )
+        self.assertEqual(
+            by_name["continuous-learning-v2"]["classification_path"],
+            "skills/continuous-learning-v2/SKILL.md",
+        )
         self.assertEqual(inventory["standing"], "NONE")
 
     def test_inventory_count_is_derived_from_surfaces(self):
@@ -169,7 +177,9 @@ class ExternalParadigmProjectionTest(unittest.TestCase):
                     "id": "ecc:skill:api-design",
                     "kind": "skill",
                     "name": "api-design",
-                    "source_path": "skills/api-design/SKILL.md",
+                    "source_path": "skills/api-design",
+                    "upstream_object_sha": "a" * 40,
+                    "upstream_object_type": "dir",
                     "state": "CANDIDATE",
                     "standing": "NONE",
                     "classification": {
@@ -206,7 +216,9 @@ class ExternalParadigmProjectionTest(unittest.TestCase):
                     "id": "ecc:skill:x",
                     "kind": "skill",
                     "name": "x",
-                    "source_path": "skills/x/SKILL.md",
+                    "source_path": "skills/x",
+                    "upstream_object_sha": "b" * 40,
+                    "upstream_object_type": "dir",
                     "state": "CANDIDATE",
                     "standing": "NONE",
                     "classification": {
