@@ -19,7 +19,7 @@ class CliTest(unittest.TestCase):
     def tearDown(self):
         self.tree.cleanup()
 
-    def run_cli(self, obs, previous=None):
+    def run_cli(self, obs, previous=None, head_sha=CROWN_SHA, extra=()):
         root = self.tree.root
         dump(root / "obs.json", obs)
         argv = [
@@ -38,7 +38,49 @@ class CliTest(unittest.TestCase):
         ]
         if previous is not None:
             argv += ["--previous", str(previous)]
-        return main(argv)
+        if head_sha is not None:
+            argv += ["--head-sha", head_sha]
+        return main(argv + list(extra))
+
+    def decision(self):
+        return json.loads((self.tree.root / "out/tag-decision.json").read_text())
+
+    def test_head_sha_is_real_not_the_crown_sha(self):
+        """__main__ used to pass crown_sha as head_sha, making SHA_MISMATCH vacuous."""
+        self.assertEqual(self.run_cli(self.obs, head_sha="d" * 40), 0)
+        self.assertEqual(self.decision()["decision"], "ILLEGAL")
+        self.assertIn(f"TAG_ILLEGAL:SHA_MISMATCH:head={'d' * 40}:crown={CROWN_SHA}", self.decision()["reasons"])
+        self.assertEqual(self.run_cli(self.obs, head_sha=None), 0)
+        self.assertEqual(self.decision()["decision"], "ILLEGAL", "absent --head-sha must fail closed")
+
+    def test_pre_tag_receipt_is_schema_v2_and_verifies(self):
+        from scripts.release_train.root_crown.crown import verify_receipt
+
+        self.assertEqual(self.run_cli(self.obs, extra=["--mode", "PRE_TAG"]), 0)
+        receipt = json.loads((self.tree.root / "out/receipt.json").read_text())
+        self.assertEqual(receipt["schema"], "https://chatman.dev/root-crown/receipt/v2")
+        self.assertEqual((receipt["mode"], receipt["attestation_head_sha"]), ("PRE_TAG", CROWN_SHA))
+        self.assertEqual(receipt["subject"]["commit_sha"], CROWN_SHA)
+        self.assertIsNone(receipt["historical"])
+        self.assertTrue(verify_receipt(receipt))
+        self.assertTrue(verify_receipt(receipt["current"]["core"]), "v1 core receipts still verify")
+        tampered = dict(receipt, standing="BLOCKED")
+        self.assertFalse(verify_receipt(tampered))
+
+    def test_post_tag_requested_without_record_is_typed_blocked(self):
+        self.assertEqual(self.run_cli(self.obs, extra=["--mode", "POST_TAG"]), 3)
+        receipt = json.loads((self.tree.root / "out/receipt.json").read_text())
+        self.assertEqual(receipt["mode"], "POST_TAG")
+        self.assertIn("TAG_UNRECORDED", {b["code"] for b in receipt["blockers"]})
+        self.assertEqual(self.decision()["decision"], "NOT_APPLICABLE:POST_TAG")
+
+    def test_absent_observation_file_is_typed_blocked_not_a_crash(self):
+        root = self.tree.root
+        argv = [
+            "--release", "v26.9.25", "--root", str(root), "--observations", str(root / "absent.json"),
+            "--crown-sha", CROWN_SHA, "--head-sha", CROWN_SHA, "--out", str(root / "out/receipt.json"),
+        ]  # fmt: skip
+        self.assertEqual(main(argv), 3)
 
     def test_alive_exit_0_and_legal_tag_decision(self):
         self.assertEqual(self.run_cli(self.obs), 0)
@@ -51,6 +93,7 @@ class CliTest(unittest.TestCase):
         self.assertEqual(self.run_cli(obs), 3)
         receipt = json.loads((self.tree.root / "out/receipt.json").read_text())
         self.assertEqual(receipt["requirements"]["AC-12"]["code"], "NOT_COLD")
+        self.assertEqual(receipt["current"]["core"]["requirements"]["AC-12"]["code"], "NOT_COLD")
         decision = json.loads((self.tree.root / "out/tag-decision.json").read_text())
         self.assertEqual(decision["decision"], "ILLEGAL")
 

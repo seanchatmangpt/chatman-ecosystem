@@ -8,7 +8,9 @@ This observer produces its ``observations.json``:
              ``master``), visibility, head_sha, pin_sha, compare_status of pin...head
   artifacts  per remote evidence locator ``owner/name:path``: sha256, parsed JSON,
              and compare_status of the artifact's own subject_sha...head
-  tag        the release tag's commit SHA or null
+  tag        the release tag: peeled commit ``sha`` (null when absent), the ref's own
+             ``object_sha``/``object_type`` (annotated tag object), and ``subject_delta``
+             (paths changed from the tagged commit to the observed root head)
   local_worktrees (``--local-worktrees``) operator-local topology receipt m_term
   private_repos  committed ``observations/private-repos.json`` (written by
              ``--private-local <repo...>`` on the operator's machine with the operator's
@@ -244,13 +246,36 @@ def observe_tag(fetch: Fetch, repository: str, tag: str) -> dict[str, Any]:
     except (urllib.error.URLError, TimeoutError, ValueError) as exc:
         return {"name": tag, "error": _err(exc)}
     obj = ref.get("object", {})
-    sha = obj.get("sha")
-    if obj.get("type") == "tag":
+    object_sha = obj.get("sha")
+    object_type = obj.get("type")
+    sha = object_sha
+    if object_type == "tag":
         try:
-            sha = fetch(f"{API}/repos/{repository}/git/tags/{sha}")["object"]["sha"]
+            sha = fetch(f"{API}/repos/{repository}/git/tags/{object_sha}")["object"]["sha"]
         except (urllib.error.URLError, TimeoutError, ValueError, KeyError) as exc:
-            return {"name": tag, "error": _err(exc)}
-    return {"name": tag, "sha": sha}
+            return {"name": tag, "object_sha": object_sha, "object_type": object_type, "error": _err(exc)}
+    # ``sha`` is the peeled commit; ``object_sha``/``object_type`` identify the ref's own
+    # object (the annotated tag object), which the post-tag crown binds to its record.
+    return {"name": tag, "sha": sha, "object_sha": object_sha, "object_type": object_type}
+
+
+def observe_subject_delta(fetch: Fetch, repository: str, tag: dict[str, Any], head: str | None) -> dict[str, Any]:
+    """Paths changed from the tagged commit to the observed head (post-tag drift, data only)."""
+    base = tag.get("sha")
+    if not base or not head:
+        return {"base": base, "head": head, "paths": None}
+    if base == head:
+        return {"base": base, "head": head, "paths": []}
+    try:
+        cmp = fetch(f"{API}/repos/{repository}/compare/{base}...{head}")
+    except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+        return {"base": base, "head": head, "error": _err(exc)}
+    return {
+        "base": base,
+        "head": head,
+        "status": cmp.get("status"),
+        "paths": sorted({f.get("filename") for f in cmp.get("files", []) if f.get("filename")}),
+    }
 
 
 def observe_local_worktrees(pattern: str = TOPOLOGY_GLOB) -> dict[str, Any] | None:
@@ -355,6 +380,9 @@ def observe(
         "subjects": subjects,
         "tag": observe_tag(fetch, pins["root_repository"], release_dir.name),
     }
+    observations["tag"]["subject_delta"] = observe_subject_delta(
+        fetch, pins["root_repository"], observations["tag"], repos.get(pins["root_repository"], {}).get("head_sha")
+    )
     committed = release_dir / "observations/local-worktrees.json"
     if committed.is_file():
         observations["local_worktrees"] = json.loads(committed.read_text(encoding="utf-8"))

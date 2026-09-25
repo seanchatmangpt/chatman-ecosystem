@@ -50,9 +50,17 @@ class Tree:
         return projector.load_inputs(self.release_dir)
 
 
+# Post-tag additions under the frozen payload (never tagged bytes, never crown inputs).
+POST_TAG_DIRS = ("hardening", "autonomy")
+
+
+def _ignore_post_tag(directory: str, names: list[str]) -> set[str]:
+    return set(POST_TAG_DIRS) & set(names) if Path(directory).name == RELEASE else set()
+
+
 def committed_tree() -> Tree:
     tree = Tree()
-    shutil.copytree(REPO / "release" / RELEASE, tree.release_dir)
+    shutil.copytree(REPO / "release" / RELEASE, tree.release_dir, ignore=_ignore_post_tag)
     shutil.copytree(REPO / "release" / "v26.9.24", tree.root / "release" / "v26.9.24")
     return tree
 
