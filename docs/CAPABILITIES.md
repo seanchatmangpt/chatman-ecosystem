@@ -121,7 +121,7 @@ done
 
 `python3 scripts/verify_capabilities.py --write` manufactures both generated capability Markdown projections; admission requires the second manufacture to be byte-identical. The ordinary ecosystem projection court separately binds `catalog/repositories.toml` to `views/generated/portfolio.md`.
 
-The capability court proves stable identities, 44-node dependency closure and acyclicity, declared repository ownership, exact CLI/API/MCP/A2A semantic closure, complete input/output/refusal contracts, DO broker/receipt law, public/custom namespace fencing, DfCM dependency gating, default DO refusal, exact-authority refusal, and no-actuation output.
+The capability court proves stable identities, 48-node dependency closure and acyclicity, declared repository ownership, exact CLI/API/MCP/A2A semantic closure, complete input/output/refusal contracts, DO broker/receipt law, public/custom namespace fencing, DfCM dependency gating, default DO refusal, exact-authority refusal, and no-actuation output.
 
 ## Reconstitution closure
 
