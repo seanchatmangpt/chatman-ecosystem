@@ -314,6 +314,24 @@ upstream novelty
 
 Local invention is the residual path, not the default.
 
+The current ECC pin compiles 461 watched donor units (292 skills, 68 agents,
+94 commands, 5 hook surfaces, 2 workflow surfaces). The intake is executable:
+
+```bash
+python3 scripts/verify_external_paradigms.py --json
+python3 scripts/extract_external_paradigm_units.py \
+  --supplier ecc \
+  --json-out target/ecc-inventory.json
+python3 scripts/project_external_paradigm_graph.py \
+  --inventory target/ecc-inventory.json \
+  --cross-product-out target/ecc-cross-product.json \
+  --ttl-out target/ecc-capabilities.ttl
+```
+
+Generated cross-product edges are integration targets only; they explicitly do
+**not** assert semantic equivalence. Unmapped donor units remain unresolved
+candidates rather than being treated as proof of novelty.
+
 
 ## Ecosystem manufacturing model
 
