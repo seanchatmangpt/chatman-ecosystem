@@ -17,7 +17,10 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from scripts.verify_external_paradigms import ParadigmRefusal, validate_registry
+try:
+    from scripts.verify_external_paradigms import ParadigmRefusal, validate_registry
+except ModuleNotFoundError:
+    from verify_external_paradigms import ParadigmRefusal, validate_registry
 
 
 KINDS = {
