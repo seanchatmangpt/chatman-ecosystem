@@ -2,10 +2,10 @@
 
 The v26.9.1 decision-manufacturing graph has two canonical source catalogs:
 
-- `catalog/capabilities.toml` — 22 repository-control/reconstitution capabilities;
+- `catalog/capabilities.toml` — 27 repository-control/reconstitution/EPR capabilities;
 - `catalog/capabilities-decision-graph.toml` — 17 ownership-bounded ecosystem capabilities.
 
-Together they form one dependency-closed graph of **39 capabilities**. `catalog/repositories.toml` is the canonical owner registry; capability admission refuses an owner not declared there. Repository registration is identity/role evidence only and does not promote a repository to runtime `ALIVE`.
+Together they form one dependency-closed graph of **44 capabilities**. `catalog/repositories.toml` is the canonical owner registry; capability admission refuses an owner not declared there. Repository registration is identity/role evidence only and does not promote a repository to runtime `ALIVE`.
 
 The graph preserves the constitutional distinction:
 
@@ -121,7 +121,7 @@ done
 
 `python3 scripts/verify_capabilities.py --write` manufactures both generated capability Markdown projections; admission requires the second manufacture to be byte-identical. The ordinary ecosystem projection court separately binds `catalog/repositories.toml` to `views/generated/portfolio.md`.
 
-The capability court proves stable identities, 39-node dependency closure and acyclicity, declared repository ownership, exact CLI/API/MCP/A2A semantic closure, complete input/output/refusal contracts, DO broker/receipt law, public/custom namespace fencing, DfCM dependency gating, default DO refusal, exact-authority refusal, and no-actuation output.
+The capability court proves stable identities, 44-node dependency closure and acyclicity, declared repository ownership, exact CLI/API/MCP/A2A semantic closure, complete input/output/refusal contracts, DO broker/receipt law, public/custom namespace fencing, DfCM dependency gating, default DO refusal, exact-authority refusal, and no-actuation output.
 
 ## Reconstitution closure
 
