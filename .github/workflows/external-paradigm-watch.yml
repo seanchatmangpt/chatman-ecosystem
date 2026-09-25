@@ -51,13 +51,13 @@ jobs:
           assert p["subject_sha"] == "e482e579415fde18357cafce70f177ae19fd7f03"
           assert p["counts"] == expected, (p["counts"], expected)
           assert p["unit_count"] == 461
-          assert p["classified_count"] == 459
-          assert p["unmapped_count"] == 2
+          assert p["classified_count"] == 461
+          assert p["unmapped_count"] == 0
           assert p["standing"] == "NONE"
           x = json.load(open("target/external-paradigms/ecc-cross-product.json"))
           assert x["standing"] == "NONE"
-          assert x["edge_count"] == 920
-          assert x["unresolved_count"] == 2
+          assert x["edge_count"] == 926
+          assert x["unresolved_count"] == 0
           assert all(edge["semantic_equivalence"] == "UNCLAIMED" for edge in x["edges"])
           PY
 
