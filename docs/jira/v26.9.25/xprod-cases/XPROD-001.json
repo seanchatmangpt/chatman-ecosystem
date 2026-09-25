@@ -1,0 +1,295 @@
+{
+  "case_id": "XPROD-001",
+  "semantic_subject_id": "urn:chatman:xprod:v26.9.25:brce-cross-product",
+  "subjects": [
+    {
+      "repository": "seanchatmangpt/autofde-lab",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7"
+    },
+    {
+      "repository": "seanchatmangpt/engineering-standards",
+      "subject_sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629"
+    },
+    {
+      "repository": "seanchatmangpt/gymact",
+      "subject_sha": "281009dfd8ef435f0027009fc1a88fd86688f8b9"
+    },
+    {
+      "repository": "seanchatmangpt/xaas",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+    }
+  ],
+  "required_formalisms": [
+    "HDDL",
+    "FOND",
+    "TLA+",
+    "POWL",
+    "OCEL2",
+    "BRCE",
+    "RECEIPT"
+  ],
+  "evidence": [
+    {
+      "evidence_id": "E-FOND",
+      "repository": "seanchatmangpt/autofde-lab",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "formalism": "FOND",
+      "claim_id": "planning:fond-policy",
+      "artifact_digest": "sha256:e01fccc42434134bf5b61680f47fe5a749af0c270050b06c8be90c393a07c818",
+      "validator": "seanchatmangpt/autofde-lab:.github/workflows/planning-formalism-court.yml",
+      "validator_digest": "sha256:d87ee26e89a0e598a4959e9f2ec7477567915246f84834801780a9bd7a27cf6d",
+      "result": "PASS",
+      "authority": "NONE",
+      "provenance": {
+        "kind": "artifact",
+        "workflow": ".github/workflows/planning-formalism-court.yml",
+        "run_id": 36115283624,
+        "run_attempt": 1,
+        "artifact_id": 10854742882,
+        "artifact_name": "planning-fond-6fbe1807388e8c44ae5d5f75455a082a745055c7",
+        "file": "evidence/E-FOND.zip",
+        "validator_file": "evidence/validators/autofde-lab--planning-formalism-court--6fbe1807388e.yml",
+        "observed": "junit tests=6 failures=0 errors=0 (tests.planning.test_fond_policy)"
+      }
+    },
+    {
+      "evidence_id": "E-HDDL",
+      "repository": "seanchatmangpt/autofde-lab",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "formalism": "HDDL",
+      "claim_id": "planning:hddl-decomposition",
+      "artifact_digest": "sha256:e44dfbec0c0e5548e4758abed569ac21097e2e9fa6f341af08bc1df9a2fc353f",
+      "validator": "seanchatmangpt/autofde-lab:.github/workflows/planning-formalism-court.yml",
+      "validator_digest": "sha256:d87ee26e89a0e598a4959e9f2ec7477567915246f84834801780a9bd7a27cf6d",
+      "result": "PASS",
+      "authority": "NONE",
+      "provenance": {
+        "kind": "artifact",
+        "workflow": ".github/workflows/planning-formalism-court.yml",
+        "run_id": 36115283624,
+        "run_attempt": 1,
+        "artifact_id": 10854348699,
+        "artifact_name": "planning-hddl-6fbe1807388e8c44ae5d5f75455a082a745055c7",
+        "file": "evidence/E-HDDL.zip",
+        "validator_file": "evidence/validators/autofde-lab--planning-formalism-court--6fbe1807388e.yml",
+        "observed": "junit tests=2 failures=0 errors=0 (tests.domains.python.test_hddl_bridge_domain)"
+      }
+    },
+    {
+      "evidence_id": "E-FRONTIER-HDDL",
+      "repository": "seanchatmangpt/autofde-lab",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "formalism": "HDDL",
+      "claim_id": "planning:hddl-fond-frontier",
+      "artifact_digest": "sha256:9a4a01308204d6bca2d3fc1d0096aee26256aae26ecf410bc9a9f435b75f5092",
+      "validator": "seanchatmangpt/autofde-lab:.github/workflows/planning-formalism-court.yml",
+      "validator_digest": "sha256:d87ee26e89a0e598a4959e9f2ec7477567915246f84834801780a9bd7a27cf6d",
+      "result": "PASS",
+      "authority": "NONE",
+      "provenance": {
+        "kind": "artifact",
+        "workflow": ".github/workflows/planning-formalism-court.yml",
+        "run_id": 36115283624,
+        "run_attempt": 1,
+        "artifact_id": 10854997482,
+        "artifact_name": "planning-frontier-6fbe1807388e8c44ae5d5f75455a082a745055c7",
+        "file": "evidence/E-FRONTIER.zip",
+        "validator_file": "evidence/validators/autofde-lab--planning-formalism-court--6fbe1807388e.yml",
+        "observed": "junit tests=5 failures=0 (tests.planning.test_fond_hddl_frontier); relation witness shared with E-FRONTIER-FOND"
+      }
+    },
+    {
+      "evidence_id": "E-FRONTIER-FOND",
+      "repository": "seanchatmangpt/autofde-lab",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "formalism": "FOND",
+      "claim_id": "planning:hddl-fond-frontier",
+      "artifact_digest": "sha256:9a4a01308204d6bca2d3fc1d0096aee26256aae26ecf410bc9a9f435b75f5092",
+      "validator": "seanchatmangpt/autofde-lab:.github/workflows/planning-formalism-court.yml",
+      "validator_digest": "sha256:d87ee26e89a0e598a4959e9f2ec7477567915246f84834801780a9bd7a27cf6d",
+      "result": "PASS",
+      "authority": "NONE",
+      "provenance": {
+        "kind": "artifact",
+        "workflow": ".github/workflows/planning-formalism-court.yml",
+        "run_id": 36115283624,
+        "run_attempt": 1,
+        "artifact_id": 10854997482,
+        "artifact_name": "planning-frontier-6fbe1807388e8c44ae5d5f75455a082a745055c7",
+        "file": "evidence/E-FRONTIER.zip",
+        "validator_file": "evidence/validators/autofde-lab--planning-formalism-court--6fbe1807388e.yml",
+        "observed": "same frontier artifact as E-FRONTIER-HDDL; relation witness only"
+      }
+    },
+    {
+      "evidence_id": "E-POWL",
+      "repository": "seanchatmangpt/autofde-lab",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "formalism": "POWL",
+      "claim_id": "powl:v2-concurrent-runner",
+      "artifact_digest": "sha256:f1b514fee4ce2efbeb1671acc3fd5602bfd950d22bd0162e206fa37507a570c0",
+      "validator": "seanchatmangpt/autofde-lab:.github/workflows/powl-runner.yml",
+      "validator_digest": "sha256:4450cfa2a9b24d342ee9bbdf0a38f03470bff6516ed6690f47c86b2a6894436f",
+      "result": "PASS",
+      "authority": "NONE",
+      "provenance": {
+        "kind": "artifact",
+        "workflow": ".github/workflows/powl-runner.yml",
+        "run_id": 36127314169,
+        "run_attempt": 1,
+        "artifact_id": 10860691849,
+        "artifact_name": "powl-runner-py3.13-6fbe1807388e8c44ae5d5f75455a082a745055c7",
+        "file": "evidence/E-POWL.zip",
+        "validator_file": "evidence/validators/autofde-lab--powl-runner--6fbe1807388e.yml",
+        "job": "POWL V2 / Python 3.13",
+        "job_id": 108046301070,
+        "observed": "63 passed (pytest-3.13.log)"
+      }
+    },
+    {
+      "evidence_id": "E-TLA-REF",
+      "repository": "seanchatmangpt/autofde-lab",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "formalism": "TLA+",
+      "claim_id": "brce:reference-safety-liveness-in-bound",
+      "artifact_digest": "sha256:a774c67ffaf517a0b65ef4e601b94439e2de80d887ed780ade43eb6c0b06086a",
+      "validator": "seanchatmangpt/autofde-lab:.github/workflows/tlc-court.yml",
+      "validator_digest": "sha256:feb660fee91253e4d8bbf13bb3fb7e3d928460193d8fa62f248d109fc5f76af3",
+      "result": "PASS",
+      "authority": "NONE",
+      "provenance": {
+        "kind": "artifact",
+        "workflow": ".github/workflows/tlc-court.yml",
+        "run_id": 36127317156,
+        "run_attempt": 1,
+        "artifact_id": 10860207207,
+        "artifact_name": "tlc-court-brce-6fbe1807388e8c44ae5d5f75455a082a745055c7",
+        "file": "evidence/E-TLA-REF.zip",
+        "validator_file": "evidence/validators/autofde-lab--tlc-court--6fbe1807388e.yml",
+        "observed": "BRCEReference MODEL_CHECK_ALIVE; 5/5 PROPERTY_HOLDS_IN_BOUND; tla2tools 1.7.4 jar sha256 936a2620...0e88; formal_proof UNSUPPORTED(formal-proof-runtime:tlaps-not-installed)",
+        "tlc_receipt_digest": "sha256:bc68a232b23e02d8f04a027851fce2f567962fa8e6ee326a5c5ac55bfe4949e2"
+      }
+    },
+    {
+      "evidence_id": "E-TLA-MUT-DO",
+      "repository": "seanchatmangpt/autofde-lab",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "formalism": "TLA+",
+      "claim_id": "brce:mutant:do-without-authority",
+      "artifact_digest": "sha256:3373a474fa6e2d3d89b06a8fd752acdcf21956bbb4105dc03afd17bd6aef415b",
+      "validator": "seanchatmangpt/autofde-lab:.github/workflows/tlc-court.yml",
+      "validator_digest": "sha256:feb660fee91253e4d8bbf13bb3fb7e3d928460193d8fa62f248d109fc5f76af3",
+      "result": "COUNTEREXAMPLE",
+      "authority": "NONE",
+      "counterexample_digest": "sha256:0e644e9766fcc912343ce85ba0420d81ff39e00e13165158ca1b2e4a2c396f7c",
+      "provenance": {
+        "kind": "artifact",
+        "workflow": ".github/workflows/tlc-court.yml",
+        "run_id": 36127317156,
+        "run_attempt": 1,
+        "artifact_id": 10860272252,
+        "artifact_name": "tlc-court-mutant-do_without_authority-6fbe1807388e8c44ae5d5f75455a082a745055c7",
+        "file": "evidence/E-TLA-MUT-DO.zip",
+        "validator_file": "evidence/validators/autofde-lab--tlc-court--6fbe1807388e.yml",
+        "observed": "BRCEMutantDoWithoutAuthority ExecutedRequiresAuthority INVARIANT_VIOLATED (Init,Parse,Route,Admit,Construct,Actuate); AdmittedEventuallyTerminal TEMPORAL_VIOLATED",
+        "counterexample_digest_source": "mutant-do_without_authority/receipt.json properties[ExecutedRequiresAuthority].counterexample.transition_trace_digest",
+        "counterexample_ocel_digest": "sha256:e02e3cf823ae60a9ee69b360ebbc88e05114246e15b5bd37e98cb4a75032db79",
+        "tlc_receipt_digest": "sha256:8a272a1c81e9f997a1ee076e9dbb303a9898c3db1e4472ebc8ff82e16cc9e4f3"
+      }
+    },
+    {
+      "evidence_id": "E-OCEL2",
+      "repository": "seanchatmangpt/gymact",
+      "subject_sha": "281009dfd8ef435f0027009fc1a88fd86688f8b9",
+      "formalism": "OCEL2",
+      "claim_id": "gymact:domain-world-ocel-replay",
+      "artifact_digest": "sha256:508008feb79c10578d40217ecd030d1a2808f9aaef085f75c9ab6ef98db8df9c",
+      "validator": "seanchatmangpt/gymact:.github/workflows/v2691-world-execution.yml",
+      "validator_digest": "sha256:6616f4146e707381a8b0e6a29b0777ca2860dff8c627291085611c2aec495de9",
+      "result": "PASS",
+      "authority": "NONE",
+      "provenance": {
+        "kind": "artifact",
+        "workflow": ".github/workflows/v2691-world-execution.yml",
+        "run_id": 36111936727,
+        "run_attempt": 1,
+        "artifact_id": 10853604483,
+        "artifact_name": "v2691-world-execution-281009dfd8ef435f0027009fc1a88fd86688f8b9",
+        "file": "evidence/E-OCEL2.zip",
+        "validator_file": "evidence/validators/gymact--v2691-world-execution--281009dfd8ef.yml",
+        "observed": "receipt.json canonical.standing ALIVE; independent_court.replay_conformant true; 3 falsifiers passed; external_actuation NONE"
+      }
+    },
+    {
+      "evidence_id": "E-RECEIPT",
+      "repository": "seanchatmangpt/xaas",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "formalism": "RECEIPT",
+      "claim_id": "xaas:stogaf-wd-cs2-receipt",
+      "artifact_digest": "sha256:3b467680183642230f829e3a158975e1b208c6dea092fb46886b82a5545bcc77",
+      "validator": "seanchatmangpt/xaas:.github/workflows/stogaf-wd-cs2-court.yml",
+      "validator_digest": "sha256:25c773d97efc3ba976ed02b8b82ffb6adc4cce64441be78a1a7d2f2402e3bd08",
+      "result": "PASS",
+      "authority": "NONE",
+      "provenance": {
+        "kind": "artifact",
+        "workflow": ".github/workflows/stogaf-wd-cs2-court.yml",
+        "run_id": 36126643323,
+        "run_attempt": 1,
+        "artifact_id": 10860259865,
+        "artifact_name": "wd-cs2-stogaf-receipt-c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+        "file": "evidence/E-RECEIPT.zip",
+        "validator_file": "evidence/validators/xaas--stogaf-wd-cs2-court--c10cdab95b92.yml",
+        "observed": "wd-cs2-stogaf-receipt.json subject_sha=c10cdab9 authority SELECT_CONSTRUCT_ONLY friday_do_capabilities 0; wd-cs2-evaluation.json controls 7/7 passed; semantic report 9 gates 0 refusal rows; evidence_ceiling REPO_LOCAL_FIXTURE"
+      }
+    },
+    {
+      "evidence_id": "E-BRCE",
+      "repository": "seanchatmangpt/engineering-standards",
+      "subject_sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+      "formalism": "BRCE",
+      "claim_id": "brce:semantic-standard-root-conformance",
+      "artifact_digest": "sha256:35c385d749c2b6c5c03d3f805c532e3b811d604edcc4c623dcbd383a94a348de",
+      "validator": "seanchatmangpt/engineering-standards:.github/workflows/docs.yml",
+      "validator_digest": "sha256:db16dc600320c3c0bd1622fa6a7c8576711c7f49ec4afaf670d9fee86cfe40d4",
+      "result": "PASS",
+      "authority": "NONE",
+      "provenance": {
+        "kind": "artifact",
+        "workflow": ".github/workflows/docs.yml",
+        "run_id": 36101146601,
+        "run_attempt": 1,
+        "artifact_id": 10850572678,
+        "artifact_name": "root-conformance-7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+        "file": "evidence/E-BRCE.zip",
+        "validator_file": "evidence/validators/engineering-standards--docs--7e8d4c5cb5ae.yml",
+        "observed": "root-conformance.json standing ALIVE subject repository-semantic-conformance; non_claims include CommandBus/BRCE DO",
+        "scope": "semantic-standard conformance of the BRCE protocol standard only; BRCE execution (affidavit adapter NOT_CLAIMED) is UNSUPPORTED"
+      }
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "R-HDDL-FOND-frontier",
+      "left": "HDDL",
+      "right": "FOND",
+      "claim_id": "planning:hddl-fond-frontier"
+    }
+  ],
+  "mutants": [
+    {
+      "mutant_id": "M-TLA-DO-WITHOUT-AUTHORITY",
+      "formalism": "TLA+",
+      "claim_id": "brce:mutant:do-without-authority",
+      "expected": "COUNTEREXAMPLE"
+    }
+  ],
+  "non_claims": [
+    "BRCE execution: UNSUPPORTED(brce-execution:affidavit-adapter-not-claimed); E-BRCE is semantic-standard conformance only",
+    "TLAPS proof: UNSUPPORTED(formal-proof-runtime:tlaps-not-installed); TLA+ evidence is bounded TLC model checking only",
+    "Correspondence is claimed only for HDDL x FOND (R-HDDL-FOND-frontier); no other producer pair checks a shared claim",
+    "ALIVE here is the court ceiling COMPOSITIONAL_CORRESPONDENCE_ONLY, not production behavior",
+    "ggen_igniter has no formalism in this case"
+  ],
+  "subject_selection": "current default-branch merge SHA per repository at 2026-09-25 (autofde-lab master, engineering-standards main, gymact main, xaas main)"
+}

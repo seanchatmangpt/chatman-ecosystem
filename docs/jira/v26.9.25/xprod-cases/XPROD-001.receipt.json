@@ -1,0 +1,43 @@
+{
+  "authority": "NONE",
+  "case_id": "XPROD-001",
+  "claim_ceiling": "COMPOSITIONAL_CORRESPONDENCE_ONLY",
+  "dimensions_present": [
+    "BRCE",
+    "FOND",
+    "HDDL",
+    "OCEL2",
+    "POWL",
+    "RECEIPT",
+    "TLA+"
+  ],
+  "evidence_ids": [
+    "E-BRCE",
+    "E-FOND",
+    "E-FRONTIER-FOND",
+    "E-FRONTIER-HDDL",
+    "E-HDDL",
+    "E-OCEL2",
+    "E-POWL",
+    "E-RECEIPT",
+    "E-TLA-MUT-DO",
+    "E-TLA-REF"
+  ],
+  "mutants_checked": [
+    "M-TLA-DO-WITHOUT-AUTHORITY"
+  ],
+  "receipt_digest": "sha256:08ab0156c6410810bbf82635832acaf6371cd125f02fc7ff4f90e5a41ebad769",
+  "refusals": [],
+  "relations_checked": [
+    "R-HDDL-FOND-frontier"
+  ],
+  "schema": "https://chatman.dev/cross-product-court/receipt/v1",
+  "semantic_subject_id": "urn:chatman:xprod:v26.9.25:brce-cross-product",
+  "standing": "ALIVE",
+  "subject_bindings": [
+    "seanchatmangpt/autofde-lab@6fbe1807388e8c44ae5d5f75455a082a745055c7",
+    "seanchatmangpt/engineering-standards@7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+    "seanchatmangpt/gymact@281009dfd8ef435f0027009fc1a88fd86688f8b9",
+    "seanchatmangpt/xaas@c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+  ]
+}
