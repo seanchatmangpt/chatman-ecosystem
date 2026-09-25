@@ -278,6 +278,43 @@ Those systems retain their own identities and evidence boundaries.
 
 ---
 
+## External paradigm supply chain
+
+The composition root may consume independently maintained repositories as
+**paradigm suppliers**. Their job is to discover and maintain useful patterns;
+this repository's job is to bind those patterns to exact subjects, compare
+them against admitted capabilities, and classify each delta as:
+
+```text
+VENDOR | WRAP | REPLACE | NOVEL_GAP
+```
+
+External popularity, tests, confidence, or release status do not confer local
+authority or standing. Suppliers enter as `CANDIDATE`; consequential DO still
+routes through BRCE.
+
+The first reference supplier is ECC, pinned by exact SHA in
+[`upstream/paradigms.json`](upstream/paradigms.json). Its current mapping is
+[`upstream/ecc/pattern-map.json`](upstream/ecc/pattern-map.json), with the
+governing architecture in
+[`docs/architecture/external-paradigm-supply-chain.md`](docs/architecture/external-paradigm-supply-chain.md).
+
+The design objective is to outsource **novel pattern discovery** without
+outsourcing semantic authority:
+
+```text
+upstream novelty
+→ exact-SHA observation
+→ capability normalization
+→ deduplication
+→ qualification
+→ deterministic manufacture
+→ admission
+```
+
+Local invention is the residual path, not the default.
+
+
 ## Ecosystem manufacturing model
 
 The research program treats the ecosystem as a set of bounded manufacturing roles rather than one giant runtime.
