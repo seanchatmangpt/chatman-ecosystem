@@ -272,7 +272,11 @@ defmodule WeaverAsh.Runner do
       digest = :crypto.hash(:sha256, encoded) |> Base.encode16(case: :lower)
 
       with :ok <- File.write(path, encoded),
-           :ok <- File.write(output_path(args.root, args.receipt_dir, "receipt.sha256"), "#{digest}  receipt.json\n") do
+           :ok <-
+             File.write(
+               output_path(args.root, args.receipt_dir, "receipt.sha256"),
+               "#{digest}  receipt.json\n"
+             ) do
         {:ok,
          %{
            "standing" => "ALIVE",

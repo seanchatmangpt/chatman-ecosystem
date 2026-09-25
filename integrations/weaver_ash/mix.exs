@@ -20,7 +20,7 @@ defmodule WeaverAsh.MixProject do
 
   defp deps do
     [
-      {:ash, "== 3.32.0"},
+      {:ash, "== 3.33.10"},
       {:reactor, "== 1.0.6"},
       {:jason, "~> 1.4"},
       {:sourceror, "~> 1.8", only: [:dev, :test]}

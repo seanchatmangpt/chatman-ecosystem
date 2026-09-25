@@ -34,9 +34,15 @@ defmodule Mix.Tasks.Weaver.Crown do
 
     root = opts[:root] || default_root()
     subject_sha = opts[:subject_sha] || System.get_env("ECOSYSTEM_SUBJECT_SHA") || git_head!(root)
-    repository = opts[:repository] || System.get_env("GITHUB_REPOSITORY") || "seanchatmangpt/chatman-ecosystem"
+
+    repository =
+      opts[:repository] || System.get_env("GITHUB_REPOSITORY") ||
+        "seanchatmangpt/chatman-ecosystem"
+
     registry = opts[:registry] || System.get_env("WEAVER_REGISTRY") || "telemetry/weaver"
-    receipt_dir = opts[:receipt_dir] || System.get_env("WEAVER_RECEIPT_DIR") || "target/weaver-live"
+
+    receipt_dir =
+      opts[:receipt_dir] || System.get_env("WEAVER_RECEIPT_DIR") || "target/weaver-live"
 
     broker_subject =
       opts[:broker_subject] ||
