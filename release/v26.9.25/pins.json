@@ -1,0 +1,208 @@
+{
+  "release": "v26.9.25",
+  "root_repository": "seanchatmangpt/chatman-ecosystem",
+  "observed_at": "2026-09-25T08:39:41Z",
+  "authority": "github-api:gh-cli-operator-token:read (lane chatman-crown)",
+  "_provenance": "Only hand-written SHAs of the release: default-branch heads resolved with gh api repos/<r>/commits/<default_branch> at observed_at. The root repository's own subject is the runtime crown_sha, never this pin.",
+  "repos": {
+    "chatman-ecosystem": {
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "ref": "main",
+      "sha": "49745eeb234317d619f965240dc7f0e23fcfef5d",
+      "role": "root",
+      "disposition": "CROWN",
+      "required": true,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github",
+      "root": true
+    },
+    "engineering-standards": {
+      "repository": "seanchatmangpt/engineering-standards",
+      "ref": "main",
+      "sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+      "role": "normative-standard",
+      "disposition": "REQUIRED",
+      "required": true,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "ggen_igniter": {
+      "repository": "seanchatmangpt/ggen_igniter",
+      "ref": "main",
+      "sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+      "role": "sjira-authority",
+      "disposition": "REQUIRED",
+      "required": true,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "xaas": {
+      "repository": "seanchatmangpt/xaas",
+      "ref": "main",
+      "sha": "70f7ea75df1d20a37666cd09050d5ec10a237892",
+      "role": "runtime-fabric",
+      "disposition": "REQUIRED",
+      "required": true,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "zcode-cli": {
+      "repository": "seanchatmangpt/zcode-cli",
+      "ref": "main",
+      "sha": "d1abfbe56660ade672af1125a3f11d91fc50a09e",
+      "role": "worker-execution",
+      "disposition": "REQUIRED",
+      "required": true,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "chatgpt-cloud-elixir": {
+      "repository": "seanchatmangpt/chatgpt-cloud-elixir",
+      "ref": "main",
+      "sha": "08722697df7df53b0697ad70eeb839b898d14b4b",
+      "role": "cloud-runtime",
+      "disposition": "REQUIRED",
+      "required": true,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "autofde-lab": {
+      "repository": "seanchatmangpt/autofde-lab",
+      "ref": "master",
+      "sha": "72900f03cf9772d84d0bace1e35e86eb6b077b92",
+      "role": "formal-courts",
+      "disposition": "REQUIRED",
+      "required": true,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "ash_a2a": {
+      "repository": "seanchatmangpt/ash_a2a",
+      "ref": "main",
+      "sha": "7999524d0b98aa5dc650a0538c1be5ec8b867477",
+      "role": "a2a-contracts",
+      "disposition": "REQUIRED",
+      "required": true,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "affidavit": {
+      "repository": "seanchatmangpt/affidavit",
+      "ref": "main",
+      "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+      "role": "receipt-persistence",
+      "disposition": "REQUIRED",
+      "required": true,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "ggen-marketplace": {
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "ref": "main",
+      "sha": "1f4abc53084e3376a7fed2c1d153029e8711fcee",
+      "role": "pack-marketplace",
+      "disposition": "REQUIRED",
+      "required": true,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "gymact": {
+      "repository": "seanchatmangpt/gymact",
+      "ref": "main",
+      "sha": "281009dfd8ef435f0027009fc1a88fd86688f8b9",
+      "role": "world-semantics",
+      "disposition": "REQUIRED",
+      "required": true,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "zoela": {
+      "repository": "seanchatmangpt/zoela",
+      "ref": "main",
+      "sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+      "role": "godslaw-domain",
+      "disposition": "REQUIRED",
+      "required": true,
+      "depends_on": [],
+      "visibility": "private",
+      "ref_check": "external"
+    },
+    "beam4pm": {
+      "repository": "seanchatmangpt/beam4pm",
+      "ref": "main",
+      "sha": "8c3f5e09c297023059ad384629a55ddb2ac785b1",
+      "role": "process-mining",
+      "disposition": "ADAPTER",
+      "required": false,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "wasm4pm": {
+      "repository": "seanchatmangpt/wasm4pm",
+      "ref": "main",
+      "sha": "9fc4f1ae3cc99cf65a5f014580db8e1ea3d08b55",
+      "role": "process-mining-wasm",
+      "disposition": "ADAPTER",
+      "required": false,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "ash_r2rml": {
+      "repository": "seanchatmangpt/ash_r2rml",
+      "ref": "main",
+      "sha": "89a1f154e78da2c2cc16076ee5b131275ef927bc",
+      "role": "r2rml-projection",
+      "disposition": "ADAPTER",
+      "required": false,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "ex4pm": {
+      "repository": "seanchatmangpt/ex4pm",
+      "ref": "main",
+      "sha": "c4ca84410c379888305c85201710734afb21f9bf",
+      "role": "process-control-plane",
+      "disposition": "ADAPTER",
+      "required": false,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "ash_surface": {
+      "repository": "seanchatmangpt/ash_surface",
+      "ref": "main",
+      "sha": "7d5492795d9b9a0956f51545ed1ad1932768b77e",
+      "role": "ash-surface",
+      "disposition": "ADAPTER",
+      "required": false,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    },
+    "ggen-ecosystem": {
+      "repository": "seanchatmangpt/ggen-ecosystem",
+      "ref": "main",
+      "sha": "5542c9fec6c9fb4e8ae5d7c5622bbbf24a1c9660",
+      "role": "ggen-composition-root",
+      "disposition": "ADAPTER",
+      "required": false,
+      "depends_on": [],
+      "visibility": "public",
+      "ref_check": "github"
+    }
+  }
+}

@@ -1,0 +1,239 @@
+name: Root Crown (v26.9.25)
+
+# Autonomic loop (RFC-0004 §44/§45/§55): every run re-observes every pinned repository,
+# recomputes RELEASE = C ∧ A ∧ R ∧ X ∧ F ∧ M from a cold checkout, and uploads a receipt
+# hash-chained to the previous successful run's receipt (genesis when none exists).
+# Observation/recompute/receipt carry no authority. The tag is RELEASE authority: it runs
+# only after an ALIVE receipt, only at crown_sha, and only behind the operator-approved
+# `release-crown` environment (BRCE gate; RFC §46 keeps publication authorities separate).
+
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'release line vYY.M.D'
+        required: false
+        default: 'v26.9.25'
+  push:
+    branches: [main]
+    paths:
+      - 'release/v26.9.25/**'
+      - 'scripts/release_train/root_crown/**'
+      - 'scripts/observe_release_heads.py'
+      - '.github/workflows/root-crown.yml'
+  pull_request:
+    paths:
+      - 'release/v26.9.25/**'
+      - 'scripts/release_train/root_crown/**'
+      - 'scripts/observe_release_heads.py'
+      - 'tests/release_train/root_crown/**'
+      - 'tests/test_observe_release_heads.py'
+      - '.github/workflows/root-crown.yml'
+
+permissions:
+  contents: read
+  actions: read
+  checks: read
+
+concurrency:
+  group: root-crown-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+env:
+  RELEASE: ${{ github.event.inputs.release || 'v26.9.25' }}
+
+jobs:
+  crown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      standing: ${{ steps.crown.outputs.standing }}
+      receipt_digest: ${{ steps.crown.outputs.receipt_digest }}
+      crown_sha: ${{ steps.crown.outputs.crown_sha }}
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Assert exact subject identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$expected"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Courts (root_crown, release_closure_court, invalidation_promotion, cross_product_court)
+        env:
+          PYTHONPATH: .
+          PYTHONDONTWRITEBYTECODE: '1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for suite in root_crown release_closure_court invalidation_promotion cross_product_court; do
+            echo "::group::$suite"
+            python3 -m unittest discover -s "tests/release_train/$suite" -p 'test_*.py' -v
+            echo "::endgroup::"
+          done
+          python3 -m unittest discover -s tests -p 'test_observe_release_heads.py' -v
+
+      - name: Refuse ambient consequence surfaces in the court
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -REn \
+            'requests\.(post|put|patch|delete)|httpx|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|socket\.|boto3|azure\.|google\.cloud|kubectl|terraform|git push|gh pr merge' \
+            scripts/release_train/root_crown \
+            tests/release_train/root_crown
+
+      - name: Cold reconstruction (projector --check on a clean runner)
+        env:
+          PYTHONPATH: .
+        run: python3 -m scripts.release_train.root_crown.projector --release "$RELEASE" --check
+
+      - name: Root manifest (verify_release)
+        run: python3 scripts/verify_release.py --release "$RELEASE"
+
+      - name: Observe release heads (read-only GitHub API)
+        if: github.event_name != 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/observe_release_heads.py
+          --release "$RELEASE" --cold --run-id "${{ github.run_id }}"
+          --out .artifacts/observations.json
+
+      - name: Previous receipt (hash chain; genesis when none)
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p .artifacts/prev
+          prev="$(gh run list -R "$GITHUB_REPOSITORY" -w root-crown.yml -b main -s success -L 1 --json databaseId -q '.[0].databaseId' 2>/dev/null || true)"
+          if [ -n "$prev" ] && gh run download "$prev" -R "$GITHUB_REPOSITORY" -n root-crown-receipt -D .artifacts/prev 2>/dev/null; then
+            echo "previous receipt from run $prev"
+          else
+            echo "genesis: no previous successful root-crown receipt"
+          fi
+
+      - name: Root crown
+        id: crown
+        if: github.event_name != 'pull_request'
+        env:
+          PYTHONPATH: .
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -m scripts.release_train.root_crown \
+            --release "$RELEASE" \
+            --observations .artifacts/observations.json \
+            --previous .artifacts/prev/crown-receipt.json \
+            --crown-sha "$GITHUB_SHA" \
+            --out .artifacts/receipt/crown-receipt.json \
+            --tag-decision .artifacts/receipt/tag-decision.json
+          code=$?
+          standing="$(python3 -c 'import json;print(json.load(open(".artifacts/receipt/crown-receipt.json"))["standing"])')"
+          digest="$(python3 -c 'import json;print(json.load(open(".artifacts/receipt/crown-receipt.json"))["receipt_digest"])')"
+          cp .artifacts/observations.json .artifacts/receipt/observations.json
+          if [ "$standing" != "ALIVE" ]; then cp .artifacts/receipt/tag-decision.json .artifacts/receipt/tag-illegal.json; fi
+          echo "standing=$standing" >> "$GITHUB_OUTPUT"
+          echo "receipt_digest=$digest" >> "$GITHUB_OUTPUT"
+          echo "crown_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Root crown $RELEASE @ $GITHUB_SHA: $standing"
+            echo "receipt \`$digest\`"
+            echo
+            python3 - <<'PY'
+          import json
+          r = json.load(open(".artifacts/receipt/crown-receipt.json"))
+          print("| term | state |\n|---|---|")
+          for t, v in r["terms"].items():
+              print(f"| {t} | {v['state']} |")
+          print()
+          for item in r["remaining"]:
+              print(f"- {item['id']} {item['state']} {item['code']} ({item['failure_class']}/{item['broken_term']}): {item['detail'][:160]}")
+          PY
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "$code" > .artifacts/receipt/exit-code
+          exit 0
+
+      - name: Upload root-crown receipt
+        if: github.event_name != 'pull_request' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: root-crown-receipt
+          path: .artifacts/receipt/
+          retention-days: 90
+          if-no-files-found: error
+
+      - name: Exit policy (REFUSED fails; typed BLOCKED warns; ALIVE passes)
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          code="$(cat .artifacts/receipt/exit-code)"
+          case "$code" in
+            0) echo "ALIVE" ;;
+            3) echo "::warning title=root crown BLOCKED::typed blockers remain (see receipt); loop continues" ;;
+            *) echo "::error title=root crown REFUSED::exit $code"; exit 1 ;;
+          esac
+
+  tag:
+    needs: crown
+    if: needs.crown.outputs.standing == 'ALIVE' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: release-crown
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Checkout crown SHA
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.crown.outputs.crown_sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download receipt
+        uses: actions/download-artifact@v4
+        with:
+          name: root-crown-receipt
+          path: .artifacts/receipt
+
+      - name: Verify receipt, crown SHA and tag absence, then tag (RFC §45)
+        env:
+          PYTHONPATH: .
+          CROWN_SHA: ${{ needs.crown.outputs.crown_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CROWN_SHA"
+          existing="$(git ls-remote --tags origin "refs/tags/$RELEASE^{}" | cut -f1)"
+          [ -n "$existing" ] || existing="$(git ls-remote --tags origin "refs/tags/$RELEASE" | cut -f1)"
+          python3 - "$CROWN_SHA" "$existing" <<'PY'
+          import json, sys
+          from scripts.release_train.root_crown.tag import tag_decision
+          receipt = json.load(open(".artifacts/receipt/crown-receipt.json"))
+          decision = tag_decision(receipt, sys.argv[1], sys.argv[2] or None, "v26.9.25")
+          print(json.dumps(decision, indent=2))
+          assert decision["decision"] == "LEGAL", decision["reasons"]
+          PY
+          if [ "$existing" = "$CROWN_SHA" ]; then echo "tag already at crown SHA"; exit 0; fi
+          digest="${{ needs.crown.outputs.receipt_digest }}"
+          git config user.name "root-crown"
+          git config user.email "root-crown@users.noreply.github.com"
+          git tag -a "$RELEASE" "$CROWN_SHA" -m "crown receipt $digest; approval run ${{ github.run_id }}"
+          git push origin "refs/tags/$RELEASE"
+          test "$(git ls-remote --tags origin "refs/tags/$RELEASE^{}" | cut -f1)" = "$CROWN_SHA"
