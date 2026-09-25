@@ -15,6 +15,7 @@ python3 scripts/verify_release.py --check-refs
 python3 scripts/verify_standing_evidence.py
 python3 scripts/verify_crown_edges.py
 python3 scripts/verify_external_paradigms.py
+python3 scripts/verify_spg_prior_art.py --self-test
 python3 scripts/verify_dfcm_capabilities.py
 python3 scripts/verify_live_azure_authority.py
 python3 scripts/v2030_definition_of_done.py --self-test
@@ -73,6 +74,7 @@ cat > target/crown/admission.json <<JSON
     "standing_evidence",
     "mandatory_crown_edges",
     "external_paradigms",
+    "spg_prior_art",
     "live_azure_authority_admission",
     "v2030_definition_of_done",
     "format",
