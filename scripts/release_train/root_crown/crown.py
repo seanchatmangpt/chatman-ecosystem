@@ -19,7 +19,10 @@ from . import berthier, projector
 from .evidence import DEFERRED, EVALUATORS, Context, Evaluator
 from .model import (
     FAILURE_CLASS,
+    MODES,
     SCHEMA_RECEIPT,
+    SCHEMA_RECEIPT_V2,
+    SCHEMA_RECEIPTS,
     TERMS,
     UNKNOWN,
     REFUSED,
@@ -46,7 +49,20 @@ def receipt_digest_of(receipt: dict[str, Any]) -> str:
 
 
 def verify_receipt(receipt: dict[str, Any]) -> bool:
-    return isinstance(receipt, dict) and receipt.get("receipt_digest") == receipt_digest_of(receipt)
+    """v1 and v2 receipts: the digest recomputes over every field but itself."""
+    return (
+        isinstance(receipt, dict)
+        and receipt.get("schema", SCHEMA_RECEIPT) in SCHEMA_RECEIPTS
+        and receipt.get("receipt_digest") == receipt_digest_of(receipt)
+    )
+
+
+def _contained(label: str, fn: Any, *args: Any) -> tuple[Any, str | None]:
+    """RFC §39: an evaluator crash is a typed REFUSED VERIFIER_CRASHED, never an escape."""
+    try:
+        return fn(*args), None
+    except Exception as exc:  # noqa: BLE001 — containment is the point
+        return None, f"{label}:{type(exc).__name__}:{exc}"
 
 
 def _new_head_impacts(
@@ -93,13 +109,23 @@ def evaluate(
     *,
     root: Path = Path("."),
     evaluators: dict[str, Evaluator] | None = None,
+    mode: str = "PRE_TAG",
 ) -> Verdict:
+    """Evaluate one release tree at ``crown_sha`` (the core receipt, schema v1).
+
+    ``mode`` PRE_TAG binds the observed root head to crown_sha (``CROWN_SHA_SPLIT``);
+    POST_TAG does not (after the tag, the observed head legitimately moves on and the
+    tag binding is the post-tag evaluator supplied by ``posttag``).
+    """
+    if mode not in MODES:
+        raise ValueError(f"mode {mode!r} not in {MODES}")
     registry = EVALUATORS if evaluators is None else evaluators
     inputs = projector.load_inputs(release_dir)
     reqs = inputs.requirements
     refusals: list[str] = []
     refusals += validate_requirements(inputs.requirements_doc, inputs.pins, inputs.rfc_text, registry.keys())
-    refusals += projector.check(release_dir)
+    drift, crashed = _contained("projector.check", projector.check, release_dir)
+    refusals += [f"REFUSED:VERIFIER_CRASHED:{crashed}"] if crashed else drift
 
     previous_digest = None
     if previous is not None:
@@ -109,7 +135,7 @@ def evaluate(
 
     root_repo = inputs.pins["root_repository"]
     root_obs = observations.get("repos", {}).get(root_repo, {})
-    if root_obs.get("head_sha") and root_obs["head_sha"] != crown_sha:
+    if mode == "PRE_TAG" and root_obs.get("head_sha") and root_obs["head_sha"] != crown_sha:
         refusals.append(f"REFUSED:CROWN_SHA_SPLIT:observed={root_obs['head_sha']}:crown={crown_sha}")
 
     ctx = Context(root=root, release_dir=release_dir, observations=observations, crown_sha=crown_sha, inputs=inputs)
@@ -124,7 +150,8 @@ def evaluate(
             state = REFUSED("UNKNOWN_EVIDENCE_KIND", req.evidence_kind)
         else:
             ctx.extra["states"] = states
-            state = fn(req, ctx)
+            result, crashed = _contained(req.id, fn, req, ctx)
+            state = REFUSED("VERIFIER_CRASHED", crashed) if crashed else result
         if state.state in {"BLOCKED", "UNKNOWN"} and (not state.code or state.code not in FAILURE_CLASS):
             state = REFUSED("BLOCKED_WITHOUT_TYPE", f"{req.id}:{state.code}")
         if state.state == "PASS" and req.id in impacts:
@@ -213,4 +240,140 @@ def evaluate(
         tuple(all_refusals),
         remaining,
         receipt,
+    )
+
+
+def _typed(refusal: str) -> dict[str, Any]:
+    code = code_of(refusal)
+    cls, term = FAILURE_CLASS.get(code, (None, None))
+    return {"refusal": refusal, "code": code, "failure_class": cls, "broken_term": term}
+
+
+def _worst(*standings: str) -> str:
+    for s in ("REFUSED", "BLOCKED"):
+        if s in standings:
+            return s
+    return "ALIVE"
+
+
+def attest(
+    release_dir: Path,
+    observations: dict[str, Any] | None,
+    previous: dict[str, Any] | None,
+    crown_sha: str,
+    *,
+    root: Path = Path("."),
+    requested_mode: str = "auto",
+    head_sha: str | None = None,
+    subject_dir: Path | None = None,
+    hardening_dir: Path | None = None,
+    tag_observation: dict[str, Any] | None = None,
+    ancestry: set[str] | None = None,
+    evaluators: dict[str, Evaluator] | None = None,
+) -> Verdict:
+    """Receipt schema v2: mode dispatch over PRE_TAG (the tagging crown) and POST_TAG.
+
+    PRE_TAG: the v1 evaluation of ``crown_sha`` wrapped in the v2 envelope (the chain
+    parent is ``previous``). POST_TAG: ``historical`` (exact replay of the tag-named
+    receipt + hardened ceiling) and ``current`` (the attested head, post-tag tag binding,
+    frozen payload) are reported separately; the chain parent is read from git
+    (``hardening/receipts/chain.json``), ``previous`` is ignored. The overall standing is
+    the worst of the sections; history is never refused because the head drifted.
+    """
+    from . import chain, posttag
+
+    hardening = hardening_dir if hardening_dir is not None else release_dir / "hardening"
+    record = posttag.load_record(hardening)
+    tags = posttag.tag_sources(observations, tag_observation)
+    mode, mode_blockers = posttag.select_mode(requested_mode, record, tags, head_sha or crown_sha)
+    attested = head_sha or crown_sha
+    historical: dict[str, Any] | None = None
+    subject_refusals: list[str] = []
+    subject_blockers: list[str] = list(mode_blockers)
+    chain_refusals: list[str] = []
+    chain_blockers: list[str] = []
+    if mode == "PRE_TAG":
+        verdict = evaluate(
+            release_dir, observations or {}, previous, crown_sha, root=root, evaluators=evaluators, mode="PRE_TAG"
+        )
+        current = {
+            "standing": verdict.standing,
+            "refusals": list(verdict.refusals),
+            "drift": {},
+            "receipt": verdict.receipt,
+        }
+        parent_digest = verdict.receipt["previous_receipt_digest"]
+        genesis = previous is None
+    else:
+        if record is not None:
+            subject_refusals, blockers = posttag.verify_tag_subject(record, hardening, tags)
+            subject_blockers += blockers
+            historical = posttag.historical_standing(record, hardening, subject_dir, root)
+        # Without a tag record there is no post-tag chain to read (TAG_UNRECORDED is the blocker).
+        link = chain.parent_of(hardening, ancestry) if record is not None else chain.ChainResult(None)
+        chain_refusals, chain_blockers = link.refusals, link.blockers
+        current = posttag.current_conformance(
+            release_dir,
+            observations,
+            link.parent,
+            crown_sha,
+            record,
+            tags,
+            root=root,
+            evaluators=evaluators,
+            hardening_dir=hardening,
+        )
+        parent_digest = link.parent_digest
+        genesis = False
+    core = current["receipt"]
+    refusals = sorted(
+        set(current["refusals"] + subject_refusals + chain_refusals + (historical["refusals"] if historical else []))
+    )
+    blockers = sorted(set(subject_blockers + chain_blockers + (historical["blockers"] if historical else [])))
+    sections = [current["standing"], "BLOCKED" if blockers else "ALIVE", "REFUSED" if refusals else "ALIVE"]
+    if historical is not None:
+        sections.append(historical["standing"])
+    elif mode == "POST_TAG":
+        sections.append("BLOCKED")
+    standing = _worst(*sections)
+    remaining = list(core["remaining"]) + [
+        {"id": f"{mode}:{code_of(b)}", "term": None, "state": "BLOCKED", "detail": b, "subject_sha": attested}
+        | {k: v for k, v in _typed(b).items() if k in ("code", "failure_class", "broken_term")}
+        for b in blockers
+    ]
+    receipt: dict[str, Any] = {
+        "schema": SCHEMA_RECEIPT_V2,
+        "release": release_dir.name,
+        "mode": mode,
+        "subject": posttag.subject_of(record, release_dir.name, crown_sha if mode == "PRE_TAG" else None),
+        "attestation_head_sha": attested,
+        "crown_sha": crown_sha if mode == "PRE_TAG" else (record or {}).get("subject", {}).get("commit_sha"),
+        "root_repository": core["root_repository"],
+        "evaluated_at": core["evaluated_at"],
+        "observations_digest": core["observations_digest"],
+        "observation_authority": core["observation_authority"],
+        "previous_receipt_digest": parent_digest,
+        "genesis": genesis,
+        "standing": standing,
+        "theorem": core["theorem"],
+        "terms": core["terms"],
+        "requirements": core["requirements"],
+        "refusals": refusals,
+        "global_refusals": [_typed(r) for r in refusals],
+        "blockers": [_typed(b) for b in blockers],
+        "remaining": remaining,
+        "heads": core["heads"],
+        "historical": historical,
+        "current": {
+            "standing": current["standing"],
+            "refusals": current["refusals"],
+            "drift": current["drift"],
+            "core_receipt_digest": core["receipt_digest"],
+            "core": core,
+        },
+        "authority": "NONE",
+    }
+    receipt["receipt_digest"] = receipt_digest_of(receipt)
+    return Verdict(
+        standing, {t: v["state"] for t, v in core["terms"].items()}, tuple(refusals), tuple(remaining), receipt
     )

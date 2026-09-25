@@ -1,0 +1,39 @@
+{
+  "courts": {
+    "brce_court": {
+      "command": "cargo run -q --example brce_court -- <work> d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+      "exit": 0,
+      "mutants_killed": "8/8",
+      "output_sha256": "sha256:cf1e5804588d5a2e6980a1566c635532ab37d1fd4291d67888bb7c2a1415a2c0",
+      "standing": "ADMITTED"
+    },
+    "clippy": {
+      "command": "cargo clippy --all-targets -- -D warnings",
+      "exit": 0,
+      "log_sha256": "sha256:22702d0e7f417a7c6c13f06778b3efb3620308a42dd3606f0be803d4edc67436"
+    },
+    "doctest": {
+      "command": "cargo test --doc",
+      "exit": 0,
+      "ignored": 6,
+      "log_sha256": "sha256:449579c612b2bebbcaf71fddb32852b3466cebfb4c4dd55c2385b52d7cb97c25",
+      "passed": 32
+    },
+    "fmt": {
+      "command": "cargo fmt --all -- --check",
+      "exit": 0,
+      "log_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "test": {
+      "command": "cargo test --all-targets",
+      "exit": 0,
+      "failed": 0,
+      "log_sha256": "sha256:0920262dbf3d0080201a3fe8ba6ed582dcce99b3c185d52cabe41a6d025ec420",
+      "passed": 806
+    }
+  },
+  "extraction": "git archive d70b0e40 | tar -x (pinned nightly-2026-08-12, rustc 1.99.0-nightly 3d6c19bb9)",
+  "repository": "seanchatmangpt/affidavit",
+  "schema": "chatman/lane-court-harvest/v1",
+  "subject_sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2"
+}

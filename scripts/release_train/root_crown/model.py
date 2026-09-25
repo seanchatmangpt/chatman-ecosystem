@@ -15,6 +15,11 @@ from typing import Any
 from scripts.release_train.cross_product_court.model import canonical_digest
 
 SCHEMA_RECEIPT = "https://chatman.dev/root-crown/receipt/v1"
+# v2 (post-tag hardening): mode, subject{tag,tag_object_sha,commit_sha,tree_sha},
+# attestation_head_sha, historical, current. verify_receipt accepts v1 and v2.
+SCHEMA_RECEIPT_V2 = "https://chatman.dev/root-crown/receipt/v2"
+SCHEMA_RECEIPTS = (SCHEMA_RECEIPT, SCHEMA_RECEIPT_V2)
+MODES = ("PRE_TAG", "POST_TAG")
 SCHEMA_OBSERVATIONS = "https://chatman.dev/root-crown/observations/v1"
 
 TERMS = ("C", "A", "R", "X", "F", "M")
@@ -98,7 +103,23 @@ CROWN_RULES = (
     "PRIVATE_OBSERVATION_DIGEST_MISMATCH",
     "PRIVATE_HEAD_SPLIT",
     "REQUIRED_UNKNOWN",
+    "VERIFIER_CRASHED",
 )
+# Post-tag refusals (posttag.py, chain.py): the tag, its recorded subject and the
+# historical receipt are immutable; any recomputation that disagrees is REFUSED.
+POST_TAG_RULES = (
+    "TAG_OBJECT_DIGEST_MISMATCH",
+    "TAG_MUTATED",
+    "TAG_SUBJECT_SPLIT",
+    "TAG_RECEIPT_SPLIT",
+    "SUBJECT_TREE_MISMATCH",
+    "HISTORICAL_OBSERVATION_SPLIT",
+    "PAYLOAD_MUTATED_POST_TAG",
+)
+# Post-tag typed blockers (lawful, non-ALIVE).
+POST_TAG_BLOCKERS = ("TAG_UNRECORDED", "REPLAY_DIVERGED", "SUBJECT_ABSENT")
+# RECEIPT_CHAIN_BROKEN detail tokens (chain.py).
+CHAIN_TOKENS = ("PARENT_DIGEST", "PARENT_REFUSED", "PARENT_UNTYPED_BLOCKED", "PARENT_NOT_ANCESTOR")
 # Typed blockers: lawful, terminal, non-ALIVE.
 BLOCKER_CODES = (
     "EVIDENCE_ABSENT",
@@ -161,6 +182,19 @@ FAILURE_CLASS: dict[str, tuple[str, str]] = {
     "PRIVATE_OBSERVATION_DIGEST_MISMATCH": ("EVIDENCE_FAILURE", "R_missing_identity"),
     "PRIVATE_HEAD_SPLIT": ("SUBJECT_FAILURE", "R_missing_identity"),
     "REQUIRED_UNKNOWN": ("EVIDENCE_FAILURE", "R_missing_standing"),
+    "VERIFIER_CRASHED": ("VERIFICATION_FAILURE", "mu_unlawful"),
+    # post-tag refusals
+    "TAG_OBJECT_DIGEST_MISMATCH": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    "TAG_MUTATED": ("AUTHORITY_FAILURE", "R_missing_identity"),
+    "TAG_SUBJECT_SPLIT": ("SUBJECT_FAILURE", "R_missing_identity"),
+    "TAG_RECEIPT_SPLIT": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    "SUBJECT_TREE_MISMATCH": ("SUBJECT_FAILURE", "R_missing_replay"),
+    "HISTORICAL_OBSERVATION_SPLIT": ("EVIDENCE_FAILURE", "mu_on_O"),
+    "PAYLOAD_MUTATED_POST_TAG": ("SUBJECT_FAILURE", "mu_unlawful"),
+    # post-tag typed blockers
+    "TAG_UNRECORDED": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    "REPLAY_DIVERGED": ("VERIFICATION_FAILURE", "R_missing_replay"),
+    "SUBJECT_ABSENT": ("EVIDENCE_FAILURE", "R_missing_replay"),
     # typed blockers
     "EVIDENCE_ABSENT": ("EVIDENCE_FAILURE", "R_missing_consequence"),
     "OBSERVATION_MISSING": ("TRANSPORT_FAILURE", "R_missing_identity"),
@@ -180,7 +214,16 @@ FAILURE_CLASS: dict[str, tuple[str, str]] = {
     "RECEIPT_UNVERIFIED": ("EVIDENCE_FAILURE", "R_missing_identity"),
 }
 
-ALL_CODES = REQ_RULES + PROJECTOR_RULES + BERTHIER_RULES + CROWN_RULES + BLOCKER_CODES + TAG_RULES
+ALL_CODES = (
+    REQ_RULES
+    + PROJECTOR_RULES
+    + BERTHIER_RULES
+    + CROWN_RULES
+    + POST_TAG_RULES
+    + POST_TAG_BLOCKERS
+    + BLOCKER_CODES
+    + TAG_RULES
+)
 
 
 @dataclass(frozen=True, slots=True)

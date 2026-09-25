@@ -1,0 +1,137 @@
+{
+  "court": {
+    "consequences_observed": 3,
+    "ledger_head": "494aefa9136a39bcbab0bfc0e06829aa3a7a2ec974166a3da3706eb9da4a7dc3",
+    "receipts": 4,
+    "records": 36,
+    "refusals": [],
+    "replay_digest": "19feff172e77c8a4f6f0d9e10aaf260a83fa6fbb76a842b46bc40b803aa7a7d5",
+    "rules": [
+      "CHAIN_INTEGRITY",
+      "ZERO_UNRECEIPTED_ACTUATION",
+      "DO_REQUIRES_AUTHORITY",
+      "CONSTRUCT_REQUIRES_ADMISSION",
+      "RECEIPT_DIGEST_VALID",
+      "AT_MOST_ONCE_CONSEQUENCE",
+      "CRASH_WINDOW_RECONCILED",
+      "UNKNOWN_NOT_PROMOTED"
+    ],
+    "standing": "ADMITTED"
+  },
+  "court_run_b": {
+    "consequences_observed": 3,
+    "ledger_head": "494aefa9136a39bcbab0bfc0e06829aa3a7a2ec974166a3da3706eb9da4a7dc3",
+    "receipts": 4,
+    "records": 36,
+    "refusals": [],
+    "replay_digest": "19feff172e77c8a4f6f0d9e10aaf260a83fa6fbb76a842b46bc40b803aa7a7d5",
+    "rules": [
+      "CHAIN_INTEGRITY",
+      "ZERO_UNRECEIPTED_ACTUATION",
+      "DO_REQUIRES_AUTHORITY",
+      "CONSTRUCT_REQUIRES_ADMISSION",
+      "RECEIPT_DIGEST_VALID",
+      "AT_MOST_ONCE_CONSEQUENCE",
+      "CRASH_WINDOW_RECONCILED",
+      "UNKNOWN_NOT_PROMOTED"
+    ],
+    "standing": "ADMITTED"
+  },
+  "ledger_blake3": "6f022a9724a104fb8864112aa5ff3a8da615293f9ad6df45480be35472c50825",
+  "mutants": [
+    {
+      "killed": true,
+      "mutation": "flip Done.result.changed in place, chain not recomputed",
+      "refused_rules": [
+        "CHAIN_INTEGRITY"
+      ],
+      "rule": "CHAIN_INTEGRITY",
+      "standing": "REFUSED"
+    },
+    {
+      "killed": true,
+      "mutation": "external effect 'rogue-unreceipted' written outside the pipeline",
+      "refused_rules": [
+        "ZERO_UNRECEIPTED_ACTUATION"
+      ],
+      "rule": "ZERO_UNRECEIPTED_ACTUATION",
+      "standing": "REFUSED"
+    },
+    {
+      "killed": true,
+      "mutation": "Done appended for an attempt that never passed PREPARED/authority",
+      "refused_rules": [
+        "DO_REQUIRES_AUTHORITY"
+      ],
+      "rule": "DO_REQUIRES_AUTHORITY",
+      "standing": "REFUSED"
+    },
+    {
+      "killed": true,
+      "mutation": "every Admitted outcome rewritten to Refused, construct kept",
+      "refused_rules": [
+        "CONSTRUCT_REQUIRES_ADMISSION"
+      ],
+      "rule": "CONSTRUCT_REQUIRES_ADMISSION",
+      "standing": "REFUSED"
+    },
+    {
+      "killed": true,
+      "mutation": "receipt.effect.changed flipped after sealing; ledger re-chained",
+      "refused_rules": [
+        "RECEIPT_DIGEST_VALID"
+      ],
+      "rule": "RECEIPT_DIGEST_VALID",
+      "standing": "REFUSED"
+    },
+    {
+      "killed": true,
+      "mutation": "second PREPARED+Done(changed=true) for an already-receipted consequence",
+      "refused_rules": [
+        "AT_MOST_ONCE_CONSEQUENCE",
+        "CRASH_WINDOW_RECONCILED"
+      ],
+      "rule": "AT_MOST_ONCE_CONSEQUENCE",
+      "standing": "REFUSED"
+    },
+    {
+      "killed": true,
+      "mutation": "PREPARED appended with no Done/receipt/reconciliation",
+      "refused_rules": [
+        "CRASH_WINDOW_RECONCILED"
+      ],
+      "rule": "CRASH_WINDOW_RECONCILED",
+      "standing": "REFUSED"
+    },
+    {
+      "killed": true,
+      "mutation": "EXECUTION_UNKNOWN reconciliation followed by an executed=true receipt",
+      "refused_rules": [
+        "UNKNOWN_NOT_PROMOTED"
+      ],
+      "rule": "UNKNOWN_NOT_PROMOTED",
+      "standing": "REFUSED"
+    }
+  ],
+  "ok": true,
+  "replay": {
+    "consequence_free": true,
+    "consequences_after_replay": 3,
+    "consequences_before_replay": 3,
+    "digest_equal": true,
+    "digest_run_a": "19feff172e77c8a4f6f0d9e10aaf260a83fa6fbb76a842b46bc40b803aa7a7d5",
+    "digest_run_a_rejudged": "19feff172e77c8a4f6f0d9e10aaf260a83fa6fbb76a842b46bc40b803aa7a7d5",
+    "digest_run_b": "19feff172e77c8a4f6f0d9e10aaf260a83fa6fbb76a842b46bc40b803aa7a7d5"
+  },
+  "scenario_log": [
+    "c-lawful: receipted",
+    "c-idem: retry executed=true changed=false",
+    "c-expired: REFUSED(GRANT_EXPIRED:grant-c-expired)",
+    "crash: pipeline dropped after c-crash DO and c-precrash PREPARED",
+    "pre-reconcile court: REFUSED {ZeroUnreceiptedActuation, CrashWindowReconciled}",
+    "reconcile c-crash: EffectConfirmed",
+    "reconcile c-precrash: NoEffectConfirmed"
+  ],
+  "scenario_log_equal_across_runs": true,
+  "subject_sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2"
+}

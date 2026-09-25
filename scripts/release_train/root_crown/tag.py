@@ -12,7 +12,9 @@ from typing import Any
 from .crown import verify_receipt
 
 
-def tag_decision(receipt: dict[str, Any], head_sha: str, existing_tag_sha: str | None, tag: str) -> dict[str, Any]:
+def tag_decision(
+    receipt: dict[str, Any], head_sha: str | None, existing_tag_sha: str | None, tag: str
+) -> dict[str, Any]:
     reasons: list[str] = []
     crown_sha = receipt.get("crown_sha") if isinstance(receipt, dict) else None
     if not verify_receipt(receipt):
@@ -37,4 +39,21 @@ def tag_decision(receipt: dict[str, Any], head_sha: str, existing_tag_sha: str |
             for item in receipt.get("remaining", [])
         ],
         "authority": "NONE (decision only; tagging requires the release-crown environment approval)",
+    }
+
+
+def post_tag_decision(receipt: dict[str, Any], head_sha: str | None, tag: str) -> dict[str, Any]:
+    """POST_TAG: the tag already exists and is immutable; no tag decision applies."""
+    subject = receipt.get("subject") or {}
+    return {
+        "tag": tag,
+        "decision": "NOT_APPLICABLE:POST_TAG",
+        "crown_sha": receipt.get("crown_sha"),
+        "head_sha": head_sha,
+        "existing_tag_sha": subject.get("commit_sha"),
+        "existing_tag_object_sha": subject.get("tag_object_sha"),
+        "receipt_digest": receipt.get("receipt_digest"),
+        "reasons": [],
+        "remaining": [],
+        "authority": "NONE (post-tag attestation; the tag is immutable and never re-created)",
     }
