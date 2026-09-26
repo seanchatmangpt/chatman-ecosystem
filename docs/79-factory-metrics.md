@@ -136,3 +136,18 @@ L\downarrow\text{ or bounded}
 under increasing valuable load.
 
 That combination would demonstrate manufacturing capacity rather than activity inflation.
+
+## 79.11 Daily accomplishment projection
+
+The operational review surface is the verified daily accomplishment log. Its canonical policy is `catalog/accomplishment-log.toml`; `scripts/measure_train/accomplishment_log.py` is the deterministic compiler.
+
+The report must expose four disjoint review surfaces:
+
+- completed work with verified consequence;
+- receipts/evidence;
+- open gaps, including every unverified completion claim;
+- blocked items.
+
+The 250/hour progress metric uses only unique exact Git subjects that satisfy the full consequence-verification receipt contract. Raw commits, PRs, workflow presence, prose completion claims, and unverified semantic fingerprints do not enter the numerator.
+
+Scheduled reports remain `CANDIDATE` and `PENDING_USER_REVIEW`. Review status is therefore orthogonal to compiler execution, preventing CI from manufacturing human approval.
