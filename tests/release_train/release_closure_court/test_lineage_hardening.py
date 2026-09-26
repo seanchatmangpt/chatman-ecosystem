@@ -27,7 +27,7 @@ from scripts.release_train.release_closure_court.bench import synthetic_closure
 from scripts.release_train.release_closure_court.court import evaluate, repair_order
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from test_court import B, C, _base, _with_lineage
+from test_court import B, C, _base, _pr, _with_lineage
 
 ROOT = Path(__file__).resolve().parents[3]
 BENCH_RECEIPT = ROOT / "benchmarks" / "release-closure-court" / "v1" / "receipt.json"
@@ -270,6 +270,124 @@ class StructuralInputTests(unittest.TestCase):
         closure["subjects"][-1]["depends_on"] = [closure["subjects"][0]["subject_id"]]
         cycles = [r for r in _refusals(closure) if r.startswith("REFUSED:DEPENDENCY_CYCLE")]
         self.assertEqual(len(cycles), 1, cycles)
+
+
+def _json_paths(obj: Any, prefix: tuple = ()):
+    yield prefix
+    if isinstance(obj, dict):
+        for key, value in obj.items():
+            yield from _json_paths(value, prefix + (key,))
+    elif isinstance(obj, list):
+        for pos, value in enumerate(obj):
+            yield from _json_paths(value, prefix + (pos,))
+
+
+_JUNK: tuple[Any, ...] = (None, 1, True, "", "  ", "x", ["x"], {"x": 1}, [], {}, 3.5, [["y"]],
+                          [{"sha": 1}], ["SPEC"])
+
+
+class NeverCrashTests(unittest.TestCase):
+    """Every structural corruption is a typed verdict, never a traceback (repair of #282)."""
+
+    def _crash_input(self) -> dict:
+        # Audit repro: unhashable id on a non-terminal row + any declared edge.
+        c = _base()
+        c["subjects"][0]["subject_id"] = ["x"]
+        c["subjects"][0]["impl_standing"] = "BLOCKED"
+        c["subjects"][0]["impl_type"] = "external"
+        c["subjects"][1]["depends_on"] = []
+        return c
+
+    def test_unhashable_id_on_non_terminal_row_with_edges_is_refused(self) -> None:
+        for bad in (["x"], {"x": 1}):
+            with self.subTest(sid=bad):
+                c = self._crash_input()
+                c["subjects"][0]["subject_id"] = bad
+                verdict = evaluate(c)
+                self.assertEqual(verdict.standing, "REFUSED")
+                self.assertIn(f"REFUSED:MALFORMED_ROW:{bad}:subject_id", verdict.refusals)
+                self.assertEqual(verdict.receipt["repair_order"], [])
+
+    def test_blank_id_on_non_terminal_row_never_enters_repair_order(self) -> None:
+        c = self._crash_input()
+        c["subjects"][0]["subject_id"] = "  "
+        self.assertEqual(evaluate(c).receipt["repair_order"], [])
+
+    def test_cli_refuses_the_audit_repro_with_exit_2_and_a_receipt(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            bad = Path(tmp, "crash.json")
+            bad.write_text(json.dumps(self._crash_input()), encoding="utf-8")
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                self.assertEqual(main(["court", str(bad)]), 2)
+            receipt = json.loads(buf.getvalue())
+            self.assertEqual(receipt["standing"], "REFUSED")
+            self.assertIn("REFUSED:MALFORMED_ROW:['x']:subject_id", receipt["refusals"])
+
+    def test_non_list_transient_heads_pins_and_courts_are_typed_refusals(self) -> None:
+        cases = [
+            (lambda c: c.__setitem__("transient_heads", C), "REFUSED:MALFORMED_ROW:closure:transient_heads"),
+            (lambda c: c["transient_heads"].append("x"), "REFUSED:MALFORMED_ROW:closure:transient_heads[1]"),
+            (lambda c: c["subjects"][0].__setitem__("pins", "x"), "REFUSED:MALFORMED_ROW:SPEC:pins"),
+            (lambda c: c["subjects"][0]["pins"].append(7), "REFUSED:MALFORMED_ROW:SPEC:pins[1]"),
+            (lambda c: c["subjects"][1].__setitem__("courts", "x"), "REFUSED:MALFORMED_ROW:IMPL:courts"),
+            (lambda c: c["subjects"][1]["courts"].append(None), "REFUSED:MALFORMED_ROW:IMPL:courts[1]"),
+            (lambda c: c["subjects"][1].__setitem__("authority_claimed", ["DO"]),
+             "REFUSED:MALFORMED_ROW:IMPL:authority_claimed"),
+            (lambda c: c["subjects"][0].__setitem__("rfc_id", ["RFC-X"]), "REFUSED:MALFORMED_ROW:SPEC:rfc_id"),
+        ]
+        for mutate, expected in cases:
+            with self.subTest(expected=expected):
+                c = _with_lineage()
+                mutate(c)
+                verdict = evaluate(c)
+                self.assertIn(expected, verdict.refusals)
+                self.assertEqual(verdict.standing, "REFUSED")
+
+    def test_transient_pin_law_still_fires_after_hardening(self) -> None:
+        c = _base()
+        c["subjects"][0]["pins"] = [{"repository": "o/pack", "sha": C}]
+        self.assertIn(f"REFUSED:TRANSIENT_PIN:SPEC:{C}->durable={B}", _refusals(c))
+
+    def test_every_single_field_corruption_yields_a_verdict(self) -> None:
+        base = self._crash_input()
+        base["subjects"][0]["subject_id"] = "SPEC"
+        base["subjects"][1]["depends_on"] = ["SPEC"]
+        base["subjects"][1]["lineage"] = _with_lineage()["subjects"][1]["lineage"]
+        paths = [p for p in _json_paths(base) if p]
+        self.assertGreater(len(paths), 50)
+        for path in paths:
+            for junk in _JUNK:
+                c = copy.deepcopy(base)
+                node = c
+                for key in path[:-1]:
+                    node = node[key]
+                node[path[-1]] = copy.deepcopy(junk)
+                with self.subTest(path=path, junk=junk):
+                    verdict = evaluate(c)
+                    self.assertIn(verdict.standing, {"ALIVE", "PARTIAL_ALIVE", "REFUSED"})
+                    json.dumps(verdict.receipt)  # the receipt is always serializable
+
+
+class LawCoverageTests(unittest.TestCase):
+    def test_two_canonical_heads_at_the_row_sha_are_successor_ambiguous(self) -> None:
+        c = _with_lineage()
+        c["subjects"][1]["lineage"] = [_pr(7, B, "MERGED", "CANONICAL"), _pr(8, B, "MERGED", "CANONICAL")]
+        refusals = _refusals(c)
+        self.assertIn("REFUSED:SUCCESSOR_AMBIGUOUS:IMPL:canonical=2", refusals)
+        self.assertFalse(any("CANONICAL_SUBJECT_SPLIT" in r for r in refusals), refusals)
+
+    def test_dependency_not_admitted_is_membership_not_standing(self) -> None:
+        # A dependency present in the closure but BLOCKED is not refused by the membership
+        # law; the closure is held at PARTIAL_ALIVE and the blocker is repaired first.
+        c = _with_lineage()
+        c["subjects"][0]["impl_standing"] = "BLOCKED"
+        c["subjects"][0]["impl_type"] = "external"
+        verdict = evaluate(c)
+        self.assertEqual(verdict.standing, "PARTIAL_ALIVE", verdict.refusals)
+        self.assertEqual(verdict.receipt["repair_order"], ["SPEC"])
+        c["subjects"][1]["depends_on"] = ["MISSING"]
+        self.assertIn("REFUSED:DEPENDENCY_NOT_ADMITTED:IMPL:MISSING", _refusals(c))
 
 
 class ReplayAndReorderingTests(unittest.TestCase):
