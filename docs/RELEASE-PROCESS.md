@@ -8,6 +8,11 @@ This repository is a composition/control plane. A release document can admit ide
 
 - current operational snapshot: `v26.8.18`
 - next dependency-closed composition target: `v26.9.1`
+- active release line: `v26.9.25` (`release/v26.9.25/manifest.toml` version `26.9.25`, standing `BLOCKED`, closure standing `PARTIAL_ALIVE`)
+
+2026-09-24: release line `v26.9.23` sealed — `release/v26.9.23/` + `receipts/v26.9.23/` (CE23-0.json standing ALIVE; court verdicts incl. CE23-9). The v26.9.1 composition remains predecessor law.
+
+2026-09-25: the active line is `v26.9.25`; `v26.9.23` remains the most recent sealed subject. The `v26.9.24` closure ledger (`release/v26.9.24/closure.json`, 18 subject rows bound to exact SHAs) is typed `PARTIAL_ALIVE` and its tag decision is recorded as `ILLEGAL` (`CROWN_NOT_ALIVE`) in `release/v26.9.24/tag-illegal.json`.
 
 See `VERSIONING.md` for why these subjects coexist.
 
@@ -116,6 +121,28 @@ Do not merge unless explicitly authorized.
 ## CI
 
 GitHub Actions is supplementary evidence. Status metadata without logs/owning acceptance behavior is not automatically proof. Exact-head matters: a green run for an earlier head cannot crown a later head whose tree changed.
+
+## Root crown (v26.9.25)
+
+The Root Crown is the autonomic loop of the v26.9.25 release line (RFC-0004 §44/§45/§55; introduced by `a7aaed0f`): every run re-observes every pinned repository in `release/v26.9.25/pins.json` — the default-branch heads of the 18 pinned repositories — and recomputes `RELEASE = C ∧ A ∧ R ∧ X ∧ F ∧ M` from a cold checkout. Observation, recompute, and receipt carry no authority; the tag is the RELEASE authority.
+
+The CI surface is `.github/workflows/root-crown.yml` with the court package in `scripts/release_train/root_crown/`:
+
+- scheduled every 30 minutes (`cron: '7,37 * * * *'`) plus `workflow_dispatch` with a release-line input (default `v26.9.25`); push and pull_request run the test courts only;
+- cold reconstruction runs the projector with `--check`, which refuses `PROJECTION_DRIFT` (`REFUSED:PROJECTION_DRIFT`) before any court evaluates;
+- the crown runs the Berthier recompile court (reusing `invalidation_promotion` dependency-graph/cascade/binding machinery) and emits a hash-chained receipt — chained to the previous successful run's receipt, genesis when none exists — uploaded as a workflow artifact;
+- typed refusal codes: `STALE_PROJECTION`, `ARTIFACT_DIGEST_MISMATCH`, `OMITTED_SUBJECT`, `UNEVIDENCED_WORK`, `AUTHORITY_INCREASE`, `BREAK_GLASS_AS_NORMAL`, `PREMISE_UNBOUND` (each carries an RFC 39 class and broken term);
+- tag authority flows only through the `release-crown` environment: the tag job executes only on an `ALIVE` receipt, only at `crown_sha`, and only on `main`.
+
+## Release closure court (v26.9.24)
+
+The release closure court (RFC-0002; introduced by `c5addffa`) evaluates `release/<v>/closure.json` rows and emits a digest-bound receipt with `authority = NONE`. It checks, per row: exact SHA, typed `BLOCKED` dispositions, successor binding, court-subject identity, authority ceiling, transient pins, and a single canonical owner. Invocation:
+
+```bash
+python3 -m scripts.release_train.release_closure_court
+```
+
+`SPEC_STANDINGS` now includes `MERGED` (terminal, but not a canonical `FINAL_SPEC` owner). Tag decisions are recorded in the typed tag-illegal ledger: `release/v26.9.24/tag-illegal.json` carries a `PARTIAL_ALIVE` closure standing and the decision `ILLEGAL` (`TAG_ILLEGAL:CROWN_NOT_ALIVE`).
 
 ## Release standing
 

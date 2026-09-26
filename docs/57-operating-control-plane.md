@@ -16,6 +16,8 @@ constraints = authority, scope, dependency, evidence
 
 The base should not move silently. If `main` changes after work begins, either preserve the original subject or explicitly reconcile the purpose branch onto the new base and re-run the exact-head verifier.
 
+**Warning:** `.github/workflows/apply-release-ref-auth-repair.yml` auto-mutates pull-request heads with `contents: write` (it commits the authenticated ref-verifier patch as `github-actions[bot]`) and can race exact-head court subjects. Courts should pin subject SHAs before adjudication.
+
 ## Read doctrine before edits
 
 The root `AGENTS.md` and `CONSTITUTION.md` are not decorative. They define the control laws for work in this repository. The operator should then inspect the applicable release manifest, candidate/fleet policy, status projection, receipts, tests, and owning workflow before manufacturing a change.

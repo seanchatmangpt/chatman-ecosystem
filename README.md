@@ -221,6 +221,8 @@ failed edge ≠ failed graph
 
 One blocked transport, verifier, provider, or authority edge changes topology. It does not automatically invalidate every other lawful path.
 
+The capability side of DfCM is admitted, not asserted: `scripts/verify_dfcm_capabilities.py` validates the canonical DfCM capability graph (44 capabilities, including the registered EPR native capabilities) and the Crown and CI refuse on any capability-graph violation.
+
 ---
 
 ## Standing vocabulary
@@ -409,6 +411,8 @@ Subject drift, intent drift, malformed grants, unsupported scope, or missing aut
 
 Credentials may make an operation technically possible. They do not make it lawful.
 
+This boundary is exercised, not just stated: the `xprod-001-reevaluate` workflow (`.github/workflows/xprod-001-reevaluate.yml`) re-runs the committed cross-product court cases against real producer runs. Its offline contract is gating and refuses `REFUSED:RECEIPT_REPLAY_MISMATCH` when a court replay diverges from the committed receipt; its online provenance step uses read-only `GET`s against the GitHub REST API (`GH_TOKEN`/`GITHUB_TOKEN`) and strips the `Authorization` header on the cross-host redirect to artifact storage, so the token never reaches the storage host. Court receipts live under `xprod-cases/receipts/` (for example `docs/jira/v26.9.25/xprod-cases/receipts/`).
+
 ---
 
 ## Receipts and replay
@@ -445,6 +449,7 @@ The Crown currently executes, among other gates:
 release graph
 standing evidence
 mandatory Crown edges
+DfCM capability admission court
 v2030 executable Definition of Done
 Python tests
 cargo fmt
@@ -464,6 +469,10 @@ exact GitHub subject read
 artifact transfer
 Crown verification
 ```
+
+The DfCM capability admission court (`scripts/verify_dfcm_capabilities.py`, stdlib-only) validates capability contracts against the canonical DfCM capability graph — 44 capabilities, including the externally registered EPR native capabilities — and refuses on any capability-graph violation (`REFUSED:*`, fail-closed), so the Crown itself refuses when the graph is violated. CI enforces the same court in the Capability Catalog workflow (`.github/workflows/capabilities.yml`), which re-runs it whenever the DfCM capability graph (`catalog/dfcm.toml`), the court, or its tests change.
+
+The ALOOP qualification crown (`scripts/aloop_crown.py`, ALOOP-CROWN-001 per RFC-0005) derives an ALOOP episode's standing from lane-authored run records (`<root>/lane-*/record.json`) as a typed, refusable verdict: fail-closed on missing or incomplete lane evidence, SELECT/MEASURE only (no actuation, no standing promotion), and it honors repos a lane declares `read_only` rather than expecting write access (RFC-0005 R008).
 
 The individual composition-root checks are useful when diagnosing a narrower failure:
 

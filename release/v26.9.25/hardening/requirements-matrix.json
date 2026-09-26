@@ -666,7 +666,7 @@
   ],
   "schema": "https://chatman.dev/root-crown/hardening/requirements-matrix/v1",
   "sections": {
-    "current": "inputs/current-observations.json through posttag.current_conformance at the observed root head (receipt sha256:c6fab9f62d725909d70b9cc4dcba018335415c40541707a63a72180db362e226)",
+    "current": "inputs/current-observations.json through posttag.current_conformance at the observed root head (receipt sha256:ea2de82675afbcd804b9dec84a675173c6473fd625da6608caf0e6f57cb44a0a)",
     "hardened": "replay-receipt.json historical.hardened.remaining (current evaluator over tag-time inputs + delta observations)",
     "historical": "receipts/run-36161744816/crown-receipt.json (tag-named receipt, sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c); exit = its run exit-code"
   }

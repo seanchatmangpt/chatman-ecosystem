@@ -12,8 +12,9 @@ local platform surface, ggen provisioning, marketplace bridging, security/admiss
 multi-signal observability, OCEL v2 accumulation, cold-standby DR, and compliance-readiness
 evidence.
 
-The next crown remains `v26.9.1`. Work should close evidence and implementation edges without
-reopening the frozen constitutional calculus unless a real falsifier is found.
+The `v26.9.23` release line is sealed (see `release/v26.9.23/README.md` and `receipts/v26.9.23/`); the next-crown question re-opens from that baseline.
+
+The active crown line is now `v26.9.25` (`release/v26.9.25/manifest.toml`, standing `BLOCKED`, closure standing `PARTIAL_ALIVE`). Its Root Crown (`.github/workflows/root-crown.yml`) re-observes the 18 pinned repository heads every 30 minutes, recomputes `RELEASE = C ∧ A ∧ R ∧ X ∧ F ∧ M` from a cold checkout, and holds tag authority behind the `release-crown` environment; the `v26.9.24` line's tag decision is typed `ILLEGAL` (`CROWN_NOT_ALIVE`). The frozen `v26.9.1` composition remains predecessor law. Work should close evidence and implementation edges without reopening the frozen constitutional calculus unless a real falsifier is found.
 
 ## Preserve
 
