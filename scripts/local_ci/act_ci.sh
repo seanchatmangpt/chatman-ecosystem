@@ -40,9 +40,26 @@ set -e
 rm -rf "$BOX"
 LOGD=$(shasum -a 256 "$LOG" | cut -d' ' -f1)
 WFD=$(git -C "$CANON" show "$FULL:.github/workflows/$WF" | shasum -a 256 | cut -d' ' -f1)
-if [ $RC -eq 0 ]; then STANDING=PASS
-elif grep -qE "failed to start container|Cannot connect to the Docker daemon|image .* not found|no such image|manifest unknown" "$LOG"; then STANDING="BLOCKED(TRANSPORT_FAILURE:act-runtime)"
-else STANDING=FAIL; fi
+# classify (v26.9.26 classifier fixes, lane W4-F):
+#   fix A — colima/containerd transport storms ("input/output error",
+#           "unable to determine if image already exists") are BLOCKED(TRANSPORT), not FAIL;
+#   fix B — rc=0 with zero executed jobs (act logs "[job] 🚀  Start image=..." per job start)
+#           is FAIL(zero_jobs_ran): a PASS requires >=1 executed job.
+act_ci_classify() {
+  local rc=$1 log=$2
+  if [ "$rc" -eq 0 ]; then
+    if grep -qE '\] 🚀 +Start image=' "$log"; then
+      printf 'PASS'
+    else
+      printf 'FAIL(zero_jobs_ran)'
+    fi
+  elif grep -qE 'failed to start container|Cannot connect to the Docker daemon|image .* not found|no such image|manifest unknown|input/output error|unable to determine if image already exists' "$log"; then
+    printf 'BLOCKED(TRANSPORT_FAILURE:act-runtime)'
+  else
+    printf 'FAIL'
+  fi
+}
+STANDING=$(act_ci_classify "$RC" "$LOG")
 cat >"${LOG%.log}.receipt.json" <<JSON
 {"schema":"v26.9.25/act-ci-receipt/1","repository":"seanchatmangpt/$REPO","subject_sha":"$FULL",
  "workflow":".github/workflows/$WF","workflow_sha256":"sha256:$WFD","event":"$EVENT","job":"${JOB}",
