@@ -1,0 +1,38 @@
+{
+  "id": "R-v26.9.26-001",
+  "capability": "premise_import: machine producer, planner and court for release premise imports (RFC-0005 edge E-ADM-02)",
+  "exact_subject": {
+    "repo": "seanchatmangpt/chatman-ecosystem",
+    "branch": "claude/sharp-ramanujan-3201f9",
+    "base_sha": "c8dd167a94bf829c9011b7a6836feca6c180ff15",
+    "commits": ["114c4ab9", "76491cbe"]
+  },
+  "provenance": {
+    "source_repo": "seanchatmangpt/engineering-standards",
+    "source_ref": "main",
+    "source_head": "71a6f607074b0f8d1b23855c11f10557a545b655"
+  },
+  "authority": "CONSTRUCT on designated branch only; no merge, no tag, no external mutation",
+  "files": [
+    "scripts/premise_import/{__init__,__main__,premise_import}.py",
+    "tests/premise_import/test_premise_import.py",
+    "catalog/premise-imports.toml",
+    ".github/workflows/premise-import.yml"
+  ],
+  "verification": [
+    {"cmd": "PYTHONPATH=. PREMISE_IMPORT_REPOS_ROOT=/home/user/seanchatmangpt python3 -m unittest discover -s tests/premise_import -p 'test_*.py'", "exit": 0, "tests": 28},
+    {"cmd": "PYTHONPATH=. python3 -m scripts.premise_import check", "exit": 0, "verdict": "ADMITTED"},
+    {"cmd": "PYTHONPATH=. python3 -m scripts.premise_import --repos-root /home/user/seanchatmangpt plan", "exit": 0, "verdict": "ADMITTED", "premises": {"v26.9.25/0004": "IMPORTED", "v26.9.25/0005": "IMPORTED"}},
+    {"cmd": "PYTHONPATH=. python3 -m scripts.premise_import --repos-root /home/user/seanchatmangpt plan --release v26.9.26", "exit": 3, "verdict": "BLOCKED(PREMISE_ABSENT:E-ADM-01)"},
+    {"cmd": "machine import of both committed v26.9.25 imports into scratch + diff -r", "result": "BYTE_IDENTICAL"},
+    {"cmd": "python3 scripts/verify_release.py --check-refs", "exit": 0},
+    {"cmd": "python3 -m unittest discover -s tests -p 'test_*.py'", "result": "597 run, 1 failure (pre-existing on base c8dd167a: test_ce23_0_court R1 lineage; see state file FE-01)"}
+  ],
+  "falsifiers": {
+    "court_mutants": "7/7 killed",
+    "planner_mutants": "10/10 killed (after fixing oldest-add bug found by mutation)"
+  },
+  "replay": "clone engineering-standards to <R>/engineering-standards; PREMISE_IMPORT_REPOS_ROOT=<R> run the test suite; or CI workflow premise-import.yml",
+  "standing": "PARTIAL_ALIVE",
+  "standing_reason": "executed locally on the exact branch head; CI workflow premise-import.yml not yet observed on GitHub; not merged"
+}
