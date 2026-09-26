@@ -1317,7 +1317,7 @@
   "schema": "https://chatman.dev/root-crown/hardening/mutation-report/v1",
   "source_digests": {
     "scripts/observe_release_heads.py": "sha256:22d7008c0ad662bb9378bb7806ee90f155aa58e784ce2ec567cf5b8239e9dcfb",
-    "scripts/release_train/release_closure_court/court.py": "sha256:9c46863eec5a6619f7221206def681ef94fd391a28b2c107ce1ba1bcff5d3698",
+    "scripts/release_train/release_closure_court/court.py": "sha256:e12c1263592038394a8dbe1a73edc2a894a88c4064f44e1ad39ecdce60de24fb",
     "scripts/release_train/root_crown/binding.py": "sha256:51dda4ae530be25f952f9b0603c4e81f293a82f64faabb45bbc05dd08a913b72",
     "scripts/release_train/root_crown/chain.py": "sha256:3039484a9b8f992aa6c5ee72989af86570afe5c1ab4e45f177597e4714009253",
     "scripts/release_train/root_crown/crown.py": "sha256:775f4eee8478a2e68f579655be707313c3a3fdcda9e09770ab0996b826434b20",

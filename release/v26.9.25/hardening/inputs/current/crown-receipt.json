@@ -111,7 +111,7 @@
       "observations_digest": "sha256:b9ec24d0676f10625c6a81f0b3fd22fc490d036d2a380b63bf9961babe4c11bf",
       "packets_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
       "previous_receipt_digest": "sha256:7e7e9c80c3cd4649d9e00039d2336c8b5ff477b53227332dd4b445de3c2cc856",
-      "receipt_digest": "sha256:0e51e01d472f528fdaacd4700a27b3546325a3ac3103ec73e9e80d7bee377393",
+      "receipt_digest": "sha256:10d95169f87a317effc1b7c8c0ae4d7695239ed9870743a986b387c64b4bee85",
       "refusals": [],
       "release": "v26.9.25",
       "remaining": [
@@ -343,7 +343,7 @@
           },
           "broken_term": null,
           "code": null,
-          "detail": "13 required subjects terminal (11 typed non-ALIVE dispositions); closure court PARTIAL_ALIVE; receipt=sha256:f95b998cd8f7b02ba80612b1d1f87d716360330256e2c4d8743aa105e2326180; policy AC-02 ceiling=TERMINAL",
+          "detail": "13 required subjects terminal (11 typed non-ALIVE dispositions); closure court PARTIAL_ALIVE; receipt=sha256:474ef17f5ba29af54c3ae86bf5cb708455c61e2abc2d654634e8439ee2f45a94; policy AC-02 ceiling=TERMINAL",
           "failure_class": null,
           "state": "PASS",
           "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
@@ -741,7 +741,7 @@
           },
           "broken_term": null,
           "code": null,
-          "detail": "13 required subjects terminal (11 typed non-ALIVE dispositions); closure court PARTIAL_ALIVE; receipt=sha256:f95b998cd8f7b02ba80612b1d1f87d716360330256e2c4d8743aa105e2326180; policy F-03 ceiling=TERMINAL",
+          "detail": "13 required subjects terminal (11 typed non-ALIVE dispositions); closure court PARTIAL_ALIVE; receipt=sha256:474ef17f5ba29af54c3ae86bf5cb708455c61e2abc2d654634e8439ee2f45a94; policy F-03 ceiling=TERMINAL",
           "failure_class": null,
           "state": "PASS",
           "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
@@ -1092,7 +1092,7 @@
       },
       "theorem": "RELEASE = C AND A AND R AND X AND F AND M"
     },
-    "core_receipt_digest": "sha256:0e51e01d472f528fdaacd4700a27b3546325a3ac3103ec73e9e80d7bee377393",
+    "core_receipt_digest": "sha256:10d95169f87a317effc1b7c8c0ae4d7695239ed9870743a986b387c64b4bee85",
     "drift": {
       "moved_since_tag": [
         "seanchatmangpt/ash_a2a",
@@ -1186,7 +1186,7 @@
   "observation_authority": "github-api:GITHUB_TOKEN:read",
   "observations_digest": "sha256:b9ec24d0676f10625c6a81f0b3fd22fc490d036d2a380b63bf9961babe4c11bf",
   "previous_receipt_digest": "sha256:7e7e9c80c3cd4649d9e00039d2336c8b5ff477b53227332dd4b445de3c2cc856",
-  "receipt_digest": "sha256:7708c69c5e8217dcb55f7fd0d51369e16d858142c7bf2478535ce30758440b9c",
+  "receipt_digest": "sha256:73061fee467d7bd6e80cf04f7d324c5bf7dab64b0722b192346ac66d2970740b",
   "refusals": [],
   "release": "v26.9.25",
   "remaining": [
@@ -1418,7 +1418,7 @@
       },
       "broken_term": null,
       "code": null,
-      "detail": "13 required subjects terminal (11 typed non-ALIVE dispositions); closure court PARTIAL_ALIVE; receipt=sha256:f95b998cd8f7b02ba80612b1d1f87d716360330256e2c4d8743aa105e2326180; policy AC-02 ceiling=TERMINAL",
+      "detail": "13 required subjects terminal (11 typed non-ALIVE dispositions); closure court PARTIAL_ALIVE; receipt=sha256:474ef17f5ba29af54c3ae86bf5cb708455c61e2abc2d654634e8439ee2f45a94; policy AC-02 ceiling=TERMINAL",
       "failure_class": null,
       "state": "PASS",
       "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
@@ -1816,7 +1816,7 @@
       },
       "broken_term": null,
       "code": null,
-      "detail": "13 required subjects terminal (11 typed non-ALIVE dispositions); closure court PARTIAL_ALIVE; receipt=sha256:f95b998cd8f7b02ba80612b1d1f87d716360330256e2c4d8743aa105e2326180; policy F-03 ceiling=TERMINAL",
+      "detail": "13 required subjects terminal (11 typed non-ALIVE dispositions); closure court PARTIAL_ALIVE; receipt=sha256:474ef17f5ba29af54c3ae86bf5cb708455c61e2abc2d654634e8439ee2f45a94; policy F-03 ceiling=TERMINAL",
       "failure_class": null,
       "state": "PASS",
       "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"

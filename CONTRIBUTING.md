@@ -52,6 +52,17 @@ The Makefile also exposes narrower targets such as `make test`, `make verify`, `
 
 For subsystem-specific commands, see [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md).
 
+## Dependency and license policy
+
+`deny.toml` is the dependency/license policy gate (`cargo deny check`; part of `./scripts/crown.sh` and the "Dependency license and source policy" CI check). Current admitted exceptions, each carried as an explicit, reasoned row in `deny.toml`:
+
+- `sources.allow-git` admits the first-party git source `https://github.com/seanchatmangpt/clap-noun-verb.git` (pinned by rev in `Cargo.lock`);
+- `licenses.allow` admits `CC0-1.0` (pulled by notify 6.1.1 via clap-noun-verb);
+- `advisories.ignore` carries a standing `RUSTSEC-2024-0370` ignore: proc-macro-error is unmaintained (not a vulnerability), pulled transitively at build time only via clap-noun-verb macros, with no safe upgrade upstream — revisit when clap-noun-verb drops it;
+- vulnerable dependencies are patched rather than ignored where an upgrade exists (for example rustls updated through `cargo update`).
+
+Do not weaken or remove an ignore row without replacing it with an executed verifier result.
+
 ## Documentation changes
 
 When adding or changing docs:

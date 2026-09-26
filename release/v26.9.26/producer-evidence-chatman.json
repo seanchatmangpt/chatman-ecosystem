@@ -1,0 +1,73 @@
+{
+  "schema": "https://chatman.dev/release/v26.9.26/producer-evidence/v1",
+  "release": "v26.9.26",
+  "producer": "lane L7 (wave 3, overnight completion loop 2026-09-26)",
+  "subject": {
+    "repository": "seanchatmangpt/chatman-ecosystem",
+    "branch": "feat/aloop-crown-001",
+    "sha": "5151a2e3a59548d3593004c5f44ee129727c76be",
+    "base": "c59596f5506e7a00ca4ed6b909ebf6d6659b74c1 (GitHub namesake lineage root; local lineage 6c21e25 is NOT in ancestry - operator-gated CE23-0)",
+    "pr": "https://github.com/seanchatmangpt/chatman-ecosystem/pull/297"
+  },
+  "lineage_fence": "BLOCKED(operator:CE23-0): dual-lineage question (local 6c21e25 vs GitHub c59596f5) is operator-gated; this lane works only the GitHub-namesake line, pushes no lineage decision.",
+  "rows": [
+    {
+      "capability": "release-closure-court R25-018 verifier/subject standing split",
+      "subject_locator": "git:seanchatmangpt/chatman-ecosystem@5151a2e3a59548d3593004c5f44ee129727c76be:scripts/release_train/release_closure_court/court.py",
+      "sha256": "sha256:e12c1263592038394a8dbe1a73edc2a894a88c4064f44e1ad39ecdce60de24fb",
+      "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@5151a2e3a59548d3593004c5f44ee129727c76be:tests/release_train/release_closure_court/test_court.py",
+      "evidence_sha256": "sha256:88db2d7ba3215cbe8efaf91b7acb56140e68669575a0f4304706dee92fec7a2f",
+      "witnessed": "PYTHONPATH=. pytest tests/release_train/release_closure_court/test_court.py -> 28 passed, 33 subtests passed (exit 0) at 70be75b0 and re-run at 35e3ad77 post-merge with tests/premise_import: 55 passed, 2 skipped, 43 subtests. Local execution this session, exact heads.",
+      "standing": "ALIVE"
+    },
+    {
+      "capability": "CE23-9 exact-head root court: members re-observed at current head",
+      "subject_locator": "git:seanchatmangpt/chatman-ecosystem@5151a2e3a59548d3593004c5f44ee129727c76be:release/v26.9.23/courts/ce23_9/members.py",
+      "sha256": "sha256:749a092040be16c0ecb4aa6b8285824d5b69c614f56734697e3361a23c4dc8cf",
+      "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@5151a2e3a59548d3593004c5f44ee129727c76be:release/v26.9.26/producer-evidence-chatman.json",
+      "witnessed": "python3 release/v26.9.23/courts/ce23_9/members.py subject-clean -> MEMBER_ALIVE head=35e3ad77 clean=True; members.py exact-head-ci -> MEMBER_UNKNOWN (30 check-runs observed; typed 'audit' docs-vacuity FAILURE at exact head [books/no-agent-coding density, pre-existing at 70be75b0, absent from this PR's diff]; 13 EXACT_HEAD_CHECK_MISSING = CI still pending at observation time). Full-court re-run NOT executed this session (dominated by replayed CE23-12, ~20 min; local CI members would run cargo builds - disk gate).",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "capability": "CE23-9 round-1 receipt exact-SHA binding + edge freshness",
+      "subject_locator": "git:seanchatmangpt/chatman-ecosystem@5151a2e3a59548d3593004c5f44ee129727c76be:receipts/v26.9.23/CE23-9.json",
+      "sha256": "sha256:ecd00767a95bf05bf64e8ac897dde082fe1d78a34a6ee9743894d48593e84af0",
+      "binding": "subject_sha d2f36659e0860f0c456137d50be8856da1d86839 (branch release/v26.9.23-int) exists as a commit object and is contained in origin/HEAD->origin/main ancestry and origin/claude/* branches: PUBLISHED. Receipt standing field: UNKNOWN (exit 75, nothing refused) typed against 5 edges; freshness re-observed 2026-09-26:",
+      "edges": [
+        {"edge": "VENDOR_PUBLICATION_PENDING", "state_now": "CLOSED: ggen-marketplace release/v26.9.23-int local==origin==abd3ee12c58f65e81df167d89c82c13fff1caa9e; e3988aba4a850095d94d3b18a4495766d13e4d5e is ancestor of origin line (observed git rev-list/merge-base this session)"},
+        {"edge": "CE23-0 CE-INTAKE stub", "state_now": "CLOSED: receipts/v26.9.23/CE23-0.json standing ALIVE, court exit 0 at 9af94f93 (49 OK)"},
+        {"edge": "EXACT_HEAD_UNPUBLISHED", "state_now": "CLOSED: d2f36659 published (git branch -r --contains witnessed)"},
+        {"edge": "OPERATOR_ACCEPTANCE_ABSENT (GC23-12, xaas docs/sjira/v26.9.23/successor/ACCEPTED)", "state_now": "OPEN by design: operator-only edge; court continues after it typed UNKNOWN"},
+        {"edge": "CE23-3/4/5/6/8 courts", "state_now": "OPEN: no receipts exist (machinery-absent stubs per HANDWRITTEN.md row 15); re-running the full court would still type these UNKNOWN"}
+      ],
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "capability": "ALOOP crown PROCESS honors declared read_only repos (RFC-0005 R008)",
+      "subject_locator": "git:seanchatmangpt/chatman-ecosystem@5151a2e3a59548d3593004c5f44ee129727c76be:scripts/aloop",
+      "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@5151a2e3a59548d3593004c5f44ee129727c76be:release/v26.9.26/producer-evidence-chatman.json",
+      "witnessed": "Commits fcd645da + 904cf325, carried by PR #297 (OPEN at 5151a2e3). CHATMAN ECOSYSTEM CROWN + S0-S3 exact-head crown checks success at 35e3ad77 (GitHub check-runs observed this session). Not merged: merge requires green incl. pre-existing docs-vacuity audit failure (below).",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "capability": "root-crown mutation harness anti-vacuity (MUTATION_REPORT_DRIFT gate)",
+      "subject_locator": "git:seanchatmangpt/chatman-ecosystem@5151a2e3a59548d3593004c5f44ee129727c76be:release/v26.9.25/hardening/inputs/mutation-report.json",
+      "sha256": "sha256:4acac0eaf084cb03812cbdfbd89bac7119fa28920e46cdeae3d54cf1c8e6b448",
+      "witnessed": "Falsifier observed firing: --check-report exit 2 REFUSED:MUTATION_REPORT_DRIFT on court.py digest drift (PR #282 lineage laws + R25-018 changed court.py after the report was minted; same refusal red on main at 19eca561, run 36238393538). Repair commit 5151a2e3 regenerates the report; --check-report exit 0, 124 mutants, 0 survivors, single-digest diff.",
+      "standing": "ALIVE"
+    }
+  ],
+  "unresolved": [
+    {
+      "edge": "docs-vacuity 'audit' check failure at exact head",
+      "detail": "15 LOW_SEMANTIC_DENSITY findings, all in books/no-agent-coding/src/** (score 193-218 < 220; run 36239835369 job 108398143513). Pre-existing at 70be75b0; zero findings in files touched by this branch. Repair = genuine content work on 15 published book pages; not fabricated to pass a density gate in this lane.",
+      "standing": "BUILD_BROKEN(docs)"
+    },
+    {
+      "edge": "dual-lineage CE23-0",
+      "detail": "Local lineage 6c21e25 (never pushed, holds v26.9.22 receipts) vs GitHub namesake c59596f5. Operator-gated; no lineage-altering push performed. Evidence: git merge-base --is-ancestor 6c21e25 HEAD -> not ancestor.",
+      "standing": "BLOCKED(operator:CE23-0)"
+    }
+  ],
+  "generated": "2026-09-26 by lane L7"
+}

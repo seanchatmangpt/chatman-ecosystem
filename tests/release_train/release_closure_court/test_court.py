@@ -15,12 +15,13 @@ from scripts.release_train.release_closure_court.court import (
     DURABLE_RULES,
     LINEAGE_RULES,
     RULES,
+    _combine_standings,
     evaluate,
 )
 
 ROOT = Path(__file__).resolve().parents[3]
 REAL_CLOSURE = ROOT / "release" / "v26.9.24" / "closure.json"
-A, B, C = "a" * 40, "b" * 40, "c" * 40
+A, B, C, D = "a" * 40, "b" * 40, "c" * 40, "d" * 40
 
 
 def _base() -> dict:
@@ -129,6 +130,9 @@ class ReleaseClosureCourtTests(unittest.TestCase):
                 {**copy.deepcopy(c["subjects"][0]), "subject_id": "SPEC-COPY", "repository": "o/other"}
             ),
             "REFUSED:BLOCKED_WITHOUT_TYPE": lambda c: c["subjects"][1].update(impl_standing="BLOCKED"),
+            "REFUSED:VERIFIER_EVIDENCE_MISSING": lambda c: c["subjects"][1].update(
+                verifier_standing="UNKNOWN"
+            ),
             "REFUSED:SUCCESSOR_AMBIGUOUS": lambda c: _lineage(c).append(_pr(8, C, "OPEN", "UNRESOLVED")),
             "REFUSED:CANONICAL_SUBJECT_SPLIT": lambda c: _lineage(c)[0].update(sha=A),
             "REFUSED:SUPERSEDED_LINEAGE_OPEN": lambda c: _lineage(c).append(_pr(3, C, "OPEN", "ZOMBIE")),
@@ -146,6 +150,103 @@ class ReleaseClosureCourtTests(unittest.TestCase):
                 verdict = evaluate(closure)
                 self.assertEqual(verdict.standing, "REFUSED")
                 self.assertIn(rule, _refusal_prefixes(closure))
+
+    def test_verifier_alive_and_subject_unknown_coexist(self) -> None:
+        """R25-018: VERIFIER_ALIVE and SUBJECT_ALIVE are independent fields. An unproven
+        (UNKNOWN, optional) subject does not poison the closure while its verifier is ALIVE."""
+        c = _base()
+        c["subjects"].append(
+            {
+                "subject_id": "UNPROVEN",
+                "repository": "o/maybe",
+                "artifact": "lib/maybe.ex",
+                "sha": D,
+                "required": False,
+                "spec_standing": "NOT_A_SPEC",
+                "impl_standing": "UNKNOWN",
+                "verifier_standing": "ALIVE",
+                "authority_ceiling": "NONE",
+                "authority_claimed": "NONE",
+                "courts": [{"court": "ci", "result": "PASS", "sha": D}],
+            }
+        )
+        v = evaluate(c)
+        self.assertEqual(v.refusals, (), v.refusals)
+        self.assertEqual(v.verifier_standing, "ALIVE")
+        self.assertEqual(v.standing, "ALIVE")
+
+    def test_subject_alive_without_verifier_evidence_is_refused(self) -> None:
+        """Anti-vacuity: a subject claiming ALIVE whose verifier did not execute at the
+        exact subject sha is REFUSED:VERIFIER_EVIDENCE_MISSING, never alive."""
+        declared_unknown = _base()
+        declared_unknown["subjects"][1]["verifier_standing"] = "UNKNOWN"
+        self.assertEqual(evaluate(declared_unknown).standing, "REFUSED")
+        self.assertIn("REFUSED:VERIFIER_EVIDENCE_MISSING", _refusal_prefixes(declared_unknown))
+        derived_unknown = _base()
+        derived_unknown["subjects"][1]["courts"] = []
+        self.assertIn("REFUSED:VERIFIER_EVIDENCE_MISSING", _refusal_prefixes(derived_unknown))
+        declared_alive_without_witness = _base()
+        declared_alive_without_witness["subjects"][1]["courts"] = []
+        declared_alive_without_witness["subjects"][1]["verifier_standing"] = "ALIVE"
+        self.assertIn(
+            "REFUSED:VERIFIER_EVIDENCE_MISSING", _refusal_prefixes(declared_alive_without_witness)
+        )
+
+    def test_both_alive_yields_standing_alive_and_receipt_carries_the_split(self) -> None:
+        v = evaluate(_base())
+        self.assertEqual(v.subject_standing, "ALIVE")
+        self.assertEqual(v.verifier_standing, "ALIVE")
+        self.assertEqual(v.standing, "ALIVE")
+        self.assertEqual(v.receipt["subject_standing"], "ALIVE")
+        self.assertEqual(v.receipt["verifier_standing"], "ALIVE")
+
+    def test_declared_verifier_is_validated_and_terminal_propagates(self) -> None:
+        blocked = _base()
+        blocked["subjects"][1]["verifier_standing"] = "BLOCKED"
+        v = evaluate(blocked)
+        self.assertEqual(v.standing, "REFUSED", v.refusals)
+        self.assertIn("REFUSED:VERIFIER_EVIDENCE_MISSING", _refusal_prefixes(blocked))
+        malformed = _base()
+        malformed["subjects"][1]["verifier_standing"] = "HULK"
+        self.assertIn("REFUSED:MALFORMED_ROW", _refusal_prefixes(malformed))
+
+    def test_subject_standing_does_not_inherit_verifier_standing(self) -> None:
+        """R25-018 tripwire (fails on pre-split semantics): the subject lane and the
+        verifier lane are independent state. (1) An unevidenced liveness claim is
+        REFUSED:VERIFIER_EVIDENCE_MISSING, not silently alive. (2) A degraded verifier
+        with zero subject-law violations keeps subject_standing ALIVE while the combined
+        standing degrades conservatively — standing never reports above the subject lane."""
+        missing_evidence = _base()
+        missing_evidence["subjects"][1]["courts"] = []
+        v = evaluate(missing_evidence)
+        self.assertIn("REFUSED:VERIFIER_EVIDENCE_MISSING", _refusal_prefixes(missing_evidence))
+        self.assertEqual(v.standing, "REFUSED")
+        degraded_verifier = _base()
+        degraded_verifier["subjects"].append(
+            {
+                "subject_id": "UNPROVEN",
+                "repository": "o/maybe",
+                "artifact": "lib/maybe.ex",
+                "sha": D,
+                "required": False,
+                "spec_standing": "NOT_A_SPEC",
+                "impl_standing": "UNKNOWN",
+                "verifier_standing": "PARTIAL_ALIVE",
+                "authority_ceiling": "NONE",
+                "authority_claimed": "NONE",
+                "courts": [],
+            }
+        )
+        v2 = evaluate(degraded_verifier)
+        self.assertEqual(v2.refusals, (), v2.refusals)
+        self.assertEqual(v2.subject_standing, "ALIVE")
+        self.assertEqual(v2.verifier_standing, "PARTIAL_ALIVE")
+        self.assertEqual(v2.standing, "PARTIAL_ALIVE")
+        self.assertEqual(v2.receipt["subject_standing"], "ALIVE")
+        self.assertEqual(v2.receipt["verifier_standing"], "PARTIAL_ALIVE")
+        self.assertEqual(
+            v2.receipt["standing"], _combine_standings("ALIVE", "PARTIAL_ALIVE")
+        )
 
     def test_lineage_bound_closure_is_alive_and_orders_repairs(self) -> None:
         v = evaluate(_with_lineage())
@@ -194,8 +295,12 @@ TAGGED_CLOSURE = ROOT / "release" / "v26.9.25" / "closure.json"
 # The v26.9.25 tagged closure verdict, computed by the tag-time court (68bacd8d,
 # scripts/release_train/release_closure_court) over the tagged closure.json:
 # `python3 -m scripts.release_train.release_closure_court release/v26.9.25/closure.json`.
-TAGGED_RECEIPT_DIGEST = "sha256:f95b998cd8f7b02ba80612b1d1f87d716360330256e2c4d8743aa105e2326180"
-TAGGED_STDOUT_SHA256 = "b849951ae3a788a6cec732868fdd613ee65054d8adb0c1f6a5e85f5457c3cbd7"
+# Re-pinned by the R25-018 verifier/subject standing split (merge of origin/main's
+# lineage laws with feat/aloop-crown-001): the receipt payload gained the two split
+# fields (subject_standing PARTIAL_ALIVE, verifier_standing ALIVE — the tagged
+# closure's PARTIAL_ALIVE is subject-side); the combined standing is unchanged.
+TAGGED_RECEIPT_DIGEST = "sha256:474ef17f5ba29af54c3ae86bf5cb708455c61e2abc2d654634e8439ee2f45a94"
+TAGGED_STDOUT_SHA256 = "c4ad6ebbcc81ef221606bb0b3e8c922ec113b37562eea8ee0107edd4bd1c39b3"
 D = "d" * 40  # the evidence container commit (holds the receipt bytes)
 E = "e" * 40  # a producer subject behind the court sha
 

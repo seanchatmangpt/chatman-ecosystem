@@ -8,8 +8,11 @@ The repository currently carries two different version subjects and they must no
 |---|---|---|
 | `v26.8.18` | observed operational/documentation snapshot | `PARTIAL_ALIVE` |
 | `v26.9.1` | next dependency-closed composition crown and frozen constitutional proof target | `PARTIAL_ALIVE` target corpus; not the current implementation snapshot |
+| `v26.9.23` | sealed release line (`release/v26.9.23/` + `receipts/v26.9.23/`, CE23-0.json standing `ALIVE`) | sealed historical subject |
+| `v26.9.24` | closure-ledger line (`release/v26.9.24/closure.json`, 18 subject rows bound to exact SHAs) | closure `PARTIAL_ALIVE`; tag decision `ILLEGAL` (`CROWN_NOT_ALIVE`) in `release/v26.9.24/tag-illegal.json` |
+| `v26.9.25` | active release line with the Root Crown autonomic loop (`release/v26.9.25/manifest.toml`) | manifest standing `BLOCKED`, closure standing `PARTIAL_ALIVE` |
 
-`v26.8.18` answers **what is implemented and evidenced now?** `v26.9.1` answers **what exact composition and proof obligations must close next?**
+`v26.8.18` answers **what is implemented and evidenced now?** `v26.9.1` answers **what exact composition and proof obligations must close next?** `v26.9.25` is the active release line whose closure and tagging the Root Crown recomputes autonomously; until its courts admit `ALIVE`, its standing is typed `BLOCKED`/`PARTIAL_ALIVE`, never assumed.
 
 ## Exact-subject rule
 

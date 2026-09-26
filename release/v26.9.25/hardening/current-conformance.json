@@ -157,9 +157,9 @@
   ],
   "replay": {
     "committed_receipt": "inputs/current/crown-receipt.json",
-    "committed_sha256": "f41d89599ae3029488ee16a92d9f74276d82b3857229a44ec5ac603e3c106072",
-    "receipt_digest": "sha256:7708c69c5e8217dcb55f7fd0d51369e16d858142c7bf2478535ce30758440b9c",
-    "recomputed_sha256": "f41d89599ae3029488ee16a92d9f74276d82b3857229a44ec5ac603e3c106072",
+    "committed_sha256": "560731a444aa9474ee1af10228bab949170341b4a4247a8735c867175b6bb17c",
+    "receipt_digest": "sha256:73061fee467d7bd6e80cf04f7d324c5bf7dab64b0722b192346ac66d2970740b",
+    "recomputed_sha256": "560731a444aa9474ee1af10228bab949170341b4a4247a8735c867175b6bb17c",
     "result": "EXACT"
   },
   "schema": "https://chatman.dev/root-crown/hardening/current-conformance/v1",

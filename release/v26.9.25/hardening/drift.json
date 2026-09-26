@@ -3,7 +3,7 @@
   "authority": "NONE",
   "current": {
     "blockers": [],
-    "receipt_digest": "sha256:c6fab9f62d725909d70b9cc4dcba018335415c40541707a63a72180db362e226",
+    "receipt_digest": "sha256:ea2de82675afbcd804b9dec84a675173c6473fd625da6608caf0e6f57cb44a0a",
     "refusals": [],
     "remaining": [
       "AC-03:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
