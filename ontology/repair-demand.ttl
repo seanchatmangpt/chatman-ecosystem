@@ -1,0 +1,32 @@
+@prefix rd: <https://chatman.ai/ontology/repair-demand#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+rd:RepairDemand a rd:Class .
+rd:RepairCapability a rd:Class .
+rd:CrownFinding a rd:Class .
+rd:RepairDemandReceipt a rd:Class .
+rd:RepairDemandCourt a rd:Class ;
+  rd:authority "NONE" ;
+  rd:ceiling "CONSTRUCT" .
+
+rd:exactSubject a rd:Property .
+rd:brokenTerm a rd:Property .
+rd:routesTo a rd:Property .
+rd:demandId a rd:Property .
+rd:receiptDigest a rd:Property .
+rd:authority a rd:Property .
+rd:ceiling a rd:Property .
+
+rd:missingIdentity a rd:CrownFinding ; rd:brokenTerm "R_missing_identity" ; rd:routesTo rd:ExactSubjectRepair .
+rd:missingReplay a rd:CrownFinding ; rd:brokenTerm "R_missing_replay" ; rd:routesTo rd:ReplayRepair .
+rd:missingAuthority a rd:CrownFinding ; rd:brokenTerm "R_missing_authority" ; rd:routesTo rd:AuthorityRepair .
+rd:missingConsequence a rd:CrownFinding ; rd:brokenTerm "R_missing_consequence" ; rd:routesTo rd:ConsequenceRepair .
+rd:muOnO a rd:CrownFinding ; rd:brokenTerm "mu_on_O" ; rd:routesTo rd:ManufactureRepair .
+rd:notFedBack a rd:CrownFinding ; rd:brokenTerm "R_not_fed_back" ; rd:routesTo rd:FeedbackRepair .
+
+rd:ExactSubjectRepair a rd:RepairCapability .
+rd:ReplayRepair a rd:RepairCapability .
+rd:AuthorityRepair a rd:RepairCapability .
+rd:ConsequenceRepair a rd:RepairCapability .
+rd:ManufactureRepair a rd:RepairCapability .
+rd:FeedbackRepair a rd:RepairCapability .
