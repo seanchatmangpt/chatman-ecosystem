@@ -1,0 +1,4 @@
+{"repo": "/Users/sac/bytestar", "ref": "refs/preserve/v26.9.25/tmp_w5-probe-bytestar/ignored-evidence", "blobs": 0, "hits": [], "over50MB": []}
+{"repo": "/Users/sac/zoela", "ref": "refs/preserve/v26.9.25/work_zoela/ignored-evidence", "blobs": 4, "hits": [{"path": ".ggen/keys/verifying.key", "why": "SECRET_BASENAME"}, {"path": "packs/github-actions-pack/examples/consume-github-actions-pack/.ggen/keys/verifying.key", "why": "SECRET_BASENAME"}], "over50MB": []}
+{"repo": "/Users/sac/zoela", "ref": "refs/preserve/v26.9.25/zoela-wt_w30-jtbd-decouple/ignored-evidence", "blobs": 128, "hits": [], "over50MB": []}
+{"repo": "/Users/sac/zoela", "ref": "refs/preserve/v26.9.25/zv_regen/ignored-evidence", "blobs": 3, "hits": [{"path": ".ggen/keys/verifying.key", "why": "SECRET_BASENAME"}], "over50MB": []}
