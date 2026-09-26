@@ -1,0 +1,10 @@
+@prefix ce: <https://seanchatmangpt.github.io/chatman-ecosystem/edge-retirement#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ce:E-REP-01 a ce:RetiredEdge ;
+  ce:exactSubject "e84ac08ec96c5410d24bc1da49d10e900079af79" ;
+  ce:ownerKind ce:machineOwner ;
+  ce:authority "NONE" ;
+  ce:consequence "crown finding maps to typed repair demand without recurring human/LLM routing" ;
+  ce:receipt "sha256:pending-exact-head-execution" ;
+  ce:replayDigest "sha256:pending-exact-head-execution" .
