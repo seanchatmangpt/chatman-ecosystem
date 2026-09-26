@@ -1,0 +1,46 @@
+@prefix ea: <https://chatman.ai/ontology/enterprise-architecture#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+ea:SBBQualificationShape a sh:NodeShape ;
+  sh:targetClass ea:SolutionBuildingBlock ;
+  sh:property [ sh:path ea:hasStanding ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ea:exactSubject ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+ea:QualifiedSBBShape a sh:NodeShape ;
+  sh:targetObjectsOf ea:hasCandidateSBB ;
+  sh:or (
+    [ sh:property [ sh:path ea:qualifiedBy ; sh:minCount 1 ] ]
+    [ sh:property [ sh:path ea:hasStanding ; sh:hasValue ea:CANDIDATE ] ]
+    [ sh:property [ sh:path ea:hasStanding ; sh:hasValue ea:REFUSED ] ]
+    [ sh:property [ sh:path ea:hasStanding ; sh:hasValue ea:UNKNOWN ] ]
+  ) .
+
+ea:QualificationReceiptShape a sh:NodeShape ;
+  sh:targetClass ea:QualificationReceipt ;
+  sh:property [ sh:path ea:exactSubject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ea:qualificationDigest ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ea:hasEvidence ; sh:minCount 1 ] .
+
+# Deliberately no rule maps qualification to authority. Capability compatibility MUST NOT confer DO.
+
+
+ea:ArchitectureClaimShape a sh:NodeShape ;
+  sh:targetClass ea:IndustryClosureClaim ;
+  sh:property [ sh:path ea:architectureVersion ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ea:claimText ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ea:hasFalsifier ; sh:minCount 1 ] ;
+  sh:property [ sh:path ea:hasStanding ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+ea:ArchitectureVersionShape a sh:NodeShape ;
+  sh:targetClass ea:ArchitectureVersion ;
+  sh:property [ sh:path ea:versionDigest ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+ea:ArchitectureCourtShape a sh:NodeShape ;
+  sh:targetClass ea:ArchitectureCourt ;
+  sh:property [ sh:path ea:exactSubject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ea:boundaryDigest ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ea:hasEvidence ; sh:minCount 1 ] ;
+  sh:property [ sh:path ea:grantsDoAuthority ; sh:hasValue false ] .
+
+# The architecture claim is intentionally versioned. A later version may learn from a
+# defeating architecture, but that does not erase the historical falsification.
