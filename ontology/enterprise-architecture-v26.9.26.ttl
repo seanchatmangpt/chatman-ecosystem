@@ -1,0 +1,66 @@
+@prefix ea: <https://chatman.ai/ontology/enterprise-architecture#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+ea:Industry a rdfs:Class .
+ea:Strategy a rdfs:Class .
+ea:OperatingModel a rdfs:Class .
+ea:Capability a rdfs:Class .
+ea:ValueStream a rdfs:Class .
+ea:Process a rdfs:Class .
+ea:ArchitectureRequirement a rdfs:Class .
+ea:ArchitectureBuildingBlock a rdfs:Class .
+ea:ArchitectureContract a rdfs:Class .
+ea:SolutionBuildingBlock a rdfs:Class .
+ea:Pack a rdfs:Class .
+ea:BBlock a rdfs:Class .
+ea:BaselineArchitecture a rdfs:Class .
+ea:TargetArchitecture a rdfs:Class .
+ea:TransitionArchitecture a rdfs:Class .
+ea:Qualification a rdfs:Class .
+ea:QualificationReceipt a rdfs:Class .
+ea:ArchitectureDecision a rdfs:Class .
+ea:ArchitectureReceipt a rdfs:Class .
+ea:AuthorityBoundary a rdfs:Class .
+ea:Standing a rdfs:Class .
+
+ea:derivedFromStrategy a rdf:Property ; rdfs:domain ea:ArchitectureRequirement ; rdfs:range ea:Strategy .
+ea:realizesCapability a rdf:Property ; rdfs:domain ea:ArchitectureBuildingBlock ; rdfs:range ea:Capability .
+ea:requiresABB a rdf:Property ; rdfs:range ea:ArchitectureBuildingBlock .
+ea:satisfiesABB a rdf:Property ; rdfs:domain ea:SolutionBuildingBlock ; rdfs:range ea:ArchitectureBuildingBlock .
+ea:governedByContract a rdf:Property ; rdfs:range ea:ArchitectureContract .
+ea:hasCandidateSBB a rdf:Property ; rdfs:domain ea:ArchitectureBuildingBlock ; rdfs:range ea:SolutionBuildingBlock .
+ea:qualifiedBy a rdf:Property ; rdfs:domain ea:SolutionBuildingBlock ; rdfs:range ea:Qualification .
+ea:composedFromPack a rdf:Property ; rdfs:domain ea:SolutionBuildingBlock ; rdfs:range ea:Pack .
+ea:composedFromBBlock a rdf:Property ; rdfs:domain ea:SolutionBuildingBlock ; rdfs:range ea:BBlock .
+ea:transitionFrom a rdf:Property ; rdfs:domain ea:TransitionArchitecture .
+ea:transitionTo a rdf:Property ; rdfs:domain ea:TransitionArchitecture .
+ea:hasEvidence a rdf:Property ; rdfs:range prov:Entity .
+ea:hasAuthorityBoundary a rdf:Property ; rdfs:range ea:AuthorityBoundary .
+ea:hasStanding a rdf:Property ; rdfs:range ea:Standing .
+ea:exactSubject a rdf:Property ; rdfs:range xsd:string .
+ea:artifactDigest a rdf:Property ; rdfs:range xsd:string .
+ea:qualificationDigest a rdf:Property ; rdfs:range xsd:string .
+ea:refusalCode a rdf:Property ; rdfs:range xsd:string .
+
+ea:Diversification a ea:OperatingModel .
+ea:Coordination a ea:OperatingModel .
+ea:Replication a ea:OperatingModel .
+ea:Unification a ea:OperatingModel .
+
+ea:UNKNOWN a ea:Standing .
+ea:CANDIDATE a ea:Standing .
+ea:ADMITTED a ea:Standing .
+ea:QUALIFIED a ea:Standing .
+ea:REFUSED a ea:Standing .
+ea:SUPERSEDED a ea:Standing .
+ea:PARTIAL_ALIVE a ea:Standing .
+ea:ALIVE a ea:Standing .
+
+# Normative semantic separations.
+ea:ArchitectureBuildingBlock rdfs:comment "Implementation-independent architecture need. MUST NOT be used as a vendor/product identity." .
+ea:SolutionBuildingBlock rdfs:comment "Concrete realization candidate. Qualification never grants authority or consequential DO." .
+ea:Pack rdfs:comment "Reusable semantic/manufacturing material; not an ABB, SBB, or enterprise architecture." .
+ea:ArchitectureContract rdfs:comment "Machine-evaluable contract used to decide whether an exact SBB subject satisfies an ABB." .
