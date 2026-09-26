@@ -64,3 +64,42 @@ ea:ArchitectureBuildingBlock rdfs:comment "Implementation-independent architectu
 ea:SolutionBuildingBlock rdfs:comment "Concrete realization candidate. Qualification never grants authority or consequential DO." .
 ea:Pack rdfs:comment "Reusable semantic/manufacturing material; not an ABB, SBB, or enterprise architecture." .
 ea:ArchitectureContract rdfs:comment "Machine-evaluable contract used to decide whether an exact SBB subject satisfies an ABB." .
+
+
+# DfCM Industry Closure architecture-level court.
+ea:ArchitectureVersion a rdfs:Class .
+ea:ArchitectureClaim a rdfs:Class .
+ea:ArchitectureCourt a rdfs:Class .
+ea:CompetingArchitecture a rdfs:Class .
+ea:DfCMFrontier a rdfs:Class .
+ea:IndustryClosureClaim a rdfs:Class ; rdfs:subClassOf ea:ArchitectureClaim .
+ea:ArchitectureFalsifier a rdfs:Class .
+
+ea:architectureVersion a rdf:Property ; rdfs:range ea:ArchitectureVersion .
+ea:versionDigest a rdf:Property ; rdfs:range xsd:string .
+ea:boundaryDigest a rdf:Property ; rdfs:range xsd:string .
+ea:claimSubject a rdf:Property .
+ea:evaluatedBy a rdf:Property ; rdfs:range ea:ArchitectureCourt .
+ea:comparedWith a rdf:Property ; rdfs:range ea:CompetingArchitecture .
+ea:hasFalsifier a rdf:Property ; rdfs:range ea:ArchitectureFalsifier .
+ea:preservesOption a rdf:Property ; rdfs:domain ea:DfCMFrontier .
+ea:strictlyDominates a rdf:Property ; rdfs:domain ea:CompetingArchitecture .
+ea:grantsDoAuthority a rdf:Property ; rdfs:range xsd:boolean .
+ea:claimText a rdf:Property ; rdfs:range xsd:string .
+
+ea:ChatmanFullerV26_9_26 a ea:ArchitectureVersion ;
+  ea:versionDigest "v26.9.26" .
+
+ea:ChatmanFullerBestArchitectureClaim a ea:IndustryClosureClaim ;
+  ea:architectureVersion ea:ChatmanFullerV26_9_26 ;
+  ea:claimText "Chatman/Fuller v26.9.26 is the best architecture under the declared common court until falsified." ;
+  ea:hasStanding ea:CANDIDATE .
+
+ea:StrictDominanceFalsifier a ea:ArchitectureFalsifier ;
+  rdfs:comment "Produce a lawful architecture that, under the same admitted reality, boundary, authority, cost, evidence and consequences, is no worse on every required dimension and strictly better on at least one." .
+
+ea:ChatmanFullerBestArchitectureClaim ea:hasFalsifier ea:StrictDominanceFalsifier .
+
+ea:IndustryClosureClaim rdfs:comment "Architecture-level, versioned and falsifiable claim. Industry closure is not merely exhaustive ABB enumeration; it stands only while no admissible competing reality-to-consequence architecture strictly dominates the claimed architecture under the same court." .
+ea:DfCMFrontier rdfs:comment "Maximum useful lawful reversible possibility space preserved before irreversible selection, bounded by ontology, capability, authority, cost, evidence and consequence." .
+ea:ArchitectureCourt rdfs:comment "Common-boundary adversarial comparison court. Court evidence may establish standing or falsification but never grants consequential DO authority." .
