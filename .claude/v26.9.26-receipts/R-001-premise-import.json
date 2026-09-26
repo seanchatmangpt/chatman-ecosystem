@@ -98,7 +98,9 @@
   ],
   "integration": {
     "pr": "https://github.com/seanchatmangpt/chatman-ecosystem/pull/294",
-    "merged": false,
+    "merged": true,
+    "merge_sha": "19eca5613dc5f75d629fd696dc275d071fedfac2",
+    "merged_head": "c342769215cb8a8946ce1be9dd73a73093ebbecf",
     "merge_authority": "operator (E-ACT-01 HumanAuthorityGate)"
   }
 }
