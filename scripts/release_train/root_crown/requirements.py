@@ -91,14 +91,26 @@ def split_ref(ref: str) -> tuple[str | None, str]:
 
 
 def _premise_set_refusals(doc: dict[str, Any], premise_set: dict[str, str], terms: tuple[str, ...]) -> list[str]:
-    """Every premise member a declared term needs is imported and its bytes recompute."""
+    """Every premise member a declared term needs is imported and its bytes recompute.
+
+    Hardening: a member may be declared once (a duplicate rfc_id would let an unbound first
+    entry shadow the bound one), and the primary premise (RFC-0004) is never a set member
+    (a second RFC-0004 text would replace the admitted one in the Berthier sources).
+    """
     refusals: list[str] = []
     premise = doc.get("premise")
-    declared = {
-        e.get("rfc_id"): e
+    entries = [
+        e
         for e in (premise.get("set", []) if isinstance(premise, dict) and isinstance(premise.get("set"), list) else [])
         if isinstance(e, dict)
-    }
+    ]
+    primary = premise.get("rfc_id") if isinstance(premise, dict) else None
+    ids = [e.get("rfc_id") for e in entries]
+    for rfc in sorted({i for i in ids if ids.count(i) > 1}, key=str):
+        refusals.append(f"REFUSED:REQ_PREMISE_UNBOUND:{rfc}:duplicate-set-member")
+    if primary is not None and primary in ids:
+        refusals.append(f"REFUSED:REQ_PREMISE_UNBOUND:{primary}:primary-premise-in-set")
+    declared = {e.get("rfc_id"): e for e in entries}
     for term in terms:
         rfc = TERM_PREMISE.get(term)
         if rfc is None:
@@ -117,6 +129,7 @@ def validate_requirements(
     rfc_text: str,
     evidence_kinds: Iterable[str],
     premise_set: dict[str, str] | None = None,
+    release: str | None = None,
 ) -> list[str]:
     refusals: list[str] = []
     rows = doc.get("requirements")
@@ -126,7 +139,7 @@ def validate_requirements(
     sections = premise_sections(rfc_text)
     members = dict(premise_set or {})
     member_sections = {rfc: premise_sections(text) for rfc, text in sorted(members.items())}
-    terms, term_refusals = release_terms(doc)
+    terms, term_refusals = release_terms(doc, release)
     refusals += term_refusals + _premise_set_refusals(doc, members, terms)
     admitted_owners = {entry["repository"] for entry in pins.get("repos", {}).values()}
     seen: dict[str, int] = {}

@@ -141,9 +141,16 @@ def evaluate(
     reqs = inputs.requirements
     refusals: list[str] = []
     refusals += validate_requirements(
-        inputs.requirements_doc, inputs.pins, inputs.rfc_text, registry.keys(), inputs.premise_set
+        inputs.requirements_doc,
+        inputs.pins,
+        inputs.rfc_text,
+        registry.keys(),
+        inputs.premise_set,
+        release=release_dir.name,
     )
-    terms, _ = release_terms(inputs.requirements_doc)
+    # Same release line as the admission above: the term gate reads the directory, not a
+    # relabelled premise.
+    terms, _ = release_terms(inputs.requirements_doc, release_dir.name)
     drift, crashed = _contained("projector.check", projector.check, release_dir)
     refusals += [f"REFUSED:VERIFIER_CRASHED:{crashed}"] if crashed else drift
 

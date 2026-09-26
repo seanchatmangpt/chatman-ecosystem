@@ -44,7 +44,11 @@ from typing import Any, Callable, Iterator
 REPO = Path(__file__).resolve().parents[3]
 RELEASE = "v26.9.25"
 SCHEMA_REPORT = "https://chatman.dev/root-crown/hardening/mutation-report/v1"
-REPORT = f"release/{RELEASE}/hardening/inputs/mutation-report.json"
+# The live report pins the CURRENT court sources, so it cannot live in a released line:
+# release/v26.9.25/** is immutable history (its tag-time report stays there, read by
+# attestation/final as the post-tag record). Every court-source change re-writes this one.
+REPORT = "receipts/root-crown/mutation-report.json"
+FROZEN_REPORT = f"release/{RELEASE}/hardening/inputs/mutation-report.json"
 TEST_DIR = "tests/release_train/root_crown"
 COPY_PATHS = (
     "scripts",

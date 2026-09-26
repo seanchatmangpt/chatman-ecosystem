@@ -57,18 +57,38 @@ def calver(release: Any) -> tuple[int, int, int] | None:
 
 
 def release_terms(doc: dict[str, Any], release: str | None = None) -> tuple[tuple[str, ...], list[str]]:
-    """(terms evaluated for this premise, typed REQ_TERM_UNBOUND refusals).
+    """(terms evaluated for this premise, typed REQ_TERM_UNBOUND / REQ_MALFORMED refusals).
 
     The premise's ``terms`` table declares the theorem; absent, the RFC-0004 six. A declared
     symbol outside ``TERM_REGISTRY`` is refused. ``TERM_FROM_RELEASE`` gates a term both
     ways: declared before its first calver -> refused (``premature``); omitted on or after
     it -> refused (``required-from``) and still evaluated, so its missing rows keep it open.
+
+    Hardening (v26.9.26): the premise can only add terms, never erode the RFC-0004 base: an
+    omitted base term is refused (``base-term-omitted``) and still evaluated. A ``terms``
+    table that is present but not a non-empty object is refused (never silently defaulted).
+    ``release`` is the release line the crown evaluates (the release directory name); a
+    premise naming another line, or a line that is not a calver, is refused so the term
+    gate cannot be bypassed by relabelling the premise.
     """
+    refusals: list[str] = []
     table = doc.get("terms")
+    if "terms" in doc and not (isinstance(table, dict) and table):
+        refusals.append("REFUSED:REQ_MALFORMED:terms:not-a-non-empty-object")
     declared = list(table) if isinstance(table, dict) and table else list(TERMS)
-    refusals = [f"REFUSED:REQ_TERM_UNBOUND:{t}:not-in-registry" for t in declared if t not in TERM_REGISTRY]
+    refusals += [f"REFUSED:REQ_TERM_UNBOUND:{t}:not-in-registry" for t in declared if t not in TERM_REGISTRY]
     evaluated = {t for t in declared if t in TERM_REGISTRY}
-    version = calver(release if release is not None else doc.get("release"))
+    for term in TERMS:
+        if term not in evaluated:
+            refusals.append(f"REFUSED:REQ_TERM_UNBOUND:{term}:base-term-omitted")
+            evaluated.add(term)
+    named = doc.get("release")
+    line = release if release is not None else named
+    if release is not None and named is not None and named != release:
+        refusals.append(f"REFUSED:REQ_MALFORMED:release:premise-names-{named}-for-{release}")
+    version = calver(line)
+    if line is not None and version is None:
+        refusals.append(f"REFUSED:REQ_MALFORMED:release:not-calver:{line}")
     for term, first in sorted(TERM_FROM_RELEASE.items()):
         since = "v{}.{}.{}".format(*first)
         if version is None:

@@ -921,6 +921,12 @@ def _autonomic_evidence(req: Requirement, ctx: Context) -> tuple[bytes | None, d
     return None, data, blocker
 
 
+def _gates_text(gates: Any) -> str:
+    if isinstance(gates, list) and all(isinstance(g, str) for g in gates):
+        return ",".join(gates)
+    return json.dumps(gates, sort_keys=True)
+
+
 def autonomic_receipt(req: Requirement, ctx: Context) -> ReqState:
     """Term U (RFC-0005 §2.3, §3): compose the autonomic_crown receipt into the root crown.
 
@@ -960,7 +966,10 @@ def autonomic_receipt(req: Requirement, ctx: Context) -> ReqState:
         )
     subject = data.get("crown_subject")
     root_repo = ctx.container_repo
-    standing = (data.get("standings") or {}).get("autonomy")
+    # Shape-tolerant reads: a sealed receipt with malformed standings is typed below
+    # (AUTONOMIC_NOT_AUTONOMIC), never a verifier crash.
+    standings = data.get("standings") if isinstance(data.get("standings"), dict) else {}
+    standing = standings.get("autonomy")
     if req.evidence_locator.startswith("local:"):
         path = req.evidence_locator[len("local:") :]
         identity = f"{root_repo}@{subject}"
@@ -1001,18 +1010,25 @@ def autonomic_receipt(req: Requirement, ctx: Context) -> ReqState:
     refusal = binding.admit(bound, crown_sha=ctx.crown_sha, root_repository=root_repo, allowlist=ctx.allowlist)
     if refusal is not None:
         return refusal
-    standings = data.get("standings") or {}
-    execution = (standings.get("execution") or {}).get("state")
+    execution_doc = standings.get("execution")
+    execution = execution_doc.get("state") if isinstance(execution_doc, dict) else None
     exit_value = data.get("exit")
-    if exit_value == 2 or execution == "REFUSED":
+    if (type(exit_value) is int and exit_value == 2) or execution == "REFUSED":
         return REFUSED(
             "ARTIFACT_REFUSED", f"{req.evidence_locator}: autonomic crown refused (exit {exit_value})", subject
         )
-    if not (execution == "ALIVE" and standing == "AUTONOMIC" and exit_value == 0):
+    # ``exit`` must be the integer 0: JSON ``false`` or ``0.0`` compare equal to 0 in Python
+    # but are not the autonomic court's exit code (a re-sealed forgery, not a witness).
+    # A witness of U has no blocked gate: AUTONOMIC standings next to a non-empty (or
+    # non-list) ``blocked_gates`` is self-contradictory, however well sealed.
+    gates_clear = data.get("blocked_gates") == []
+    if not (
+        execution == "ALIVE" and standing == "AUTONOMIC" and type(exit_value) is int and exit_value == 0 and gates_clear
+    ):
         return BLOCKED(
             "AUTONOMIC_NOT_AUTONOMIC",
             f"{req.evidence_locator}: execution={execution} autonomy={standing} exit={exit_value} "
-            f"blocked_gates={','.join(data.get('blocked_gates') or [])} at {subject}",
+            f"blocked_gates={_gates_text(data.get('blocked_gates'))} at {subject}",
             subject,
         )
     return PASS(f"U: autonomic receipt {data.get('receipt_digest')} AUTONOMIC/ALIVE at {subject}", subject, bound)

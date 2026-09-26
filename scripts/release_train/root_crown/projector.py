@@ -83,7 +83,9 @@ def premise_input(inputs: "Inputs", rfc_text: str | None = None) -> str | dict[s
     text = inputs.rfc_text if rfc_text is None else rfc_text
     if not inputs.premise_set:
         return text
-    return {berthier.PREMISE: text} | dict(inputs.premise_set)
+    # The admitted RFC-0004 text always wins: a set member claiming the primary id is refused
+    # by requirements._premise_set_refusals and can never replace it here.
+    return dict(inputs.premise_set) | {berthier.PREMISE: text}
 
 
 def load_inputs(release_dir: Path) -> Inputs:
@@ -99,6 +101,8 @@ def load_inputs(release_dir: Path) -> Inputs:
         path = release_dir / rel if isinstance(rel, str) and rel and not rel.startswith("/") else None
         if path is None or ".." in Path(rel).parts or not path.is_file() or not isinstance(entry.get("rfc_id"), str):
             continue  # unbound member: requirements.validate_requirements refuses REQ_PREMISE_UNBOUND
+        if not path.resolve().is_relative_to(release_dir.resolve()):
+            continue  # a symlink escaping the release tree is not an import: unbound as above
         premise_set[entry["rfc_id"]] = path.read_text(encoding="utf-8")
         set_digests[rel] = sha256_bytes(path.read_bytes())
     return Inputs(
