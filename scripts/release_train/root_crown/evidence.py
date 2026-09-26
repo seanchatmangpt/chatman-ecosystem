@@ -28,6 +28,7 @@ from .model import (
     FAILURE_CLASSES,
     PASS,
     REFUSED,
+    TERM_PREMISE,
     EvidenceBinding,
     ReqState,
     Requirement,
@@ -290,10 +291,17 @@ class Context:
         )
 
     def policy_refusals(self) -> list[str]:
+        # Rows of a term bound by another premise (TERM_PREMISE, e.g. U) are success-only by
+        # construction (their evaluator admits no relaxation), so RFC-0004's terminality
+        # policy neither grounds nor covers them.
         return terminality.validate(
             self.policy,
             self.policy_missing,
-            self.inputs.requirements_doc.get("requirements", []),
+            [
+                r
+                for r in self.inputs.requirements_doc.get("requirements", [])
+                if not (isinstance(r, dict) and r.get("term") in TERM_PREMISE)
+            ],
             self.inputs.rfc_text,
             self.import_sha256,
         )
@@ -648,7 +656,7 @@ def judge_committed(ctx: Context, rfc_text: str | None = None) -> berthier.Berth
     graph = inputs.prior_berthier or {"edges": [], "baseline": {}}
     edges = berthier.edges_from_json(graph["edges"])
     text = rfc_text if rfc_text is not None else (ctx.premise_text if ctx.premise_text is not None else inputs.rfc_text)
-    current = berthier.source_digests(text, inputs.requirements)
+    current = berthier.source_digests(projector.premise_input(inputs, text), inputs.requirements)
     for name in berthier.PROJECTED_OUTPUTS:
         path = ctx.release_dir / name
         if path.is_file():
@@ -679,7 +687,11 @@ def crown_test(inputs: projector.Inputs, section: str | None = None) -> tuple[bo
     affected requirements; and no other input changed (ManualRestatementCount = 0).
     """
     sections = premise_sections(inputs.rfc_text)
-    referenced = sorted({ref for r in inputs.requirements for ref in r.premise_refs})
+    # The §9 mutation targets RFC-0004 sections; premise-set references (``RFC-0005§n``) are
+    # recompiled by the autonomic court's U-12 premise-set test (autonomic_crown.premise).
+    referenced = sorted(
+        {ref for r in inputs.requirements for ref in r.premise_refs if berthier.split_ref(ref)[0] == berthier.PREMISE}
+    )
     owners_by_section = {
         ref: len({r.owner_repo for r in inputs.requirements if ref in r.premise_refs}) for ref in referenced
     }
@@ -704,7 +716,7 @@ def crown_test(inputs: projector.Inputs, section: str | None = None) -> tuple[bo
     if graph is None:
         return False, "no committed berthier.json"
     edges = berthier.edges_from_json(graph["edges"])
-    current = berthier.source_digests(mutated_text, inputs.requirements)
+    current = berthier.source_digests(projector.premise_input(inputs, mutated_text), inputs.requirements)
     stale_verdict = berthier.judge(edges, current, [], {}, None)
     if set(stale_verdict.stale) != expected:
         return False, f"stale={sorted(stale_verdict.stale)} expected={sorted(expected)}"
@@ -713,7 +725,7 @@ def crown_test(inputs: projector.Inputs, section: str | None = None) -> tuple[bo
     regenerated = projector.compile_graph(inputs, rfc_text=mutated_text)
     new_graph = json.loads(regenerated["berthier.json"])
     new_packets = json.loads(regenerated["out/packets.json"])["packets"]
-    new_current = berthier.source_digests(mutated_text, inputs.requirements)
+    new_current = berthier.source_digests(projector.premise_input(inputs, mutated_text), inputs.requirements)
     new_current["proj:out/packets.json"] = sha256_bytes(regenerated["out/packets.json"])
     new_current["proj:out/requirements.ttl"] = sha256_bytes(regenerated["out/requirements.ttl"])
     after = berthier.judge(
@@ -891,6 +903,121 @@ def crown_self(req: Requirement, ctx: Context) -> ReqState:
     return in_tree_pass(req, ctx, "every other requirement PASS", "crown_self")
 
 
+def _autonomic_evidence(req: Requirement, ctx: Context) -> tuple[bytes | None, dict[str, Any] | None, ReqState | None]:
+    """(raw bytes or None for an observed receipt, receipt json, blocker)."""
+    if req.evidence_locator.startswith("local:"):
+        path = _local_path(ctx, req)
+        if not path.is_file():
+            return None, None, BLOCKED("EVIDENCE_ABSENT", f"absent:{req.evidence_locator}")
+        raw = path.read_bytes()
+        try:
+            data = json.loads(raw.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            return None, None, BLOCKED("ARTIFACT_NOT_JSON", req.evidence_locator)
+        if not isinstance(data, dict):
+            return None, None, BLOCKED("ARTIFACT_NOT_JSON", req.evidence_locator)
+        return raw, data, None
+    data, blocker, _ = _artifact(req, ctx)
+    return None, data, blocker
+
+
+def autonomic_receipt(req: Requirement, ctx: Context) -> ReqState:
+    """Term U (RFC-0005 §2.3, §3): compose the autonomic_crown receipt into the root crown.
+
+    The receipt (``release/<line>/autonomy/autonomic-receipt.json``, schema
+    ``autonomic-crown/receipt/v1``) is admitted only when:
+
+    1. its ``receipt_digest`` recomputes over every other field and its schema is the
+       autonomic crown's (else REFUSED AUTONOMIC_RECEIPT_DIGEST_MISMATCH);
+    2. it is a receipt for this release line (else BLOCKED AUTONOMIC_RECEIPT_STALE: an
+       earlier line's receipt is never evidence of U, RFC-0005 §2.2);
+    3. its subject (``crown_subject``, the root crown commit it measured) binds to the crown
+       commit through ``binding.admit``: an exact 40-hex producer commit, never the
+       container itself, on the container's lineage with an observed receipt-only delta
+       (``observations.subjects`` / ``observations.subject_deltas`` for an in-tree receipt,
+       the artifact observation for a remote one). A stale subject is typed by the binding
+       law (EVIDENCE_SUBJECT_SPLIT, EVIDENCE_LINEAGE_MISSING, EVIDENCE_DELTA_UNBOUNDED);
+    4. it witnesses U: execution ALIVE, autonomy AUTONOMIC and exit 0 (else REFUSED
+       ARTIFACT_REFUSED for a refusing court, BLOCKED AUTONOMIC_NOT_AUTONOMIC otherwise).
+
+    Success-only: no typed disposition relaxes U (RFC-0005 §3: UNKNOWN is not admitted).
+    """
+    from scripts.release_train.autonomic_crown import receipt as autonomic
+
+    raw, data, blocker = _autonomic_evidence(req, ctx)
+    if blocker is not None:
+        return blocker
+    assert data is not None
+    if not autonomic.verify(data):
+        return REFUSED(
+            "AUTONOMIC_RECEIPT_DIGEST_MISMATCH",
+            f"{req.evidence_locator}: schema={data.get('schema')} receipt_digest={data.get('receipt_digest')} does not recompute",
+        )
+    release = ctx.release_dir.name
+    if data.get("release") != release:
+        return BLOCKED(
+            "AUTONOMIC_RECEIPT_STALE", f"{req.evidence_locator}: receipt for {data.get('release')}, crown is {release}"
+        )
+    subject = data.get("crown_subject")
+    root_repo = ctx.container_repo
+    standing = (data.get("standings") or {}).get("autonomy")
+    if req.evidence_locator.startswith("local:"):
+        path = req.evidence_locator[len("local:") :]
+        identity = f"{root_repo}@{subject}"
+        bound = binding.bind_remote(
+            req,
+            repository=root_repo,
+            path=path,
+            subject_sha=subject,
+            container_sha=ctx.crown_sha,
+            evidence_digest=binding.sha256_tag(raw or b""),
+            compare_status=(ctx.observations.get("subjects") or {}).get(identity),
+            delta_paths=(ctx.observations.get("subject_deltas") or {}).get(f"{identity}..{ctx.crown_sha}"),
+            allowlist=ctx.allowlist,
+            data={"producer": "autonomic_crown", "court": "autonomic_crown", "exit_code": data.get("exit")},
+            standing=standing,
+            owner=root_repo,
+            owner_source="container",
+            kind="LOCAL_RECEIPT",
+        )
+    else:
+        repository, _, path = req.evidence_locator.partition(":")
+        seen = ctx.artifacts.get(req.evidence_locator, {})
+        bound = binding.bind_remote(
+            req,
+            repository=repository,
+            path=path,
+            subject_sha=subject,
+            container_sha=seen.get("head_sha"),
+            evidence_digest=seen.get("sha256"),
+            compare_status=seen.get("subject_compare"),
+            delta_paths=seen.get("subject_delta_paths"),
+            allowlist=ctx.allowlist,
+            data={"producer": "autonomic_crown", "court": "autonomic_crown", "exit_code": data.get("exit")},
+            standing=standing,
+            owner=repository,
+            owner_source="container",
+        )
+    refusal = binding.admit(bound, crown_sha=ctx.crown_sha, root_repository=root_repo, allowlist=ctx.allowlist)
+    if refusal is not None:
+        return refusal
+    standings = data.get("standings") or {}
+    execution = (standings.get("execution") or {}).get("state")
+    exit_value = data.get("exit")
+    if exit_value == 2 or execution == "REFUSED":
+        return REFUSED(
+            "ARTIFACT_REFUSED", f"{req.evidence_locator}: autonomic crown refused (exit {exit_value})", subject
+        )
+    if not (execution == "ALIVE" and standing == "AUTONOMIC" and exit_value == 0):
+        return BLOCKED(
+            "AUTONOMIC_NOT_AUTONOMIC",
+            f"{req.evidence_locator}: execution={execution} autonomy={standing} exit={exit_value} "
+            f"blocked_gates={','.join(data.get('blocked_gates') or [])} at {subject}",
+            subject,
+        )
+    return PASS(f"U: autonomic receipt {data.get('receipt_digest')} AUTONOMIC/ALIVE at {subject}", subject, bound)
+
+
 Evaluator = Callable[[Requirement, Context], ReqState]
 
 EVALUATORS: dict[str, Evaluator] = {
@@ -907,5 +1034,6 @@ EVALUATORS: dict[str, Evaluator] = {
     "worktree_observation": worktree_observation,
     "tag_binding": tag_binding,
     "crown_self": crown_self,
+    "autonomic_receipt": autonomic_receipt,
 }
 DEFERRED = {"crown_self"}

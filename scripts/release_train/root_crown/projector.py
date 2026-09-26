@@ -14,7 +14,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -63,6 +63,27 @@ class Inputs:
     imports: dict[str, Any]
     prior_berthier: dict[str, Any] | None
     input_digests: dict[str, str]
+    # RFC-0005 §10 premise set beyond RFC-0004: rfc id -> imported text. Empty for a
+    # single-premise release, which then projects byte-identically to before premise sets.
+    premise_set: dict[str, str] = field(default_factory=dict)
+
+
+def premise_set_entries(doc: dict[str, Any]) -> list[dict[str, Any]]:
+    """``requirements.json`` ``premise.set``: [{rfc_id, import, sha256}] (RFC-0005 §10)."""
+    premise = doc.get("premise")
+    entries = premise.get("set") if isinstance(premise, dict) else None
+    return [e for e in entries if isinstance(e, dict)] if isinstance(entries, list) else []
+
+
+def premise_input(inputs: "Inputs", rfc_text: str | None = None) -> str | dict[str, str]:
+    """RFC-0004 text alone (single premise) or the premise-set mapping {rfc id: text}.
+
+    ``rfc_text`` overrides the RFC-0004 member in memory (the §9 crown test mutation).
+    """
+    text = inputs.rfc_text if rfc_text is None else rfc_text
+    if not inputs.premise_set:
+        return text
+    return {berthier.PREMISE: text} | dict(inputs.premise_set)
 
 
 def load_inputs(release_dir: Path) -> Inputs:
@@ -71,6 +92,15 @@ def load_inputs(release_dir: Path) -> Inputs:
         raise FileNotFoundError(",".join(f"REFUSED:PROJECTION_INPUT_MISSING:{m}" for m in missing))
     doc = load_rows(release_dir / "requirements.json")
     prior_path = release_dir / "berthier.json"
+    premise_set: dict[str, str] = {}
+    set_digests: dict[str, str] = {}
+    for entry in premise_set_entries(doc):
+        rel = entry.get("import")
+        path = release_dir / rel if isinstance(rel, str) and rel and not rel.startswith("/") else None
+        if path is None or ".." in Path(rel).parts or not path.is_file() or not isinstance(entry.get("rfc_id"), str):
+            continue  # unbound member: requirements.validate_requirements refuses REQ_PREMISE_UNBOUND
+        premise_set[entry["rfc_id"]] = path.read_text(encoding="utf-8")
+        set_digests[rel] = sha256_bytes(path.read_bytes())
     return Inputs(
         release_dir=release_dir,
         version=release_dir.name,
@@ -82,7 +112,8 @@ def load_inputs(release_dir: Path) -> Inputs:
         rfc_text=(release_dir / "imports/RFC-0004.md").read_text(encoding="utf-8"),
         imports=json.loads((release_dir / "imports/IMPORTS.json").read_text(encoding="utf-8")),
         prior_berthier=json.loads(prior_path.read_text(encoding="utf-8")) if prior_path.is_file() else None,
-        input_digests={name: sha256_bytes((release_dir / name).read_bytes()) for name in INPUTS},
+        input_digests={name: sha256_bytes((release_dir / name).read_bytes()) for name in INPUTS} | set_digests,
+        premise_set=premise_set,
     )
 
 
@@ -201,9 +232,8 @@ def _json_bytes(value: Any) -> bytes:
 
 def compile_graph(inputs: Inputs, rfc_text: str | None = None) -> dict[str, bytes]:
     """Project the Berthier graph, packets and the TTL view (premise text overridable in memory)."""
-    text = inputs.rfc_text if rfc_text is None else rfc_text
     reqs = inputs.requirements
-    sources = berthier.source_digests(text, reqs)
+    sources = berthier.source_digests(premise_input(inputs, rfc_text), reqs)
     prior = inputs.prior_berthier
     prior_edges = berthier.edges_from_json(prior["edges"]) if prior else ()
     if prior is None:

@@ -7,7 +7,7 @@
     "failures": 0,
     "ok": true,
     "skipped": 6,
-    "tests_run": 231
+    "tests_run": 257
   },
   "killed": 124,
   "mutants": {
@@ -1197,10 +1197,10 @@
     "scripts/release_train/release_closure_court/court.py": "sha256:b8df6b4ba774f1dd2824d9be4ebc0afdc598b6de7312ada7405f898e075eb9e0",
     "scripts/release_train/root_crown/binding.py": "sha256:51dda4ae530be25f952f9b0603c4e81f293a82f64faabb45bbc05dd08a913b72",
     "scripts/release_train/root_crown/chain.py": "sha256:3039484a9b8f992aa6c5ee72989af86570afe5c1ab4e45f177597e4714009253",
-    "scripts/release_train/root_crown/crown.py": "sha256:667e8b97307b1d56279229a7815e81fb031c2a6e7ba8fffe19d74f27e1217b81",
-    "scripts/release_train/root_crown/evidence.py": "sha256:e2e1469b87d1e0d5382ab1fb08cd3f46c3bb6f85d11d9b2f046a49e7bba95f48",
+    "scripts/release_train/root_crown/crown.py": "sha256:6f367140572dd0ae934e50a2eecf49e262598c2d566a8e9a0a7c4002dee3894f",
+    "scripts/release_train/root_crown/evidence.py": "sha256:1d49f8f35eac796660405c1e5f67d9c523469fc5fcaf06dafbb053a742a59688",
     "scripts/release_train/root_crown/gitobj.py": "sha256:191690fafbc380bef695eee9beee8563d123cecc6beab89ac99a2898830979a2",
-    "scripts/release_train/root_crown/model.py": "sha256:9db631d1d74544614739055c308a3997d2602b1f02f0478bebc07a9ba54f4b9f",
+    "scripts/release_train/root_crown/model.py": "sha256:be753ee6a18046ab969f8e7efdc7cb03137a999e0c6ece8ceb7d309b1da3de6a",
     "scripts/release_train/root_crown/mutate.py": "sha256:fb61da8459e776a14ee57da2884abd6fdf553dd3acbca7a88fe9b716f6e09596",
     "scripts/release_train/root_crown/policy.py": "sha256:056b1d5c58e85ce26d59b8f4b83c23fe941ec3fa45b07ac6975dfd4e33ec05e2",
     "scripts/release_train/root_crown/posttag.py": "sha256:35ed4c9eb84e25d281f11166cb8b73439aea52e352ac710266e82819ba72e48f",

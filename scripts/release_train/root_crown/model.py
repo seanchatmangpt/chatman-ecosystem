@@ -1,6 +1,8 @@
 """Root crown data model: requirements, requirement states, rule table.
 
-RFC-0004 (engineering-standards@7e8d4c5c) §3: RELEASE = C ∧ A ∧ R ∧ X ∧ F ∧ M.
+RFC-0004 (engineering-standards@7e8d4c5c) §3: RELEASE = C ∧ A ∧ R ∧ X ∧ F ∧ M; RFC-0005
+(engineering-standards@71a6f607) adds ∧ U from the next calver. The evaluated term set is
+the one the release premise declares (``release_terms``), never a hard-coded tuple.
 Every refusal/blocker code the root crown can emit is listed in ``FAILURE_CLASS``
 with its RFC §39 class and its Chatman-equation ``broken_term``; a test asserts
 the table is total over every emitted code.
@@ -9,6 +11,7 @@ the table is total over every emitted code.
 from __future__ import annotations
 
 import hashlib
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -22,7 +25,12 @@ SCHEMA_RECEIPTS = (SCHEMA_RECEIPT, SCHEMA_RECEIPT_V2)
 MODES = ("PRE_TAG", "POST_TAG")
 SCHEMA_OBSERVATIONS = "https://chatman.dev/root-crown/observations/v1"
 
+# RFC-0004 §3 base theorem. A release premise may declare more terms (requirements.json
+# ``terms``); ``release_terms`` computes the evaluated set and the crown never iterates a
+# fixed tuple. A premise without a ``terms`` table evaluates exactly these six.
 TERMS = ("C", "A", "R", "X", "F", "M")
+# Every term symbol the crown can evaluate, in theorem order.
+TERM_REGISTRY = TERMS + ("U",)
 TERM_NAMES = {
     "C": "closure",
     "A": "authority integrity",
@@ -30,7 +38,54 @@ TERM_NAMES = {
     "X": "semantic cross-product verification",
     "F": "formalized recurring reasoning",
     "M": "migration and repository integrity",
+    "U": "autonomic closure",
 }
+# Terms bound by a premise other than RFC-0004 (RFC-0005 §10 premise set): their rows cite
+# ``<RFC>§n`` references and are admitted against that premise, not RFC-0004 coverage.
+TERM_PREMISE = {"U": "RFC-0005"}
+# RFC-0005 §2.2-§2.3: U SHALL NOT be evaluated for v26.9.25 and binds from the next calver
+# onward: a premise that declares U earlier is refused, and a premise for a release on or
+# after the first calver that omits U is refused while U is still evaluated (no silent drop).
+TERM_FROM_RELEASE = {"U": (26, 9, 26)}
+_CALVER = re.compile(r"^v(\d+)\.(\d+)\.(\d+)$")
+
+
+def calver(release: Any) -> tuple[int, int, int] | None:
+    """``vYY.M.D`` -> (YY, M, D); anything else -> None (no term gating)."""
+    match = _CALVER.fullmatch(release) if isinstance(release, str) else None
+    return (int(match[1]), int(match[2]), int(match[3])) if match else None
+
+
+def release_terms(doc: dict[str, Any], release: str | None = None) -> tuple[tuple[str, ...], list[str]]:
+    """(terms evaluated for this premise, typed REQ_TERM_UNBOUND refusals).
+
+    The premise's ``terms`` table declares the theorem; absent, the RFC-0004 six. A declared
+    symbol outside ``TERM_REGISTRY`` is refused. ``TERM_FROM_RELEASE`` gates a term both
+    ways: declared before its first calver -> refused (``premature``); omitted on or after
+    it -> refused (``required-from``) and still evaluated, so its missing rows keep it open.
+    """
+    table = doc.get("terms")
+    declared = list(table) if isinstance(table, dict) and table else list(TERMS)
+    refusals = [f"REFUSED:REQ_TERM_UNBOUND:{t}:not-in-registry" for t in declared if t not in TERM_REGISTRY]
+    evaluated = {t for t in declared if t in TERM_REGISTRY}
+    version = calver(release if release is not None else doc.get("release"))
+    for term, first in sorted(TERM_FROM_RELEASE.items()):
+        since = "v{}.{}.{}".format(*first)
+        if version is None:
+            continue
+        if term in evaluated and version < first:
+            refusals.append(f"REFUSED:REQ_TERM_UNBOUND:{term}:premature(binds-from-{since})")
+        elif term not in evaluated and version >= first:
+            refusals.append(f"REFUSED:REQ_TERM_UNBOUND:{term}:required-from-{since}")
+            evaluated.add(term)
+    return tuple(t for t in TERM_REGISTRY if t in evaluated), sorted(refusals)
+
+
+def theorem(terms: tuple[str, ...]) -> str:
+    """``RELEASE = C AND A AND ...`` over the evaluated terms (the six-term string is unchanged)."""
+    return "RELEASE = " + " AND ".join(terms)
+
+
 KINDS = ("AC", "FALSIFIER")
 STATES = ("PASS", "BLOCKED", "REFUSED", "UNKNOWN")
 
@@ -162,6 +217,12 @@ BLOCKER_CODES = (
     "CROWN_DEPENDENCIES_OPEN",
     "NEW_HEAD_UNEVIDENCED",
 )
+# Term U (RFC-0005) composition: the autonomic_crown receipt the premise binds U to.
+# AUTONOMIC_RECEIPT_DIGEST_MISMATCH: the receipt's schema or receipt_digest does not recompute.
+AUTONOMIC_RULES = ("AUTONOMIC_RECEIPT_DIGEST_MISMATCH",)
+# Typed blockers: the receipt is for another release line (stale), or it recomputes but
+# does not witness U (execution not ALIVE or autonomy not AUTONOMIC).
+AUTONOMIC_BLOCKERS = ("AUTONOMIC_RECEIPT_STALE", "AUTONOMIC_NOT_AUTONOMIC")
 # Tag decision reasons (tag.py).
 TAG_RULES = ("CROWN_NOT_ALIVE", "SHA_MISMATCH", "TAG_EXISTS_ELSEWHERE", "RECEIPT_UNVERIFIED")
 
@@ -251,6 +312,10 @@ FAILURE_CLASS: dict[str, tuple[str, str]] = {
     "XPROD_BLOCKED": ("EVIDENCE_FAILURE", "R_missing_standing"),
     "CROWN_DEPENDENCIES_OPEN": ("DEPENDENCY_FAILURE", "R_missing_standing"),
     "NEW_HEAD_UNEVIDENCED": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    # term U (autonomic receipt composition)
+    "AUTONOMIC_RECEIPT_DIGEST_MISMATCH": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    "AUTONOMIC_RECEIPT_STALE": ("EVIDENCE_FAILURE", "R_not_fed_back"),
+    "AUTONOMIC_NOT_AUTONOMIC": ("CAPABILITY_GAP", "mu_on_O"),
     # tag
     "CROWN_NOT_ALIVE": ("DEPENDENCY_FAILURE", "R_missing_standing"),
     "SHA_MISMATCH": ("SUBJECT_FAILURE", "R_missing_identity"),
@@ -269,6 +334,8 @@ ALL_CODES = (
     + BINDING_BLOCKERS
     + POST_TAG_BLOCKERS
     + BLOCKER_CODES
+    + AUTONOMIC_RULES
+    + AUTONOMIC_BLOCKERS
     + TAG_RULES
 )
 
