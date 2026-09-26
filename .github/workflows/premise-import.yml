@@ -1,0 +1,71 @@
+name: Premise imports (E-ADM-02)
+
+# The machine producer of release premise imports (release/<v>/[<lane>/]imports/) and its
+# court. Every IMPORTS.json row must recompute offline (sha256 + git blob id), no copy may
+# be unlisted, and every row's copy must equal the source blob at its exact source_sha.
+# The source repositories are public and read by anonymous clone only (no token, no DO).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'release/**/imports/**'
+      - 'scripts/premise_import/**'
+      - 'tests/premise_import/**'
+      - 'catalog/premise-imports.toml'
+      - 'scripts/durable_locator/**'
+      - '.github/workflows/premise-import.yml'
+  pull_request:
+    paths:
+      - 'release/**/imports/**'
+      - 'scripts/premise_import/**'
+      - 'tests/premise_import/**'
+      - 'catalog/premise-imports.toml'
+      - 'scripts/durable_locator/**'
+      - '.github/workflows/premise-import.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  court:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PYTHONPATH: .
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline court (every committed import recomputes)
+        run: python3 -m scripts.premise_import check
+      - name: Source repositories (anonymous read-only clones of every imported source_repo)
+        shell: bash
+        run: |
+          set -euo pipefail
+          repos="${RUNNER_TEMP}/premise-repos"
+          mkdir -p "$repos"
+          for slug in $(python3 -c 'import json,pathlib;print("\n".join(sorted({r["source_repo"] for p in pathlib.Path("release").rglob("imports/IMPORTS.json") for r in json.loads(p.read_text())["imports"]})))'); do
+            git clone -q --filter=blob:none "https://github.com/${slug}.git" "$repos/${slug#*/}"
+          done
+          echo "PREMISE_IMPORT_REPOS_ROOT=$repos" >> "$GITHUB_ENV"
+      - name: Falsifiers + machine replay of every committed import
+        run: python3 -m unittest discover -s tests/premise_import -p 'test_*.py' -v
+      - name: Source-resolved court (copy == source blob at source_sha)
+        run: python3 -m scripts.premise_import --repos-root "$PREMISE_IMPORT_REPOS_ROOT" --no-network check
+      - name: Derived plan (committed imports == FINAL_SPEC premises on each source ref)
+        run: python3 -m scripts.premise_import --repos-root "$PREMISE_IMPORT_REPOS_ROOT" plan
+      - name: Current release line premise standing (BLOCKED on E-ADM-01 is reported, not failed)
+        shell: bash
+        run: |
+          set -uo pipefail
+          line="${PREMISE_RELEASE_LINE:-v26.9.26}"   # fixed release line; never derived from the clock
+          # The runner shell is `bash -e`: capture the exit status without aborting the step.
+          code=0
+          python3 -m scripts.premise_import --repos-root "$PREMISE_IMPORT_REPOS_ROOT" plan --release "$line" > plan-line.json || code=$?
+          verdict="$(python3 -c 'import json;print(json.load(open("plan-line.json"))["verdict"])' 2>/dev/null || echo UNKNOWN)"
+          echo "premise standing of $line: $verdict (exit $code)" | tee -a "$GITHUB_STEP_SUMMARY"
+          [ "$code" -eq 0 ] || [ "$code" -eq 3 ]
