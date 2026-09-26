@@ -1,0 +1,214 @@
+{
+ "records": {
+  "lsp-max_claude_worktrees_wf_9429e663-5e6-4": {
+   "bundle": null,
+   "canonical": "/Users/sac/lsp-max",
+   "copy_id": "lsp-max_claude_worktrees_wf_9429e663-5e6-4",
+   "durable": "REMOTE",
+   "files": 79,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_9429e663-5e6-4/anchor",
+   "nearest_base": {
+    "changed_paths": 63,
+    "commit": "49e1ce54549d5efc53b75510517c2f0b86f5c827",
+    "ratio": 0.7975,
+    "total_paths": 79
+   },
+   "ok": true,
+   "path": "/Users/sac/lsp-max/.claude/worktrees/wf_9429e663-5e6-4",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_9429e663-5e6-4/anchor": "4c7abdef46ccca884226abef071b9bcd634c3f67",
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_9429e663-5e6-4/dirty": "1970e687f8b274b53aa1672993e5de45d339370b"
+   },
+   "remote_ref": "backup/v26.9.25/lsp-max_claude_worktrees_wf_9429e663-5e6-4",
+   "remote_verified_sha": "4c7abdef46ccca884226abef071b9bcd634c3f67",
+   "repo_id": "lsp-max",
+   "sha": "4c7abdef46ccca884226abef071b9bcd634c3f67",
+   "skipped": [],
+   "snapshot_tree": "cdff7f130a4b1070c7aa9a114e0390ae9d9f45d5",
+   "superseded": []
+  },
+  "lsp-max_claude_worktrees_wf_9429e663-5e6-5": {
+   "bundle": null,
+   "canonical": "/Users/sac/lsp-max",
+   "copy_id": "lsp-max_claude_worktrees_wf_9429e663-5e6-5",
+   "durable": "REMOTE",
+   "files": 83,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_9429e663-5e6-5/anchor",
+   "nearest_base": {
+    "changed_paths": 13,
+    "commit": "1970e687f8b274b53aa1672993e5de45d339370b",
+    "ratio": 0.1566,
+    "total_paths": 83
+   },
+   "ok": true,
+   "path": "/Users/sac/lsp-max/.claude/worktrees/wf_9429e663-5e6-5",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_9429e663-5e6-5/anchor": "760697ad82b03a85bb37deb9fcf385828c501f0e",
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_9429e663-5e6-5/dirty": "bcf7ba838d381233a163b03aa7aa93b8217acec0"
+   },
+   "remote_ref": "backup/v26.9.25/lsp-max_claude_worktrees_wf_9429e663-5e6-5",
+   "remote_verified_sha": "760697ad82b03a85bb37deb9fcf385828c501f0e",
+   "repo_id": "lsp-max",
+   "sha": "760697ad82b03a85bb37deb9fcf385828c501f0e",
+   "skipped": [],
+   "snapshot_tree": "aeee9e8cacddd70d749facb89014ca4aba22f273",
+   "superseded": []
+  },
+  "lsp-max_claude_worktrees_wf_9429e663-5e6-6": {
+   "bundle": null,
+   "canonical": "/Users/sac/lsp-max",
+   "copy_id": "lsp-max_claude_worktrees_wf_9429e663-5e6-6",
+   "durable": "REMOTE",
+   "files": 79,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_9429e663-5e6-6/anchor",
+   "nearest_base": {
+    "changed_paths": 5,
+    "commit": "1970e687f8b274b53aa1672993e5de45d339370b",
+    "ratio": 0.0633,
+    "total_paths": 79
+   },
+   "ok": true,
+   "path": "/Users/sac/lsp-max/.claude/worktrees/wf_9429e663-5e6-6",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_9429e663-5e6-6/anchor": "c47f5b6b9c656ad800bfc6262c540d7065668f4a",
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_9429e663-5e6-6/dirty": "fd7a197778ea4b09ea69a5ac56fd1a4b0c44a0ca"
+   },
+   "remote_ref": "backup/v26.9.25/lsp-max_claude_worktrees_wf_9429e663-5e6-6",
+   "remote_verified_sha": "c47f5b6b9c656ad800bfc6262c540d7065668f4a",
+   "repo_id": "lsp-max",
+   "sha": "c47f5b6b9c656ad800bfc6262c540d7065668f4a",
+   "skipped": [],
+   "snapshot_tree": "57bfb3712972eef788d3c9d43a44ab121fb4f7d5",
+   "superseded": []
+  },
+  "lsp-max_claude_worktrees_wf_e3ab33cb-bbf-5": {
+   "bundle": null,
+   "canonical": "/Users/sac/lsp-max",
+   "copy_id": "lsp-max_claude_worktrees_wf_e3ab33cb-bbf-5",
+   "durable": "REMOTE",
+   "files": 95,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-5/anchor",
+   "nearest_base": {
+    "changed_paths": 37,
+    "commit": "bcf7ba838d381233a163b03aa7aa93b8217acec0",
+    "ratio": 0.3895,
+    "total_paths": 95
+   },
+   "ok": true,
+   "path": "/Users/sac/lsp-max/.claude/worktrees/wf_e3ab33cb-bbf-5",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-5/anchor": "9af404bef17cf342c8dd238dbc05c416609707dc",
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-5/dirty": "44bca1515c230486085baa71e7f6c651acc447fc"
+   },
+   "remote_ref": "backup/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-5",
+   "remote_verified_sha": "9af404bef17cf342c8dd238dbc05c416609707dc",
+   "repo_id": "lsp-max",
+   "sha": "9af404bef17cf342c8dd238dbc05c416609707dc",
+   "skipped": [],
+   "snapshot_tree": "8a62caadd5bd9af85b57fdcc67ce1a3249b21a5e",
+   "superseded": []
+  },
+  "lsp-max_claude_worktrees_wf_e3ab33cb-bbf-6": {
+   "bundle": null,
+   "canonical": "/Users/sac/lsp-max",
+   "copy_id": "lsp-max_claude_worktrees_wf_e3ab33cb-bbf-6",
+   "durable": "REMOTE",
+   "files": 36,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-6/anchor",
+   "nearest_base": {
+    "changed_paths": 11,
+    "commit": "49e1ce54549d5efc53b75510517c2f0b86f5c827",
+    "ratio": 0.3056,
+    "total_paths": 36
+   },
+   "ok": true,
+   "path": "/Users/sac/lsp-max/.claude/worktrees/wf_e3ab33cb-bbf-6",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-6/anchor": "4a8ffb4d76330e61b8799c2686aedc395995067c",
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-6/dirty": "9317ba2e21d9433bd14149a9fe1cd4100fc8b6bb"
+   },
+   "remote_ref": "backup/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-6",
+   "remote_verified_sha": "4a8ffb4d76330e61b8799c2686aedc395995067c",
+   "repo_id": "lsp-max",
+   "sha": "4a8ffb4d76330e61b8799c2686aedc395995067c",
+   "skipped": [],
+   "snapshot_tree": "5ddbc23ff3061648aa930a8b5ffd7b3a07b2c29c",
+   "superseded": []
+  },
+  "lsp-max_claude_worktrees_wf_e3ab33cb-bbf-7": {
+   "bundle": null,
+   "canonical": "/Users/sac/lsp-max",
+   "copy_id": "lsp-max_claude_worktrees_wf_e3ab33cb-bbf-7",
+   "durable": "REMOTE",
+   "files": 99,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-7/anchor",
+   "nearest_base": {
+    "changed_paths": 6,
+    "commit": "44bca1515c230486085baa71e7f6c651acc447fc",
+    "ratio": 0.0606,
+    "total_paths": 99
+   },
+   "ok": true,
+   "path": "/Users/sac/lsp-max/.claude/worktrees/wf_e3ab33cb-bbf-7",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-7/anchor": "afdc4e1f42da5503a7bdfaa223028a54d6b2d932",
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-7/dirty": "1b83bb9be7150b002da408d5b87b701b3c1ee80e"
+   },
+   "remote_ref": "backup/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-7",
+   "remote_verified_sha": "afdc4e1f42da5503a7bdfaa223028a54d6b2d932",
+   "repo_id": "lsp-max",
+   "sha": "afdc4e1f42da5503a7bdfaa223028a54d6b2d932",
+   "skipped": [],
+   "snapshot_tree": "ca9e00d816033e5db8f9df7e8522a7208938cf98",
+   "superseded": []
+  },
+  "lsp-max_claude_worktrees_wf_e3ab33cb-bbf-8": {
+   "bundle": null,
+   "canonical": "/Users/sac/lsp-max",
+   "copy_id": "lsp-max_claude_worktrees_wf_e3ab33cb-bbf-8",
+   "durable": "REMOTE",
+   "files": 96,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-8/anchor",
+   "nearest_base": {
+    "changed_paths": 3,
+    "commit": "44bca1515c230486085baa71e7f6c651acc447fc",
+    "ratio": 0.0312,
+    "total_paths": 96
+   },
+   "ok": true,
+   "path": "/Users/sac/lsp-max/.claude/worktrees/wf_e3ab33cb-bbf-8",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-8/anchor": "fb5dc6d0f7ade99ce4e5ec387c28246e197acb78",
+    "refs/preserve/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-8/dirty": "dc730b443855f1f1a342cb8023fe0a36b244440f"
+   },
+   "remote_ref": "backup/v26.9.25/lsp-max_claude_worktrees_wf_e3ab33cb-bbf-8",
+   "remote_verified_sha": "fb5dc6d0f7ade99ce4e5ec387c28246e197acb78",
+   "repo_id": "lsp-max",
+   "sha": "fb5dc6d0f7ade99ce4e5ec387c28246e197acb78",
+   "skipped": [],
+   "snapshot_tree": "b22378c12f9ab97a3f3e2b8c6c231826484d1d2b",
+   "superseded": []
+  }
+ }
+}

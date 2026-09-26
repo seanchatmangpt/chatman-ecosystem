@@ -1,0 +1,98 @@
+{
+ "records": {
+  "unibit-overnight-worktree": {
+   "bundle": null,
+   "canonical": "/Users/sac/unibit",
+   "copy_id": "unibit-overnight-worktree",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/unibit-overnight-worktree/anchor",
+   "ok": true,
+   "path": "/Users/sac/unibit-overnight-worktree",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/unibit-overnight-worktree/anchor": "2dbaae28415d49a3d2fa49e58b0dc9946d9212ae",
+    "refs/preserve/v26.9.25/unibit-overnight-worktree/dirty": "f0a95782af39b05d77ac8bb37e5b07154f8d48bc",
+    "refs/preserve/v26.9.25/unibit-overnight-worktree/index": "811b786096cf0fd6e7f7228802df7af55c1790fc",
+    "refs/preserve/v26.9.25/unibit-overnight-worktree/worktree-head": "44e0c57890dd5945cabe0388e866994390e33315"
+   },
+   "remote_ref": "backup/v26.9.25/unibit-overnight-worktree",
+   "remote_verified_sha": "2dbaae28415d49a3d2fa49e58b0dc9946d9212ae",
+   "repo_id": "unibit",
+   "sha": "2dbaae28415d49a3d2fa49e58b0dc9946d9212ae",
+   "skipped": [],
+   "snapshot_tree": "aff925abfe64ef5975ac1b9ae3d503a88a76c465"
+  },
+  "unibit_ostar_ref_claude_worktrees_agent-ab316fa1": {
+   "bundle": null,
+   "canonical": "/Users/sac/unibit",
+   "copy_id": "unibit_ostar_ref_claude_worktrees_agent-ab316fa1",
+   "durable": "REMOTE",
+   "files": 2815,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/unibit_ostar_ref_claude_worktrees_agent-ab316fa1/anchor",
+   "nearest_base": {
+    "changed_paths": 2815,
+    "commit": "2dbaae28415d49a3d2fa49e58b0dc9946d9212ae",
+    "ratio": 1.0,
+    "total_paths": 2815
+   },
+   "ok": true,
+   "path": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab316fa1",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/unibit_ostar_ref_claude_worktrees_agent-ab316fa1/anchor": "c045408d5c11f681131f323801a1e6ab4e02fb83",
+    "refs/preserve/v26.9.25/unibit_ostar_ref_claude_worktrees_agent-ab316fa1/dirty": "5b7d6271ae73f92871e06cc7da2ff05a1e0a6c3d"
+   },
+   "remote_ref": "backup/v26.9.25/unibit_ostar_ref_claude_worktrees_agent-ab316fa1",
+   "remote_verified_sha": "c045408d5c11f681131f323801a1e6ab4e02fb83",
+   "repo_id": "unibit",
+   "sha": "c045408d5c11f681131f323801a1e6ab4e02fb83",
+   "skipped": [
+    {
+     "path": "vendors/pictl/packages/testing/src/redaction.ts",
+     "reason": "SECRET",
+     "sha256": "12d29ced8bfcb661be593fafa6922f793c16b37e889f7e3e91abcf64a91e256a"
+    }
+   ],
+   "snapshot_tree": "59773258617dd5b9150508e199b4ba0b3827cbe5"
+  },
+  "unibit_ostar_ref_claude_worktrees_agent-ab9779ba": {
+   "bundle": null,
+   "canonical": "/Users/sac/unibit",
+   "copy_id": "unibit_ostar_ref_claude_worktrees_agent-ab9779ba",
+   "durable": "REMOTE",
+   "files": 2812,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/unibit_ostar_ref_claude_worktrees_agent-ab9779ba/anchor",
+   "nearest_base": {
+    "changed_paths": 4,
+    "commit": "5b7d6271ae73f92871e06cc7da2ff05a1e0a6c3d",
+    "ratio": 0.0014,
+    "total_paths": 2812
+   },
+   "ok": true,
+   "path": "/Users/sac/unibit/ostar_ref/.claude/worktrees/agent-ab9779ba",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/unibit_ostar_ref_claude_worktrees_agent-ab9779ba/anchor": "11fa9e81c037046f3707437343e942e12cfbd5ab",
+    "refs/preserve/v26.9.25/unibit_ostar_ref_claude_worktrees_agent-ab9779ba/dirty": "36df25c1a54f24c708761b77a522ecf58023f061"
+   },
+   "remote_ref": "backup/v26.9.25/unibit_ostar_ref_claude_worktrees_agent-ab9779ba",
+   "remote_verified_sha": "11fa9e81c037046f3707437343e942e12cfbd5ab",
+   "repo_id": "unibit",
+   "sha": "11fa9e81c037046f3707437343e942e12cfbd5ab",
+   "skipped": [
+    {
+     "path": "vendors/pictl/packages/testing/src/redaction.ts",
+     "reason": "SECRET",
+     "sha256": "12d29ced8bfcb661be593fafa6922f793c16b37e889f7e3e91abcf64a91e256a"
+    }
+   ],
+   "snapshot_tree": "7969dd88cd9b97a6af20d50d2701c0ee46ead0a5"
+  }
+ }
+}

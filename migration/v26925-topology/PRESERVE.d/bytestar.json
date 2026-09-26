@@ -1,0 +1,63 @@
+{
+ "records": {
+  "tmp_w5-probe-bytestar": {
+   "bundle": null,
+   "canonical": "/Users/sac/bytestar",
+   "copy_id": "tmp_w5-probe-bytestar",
+   "durable": "REMOTE",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_w5-probe-bytestar-ignored.bundle",
+    "sha256": "32b11ea1fcc082c86fc1e7fe2652a3121fe73f94512d3669605deea2fc7c3302",
+    "size": 985,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_w5-probe-bytestar/anchor",
+   "ok": true,
+   "path": "/private/tmp/w5-probe-bytestar",
+   "redacted": [
+    {
+     "blob": "630ec165a3a527b500d01f633bba0adae059aec7",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": "ontoforge-js/docker/nginx/ssl/cert.pem",
+     "sha256": "9064046e60a84061d2431c13fbf333def574ad8535ec6dcf47f0462a218e317e"
+    },
+    {
+     "blob": "8d395517482c0140b578ef2b499712c1abaed77f",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": "ontoforge-js/docker/nginx/ssl/key.pem",
+     "sha256": "f1c06d068e9effbb09d8d937e4ea861c70e12b4770bacdf1bf75368479e5f605"
+    }
+   ],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_w5-probe-bytestar/anchor": "b47bb115c6727c6ef4e942cf8251368f6748af5e",
+    "refs/preserve/v26.9.25/tmp_w5-probe-bytestar/dirty": "7f9410553f450ff994466f3558bb7be08fbe5264",
+    "refs/preserve/v26.9.25/tmp_w5-probe-bytestar/ignored-evidence": "1f0f9b5a7f9338744dc18c36d940caadc8f202f6",
+    "refs/preserve/v26.9.25/tmp_w5-probe-bytestar/index": "e0e11835388bda259f792c89df4c8e3be02d3853",
+    "refs/preserve/v26.9.25/tmp_w5-probe-bytestar/worktree-head": "35cb4aef41162f00f1bac797a6aa42f760057aef"
+   },
+   "remote_ref": "backup/v26.9.25/tmp_w5-probe-bytestar",
+   "remote_verified_sha": "b47bb115c6727c6ef4e942cf8251368f6748af5e",
+   "repo_id": "bytestar",
+   "sha": "b47bb115c6727c6ef4e942cf8251368f6748af5e",
+   "skipped": [],
+   "snapshot_tree": "7c3200fc7d1c397126ca31b0dfef46b173670ca9",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "snapshot recomputed after KEY_PATH redaction rule (tracked ontoforge-js/docker/nginx/ssl/key.pem, blob in HEAD)",
+     "refs": {
+      "refs/preserve/v26.9.25/tmp_w5-probe-bytestar/superseded-1/anchor": "d05d7588fce49dd96fad9fbbf5eb160c7b0a1290",
+      "refs/preserve/v26.9.25/tmp_w5-probe-bytestar/superseded-1/dirty": "1981ca74fabc5963e483b2335845d5a81d425e97",
+      "refs/preserve/v26.9.25/tmp_w5-probe-bytestar/superseded-1/ignored-evidence": "fd50909688b4a7ced8848a0361f8f525123a9cf3",
+      "refs/preserve/v26.9.25/tmp_w5-probe-bytestar/superseded-1/index": "e0e11835388bda259f792c89df4c8e3be02d3853",
+      "refs/preserve/v26.9.25/tmp_w5-probe-bytestar/superseded-1/worktree-head": "35cb4aef41162f00f1bac797a6aa42f760057aef"
+     },
+     "remote_ref": "origin (contains)",
+     "remote_verified_sha": null
+    }
+   ]
+  }
+ }
+}

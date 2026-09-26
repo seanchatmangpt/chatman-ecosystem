@@ -1,0 +1,57 @@
+{
+ "records": {
+  "ferroplan-worktrees": {
+   "bundle": null,
+   "canonical": "/Users/sac/ferroplan",
+   "copy_id": "ferroplan-worktrees",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/ferroplan-worktrees/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/ferroplan-worktrees",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/ferroplan-worktrees/anchor": "4b3a525487f296314ab43fceeeba1bde1ab4ca58",
+    "refs/preserve/v26.9.25/ferroplan-worktrees/dirty": "7c36d16a1c5669a685263c2c90390d7b32b68ba0"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ferroplan",
+   "sha": "4b3a525487f296314ab43fceeeba1bde1ab4ca58",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+  },
+  "mfw_mfw-planner_vendor-ferroplan": {
+   "bundle": null,
+   "canonical": "/Users/sac/ferroplan",
+   "copy_id": "mfw_mfw-planner_vendor-ferroplan",
+   "durable": "REMOTE",
+   "kind": "VENDORED_BUILD_INPUT",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/mfw_mfw-planner_vendor-ferroplan/anchor",
+   "ok": true,
+   "path": "/Users/sac/mfw/mfw-planner/.vendor-ferroplan",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/mfw_mfw-planner_vendor-ferroplan/anchor": "863911ec4925a668eff4ce5aa30f6f4c945489ad",
+    "refs/preserve/v26.9.25/mfw_mfw-planner_vendor-ferroplan/dirty": "97df49cab5d006233dd4e7b030926a829b022f6c",
+    "refs/preserve/v26.9.25/mfw_mfw-planner_vendor-ferroplan/index": "d9f32cf03ff1a26c66a4a39d4e59a571e3f03829",
+    "refs/preserve/v26.9.25/mfw_mfw-planner_vendor-ferroplan/worktree-head": "b90bebff83e8c112ada8e3c6469404e54aa04261"
+   },
+   "remote_ref": "backup/v26.9.25/mfw_mfw-planner_vendor-ferroplan",
+   "remote_verified_sha": "863911ec4925a668eff4ce5aa30f6f4c945489ad",
+   "repo_id": "ferroplan",
+   "sha": "863911ec4925a668eff4ce5aa30f6f4c945489ad",
+   "skipped": [],
+   "snapshot_tree": "089f32f4c51aa8f19839727eebe619f675c4b655"
+  }
+ }
+}
