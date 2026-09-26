@@ -1,0 +1,82 @@
+{
+  "version": "v26.9.26",
+  "rfc": "Executable Enterprise Architecture: Strategy, ABB/SBB Resolution, Industry Closure, and Manufacture",
+  "semantic_root": {
+    "repo": "seanchatmangpt/chatman-ecosystem",
+    "pr": 296,
+    "base": "c8dd167a94bf829c9011b7a6836feca6c180ff15",
+    "head": "10086d8eaa274b7988cbaade88efc5bf74ede9a9",
+    "role": "canonical EA ontology, SHACL laws, BRCE boundary"
+  },
+  "lanes": [
+    {
+      "repo": "seanchatmangpt/ggen-marketplace",
+      "pr": 506,
+      "head": "18e9988bbe81602bb2e493bd397c9ee86161727a",
+      "role": "Industry Closure / ABB-SBB qualification packs"
+    },
+    {
+      "repo": "seanchatmangpt/ggen",
+      "pr": 753,
+      "head": "4e8def21297fd028ab864e2a5f19aef55a17bed4",
+      "role": "deterministic SBB manufacture"
+    },
+    {
+      "repo": "seanchatmangpt/ggen_igniter",
+      "pr": 37,
+      "head": "c96ce885c65a139fb586e56252b4ef5c08d2519c",
+      "role": "EA-aware bootstrap and migration"
+    },
+    {
+      "repo": "seanchatmangpt/ash_kudzu",
+      "pr": 6,
+      "head": "541999cc112a332c6fef6d7ff2328472ab36f764",
+      "role": "external technology descriptions -> candidate SBB semantics"
+    },
+    {
+      "repo": "seanchatmangpt/ash_atlassian",
+      "pr": 1,
+      "head": "7686b2d2b8d972aed81163b83c973d84474e2f1c",
+      "role": "architecture governance and sJira WorkOrders"
+    },
+    {
+      "repo": "seanchatmangpt/xaas",
+      "pr": 80,
+      "head": "119fa49c46789d8a993675e75ded40138a6817d0",
+      "role": "qualified SBB runtime realization"
+    },
+    {
+      "repo": "seanchatmangpt/ash_a2a",
+      "pr": 46,
+      "head": "7725b8240e095b6eca62b8d701644385483bd1c4",
+      "role": "SA2A ABB/SBB semantic interchange"
+    },
+    {
+      "repo": "seanchatmangpt/autofde-lab",
+      "pr": 203,
+      "head": "e3cad0c85ded1d6e4d5787f5cf91f6df6caae51d",
+      "role": "independent SBB qualification/falsification court"
+    },
+    {
+      "repo": "seanchatmangpt/gymact",
+      "pr": 150,
+      "head": "ed64a27bbacd79b59fb67996c8531710c7cafde5",
+      "role": "EA selection and transition experiment worlds"
+    },
+    {
+      "repo": "seanchatmangpt/affidavit",
+      "pr": 86,
+      "head": "9a7e9660b66b9b3131e5ab435760931f668044c9",
+      "role": "qualification receipts and standing"
+    }
+  ],
+  "invariants": [
+    "Strategy != OperatingModel != Capability != Requirement != ABB != ArchitectureContract != SBB != Pack != Artifact",
+    "candidate != truth != authority != DO != standing",
+    "UNKNOWN remains first-class",
+    "qualification never grants consequential authority",
+    "reuse -> compose -> extend -> invent",
+    "exact immutable subject required for qualification",
+    "downstream repos consume canonical EA semantics rather than fork them"
+  ]
+}
