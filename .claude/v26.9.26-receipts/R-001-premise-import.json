@@ -5,7 +5,12 @@
     "repo": "seanchatmangpt/chatman-ecosystem",
     "branch": "claude/sharp-ramanujan-3201f9",
     "base_sha": "c8dd167a94bf829c9011b7a6836feca6c180ff15",
-    "commits": ["114c4ab9", "76491cbe"]
+    "commits": [
+      "114c4ab9",
+      "76491cbe",
+      "f66128a2"
+    ],
+    "alive_subject": "f66128a29ba2634397bc80998267e4340560dcf7"
   },
   "provenance": {
     "source_repo": "seanchatmangpt/engineering-standards",
@@ -20,19 +25,80 @@
     ".github/workflows/premise-import.yml"
   ],
   "verification": [
-    {"cmd": "PYTHONPATH=. PREMISE_IMPORT_REPOS_ROOT=/home/user/seanchatmangpt python3 -m unittest discover -s tests/premise_import -p 'test_*.py'", "exit": 0, "tests": 28},
-    {"cmd": "PYTHONPATH=. python3 -m scripts.premise_import check", "exit": 0, "verdict": "ADMITTED"},
-    {"cmd": "PYTHONPATH=. python3 -m scripts.premise_import --repos-root /home/user/seanchatmangpt plan", "exit": 0, "verdict": "ADMITTED", "premises": {"v26.9.25/0004": "IMPORTED", "v26.9.25/0005": "IMPORTED"}},
-    {"cmd": "PYTHONPATH=. python3 -m scripts.premise_import --repos-root /home/user/seanchatmangpt plan --release v26.9.26", "exit": 3, "verdict": "BLOCKED(PREMISE_ABSENT:E-ADM-01)"},
-    {"cmd": "machine import of both committed v26.9.25 imports into scratch + diff -r", "result": "BYTE_IDENTICAL"},
-    {"cmd": "python3 scripts/verify_release.py --check-refs", "exit": 0},
-    {"cmd": "python3 -m unittest discover -s tests -p 'test_*.py'", "result": "597 run, 1 failure (pre-existing on base c8dd167a: test_ce23_0_court R1 lineage; see state file FE-01)"}
+    {
+      "cmd": "PYTHONPATH=. PREMISE_IMPORT_REPOS_ROOT=/home/user/seanchatmangpt python3 -m unittest discover -s tests/premise_import -p 'test_*.py'",
+      "exit": 0,
+      "tests": 28
+    },
+    {
+      "cmd": "PYTHONPATH=. python3 -m scripts.premise_import check",
+      "exit": 0,
+      "verdict": "ADMITTED"
+    },
+    {
+      "cmd": "PYTHONPATH=. python3 -m scripts.premise_import --repos-root /home/user/seanchatmangpt plan",
+      "exit": 0,
+      "verdict": "ADMITTED",
+      "premises": {
+        "v26.9.25/0004": "IMPORTED",
+        "v26.9.25/0005": "IMPORTED"
+      }
+    },
+    {
+      "cmd": "PYTHONPATH=. python3 -m scripts.premise_import --repos-root /home/user/seanchatmangpt plan --release v26.9.26",
+      "exit": 3,
+      "verdict": "BLOCKED(PREMISE_ABSENT:E-ADM-01)"
+    },
+    {
+      "cmd": "machine import of both committed v26.9.25 imports into scratch + diff -r",
+      "result": "BYTE_IDENTICAL"
+    },
+    {
+      "cmd": "python3 scripts/verify_release.py --check-refs",
+      "exit": 0
+    },
+    {
+      "cmd": "python3 -m unittest discover -s tests -p 'test_*.py'",
+      "result": "597 run, 1 failure (pre-existing on base c8dd167a: test_ce23_0_court R1 lineage; see state file FE-01)"
+    },
+    {
+      "cmd": "GitHub Actions premise-import.yml job court on PR #294 head f66128a2",
+      "run": "https://github.com/seanchatmangpt/chatman-ecosystem/actions/runs/36218966157/job/108340471531",
+      "conclusion": "success",
+      "includes": [
+        "offline court",
+        "source-resolved court over fresh clone of engineering-standards",
+        "28 falsifiers + machine replay (not skipped)",
+        "derived plan ADMITTED",
+        "v26.9.26 BLOCKED(PREMISE_ABSENT:E-ADM-01) reported"
+      ]
+    },
+    {
+      "cmd": "all 25 check runs on f66128a2 (incl. CHATMAN ECOSYSTEM CROWN)",
+      "conclusion": "success",
+      "mergeable_state": "clean"
+    }
   ],
   "falsifiers": {
     "court_mutants": "7/7 killed",
     "planner_mutants": "10/10 killed (after fixing oldest-add bug found by mutation)"
   },
   "replay": "clone engineering-standards to <R>/engineering-standards; PREMISE_IMPORT_REPOS_ROOT=<R> run the test suite; or CI workflow premise-import.yml",
-  "standing": "PARTIAL_ALIVE",
-  "standing_reason": "executed locally on the exact branch head; CI workflow premise-import.yml not yet observed on GitHub; not merged"
+  "standing": "ALIVE",
+  "standing_reason": "observed execution of the exact subject f66128a2 under its owning verifier (premise-import.yml court, run 36218966157) with source replay; standing does not transfer to later commits without re-observation",
+  "repairs": [
+    {
+      "commit": "f66128a2",
+      "defect": "CI step aborted on expected exit 3 under runner bash -e",
+      "runs_failed": [
+        "36218825236 (067b4b0d)",
+        "36218834504 (c35861ba)"
+      ]
+    }
+  ],
+  "integration": {
+    "pr": "https://github.com/seanchatmangpt/chatman-ecosystem/pull/294",
+    "merged": false,
+    "merge_authority": "operator (E-ACT-01 HumanAuthorityGate)"
+  }
 }
