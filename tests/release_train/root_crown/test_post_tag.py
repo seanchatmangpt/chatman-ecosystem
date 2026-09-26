@@ -17,6 +17,7 @@ from pathlib import Path
 from _support import REPO, RELEASE, committed_tree
 
 from scripts.release_train.root_crown import crown, evidence, posttag
+from scripts.release_train.root_crown.hardening import POST_TAG_EXCLUDES
 from scripts.release_train.root_crown.model import POST_TAG_BLOCKERS, POST_TAG_RULES, code_of
 
 HARDENING = REPO / "release" / RELEASE / "hardening"
@@ -170,7 +171,7 @@ class PostTagTest(unittest.TestCase):
     def m_subject_tree(self):
         subject = self.tree.root / "subject"
         shutil.copytree(
-            REPO / "release" / RELEASE, subject / "release" / RELEASE, ignore=shutil.ignore_patterns("hardening")
+            REPO / "release" / RELEASE, subject / "release" / RELEASE, ignore=shutil.ignore_patterns(*POST_TAG_EXCLUDES)
         )
         clean = {code_of(r) + ":" + r.split(":")[2] for r in posttag.verify_subject_tree(subject, self.record())}
         self.assertNotIn(f"SUBJECT_TREE_MISMATCH:release/{RELEASE}", clean)
