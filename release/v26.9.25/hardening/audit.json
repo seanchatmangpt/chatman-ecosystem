@@ -1,0 +1,132 @@
+{
+  "GENERATED": "scripts/release_train/root_crown/hardening.py -- do not edit; run --write",
+  "authority": "NONE",
+  "beb7bc2d": {
+    "ancestor_of_main": false,
+    "branch": "origin/feat/v26.9.25-receipt-descendant-admission",
+    "command": "git merge-base --is-ancestor beb7bc2d origin/main (exit 1); gh pr list --head feat/v26.9.25-receipt-descendant-admission --state all (0)",
+    "commit": "beb7bc2dc3891544889314d39db302bdff8068d4",
+    "consumed_by": [
+      "scripts/release_train/root_crown/policy/v26.9.25/delta-allowlist.json (provenance: its frontier.falsifiers are the falsifier corpus)",
+      "tests/release_train/root_crown/test_binding.py (falsifier fixtures)"
+    ],
+    "disposition": "CITED_NOT_MERGED",
+    "pull_requests": 0
+  },
+  "cancelled_runs": [
+    {
+      "conclusion": "cancelled",
+      "head_sha": "6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+      "run_id": 36203921348,
+      "standing": "BLOCKED(AUTHORITY_FAILURE:pages-deploy-not-authorized)",
+      "workflow": "mdBook Pages"
+    }
+  ],
+  "frozen_payload": {
+    "excludes": [
+      "autonomy",
+      "hardening"
+    ],
+    "path": "release/v26.9.25",
+    "recomputed_tree_sha": "a01b914de2e4b3503dc2126ce233654af764c362",
+    "result": "HOLDS",
+    "tagged_tree_sha": "a01b914de2e4b3503dc2126ce233654af764c362"
+  },
+  "mutation": {
+    "harnesses": [
+      {
+        "error": null,
+        "killed": 124,
+        "locator": "git:seanchatmangpt/chatman-ecosystem@6ff74d37c99ed4a4ccabedc53263147b253e65e0:release/v26.9.25/hardening/inputs/mutation-report.json",
+        "name": "root_crown",
+        "parser": "root_crown_report",
+        "sha256": "274c8b9d8f8e827a8caac82c125b4213eb6ce252d5e28b66d0c68bd08428112c",
+        "total": 124
+      },
+      {
+        "error": null,
+        "killed": 4,
+        "locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/evidence/courts/chatman-ecosystem/6ff74d37c99ed4a4ccabedc53263147b253e65e0/xprod-mutate/XPROD-001.mutate.json",
+        "name": "xprod",
+        "parser": "xprod",
+        "sha256": "3d11e5d831d48b304529a21cc89d165cadd5d2ffaea76d37fba940607af003e3",
+        "total": 4
+      },
+      {
+        "error": null,
+        "killed": 8,
+        "locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+        "name": "affidavit_brce",
+        "parser": "affidavit_brce",
+        "sha256": "1b3ab4f82b65c27b54eb7b2a7684b1234d7bded57099b43d5668fcc044db74cd",
+        "total": 8
+      },
+      {
+        "error": null,
+        "killed": 50,
+        "locator": "git:seanchatmangpt/zoela@eb18cc73409573366c8fc6544eb41531083ccc1c:release/v26.9.25/receipts/godslaw-gate-witness.post-tag.json",
+        "name": "zoela_witness",
+        "parser": "zoela_witness",
+        "sha256": "f7197df1779f175ae487cb0f24a318bb0679b531f62e4336b5b18e1cdd242375",
+        "total": 50
+      },
+      {
+        "error": null,
+        "killed": 15,
+        "locator": "git:seanchatmangpt/ggen_igniter@647db5f208b7ec88c84f0dc7d70925b4dec330f9:receipts/v26.9.25/sjira-origin-trust-root.json",
+        "name": "ggen_igniter_origin",
+        "parser": "ggen_igniter_origin",
+        "sha256": "2062638ea101ad323b9f308c40bfce362f15b8c1b30fdedb999129305de2bb19",
+        "total": 15
+      }
+    ],
+    "root_crown": {
+      "all_killed": true,
+      "killed": 124,
+      "path": "release/v26.9.25/hardening/inputs/mutation-report.json",
+      "source_digests": 12,
+      "survivors": [],
+      "total": 124
+    }
+  },
+  "observed_at": "2026-09-26T00:25:00Z",
+  "release": "v26.9.25",
+  "release_crown_reviewer": {
+    "broken_term": "R_missing_authority",
+    "command": "gh api repos/seanchatmangpt/chatman-ecosystem/environments/release-crown",
+    "environment": "release-crown",
+    "failure_class": "AUTHORITY_FAILURE",
+    "owner": "operator",
+    "protection_rules": [],
+    "required_reviewers": 0,
+    "standing": "BLOCKED(AUTHORITY_CONFIGURATION:release-crown-reviewer-missing)",
+    "verify": "gh api repos/seanchatmangpt/chatman-ecosystem/environments/release-crown --jq '[.protection_rules[]?|select(.type==\"required_reviewers\")]|length'"
+  },
+  "schema": "https://chatman.dev/root-crown/hardening/audit/v1",
+  "tag_illegal": {
+    "note": "the tagged tag-illegal.json is frozen payload (never edited); the tag-named run's LEGAL decision supersedes it",
+    "standing": "SUPERSEDED",
+    "superseded_by": {
+      "crown_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "decision": "LEGAL",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/receipts/run-36161744816/tag-decision.json",
+      "receipt_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c",
+      "run_id": "36161744816"
+    },
+    "tagged": {
+      "crown_sha": "4d05717e361ffefa1049885519e7b1606933cc50",
+      "decision": "ILLEGAL",
+      "path": "release/v26.9.25/tag-illegal.json",
+      "receipt_digest": "sha256:f2227dc4546dba4a577bf8afdb9c4a924e519b66095dd77b4c16e78a778b6c47",
+      "sha256": "sha256:27303eb57c39066c06c995d524079014d29c8c8ae97d06d6e55627e2697e5f92"
+    }
+  },
+  "weaver": {
+    "command": "gh run list -R seanchatmangpt/chatman-ecosystem --commit 6ff74d37c99ed4a4ccabedc53263147b253e65e0 --json databaseId,name,status,conclusion",
+    "conclusion": "success",
+    "head_sha": "6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+    "history": "PR #277 (ash advisory pin, merge 5006fddc) and PR #284 (ref-check token, merge 81b42dd5) repaired the earlier red runs 36187262460 (HTTP 403 rate limit) on 5b5681d1",
+    "run_id": 36203921399,
+    "workflow": "Weaver Exact-Subject Capability Crown"
+  }
+}

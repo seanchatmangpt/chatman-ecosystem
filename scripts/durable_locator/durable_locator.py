@@ -30,6 +30,10 @@ Subcommands:
     completeness <INDEX.json>              rescan the sources; 0 unindexed scratch locators
     requirements-locators --release V --write|--check
                                            generate release/V/hardening/requirements-locators.json
+    stage-root <json...> --dest D          lay every git: locator named in the documents out at
+                                           D/<owner>/<repo>/<sha>/<path> (the layout the durable/v1
+                                           release closure court resolves); a recorded sha256 beside
+                                           the locator (evidence-index rows) must recompute
 
 Exit codes: 0 ok, 1 refusal/drift/mismatch, 2 usage.
 """
@@ -542,6 +546,42 @@ def requirements_locators(repo_root: Path, release: str) -> dict[str, Any]:
     }
 
 
+# ---------------------------------------------------------------- evidence root
+
+
+def stage_root(resolver: Resolver, documents: list[Any], dest: Path) -> tuple[list[str], list[str]]:
+    """(staged locators, findings). Every ``git:`` string in ``documents`` is resolved and
+    written to ``dest/<owner>/<repo>/<sha>/<path>``; an evidence-index row (``locator`` +
+    ``sha256``) must recompute, else ``REFUSED[DIGEST_MISMATCH]``."""
+    recorded: dict[str, str] = {}
+    locators: set[str] = set()
+    for doc in documents:
+        for _, value in walk_strings(doc):
+            if value.startswith("git:"):
+                locators.add(value)
+        for row in doc.get("rows", []) if isinstance(doc, dict) else []:
+            if isinstance(row, dict) and isinstance(row.get("locator"), str) and row.get("sha256"):
+                recorded[row["locator"]] = str(row["sha256"]).removeprefix("sha256:")
+    staged: list[str] = []
+    findings: list[str] = []
+    for text in sorted(locators):
+        try:
+            loc = parse(text)
+            data = resolver.resolve(loc)
+        except Refused as exc:
+            findings.append(f"{exc} ({text})")
+            continue
+        assert loc.repository and loc.sha and loc.path
+        want = recorded.get(text)
+        if want is not None and sha256_hex(data) != want:
+            findings.append(f"REFUSED[DIGEST_MISMATCH] {text} recorded={want} actual={sha256_hex(data)}")
+        target = dest / loc.repository / loc.sha / loc.path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(data)
+        staged.append(text)
+    return staged, findings
+
+
 # ---------------------------------------------------------------- cli
 
 
@@ -582,6 +622,9 @@ def main(argv: list[str] | None = None) -> int:
     g = p.add_mutually_exclusive_group(required=True)
     g.add_argument("--write", action="store_true")
     g.add_argument("--check", action="store_true")
+    p = sub.add_parser("stage-root")
+    p.add_argument("documents", nargs="+")
+    p.add_argument("--dest", required=True)
     args = ap.parse_args(argv)
     resolver = Resolver(Path(args.repos_root), allow_network=not args.no_network)
     try:
@@ -591,6 +634,14 @@ def main(argv: list[str] | None = None) -> int:
         if args.cmd == "index":
             rules = json.loads(Path(args.rules).read_text(encoding="utf-8"))
             return _write_or_check(Path(args.out), dump(build_index(resolver, rules)), args.write)
+        if args.cmd == "stage-root":
+            docs = [json.loads(Path(d).read_text(encoding="utf-8")) for d in args.documents]
+            staged, findings = stage_root(resolver, docs, Path(args.dest))
+            for f in findings:
+                print(f)
+            status = "ALIVE" if not findings else "REFUSED"
+            print(f"STAGE-ROOT {status} staged={len(staged)} findings={len(findings)}")
+            return 0 if not findings else 1
         if args.cmd == "requirements-locators":
             root = Path(args.repo_root)
             out = root / "release" / args.release / "hardening" / "requirements-locators.json"

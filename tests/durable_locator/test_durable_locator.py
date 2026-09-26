@@ -138,6 +138,55 @@ class ResolverTest(unittest.TestCase):
         self.assertEqual(ctx.exception.code, "REPOSITORY_UNAVAILABLE")
 
 
+class StageRootTest(unittest.TestCase):
+    """stage-root lays git: locators out at <dest>/<owner>/<repo>/<sha>/<path> and rehashes."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name) / "repos"
+        self.dest = Path(self.tmp.name) / "evroot"
+        self.body = b'{"court": "PASS"}\n'
+        self.sha = make_repo(self.root, "r", {"ev/court.out": self.body})
+        self.resolver = dl.Resolver(self.root, allow_network=False)
+        self.loc = f"git:o/r@{self.sha}:ev/court.out"
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_every_git_string_is_staged_at_the_commit_addressed_layout(self):
+        doc = {"subjects": [{"courts": [{"evidence_locator": self.loc, "note": "https://example.invalid/x"}]}]}
+        staged, findings = dl.stage_root(self.resolver, [doc], self.dest)
+        self.assertEqual((staged, findings), ([self.loc], []))
+        self.assertEqual((self.dest / "o/r" / self.sha / "ev/court.out").read_bytes(), self.body)
+
+    def test_recorded_digest_must_recompute(self):
+        good = {"rows": [{"locator": self.loc, "sha256": "sha256:" + sha256(self.body)}]}
+        self.assertEqual(dl.stage_root(self.resolver, [good], self.dest)[1], [])
+        bad = {"rows": [{"locator": self.loc, "sha256": "0" * 64}]}
+        findings = dl.stage_root(self.resolver, [bad], self.dest)[1]
+        self.assertEqual(len(findings), 1)
+        self.assertTrue(findings[0].startswith("REFUSED[DIGEST_MISMATCH]"))
+
+    def test_unresolvable_locator_is_a_finding_not_a_staged_file(self):
+        missing = f"git:o/r@{self.sha}:ev/absent.out"
+        staged, findings = dl.stage_root(self.resolver, [{"x": missing}], self.dest)
+        self.assertEqual(staged, [])
+        self.assertIn("PATH_NOT_FOUND", findings[0])
+        self.assertFalse((self.dest / "o/r" / self.sha / "ev/absent.out").exists())
+
+    def test_cli_exit_codes(self):
+        doc = Path(self.tmp.name) / "doc.json"
+        doc.write_text(json.dumps({"rows": [{"locator": self.loc, "sha256": sha256(self.body)}]}))
+        argv = ["--repos-root", str(self.root), "--no-network", "stage-root", str(doc), "--dest", str(self.dest)]
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            self.assertEqual(dl.main(argv), 0)
+        self.assertIn("STAGE-ROOT ALIVE staged=1 findings=0", out.getvalue())
+        doc.write_text(json.dumps({"rows": [{"locator": self.loc, "sha256": "1" * 64}]}))
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            self.assertEqual(dl.main(argv), 1)
+        self.assertIn("STAGE-ROOT REFUSED", out.getvalue())
+
+
 class OwnerBindingTest(unittest.TestCase):
     """The local checkout is keyed by repo name only; its origin remote must name the
     locator's full owner/repo, else git:attacker/<repo>@... would resolve ALIVE locally."""

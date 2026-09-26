@@ -6,8 +6,8 @@
     "errors": 0,
     "failures": 0,
     "ok": true,
-    "skipped": 4,
-    "tests_run": 224
+    "skipped": 6,
+    "tests_run": 231
   },
   "killed": 124,
   "mutants": {
