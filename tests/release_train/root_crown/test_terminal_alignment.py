@@ -223,10 +223,10 @@ class TerminalAlignmentTest(unittest.TestCase):
         """A typed BLOCKED receipt is "BLOCKED at <subject>", never "ALIVE at <subject>"."""
         state = self.evaluate("AC-15", self.remote("AC-15", standing="BLOCKED", type=TYPED))
         self.assertEqual(state.state, "PASS", state.detail)
-        self.assertIn(f"BLOCKED at {state.subject_sha} (identical)", state.detail)
+        self.assertIn(f"BLOCKED at {state.subject_sha} (ahead)", state.detail)
         self.assertNotIn("ALIVE at", state.detail)
         alive = self.evaluate("AC-07")
-        self.assertIn(f"ALIVE at {alive.subject_sha} (identical)", alive.detail)
+        self.assertIn(f"ALIVE at {alive.subject_sha} (ahead)", alive.detail)
 
     def test_closure_typed_rows_follow_the_policy_row(self):
         """With an AC-02 row that admits success only, a typed BLOCKED closure row is not terminal."""

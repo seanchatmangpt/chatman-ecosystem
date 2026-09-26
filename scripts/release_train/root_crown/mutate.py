@@ -18,7 +18,8 @@ report does not depend on whether a tag subject happens to be materialized.
 
 Output: ``{schema, baseline, mutants{name:{kind,killed,detail,...}}, all_killed, survivors}``.
 Exit 0 every mutant killed, 1 a survivor, 2 refusal (ANCHOR_DRIFT, BASELINE_RED,
-MUTATION_REPORT_DRIFT, usage). ``--write-report`` writes the canonical report;
+HARNESS_LOAD_ERROR, MUTATION_REPORT_DRIFT, usage). A killer module that fails to import, on
+the pristine copy or under a mutant, is ``REFUSED:HARNESS_LOAD_ERROR`` -- never a kill. ``--write-report`` writes the canonical report;
 ``--check-report`` recomputes it and refuses any byte difference.
 """
 
@@ -58,6 +59,10 @@ HARNESS_CODES = {
     "ANCHOR_DRIFT": ("VERIFICATION_FAILURE", "admission_vacuous"),
     "BASELINE_RED": ("VERIFICATION_FAILURE", "admission_vacuous"),
     "MUTATION_REPORT_DRIFT": ("EVIDENCE_FAILURE", "R_missing_replay"),
+    # A killer module that does not import (unittest.loader._FailedTest / ImportError) or
+    # loads zero tests is a harness defect, never a kill: counting it would admit a mutant
+    # as killed with no court ever judging it.
+    "HARNESS_LOAD_ERROR": ("VERIFICATION_FAILURE", "admission_vacuous"),
 }
 MAX_DETAIL_TESTS = 6
 
@@ -161,9 +166,32 @@ def _copy(root: Path, dest: Path, paths: tuple[str, ...]) -> None:
             shutil.copy2(src, dest / rel)
 
 
+def _is_load_error(test: Any, trace: str) -> bool:
+    """A loader placeholder (``unittest.loader._FailedTest``) or an import-time error."""
+    if isinstance(test, getattr(unittest.loader, "_FailedTest", ())):
+        return True
+    if type(test).__name__ in ("_FailedTest", "ModuleImportFailure"):
+        return True
+    return test.id().startswith("unittest.loader.") and ("ImportError" in trace or "ModuleNotFoundError" in trace)
+
+
+def _walk(suite: unittest.TestSuite) -> Iterator[unittest.TestCase]:
+    for t in suite:
+        if isinstance(t, unittest.TestSuite):
+            yield from _walk(t)
+        else:
+            yield t
+
+
+def _load_errors(suite: unittest.TestSuite) -> list[str]:
+    """Loader placeholders in a not-yet-run suite (killer names that do not import)."""
+    return sorted(t.id() for t in _walk(suite) if _is_load_error(t, ""))
+
+
 def _run_tests(suite: unittest.TestSuite) -> dict[str, Any]:
     stream = io.StringIO()
     result = unittest.TextTestRunner(stream=stream, verbosity=0).run(suite)
+    load_errors = sorted({t.id() for t, tb in result.errors if _is_load_error(t, tb)})
     failed = sorted({t.id() for t, _ in result.failures + result.errors})
     return {
         "tests_run": result.testsRun,
@@ -172,6 +200,7 @@ def _run_tests(suite: unittest.TestSuite) -> dict[str, Any]:
         "skipped": len(result.skipped),
         "ok": result.wasSuccessful(),
         "failed_tests": failed,
+        "load_errors": load_errors,
     }
 
 
@@ -179,9 +208,15 @@ def _discover(test_dir: Path) -> unittest.TestSuite:
     return unittest.TestLoader().discover(str(test_dir), pattern="test_*.py", top_level_dir=str(test_dir))
 
 
-def _load(modules: tuple[str, ...]) -> unittest.TestSuite:
+def _load(modules: tuple[str, ...], label: str = "") -> unittest.TestSuite:
+    """Load killer modules. ``loadTestsFromName`` wraps only ImportError in a _FailedTest;
+    any other import-time exception (SyntaxError, NameError, ...) escapes: that is a load
+    error too, refused typed instead of crashing the harness or counting as a kill."""
     loader = unittest.TestLoader()
-    return unittest.TestSuite(loader.loadTestsFromName(m) for m in modules)
+    try:
+        return unittest.TestSuite([loader.loadTestsFromName(m) for m in modules])
+    except Exception as exc:  # noqa: BLE001 -- typed below
+        raise HarnessRefusal("HARNESS_LOAD_ERROR", f"{label}:{type(exc).__name__}:{','.join(modules)}") from exc
 
 
 def anchor_refusals(root: Path, mutants: tuple[SourceMutant, ...]) -> list[str]:
@@ -225,8 +260,20 @@ def run(
         tests = copy_root / test_dir
         with isolated(copy_root, tests, tops):
             baseline = _run_tests(_discover(tests))
+        if baseline["load_errors"]:
+            raise HarnessRefusal("HARNESS_LOAD_ERROR", "baseline:" + ",".join(baseline["load_errors"][:MAX_DETAIL_TESTS]))
         if not baseline["ok"]:
             raise HarnessRefusal("BASELINE_RED", ",".join(baseline["failed_tests"][:MAX_DETAIL_TESTS]))
+        # Every killer must import and load >= 1 test on the pristine copy before any mutant.
+        with isolated(copy_root, tests, tops):
+            for m in source:
+                suite = _load(m.killers, m.name)
+                bad = _load_errors(suite)
+                if bad or suite.countTestCases() == 0:
+                    raise HarnessRefusal(
+                        "HARNESS_LOAD_ERROR",
+                        f"{m.name}:" + (",".join(bad[:MAX_DETAIL_TESTS]) if bad else "0 killer tests loaded"),
+                    )
         for m in source:
             target = copy_root / m.file
             original = target.read_bytes()
@@ -234,9 +281,13 @@ def run(
             target.write_text(text.replace(m.anchor, m.replacement, 1), encoding="utf-8")
             try:
                 with isolated(copy_root, tests, tops):
-                    outcome = _run_tests(_load(m.killers))
+                    outcome = _run_tests(_load(m.killers, m.name))
             finally:
                 target.write_bytes(original)
+            if outcome["load_errors"]:
+                raise HarnessRefusal(
+                    "HARNESS_LOAD_ERROR", f"{m.name}:" + ",".join(outcome["load_errors"][:MAX_DETAIL_TESTS])
+                )
             killed = not outcome["ok"]
             failed = outcome["failed_tests"]
             detail = (
@@ -278,7 +329,7 @@ def run(
         "schema": SCHEMA_REPORT,
         "release": RELEASE,
         "source_digests": {f: "sha256:" + hashlib.sha256((root / f).read_bytes()).hexdigest() for f in files},
-        "baseline": {k: v for k, v in baseline.items() if k != "failed_tests"},
+        "baseline": {k: v for k, v in baseline.items() if k not in ("failed_tests", "load_errors")},
         "mutants": dict(sorted(mutants.items())),
         "total": len(mutants),
         "killed": len(mutants) - len(survivors),
@@ -301,6 +352,11 @@ CHAIN = "scripts/release_train/root_crown/chain.py"
 REPLAY = "scripts/release_train/root_crown/replay.py"
 GITOBJ = "scripts/release_train/root_crown/gitobj.py"
 POLICY = "scripts/release_train/root_crown/policy.py"
+BINDING = "scripts/release_train/root_crown/binding.py"
+MODEL = "scripts/release_train/root_crown/model.py"
+OBSERVER = "scripts/observe_release_heads.py"
+CLOSURE_COURT = "scripts/release_train/release_closure_court/court.py"
+MUTATE = "scripts/release_train/root_crown/mutate.py"
 
 T_TYPED = "test_typed_terminal"
 T_ALIGN = "test_terminal_alignment"
@@ -311,6 +367,8 @@ T_CHAIN = "test_chain"
 T_REPLAY = "test_replay"
 T_GITOBJ = "test_gitobj"
 T_POLICY = "test_policy"
+T_BINDING = "test_binding"
+T_MUTATE = "test_mutate"
 
 SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
     # --- the five audit survivors (each killed by a new test in test_typed_terminal) ---------
@@ -516,6 +574,127 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
         (T_POST,),
         "PAYLOAD_MUTATED_POST_TAG",
     ),
+    # --- PR-M: verify_tag_subject recompute, one mutant per dropped clause --------------------
+    SourceMutant(
+        "tag_subject_recompute_drops_tag",
+        POSTTAG,
+        '        ("tag", "TAG_MUTATED"),\n',
+        "",
+        (T_POST,),
+        "TAG_MUTATED(record.tag vs raw objects)",
+    ),
+    SourceMutant(
+        "tag_subject_recompute_drops_subject",
+        POSTTAG,
+        '        ("subject", "TAG_SUBJECT_SPLIT"),\n',
+        "",
+        (T_POST,),
+        "TAG_SUBJECT_SPLIT(record.subject vs raw objects)",
+    ),
+    SourceMutant(
+        "tag_subject_recompute_drops_payload",
+        POSTTAG,
+        '        ("payload", "TAG_SUBJECT_SPLIT"),\n',
+        "",
+        (T_POST,),
+        "TAG_SUBJECT_SPLIT(record.payload vs raw objects)",
+    ),
+    SourceMutant(
+        "tag_subject_recompute_drops_tag_receipt",
+        POSTTAG,
+        '        ("tag_receipt", "TAG_RECEIPT_SPLIT"),\n',
+        "",
+        (T_POST,),
+        "TAG_RECEIPT_SPLIT(record.tag_receipt vs raw objects)",
+    ),
+    SourceMutant(
+        "tag_subject_recompute_drops_raw_objects",
+        POSTTAG,
+        '        ("raw_objects", "TAG_OBJECT_DIGEST_MISMATCH"),\n',
+        "",
+        (T_POST,),
+        "TAG_OBJECT_DIGEST_MISMATCH(record.raw_objects vs raw objects)",
+    ),
+    SourceMutant(
+        "tag_receipt_self_digest_unchecked",
+        POSTTAG,
+        '        receipt_digest_of(receipt) != receipt.get("receipt_digest")\n        or ',
+        "        ",
+        (T_POST,),
+        "TAG_RECEIPT_SPLIT(receipt self digest)",
+    ),
+    SourceMutant(
+        "tag_receipt_crown_sha_unchecked",
+        POSTTAG,
+        '    if receipt.get("crown_sha") != recomputed["subject"]["commit_sha"] or receipt.get("standing") != "ALIVE":',
+        '    if receipt.get("standing") != "ALIVE":',
+        (T_POST,),
+        "TAG_RECEIPT_SPLIT(receipt crown_sha)",
+    ),
+    SourceMutant(
+        "tag_receipt_standing_unchecked",
+        POSTTAG,
+        '    if receipt.get("crown_sha") != recomputed["subject"]["commit_sha"] or receipt.get("standing") != "ALIVE":',
+        '    if receipt.get("crown_sha") != recomputed["subject"]["commit_sha"]:',
+        (T_POST,),
+        "TAG_RECEIPT_SPLIT(receipt standing)",
+    ),
+    SourceMutant(
+        "current_head_unattested_off",
+        POSTTAG,
+        "    if observed_root and observed_root != head_sha:\n        blockers.append(",
+        "    if False:\n        blockers.append(",
+        (T_POST,),
+        "CURRENT_HEAD_UNATTESTED",
+    ),
+    SourceMutant(
+        "current_head_unattested_not_blocking",
+        POSTTAG,
+        '    if blockers and standing != "REFUSED":\n        standing = "BLOCKED"',
+        '    if False:\n        standing = "BLOCKED"',
+        (T_POST,),
+        "CURRENT_HEAD_UNATTESTED(current standing)",
+    ),
+    SourceMutant(
+        "current_blockers_dropped_by_attest",
+        CROWN,
+        '            + list(current.get("blockers", []))\n',
+        "",
+        (T_POST,),
+        "CURRENT_HEAD_UNATTESTED(attest receipt blockers)",
+    ),
+    SourceMutant(
+        "own_lines_ignore_evaluator_class",
+        POLICY,
+        "        patterns.append(_token(term))",
+        "        pass",
+        (T_POLICY,),
+        "POLICY_RELAXATION_UNGROUNDED(evaluator-class line)",
+    ),
+    SourceMutant(
+        "own_lines_ignore_row_id_token",
+        POLICY,
+        "    patterns = [_token(rid)]",
+        "    patterns = []",
+        (T_POLICY,),
+        "POLICY_RELAXATION_UNGROUNDED(id-named line)",
+    ),
+    SourceMutant(
+        "harness_load_error_counted_as_kill",
+        MUTATE,
+        '            if outcome["load_errors"]:\n                raise HarnessRefusal(',
+        '            if False:\n                raise HarnessRefusal(',
+        (T_MUTATE,),
+        "HARNESS_LOAD_ERROR(under mutant)",
+    ),
+    SourceMutant(
+        "harness_killer_preflight_off",
+        MUTATE,
+        "                if bad or suite.countTestCases() == 0:\n                    raise HarnessRefusal(",
+        "                if False:\n                    raise HarnessRefusal(",
+        (T_MUTATE,),
+        "HARNESS_LOAD_ERROR(pristine killer preflight)",
+    ),
     SourceMutant(
         "replay_diverged_off",
         REPLAY,
@@ -664,8 +843,8 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
     SourceMutant(
         "bound_detail_says_alive",
         EVIDENCE,
-        '    return PASS(f"{req.evidence_locator} {standing} at {subject} ({status})", subject)',
-        '    return PASS(f"{req.evidence_locator} ALIVE at {subject} ({status})", subject)',
+        '    return _admitted(ctx, bound, f"{req.evidence_locator} {standing} at {subject} ({status})", subject)',
+        '    return _admitted(ctx, bound, f"{req.evidence_locator} ALIVE at {subject} ({status})", subject)',
         (T_ALIGN, T_POLICY),
         "_bound detail names the receipt standing",
     ),
@@ -704,7 +883,7 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
     SourceMutant(
         "relaxation_own_line_unchecked",
         POLICY,
-        "        elif (line := own_line(rid, row.rfc_anchor, section)) is not None and row.rfc_phrase not in line:",
+        "        elif not any(row.rfc_phrase in line for line in own_lines(rid, row.rfc_anchor, section, evidence_kind)):",
         "        elif False:",
         (T_POLICY,),
         "POLICY_RELAXATION_UNGROUNDED(borrowed phrase)",
@@ -773,6 +952,196 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
         (T_POLICY,),
         "POLICY_RELAXATION_UNGROUNDED(one grounding, several relaxations)",
     ),
+    # --- evidence binding (PR-4): one disable-mutant per binding rule + the wiring sites
+    SourceMutant(
+        "binding_not_durable_admitted",
+        BINDING,
+        "    if not is_durable(binding.evidence_locator):",
+        "    if False:",
+        (T_BINDING,),
+        "EVIDENCE_NOT_DURABLE",
+    ),
+    SourceMutant(
+        "binding_mutable_subject_admitted",
+        BINDING,
+        "        if not (isinstance(value, str) and HEX40.fullmatch(value)):",
+        "        if False:",
+        (T_BINDING,),
+        "EVIDENCE_SUBJECT_MUTABLE",
+    ),
+    SourceMutant(
+        "binding_container_claims_subject_admitted",
+        BINDING,
+        "        if subject == container or (foreign and subject == crown_sha):",
+        "        if False:",
+        (T_BINDING,),
+        "EVIDENCE_CONTAINER_CLAIMS_SUBJECT",
+    ),
+    SourceMutant(
+        "binding_split_admitted",
+        BINDING,
+        "    if status in LINEAGE_BAD:",
+        "    if False:",
+        (T_BINDING,),
+        "EVIDENCE_SUBJECT_SPLIT",
+    ),
+    SourceMutant(
+        "binding_lineage_missing_admitted",
+        BINDING,
+        '    if status not in LINEAGE_OK or proof.get("delta_paths") is None:',
+        "    if False:",
+        (T_BINDING, T_POST),
+        "EVIDENCE_LINEAGE_MISSING",
+    ),
+    SourceMutant(
+        "binding_misclaim_admitted",
+        BINDING,
+        '    if proof.get("delta_class") != computed:',
+        "    if False:",
+        (T_BINDING,),
+        "EVIDENCE_DELTA_MISCLAIMED",
+    ),
+    SourceMutant(
+        "binding_unbounded_inherited",
+        BINDING,
+        '    if computed == "UNBOUNDED":',
+        "    if False:",
+        (T_BINDING, T_POST, T_POLICY),
+        "EVIDENCE_DELTA_UNBOUNDED",
+    ),
+    SourceMutant(
+        "binding_content_digest_unchecked",
+        BINDING,
+        "    if content is not None and binding.evidence_digest != sha256_tag(content):",
+        "    if False:",
+        (T_BINDING,),
+        "EVIDENCE_DIGEST_MISMATCH(bytes)",
+    ),
+    SourceMutant(
+        "binding_self_digest_unchecked",
+        BINDING,
+        "    if binding.binding_digest != binding.computed_digest():",
+        "    if False:",
+        (T_BINDING,),
+        "EVIDENCE_DIGEST_MISMATCH(binding)",
+    ),
+    SourceMutant(
+        "binding_traversal_admitted",
+        BINDING,
+        '    if any(s in ("", ".", "..") for s in segments):',
+        "    if False:",
+        (T_BINDING,),
+        "classify_delta(traversal)",
+    ),
+    SourceMutant(
+        "binding_deny_extension_ignored",
+        BINDING,
+        '    if any(lowered.endswith(ext) for ext in allowlist.get("deny_extensions", [])):',
+        "    if False:",
+        (T_BINDING,),
+        "classify_delta(deny_extensions)",
+    ),
+    SourceMutant(
+        "binding_deny_segment_ignored",
+        BINDING,
+        '    if set(segments) & set(allowlist.get("deny_segments", [])):',
+        "    if False:",
+        (T_BINDING,),
+        "classify_delta(deny_segments)",
+    ),
+    SourceMutant(
+        "binding_glob_star_crosses_segments",
+        BINDING,
+        '            out.append("[^/]*")',
+        '            out.append(".*")',
+        (T_BINDING,),
+        "classify_delta(* is one segment)",
+    ),
+    SourceMutant(
+        "binding_admission_bypassed",
+        EVIDENCE,
+        "    refusal = binding.admit(bound, crown_sha=ctx.crown_sha, root_repository=ctx.container_repo, allowlist=ctx.allowlist)",
+        "    refusal = None",
+        (T_BINDING, T_POST, T_POLICY),
+        "admit wired into every PASS",
+    ),
+    SourceMutant(
+        "binding_remote_delta_dropped",
+        EVIDENCE,
+        '        delta_paths=observed.get("subject_delta_paths"),',
+        "        delta_paths=[],",
+        (T_BINDING, T_POST, T_POLICY),
+        "observed delta reaches the binding",
+    ),
+    SourceMutant(
+        "binding_new_head_exemption_widened",
+        CROWN,
+        '            in_tree = bound is not None and bound.kind == "IN_TREE_DERIVED" and state.subject_sha == crown_sha',
+        "            in_tree = state.subject_sha == crown_sha",
+        (T_BINDING,),
+        "NEW_HEAD exemption only for IN_TREE_DERIVED",
+    ),
+    SourceMutant(
+        "binding_dropped_from_receipt",
+        MODEL,
+        '            "binding": None if self.binding is None else self.binding.as_dict(),',
+        '            "binding": None,',
+        (T_BINDING, T_POST),
+        "ReqState.binding in as_dict v2",
+    ),
+    SourceMutant(
+        "observer_rename_source_dropped",
+        OBSERVER,
+        '    touched = {f["filename"] for f in files} | {f["previous_filename"] for f in files if "previous_filename" in f}',
+        '    touched = {f["filename"] for f in files}',
+        (T_BINDING,),
+        "compare_delta keeps previous_filename of renames/copies",
+    ),
+    SourceMutant(
+        "binding_post_tag_deltas_ignored",
+        POSTTAG,
+        "        with_deltas(observations, hardening)",
+        "        observations",
+        (T_POST,),
+        "committed delta observations reach the current evaluation",
+    ),
+    # --- durable/v1 closure court: the three bypasses found on 7f3c46f0 -----------------------
+    SourceMutant(
+        "closure_in_tree_self_declared",
+        CLOSURE_COURT,
+        "        if container_sha is not None and subject == container_sha:\n",
+        '        if container_sha is not None and subject == container_sha and court.get("binding_kind") != "IN_TREE_DERIVED":\n',
+        (T_BINDING,),
+        "EVIDENCE_CONTAINER_CLAIMS_SUBJECT is not exempted by a field of the judged row",
+    ),
+    SourceMutant(
+        "closure_flat_fallback",
+        CLOSURE_COURT,
+        '    candidate = evidence_root / match["repo"] / match["sha"] / path\n'
+        "    if candidate.is_file() and candidate.resolve().is_relative_to(evidence_root.resolve()):\n"
+        "        return candidate.read_bytes()\n",
+        '    for candidate in (evidence_root / match["repo"] / match["sha"] / path, evidence_root / path):\n'
+        "        if candidate.is_file():\n"
+        "            return candidate.read_bytes()\n",
+        (T_BINDING,),
+        "git: locators resolve only at the (repository, commit)-addressed layout",
+    ),
+    SourceMutant(
+        "closure_unrecomputable_evidence_admitted",
+        CLOSURE_COURT,
+        "            if match is None and passed:\n",
+        "            if False:\n",
+        (T_BINDING,),
+        "a PASS whose evidence digest cannot be recomputed offline is EVIDENCE_NOT_DURABLE",
+    ),
+    SourceMutant(
+        "closure_unrecomputable_companion_admitted",
+        CLOSURE_COURT,
+        '                        refusals.append(f"REFUSED:EVIDENCE_NOT_DURABLE:{where}:unrecomputable:{companion}")\n',
+        "                        pass\n",
+        (T_BINDING,),
+        "a PASS whose log/output digest cannot be recomputed offline is EVIDENCE_NOT_DURABLE",
+    ),
 )
 
 
@@ -785,6 +1154,9 @@ DATA_ENV_MODULES = (
     "scripts.release_train.root_crown.replay",
     "scripts.release_train.root_crown.model",
     "scripts.release_train.root_crown.policy",
+    "scripts.release_train.root_crown.binding",
+    "scripts.release_train.release_closure_court.court",
+    "scripts.observe_release_heads",
 )
 TAG_OBJECT = "337e839937c247de4ee58b744c8b8e43950d18e3"
 TAG_COMMIT = "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
@@ -1045,6 +1417,134 @@ def dm_replay_mismatch(env: Env) -> tuple[list[str], list[str]]:
     return [str(control.refusal())], [str(mutated.refusal())]
 
 
+def _artifact_eval(env: Env, rid: str, edit: Callable[[dict[str, Any], dict[str, Any]], None]) -> tuple[list[str], list[str]]:
+    """Crown over the ALIVE tree; ``edit(artifact_entry, receipt_json)`` breaks one producer receipt."""
+
+    def mutate(tree: Any, obs: dict[str, Any]) -> None:
+        art = obs["artifacts"][_req(tree, rid).evidence_locator]
+        edit(art, art["json"])
+
+    return _crown_eval(env, mutate)
+
+
+AUTOFDE_FALSIFIER = "scripts/release_tlc_court_receipt.py"  # beb7bc2d frontier falsifier
+
+
+def dm_delta_unbounded(env: Env) -> tuple[list[str], list[str]]:
+    return _artifact_eval(env, "AC-07", lambda art, data: art["subject_delta_paths"].append(AUTOFDE_FALSIFIER))
+
+
+def dm_delta_unobserved(env: Env) -> tuple[list[str], list[str]]:
+    return _artifact_eval(env, "AC-07", lambda art, data: art.pop("subject_delta_paths"))
+
+
+def dm_delta_misclaimed(env: Env) -> tuple[list[str], list[str]]:
+    def edit(art: dict[str, Any], data: dict[str, Any]) -> None:
+        art["subject_delta_paths"].append(AUTOFDE_FALSIFIER)
+        data["subject_delta_class"] = "RECEIPT_ONLY"  # the receipt-only claim the delta refutes
+
+    return _artifact_eval(env, "AC-07", edit)
+
+
+def dm_receipt_names_its_container(env: Env) -> tuple[list[str], list[str]]:
+    return _artifact_eval(env, "AC-07", lambda art, data: data.update(subject_sha=art["head_sha"]))
+
+
+def dm_mutable_subject(env: Env) -> tuple[list[str], list[str]]:
+    return _artifact_eval(env, "AC-07", lambda art, data: data.update(subject_sha="master"))
+
+
+def dm_code_renamed_into_receipts(env: Env) -> tuple[list[str], list[str]]:
+    """The observer + delta law over a compare payload renaming code into receipts/ (control: a
+    receipt renamed within receipts/). The rename source is part of the delta."""
+    allowlist = env.binding.load_allowlist(RELEASE)
+
+    def classify(previous: str) -> list[str]:
+        payload = {
+            "status": "ahead",
+            "files": [{"filename": f"release/{RELEASE}/receipts/gate.json", "previous_filename": previous, "status": "renamed"}],
+        }
+        delta = env.observe_release_heads.compare_delta(lambda url: payload, "o/r", "1" * 40, "2" * 40)
+        cls, offending = env.binding.classify_delta(delta["delta_paths"], allowlist)
+        return [f"{cls}:{','.join(offending)}"]
+
+    return classify(f"release/{RELEASE}/receipts/old-gate.json"), classify("scripts/release_gate.py")
+
+
+def _durable_case(env: Env, edit: Callable[[dict[str, Any], Path], None]) -> tuple[list[str], list[str]]:
+    """The tagged closure bound to the E1 index, judged over the (repository, commit)-addressed
+    evidence root (``_support.stage_evidence_root``): clean control vs one edit of the affidavit
+    court (``edit(court, root)``). Only AFFIDAVIT refusals are compared."""
+    closure = json.loads((env.root / f"release/{RELEASE}/closure.json").read_text(encoding="utf-8"))
+    index = json.loads((env.root / f"release/{RELEASE}/hardening/evidence/INDEX.json").read_text(encoding="utf-8"))
+    with tempfile.TemporaryDirectory() as tmp:
+        root = env._support.stage_evidence_root(index, env.root, Path(tmp))
+        bound = env.court.bind_index(closure, index)
+        control = [r for r in env.court.evaluate(bound, root).refusals if ":AFFIDAVIT:" in r]
+        edit(bound["subjects"][9]["courts"][0], root)
+        return control, [r for r in env.court.evaluate(bound, root).refusals if ":AFFIDAVIT:" in r]
+
+
+def dm_evidence_not_durable(env: Env) -> tuple[list[str], list[str]]:
+    """A PASS court under durable/v1 citing a scratch path (the tag-time closure's form)."""
+    return _durable_case(env, lambda court, root: court.update(evidence_locator=court["evidence"]))
+
+
+def dm_evidence_digest_mismatch(env: Env) -> tuple[list[str], list[str]]:
+    """The E1 affidavit court output with one byte flipped: the recorded output_sha256 no longer recomputes."""
+
+    def flip(court: dict[str, Any], root: Path) -> None:
+        target = next(root.rglob("courts/affidavit/*/court.out"))
+        data = bytearray(target.read_bytes())
+        data[0] ^= 1
+        target.write_bytes(bytes(data))
+
+    return _durable_case(env, flip)
+
+
+def dm_evidence_self_declared_in_tree(env: Env) -> tuple[list[str], list[str]]:
+    """The affidavit court names its own evidence container as subject and self-declares IN_TREE_DERIVED."""
+
+    def edit(court: dict[str, Any], root: Path) -> None:
+        court.update(evidence_subject_sha=court["evidence_locator"].split("@")[1][:40], binding_kind="IN_TREE_DERIVED")
+
+    return _durable_case(env, edit)
+
+
+def dm_evidence_locator_sha_forged(env: Env) -> tuple[list[str], list[str]]:
+    """The affidavit locators' container SHA forged while the bytes also sit at <root>/<path>."""
+
+    def edit(court: dict[str, Any], root: Path) -> None:
+        real = court["evidence_locator"].split("@")[1][:40]
+        for key in ("evidence_locator", "log_locator", "output_locator"):
+            if court.get(key):
+                path = court[key].split(":", 2)[2]
+                (root / path).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(env.root / path, root / path)
+                court[key] = court[key].replace(real, "f" * 40)
+        court["evidence_subject_sha"] = real
+
+    return _durable_case(env, edit)
+
+
+def dm_evidence_unrecomputable(env: Env) -> tuple[list[str], list[str]]:
+    """The affidavit PASS cites an https evidence locator with a fabricated digest."""
+
+    def edit(court: dict[str, Any], root: Path) -> None:
+        court.update(evidence_locator="https://example.invalid/r.json", evidence_digest="sha256:" + "0" * 64)
+
+    return _durable_case(env, edit)
+
+
+def dm_companion_unrecomputable(env: Env) -> tuple[list[str], list[str]]:
+    """The affidavit PASS backs its output_sha256 with an https companion and a fabricated digest."""
+
+    def edit(court: dict[str, Any], root: Path) -> None:
+        court.update(output_locator="https://example.invalid/out", output_sha256="sha256:" + "1" * 64)
+
+    return _durable_case(env, edit)
+
+
 DATA_MUTANTS: tuple[DataMutant, ...] = (
     DataMutant("dm_terminal_blocker_without_type", dm_terminal_blocker_without_type, "REFUSED:BLOCKED_WITHOUT_TYPE:AC-15", "BLOCKED_WITHOUT_TYPE"),
     DataMutant(
@@ -1092,6 +1592,58 @@ DATA_MUTANTS: tuple[DataMutant, ...] = (
         "PAYLOAD_MUTATED_POST_TAG",
     ),
     DataMutant("dm_replay_mismatch", dm_replay_mismatch, "BLOCKED:REPLAY_DIVERGED", "REPLAY_DIVERGED"),
+    DataMutant("dm_delta_unbounded", dm_delta_unbounded, "BLOCKED:EVIDENCE_DELTA_UNBOUNDED:AC-07", "EVIDENCE_DELTA_UNBOUNDED"),
+    DataMutant("dm_delta_unobserved", dm_delta_unobserved, "REFUSED:EVIDENCE_LINEAGE_MISSING:AC-07", "EVIDENCE_LINEAGE_MISSING"),
+    DataMutant("dm_delta_misclaimed", dm_delta_misclaimed, "REFUSED:EVIDENCE_DELTA_MISCLAIMED:AC-07", "EVIDENCE_DELTA_MISCLAIMED"),
+    DataMutant(
+        "dm_receipt_names_its_container",
+        dm_receipt_names_its_container,
+        "REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AC-07",
+        "EVIDENCE_CONTAINER_CLAIMS_SUBJECT",
+    ),
+    DataMutant("dm_mutable_subject", dm_mutable_subject, "REFUSED:EVIDENCE_SUBJECT_MUTABLE:AC-07", "EVIDENCE_SUBJECT_MUTABLE"),
+    DataMutant(
+        "dm_code_renamed_into_receipts",
+        dm_code_renamed_into_receipts,
+        "UNBOUNDED:scripts/release_gate.py",
+        "EVIDENCE_DELTA_UNBOUNDED",
+    ),
+    DataMutant(
+        "dm_evidence_not_durable",
+        dm_evidence_not_durable,
+        "REFUSED:EVIDENCE_NOT_DURABLE:AFFIDAVIT:affidavit:brce_court",
+        "EVIDENCE_NOT_DURABLE",
+    ),
+    DataMutant(
+        "dm_evidence_digest_mismatch",
+        dm_evidence_digest_mismatch,
+        "REFUSED:EVIDENCE_DIGEST_MISMATCH:AFFIDAVIT",
+        "EVIDENCE_DIGEST_MISMATCH",
+    ),
+    DataMutant(
+        "dm_evidence_self_declared_in_tree",
+        dm_evidence_self_declared_in_tree,
+        "REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AFFIDAVIT",
+        "EVIDENCE_CONTAINER_CLAIMS_SUBJECT",
+    ),
+    DataMutant(
+        "dm_evidence_locator_sha_forged",
+        dm_evidence_locator_sha_forged,
+        f"unresolved:git:seanchatmangpt/chatman-ecosystem@{'f' * 40}:",
+        "EVIDENCE_NOT_DURABLE",
+    ),
+    DataMutant(
+        "dm_evidence_unrecomputable",
+        dm_evidence_unrecomputable,
+        "unrecomputable:https://example.invalid/r.json",
+        "EVIDENCE_NOT_DURABLE",
+    ),
+    DataMutant(
+        "dm_companion_unrecomputable",
+        dm_companion_unrecomputable,
+        "unrecomputable:https://example.invalid/out",
+        "EVIDENCE_NOT_DURABLE",
+    ),
 )
 
 

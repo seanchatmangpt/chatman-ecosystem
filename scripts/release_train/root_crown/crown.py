@@ -171,7 +171,12 @@ def evaluate(
         if state.state == "PASS" and req.id in impacts:
             moved = impacts[req.id]
             new_heads = {heads.get(r) for r in moved}
-            if state.subject_sha not in new_heads and not (state.subject_sha == crown_sha):
+            bound = state.binding
+            # Survives a moved head only when its evaluated subject is the new head, or when
+            # it is IN_TREE_DERIVED from the crown's own tree at crown_sha. A receipt (local,
+            # remote or operator-local) is never exempted by the crown commit.
+            in_tree = bound is not None and bound.kind == "IN_TREE_DERIVED" and state.subject_sha == crown_sha
+            if state.subject_sha not in new_heads and not in_tree:
                 state = UNKNOWN(
                     "NEW_HEAD_UNEVIDENCED",
                     f"heads moved: {','.join(moved)}; evidence bound to {state.subject_sha}",
@@ -343,7 +348,14 @@ def attest(
     refusals = sorted(
         set(current["refusals"] + subject_refusals + chain_refusals + (historical["refusals"] if historical else []))
     )
-    blockers = sorted(set(subject_blockers + chain_blockers + (historical["blockers"] if historical else [])))
+    blockers = sorted(
+        set(
+            subject_blockers
+            + chain_blockers
+            + list(current.get("blockers", []))
+            + (historical["blockers"] if historical else [])
+        )
+    )
     sections = [current["standing"], "BLOCKED" if blockers else "ALIVE", "REFUSED" if refusals else "ALIVE"]
     if historical is not None:
         sections.append(historical["standing"])
@@ -381,6 +393,7 @@ def attest(
         "current": {
             "standing": current["standing"],
             "refusals": current["refusals"],
+            "blockers": list(current.get("blockers", [])),
             "drift": current["drift"],
             "core_receipt_digest": core["receipt_digest"],
             "core": core,

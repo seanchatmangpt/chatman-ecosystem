@@ -23,7 +23,7 @@ from pathlib import Path
 
 from _support import CROWN_SHA, REPO, RELEASE, alive_observations, alive_tree, dump, load
 
-from scripts.release_train.root_crown import crown, evidence, policy
+from scripts.release_train.root_crown import binding, crown, evidence, policy
 from scripts.release_train.root_crown.model import FAILURE_CLASS, TERMINALITY_RULES, code_of
 
 POLICY = REPO / "scripts/release_train/root_crown/policy" / RELEASE / "terminality.json"
@@ -211,6 +211,44 @@ class PolicyRefusalTest(unittest.TestCase):
         self.relax("AC-07", rfc_phrase="has terminal standing")
         self.assert_ungrounded("AC-07", "not on AC-07's own §48 line")
 
+    def test_section55_relaxation_not_naming_the_row_is_ungrounded(self):
+        """§55 "normative_artifacts_terminal" carries a marker but its line names neither
+        AC-07 nor AC-07's evaluator class (receipt_artifact): previously admitted."""
+        self.relax("AC-07", rfc_anchor="§55", rfc_phrase="normative_artifacts_terminal")
+        self.assert_ungrounded("AC-07", "no line names AC-07 or evaluator class receipt_artifact")
+
+    def test_section38_relaxation_not_naming_the_row_is_ungrounded(self):
+        """§38 closure rules name no requirement; a relaxation there cannot cite its own line."""
+        self.relax("F-13", rfc_anchor="§38", rfc_phrase="BLOCKED(reason)")
+        self.assert_ungrounded("F-13", "not on F-13's own §38 line")
+
+    def test_f09_line_is_bound_through_its_evaluator_class_only(self):
+        """F-09's §55 term is its own only via typed_blocker_allowed; another F row with a
+        different evaluator borrowing the term alone (F-09 relaxed elsewhere) is ungrounded."""
+        self.row("F-09")["rfc_phrase"] = "godslaw_migration_terminal"
+        self.assert_ungrounded("F-09", "no line names F-09 or evaluator class typed_blocker_allowed")
+        self.doc = load(POLICY)
+        self.relax("F-13", rfc_anchor="§55", rfc_phrase="cloud_runtime_alive_or_typed_blocker")
+        self.write()
+        refusals = self.ctx().policy_refusals()
+        self.assertTrue(any(r.startswith("REFUSED:POLICY_RELAXATION_UNGROUNDED:F-13:") and "own §55 line" in r
+                            for r in refusals), refusals)
+        self.assertFalse(any(r.startswith("REFUSED:POLICY_RELAXATION_UNGROUNDED:F-09:") for r in refusals), refusals)
+
+    def test_own_lines_cover_every_anchor(self):
+        section = "# 55. X\n  AND a_terminal\n  AND cloud_runtime_alive_or_typed_blocker\nAC-07 names it\n3. third\n"
+        self.assertEqual(policy.own_lines("AC-07", "§55", section), ["AC-07 names it"])
+        self.assertEqual(
+            policy.own_lines("F-09", "§55", section, "typed_blocker_allowed"),
+            ["  AND cloud_runtime_alive_or_typed_blocker"],
+        )
+        self.assertEqual(policy.own_lines("F-09", "§55", section, "receipt_artifact"), [])
+        self.assertEqual(policy.own_lines("F-3", "§47", section), ["3. third"])
+        self.assertEqual(policy.own_lines("AC-0", "§55", section), [], "AC-0 is not a token of AC-07")
+        named = section + "  AND see F-13 here_terminal\n"
+        self.assertEqual(policy.own_lines("F-13", "§55", named), ["  AND see F-13 here_terminal"])
+        self.assertEqual(policy.own_lines("F-1", "§55", named), [], "F-1 is not a token of F-13")
+
     def test_phrase_absent_from_the_anchor_is_ungrounded(self):
         self.row("F-09")["rfc_phrase"] = "cloud_runtime_alive_or_any_blocker"
         self.assert_ungrounded("F-09", "not in §55")
@@ -383,25 +421,49 @@ class AmendmentReceiptTest(unittest.TestCase):
 
 class HistoricalReplayUnchangedTest(unittest.TestCase):
     """The tag-time observations, re-evaluated by the hardened evaluators over the committed
-    payload, stay ALIVE; AC-15 and F-09 remain terminal with the container as owner."""
+    payload: the terminality policy refuses nothing (AC-15 and F-09 stay typed with the
+    container as owner); the evidence binding (PR-4) is what moves the ceiling.
+
+    Without the observed subject->container deltas every producer receipt read at a
+    descendant head is REFUSED EVIDENCE_LINEAGE_MISSING; with the committed delta observations
+    (hardening/inputs/delta-observations.json) the receipt-only affidavit delta is admitted and
+    every other producer is typed BLOCKED EVIDENCE_DELTA_UNBOUNDED."""
 
     HIST = REPO / "release" / RELEASE / "hardening/receipts/run-36161744816"
     PREV = REPO / "release" / RELEASE / "hardening/receipts/run-36160116076"
+    DELTAS = REPO / "release" / RELEASE / "hardening/inputs/delta-observations.json"
+    PRODUCERS = {
+        "AC-03", "AC-04", "AC-07", "AC-08", "AC-13", "AC-14", "AC-15", "AC-16",
+        "F-01", "F-02", "F-05", "F-08", "F-09", "F-12", "F-13",
+    }  # fmt: skip
 
-    @unittest.skipUnless((HIST / "observations.json").is_file(), "tag-time observations not committed")
-    def test_tag_time_inputs_stay_alive_under_the_policy(self):
-        obs = load(self.HIST / "observations.json")
+    def _evaluate(self, obs):
         prev = load(self.PREV / "crown-receipt.json")
-        verdict = crown.evaluate(
+        return crown.evaluate(
             REPO / "release" / RELEASE, obs, prev, "68bacd8dcc9ae12e4e97727a284c14abdc7520c5", root=REPO
         )
-        self.assertEqual((verdict.standing, verdict.refusals), ("ALIVE", ()), verdict.remaining)
-        reqs = verdict.receipt["requirements"]
-        self.assertIn("owner=seanchatmangpt/zoela owner_source=explicit", reqs["AC-15"]["detail"])
-        self.assertIn("BLOCKED at f1313f1c1462b9d2f4dd3cb010dbe5921f53185d", reqs["AC-15"]["detail"])
-        self.assertNotIn("ALIVE at", reqs["AC-15"]["detail"])
-        self.assertIn("terminal BLOCKED(TRANSPORT_FAILURE:cloud-to-zcode-leg-unreceipted) (RFC §55", reqs["F-09"]["detail"])
 
+    @unittest.skipUnless((HIST / "observations.json").is_file(), "tag-time observations not committed")
+    def test_tag_time_inputs_refuse_only_unproven_lineage(self):
+        verdict = self._evaluate(load(self.HIST / "observations.json"))
+        self.assertEqual({code_of(r) for r in verdict.refusals}, {"EVIDENCE_LINEAGE_MISSING"})
+        self.assertEqual({r.split(":")[2] for r in verdict.refusals}, self.PRODUCERS)
+
+    @unittest.skipUnless(DELTAS.is_file(), "delta observations not committed")
+    def test_tag_time_inputs_with_observed_deltas(self):
+        obs = binding.overlay_deltas(load(self.HIST / "observations.json"), load(self.DELTAS))
+        verdict = self._evaluate(obs)
+        self.assertEqual((verdict.standing, verdict.refusals), ("BLOCKED", ()), verdict.remaining)
+        reqs = verdict.receipt["requirements"]
+        self.assertEqual({k for k in ("AC-08", "F-05") if reqs[k]["state"] == "PASS"}, {"AC-08", "F-05"})
+        unbounded = {rid for rid, r in reqs.items() if r["code"] == "EVIDENCE_DELTA_UNBOUNDED"}
+        self.assertEqual(unbounded, self.PRODUCERS - {"AC-08", "F-05"})
+        self.assertIn("scripts/release_tlc_court_receipt.py", reqs["AC-07"]["detail"])
+        self.assertIn("release/v26.9.25/receipts/replay/origin_probe.exs", reqs["AC-03"]["detail"])
+        self.assertIn("release/v26.9.25/receipts/manufacture.py", reqs["AC-13"]["detail"])
+        self.assertIn("release/v26.9.25/receipts/godslaw-gate-witness.py", reqs["AC-15"]["detail"])
+        # Policy + owner courts refuse nothing on history: the typed dispositions still reach binding.
+        self.assertFalse({"OWNER_SPLIT", "BLOCKED_WITHOUT_TYPE", "ARTIFACT_BLOCKED"} & {r["code"] for r in reqs.values()})
 
 if __name__ == "__main__":
     unittest.main()

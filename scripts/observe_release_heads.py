@@ -7,11 +7,17 @@ This observer produces its ``observations.json``:
   repos      per pinned repository: default_branch (never hardcoded: autofde-lab is
              ``master``), visibility, head_sha, pin_sha, compare_status of pin...head
   artifacts  per remote evidence locator ``owner/name:path``: sha256, parsed JSON,
-             and compare_status of the artifact's own subject_sha...head
+             compare_status of the artifact's own subject_sha...head, and
+             ``subject_delta_paths`` (compare API ``files[]`` of subject...head: the lineage
+             proof the root crown's evidence binding classifies)
   tag        the release tag: peeled commit ``sha`` (null when absent), the ref's own
              ``object_sha``/``object_type`` (annotated tag object), and ``subject_delta``
              (paths changed from the tagged commit to the observed root head)
   local_worktrees (``--local-worktrees``) operator-local topology receipt m_term
+  --post-tag-bindings  ``release/<v>/hardening/inputs/delta-observations.json``: the
+             changed paths of every immutable (producer subject, container head) pair the
+             tagged ``closure.json`` and the tag-named crown observations record, classified
+             against ``root_crown/policy/<v>/delta-allowlist.json``
   private_repos  committed ``observations/private-repos.json`` (written by
              ``--private-local <repo...>`` on the operator's machine with the operator's
              ``gh`` auth, because the repo-scoped CI token cannot read private repos) plus
@@ -39,6 +45,9 @@ from pathlib import Path
 from typing import Any, Callable
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+_REPO_ROOT = str(Path(__file__).resolve().parents[1])
+if _REPO_ROOT not in sys.path:
+    sys.path.append(_REPO_ROOT)
 import release_line  # noqa: E402
 import verify_release  # noqa: E402
 
@@ -47,6 +56,10 @@ Fetch = Callable[[str], dict[str, Any]]
 TOPOLOGY_GLOB = "~/.claude/migration/v26925-topology/TOPOLOGY-RECEIPT*.json"
 PRIVATE_FILE = "observations/private-repos.json"
 PRIVATE_SCHEMA = "https://chatman.dev/root-crown/private-observations/v1"
+DELTA_FILE = "hardening/inputs/delta-observations.json"
+DELTA_SCHEMA = "https://chatman.dev/root-crown/hardening/delta-observations/v1"
+# The compare API lists at most 300 files; a full page cannot prove the delta is complete.
+COMPARE_FILE_LIMIT = 300
 
 
 def github_fetch(url: str) -> dict[str, Any]:
@@ -63,6 +76,43 @@ def _compare(fetch: Fetch, repository: str, base: str, head: str) -> str | None:
     payload = fetch(f"{API}/repos/{repository}/compare/{base}...{urllib.parse.quote(head, safe='')}")
     status = payload.get("status")
     return status if status in {"identical", "ahead", "behind", "diverged"} else None
+
+
+def compare_delta(fetch: Fetch, repository: str, base: str, head: str) -> dict[str, Any]:
+    """``{status, ahead_by, files, delta_paths}`` of base...head (compare API ``files[]``).
+
+    ``delta_paths`` is every touched path: ``filename`` plus ``previous_filename`` of renames/copies.
+
+    ``delta_paths`` is None when the listing may be truncated (``COMPARE_FILE_LIMIT``): an
+    incomplete listing is not a lineage proof.
+    """
+    if base == head:
+        return {"status": "identical", "ahead_by": 0, "files": [], "delta_paths": []}
+    payload = fetch(f"{API}/repos/{repository}/compare/{base}...{urllib.parse.quote(head, safe='')}")
+    status = payload.get("status")
+    files = sorted(
+        (_delta_file(f) for f in payload.get("files", []) if f.get("filename")),
+        key=lambda f: str(f["filename"]),
+    )
+    complete = len(files) < COMPARE_FILE_LIMIT
+    touched = {f["filename"] for f in files} | {f["previous_filename"] for f in files if "previous_filename" in f}
+    return {
+        "status": status if status in {"identical", "ahead", "behind", "diverged"} else None,
+        "ahead_by": payload.get("ahead_by"),
+        "files": files,
+        "delta_paths": sorted(touched) if complete else None,
+    }
+
+
+def _delta_file(f: dict[str, Any]) -> dict[str, Any]:
+    """One compare ``files[]`` entry. A rename/copy keeps ``previous_filename``: the source path is
+    part of the delta (a code file renamed into ``receipts/`` removes code from the subject), so it
+    lands in ``delta_paths`` and is classified like any other touched path."""
+    out = {"filename": f.get("filename"), "status": f.get("status")}
+    prev = f.get("previous_filename")
+    if isinstance(prev, str) and prev and prev != f.get("filename"):
+        out["previous_filename"] = prev
+    return out
 
 
 def gh_fetch(url: str) -> dict[str, Any]:
@@ -230,10 +280,100 @@ def observe_artifact(fetch: Fetch, locator: str, repo_obs: dict[str, Any]) -> di
     subject = data.get("subject_sha") if isinstance(data, dict) else None
     if isinstance(subject, str) and len(subject) == 40:
         try:
-            out["subject_compare"] = "identical" if subject == head else _compare(fetch, repository, subject, head)
+            delta = compare_delta(fetch, repository, subject, head)
+            out["subject_compare"] = delta["status"]
+            out["subject_delta_paths"] = delta["delta_paths"]
         except (urllib.error.URLError, TimeoutError, ValueError, KeyError) as exc:
             out["subject_compare_error"] = _err(exc)
     return out
+
+
+def _closure_claim(text: Any) -> str | None:
+    """The delta class a closure court's prose claims (``receipt-only paths`` -> RECEIPT_ONLY)."""
+    return "RECEIPT_ONLY" if isinstance(text, str) and "receipt-only" in text else None
+
+
+def immutable_pairs(release_dir: Path) -> list[dict[str, Any]]:
+    """(repository, producer subject, container head) pairs recorded by tag-immutable inputs.
+
+    Sources: ``closure.json`` courts whose ``evidence_subject_sha`` differs from the court
+    ``sha``; the tag-named crown observations (``hardening/TAG-SUBJECT.json`` ->
+    ``tag_receipt.observations_path``) artifacts whose receipt ``subject_sha`` differs from
+    the observed ``head_sha``.
+    """
+    pairs: dict[tuple[str, str, str], dict[str, Any]] = {}
+
+    def add(repository: str, base: str, head: str, source: str, claimed: str | None) -> None:
+        entry = pairs.setdefault(
+            (repository, base, head), {"repository": repository, "base": base, "head": head, "claims": []}
+        )
+        entry["claims"].append({"source": source, "claimed_class": claimed})
+
+    closure = json.loads((release_dir / "closure.json").read_text(encoding="utf-8"))
+    for i, row in enumerate(closure.get("subjects", [])):
+        for j, court in enumerate(row.get("courts", [])):
+            base, head = court.get("evidence_subject_sha"), court.get("sha")
+            if isinstance(base, str) and isinstance(head, str) and base != head:
+                add(row["repository"], base, head, f"closure.json#/subjects/{i}/courts/{j}", _closure_claim(court.get("detail")))
+    record_path = release_dir / "hardening" / "TAG-SUBJECT.json"
+    if record_path.is_file():
+        record = json.loads(record_path.read_text(encoding="utf-8"))
+        rel = record["tag_receipt"]["observations_path"]
+        observations = json.loads((release_dir / "hardening" / rel).read_text(encoding="utf-8"))
+        for locator, art in sorted(observations.get("artifacts", {}).items()):
+            data = art.get("json") if isinstance(art, dict) else None
+            base = data.get("subject_sha") if isinstance(data, dict) else None
+            head = art.get("head_sha") if isinstance(art, dict) else None
+            if "@" in locator or not (isinstance(base, str) and isinstance(head, str)) or base == head:
+                continue
+            add(locator.partition(":")[0], base, head, f"hardening/{rel}#/artifacts/{locator}", None)
+    for entry in pairs.values():
+        entry["claims"].sort(key=lambda c: c["source"])
+    return [pairs[k] for k in sorted(pairs)]
+
+
+def observe_post_tag_bindings(release_dir: Path, fetch: Fetch = github_fetch, *, now: str | None = None) -> dict[str, Any]:
+    """``--post-tag-bindings``: observe and classify every immutable subject->container delta."""
+    from scripts.release_train.root_crown import binding
+
+    release = release_dir.name
+    allowlist_path = binding.POLICY_ROOT / release / binding.ALLOWLIST_FILE
+    allowlist = binding.load_allowlist(release)
+    out_pairs = []
+    for pair in immutable_pairs(release_dir):
+        entry = dict(pair)
+        try:
+            entry.update(compare_delta(fetch, pair["repository"], pair["base"], pair["head"]))
+        except (urllib.error.URLError, TimeoutError, ValueError, KeyError) as exc:
+            entry.update({"error": _err(exc), "status": None, "delta_paths": None})
+        computed, offending = binding.classify_delta(entry.get("delta_paths"), allowlist)
+        entry["delta_class"] = computed
+        entry["offending_paths"] = offending
+        claims = [c["claimed_class"] for c in entry["claims"] if c["claimed_class"]]
+        entry["claim_holds"] = None if not claims else all(c == computed for c in claims)
+        if entry.get("status") in {"behind", "diverged"}:
+            entry["binding"] = "REFUSED(EVIDENCE_SUBJECT_SPLIT)"
+        elif computed is None or entry.get("status") not in {"identical", "ahead"}:
+            entry["binding"] = "REFUSED(EVIDENCE_LINEAGE_MISSING)"
+        elif computed == "UNBOUNDED":
+            entry["binding"] = "BLOCKED(EVIDENCE_DELTA_UNBOUNDED)"
+        else:
+            entry["binding"] = "ADMITTED"
+        out_pairs.append(entry)
+    return {
+        "OBSERVED": "scripts/observe_release_heads.py --post-tag-bindings -- observation, do not edit; re-observe",
+        "schema": DELTA_SCHEMA,
+        "release": release,
+        "observed_at": now or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "allowlist": {
+            "path": allowlist_path.relative_to(Path(_REPO_ROOT)).as_posix()
+            if allowlist_path.is_relative_to(Path(_REPO_ROOT))
+            else allowlist_path.name,
+            "sha256": hashlib.sha256(allowlist_path.read_bytes()).hexdigest(),
+        },
+        "pairs": out_pairs,
+        "authority": "NONE",
+    }
 
 
 def observe_tag(fetch: Fetch, repository: str, tag: str) -> dict[str, Any]:
@@ -408,9 +548,33 @@ def main(argv: list[str] | None = None) -> int:
         "--local-worktrees", action="store_true", help="ingest the operator-local topology receipt m_term"
     )
     parser.add_argument("--cold", action="store_true", help="declare a clean runner (CI) for AC-12")
+    parser.add_argument(
+        "--post-tag-bindings",
+        action="store_true",
+        help=f"observe the immutable subject->container deltas into release/<v>/{DELTA_FILE}",
+    )
+    parser.add_argument("--transport", choices=("api", "gh"), default="api", help="gh = operator-local gh auth")
     parser.add_argument("--run-id")
     args = parser.parse_args(argv)
     release_dir = release_line.release_dir(args.release)
+    if args.post_tag_bindings:
+        doc = observe_post_tag_bindings(release_dir, gh_fetch if args.transport == "gh" else github_fetch)
+        target = args.out or release_dir / DELTA_FILE
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(doc, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(
+            json.dumps(
+                {
+                    "out": str(target),
+                    "pairs": [
+                        f"{p['repository']}@{p['base'][:8]}..{p['head'][:8]}:{p['delta_class']}:{p['binding']}"
+                        for p in doc["pairs"]
+                    ],
+                },
+                sort_keys=True,
+            )
+        )
+        return 1 if any(p.get("error") for p in doc["pairs"]) else 0
     if args.private_local:
         private = observe_private_local(release_dir, args.private_local)
         target = args.out or release_dir / PRIVATE_FILE
