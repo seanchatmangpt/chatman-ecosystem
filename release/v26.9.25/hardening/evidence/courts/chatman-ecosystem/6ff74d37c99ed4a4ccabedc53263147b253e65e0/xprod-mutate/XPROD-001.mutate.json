@@ -1,0 +1,43 @@
+{
+  "all_killed": true,
+  "case_id": "XPROD-001",
+  "mutants": {
+    "authority_do": {
+      "exit_code": 2,
+      "expected": "REFUSED:INADMISSIBLE_CASE:",
+      "killed": true,
+      "observed_standing": "REFUSED",
+      "refusals": [
+        "REFUSED:INADMISSIBLE_CASE:cross-product evidence projections carry no authority"
+      ]
+    },
+    "digest_mismatch": {
+      "exit_code": 2,
+      "expected": "REFUSED:ARTIFACT_DIGEST_MISMATCH:E-POWL",
+      "killed": true,
+      "observed_standing": "REFUSED",
+      "refusals": [
+        "REFUSED:ARTIFACT_DIGEST_MISMATCH:E-POWL"
+      ]
+    },
+    "missing_producer": {
+      "exit_code": 2,
+      "expected": "BLOCKED:MISSING_DIMENSION:BRCE",
+      "killed": true,
+      "observed_standing": "BLOCKED",
+      "refusals": [
+        "BLOCKED:MISSING_DIMENSION:BRCE"
+      ]
+    },
+    "sha_drift": {
+      "exit_code": 2,
+      "expected": "REFUSED:SUBJECT_IDENTITY_SPLIT:seanchatmangpt/gymact",
+      "killed": true,
+      "observed_standing": "REFUSED",
+      "refusals": [
+        "BLOCKED:MISSING_DIMENSION:OCEL2",
+        "REFUSED:SUBJECT_IDENTITY_SPLIT:seanchatmangpt/gymact:expected=281009dfd8ef435f0027009fc1a88fd86688f8b9:observed=281009dfd8ef435f0027009fc1a88fd86688f8b0"
+      ]
+    }
+  }
+}
