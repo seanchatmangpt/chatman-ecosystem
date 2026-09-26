@@ -4,6 +4,7 @@
 
 | Capability | Class | Authority | Broker | Receipt | Standing | Interfaces |
 |---|---|---|---|---|---|---|
+| `capability:admit-novelty-residual` | `SELECT` | `classify` | false | true | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:admit-public-custom-ontology` | `SELECT` | `classify` | false | true | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:advance-review-readiness` | `DO` | `modify_external_object` | true | true | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:audit-vacuity` | `OBSERVE` | `observe` | false | false | `CANDIDATE` | cli, api, mcp, a2a |
@@ -13,6 +14,7 @@
 | `capability:consolidate-wip-train` | `CONSTRUCT` | `persist_control_plane` | false | true | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:detect-base-drift` | `OBSERVE` | `observe` | false | false | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:detect-external-paradigm-delta` | `OBSERVE` | `observe` | false | true | `CANDIDATE` | cli, api, mcp, a2a |
+| `capability:diff-semantic-procedural-graph` | `OBSERVE` | `observe` | false | false | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:enforce-authority-ceiling` | `SELECT` | `classify` | false | false | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:extract-external-paradigm-units` | `OBSERVE` | `observe` | false | true | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:inventory-branch-pr-graph` | `OBSERVE` | `observe` | false | false | `CANDIDATE` | cli, api, mcp, a2a |
@@ -28,12 +30,15 @@
 | `capability:reconstitute-with-ggen-legacy` | `CONSTRUCT` | `persist_control_plane` | false | true | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:replay-manufacture` | `OBSERVE` | `observe` | false | false | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:retire-merged-equivalent-branch` | `DO` | `delete` | true | true | `CANDIDATE` | cli, api, mcp, a2a |
+| `capability:route-required-semantics-to-prior-art` | `SELECT` | `classify` | false | true | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:type-blocker-standing` | `SELECT` | `classify` | false | false | `CANDIDATE` | cli, api, mcp, a2a |
+| `capability:validate-semantic-procedural-graph` | `SELECT` | `classify` | false | true | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:verify-source-correspondence` | `OBSERVE` | `observe` | false | false | `CANDIDATE` | cli, api, mcp, a2a |
 | `capability:write-pr-receipt` | `CONSTRUCT` | `draft` | false | false | `CANDIDATE` | cli, api, mcp, a2a |
 
 ## Dependency graph
 
+- `capability:admit-novelty-residual` ← `capability:route-required-semantics-to-prior-art`
 - `capability:admit-public-custom-ontology` ← `capability:verify-source-correspondence`
 - `capability:advance-review-readiness` ← `capability:write-pr-receipt`, `capability:enforce-authority-ceiling`
 - `capability:audit-vacuity` ← `capability:observe-exact-head-workflows`
@@ -43,6 +48,7 @@
 - `capability:consolidate-wip-train` ← `capability:classify-branch-standing`, `capability:recompose-current-base`
 - `capability:detect-base-drift` ← `capability:observe-exact-github-subject`
 - `capability:detect-external-paradigm-delta` ← `capability:observe-external-paradigm-subject`
+- `capability:diff-semantic-procedural-graph` ← `capability:validate-semantic-procedural-graph`
 - `capability:enforce-authority-ceiling` ← `capability:project-interface-surfaces`
 - `capability:extract-external-paradigm-units` ← `capability:observe-external-paradigm-subject`
 - `capability:inventory-branch-pr-graph` ← `capability:observe-exact-github-subject`
@@ -58,6 +64,8 @@
 - `capability:reconstitute-with-ggen-legacy` ← `capability:manufacture-deterministic-projection`, `capability:replay-manufacture`
 - `capability:replay-manufacture` ← `capability:manufacture-deterministic-projection`
 - `capability:retire-merged-equivalent-branch` ← `capability:classify-branch-standing`
+- `capability:route-required-semantics-to-prior-art` ← `capability:classify-external-paradigm`
 - `capability:type-blocker-standing` ← `capability:localize-ci-failure`
+- `capability:validate-semantic-procedural-graph` ← `capability:route-required-semantics-to-prior-art`, `capability:enforce-authority-ceiling`
 - `capability:verify-source-correspondence` ← `capability:observe-exact-github-subject`
 - `capability:write-pr-receipt` ← `capability:observe-exact-head-workflows`, `capability:enforce-authority-ceiling`

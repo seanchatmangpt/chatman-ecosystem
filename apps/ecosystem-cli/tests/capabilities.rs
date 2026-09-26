@@ -2,7 +2,7 @@ use serde_json::Value;
 use std::path::PathBuf;
 use std::process::Command;
 
-const CAPABILITY_COUNT: usize = 44;
+const CAPABILITY_COUNT: usize = 48;
 
 fn root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..")

@@ -461,3 +461,70 @@ interfaces = ["cli", "api", "mcp", "a2a"]
 source_repositories = ["chatman-ecosystem"]
 refusals = ["REFUSED:DISCOVERED_SUBJECT", "BLOCKED:TRANSPORT"]
 
+[[capability]]
+id = "capability:route-required-semantics-to-prior-art"
+title = "Route required semantics to qualified prior art"
+class = "SELECT"
+owner = "repository:chatman-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["required semantics", "prior-art catalog", "same-subject boundary and conditions"]
+outputs = ["REUSE", "COMPOSE", "EXTEND", "NOVEL_GAP candidate", "prior-art search receipt"]
+depends_on = ["capability:classify-external-paradigm"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem"]
+refusals = ["REFUSED:PRIOR_ART_SEARCH_MISSING", "REFUSED:UNKNOWN_PRIOR_ART", "REFUSED:PREMATURE_NOVELTY"]
+
+[[capability]]
+id = "capability:admit-novelty-residual"
+title = "Admit only the irreducible novelty residual"
+class = "SELECT"
+owner = "repository:chatman-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["required semantics", "discharged prior-art candidates", "candidate failure reasons", "explicit falsifier"]
+outputs = ["NOVEL_GAP or typed refusal", "irreducible residual"]
+depends_on = ["capability:route-required-semantics-to-prior-art"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem"]
+refusals = ["REFUSED:NOVELTY_WITHOUT_PRIOR_ART_FAILURES", "REFUSED:NOVELTY_SEARCH_NOT_DISCHARGED", "REFUSED:FALSIFIER_MISSING"]
+
+[[capability]]
+id = "capability:validate-semantic-procedural-graph"
+title = "Validate a Semantic Procedural Graph without granting authority"
+class = "SELECT"
+owner = "repository:chatman-ecosystem"
+required_authority = "classify"
+broker_required = false
+receipt_required = true
+reversible = true
+standing = "CANDIDATE"
+inputs = ["SPG candidate", "prior-art catalog", "projection bindings"]
+outputs = ["ADMITTED_STRUCTURE or typed refusal", "projection preservation obligations"]
+depends_on = ["capability:route-required-semantics-to-prior-art", "capability:enforce-authority-ceiling"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem"]
+refusals = ["REFUSED:SPG_SCHEMA", "REFUSED:CONSEQUENCE_WITHOUT_AUTHORITY", "REFUSED:CONSEQUENCE_WITHOUT_RECEIPT", "REFUSED:SPG_SELF_STANDING"]
+
+[[capability]]
+id = "capability:diff-semantic-procedural-graph"
+title = "Compute semantic procedure graph delta"
+class = "OBSERVE"
+owner = "repository:chatman-ecosystem"
+required_authority = "observe"
+broker_required = false
+receipt_required = false
+reversible = true
+standing = "CANDIDATE"
+inputs = ["old SPG exact subject", "new SPG exact subject"]
+outputs = ["node delta", "edge delta", "guard delta", "authority delta", "evidence delta", "consequence delta"]
+depends_on = ["capability:validate-semantic-procedural-graph"]
+interfaces = ["cli", "api", "mcp", "a2a"]
+source_repositories = ["chatman-ecosystem"]
+refusals = ["REFUSED:SPG_IDENTITY_MISSING", "REFUSED:SPG_VERSION_MISSING"]

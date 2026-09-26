@@ -1,0 +1,116 @@
+schema = "chatman.prior-art-catalog.v1"
+version = "26.9.25"
+subject = "PUBLIC_FORMAL_MACHINERY"
+standing = "CANDIDATE_REFERENCE"
+
+[[entry]]
+id = "prior:rdf"
+name = "RDF"
+kind = "standard"
+retrieval_uri = "https://www.w3.org/TR/rdf11-concepts/"
+semantics = ["graph-data", "identity", "typed-relations"]
+exact_version_required_before_projection = true
+
+[[entry]]
+id = "prior:owl2"
+name = "OWL 2"
+kind = "standard"
+retrieval_uri = "https://www.w3.org/TR/owl2-overview/"
+semantics = ["ontology", "class-axioms", "property-axioms", "logical-consistency"]
+exact_version_required_before_projection = true
+
+[[entry]]
+id = "prior:shacl"
+name = "SHACL"
+kind = "standard"
+retrieval_uri = "https://www.w3.org/TR/shacl/"
+semantics = ["graph-constraints", "shape-validation", "admission"]
+exact_version_required_before_projection = true
+
+[[entry]]
+id = "prior:prov-o"
+name = "PROV-O"
+kind = "standard"
+retrieval_uri = "https://www.w3.org/TR/prov-o/"
+semantics = ["provenance", "derivation", "activity", "entity", "agent"]
+exact_version_required_before_projection = true
+
+[[entry]]
+id = "prior:p-plan"
+name = "P-Plan"
+kind = "public-ontology"
+retrieval_uri = "https://purl.org/net/p-plan"
+semantics = ["plan", "step", "variable", "execution-correspondence"]
+exact_version_required_before_projection = true
+
+[[entry]]
+id = "prior:pddl"
+name = "PDDL"
+kind = "planning-formalism"
+retrieval_uri = "https://planning.wiki/ref/pddl"
+semantics = ["classical-planning", "actions", "preconditions", "effects"]
+exact_version_required_before_projection = true
+
+[[entry]]
+id = "prior:hddl"
+name = "HDDL"
+kind = "planning-formalism"
+retrieval_uri = "https://www.hddl.info/"
+semantics = ["hierarchical-planning", "htn", "task-decomposition", "methods"]
+exact_version_required_before_projection = true
+
+[[entry]]
+id = "prior:fond"
+name = "FOND"
+kind = "planning-formalism"
+retrieval_uri = "https://planning.wiki/ref/planners/fond"
+semantics = ["nondeterministic-planning", "strong-policy", "strong-cyclic-policy"]
+exact_version_required_before_projection = true
+
+[[entry]]
+id = "prior:tla-plus"
+name = "TLA+"
+kind = "formal-method"
+retrieval_uri = "https://lamport.azurewebsites.net/tla/tla.html"
+semantics = ["transition-system", "safety", "liveness", "concurrency", "fairness"]
+exact_version_required_before_projection = true
+
+[[entry]]
+id = "prior:ocel2"
+name = "OCEL 2.0"
+kind = "process-standard"
+retrieval_uri = "https://www.ocel-standard.org/2.0/"
+semantics = ["object-centric-events", "execution-observation", "process-mining"]
+exact_version_required_before_projection = true
+
+[[entry]]
+id = "prior:datalog"
+name = "Datalog / logic programming"
+kind = "formalism-family"
+retrieval_uri = "https://www.cs.ox.ac.uk/people/michael.benedikt/teaching/datalog-notes.pdf"
+semantics = ["rules", "fixpoint", "logical-query"]
+exact_version_required_before_projection = false
+
+[[entry]]
+id = "prior:smt"
+name = "SAT / SMT / CP"
+kind = "solver-family"
+retrieval_uri = "https://smt-lib.org/"
+semantics = ["constraints", "satisfiability", "theory-reasoning", "constraint-programming"]
+exact_version_required_before_projection = false
+
+[[entry]]
+id = "prior:lean4"
+name = "Lean 4"
+kind = "proof-assistant"
+retrieval_uri = "https://lean-lang.org/"
+semantics = ["proof", "kernel-admission", "dependent-types"]
+exact_version_required_before_projection = true
+
+[[entry]]
+id = "prior:or"
+name = "Operations Research"
+kind = "formalism-family"
+retrieval_uri = "https://www.informs.org/"
+semantics = ["optimization", "scheduling", "allocation", "decision-analysis"]
+exact_version_required_before_projection = false
