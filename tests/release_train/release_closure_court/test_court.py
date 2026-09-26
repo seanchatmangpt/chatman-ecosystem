@@ -10,7 +10,13 @@ from contextlib import redirect_stdout
 from pathlib import Path
 
 from scripts.release_train.release_closure_court.__main__ import main
-from scripts.release_train.release_closure_court.court import BASE_RULES, DURABLE_RULES, RULES, evaluate
+from scripts.release_train.release_closure_court.court import (
+    BASE_RULES,
+    DURABLE_RULES,
+    LINEAGE_RULES,
+    RULES,
+    evaluate,
+)
 
 ROOT = Path(__file__).resolve().parents[3]
 REAL_CLOSURE = ROOT / "release" / "v26.9.24" / "closure.json"
@@ -51,6 +57,24 @@ def _base() -> dict:
             },
         ],
     }
+
+
+def _pr(n: int, sha: str, state: str, disposition: str, additions: int = 10) -> dict:
+    return {"pr": n, "sha": sha, "state": state, "draft": False, "mergeable": "MERGEABLE",
+            "disposition": disposition, "additions": additions}
+
+
+def _with_lineage() -> dict:
+    c = _base()
+    c["max_canonical_additions"] = 50000
+    c["subjects"][1]["lineage"] = [_pr(7, B, "MERGED", "CANONICAL"), _pr(5, A, "OPEN", "SUPERSEDED")]
+    c["subjects"][1]["lineage"][1]["state"] = "CLOSED_UNMERGED"
+    c["subjects"][1]["depends_on"] = ["SPEC"]
+    return c
+
+
+def _lineage(c: dict) -> list:
+    return c["subjects"][1]["lineage"]
 
 
 def _refusal_prefixes(closure: dict) -> set[str]:
@@ -105,16 +129,41 @@ class ReleaseClosureCourtTests(unittest.TestCase):
                 {**copy.deepcopy(c["subjects"][0]), "subject_id": "SPEC-COPY", "repository": "o/other"}
             ),
             "REFUSED:BLOCKED_WITHOUT_TYPE": lambda c: c["subjects"][1].update(impl_standing="BLOCKED"),
+            "REFUSED:SUCCESSOR_AMBIGUOUS": lambda c: _lineage(c).append(_pr(8, C, "OPEN", "UNRESOLVED")),
+            "REFUSED:CANONICAL_SUBJECT_SPLIT": lambda c: _lineage(c)[0].update(sha=A),
+            "REFUSED:SUPERSEDED_LINEAGE_OPEN": lambda c: _lineage(c).append(_pr(3, C, "OPEN", "ZOMBIE")),
+            "REFUSED:ALIVE_ON_NON_FINAL_HEAD": lambda c: _lineage(c)[0].update(state="OPEN", draft=True),
+            "REFUSED:SCOPE_EXCEEDS_BOUND": lambda c: _lineage(c)[0].update(additions=136153),
+            "REFUSED:DEPENDENCY_NOT_ADMITTED": lambda c: c["subjects"][1]["depends_on"].append("GHOST"),
+            "REFUSED:DEPENDENCY_CYCLE": lambda c: c["subjects"][0].update(depends_on=["IMPL"]),
         }
-        self.assertEqual(set(mutants), set(BASE_RULES))
-        self.assertEqual(set(BASE_RULES) | set(DURABLE_RULES), set(RULES))
+        self.assertEqual(set(mutants), set(BASE_RULES) | set(LINEAGE_RULES))
+        self.assertEqual(set(BASE_RULES) | set(DURABLE_RULES) | set(LINEAGE_RULES), set(RULES))
         for rule, mutate in mutants.items():
             with self.subTest(rule=rule):
-                closure = _base()
+                closure = _with_lineage()
                 mutate(closure)
                 verdict = evaluate(closure)
                 self.assertEqual(verdict.standing, "REFUSED")
                 self.assertIn(rule, _refusal_prefixes(closure))
+
+    def test_lineage_bound_closure_is_alive_and_orders_repairs(self) -> None:
+        v = evaluate(_with_lineage())
+        self.assertEqual(v.standing, "ALIVE", v.refusals)
+        self.assertEqual(v.receipt["repair_order"], [])
+        c = _with_lineage()
+        c["subjects"][0].update(impl_standing="BLOCKED", impl_type="evidence:unharvested")
+        c["subjects"][1].update(impl_standing="BLOCKED", impl_type="DEPENDENCY_FAILURE")
+        self.assertEqual(evaluate(c).receipt["repair_order"], ["SPEC", "IMPL"])
+
+    def test_typed_blocker_on_draft_head_is_terminal_not_refused(self) -> None:
+        c = _with_lineage()
+        _lineage(c)[0].update(state="OPEN", draft=True, mergeable="CONFLICTING")
+        c["subjects"][1].update(impl_standing="BLOCKED", impl_type="lineage:draft-conflicting")
+        self.assertEqual(evaluate(c).standing, "PARTIAL_ALIVE")
+
+    def test_rows_without_lineage_keep_existing_receipt_shape(self) -> None:
+        self.assertNotIn("repair_order", evaluate(_base()).receipt)
 
     def test_cli_exit_codes_follow_standing(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
