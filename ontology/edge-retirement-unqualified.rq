@@ -1,0 +1,9 @@
+PREFIX ce: <https://seanchatmangpt.github.io/chatman-ecosystem/edge-retirement#>
+SELECT ?edge ?reason WHERE {
+ ?edge a ce:RetiredEdge .
+ { FILTER NOT EXISTS { ?edge ce:ownerKind ce:machineOwner } BIND("missing-machine-owner" AS ?reason) }
+ UNION { ?edge ce:ownerKind ?o . FILTER(?o IN (ce:humanOwner, ce:llmOwner)) BIND("recurring-intelligence-remains" AS ?reason) }
+ UNION { ?edge ce:authority ?a . FILTER(?a != "NONE") BIND("authority-widening" AS ?reason) }
+ UNION { FILTER NOT EXISTS { ?edge ce:receipt ?r } BIND("missing-receipt" AS ?reason) }
+ UNION { FILTER NOT EXISTS { ?edge ce:replayDigest ?r } BIND("missing-replay" AS ?reason) }
+}
