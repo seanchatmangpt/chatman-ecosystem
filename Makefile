@@ -8,10 +8,10 @@ test:
 	python3 -m unittest discover -s tests -p 'test_*.py' -v
 
 survey:
-	python3 scripts/survey_portfolio.py --output-dir .artifacts/portfolio-survey --fail-on-blocking
+	python3 scripts/survey_portfolio.py --release v26.9.1 --output-dir .artifacts/portfolio-survey --fail-on-blocking
 
 survey-check:
-	python3 scripts/survey_portfolio.py --output-dir .artifacts/portfolio-survey --fail-on-blocking --require-policy-current
+	python3 scripts/survey_portfolio.py --release v26.9.1 --output-dir .artifacts/portfolio-survey --fail-on-blocking --require-policy-current
 
 crown:
 	python3 scripts/verify_release.py --check-refs --require-alive
@@ -20,7 +20,7 @@ audit-stubs:
 	python3 scripts/audit_stubs_wip.py --write
 
 west-check:
-	python3 scripts/verify_west_workspace.py --json
+	python3 scripts/verify_west_workspace.py --json --release v26.9.1
 
 west-plan:
 	west dfcm-plan --all --json

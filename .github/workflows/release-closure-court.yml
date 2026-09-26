@@ -6,6 +6,7 @@ on:
       - 'scripts/release_train/release_closure_court/**'
       - 'scripts/release_train/cross_product_court/**'
       - 'tests/release_train/release_closure_court/**'
+      - 'benchmarks/release-closure-court/**'
       - 'release/v26.9.24/**'
       - 'docs/jira/v26.9.24/xprod-cases/**'
       - '.github/workflows/release-closure-court.yml'
