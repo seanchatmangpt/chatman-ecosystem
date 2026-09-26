@@ -34,6 +34,8 @@ on:
       - 'scripts/observe_scorecard.py'
       - 'scripts/release_train/autonomic_crown/**'
       - 'scripts/observe_governance.py'
+      - 'receipts/root-crown/**'
+      - 'benchmarks/root_crown/**'
       - '.github/workflows/root-crown.yml'
   pull_request:
     paths:
@@ -41,6 +43,7 @@ on:
       - 'scripts/release_train/root_crown/**'
       - 'scripts/observe_release_heads.py'
       - 'tests/release_train/root_crown/**'
+      - 'tests/release_train/root_crown_bench/**'
       - 'scripts/durable_locator/**'
       - 'tests/durable_locator/**'
       - 'tests/test_observe_release_heads.py'
@@ -51,6 +54,8 @@ on:
       - 'scripts/release_train/autonomic_crown/**'
       - 'tests/release_train/autonomic_crown/**'
       - 'scripts/observe_governance.py'
+      - 'receipts/root-crown/**'
+      - 'benchmarks/root_crown/**'
       - '.github/workflows/root-crown.yml'
 
 permissions:
@@ -161,13 +166,23 @@ jobs:
           python3 -m unittest discover -s tests/release_train/root_crown_attestation -p 'test_*.py' -v
           python3 -m unittest discover -s tests -p 'test_observe_attestation.py' -v
 
+      - name: Term U benchmark (--check; median within 5x of the committed receipt)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tests/release_train/root_crown_bench -p 'test_*.py' -v
+          python3 benchmarks/root_crown/bench_term_u.py --check --iterations 10
+
       - name: Mutation harness (--check-report; survivors must be 0)
         env:
           PYTHONPATH: .
           PYTHONDONTWRITEBYTECODE: '1'
         # In-process source + data mutants over a temp copy; exit 0 all killed, 1 survivor,
-        # 2 ANCHOR_DRIFT / BASELINE_RED / MUTATION_REPORT_DRIFT. The committed report
-        # (release/v26.9.25/hardening/inputs/mutation-report.json) must recompute byte-identically.
+        # 2 ANCHOR_DRIFT / BASELINE_RED / MUTATION_REPORT_DRIFT. The committed live report
+        # (receipts/root-crown/mutation-report.json) must recompute byte-identically; the
+        # tag-time report under release/v26.9.25 is immutable history and is never rewritten.
         run: python3 -m scripts.release_train.root_crown.mutate --check-report
 
       - name: Durable evidence locators (CE23-9; read-only git cat-file on this checkout)
