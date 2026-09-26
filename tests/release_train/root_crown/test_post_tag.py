@@ -254,7 +254,123 @@ class PostTagTest(unittest.TestCase):
 
     def test_post_tag_blockers_are_all_emitted_somewhere(self):
         emitted = {"TAG_UNRECORDED", "REPLAY_DIVERGED", "SUBJECT_ABSENT"}  # test_cli, test_replay, above
+        emitted.add(code_of(self.m_current_head_unattested()["current"]["blockers"][0]))
         self.assertEqual(emitted, set(POST_TAG_BLOCKERS))
+
+    # --- current conformance: the observed root head must be the attested head ---------------
+    def m_current_head_unattested(self):
+        obs = json.loads(json.dumps(self.obs))
+        obs["repos"]["seanchatmangpt/chatman-ecosystem"]["head_sha"] = "b" * 40
+        return self.attest(obs=obs).receipt
+
+    def test_current_head_unattested_is_a_typed_current_blocker(self):
+        receipt = self.m_current_head_unattested()
+        current = receipt["current"]
+        self.assertFalse(current["drift"]["root_observed_head_is_attested"])
+        self.assertEqual([code_of(b) for b in current["blockers"]], ["CURRENT_HEAD_UNATTESTED"])
+        self.assertIn(f"observed head {'b' * 40} is not the attested head {HEAD}", current["blockers"][0])
+        self.assertEqual(current["standing"], "BLOCKED")
+        typed = {b["code"]: b for b in receipt["blockers"]}["CURRENT_HEAD_UNATTESTED"]
+        self.assertEqual((typed["failure_class"], typed["broken_term"]), ("SUBJECT_FAILURE", "R_missing_identity"))
+        self.assertIn("POST_TAG:CURRENT_HEAD_UNATTESTED", {r["id"] for r in receipt["remaining"]})
+        self.assertEqual(receipt["refusals"], [], "an unattested head is never a refusal")
+        self.assertTrue(crown.verify_receipt(receipt))
+
+    def test_current_head_unattested_never_touches_history(self):
+        attested = json.loads(json.dumps(self.obs))
+        attested["repos"]["seanchatmangpt/chatman-ecosystem"]["head_sha"] = HEAD
+        clean = self.attest(obs=attested).receipt
+        self.assertTrue(clean["current"]["drift"]["root_observed_head_is_attested"])
+        self.assertEqual(clean["current"]["blockers"], [])
+        self.assertNotIn("CURRENT_HEAD_UNATTESTED", {b["code"] for b in clean["blockers"]})
+        split = self.m_current_head_unattested()
+        self.assertEqual(split["historical"], clean["historical"])
+
+    def test_unattested_head_blocks_an_otherwise_alive_current_section(self):
+        """With every evaluator a real PASS (a simple in-tree evaluator, not a patch), the
+        current section is ALIVE exactly when the observed root head is the attested head."""
+        registry = {k: (lambda req, ctx: evidence.in_tree_pass(req, ctx, "forced PASS", "test")) for k in evidence.EVALUATORS}
+        record = self.record()
+        tags = [local_tag()]
+
+        def current(observed):
+            obs = json.loads(json.dumps(self.obs))
+            obs["repos"]["seanchatmangpt/chatman-ecosystem"]["head_sha"] = observed
+            return posttag.current_conformance(
+                self.tree.release_dir, obs, None, HEAD, record, tags,
+                root=self.tree.root, evaluators=registry, hardening_dir=self.hardening,
+            )  # fmt: skip
+
+        attested = current(HEAD)
+        self.assertEqual((attested["standing"], attested["refusals"], attested["blockers"]), ("ALIVE", [], []))
+        split = current("b" * 40)
+        self.assertEqual(split["standing"], "BLOCKED")
+        self.assertEqual([code_of(b) for b in split["blockers"]], ["CURRENT_HEAD_UNATTESTED"])
+        self.assertEqual(split["refusals"], [])
+
+    def test_unobserved_root_head_is_not_an_unattested_head(self):
+        obs = json.loads(json.dumps(self.obs))
+        obs["repos"]["seanchatmangpt/chatman-ecosystem"].pop("head_sha", None)
+        current = self.attest(obs=obs).receipt["current"]
+        self.assertIsNone(current["drift"]["root_observed_head_is_attested"])
+        self.assertNotIn("CURRENT_HEAD_UNATTESTED", {code_of(b) for b in current["blockers"]})
+
+    # --- verify_tag_subject: each recompute clause refuses on its own --------------------------
+    def tampered_record_codes(self, section, mutate_fn):
+        record = json.loads(json.dumps(self.record()))
+        mutate_fn(record[section])
+        refusals, _ = posttag.verify_tag_subject(record, self.hardening, [local_tag()])
+        return refusals
+
+    def test_each_recomputed_section_refuses_independently(self):
+        table = {
+            "tag": ("TAG_MUTATED", lambda v: v.update(tagger="forged <f@example.invalid> 0 +0000")),
+            "subject": ("TAG_SUBJECT_SPLIT", lambda v: v.update(tree_sha="d" * 40)),
+            "payload": ("TAG_SUBJECT_SPLIT", lambda v: v.update(tree_sha="d" * 40)),
+            "tag_receipt": ("TAG_RECEIPT_SPLIT", lambda v: v.update(observations_digest="sha256:" + "0" * 64)),
+            "raw_objects": ("TAG_OBJECT_DIGEST_MISMATCH", lambda v: v.update({"f" * 40: "inputs/objects/forged.raw"})),
+        }
+        self.assertEqual(posttag.verify_tag_subject(self.record(), self.hardening, [local_tag()])[0], [])
+        for section, (code, fn) in table.items():
+            with self.subTest(section=section):
+                self.assertEqual(
+                    self.tampered_record_codes(section, fn),
+                    [f"REFUSED:{code}:TAG-SUBJECT.json {section} does not recompute from raw objects"],
+                )
+
+    def rewrite_tag_receipt(self, **fields):
+        record = self.record()
+        path = self.hardening / record["tag_receipt"]["path"]
+        receipt = json.loads(path.read_text())
+        receipt.update(fields)
+        path.write_text(json.dumps(receipt))
+        refusals, _ = posttag.verify_tag_subject(record, self.hardening, [local_tag()])
+        return refusals
+
+    def test_tag_receipt_self_digest_must_recompute(self):
+        refusals = self.rewrite_tag_receipt(evaluated_at="2099-01-01T00:00:00Z")
+        self.assertIn("does not recompute to the tag message digest", " ".join(refusals))
+
+    def test_tag_receipt_must_name_the_tag_target_alive(self):
+        for field, value in (("crown_sha", "d" * 40), ("standing", "BLOCKED")):
+            with self.subTest(field=field):
+                self.tearDown()
+                self.setUp()
+                from scripts.release_train.root_crown.crown import receipt_digest_of
+
+                record = self.record()
+                path = self.hardening / record["tag_receipt"]["path"]
+                receipt = json.loads(path.read_text())
+                receipt[field] = value
+                receipt["receipt_digest"] = record["tag"]["message_receipt_digest"]  # keep the lookup key
+                path.write_text(json.dumps(receipt))
+                refusals, _ = posttag.verify_tag_subject(record, self.hardening, [local_tag()])
+                want = f"crown_sha={value}" if field == "crown_sha" else f"standing={value}"
+                self.assertTrue(
+                    any(r.startswith("REFUSED:TAG_RECEIPT_SPLIT:tag receipt crown_sha=") and want in r for r in refusals),
+                    refusals,
+                )
+                self.assertNotEqual(receipt_digest_of(receipt), receipt["receipt_digest"])
 
     def test_payload_mutation_never_refuses_history(self):
         self.m_payload_mutated()

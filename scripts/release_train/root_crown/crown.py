@@ -348,7 +348,14 @@ def attest(
     refusals = sorted(
         set(current["refusals"] + subject_refusals + chain_refusals + (historical["refusals"] if historical else []))
     )
-    blockers = sorted(set(subject_blockers + chain_blockers + (historical["blockers"] if historical else [])))
+    blockers = sorted(
+        set(
+            subject_blockers
+            + chain_blockers
+            + list(current.get("blockers", []))
+            + (historical["blockers"] if historical else [])
+        )
+    )
     sections = [current["standing"], "BLOCKED" if blockers else "ALIVE", "REFUSED" if refusals else "ALIVE"]
     if historical is not None:
         sections.append(historical["standing"])
@@ -386,6 +393,7 @@ def attest(
         "current": {
             "standing": current["standing"],
             "refusals": current["refusals"],
+            "blockers": list(current.get("blockers", [])),
             "drift": current["drift"],
             "core_receipt_digest": core["receipt_digest"],
             "core": core,

@@ -7,9 +7,9 @@
     "failures": 0,
     "ok": true,
     "skipped": 4,
-    "tests_run": 208
+    "tests_run": 224
   },
-  "killed": 109,
+  "killed": 124,
   "mutants": {
     "acceptance_drift_off": {
       "detail": "killed by 2 test(s): test_policy.PolicyRefusalTest.test_acceptance_drift,test_policy.PolicyRefusalTest.test_every_terminality_code_is_typed_and_emitted",
@@ -146,7 +146,7 @@
       "rule": "EVIDENCE_NOT_DURABLE"
     },
     "binding_post_tag_deltas_ignored": {
-      "detail": "killed by 2 test(s): test_post_tag.PostTagTest.test_post_tag_head_is_attested_not_refused,test_post_tag.PostTagTest.test_subject_absent_is_typed_blocked",
+      "detail": "killed by 3 test(s): test_post_tag.PostTagTest.test_current_head_unattested_is_a_typed_current_blocker,test_post_tag.PostTagTest.test_post_tag_head_is_attested_not_refused,test_post_tag.PostTagTest.test_subject_absent_is_typed_blocked",
       "file": "scripts/release_train/root_crown/posttag.py",
       "killed": true,
       "killers": [
@@ -332,6 +332,36 @@
       ],
       "kind": "source",
       "rule": "CROWN_SHA_SPLIT"
+    },
+    "current_blockers_dropped_by_attest": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_current_head_unattested_is_a_typed_current_blocker",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "CURRENT_HEAD_UNATTESTED(attest receipt blockers)"
+    },
+    "current_head_unattested_not_blocking": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_unattested_head_blocks_an_otherwise_alive_current_section",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "CURRENT_HEAD_UNATTESTED(current standing)"
+    },
+    "current_head_unattested_off": {
+      "detail": "killed by 3 test(s): test_post_tag.PostTagTest.test_current_head_unattested_is_a_typed_current_blocker,test_post_tag.PostTagTest.test_post_tag_blockers_are_all_emitted_somewhere,test_post_tag.PostTagTest.test_unattested_head_blocks_an_otherwise_alive_current_section",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "CURRENT_HEAD_UNATTESTED"
     },
     "dm_acceptance_drift": {
       "detail": "court emitted 'REFUSED:ACCEPTANCE_DRIFT:AC-15'; control clean",
@@ -598,6 +628,26 @@
       "kind": "source",
       "rule": "git tree mode 100755"
     },
+    "harness_killer_preflight_off": {
+      "detail": "killed by 2 test(s): test_mutate.CommittedReportTest.test_every_committed_anchor_matches_exactly_once,test_mutate.HarnessTest.test_killer_loading_zero_tests_is_refused",
+      "file": "scripts/release_train/root_crown/mutate.py",
+      "killed": true,
+      "killers": [
+        "test_mutate"
+      ],
+      "kind": "source",
+      "rule": "HARNESS_LOAD_ERROR(pristine killer preflight)"
+    },
+    "harness_load_error_counted_as_kill": {
+      "detail": "killed by 2 test(s): test_mutate.CommittedReportTest.test_every_committed_anchor_matches_exactly_once,test_mutate.HarnessTest.test_mutant_whose_killer_import_raises_importerror_is_refused_not_killed",
+      "file": "scripts/release_train/root_crown/mutate.py",
+      "killed": true,
+      "killers": [
+        "test_mutate"
+      ],
+      "kind": "source",
+      "rule": "HARNESS_LOAD_ERROR(under mutant)"
+    },
     "historical_observation_split_off": {
       "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_one_refusing_mutant_per_post_tag_rule (rule='HISTORICAL_OBSERVATION_SPLIT')",
       "file": "scripts/release_train/root_crown/posttag.py",
@@ -669,6 +719,26 @@
       ],
       "kind": "source",
       "rule": "compare_delta keeps previous_filename of renames/copies"
+    },
+    "own_lines_ignore_evaluator_class": {
+      "detail": "killed by 7 test(s): test_policy.CommittedPolicyTest.test_committed_policy_is_admitted,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_refuse_only_unproven_lineage,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_with_observed_deltas,test_policy.OwnerRuleTest.test_f09_owner_split,test_policy.PolicyRefusalTest.test_committed_copy_is_admitted_and_crown_alive,test_policy.PolicyRefusalTest.test_f09_line_is_bound_through_its_evaluator_class_only",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(evaluator-class line)"
+    },
+    "own_lines_ignore_row_id_token": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_own_lines_cover_every_anchor",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(id-named line)"
     },
     "owner_container_default_off": {
       "detail": "killed by 10 test(s): test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_refuse_only_unproven_lineage,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_with_observed_deltas,test_policy.OwnerRuleTest.test_absent_owner_is_the_container,test_policy.OwnerRuleTest.test_closure_row_owner_split_and_container_default,test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='broken_term'),test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='failure_class')",
@@ -773,7 +843,7 @@
       "rule": "TERMINALITY_POLICY_MISSING(other release)"
     },
     "receipt_policy_refusal_dropped": {
-      "detail": "killed by 11 test(s): test_policy.PolicyRefusalTest.test_absent_anchor_is_ungrounded,test_policy.PolicyRefusalTest.test_acceptance_drift,test_policy.PolicyRefusalTest.test_borrowing_another_requirements_terminal_phrase_is_ungrounded,test_policy.PolicyRefusalTest.test_coverage_gap_duplicate_extra_and_malformed_rows,test_policy.PolicyRefusalTest.test_missing_policy (rid='AC-07'),test_policy.PolicyRefusalTest.test_missing_policy (rid='AC-15')",
+      "detail": "killed by 13 test(s): test_policy.PolicyRefusalTest.test_absent_anchor_is_ungrounded,test_policy.PolicyRefusalTest.test_acceptance_drift,test_policy.PolicyRefusalTest.test_borrowing_another_requirements_terminal_phrase_is_ungrounded,test_policy.PolicyRefusalTest.test_coverage_gap_duplicate_extra_and_malformed_rows,test_policy.PolicyRefusalTest.test_missing_policy (rid='AC-07'),test_policy.PolicyRefusalTest.test_missing_policy (rid='AC-15')",
       "file": "scripts/release_train/root_crown/evidence.py",
       "killed": true,
       "killers": [
@@ -783,7 +853,7 @@
       "rule": "TERMINALITY_POLICY_MISSING / ACCEPTANCE_DRIFT (receipt_artifact)"
     },
     "record_section_unchecked": {
-      "detail": "killed by 3 test(s): test_typed_terminal.RecordBindingTest.test_edited_record_sections_are_refused (code='TAG_MUTATED'),test_typed_terminal.RecordBindingTest.test_edited_record_sections_are_refused (code='TAG_RECEIPT_SPLIT'),test_typed_terminal.RecordBindingTest.test_edited_record_sections_are_refused (code='TAG_SUBJECT_SPLIT')",
+      "detail": "killed by 8 test(s): test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='payload'),test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='raw_objects'),test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='subject'),test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='tag'),test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='tag_receipt'),test_typed_terminal.RecordBindingTest.test_edited_record_sections_are_refused (code='TAG_MUTATED')",
       "file": "scripts/release_train/root_crown/posttag.py",
       "killed": true,
       "killers": [
@@ -814,7 +884,7 @@
       "rule": "POLICY_RELAXATION_UNGROUNDED(no terminality marker)"
     },
     "relaxation_own_line_unchecked": {
-      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_borrowing_another_requirements_terminal_phrase_is_ungrounded",
+      "detail": "killed by 4 test(s): test_policy.PolicyRefusalTest.test_borrowing_another_requirements_terminal_phrase_is_ungrounded,test_policy.PolicyRefusalTest.test_f09_line_is_bound_through_its_evaluator_class_only,test_policy.PolicyRefusalTest.test_section38_relaxation_not_naming_the_row_is_ungrounded,test_policy.PolicyRefusalTest.test_section55_relaxation_not_naming_the_row_is_ungrounded",
       "file": "scripts/release_train/root_crown/policy.py",
       "killed": true,
       "killers": [
@@ -956,6 +1026,36 @@
       "kind": "source",
       "rule": "TAG_OBJECT_DIGEST_MISMATCH"
     },
+    "tag_receipt_crown_sha_unchecked": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_tag_receipt_must_name_the_tag_target_alive (field='crown_sha')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_RECEIPT_SPLIT(receipt crown_sha)"
+    },
+    "tag_receipt_self_digest_unchecked": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_tag_receipt_self_digest_must_recompute",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_RECEIPT_SPLIT(receipt self digest)"
+    },
+    "tag_receipt_standing_unchecked": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_tag_receipt_must_name_the_tag_target_alive (field='standing')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_RECEIPT_SPLIT(receipt standing)"
+    },
     "tag_split_off": {
       "detail": "killed by 3 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='TAG_SHA_SPLIT'),test_falsifiers.FalsifierTableTest.test_each_falsifier_passes_alive_and_refuses_its_mutant (falsifier='F-14'),test_post_tag.PostTagTest.test_pre_tag_semantics_refuse_every_post_tag_commit",
       "file": "scripts/release_train/root_crown/evidence.py",
@@ -967,6 +1067,56 @@
       ],
       "kind": "source",
       "rule": "TAG_SHA_SPLIT"
+    },
+    "tag_subject_recompute_drops_payload": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='payload')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_SUBJECT_SPLIT(record.payload vs raw objects)"
+    },
+    "tag_subject_recompute_drops_raw_objects": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='raw_objects')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_OBJECT_DIGEST_MISMATCH(record.raw_objects vs raw objects)"
+    },
+    "tag_subject_recompute_drops_subject": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='subject')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_SUBJECT_SPLIT(record.subject vs raw objects)"
+    },
+    "tag_subject_recompute_drops_tag": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='tag')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_MUTATED(record.tag vs raw objects)"
+    },
+    "tag_subject_recompute_drops_tag_receipt": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='tag_receipt')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_RECEIPT_SPLIT(record.tag_receipt vs raw objects)"
     },
     "tag_subject_split_off": {
       "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_verify_tag_subject_refuses_each_observation_breach_independently",
@@ -1047,14 +1197,15 @@
     "scripts/release_train/release_closure_court/court.py": "sha256:b8df6b4ba774f1dd2824d9be4ebc0afdc598b6de7312ada7405f898e075eb9e0",
     "scripts/release_train/root_crown/binding.py": "sha256:51dda4ae530be25f952f9b0603c4e81f293a82f64faabb45bbc05dd08a913b72",
     "scripts/release_train/root_crown/chain.py": "sha256:3039484a9b8f992aa6c5ee72989af86570afe5c1ab4e45f177597e4714009253",
-    "scripts/release_train/root_crown/crown.py": "sha256:8f72a974df9a62f85a7ce2527556ce96194b4ea7cb8b28b042c3c6a7c1d3b3e8",
-    "scripts/release_train/root_crown/evidence.py": "sha256:ce2080191087b639b79b3a4ed69b83ceea40503c053f38b7abd8c63ca585415c",
+    "scripts/release_train/root_crown/crown.py": "sha256:667e8b97307b1d56279229a7815e81fb031c2a6e7ba8fffe19d74f27e1217b81",
+    "scripts/release_train/root_crown/evidence.py": "sha256:e2e1469b87d1e0d5382ab1fb08cd3f46c3bb6f85d11d9b2f046a49e7bba95f48",
     "scripts/release_train/root_crown/gitobj.py": "sha256:191690fafbc380bef695eee9beee8563d123cecc6beab89ac99a2898830979a2",
-    "scripts/release_train/root_crown/model.py": "sha256:d6c72717c405aa73dd741eeedf56bbdbab0dbf98a479ef5f573d2517aa46fb25",
-    "scripts/release_train/root_crown/policy.py": "sha256:f3d0c0d2b60e1fbae321145877f1fb20333e8336c4330926c2937aa7299e0a5d",
-    "scripts/release_train/root_crown/posttag.py": "sha256:7a60f56d4e1d17619a1213c3cb93dcf7ffeb32d09b01067dac13cf8958b942fe",
+    "scripts/release_train/root_crown/model.py": "sha256:9db631d1d74544614739055c308a3997d2602b1f02f0478bebc07a9ba54f4b9f",
+    "scripts/release_train/root_crown/mutate.py": "sha256:fb61da8459e776a14ee57da2884abd6fdf553dd3acbca7a88fe9b716f6e09596",
+    "scripts/release_train/root_crown/policy.py": "sha256:056b1d5c58e85ce26d59b8f4b83c23fe941ec3fa45b07ac6975dfd4e33ec05e2",
+    "scripts/release_train/root_crown/posttag.py": "sha256:35ed4c9eb84e25d281f11166cb8b73439aea52e352ac710266e82819ba72e48f",
     "scripts/release_train/root_crown/replay.py": "sha256:c3610676203a00d48a00a50af3c70f59eaf5d7608a95a7390947bc32332b6a2d"
   },
   "survivors": [],
-  "total": 109
+  "total": 124
 }

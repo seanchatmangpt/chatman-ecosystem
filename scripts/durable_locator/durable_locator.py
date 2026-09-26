@@ -13,8 +13,10 @@ Refused locators (typed REFUSED[<code>], broken_term R_missing_replay, EVIDENCE_
     MALFORMED         everything else
 
 Resolution reads the canonical object database of ``<repos-root>/<repo>`` with
-``git cat-file`` (read-only; never touches a working tree) and falls back to
-``gh api`` for a repository with no local checkout. This module is deliberately
+``git cat-file`` (read-only; never touches a working tree) only when that checkout's
+``origin`` remote names the locator's full ``<owner>/<repo>``; otherwise (no checkout,
+or OWNER_MISMATCH) it falls back to ``gh api`` on the full ``owner/repo``, and without
+network it refuses REFUSED[OWNER_MISMATCH] / REFUSED[REPOSITORY_UNAVAILABLE]. This module is deliberately
 outside ``scripts/release_train`` (not only root_crown) because it spawns
 ``git``/``gh``: release-train.yml's static no-DO boundary greps the whole
 ``scripts/release_train`` tree for ``subprocess.``, and root_crown stays
@@ -111,6 +113,18 @@ def parse(text: str) -> Locator:
     raise Refused("MALFORMED", text)
 
 
+_REMOTE_RX = re.compile(
+    r"^(?:(?:https?|ssh|git)://(?:[^@/\s]+@)?[^/\s]+/|[^@/\s]+@[^:/\s]+:)"
+    r"(?P<owner>[A-Za-z0-9_.-]+)/(?P<repo>[A-Za-z0-9_.-]+?)(?:\.git)?/?$"
+)
+
+
+def remote_slug(url: str) -> str | None:
+    """Normalize an https/ssh/scp-style remote URL to ``owner/repo``; None if unrecognized."""
+    m = _REMOTE_RX.match(url.strip())
+    return f"{m['owner']}/{m['repo']}" if m else None
+
+
 def sha256_hex(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -122,15 +136,47 @@ class Resolver:
         self.repos_root = Path(repos_root)
         self.allow_network = allow_network
 
-    def local_dir(self, repository: str) -> Path | None:
+    def _candidate_dir(self, repository: str) -> Path | None:
         d = self.repos_root / repository.split("/", 1)[1]
         return d if (d / ".git").exists() or (d / "HEAD").is_file() else None
+
+    def origin_slug(self, repo_dir: Path) -> str | None:
+        """``owner/repo`` of the checkout's ``origin`` remote (normalized), or None."""
+        out = self._git(repo_dir, "remote", "get-url", "origin")
+        if out.returncode != 0:
+            return None
+        return remote_slug(out.stdout.decode("utf-8", "replace").strip())
+
+    def owner_mismatch(self, repository: str) -> str | None:
+        """Why the local checkout named like ``repository`` is NOT that repository, else None.
+
+        The directory is keyed by the repo name only, so ``git:attacker/<repo>@...`` would
+        otherwise resolve against the canonical ``<owner>/<repo>`` object database. The
+        checkout's ``origin`` remote must name the full ``owner/repo`` (case-insensitive).
+        """
+        d = self._candidate_dir(repository)
+        if d is None:
+            return None
+        slug = self.origin_slug(d)
+        if slug is None:
+            return f"{repository}: local checkout {d.name} has no recognizable origin remote"
+        if slug.lower() != repository.lower():
+            return f"{repository}: local checkout {d.name} origin is {slug}"
+        return None
+
+    def local_dir(self, repository: str) -> Path | None:
+        """The local checkout for ``repository`` only if its origin remote names ``owner/repo``."""
+        d = self._candidate_dir(repository)
+        if d is None or self.owner_mismatch(repository) is not None:
+            return None
+        return d
 
     def _git(self, repo_dir: Path, *args: str) -> subprocess.CompletedProcess[bytes]:
         return subprocess.run(["git", "-C", str(repo_dir), *args], capture_output=True, check=False)
 
     def blob(self, repository: str, sha: str, path: str) -> bytes:
         d = self.local_dir(repository)
+        mismatch = self.owner_mismatch(repository) if d is None else None
         if d is not None:
             if self._git(d, "cat-file", "-e", f"{sha}^{{commit}}").returncode != 0:
                 raise Refused("SHA_NOT_FOUND", f"{repository}@{sha}")
@@ -141,7 +187,10 @@ class Resolver:
                 raise Refused("NOT_A_BLOB", f"{repository}@{sha}:{path}")
             return out.stdout
         if not self.allow_network:
+            if mismatch is not None:
+                raise Refused("OWNER_MISMATCH", mismatch)
             raise Refused("REPOSITORY_UNAVAILABLE", repository)
+        # Owner mismatch with network: the gh api path addresses the full owner/repo.
         out = subprocess.run(
             ["gh", "api", "-H", "Accept: application/vnd.github.raw", f"repos/{repository}/contents/{path}?ref={sha}"],
             capture_output=True,
@@ -154,6 +203,9 @@ class Resolver:
     def tree_paths(self, repository: str, sha: str, prefix: str) -> list[str]:
         d = self.local_dir(repository)
         if d is None:
+            mismatch = self.owner_mismatch(repository)
+            if mismatch is not None:
+                raise Refused("OWNER_MISMATCH", mismatch)
             raise Refused("REPOSITORY_UNAVAILABLE", repository)
         out = self._git(d, "ls-tree", "-r", "-z", "--name-only", sha, "--", prefix)
         if out.returncode != 0:

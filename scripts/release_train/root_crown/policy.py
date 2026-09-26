@@ -11,8 +11,12 @@ SUPERSEDED/BLOCKED/UNSUPPORTED/REFUSED disposition. A relaxation is lawful only 
 
 * the pinned RFC import hashes to the policy's ``rfc_import.sha256``;
 * ``rfc_phrase`` is a literal substring of the ``rfc_anchor`` section of that import and,
-  for the §48 / §47 anchors, of the requirement's own line there (``AC-02 ...`` /
-  ``3. ...``), so one requirement cannot borrow another's terminality;
+  under EVERY anchor, of a line of that section that names the row: its id (``AC-02 ...``
+  in §48, ``3. ...`` for F-03 in §47, or the id as a token anywhere) or its evaluator
+  class (a crown-predicate term the row's ``evidence_kind`` evaluator is declared to
+  implement, ``EVALUATOR_PREDICATES``; e.g. F-09's ``typed_blocker_allowed`` implements
+  §55 ``cloud_runtime_alive_or_typed_blocker``), so no requirement can borrow another
+  line's terminality (e.g. §55 ``normative_artifacts_terminal`` for AC-07);
 * no other relaxed row cites the same anchor and phrase;
 * the phrase names terminality (``RELAXATION_MARKERS``);
 * the admitted states are all RFC §38 dispositions;
@@ -62,6 +66,12 @@ ROW_FIELDS = (
     "rfc_phrase",
     "acceptance_sha256",
 )
+# Evaluator class -> {anchor: crown-predicate terms it implements}. The declaration lives in
+# the court, not in the policy file, so a relaxed row cannot choose its own grounding line;
+# evidence.typed_blocker_allowed's docstring states the same binding (RFC §55, F-09).
+EVALUATOR_PREDICATES: dict[str, dict[str, tuple[str, ...]]] = {
+    "typed_blocker_allowed": {"§55": ("cloud_runtime_alive_or_typed_blocker",)},
+}
 POLICY_CODES = (
     "TERMINALITY_POLICY_MISSING",
     "POLICY_COVERAGE_GAP",
@@ -141,16 +151,26 @@ def load_policy(release: str, root: Path = POLICY_ROOT) -> Policy:
     )
 
 
-def own_line(rid: str, anchor: str, section: str) -> str | None:
-    """The requirement's own line in §48 (``AC-NN ...``) or §47 (``N. ...``); None for other anchors."""
-    if anchor == "§48" and rid.startswith("AC-"):
-        pattern = rf"^{re.escape(rid)} .*$"
-    elif anchor == "§47" and rid.startswith("F-") and rid[2:].isdigit():
-        pattern = rf"^{int(rid[2:])}\. .*$"
-    else:
-        return None
-    match = re.search(pattern, section, re.MULTILINE)
-    return match.group(0) if match else ""
+def _token(term: str) -> re.Pattern[str]:
+    return re.compile(rf"(?<![A-Za-z0-9_-]){re.escape(term)}(?![A-Za-z0-9_-])")
+
+
+def own_lines(rid: str, anchor: str, section: str, evidence_kind: str | None = None) -> list[str]:
+    """Every line of ``section`` that names the row: its id or its evaluator class.
+
+    Id: ``AC-NN ...`` (§48 numbering), ``N. ...`` for ``F-N`` (§47 numbering), or the id
+    as a token on any line. Evaluator class: a term ``EVALUATOR_PREDICATES`` declares the
+    row's ``evidence_kind`` evaluator implements under this anchor, as a token. Every
+    anchor is covered; an empty list means no line of the section names the row.
+    """
+    patterns = [_token(rid)]
+    if rid.startswith("AC-"):
+        patterns.append(re.compile(rf"^{re.escape(rid)} "))
+    if anchor == "§47" and rid.startswith("F-") and rid[2:].isdigit():
+        patterns.append(re.compile(rf"^{int(rid[2:])}\. "))
+    for term in EVALUATOR_PREDICATES.get(evidence_kind or "", {}).get(anchor, ()):
+        patterns.append(_token(term))
+    return [line for line in section.splitlines() if any(p.search(line) for p in patterns)]
 
 
 def _malformed(row: dict[str, Any]) -> list[str]:
@@ -170,7 +190,12 @@ def _to_row(raw: dict[str, Any]) -> Row:
 
 
 def row_refusals(
-    raw: dict[str, Any], acceptance: str, rfc_text: str, policy: Policy, import_sha256: str | None
+    raw: dict[str, Any],
+    acceptance: str,
+    rfc_text: str,
+    policy: Policy,
+    import_sha256: str | None,
+    evidence_kind: str | None = None,
 ) -> tuple[Row | None, list[tuple[str, str]]]:
     """(row, [(code, detail)]) for one policy row against its requirement and the pinned RFC."""
     rid = str(raw.get("id"))
@@ -204,8 +229,11 @@ def row_refusals(
             ungrounded.append(f"anchor {row.rfc_anchor} absent from the RFC import")
         elif row.rfc_phrase not in section:
             ungrounded.append(f"phrase {row.rfc_phrase!r} not in {row.rfc_anchor}")
-        elif (line := own_line(rid, row.rfc_anchor, section)) is not None and row.rfc_phrase not in line:
-            ungrounded.append(f"phrase {row.rfc_phrase!r} not on {rid}'s own {row.rfc_anchor} line")
+        elif not any(row.rfc_phrase in line for line in own_lines(rid, row.rfc_anchor, section, evidence_kind)):
+            ungrounded.append(
+                f"phrase {row.rfc_phrase!r} not on {rid}'s own {row.rfc_anchor} line"
+                f" (no line names {rid} or evaluator class {evidence_kind})"
+            )
         if not any(marker in row.rfc_phrase for marker in RELAXATION_MARKERS):
             ungrounded.append(f"phrase {row.rfc_phrase!r} names no terminality marker")
     elif row.standing_ceiling != "ALIVE":
@@ -248,7 +276,9 @@ def validate(
         if not raws:
             refusals.append(f"REFUSED:POLICY_COVERAGE_GAP:{req['id']}:no-policy-row")
             continue
-        _, problems = row_refusals(raws[0], str(req.get("acceptance", "")), rfc_text, policy, import_sha256)
+        _, problems = row_refusals(
+            raws[0], str(req.get("acceptance", "")), rfc_text, policy, import_sha256, req.get("evidence_kind")
+        )
         refusals += [f"REFUSED:{code}:{detail}" for code, detail in problems]
     return sorted(set(refusals))
 
@@ -260,6 +290,7 @@ def admit(
     acceptance: str,
     rfc_text: str,
     import_sha256: str | None,
+    evidence_kind: str | None = None,
 ) -> tuple[Row | None, ReqState | None]:
     """(row, None) when the requirement's row is admitted, else (None, typed REFUSED)."""
     if policy is None:
@@ -267,7 +298,7 @@ def admit(
     raws = policy.raw(rid)
     if len(raws) != 1:
         return None, REFUSED("POLICY_COVERAGE_GAP", f"{rid}:{len(raws)} policy rows in {policy.path}")
-    row, problems = row_refusals(raws[0], acceptance, rfc_text, policy, import_sha256)
+    row, problems = row_refusals(raws[0], acceptance, rfc_text, policy, import_sha256, evidence_kind)
     if problems:
         code, detail = problems[0]
         return None, REFUSED(code, detail)

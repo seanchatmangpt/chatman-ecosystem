@@ -90,6 +90,54 @@ class HarnessTest(unittest.TestCase):
         self.assertIn("test_calc.CalcTest.test_add", caught.exception.detail)
         self.assertEqual(caught.exception.as_dict()["failure_class"], "VERIFICATION_FAILURE")
 
+    def test_killer_that_does_not_import_is_a_harness_load_error_not_a_kill(self):
+        ghost = mutate.SourceMutant("add_to_sub", "pkgx/calc.py", "return a + b", "return a - b", ("test_no_such_module",))
+        with self.assertRaises(mutate.HarnessRefusal) as caught:
+            run(synthetic(self.root), ghost)
+        self.assertEqual(caught.exception.code, "HARNESS_LOAD_ERROR")
+        self.assertIn("add_to_sub:unittest.loader._FailedTest.test_no_such_module", caught.exception.detail)
+        self.assertEqual(
+            (caught.exception.as_dict()["failure_class"], caught.exception.as_dict()["broken_term"]),
+            ("VERIFICATION_FAILURE", "admission_vacuous"),
+        )
+
+    def test_killer_module_with_broken_import_is_refused(self):
+        root = synthetic(self.root)
+        (root / "tsuite" / "test_broken.py").write_text("import unittest\nfrom pkgx.absent import nothing\n")
+        broken = mutate.SourceMutant("add_to_sub", "pkgx/calc.py", "return a + b", "return a - b", ("test_broken",))
+        with self.assertRaises(mutate.HarnessRefusal) as caught:
+            run(root, broken)
+        self.assertEqual(caught.exception.code, "HARNESS_LOAD_ERROR")
+        self.assertIn("test_broken", caught.exception.detail)
+        self.assertTrue(caught.exception.detail.startswith("baseline:"), "an import error is never a red-test kill")
+
+    def test_mutant_that_breaks_killer_import_is_refused_not_killed(self):
+        unimportable = mutate.SourceMutant("syntax", "pkgx/calc.py", "return a + b", "return a +", ("test_calc",))
+        with self.assertRaises(mutate.HarnessRefusal) as caught:
+            run(synthetic(self.root), unimportable)
+        self.assertEqual(caught.exception.code, "HARNESS_LOAD_ERROR")
+        self.assertTrue(caught.exception.detail.startswith("syntax:"), caught.exception.detail)
+
+    def test_mutant_whose_killer_import_raises_importerror_is_refused_not_killed(self):
+        """ImportError under a mutant becomes a unittest.loader._FailedTest in result.errors."""
+        breaks = mutate.SourceMutant(
+            "imports_missing", "pkgx/calc.py", "def add(a, b):", "from pkgx.nowhere import x\ndef add(a, b):", ("test_calc",)
+        )
+        with self.assertRaises(mutate.HarnessRefusal) as caught:
+            run(synthetic(self.root), breaks)
+        self.assertEqual(caught.exception.code, "HARNESS_LOAD_ERROR")
+        self.assertEqual(caught.exception.detail, "imports_missing:unittest.loader._FailedTest.test_calc")
+        self.assertEqual((self.root / "pkgx" / "calc.py").read_text(), CALC)
+
+    def test_killer_loading_zero_tests_is_refused(self):
+        root = synthetic(self.root)
+        (root / "tsuite" / "test_empty.py").write_text("import unittest\n")
+        empty = mutate.SourceMutant("add_to_sub", "pkgx/calc.py", "return a + b", "return a - b", ("test_empty",))
+        with self.assertRaises(mutate.HarnessRefusal) as caught:
+            run(root, empty)
+        self.assertEqual(caught.exception.code, "HARNESS_LOAD_ERROR")
+        self.assertIn("0 killer tests loaded", caught.exception.detail)
+
     def emit(self, report, **flags):
         with contextlib.redirect_stdout(io.StringIO()) as out:
             code = mutate.emit(report, self.root, **flags)
