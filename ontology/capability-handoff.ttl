@@ -1,0 +1,24 @@
+@prefix ch: <https://chatman.ai/ns/handoff#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+ch:CapabilityHandoff a sh:NodeShape ;
+  sh:targetClass ch:Handoff ;
+  sh:property [ sh:path ch:producerSubject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ch:consumerSubject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ch:capability ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ch:evidenceDigest ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ch:consequence ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+ch:ALIVE a ch:AdmittedStanding .
+ch:PARTIAL_ALIVE a ch:AdmittedStanding .
+ch:UNKNOWN a ch:NonAdmittedStanding .
+ch:BLOCKED a ch:NonAdmittedStanding .
+
+ch:policy-v1 a ch:HandoffPolicy ;
+  ch:admittedStanding ch:ALIVE, ch:PARTIAL_ALIVE ;
+  ch:requiresExactSubject true ;
+  ch:requiresEvidenceDigest true ;
+  ch:requiresReceiptReplay true ;
+  ch:handoffAuthority "NONE" ;
+  prov:value "qualification only; consequence execution remains outside this court" .
