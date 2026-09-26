@@ -72,6 +72,37 @@ def _swap(value):
     return json.loads(text)
 
 
+def pass_gate(gid: str, row: dict) -> dict:
+    """A PASS gate row in the autonomic court's shape: evidence digest, no code."""
+    return {
+        "id": gid,
+        "state": "PASS",
+        "measured": row.get("threshold"),
+        "threshold": row.get("threshold"),
+        "detail": "fixture",
+        "evidence": {"digest": "sha256:" + hashlib.sha256(f"fixture:{gid}".encode()).hexdigest()},
+        "findings": [],
+    }
+
+
+def coherent_blocked_gate(gid: str, row: dict) -> dict:
+    """A BLOCKED gate row carrying a typed code (the committed row when it is BLOCKED)."""
+    if row.get("state") == "BLOCKED" and row.get("code"):
+        return copy.deepcopy(row)
+    return {
+        "id": gid,
+        "state": "BLOCKED",
+        "measured": "0",
+        "threshold": row.get("threshold"),
+        "detail": "fixture",
+        "evidence": None,
+        "findings": [],
+        "code": "HUMAN_OR_LLM_EDGE",
+        "failure_class": "CAPABILITY_GAP",
+        "broken_term": "mu_on_O",
+    }
+
+
 class UTree:
     """A v26.9.26-shaped release tree plus its policy root and observations."""
 
@@ -125,21 +156,37 @@ class UTree:
         self._base.cleanup()
         self._policy.cleanup()
 
-    def write_receipt(self, **changes) -> dict:
-        """A real autonomic_crown receipt for this line, re-sealed by the real sealer."""
+    def write_receipt(self, blocked=(), **changes) -> dict:
+        """A real autonomic_crown receipt for this line, re-sealed by the real sealer.
+
+        The body is coherent: the gate table is total over U-01..U-18, every gate not in
+        ``blocked`` is PASS with an evidence digest, every gate in ``blocked`` is BLOCKED
+        with the committed receipt's typed code, and ``blocked_gates``/``passed_gates``/
+        ``standings.autonomy``/``exit`` are what the autonomic court derives from that table.
+        ``changes`` then override any field (forgeries re-sealed by the same sealer).
+        """
         body = load(COMMITTED_AUTONOMIC)
         body.pop("receipt_digest")
+        gates = {}
+        for gid, row in body["gates"].items():
+            if gid in blocked:
+                gates[gid] = coherent_blocked_gate(gid, row)
+            else:
+                gates[gid] = pass_gate(gid, row)
+        autonomic_ok = not blocked
         body.update(
             {
                 "release": NEW,
                 "crown_subject": SUBJECT,
                 "standings": {
                     "execution": {"state": "ALIVE", "detail": "fixture"},
-                    "autonomy": "AUTONOMIC",
+                    "autonomy": "AUTONOMIC" if autonomic_ok else "NOT_AUTONOMIC",
                     "authority": {"state": "AUTHORIZED", "detail": "fixture"},
                 },
-                "blocked_gates": [],
-                "exit": 0,
+                "gates": gates,
+                "blocked_gates": sorted(g for g in gates if gates[g]["state"] != "PASS"),
+                "passed_gates": sorted(g for g in gates if gates[g]["state"] == "PASS"),
+                "exit": 0 if autonomic_ok else 3,
             }
         )
         body.update(changes)
@@ -209,7 +256,12 @@ class ReleaseTermsTest(unittest.TestCase):
         self.assertEqual(theorem(release_terms(doc)[0]), "RELEASE = C AND A AND R AND X AND F AND M AND U")
 
     def test_every_new_code_is_typed(self):
-        for code in ("AUTONOMIC_RECEIPT_DIGEST_MISMATCH", "AUTONOMIC_RECEIPT_STALE", "AUTONOMIC_NOT_AUTONOMIC"):
+        for code in (
+            "AUTONOMIC_RECEIPT_DIGEST_MISMATCH",
+            "AUTONOMIC_STANDING_UNDERIVED",
+            "AUTONOMIC_RECEIPT_STALE",
+            "AUTONOMIC_NOT_AUTONOMIC",
+        ):
             self.assertIn(code, FAILURE_CLASS)
 
 
@@ -309,15 +361,7 @@ class TermUCrownTest(unittest.TestCase):
 
     def test_not_autonomic_receipt_is_typed_blocked(self):
         # RFC-0005 §15: the expected first standing (ALIVE / NOT_AUTONOMIC) keeps U open.
-        self.tree.write_receipt(
-            standings={
-                "execution": {"state": "ALIVE", "detail": "fixture"},
-                "autonomy": "NOT_AUTONOMIC",
-                "authority": {"state": "WAITING_EXTERNAL_AUTHORITY", "detail": "fixture"},
-            },
-            blocked_gates=["U-03", "U-15"],
-            exit=3,
-        )
+        self.tree.write_receipt(blocked=("U-03", "U-15"))
         state = self.tree.u_state()
         self.assertEqual((state.state, state.code), ("BLOCKED", "AUTONOMIC_NOT_AUTONOMIC"))
         self.assertEqual((state.failure_class, state.broken_term), ("CAPABILITY_GAP", "mu_on_O"))

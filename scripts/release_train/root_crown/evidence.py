@@ -927,6 +927,70 @@ def _gates_text(gates: Any) -> str:
     return json.dumps(gates, sort_keys=True)
 
 
+def derive_autonomic_standing(data: dict[str, Any]) -> tuple[dict[str, Any] | None, list[str]]:
+    """Re-derive a sealed autonomic receipt's summary standing from its own gate table.
+
+    A seal proves the bytes were not edited after sealing, not that the summary fields
+    (``blocked_gates``, ``passed_gates``, ``standings.autonomy``) agree with the per-gate
+    results they summarize. Stored standing is admitted only when it recomputes here,
+    with the autonomic court's own laws: the gate table is total over U-01..U-18 and
+    typed (``gates.admit``: PASS needs an evidence digest, non-PASS a typed code), and
+    autonomy is ``standing.autonomy_of`` over those gates and the execution state.
+
+    Returns ``(derived, gaps)``: ``derived`` is ``{blocked_gates, passed_gates, autonomy}``
+    (None when the table cannot be read), ``gaps`` every disagreement or malformation.
+    """
+    from scripts.release_train.autonomic_crown import gates as autonomic_gates
+    from scripts.release_train.autonomic_crown import standing as autonomic_standing
+    from scripts.release_train.autonomic_crown.model import GATE_IDS, GateResult
+
+    table = data.get("gates")
+    if not isinstance(table, dict):
+        return None, ["gates:not-an-object"]
+    gaps: list[str] = []
+    results: list[GateResult] = []
+    for gid in sorted(table):
+        row = table[gid]
+        if not isinstance(row, dict) or row.get("id") != gid:
+            gaps.append(f"gates.{gid}:row-malformed")
+            continue
+        evidence_doc = row.get("evidence")
+        results.append(
+            GateResult(
+                id=gid,
+                state=row.get("state") if isinstance(row.get("state"), str) else repr(row.get("state")),
+                measured=row.get("measured"),
+                threshold=str(row.get("threshold")),
+                code=row.get("code") if isinstance(row.get("code"), str) else None,
+                evidence=evidence_doc if isinstance(evidence_doc, dict) else None,
+            )
+        )
+    extra = sorted(set(table) - set(GATE_IDS))
+    if extra:
+        gaps.append(f"gates:not-in-premise:{','.join(map(str, extra))}")
+    gaps.extend(f"gates.{f.subject}:{f.code}" for f in autonomic_gates.admit(results))
+    if gaps:
+        return None, gaps
+    standings = data.get("standings") if isinstance(data.get("standings"), dict) else {}
+    execution_doc = standings.get("execution")
+    execution = execution_doc.get("state") if isinstance(execution_doc, dict) else None
+    autonomy, _ = autonomic_standing.autonomy_of(results, str(execution))
+    derived = {
+        "blocked_gates": sorted(r.id for r in results if r.state != "PASS"),
+        "passed_gates": sorted(r.id for r in results if r.state == "PASS"),
+        "autonomy": autonomy,
+    }
+    stored = {
+        "blocked_gates": data.get("blocked_gates"),
+        "passed_gates": data.get("passed_gates"),
+        "autonomy": standings.get("autonomy"),
+    }
+    for key in ("blocked_gates", "passed_gates", "autonomy"):
+        if stored[key] != derived[key]:
+            gaps.append(f"{key}:stored={_gates_text(stored[key])}:derived={_gates_text(derived[key])}")
+    return derived, gaps
+
+
 def autonomic_receipt(req: Requirement, ctx: Context) -> ReqState:
     """Term U (RFC-0005 §2.3, §3): compose the autonomic_crown receipt into the root crown.
 
@@ -943,7 +1007,12 @@ def autonomic_receipt(req: Requirement, ctx: Context) -> ReqState:
        (``observations.subjects`` / ``observations.subject_deltas`` for an in-tree receipt,
        the artifact observation for a remote one). A stale subject is typed by the binding
        law (EVIDENCE_SUBJECT_SPLIT, EVIDENCE_LINEAGE_MISSING, EVIDENCE_DELTA_UNBOUNDED);
-    4. it witnesses U: execution ALIVE, autonomy AUTONOMIC and exit 0 (else REFUSED
+    4. its summary standing re-derives from its own sealed gate table
+       (``derive_autonomic_standing``: ``blocked_gates``/``passed_gates`` are the non-PASS /
+       PASS gate ids and ``standings.autonomy`` is the autonomic court's ``autonomy_of``
+       over them), else REFUSED AUTONOMIC_STANDING_UNDERIVED -- a well-sealed receipt
+       whose summary contradicts its gates is stored standing, never derived standing;
+    5. it witnesses U: execution ALIVE, derived autonomy AUTONOMIC and exit 0 (else REFUSED
        ARTIFACT_REFUSED for a refusing court, BLOCKED AUTONOMIC_NOT_AUTONOMIC otherwise).
 
     Success-only: no typed disposition relaxes U (RFC-0005 §3: UNKNOWN is not admitted).
@@ -1017,13 +1086,25 @@ def autonomic_receipt(req: Requirement, ctx: Context) -> ReqState:
         return REFUSED(
             "ARTIFACT_REFUSED", f"{req.evidence_locator}: autonomic crown refused (exit {exit_value})", subject
         )
+    # Standing is derived, not read: the summary must recompute from the gate table.
+    derived, gaps = derive_autonomic_standing(data)
+    if gaps or derived is None:
+        return REFUSED(
+            "AUTONOMIC_STANDING_UNDERIVED",
+            f"{req.evidence_locator}: stored standing does not re-derive from the sealed gates: {'; '.join(gaps)}",
+            subject,
+        )
     # ``exit`` must be the integer 0: JSON ``false`` or ``0.0`` compare equal to 0 in Python
     # but are not the autonomic court's exit code (a re-sealed forgery, not a witness).
-    # A witness of U has no blocked gate: AUTONOMIC standings next to a non-empty (or
-    # non-list) ``blocked_gates`` is self-contradictory, however well sealed.
-    gates_clear = data.get("blocked_gates") == []
+    # A witness of U has no blocked gate: the derived blocked set must be empty.
+    gates_clear = derived["blocked_gates"] == [] and data.get("blocked_gates") == []
     if not (
-        execution == "ALIVE" and standing == "AUTONOMIC" and type(exit_value) is int and exit_value == 0 and gates_clear
+        execution == "ALIVE"
+        and derived["autonomy"] == "AUTONOMIC"
+        and standing == "AUTONOMIC"
+        and type(exit_value) is int
+        and exit_value == 0
+        and gates_clear
     ):
         return BLOCKED(
             "AUTONOMIC_NOT_AUTONOMIC",

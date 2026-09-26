@@ -7,9 +7,9 @@
     "failures": 0,
     "ok": true,
     "skipped": 6,
-    "tests_run": 283
+    "tests_run": 295
   },
-  "killed": 124,
+  "killed": 136,
   "mutants": {
     "acceptance_drift_off": {
       "detail": "killed by 2 test(s): test_policy.PolicyRefusalTest.test_acceptance_drift,test_policy.PolicyRefusalTest.test_every_terminality_code_is_typed_and_emitted",
@@ -1158,6 +1158,129 @@
       "kind": "source",
       "rule": "AC-15 typed PLANNED is not a terminal disposition (ARTIFACT_BLOCKED)"
     },
+    "u_base_term_erosion": {
+      "detail": "killed by 7 test(s): test_term_u_hardening.PremiseErosionTest.test_dropping_a_base_term_is_refused_and_the_term_still_evaluated (dropped='A'),test_term_u_hardening.PremiseErosionTest.test_dropping_a_base_term_is_refused_and_the_term_still_evaluated (dropped='C'),test_term_u_hardening.PremiseErosionTest.test_dropping_a_base_term_is_refused_and_the_term_still_evaluated (dropped='F'),test_term_u_hardening.PremiseErosionTest.test_dropping_a_base_term_is_refused_and_the_term_still_evaluated (dropped='M'),test_term_u_hardening.PremiseErosionTest.test_dropping_a_base_term_is_refused_and_the_term_still_evaluated (dropped='R'),test_term_u_hardening.PremiseErosionTest.test_dropping_a_base_term_is_refused_and_the_term_still_evaluated (dropped='X')",
+      "file": "scripts/release_train/root_crown/model.py",
+      "killed": true,
+      "killers": [
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "REQ_TERM_UNBOUND base-term-omitted"
+    },
+    "u_digest_unchecked": {
+      "detail": "killed by 6 test(s): test_term_u.TermUCrownTest.test_foreign_schema_is_refused,test_term_u.TermUCrownTest.test_tampered_receipt_digest_is_refused,test_term_u_hardening.ForgedReceiptTest.test_unsealed_digest_forms_are_refused (receipt_digest=''),test_term_u_hardening.ForgedReceiptTest.test_unsealed_digest_forms_are_refused (receipt_digest='SHA256:C751A275290CCB31ED94B28CF05B79DD696BB3443D7AAF7B51F5A272570BAFF4'),test_term_u_hardening.ForgedReceiptTest.test_unsealed_digest_forms_are_refused (receipt_digest='c751a275290ccb31ed94b28cf05b79dd696bb3443d7aaf7b51f5a272570baff4'),test_term_u_hardening.ForgedReceiptTest.test_unsealed_digest_forms_are_refused (receipt_digest=None)",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_term_u",
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "AUTONOMIC_RECEIPT_DIGEST_MISMATCH"
+    },
+    "u_exit_loose_equality": {
+      "detail": "killed by 2 test(s): test_term_u_hardening.ForgedReceiptTest.test_exit_that_merely_equals_zero_is_not_a_witness (exit=0.0),test_term_u_hardening.ForgedReceiptTest.test_exit_that_merely_equals_zero_is_not_a_witness (exit=False)",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "exit must be the integer 0 (false/0.0 are forgeries)"
+    },
+    "u_gate_admission_off": {
+      "detail": "killed by 5 test(s): test_term_u_hardening.DerivedStandingTest.test_blocked_gate_without_typed_code_is_underived,test_term_u_hardening.DerivedStandingTest.test_pass_without_evidence_digest_is_underived (evidence=None),test_term_u_hardening.DerivedStandingTest.test_pass_without_evidence_digest_is_underived (evidence={'digest': 'sha256:short'}),test_term_u_hardening.DerivedStandingTest.test_pass_without_evidence_digest_is_underived (evidence={'digest': 7}),test_term_u_hardening.DerivedStandingTest.test_pass_without_evidence_digest_is_underived (evidence={})",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "the gate table is total, typed and PASS evidence-backed (autonomic gates.admit)"
+    },
+    "u_premature_gate_off": {
+      "detail": "killed by 1 test(s): test_term_u.ReleaseTermsTest.test_u_declared_before_its_calver_is_refused",
+      "file": "scripts/release_train/root_crown/model.py",
+      "killed": true,
+      "killers": [
+        "test_term_u"
+      ],
+      "kind": "source",
+      "rule": "REQ_TERM_UNBOUND premature"
+    },
+    "u_premise_sha_unchecked": {
+      "detail": "killed by 1 test(s): test_term_u.PremiseSetAdmissionTest.test_rfc_0005_digest_mismatch_is_refused",
+      "file": "scripts/release_train/root_crown/requirements.py",
+      "killed": true,
+      "killers": [
+        "test_term_u"
+      ],
+      "kind": "source",
+      "rule": "REQ_PREMISE_UNBOUND RFC-0005 sha256 mismatch"
+    },
+    "u_required_from_dropped": {
+      "detail": "killed by 4 test(s): test_term_u.PremiseSetAdmissionTest.test_crown_refuses_a_v26_9_26_premise_that_omits_u,test_term_u.ReleaseTermsTest.test_premise_omitting_u_from_its_calver_is_refused_and_still_evaluates_u,test_term_u_hardening.CrownRelabelTest.test_crown_reads_the_directory_line_not_the_premise_label,test_term_u_hardening.PremiseErosionTest.test_relabelled_premise_cannot_evade_u",
+      "file": "scripts/release_train/root_crown/model.py",
+      "killed": true,
+      "killers": [
+        "test_term_u",
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "REQ_TERM_UNBOUND required-from (U cannot be dropped by omission)"
+    },
+    "u_row_premise_citation_off": {
+      "detail": "killed by 1 test(s): test_term_u.PremiseSetAdmissionTest.test_u_row_citing_only_rfc_0004_is_refused",
+      "file": "scripts/release_train/root_crown/requirements.py",
+      "killed": true,
+      "killers": [
+        "test_term_u"
+      ],
+      "kind": "source",
+      "rule": "REQ_PREMISE_UNBOUND term U cites no RFC-0005 section"
+    },
+    "u_stale_release_accepted": {
+      "detail": "killed by 5 test(s): test_term_u.TermUCrownTest.test_committed_v26_9_25_receipt_is_never_evidence_of_u,test_term_u_hardening.ForgedReceiptTest.test_receipt_with_no_release_or_foreign_release_is_stale (release=''),test_term_u_hardening.ForgedReceiptTest.test_receipt_with_no_release_or_foreign_release_is_stale (release='v26.9.25'),test_term_u_hardening.ForgedReceiptTest.test_receipt_with_no_release_or_foreign_release_is_stale (release='v26.9.27'),test_term_u_hardening.ForgedReceiptTest.test_receipt_with_no_release_or_foreign_release_is_stale (release=None)",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_term_u",
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "AUTONOMIC_RECEIPT_STALE"
+    },
+    "u_standing_underived_admitted": {
+      "detail": "killed by 15 test(s): test_term_u_hardening.DerivedStandingTest.test_a1_empty_passed_gates_with_blocked_table,test_term_u_hardening.DerivedStandingTest.test_a2_every_gate_blocked_under_autonomic_summary,test_term_u_hardening.DerivedStandingTest.test_not_autonomic_summary_over_all_pass_table_is_underived,test_term_u_hardening.DerivedStandingTest.test_one_blocked_gate_hidden_by_the_summary (gate='U-01'),test_term_u_hardening.DerivedStandingTest.test_one_blocked_gate_hidden_by_the_summary (gate='U-18'),test_term_u_hardening.DerivedStandingTest.test_passed_gates_summary_must_match (passed=None)",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "a sealed receipt whose summary contradicts its gate table is AUTONOMIC_STANDING_UNDERIVED"
+    },
+    "u_summary_compare_off": {
+      "detail": "killed by 15 test(s): test_term_u_hardening.DerivedStandingTest.test_a1_empty_passed_gates_with_blocked_table,test_term_u_hardening.DerivedStandingTest.test_a2_every_gate_blocked_under_autonomic_summary,test_term_u_hardening.DerivedStandingTest.test_not_autonomic_summary_over_all_pass_table_is_underived,test_term_u_hardening.DerivedStandingTest.test_one_blocked_gate_hidden_by_the_summary (gate='U-01'),test_term_u_hardening.DerivedStandingTest.test_one_blocked_gate_hidden_by_the_summary (gate='U-18'),test_term_u_hardening.DerivedStandingTest.test_passed_gates_summary_must_match (passed=None)",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "blocked_gates/passed_gates/autonomy must equal the values derived from the gates"
+    },
+    "u_unbound_term_vacuous": {
+      "detail": "killed by 1 test(s): test_term_u.PremiseSetAdmissionTest.test_crown_refuses_a_v26_9_26_premise_that_omits_u",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_term_u"
+      ],
+      "kind": "source",
+      "rule": "a term no requirement binds is BLOCKED, never vacuously PASS"
+    },
     "untyped_closure_accepted": {
       "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_untyped_blocked_closure_row_is_refused",
       "file": "scripts/release_train/root_crown/evidence.py",
@@ -1194,18 +1317,19 @@
   "schema": "https://chatman.dev/root-crown/hardening/mutation-report/v1",
   "source_digests": {
     "scripts/observe_release_heads.py": "sha256:22d7008c0ad662bb9378bb7806ee90f155aa58e784ce2ec567cf5b8239e9dcfb",
-    "scripts/release_train/release_closure_court/court.py": "sha256:b8df6b4ba774f1dd2824d9be4ebc0afdc598b6de7312ada7405f898e075eb9e0",
+    "scripts/release_train/release_closure_court/court.py": "sha256:9c46863eec5a6619f7221206def681ef94fd391a28b2c107ce1ba1bcff5d3698",
     "scripts/release_train/root_crown/binding.py": "sha256:51dda4ae530be25f952f9b0603c4e81f293a82f64faabb45bbc05dd08a913b72",
     "scripts/release_train/root_crown/chain.py": "sha256:3039484a9b8f992aa6c5ee72989af86570afe5c1ab4e45f177597e4714009253",
     "scripts/release_train/root_crown/crown.py": "sha256:775f4eee8478a2e68f579655be707313c3a3fdcda9e09770ab0996b826434b20",
-    "scripts/release_train/root_crown/evidence.py": "sha256:61d6d8f11b7f04ccf4a23df7d8b144cbf83c40ac2255275c9a6951d409248c8d",
+    "scripts/release_train/root_crown/evidence.py": "sha256:69766261add83a5ae2edd8ed38d73354a537ed8545316c5cd2df85214393f669",
     "scripts/release_train/root_crown/gitobj.py": "sha256:191690fafbc380bef695eee9beee8563d123cecc6beab89ac99a2898830979a2",
-    "scripts/release_train/root_crown/model.py": "sha256:ff9da80cb6a0f504b289ea856d1bea0077145391e69f1e0e8b27eb8f80a25ee5",
-    "scripts/release_train/root_crown/mutate.py": "sha256:6a0936118437003f13e61d4629b4df696592acd8e2ec46d79f9b634719bbc2de",
+    "scripts/release_train/root_crown/model.py": "sha256:b24550ed464e0174a3fb3c6a6cfa1142ec666082ed4174be3ce8a29d7d9fe150",
+    "scripts/release_train/root_crown/mutate.py": "sha256:357fedd901d63a2f77b25d7871529c8d419b9ea0648a597f8ec9946c7f0c8de1",
     "scripts/release_train/root_crown/policy.py": "sha256:056b1d5c58e85ce26d59b8f4b83c23fe941ec3fa45b07ac6975dfd4e33ec05e2",
     "scripts/release_train/root_crown/posttag.py": "sha256:35ed4c9eb84e25d281f11166cb8b73439aea52e352ac710266e82819ba72e48f",
-    "scripts/release_train/root_crown/replay.py": "sha256:c3610676203a00d48a00a50af3c70f59eaf5d7608a95a7390947bc32332b6a2d"
+    "scripts/release_train/root_crown/replay.py": "sha256:c3610676203a00d48a00a50af3c70f59eaf5d7608a95a7390947bc32332b6a2d",
+    "scripts/release_train/root_crown/requirements.py": "sha256:81eff5bc9704bb66a5e89fe5a38effc0605ca026321008d0d73362bd6390f8e7"
   },
   "survivors": [],
-  "total": 124
+  "total": 136
 }

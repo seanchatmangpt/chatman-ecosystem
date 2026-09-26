@@ -373,6 +373,9 @@ T_GITOBJ = "test_gitobj"
 T_POLICY = "test_policy"
 T_BINDING = "test_binding"
 T_MUTATE = "test_mutate"
+T_TERMU = "test_term_u"
+T_TERMU_H = "test_term_u_hardening"
+REQUIREMENTS = "scripts/release_train/root_crown/requirements.py"
 
 SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
     # --- the five audit survivors (each killed by a new test in test_typed_terminal) ---------
@@ -1145,6 +1148,103 @@ SOURCE_MUTANTS: tuple[SourceMutant, ...] = (
         "                        pass\n",
         (T_BINDING,),
         "a PASS whose log/output digest cannot be recomputed offline is EVIDENCE_NOT_DURABLE",
+    ),
+    # --- term U (RFC-0005): premise-driven terms + autonomic receipt composition ------------
+    SourceMutant(
+        "u_standing_underived_admitted",
+        EVIDENCE,
+        "    if gaps or derived is None:\n",
+        "    if derived is None:\n",
+        (T_TERMU_H,),
+        "a sealed receipt whose summary contradicts its gate table is AUTONOMIC_STANDING_UNDERIVED",
+    ),
+    SourceMutant(
+        "u_summary_compare_off",
+        EVIDENCE,
+        "        if stored[key] != derived[key]:\n",
+        "        if False:\n",
+        (T_TERMU_H,),
+        "blocked_gates/passed_gates/autonomy must equal the values derived from the gates",
+    ),
+    SourceMutant(
+        "u_gate_admission_off",
+        EVIDENCE,
+        '    gaps.extend(f"gates.{f.subject}:{f.code}" for f in autonomic_gates.admit(results))\n',
+        "    pass\n",
+        (T_TERMU_H,),
+        "the gate table is total, typed and PASS evidence-backed (autonomic gates.admit)",
+    ),
+    SourceMutant(
+        "u_digest_unchecked",
+        EVIDENCE,
+        "    if not autonomic.verify(data):\n",
+        "    if False:\n",
+        (T_TERMU, T_TERMU_H),
+        "AUTONOMIC_RECEIPT_DIGEST_MISMATCH",
+    ),
+    SourceMutant(
+        "u_stale_release_accepted",
+        EVIDENCE,
+        '    if data.get("release") != release:\n',
+        "    if False:\n",
+        (T_TERMU, T_TERMU_H),
+        "AUTONOMIC_RECEIPT_STALE",
+    ),
+    SourceMutant(
+        "u_exit_loose_equality",
+        EVIDENCE,
+        "        and type(exit_value) is int\n",
+        "",
+        (T_TERMU_H,),
+        "exit must be the integer 0 (false/0.0 are forgeries)",
+    ),
+    SourceMutant(
+        "u_unbound_term_vacuous",
+        CROWN,
+        '            term_states[term] = {"state": "BLOCKED", "requirements": [], "detail": f"no requirement binds term {term}"}\n',
+        '            term_states[term] = {"state": "PASS", "requirements": [], "detail": ""}\n',
+        (T_TERMU,),
+        "a term no requirement binds is BLOCKED, never vacuously PASS",
+    ),
+    SourceMutant(
+        "u_premature_gate_off",
+        MODEL,
+        "        if term in evaluated and version < first:\n",
+        "        if False:\n",
+        (T_TERMU,),
+        "REQ_TERM_UNBOUND premature",
+    ),
+    SourceMutant(
+        "u_required_from_dropped",
+        MODEL,
+        "        elif term not in evaluated and version >= first:\n",
+        "        elif False:\n",
+        (T_TERMU, T_TERMU_H),
+        "REQ_TERM_UNBOUND required-from (U cannot be dropped by omission)",
+    ),
+    SourceMutant(
+        "u_base_term_erosion",
+        MODEL,
+        '            refusals.append(f"REFUSED:REQ_TERM_UNBOUND:{term}:base-term-omitted")\n',
+        "            pass\n",
+        (T_TERMU_H,),
+        "REQ_TERM_UNBOUND base-term-omitted",
+    ),
+    SourceMutant(
+        "u_premise_sha_unchecked",
+        REQUIREMENTS,
+        '        elif sha256_bytes(premise_set[rfc].encode("utf-8")) != entry.get("sha256"):\n',
+        "        elif False:\n",
+        (T_TERMU,),
+        "REQ_PREMISE_UNBOUND RFC-0005 sha256 mismatch",
+    ),
+    SourceMutant(
+        "u_row_premise_citation_off",
+        REQUIREMENTS,
+        "            if not any(split_ref(ref)[0] == term_rfc for ref in row[\"premise_refs\"]):\n",
+        "            if False:\n",
+        (T_TERMU,),
+        "REQ_PREMISE_UNBOUND term U cites no RFC-0005 section",
     ),
 )
 

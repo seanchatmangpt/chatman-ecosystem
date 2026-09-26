@@ -239,7 +239,9 @@ BLOCKER_CODES = (
 )
 # Term U (RFC-0005) composition: the autonomic_crown receipt the premise binds U to.
 # AUTONOMIC_RECEIPT_DIGEST_MISMATCH: the receipt's schema or receipt_digest does not recompute.
-AUTONOMIC_RULES = ("AUTONOMIC_RECEIPT_DIGEST_MISMATCH",)
+# AUTONOMIC_STANDING_UNDERIVED: the receipt's summary standing (blocked_gates, passed_gates,
+# standings.autonomy) does not re-derive from its own sealed gate table.
+AUTONOMIC_RULES = ("AUTONOMIC_RECEIPT_DIGEST_MISMATCH", "AUTONOMIC_STANDING_UNDERIVED")
 # Typed blockers: the receipt is for another release line (stale), or it recomputes but
 # does not witness U (execution not ALIVE or autonomy not AUTONOMIC).
 AUTONOMIC_BLOCKERS = ("AUTONOMIC_RECEIPT_STALE", "AUTONOMIC_NOT_AUTONOMIC")
@@ -334,6 +336,7 @@ FAILURE_CLASS: dict[str, tuple[str, str]] = {
     "NEW_HEAD_UNEVIDENCED": ("EVIDENCE_FAILURE", "R_missing_identity"),
     # term U (autonomic receipt composition)
     "AUTONOMIC_RECEIPT_DIGEST_MISMATCH": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    "AUTONOMIC_STANDING_UNDERIVED": ("VERIFICATION_FAILURE", "R_missing_standing"),
     "AUTONOMIC_RECEIPT_STALE": ("EVIDENCE_FAILURE", "R_not_fed_back"),
     "AUTONOMIC_NOT_AUTONOMIC": ("CAPABILITY_GAP", "mu_on_O"),
     # tag

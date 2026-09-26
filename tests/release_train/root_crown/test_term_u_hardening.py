@@ -14,8 +14,11 @@ Guards added by PR #295 hardening (v26.9.26):
 - premise-set shadowing: duplicate members and an RFC-0004 member are refused, and the
   admitted RFC-0004 text always wins in the Berthier sources;
 - symlinked premise imports escaping the release tree are unbound;
-- forged sealed receipts: ``exit`` false/0.0/"0", AUTONOMIC with blocked gates, and
-  malformed standings are typed AUTONOMIC_NOT_AUTONOMIC;
+- forged sealed receipts: ``exit`` false/0.0/"0" and malformed standings are typed
+  AUTONOMIC_NOT_AUTONOMIC;
+- derived standing (court #295 R_missing_standing): the summary fields ``blocked_gates``,
+  ``passed_gates`` and ``standings.autonomy`` must re-derive from the receipt's own sealed
+  gate table (total, typed, PASS evidence-backed), else AUTONOMIC_STANDING_UNDERIVED;
 - replay/duplicate/reorder: a re-delivered identical receipt is idempotent, and a
   receipt from an earlier evaluation of another subject never passes;
 - the v26.9.25 tag-time mutation report is immutable history (pinned bytes).
@@ -32,8 +35,18 @@ import unittest
 from pathlib import Path
 
 from _support import CROWN_SHA, REPO, dump, load
-from test_term_u import NEW, OLD, RECEIPT_PATH, ROOT_REPO, SUBJECT, UTree
+from test_term_u import (
+    COMMITTED_AUTONOMIC,
+    NEW,
+    OLD,
+    RECEIPT_PATH,
+    ROOT_REPO,
+    SUBJECT,
+    UTree,
+    coherent_blocked_gate,
+)
 
+from scripts.release_train.autonomic_crown import receipt as autonomic
 from scripts.release_train.root_crown import berthier, crown, evidence, mutate, projector
 from scripts.release_train.root_crown.model import FAILURE_CLASS, TERM_REGISTRY, TERMS, code_of, release_terms
 from scripts.release_train.root_crown.requirements import validate_requirements
@@ -219,9 +232,13 @@ class ForgedReceiptTest(unittest.TestCase):
                 self.assert_not_autonomic(exit=value)
 
     def test_autonomic_with_blocked_gates_is_contradictory(self):
+        # The summary list disagrees with the (all-PASS) gate table it summarizes.
         for gates in (["U-03"], None, "U-03", {"U-03": 1}, [1]):
             with self.subTest(blocked_gates=gates):
-                self.assert_not_autonomic(blocked_gates=gates)
+                self.tree.write_receipt(blocked_gates=gates)
+                state = self.tree.u_state()
+                self.assertEqual((state.state, state.code), ("REFUSED", "AUTONOMIC_STANDING_UNDERIVED"), state.detail)
+                self.assertNotEqual(self.tree.evaluate().standing, "ALIVE")
 
     def test_malformed_standings_are_typed_not_crashes(self):
         for standings in (
@@ -266,6 +283,121 @@ class ForgedReceiptTest(unittest.TestCase):
                 forged = dict(sealed, receipt_digest=digest_value)
                 dump(self.tree.root / RECEIPT_PATH, forged)
                 self.assertEqual(self.tree.u_state().code, "AUTONOMIC_RECEIPT_DIGEST_MISMATCH")
+
+
+class DerivedStandingTest(unittest.TestCase):
+    """Sealed receipts whose summary standing contradicts their own gate table (court #295)."""
+
+    def setUp(self):
+        self.tree = UTree()
+        self.gate_ids = sorted(load(COMMITTED_AUTONOMIC)["gates"])
+
+    def tearDown(self):
+        self.tree.cleanup()
+
+    def assert_underived(self, sealed=None, **changes):
+        if sealed is None:
+            self.tree.write_receipt(**changes)
+        else:
+            dump(self.tree.root / RECEIPT_PATH, autonomic.seal(sealed, sealed.get("evaluated_at")))
+        state = self.tree.u_state()
+        self.assertEqual((state.state, state.code), ("REFUSED", "AUTONOMIC_STANDING_UNDERIVED"), state.detail)
+        self.assertEqual((state.failure_class, state.broken_term), ("VERIFICATION_FAILURE", "R_missing_standing"))
+        verdict = self.tree.evaluate()
+        self.assertNotEqual(verdict.standing, "ALIVE")
+        self.assertNotEqual(verdict.terms["U"], "PASS")
+        return state
+
+    def body(self, **kwargs):
+        sealed = self.tree.write_receipt(**kwargs)
+        sealed.pop("receipt_digest")
+        return sealed
+
+    def test_positive_control_gate_table_is_all_pass(self):
+        sealed = self.tree.write_receipt()
+        self.assertEqual(evidence.derive_autonomic_standing(sealed)[1], [])
+        self.assertEqual(sealed["passed_gates"], self.gate_ids)
+        self.assertEqual(self.tree.u_state().state, "PASS")
+
+    def test_committed_producer_receipt_re_derives(self):
+        # Anti-vacuity: the real autonomic court's committed output is coherent under the
+        # derivation, so the refusals below are about contradiction, not shape.
+        derived, gaps = evidence.derive_autonomic_standing(load(COMMITTED_AUTONOMIC))
+        self.assertEqual(gaps, [])
+        self.assertEqual(derived["autonomy"], "NOT_AUTONOMIC")
+        self.assertEqual(len(derived["blocked_gates"]), 14)
+
+    def test_a1_empty_passed_gates_with_blocked_table(self):
+        # Court A1: summary AUTONOMIC/[] over a table with 14 of 18 gates BLOCKED.
+        body = self.body()
+        body["gates"] = load(COMMITTED_AUTONOMIC)["gates"]
+        body["passed_gates"] = []
+        self.assert_underived(body)
+
+    def test_a2_every_gate_blocked_under_autonomic_summary(self):
+        # Court A2: all 18 gates BLOCKED while the summary says AUTONOMIC with no blocked gate.
+        body = self.body()
+        body["gates"] = {g: coherent_blocked_gate(g, row) for g, row in body["gates"].items()}
+        self.assert_underived(body)
+
+    def test_one_blocked_gate_hidden_by_the_summary(self):
+        for gid in (self.gate_ids[0], self.gate_ids[-1]):
+            with self.subTest(gate=gid):
+                body = self.body()
+                body["gates"][gid] = coherent_blocked_gate(gid, body["gates"][gid])
+                self.assert_underived(body)
+
+    def test_passed_gates_summary_must_match(self):
+        for passed in ([], self.gate_ids[:-1], self.gate_ids + ["U-19"], list(reversed(self.gate_ids)), None):
+            with self.subTest(passed=passed):
+                self.assert_underived(passed_gates=passed)
+
+    def test_not_autonomic_summary_over_all_pass_table_is_underived(self):
+        # Under-claiming is also stored standing: the court would have said AUTONOMIC.
+        self.assert_underived(
+            standings={
+                "execution": {"state": "ALIVE"},
+                "autonomy": "NOT_AUTONOMIC",
+                "authority": {"state": "AUTHORIZED"},
+            }
+        )
+
+    def test_pass_without_evidence_digest_is_underived(self):
+        for evidence_value in (None, {}, {"digest": "sha256:short"}, {"digest": 7}):
+            with self.subTest(evidence=evidence_value):
+                body = self.body()
+                body["gates"][self.gate_ids[2]]["evidence"] = evidence_value
+                self.assert_underived(body)
+
+    def test_blocked_gate_without_typed_code_is_underived(self):
+        body = self.body(blocked=(self.gate_ids[4],))
+        body["gates"][self.gate_ids[4]]["code"] = "NOT_A_CODE"
+        self.assert_underived(body)
+
+    def test_incomplete_extra_or_mislabelled_gate_table_is_underived(self):
+        cases = {
+            "missing": lambda g: g.pop("U-18"),
+            "extra": lambda g: g.update({"U-19": dict(g["U-01"], id="U-19")}),
+            "relabelled": lambda g: g["U-01"].update({"id": "U-02"}),
+            "non-object-row": lambda g: g.update({"U-01": "PASS"}),
+            "unknown-state": lambda g: g["U-01"].update({"state": "pass"}),
+        }
+        for name, edit in cases.items():
+            with self.subTest(case=name):
+                body = self.body()
+                edit(body["gates"])
+                self.assert_underived(body)
+
+    def test_non_object_gate_table_is_underived(self):
+        for gates in (None, [], "U-01..U-18 PASS", 18):
+            with self.subTest(gates=gates):
+                self.assert_underived(gates=gates)
+
+    def test_coherent_not_autonomic_receipt_stays_typed_blocked(self):
+        self.tree.write_receipt(blocked=(self.gate_ids[0],))
+        state = self.tree.u_state()
+        self.assertEqual((state.state, state.code), ("BLOCKED", "AUTONOMIC_NOT_AUTONOMIC"), state.detail)
+        self.assertIn(self.gate_ids[0], state.detail)
 
 
 class ReplayTest(unittest.TestCase):
