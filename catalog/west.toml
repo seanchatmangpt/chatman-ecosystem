@@ -10,7 +10,7 @@ manifest_repository = "seanchatmangpt/chatman-ecosystem"
 repository_identity = "preserved"
 workspace_revision = "floating-head"
 release_revision = "exact-sha"
-release_manifest = "release/v26.9.1/manifest.toml"
+release_manifest = "release/v26.9.25/manifest.toml"
 external_actuation_authority = "none"
 
 [dfcm]
