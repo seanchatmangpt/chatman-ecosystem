@@ -94,13 +94,16 @@ MATRIX_FIELDS = {
 MACHINE = ("/Users/", "/tmp/", "/private/", "~/", "/home/")
 E1 = "c599667a84ec79d832bb779bce1730b33b43fdd4"
 TAG_COMMIT = "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+E3 = json.loads((HARDENING / "inputs" / "final-lanes.json").read_text())["containers"]["e3"]["commit"] if (HARDENING / "inputs" / "final-lanes.json").is_file() else None
 
 
 def stage_chatman(closure: dict, dest: Path) -> set[str]:
-    """Lay the root repository's git: locators out at <dest>/<owner>/<repo>/<sha>/<path>.
+    """Lay the root repository's evidence-only containers out at <dest>/<owner>/<repo>/<sha>/<path>.
 
-    Bytes come from the committed tree (a descendant of every container commit) or, for the
-    tag commit, from the materialized tag subject; the court recomputes every digest.
+    Only the E1 / E3 evidence commits (whose bytes this tree never rewrites) come from the
+    committed tree, and the tag commit from the materialized tag subject; any other root
+    container (e.g. main's mutation report, since regenerated) stays unstaged, exactly like a
+    foreign repository. The court recomputes every digest.
     """
     import re
 
@@ -110,7 +113,7 @@ def stage_chatman(closure: dict, dest: Path) -> set[str]:
         for court in row.get("courts", []):
             for field in ("evidence_locator", "log_locator", "output_locator"):
                 match = grammar.fullmatch(str(court.get(field, "")))
-                if match is None or match["repo"] != REPOSITORY:
+                if match is None or match["repo"] != REPOSITORY or match["sha"] not in (E1, E3, TAG_COMMIT):
                     continue
                 src = (SUBJECT if match["sha"] == TAG_COMMIT else REPO) / match["path"]
                 target = dest / match["repo"] / match["sha"] / match["path"]
@@ -214,8 +217,8 @@ class FinalOutputsTest(unittest.TestCase):
             staged = stage_chatman(closure, dest)
             self.assertTrue(staged)
             verdict = closure_court.evaluate(closure, dest)
-            foreign = [r for r in verdict.refusals if f"git:{REPOSITORY}@" in r]
-            self.assertEqual(foreign, [])
+            staged_refused = [r for r in verdict.refusals if any(loc in r for loc in staged)]
+            self.assertEqual(staged_refused, [])
             for refusal in verdict.refusals:
                 self.assertIn(":unresolved:git:seanchatmangpt/", refusal)
             target = next(p for p in sorted(dest.rglob("crown-receipt.json")) if E1 in p.as_posix())
