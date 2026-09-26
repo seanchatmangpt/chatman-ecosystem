@@ -1,0 +1,12 @@
+{
+  "authority": "NONE (post-tag attestation; the tag is immutable and never re-created)",
+  "crown_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+  "decision": "NOT_APPLICABLE:POST_TAG",
+  "existing_tag_object_sha": "337e839937c247de4ee58b744c8b8e43950d18e3",
+  "existing_tag_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+  "head_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+  "reasons": [],
+  "receipt_digest": "sha256:7708c69c5e8217dcb55f7fd0d51369e16d858142c7bf2478535ce30758440b9c",
+  "remaining": [],
+  "tag": "v26.9.25"
+}

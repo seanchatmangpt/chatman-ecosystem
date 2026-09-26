@@ -1,0 +1,360 @@
+{
+ "$id": "release/v26.9.25/hardening/topology-relocation.json",
+ "schema": "chatman.v26925.topology-relocation/1",
+ "subject": {
+  "receipt": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+  "receipt_sha256": "sha256:32bbd585a5c4d1fdebfb232bdec48811b2cf20466fef07f1930e01ac9baf5e52",
+  "durable_copy": "git:seanchatmangpt/chatman-ecosystem@570d358994e9cb7c19e3e8ca952aa8ebcc7713fa:migration/v26925-topology/TOPOLOGY-RECEIPT.json",
+  "durable_copy_sha256": "sha256:32bbd585a5c4d1fdebfb232bdec48811b2cf20466fef07f1930e01ac9baf5e52"
+ },
+ "rebinding": {
+  "replay.durable_location": {
+   "from": "/Users/sac/.claude/migration/v26925-topology",
+   "to": "git:seanchatmangpt/chatman-ecosystem@570d358994e9cb7c19e3e8ca952aa8ebcc7713fa:migration/v26925-topology"
+  },
+  "replay.commands[*].cwd": {
+   "from": "/Users/sac/.claude/migration/v26925-topology",
+   "to": "git:seanchatmangpt/chatman-ecosystem@570d358994e9cb7c19e3e8ca952aa8ebcc7713fa:migration/v26925-topology"
+  },
+  "rule": "absolute operator paths are never evidence locators (CE23-9); the bytes were copied byte-identically (cmp) into the bytes commit, then replayed from git archive of that commit"
+ },
+ "bytes_commit": "570d358994e9cb7c19e3e8ca952aa8ebcc7713fa",
+ "bytes_manifest": [
+  {
+   "path": "migration/v26925-topology/DELETED.json",
+   "sha256": "sha256:103e2b12dc2de19209859736ffe5c087513c7c81722b468305235584260859f0"
+  },
+  {
+   "path": "migration/v26925-topology/INVENTORY.json",
+   "sha256": "sha256:d2a46c444cc0d2829e76537dec21d6ce19d2066adb5e42ec9b753fe9c4c27e14"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/SparsePrimingRepresentations.json",
+   "sha256": "sha256:e214dcea0bc9355d914a1a0fa5c1af39a6539b6961871e7a0a257a969e9be812"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/aidgen.json",
+   "sha256": "sha256:212d3274a23490504c33f3fed375c2e2b38b6f224ab5661d64b994e0b1af1569"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/ash_a2a.json",
+   "sha256": "sha256:2019c441b984885f904afb0330dfb38367117531b916a04683c12a1b25d179d1"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/ash_ex4pm.json",
+   "sha256": "sha256:cf8c35129f45ecf80a2d8acf9cc7475b724139bc8182109dc56cad0ff8d06a81"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/ash_r2rml.json",
+   "sha256": "sha256:3091b6ca24cee9e3cdf4016a2c0781bdce67545f4fcd27014ac2ec0ccb86df50"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/autofde-lab.json",
+   "sha256": "sha256:ced2ab1a5d0ab604edf4ba85cfad325ce073e7250512a31974256edda5992839"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/bcinr.json",
+   "sha256": "sha256:6578f41ca3667478e52052f04b537e3ae2e54ace872e8118fda37a6032126006"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/beam4pm.json",
+   "sha256": "sha256:38b337731f6ecc0cb1fa5a2804801eef17eb8de327e6798c88fa3b458310dafb"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/bytestar.json",
+   "sha256": "sha256:55b2b878e895f688b1331007f2919bcbc7262b26d9929be251ce186d8fc8ca53"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/cargo-cicd.json",
+   "sha256": "sha256:0ea244d97a35700350e4e251c8309cce5debd243be5480c215d5a9c1a77c8113"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/chicago-tdd-tools.json",
+   "sha256": "sha256:c2b5f032c96428925869f9f008a4ef6f8b5cc7233ba39af1715244b5cef01152"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/citty-test-utils.json",
+   "sha256": "sha256:381e363c71bb030650a26733ab594ed87fe86dab34590d333d9ee763eb76a90d"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/clap-noun-verb.json",
+   "sha256": "sha256:5b6a3476c1dda0b5cdaa91f74e27fe781971efa7550907f826fa7e26d0ef852b"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/dteam.json",
+   "sha256": "sha256:d24c1477e83d8440a746e27f4ae4b32732011de7d1c3a668b58a6f2dea0983e4"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/ex4pm.json",
+   "sha256": "sha256:b90cce44a497dbb2d41f7157afc78dd49346c9b024b23e68e444bdb7ddbcb23d"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/expo-supabase-ai-template.json",
+   "sha256": "sha256:824aa991d998b48a50981b12f8adeef01b6897c5750f32995aa5f6ecf38bd954"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/ferroplan.json",
+   "sha256": "sha256:a01351b7612e5f3fbb58d1ce53605c540cae8f9ad9c5f38f815c75821bfd5bd5"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/ggen-legacy.json",
+   "sha256": "sha256:633c1efe27fd76c6ea6bac3b79b32e3cfe3489441d63c15a6bae0666117be461"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/ggen-marketplace.json",
+   "sha256": "sha256:b58c1f5a8b20fd161a262cec5d621ac900b9eb2f4abde94117e695f71b92f2d7"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/ggen.json",
+   "sha256": "sha256:1bfccaf9f8d7d4fcb2b6bd21a1d1b1dd6dd1aa88aa1a82f86439d37f06a091e6"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/ggen_igniter.json",
+   "sha256": "sha256:cfe80d320bbb2224603cc87943f99ea0f43cd2f4fb77c6bfedfd63a2e164dcce"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/gymact.json",
+   "sha256": "sha256:4b8c3114ce981483aa40c5cdaca1217f5377a47dea6c2a6d27547a08b93a99cf"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/lsp-max.json",
+   "sha256": "sha256:30a7050067f4dc8bd54e6cb5a942fefff1fc0e7e5c892e5cf6b33d7b7ece87cc"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/mfact.json",
+   "sha256": "sha256:6abd9008694fc2f668f50c4aa1cd0b6127f98df7e19d65fd66d2152f4d1f74c0"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/osx-clnr.json",
+   "sha256": "sha256:b60289364e7a70a2475c9b5b51693351b1b818f20b87fa044d0781de2422b3f5"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/praxis.json",
+   "sha256": "sha256:f79d069a71a7037ecbe37b07cd777de99eb924c8d3dcfd5d2ac77adc341d3253"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/process-intelligence.json",
+   "sha256": "sha256:ca9d6405de138eda05554c3058a08a0c84f6f75618d6ac3a6ef2b1cc3343f7ec"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/truex.json",
+   "sha256": "sha256:3d4aeee51232c9cf503d8b51202fa76c775a1bc0980acef7f3b69732db28d979"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/unibit.json",
+   "sha256": "sha256:9aa0d2d1e0cee79d43f1bc1306a2f101c3ab8d477689e16c4dc277bd08c233e7"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/unjucks.json",
+   "sha256": "sha256:029c7bef0394040deb009fc683fc928ca2c5749d75e5847b3ccd899ceb22167f"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/wasm4pm.json",
+   "sha256": "sha256:dec20ce7bbdd365bc06306bc1146b0a02d49e99bdf506aced4d82233990c7c59"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/xaas.json",
+   "sha256": "sha256:e923a9d478a318083e3f5334b9fabcea2f81ff9705e4d7006c91ec79aeaafb1e"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.d/zoela.json",
+   "sha256": "sha256:563e0495360df9f6a90671fcde0279a10657b5807d13cc9ca890c35c98d302a0"
+  },
+  {
+   "path": "migration/v26925-topology/PRESERVE.json",
+   "sha256": "sha256:fa83d77dc106629f9cf870a2c1c5c9ce74020f705009442f16458671d97e2dba"
+  },
+  {
+   "path": "migration/v26925-topology/REVOKED.json",
+   "sha256": "sha256:2bc7a284558aaea91eee40a70e78639719409aaec706047a5344efc3ba6cb336"
+  },
+  {
+   "path": "migration/v26925-topology/RUN.json",
+   "sha256": "sha256:dae280c4e6634af27fee464ce8a60e606eb8c5832c86255d8651e1a1e83ce73f"
+  },
+  {
+   "path": "migration/v26925-topology/TOPOLOGY-RECEIPT.json",
+   "sha256": "sha256:32bbd585a5c4d1fdebfb232bdec48811b2cf20466fef07f1930e01ac9baf5e52"
+  },
+  {
+   "path": "migration/v26925-topology/TOPOLOGY-RECEIPT.stage1.json",
+   "sha256": "sha256:b50751a071b358f5d700a387a2c345306c1193b6ed4e22d386391085d745c2dc"
+  },
+  {
+   "path": "migration/v26925-topology/finalize_receipt.py",
+   "sha256": "sha256:926f29e007a169a7772eeded00f967aaa8a1c7365eb9258daa8b9cda38261a2c"
+  },
+  {
+   "path": "migration/v26925-topology/finalize_receipt_finish.py",
+   "sha256": "sha256:593eeed8e0848b322ad854e7bde505c77a8361df23c49c527ee71c66abf0c4c7"
+  },
+  {
+   "path": "migration/v26925-topology/finalize_receipt_stage2.py",
+   "sha256": "sha256:f7a1fddc8f119fad1f26234df7b44537f422b65bae90a45f26666df961bf1fef"
+  },
+  {
+   "path": "migration/v26925-topology/replay_guard.py",
+   "sha256": "sha256:b605cae5a6e078b977e5982d1d6ba811a707b254ca25f4e2072e2be305da7d9e"
+  },
+  {
+   "path": "migration/v26925-topology/ruff.toml",
+   "sha256": "sha256:48de3500f33de0354fa6174bbaec107dbcca076e61df753df3dc69a56a5c4034"
+  },
+  {
+   "path": "migration/v26925-topology/run_queue.sh",
+   "sha256": "sha256:6d9330eb243c734f106127c925a4fde5ed8ff89d62a7247c320559f4a1487dfb"
+  },
+  {
+   "path": "migration/v26925-topology/scope.finish.json",
+   "sha256": "sha256:86ba96ab2f71f1ec8853a3b1241a94d69bd92da8206689ead8871e0d4f37e07c"
+  },
+  {
+   "path": "migration/v26925-topology/scope.json",
+   "sha256": "sha256:080ee2f36646e7407b7de191bf0442819c6812d0d1ffbe4c9a08cc88624fec3d"
+  },
+  {
+   "path": "migration/v26925-topology/scope.merged.json",
+   "sha256": "sha256:ff3d7ef84ffbda1af9bbdd6fcdb8adb0d829ac980d2fa6bf2e8c6a056ea055dd"
+  },
+  {
+   "path": "migration/v26925-topology/scope.stage2.json",
+   "sha256": "sha256:03851e20e20310dba0a4fe86c81b2f3b6dc70c18515155e805dde098b2ab15a5"
+  },
+  {
+   "path": "migration/v26925-topology/scope.stage2b.json",
+   "sha256": "sha256:e38bc1ccc3c5b62c1f3750e4e0fe4d5778a1d02db769d7274bb15b91296c317a"
+  },
+  {
+   "path": "migration/v26925-topology/scope.stage2b1.json",
+   "sha256": "sha256:33d024a3406a26a44dc5ecc31568bde3ca805b1cfb753867a997f153533c9979"
+  },
+  {
+   "path": "migration/v26925-topology/scope.stage2b2.json",
+   "sha256": "sha256:90a93f93078141c32274085b7f26ed5e5dcf1e1655794c4cae4041e76b1d949f"
+  },
+  {
+   "path": "migration/v26925-topology/scope.stage2b3.json",
+   "sha256": "sha256:c38a62f9dcbf8aedbe2085532f2cfa361e2b2c2c499626f0b353ec5c9d6ce1cb"
+  },
+  {
+   "path": "migration/v26925-topology/steps.jsonl",
+   "sha256": "sha256:d4cf0a84ad8036dce8d433a42ce016446ee350eee054f9f466943305418c9406"
+  },
+  {
+   "path": "migration/v26925-topology/tests/test_topology.py",
+   "sha256": "sha256:6afea2d33fe4fd2868e0ce90534213e1ba7d2fcf9d29de384c684d2b7a37b18a"
+  },
+  {
+   "path": "migration/v26925-topology/topology.py",
+   "sha256": "sha256:8452b856208c16452920fca34c7df63503b74a50e72c468663297b53b884f64b"
+  }
+ ],
+ "excluded": {
+  "bundles/": "see release/v26.9.25/hardening/bundles.json (per-bundle durability classification)",
+  "locks/": "empty runtime lock dir",
+  "verify/": "runtime outputs regenerated by replay",
+  "__pycache__/ .pytest_cache/ .ruff_cache/": "caches"
+ },
+ "replay_procedure": [
+  "git -C <chatman-ecosystem> archive 570d358994e9cb7c19e3e8ca952aa8ebcc7713fa migration/v26925-topology | tar -x -C <scratch>",
+  "cd <scratch>/migration/v26925-topology && mkdir -p verify",
+  "then each commands[*].cmd with TOPO_HOME=$PWD (TOPO_FIXTURES, TOPO_SCRATCH under <scratch>)"
+ ],
+ "commands": [
+  {
+   "cmd": "cd tests && python3 test_topology.py",
+   "cwd_original": "/Users/sac/.claude/migration/v26925-topology",
+   "cwd": "git:seanchatmangpt/chatman-ecosystem@570d358994e9cb7c19e3e8ca952aa8ebcc7713fa:migration/v26925-topology",
+   "exit_original": 0,
+   "output_sha256_original": "d81fb302261d75c4ada8c360d616c539610be6537dae9d75133a5cddf681b6bd",
+   "replay": {
+    "exit": 0,
+    "output_sha256": "eecba25481ac3dc3032cd0803f89acc23a03c966f75f1140a1489a7bde01f91f",
+    "output_sha256_equal": false,
+    "evidence": "git:seanchatmangpt/chatman-ecosystem@7ae7e0eeead09f91e5affa390578b28b1ddcfb34:release/v26.9.25/hardening/evidence/topology/570d358994e9cb7c19e3e8ca952aa8ebcc7713fa/test_topology.log",
+    "summary": "Ran 30 tests ... OK",
+    "sha_note": "output embeds per-run fixture paths (TOPO_FIXTURES under the replaying lane scratch, uuid-suffixed); byte inequality expected, exit+count are the admission fields"
+   }
+  },
+  {
+   "cmd": "python3 replay_guard.py",
+   "cwd_original": "/Users/sac/.claude/migration/v26925-topology",
+   "cwd": "git:seanchatmangpt/chatman-ecosystem@570d358994e9cb7c19e3e8ca952aa8ebcc7713fa:migration/v26925-topology",
+   "exit_original": 0,
+   "output_sha256_original": "9e4149c31d59f498760a35311e1178a5461319a3d9767ad24d17df7b589d9162",
+   "replay": {
+    "exit": 0,
+    "output_sha256": "9e4149c31d59f498760a35311e1178a5461319a3d9767ad24d17df7b589d9162",
+    "output_sha256_equal": true,
+    "evidence": "git:seanchatmangpt/chatman-ecosystem@7ae7e0eeead09f91e5affa390578b28b1ddcfb34:release/v26.9.25/hardening/evidence/topology/570d358994e9cb7c19e3e8ca952aa8ebcc7713fa/replay_guard.log",
+    "summary": "40 cases, 0 failures",
+    "depends_on": "LOCAL_HOST_OBSERVATION ~/.claude/dfcm/topology_guard.py + topology_guard_cases.json (operator host, not in this repo)"
+   }
+  },
+  {
+   "cmd": "! grep -rnE 'unittest.mock|Mock\\(|MagicMock|patch\\(|monkeypatch|Mox|Mimic|:meck' tests/",
+   "cwd_original": "/Users/sac/.claude/migration/v26925-topology",
+   "cwd": "git:seanchatmangpt/chatman-ecosystem@570d358994e9cb7c19e3e8ca952aa8ebcc7713fa:migration/v26925-topology",
+   "exit_original": 0,
+   "output_sha256_original": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "replay": {
+    "exit": 0,
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "output_sha256_equal": true,
+    "evidence": "git:seanchatmangpt/chatman-ecosystem@7ae7e0eeead09f91e5affa390578b28b1ddcfb34:release/v26.9.25/hardening/evidence/topology/570d358994e9cb7c19e3e8ca952aa8ebcc7713fa/mockgrep.out",
+    "summary": "grep exit 1, zero matches (empty output)"
+   }
+  },
+  {
+   "cmd": "ruff check --select E9,F topology.py tests/ && ruff format --check topology.py tests/",
+   "cwd_original": "/Users/sac/.claude/migration/v26925-topology",
+   "cwd": "git:seanchatmangpt/chatman-ecosystem@570d358994e9cb7c19e3e8ca952aa8ebcc7713fa:migration/v26925-topology",
+   "exit_original": 0,
+   "output_sha256_original": "afa20b27dacc9bf0aba3c1d265964c21e04ab42f6e39e2dd4769718ceded003a",
+   "replay": {
+    "exit": 0,
+    "output_sha256": "afa20b27dacc9bf0aba3c1d265964c21e04ab42f6e39e2dd4769718ceded003a",
+    "output_sha256_equal": true,
+    "evidence": "git:seanchatmangpt/chatman-ecosystem@7ae7e0eeead09f91e5affa390578b28b1ddcfb34:release/v26.9.25/hardening/evidence/topology/570d358994e9cb7c19e3e8ca952aa8ebcc7713fa/ruff.log",
+    "summary": "ruff 0.14.0: All checks passed! / 2 files already formatted"
+   }
+  },
+  {
+   "cmd": "python3 topology.py verify --scope scope.finish.json --json",
+   "cwd_original": "/Users/sac/.claude/migration/v26925-topology",
+   "cwd": "git:seanchatmangpt/chatman-ecosystem@570d358994e9cb7c19e3e8ca952aa8ebcc7713fa:migration/v26925-topology",
+   "exit_original": 0,
+   "output_sha256_original": "2aa2853166114793a77a0a31b5b94d14210f1d5cd282e250c41514f52d58f519",
+   "replay": {
+    "exit": 0,
+    "output_sha256": "2aa2853166114793a77a0a31b5b94d14210f1d5cd282e250c41514f52d58f519",
+    "output_sha256_equal": true,
+    "evidence": "git:seanchatmangpt/chatman-ecosystem@7ae7e0eeead09f91e5affa390578b28b1ddcfb34:release/v26.9.25/hardening/evidence/topology/570d358994e9cb7c19e3e8ca952aa8ebcc7713fa/verify.json",
+    "summary": "{\"holds\": true, \"unauthorized_worktrees\": 0, \"shadow_copies\": 0, \"violations\": []}",
+    "observation_type": "LOCAL_HOST_OBSERVATION",
+    "note": "m_term() reads INVENTORY.json + steps.jsonl from the archive and live filesystem presence on the replaying host; it is a host observation, not a hermetic replay. steps.jsonl sha256 unchanged by the run."
+   }
+  }
+ ],
+ "standing": "PARTIAL_ALIVE",
+ "standing_reason": [
+  "replay of 4/5 commands from the git archive reproduces exit 0 and (3/5) byte-identical output digests",
+  "topology.py verify is typed LOCAL_HOST_OBSERVATION (reads live host filesystem)",
+  "replay_guard.py reads ~/.claude/dfcm/* on the operator host (not durable in this repo)"
+ ],
+ "blocked": [
+  {
+   "id": "BLOCKED(EVIDENCE_NOT_HERMETIC:replay_guard-host-dependency)",
+   "broken_term": "R_missing_replay",
+   "failure_class": "EVIDENCE_FAILURE",
+   "detail": "topology_guard.py and topology_guard_cases.json live under ~/.claude/dfcm on the operator host"
+  },
+  {
+   "id": "BLOCKED(EVIDENCE_NOT_HERMETIC:verify-local-host-observation)",
+   "broken_term": "R_missing_replay",
+   "failure_class": "EVIDENCE_FAILURE",
+   "detail": "m_term holds is computed against the replaying host filesystem"
+  }
+ ],
+ "evidence_commit": "7ae7e0eeead09f91e5affa390578b28b1ddcfb34"
+}

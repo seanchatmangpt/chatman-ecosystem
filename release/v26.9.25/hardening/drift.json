@@ -1,0 +1,231 @@
+{
+  "GENERATED": "scripts/release_train/root_crown/hardening.py -- do not edit; run --write",
+  "authority": "NONE",
+  "current": {
+    "blockers": [],
+    "receipt_digest": "sha256:c6fab9f62d725909d70b9cc4dcba018335415c40541707a63a72180db362e226",
+    "refusals": [],
+    "remaining": [
+      "AC-03:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+      "AC-04:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+      "AC-07:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+      "AC-12:BLOCKED:NOT_COLD",
+      "AC-13:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+      "AC-14:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+      "AC-15:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+      "AC-16:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+      "AC-18:BLOCKED:CROWN_DEPENDENCIES_OPEN",
+      "F-01:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+      "F-02:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+      "F-08:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+      "F-09:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+      "F-12:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+      "F-13:BLOCKED:EVIDENCE_DELTA_UNBOUNDED"
+    ],
+    "standing": "BLOCKED"
+  },
+  "law": "drift is reported, never used to refuse history (posttag.py); the historical replay stays HISTORICAL_RELEASE_REPLAY_EXACT",
+  "moved_since_tag": [
+    "seanchatmangpt/ash_a2a",
+    "seanchatmangpt/autofde-lab",
+    "seanchatmangpt/beam4pm",
+    "seanchatmangpt/chatman-ecosystem",
+    "seanchatmangpt/engineering-standards",
+    "seanchatmangpt/ggen-ecosystem",
+    "seanchatmangpt/ggen-marketplace",
+    "seanchatmangpt/ggen_igniter",
+    "seanchatmangpt/gymact",
+    "seanchatmangpt/xaas",
+    "seanchatmangpt/zoela"
+  ],
+  "observations": {
+    "locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/inputs/current-observations.json",
+    "observation_authority": "github-api:GITHUB_TOKEN:read",
+    "observed_at": "2026-09-26T00:20:35Z",
+    "path": "release/v26.9.25/hardening/inputs/current-observations.json",
+    "sha256": "sha256:e7b46af8069b4ef5fc359cd9a3b882e00488c6c85c6498576faf1510e0050469"
+  },
+  "payload_freeze": {
+    "excludes": [
+      "autonomy",
+      "hardening"
+    ],
+    "path": "release/v26.9.25",
+    "recomputed_tree_sha": "a01b914de2e4b3503dc2126ce233654af764c362",
+    "result": "HOLDS",
+    "tagged_tree_sha": "a01b914de2e4b3503dc2126ce233654af764c362"
+  },
+  "release": "v26.9.25",
+  "repos": {
+    "seanchatmangpt/affidavit": {
+      "compare_status": "identical",
+      "error": null,
+      "moved_since_tag": false,
+      "observed_head": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+      "pin_sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+      "tag_receipt_head": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2"
+    },
+    "seanchatmangpt/ash_a2a": {
+      "compare_status": "ahead",
+      "error": null,
+      "moved_since_tag": true,
+      "observed_head": "8877c599312150569e42cedf50d4473d84a7be05",
+      "pin_sha": "7999524d0b98aa5dc650a0538c1be5ec8b867477",
+      "tag_receipt_head": "7999524d0b98aa5dc650a0538c1be5ec8b867477"
+    },
+    "seanchatmangpt/ash_r2rml": {
+      "compare_status": "identical",
+      "error": null,
+      "moved_since_tag": false,
+      "observed_head": "901bfb8a08dac5ea30ad77f0bb6de7a29eb8cd34",
+      "pin_sha": "901bfb8a08dac5ea30ad77f0bb6de7a29eb8cd34",
+      "tag_receipt_head": "901bfb8a08dac5ea30ad77f0bb6de7a29eb8cd34"
+    },
+    "seanchatmangpt/ash_surface": {
+      "compare_status": "identical",
+      "error": null,
+      "moved_since_tag": false,
+      "observed_head": "7d5492795d9b9a0956f51545ed1ad1932768b77e",
+      "pin_sha": "7d5492795d9b9a0956f51545ed1ad1932768b77e",
+      "tag_receipt_head": "7d5492795d9b9a0956f51545ed1ad1932768b77e"
+    },
+    "seanchatmangpt/autofde-lab": {
+      "compare_status": "ahead",
+      "error": null,
+      "moved_since_tag": true,
+      "observed_head": "b417eea64ef8e4d841b9cc2f4a898753e4b71d1b",
+      "pin_sha": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0",
+      "tag_receipt_head": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0"
+    },
+    "seanchatmangpt/beam4pm": {
+      "compare_status": "ahead",
+      "error": null,
+      "moved_since_tag": true,
+      "observed_head": "c2d9dbe441b892ba070eac52bfebeb0e3c132d39",
+      "pin_sha": "8c3f5e09c297023059ad384629a55ddb2ac785b1",
+      "tag_receipt_head": "8c3f5e09c297023059ad384629a55ddb2ac785b1"
+    },
+    "seanchatmangpt/chatgpt-cloud-elixir": {
+      "compare_status": "identical",
+      "error": null,
+      "moved_since_tag": false,
+      "observed_head": "d6727fef06b170bc6c3839bbf2a9456e33111920",
+      "pin_sha": "d6727fef06b170bc6c3839bbf2a9456e33111920",
+      "tag_receipt_head": "d6727fef06b170bc6c3839bbf2a9456e33111920"
+    },
+    "seanchatmangpt/chatman-ecosystem": {
+      "compare_status": "ahead",
+      "error": null,
+      "moved_since_tag": true,
+      "observed_head": "6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+      "pin_sha": "8321663d02b849cbb7879b3eaf548d5bdca7a7e9",
+      "tag_receipt_head": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+    },
+    "seanchatmangpt/engineering-standards": {
+      "compare_status": "ahead",
+      "error": null,
+      "moved_since_tag": true,
+      "observed_head": "71a6f607074b0f8d1b23855c11f10557a545b655",
+      "pin_sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+      "tag_receipt_head": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629"
+    },
+    "seanchatmangpt/ex4pm": {
+      "compare_status": "identical",
+      "error": null,
+      "moved_since_tag": false,
+      "observed_head": "c4ca84410c379888305c85201710734afb21f9bf",
+      "pin_sha": "c4ca84410c379888305c85201710734afb21f9bf",
+      "tag_receipt_head": "c4ca84410c379888305c85201710734afb21f9bf"
+    },
+    "seanchatmangpt/ggen-ecosystem": {
+      "compare_status": "ahead",
+      "error": null,
+      "moved_since_tag": true,
+      "observed_head": "a58edcf80325de5709088e7b7938ad68c33e04f3",
+      "pin_sha": "8bf231242b5fa30587a3d7357c8aaa57905ccfdf",
+      "tag_receipt_head": "8bf231242b5fa30587a3d7357c8aaa57905ccfdf"
+    },
+    "seanchatmangpt/ggen-marketplace": {
+      "compare_status": "ahead",
+      "error": null,
+      "moved_since_tag": true,
+      "observed_head": "bf10f7bf0ee8adbcaf9d8399883e53a5e837ff5b",
+      "pin_sha": "1f4abc53084e3376a7fed2c1d153029e8711fcee",
+      "tag_receipt_head": "1f4abc53084e3376a7fed2c1d153029e8711fcee"
+    },
+    "seanchatmangpt/ggen_igniter": {
+      "compare_status": "ahead",
+      "error": null,
+      "moved_since_tag": true,
+      "observed_head": "316436474aa949fd2f924980160016a58807bd06",
+      "pin_sha": "9639198b5c3e0e25906acc5b36dd9eb17bd592be",
+      "tag_receipt_head": "9639198b5c3e0e25906acc5b36dd9eb17bd592be"
+    },
+    "seanchatmangpt/gymact": {
+      "compare_status": "ahead",
+      "error": null,
+      "moved_since_tag": true,
+      "observed_head": "eeb0c2b97cfa55210f26bb7365989a739b3cb113",
+      "pin_sha": "281009dfd8ef435f0027009fc1a88fd86688f8b9",
+      "tag_receipt_head": "281009dfd8ef435f0027009fc1a88fd86688f8b9"
+    },
+    "seanchatmangpt/wasm4pm": {
+      "compare_status": "identical",
+      "error": null,
+      "moved_since_tag": false,
+      "observed_head": "9fc4f1ae3cc99cf65a5f014580db8e1ea3d08b55",
+      "pin_sha": "9fc4f1ae3cc99cf65a5f014580db8e1ea3d08b55",
+      "tag_receipt_head": "9fc4f1ae3cc99cf65a5f014580db8e1ea3d08b55"
+    },
+    "seanchatmangpt/xaas": {
+      "compare_status": "ahead",
+      "error": null,
+      "moved_since_tag": true,
+      "observed_head": "4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f",
+      "pin_sha": "e039967dac9f88961873b6a958f3979a106854f2",
+      "tag_receipt_head": "e039967dac9f88961873b6a958f3979a106854f2"
+    },
+    "seanchatmangpt/zcode-cli": {
+      "compare_status": "identical",
+      "error": null,
+      "moved_since_tag": false,
+      "observed_head": "d1abfbe56660ade672af1125a3f11d91fc50a09e",
+      "pin_sha": "d1abfbe56660ade672af1125a3f11d91fc50a09e",
+      "tag_receipt_head": "d1abfbe56660ade672af1125a3f11d91fc50a09e"
+    },
+    "seanchatmangpt/zoela": {
+      "compare_status": "ahead",
+      "error": null,
+      "moved_since_tag": true,
+      "observed_head": "89745f2fa4f7f438749ef61b638d17739ef11630",
+      "pin_sha": "3d16cf3e43e195092161aaba4d481c7654b4035d",
+      "tag_receipt_head": "3d16cf3e43e195092161aaba4d481c7654b4035d"
+    }
+  },
+  "root": {
+    "moved_since_tag": [
+      "seanchatmangpt/ash_a2a",
+      "seanchatmangpt/autofde-lab",
+      "seanchatmangpt/beam4pm",
+      "seanchatmangpt/chatman-ecosystem",
+      "seanchatmangpt/engineering-standards",
+      "seanchatmangpt/ggen-ecosystem",
+      "seanchatmangpt/ggen-marketplace",
+      "seanchatmangpt/ggen_igniter",
+      "seanchatmangpt/gymact",
+      "seanchatmangpt/xaas",
+      "seanchatmangpt/zoela"
+    ],
+    "root_observed_head": "6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+    "root_observed_head_is_attested": true
+  },
+  "schema": "https://chatman.dev/root-crown/hardening/drift/v1",
+  "tag": {
+    "holds": true,
+    "observed_commit_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+    "observed_object_sha": "337e839937c247de4ee58b744c8b8e43950d18e3",
+    "recorded_commit_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+    "recorded_object_sha": "337e839937c247de4ee58b744c8b8e43950d18e3",
+    "subject_delta_paths": 109
+  }
+}

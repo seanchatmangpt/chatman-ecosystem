@@ -1,0 +1,516 @@
+test_cleanup_moves_to_trash_and_is_reversible (__main__.TestDrillAndCleanup.test_cleanup_moves_to_trash_and_is_reversible) ... OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '1f68db9b3422eec56bcf5ba71ad806fba1d994895245d26c24150605ea03b2d9', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_cleanup-91be92ae_C2 :: 201886c400f108011fa6c824decf252a6e0b2966
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_cleanup-91be92ae_K_claude_worktrees_agent-1 :: 3f60a9a6c13415a6d49412daf4560eb25a53d4cc
+OK   push 1 backup refs :: /fixtures/cleanup-91be92ae/origin.git
+ * [new branch]      3f60a9a6c13415a6d49412daf4560eb25a53d4cc -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_cleanup-91be92ae_C2 files=3 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_cleanup-91be92ae_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   retire tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_cleanup-91be92ae_K_claude_worktrees_agent-1 :: [{'from': '/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/fixtures/cleanup-91be92ae/K/.claude/worktrees/agent
+OK   retire tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_cleanup-91be92ae_C2 :: [{'from': '/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/fixtures/cleanup-91be92ae/C2', 'to': '/private/tmp/
+ok
+test_cleanup_refuses_without_drill (__main__.TestDrillAndCleanup.test_cleanup_refuses_without_drill) ... {
+ "holds": true,
+ "unauthorized_worktrees": 0,
+ "shadow_copies": 0,
+ "violations": []
+}
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '05306b29f84d0f670f9fef2044bc5127bde20f13c4330a65083ad4a29754432c', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_nodrill-ea63484c_K_claude_worktrees_agent-1 :: 7b0eca25266874bfa5e355e73b3d5325bd2d3224
+OK   push 1 backup refs :: /fixtures/nodrill-ea63484c/origin.git
+ * [new branch]      7b0eca25266874bfa5e355e73b3d5325bd2d3224 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-
+ok
+test_drill_byte_exact_and_mutant (__main__.TestDrillAndCleanup.test_drill_byte_exact_and_mutant) ... SKIP tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_nodrill-ea63484c_K_claude_worktrees_agent-1: REFUSED(UNREVERSIBLE_CLEANUP:R12)
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': 'aaada8483b3708269fb231d51dbf2620435855cad1ac567602ce9aedc982f20b', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_drill-29078acb_K_claude_worktrees_agent-1 :: 4842077c2fd602665a7514aadd0b37bb93a160f6
+OK   push 1 backup refs :: able/fixtures/drill-29078acb/origin.git
+ * [new branch]      4842077c2fd602665a7514aadd0b37bb93a160f6 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v2692
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=6>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_staged_state_recorded_separately (__main__.TestDrillAndCleanup.test_staged_state_recorded_separately) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_drill-29078acb_K_claude_worktrees_agent-1 files=6 mism=[] missing=[] extra=[]
+FAIL tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_drill-29078acb_K_claude_worktrees_agent-1 files=6 mism=['bin.dat'] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': 'af715cca36c4d242ad5c310c7b0dad9b3608728b3201ceaa1de2ca28d306f6fc', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_staged-05ffa2be_K_claude_worktrees_agent-st :: 8f14b1b9d707da6d01aba1190a920e4526490382
+OK   push 1 backup refs :: e/fixtures/staged-05ffa2be/origin.git
+ * [new branch]      8f14b1b9d707da6d01aba1190a920e4526490382 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_deinit_retire_of_active_submodule_leaves_parent_clean (__main__.TestFinishSignoffs.test_deinit_retire_of_active_submodule_leaves_parent_clean) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_staged-05ffa2be_K_claude_worktrees_agent-st files=3 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': 'a0a41cf1240a64e6ae855e3ffc479e1bdb79cbfeac8aeb502dfee1ab12b0e441', 'kinds': {'CANONICAL': 1}}
+{
+ "CANONICAL": 1
+}
+
+OK   signoff add tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_deinit-0106f987_P_sub :: {'grant': 'test', 'before': None, 'after_kind': 'SUBMODULE_ACTIVE'}
+{"signoffs_applied": 1}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_deinit-0106f987_P_sub :: 8d01d2e2ba1521f64929867efd17255eb1807698
+OK   push 1 backup refs :: tem/H2-topology-durable/fixtures/deinit-0106f987/origin.git
+ * [new branch]      8d01d2e2ba1521f64929867efd17255eb1807698 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58a
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_deinit-0106f987_P_sub files=2 mism=[] missing=[] extra=[]
+OK   retire tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_deinit-0106f987_P_sub :: [{'from': '/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/fixtures/deinit-0106f987/P/sub', 'to': '/private/tm
+ok
+test_m_term_unowned_identity_is_sole_copy (__main__.TestFinishSignoffs.test_m_term_unowned_identity_is_sole_copy) ... ok
+test_secret_trash_records_sha256_only_and_secret_survives_in_trash (__main__.TestFinishSignoffs.test_secret_trash_records_sha256_only_and_secret_survives_in_trash) ... {
+ "holds": true,
+ "unauthorized_worktrees": 0,
+ "shadow_copies": 0,
+ "violations": []
+}
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '62e0c6a63d01f4bc890666fa26f880ff5b6c1dd952f073bc34fda018fd367385', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_secrettrash-08a9fe2d_K_claude_worktrees_agent-sec :: 0cb7e2886db78aa48ce2f1f9db07c09986c38180
+OK   push 1 backup refs :: secrettrash-08a9fe2d/origin.git
+ * [new branch]      0cb7e2886db78aa48ce2f1f9db07c09986c38180 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-harden
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_secrettrash-08a9fe2d_K_claude_worktrees_agent-sec files=3 mism=[] missing=[] extra=[]
+OK   signoff secret_trash tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_secrettrash-08a9fe2d_K_claude_worktrees_agent-sec :: {'grant': 'test grant', 'before': {'kind': 'LINKED_WORKTREE', 'blocked': None, 'writer_queue': 'fx'}, 'after_kind': 'LINKED_WORKTREE'}
+{"signoffs_applied": 1}
+OK   retire tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_secrettrash-08a9fe2d_K_claude_worktrees_agent-sec :: [{'from': '/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/fixtures/secrettrash-08a9fe2d/K/.claude/worktrees/a
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/tests/test_topology.py:474: ResourceWarning: unclosed file <_io.TextIOWrapper name='/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/fixtures/secrettrash-08a9fe2d/state/steps.jsonl' mode='r' encoding='UTF-8'>
+  steps = [json.loads(x) for x in open(os.path.join(w.home, "steps.jsonl"))]
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R10_not_canonical (__main__.TestGateRules.test_R10_not_canonical) ... OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': 'caee87ca70d5bb51c317f7c9065647a5652cc56e6f705762c6ab2966727c0582', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-facf5eeb_C :: 7c98bc7afdc0cbd2b248ca2ab90eaa4a0032ca4d
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-facf5eeb_K_claude_worktrees_agent-1 :: aec5e7ef91cb10e5ef7ce1be06eff260a37dccc3
+OK   push 2 backup refs :: opology-durable_fixtures_gate-facf5eeb_C
+ * [new branch]      aec5e7ef91cb10e5ef7ce1be06eff260a37dccc3 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R11_no_nested_ungated (__main__.TestGateRules.test_R11_no_nested_ungated) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-facf5eeb_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-facf5eeb_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '05b1fb0ba264f9e71b581747d08cf1060e3605a467ae851812e9db28006d14af', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-7cee8590_C :: 11e95d3b874d69ef02d202cc563ca6eae9a502d7
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-7cee8590_K_claude_worktrees_agent-1 :: 88a71b7e8dd203b814b2baab78e4ba058c33f18d
+OK   push 2 backup refs :: opology-durable_fixtures_gate-7cee8590_C
+ * [new branch]      88a71b7e8dd203b814b2baab78e4ba058c33f18d -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R12_rollback_qualified (__main__.TestGateRules.test_R12_rollback_qualified) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-7cee8590_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-7cee8590_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': 'fefae5a3197c9afa2ac54dd4012f3835e259733779f7e41d8c3170bdb24c6e76', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-949e6155_C :: 0f960d31d7d485a9db677adff43b9f0e8923e460
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-949e6155_K_claude_worktrees_agent-1 :: ee7e254c5f7293d37be276915012767c35d21eb7
+OK   push 2 backup refs :: opology-durable_fixtures_gate-949e6155_C
+ * [new branch]      ee7e254c5f7293d37be276915012767c35d21eb7 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R13_lock_held (__main__.TestGateRules.test_R13_lock_held) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-949e6155_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-949e6155_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '5e8a996b6584ba79657085d60356488d706a8efd3b0699925bdb7a398e34cf72', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-45c1e3b4_C :: 0f28d18319d827c6207ae9b207eef78c258d5984
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-45c1e3b4_K_claude_worktrees_agent-1 :: 221d9c8abd2e4a4860cd5b5841be1469f5cb22a9
+OK   push 2 backup refs :: opology-durable_fixtures_gate-45c1e3b4_C
+ * [new branch]      221d9c8abd2e4a4860cd5b5841be1469f5cb22a9 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R14_not_live (__main__.TestGateRules.test_R14_not_live) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-45c1e3b4_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-45c1e3b4_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '63edfcf73e0db4eb5c5a4302529d865357b2ebfa55c8f5e8b43b6012018b42bf', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-5b698d33_C :: 7a46db2a947a89dbd94c4f997145ae04316601b7
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-5b698d33_K_claude_worktrees_agent-1 :: aed9139374ef8f0eae6f905c052f7d4854717013
+OK   push 2 backup refs :: opology-durable_fixtures_gate-5b698d33_C
+ * [new branch]      aed9139374ef8f0eae6f905c052f7d4854717013 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R17_owner_resolved (__main__.TestGateRules.test_R17_owner_resolved) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-5b698d33_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-5b698d33_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '0063f6f5c2f4d90da6105febc2eaec3d45458e7b40b8ed0d1a40f8d83d06526a', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-7a5515ee_C :: c1ece7f733787be38a741af7f38406c33c8c2d4a
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-7a5515ee_K_claude_worktrees_agent-1 :: c14e065e3c9543df153a6c81c28e856e278a4d6d
+OK   push 2 backup refs :: opology-durable_fixtures_gate-7a5515ee_C
+ * [new branch]      c14e065e3c9543df153a6c81c28e856e278a4d6d -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R1_frozen (__main__.TestGateRules.test_R1_frozen) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-7a5515ee_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-7a5515ee_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '6d511875eda3a947078b3f859cd8ae434068d2b27cad35028fa928de5835ccd6', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-cb14ee94_C :: 57e97bad7c30c4b7e0a5a7dae9dd76046966f4d8
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-cb14ee94_K_claude_worktrees_agent-1 :: cf361408c12677a9aab05f6d69eb5b23b1bc3cd1
+OK   push 2 backup refs :: opology-durable_fixtures_gate-cb14ee94_C
+ * [new branch]      cf361408c12677a9aab05f6d69eb5b23b1bc3cd1 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R2_ref_resolves (__main__.TestGateRules.test_R2_ref_resolves) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-cb14ee94_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-cb14ee94_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '7b8ec05c48762ce8b8813183bbcaabd2c685d2baff065dde72b2296a820d9751', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-038c9986_C :: d1cf6868bc47285aecd181ab8fd08eecd1164e0d
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-038c9986_K_claude_worktrees_agent-1 :: 47babaca132be3d4cb7d17d2829e5310a69fa481
+OK   push 2 backup refs :: opology-durable_fixtures_gate-038c9986_C
+ * [new branch]      47babaca132be3d4cb7d17d2829e5310a69fa481 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R3_commit_reachable (__main__.TestGateRules.test_R3_commit_reachable) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-038c9986_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-038c9986_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '1fa2eab12ed33487bff367f2ab8b64d76cbaef86f691f451f4a1e9cadf33e8b1', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-ebe92b16_C :: b5dda2f6ae82da79d17a89eb9ace89d7ffc24847
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-ebe92b16_K_claude_worktrees_agent-1 :: 3f83a3572cf6dac2cac449da8a42bc9c57e7354e
+OK   push 2 backup refs :: opology-durable_fixtures_gate-ebe92b16_C
+ * [new branch]      3f83a3572cf6dac2cac449da8a42bc9c57e7354e -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R4_dirty_archived (__main__.TestGateRules.test_R4_dirty_archived) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-ebe92b16_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-ebe92b16_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '2707d00cec69d2ba34e83a9ce37c8e5265ba91fdbe3c5072de42dd5237a5a459', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-f812875a_C :: 913195134628f3b000a654076d33cd0cb0978174
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-f812875a_K_claude_worktrees_agent-1 :: 9d240b3ef03a82e39b555f24b328ea6dfd5755f3
+OK   push 2 backup refs :: opology-durable_fixtures_gate-f812875a_C
+ * [new branch]      9d240b3ef03a82e39b555f24b328ea6dfd5755f3 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R5_ignored_evidence (__main__.TestGateRules.test_R5_ignored_evidence) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-f812875a_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-f812875a_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '06e71839c86e9860cf133919a1c81d236c6a9227f0c60e72bd34d1c0943cc4fc', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-c480a2d1_C :: b7b8a1b5af9a0cf754b52b0373dfd5cf4a47b3ee
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-c480a2d1_K_claude_worktrees_agent-1 :: 66e3304f3f309c73346e2abd17376f1270be1731
+OK   push 2 backup refs :: opology-durable_fixtures_gate-c480a2d1_C
+ * [new branch]      66e3304f3f309c73346e2abd17376f1270be1731 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R6_stash (__main__.TestGateRules.test_R6_stash) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-c480a2d1_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-c480a2d1_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '76ad233442ce563742423cdcb577391277f3e2af7bf069c9e97ef6eaa40409ac', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-20637c6f_C :: b940ef4f09377667a4385ebd14b89d89dca5b746
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-20637c6f_K_claude_worktrees_agent-1 :: 6269dc91a37ea2c8c29d14cd97b22f2ff7273fb2
+OK   push 2 backup refs :: opology-durable_fixtures_gate-20637c6f_C
+ * [new branch]      6269dc91a37ea2c8c29d14cd97b22f2ff7273fb2 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R7_snapshot_fresh (__main__.TestGateRules.test_R7_snapshot_fresh) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-20637c6f_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-20637c6f_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': 'fe2ba4a8e1c9d14abbb00eb63d58de616c61cc235f4045d51b26eb832663896e', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-c70488c4_C :: eff72f92a96f2e5f92b449e48e9fd28c971240b1
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-c70488c4_K_claude_worktrees_agent-1 :: e39a7869a5aecae05e146c65bf29aaeff2fa6bd2
+OK   push 2 backup refs :: opology-durable_fixtures_gate-c70488c4_C
+ * [new branch]      e39a7869a5aecae05e146c65bf29aaeff2fa6bd2 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R8_remote_durable (__main__.TestGateRules.test_R8_remote_durable) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-c70488c4_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-c70488c4_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '051f6fd38425ec3a8f14b23fa08133bc2dd06a319f7c4182533859fa2552a95b', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-ccd64096_C :: a075da8e6a9748d1533a0e3c7c98b22e03e13c4b
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-ccd64096_K_claude_worktrees_agent-1 :: d600b6ce2e53f5a6c949128b82a7ce1a6c00e745
+OK   push 2 backup refs :: opology-durable_fixtures_gate-ccd64096_C
+ * [new branch]      d600b6ce2e53f5a6c949128b82a7ce1a6c00e745 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R9_no_key_material_pushed (__main__.TestGateRules.test_R9_no_key_material_pushed) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-ccd64096_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-ccd64096_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '70b84280fedae9b263be390a1c3d638e46ead25c73b93b6b106f87902f88e338', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-b01f8e08_C :: 5ae2802ba637a64bc6768c89ecdae858c0b42cc5
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-b01f8e08_K_claude_worktrees_agent-1 :: 633145bd41853b861891d7f02e40a070dd1ed301
+OK   push 2 backup refs :: opology-durable_fixtures_gate-b01f8e08_C
+ * [new branch]      633145bd41853b861891d7f02e40a070dd1ed301 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_baseline_pass (__main__.TestGateRules.test_baseline_pass) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-b01f8e08_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-b01f8e08_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': 'ff4f4e69f922202c6f68d9ab93271653ba6fe3c7ed060e0125e84d955d5504e0', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1, 'CLONE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1,
+ "CLONE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-48a5789c_C :: 88c589ee10ad96c6a9180047928ed6398d0a7042
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-48a5789c_K_claude_worktrees_agent-1 :: e0754a3f2e0b2c54d3450b750d4282c3d9437d01
+OK   push 2 backup refs :: opology-durable_fixtures_gate-48a5789c_C
+ * [new branch]      e0754a3f2e0b2c54d3450b750d4282c3d9437d01 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v269
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R15_size (__main__.TestSizeSecretOrphan.test_R15_size) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-48a5789c_C files=5 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_gate-48a5789c_K_claude_worktrees_agent-1 files=4 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': 'b4289ff361fda1b1d4a845bcbd344c7c654f88e992d2e5e4705a9d51191a13e9', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_size-e0e6302b_K_claude_worktrees_agent-big :: d58cfdb3cfe2eeacb93d71a0aa5afaca62d3db7e
+OK   push 1 backup refs :: able/fixtures/size-e0e6302b/origin.git
+ * [new branch]      d58cfdb3cfe2eeacb93d71a0aa5afaca62d3db7e -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_R16_secret_unpreservable_and_dedup (__main__.TestSizeSecretOrphan.test_R16_secret_unpreservable_and_dedup) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_size-e0e6302b_K_claude_worktrees_agent-big files=3 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': 'ad5e7af7b08353711237f6947f4c23c5cbdad8276a044006177a8a955126eced', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_secret-20394c05_K_claude_worktrees_agent-sec :: 44a92d81dcc5a25f5e052a50f6c787faf9cd0275
+OK   push 1 backup refs :: /fixtures/secret-20394c05/origin.git
+ * [new branch]      44a92d81dcc5a25f5e052a50f6c787faf9cd0275 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-h
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_secret-20394c05_K_claude_worktrees_agent-sec files=3 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '9350af95e113907fb6c97dcf345ac5b5b083dcd8638cc7b01009a501ea7c09f7', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_secretdedup-c18dbd46_K_claude_worktrees_agent-sec :: c550ce2ab64b8cd1c035269879f1fb11433b3640
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_orphan_and_prunable (__main__.TestSizeSecretOrphan.test_orphan_and_prunable) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_secretdedup-c18dbd46_K_claude_worktrees_agent-sec files=3 mism=[] missing=[] extra=[]
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': '49bbf8cff6d6e002b8d6465bb4d304c8e6622bca23f76e1030e72cdc4f452e87', 'kinds': {'CANONICAL': 1, 'PRUNABLE_RECORD': 1, 'ORPHAN_WORKTREE': 1}}
+{
+ "CANONICAL": 1,
+ "PRUNABLE_RECORD": 1,
+ "ORPHAN_WORKTREE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_orphan-d624af96_K_claude_worktrees_agent-orphan :: 694ea191600b1b00764c217c3f51135c765d4f93
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_orphan-d624af96_K_claude_worktrees_stale-1 :: 423e8d0f9affc398cc1b72a6508390597dd637f1
+OK   push 1 backup refs :: xtures/orphan-d624af96/origin.git
+ * [new branch]      694ea191600b1b00764c217c3f51135c765d4f93 -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hard
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_revoked_key_redacted_and_passes (__main__.TestSizeSecretOrphan.test_revoked_key_redacted_and_passes) ... PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_orphan-d624af96_K_claude_worktrees_agent-orphan files=33 mism=[] missing=[] extra=[]
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_orphan-d624af96_K_claude_worktrees_stale-1 files=0 mism=None missing=None extra=None
+OK   freeze :: topo-20260925T0500Z-67450
+OK   inventory :: {'sha256': 'acb3027007bdc2b90ebd45a45fe6fa86f7055b8ec9d251f8b16478a9d32c0a5c', 'kinds': {'CANONICAL': 1, 'LINKED_WORKTREE': 1}}
+{
+ "CANONICAL": 1,
+ "LINKED_WORKTREE": 1
+}
+OK   preserve tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_revoked-39267073_K_claude_worktrees_agent-key :: 50db0e0b2c46ab474aa837d27a0e9d20e743af0a
+OK   push 1 backup refs :: ixtures/revoked-39267073/origin.git
+ * [new branch]      50db0e0b2c46ab474aa837d27a0e9d20e743af0a -> backup/v26.9.25/tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-ha
+/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925-hardening/chatman-ecosystem/H2-topology-durable/replay/migration/v26925-topology/topology.py:2164: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  r = drill_copy(scope, c, rec, run.get("run_id"))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_gitlink_precedence (__main__.TestV26923Fixes.test_gitlink_precedence) ... ok
+test_is_secret_no_token_substring (__main__.TestV26923Fixes.test_is_secret_no_token_substring) ... ok
+test_porcelain_z_odd_paths (__main__.TestV26923Fixes.test_porcelain_z_odd_paths) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 62.963s
+
+OK
+PASS tmp_claude-501_-Users-sac_90d06f90-3c25-4b15-bede-3d0e7e58ac78_scratchpad_v26925-hardening_chatman-ecosystem_H2-topology-durable_fixtures_revoked-39267073_K_claude_worktrees_agent-key files=4 mism=[] missing=[] extra=[]

@@ -1,0 +1,487 @@
+{
+ "records": {
+  "gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Engine-Prover-truex-doctor-eafafc1e": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Engine-Prover-truex-doctor-eafafc1e",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Engine-Prover-truex-doctor-eafafc1e/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/60c7b6e3-1e26-49ba-bc6a-de82f70692b1/.system_generated/worktrees/subagent-Engine-Prover-truex-doctor-eafafc1e",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Engine-Prover-truex-doctor-eafafc1e/admin-index": "64fe2e201585257c2cc2df8b3a58e886a69af6b0",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Engine-Prover-truex-doctor-eafafc1e/anchor": "4904edac991c7fc3035e30823878e57207f5e793",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Engine-Prover-truex-doctor-eafafc1e/worktree-head": "53f64bc3ad2b046ca85bb9a60c820cf9d5bcb5d2"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "4904edac991c7fc3035e30823878e57207f5e793"
+  },
+  "gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Receipt-Prover-truex-doctor-b5cabdda": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Receipt-Prover-truex-doctor-b5cabdda",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Receipt-Prover-truex-doctor-b5cabdda/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/60c7b6e3-1e26-49ba-bc6a-de82f70692b1/.system_generated/worktrees/subagent-Receipt-Prover-truex-doctor-b5cabdda",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Receipt-Prover-truex-doctor-b5cabdda/admin-index": "de24d6ad92565f0bc5a15e9fcf05cd29c7e0376e",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Receipt-Prover-truex-doctor-b5cabdda/anchor": "1814529d289977ea06d71b5c85121aba1bb6eb68",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Receipt-Prover-truex-doctor-b5cabdda/worktree-head": "53f64bc3ad2b046ca85bb9a60c820cf9d5bcb5d2"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "1814529d289977ea06d71b5c85121aba1bb6eb68"
+  },
+  "gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Replay-Prover-truex-doctor-1531e944": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Replay-Prover-truex-doctor-1531e944",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Replay-Prover-truex-doctor-1531e944/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/60c7b6e3-1e26-49ba-bc6a-de82f70692b1/.system_generated/worktrees/subagent-Replay-Prover-truex-doctor-1531e944",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Replay-Prover-truex-doctor-1531e944/admin-index": "ab5f9566909ba624b8c3a3936b3f5d05b47e0f0f",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Replay-Prover-truex-doctor-1531e944/anchor": "79e4ca1b4eddcb1d223f65eed004f77beae86da6",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_60c7b6e3-1e26-49ba-bc6a-de82f70692b1_system_generated_worktrees_subagent-Replay-Prover-truex-doctor-1531e944/worktree-head": "53f64bc3ad2b046ca85bb9a60c820cf9d5bcb5d2"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "79e4ca1b4eddcb1d223f65eed004f77beae86da6"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-84b9dc8c": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-84b9dc8c",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-84b9dc8c/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-84b9dc8c",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-84b9dc8c/admin-index": "b35281d58eebb28736a94653836672c9dc1ff322",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-84b9dc8c/anchor": "882a52e1e57cbdbe905e8aca1098aaf7141222a6",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-84b9dc8c/worktree-head": "fbc895c4a8fe8cfc6a441521e0e0c945b73a5df5"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "882a52e1e57cbdbe905e8aca1098aaf7141222a6"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-a55c6e1e": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-a55c6e1e",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-a55c6e1e/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-a55c6e1e",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-a55c6e1e/admin-index": "c14447c2a9748acdaf23721696564b50d160b3f4",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-a55c6e1e/anchor": "890e38456d82306340b0e4da04265d8578c185e7",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-a55c6e1e/worktree-head": "e08bea256f9b34469317bf5ee956743a1e403b54"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "890e38456d82306340b0e4da04265d8578c185e7"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-aab5ed0d": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-aab5ed0d",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-aab5ed0d/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-aab5ed0d",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-aab5ed0d/admin-index": "12a45bcc5d211552604b899098f8a0776b2c583e",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-aab5ed0d/anchor": "836b4acfab03cb83c3ea52c56c6769b63ea40efb",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-aab5ed0d/worktree-head": "9b5edc75dbf857c71a270e2bf6d4614949d1971e"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "836b4acfab03cb83c3ea52c56c6769b63ea40efb"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-ad1aa9b3": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-ad1aa9b3",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-ad1aa9b3/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-ad1aa9b3",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-ad1aa9b3/admin-index": "6b915491ef58913c5a92d86bc7ac970bf26c722d",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-ad1aa9b3/anchor": "0eceea82cd4f0f0d4430ca5add4e092946848b05",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-CLI---Integration-Specialist-truex-cli-specialist-ad1aa9b3/worktree-head": "e08bea256f9b34469317bf5ee956743a1e403b54"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "0eceea82cd4f0f0d4430ca5add4e092946848b05"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-2453b516": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-2453b516",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-2453b516/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-2453b516",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-2453b516/admin-index": "7bebd6c0a28d301e2be1f97feb07689ac0247fd8",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-2453b516/anchor": "f53543070e2ec917bc4a691447b10be6dc7341b7",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-2453b516/worktree-head": "9b5edc75dbf857c71a270e2bf6d4614949d1971e"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "f53543070e2ec917bc4a691447b10be6dc7341b7"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-49e11be4": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-49e11be4",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-49e11be4/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-49e11be4",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-49e11be4/admin-index": "329f0c32e86d2b4c1901ab8bbfca18aa155d8560",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-49e11be4/anchor": "29c87582f15cbfc9a4c53f36cdf8995b35a77858",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-49e11be4/worktree-head": "e08bea256f9b34469317bf5ee956743a1e403b54"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "29c87582f15cbfc9a4c53f36cdf8995b35a77858"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-592a46a0": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-592a46a0",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-592a46a0/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-592a46a0",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-592a46a0/admin-index": "0637b65cd3296cfc5f2bbfb3adc042ee1fd969e2",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-592a46a0/anchor": "f224f24822170444ac34ebb2222d77fa34c3e9d1",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-592a46a0/worktree-head": "e08bea256f9b34469317bf5ee956743a1e403b54"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "f224f24822170444ac34ebb2222d77fa34c3e9d1"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-de264deb": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-de264deb",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-de264deb/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-de264deb",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-de264deb/admin-index": "f55627d595195d5c45c59c0744817a7b5f36eb08",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-de264deb/anchor": "5682b1a32463162b8c3425bd4f7d17f0083eeaf5",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Concurrency-Stress-Specialist-truex-concurrency-specialist-de264deb/worktree-head": "fbc895c4a8fe8cfc6a441521e0e0c945b73a5df5"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "5682b1a32463162b8c3425bd4f7d17f0083eeaf5"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-0b9110e0": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-0b9110e0",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-0b9110e0/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-0b9110e0",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-0b9110e0/admin-index": "b095f86000ba7f7bc01ac73182ba103a6486dde6",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-0b9110e0/anchor": "28bcaa59603f0bd9538a59bd61848a4713dbeef2",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-0b9110e0/worktree-head": "fbc895c4a8fe8cfc6a441521e0e0c945b73a5df5"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "28bcaa59603f0bd9538a59bd61848a4713dbeef2"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-49ac5710": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-49ac5710",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-49ac5710/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-49ac5710",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-49ac5710/admin-index": "223abba4f734f4c7694f003d20bb0218656ddde3",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-49ac5710/anchor": "71b6b5ead7e8ed263ee35a35b84c61cb81ff02b8",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-49ac5710/worktree-head": "9b5edc75dbf857c71a270e2bf6d4614949d1971e"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "71b6b5ead7e8ed263ee35a35b84c61cb81ff02b8"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-765e6b1a": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-765e6b1a",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-765e6b1a/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-765e6b1a",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-765e6b1a/admin-index": "d2ce612a5a69db247758308f1d8ee59ab37f9d80",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-765e6b1a/anchor": "e46a1056f2696058af2628a13805db1911882895",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-765e6b1a/worktree-head": "e08bea256f9b34469317bf5ee956743a1e403b54"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "e46a1056f2696058af2628a13805db1911882895"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-bf734770": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-bf734770",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-bf734770/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-bf734770",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-bf734770/admin-index": "8c27d0ab7a5ce913f47aced9603c187933663d0e",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-bf734770/anchor": "6c8de8ae774408023f99cd7338c5726f96f36a56",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-E2E-Path-Specialist-truex-e2e-specialist-bf734770/worktree-head": "e08bea256f9b34469317bf5ee956743a1e403b54"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "6c8de8ae774408023f99cd7338c5726f96f36a56"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-07e45a0b": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-07e45a0b",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-07e45a0b/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-07e45a0b",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-07e45a0b/admin-index": "2044ca99420b7f0a6cd9f7902aa24e7f207df461",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-07e45a0b/anchor": "c20c66f17b071f82f5471fa5de826c24d82d3c36",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-07e45a0b/worktree-head": "e08bea256f9b34469317bf5ee956743a1e403b54"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "c20c66f17b071f82f5471fa5de826c24d82d3c36"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-17d247c0": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-17d247c0",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-17d247c0/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-17d247c0",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-17d247c0/admin-index": "5b6ab7ff650b22325eb45a9246319f45ae37ca24",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-17d247c0/anchor": "c600caaf67b416dac43081ba9dbfb000f0a2ad19",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-17d247c0/worktree-head": "e08bea256f9b34469317bf5ee956743a1e403b54"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "c600caaf67b416dac43081ba9dbfb000f0a2ad19"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-996780bd": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-996780bd",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-996780bd/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-996780bd",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-996780bd/admin-index": "b527761ac01fea792abd5114b67271558be23365",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-996780bd/anchor": "b5fa98e1672aca103c33fa49b03ab992f2bda3e6",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-996780bd/worktree-head": "fbc895c4a8fe8cfc6a441521e0e0c945b73a5df5"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "b5fa98e1672aca103c33fa49b03ab992f2bda3e6"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-a58bfce1": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-a58bfce1",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-a58bfce1/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-a58bfce1",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-a58bfce1/admin-index": "ac653693ca802ebd90f254dd9768b3acf54301b8",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-a58bfce1/anchor": "caf0f0278ffa70feff06c54169b646746197ad52",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Fuzz---Refusal-Specialist-truex-fuzz-specialist-a58bfce1/worktree-head": "9b5edc75dbf857c71a270e2bf6d4614949d1971e"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "caf0f0278ffa70feff06c54169b646746197ad52"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-04cdcf76": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-04cdcf76",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-04cdcf76/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-04cdcf76",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-04cdcf76/admin-index": "b9ca10b8ff9ea7ff50e1c72a2c83fbe91e0a40c5",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-04cdcf76/anchor": "d9b38da100deb856749db676445a2131f73d7626",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-04cdcf76/worktree-head": "e08bea256f9b34469317bf5ee956743a1e403b54"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "d9b38da100deb856749db676445a2131f73d7626"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-0a8992d3": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-0a8992d3",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-0a8992d3/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-0a8992d3",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-0a8992d3/admin-index": "27a5a72906e2e761afaa94af55ae296e70382733",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-0a8992d3/anchor": "fec7beae537176215e4d66a5f65cab54a4db0618",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-0a8992d3/worktree-head": "e08bea256f9b34469317bf5ee956743a1e403b54"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "fec7beae537176215e4d66a5f65cab54a4db0618"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-ae4ffb89": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-ae4ffb89",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-ae4ffb89/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-ae4ffb89",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-ae4ffb89/admin-index": "f5730a42ef8403934f9b9347b115472a1bc86623",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-ae4ffb89/anchor": "c3d702760446ccdc610915ab1fe0f3e396bc0f70",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-ae4ffb89/worktree-head": "9b5edc75dbf857c71a270e2bf6d4614949d1971e"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "c3d702760446ccdc610915ab1fe0f3e396bc0f70"
+  },
+  "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-e48e9ef5": {
+   "bundle": null,
+   "canonical": "/Users/sac/truex",
+   "copy_id": "gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-e48e9ef5",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-e48e9ef5/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/75ee7101-e4e0-4550-b270-49c879819637/.system_generated/worktrees/subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-e48e9ef5",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-e48e9ef5/admin-index": "39627d5c6274b6757bd7ce0979e74155ea718d5b",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-e48e9ef5/anchor": "032dd95bb2c5750157133a174687c9bf2732a3c2",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_75ee7101-e4e0-4550-b270-49c879819637_system_generated_worktrees_subagent-Reactive-Resource-Leak-Auditor-truex-leak-auditor-e48e9ef5/worktree-head": "fbc895c4a8fe8cfc6a441521e0e0c945b73a5df5"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "truex",
+   "sha": "032dd95bb2c5750157133a174687c9bf2732a3c2"
+  }
+ }
+}

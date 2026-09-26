@@ -1,0 +1,9 @@
+{
+  "_provenance": "Durable locators of the crown run the committed autonomic receipt evaluates (run 36161856985 on the v26.9.25 tag commit). {crown_sha} binds the workflow to the exact subject that ran.",
+  "locators": {
+    "crown_receipt": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/receipts/run-36161856985/crown-receipt.json",
+    "observations": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/receipts/run-36161856985/observations.json",
+    "chain": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/receipts/chain.json",
+    "workflow": "git:seanchatmangpt/chatman-ecosystem@{crown_sha}:.github/workflows/root-crown.yml"
+  }
+}

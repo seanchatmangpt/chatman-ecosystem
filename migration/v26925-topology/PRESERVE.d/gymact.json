@@ -1,0 +1,49 @@
+{
+ "records": {
+  "tmp_t1-probe-gym": {
+   "bundle": null,
+   "canonical": "/Users/sac/gymact",
+   "copy_id": "tmp_t1-probe-gym",
+   "durable": "REMOTE",
+   "files": 2380,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_t1-probe-gym/anchor",
+   "nearest_base": {
+    "changed_paths": 7,
+    "commit": "4ab72e685302aa591f65fecad0ec73129ecd3589",
+    "ratio": 0.0029,
+    "total_paths": 2380
+   },
+   "ok": true,
+   "path": "/private/tmp/t1-probe-gym",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_t1-probe-gym/anchor": "66728e04de3628bed8dd0228c0b5ab9d9fefe14b",
+    "refs/preserve/v26.9.25/tmp_t1-probe-gym/dirty": "4e6f356bed7e3a0ac93b95a04cad1e1ad2f3b79d"
+   },
+   "remote_ref": "backup/v26.9.25/tmp_t1-probe-gym",
+   "remote_verified_sha": "66728e04de3628bed8dd0228c0b5ab9d9fefe14b",
+   "repo_id": "gymact",
+   "sha": "66728e04de3628bed8dd0228c0b5ab9d9fefe14b",
+   "skipped": [
+    {
+     "path": ".env.example",
+     "reason": "SECRET",
+     "sha256": "24728873d2fb7ca7ef278e4f477ecd04dafe3afb60489cd5e85cb5b749812fb3"
+    },
+    {
+     "path": ".ggen/keys/signing.key",
+     "reason": "SECRET",
+     "sha256": "3d1a84981f86dd4552beb3ef4c901d676c992696ca323372af7a62305a622cfd"
+    },
+    {
+     "path": ".secrets.example",
+     "reason": "SECRET",
+     "sha256": "49b8624ba9200c9529392556ccd1cd27a88f66bba9e75d7e5c41d6b26789a285"
+    }
+   ],
+   "snapshot_tree": "4bb6076e4dbbea16c5051ff03b30eb569c85161b"
+  }
+ }
+}

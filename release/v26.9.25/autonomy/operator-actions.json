@@ -1,0 +1,73 @@
+{
+  "schema": "https://chatman.dev/autonomic-crown/operator-actions/v1",
+  "release": "v26.9.25",
+  "scope": "POST_TAG; RFC-0005 §13 operator-only actions (HumanAuthorityGates). No machine edge holds this authority; the crown never performs them.",
+  "standing_until_performed": {
+    "state": "BLOCKED(AUTHORITY_CONFIGURATION)",
+    "failure_class": "AUTHORITY_FAILURE",
+    "broken_term": "R_missing_authority",
+    "authority": "WAITING_EXTERNAL_AUTHORITY",
+    "gates": [
+      "U-08"
+    ]
+  },
+  "actions": [
+    {
+      "id": "OA-01",
+      "order": 1,
+      "title": "Protect main",
+      "rfc": "RFC-0005 §12 (default branch main unprotected), §13.1",
+      "actor": "operator (repository admin)",
+      "request": {
+        "method": "PUT",
+        "path": "repos/seanchatmangpt/chatman-ecosystem/branches/main/protection",
+        "body": {
+          "required_status_checks": null,
+          "enforce_admins": true,
+          "required_pull_request_reviews": {
+            "required_approving_review_count": 0
+          },
+          "restrictions": null,
+          "allow_force_pushes": false,
+          "allow_deletions": false
+        }
+      },
+      "command": "gh api -X PUT repos/seanchatmangpt/chatman-ecosystem/branches/main/protection -H 'Accept: application/vnd.github+json' --input - <<'JSON'\n{\"required_status_checks\":null,\"enforce_admins\":true,\"required_pull_request_reviews\":{\"required_approving_review_count\":0},\"restrictions\":null,\"allow_force_pushes\":false,\"allow_deletions\":false}\nJSON",
+      "verification": [
+        "gh api repos/seanchatmangpt/chatman-ecosystem/branches/main --jq .protected   # expect: true",
+        "gh api repos/seanchatmangpt/chatman-ecosystem/branches/main/protection --jq '{enforce_admins: .enforce_admins.enabled, force: .allow_force_pushes.enabled, deletions: .allow_deletions.enabled, reviews: .required_pull_request_reviews.required_approving_review_count}'   # expect: true,false,false,0"
+      ]
+    },
+    {
+      "id": "OA-02",
+      "order": 2,
+      "after": "OA-01",
+      "title": "Require a reviewer on the release-crown environment, protected branches only",
+      "rfc": "RFC-0005 §12 (release-crown has no required reviewer), §13.2",
+      "actor": "operator (repository admin)",
+      "request": {
+        "method": "PUT",
+        "path": "repos/seanchatmangpt/chatman-ecosystem/environments/release-crown",
+        "body": {
+          "reviewers": [
+            {
+              "type": "User",
+              "id": "<operator user id>"
+            }
+          ],
+          "deployment_branch_policy": {
+            "protected_branches": true,
+            "custom_branch_policies": false
+          }
+        }
+      },
+      "command": "uid=$(gh api users/seanchatmangpt --jq .id) && gh api -X PUT repos/seanchatmangpt/chatman-ecosystem/environments/release-crown -H 'Accept: application/vnd.github+json' --input - <<JSON\n{\"reviewers\":[{\"type\":\"User\",\"id\":$uid}],\"deployment_branch_policy\":{\"protected_branches\":true,\"custom_branch_policies\":false}}\nJSON",
+      "verification": [
+        "gh api repos/seanchatmangpt/chatman-ecosystem/environments/release-crown --jq '[.protection_rules[] | select(.type==\"required_reviewers\") | .reviewers | length] | add'   # expect: >= 1",
+        "gh api repos/seanchatmangpt/chatman-ecosystem/environments/release-crown --jq .deployment_branch_policy.protected_branches   # expect: true",
+        "python3 scripts/observe_governance.py --repo seanchatmangpt/chatman-ecosystem --out .artifacts/governance.json   # GET-only; then the autonomic job reports authority AUTHORIZED only if both hold"
+      ]
+    }
+  ],
+  "note": "protected_branches=true requires main to be protected first (OA-01 before OA-02). Neither action changes the autonomy standing (a HumanAuthorityGate does not break U); both are required for authority AUTHORIZED and for U-08."
+}

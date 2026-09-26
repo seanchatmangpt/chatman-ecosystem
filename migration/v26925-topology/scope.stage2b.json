@@ -1,0 +1,124 @@
+{
+ "canonicals": {},
+ "canonical_map": {
+  "ggen": "/Users/sac/ggen",
+  "gymact": "/Users/sac/gymact",
+  "unjucks": "/Users/sac/unjucks",
+  "ferroplan": "/Users/sac/ferroplan",
+  "ash_a2a": "/Users/sac/ash_a2a",
+  "ostar": "/Users/sac/chatmangpt/ostar",
+  "SparsePrimingRepresentations": "/Users/sac/SparsePrimingRepresentations",
+  "aidgen": "/Users/sac/dev/aidgen",
+  "bytestar": "/Users/sac/bytestar",
+  "lsp-types-max": "/Users/sac/lsp-types-max",
+  "ggen-ecosystem": "/Users/sac/ggen-ecosystem",
+  "bcinr": "/Users/sac/bcinr",
+  "ggen-legacy": "/Users/sac/ggen-legacy",
+  "osx-clnr": "/Users/sac/osx-clnr",
+  "mfact": "/Users/sac/mfact",
+  "dteam": "/Users/sac/dteam",
+  "praxis": "/Users/sac/praxis",
+  "unibit": "/Users/sac/unibit",
+  "clap-noun-verb": "/Users/sac/clap-noun-verb",
+  "lsp-max": "/Users/sac/lsp-max",
+  "knhk": "/Users/sac/knhk",
+  "mfw": "/Users/sac/mfw",
+  "citty-test-utils": "/Users/sac/citty-test-utils",
+  "truex": "/Users/sac/truex",
+  "process-intelligence": "/Users/sac/process-intelligence",
+  "cargo-cicd": "/Users/sac/cargo-cicd",
+  "expo-supabase-ai-template": "/Users/sac/expo-supabase-ai-template",
+  "chicago-tdd-tools": "/Users/sac/chicago-tdd-tools",
+  "ash_ex4pm": "/Users/sac/ash_ex4pm",
+  "zoela": "/Users/sac/zoela",
+  "ex4pm": "/Users/sac/ex4pm",
+  "wasm4pm": "/Users/sac/wasm4pm",
+  "ash_r2rml": "/Users/sac/ash_r2rml",
+  "xaas": "/Users/sac/xaas",
+  "autofde-lab": "/Users/sac/autofde-lab",
+  "ggen_igniter": "/Users/sac/ggen_igniter",
+  "beam4pm": "/Users/sac/beam4pm",
+  "ggen-marketplace": "/Users/sac/ggen-marketplace",
+  "engineering-standards": "/Users/sac/engineering-standards",
+  "chatgpt-cloud-elixir": "/Users/sac/chatgpt-cloud-elixir",
+  "zcode-cli": "/Users/sac/zcode-cli"
+ },
+ "refs_only_repos": [],
+ "no_push_repos": [],
+ "owned_remote_patterns": [
+  "github.com/seanchatmangpt/"
+ ],
+ "exclude_paths": [],
+ "revoked_blobs": [
+  "2526aea024316351de21e640242799b160583ebf",
+  "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+  "40b0151635c49461e89d1608195dc8f20de3b826",
+  "57a9a64dea0bdf1e0c4fa3de929a80bb92ee0efd",
+  "6c20ccb464f9c7128f0cf8b2c4382ebec816bcb5",
+  "8855b47524c5340c6403da11a75c78e2125aaf25",
+  "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+  "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+  "b9b4240cad37f19508843c0e2a09ab08d1171d2d",
+  "dafe39933ba100f1c731f5658dce64361f35870a",
+  "eea6dfa8131f95223f020edf79068ad02e66f1f5",
+  "f0eeaa62ad272524de8d7ffc575c3d97deb93d7c"
+ ],
+ "host_signoff": [
+  {
+   "path": "/Users/sac/lsp-max/.claude/worktrees/",
+   "grant": "operator order v26.9.25 lane topo-1 stage-1 list: 'lsp-max (orphans)'; parent /Users/sac/tower-lsp-max no longer exists; archived into host lsp-max refs/preserve/v26.9.25/* (+ backup branch)"
+  }
+ ],
+ "blocked": [],
+ "extra_copies": [
+  {
+   "path": "/Users/sac/ex4pm-worktrees",
+   "owner": "ex4pm",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  },
+  {
+   "path": "/Users/sac/wasm4pm-worktrees",
+   "owner": "wasm4pm",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  },
+  {
+   "path": "/Users/sac/xaas-worktrees",
+   "owner": "xaas",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  },
+  {
+   "path": "/Users/sac/wt-v26918",
+   "owner": "ggen-marketplace",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  },
+  {
+   "path": "/Users/sac/zoela-wt",
+   "owner": "zoela",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  },
+  {
+   "path": "/Users/sac/zoela-wt2",
+   "owner": "zoela",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  },
+  {
+   "path": "/Users/sac/work",
+   "owner": "zoela",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  }
+ ]
+}

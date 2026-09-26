@@ -1,0 +1,508 @@
+{
+  "GENERATED": "scripts/release_train/root_crown/hardening.py -- do not edit; run --write",
+  "authority": "NONE",
+  "definition": "per-repository measures of the pinned release against its predecessor pins (git archives); delta = release - predecessor over repositories measured at both",
+  "falsifier": "a repository measured at both pins has a delta that differs from the difference of its two rows",
+  "generated_share": {
+    "v26.9.24": 0.067044,
+    "v26.9.25": 0.049786
+  },
+  "paired_repositories": 12,
+  "paired_totals": {
+    "files": {
+      "delta": 184,
+      "v26.9.24": 57416,
+      "v26.9.25": 57600
+    },
+    "generated_files": {
+      "delta": 38,
+      "v26.9.24": 2556,
+      "v26.9.25": 2594
+    },
+    "generated_loc": {
+      "delta": 2165,
+      "v26.9.24": 451877,
+      "v26.9.25": 454042
+    },
+    "handwritten_loc": {
+      "delta": 3969,
+      "v26.9.24": 87057,
+      "v26.9.25": 91026
+    },
+    "loc": {
+      "delta": 68908,
+      "v26.9.24": 6740004,
+      "v26.9.25": 6808912
+    },
+    "marketplace_reused_loc": {
+      "delta": 0,
+      "v26.9.24": 290466,
+      "v26.9.25": 290466
+    }
+  },
+  "predecessor": "v26.9.24",
+  "release": "v26.9.25",
+  "rows": [
+    {
+      "delta": {
+        "files": 4,
+        "generated_files": 0,
+        "generated_loc": 0,
+        "handwritten_loc": 0,
+        "loc": 2510,
+        "marketplace_reused_loc": 0
+      },
+      "repository": "seanchatmangpt/affidavit",
+      "v26.9.24": {
+        "files": 728,
+        "generated_files": 4,
+        "generated_loc": 5889,
+        "handwritten_loc": 0,
+        "loc": 130720,
+        "marketplace_reused_loc": 34,
+        "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030"
+      },
+      "v26.9.25": {
+        "files": 732,
+        "generated_files": 4,
+        "generated_loc": 5889,
+        "handwritten_loc": 0,
+        "loc": 133230,
+        "marketplace_reused_loc": 34,
+        "sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2"
+      }
+    },
+    {
+      "delta": {
+        "files": 1,
+        "generated_files": 0,
+        "generated_loc": 0,
+        "handwritten_loc": 0,
+        "loc": 91,
+        "marketplace_reused_loc": 0
+      },
+      "repository": "seanchatmangpt/ash_a2a",
+      "v26.9.24": {
+        "files": 933,
+        "generated_files": 3,
+        "generated_loc": 1903,
+        "handwritten_loc": 0,
+        "loc": 188430,
+        "marketplace_reused_loc": 17,
+        "sha": "12f98f816d5eda50f0aebbb43c21cf1a9f580352"
+      },
+      "v26.9.25": {
+        "files": 934,
+        "generated_files": 3,
+        "generated_loc": 1903,
+        "handwritten_loc": 0,
+        "loc": 188521,
+        "marketplace_reused_loc": 17,
+        "sha": "7999524d0b98aa5dc650a0538c1be5ec8b867477"
+      }
+    },
+    {
+      "delta": {
+        "files": 2,
+        "generated_files": 0,
+        "generated_loc": 0,
+        "handwritten_loc": 0,
+        "loc": 411,
+        "marketplace_reused_loc": 0
+      },
+      "repository": "seanchatmangpt/ash_r2rml",
+      "v26.9.24": {
+        "files": 534,
+        "generated_files": 2,
+        "generated_loc": 404,
+        "handwritten_loc": 0,
+        "loc": 53098,
+        "marketplace_reused_loc": 0,
+        "sha": "76cc5204f3e20370fd1593af31f237a2bbb4caeb"
+      },
+      "v26.9.25": {
+        "files": 536,
+        "generated_files": 2,
+        "generated_loc": 404,
+        "handwritten_loc": 0,
+        "loc": 53509,
+        "marketplace_reused_loc": 0,
+        "sha": "901bfb8a08dac5ea30ad77f0bb6de7a29eb8cd34"
+      }
+    },
+    {
+      "repository": "seanchatmangpt/ash_surface",
+      "v26.9.24": {
+        "sha": null,
+        "standing": "UNKNOWN(NOT_PINNED)"
+      },
+      "v26.9.25": {
+        "files": 41,
+        "generated_files": 1,
+        "generated_loc": 247,
+        "handwritten_loc": 0,
+        "loc": 3528,
+        "marketplace_reused_loc": 0,
+        "sha": "7d5492795d9b9a0956f51545ed1ad1932768b77e"
+      }
+    },
+    {
+      "delta": {
+        "files": 24,
+        "generated_files": 0,
+        "generated_loc": 8,
+        "handwritten_loc": 0,
+        "loc": 3872,
+        "marketplace_reused_loc": 0
+      },
+      "repository": "seanchatmangpt/autofde-lab",
+      "v26.9.24": {
+        "files": 5674,
+        "generated_files": 52,
+        "generated_loc": 25561,
+        "handwritten_loc": 0,
+        "loc": 809212,
+        "marketplace_reused_loc": 3455,
+        "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7"
+      },
+      "v26.9.25": {
+        "files": 5698,
+        "generated_files": 52,
+        "generated_loc": 25569,
+        "handwritten_loc": 0,
+        "loc": 813084,
+        "marketplace_reused_loc": 3455,
+        "sha": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0"
+      }
+    },
+    {
+      "delta": {
+        "files": 1,
+        "generated_files": 0,
+        "generated_loc": 0,
+        "handwritten_loc": 0,
+        "loc": 67,
+        "marketplace_reused_loc": 0
+      },
+      "repository": "seanchatmangpt/beam4pm",
+      "v26.9.24": {
+        "files": 6358,
+        "generated_files": 1459,
+        "generated_loc": 234537,
+        "handwritten_loc": 0,
+        "loc": 309719,
+        "marketplace_reused_loc": 0,
+        "sha": "be43246cc39a6fde9d86b31214a0177c71e6206f"
+      },
+      "v26.9.25": {
+        "files": 6359,
+        "generated_files": 1459,
+        "generated_loc": 234537,
+        "handwritten_loc": 0,
+        "loc": 309786,
+        "marketplace_reused_loc": 0,
+        "sha": "8c3f5e09c297023059ad384629a55ddb2ac785b1"
+      }
+    },
+    {
+      "repository": "seanchatmangpt/chatgpt-cloud-elixir",
+      "v26.9.24": {
+        "sha": null,
+        "standing": "UNKNOWN(NOT_PINNED)"
+      },
+      "v26.9.25": {
+        "files": 2054,
+        "generated_files": 0,
+        "generated_loc": 0,
+        "handwritten_loc": 0,
+        "loc": 576434,
+        "marketplace_reused_loc": 28,
+        "sha": "d6727fef06b170bc6c3839bbf2a9456e33111920"
+      }
+    },
+    {
+      "delta": {
+        "files": 62,
+        "generated_files": 3,
+        "generated_loc": 794,
+        "handwritten_loc": 0,
+        "loc": 52998,
+        "marketplace_reused_loc": 0
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "v26.9.24": {
+        "files": 13072,
+        "generated_files": 404,
+        "generated_loc": 77094,
+        "handwritten_loc": 20259,
+        "loc": 1588181,
+        "marketplace_reused_loc": 283128,
+        "sha": "a4d5a2b12e455cf15f23a0f20b1895f575e1e765"
+      },
+      "v26.9.25": {
+        "files": 13134,
+        "generated_files": 407,
+        "generated_loc": 77888,
+        "handwritten_loc": 20259,
+        "loc": 1641179,
+        "marketplace_reused_loc": 283128,
+        "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+      }
+    },
+    {
+      "repository": "seanchatmangpt/engineering-standards",
+      "v26.9.24": {
+        "sha": null,
+        "standing": "UNKNOWN(PREDECESSOR_AMBIGUOUS:no candidate descends from all others)"
+      },
+      "v26.9.25": {
+        "files": 103,
+        "generated_files": 0,
+        "generated_loc": 0,
+        "handwritten_loc": 0,
+        "loc": 15162,
+        "marketplace_reused_loc": 0,
+        "sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629"
+      }
+    },
+    {
+      "delta": {
+        "files": 1,
+        "generated_files": 0,
+        "generated_loc": 0,
+        "handwritten_loc": 0,
+        "loc": 89,
+        "marketplace_reused_loc": 0
+      },
+      "repository": "seanchatmangpt/ex4pm",
+      "v26.9.24": {
+        "files": 777,
+        "generated_files": 10,
+        "generated_loc": 1363,
+        "handwritten_loc": 0,
+        "loc": 53373,
+        "marketplace_reused_loc": 17,
+        "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc"
+      },
+      "v26.9.25": {
+        "files": 778,
+        "generated_files": 10,
+        "generated_loc": 1363,
+        "handwritten_loc": 0,
+        "loc": 53462,
+        "marketplace_reused_loc": 17,
+        "sha": "c4ca84410c379888305c85201710734afb21f9bf"
+      }
+    },
+    {
+      "repository": "seanchatmangpt/ggen-ecosystem",
+      "v26.9.24": {
+        "sha": null,
+        "standing": "UNKNOWN(NOT_PINNED)"
+      },
+      "v26.9.25": {
+        "files": 3900,
+        "generated_files": 2,
+        "generated_loc": 395,
+        "handwritten_loc": 0,
+        "loc": 40474,
+        "marketplace_reused_loc": 17,
+        "sha": "8bf231242b5fa30587a3d7357c8aaa57905ccfdf"
+      }
+    },
+    {
+      "delta": {
+        "files": 0,
+        "generated_files": 0,
+        "generated_loc": 0,
+        "handwritten_loc": 0,
+        "loc": 31,
+        "marketplace_reused_loc": 0
+      },
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "v26.9.24": {
+        "files": 15633,
+        "generated_files": 479,
+        "generated_loc": 64405,
+        "handwritten_loc": 4909,
+        "loc": 1683248,
+        "marketplace_reused_loc": null,
+        "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793"
+      },
+      "v26.9.25": {
+        "files": 15633,
+        "generated_files": 479,
+        "generated_loc": 64405,
+        "handwritten_loc": 4909,
+        "loc": 1683279,
+        "marketplace_reused_loc": null,
+        "sha": "1f4abc53084e3376a7fed2c1d153029e8711fcee"
+      }
+    },
+    {
+      "delta": {
+        "files": 43,
+        "generated_files": 34,
+        "generated_loc": 1173,
+        "handwritten_loc": 1388,
+        "loc": 4328,
+        "marketplace_reused_loc": 0
+      },
+      "repository": "seanchatmangpt/ggen_igniter",
+      "v26.9.24": {
+        "files": 958,
+        "generated_files": 22,
+        "generated_loc": 7491,
+        "handwritten_loc": 15600,
+        "loc": 149068,
+        "marketplace_reused_loc": 17,
+        "sha": "7d53cb3b3ffe0a32f0e4b5f1365b9e1adff82d44"
+      },
+      "v26.9.25": {
+        "files": 1001,
+        "generated_files": 56,
+        "generated_loc": 8664,
+        "handwritten_loc": 16988,
+        "loc": 153396,
+        "marketplace_reused_loc": 17,
+        "sha": "9639198b5c3e0e25906acc5b36dd9eb17bd592be"
+      }
+    },
+    {
+      "delta": {
+        "files": 1,
+        "generated_files": 0,
+        "generated_loc": 0,
+        "handwritten_loc": 0,
+        "loc": 10,
+        "marketplace_reused_loc": 0
+      },
+      "repository": "seanchatmangpt/gymact",
+      "v26.9.24": {
+        "files": 2210,
+        "generated_files": 45,
+        "generated_loc": 4990,
+        "handwritten_loc": 0,
+        "loc": 142260,
+        "marketplace_reused_loc": 49,
+        "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01"
+      },
+      "v26.9.25": {
+        "files": 2211,
+        "generated_files": 45,
+        "generated_loc": 4990,
+        "handwritten_loc": 0,
+        "loc": 142270,
+        "marketplace_reused_loc": 49,
+        "sha": "281009dfd8ef435f0027009fc1a88fd86688f8b9"
+      }
+    },
+    {
+      "delta": {
+        "files": 1,
+        "generated_files": 0,
+        "generated_loc": 0,
+        "handwritten_loc": 0,
+        "loc": 470,
+        "marketplace_reused_loc": 0
+      },
+      "repository": "seanchatmangpt/wasm4pm",
+      "v26.9.24": {
+        "files": 7818,
+        "generated_files": 48,
+        "generated_loc": 13899,
+        "handwritten_loc": 0,
+        "loc": 1310471,
+        "marketplace_reused_loc": 3126,
+        "sha": "552f15ecba00f75a5866dfc3e7565ef2fe629341"
+      },
+      "v26.9.25": {
+        "files": 7819,
+        "generated_files": 48,
+        "generated_loc": 13899,
+        "handwritten_loc": 0,
+        "loc": 1310941,
+        "marketplace_reused_loc": 3126,
+        "sha": "9fc4f1ae3cc99cf65a5f014580db8e1ea3d08b55"
+      }
+    },
+    {
+      "delta": {
+        "files": 44,
+        "generated_files": 1,
+        "generated_loc": 190,
+        "handwritten_loc": 2581,
+        "loc": 4031,
+        "marketplace_reused_loc": 0
+      },
+      "repository": "seanchatmangpt/xaas",
+      "v26.9.24": {
+        "files": 2721,
+        "generated_files": 28,
+        "generated_loc": 14341,
+        "handwritten_loc": 46289,
+        "loc": 322224,
+        "marketplace_reused_loc": 623,
+        "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60"
+      },
+      "v26.9.25": {
+        "files": 2765,
+        "generated_files": 29,
+        "generated_loc": 14531,
+        "handwritten_loc": 48870,
+        "loc": 326255,
+        "marketplace_reused_loc": 623,
+        "sha": "e039967dac9f88961873b6a958f3979a106854f2"
+      }
+    },
+    {
+      "repository": "seanchatmangpt/zcode-cli",
+      "v26.9.24": {
+        "sha": null,
+        "standing": "UNKNOWN(NOT_PINNED)"
+      },
+      "v26.9.25": {
+        "files": 515,
+        "generated_files": 81,
+        "generated_loc": 4752,
+        "handwritten_loc": 3974,
+        "loc": 108821,
+        "marketplace_reused_loc": 0,
+        "sha": "d1abfbe56660ade672af1125a3f11d91fc50a09e"
+      }
+    },
+    {
+      "repository": "seanchatmangpt/zoela",
+      "v26.9.24": {
+        "sha": null,
+        "standing": "UNKNOWN(NOT_PINNED)"
+      },
+      "v26.9.25": {
+        "files": 79664,
+        "generated_files": 6,
+        "generated_loc": 465,
+        "handwritten_loc": 0,
+        "loc": 1684146,
+        "marketplace_reused_loc": 435,
+        "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d"
+      }
+    }
+  ],
+  "schema": "https://chatman.dev/release-scorecard/benchmark/v1",
+  "totals": {
+    "v26.9.24": {
+      "files": 57416,
+      "generated_files": 2556,
+      "generated_loc": 451877,
+      "loc": 6740004,
+      "marketplace_reused_loc": 290466
+    },
+    "v26.9.25": {
+      "files": 143877,
+      "generated_files": 2684,
+      "generated_loc": 459901,
+      "loc": 9237477,
+      "marketplace_reused_loc": 290946
+    }
+  }
+}

@@ -1,0 +1,797 @@
+{
+  "GENERATED": "scripts/release_train/root_crown/hardening.py -- do not edit; run --write",
+  "_derivation": "release/v26.9.25/closure.json (tagged, sha256:be08fa0654260cb615708144f6cc63a84f5f55f5568ebc60c75d7b206a3bafee) bound to release/v26.9.25/hardening/evidence/INDEX.json and release/v26.9.25/hardening/inputs/delta-observations.json (release_closure_court.bind_index), then release/v26.9.25/hardening/inputs/final-lanes.json rebinds, supersessions, root row, typed rows and post-tag rows",
+  "_provenance": "Initial v26.9.25 subject rows written by lane chatman-crown at 2026-09-25T08:40Z. Every repository is terminal as typed BLOCKED until its lane lands evidence; the final lane re-harvests courts and updates rows (pins-only PR + projector --write). | final lane (chatman-final) 2026-09-25: shas = pins.json observed_at; impl_type carries typed terminal disposition from lane reports with broken_term;class. No row claims ALIVE: courts[] unharvested by this lane. | lane crown-refresh 2026-09-25T13:33:49Z: row shas = pins.json heads; courts[] harvested from producer receipts (PR #34/#73/#180/#82/#34), act receipts and a local zoela witness on the exact head; impl_standing promoted only on a PASS court at the exact row sha (ENGINEERING_STANDARDS). | lane crown-final 2026-09-25T16:31:32Z: AFFIDAVIT promoted to ALIVE on PASS courts at the exact row sha d70b0e40 (brce_court + fmt/clippy/test/doctest on a git-archive extraction); GGEN_ECOSYSTEM and CHATMAN_ECOSYSTEM shas = pins heads; AC-02 reads typed BLOCKED rows as terminal (RFC \u00a738).",
+  "court_command": "python3 scripts/durable_locator/durable_locator.py stage-root release/v26.9.25/hardening/closure-final.json --dest <root> && python3 -m scripts.release_train.release_closure_court release/v26.9.25/hardening/closure-final.json --evidence-root <root>",
+  "evidence_profile": "durable/v1",
+  "normative_ledger": "seanchatmangpt/engineering-standards:RFC-0004@7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+  "release": "v26.9.25",
+  "subjects": [
+    {
+      "artifact": "docs/engineering/rfc/0004-v26.9.25-self-closing-release.md",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "SUPERSEDED",
+      "repository": "seanchatmangpt/engineering-standards",
+      "required": true,
+      "rfc_id": "RFC-0004",
+      "row_origin": "tagged",
+      "sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+      "spec_standing": "FINAL_SPEC",
+      "subject_id": "RFC-0004",
+      "successor": {
+        "locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/receipts/run-36161744816/crown-receipt.json",
+        "proof": "the RFC-0004 implementation row was BLOCKED on crown:root-crown-not-ALIVE(AC-18); the tag-named crown receipt (run 36161744816) is ALIVE at 68bacd8d and replays byte-identically (replay-receipt.json HISTORICAL_RELEASE_REPLAY_EXACT)",
+        "receipt_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c",
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+      },
+      "tagged_impl": {
+        "standing": "BLOCKED",
+        "type": "crown:root-crown-not-ALIVE(AC-18);R_missing_standing;VERIFICATION_FAILURE"
+      }
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "root-crown(run 36161744816, PRE_TAG, tag-named receipt)",
+          "detail": "standing ALIVE, receipt sha256:2323f877..., replayed byte-identically from the materialized tag subject; the tagged row pinned the pre-tag head 8321663d while the root subject is the runtime crown_sha 68bacd8d",
+          "evidence_ceiling": "GITHUB_ACTIONS_RUN+EXACT_REPLAY",
+          "evidence_digest": "sha256:152900efa367ced50c05605bebcbeb0f3450aef0e09871ae4ba0d13d00406fc0",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/receipts/run-36161744816/crown-receipt.json",
+          "evidence_subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+          "exit_code": 0,
+          "kind": "implementation",
+          "required": true,
+          "result": "PASS",
+          "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+        }
+      ],
+      "impl_standing": "ALIVE",
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "required": true,
+      "row_origin": "tagged",
+      "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "CHATMAN_ECOSYSTEM",
+      "tagged_impl": {
+        "sha": "8321663d02b849cbb7879b3eaf548d5bdca7a7e9",
+        "standing": "BLOCKED",
+        "type": "crown:BLOCKED@8321663d(run36160116076:AC-02,AC-08,AC-09,AC-10);root-subject-is-runtime-crown_sha;R_missing_standing;VERIFICATION_FAILURE"
+      }
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "act:docs.yml(push)",
+          "evidence": "scratchpad/v26925/act/receipts/engineering-standards-7e8d4c5cb5ae-docs.receipt.json",
+          "evidence_ceiling": "LOCAL_ACT_RUN",
+          "evidence_digest": "sha256:a54744c66632110dd22e7427ed4b2a1a2bbfe36b902b47038bc50f6e7299c4df",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/docs.receipt.json",
+          "exit_code": 0,
+          "kind": "implementation",
+          "log_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/docs.log",
+          "log_sha256": "sha256:dd88bec364313dc9a741a467a0d4c54311ea482d8b01795d9f9359127014f6e5",
+          "required": true,
+          "result": "PASS",
+          "sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629"
+        },
+        {
+          "artifact_digest": "sha256:35c385d749c2b6c5c03d3f805c532e3b811d604edcc4c623dcbd383a94a348de",
+          "artifact_id": 10850572678,
+          "artifact_locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/evidence/courts/engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/github-run-36101146601/artifact-10850572678.zip",
+          "court": "github:repository-semantic-conformance",
+          "evidence_digest": "sha256:17b2f98864b3315e15c387af66eb546a09128a98473bb99457df7c79557fdcfa",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/evidence/courts/engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/github-run-36101146601/root-conformance.json",
+          "kind": "implementation",
+          "log_locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/evidence/courts/engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/github-run-36101146601/run.log",
+          "log_sha256": "sha256:db5830639c2de45f2c7dd1125314eee1239fcbdd3796dcfb33ddc5061bdd819a",
+          "rebound_by": "release/v26.9.25/hardening/inputs/final-lanes.json#rebinds (run 36101146601 (Root standards qualification, workflow_dispatch, success, head 7e8d4c5c); artifact root-conformance-7e8d4c5c zip digest equals the GitHub artifact digest; root-conformance.json standing ALIVE)",
+          "required": true,
+          "result": "PASS",
+          "run_id": 36101146601,
+          "sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629"
+        }
+      ],
+      "impl_standing": "ALIVE",
+      "repository": "seanchatmangpt/engineering-standards",
+      "required": true,
+      "row_origin": "tagged",
+      "sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "ENGINEERING_STANDARDS"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "receipts:sjira-origin-authority+prose-inert(PR#34)",
+          "detail": "AC-03/F-02 ALIVE (origin_probe exit 0) and AC-04/F-01 ALIVE (mix test 56/0 exit 0); head differs from subject 780a81d8 by receipt-only paths (gh compare ahead_by 2); no court run observed on the exact head sha -> not PASS (R_missing_identity)",
+          "evidence": [
+            "release/v26.9.25/receipts/sjira-origin-authority.json",
+            "release/v26.9.25/receipts/prose-inert.json"
+          ],
+          "evidence_subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+          "kind": "implementation",
+          "lineage_proof": {
+            "delta_class": "UNBOUNDED",
+            "delta_paths": [
+              "release/v26.9.25/receipts/prose-inert.json",
+              "release/v26.9.25/receipts/replay/origin-probe.out.json",
+              "release/v26.9.25/receipts/replay/origin_probe.exs",
+              "release/v26.9.25/receipts/sjira-origin-authority.json"
+            ],
+            "status": "ahead"
+          },
+          "required": true,
+          "result": "BLOCKED",
+          "sha": "9639198b5c3e0e25906acc5b36dd9eb17bd592be"
+        }
+      ],
+      "impl_standing": "BLOCKED",
+      "impl_type": "receipts:AC-03/AC-04-ALIVE@780a81d8(PR#34->9639198b);exact-head-court-unobserved;merge-full-suite-unobserved;R_missing_identity;VERIFICATION_FAILURE",
+      "repository": "seanchatmangpt/ggen_igniter",
+      "required": true,
+      "row_origin": "tagged",
+      "sha": "9639198b5c3e0e25906acc5b36dd9eb17bd592be",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "GGEN_IGNITER"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "receipts:case-study-schema+wd-evidence-ceiling+cloud-runtime(PR#73)",
+          "detail": "AC-13 ALIVE, AC-14/F-12 ALIVE, F-09 typed BLOCKED TRANSPORT_FAILURE:cloud-to-zcode-leg-unreceipted; head differs from subject c10cdab9 by receipt-only paths (gh compare ahead_by 2); no court run observed on the exact head sha -> not PASS (R_missing_identity)",
+          "evidence": [
+            "release/v26.9.25/receipts/case-study-schema.json",
+            "release/v26.9.25/receipts/wd-evidence-ceiling.json",
+            "release/v26.9.25/receipts/cloud-runtime.json"
+          ],
+          "evidence_subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+          "kind": "implementation",
+          "lineage_proof": {
+            "delta_class": "UNBOUNDED",
+            "delta_paths": [
+              "release/v26.9.25/receipts/case-study-schema.json",
+              "release/v26.9.25/receipts/cloud-runtime.json",
+              "release/v26.9.25/receipts/manufacture.py",
+              "release/v26.9.25/receipts/wd-evidence-ceiling.json"
+            ],
+            "status": "ahead"
+          },
+          "required": true,
+          "result": "BLOCKED",
+          "sha": "e039967dac9f88961873b6a958f3979a106854f2"
+        }
+      ],
+      "impl_standing": "BLOCKED",
+      "impl_type": "receipts:AC-13/AC-14-ALIVE@c10cdab9(PR#73->e039967d);F-09-cloud-legs-typed-BLOCKED;deploy/token/egress-operator-gated;R_missing_authority;AUTHORITY_FAILURE",
+      "repository": "seanchatmangpt/xaas",
+      "required": true,
+      "row_origin": "tagged",
+      "sha": "e039967dac9f88961873b6a958f3979a106854f2",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "XAAS"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "BLOCKED",
+      "impl_type": "lane-zcode:CI-ALIVE@d1abfbe(run36113964377);pkg-pr-new-app-not-installed;R_missing_authority;AUTHORITY_FAILURE",
+      "repository": "seanchatmangpt/zcode-cli",
+      "required": true,
+      "row_origin": "tagged",
+      "sha": "d1abfbe56660ade672af1125a3f11d91fc50a09e",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "ZCODE_CLI"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "BLOCKED",
+      "impl_type": "lane-cloud+fabric:PARTIAL_ALIVE@d6727fef(loopback-live-leg);cloud-transport-not-claimed;R_missing_consequence;TRANSPORT_FAILURE",
+      "repository": "seanchatmangpt/chatgpt-cloud-elixir",
+      "required": true,
+      "row_origin": "tagged",
+      "sha": "d6727fef06b170bc6c3839bbf2a9456e33111920",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "CHATGPT_CLOUD_ELIXIR"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "receipts:tlc-court(PR#180)",
+          "detail": "AC-07/F-08 ALIVE (TLC 5 models exit 0, 4/4 mutants killed, 54 court tests); head differs from subject 6fbe1807 by receipt-only paths (gh compare ahead_by 2); no court run observed on the exact head sha -> not PASS (R_missing_identity)",
+          "evidence": [
+            "release/v26.9.25/receipts/tlc-court.json"
+          ],
+          "evidence_subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+          "kind": "implementation",
+          "lineage_proof": {
+            "delta_class": "UNBOUNDED",
+            "delta_paths": [
+              "release/v26.9.25/receipts/tlc-court.json",
+              "scripts/release_tlc_court_receipt.py"
+            ],
+            "status": "ahead"
+          },
+          "required": true,
+          "result": "BLOCKED",
+          "sha": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0"
+        }
+      ],
+      "impl_standing": "BLOCKED",
+      "impl_type": "EVIDENCE_DELTA_UNBOUNDED:6fbe1807..98b6cc9b(scripts/release_tlc_court_receipt.py);R_missing_identity;EVIDENCE_FAILURE",
+      "repository": "seanchatmangpt/autofde-lab",
+      "required": true,
+      "row_origin": "tagged",
+      "sha": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "AUTOFDE_LAB",
+      "tagged_impl": {
+        "standing": "BLOCKED",
+        "type": "receipts:AC-07/F-08-ALIVE@6fbe1807(PR#180->98b6cc9b);full-qualification-baseline-ray-rllib;mu_on_O;DEPENDENCY_FAILURE"
+      }
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "BLOCKED",
+      "impl_type": "evidence:default-branch-courts-unharvested-by-final-lane;R_missing_consequence;EVIDENCE_FAILURE",
+      "repository": "seanchatmangpt/ash_a2a",
+      "required": true,
+      "row_origin": "tagged",
+      "sha": "7999524d0b98aa5dc650a0538c1be5ec8b867477",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "ASH_A2A"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "affidavit:brce_court(AC-08/F-05)",
+          "detail": "ADMITTED on 8 rules, replay digest equal across 2 runs, 8/8 mutants killed; producer receipt release/v26.9.25/receipts/brce-ledger.json ALIVE@9d158477 (PR#83->9d158477, PR#84->d70b0e40)",
+          "evidence": "scratchpad/v26925/lanes/crown-final/affidavit-d70b0e40-courts.json",
+          "evidence_ceiling": "LOCAL_EXACT_SHA_RUN",
+          "evidence_digest": "sha256:1b3ab4f82b65c27b54eb7b2a7684b1234d7bded57099b43d5668fcc044db74cd",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+          "exit_code": 0,
+          "kind": "implementation",
+          "output_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/court.out",
+          "output_sha256": "sha256:cf1e5804588d5a2e6980a1566c635532ab37d1fd4291d67888bb7c2a1415a2c0",
+          "required": true,
+          "result": "PASS",
+          "sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2"
+        },
+        {
+          "court": "cargo fmt --all -- --check",
+          "evidence": "scratchpad/v26925/lanes/crown-final/affidavit-d70b0e40-courts.json",
+          "evidence_ceiling": "LOCAL_EXACT_SHA_RUN",
+          "evidence_digest": "sha256:1b3ab4f82b65c27b54eb7b2a7684b1234d7bded57099b43d5668fcc044db74cd",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+          "exit_code": 0,
+          "kind": "implementation",
+          "required": true,
+          "result": "PASS",
+          "sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2"
+        },
+        {
+          "court": "cargo clippy --all-targets -- -D warnings",
+          "evidence": "scratchpad/v26925/lanes/crown-final/affidavit-d70b0e40-courts.json",
+          "evidence_ceiling": "LOCAL_EXACT_SHA_RUN",
+          "evidence_digest": "sha256:1b3ab4f82b65c27b54eb7b2a7684b1234d7bded57099b43d5668fcc044db74cd",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+          "exit_code": 0,
+          "kind": "implementation",
+          "required": true,
+          "result": "PASS",
+          "sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2"
+        },
+        {
+          "court": "cargo test --all-targets",
+          "detail": "806 passed, 0 failed",
+          "evidence": "scratchpad/v26925/lanes/crown-final/affidavit-d70b0e40-courts.json",
+          "evidence_ceiling": "LOCAL_EXACT_SHA_RUN",
+          "evidence_digest": "sha256:1b3ab4f82b65c27b54eb7b2a7684b1234d7bded57099b43d5668fcc044db74cd",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+          "exit_code": 0,
+          "kind": "implementation",
+          "required": true,
+          "result": "PASS",
+          "sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2"
+        },
+        {
+          "court": "cargo test --doc",
+          "detail": "32 passed, 6 ignored",
+          "evidence": "scratchpad/v26925/lanes/crown-final/affidavit-d70b0e40-courts.json",
+          "evidence_ceiling": "LOCAL_EXACT_SHA_RUN",
+          "evidence_digest": "sha256:1b3ab4f82b65c27b54eb7b2a7684b1234d7bded57099b43d5668fcc044db74cd",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+          "exit_code": 0,
+          "kind": "implementation",
+          "required": true,
+          "result": "PASS",
+          "sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2"
+        }
+      ],
+      "impl_standing": "ALIVE",
+      "repository": "seanchatmangpt/affidavit",
+      "required": true,
+      "row_origin": "tagged",
+      "sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "AFFIDAVIT"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "BLOCKED",
+      "impl_type": "lane-marketplace:PARTIAL_ALIVE@1f4abc53;R51/R52-baseline;GM-2-publish-unobserved;mu_unlawful;SUBJECT_FAILURE",
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "required": true,
+      "row_origin": "tagged",
+      "sha": "1f4abc53084e3376a7fed2c1d153029e8711fcee",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "GGEN_MARKETPLACE"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "BLOCKED",
+      "impl_type": "evidence:XPROD-producer-v2691-ALIVE(run36111936727);full-courts-unharvested;R_missing_consequence;EVIDENCE_FAILURE",
+      "repository": "seanchatmangpt/gymact",
+      "required": true,
+      "row_origin": "tagged",
+      "sha": "281009dfd8ef435f0027009fc1a88fd86688f8b9",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "GYMACT"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "command": "python3 release/v26.9.25/receipts/godslaw-gate-witness.py <archive> 3d16cf3e /Users/sac/zoela out.json",
+          "court": "local:godslaw-gate-witness.py(git archive of head)",
+          "evidence_ceiling": "LOCAL_RUN",
+          "evidence_digest": "sha256:17a3a42965c3610cecd9843aa173422bf127296d389c6b8ac7a0956cea090d55",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/zoela/3d16cf3e43e195092161aaba4d481c7654b4035d/godslaw-gate-witness.out.json",
+          "exit_code": 0,
+          "kind": "implementation",
+          "log_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/zoela/3d16cf3e43e195092161aaba4d481c7654b4035d/godslaw-gate-witness.log",
+          "log_sha256": "sha256:d08cce3fe251a5e86cd2a9be977e984e0c7c6e6ebd551940b3060ea852ca2c91",
+          "output_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/zoela/3d16cf3e43e195092161aaba4d481c7654b4035d/godslaw-gate-witness.out.json",
+          "output_sha256": "sha256:17a3a42965c3610cecd9843aa173422bf127296d389c6b8ac7a0956cea090d55",
+          "rebound_by": "release/v26.9.25/hardening/inputs/final-lanes.json#rebinds (E1 bytes of the tag-time witness run (output_sha256 / log_sha256 as recorded in the tagged closure))",
+          "required": true,
+          "result": "PASS",
+          "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d",
+          "summary": "TRIPLES 2157 GATES 23 NONZERO {} MUTANTS 19 VACUOUS 0; OBJ True x5; TAMPER_REFUSED True PIN True"
+        },
+        {
+          "court": "act:zoela-admission.yml(push)",
+          "detail": "act exit 1 at f1313f1c: BASELINE stale v26.8.23 release verifier + TRANSPORT_FAILURE act-image-missing-libclang; not run on head 3d16cf3e",
+          "evidence": "scratchpad/v26925/act/receipts/zoela-f1313f1c1462-zoela-admission.receipt.json",
+          "evidence_digest": "sha256:684e0a934523f6b83b9e10892549ca4d6106fe4b603c55a182abbd63be15d278",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/zoela/f1313f1c1462b9d2f4dd3cb010dbe5921f53185d/zoela-admission.receipt.json",
+          "evidence_subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+          "kind": "implementation",
+          "lineage_proof": {
+            "delta_class": "UNBOUNDED",
+            "delta_paths": [
+              "release/v26.9.25/receipts/godslaw-gate-witness.py",
+              "release/v26.9.25/receipts/godslaw-interpretation.json",
+              "release/v26.9.25/receipts/godslaw-migration.json",
+              "release/v26.9.25/receipts/vision2027-admission.json"
+            ],
+            "status": "ahead"
+          },
+          "required": true,
+          "result": "BLOCKED",
+          "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d"
+        }
+      ],
+      "impl_standing": "BLOCKED",
+      "impl_type": "receipts:AC-16/F-13-ALIVE,AC-15-BLOCKED@f1313f1c(PR#34->3d16cf3e);witness-PASS@3d16cf3e;AUTHORITY_FAILURE:operator-repo-rename(terminal);R_missing_authority;AUTHORITY_FAILURE",
+      "repository": "seanchatmangpt/zoela",
+      "required": true,
+      "row_origin": "tagged",
+      "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "ZOELA"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "BLOCKED",
+      "impl_type": "lane-beam4pm:determinism-court-runner-drift;R_missing_replay;DEPENDENCY_FAILURE",
+      "repository": "seanchatmangpt/beam4pm",
+      "required": false,
+      "row_origin": "tagged",
+      "sha": "8c3f5e09c297023059ad384629a55ddb2ac785b1",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "BEAM4PM"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "BLOCKED",
+      "impl_type": "lane-wasm4pm:rust-green@ef418eb;WASM-step-baseline;admission_vacuous;VERIFICATION_FAILURE",
+      "repository": "seanchatmangpt/wasm4pm",
+      "required": false,
+      "row_origin": "tagged",
+      "sha": "9fc4f1ae3cc99cf65a5f014580db8e1ea3d08b55",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "WASM4PM"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "BLOCKED",
+      "impl_type": "lane-ash_r2rml:ALIVE@901bfb8a(run36115423274);hex-publish-key-revoked;R_missing_authority;AUTHORITY_FAILURE",
+      "repository": "seanchatmangpt/ash_r2rml",
+      "required": false,
+      "row_origin": "tagged",
+      "sha": "901bfb8a08dac5ea30ad77f0bb6de7a29eb8cd34",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "ASH_R2RML"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "BLOCKED",
+      "impl_type": "lane-ex4pm:ALIVE@b53d29a(tree-ca3b6ba);formatter-inputs-vacuous;admission_vacuous;VERIFICATION_FAILURE",
+      "repository": "seanchatmangpt/ex4pm",
+      "required": false,
+      "row_origin": "tagged",
+      "sha": "c4ca84410c379888305c85201710734afb21f9bf",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "EX4PM"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "BLOCKED",
+      "impl_type": "lane-closures:#3-reopened-pending-#7(red-checks);mu_unlawful;DEPENDENCY_FAILURE",
+      "repository": "seanchatmangpt/ash_surface",
+      "required": false,
+      "row_origin": "tagged",
+      "sha": "7d5492795d9b9a0956f51545ed1ad1932768b77e",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "ASH_SURFACE"
+    },
+    {
+      "artifact": "default-branch head",
+      "authority_ceiling": "CONSTRUCT",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "BLOCKED",
+      "impl_type": "evidence:crown-roller-BLOCKED(LFS-budget);courts-unharvested;R_missing_consequence;DEPENDENCY_FAILURE",
+      "repository": "seanchatmangpt/ggen-ecosystem",
+      "required": false,
+      "row_origin": "tagged",
+      "sha": "8bf231242b5fa30587a3d7357c8aaa57905ccfdf",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "GGEN_ECOSYSTEM"
+    },
+    {
+      "artifact": "receipts/v26.9.25/sjira-origin-trust-root.json",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "ggen_igniter:origin_mutants.sh+origin_guard_test(G1 local ladder)",
+          "detail": "15/15 origin mutants killed; origin-guard 45/45; format/compile/credo exit 0",
+          "evidence_ceiling": "LOCAL_EXACT_SHA_RUN",
+          "evidence_digest": "sha256:2062638ea101ad323b9f308c40bfce362f15b8c1b30fdedb999129305de2bb19",
+          "evidence_locator": "git:seanchatmangpt/ggen_igniter@647db5f208b7ec88c84f0dc7d70925b4dec330f9:receipts/v26.9.25/sjira-origin-trust-root.json",
+          "evidence_subject_sha": "0abf43db9df797ab725b8fdffd18579bde2e6720",
+          "exit_code": 0,
+          "kind": "implementation",
+          "required": false,
+          "result": "PASS",
+          "sha": "0abf43db9df797ab725b8fdffd18579bde2e6720"
+        }
+      ],
+      "impl_note": "act ci.yml BLOCKED(TRANSPORT_FAILURE:act-runtime) reproduced on base 9639198b; 10 full-suite failures reproduce on base",
+      "impl_standing": "PARTIAL_ALIVE",
+      "merged_as": "316436474aa949fd2f924980160016a58807bd06",
+      "pr": 35,
+      "repository": "seanchatmangpt/ggen_igniter",
+      "required": false,
+      "row_origin": "post-tag",
+      "sha": "0abf43db9df797ab725b8fdffd18579bde2e6720",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "POST-TAG:G1-ORIGIN-TRUST-ROOT"
+    },
+    {
+      "artifact": "lib/xaas (origin-authority backfill, compile_prose intake retirement)",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "github:xaas exact-head test court",
+          "detail": "passed on GitHub at 2ee08326; no durable (git:) bytes harvested, so not a PASS under durable/v1",
+          "evidence_locator": "https://github.com/seanchatmangpt/xaas/actions/runs/36193110697",
+          "kind": "implementation",
+          "required": false,
+          "result": "BLOCKED",
+          "run_id": 36193110697,
+          "sha": "2ee08326d76db6ddb4d2a194a7f3f001ba7dd2fa"
+        }
+      ],
+      "impl_standing": "BLOCKED",
+      "impl_type": "EVIDENCE_NOT_DURABLE:github-exact-head-test-court-run-36193110697-unharvested;R_missing_replay;EVIDENCE_FAILURE",
+      "merged_as": "26843052808901e9e871c25006504f5dda50ae92",
+      "pr": 74,
+      "repository": "seanchatmangpt/xaas",
+      "required": false,
+      "row_origin": "post-tag",
+      "sha": "2ee08326d76db6ddb4d2a194a7f3f001ba7dd2fa",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "POST-TAG:X1-ORIGIN-BACKFILL"
+    },
+    {
+      "artifact": "release/v26.9.25/receipts/case-study-schema.post-tag.json",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "xaas:rerun_case_study.py(AC-13 post-tag re-run)",
+          "detail": "standing ALIVE, 11/11 checks true, court output and report bytes equal the tagged receipt",
+          "evidence_ceiling": "REPO_LOCAL_FIXTURE",
+          "evidence_digest": "sha256:d15f9e074ad2d38b2434cbe9fd856d306fc60477b0100260527bc0da687da297",
+          "evidence_locator": "git:seanchatmangpt/xaas@0249ca416332b101d0e1ed797683dacb1a365715:release/v26.9.25/receipts/case-study-schema.post-tag.json",
+          "evidence_subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+          "exit_code": 0,
+          "kind": "implementation",
+          "required": false,
+          "result": "PASS",
+          "sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+        }
+      ],
+      "impl_standing": "ALIVE",
+      "merged_as": "4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f",
+      "pr": 75,
+      "repository": "seanchatmangpt/xaas",
+      "required": false,
+      "row_origin": "post-tag",
+      "sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "POST-TAG:X2-CASE-STUDY-SCHEMA"
+    },
+    {
+      "artifact": "release/v26.9.25/receipts/godslaw-gate-witness.post-tag.json",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "zoela:godslaw-gate-witness v2 (gates 145/150/155)",
+          "detail": "23 gates, 0 nonzero, 50/50 mutants killed, 0 vacuous",
+          "evidence_ceiling": "LOCAL_WITNESS_RUN",
+          "evidence_digest": "sha256:f7197df1779f175ae487cb0f24a318bb0679b531f62e4336b5b18e1cdd242375",
+          "evidence_locator": "git:seanchatmangpt/zoela@eb18cc73409573366c8fc6544eb41531083ccc1c:release/v26.9.25/receipts/godslaw-gate-witness.post-tag.json",
+          "evidence_subject_sha": "51e60d889c9e4bb54eda52cd154bea320e54c4b4",
+          "exit_code": 0,
+          "kind": "implementation",
+          "required": false,
+          "result": "PASS",
+          "sha": "51e60d889c9e4bb54eda52cd154bea320e54c4b4"
+        }
+      ],
+      "impl_note": "act zoela-admission.yml BASELINE (RELEASE_VERSION_MISMATCH, identical at f1313f1c) + BLOCKED(TRANSPORT_FAILURE:act-image-missing-libclang); gate eval witnessed with local ggen 26.9.18, not the pinned c61ee99 build",
+      "impl_standing": "PARTIAL_ALIVE",
+      "merged_as": "89745f2fa4f7f438749ef61b638d17739ef11630",
+      "pr": 35,
+      "repository": "seanchatmangpt/zoela",
+      "required": false,
+      "row_origin": "post-tag",
+      "sha": "51e60d889c9e4bb54eda52cd154bea320e54c4b4",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "POST-TAG:Z1-GODSLAW-GATES"
+    },
+    {
+      "artifact": "docs/rfcs/aloop/ALOOP-001-chatman-root-crown-v26.9.25.json",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "autofde-lab:ALOOP-001 court r9 on the chatman root-crown real trace",
+          "detail": "verdict NOT_QUALIFIED, standing BLOCKED (receipt sha256:4926021c...)",
+          "evidence_digest": "sha256:cb9d19a12dab036fefd533a78867a68c27f91c91914a74c67f08d9ba09be4148",
+          "evidence_locator": "git:seanchatmangpt/autofde-lab@b417eea64ef8e4d841b9cc2f4a898753e4b71d1b:docs/rfcs/aloop/ALOOP-001-chatman-root-crown-v26.9.25.json",
+          "exit_code": 3,
+          "kind": "implementation",
+          "required": false,
+          "result": "BLOCKED",
+          "sha": "b417eea64ef8e4d841b9cc2f4a898753e4b71d1b"
+        }
+      ],
+      "impl_standing": "BLOCKED",
+      "impl_type": "ALOOP-001:NOT_QUALIFIED(exit 3; real trace unsealed, sealed-recorder profile caps it below AUTONOMOUS);R_missing_standing;VERIFICATION_FAILURE",
+      "merged_as": "b417eea64ef8e4d841b9cc2f4a898753e4b71d1b",
+      "pr": 181,
+      "repository": "seanchatmangpt/autofde-lab",
+      "required": false,
+      "row_origin": "post-tag",
+      "sha": "b417eea64ef8e4d841b9cc2f4a898753e4b71d1b",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "POST-TAG:ALOOP-R9"
+    },
+    {
+      "artifact": "docs/engineering/rfc/0005-v26.9.25-autonomic-closure-amendment.md",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "NOT_CLAIMED",
+      "merged_as": "71a6f607074b0f8d1b23855c11f10557a545b655",
+      "pr": 9,
+      "repository": "seanchatmangpt/engineering-standards",
+      "required": false,
+      "rfc_id": "RFC-0005",
+      "row_origin": "post-tag",
+      "sha": "71a6f607074b0f8d1b23855c11f10557a545b655",
+      "spec_standing": "MERGED",
+      "subject_id": "POST-TAG:RFC-0005"
+    },
+    {
+      "artifact": "PR #81 fix/affidavit-v26.9.17-boundary",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [],
+      "impl_standing": "SUPERSEDED",
+      "merged_as": null,
+      "pr": 81,
+      "repository": "seanchatmangpt/affidavit",
+      "required": false,
+      "row_origin": "post-tag",
+      "sha": "0abd0cc351b08c8c19414410e0cd365bfeac0ccb",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "POST-TAG:AFFIDAVIT-PR81",
+      "successor": {
+        "proof": "closed 2026-09-25T22:07:49Z (issuecomment-5840329301): human output to stderr already on main (ab3e351); machine data on stdout (3a6ec79, src/output.rs); main pins wasm4pm-compat =26.8.7; head 0abd0cc3 preserved on origin",
+        "repository": "seanchatmangpt/affidavit",
+        "sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2"
+      }
+    },
+    {
+      "artifact": "release/v26.9.25/hardening/inputs/mutation-report.json",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "root_crown.mutate --check-report",
+          "detail": "124/124 mutants killed, 0 survivors (PR-2 harness #279 + PR-M #287); report bytes equal at 6ca45f02 and the merge",
+          "evidence_ceiling": "COMMITTED_REPORT(--check-report in Root Crown CI)",
+          "evidence_digest": "sha256:274c8b9d8f8e827a8caac82c125b4213eb6ce252d5e28b66d0c68bd08428112c",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@6ff74d37c99ed4a4ccabedc53263147b253e65e0:release/v26.9.25/hardening/inputs/mutation-report.json",
+          "evidence_subject_sha": "6ca45f02934d561e82d6fe867b22ac880f7bd1f6",
+          "exit_code": 0,
+          "kind": "implementation",
+          "required": false,
+          "result": "PASS",
+          "sha": "6ca45f02934d561e82d6fe867b22ac880f7bd1f6"
+        }
+      ],
+      "impl_standing": "ALIVE",
+      "merged_as": "6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+      "pr": 287,
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "required": false,
+      "row_origin": "post-tag",
+      "sha": "6ca45f02934d561e82d6fe867b22ac880f7bd1f6",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "POST-TAG:ROOT-MUTATION-HARNESS"
+    },
+    {
+      "artifact": "docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "xprod_reeval.mutate XPROD-001",
+          "detail": "4/4 case mutants killed (authority_do, digest_mismatch, missing_producer, sha_drift)",
+          "evidence_ceiling": "LOCAL_EXACT_SHA_RUN",
+          "evidence_digest": "sha256:3d11e5d831d48b304529a21cc89d165cadd5d2ffaea76d37fba940607af003e3",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/evidence/courts/chatman-ecosystem/6ff74d37c99ed4a4ccabedc53263147b253e65e0/xprod-mutate/XPROD-001.mutate.json",
+          "evidence_subject_sha": "6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+          "exit_code": 0,
+          "kind": "implementation",
+          "required": false,
+          "result": "PASS",
+          "sha": "6ff74d37c99ed4a4ccabedc53263147b253e65e0"
+        }
+      ],
+      "impl_standing": "ALIVE",
+      "merged_as": "6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+      "pr": null,
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "required": false,
+      "row_origin": "post-tag",
+      "sha": "6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "POST-TAG:XPROD-001-MUTANTS"
+    },
+    {
+      "artifact": ".github/workflows/root-crown.yml (POST_TAG)",
+      "authority_ceiling": "NONE",
+      "authority_claimed": "NONE",
+      "courts": [
+        {
+          "court": "github:Root Crown (v26.9.25) run 36203921304 (push)",
+          "detail": "POST_TAG standing BLOCKED; historical ALIVE HISTORICAL_RELEASE_REPLAY_EXACT, ceiling BLOCKED; artifact 10892647761 digest sha256:7f80fe22...",
+          "evidence_digest": "sha256:2b9a0032d1fc1ba9f39d5b6944bd2850b94549938beaa1615360746e1b8f13e1",
+          "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/evidence/courts/chatman-ecosystem/6ff74d37c99ed4a4ccabedc53263147b253e65e0/root-crown-run-36203921304/crown-receipt.json",
+          "evidence_subject_sha": "6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+          "exit_code": 3,
+          "kind": "implementation",
+          "required": false,
+          "result": "BLOCKED",
+          "sha": "6ff74d37c99ed4a4ccabedc53263147b253e65e0"
+        }
+      ],
+      "impl_standing": "BLOCKED",
+      "impl_type": "CROWN_BLOCKED:13xEVIDENCE_DELTA_UNBOUNDED+AC-18:CROWN_DEPENDENCIES_OPEN;R_missing_identity;EVIDENCE_FAILURE",
+      "merged_as": "6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+      "pr": null,
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "required": false,
+      "row_origin": "post-tag",
+      "sha": "6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+      "spec_standing": "NOT_A_SPEC",
+      "subject_id": "POST-TAG:ROOT-CROWN@6ff74d37"
+    }
+  ],
+  "transient_heads": [
+    {
+      "proof": "PR #482 head -> merge",
+      "replaced_by": "05011be534f647d1b5aef18a2080cb61bfcf7951",
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "sha": "76774bbaf83ec92e6e52b81ceb6a165b00de8b93"
+    },
+    {
+      "proof": "PR #484 head -> merge",
+      "replaced_by": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "sha": "02c13c468892c040c8abfd5023db4c1a19fa4820"
+    }
+  ]
+}

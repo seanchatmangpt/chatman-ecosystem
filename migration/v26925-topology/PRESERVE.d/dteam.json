@@ -1,0 +1,28 @@
+{
+ "records": {
+  "dteam_dev-worktree": {
+   "bundle": null,
+   "canonical": "/Users/sac/dteam",
+   "copy_id": "dteam_dev-worktree",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/dteam_dev-worktree/anchor",
+   "ok": true,
+   "path": "/Users/sac/dteam/dev-worktree",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/dteam_dev-worktree/anchor": "d377d01bd36857d77164e6489074f5848833752c",
+    "refs/preserve/v26.9.25/dteam_dev-worktree/dirty": "2785a8bcf44562df4e8ed9d6ab4041d0b552684a",
+    "refs/preserve/v26.9.25/dteam_dev-worktree/index": "aba4f7efedc6b6974f0fd92b41908f81b0f23f25",
+    "refs/preserve/v26.9.25/dteam_dev-worktree/worktree-head": "d592d1b73930714503c87961af5912f1a3efb6a7"
+   },
+   "remote_ref": "backup/v26.9.25/dteam_dev-worktree",
+   "remote_verified_sha": "d377d01bd36857d77164e6489074f5848833752c",
+   "repo_id": "dteam",
+   "sha": "d377d01bd36857d77164e6489074f5848833752c",
+   "skipped": [],
+   "snapshot_tree": "abcfd47d7ad71a7f0289e01392bcd124528a4d5b"
+  }
+ }
+}

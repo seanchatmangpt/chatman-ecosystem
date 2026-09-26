@@ -1,0 +1,532 @@
+{
+ "deleted_artifacts": [
+  {
+   "at": "2026-09-25T05:59:12Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_14d41261-3fe-1",
+   "fingerprint": "6cd8512d773a8920a8b1978c24fcb9034b50f67213a84d25f5fb3c5798232e8d",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_14d41261-3fe-1",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_14d41261-3fe-1-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_14d41261-3fe-1",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_14d41261-3fe-1-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_14d41261-3fe-1"
+  },
+  {
+   "at": "2026-09-25T05:59:16Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_14d41261-3fe-2",
+   "fingerprint": "d91a90606fc83aad2efc0e663be437b7558f71c67453f18fe691fb5d630f29eb",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_14d41261-3fe-2",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_14d41261-3fe-2-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_14d41261-3fe-2",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_14d41261-3fe-2-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_14d41261-3fe-2"
+  },
+  {
+   "at": "2026-09-25T05:59:21Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_14d41261-3fe-3",
+   "fingerprint": "bf43526f4184889f5eb91e1b859bc08b77151eb1ad61f1fc72c7e071978ca290",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_14d41261-3fe-3",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_14d41261-3fe-3-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_14d41261-3fe-3",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_14d41261-3fe-3-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_14d41261-3fe-3"
+  },
+  {
+   "at": "2026-09-25T05:59:25Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_2d1bd891-8f3-1",
+   "fingerprint": "5d6b177cab54d75ee27d4320c75d397be789d66da8c402678c05bb28e3fb1ec3",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_2d1bd891-8f3-1",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_2d1bd891-8f3-1-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_2d1bd891-8f3-1",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_2d1bd891-8f3-1-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_2d1bd891-8f3-1"
+  },
+  {
+   "at": "2026-09-25T05:59:31Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_2d1bd891-8f3-2",
+   "fingerprint": "a57688ec24d7a5a104061279753f9cf0dd7a4962cd339877d90f40b7e9ad671c",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_2d1bd891-8f3-2",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_2d1bd891-8f3-2-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_2d1bd891-8f3-2",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_2d1bd891-8f3-2-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_2d1bd891-8f3-2"
+  },
+  {
+   "at": "2026-09-25T05:59:37Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_c50257bb-165-1",
+   "fingerprint": "048d7d7ba22c46f6fd34df0f8cdd3cbd2f6a4f2fcb8cadb5181dad753b7291f5",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_c50257bb-165-1",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_c50257bb-165-1-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_c50257bb-165-1",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_c50257bb-165-1-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_c50257bb-165-1"
+  },
+  {
+   "at": "2026-09-25T05:59:44Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_c50257bb-165-2",
+   "fingerprint": "681b613908e20ed98903affd641f0d1e2b20859892cf80077b215e89fc81826b",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_c50257bb-165-2",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_c50257bb-165-2-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_c50257bb-165-2",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_c50257bb-165-2-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_c50257bb-165-2"
+  },
+  {
+   "at": "2026-09-25T05:59:49Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_d45a38a1-7b7-1",
+   "fingerprint": "b98ce4a9cecba2b5f3262ed13060f6ce5e55923d0af4e44fcf0142a247076be9",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_d45a38a1-7b7-1",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_d45a38a1-7b7-1-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_d45a38a1-7b7-1",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_d45a38a1-7b7-1-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_d45a38a1-7b7-1"
+  },
+  {
+   "at": "2026-09-25T05:59:54Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_d45a38a1-7b7-2",
+   "fingerprint": "5521eb97ebf3c63445403cbe66d1d59d1ef7660f22d19dab15c93ab6bd977e22",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_d45a38a1-7b7-2",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_d45a38a1-7b7-2-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_d45a38a1-7b7-2",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_d45a38a1-7b7-2-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_d45a38a1-7b7-2"
+  },
+  {
+   "at": "2026-09-25T05:59:58Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_d45a38a1-7b7-3",
+   "fingerprint": "5465523ce69694b356687ceb9a3cd22da83e1dceab86d9ff80cc731edbe313fb",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_d45a38a1-7b7-3",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_d45a38a1-7b7-3-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_d45a38a1-7b7-3",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_d45a38a1-7b7-3-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_d45a38a1-7b7-3"
+  },
+  {
+   "at": "2026-09-25T06:00:03Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_d4a5bdab-bb5-1",
+   "fingerprint": "44621c2a767aacd80925828d62d273ede053ba132debe5817438ffe54df44da8",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_d4a5bdab-bb5-1",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_d4a5bdab-bb5-1-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_d4a5bdab-bb5-1",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_d4a5bdab-bb5-1-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_d4a5bdab-bb5-1"
+  },
+  {
+   "at": "2026-09-25T06:00:08Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_d4a5bdab-bb5-2",
+   "fingerprint": "4387331d8f9f6ab16cc2f2cb7489bd53e505c428ca7248ab71a0a8d7973f0515",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_d4a5bdab-bb5-2",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_d4a5bdab-bb5-2-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_d4a5bdab-bb5-2",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_d4a5bdab-bb5-2-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_d4a5bdab-bb5-2"
+  },
+  {
+   "at": "2026-09-25T06:00:12Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_dbca2a9c-5eb-1",
+   "fingerprint": "0ecd9b8c22ff7865753a42779253cb3bed4d895f73640904834200224e104e32",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_dbca2a9c-5eb-1",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_dbca2a9c-5eb-1-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_dbca2a9c-5eb-1",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_dbca2a9c-5eb-1-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_dbca2a9c-5eb-1"
+  },
+  {
+   "at": "2026-09-25T06:00:17Z",
+   "copy_id": "ggen-legacy_claude_worktrees_wf_dbca2a9c-5eb-2",
+   "fingerprint": "d3cdbcd974c0432b22d4811934aeb2d199e43db28733c68012f199102afb8f11",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.claude/worktrees/wf_dbca2a9c-5eb-2",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_dbca2a9c-5eb-2-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/wf_dbca2a9c-5eb-2",
+     "to": "/Users/sac/.Trash/ggen-legacy_claude_worktrees_wf_dbca2a9c-5eb-2-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/ggen-legacy/.claude/worktrees/wf_dbca2a9c-5eb-2"
+  },
+  {
+   "at": "2026-09-25T06:00:17Z",
+   "copy_id": "tmp_integrate6-eafexec",
+   "fingerprint": "0164f46996b6eb5260f773ed93ccb592375ea0982ec75f97f0888906cee2b56d",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/ggen-legacy/.git/worktrees/integrate6-eafexec",
+     "to": "/Users/sac/.Trash/tmp_integrate6-eafexec-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/private/tmp/integrate6-eafexec"
+  },
+  {
+   "at": "2026-09-25T06:02:09Z",
+   "copy_id": "osx-clnr_claude_worktrees_agent-a0ee3d276fe4dc0c8",
+   "fingerprint": "1fbc1fadc6e2a915b9b3d22e61104b14c5b8f82e076ddf1618e610b4683e2df0",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/osx-clnr/.claude/worktrees/agent-a0ee3d276fe4dc0c8",
+     "to": "/Users/sac/.Trash/osx-clnr_claude_worktrees_agent-a0ee3d276fe4dc0c8-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/osx-clnr/.git/worktrees/agent-a0ee3d276fe4dc0c8",
+     "to": "/Users/sac/.Trash/osx-clnr_claude_worktrees_agent-a0ee3d276fe4dc0c8-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/osx-clnr/.claude/worktrees/agent-a0ee3d276fe4dc0c8"
+  },
+  {
+   "at": "2026-09-25T06:02:12Z",
+   "copy_id": "osx-clnr_claude_worktrees_agent-a3f9f3edd06244944",
+   "fingerprint": "fe94c130e5997ce868bf659181c108b321947ae7f2164eb549d101feebf6d697",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/osx-clnr/.claude/worktrees/agent-a3f9f3edd06244944",
+     "to": "/Users/sac/.Trash/osx-clnr_claude_worktrees_agent-a3f9f3edd06244944-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/osx-clnr/.git/worktrees/agent-a3f9f3edd06244944",
+     "to": "/Users/sac/.Trash/osx-clnr_claude_worktrees_agent-a3f9f3edd06244944-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/osx-clnr/.claude/worktrees/agent-a3f9f3edd06244944"
+  },
+  {
+   "at": "2026-09-25T06:02:14Z",
+   "copy_id": "osx-clnr_claude_worktrees_agent-a616005265c1e78fd",
+   "fingerprint": "a66a5e34f47e5ed77ca3793c08d87e734923474fd39a966ce0b227998d770cfe",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/osx-clnr/.claude/worktrees/agent-a616005265c1e78fd",
+     "to": "/Users/sac/.Trash/osx-clnr_claude_worktrees_agent-a616005265c1e78fd-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/osx-clnr/.git/worktrees/agent-a616005265c1e78fd",
+     "to": "/Users/sac/.Trash/osx-clnr_claude_worktrees_agent-a616005265c1e78fd-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/osx-clnr/.claude/worktrees/agent-a616005265c1e78fd"
+  },
+  {
+   "at": "2026-09-25T06:02:16Z",
+   "copy_id": "osx-clnr_claude_worktrees_wf_64225564-76f-5",
+   "fingerprint": "5176920e47ab5dbcd3cbd9fba336d30712dec41c7aec9b8157d8222d14de730b",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/osx-clnr/.claude/worktrees/wf_64225564-76f-5",
+     "to": "/Users/sac/.Trash/osx-clnr_claude_worktrees_wf_64225564-76f-5-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/osx-clnr/.git/worktrees/wf_64225564-76f-5",
+     "to": "/Users/sac/.Trash/osx-clnr_claude_worktrees_wf_64225564-76f-5-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/osx-clnr/.claude/worktrees/wf_64225564-76f-5"
+  },
+  {
+   "at": "2026-09-25T06:02:16Z",
+   "copy_id": "tmp_oclnr-fix-wt",
+   "fingerprint": "f9b840c971b824422aa578b4515f68e0969a27d69360c4df671734d782e5a889",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/osx-clnr/.git/worktrees/oclnr-fix-wt",
+     "to": "/Users/sac/.Trash/tmp_oclnr-fix-wt-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/private/tmp/oclnr-fix-wt"
+  },
+  {
+   "at": "2026-09-25T06:02:16Z",
+   "copy_id": "tmp_oclnr-redact-wire",
+   "fingerprint": "0072ccc85c08bd7c3882ded92db11d63ec4676a620d6cbb8ac66114f40f1d72f",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/osx-clnr/.git/worktrees/oclnr-redact-wire",
+     "to": "/Users/sac/.Trash/tmp_oclnr-redact-wire-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/private/tmp/oclnr-redact-wire"
+  },
+  {
+   "at": "2026-09-25T06:06:02Z",
+   "copy_id": "bcinr_claude_worktrees_agent-a35a85aec63695f13",
+   "fingerprint": "cf1dd747c4ec7fc7d6eea6c87ce8666f05a1b8bbdf3293f4112013dab681b310",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/bcinr/.claude/worktrees/agent-a35a85aec63695f13",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_agent-a35a85aec63695f13-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/bcinr/.git/worktrees/agent-a35a85aec63695f13",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_agent-a35a85aec63695f13-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/bcinr/.claude/worktrees/agent-a35a85aec63695f13"
+  },
+  {
+   "at": "2026-09-25T06:06:16Z",
+   "copy_id": "bcinr_claude_worktrees_agent-a7eb75875dfb2d24c",
+   "fingerprint": "e3f73ac01c67b5322bca3441ba2d30e0b6ec538ef24a277c71c2708476ac51f5",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/bcinr/.claude/worktrees/agent-a7eb75875dfb2d24c",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/bcinr/.git/worktrees/agent-a7eb75875dfb2d24c",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/bcinr/.claude/worktrees/agent-a7eb75875dfb2d24c"
+  },
+  {
+   "at": "2026-09-25T06:06:31Z",
+   "copy_id": "bcinr_claude_worktrees_agent-a83a540ad4d487dda",
+   "fingerprint": "ff5fe40675a2cfa9048dc59b066b604e7c20daed6fd03d05d6f37c7e3af46610",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/bcinr/.claude/worktrees/agent-a83a540ad4d487dda",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_agent-a83a540ad4d487dda-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/bcinr/.git/worktrees/agent-a83a540ad4d487dda",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_agent-a83a540ad4d487dda-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/bcinr/.claude/worktrees/agent-a83a540ad4d487dda"
+  },
+  {
+   "at": "2026-09-25T06:06:45Z",
+   "copy_id": "bcinr_claude_worktrees_agent-ac65ac5e90a63c54c",
+   "fingerprint": "9d00d7565a29470d03ef78eac58b87f540c8fcdaf66cc9367b5dec7c939a414c",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/bcinr/.claude/worktrees/agent-ac65ac5e90a63c54c",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/bcinr/.git/worktrees/agent-ac65ac5e90a63c54c",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/bcinr/.claude/worktrees/agent-ac65ac5e90a63c54c"
+  },
+  {
+   "at": "2026-09-25T06:07:01Z",
+   "copy_id": "bcinr_claude_worktrees_wf_7a8d0628-158-1",
+   "fingerprint": "b7a2446daee2fea004abd2328d2a8190f642077ef7558ee937a1b80e200b79a1",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/bcinr/.claude/worktrees/wf_7a8d0628-158-1",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_wf_7a8d0628-158-1-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/bcinr/.git/worktrees/wf_7a8d0628-158-1",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_wf_7a8d0628-158-1-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/bcinr/.claude/worktrees/wf_7a8d0628-158-1"
+  },
+  {
+   "at": "2026-09-25T06:07:18Z",
+   "copy_id": "bcinr_claude_worktrees_wf_7a8d0628-158-3",
+   "fingerprint": "42e546bd28d839f6b4d55977746d31a1044b4678394049ff3d85f7eea229b4d4",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/bcinr/.claude/worktrees/wf_7a8d0628-158-3",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_wf_7a8d0628-158-3-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/bcinr/.git/worktrees/wf_7a8d0628-158-3",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_wf_7a8d0628-158-3-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/bcinr/.claude/worktrees/wf_7a8d0628-158-3"
+  },
+  {
+   "at": "2026-09-25T06:07:33Z",
+   "copy_id": "bcinr_claude_worktrees_wf_7a8d0628-158-4",
+   "fingerprint": "5e70944b4f75da28a55e18e82ffed104a0b4271366dd84ead5cacd7f9fae34e4",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/bcinr/.claude/worktrees/wf_7a8d0628-158-4",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_wf_7a8d0628-158-4-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/bcinr/.git/worktrees/wf_7a8d0628-158-4",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_wf_7a8d0628-158-4-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/bcinr/.claude/worktrees/wf_7a8d0628-158-4"
+  },
+  {
+   "at": "2026-09-25T06:07:48Z",
+   "copy_id": "bcinr_claude_worktrees_wf_8bf87291-515-1",
+   "fingerprint": "3b2c732d57bc5a3b4f972c2f6c78d1d142bcf22997d17b7aae79c81b220c848d",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/bcinr/.claude/worktrees/wf_8bf87291-515-1",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_wf_8bf87291-515-1-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/bcinr/.git/worktrees/wf_8bf87291-515-1",
+     "to": "/Users/sac/.Trash/bcinr_claude_worktrees_wf_8bf87291-515-1-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/bcinr/.claude/worktrees/wf_8bf87291-515-1"
+  },
+  {
+   "at": "2026-09-25T06:08:31Z",
+   "copy_id": "praxis-hierarchical-projection-wt",
+   "fingerprint": "1bc5443b1dd381002ac526625febe8762e0bea3e06ca1f5135318fc9cab90955",
+   "gate_run_id": "topo-20260925T0500Z-7908",
+   "method": "trash-move",
+   "moved": [
+    {
+     "from": "/Users/sac/praxis-hierarchical-projection-wt",
+     "to": "/Users/sac/.Trash/praxis-hierarchical-projection-wt-retired-20260925T0500Z"
+    },
+    {
+     "from": "/Users/sac/praxis/.git/worktrees/praxis-hierarchical-projection-wt",
+     "to": "/Users/sac/.Trash/praxis-hierarchical-projection-wt-admin-retired-20260925T0500Z"
+    }
+   ],
+   "path": "/Users/sac/praxis-hierarchical-projection-wt"
+  }
+ ]
+}

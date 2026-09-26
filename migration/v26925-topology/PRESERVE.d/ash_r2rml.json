@@ -1,0 +1,29 @@
+{
+ "records": {
+  "tmp_xaas-w9-sweep-ash_r2rml": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_r2rml",
+   "copy_id": "tmp_xaas-w9-sweep-ash_r2rml",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w9-sweep-ash_r2rml/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w9-sweep-ash_r2rml",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sweep-ash_r2rml/anchor": "f60c21afdbac4ca2d04e9b2cab2ef702ae438dd9",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sweep-ash_r2rml/dirty": "436ebd625fc95e6cfc6cf63b21026b5b8b381f54",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sweep-ash_r2rml/index": "001ab5ad326ecd1795042bba45cfe90a63d39de0",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sweep-ash_r2rml/worktree-head": "9a5a71d55fc2723b951421213e224e6090740e21"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_r2rml",
+   "sha": "f60c21afdbac4ca2d04e9b2cab2ef702ae438dd9",
+   "skipped": [],
+   "snapshot_tree": "6b6eda2a7f566fa5ac1bdaf7f10e2798380efd02",
+   "superseded": []
+  }
+ }
+}

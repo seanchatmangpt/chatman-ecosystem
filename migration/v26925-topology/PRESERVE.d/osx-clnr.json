@@ -1,0 +1,142 @@
+{
+ "records": {
+  "osx-clnr_claude_worktrees_agent-a0ee3d276fe4dc0c8": {
+   "bundle": null,
+   "canonical": "/Users/sac/osx-clnr",
+   "copy_id": "osx-clnr_claude_worktrees_agent-a0ee3d276fe4dc0c8",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a0ee3d276fe4dc0c8/anchor",
+   "ok": true,
+   "path": "/Users/sac/osx-clnr/.claude/worktrees/agent-a0ee3d276fe4dc0c8",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a0ee3d276fe4dc0c8/anchor": "77f38675afe5588dd4ad711cdbed08b647be904e",
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a0ee3d276fe4dc0c8/dirty": "d57f932e31458a99c799a6c579dfd344ac91f3d1",
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a0ee3d276fe4dc0c8/index": "19145ac73e73211a670bbebb1f08d9d41e08b4b7",
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a0ee3d276fe4dc0c8/worktree-head": "7c705903b721b6381e1406ab546a2721cf7afd8b"
+   },
+   "remote_ref": "backup/v26.9.25/osx-clnr_claude_worktrees_agent-a0ee3d276fe4dc0c8",
+   "remote_verified_sha": "77f38675afe5588dd4ad711cdbed08b647be904e",
+   "repo_id": "osx-clnr",
+   "sha": "77f38675afe5588dd4ad711cdbed08b647be904e",
+   "skipped": [],
+   "snapshot_tree": "f59371ba91fc8d6fdedf3f6a258702da30b63dd3"
+  },
+  "osx-clnr_claude_worktrees_agent-a3f9f3edd06244944": {
+   "bundle": null,
+   "canonical": "/Users/sac/osx-clnr",
+   "copy_id": "osx-clnr_claude_worktrees_agent-a3f9f3edd06244944",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a3f9f3edd06244944/anchor",
+   "ok": true,
+   "path": "/Users/sac/osx-clnr/.claude/worktrees/agent-a3f9f3edd06244944",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a3f9f3edd06244944/anchor": "4036340f995cf57a79ed415813433f0ace61f7bf",
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a3f9f3edd06244944/dirty": "04c366cc70b458ca97cf2e6e7755fdb65a5747b3",
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a3f9f3edd06244944/index": "f5950d033c107cda07b6cf73227a9aa07690ff0b",
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a3f9f3edd06244944/worktree-head": "6ed9727ef99c59a1087b3f9fd74c5313f4a89d22"
+   },
+   "remote_ref": "backup/v26.9.25/osx-clnr_claude_worktrees_agent-a3f9f3edd06244944",
+   "remote_verified_sha": "4036340f995cf57a79ed415813433f0ace61f7bf",
+   "repo_id": "osx-clnr",
+   "sha": "4036340f995cf57a79ed415813433f0ace61f7bf",
+   "skipped": [],
+   "snapshot_tree": "d8107195f6c9e690bbc74e86537950b5afce7f75"
+  },
+  "osx-clnr_claude_worktrees_agent-a616005265c1e78fd": {
+   "bundle": null,
+   "canonical": "/Users/sac/osx-clnr",
+   "copy_id": "osx-clnr_claude_worktrees_agent-a616005265c1e78fd",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a616005265c1e78fd/anchor",
+   "ok": true,
+   "path": "/Users/sac/osx-clnr/.claude/worktrees/agent-a616005265c1e78fd",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a616005265c1e78fd/anchor": "1ce42feea9f488ba66e499aeea2e4aa0f00225d7",
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a616005265c1e78fd/dirty": "b72269f259f26cd03210e30a4c49794b47819526",
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a616005265c1e78fd/index": "53b50c748c1c26b3c4bb9f85b33bb208c42d0fc1",
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_agent-a616005265c1e78fd/worktree-head": "47291ceff5a032bd86b8eab179d378e4e594f3c6"
+   },
+   "remote_ref": "backup/v26.9.25/osx-clnr_claude_worktrees_agent-a616005265c1e78fd",
+   "remote_verified_sha": "1ce42feea9f488ba66e499aeea2e4aa0f00225d7",
+   "repo_id": "osx-clnr",
+   "sha": "1ce42feea9f488ba66e499aeea2e4aa0f00225d7",
+   "skipped": [],
+   "snapshot_tree": "48113fb27608eba66dedbc7fb02075d30280efc8"
+  },
+  "osx-clnr_claude_worktrees_wf_64225564-76f-5": {
+   "bundle": null,
+   "canonical": "/Users/sac/osx-clnr",
+   "copy_id": "osx-clnr_claude_worktrees_wf_64225564-76f-5",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_wf_64225564-76f-5/anchor",
+   "ok": true,
+   "path": "/Users/sac/osx-clnr/.claude/worktrees/wf_64225564-76f-5",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_wf_64225564-76f-5/anchor": "99ec145540818dd934709d5fba8c1815ad9afba1",
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_wf_64225564-76f-5/dirty": "2daf4bfa8a6913f11b63907ca3934893708b9d35",
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_wf_64225564-76f-5/index": "b96bce962d96c66e2c485998f961b097d71bbb2a",
+    "refs/preserve/v26.9.25/osx-clnr_claude_worktrees_wf_64225564-76f-5/worktree-head": "4db3560e6b6ee29e0c4083aa5a8d222655843dfe"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "osx-clnr",
+   "sha": "99ec145540818dd934709d5fba8c1815ad9afba1",
+   "skipped": [],
+   "snapshot_tree": "e72817992eeece424d6625be4a5a722ac16ced5f"
+  },
+  "tmp_oclnr-fix-wt": {
+   "bundle": null,
+   "canonical": "/Users/sac/osx-clnr",
+   "copy_id": "tmp_oclnr-fix-wt",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_oclnr-fix-wt/anchor",
+   "ok": true,
+   "path": "/private/tmp/oclnr-fix-wt",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_oclnr-fix-wt/admin-index": "5fe9dc24ea940b20d0e96f27bfe102a071a3c16b",
+    "refs/preserve/v26.9.25/tmp_oclnr-fix-wt/anchor": "c8b68ca8976366326f4eb4b20435d208ed29321e",
+    "refs/preserve/v26.9.25/tmp_oclnr-fix-wt/worktree-head": "db2ab7fe5f2a12075c3b733c0929de59af4aae6e"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "osx-clnr",
+   "sha": "c8b68ca8976366326f4eb4b20435d208ed29321e"
+  },
+  "tmp_oclnr-redact-wire": {
+   "bundle": null,
+   "canonical": "/Users/sac/osx-clnr",
+   "copy_id": "tmp_oclnr-redact-wire",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_oclnr-redact-wire/anchor",
+   "ok": true,
+   "path": "/private/tmp/oclnr-redact-wire",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_oclnr-redact-wire/admin-index": "4dad593b04633a8c04f970ac00b482f25fe497ea",
+    "refs/preserve/v26.9.25/tmp_oclnr-redact-wire/anchor": "bc2af2f0a2200923178a2849b2a508a285e206c2",
+    "refs/preserve/v26.9.25/tmp_oclnr-redact-wire/worktree-head": "ba651327227d2a46d6fd1f02ae12dd706af08fd3"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "osx-clnr",
+   "sha": "bc2af2f0a2200923178a2849b2a508a285e206c2"
+  }
+ }
+}

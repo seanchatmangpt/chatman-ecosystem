@@ -1,0 +1,61 @@
+{
+ "records": {
+  "praxis-hierarchical-projection-wt": {
+   "bundle": null,
+   "canonical": "/Users/sac/praxis",
+   "copy_id": "praxis-hierarchical-projection-wt",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/praxis-hierarchical-projection-wt/anchor",
+   "ok": true,
+   "path": "/Users/sac/praxis-hierarchical-projection-wt",
+   "redacted": [
+    {
+     "blob": "2526aea024316351de21e640242799b160583ebf",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/signing.key",
+     "sha256": "447e816911667a45102ebd3746c77502de24e23c1a27e29e95b084f1a604495f"
+    },
+    {
+     "blob": "dafe39933ba100f1c731f5658dce64361f35870a",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/verifying.key",
+     "sha256": "b16fe50d66a270878865953eb2d0f4632d4a7fa03bf0f1458427e24db6d1ec42"
+    },
+    {
+     "blob": "afa504b7002a76eb6d7803697a4d0d0d0fc4309d",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": ".praxis/keys/private.key",
+     "sha256": "9d37225d61e306cc9ed87ad51035d80681ef2daff4586accfde0b80dae6ca9ae"
+    }
+   ],
+   "refs": {
+    "refs/preserve/v26.9.25/praxis-hierarchical-projection-wt/anchor": "d3d47661a4472fc073598eb90e35eb6fdd934d8b",
+    "refs/preserve/v26.9.25/praxis-hierarchical-projection-wt/dirty": "de623990a3b086aba8e5137181e07189427eb956",
+    "refs/preserve/v26.9.25/praxis-hierarchical-projection-wt/index": "86e46df1214bdbfcc5a566d65458a4241c55dd1c",
+    "refs/preserve/v26.9.25/praxis-hierarchical-projection-wt/worktree-head": "ec825bc433397974a5ae6728dff7890595912ed9"
+   },
+   "remote_ref": "backup/v26.9.25/praxis-hierarchical-projection-wt-d3d47661a4",
+   "remote_verified_sha": "d3d47661a4472fc073598eb90e35eb6fdd934d8b",
+   "repo_id": "praxis",
+   "sha": "d3d47661a4472fc073598eb90e35eb6fdd934d8b",
+   "skipped": [],
+   "snapshot_tree": "f56c36bd3f8b3e0dcf33f3945521bae0cdad1705",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "tracked private-key path (.praxis/keys/private.key, blob already public on origin) must be redacted from pushed snapshot trees (R9)",
+     "refs": {
+      "refs/preserve/v26.9.25/praxis-hierarchical-projection-wt/superseded-1/anchor": "9d33a39ebf58149d4865ac9d716b301ce72d542d",
+      "refs/preserve/v26.9.25/praxis-hierarchical-projection-wt/superseded-1/dirty": "96f2b50b69ab39cb58a02233cb51240974d44b03",
+      "refs/preserve/v26.9.25/praxis-hierarchical-projection-wt/superseded-1/index": "86e46df1214bdbfcc5a566d65458a4241c55dd1c",
+      "refs/preserve/v26.9.25/praxis-hierarchical-projection-wt/superseded-1/worktree-head": "ec825bc433397974a5ae6728dff7890595912ed9"
+     },
+     "remote_ref": "backup/v26.9.25/praxis-hierarchical-projection-wt",
+     "remote_verified_sha": "9d33a39ebf58149d4865ac9d716b301ce72d542d"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,132 @@
+{
+  "schema": "https://chatman.dev/autonomic-crown/gates/v1",
+  "source": "RFC-0005 §7",
+  "gates": [
+    {
+      "id": "U-01",
+      "name": "machine-owned edges",
+      "metric": "recurring edges with `owner_kind: machine` ÷ recurring edges",
+      "threshold": "100%",
+      "evidence_kind": "edges.json"
+    },
+    {
+      "id": "U-02",
+      "name": "human operations",
+      "metric": "recurring edges with a HumanOperationalDependency",
+      "threshold": "0",
+      "evidence_kind": "edges.json"
+    },
+    {
+      "id": "U-03",
+      "name": "general LLM calls",
+      "metric": "general LLM calls on a formalized recurring path",
+      "threshold": "0",
+      "evidence_kind": "edges.json, run logs"
+    },
+    {
+      "id": "U-04",
+      "name": "exact evidence",
+      "metric": "edges whose evidence has a durable locator and recomputed sha256",
+      "threshold": "100%",
+      "evidence_kind": "edges.json, recomputed digests"
+    },
+    {
+      "id": "U-05",
+      "name": "recoverable repair",
+      "metric": "injected recoverable failures repaired and re-verified",
+      "threshold": "100%",
+      "evidence_kind": "fault-injection receipts"
+    },
+    {
+      "id": "U-06",
+      "name": "unrecoverable containment",
+      "metric": "unrecoverable failures typed while independent work continues",
+      "threshold": "100%",
+      "evidence_kind": "fault-injection receipts"
+    },
+    {
+      "id": "U-07",
+      "name": "semantic mutants",
+      "metric": "semantic mutants of the crown and gates killed",
+      "threshold": "100%",
+      "evidence_kind": "mutation receipts"
+    },
+    {
+      "id": "U-08",
+      "name": "authority amplification",
+      "metric": "authority-amplification attempts accepted",
+      "threshold": "0",
+      "evidence_kind": "refusal receipts"
+    },
+    {
+      "id": "U-09",
+      "name": "unreceipted DO",
+      "metric": "unreceipted or duplicate DO",
+      "threshold": "0",
+      "evidence_kind": "BRCE receipts, reconciliation log"
+    },
+    {
+      "id": "U-10",
+      "name": "kill between DO and receipt",
+      "metric": "kills between DO and receipt that reconcile exactly once",
+      "threshold": "100%",
+      "evidence_kind": "reconciliation receipts"
+    },
+    {
+      "id": "U-11",
+      "name": "cold reconstruction",
+      "metric": "reconstruction from durable state after deleting runner, workspace and artifacts",
+      "threshold": "100%",
+      "evidence_kind": "replay receipts"
+    },
+    {
+      "id": "U-12",
+      "name": "objective mutation",
+      "metric": "admitted objective mutations that close affected repos without manual restatement",
+      "threshold": "100%",
+      "evidence_kind": "premise-set receipts"
+    },
+    {
+      "id": "U-13",
+      "name": "pinned toolchain",
+      "metric": "unpinned actions or toolchains on the path",
+      "threshold": "0",
+      "evidence_kind": "workflow scan"
+    },
+    {
+      "id": "U-14",
+      "name": "hidden local state",
+      "metric": "hidden local state the path depends on",
+      "threshold": "0",
+      "evidence_kind": "durability scan"
+    },
+    {
+      "id": "U-15",
+      "name": "unchanged retry",
+      "metric": "retries with unchanged input and unchanged hypothesis",
+      "threshold": "0",
+      "evidence_kind": "run history"
+    },
+    {
+      "id": "U-16",
+      "name": "internal blockers",
+      "metric": "internal blockers at an AUTONOMIC crown",
+      "threshold": "0",
+      "evidence_kind": "crown receipt"
+    },
+    {
+      "id": "U-17",
+      "name": "scheduler independence",
+      "metric": "removing the primary scheduler stops the controller",
+      "threshold": "false",
+      "evidence_kind": "scheduler-removal receipt"
+    },
+    {
+      "id": "U-18",
+      "name": "clean cycles",
+      "metric": "independent clean cycles",
+      "threshold": "3/3",
+      "evidence_kind": "cycle receipts"
+    }
+  ]
+}

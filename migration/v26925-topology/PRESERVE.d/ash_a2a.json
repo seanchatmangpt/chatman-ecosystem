@@ -1,0 +1,178 @@
+{
+ "records": {
+  "ash-surface-wt": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_a2a",
+   "copy_id": "ash-surface-wt",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/ash-surface-wt/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/ash-surface-wt",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/ash-surface-wt/anchor": "da9dbcf5a87b9dcf1186ebdfa3c51c3e7ee80794",
+    "refs/preserve/v26.9.25/ash-surface-wt/dirty": "dfd4761b83f0f3814af79bce8fe86d5aea7e4a7a"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_a2a",
+   "sha": "da9dbcf5a87b9dcf1186ebdfa3c51c3e7ee80794",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+  },
+  "ash_a2a-worktrees": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_a2a",
+   "copy_id": "ash_a2a-worktrees",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/ash_a2a-worktrees/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/ash_a2a-worktrees",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/ash_a2a-worktrees/anchor": "e68c678321e61d8eeeb4fe95212737c97fae8c4e",
+    "refs/preserve/v26.9.25/ash_a2a-worktrees/dirty": "a31cc9e33eb6cf42788928dd8be866c5eabb7e8f"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_a2a",
+   "sha": "e68c678321e61d8eeeb4fe95212737c97fae8c4e",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+  },
+  "ash_a2a-wt": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_a2a",
+   "copy_id": "ash_a2a-wt",
+   "durable": "REMOTE",
+   "files": 2,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/ash_a2a-wt/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/ash_a2a-wt",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/ash_a2a-wt/anchor": "441324dbd9c7b31ac9a1a9e642f901c2ad03fe02",
+    "refs/preserve/v26.9.25/ash_a2a-wt/dirty": "1d8a0f0e2d59e54bab4f1ea0d29845084bf4a781"
+   },
+   "remote_ref": "backup/v26.9.25/ash_a2a-wt",
+   "remote_verified_sha": "441324dbd9c7b31ac9a1a9e642f901c2ad03fe02",
+   "repo_id": "ash_a2a",
+   "sha": "441324dbd9c7b31ac9a1a9e642f901c2ad03fe02",
+   "skipped": [],
+   "snapshot_tree": "31c08b4797c3bf98291be0a98051adcf038394ee"
+  },
+  "ash_a2a-wt2": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_a2a",
+   "copy_id": "ash_a2a-wt2",
+   "durable": "REMOTE",
+   "files": 3,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/ash_a2a-wt2/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/ash_a2a-wt2",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/ash_a2a-wt2/anchor": "fa0d9c49351e244f7abeb21ad112df66482dd9ec",
+    "refs/preserve/v26.9.25/ash_a2a-wt2/dirty": "8e92955ed952389f2b60165f9c944e5b284568d8"
+   },
+   "remote_ref": "backup/v26.9.25/ash_a2a-wt2",
+   "remote_verified_sha": "fa0d9c49351e244f7abeb21ad112df66482dd9ec",
+   "repo_id": "ash_a2a",
+   "sha": "fa0d9c49351e244f7abeb21ad112df66482dd9ec",
+   "skipped": [],
+   "snapshot_tree": "8b2bb6b51777b99b689af3bda714e9e7c243cc7c"
+  },
+  "frozen-duckdb-wt": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_a2a",
+   "copy_id": "frozen-duckdb-wt",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/frozen-duckdb-wt/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/frozen-duckdb-wt",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/frozen-duckdb-wt/anchor": "2ad673b0372863234eed73145b5a07474caf3dbe",
+    "refs/preserve/v26.9.25/frozen-duckdb-wt/dirty": "ff0399c54f4b3f469506e4900bdee4d7cde946cc"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_a2a",
+   "sha": "2ad673b0372863234eed73145b5a07474caf3dbe",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+  },
+  "worktrees": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_a2a",
+   "copy_id": "worktrees",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/worktrees/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/worktrees",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/worktrees/anchor": "84fb71953625e7011e5e240dc6093e2d31644bb4",
+    "refs/preserve/v26.9.25/worktrees/dirty": "8e973ad2cbf7e3783444f97de96651027ff26b5b"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_a2a",
+   "sha": "84fb71953625e7011e5e240dc6093e2d31644bb4",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+  }
+ }
+}

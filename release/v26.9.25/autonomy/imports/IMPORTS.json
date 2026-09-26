@@ -1,0 +1,15 @@
+{
+  "imports": [
+    {
+      "path": "imports/RFC-0005.md",
+      "source_repo": "seanchatmangpt/engineering-standards",
+      "source_sha": "71a6f607074b0f8d1b23855c11f10557a545b655",
+      "source_path": "docs/engineering/rfc/0005-v26.9.25-autonomic-closure-amendment.md",
+      "source_blob_sha1": "0b9eda64d71381ddfefa52e4752cf65ec9d9da53",
+      "sha256": "f153fcc41e6f3f17b88929c3a7a1c6cb8defdfa7edd940d6dd21e127fabd310d",
+      "standing": "NOT_A_SPEC",
+      "scope": "POST_TAG",
+      "owner": "seanchatmangpt/engineering-standards (PR #9, FINAL_SPEC; merge 71a6f607)"
+    }
+  ]
+}
