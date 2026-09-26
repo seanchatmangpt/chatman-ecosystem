@@ -29,6 +29,14 @@ IMPL_TERMINAL = frozenset(
 )
 COURT_RESULTS = frozenset({"PASS", "FAIL", "BASELINE_BLOCKER", "BLOCKED"})
 AUTHORITY_RANK = {"NONE": 0, "SELECT": 1, "CONSTRUCT": 2, "DO": 3}
+# R25-018: VERIFIER_ALIVE is not SUBJECT_ALIVE (docs/post-agi-platform-handbook/
+# part-08-replay-closure/32-capsule-alive.md). The verifying run's standing and the
+# subject's standing are independent state fields, combined only conservatively.
+VERIFIER_STANDINGS = frozenset(
+    {"UNKNOWN", "PARTIAL_ALIVE", "ALIVE", "BLOCKED", "BUILD_BROKEN", "REFUSED"}
+)
+STANDING_RANK = {"UNKNOWN": 0, "PARTIAL_ALIVE": 1, "ALIVE": 2}
+TERMINAL_PROPAGATE = ("REFUSED", "BUILD_BROKEN", "BLOCKED")
 
 RULES = (
     "REFUSED:MALFORMED_ROW",
@@ -44,15 +52,46 @@ RULES = (
     "REFUSED:TRANSIENT_PIN",
     "REFUSED:DUPLICATE_CANONICAL_OWNER",
     "REFUSED:BLOCKED_WITHOUT_TYPE",
+    "REFUSED:VERIFIER_EVIDENCE_MISSING",
 )
 
 
 @dataclass(frozen=True, slots=True)
 class Verdict:
     standing: str
+    verifier_standing: str
+    subject_standing: str
     refusals: tuple[str, ...]
     remaining: tuple[str, ...]
     receipt: dict[str, Any]
+
+
+def _combine_standings(*values: str) -> str:
+    """Conservative min: UNKNOWN < PARTIAL_ALIVE < ALIVE; BLOCKED/BUILD_BROKEN/REFUSED propagate."""
+    for terminal in TERMINAL_PROPAGATE:
+        if terminal in values:
+            return terminal
+    return min(values, key=lambda v: STANDING_RANK.get(v, 0))
+
+
+def _exact_subject_pass(row: dict[str, Any]) -> bool:
+    """True when an implementation-kind verifier court PASSED at the row's exact sha."""
+    sha = row.get("sha")
+    return any(
+        c.get("result") == "PASS"
+        and c.get("kind", "implementation") == "implementation"
+        and c.get("sha") == sha
+        for c in row.get("courts", [])
+    )
+
+
+def _row_verifier_standing(row: dict[str, Any]) -> str:
+    """Effective verifier standing of a row: its declared verifier_standing, else
+    derived from courts (exact-subject PASS -> ALIVE, else UNKNOWN)."""
+    declared = row.get("verifier_standing")
+    if isinstance(declared, str) and declared.strip():
+        return declared.strip()
+    return "ALIVE" if _exact_subject_pass(row) else "UNKNOWN"
 
 
 def _row_refusals(row: dict[str, Any]) -> list[str]:
@@ -102,6 +141,21 @@ def _row_refusals(row: dict[str, Any]) -> list[str]:
     claimed = row.get("authority_claimed", "NONE")
     if AUTHORITY_RANK.get(claimed, 99) > AUTHORITY_RANK.get(ceiling, -1):
         out.append(f"REFUSED:AUTHORITY_ESCALATION:{sid}:{claimed}>{ceiling}")
+    declared = row.get("verifier_standing")
+    if declared is not None and (
+        not isinstance(declared, str)
+        or not declared.strip()
+        or declared.strip() not in VERIFIER_STANDINGS
+    ):
+        out.append(f"REFUSED:MALFORMED_ROW:{sid}:verifier_standing")
+    verifier = _row_verifier_standing(row)
+    if impl in {"ALIVE", "PARTIAL_ALIVE"} and verifier != "ALIVE":
+        # R25-018 anti-vacuity: a subject liveness claim without a verifier that
+        # executed against the exact subject is unevidenced, not alive.
+        out.append(f"REFUSED:VERIFIER_EVIDENCE_MISSING:{sid}")
+    elif verifier == "ALIVE" and not _exact_subject_pass(row):
+        # Declared VERIFIER_ALIVE without witnessed exact-subject execution.
+        out.append(f"REFUSED:VERIFIER_EVIDENCE_MISSING:{sid}")
     return out
 
 
@@ -145,17 +199,26 @@ def evaluate(closure: dict[str, Any]) -> Verdict:
         )
     )
     refusals = sorted(set(refusals))
-    if refusals:
-        standing = "REFUSED"
-    elif remaining:
-        standing = "PARTIAL_ALIVE"
-    else:
-        standing = "ALIVE"
+    subject_standing = "REFUSED" if refusals else ("PARTIAL_ALIVE" if remaining else "ALIVE")
+    verifier_inputs = [
+        _row_verifier_standing(r)
+        for r in rows
+        if r.get("impl_standing") in {"ALIVE", "PARTIAL_ALIVE"}
+        or (
+            isinstance(r.get("verifier_standing"), str)
+            and r.get("verifier_standing").strip() in VERIFIER_STANDINGS
+        )
+    ]
+    # No liveness claim and no declared verifier anywhere: nothing to verify (vacuously ALIVE).
+    verifier_standing = _combine_standings(*verifier_inputs) if verifier_inputs else "ALIVE"
+    standing = _combine_standings(subject_standing, verifier_standing)
     payload = {
         "schema": SCHEMA,
         "release": closure.get("release"),
         "normative_ledger": closure.get("normative_ledger"),
         "standing": standing,
+        "subject_standing": subject_standing,
+        "verifier_standing": verifier_standing,
         "refusals": refusals,
         "remaining": list(remaining),
         "subjects": sorted(
@@ -164,7 +227,7 @@ def evaluate(closure: dict[str, Any]) -> Verdict:
         "authority": "NONE",
     }
     payload["receipt_digest"] = canonical_digest(payload)
-    return Verdict(standing, tuple(refusals), remaining, payload)
+    return Verdict(standing, verifier_standing, subject_standing, tuple(refusals), remaining, payload)
 
 
 def evaluate_path(path: str | Path) -> Verdict:
