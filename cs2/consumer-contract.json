@@ -1,0 +1,14 @@
+{
+  "schema": "CS2_CONSUMER_HANDOFF_V1",
+  "subject": "RFC-CS2-001",
+  "canonical_owner": "seanchatmangpt/chatman-ecosystem",
+  "canonical_path": "cs2/canonical.ttl",
+  "identity_rule": "consumer MUST bind producer repo + exact 40-hex SHA + sha256(canonical.ttl)",
+  "authority_ceiling": "CONSTRUCT",
+  "admission": "generated != admitted; consumer verification required",
+  "consumers": [
+    {"repo":"seanchatmangpt/ggen-marketplace","work_id":"CS2-WRK-003","projection":"pinned reusable CS2 pack"},
+    {"repo":"seanchatmangpt/ash_a2a","work_id":"CS2-WRK-012","projection":"bounded CS2 evidence/triage exchange"}
+  ],
+  "falsifier": "consumer succeeds from copied/local surrogate after canonical producer identity is changed"
+}
