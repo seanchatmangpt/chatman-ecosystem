@@ -1,0 +1,4 @@
+@prefix cs: <urn:xaas:case-study:> .
+
+<urn:xaas:wd-cs2:case> cs:caseRevisionDigest "6bd9762edbdf7c8f2a267106343601c60eef8c5cf32f52e183b963cc6453806f" ;
+  cs:generatorIdentity "ggen_igniter@26.9.15+engine=sparql;wd_cs2_case_study_pack=sha256:32704e04ec1ea4fc15eebb00a73678eabb0feac1720c8ad8ebb64b57c8a07693" .

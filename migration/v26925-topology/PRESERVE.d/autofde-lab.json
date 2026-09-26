@@ -1,0 +1,1161 @@
+{
+ "records": {
+  "autofde-lab-worktrees": {
+   "bundle": null,
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab-worktrees",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab-worktrees/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab-worktrees",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab-worktrees/anchor": "127c9d6a2eca0525f13cc7ff8dfc5c03948b203d",
+    "refs/preserve/v26.9.25/autofde-lab-worktrees/dirty": "affb43313591952a0cdd9266480a6fbd0d050e87"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "127c9d6a2eca0525f13cc7ff8dfc5c03948b203d",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+  },
+  "autofde-lab-wt": {
+   "bundle": null,
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab-wt",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab-wt/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab-wt",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab-wt/anchor": "201aedaf33ec7bde5ff841158954e3ce698236f5",
+    "refs/preserve/v26.9.25/autofde-lab-wt/dirty": "9c0315c68e7f67a3a47b37d91a442cd38df08a92"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "201aedaf33ec7bde5ff841158954e3ce698236f5",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+  },
+  "autofde-lab_claude_worktrees_agent-a01ca255695584cea": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a01ca255695584cea.bundle",
+    "sha256": "ed8a15c7f557012b564d47f4ad80517d4a9df1e8c768ee8574518664a8400a25",
+    "size": 29875,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a01ca255695584cea",
+   "files": 1523,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea/anchor",
+   "nearest_base": {
+    "changed_paths": 1,
+    "commit": "9ae1fb9a38a94898798526a68877af6958353715",
+    "ratio": 0.0007,
+    "total_paths": 1523
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a01ca255695584cea",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea/anchor": "d39ebf3d6847bac084d1a59567ecc6293bcef789",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea/dirty": "c7d86be42bc105c00a6545c8bc4d88fbac4e4d0f"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "d39ebf3d6847bac084d1a59567ecc6293bcef789",
+   "skipped": [],
+   "snapshot_tree": "9eae480400d93738f8766b4cbf8d983b49fc26ab",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "regen-.terraform+test-fixture-keys+nested-of-nested",
+     "refs": {
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea/superseded-1/anchor": "3055ba95e619772a75a7767016929ba5571417c8",
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea/superseded-1/dirty": "9ae1fb9a38a94898798526a68877af6958353715"
+     },
+     "remote_ref": null,
+     "remote_verified_sha": null
+    }
+   ]
+  },
+  "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_Catch2": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_Catch2.bundle",
+    "sha256": "5b77b17d9d1d716a4c9a17a7aa7d4f7270a003a8ead7a6b1255647e3b268b927",
+    "size": 5557142,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_Catch2",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_Catch2/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a01ca255695584cea/cpp/sdk/Catch2",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_Catch2/anchor": "608ea363fd2bc99b62f8dc9f5a2a0a325088ad1e",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_Catch2/dirty": "82998eaac680377d534cac28216da272a5f4a681"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "608ea363fd2bc99b62f8dc9f5a2a0a325088ad1e"
+  },
+  "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_PEGTL": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_PEGTL.bundle",
+    "sha256": "5c45239c99b438768f7a47f413f326bc5d538388c3f838adbbb6a220738b4e18",
+    "size": 2209071,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_PEGTL",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_PEGTL/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a01ca255695584cea/cpp/sdk/PEGTL",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_PEGTL/anchor": "e0bddf78f2f7825e31bfb027eed5ca4985ff2082",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_PEGTL/dirty": "31cf439975bda14a45b0ff355796d53b556b0240"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "e0bddf78f2f7825e31bfb027eed5ca4985ff2082"
+  },
+  "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_backward-cpp": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_backward-cpp.bundle",
+    "sha256": "39216a38c32c4bfd47865d7bc366b660f4e45eb939fb3905d6cebf314c441473",
+    "size": 381235,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_backward-cpp",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_backward-cpp/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a01ca255695584cea/cpp/sdk/backward-cpp",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_backward-cpp/anchor": "75ecbc6fbd41a029954baa748256dcc87ef46d05",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_backward-cpp/dirty": "426843c6310ba4374d4ca3ed0ef8106fde5db762"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "75ecbc6fbd41a029954baa748256dcc87ef46d05"
+  },
+  "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_json": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_json.bundle",
+    "sha256": "1e95b6c39b65c9c5e3eb3e15e115d0a13e7b11426bfbf0a75a1bd0522f85f735",
+    "size": 14369006,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_json",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_json/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a01ca255695584cea/cpp/sdk/json",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_json/anchor": "cc7da827e8454fc33b575263175c4d61afec3552",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_json/dirty": "bb7b461a1926a605ea76ef396ff073da0ef13326"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "cc7da827e8454fc33b575263175c4d61afec3552"
+  },
+  "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng.bundle",
+    "sha256": "a543adf69065031ffb6b8742bda1d9ba01700d10cfc10c746b044b8d80fc7869",
+    "size": 3292556,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng",
+   "files": 743,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng/anchor",
+   "nearest_base": {
+    "changed_paths": 4,
+    "commit": "cf0f0c6f112038033e3777b6f6ab7b1a82fe20c8",
+    "ratio": 0.0054,
+    "total_paths": 743
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a01ca255695584cea/cpp/sdk/nng",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng/anchor": "a9895a3a43175e505e0e7ee6f56671f6906ae48a",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng/dirty": "cf62e4ac5f0c0409556eb0c2bcd13f91c230d4f2"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "a9895a3a43175e505e0e7ee6f56671f6906ae48a",
+   "skipped": [],
+   "snapshot_tree": "6ec27bf3e575cab96932d9d09a0c82642b8d08e9",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "regen-.terraform+test-fixture-keys+nested-of-nested",
+     "refs": {
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng/superseded-1/anchor": "b7f2dd8a639c696740a7c4629e5105ae79ec96eb",
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng/superseded-1/dirty": "a1b5d3fd5d6f57ad624f427073e2c411b6da5dcc"
+     },
+     "remote_ref": null,
+     "remote_verified_sha": null
+    }
+   ]
+  },
+  "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng_extern_nng-wolfssl": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng_extern_nng-wolfssl.bundle",
+    "sha256": "cb98520b0a9fa3ac544d27cf2586a606ded2fdbd8a12ec69dd0dc3674061d729",
+    "size": 250086,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng_extern_nng-wolfssl",
+   "files": 7,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng_extern_nng-wolfssl/anchor",
+   "nearest_base": {
+    "changed_paths": 7,
+    "commit": "aa9c9b93d899c0f2191c1d1f09c808999d0f8343",
+    "ratio": 1.0,
+    "total_paths": 7
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a01ca255695584cea/cpp/sdk/nng/extern/nng-wolfssl",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng_extern_nng-wolfssl/anchor": "ce6f1ba071a697e377f9a29d0fe79c55e3bca883",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nng_extern_nng-wolfssl/dirty": "6ef5d5764f40600d9da5309db63b269362ff3ada"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "ce6f1ba071a697e377f9a29d0fe79c55e3bca883",
+   "skipped": [],
+   "snapshot_tree": "71f5eb72101440c1b298b1ff626b2396fb892b20",
+   "superseded": []
+  },
+  "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nngpp": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nngpp.bundle",
+    "sha256": "c199e47c4fdd59eeed0a1fe4f2a1fb3a63410789ff8c7143242b7f2fcf0eb921",
+    "size": 600001,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nngpp",
+   "files": 152,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nngpp/anchor",
+   "nearest_base": {
+    "changed_paths": 2,
+    "commit": "6bf44eb098e8a0792cdedb01422fad893196a22c",
+    "ratio": 0.0132,
+    "total_paths": 152
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a01ca255695584cea/cpp/sdk/nngpp",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nngpp/anchor": "f5d4f8c9390ffa0d8c82265c018e5b8298fbbda7",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nngpp/dirty": "533263fc27eae2e80ec19c58d348d3182b4a8990"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "f5d4f8c9390ffa0d8c82265c018e5b8298fbbda7",
+   "skipped": [],
+   "snapshot_tree": "24a4886ed0ae31c8861857fdf14679198f4d04e4",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "regen-.terraform+test-fixture-keys+nested-of-nested",
+     "refs": {
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nngpp/superseded-1/anchor": "ed4616b99a5ce0fcdbad63b10cac9f4de9c5dbbd",
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_nngpp/superseded-1/dirty": "c96dcf365bb80378f8ef9bbaec58cd5a4f1909e2"
+     },
+     "remote_ref": null,
+     "remote_verified_sha": null
+    }
+   ]
+  },
+  "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_pybind11": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_pybind11.bundle",
+    "sha256": "193c7e9d2de462c0e80e054bb70c5b1330fe090285ea8682d84635d5cbd2655e",
+    "size": 3924827,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_pybind11",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_pybind11/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a01ca255695584cea/cpp/sdk/pybind11",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_pybind11/anchor": "0400e3b88543bf883c466e5ce80a1b14f41e373b",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_pybind11/dirty": "142b5cd7fca9592588da8a6466a8349d93cad3ab"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "0400e3b88543bf883c466e5ce80a1b14f41e373b"
+  },
+  "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_spdlog": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_spdlog.bundle",
+    "sha256": "374fba37d75fd078be843378708e9f8437872833586710389bb56fb035d0a05f",
+    "size": 1565369,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_spdlog",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_spdlog/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a01ca255695584cea/cpp/sdk/spdlog",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_spdlog/anchor": "f0a41a2cb1c83cee6ce04abfaff272d90f85204c",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_sdk_spdlog/dirty": "3e70e585edb6bc9616ed93d4375aca6c6064d5e8"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "f0a41a2cb1c83cee6ce04abfaff272d90f85204c"
+  },
+  "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_tests_data_pddl": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_tests_data_pddl.bundle",
+    "sha256": "7c8925df13816fcda37006becdd20a01bd70b3db1a686b576135cf247eab8ab8",
+    "size": 1754325609,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_tests_data_pddl",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_tests_data_pddl/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a01ca255695584cea/cpp/tests/data/pddl",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_tests_data_pddl/anchor": "c7de4581aa1bd71b20dba8e50968c85ae8798ac1",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a01ca255695584cea_cpp_tests_data_pddl/dirty": "d818f3b0a158ed7824b47914083eb4615a0018d8"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "c7de4581aa1bd71b20dba8e50968c85ae8798ac1"
+  },
+  "autofde-lab_claude_worktrees_agent-a66c667e67159e3a6": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a66c667e67159e3a6.bundle",
+    "sha256": "41e288f56d1f2a9c4a3efa811afc48b0c7c9182d58bdbbf71586fef2416351c8",
+    "size": 185157,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a66c667e67159e3a6",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a66c667e67159e3a6/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a66c667e67159e3a6",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a66c667e67159e3a6/anchor": "b96359303989f6f375f13ac5a26bb1b0c7f940ef",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a66c667e67159e3a6/dirty": "6b027883d5ccc4d2ed08eccabd2989e93f0386ce"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "b96359303989f6f375f13ac5a26bb1b0c7f940ef"
+  },
+  "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6.bundle",
+    "sha256": "bc493d46609b55f3dd2a9e34962886b6065a37f2647ac05c70f4cf2c79d0e2be",
+    "size": 185703,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6",
+   "files": 1520,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6/anchor",
+   "nearest_base": {
+    "changed_paths": 1,
+    "commit": "bb07c8d713308bd596e28926f1f023d10ee669da",
+    "ratio": 0.0007,
+    "total_paths": 1520
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a6de8944b0b9564f6",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6/anchor": "06944855ecf906320098cdcb35fffdb95df0c0fd",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6/dirty": "88204b03cc67d41fb2a95fc2c51893cb64a4e1c2"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "06944855ecf906320098cdcb35fffdb95df0c0fd",
+   "skipped": [],
+   "snapshot_tree": "bfe243b6ad2b11afbd0a7d649e0a4679d5fc4743",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "regen-.terraform+test-fixture-keys+nested-of-nested",
+     "refs": {
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6/superseded-1/anchor": "aa9c9b93d899c0f2191c1d1f09c808999d0f8343",
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6/superseded-1/dirty": "bb07c8d713308bd596e28926f1f023d10ee669da"
+     },
+     "remote_ref": null,
+     "remote_verified_sha": null
+    }
+   ]
+  },
+  "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_Catch2": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_Catch2.bundle",
+    "sha256": "6f4d57f923633a888fa66c51047abcc1b6a42066fab16904e779c32ce0982b41",
+    "size": 5615123,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_Catch2",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_Catch2/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a6de8944b0b9564f6/cpp/sdk/Catch2",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_Catch2/anchor": "4902a916df04affe5ee42dcaa8d288d6fe2f7dd6",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_Catch2/dirty": "e30419bc682209c887eebba6a9806a102b549d25"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "4902a916df04affe5ee42dcaa8d288d6fe2f7dd6"
+  },
+  "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_PEGTL": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_PEGTL.bundle",
+    "sha256": "842fac7b856d3ad2f96bd74a21dedcbe4727979f71ef0b0fdc8b90fc0d9cda00",
+    "size": 2271946,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_PEGTL",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_PEGTL/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a6de8944b0b9564f6/cpp/sdk/PEGTL",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_PEGTL/anchor": "a8d44b773c03011ee918cf7b133e0f73bbbc9ebd",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_PEGTL/dirty": "320d1acdeea4b2b8053b328f1f664112704123c9"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "a8d44b773c03011ee918cf7b133e0f73bbbc9ebd"
+  },
+  "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_backward-cpp": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_backward-cpp.bundle",
+    "sha256": "6ed618c9107774b878e719cf76db5219191a57c1dba1bd091f502e04b694b2f9",
+    "size": 384312,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_backward-cpp",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_backward-cpp/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a6de8944b0b9564f6/cpp/sdk/backward-cpp",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_backward-cpp/anchor": "f1e2ef7e93543ea9dacfce1bc75c5468f4574d43",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_backward-cpp/dirty": "bf76acf5dba154bb1af41ac185d274582c4dd657"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "f1e2ef7e93543ea9dacfce1bc75c5468f4574d43"
+  },
+  "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_json": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_json.bundle",
+    "sha256": "f298e1689a8fca619b312bb24f968bdd3cdf09038a7173180216fae33fd2a4ac",
+    "size": 14387850,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_json",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_json/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a6de8944b0b9564f6/cpp/sdk/json",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_json/anchor": "945bd9976b49e2b8a8f7396d0fcf237e00149edd",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_json/dirty": "f66b432b579df911cd6365eea3efe14f3a6e2bd4"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "945bd9976b49e2b8a8f7396d0fcf237e00149edd"
+  },
+  "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng.bundle",
+    "sha256": "6bc5b6672100908bb0c5e67e1b1a2e3e4f07116fac2653d9eb912693224cc985",
+    "size": 3304147,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng",
+   "files": 743,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": "cf62e4ac5f0c0409556eb0c2bcd13f91c230d4f2",
+    "ratio": 0.0,
+    "total_paths": 743
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a6de8944b0b9564f6/cpp/sdk/nng",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng/anchor": "27209b1a177c38e80aa7404c0a7575faaa7d0182",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng/dirty": "931002b4c48f576f972a1608e8a4a2785647867c"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "27209b1a177c38e80aa7404c0a7575faaa7d0182",
+   "skipped": [],
+   "snapshot_tree": "6ec27bf3e575cab96932d9d09a0c82642b8d08e9",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "regen-.terraform+test-fixture-keys+nested-of-nested",
+     "refs": {
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng/superseded-1/anchor": "33087c79fa1d6dffe6eba8747315b4a2f8b6c5d5",
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng/superseded-1/dirty": "2ac0d0418a1e6cfb46a93b6dafc52081c8bd7b2e"
+     },
+     "remote_ref": null,
+     "remote_verified_sha": null
+    }
+   ]
+  },
+  "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng_extern_nng-wolfssl": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng_extern_nng-wolfssl.bundle",
+    "sha256": "ea97c7a6e0eeba087503a150438b2a5a2b67b8e9d29867e02fd92642f6e8bf47",
+    "size": 250226,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng_extern_nng-wolfssl",
+   "files": 7,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng_extern_nng-wolfssl/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": "6ef5d5764f40600d9da5309db63b269362ff3ada",
+    "ratio": 0.0,
+    "total_paths": 7
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a6de8944b0b9564f6/cpp/sdk/nng/extern/nng-wolfssl",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng_extern_nng-wolfssl/anchor": "08270cbba32066199721c62120ef2aa9e3a4715f",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nng_extern_nng-wolfssl/dirty": "5c8f1cdf69063e70cfdebdb8a8ab4910009a39d0"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "08270cbba32066199721c62120ef2aa9e3a4715f",
+   "skipped": [],
+   "snapshot_tree": "71f5eb72101440c1b298b1ff626b2396fb892b20",
+   "superseded": []
+  },
+  "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nngpp": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nngpp.bundle",
+    "sha256": "08dee28c75b3f4cb5b4527c47d9f81f10e4d66997b03d7618d5099b2a953be1f",
+    "size": 604159,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nngpp",
+   "files": 152,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nngpp/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": "533263fc27eae2e80ec19c58d348d3182b4a8990",
+    "ratio": 0.0,
+    "total_paths": 152
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a6de8944b0b9564f6/cpp/sdk/nngpp",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nngpp/anchor": "98798b841a77ec9c44899d03e973e2edb04b207e",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nngpp/dirty": "0a7c5b17e65516031378d7e6a0eb7c33a65ecdd4"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "98798b841a77ec9c44899d03e973e2edb04b207e",
+   "skipped": [],
+   "snapshot_tree": "24a4886ed0ae31c8861857fdf14679198f4d04e4",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "regen-.terraform+test-fixture-keys+nested-of-nested",
+     "refs": {
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nngpp/superseded-1/anchor": "90e13f50f2830f340814ff40e8bbe4051906cc1d",
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_nngpp/superseded-1/dirty": "bf808102278a13ac38d4944e33f0e3f2028342f0"
+     },
+     "remote_ref": null,
+     "remote_verified_sha": null
+    }
+   ]
+  },
+  "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_pybind11": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_pybind11.bundle",
+    "sha256": "f66ef959f32ce5d14eb35d16bb733a7f8ce0d0201bae00dc99a959d6e25d8a75",
+    "size": 3928203,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_pybind11",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_pybind11/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a6de8944b0b9564f6/cpp/sdk/pybind11",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_pybind11/anchor": "8804a522fc7f3b696bb94e5002c1823836a33a52",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_pybind11/dirty": "7d658bf92444510b9487db359697152ac580d964"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "8804a522fc7f3b696bb94e5002c1823836a33a52"
+  },
+  "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_spdlog": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_spdlog.bundle",
+    "sha256": "44b7b0e4b65b4c90c3d6818c4504ebe77c5ebf291a0c2854b6556640ffdd7784",
+    "size": 1575470,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_spdlog",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_spdlog/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a6de8944b0b9564f6/cpp/sdk/spdlog",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_spdlog/anchor": "71599ca4cb2c3df1e895f233f2b4c818b9b3c8ed",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-a6de8944b0b9564f6_cpp_sdk_spdlog/dirty": "60c5a1d80144b99f52713041bb489e5668291d97"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "71599ca4cb2c3df1e895f233f2b4c818b9b3c8ed"
+  },
+  "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c.bundle",
+    "sha256": "6bfc4f31aa7083f68639202a2f38f0c41b8491e070a4cb36a9a0b0abf9c7ab1f",
+    "size": 641483,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c",
+   "files": 1342,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": "55bc3aec10fd010f1fc6c5e02045f6285bfe8bf9",
+    "ratio": 0.0,
+    "total_paths": 1342
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-ac4dc74a8c9b3849c",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c/anchor": "9d76c610e00c2f3cd12d20115db8f1a696594212",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c/dirty": "dcde55c20a66802ddea220d15412b85a1f2ed6d3"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "9d76c610e00c2f3cd12d20115db8f1a696594212",
+   "skipped": [],
+   "snapshot_tree": "7bf013ebed0791d602f6557c9cc445923abf3b2d",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "regen-.terraform+test-fixture-keys+nested-of-nested",
+     "refs": {
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c/superseded-1/anchor": "b709eb432a55a0c9b68470e67972596d56986477",
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c/superseded-1/dirty": "55bc3aec10fd010f1fc6c5e02045f6285bfe8bf9"
+     },
+     "remote_ref": null,
+     "remote_verified_sha": null
+    }
+   ]
+  },
+  "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_Catch2": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_Catch2.bundle",
+    "sha256": "9f2ac2aaf6fc0420527ff337ff46aaeda9be572a88b0aa5d22f4b2f20b2bc7e8",
+    "size": 5615278,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_Catch2",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_Catch2/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-ac4dc74a8c9b3849c/cpp/sdk/Catch2",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_Catch2/anchor": "93d89c5a142d84a350b4b7837c29b01b73ad3a75",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_Catch2/dirty": "1e30f85c5faca71ab6e0ad5dd9d6fcae35ef08a0"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "93d89c5a142d84a350b4b7837c29b01b73ad3a75"
+  },
+  "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_PEGTL": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_PEGTL.bundle",
+    "sha256": "6de87772ef6a9dcd6bec8e96c2c37fc11ed17afc2a952c2e37a80304fbd1b8f0",
+    "size": 2271705,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_PEGTL",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_PEGTL/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-ac4dc74a8c9b3849c/cpp/sdk/PEGTL",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_PEGTL/anchor": "0e3c83f7e67fd54a17f1816b870323afcb00b601",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_PEGTL/dirty": "ad1e343c73419ee01119b0f0b741b9b6c828ca94"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "0e3c83f7e67fd54a17f1816b870323afcb00b601"
+  },
+  "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_backward-cpp": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_backward-cpp.bundle",
+    "sha256": "f1105ea708e45ebc84dd285a12abe23da9ab8591c6ef3d5bba9958dcabd37972",
+    "size": 384064,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_backward-cpp",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_backward-cpp/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-ac4dc74a8c9b3849c/cpp/sdk/backward-cpp",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_backward-cpp/anchor": "79c9160b65cb21fb10b43cecc691399f371638b9",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_backward-cpp/dirty": "532a062fc4cc4968c762a42a3763d8b8cd626def"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "79c9160b65cb21fb10b43cecc691399f371638b9"
+  },
+  "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_json": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_json.bundle",
+    "sha256": "8720cd93a483d270bcade35bb068588cdc3107e357390500257c6eddcf21d3b0",
+    "size": 14388002,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_json",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_json/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-ac4dc74a8c9b3849c/cpp/sdk/json",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_json/anchor": "b8a33d90009b4456497b502638518570141ce9c7",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_json/dirty": "37407e1c8ff572675718c33eb7e213d2185dbb17"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "b8a33d90009b4456497b502638518570141ce9c7"
+  },
+  "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng.bundle",
+    "sha256": "287c80ea28d5a0c85b5adb70039c580abc847b6bd271cc295f5d5657dc8b5673",
+    "size": 3304147,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng",
+   "files": 743,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": "cf62e4ac5f0c0409556eb0c2bcd13f91c230d4f2",
+    "ratio": 0.0,
+    "total_paths": 743
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-ac4dc74a8c9b3849c/cpp/sdk/nng",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng/anchor": "f58372e2e76fda28e6c77cf84a8cd328f8292717",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng/dirty": "5027a3b8f9e262a06d17a8a374981f788181333c"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "f58372e2e76fda28e6c77cf84a8cd328f8292717",
+   "skipped": [],
+   "snapshot_tree": "6ec27bf3e575cab96932d9d09a0c82642b8d08e9",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "regen-.terraform+test-fixture-keys+nested-of-nested",
+     "refs": {
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng/superseded-1/anchor": "2a6477ae2013b876d219a11c336f10d3b3817aa7",
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng/superseded-1/dirty": "cf0f0c6f112038033e3777b6f6ab7b1a82fe20c8"
+     },
+     "remote_ref": null,
+     "remote_verified_sha": null
+    }
+   ]
+  },
+  "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng_extern_nng-wolfssl": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng_extern_nng-wolfssl.bundle",
+    "sha256": "228b06959e90cdf5eaeb09809e85f19ccabfbcefd3837032ab1dac576d500129",
+    "size": 250243,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng_extern_nng-wolfssl",
+   "files": 7,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng_extern_nng-wolfssl/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": "6ef5d5764f40600d9da5309db63b269362ff3ada",
+    "ratio": 0.0,
+    "total_paths": 7
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-ac4dc74a8c9b3849c/cpp/sdk/nng/extern/nng-wolfssl",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng_extern_nng-wolfssl/anchor": "ac850b33e727ce5d5fd2607d1326f91fb9cb7f40",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nng_extern_nng-wolfssl/dirty": "613af40c79d835db763284036035593189c39cb8"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "ac850b33e727ce5d5fd2607d1326f91fb9cb7f40",
+   "skipped": [],
+   "snapshot_tree": "71f5eb72101440c1b298b1ff626b2396fb892b20",
+   "superseded": []
+  },
+  "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nngpp": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nngpp.bundle",
+    "sha256": "34b1aae4f24f22374ca2454afcd3da4bf3058f5bda357ffc82ebe864b4053182",
+    "size": 604159,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nngpp",
+   "files": 152,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nngpp/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": "0a7c5b17e65516031378d7e6a0eb7c33a65ecdd4",
+    "ratio": 0.0,
+    "total_paths": 152
+   },
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-ac4dc74a8c9b3849c/cpp/sdk/nngpp",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nngpp/anchor": "dd3e9c5674f0153c6c0c792f78f45234f9e6b6e9",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nngpp/dirty": "67b1355fa0cca92b83838dce47e7b969c2f48256"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "dd3e9c5674f0153c6c0c792f78f45234f9e6b6e9",
+   "skipped": [],
+   "snapshot_tree": "24a4886ed0ae31c8861857fdf14679198f4d04e4",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "regen-.terraform+test-fixture-keys+nested-of-nested",
+     "refs": {
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nngpp/superseded-1/anchor": "839cb3f3d5d08ebf701874854984fbb19c2d7928",
+      "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_nngpp/superseded-1/dirty": "6bf44eb098e8a0792cdedb01422fad893196a22c"
+     },
+     "remote_ref": null,
+     "remote_verified_sha": null
+    }
+   ]
+  },
+  "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_pybind11": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_pybind11.bundle",
+    "sha256": "33a9637076a329416f5a332eb882014b1f6270c4a279fc7de734f065172372a6",
+    "size": 3928202,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_pybind11",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_pybind11/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-ac4dc74a8c9b3849c/cpp/sdk/pybind11",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_pybind11/anchor": "8afb3250c2c4bef06a74d540273a96bb40f12822",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_pybind11/dirty": "463c888ff60a877a26ac93284ff3721e030599ad"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "8afb3250c2c4bef06a74d540273a96bb40f12822"
+  },
+  "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_spdlog": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_spdlog.bundle",
+    "sha256": "7dccbb853db192ce003dbdfae2331341e5efc80d0f879e79aef644393b2c6255",
+    "size": 1575470,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_spdlog",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_spdlog/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-ac4dc74a8c9b3849c/cpp/sdk/spdlog",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_spdlog/anchor": "5fda56c5154e92f11a47c0c556a7d8aeca76bd8c",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_sdk_spdlog/dirty": "0b1435d428a19219086ec06519a1c915abca8114"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "5fda56c5154e92f11a47c0c556a7d8aeca76bd8c"
+  },
+  "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_tests_data_pddl": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_tests_data_pddl.bundle",
+    "sha256": "2a374769fd9ef455e0e3b4cd52e138bc176240c0a90c233c6702567ed5e5c067",
+    "size": 1753118604,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_tests_data_pddl",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "FOREIGN_REMOTE",
+   "local_ref": "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_tests_data_pddl/anchor",
+   "ok": true,
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-ac4dc74a8c9b3849c/cpp/tests/data/pddl",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_tests_data_pddl/anchor": "f8108f87333c94cc311546b50b3088a43bc2b2ef",
+    "refs/preserve/v26.9.25/autofde-lab_claude_worktrees_agent-ac4dc74a8c9b3849c_cpp_tests_data_pddl/dirty": "0b2dd6eb9fe6476c9d4a45fdc5f706ffd8e62375"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "f8108f87333c94cc311546b50b3088a43bc2b2ef"
+  },
+  "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab.bundle",
+    "sha256": "9546308425b7ef6966f79bc3ea155db9da5e6a28d61a8568403a92d752084d28",
+    "size": 1594,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "clap-noun-verb_clap-noun-verb-any_playground_autofde-lab",
+   "kind": "SUBMODULE_ACTIVE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab/anchor",
+   "ok": true,
+   "path": "/Users/sac/clap-noun-verb/clap-noun-verb-any/playground/autofde-lab",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab/anchor": "184ea9570f08a14e60204569604866f9c7df8b6f",
+    "refs/preserve/v26.9.25/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab/dirty": "75eb33edcb5d62bf5b83d3aceeccbe93e6c74c45",
+    "refs/preserve/v26.9.25/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab/index": "2458851cc102c12f5b4290d0efde9a56da84eb45",
+    "refs/preserve/v26.9.25/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab/worktree-head": "4bd21ad233ad71bd9e6290287f4bcffefd433deb"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "184ea9570f08a14e60204569604866f9c7df8b6f",
+   "skipped": [],
+   "snapshot_tree": "f5dde9dde6aecc21e7619739b6ca8d41e8f659e3",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "regen-.terraform+test-fixture-keys+nested-of-nested",
+     "refs": {
+      "refs/preserve/v26.9.25/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab/superseded-1/anchor": "184ea9570f08a14e60204569604866f9c7df8b6f",
+      "refs/preserve/v26.9.25/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab/superseded-1/dirty": "75eb33edcb5d62bf5b83d3aceeccbe93e6c74c45",
+      "refs/preserve/v26.9.25/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab/superseded-1/index": "2458851cc102c12f5b4290d0efde9a56da84eb45",
+      "refs/preserve/v26.9.25/clap-noun-verb_clap-noun-verb-any_playground_autofde-lab/superseded-1/worktree-head": "4bd21ad233ad71bd9e6290287f4bcffefd433deb"
+     },
+     "remote_ref": null,
+     "remote_verified_sha": null
+    }
+   ]
+  },
+  "tmp_t1-probe-afde": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_t1-probe-afde.bundle",
+    "sha256": "fbd9ed8026395cfd46509ea79e144b3ce83b09274df8d66b724db9e6f98c1343",
+    "size": 2045,
+    "verified": true
+   },
+   "canonical": "/Users/sac/autofde-lab",
+   "copy_id": "tmp_t1-probe-afde",
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_t1-probe-afde/anchor",
+   "ok": true,
+   "path": "/private/tmp/t1-probe-afde",
+   "rebuilt_from": "git refs + bundles/ + ls-remote (part file overwritten by a later same-queue run; fixed: parts merge)",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_t1-probe-afde/anchor": "27d49bca088d857669642e6ac1a50660121f6e5e",
+    "refs/preserve/v26.9.25/tmp_t1-probe-afde/dirty": "38b06293f2cd5dae1b7c9a5c7526969fa9c8a7b2"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "autofde-lab",
+   "sha": "27d49bca088d857669642e6ac1a50660121f6e5e"
+  }
+ }
+}

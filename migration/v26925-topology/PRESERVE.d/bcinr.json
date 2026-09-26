@@ -1,0 +1,574 @@
+{
+ "records": {
+  "bcinr_claude_worktrees_agent-a35a85aec63695f13": {
+   "bundle": null,
+   "canonical": "/Users/sac/bcinr",
+   "copy_id": "bcinr_claude_worktrees_agent-a35a85aec63695f13",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a35a85aec63695f13/anchor",
+   "ok": true,
+   "path": "/Users/sac/bcinr/.claude/worktrees/agent-a35a85aec63695f13",
+   "redacted": [
+    {
+     "blob": "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/signing.key",
+     "sha256": "fa834159f5cb00f1ac315b139e5596b497935d0b831ac90cefed2e93390450e6"
+    },
+    {
+     "blob": "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/verifying.key",
+     "sha256": "fb14244dea0817abead2f48100bc83d117dc7c0d21bbd8a56263a4e465012a8b"
+    },
+    {
+     "blob": "a2de77d9b5229ad453882e530b7002be319df85f",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": "playground/.ggen/keys/signing.key",
+     "sha256": "f43b581d76b49b26a62fc9ede242ea41faa127e525806f1f1bbece77bba65cb2"
+    }
+   ],
+   "refs": {
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a35a85aec63695f13/anchor": "dbc9ff7f26a792a123cbaa50634ba225e2707415",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a35a85aec63695f13/dirty": "f0ac94f83e1e6dcc91d103b9678d5d6473677ad2",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a35a85aec63695f13/index": "965498d940b6bdd516aea0617b32d6ce9485b0a4",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a35a85aec63695f13/worktree-head": "bf278da8c56fce12d9f89ea164c14db47b9904f4"
+   },
+   "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_agent-a35a85aec63695f13-dbc9ff7f26",
+   "remote_verified_sha": "dbc9ff7f26a792a123cbaa50634ba225e2707415",
+   "repo_id": "bcinr",
+   "sha": "dbc9ff7f26a792a123cbaa50634ba225e2707415",
+   "skipped": [],
+   "snapshot_tree": "0cfa874b46a43b9df8d9aa8ebe321f3ad73ff588",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "tracked private-key path (playground/.ggen/keys/signing.key, blob already public on origin main history) must be redacted from pushed snapshot trees (R9)",
+     "refs": {
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a35a85aec63695f13/superseded-1/anchor": "5ada79005146aedeccb51b88111d1997c4fd7f57",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a35a85aec63695f13/superseded-1/dirty": "32839ad8e2747dc4a11c068265b36e24179f138a",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a35a85aec63695f13/superseded-1/index": "965498d940b6bdd516aea0617b32d6ce9485b0a4",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a35a85aec63695f13/superseded-1/worktree-head": "bf278da8c56fce12d9f89ea164c14db47b9904f4"
+     },
+     "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_agent-a35a85aec63695f13",
+     "remote_verified_sha": "5ada79005146aedeccb51b88111d1997c4fd7f57"
+    }
+   ]
+  },
+  "bcinr_claude_worktrees_agent-a7eb75875dfb2d24c": {
+   "bundle": null,
+   "canonical": "/Users/sac/bcinr",
+   "copy_id": "bcinr_claude_worktrees_agent-a7eb75875dfb2d24c",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c/anchor",
+   "ok": true,
+   "path": "/Users/sac/bcinr/.claude/worktrees/agent-a7eb75875dfb2d24c",
+   "redacted": [
+    {
+     "blob": "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/signing.key",
+     "sha256": "fa834159f5cb00f1ac315b139e5596b497935d0b831ac90cefed2e93390450e6"
+    },
+    {
+     "blob": "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/verifying.key",
+     "sha256": "fb14244dea0817abead2f48100bc83d117dc7c0d21bbd8a56263a4e465012a8b"
+    },
+    {
+     "blob": "a2de77d9b5229ad453882e530b7002be319df85f",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": "playground/.ggen/keys/signing.key",
+     "sha256": "f43b581d76b49b26a62fc9ede242ea41faa127e525806f1f1bbece77bba65cb2"
+    }
+   ],
+   "refs": {
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c/anchor": "4d4d08b36da69f42c8c099de7b2dfb63cfedf2b5",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c/dirty": "d8500371eaa61bebbd43a54c5018786c52d5fd8f",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c/index": "17a369930c2cbe1d67585d594f1727b3d39f492c",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+   },
+   "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c-4d4d08b36d",
+   "remote_verified_sha": "4d4d08b36da69f42c8c099de7b2dfb63cfedf2b5",
+   "repo_id": "bcinr",
+   "sha": "4d4d08b36da69f42c8c099de7b2dfb63cfedf2b5",
+   "skipped": [],
+   "snapshot_tree": "525deca592e46306ef8d08b05c751a9fade64f19",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "tracked private-key path (playground/.ggen/keys/signing.key, blob already public on origin main history) must be redacted from pushed snapshot trees (R9)",
+     "refs": {
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c/superseded-1/anchor": "b253e5e59879002e686e5eac76e5eb86c342ae72",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c/superseded-1/dirty": "eaf944309538cde1c3f487bf1b2ac671a3aac45d",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c/superseded-1/index": "17a369930c2cbe1d67585d594f1727b3d39f492c",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c/superseded-1/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+     },
+     "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_agent-a7eb75875dfb2d24c",
+     "remote_verified_sha": "b253e5e59879002e686e5eac76e5eb86c342ae72"
+    }
+   ]
+  },
+  "bcinr_claude_worktrees_agent-a83a540ad4d487dda": {
+   "bundle": null,
+   "canonical": "/Users/sac/bcinr",
+   "copy_id": "bcinr_claude_worktrees_agent-a83a540ad4d487dda",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a83a540ad4d487dda/anchor",
+   "ok": true,
+   "path": "/Users/sac/bcinr/.claude/worktrees/agent-a83a540ad4d487dda",
+   "redacted": [
+    {
+     "blob": "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/signing.key",
+     "sha256": "fa834159f5cb00f1ac315b139e5596b497935d0b831ac90cefed2e93390450e6"
+    },
+    {
+     "blob": "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/verifying.key",
+     "sha256": "fb14244dea0817abead2f48100bc83d117dc7c0d21bbd8a56263a4e465012a8b"
+    },
+    {
+     "blob": "a2de77d9b5229ad453882e530b7002be319df85f",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": "playground/.ggen/keys/signing.key",
+     "sha256": "f43b581d76b49b26a62fc9ede242ea41faa127e525806f1f1bbece77bba65cb2"
+    }
+   ],
+   "refs": {
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a83a540ad4d487dda/anchor": "c7ef6aca4f0fa1ed523eeee843d2b431d920fae3",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a83a540ad4d487dda/dirty": "bca84e36ac1add469f9815d20a51505fa1ed95b4",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a83a540ad4d487dda/index": "f55bcfc6578a6354a780c713c93066e32d5b0656",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a83a540ad4d487dda/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+   },
+   "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_agent-a83a540ad4d487dda-c7ef6aca4f",
+   "remote_verified_sha": "c7ef6aca4f0fa1ed523eeee843d2b431d920fae3",
+   "repo_id": "bcinr",
+   "sha": "c7ef6aca4f0fa1ed523eeee843d2b431d920fae3",
+   "skipped": [],
+   "snapshot_tree": "d6eebb2c494de113ee576a4a20ce618b619c1565",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "tracked private-key path (playground/.ggen/keys/signing.key, blob already public on origin main history) must be redacted from pushed snapshot trees (R9)",
+     "refs": {
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a83a540ad4d487dda/superseded-1/anchor": "a1d152d3e30db307496733292af2d0b4f00cafa0",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a83a540ad4d487dda/superseded-1/dirty": "964200cc616e4e2c8811a984cc8e7f51aa3d683b",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a83a540ad4d487dda/superseded-1/index": "f55bcfc6578a6354a780c713c93066e32d5b0656",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-a83a540ad4d487dda/superseded-1/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+     },
+     "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_agent-a83a540ad4d487dda",
+     "remote_verified_sha": "a1d152d3e30db307496733292af2d0b4f00cafa0"
+    }
+   ]
+  },
+  "bcinr_claude_worktrees_agent-ac65ac5e90a63c54c": {
+   "bundle": null,
+   "canonical": "/Users/sac/bcinr",
+   "copy_id": "bcinr_claude_worktrees_agent-ac65ac5e90a63c54c",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c/anchor",
+   "ok": true,
+   "path": "/Users/sac/bcinr/.claude/worktrees/agent-ac65ac5e90a63c54c",
+   "redacted": [
+    {
+     "blob": "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/signing.key",
+     "sha256": "fa834159f5cb00f1ac315b139e5596b497935d0b831ac90cefed2e93390450e6"
+    },
+    {
+     "blob": "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/verifying.key",
+     "sha256": "fb14244dea0817abead2f48100bc83d117dc7c0d21bbd8a56263a4e465012a8b"
+    },
+    {
+     "blob": "a2de77d9b5229ad453882e530b7002be319df85f",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": "playground/.ggen/keys/signing.key",
+     "sha256": "f43b581d76b49b26a62fc9ede242ea41faa127e525806f1f1bbece77bba65cb2"
+    }
+   ],
+   "refs": {
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c/anchor": "f12b3dba0e32a40be6b113f3d2f08c35c0d2aab7",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c/dirty": "ca56799509d2a1f0ce06464151520aae15d7c490",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c/index": "9ba033fc604f3436f760203f40749e96f9da2287",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+   },
+   "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c-f12b3dba0e",
+   "remote_verified_sha": "f12b3dba0e32a40be6b113f3d2f08c35c0d2aab7",
+   "repo_id": "bcinr",
+   "sha": "f12b3dba0e32a40be6b113f3d2f08c35c0d2aab7",
+   "skipped": [],
+   "snapshot_tree": "7180a9e145c716565c845ac5f163d8c9087338bd",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "tracked private-key path (playground/.ggen/keys/signing.key, blob already public on origin main history) must be redacted from pushed snapshot trees (R9)",
+     "refs": {
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c/superseded-1/anchor": "c5c268070894859608d2d69744982457659ffa8d",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c/superseded-1/dirty": "95f495b6360ca61b757debb10dcb0cfa57cabb75",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c/superseded-1/index": "9ba033fc604f3436f760203f40749e96f9da2287",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c/superseded-1/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+     },
+     "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_agent-ac65ac5e90a63c54c",
+     "remote_verified_sha": "c5c268070894859608d2d69744982457659ffa8d"
+    }
+   ]
+  },
+  "bcinr_claude_worktrees_wf_7a8d0628-158-1": {
+   "bundle": null,
+   "canonical": "/Users/sac/bcinr",
+   "copy_id": "bcinr_claude_worktrees_wf_7a8d0628-158-1",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-1/anchor",
+   "ok": true,
+   "path": "/Users/sac/bcinr/.claude/worktrees/wf_7a8d0628-158-1",
+   "redacted": [
+    {
+     "blob": "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/signing.key",
+     "sha256": "fa834159f5cb00f1ac315b139e5596b497935d0b831ac90cefed2e93390450e6"
+    },
+    {
+     "blob": "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/verifying.key",
+     "sha256": "fb14244dea0817abead2f48100bc83d117dc7c0d21bbd8a56263a4e465012a8b"
+    },
+    {
+     "blob": "a2de77d9b5229ad453882e530b7002be319df85f",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": "playground/.ggen/keys/signing.key",
+     "sha256": "f43b581d76b49b26a62fc9ede242ea41faa127e525806f1f1bbece77bba65cb2"
+    }
+   ],
+   "refs": {
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-1/anchor": "dd0235740ee1407ec2c0870bce488c03d9839d17",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-1/dirty": "13c80301f20eb2ebd037b169f07155819cff2648",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-1/index": "5884abd04293732c2fd86c26074fb931c7cf994b",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-1/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+   },
+   "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-1-dd0235740e",
+   "remote_verified_sha": "dd0235740ee1407ec2c0870bce488c03d9839d17",
+   "repo_id": "bcinr",
+   "sha": "dd0235740ee1407ec2c0870bce488c03d9839d17",
+   "skipped": [],
+   "snapshot_tree": "d8222058c4f4a1f5e16ea7884b0e093a7449f749",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "tracked private-key path (playground/.ggen/keys/signing.key, blob already public on origin main history) must be redacted from pushed snapshot trees (R9)",
+     "refs": {
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-1/superseded-1/anchor": "d5e248c662a2ee2d5ba4d6c9e326ed70c132e3c7",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-1/superseded-1/dirty": "30fea07f3e4cf94850da54228c4bef3dfb5d6835",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-1/superseded-1/index": "5884abd04293732c2fd86c26074fb931c7cf994b",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-1/superseded-1/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+     },
+     "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-1",
+     "remote_verified_sha": "d5e248c662a2ee2d5ba4d6c9e326ed70c132e3c7"
+    }
+   ]
+  },
+  "bcinr_claude_worktrees_wf_7a8d0628-158-3": {
+   "bundle": null,
+   "canonical": "/Users/sac/bcinr",
+   "copy_id": "bcinr_claude_worktrees_wf_7a8d0628-158-3",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-3/anchor",
+   "ok": true,
+   "path": "/Users/sac/bcinr/.claude/worktrees/wf_7a8d0628-158-3",
+   "redacted": [
+    {
+     "blob": "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/signing.key",
+     "sha256": "fa834159f5cb00f1ac315b139e5596b497935d0b831ac90cefed2e93390450e6"
+    },
+    {
+     "blob": "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/verifying.key",
+     "sha256": "fb14244dea0817abead2f48100bc83d117dc7c0d21bbd8a56263a4e465012a8b"
+    },
+    {
+     "blob": "a2de77d9b5229ad453882e530b7002be319df85f",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": "playground/.ggen/keys/signing.key",
+     "sha256": "f43b581d76b49b26a62fc9ede242ea41faa127e525806f1f1bbece77bba65cb2"
+    }
+   ],
+   "refs": {
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-3/anchor": "c42b2e5ea39d4aa82a6018344a9ac349268c0ca8",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-3/dirty": "b81a4bd5f917f6724a841372a286f7f308d39c2a",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-3/index": "868ab79cfca776aca2c530de0ba5451d495c6971",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-3/worktree-head": "bf278da8c56fce12d9f89ea164c14db47b9904f4"
+   },
+   "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-3-c42b2e5ea3",
+   "remote_verified_sha": "c42b2e5ea39d4aa82a6018344a9ac349268c0ca8",
+   "repo_id": "bcinr",
+   "sha": "c42b2e5ea39d4aa82a6018344a9ac349268c0ca8",
+   "skipped": [],
+   "snapshot_tree": "5d955e7153e25d30ebc75a7d113605f21580521a",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "tracked private-key path (playground/.ggen/keys/signing.key, blob already public on origin main history) must be redacted from pushed snapshot trees (R9)",
+     "refs": {
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-3/superseded-1/anchor": "19a7ec5f321dee149e516aebefd7b3825fc952ef",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-3/superseded-1/dirty": "edbc8fcff4fa488bc4318bf8fb30953061b58350",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-3/superseded-1/index": "868ab79cfca776aca2c530de0ba5451d495c6971",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-3/superseded-1/worktree-head": "bf278da8c56fce12d9f89ea164c14db47b9904f4"
+     },
+     "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-3",
+     "remote_verified_sha": "19a7ec5f321dee149e516aebefd7b3825fc952ef"
+    }
+   ]
+  },
+  "bcinr_claude_worktrees_wf_7a8d0628-158-4": {
+   "bundle": null,
+   "canonical": "/Users/sac/bcinr",
+   "copy_id": "bcinr_claude_worktrees_wf_7a8d0628-158-4",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-4/anchor",
+   "ok": true,
+   "path": "/Users/sac/bcinr/.claude/worktrees/wf_7a8d0628-158-4",
+   "redacted": [
+    {
+     "blob": "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/signing.key",
+     "sha256": "fa834159f5cb00f1ac315b139e5596b497935d0b831ac90cefed2e93390450e6"
+    },
+    {
+     "blob": "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/verifying.key",
+     "sha256": "fb14244dea0817abead2f48100bc83d117dc7c0d21bbd8a56263a4e465012a8b"
+    },
+    {
+     "blob": "a2de77d9b5229ad453882e530b7002be319df85f",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": "playground/.ggen/keys/signing.key",
+     "sha256": "f43b581d76b49b26a62fc9ede242ea41faa127e525806f1f1bbece77bba65cb2"
+    }
+   ],
+   "refs": {
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-4/anchor": "26b60e0b757a814d8f33485749000e7d40209231",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-4/dirty": "ae90f4c2b89535f74614208d863ab55615778fc1",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-4/index": "bd4c624d00e9d6616ad5d307805c257eb45bd864",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-4/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+   },
+   "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-4-26b60e0b75",
+   "remote_verified_sha": "26b60e0b757a814d8f33485749000e7d40209231",
+   "repo_id": "bcinr",
+   "sha": "26b60e0b757a814d8f33485749000e7d40209231",
+   "skipped": [],
+   "snapshot_tree": "647c4bf4082f0c86d339d0e099ce04ffde7ef27f",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "tracked private-key path (playground/.ggen/keys/signing.key, blob already public on origin main history) must be redacted from pushed snapshot trees (R9)",
+     "refs": {
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-4/superseded-1/anchor": "55c95a86554b26c1ef9187233511da0f723a8b31",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-4/superseded-1/dirty": "70c736de0fb2eeeedaa9c554aa577084bd85b98d",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-4/superseded-1/index": "bd4c624d00e9d6616ad5d307805c257eb45bd864",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-4/superseded-1/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+     },
+     "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_wf_7a8d0628-158-4",
+     "remote_verified_sha": "55c95a86554b26c1ef9187233511da0f723a8b31"
+    }
+   ]
+  },
+  "bcinr_claude_worktrees_wf_8bf87291-515-1": {
+   "bundle": null,
+   "canonical": "/Users/sac/bcinr",
+   "copy_id": "bcinr_claude_worktrees_wf_8bf87291-515-1",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-1/anchor",
+   "ok": true,
+   "path": "/Users/sac/bcinr/.claude/worktrees/wf_8bf87291-515-1",
+   "redacted": [
+    {
+     "blob": "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/signing.key",
+     "sha256": "fa834159f5cb00f1ac315b139e5596b497935d0b831ac90cefed2e93390450e6"
+    },
+    {
+     "blob": "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/verifying.key",
+     "sha256": "fb14244dea0817abead2f48100bc83d117dc7c0d21bbd8a56263a4e465012a8b"
+    },
+    {
+     "blob": "a2de77d9b5229ad453882e530b7002be319df85f",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": "playground/.ggen/keys/signing.key",
+     "sha256": "f43b581d76b49b26a62fc9ede242ea41faa127e525806f1f1bbece77bba65cb2"
+    }
+   ],
+   "refs": {
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-1/anchor": "ff42482909eaa46ebff0769f2b0d8ea98fc46495",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-1/dirty": "12c9f335fd03e7b985b36ad9b5ba833ce0014529",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-1/index": "4b2a513c9ecc52a021bbeb1e42bc5c1ceed3620f",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-1/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+   },
+   "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-1-ff42482909",
+   "remote_verified_sha": "ff42482909eaa46ebff0769f2b0d8ea98fc46495",
+   "repo_id": "bcinr",
+   "sha": "ff42482909eaa46ebff0769f2b0d8ea98fc46495",
+   "skipped": [],
+   "snapshot_tree": "9a6d6eb3bb23de82b2c77885e3050b5a31176e7e",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "tracked private-key path (playground/.ggen/keys/signing.key, blob already public on origin main history) must be redacted from pushed snapshot trees (R9)",
+     "refs": {
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-1/superseded-1/anchor": "5dd7bc9c5f459a4bdb80c0f0e34e6e6d60e9b077",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-1/superseded-1/dirty": "c3fe8bde0cc8584af541b84493ebd1541287d843",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-1/superseded-1/index": "4b2a513c9ecc52a021bbeb1e42bc5c1ceed3620f",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-1/superseded-1/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+     },
+     "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-1",
+     "remote_verified_sha": "5dd7bc9c5f459a4bdb80c0f0e34e6e6d60e9b077"
+    }
+   ]
+  },
+  "bcinr_claude_worktrees_wf_8bf87291-515-2": {
+   "bundle": null,
+   "canonical": "/Users/sac/bcinr",
+   "copy_id": "bcinr_claude_worktrees_wf_8bf87291-515-2",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-2/anchor",
+   "ok": true,
+   "path": "/Users/sac/bcinr/.claude/worktrees/wf_8bf87291-515-2",
+   "redacted": [
+    {
+     "blob": "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/signing.key",
+     "sha256": "fa834159f5cb00f1ac315b139e5596b497935d0b831ac90cefed2e93390450e6"
+    },
+    {
+     "blob": "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/verifying.key",
+     "sha256": "fb14244dea0817abead2f48100bc83d117dc7c0d21bbd8a56263a4e465012a8b"
+    },
+    {
+     "blob": "a2de77d9b5229ad453882e530b7002be319df85f",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": "playground/.ggen/keys/signing.key",
+     "sha256": "f43b581d76b49b26a62fc9ede242ea41faa127e525806f1f1bbece77bba65cb2"
+    }
+   ],
+   "refs": {
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-2/anchor": "a439c3bb09f7a1e69cfba09b1c63bc1793f7f330",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-2/dirty": "9868b5917a23faf79ae7c0665411ce14cc8c3544",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-2/index": "142a78248988062f4ba7236608b3336ca093de40",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-2/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+   },
+   "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-2-a439c3bb09",
+   "remote_verified_sha": "a439c3bb09f7a1e69cfba09b1c63bc1793f7f330",
+   "repo_id": "bcinr",
+   "sha": "a439c3bb09f7a1e69cfba09b1c63bc1793f7f330",
+   "skipped": [],
+   "snapshot_tree": "4f21cf8fef3d272ac170d14b738ff7b9218b3d28",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "tracked private-key path (playground/.ggen/keys/signing.key, blob already public on origin main history) must be redacted from pushed snapshot trees (R9)",
+     "refs": {
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-2/superseded-1/anchor": "d10f85ccad903cf63d4c3972da7b9348b6caf503",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-2/superseded-1/dirty": "0504bc039b36d146280be27729ba3a8573a01f25",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-2/superseded-1/index": "142a78248988062f4ba7236608b3336ca093de40",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-2/superseded-1/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+     },
+     "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-2",
+     "remote_verified_sha": "d10f85ccad903cf63d4c3972da7b9348b6caf503"
+    }
+   ]
+  },
+  "bcinr_claude_worktrees_wf_8bf87291-515-3": {
+   "bundle": null,
+   "canonical": "/Users/sac/bcinr",
+   "copy_id": "bcinr_claude_worktrees_wf_8bf87291-515-3",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-3/anchor",
+   "ok": true,
+   "path": "/Users/sac/bcinr/.claude/worktrees/wf_8bf87291-515-3",
+   "redacted": [
+    {
+     "blob": "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/signing.key",
+     "sha256": "fa834159f5cb00f1ac315b139e5596b497935d0b831ac90cefed2e93390450e6"
+    },
+    {
+     "blob": "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+     "class": "REVOKED_KEY",
+     "path": ".ggen/keys/verifying.key",
+     "sha256": "fb14244dea0817abead2f48100bc83d117dc7c0d21bbd8a56263a4e465012a8b"
+    },
+    {
+     "blob": "a2de77d9b5229ad453882e530b7002be319df85f",
+     "class": "KEY_PATH_IN_HEAD",
+     "path": "playground/.ggen/keys/signing.key",
+     "sha256": "f43b581d76b49b26a62fc9ede242ea41faa127e525806f1f1bbece77bba65cb2"
+    }
+   ],
+   "refs": {
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-3/anchor": "4b2f1aa83a2f297799334821c4904fa100b55ebc",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-3/dirty": "7f77810406ed80f241ee1951a83a7a48bb7f1398",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-3/index": "0d4eb2d0b5e6beff664bdf1d1c61ad6723bb4ccb",
+    "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-3/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+   },
+   "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-3-4b2f1aa83a",
+   "remote_verified_sha": "4b2f1aa83a2f297799334821c4904fa100b55ebc",
+   "repo_id": "bcinr",
+   "sha": "4b2f1aa83a2f297799334821c4904fa100b55ebc",
+   "skipped": [],
+   "snapshot_tree": "1f5ed8fa35fc3508001fd0a960dad72ab4359577",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "tracked private-key path (playground/.ggen/keys/signing.key, blob already public on origin main history) must be redacted from pushed snapshot trees (R9)",
+     "refs": {
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-3/superseded-1/anchor": "5d11230bf2c3b547d6c91a0d36a0ca331f2dae58",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-3/superseded-1/dirty": "480ec8aded57d041f51854700bddc1b1e33cc60c",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-3/superseded-1/index": "0d4eb2d0b5e6beff664bdf1d1c61ad6723bb4ccb",
+      "refs/preserve/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-3/superseded-1/worktree-head": "fb9321d27882169acc83aaca0639b319cd3b7900"
+     },
+     "remote_ref": "backup/v26.9.25/bcinr_claude_worktrees_wf_8bf87291-515-3",
+     "remote_verified_sha": "5d11230bf2c3b547d6c91a0d36a0ca331f2dae58"
+    }
+   ]
+  }
+ }
+}

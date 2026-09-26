@@ -1,0 +1,978 @@
+{
+ "records": {
+  "ggen_igniter-worktrees": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "ggen_igniter-worktrees",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/ggen_igniter-worktrees/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/ggen_igniter-worktrees",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/ggen_igniter-worktrees/anchor": "2d4b19af1cc4e3ac3dd492643a1d2922ff43674d",
+    "refs/preserve/v26.9.25/ggen_igniter-worktrees/dirty": "d2b0951c610feb14b7d1932d65f39445ac4edbb3"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "2d4b19af1cc4e3ac3dd492643a1d2922ff43674d",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+  },
+  "ggen_igniter-wt": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "ggen_igniter-wt",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/ggen_igniter-wt/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/ggen_igniter-wt",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/ggen_igniter-wt/anchor": "ef64bb7c438e1f836af74460cac812356d0ab1ab",
+    "refs/preserve/v26.9.25/ggen_igniter-wt/dirty": "59fddd334715bc73fdbb6c6f8f06d2848d1509fa"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "ef64bb7c438e1f836af74460cac812356d0ab1ab",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+  },
+  "ggen_igniter-wt2": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "ggen_igniter-wt2",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/ggen_igniter-wt2/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/ggen_igniter-wt2",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/ggen_igniter-wt2/anchor": "25ded33409df8f809687d0286b6353b8bc92c8d1",
+    "refs/preserve/v26.9.25/ggen_igniter-wt2/dirty": "9cc308c5709ebaf1a956a72a12798a96a3a76233"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "25ded33409df8f809687d0286b6353b8bc92c8d1",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+  },
+  "tmp_ggen-w9-errc": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_ggen-w9-errc.bundle",
+    "sha256": "fc16a8c3563a880f78671cce57a8b78cf244d34927f0621730002f0b81b51f97",
+    "size": 35491,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_ggen-w9-errc",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_ggen-w9-errc-ignored.bundle",
+    "sha256": "344653b9d1286275628418cbf64d76a46601270eaf1fba5c21101a8bb0d127e9",
+    "size": 11388286,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_ggen-w9-errc/anchor",
+   "ok": true,
+   "path": "/private/tmp/ggen-w9-errc",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_ggen-w9-errc/anchor": "117010d797bc8197a42b6338368063f3df2f6691",
+    "refs/preserve/v26.9.25/tmp_ggen-w9-errc/dirty": "0092d89a3277ccec0d406bb319b66680661882d6",
+    "refs/preserve/v26.9.25/tmp_ggen-w9-errc/ignored-evidence": "635edc8f9cd26352d98ed1ad197362f9c9d414a0",
+    "refs/preserve/v26.9.25/tmp_ggen-w9-errc/index": "5254beb982d1b6899f34d0adb47be8f9ff9111a1",
+    "refs/preserve/v26.9.25/tmp_ggen-w9-errc/worktree-head": "bba05927d2f17c8d94a9b2360c5b88abd1314f69"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "117010d797bc8197a42b6338368063f3df2f6691",
+   "skipped": [],
+   "snapshot_tree": "8bae248d554e2820fa61106f262168e7edf10cdd"
+  },
+  "tmp_scj-ggen-igniter": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_scj-ggen-igniter.bundle",
+    "sha256": "df2f2ff8c05a84cd913816f208f6f6864b352140ef1bcb74aee99cb989972a79",
+    "size": 22924085,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_scj-ggen-igniter",
+   "files": 501,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_scj-ggen-igniter/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/private/tmp/scj-ggen-igniter",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_scj-ggen-igniter/anchor": "6365f42a5c19d7c90fcaead24bb92958156088d0",
+    "refs/preserve/v26.9.25/tmp_scj-ggen-igniter/dirty": "3610331b830baa4f127a8643e81ba2cc3a043c83"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "6365f42a5c19d7c90fcaead24bb92958156088d0",
+   "skipped": [],
+   "snapshot_tree": "3a630053100900a5437f8d93c5af860117a2b94e"
+  },
+  "tmp_t1-probe-gi": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_t1-probe-gi.bundle",
+    "sha256": "da8a65b6d70ed15bb60ac8a4d95b97a35b9c6671096879e3c60e8a2cf0c6c247",
+    "size": 1515,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_t1-probe-gi",
+   "files": 805,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_t1-probe-gi/anchor",
+   "nearest_base": {
+    "changed_paths": 7,
+    "commit": "dcebc422978498fefff90854a475b1001804f17a",
+    "ratio": 0.0087,
+    "total_paths": 805
+   },
+   "ok": true,
+   "path": "/private/tmp/t1-probe-gi",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_t1-probe-gi/anchor": "de2ddb1c52b9ccae072319b21a9c2be94db1bd16",
+    "refs/preserve/v26.9.25/tmp_t1-probe-gi/dirty": "7af62134d0368f71fed7bf473c673fad097d3ff9"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "de2ddb1c52b9ccae072319b21a9c2be94db1bd16",
+   "skipped": [],
+   "snapshot_tree": "e7eae63092df0be475a2eca05c3ae7c141e3693b"
+  },
+  "tmp_xaas-w4-ggen": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w4-ggen",
+   "durable": "ALREADY_ON_ORIGIN",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w4-ggen-ignored.bundle",
+    "sha256": "46f501687318973fc56be92ab9d1abe43bc84a352c12012c45805e19b8c18c0f",
+    "size": 10915339,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w4-ggen/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w4-ggen",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w4-ggen/anchor": "8603e750d178ccb16cd16ea967bd86a948ba6da2",
+    "refs/preserve/v26.9.25/tmp_xaas-w4-ggen/dirty": "3ee746d35ef90375ce47a027268806fedf6d452e",
+    "refs/preserve/v26.9.25/tmp_xaas-w4-ggen/ignored-evidence": "9a8a0a78db19f33a9eebb40fabe9bd027cc17f3d",
+    "refs/preserve/v26.9.25/tmp_xaas-w4-ggen/index": "28ed4ca6a81f58c9ddb6405124321d6098091bb1",
+    "refs/preserve/v26.9.25/tmp_xaas-w4-ggen/worktree-head": "a6bdcae2e4f2c6d91846a0c39ca58e83930a1d1f"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "8603e750d178ccb16cd16ea967bd86a948ba6da2",
+   "skipped": [],
+   "snapshot_tree": "89d6455d276b2341bdf289f93ffa313ccd1c7c44"
+  },
+  "tmp_xaas-w4-shallow-sim": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w4-shallow-sim",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w4-shallow-sim/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w4-shallow-sim",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w4-shallow-sim/anchor": "1328af84146f0548be741653c730d918c7acf22d",
+    "refs/preserve/v26.9.25/tmp_xaas-w4-shallow-sim/dirty": "2ba1a00b9f1322bbb93484b4030a00562e4e02c7",
+    "refs/preserve/v26.9.25/tmp_xaas-w4-shallow-sim/index": "92d5e36f418c1f4d48f5fd5159d50aca3bc872b5",
+    "refs/preserve/v26.9.25/tmp_xaas-w4-shallow-sim/worktree-head": "864099d5f09718e08a901721857ded9ee9e589c4"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "1328af84146f0548be741653c730d918c7acf22d",
+   "skipped": [],
+   "snapshot_tree": "7d8e1a49ade3861a8347fa3f1014b92264a3be60"
+  },
+  "tmp_xaas-w6-crown-ggen": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w6-crown-ggen.bundle",
+    "sha256": "4142b31b4e5b844d0bd86b1b18309818f9b8f8938d73cb51a660fc4b58fa6909",
+    "size": 6375,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w6-crown-ggen",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w6-crown-ggen-ignored.bundle",
+    "sha256": "4c203ff34fed486f0d8bb4cd810c9134cc2899a6156cce313d516b9bc25fbde2",
+    "size": 10915114,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w6-crown-ggen/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w6-crown-ggen",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w6-crown-ggen/anchor": "9993c5d39efc9c63d672c2687747b42863e7c73f",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-crown-ggen/dirty": "6a58966e5ce9f645c37918c69ce4522a75ea6a2f",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-crown-ggen/ignored-evidence": "e1feb6fea17268f9f54c9b4b9e9aeca987dde9ad",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-crown-ggen/index": "72595147e1dec5c9dc2d3d02e39561a7e9229944",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-crown-ggen/worktree-head": "84afd5c6743d8abb663e0b3b9778751a3330f109"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "9993c5d39efc9c63d672c2687747b42863e7c73f",
+   "skipped": [],
+   "snapshot_tree": "507c5bbfc8e9131642cd45f9ae1484ae960cff88"
+  },
+  "tmp_xaas-w6-descriptor": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w6-descriptor.bundle",
+    "sha256": "4d1eabcfb84f475a67b9cded5183cc257e82b85637ddf4f538cb0ce436ef2cb4",
+    "size": 25285,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w6-descriptor",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w6-descriptor-ignored.bundle",
+    "sha256": "6fcf96715b7211d7cc04efb69d3d1abee8308345bed0a783ed72fc3a5b06a6ac",
+    "size": 10939136,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w6-descriptor/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w6-descriptor",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w6-descriptor/anchor": "9fedbee26614152c8d3dbd1af8c55bb3cca41c29",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-descriptor/dirty": "633eaa84a171dd8407b83c81e88d2c54c6b2a23a",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-descriptor/ignored-evidence": "1b884887ec40db3787631284a1cf7cd1d1136dc7",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-descriptor/index": "8998c3551cf645c9ac3ecb81fdf74de16cf71156",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-descriptor/worktree-head": "a6bdcae2e4f2c6d91846a0c39ca58e83930a1d1f"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "9fedbee26614152c8d3dbd1af8c55bb3cca41c29",
+   "skipped": [],
+   "snapshot_tree": "7c1aa2dde6e303949e3549dffa01252665554582"
+  },
+  "tmp_xaas-w6-digest": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w6-digest",
+   "durable": "ALREADY_ON_ORIGIN",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w6-digest-ignored.bundle",
+    "sha256": "8a45ba859e2e03599c44060df66f5b2528a9854de67666d858d1b6639a356a89",
+    "size": 10915116,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w6-digest/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w6-digest",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w6-digest/anchor": "45c1aeabd0858a3e3ab669963287cd6c62da2851",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-digest/dirty": "597398e101961c2badd4ae0c1f1c93ef94172a9b",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-digest/ignored-evidence": "4ea36bc53c640d21abf5afcf9278e426e17577d2",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-digest/index": "e501468ef7c5b5ba312fc017580051f53a10d39b",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-digest/worktree-head": "2507934d95dcd6cae3f2f9f2f9bc35e90e321377"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "45c1aeabd0858a3e3ab669963287cd6c62da2851",
+   "skipped": [],
+   "snapshot_tree": "2954ec292b870182095e1ade9d4c45416b417139"
+  },
+  "tmp_xaas-w6-reconciler": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w6-reconciler.bundle",
+    "sha256": "8aae4e2ff6f34a4089ccbb6481c57e6886fb4f1cc30a6cb92a31f2cbbddc16be",
+    "size": 129176,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w6-reconciler",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w6-reconciler-ignored.bundle",
+    "sha256": "8dd76a5b952cb0a5ed20526551f38630b17a84539e0be87f69753672cc4c38d4",
+    "size": 11449970,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w6-reconciler/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w6-reconciler",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w6-reconciler/anchor": "23232d53f9a7c3d28f66636ec50b3bd9f69ec8a4",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-reconciler/dirty": "18a289e2089231e274b024cea21ea83e23cca41c",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-reconciler/ignored-evidence": "4b253f6172ca838cb71d34e2aba2a16829f97a0d",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-reconciler/index": "2f42759f8472340873e1da13b03cf73e76dfded4",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-reconciler/worktree-head": "c31d541cfa5d6addbffd1f597030d0320ac3fee0"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "23232d53f9a7c3d28f66636ec50b3bd9f69ec8a4",
+   "skipped": [],
+   "snapshot_tree": "a8dcfe9f504a2dea2acc8031d1279aaf958bc611"
+  },
+  "tmp_xaas-w6-sole": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w6-sole.bundle",
+    "sha256": "70519924d881e01a2e3d31f9dd8a507fdf14a79f8ef7ab05d6ca8c97fce11c23",
+    "size": 18335,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w6-sole",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w6-sole-ignored.bundle",
+    "sha256": "fdf72be1e87cb2576a7d5373dcb9917c8dab0e0bbb560a0b348b68edfd01ee9b",
+    "size": 10932381,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w6-sole/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w6-sole",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w6-sole/anchor": "aad557b2f3fef5225cdac19816f3bc53c2b25c92",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-sole/dirty": "c0f500ff613bf51253d8f020e986f26491f5a83b",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-sole/ignored-evidence": "d8d8b22a83291f95a974863fdf06623b91c5dd19",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-sole/index": "dbd88a79eb1281da885aa3ebcddfd8a15fc7faaf",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-sole/worktree-head": "a6bdcae2e4f2c6d91846a0c39ca58e83930a1d1f"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "aad557b2f3fef5225cdac19816f3bc53c2b25c92",
+   "skipped": [],
+   "snapshot_tree": "bf3f61a921ddaf436bd302c05f3ce6b72fdd20c5"
+  },
+  "tmp_xaas-w6-vocab": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w6-vocab.bundle",
+    "sha256": "528b7dc89f2e61e5bb7c39b197f2ea5bc9b32ec42285e5693ef7cd722d926ea7",
+    "size": 56755,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w6-vocab",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w6-vocab-ignored.bundle",
+    "sha256": "e03630ae18f654c648eb4147cc144afa99e96b1cee4b950084597a3f47007146",
+    "size": 10968042,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w6-vocab/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w6-vocab",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w6-vocab/anchor": "60c6096ecc35f4f304b2156b0e1c4c06181944f5",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-vocab/dirty": "8494bd4c56d2b7164a1f0ad4c417a9fdb5c525c0",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-vocab/ignored-evidence": "dae2c2359d6b296e2ae0d1e9fd11fd8390ce437d",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-vocab/index": "7720f3100ed4319fc70d909aaf886a6f71df37f8",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-vocab/worktree-head": "06a91142937eb63241f3270287f5d089a5608c4c"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "60c6096ecc35f4f304b2156b0e1c4c06181944f5",
+   "skipped": [],
+   "snapshot_tree": "fbedb0b6940e5704502b40c0ad3dd06e01630504"
+  },
+  "tmp_xaas-w7-crown-ggen": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w7-crown-ggen",
+   "durable": "ALREADY_ON_ORIGIN",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w7-crown-ggen-ignored.bundle",
+    "sha256": "2921302d14f0a668be4d43f4c8aca18b5c95eb1a1ec635f694582db998e47727",
+    "size": 10915118,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w7-crown-ggen/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w7-crown-ggen",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w7-crown-ggen/anchor": "52591aef25fff3b162a5cc6164815db218325a7a",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-crown-ggen/dirty": "d716740a1ce1ee427f419ad6a01835e8c50079c3",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-crown-ggen/ignored-evidence": "23f81943b8d9dcd3454419dd5e537254f01e5595",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-crown-ggen/index": "367a74872d03085f8a873202f854a0586e4e5f9c",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-crown-ggen/worktree-head": "8bf6784b7c1046f3eb4d84e13a9b3a76276cd6fc"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "52591aef25fff3b162a5cc6164815db218325a7a",
+   "skipped": [],
+   "snapshot_tree": "8208d30b385b46491e63e3d9688ec8d96abab810"
+  },
+  "tmp_xaas-w7-descriptor": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w7-descriptor.bundle",
+    "sha256": "7da9e3c2886beae3f24fe1c36ed65b5ddc3336c4c8a75e3b00d2878aaf87abf2",
+    "size": 39459,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w7-descriptor",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w7-descriptor-ignored.bundle",
+    "sha256": "31868dc092dc8cd29c14a788e95473001a1fd8d6c9b5c44ef006db518f5240e9",
+    "size": 10975533,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w7-descriptor/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w7-descriptor",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w7-descriptor/anchor": "472e99e489614b7a269e630c778e4da4cf95ac68",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-descriptor/dirty": "ebb53e8203a427ee417cb71414313bbf7d40d34d",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-descriptor/ignored-evidence": "35cc6a0bfb0bbc88c3c6134f9d9dab5fce259bb3",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-descriptor/index": "684134acd48d3fbb88f8b0f6246f6d474b44439c",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-descriptor/worktree-head": "84afd5c6743d8abb663e0b3b9778751a3330f109"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "472e99e489614b7a269e630c778e4da4cf95ac68",
+   "skipped": [],
+   "snapshot_tree": "b94ffd3128b091ba45369c87d3e024e9af612707"
+  },
+  "tmp_xaas-w7-reconciler": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w7-reconciler.bundle",
+    "sha256": "32dab9d5dcd7421d4c26f08cda9fa6dd479c76672fc85e6fda1e078beb6cb8f0",
+    "size": 72917,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w7-reconciler",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w7-reconciler-ignored.bundle",
+    "sha256": "79330b8b159735b11bae5a6d7ec0a8b03bfc4d20e1794934d6c902d3834e7524",
+    "size": 11410191,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w7-reconciler/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w7-reconciler",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w7-reconciler/anchor": "6d1952806c0c98b54de72e9e64451f7ce4ff5427",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-reconciler/dirty": "fdf19ba8dbdf9ff499e939dfba8939208c898028",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-reconciler/ignored-evidence": "94e087f96ef491bc2bfd24cf5930b53c5dd0f14f",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-reconciler/index": "5b601f135f3d7eba9204c6ad019712aa258439c8",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-reconciler/worktree-head": "84afd5c6743d8abb663e0b3b9778751a3330f109"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "6d1952806c0c98b54de72e9e64451f7ce4ff5427",
+   "skipped": [],
+   "snapshot_tree": "3d5fce943380a081241b076e78f80d442dbe678f"
+  },
+  "tmp_xaas-w7-sole": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w7-sole.bundle",
+    "sha256": "b1c7069738a7cb6507dbbacf856065da633ede6385b26eab3b96203eaf7cafa0",
+    "size": 30422,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w7-sole",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w7-sole-ignored.bundle",
+    "sha256": "38eae52432340ab9d0fedace508b5ba4e2282d395a48a6c1f7fe5440e7aea54a",
+    "size": 11333904,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w7-sole/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w7-sole",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w7-sole/anchor": "ba99d68895d9be782c6dfc5d3fab9118cf43c6ae",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-sole/dirty": "72da7a9918008ff2d516e53e3c80e71398580832",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-sole/ignored-evidence": "0a20cf7a904914adb7a3ec29af7d6d7e35dfb1d9",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-sole/index": "6c34dcea8c487ae31d542910823a088384be2deb",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-sole/worktree-head": "84afd5c6743d8abb663e0b3b9778751a3330f109"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "ba99d68895d9be782c6dfc5d3fab9118cf43c6ae",
+   "skipped": [],
+   "snapshot_tree": "c51552206e4f947d998fdd01bf7ec0b1f2e384c7"
+  },
+  "tmp_xaas-w7-vocab": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w7-vocab",
+   "durable": "ALREADY_ON_ORIGIN",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w7-vocab-ignored.bundle",
+    "sha256": "303797f901c43af2475d5fd19d229d7e8d1ed059474cebda66bf166f62d2d95c",
+    "size": 11346738,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w7-vocab/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w7-vocab",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w7-vocab/anchor": "167d7576960bde81479842c26544d259a1286dfb",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-vocab/dirty": "f33ce52641dd438cf3b0095a01b33e3e1fbdd05a",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-vocab/ignored-evidence": "6774edf41e2687f67cf027bdbfb28f4d69c2d4e1",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-vocab/index": "4502f7eefee92a186aba3bb5eb9c110544109e22",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-vocab/worktree-head": "79ab25f450f49e5329cbfc7e8687a22f35a175f5"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "167d7576960bde81479842c26544d259a1286dfb",
+   "skipped": [],
+   "snapshot_tree": "599afa65e0c81acd8607e0e91bb1391347bcb1d2"
+  },
+  "tmp_xaas-w8-ci": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w8-ci",
+   "durable": "ALREADY_ON_ORIGIN",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w8-ci-ignored.bundle",
+    "sha256": "e343b632cef68d3c811898e744d0769404ef872abb5a79987983fbea5aa144ba",
+    "size": 11385829,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w8-ci/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w8-ci",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w8-ci/anchor": "3a239faaf0d839bbebefec2ca6ccfa59cec8adb3",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-ci/dirty": "2c5dbde26d178954b2f1e7b91e631c5ced8acfba",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-ci/ignored-evidence": "f94f10017a585de04c28ed5ee3bb96284fc417e8",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-ci/index": "c8fc319ea2f68e1d4c9808d9a951df6865a2c50c",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-ci/worktree-head": "bba05927d2f17c8d94a9b2360c5b88abd1314f69"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "3a239faaf0d839bbebefec2ca6ccfa59cec8adb3",
+   "skipped": [],
+   "snapshot_tree": "9ffb203b61b658f0cde9fa0f76ff3014e5f9ad67"
+  },
+  "tmp_xaas-w8-crown-ggen": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w8-crown-ggen",
+   "durable": "ALREADY_ON_ORIGIN",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w8-crown-ggen-ignored.bundle",
+    "sha256": "bae25cd7a70a812dada374ffe2215ba7710ea1f5b94e6ba629886ebfb3ef8f04",
+    "size": 11410022,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w8-crown-ggen/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w8-crown-ggen",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w8-crown-ggen/anchor": "010731a7842d999a5f9c8b05b67449d4b1ccbfd4",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-crown-ggen/dirty": "5a8a2cb52990bcfb5f8aae2a906cf60725a30285",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-crown-ggen/ignored-evidence": "bdbcc0a2af469c88137e593e0ba2b3ab304dddcf",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-crown-ggen/index": "2c62af045a26ddcc07ead4323410b922245d229c",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-crown-ggen/worktree-head": "6d66a16f2583368ed84595d9177319710cac38b3"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "010731a7842d999a5f9c8b05b67449d4b1ccbfd4",
+   "skipped": [],
+   "snapshot_tree": "67d2f9c1dbd778d0c00f02e97cc00ff87659ee43"
+  },
+  "tmp_xaas-w8-int-ggen": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w8-int-ggen.bundle",
+    "sha256": "53f16927d42678950484bfc6367a843f672145d6c4a6dde3181fba08e54088ef",
+    "size": 10197,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w8-int-ggen",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w8-int-ggen-ignored.bundle",
+    "sha256": "4c20127b3e9082935406f41cec6976e7b9e4a5115f525ade86753afc93ea219d",
+    "size": 11433426,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w8-int-ggen/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w8-int-ggen",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w8-int-ggen/anchor": "8963f87bb9d7e0e90623380233f155c5075cc546",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-int-ggen/dirty": "58eafbe11e468195e0c055fb48666fe40d0f14c6",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-int-ggen/ignored-evidence": "f24fc657fd4f33e84b3585ec0414b0c8a81eb9e7",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-int-ggen/index": "d5ecef8ab2fc02c443486e689e5ef14e79acf0e9",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-int-ggen/worktree-head": "50785195af08da6c80519d80740fe4e9543b692c"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "8963f87bb9d7e0e90623380233f155c5075cc546",
+   "skipped": [],
+   "snapshot_tree": "c43392b09091588f8292c337e61791738df1f7f0"
+  },
+  "tmp_xaas-w8-sole": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w8-sole.bundle",
+    "sha256": "a1a41456f837b1fa0c66852acef5007e81d70bb3874d387b4619edae21e2a71d",
+    "size": 11342,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w8-sole",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w8-sole-ignored.bundle",
+    "sha256": "b1db50462632484b59b1e80c38077c66ebb1e068ecd28a47ed6e5be51b6de599",
+    "size": 10947552,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w8-sole/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w8-sole",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w8-sole/anchor": "4dc7835cde655ac86535444367a09a49b29f3eba",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-sole/dirty": "501429668b3df97c681fc09409e3cc8939f91da5",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-sole/ignored-evidence": "dbe86f2cb6ec788d2bda3008a34739e58a12ca5f",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-sole/index": "e3cf0e58917cbccfab3fef0f0b69b119fa03bc08",
+    "refs/preserve/v26.9.25/tmp_xaas-w8-sole/worktree-head": "79ab25f450f49e5329cbfc7e8687a22f35a175f5"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "4dc7835cde655ac86535444367a09a49b29f3eba",
+   "skipped": [],
+   "snapshot_tree": "9e66d7b78a5f7fb62a3c0fe4633b3bc5e948e0fe"
+  },
+  "tmp_xaas-w9-g5": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w9-g5.bundle",
+    "sha256": "b67d550d8433c8f24bf8e01748474b6d7c7eecd01bfb697d3b2fafadad9cad24",
+    "size": 3556,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w9-g5",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w9-g5-ignored.bundle",
+    "sha256": "46d42863b24835dba4f4444319d72441c9b54c66596f4eae56150fad601a8386",
+    "size": 10915300,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w9-g5/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w9-g5",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w9-g5/anchor": "503786a9fb685daaf7856f55fe3f88ab33bc26bd",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-g5/dirty": "d2594f383289d6dab7e30eac3d08aa53b8e54329",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-g5/ignored-evidence": "e99e377e49883009b04ae7fd020ae393fd01ab10",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-g5/index": "dabb301bf321a0ec6d562be8212473f5ec57d46f",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-g5/worktree-head": "186c74cd543eea6011ec9b4148438260c13e4b1d"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "503786a9fb685daaf7856f55fe3f88ab33bc26bd",
+   "skipped": [],
+   "snapshot_tree": "12e938a70a119337710efe6aa3d8efe3355415a7"
+  },
+  "tmp_xaas-w9-int-ggen": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w9-int-ggen.bundle",
+    "sha256": "dfb9140774f6eb439f04f6634ddd9bfc46fedcda7c4efd4f63532edd795add39",
+    "size": 14551,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w9-int-ggen",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w9-int-ggen-ignored.bundle",
+    "sha256": "3b45478c05c771c6c6e507a06b674ff282bb68a5a28d78008ba2f50f24cf55b7",
+    "size": 11414630,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w9-int-ggen/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w9-int-ggen",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w9-int-ggen/anchor": "47c03e1af06fd5d27fe9b8bfb5326b4d47c56ae7",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-int-ggen/dirty": "d3bce3bece13bf4789a7f418dac9178a5afa246c",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-int-ggen/ignored-evidence": "86ae3cd659564039ff63385a73d3031ea45c516b",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-int-ggen/index": "d6d2ddf519f8eae478093d59cda128520af37b26",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-int-ggen/worktree-head": "fdf139f418c37f37ce5a69541b7ba0574bb817ad"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "47c03e1af06fd5d27fe9b8bfb5326b4d47c56ae7",
+   "skipped": [],
+   "snapshot_tree": "6971f0a726efd7dd6d63f2cc9445a10b7f7e1e4f"
+  },
+  "tmp_xaas-w9-sole": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "tmp_xaas-w9-sole",
+   "durable": "ALREADY_ON_ORIGIN",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_xaas-w9-sole-ignored.bundle",
+    "sha256": "8ad8899c115896237ecd19889846103192ce019e8959f5bc8de140fbe64ba549",
+    "size": 11384698,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w9-sole/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w9-sole",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sole/anchor": "c96b38878a92e4cd362807cf563ff3091a73a056",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sole/dirty": "41d819982347c524f2340c07a41cb4a5a59fe9d9",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sole/ignored-evidence": "c468b8618b15d52af3366f91972629b099399416",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sole/index": "9f0ec843f923809737b59803971ddd862a179855",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sole/worktree-head": "90cfd360bc6dfe041d35f7082f064716d22b4d99"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "c96b38878a92e4cd362807cf563ff3091a73a056",
+   "skipped": [],
+   "snapshot_tree": "7ed6a6f4bc3e61c9cf436402bcf8176e13364778"
+  },
+  "wt-v26918_ign-12-gate-semantics": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/wt-v26918_ign-12-gate-semantics.bundle",
+    "sha256": "9cf1d72c7f961d82b1013b7e669ea9fcbde14bba6d328d06a7720000fd1bade7",
+    "size": 46844,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "wt-v26918_ign-12-gate-semantics",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/wt-v26918_ign-12-gate-semantics-ignored.bundle",
+    "sha256": "732c2a048185caad6e4a4d07a2be0150a8ea54e4e3a0916c630cd9e55cf01e39",
+    "size": 10963523,
+    "verified": true
+   },
+   "kind": "FOREIGN_LINKED_WORKTREE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/wt-v26918_ign-12-gate-semantics/anchor",
+   "ok": true,
+   "path": "/Users/sac/wt-v26918/ign-12-gate-semantics",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wt-v26918_ign-12-gate-semantics/anchor": "0daa8e402b3056d1a1e5cc011d6b13cc40873524",
+    "refs/preserve/v26.9.25/wt-v26918_ign-12-gate-semantics/dirty": "360cd0ee0576bb41107371dec22caae8d2ee9bce",
+    "refs/preserve/v26.9.25/wt-v26918_ign-12-gate-semantics/ignored-evidence": "fde2f5ff196fd91e1520bbb7fe8df58870d05019",
+    "refs/preserve/v26.9.25/wt-v26918_ign-12-gate-semantics/index": "39b18d370cebfb3042b147f0b18fb0989539d15b",
+    "refs/preserve/v26.9.25/wt-v26918_ign-12-gate-semantics/worktree-head": "f86d5ed833952d87e757f08ad873fefb876f10a8"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "0daa8e402b3056d1a1e5cc011d6b13cc40873524",
+   "skipped": [],
+   "snapshot_tree": "1772280c901c7654c05ac52f4c9dfa93a7d60654"
+  },
+  "wt-v26918_ign-13-manifest": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "wt-v26918_ign-13-manifest",
+   "durable": "ALREADY_ON_ORIGIN",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/wt-v26918_ign-13-manifest-ignored.bundle",
+    "sha256": "4ce44086249c200f9ead831d52f72b2a2e965773518241fcdd0bcf759c0ea863",
+    "size": 10929165,
+    "verified": true
+   },
+   "kind": "FOREIGN_LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wt-v26918_ign-13-manifest/anchor",
+   "ok": true,
+   "path": "/Users/sac/wt-v26918/ign-13-manifest",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wt-v26918_ign-13-manifest/anchor": "e675af65c7385f77ee5246cd68e8f70f2cec3e7c",
+    "refs/preserve/v26.9.25/wt-v26918_ign-13-manifest/dirty": "16eec78eb70be8c0ac8095c9ec05d5eb368a1c5c",
+    "refs/preserve/v26.9.25/wt-v26918_ign-13-manifest/ignored-evidence": "64f40ec2166b6e0ea702b1b087deddb5b4b39278",
+    "refs/preserve/v26.9.25/wt-v26918_ign-13-manifest/index": "ae097362c10d7b5ca12d1d2314cce9ca846b0e21",
+    "refs/preserve/v26.9.25/wt-v26918_ign-13-manifest/worktree-head": "0f340705ddabc3abd6ee7971da9a1cccf755b958"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "e675af65c7385f77ee5246cd68e8f70f2cec3e7c",
+   "skipped": [],
+   "snapshot_tree": "2e95edb90efdfa0d6ba2f499fe0ce0c6d6654b14"
+  },
+  "wt-v26918_ign-14-bindings": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/wt-v26918_ign-14-bindings.bundle",
+    "sha256": "380ffdabdfc3e3628d2e66bfa506666cf17aa67fd6f354fcdc41debd8e1c4825",
+    "size": 55864,
+    "verified": true
+   },
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "wt-v26918_ign-14-bindings",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/wt-v26918_ign-14-bindings-ignored.bundle",
+    "sha256": "53ab53b37a590113d53c1d50476d86e092f3bd360b2d886cd3c50d9bddfe1016",
+    "size": 10969710,
+    "verified": true
+   },
+   "kind": "FOREIGN_LINKED_WORKTREE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/wt-v26918_ign-14-bindings/anchor",
+   "ok": true,
+   "path": "/Users/sac/wt-v26918/ign-14-bindings",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wt-v26918_ign-14-bindings/anchor": "5b1840df9397a62eb6426b1183c577ddaf7468e9",
+    "refs/preserve/v26.9.25/wt-v26918_ign-14-bindings/dirty": "b8facb323bb81161611df397dc2b6fc08ee1000d",
+    "refs/preserve/v26.9.25/wt-v26918_ign-14-bindings/ignored-evidence": "c82d7f4acfdd7e86a2ec91e87ee1b5bfcbe737a9",
+    "refs/preserve/v26.9.25/wt-v26918_ign-14-bindings/index": "75c2564d490713ca920fc04418c7147d267eefd6",
+    "refs/preserve/v26.9.25/wt-v26918_ign-14-bindings/worktree-head": "df2274f4b930af09b165bbfd5bc3e5b39e77af68"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "5b1840df9397a62eb6426b1183c577ddaf7468e9",
+   "skipped": [],
+   "snapshot_tree": "21ce2f7802c4ffc44daed15ba080db20c16f8eed"
+  },
+  "wt-v26918_ign-15-receipt-tera": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen_igniter",
+   "copy_id": "wt-v26918_ign-15-receipt-tera",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "FOREIGN_LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wt-v26918_ign-15-receipt-tera/anchor",
+   "ok": true,
+   "path": "/Users/sac/wt-v26918/ign-15-receipt-tera",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wt-v26918_ign-15-receipt-tera/anchor": "3cb3b54b46882cbe7b43d617a68797df4802cfd9",
+    "refs/preserve/v26.9.25/wt-v26918_ign-15-receipt-tera/dirty": "470ecde9648505454053745e25f625913755b110",
+    "refs/preserve/v26.9.25/wt-v26918_ign-15-receipt-tera/index": "569510583be4d0d99dc95d97a1e6f58cf5a19cc7",
+    "refs/preserve/v26.9.25/wt-v26918_ign-15-receipt-tera/worktree-head": "15305cea430d66ede71e6a711634e3b5fab3ae09"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ggen_igniter",
+   "sha": "3cb3b54b46882cbe7b43d617a68797df4802cfd9",
+   "skipped": [],
+   "snapshot_tree": "376ca99da0077ea3731fad96f5c0d183ac95b3b9"
+  }
+ }
+}

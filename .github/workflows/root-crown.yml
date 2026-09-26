@@ -6,6 +6,13 @@ name: Root Crown (v26.9.25)
 # Observation/recompute/receipt carry no authority. The tag is RELEASE authority: it runs
 # only after an ALIVE receipt, only at crown_sha, and only behind the operator-approved
 # `release-crown` environment (BRCE gate; RFC §46 keeps publication authorities separate).
+#
+# Post-tag (release/v26.9.25/hardening/TAG-SUBJECT.json committed): the tag is immutable
+# history. The crown runs in POST_TAG mode on every event (pull_request included): it
+# replays the tag-named receipt from `git archive` of the recorded subject with the
+# tag-time code (historical), attests HEAD with the post-tag tag binding (current), reads
+# its chain parent from git (hardening/receipts/chain.json), and never tags. Exit 0 ALIVE,
+# 3 typed BLOCKED, 2 REFUSED.
 
 on:
   schedule:
@@ -21,7 +28,12 @@ on:
     paths:
       - 'release/v26.9.25/**'
       - 'scripts/release_train/root_crown/**'
+      - 'scripts/durable_locator/**'
       - 'scripts/observe_release_heads.py'
+      - 'scripts/release_train/scorecard/**'
+      - 'scripts/observe_scorecard.py'
+      - 'scripts/release_train/autonomic_crown/**'
+      - 'scripts/observe_governance.py'
       - '.github/workflows/root-crown.yml'
   pull_request:
     paths:
@@ -29,7 +41,16 @@ on:
       - 'scripts/release_train/root_crown/**'
       - 'scripts/observe_release_heads.py'
       - 'tests/release_train/root_crown/**'
+      - 'scripts/durable_locator/**'
+      - 'tests/durable_locator/**'
       - 'tests/test_observe_release_heads.py'
+      - 'scripts/release_train/scorecard/**'
+      - 'tests/release_train/scorecard/**'
+      - 'scripts/observe_scorecard.py'
+      - 'tests/test_observe_scorecard.py'
+      - 'scripts/release_train/autonomic_crown/**'
+      - 'tests/release_train/autonomic_crown/**'
+      - 'scripts/observe_governance.py'
       - '.github/workflows/root-crown.yml'
 
 permissions:
@@ -46,18 +67,21 @@ env:
 
 jobs:
   crown:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     outputs:
       standing: ${{ steps.crown.outputs.standing }}
       receipt_digest: ${{ steps.crown.outputs.receipt_digest }}
       crown_sha: ${{ steps.crown.outputs.crown_sha }}
+      mode: ${{ steps.crown.outputs.mode }}
     steps:
       - name: Checkout exact subject
-        uses: actions/checkout@v4
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Assert exact subject identity
         shell: bash
@@ -66,23 +90,102 @@ jobs:
           expected="${{ github.event.pull_request.head.sha || github.sha }}"
           test "$(git rev-parse HEAD)" = "$expected"
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
-          python-version: '3.12'
+          python-version: '3.12.14'
 
-      - name: Courts (root_crown, release_closure_court, invalidation_promotion, cross_product_court)
+      - name: Subject (mode)
+        id: subject
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        shell: bash
+        run: |
+          # POST_TAG iff the tag record is committed. Materialize the RECORDED subject commit
+          # (never whatever the tag points at now) and witness the tag-time CLI reproducing
+          # the tag-named receipt digest from the committed historical inputs.
+          set -euo pipefail
+          record="release/$RELEASE/hardening/TAG-SUBJECT.json"
+          mkdir -p .artifacts
+          git rev-list HEAD > .artifacts/ancestry.txt
+          if [ ! -f "$record" ]; then
+            echo "record=false" >> "$GITHUB_OUTPUT"
+            echo "PRE_TAG: no $record"
+            exit 0
+          fi
+          field() { python3 -c 'import functools,json,sys;print(functools.reduce(lambda d,k:d[k],sys.argv[2:],json.load(open(sys.argv[1]))))' "$record" "$@"; }
+          commit="$(field subject commit_sha)"
+          digest="$(field tag_receipt receipt_digest)"
+          hardening="$GITHUB_WORKSPACE/release/$RELEASE/hardening"
+          obs="$hardening/$(field tag_receipt observations_path)"
+          prev="$hardening/$(field tag_receipt previous_path)"
+          git rev-parse -q --verify "refs/tags/$RELEASE" >/dev/null \
+            || git fetch -q --no-tags origin "+refs/tags/$RELEASE:refs/tags/$RELEASE" \
+            || echo "::warning::tag $RELEASE not fetchable; the crown records it unobserved"
+          if git rev-parse -q --verify "refs/tags/$RELEASE" >/dev/null; then
+            python3 - "$RELEASE" "$(git rev-parse "refs/tags/$RELEASE")" "$(git rev-parse "refs/tags/$RELEASE^{commit}")" \
+              "$(git cat-file -t "refs/tags/$RELEASE")" > .artifacts/tag-observation.json <<'PY'
+          import json, sys
+          name, obj, commit, kind = sys.argv[1:5]
+          print(json.dumps({"name": name, "sha": commit, "object_sha": obj, "object_type": kind, "source": "local-git"}))
+          PY
+          fi
+          mkdir -p .artifacts/subject .artifacts/witness
+          git archive "$commit" release scripts "docs/jira/$RELEASE" | tar -x -C .artifacts/subject
+          (
+            cd .artifacts/subject
+            PYTHONPATH=. python3 -m scripts.release_train.root_crown --release "$RELEASE" --root . \
+              --observations "$obs" --previous "$prev" --crown-sha "$commit" \
+              --out "$GITHUB_WORKSPACE/.artifacts/witness/tag-time-receipt.json"
+          ) > .artifacts/witness/tag-time-summary.json
+          got="$(python3 -c 'import json;print(json.load(open(".artifacts/witness/tag-time-receipt.json"))["receipt_digest"])')"
+          echo "tag-time CLI witness: replayed=$got recorded=$digest"
+          test "$got" = "$digest"
+          echo "record=true" >> "$GITHUB_OUTPUT"
+          echo "subject_tree=$GITHUB_WORKSPACE/.artifacts/subject" >> "$GITHUB_OUTPUT"
+
+      - name: Courts (root_crown, release_closure_court, invalidation_promotion, cross_product_court, scorecard)
+        env:
+          PYTHONPATH: .
+          PYTHONDONTWRITEBYTECODE: '1'
+          ROOT_CROWN_SUBJECT_TREE: ${{ steps.subject.outputs.subject_tree }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for suite in root_crown release_closure_court invalidation_promotion cross_product_court scorecard; do
+            echo "::group::$suite"
+            python3 -m unittest discover -s "tests/release_train/$suite" -p 'test_*.py' -v
+            echo "::endgroup::"
+          done
+          python3 -m unittest discover -s tests -p 'test_observe_release_heads.py' -v
+          python3 -m unittest discover -s tests -p 'test_observe_scorecard.py' -v
+          python3 -m unittest discover -s tests/release_train/root_crown_attestation -p 'test_*.py' -v
+          python3 -m unittest discover -s tests -p 'test_observe_attestation.py' -v
+
+      - name: Mutation harness (--check-report; survivors must be 0)
+        env:
+          PYTHONPATH: .
+          PYTHONDONTWRITEBYTECODE: '1'
+        # In-process source + data mutants over a temp copy; exit 0 all killed, 1 survivor,
+        # 2 ANCHOR_DRIFT / BASELINE_RED / MUTATION_REPORT_DRIFT. The committed report
+        # (release/v26.9.25/hardening/inputs/mutation-report.json) must recompute byte-identically.
+        run: python3 -m scripts.release_train.root_crown.mutate --check-report
+
+      - name: Durable evidence locators (CE23-9; read-only git cat-file on this checkout)
         env:
           PYTHONPATH: .
           PYTHONDONTWRITEBYTECODE: '1'
         shell: bash
         run: |
           set -euo pipefail
-          for suite in root_crown release_closure_court invalidation_promotion cross_product_court; do
-            echo "::group::$suite"
-            python3 -m unittest discover -s "tests/release_train/$suite" -p 'test_*.py' -v
-            echo "::endgroup::"
-          done
-          python3 -m unittest discover -s tests -p 'test_observe_release_heads.py' -v
+          # This checkout's object DB is the DB for seanchatmangpt/chatman-ecosystem locators
+          # (fetch-depth 0 keeps E1 c599667a reachable); the other repos are absent here, so
+          # completeness (which rescans them) is a local gate, not this job's.
+          repos="${RUNNER_TEMP:-/tmp}/durable-locator-repos"
+          mkdir -p "$repos" && ln -sfn "$GITHUB_WORKSPACE" "$repos/chatman-ecosystem"
+          export DURABLE_LOCATOR_REPOS_ROOT="$repos"
+          python3 -m unittest discover -s tests/durable_locator -p 'test_*.py' -v
+          python3 scripts/durable_locator/durable_locator.py --no-network verify release/v26.9.25/hardening/evidence/INDEX.json
+          python3 scripts/durable_locator/durable_locator.py requirements-locators --release v26.9.25 --check
 
       - name: Refuse ambient consequence surfaces in the court
         shell: bash
@@ -91,7 +194,10 @@ jobs:
           ! grep -REn \
             'requests\.(post|put|patch|delete)|httpx|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|socket\.|boto3|azure\.|google\.cloud|kubectl|terraform|git push|gh pr merge' \
             scripts/release_train/root_crown \
-            tests/release_train/root_crown
+            tests/release_train/root_crown \
+            tests/release_train/root_crown_attestation \
+            scripts/release_train/scorecard \
+            tests/release_train/scorecard
 
       - name: Cold reconstruction (projector --check on a clean runner)
         env:
@@ -100,6 +206,24 @@ jobs:
 
       - name: Root manifest (verify_release)
         run: python3 scripts/verify_release.py --release "$RELEASE"
+
+      - name: Hardening projection (--check; TAG-SUBJECT, chain, exact replay)
+        if: steps.subject.outputs.record == 'true'
+        env:
+          PYTHONPATH: .
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: >-
+          python3 -m scripts.release_train.root_crown.hardening --release "$RELEASE" --check
+          --subject-tree "${{ steps.subject.outputs.subject_tree }}"
+
+      - name: Post-tag attestation (--check; current-conformance.json + ATTESTATION.json)
+        if: steps.subject.outputs.record == 'true'
+        env:
+          PYTHONPATH: .
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: >-
+          python3 -m scripts.release_train.root_crown.attestation --release "$RELEASE" --check
+          --subject-tree "${{ steps.subject.outputs.subject_tree }}"
 
       - name: Observe release heads (read-only GitHub API)
         if: github.event_name != 'pull_request'
@@ -110,8 +234,10 @@ jobs:
           --release "$RELEASE" --cold --run-id "${{ github.run_id }}"
           --out .artifacts/observations.json
 
-      - name: Previous receipt (hash chain; genesis when none)
-        if: github.event_name != 'pull_request'
+      - name: Previous receipt (PRE_TAG hash chain; genesis when none)
+        # POST_TAG reads its parent from git (hardening/receipts/chain.json), never from
+        # a 90-day Actions artifact.
+        if: github.event_name != 'pull_request' && steps.subject.outputs.record != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -127,37 +253,56 @@ jobs:
 
       - name: Root crown
         id: crown
-        if: github.event_name != 'pull_request'
         env:
           PYTHONPATH: .
+          PYTHONDONTWRITEBYTECODE: '1'
         shell: bash
         run: |
           # GitHub/act run `shell: bash` as `bash -eo pipefail`: without +e a lawful typed
           # BLOCKED (exit 3) would abort the step before the receipt, outputs and summary exist.
           set +e -uo pipefail
+          head="$(git rev-parse HEAD)"
+          subject_args=()
+          if [ -n "${{ steps.subject.outputs.subject_tree }}" ]; then
+            subject_args=(--subject-tree "${{ steps.subject.outputs.subject_tree }}")
+          fi
           python3 -m scripts.release_train.root_crown \
             --release "$RELEASE" \
+            --mode auto \
             --observations .artifacts/observations.json \
             --previous .artifacts/prev/crown-receipt.json \
-            --crown-sha "$GITHUB_SHA" \
+            --crown-sha "$head" \
+            --head-sha "$head" \
+            "${subject_args[@]}" \
+            --hardening-dir "release/$RELEASE/hardening" \
+            --tag-observation .artifacts/tag-observation.json \
+            --ancestry .artifacts/ancestry.txt \
             --out .artifacts/receipt/crown-receipt.json \
             --tag-decision .artifacts/receipt/tag-decision.json
           code=$?
           set -e
-          standing="$(python3 -c 'import json;print(json.load(open(".artifacts/receipt/crown-receipt.json"))["standing"])')"
-          digest="$(python3 -c 'import json;print(json.load(open(".artifacts/receipt/crown-receipt.json"))["receipt_digest"])')"
-          cp .artifacts/observations.json .artifacts/receipt/observations.json
+          read_receipt() { python3 -c 'import json,sys;print(json.load(open(".artifacts/receipt/crown-receipt.json"))[sys.argv[1]])' "$1"; }
+          standing="$(read_receipt standing)"
+          digest="$(read_receipt receipt_digest)"
+          mode="$(read_receipt mode)"
+          if [ -f .artifacts/observations.json ]; then cp .artifacts/observations.json .artifacts/receipt/observations.json; fi
           if [ "$standing" != "ALIVE" ]; then cp .artifacts/receipt/tag-decision.json .artifacts/receipt/tag-illegal.json; fi
           echo "standing=$standing" >> "$GITHUB_OUTPUT"
           echo "receipt_digest=$digest" >> "$GITHUB_OUTPUT"
-          echo "crown_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          echo "crown_sha=$head" >> "$GITHUB_OUTPUT"
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          echo "root crown mode=$mode standing=$standing exit=$code receipt=$digest"
           {
-            echo "## Root crown $RELEASE @ $GITHUB_SHA: $standing"
+            echo "## Root crown $RELEASE @ $head ($mode): $standing"
             echo "receipt \`$digest\`"
             echo
             python3 - <<'PY'
           import json
           r = json.load(open(".artifacts/receipt/crown-receipt.json"))
+          h = r.get("historical") or {}
+          if h:
+              print(f"historical: {h.get('standing')} {h.get('replay_standing')} ceiling={h.get('standing_ceiling')}")
+              print()
           print("| term | state |\n|---|---|")
           for t, v in r["terms"].items():
               print(f"| {t} | {v['state']} |")
@@ -171,7 +316,7 @@ jobs:
 
       - name: Upload root-crown receipt
         if: github.event_name != 'pull_request' && always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2 (v7 sends mime_type, which the act artifact server refuses)
         with:
           name: root-crown-receipt
           path: .artifacts/receipt/
@@ -179,7 +324,6 @@ jobs:
           if-no-files-found: error
 
       - name: Exit policy (REFUSED fails; typed BLOCKED warns; ALIVE passes)
-        if: github.event_name != 'pull_request'
         shell: bash
         run: |
           set -euo pipefail
@@ -190,27 +334,156 @@ jobs:
             *) echo "::error title=root crown REFUSED::exit $code"; exit 1 ;;
           esac
 
+      - name: Post-tag guard (the tag is immutable)
+        if: steps.subject.outputs.record == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          record="release/$RELEASE/hardening/TAG-SUBJECT.json"
+          want_obj="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["tag"]["object_sha"])' "$record")"
+          want_commit="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["subject"]["commit_sha"])' "$record")"
+          test "$(git rev-parse "refs/tags/$RELEASE")" = "$want_obj"
+          test "$(git rev-parse "refs/tags/$RELEASE^{commit}")" = "$want_commit"
+          echo "tag $RELEASE = $want_obj -> $want_commit (recorded, unchanged)"
+
+  # Autonomic crown (RFC-0005, term U; binds from the next calver). Evaluates the three
+  # orthogonal standings and gates U-01..U-18 over the edge inventory
+  # (release/<v>/autonomy/edges.json). Read-only: no network in the court; governance is a
+  # GET-only observation. Exit 0 AUTONOMIC, 3 typed NOT_AUTONOMIC (warns), 2 REFUSED (fails).
+  autonomic:
+    needs: crown
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Assert exact subject identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$expected"
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.12.14'
+
+      - name: Refuse network and consequence surfaces in the autonomic court
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -REn \
+            'requests\.|httpx|urllib\.request|socket\.|os\.system|boto3|kubectl|terraform|git push|gh pr merge|gh api -X' \
+            scripts/release_train/autonomic_crown tests/release_train/autonomic_crown
+
+      - name: Autonomic crown suite + committed receipt (--check)
+        id: committed
+        env:
+          PYTHONPATH: .
+          PYTHONDONTWRITEBYTECODE: '1'
+        shell: bash
+        run: |
+          set +e -uo pipefail
+          repos="${RUNNER_TEMP:-/tmp}/autonomic-repos"
+          mkdir -p "$repos" && ln -sfn "$GITHUB_WORKSPACE" "$repos/chatman-ecosystem"
+          export DURABLE_LOCATOR_REPOS_ROOT="$repos"
+          python3 -m unittest discover -s tests/release_train/autonomic_crown -p 'test_*.py' -v || exit 1
+          python3 -m scripts.release_train.autonomic_crown --release "$RELEASE" --root . \
+            --check "release/$RELEASE/autonomy/autonomic-receipt.json"
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "committed autonomic receipt exit=$code"
+          exit 0
+
+      - name: Observe governance (read-only GET)
+        if: github.event_name != 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 scripts/observe_governance.py --repo "$GITHUB_REPOSITORY" --out .artifacts/governance.json
+
+      - name: Download this run's root-crown receipt
+        if: github.event_name != 'pull_request'
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: root-crown-receipt
+          path: .artifacts/receipt
+
+      - name: Autonomic crown (this run's crown receipt)
+        id: live
+        if: github.event_name != 'pull_request'
+        env:
+          PYTHONPATH: .
+          PYTHONDONTWRITEBYTECODE: '1'
+        shell: bash
+        run: |
+          set +e -uo pipefail
+          repos="${RUNNER_TEMP:-/tmp}/autonomic-repos"
+          export DURABLE_LOCATOR_REPOS_ROOT="$repos"
+          python3 -m scripts.release_train.autonomic_crown --release "$RELEASE" --root . \
+            --crown-receipt .artifacts/receipt/crown-receipt.json \
+            --observations .artifacts/receipt/observations.json \
+            --chain "release/$RELEASE/hardening/receipts/chain.json" \
+            --governance .artifacts/governance.json --rebind-subject \
+            --out .artifacts/autonomic/autonomic-receipt.json
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Autonomic crown $RELEASE (exit $code)"
+            python3 - <<'PY'
+          import json
+          r = json.load(open(".artifacts/autonomic/autonomic-receipt.json"))
+          s = r["standings"]
+          print(f"execution {s['execution']['state']} / autonomy {s['autonomy']} / authority {s['authority']['state']}")
+          print()
+          print("| gate | state | code | measured |\n|---|---|---|---|")
+          for gid, g in r["gates"].items():
+              print(f"| {gid} | {g['state']} | {g.get('code', '')} | {g['measured']} |")
+          PY
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+
+      - name: Exit policy (REFUSED fails; typed NOT_AUTONOMIC warns; AUTONOMIC passes)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for code in "${{ steps.committed.outputs.code }}" "${{ steps.live.outputs.code }}"; do
+            case "$code" in
+              ""|0) ;;
+              3) echo "::warning title=autonomic crown NOT_AUTONOMIC::typed gate blockers remain (see receipt)" ;;
+              *) echo "::error title=autonomic crown REFUSED::exit $code"; exit 1 ;;
+            esac
+          done
+
   tag:
     needs: crown
-    if: needs.crown.outputs.standing == 'ALIVE' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    if: needs.crown.outputs.mode == 'PRE_TAG' && needs.crown.outputs.standing == 'ALIVE' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
     environment: release-crown
     permissions:
       contents: write
       actions: read
     steps:
       - name: Checkout crown SHA
-        uses: actions/checkout@v4
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           ref: ${{ needs.crown.outputs.crown_sha }}
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
-          python-version: '3.12'
+          python-version: '3.12.14'
 
       - name: Download receipt
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: root-crown-receipt
           path: .artifacts/receipt

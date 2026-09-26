@@ -1,0 +1,403 @@
+{
+ "records": {
+  "tmp_ash_ex4pm_attr_history": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_ash_ex4pm_attr_history",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_ash_ex4pm_attr_history/anchor",
+   "ok": true,
+   "path": "/private/tmp/ash_ex4pm_attr_history",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_attr_history/admin-index": "a610e6bf8f5191094a79da6476740f3159b6bf26",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_attr_history/anchor": "44dccefa0b942dfe3785c9c4932a009ed82ed65a",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_attr_history/worktree-head": "4d74dc7810cb6d29a9c2ef940f9db64bb2380063"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "44dccefa0b942dfe3785c9c4932a009ed82ed65a"
+  },
+  "tmp_ash_ex4pm_wt_brce_gate": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_ash_ex4pm_wt_brce_gate",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_brce_gate/anchor",
+   "ok": true,
+   "path": "/private/tmp/ash_ex4pm_wt_brce_gate",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_brce_gate/admin-index": "4e351508ec0b49186ce51758b3a4187f22d8761a",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_brce_gate/anchor": "301a60019d628736ff16f400b9966b8810566c8d",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_brce_gate/worktree-head": "848e4400bbfa0726f5f538b70ec0183e7631573c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "301a60019d628736ff16f400b9966b8810566c8d"
+  },
+  "tmp_ash_ex4pm_wt_describe": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_ash_ex4pm_wt_describe",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_describe/anchor",
+   "ok": true,
+   "path": "/private/tmp/ash_ex4pm_wt_describe",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_describe/admin-index": "632e06f331d2e19f4969c46c680e151933095348",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_describe/anchor": "3969f8d5d22dbde3055b38f7ce27116731464318",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_describe/worktree-head": "2d75efd6bc164ab80be36a46e2701e5e4adefa19"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "3969f8d5d22dbde3055b38f7ce27116731464318"
+  },
+  "tmp_ash_ex4pm_wt_notif_data": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_ash_ex4pm_wt_notif_data",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_notif_data/anchor",
+   "ok": true,
+   "path": "/private/tmp/ash_ex4pm_wt_notif_data",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_notif_data/admin-index": "cfc215752eb84a8f2d35938f403ba6b7fe75968f",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_notif_data/anchor": "e874b95eca7a3404649eb963149aa5323364e7ff",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_notif_data/worktree-head": "43f8c754eb53cb081b8a9d00161e2560b4d5ab67"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "e874b95eca7a3404649eb963149aa5323364e7ff"
+  },
+  "tmp_ash_ex4pm_wt_notifier_relmgmt": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_ash_ex4pm_wt_notifier_relmgmt",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_notifier_relmgmt/anchor",
+   "ok": true,
+   "path": "/private/tmp/ash_ex4pm_wt_notifier_relmgmt",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_notifier_relmgmt/admin-index": "1ad4b3c613c227e310ff0de26ca12d4246f3f57c",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_notifier_relmgmt/anchor": "369a435b7566065ce84c41fd985a8a26328e199e",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_notifier_relmgmt/worktree-head": "c6243f8a6b5be47f28f1d1e450ca06f4c1be63c6"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "369a435b7566065ce84c41fd985a8a26328e199e"
+  },
+  "tmp_ash_ex4pm_wt_notifier_scope": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_ash_ex4pm_wt_notifier_scope",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_notifier_scope/anchor",
+   "ok": true,
+   "path": "/private/tmp/ash_ex4pm_wt_notifier_scope",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_notifier_scope/admin-index": "2a84913657be7b408c447e70f32178862cebe8e7",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_notifier_scope/anchor": "5f8f3675847768109adcd26bfe6c6ee5fc86df89",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_notifier_scope/worktree-head": "46a6f009f5a73a9c870cfea315fa703b1c0d1778"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "5f8f3675847768109adcd26bfe6c6ee5fc86df89"
+  },
+  "tmp_ash_ex4pm_wt_o2o": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_ash_ex4pm_wt_o2o",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_o2o/anchor",
+   "ok": true,
+   "path": "/private/tmp/ash_ex4pm_wt_o2o",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_o2o/admin-index": "b3eacfee1f8b2aba7118c4ca240c9712509efadb",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_o2o/anchor": "9659eca45b3b64e66a39578b1f150f4a11037334",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_o2o/worktree-head": "e3f6f7caae1e303f5eccd21edefbc7f74997a6b3"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "9659eca45b3b64e66a39578b1f150f4a11037334"
+  },
+  "tmp_ash_ex4pm_wt_ocel_attrs": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_ash_ex4pm_wt_ocel_attrs",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_ocel_attrs/anchor",
+   "ok": true,
+   "path": "/private/tmp/ash_ex4pm_wt_ocel_attrs",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_ocel_attrs/admin-index": "83606716eb6476af871b4ad751dfcffbca74c96e",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_ocel_attrs/anchor": "cba50333b9cf9b58623b510c5b6cdc70178e17c8",
+    "refs/preserve/v26.9.25/tmp_ash_ex4pm_wt_ocel_attrs/worktree-head": "da3b61ba51562cfb884ad438b47e88f668130dfb"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "cba50333b9cf9b58623b510c5b6cdc70178e17c8"
+  },
+  "tmp_claude-501_ash_ex4pm_dsl_fix": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_claude-501_ash_ex4pm_dsl_fix",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_dsl_fix/anchor",
+   "ok": true,
+   "path": "/private/tmp/claude-501/ash_ex4pm_dsl_fix",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_dsl_fix/admin-index": "116369b088bded44a157c0394cccc721db425f28",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_dsl_fix/anchor": "2bbd24eda833ed75a19fe5e6bce95eded7648617",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_dsl_fix/worktree-head": "ca48bdf359b67a75dc11aedb6455f310b53e9505"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "2bbd24eda833ed75a19fe5e6bce95eded7648617"
+  },
+  "tmp_claude-501_ash_ex4pm_event_attrs_schema": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_claude-501_ash_ex4pm_event_attrs_schema",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_event_attrs_schema/anchor",
+   "ok": true,
+   "path": "/private/tmp/claude-501/ash_ex4pm_event_attrs_schema",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_event_attrs_schema/admin-index": "c2a9d1b3913bef107bed6d5ed93e83d0341a5704",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_event_attrs_schema/anchor": "64d725c95767300eab414c90d3d93713a265d80e",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_event_attrs_schema/worktree-head": "50688fa1c2e967ba09230b9e52973bc9a7c7bff7"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "64d725c95767300eab414c90d3d93713a265d80e"
+  },
+  "tmp_claude-501_ash_ex4pm_notifier_simple": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_claude-501_ash_ex4pm_notifier_simple",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_notifier_simple/anchor",
+   "ok": true,
+   "path": "/private/tmp/claude-501/ash_ex4pm_notifier_simple",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_notifier_simple/admin-index": "0e7f0bbadb71986ebe4d5f1fe30cb557fefbd115",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_notifier_simple/anchor": "123d10005cecafc92be85785a1a86797b76e9617",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_notifier_simple/worktree-head": "461490d70e9d86b72747022bb02406449955b50c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "123d10005cecafc92be85785a1a86797b76e9617"
+  },
+  "tmp_claude-501_ash_ex4pm_objtype": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_claude-501_ash_ex4pm_objtype",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_objtype/anchor",
+   "ok": true,
+   "path": "/private/tmp/claude-501/ash_ex4pm_objtype",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_objtype/admin-index": "199f9f530a5936d968ca63893e2680cb67585fdb",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_objtype/anchor": "9ab7624e05e3e52a6fde498cbe1763c216490c87",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_objtype/worktree-head": "a3c7dfec44be066b273345ef168edbebf6954ce6"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "9ab7624e05e3e52a6fde498cbe1763c216490c87"
+  },
+  "tmp_claude-501_ash_ex4pm_persist_fix": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_claude-501_ash_ex4pm_persist_fix",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_persist_fix/anchor",
+   "ok": true,
+   "path": "/private/tmp/claude-501/ash_ex4pm_persist_fix",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_persist_fix/admin-index": "9d8a3a235a17e73adc99e997a5c47b8175a5b239",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_persist_fix/anchor": "c74be8f2d4320b20efa34107541ffafca92df4bc",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_persist_fix/worktree-head": "a48b603184ccd3435df4bd52a4b8fcdcf9d32e3b"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "c74be8f2d4320b20efa34107541ffafca92df4bc"
+  },
+  "tmp_claude-501_ash_ex4pm_qualifier_fix": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_claude-501_ash_ex4pm_qualifier_fix",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_qualifier_fix/anchor",
+   "ok": true,
+   "path": "/private/tmp/claude-501/ash_ex4pm_qualifier_fix",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_qualifier_fix/admin-index": "07dbb3a23513e1c52a8c5b655295b2f45213b9d7",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_qualifier_fix/anchor": "5c70094fe17e68c3b8c113fcdfeb8985354d45de",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_qualifier_fix/worktree-head": "4ba9fed5ad6b4e7b9352a32d5c6344d6e62412b9"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "5c70094fe17e68c3b8c113fcdfeb8985354d45de"
+  },
+  "tmp_claude-501_ash_ex4pm_qualifier_impl": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_claude-501_ash_ex4pm_qualifier_impl",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_qualifier_impl/anchor",
+   "ok": true,
+   "path": "/private/tmp/claude-501/ash_ex4pm_qualifier_impl",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_qualifier_impl/admin-index": "e19a366bc6431f19e49d937991eed250e0040a26",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_qualifier_impl/anchor": "1849702c6c5b1a35fc85d1498d99ca7e1aa1e1c7",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_qualifier_impl/worktree-head": "77c3010e2e7ffe87c5f4d926a8378fe00c5d9fbf"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "1849702c6c5b1a35fc85d1498d99ca7e1aa1e1c7"
+  },
+  "tmp_claude-501_ash_ex4pm_wt": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_claude-501_ash_ex4pm_wt",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt/anchor",
+   "ok": true,
+   "path": "/private/tmp/claude-501/ash_ex4pm_wt",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt/admin-index": "c9e8f730bddd5dddb30ddf75970dfd9b8c1e0b32",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt/anchor": "338255497187485ff9f6776bf6dac342824bec58",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt/worktree-head": "1b51230134c146a216c596c68ce39b951d5e60a0"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "338255497187485ff9f6776bf6dac342824bec58"
+  },
+  "tmp_claude-501_ash_ex4pm_wt2": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_claude-501_ash_ex4pm_wt2",
+   "durable": "REMOTE",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt2/anchor",
+   "ok": true,
+   "path": "/private/tmp/claude-501/ash_ex4pm_wt2",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt2/admin-index": "5f28c9098324fb7a1c97f5cf3e13dd738f7fdd34",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt2/anchor": "d9793e74fcb56dd4d28d5c47195137cc153d40c1",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt2/worktree-head": "c9ac0e108cb78cf8c7f53a54fc6f2b99d4520fe0"
+   },
+   "remote_ref": "backup/v26.9.25/tmp_claude-501_ash_ex4pm_wt2",
+   "remote_verified_sha": "d9793e74fcb56dd4d28d5c47195137cc153d40c1",
+   "repo_id": "ash_ex4pm",
+   "sha": "d9793e74fcb56dd4d28d5c47195137cc153d40c1"
+  },
+  "tmp_claude-501_ash_ex4pm_wt_brce": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_claude-501_ash_ex4pm_wt_brce",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt_brce/anchor",
+   "ok": true,
+   "path": "/private/tmp/claude-501/ash_ex4pm_wt_brce",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt_brce/admin-index": "dcd5f9dcd888ebceb763439eb98e520f8dfb3983",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt_brce/anchor": "d5994994144bdf53ebed81f6f864f9674868841b",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt_brce/worktree-head": "7db79c58a80901e3294c8d51147e604bde92a295"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "d5994994144bdf53ebed81f6f864f9674868841b"
+  },
+  "tmp_claude-501_ash_ex4pm_wt_brcegate": {
+   "bundle": null,
+   "canonical": "/Users/sac/ash_ex4pm",
+   "copy_id": "tmp_claude-501_ash_ex4pm_wt_brcegate",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt_brcegate/anchor",
+   "ok": true,
+   "path": "/private/tmp/claude-501/ash_ex4pm_wt_brcegate",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt_brcegate/admin-index": "52e8337f684650e324e7238b5247c92b374540d5",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt_brcegate/anchor": "7abe3f40d7fe00b40f6f1cd0aea0170cac955381",
+    "refs/preserve/v26.9.25/tmp_claude-501_ash_ex4pm_wt_brcegate/worktree-head": "2930857a2734e63b8f343f05676deea164e4cdf2"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "ash_ex4pm",
+   "sha": "7abe3f40d7fe00b40f6f1cd0aea0170cac955381"
+  }
+ }
+}

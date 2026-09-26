@@ -1,0 +1,962 @@
+{
+  "OBSERVED": "scripts/observe_scorecard.py -- observation, do not edit; re-observe",
+  "authority": "NONE",
+  "mutation_harnesses": [
+    {
+      "error": null,
+      "killed": 124,
+      "locator": "git:seanchatmangpt/chatman-ecosystem@6ff74d37c99ed4a4ccabedc53263147b253e65e0:release/v26.9.25/hardening/inputs/mutation-report.json",
+      "name": "root_crown",
+      "parser": "root_crown_report",
+      "sha256": "274c8b9d8f8e827a8caac82c125b4213eb6ce252d5e28b66d0c68bd08428112c",
+      "total": 124
+    },
+    {
+      "error": null,
+      "killed": 4,
+      "locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/evidence/courts/chatman-ecosystem/6ff74d37c99ed4a4ccabedc53263147b253e65e0/xprod-mutate/XPROD-001.mutate.json",
+      "name": "xprod",
+      "parser": "xprod",
+      "sha256": "3d11e5d831d48b304529a21cc89d165cadd5d2ffaea76d37fba940607af003e3",
+      "total": 4
+    },
+    {
+      "error": null,
+      "killed": 8,
+      "locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+      "name": "affidavit_brce",
+      "parser": "affidavit_brce",
+      "sha256": "1b3ab4f82b65c27b54eb7b2a7684b1234d7bded57099b43d5668fcc044db74cd",
+      "total": 8
+    },
+    {
+      "error": null,
+      "killed": 50,
+      "locator": "git:seanchatmangpt/zoela@eb18cc73409573366c8fc6544eb41531083ccc1c:release/v26.9.25/receipts/godslaw-gate-witness.post-tag.json",
+      "name": "zoela_witness",
+      "parser": "zoela_witness",
+      "sha256": "f7197df1779f175ae487cb0f24a318bb0679b531f62e4336b5b18e1cdd242375",
+      "total": 50
+    },
+    {
+      "error": null,
+      "killed": 15,
+      "locator": "git:seanchatmangpt/ggen_igniter@647db5f208b7ec88c84f0dc7d70925b4dec330f9:receipts/v26.9.25/sjira-origin-trust-root.json",
+      "name": "ggen_igniter_origin",
+      "parser": "ggen_igniter_origin",
+      "sha256": "2062638ea101ad323b9f308c40bfce362f15b8c1b30fdedb999129305de2bb19",
+      "total": 15
+    }
+  ],
+  "new_surfaces": {
+    "duplicated_loc": 4121,
+    "new_surface_files": 372,
+    "new_surface_loc": 72119,
+    "no_predecessor": [
+      "seanchatmangpt/ash_surface",
+      "seanchatmangpt/chatgpt-cloud-elixir",
+      "seanchatmangpt/engineering-standards",
+      "seanchatmangpt/ggen-ecosystem",
+      "seanchatmangpt/zcode-cli",
+      "seanchatmangpt/zoela"
+    ],
+    "repeated_windows": 1081,
+    "repos": {
+      "seanchatmangpt/affidavit": {
+        "base": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+        "files": 4,
+        "head": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+        "loc": 2493
+      },
+      "seanchatmangpt/ash_a2a": {
+        "base": "12f98f816d5eda50f0aebbb43c21cf1a9f580352",
+        "files": 2,
+        "head": "7999524d0b98aa5dc650a0538c1be5ec8b867477",
+        "loc": 418
+      },
+      "seanchatmangpt/ash_r2rml": {
+        "base": "76cc5204f3e20370fd1593af31f237a2bbb4caeb",
+        "files": 102,
+        "head": "901bfb8a08dac5ea30ad77f0bb6de7a29eb8cd34",
+        "loc": 11145
+      },
+      "seanchatmangpt/autofde-lab": {
+        "base": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+        "files": 55,
+        "head": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0",
+        "loc": 8568
+      },
+      "seanchatmangpt/beam4pm": {
+        "base": "be43246cc39a6fde9d86b31214a0177c71e6206f",
+        "files": 1,
+        "head": "8c3f5e09c297023059ad384629a55ddb2ac785b1",
+        "loc": 67
+      },
+      "seanchatmangpt/chatman-ecosystem": {
+        "base": "a4d5a2b12e455cf15f23a0f20b1895f575e1e765",
+        "files": 43,
+        "head": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+        "loc": 6090
+      },
+      "seanchatmangpt/ex4pm": {
+        "base": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+        "files": 12,
+        "head": "c4ca84410c379888305c85201710734afb21f9bf",
+        "loc": 1924
+      },
+      "seanchatmangpt/ggen-marketplace": {
+        "base": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+        "files": 5,
+        "head": "1f4abc53084e3376a7fed2c1d153029e8711fcee",
+        "loc": 482
+      },
+      "seanchatmangpt/ggen_igniter": {
+        "base": "7d53cb3b3ffe0a32f0e4b5f1365b9e1adff82d44",
+        "files": 44,
+        "head": "9639198b5c3e0e25906acc5b36dd9eb17bd592be",
+        "loc": 16498
+      },
+      "seanchatmangpt/gymact": {
+        "base": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+        "files": 2,
+        "head": "281009dfd8ef435f0027009fc1a88fd86688f8b9",
+        "loc": 506
+      },
+      "seanchatmangpt/wasm4pm": {
+        "base": "552f15ecba00f75a5866dfc3e7565ef2fe629341",
+        "files": 54,
+        "head": "9fc4f1ae3cc99cf65a5f014580db8e1ea3d08b55",
+        "loc": 19154
+      },
+      "seanchatmangpt/xaas": {
+        "base": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+        "files": 48,
+        "head": "e039967dac9f88961873b6a958f3979a106854f2",
+        "loc": 4774
+      }
+    },
+    "top_clusters": [
+      {
+        "locations": [
+          "seanchatmangpt/wasm4pm:wasm4pm/src/ensemble.rs"
+        ],
+        "occurrences": 12,
+        "window_sha256": "079a85e7627d0db4390b246ac83b146bb9d486469d62be419fce9c165f71869b"
+      },
+      {
+        "locations": [
+          "seanchatmangpt/wasm4pm:wasm4pm/src/ensemble.rs"
+        ],
+        "occurrences": 12,
+        "window_sha256": "1a88a1ac4c8b5e1051812cac65631cc895deb3d37a2b8ba05fbfb40183678c7b"
+      },
+      {
+        "locations": [
+          "seanchatmangpt/wasm4pm:wasm4pm/src/ensemble.rs"
+        ],
+        "occurrences": 12,
+        "window_sha256": "d84233d0c0d1005b558f879b542a4b5ac3d16b3ff03e5de1ac22e1cea000c47b"
+      },
+      {
+        "locations": [
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/alignment_cost.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/causal_dependency_measure.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/declare_semantics.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/dfg_multi_trace.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/ocel_semantics.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/petri_firing.rs"
+        ],
+        "occurrences": 10,
+        "window_sha256": "0609bce0f216f72a9a54f228ed14b3b4a102a38dc0df72d58faceaabcf731f83"
+      },
+      {
+        "locations": [
+          "seanchatmangpt/wasm4pm:wasm4pm/src/ensemble.rs"
+        ],
+        "occurrences": 10,
+        "window_sha256": "51cc98828f1bb1f3502d01ecdf4cd9b9a9671276c4b97d23e00b9b4d8674e423"
+      },
+      {
+        "locations": [
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/alignment_cost.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/causal_dependency_measure.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/declare_semantics.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/dfg_multi_trace.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/ocel_semantics.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/petri_firing.rs"
+        ],
+        "occurrences": 10,
+        "window_sha256": "759db55e1ab6908d2ddf93eb0670124622b34986bc678b723a902538cfe351ac"
+      },
+      {
+        "locations": [
+          "seanchatmangpt/wasm4pm:wasm4pm/src/ensemble.rs"
+        ],
+        "occurrences": 10,
+        "window_sha256": "84a1616ed2512911d3702d485dc7abb67939543bd9cff1404fcb0189623c72b5"
+      },
+      {
+        "locations": [
+          "seanchatmangpt/wasm4pm:wasm4pm/src/ensemble.rs"
+        ],
+        "occurrences": 10,
+        "window_sha256": "90c0e1872c1a0477114810530c43cb631c581c17e0fd3f353161cacc01eaa25c"
+      },
+      {
+        "locations": [
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/alignment_cost.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/causal_dependency_measure.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/declare_semantics.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/dfg_multi_trace.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/ocel_semantics.rs",
+          "seanchatmangpt/wasm4pm:wasm4pm/src/correspondence/petri_firing.rs"
+        ],
+        "occurrences": 10,
+        "window_sha256": "993fde237ddc46523c5e9b5c608ac82f1275378b67a45d23e0f553f24e174560"
+      },
+      {
+        "locations": [
+          "seanchatmangpt/wasm4pm:wasm4pm/src/ensemble.rs"
+        ],
+        "occurrences": 10,
+        "window_sha256": "a1511e857afbd6beb7ab55604c8e81bb63d10c7697b2b6287f1cfea966f96643"
+      }
+    ]
+  },
+  "parameters": {
+    "derivable_ext": [
+      ".py",
+      ".ex",
+      ".exs",
+      ".rs",
+      ".ts",
+      ".tsx",
+      ".js",
+      ".mjs",
+      ".sh",
+      ".yml",
+      ".yaml",
+      ".toml",
+      ".ttl",
+      ".rq",
+      ".tera",
+      ".tmpl",
+      ".j2",
+      ".hbs",
+      ".sql",
+      ".go",
+      ".erl"
+    ],
+    "generated_markers": "GENERATED by|Generated by ggen|@generated|DO NOT EDIT",
+    "header_bytes": 4096,
+    "ledger_name": "HANDWRITTEN.md",
+    "loc": "non-blank lines of a UTF-8 text file",
+    "max_text_bytes": 2097152,
+    "min_reuse_loc": 5,
+    "window": 6
+  },
+  "predecessor": "v26.9.24",
+  "release": "v26.9.25",
+  "releases": {
+    "v26.9.24": {
+      "marketplace_pinned": true,
+      "repos": {
+        "seanchatmangpt/affidavit": {
+          "candidates": [
+            "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030"
+          ],
+          "error": null,
+          "files": 728,
+          "generated_files": 4,
+          "generated_loc": 5889,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 130720,
+          "marketplace_reused_files": 2,
+          "marketplace_reused_loc": 34,
+          "sha": "f3b01d77909ef37f1a1775fe2a3ed88ddc54d030",
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)",
+          "text_files": 725
+        },
+        "seanchatmangpt/ash_a2a": {
+          "candidates": [
+            "12f98f816d5eda50f0aebbb43c21cf1a9f580352"
+          ],
+          "error": null,
+          "files": 933,
+          "generated_files": 3,
+          "generated_loc": 1903,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 188430,
+          "marketplace_reused_files": 1,
+          "marketplace_reused_loc": 17,
+          "sha": "12f98f816d5eda50f0aebbb43c21cf1a9f580352",
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)",
+          "text_files": 932
+        },
+        "seanchatmangpt/ash_r2rml": {
+          "candidates": [
+            "76cc5204f3e20370fd1593af31f237a2bbb4caeb"
+          ],
+          "error": null,
+          "files": 534,
+          "generated_files": 2,
+          "generated_loc": 404,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 53098,
+          "marketplace_reused_files": 0,
+          "marketplace_reused_loc": 0,
+          "sha": "76cc5204f3e20370fd1593af31f237a2bbb4caeb",
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)",
+          "text_files": 533
+        },
+        "seanchatmangpt/autofde-lab": {
+          "candidates": [
+            "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7"
+          ],
+          "error": null,
+          "files": 5674,
+          "generated_files": 52,
+          "generated_loc": 25561,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 809212,
+          "marketplace_reused_files": 32,
+          "marketplace_reused_loc": 3455,
+          "sha": "b3375edcab896d1c8eb2afeeb9b10a37b15e5fb7",
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)",
+          "text_files": 5469
+        },
+        "seanchatmangpt/beam4pm": {
+          "candidates": [
+            "be43246cc39a6fde9d86b31214a0177c71e6206f"
+          ],
+          "error": null,
+          "files": 6358,
+          "generated_files": 1459,
+          "generated_loc": 234537,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 309719,
+          "marketplace_reused_files": 0,
+          "marketplace_reused_loc": 0,
+          "sha": "be43246cc39a6fde9d86b31214a0177c71e6206f",
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)",
+          "text_files": 6353
+        },
+        "seanchatmangpt/chatman-ecosystem": {
+          "candidates": [
+            "a4d5a2b12e455cf15f23a0f20b1895f575e1e765",
+            "d1be9fb60148fd01dde2c1f2f14c184302f1276b"
+          ],
+          "error": null,
+          "files": 13072,
+          "generated_files": 404,
+          "generated_loc": 77094,
+          "handwritten": {
+            "entries": 71,
+            "ledgers": [
+              "HANDWRITTEN.md",
+              "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/HANDWRITTEN.md"
+            ],
+            "loc": 20259,
+            "matched_files": 109,
+            "unmatched_entries": [
+              "HANDWRITTEN.md:release/v26.9.23/constitutional-role-crosswalk.toml",
+              "HANDWRITTEN.md:release/v26.9.23/manifest.toml"
+            ]
+          },
+          "loc": 1588181,
+          "marketplace_reused_files": 1962,
+          "marketplace_reused_loc": 283128,
+          "sha": "a4d5a2b12e455cf15f23a0f20b1895f575e1e765",
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)",
+          "text_files": 13054
+        },
+        "seanchatmangpt/engineering-standards": {
+          "candidates": [
+            "440797509502ecf93b0772453299e716dc049aca",
+            "846f6c50f894d106b491eed250f8cac9982c34a1"
+          ],
+          "error": "PREDECESSOR_AMBIGUOUS:no candidate descends from all others",
+          "sha": null,
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)"
+        },
+        "seanchatmangpt/ex4pm": {
+          "candidates": [
+            "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc"
+          ],
+          "error": null,
+          "files": 777,
+          "generated_files": 10,
+          "generated_loc": 1363,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 53373,
+          "marketplace_reused_files": 1,
+          "marketplace_reused_loc": 17,
+          "sha": "7a79d137c356247400bc6bd7ba1cd5bbf2433bbc",
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)",
+          "text_files": 774
+        },
+        "seanchatmangpt/ggen-marketplace": {
+          "candidates": [
+            "5eb71f7ed947f705a8d6b145cb9b0be82855d793"
+          ],
+          "error": null,
+          "files": 15633,
+          "generated_files": 479,
+          "generated_loc": 64405,
+          "handwritten": {
+            "entries": 17,
+            "ledgers": [
+              "packs/chatman-ecosystem-release-pack/HANDWRITTEN.md",
+              "packs/receipt-provenance-unification-pack/HANDWRITTEN.md"
+            ],
+            "loc": 4909,
+            "matched_files": 64,
+            "unmatched_entries": []
+          },
+          "loc": 1683248,
+          "marketplace_reused_files": null,
+          "marketplace_reused_loc": null,
+          "sha": "5eb71f7ed947f705a8d6b145cb9b0be82855d793",
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)",
+          "text_files": 15529
+        },
+        "seanchatmangpt/ggen_igniter": {
+          "candidates": [
+            "7d53cb3b3ffe0a32f0e4b5f1365b9e1adff82d44"
+          ],
+          "error": null,
+          "files": 958,
+          "generated_files": 22,
+          "generated_loc": 7491,
+          "handwritten": {
+            "entries": 48,
+            "ledgers": [
+              "HANDWRITTEN.md"
+            ],
+            "loc": 15600,
+            "matched_files": 47,
+            "unmatched_entries": [
+              "HANDWRITTEN.md:preserve/v26.9.22/wo-03-wip"
+            ]
+          },
+          "loc": 149068,
+          "marketplace_reused_files": 1,
+          "marketplace_reused_loc": 17,
+          "sha": "7d53cb3b3ffe0a32f0e4b5f1365b9e1adff82d44",
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)",
+          "text_files": 950
+        },
+        "seanchatmangpt/gymact": {
+          "candidates": [
+            "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01"
+          ],
+          "error": null,
+          "files": 2210,
+          "generated_files": 45,
+          "generated_loc": 4990,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 142260,
+          "marketplace_reused_files": 1,
+          "marketplace_reused_loc": 49,
+          "sha": "3d2e3c7e3efb2c2f86d41e8c7e16443aca5a0c01",
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)",
+          "text_files": 2210
+        },
+        "seanchatmangpt/wasm4pm": {
+          "candidates": [
+            "552f15ecba00f75a5866dfc3e7565ef2fe629341"
+          ],
+          "error": null,
+          "files": 7818,
+          "generated_files": 48,
+          "generated_loc": 13899,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 1310471,
+          "marketplace_reused_files": 5,
+          "marketplace_reused_loc": 3126,
+          "sha": "552f15ecba00f75a5866dfc3e7565ef2fe629341",
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)",
+          "text_files": 7743
+        },
+        "seanchatmangpt/xaas": {
+          "candidates": [
+            "f9670f446537ddb882edf9cd7e0b6519de557e60"
+          ],
+          "error": null,
+          "files": 2721,
+          "generated_files": 28,
+          "generated_loc": 14341,
+          "handwritten": {
+            "entries": 147,
+            "ledgers": [
+              "HANDWRITTEN.md"
+            ],
+            "loc": 46289,
+            "matched_files": 140,
+            "unmatched_entries": [
+              "HANDWRITTEN.md:.zcode-plugin/plugin.json.eex",
+              "HANDWRITTEN.md:GC23-1.sh",
+              "HANDWRITTEN.md:GC23-2.sh",
+              "HANDWRITTEN.md:GC23-3.sh",
+              "HANDWRITTEN.md:GC23-5.sh",
+              "HANDWRITTEN.md:GC23-6.sh",
+              "HANDWRITTEN.md:GC23-7.sh",
+              "HANDWRITTEN.md:GC23-8.sh",
+              "HANDWRITTEN.md:docs/sjira/v26.9.23/courts/GC23-0..GC23-12.sh",
+              "HANDWRITTEN.md:priv/templates/zcode_plugin/.mcp.json.eex",
+              "HANDWRITTEN.md:priv/templates/zcode_plugin/commands/xaas.md.eex",
+              "HANDWRITTEN.md:priv/templates/zcode_plugin/hooks/post_tool_failure.mjs.eex",
+              "HANDWRITTEN.md:priv/templates/zcode_plugin/hooks/post_tool_use.mjs.eex",
+              "HANDWRITTEN.md:priv/templates/zcode_plugin/hooks/user_prompt_submit.mjs.eex",
+              "HANDWRITTEN.md:priv/zcode_plugin/templates/script-xaas-gate.mjs.tmpl",
+              "HANDWRITTEN.md:priv/zcode_plugin/templates/script-xaas-lease.mjs.tmpl"
+            ]
+          },
+          "loc": 322224,
+          "marketplace_reused_files": 13,
+          "marketplace_reused_loc": 623,
+          "sha": "f9670f446537ddb882edf9cd7e0b6519de557e60",
+          "source": "release/v26.9.24/closure.json subjects (descendant-most)",
+          "text_files": 2712
+        }
+      }
+    },
+    "v26.9.25": {
+      "marketplace_pinned": true,
+      "repos": {
+        "seanchatmangpt/affidavit": {
+          "error": null,
+          "files": 732,
+          "generated_files": 4,
+          "generated_loc": 5889,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 133230,
+          "marketplace_reused_files": 2,
+          "marketplace_reused_loc": 34,
+          "sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+          "source": "release/v26.9.25/pins.json#/repos/affidavit/sha",
+          "text_files": 729
+        },
+        "seanchatmangpt/ash_a2a": {
+          "error": null,
+          "files": 934,
+          "generated_files": 3,
+          "generated_loc": 1903,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 188521,
+          "marketplace_reused_files": 1,
+          "marketplace_reused_loc": 17,
+          "sha": "7999524d0b98aa5dc650a0538c1be5ec8b867477",
+          "source": "release/v26.9.25/pins.json#/repos/ash_a2a/sha",
+          "text_files": 933
+        },
+        "seanchatmangpt/ash_r2rml": {
+          "error": null,
+          "files": 536,
+          "generated_files": 2,
+          "generated_loc": 404,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 53509,
+          "marketplace_reused_files": 0,
+          "marketplace_reused_loc": 0,
+          "sha": "901bfb8a08dac5ea30ad77f0bb6de7a29eb8cd34",
+          "source": "release/v26.9.25/pins.json#/repos/ash_r2rml/sha",
+          "text_files": 535
+        },
+        "seanchatmangpt/ash_surface": {
+          "error": null,
+          "files": 41,
+          "generated_files": 1,
+          "generated_loc": 247,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 3528,
+          "marketplace_reused_files": 0,
+          "marketplace_reused_loc": 0,
+          "sha": "7d5492795d9b9a0956f51545ed1ad1932768b77e",
+          "source": "release/v26.9.25/pins.json#/repos/ash_surface/sha",
+          "text_files": 41
+        },
+        "seanchatmangpt/autofde-lab": {
+          "error": null,
+          "files": 5698,
+          "generated_files": 52,
+          "generated_loc": 25569,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 813084,
+          "marketplace_reused_files": 32,
+          "marketplace_reused_loc": 3455,
+          "sha": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0",
+          "source": "release/v26.9.25/pins.json#/repos/autofde-lab/sha",
+          "text_files": 5493
+        },
+        "seanchatmangpt/beam4pm": {
+          "error": null,
+          "files": 6359,
+          "generated_files": 1459,
+          "generated_loc": 234537,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 309786,
+          "marketplace_reused_files": 0,
+          "marketplace_reused_loc": 0,
+          "sha": "8c3f5e09c297023059ad384629a55ddb2ac785b1",
+          "source": "release/v26.9.25/pins.json#/repos/beam4pm/sha",
+          "text_files": 6354
+        },
+        "seanchatmangpt/chatgpt-cloud-elixir": {
+          "error": null,
+          "files": 2054,
+          "generated_files": 0,
+          "generated_loc": 0,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 576434,
+          "marketplace_reused_files": 2,
+          "marketplace_reused_loc": 28,
+          "sha": "d6727fef06b170bc6c3839bbf2a9456e33111920",
+          "source": "release/v26.9.25/pins.json#/repos/chatgpt-cloud-elixir/sha",
+          "text_files": 2040
+        },
+        "seanchatmangpt/chatman-ecosystem": {
+          "error": null,
+          "files": 13134,
+          "generated_files": 407,
+          "generated_loc": 77888,
+          "handwritten": {
+            "entries": 71,
+            "ledgers": [
+              "HANDWRITTEN.md",
+              "release/v26.9.23/vendor/ggen-marketplace/packs/chatman-ecosystem-release-pack/HANDWRITTEN.md"
+            ],
+            "loc": 20259,
+            "matched_files": 109,
+            "unmatched_entries": [
+              "HANDWRITTEN.md:release/v26.9.23/constitutional-role-crosswalk.toml",
+              "HANDWRITTEN.md:release/v26.9.23/manifest.toml"
+            ]
+          },
+          "loc": 1641179,
+          "marketplace_reused_files": 1962,
+          "marketplace_reused_loc": 283128,
+          "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+          "source": "release/v26.9.25/hardening/TAG-SUBJECT.json#/subject/commit_sha (root subject = tag commit)",
+          "text_files": 13107
+        },
+        "seanchatmangpt/engineering-standards": {
+          "error": null,
+          "files": 103,
+          "generated_files": 0,
+          "generated_loc": 0,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 15162,
+          "marketplace_reused_files": 0,
+          "marketplace_reused_loc": 0,
+          "sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+          "source": "release/v26.9.25/pins.json#/repos/engineering-standards/sha",
+          "text_files": 103
+        },
+        "seanchatmangpt/ex4pm": {
+          "error": null,
+          "files": 778,
+          "generated_files": 10,
+          "generated_loc": 1363,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 53462,
+          "marketplace_reused_files": 1,
+          "marketplace_reused_loc": 17,
+          "sha": "c4ca84410c379888305c85201710734afb21f9bf",
+          "source": "release/v26.9.25/pins.json#/repos/ex4pm/sha",
+          "text_files": 775
+        },
+        "seanchatmangpt/ggen-ecosystem": {
+          "error": null,
+          "files": 3900,
+          "generated_files": 2,
+          "generated_loc": 395,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 40474,
+          "marketplace_reused_files": 1,
+          "marketplace_reused_loc": 17,
+          "sha": "8bf231242b5fa30587a3d7357c8aaa57905ccfdf",
+          "source": "release/v26.9.25/pins.json#/repos/ggen-ecosystem/sha",
+          "text_files": 3899
+        },
+        "seanchatmangpt/ggen-marketplace": {
+          "error": null,
+          "files": 15633,
+          "generated_files": 479,
+          "generated_loc": 64405,
+          "handwritten": {
+            "entries": 17,
+            "ledgers": [
+              "packs/chatman-ecosystem-release-pack/HANDWRITTEN.md",
+              "packs/receipt-provenance-unification-pack/HANDWRITTEN.md"
+            ],
+            "loc": 4909,
+            "matched_files": 64,
+            "unmatched_entries": []
+          },
+          "loc": 1683279,
+          "marketplace_reused_files": null,
+          "marketplace_reused_loc": null,
+          "sha": "1f4abc53084e3376a7fed2c1d153029e8711fcee",
+          "source": "release/v26.9.25/pins.json#/repos/ggen-marketplace/sha",
+          "text_files": 15529
+        },
+        "seanchatmangpt/ggen_igniter": {
+          "error": null,
+          "files": 1001,
+          "generated_files": 56,
+          "generated_loc": 8664,
+          "handwritten": {
+            "entries": 51,
+            "ledgers": [
+              "HANDWRITTEN.md"
+            ],
+            "loc": 16988,
+            "matched_files": 50,
+            "unmatched_entries": [
+              "HANDWRITTEN.md:preserve/v26.9.22/wo-03-wip"
+            ]
+          },
+          "loc": 153396,
+          "marketplace_reused_files": 1,
+          "marketplace_reused_loc": 17,
+          "sha": "9639198b5c3e0e25906acc5b36dd9eb17bd592be",
+          "source": "release/v26.9.25/pins.json#/repos/ggen_igniter/sha",
+          "text_files": 993
+        },
+        "seanchatmangpt/gymact": {
+          "error": null,
+          "files": 2211,
+          "generated_files": 45,
+          "generated_loc": 4990,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 142270,
+          "marketplace_reused_files": 1,
+          "marketplace_reused_loc": 49,
+          "sha": "281009dfd8ef435f0027009fc1a88fd86688f8b9",
+          "source": "release/v26.9.25/pins.json#/repos/gymact/sha",
+          "text_files": 2211
+        },
+        "seanchatmangpt/wasm4pm": {
+          "error": null,
+          "files": 7819,
+          "generated_files": 48,
+          "generated_loc": 13899,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 1310941,
+          "marketplace_reused_files": 5,
+          "marketplace_reused_loc": 3126,
+          "sha": "9fc4f1ae3cc99cf65a5f014580db8e1ea3d08b55",
+          "source": "release/v26.9.25/pins.json#/repos/wasm4pm/sha",
+          "text_files": 7744
+        },
+        "seanchatmangpt/xaas": {
+          "error": null,
+          "files": 2765,
+          "generated_files": 29,
+          "generated_loc": 14531,
+          "handwritten": {
+            "entries": 173,
+            "ledgers": [
+              "HANDWRITTEN.md"
+            ],
+            "loc": 48870,
+            "matched_files": 165,
+            "unmatched_entries": [
+              "HANDWRITTEN.md:.zcode-plugin/plugin.json.eex",
+              "HANDWRITTEN.md:010/020/040/050",
+              "HANDWRITTEN.md:GC23-1.sh",
+              "HANDWRITTEN.md:GC23-2.sh",
+              "HANDWRITTEN.md:GC23-3.sh",
+              "HANDWRITTEN.md:GC23-5.sh",
+              "HANDWRITTEN.md:GC23-6.sh",
+              "HANDWRITTEN.md:GC23-7.sh",
+              "HANDWRITTEN.md:GC23-8.sh",
+              "HANDWRITTEN.md:docs/sjira/v26.9.23/courts/GC23-0..GC23-12.sh",
+              "HANDWRITTEN.md:priv/templates/zcode_plugin/.mcp.json.eex",
+              "HANDWRITTEN.md:priv/templates/zcode_plugin/commands/xaas.md.eex",
+              "HANDWRITTEN.md:priv/templates/zcode_plugin/hooks/post_tool_failure.mjs.eex",
+              "HANDWRITTEN.md:priv/templates/zcode_plugin/hooks/post_tool_use.mjs.eex",
+              "HANDWRITTEN.md:priv/templates/zcode_plugin/hooks/user_prompt_submit.mjs.eex",
+              "HANDWRITTEN.md:priv/zcode_plugin/templates/script-xaas-gate.mjs.tmpl",
+              "HANDWRITTEN.md:priv/zcode_plugin/templates/script-xaas-lease.mjs.tmpl"
+            ]
+          },
+          "loc": 326255,
+          "marketplace_reused_files": 13,
+          "marketplace_reused_loc": 623,
+          "sha": "e039967dac9f88961873b6a958f3979a106854f2",
+          "source": "release/v26.9.25/pins.json#/repos/xaas/sha",
+          "text_files": 2756
+        },
+        "seanchatmangpt/zcode-cli": {
+          "error": null,
+          "files": 515,
+          "generated_files": 81,
+          "generated_loc": 4752,
+          "handwritten": {
+            "entries": 17,
+            "ledgers": [
+              "HANDWRITTEN.md",
+              "docs/sjira/v26.9.21/HANDWRITTEN.md",
+              "docs/sjira/v26.9.22/HANDWRITTEN.md"
+            ],
+            "loc": 3974,
+            "matched_files": 22,
+            "unmatched_entries": [
+              "docs/sjira/v26.9.22/HANDWRITTEN.md:ZOCEL-015.md",
+              "docs/sjira/v26.9.22/HANDWRITTEN.md:ZOCEL-016.md"
+            ]
+          },
+          "loc": 108821,
+          "marketplace_reused_files": 0,
+          "marketplace_reused_loc": 0,
+          "sha": "d1abfbe56660ade672af1125a3f11d91fc50a09e",
+          "source": "release/v26.9.25/pins.json#/repos/zcode-cli/sha",
+          "text_files": 515
+        },
+        "seanchatmangpt/zoela": {
+          "error": null,
+          "files": 79664,
+          "generated_files": 6,
+          "generated_loc": 465,
+          "handwritten": {
+            "entries": 0,
+            "ledgers": [],
+            "loc": 0,
+            "matched_files": 0,
+            "unmatched_entries": []
+          },
+          "loc": 1684146,
+          "marketplace_reused_files": 9,
+          "marketplace_reused_loc": 435,
+          "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d",
+          "source": "release/v26.9.25/pins.json#/repos/zoela/sha",
+          "text_files": 79643
+        }
+      }
+    }
+  },
+  "schema": "https://chatman.dev/release-scorecard/observations/v1",
+  "transport": "git archive --format=tar <sha> (local object DBs, streamed, no extraction, no network)"
+}

@@ -1,0 +1,48 @@
++ mix ggen_igniter.sync --engine sparql --pack-dir /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/priv/packs/wd_cs2_case_study_pack --ontology /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/tmp/wd-case-study/generated/case.ttl --template /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/priv/packs/wd_cs2_case_study_pack/templates/case-study.json.eex --out /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/tmp/wd-case-study/generated/case-study.json
+
+Igniter:
+
+    No proposed content changes!
+
+
+Notices: 
+
+* ggen_igniter: wrote /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/tmp/wd-case-study/generated/case-study.json (engine: sparql, 11 queries, 114 total row(s)) (via reactor)
+
+Notices were printed above. Please read them all before continuing!
++ mix ggen_igniter.sync --engine sparql --pack-dir /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/priv/packs/wd_cs2_case_study_pack --ontology /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/tmp/wd-case-study/generated/case.ttl --template /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/priv/packs/wd_cs2_case_study_pack/templates/claims-ledger.json.eex --out /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/tmp/wd-case-study/generated/claims-ledger.json
+
+Igniter:
+
+    No proposed content changes!
+
+
+Notices: 
+
+* ggen_igniter: wrote /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/tmp/wd-case-study/generated/claims-ledger.json (engine: sparql, 11 queries, 114 total row(s)) (via reactor)
+
+Notices were printed above. Please read them all before continuing!
++ mix ggen_igniter.sync --engine sparql --pack-dir /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/priv/packs/wd_cs2_case_study_pack --ontology /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/tmp/wd-case-study/generated/case.ttl --template /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/priv/packs/wd_cs2_case_study_pack/templates/slide-evidence-map.json.eex --out /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/tmp/wd-case-study/generated/SLIDE-EVIDENCE-MAP.json
+
+Igniter:
+
+    No proposed content changes!
+
+
+Notices: 
+
+* ggen_igniter: wrote /private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/lanes/receipts-xaas/src/tmp/wd-case-study/generated/SLIDE-EVIDENCE-MAP.json (engine: sparql, 11 queries, 114 total row(s)) (via reactor)
+
+Notices were printed above. Please read them all before continuing!
+{
+  "case_iri": "urn:xaas:wd-cs2:case",
+  "case_revision_digest": "6bd9762edbdf7c8f2a267106343601c60eef8c5cf32f52e183b963cc6453806f",
+  "drift": [],
+  "generator_identity": "ggen_igniter@26.9.15+engine=sparql;wd_cs2_case_study_pack=sha256:32704e04ec1ea4fc15eebb00a73678eabb0feac1720c8ad8ebb64b57c8a07693",
+  "mode": "check",
+  "projections_sha256": {
+    "SLIDE-EVIDENCE-MAP.json": "75718e877208625f67ef54d6b6957a4da304c097e4da782a131b754d3a3bfb80",
+    "case-study.json": "301906a8cdc1db0847e0b9e2f2733736b1a5905bdee1ac73cf9e6648b930f883",
+    "claims-ledger.json": "c0bb3d8afea7cea6c6cc82a09e2a3343e9dfdb2afc820812e8dfa2b76aa04cc3"
+  }
+}

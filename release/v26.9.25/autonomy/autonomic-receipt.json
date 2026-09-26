@@ -1,0 +1,744 @@
+{
+  "authority": "NONE",
+  "blocked_gates": [
+    "U-01",
+    "U-02",
+    "U-03",
+    "U-04",
+    "U-08",
+    "U-09",
+    "U-10",
+    "U-11",
+    "U-13",
+    "U-14",
+    "U-15",
+    "U-16",
+    "U-17",
+    "U-18"
+  ],
+  "crown_receipt_digest": "sha256:7e7e9c80c3cd4649d9e00039d2336c8b5ff477b53227332dd4b445de3c2cc856",
+  "crown_subject": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+  "evaluated_at": "2026-09-25T16:37:16Z",
+  "exit": 3,
+  "findings": [
+    {
+      "broken_term": "R_missing_replay",
+      "code": "EVIDENCE_UNRESOLVED",
+      "detail": "https locators are not fetched offline: https://github.com/seanchatmangpt/chatman-ecosystem/actions/runs/36161856985/artifacts",
+      "failure_class": "EVIDENCE_FAILURE",
+      "severity": "BLOCKED",
+      "subject": "E-CONT-01"
+    }
+  ],
+  "gates": {
+    "U-01": {
+      "broken_term": "mu_on_O",
+      "code": "HUMAN_OR_LLM_EDGE",
+      "detail": "non-machine recurring edges: ['E-ADM-02', 'E-CON-01', 'E-OBS-02', 'E-REP-01']",
+      "evidence": null,
+      "failure_class": "CAPABILITY_GAP",
+      "findings": [
+        "E-ADM-02",
+        "E-CON-01",
+        "E-OBS-02",
+        "E-REP-01"
+      ],
+      "id": "U-01",
+      "measured": "7/11",
+      "state": "BLOCKED",
+      "threshold": "100%"
+    },
+    "U-02": {
+      "broken_term": "mu_on_O",
+      "code": "HUMAN_OPERATIONAL_DEPENDENCY",
+      "detail": "human operational dependencies: ['E-ADM-02', 'E-CON-01', 'E-OBS-02', 'E-REP-01']",
+      "evidence": null,
+      "failure_class": "CAPABILITY_GAP",
+      "findings": [
+        "E-ADM-02",
+        "E-CON-01",
+        "E-OBS-02",
+        "E-REP-01"
+      ],
+      "id": "U-02",
+      "measured": 4,
+      "state": "BLOCKED",
+      "threshold": "0"
+    },
+    "U-03": {
+      "broken_term": "mu_on_O",
+      "code": "GENERAL_LLM_ON_RECURRING_PATH",
+      "detail": "LLM-operated recurring edges: ['E-ADM-02', 'E-CON-01', 'E-REP-01']",
+      "evidence": null,
+      "failure_class": "CAPABILITY_GAP",
+      "findings": [
+        "E-ADM-02",
+        "E-CON-01",
+        "E-REP-01"
+      ],
+      "id": "U-03",
+      "measured": 3,
+      "state": "BLOCKED",
+      "threshold": "0"
+    },
+    "U-04": {
+      "broken_term": "R_missing_replay",
+      "code": "EVIDENCE_NOT_EXACT",
+      "detail": "edges without a recomputed durable digest: {'E-CONT-01': 'EVIDENCE_UNRESOLVED'}",
+      "evidence": null,
+      "failure_class": "EVIDENCE_FAILURE",
+      "findings": [
+        "E-CONT-01"
+      ],
+      "id": "U-04",
+      "measured": "12/13",
+      "state": "BLOCKED",
+      "threshold": "100%"
+    },
+    "U-05": {
+      "detail": "",
+      "evidence": {
+        "digest": "sha256:4f9e9d494c82906cede7bb538946325aa13febf8364499ef920dc59dd178c293",
+        "kind": "fault-injection receipts"
+      },
+      "findings": [],
+      "id": "U-05",
+      "measured": "6/6",
+      "state": "PASS",
+      "threshold": "100%"
+    },
+    "U-06": {
+      "detail": "",
+      "evidence": {
+        "digest": "sha256:81ba21fe39ff2ea958dd867f1df5064578939d002622f1c683cff201a01d63b1",
+        "kind": "fault-injection receipts"
+      },
+      "findings": [],
+      "id": "U-06",
+      "measured": "6/6",
+      "state": "PASS",
+      "threshold": "100%"
+    },
+    "U-07": {
+      "detail": "",
+      "evidence": {
+        "digest": "sha256:75b1d28b656c9ccfce2eb21107094d200a17bd80f6d53980a95248b9a7371f86",
+        "kind": "mutation receipts"
+      },
+      "findings": [],
+      "id": "U-07",
+      "measured": "20/20",
+      "state": "PASS",
+      "threshold": "100%"
+    },
+    "U-08": {
+      "broken_term": "R_missing_authority",
+      "code": "AUTHORITY_CONFIGURATION",
+      "detail": "governance unobserved",
+      "evidence": null,
+      "failure_class": "AUTHORITY_FAILURE",
+      "findings": [],
+      "id": "U-08",
+      "measured": 0,
+      "state": "BLOCKED",
+      "threshold": "0"
+    },
+    "U-09": {
+      "broken_term": "R_missing_consequence",
+      "code": "UNMEASURED",
+      "detail": "no BRCE reconciliation receipts on the crown path",
+      "evidence": null,
+      "failure_class": "EVIDENCE_FAILURE",
+      "findings": [],
+      "id": "U-09",
+      "measured": null,
+      "state": "BLOCKED",
+      "threshold": "0"
+    },
+    "U-10": {
+      "broken_term": "R_missing_consequence",
+      "code": "UNMEASURED",
+      "detail": "no BRCE reconciliation receipts on the crown path; no kill-injection receipts",
+      "evidence": null,
+      "failure_class": "EVIDENCE_FAILURE",
+      "findings": [],
+      "id": "U-10",
+      "measured": null,
+      "state": "BLOCKED",
+      "threshold": "100%"
+    },
+    "U-11": {
+      "broken_term": "R_missing_replay",
+      "code": "NON_DURABLE_RECEIPT_STORE",
+      "detail": "retention-bound receipts: ['edge:E-CONT-01:actions-artifact', 'workflow:122:chain-parent-from-artifact', 'workflow:178:artifact-retention']",
+      "evidence": null,
+      "failure_class": "EVIDENCE_FAILURE",
+      "findings": [
+        "edge:E-CONT-01:actions-artifact",
+        "workflow:122:chain-parent-from-artifact",
+        "workflow:178:artifact-retention"
+      ],
+      "id": "U-11",
+      "measured": 3,
+      "state": "BLOCKED",
+      "threshold": "100%"
+    },
+    "U-12": {
+      "detail": "",
+      "evidence": {
+        "digest": "sha256:7549eaf79667364d36be29f5d09a8811157b6d935f2f4a569589b22cafc45602",
+        "kind": "premise-set receipts"
+      },
+      "findings": [],
+      "id": "U-12",
+      "measured": "ManualRestatementCount=0",
+      "state": "PASS",
+      "threshold": "100%"
+    },
+    "U-13": {
+      "broken_term": "R_missing_identity",
+      "code": "UNPINNED_TOOLCHAIN",
+      "detail": "['FLOATING_RUNNER:49:ubuntu-latest', 'UNPINNED_ACTION:57:actions/checkout@v4', 'UNPINNED_ACTION:69:actions/setup-python@v5', 'INEXACT_TOOLCHAIN:71:3.12', 'UNPINNED_ACTION:174:actions/upload-artifact@v4', 'FLOATING_RUNNER:196:ubuntu-latest', 'UNPINNED_ACTION:203:actions/checkout@v4', 'UNPINNED_ACTION:208:actions/setup-python@v5', 'INEXACT_TOOLCHAIN:210:3.12', 'UNPINNED_ACTION:213:actions/download-artifact@v4']",
+      "evidence": null,
+      "failure_class": "DEPENDENCY_FAILURE",
+      "findings": [
+        "FLOATING_RUNNER:196:ubuntu-latest",
+        "FLOATING_RUNNER:49:ubuntu-latest",
+        "INEXACT_TOOLCHAIN:210:3.12",
+        "INEXACT_TOOLCHAIN:71:3.12",
+        "UNPINNED_ACTION:174:actions/upload-artifact@v4",
+        "UNPINNED_ACTION:203:actions/checkout@v4",
+        "UNPINNED_ACTION:208:actions/setup-python@v5",
+        "UNPINNED_ACTION:213:actions/download-artifact@v4",
+        "UNPINNED_ACTION:57:actions/checkout@v4",
+        "UNPINNED_ACTION:69:actions/setup-python@v5"
+      ],
+      "id": "U-13",
+      "measured": 10,
+      "state": "BLOCKED",
+      "threshold": "0"
+    },
+    "U-14": {
+      "broken_term": "mu_on_O",
+      "code": "HIDDEN_LOCAL_STATE",
+      "detail": "operator-host state: ['edge:E-OBS-02:hand-supplied-observe', 'edge:E-REP-01:hand-supplied-repair', 'observations:local_worktrees:operator-local', 'observations:private_repos:operator-local']",
+      "evidence": null,
+      "failure_class": "EVIDENCE_FAILURE",
+      "findings": [
+        "edge:E-OBS-02:hand-supplied-observe",
+        "edge:E-REP-01:hand-supplied-repair",
+        "observations:local_worktrees:operator-local",
+        "observations:private_repos:operator-local"
+      ],
+      "id": "U-14",
+      "measured": 4,
+      "state": "BLOCKED",
+      "threshold": "0"
+    },
+    "U-15": {
+      "broken_term": "R_missing_consequence",
+      "code": "UNMEASURED",
+      "detail": "run history is not durable (the chain holds only committed runs)",
+      "evidence": null,
+      "failure_class": "EVIDENCE_FAILURE",
+      "findings": [],
+      "id": "U-15",
+      "measured": null,
+      "state": "BLOCKED",
+      "threshold": "0"
+    },
+    "U-16": {
+      "broken_term": "admission_vacuous",
+      "code": "BLOCKED_ONLY_WARNS",
+      "detail": "exit 3 (typed BLOCKED) is a warning, not a failure",
+      "evidence": null,
+      "failure_class": "VERIFICATION_FAILURE",
+      "findings": [],
+      "id": "U-16",
+      "measured": 0,
+      "state": "BLOCKED",
+      "threshold": "0"
+    },
+    "U-17": {
+      "broken_term": "R_not_fed_back",
+      "code": "SINGLE_SCHEDULER",
+      "detail": "schedulers=1; no unconditional secondary machine trigger (triggers=['pull_request', 'push', 'schedule', 'workflow_dispatch'])",
+      "evidence": null,
+      "failure_class": "DEPENDENCY_FAILURE",
+      "findings": [],
+      "id": "U-17",
+      "measured": true,
+      "state": "BLOCKED",
+      "threshold": "false"
+    },
+    "U-18": {
+      "broken_term": "R_not_fed_back",
+      "code": "INSUFFICIENT_CLEAN_CYCLES",
+      "detail": "distinct ALIVE subjects: ['68bacd8dcc9ae12e4e97727a284c14abdc7520c5']",
+      "evidence": null,
+      "failure_class": "VERIFICATION_FAILURE",
+      "findings": [
+        "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+      ],
+      "id": "U-18",
+      "measured": "1/3",
+      "state": "BLOCKED",
+      "threshold": "3/3"
+    }
+  },
+  "input_documents": {
+    "edges.json": "sha256:3c4231a507d27fb85bfc5ecd2fd4ec6a65714e9fba2fec38e10f741bb4b03823",
+    "gates.json": "sha256:8f6cf22897fa61a12a867ab228ac6590344fde53de8871d1ebbd2b5e3539d1c3",
+    "governance": null
+  },
+  "inputs": {
+    "chain": {
+      "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/receipts/chain.json",
+      "sha256": "60ca2b043f7cb9c72194e83a9701283ef6564a7100e815a814519863549c5421"
+    },
+    "crown_receipt": {
+      "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/receipts/run-36161856985/crown-receipt.json",
+      "sha256": "10d0c98ebb480294a744520ca15e5f983a988e3759e1e434ee2a55bd51d9deea"
+    },
+    "observations": {
+      "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/receipts/run-36161856985/observations.json",
+      "sha256": "b122838d415ed44f7f77d7d5c5b64d9d6339b3aad9dc84f2a2eb49eb4d9694f5"
+    },
+    "workflow": {
+      "locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:.github/workflows/root-crown.yml",
+      "sha256": "3f49b2889abe85556b63716829ac264bc1fd9e4a9c47ec394de805d9673e8b1a"
+    }
+  },
+  "passed_gates": [
+    "U-05",
+    "U-06",
+    "U-07",
+    "U-12"
+  ],
+  "receipt_digest": "sha256:386bf5ee3a924f012a51c4ced528b05dfbfd5d02627ab3fca6c0d5654e474e7d",
+  "release": "v26.9.25",
+  "reports": {
+    "edges": {
+      "recurring": 13,
+      "resolved": {
+        "E-ACT-01": "38f4641d81c8b9e75a74a14b899bd3c1654a4ba74a1388efd6f04df62de8954f",
+        "E-ACT-02": "89c337af49a05b48eb8cc0a9eaac246ae938c0e3ca66cd2f0553ce4f173d3fe1",
+        "E-ADM-01": "f153fcc41e6f3f17b88929c3a7a1c6cb8defdfa7edd940d6dd21e127fabd310d",
+        "E-ADM-02": "40d98ed53bb1e3d49141e16509555bb896a54330bcb47662af133aec9323937c",
+        "E-CON-01": "e330a9c8d0dcfb78dca9656641389c8266709924057fa091194ada3284580624",
+        "E-DEC-01": "363650782b4f995727ba9ae056b54c9f914a8240d7bcd0c889ce1b464eba9bea",
+        "E-OBS-01": "b122838d415ed44f7f77d7d5c5b64d9d6339b3aad9dc84f2a2eb49eb4d9694f5",
+        "E-OBS-02": "837b0a0dde6462483c7fa50568b42315d99a0a4a8bf92b0f0bbbe71db404a318",
+        "E-REP-01": "392205c07761e5588c1573e00d95feeec554889dfc75eac31f4956e79706752e",
+        "E-RPL-01": "28911f403e7c1c7523fb62f0261d827c6999b967099b5a0cf7482f2561c0a36f",
+        "E-START-01": "3f49b2889abe85556b63716829ac264bc1fd9e4a9c47ec394de805d9673e8b1a",
+        "E-VER-01": "10d0c98ebb480294a744520ca15e5f983a988e3759e1e434ee2a55bd51d9deea"
+      },
+      "total": 13,
+      "unresolved": {
+        "E-CONT-01": "EVIDENCE_UNRESOLVED"
+      }
+    },
+    "mutants": {
+      "killed": 20,
+      "mutants": {
+        "action_by_tag": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "UNPINNED_ACTION",
+          "killed": true
+        },
+        "autonomic_without_alive": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "AUTONOMY_WITHOUT_ALIVE",
+          "killed": true
+        },
+        "chain_link_forged": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "CHAIN_FORGED",
+          "killed": true
+        },
+        "container_unpinned": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "UNPINNED_CONTAINER",
+          "killed": true
+        },
+        "edge_stage_unknown": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "EDGE_MALFORMED",
+          "killed": true
+        },
+        "evidence_digest_forged": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "EVIDENCE_DIGEST_MISMATCH",
+          "killed": true
+        },
+        "gate_pass_without_evidence": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "GATE_PASS_WITHOUT_EVIDENCE",
+          "killed": true
+        },
+        "gate_row_dropped": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "GATE_COVERAGE_GAP",
+          "killed": true
+        },
+        "gate_threshold_relaxed": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "GATE_COVERAGE_GAP",
+          "killed": true
+        },
+        "hand_supply_relabeled_machine": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "OWNER_KIND_UNWITNESSED",
+          "killed": true
+        },
+        "illegal_standing_value": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "ILLEGAL_STANDING_COMBINATION",
+          "killed": true
+        },
+        "import_copy_tampered": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "IMPORT_DIGEST_MISMATCH",
+          "killed": true
+        },
+        "locator_scratch_path": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "LOCATOR_NOT_DURABLE",
+          "killed": true
+        },
+        "loop_cycle_without_repair": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "MODEL_COUNTEREXAMPLE",
+          "killed": true
+        },
+        "machine_self_grant": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "AUTHORITY_AMPLIFICATION",
+          "killed": true
+        },
+        "python_inexact": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "INEXACT_TOOLCHAIN",
+          "killed": true
+        },
+        "receipt_standing_flipped": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "RECEIPT_UNVERIFIED",
+          "killed": true
+        },
+        "runner_latest": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "FLOATING_RUNNER",
+          "killed": true
+        },
+        "stage_uncovered": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "STAGE_UNCOVERED",
+          "killed": true
+        },
+        "subject_split": {
+          "control_emitted": false,
+          "emitted": true,
+          "expected": "SUBJECT_SPLIT",
+          "killed": true
+        }
+      },
+      "survivors": [],
+      "total": 20
+    },
+    "premise_set": {
+      "manual_restatement_count": 0,
+      "mutants": {
+        "AUTHORITY_INCREASE": {
+          "control_emitted": false,
+          "emitted": true,
+          "killed": true
+        },
+        "OMITTED_SUBJECT": {
+          "control_emitted": false,
+          "emitted": true,
+          "killed": true
+        },
+        "PREMISE_UNBOUND": {
+          "control_emitted": false,
+          "emitted": true,
+          "killed": true
+        },
+        "STALE_PROJECTION": {
+          "control_emitted": false,
+          "emitted": true,
+          "killed": true
+        }
+      },
+      "objective_mutation": {
+        "dependents": [
+          "U-01",
+          "U-02",
+          "U-03",
+          "U-04",
+          "U-05",
+          "U-06",
+          "U-07",
+          "U-08",
+          "U-09",
+          "U-10",
+          "U-11",
+          "U-12",
+          "U-13",
+          "U-14",
+          "U-15",
+          "U-16",
+          "U-17",
+          "U-18"
+        ],
+        "recompile_refusals": [],
+        "recompile_standing": "ALIVE",
+        "required_owners": [
+          "seanchatmangpt/chatman-ecosystem"
+        ],
+        "section": "RFC-0005\u00a77",
+        "stale": 39,
+        "stale_matches_dependents": true
+      },
+      "ok": true,
+      "premise_set": {
+        "RFC-0004": "cefb3ab55e4afa25f7b107b5e73400036051b006231a9aea31ab7ea2aa50ed32",
+        "RFC-0005": "f153fcc41e6f3f17b88929c3a7a1c6cb8defdfa7edd940d6dd21e127fabd310d"
+      },
+      "premise_set_digest": "sha256:334f51e234ea792adad80447e1480212467fcb6b27aa10421c43f3ecae6dc704",
+      "recompile": {
+        "affected_owners": [
+          "seanchatmangpt/chatman-ecosystem"
+        ],
+        "packets_digest": "sha256:c1c9e6cc87de1cb153be6f498ac08c66a57db6c023c8dca76b2db1511a21c430",
+        "refusals": [],
+        "required_owners": [
+          "seanchatmangpt/chatman-ecosystem"
+        ],
+        "standing": "ALIVE",
+        "strategic_delta": 33
+      },
+      "single_premise_identical": true
+    },
+    "self_attack": {
+      "baseline_digest": "sha256:0fb5a82d8d6068fdf2bd5aabd769965d69ca8bd0f99b9374df449d5f44eaa72e",
+      "faults": {
+        "authority": {
+          "attempt_input_digest": "sha256:d981a268b43232aa8a06f943e3cedaddbb1f458b2055263d875bcca244c1098f",
+          "class": "AUTHORITY_FAILURE",
+          "code": "AUTHORITY_AMPLIFICATION",
+          "detail": "typed; independent gates unchanged",
+          "independent_unchanged": true,
+          "ok": true,
+          "recoverability": "U",
+          "repaired": false,
+          "typed": true,
+          "variant": "any"
+        },
+        "build": {
+          "attempt_input_digest": "sha256:bfd2b37e77616ad113c4d90f125d3fd14f3ff9b0185d5be96290b9d2e5d3ab4b",
+          "class": "BUILD_FAILURE",
+          "code": "GATE_COVERAGE_GAP",
+          "detail": "re-verified equal to baseline",
+          "hypothesis": "gates drifted; regenerate from RFC-0005 \u00a77",
+          "ok": true,
+          "recoverability": "R",
+          "repair_input_digest": "sha256:3026deaf792704f89b1e46afe25a787c556c71dc023d49cdd428a23427027405",
+          "repaired": true,
+          "typed": true,
+          "variant": "any"
+        },
+        "capability-gap": {
+          "attempt_input_digest": "sha256:415d3be98d1329fd552613fa8ffd85c7737f39a96e6e2e01ec53b6a8c8783c2f",
+          "class": "CAPABILITY_GAP",
+          "code": "UNSUPPORTED_EVIDENCE_KIND",
+          "detail": "typed; independent gates unchanged",
+          "independent_unchanged": true,
+          "ok": true,
+          "recoverability": "U",
+          "repaired": false,
+          "typed": true,
+          "variant": "any"
+        },
+        "dependency-local-new-head": {
+          "attempt_input_digest": "sha256:f7d6b5a01791b4088bba85b3ed1ca1982a460d923b6d24b45885f1b4bcf8b023",
+          "class": "DEPENDENCY_FAILURE",
+          "code": "NEW_HEAD",
+          "detail": "re-verified equal to baseline",
+          "hypothesis": "local NEW_HEAD; re-evaluate against the new head",
+          "ok": true,
+          "recoverability": "R",
+          "repair_input_digest": "sha256:0880fc73448279def22e96c3545491fc26eab78447f412d3d8597e3cfad47fb1",
+          "repaired": true,
+          "typed": true,
+          "variant": "local NEW_HEAD"
+        },
+        "dependency-remote-producer": {
+          "attempt_input_digest": "sha256:2625db2ba7d8a82767a147ab7079595f0e55ebaf53376d74bcc44ea82992b22d",
+          "class": "DEPENDENCY_FAILURE",
+          "code": "WAITING_PRODUCER",
+          "detail": "typed; independent gates unchanged",
+          "independent_unchanged": true,
+          "ok": true,
+          "recoverability": "U",
+          "repaired": false,
+          "typed": true,
+          "variant": "remote producer"
+        },
+        "evidence-forged-chain": {
+          "attempt_input_digest": "sha256:3bd089bfa0774831fb502f72ddbb20d978f608ea17d27071597e4c11695d03c5",
+          "class": "EVIDENCE_FAILURE",
+          "code": "CHAIN_FORGED",
+          "detail": "typed; independent gates unchanged",
+          "independent_unchanged": true,
+          "ok": true,
+          "recoverability": "U",
+          "repaired": false,
+          "typed": true,
+          "variant": "forged chain"
+        },
+        "evidence-stale": {
+          "attempt_input_digest": "sha256:8d09fde777a595d02cec243746b5b15b3b50375de7a8ec1b79b90ae96b51755a",
+          "class": "EVIDENCE_FAILURE",
+          "code": "EVIDENCE_DIGEST_MISMATCH",
+          "detail": "re-verified equal to baseline",
+          "hypothesis": "stale digest; re-observe and recompute",
+          "ok": true,
+          "recoverability": "R",
+          "repair_input_digest": "sha256:ed6849c96b45d59827a503682d6dc63a8692c9e337ef894ec7f9c5d505dc6329",
+          "repaired": true,
+          "typed": true,
+          "variant": "stale"
+        },
+        "model-counterexample": {
+          "attempt_input_digest": "sha256:7ed8dee5fa14ea030b7709cd1f927e9033c261d41fb2a072c8a627a68eae11f0",
+          "class": "MODEL_COUNTEREXAMPLE",
+          "code": "MODEL_COUNTEREXAMPLE",
+          "detail": "typed; independent gates unchanged",
+          "independent_unchanged": true,
+          "ok": true,
+          "recoverability": "U",
+          "repaired": false,
+          "typed": true,
+          "variant": "any"
+        },
+        "subject-crown-sha-split": {
+          "attempt_input_digest": "sha256:61521027e239bf4542411b98c8ba8d2642a91a1c016abe252eeb460cf1838dd4",
+          "class": "SUBJECT_FAILURE",
+          "code": "SUBJECT_SPLIT",
+          "detail": "re-verified equal to baseline",
+          "hypothesis": "crown-sha split; re-bind to the current crown subject",
+          "ok": true,
+          "recoverability": "R",
+          "repair_input_digest": "sha256:c84d771a487bbf28be30ee5f75ccaae1bdafcffe5600640adf45752f81d99c32",
+          "repaired": true,
+          "typed": true,
+          "variant": "crown-sha split"
+        },
+        "transport": {
+          "attempt_input_digest": "sha256:6b58e9ce724961678e80b7d874e235daf6abc4835648cac1175a873ae435b60e",
+          "class": "TRANSPORT_FAILURE",
+          "code": "TRANSPORT_UNAVAILABLE",
+          "detail": "re-verified equal to baseline",
+          "hypothesis": "transport down; re-observe through the git object database",
+          "ok": true,
+          "recoverability": "R",
+          "repair_input_digest": "sha256:f11b847ed086781e2130579c5d96e7fed938bcc06e4751900de55001dd77a84a",
+          "repaired": true,
+          "typed": true,
+          "variant": "any"
+        },
+        "verification-deterministic": {
+          "attempt_input_digest": "sha256:2df82ffc704ed5f44ff72812f6602d5a51ef158e4d3aec9a10f554f338203a88",
+          "class": "VERIFICATION_FAILURE",
+          "code": "RECEIPT_UNVERIFIED",
+          "detail": "typed; independent gates unchanged",
+          "independent_unchanged": true,
+          "ok": true,
+          "recoverability": "U",
+          "repaired": false,
+          "typed": true,
+          "variant": "deterministic"
+        },
+        "verification-transient": {
+          "attempt_input_digest": "sha256:afb3d10830e68dd39a8b178d274407f335e5037985a9dabb610b3c7eaa89554e",
+          "class": "VERIFICATION_FAILURE",
+          "code": "RECEIPT_UNVERIFIED",
+          "detail": "re-verified equal to baseline",
+          "hypothesis": "partial read; re-verify once",
+          "ok": true,
+          "recoverability": "R",
+          "repair_input_digest": "sha256:7fd29e2ff270c8bcc3b821e141edcc6c5fbfc67bf2d41de8483ceb353bf07d5f",
+          "repaired": true,
+          "typed": true,
+          "variant": "transient"
+        }
+      }
+    },
+    "workflow_scan": {
+      "independent_triggers": [],
+      "schedulers": 1,
+      "triggers": {
+        "pull_request": {
+          "paths": true
+        },
+        "push": {
+          "paths": true
+        },
+        "schedule": {
+          "paths": false
+        },
+        "workflow_dispatch": {
+          "paths": false
+        }
+      },
+      "violations": [
+        "FLOATING_RUNNER:49:ubuntu-latest",
+        "UNPINNED_ACTION:57:actions/checkout@v4",
+        "UNPINNED_ACTION:69:actions/setup-python@v5",
+        "INEXACT_TOOLCHAIN:71:3.12",
+        "UNPINNED_ACTION:174:actions/upload-artifact@v4",
+        "FLOATING_RUNNER:196:ubuntu-latest",
+        "UNPINNED_ACTION:203:actions/checkout@v4",
+        "UNPINNED_ACTION:208:actions/setup-python@v5",
+        "INEXACT_TOOLCHAIN:210:3.12",
+        "UNPINNED_ACTION:213:actions/download-artifact@v4"
+      ],
+      "warns_on_blocked": true
+    }
+  },
+  "schema": "https://chatman.dev/autonomic-crown/receipt/v1",
+  "scope": "POST_TAG (RFC-0005 \u00a72: v26.9.25 is not evaluated against U; this is the first U measurement)",
+  "standings": {
+    "authority": {
+      "detail": "governance unobserved; operator-only gates (RFC-0005 \u00a713) not witnessed",
+      "state": "WAITING_EXTERNAL_AUTHORITY"
+    },
+    "autonomy": "NOT_AUTONOMIC",
+    "execution": {
+      "state": "ALIVE"
+    }
+  },
+  "term_u": "U = SelfStart AND SelfObserve AND SelfAdmit AND SelfDecompose AND SelfConstruct AND SelfActuate AND SelfVerify AND SelfRepair AND SelfReplay AND SelfContinue AND NoHiddenHuman AND NoRepeatedLLM",
+  "theorem": "RELEASE = C AND A AND R AND X AND F AND M AND U"
+}

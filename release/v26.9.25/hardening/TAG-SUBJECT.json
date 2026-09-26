@@ -1,0 +1,58 @@
+{
+  "GENERATED": "scripts/release_train/root_crown/hardening.py -- do not edit; run --write",
+  "payload": {
+    "path": "release/v26.9.25",
+    "post_tag_excludes": [
+      "autonomy",
+      "hardening"
+    ],
+    "tree_sha": "a01b914de2e4b3503dc2126ce233654af764c362"
+  },
+  "raw_objects": {
+    "337e839937c247de4ee58b744c8b8e43950d18e3": "inputs/objects/337e839937c247de4ee58b744c8b8e43950d18e3.tag.raw",
+    "4625678d769ae74adb52e046ac70adb04ec32bcf": "inputs/objects/4625678d769ae74adb52e046ac70adb04ec32bcf.tree.raw",
+    "68bacd8dcc9ae12e4e97727a284c14abdc7520c5": "inputs/objects/68bacd8dcc9ae12e4e97727a284c14abdc7520c5.commit.raw",
+    "8553eb9ea7ab45227169eec1f57204f2ff12ad53": "inputs/objects/8553eb9ea7ab45227169eec1f57204f2ff12ad53.tree.raw",
+    "9b652f975cec686bf7533d651ed6cb18c8f7a884": "inputs/objects/9b652f975cec686bf7533d651ed6cb18c8f7a884.tree.raw",
+    "a01b914de2e4b3503dc2126ce233654af764c362": "inputs/objects/a01b914de2e4b3503dc2126ce233654af764c362.tree.raw",
+    "c07e0e5b075818854cbf351460325446845b7793": "inputs/objects/c07e0e5b075818854cbf351460325446845b7793.tree.raw"
+  },
+  "release": "v26.9.25",
+  "repository": "seanchatmangpt/chatman-ecosystem",
+  "schema": "https://chatman.dev/root-crown/hardening/tag-subject/v1",
+  "subject": {
+    "commit_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+    "parents": [
+      "8321663d02b849cbb7879b3eaf548d5bdca7a7e9",
+      "5fda5028591652635583b0dfa6704cdf443012ad"
+    ],
+    "paths": {
+      "docs/jira/v26.9.25": "94a2331f9d4564ddebacfcf37786f72bae132bff",
+      "release": "4625678d769ae74adb52e046ac70adb04ec32bcf",
+      "release/v26.9.25": "a01b914de2e4b3503dc2126ce233654af764c362",
+      "scripts": "a21ebd7d78a19279ae75a4f75c34ee8a122d8b22"
+    },
+    "tree_sha": "8553eb9ea7ab45227169eec1f57204f2ff12ad53"
+  },
+  "tag": {
+    "approval_run": "36161744816",
+    "message_receipt_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c",
+    "name": "v26.9.25",
+    "object_sha": "337e839937c247de4ee58b744c8b8e43950d18e3",
+    "object_type": "tag",
+    "tagger": "root-crown <root-crown@users.noreply.github.com> 1790354184 +0000",
+    "target_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+    "target_type": "commit"
+  },
+  "tag_receipt": {
+    "crown_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+    "observations_digest": "sha256:c4a4355e75c70b033dcb682693b9b59b4e95264a9780906a26a094b637fe6757",
+    "observations_path": "receipts/run-36161744816/observations.json",
+    "observations_recomputed_digest": "sha256:c4a4355e75c70b033dcb682693b9b59b4e95264a9780906a26a094b637fe6757",
+    "path": "receipts/run-36161744816/crown-receipt.json",
+    "previous_path": "receipts/run-36160116076/crown-receipt.json",
+    "previous_receipt_digest": "sha256:1842e92881f1a576e0e0c00e7b3102ae755f3cc2c187ea7d61b17d5b3aa2594f",
+    "receipt_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c",
+    "standing": "ALIVE"
+  }
+}

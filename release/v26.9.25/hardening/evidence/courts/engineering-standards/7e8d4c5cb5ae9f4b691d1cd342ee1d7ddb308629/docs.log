@@ -1,0 +1,161 @@
+time="2026-09-25T00:13:41-07:00" level=info msg="Using docker host 'unix:///Users/sac/.colima/default/docker.sock', and daemon socket '-'"
+level=warning msg= ⚠ You are using Apple M-series chip and you have not specified container architecture, you might encounter issues while running act. If so, try running it with '--container-architecture linux/amd64'. ⚠ 
+
+time="2026-09-25T00:13:41-07:00" level=info msg="Start server on http://192.168.12.205:34567"
+[Root standards qualification/qualify-root] ⭐ Run Set up job
+[Root standards qualification/qualify-root] 🚀  Start image=catthehacker/ubuntu:act-24.04
+[Root standards qualification/qualify-root]   🐳  docker pull image=catthehacker/ubuntu:act-24.04 platform= username= forcePull=false
+[Root standards qualification/qualify-root]   🐳  docker create image=catthehacker/ubuntu:act-24.04 platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Root standards qualification/qualify-root]   🐳  docker run image=catthehacker/ubuntu:act-24.04 platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Root standards qualification/qualify-root]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[Root standards qualification/qualify-root]   ✅  Success - Set up job
+[Root standards qualification/qualify-root]   ☁  git clone 'https://github.com/actions/setup-node' # ref=v4
+[Root standards qualification/qualify-root]   ☁  git clone 'https://github.com/actions/setup-python' # ref=v5
+[Root standards qualification/qualify-root]   ☁  git clone 'https://github.com/actions/upload-artifact' # ref=v4
+[Root standards qualification/qualify-root] ⭐ Run Main actions/checkout@v4
+[Root standards qualification/qualify-root]   🐳  docker cp src=/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/act/sandbox/engineering-standards-7e8d4c5cb5ae-88697/. dst=/private/tmp/claude-501/-Users-sac/90d06f90-3c25-4b15-bede-3d0e7e58ac78/scratchpad/v26925/act/sandbox/engineering-standards-7e8d4c5cb5ae-88697
+[Root standards qualification/qualify-root]   ✅  Success - Main actions/checkout@v4 [75.441542ms]
+[Root standards qualification/qualify-root] ⭐ Run Main actions/setup-node@v4
+[Root standards qualification/qualify-root]   🐳  docker cp src=/Users/sac/.cache/act/actions-setup-node@v4/ dst=/var/run/act/actions/actions-setup-node@v4/
+[Root standards qualification/qualify-root]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-node@v4/dist/setup/index.js] user= workdir=
+[Root standards qualification/qualify-root]   | Attempting to download 22...
+[Root standards qualification/qualify-root]   | (node:30) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[Root standards qualification/qualify-root]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[Root standards qualification/qualify-root]   | Acquiring 22.23.3 - arm64 from https://github.com/actions/node-versions/releases/download/22.23.3-35947643734/node-22.23.3-linux-arm64.tar.gz
+[Root standards qualification/qualify-root]   | Extracting ...
+[Root standards qualification/qualify-root]   | [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /tmp/f8926841-334e-4eaa-88e0-1aff8035109f -f /tmp/90420e67-46bc-4e3c-b248-ec555d7a4f30
+[Root standards qualification/qualify-root]   | Adding to the cache ...
+[Root standards qualification/qualify-root]   ❓  ::group::Environment details
+[Root standards qualification/qualify-root]   | node: v22.23.3
+[Root standards qualification/qualify-root]   | npm: 10.9.9
+[Root standards qualification/qualify-root]   | yarn: 
+[Root standards qualification/qualify-root]   ❓  ::endgroup::
+[Root standards qualification/qualify-root]   ❓ add-matcher /run/act/actions/actions-setup-node@v4/.github/tsc.json
+[Root standards qualification/qualify-root]   ❓ add-matcher /run/act/actions/actions-setup-node@v4/.github/eslint-stylish.json
+[Root standards qualification/qualify-root]   ❓ add-matcher /run/act/actions/actions-setup-node@v4/.github/eslint-compact.json
+[Root standards qualification/qualify-root]   ✅  Success - Main actions/setup-node@v4 [43.888431834s]
+[Root standards qualification/qualify-root]   ⚙  ::set-output:: node-version=v22.23.3
+[Root standards qualification/qualify-root]   ⚙  ::add-path:: /opt/hostedtoolcache/node/22.23.3/arm64/bin
+[Root standards qualification/qualify-root] ⭐ Run Main Install documentation check dependencies
+[Root standards qualification/qualify-root]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=scripts
+[Root standards qualification/qualify-root]   | 
+[Root standards qualification/qualify-root]   | added 151 packages in 9s
+[Root standards qualification/qualify-root]   ✅  Success - Main Install documentation check dependencies [9.55468475s]
+[Root standards qualification/qualify-root] ⭐ Run Main Check documentation projections
+[Root standards qualification/qualify-root]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/3] user= workdir=
+[Root standards qualification/qualify-root]   | Checked 51 Markdown files: 0 Mermaid diagram(s) and 232 relative link(s), 30 of them carrying a verified anchor.
+[Root standards qualification/qualify-root]   | All documentation checks passed.
+[Root standards qualification/qualify-root]   ✅  Success - Main Check documentation projections [120.187625ms]
+[Root standards qualification/qualify-root] ⭐ Run Main actions/setup-python@v5
+[Root standards qualification/qualify-root]   🐳  docker cp src=/Users/sac/.cache/act/actions-setup-python@v5/ dst=/var/run/act/actions/actions-setup-python@v5/
+[Root standards qualification/qualify-root]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/setup/index.js] user= workdir=
+[Root standards qualification/qualify-root]   ❓  ::group::Installed versions
+[Root standards qualification/qualify-root]   | (node:97) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[Root standards qualification/qualify-root]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[Root standards qualification/qualify-root]   | Successfully set up CPython (3.13.15)
+[Root standards qualification/qualify-root]   ❓  ::endgroup::
+[Root standards qualification/qualify-root]   ❓ add-matcher /run/act/actions/actions-setup-python@v5/.github/python.json
+[Root standards qualification/qualify-root]   ✅  Success - Main actions/setup-python@v5 [695.148166ms]
+[Root standards qualification/qualify-root]   ⚙  ::set-env:: Python3_ROOT_DIR=/opt/hostedtoolcache/Python/3.13.15/arm64
+[Root standards qualification/qualify-root]   ⚙  ::set-env:: LD_LIBRARY_PATH=/opt/hostedtoolcache/Python/3.13.15/arm64/lib
+[Root standards qualification/qualify-root]   ⚙  ::set-env:: pythonLocation=/opt/hostedtoolcache/Python/3.13.15/arm64
+[Root standards qualification/qualify-root]   ⚙  ::set-env:: PKG_CONFIG_PATH=/opt/hostedtoolcache/Python/3.13.15/arm64/lib/pkgconfig
+[Root standards qualification/qualify-root]   ⚙  ::set-env:: Python_ROOT_DIR=/opt/hostedtoolcache/Python/3.13.15/arm64
+[Root standards qualification/qualify-root]   ⚙  ::set-env:: Python2_ROOT_DIR=/opt/hostedtoolcache/Python/3.13.15/arm64
+[Root standards qualification/qualify-root]   ⚙  ::set-output:: python-version=3.13.15
+[Root standards qualification/qualify-root]   ⚙  ::set-output:: python-path=/opt/hostedtoolcache/Python/3.13.15/arm64/bin/python
+[Root standards qualification/qualify-root]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.13.15/arm64
+[Root standards qualification/qualify-root]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.13.15/arm64/bin
+[Root standards qualification/qualify-root] ⭐ Run Main Install semantic qualification dependencies
+[Root standards qualification/qualify-root]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/5] user= workdir=
+[Root standards qualification/qualify-root]   | Collecting jsonschema==4.26.0 (from -r scripts/requirements-semantic.txt (line 1))
+[Root standards qualification/qualify-root]   |   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+[Root standards qualification/qualify-root]   | Collecting pyshacl==0.40.1 (from -r scripts/requirements-semantic.txt (line 2))
+[Root standards qualification/qualify-root]   |   Downloading pyshacl-0.40.1-py3-none-any.whl.metadata (38 kB)
+[Root standards qualification/qualify-root]   | Collecting rdflib==7.6.0 (from -r scripts/requirements-semantic.txt (line 3))
+[Root standards qualification/qualify-root]   |   Downloading rdflib-7.6.0-py3-none-any.whl.metadata (12 kB)
+[Root standards qualification/qualify-root]   | Collecting attrs>=22.2.0 (from jsonschema==4.26.0->-r scripts/requirements-semantic.txt (line 1))
+[Root standards qualification/qualify-root]   |   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+[Root standards qualification/qualify-root]   | Collecting jsonschema-specifications>=2023.03.6 (from jsonschema==4.26.0->-r scripts/requirements-semantic.txt (line 1))
+[Root standards qualification/qualify-root]   |   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+[Root standards qualification/qualify-root]   | Collecting referencing>=0.28.4 (from jsonschema==4.26.0->-r scripts/requirements-semantic.txt (line 1))
+[Root standards qualification/qualify-root]   |   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+[Root standards qualification/qualify-root]   | Collecting rpds-py>=0.25.0 (from jsonschema==4.26.0->-r scripts/requirements-semantic.txt (line 1))
+[Root standards qualification/qualify-root]   |   Downloading rpds_py-2026.6.3-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (4.1 kB)
+[Root standards qualification/qualify-root]   | Collecting owlrl<8,>=7.6.2 (from pyshacl==0.40.1->-r scripts/requirements-semantic.txt (line 2))
+[Root standards qualification/qualify-root]   |   Downloading owlrl-7.6.2-py3-none-any.whl.metadata (4.6 kB)
+[Root standards qualification/qualify-root]   | Requirement already satisfied: packaging>=21.3 in /opt/hostedtoolcache/Python/3.13.15/arm64/lib/python3.13/site-packages (from pyshacl==0.40.1->-r scripts/requirements-semantic.txt (line 2)) (26.3)
+[Root standards qualification/qualify-root]   | Collecting prettytable>=3.7.0 (from pyshacl==0.40.1->-r scripts/requirements-semantic.txt (line 2))
+[Root standards qualification/qualify-root]   |   Downloading prettytable-3.18.0-py3-none-any.whl.metadata (37 kB)
+[Root standards qualification/qualify-root]   | Requirement already satisfied: pyparsing<4,>=2.1.0 in /opt/hostedtoolcache/Python/3.13.15/arm64/lib/python3.13/site-packages (from rdflib==7.6.0->-r scripts/requirements-semantic.txt (line 3)) (3.3.3)
+[Root standards qualification/qualify-root]   | Collecting html5rdf<2,>=1.2 (from rdflib[html]<8.0,>=7.3.0->pyshacl==0.40.1->-r scripts/requirements-semantic.txt (line 2))
+[Root standards qualification/qualify-root]   |   Downloading html5rdf-1.2.1-py2.py3-none-any.whl.metadata (7.5 kB)
+[Root standards qualification/qualify-root]   | Collecting wcwidth>=0.3.5 (from prettytable>=3.7.0->pyshacl==0.40.1->-r scripts/requirements-semantic.txt (line 2))
+[Root standards qualification/qualify-root]   |   Downloading wcwidth-0.9.1-cp310-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl.metadata (23 kB)
+[Root standards qualification/qualify-root]   | Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+[Root standards qualification/qualify-root]   | Downloading pyshacl-0.40.1-py3-none-any.whl (1.3 MB)
+[Root standards qualification/qualify-root]   |    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 12.9 MB/s  0:00:00
+[Root standards qualification/qualify-root]   | Downloading rdflib-7.6.0-py3-none-any.whl (615 kB)
+[Root standards qualification/qualify-root]   |    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 615.4/615.4 kB 640.9 kB/s  0:00:00
+[Root standards qualification/qualify-root]   | Downloading owlrl-7.6.2-py3-none-any.whl (55 kB)
+[Root standards qualification/qualify-root]   | Downloading html5rdf-1.2.1-py2.py3-none-any.whl (109 kB)
+[Root standards qualification/qualify-root]   | Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+[Root standards qualification/qualify-root]   | Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+[Root standards qualification/qualify-root]   | Downloading prettytable-3.18.0-py3-none-any.whl (37 kB)
+[Root standards qualification/qualify-root]   | Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+[Root standards qualification/qualify-root]   | Downloading rpds_py-2026.6.3-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (367 kB)
+[Root standards qualification/qualify-root]   | Downloading wcwidth-0.9.1-cp310-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (770 kB)
+[Root standards qualification/qualify-root]   |    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 770.5/770.5 kB 3.3 MB/s  0:00:00
+[Root standards qualification/qualify-root]   | Installing collected packages: wcwidth, rpds-py, rdflib, html5rdf, attrs, referencing, prettytable, owlrl, pyshacl, jsonschema-specifications, jsonschema
+[Root standards qualification/qualify-root]   | 
+[Root standards qualification/qualify-root]   | Successfully installed attrs-26.1.0 html5rdf-1.2.1 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 owlrl-7.6.2 prettytable-3.18.0 pyshacl-0.40.1 rdflib-7.6.0 referencing-0.37.0 rpds-py-2026.6.3 wcwidth-0.9.1
+[Root standards qualification/qualify-root]   | WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[Root standards qualification/qualify-root]   ✅  Success - Main Install semantic qualification dependencies [9.388076459s]
+[Root standards qualification/qualify-root] ⭐ Run Main Qualify semantic root and emit receipt
+[Root standards qualification/qualify-root]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/6] user= workdir=
+[Root standards qualification/qualify-root]   | turtle-graphs: 9 parsed
+[Root standards qualification/qualify-root]   | root-direction: PASS
+[Root standards qualification/qualify-root]   | shacl: PASS via pyshacl (positive fixture + 4 negative falsifiers)
+[Root standards qualification/qualify-root]   | json-schema: PASS (9 positive examples + 9 negative falsifiers)
+[Root standards qualification/qualify-root]   | compatibility: PASS
+[Root standards qualification/qualify-root]   | standing: ALIVE(repository-semantic-conformance)
+[Root standards qualification/qualify-root]   | receipt: /tmp/root-conformance.json
+[Root standards qualification/qualify-root]   | non-claims: runtime SA2A, Jira mutation, CommandBus DO, deployment, publication, cross-repository standing
+[Root standards qualification/qualify-root]   ✅  Success - Main Qualify semantic root and emit receipt [1.648118333s]
+[Root standards qualification/qualify-root] ⭐ Run Main Upload exact-head root conformance receipt
+[Root standards qualification/qualify-root]   🐳  docker cp src=/Users/sac/.cache/act/actions-upload-artifact@v4/ dst=/var/run/act/actions/actions-upload-artifact@v4/
+[Root standards qualification/qualify-root]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-upload-artifact@v4/dist/upload/index.js] user= workdir=
+[Root standards qualification/qualify-root]   | (node:145) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[Root standards qualification/qualify-root]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[Root standards qualification/qualify-root]   | With the provided path, there will be 1 file uploaded
+[Root standards qualification/qualify-root]   | Artifact name is valid!
+[Root standards qualification/qualify-root]   | Root directory input is valid!
+[Root standards qualification/qualify-root]   | Beginning upload of artifact content to blob storage
+[Root standards qualification/qualify-root]   | (node:145) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+[Root standards qualification/qualify-root]   | Uploaded bytes 701
+[Root standards qualification/qualify-root]   | Finished uploading artifact content to blob storage!
+[Root standards qualification/qualify-root]   | SHA256 digest of uploaded artifact zip is 56f1da31112a805df5fc422bda100a0c8446ec4d718ac32090b5315dcb5db155
+[Root standards qualification/qualify-root]   | Finalizing artifact upload
+[Root standards qualification/qualify-root]   | Artifact root-conformance-7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629.zip successfully finalized. Artifact ID 4016476562
+[Root standards qualification/qualify-root]   | Artifact root-conformance-7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629 has been successfully uploaded! Final size is 701 bytes. Artifact ID is 4016476562
+[Root standards qualification/qualify-root]   | Artifact download URL: https://github.com/nektos/act/actions/runs/1/artifacts/4016476562
+[Root standards qualification/qualify-root]   ✅  Success - Main Upload exact-head root conformance receipt [2.305759208s]
+[Root standards qualification/qualify-root]   ⚙  ::set-output:: artifact-id=4016476562
+[Root standards qualification/qualify-root]   ⚙  ::set-output:: artifact-digest=56f1da31112a805df5fc422bda100a0c8446ec4d718ac32090b5315dcb5db155
+[Root standards qualification/qualify-root]   ⚙  ::set-output:: artifact-url=https://github.com/nektos/act/actions/runs/1/artifacts/4016476562
+[Root standards qualification/qualify-root] ⭐ Run Post actions/setup-python@v5
+[Root standards qualification/qualify-root]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/cache-save/index.js] user= workdir=
+[Root standards qualification/qualify-root]   | (node:162) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[Root standards qualification/qualify-root]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[Root standards qualification/qualify-root]   ✅  Success - Post actions/setup-python@v5 [408.618875ms]
+[Root standards qualification/qualify-root] ⭐ Run Post actions/setup-node@v4
+[Root standards qualification/qualify-root]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-node@v4/dist/cache-save/index.js] user= workdir=
+[Root standards qualification/qualify-root]   | (node:174) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[Root standards qualification/qualify-root]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[Root standards qualification/qualify-root]   ✅  Success - Post actions/setup-node@v4 [825.07675ms]
+[Root standards qualification/qualify-root] ⭐ Run Complete job
+[Root standards qualification/qualify-root] Cleaning up container for job qualify-root
+[Root standards qualification/qualify-root]   ✅  Success - Complete job
+[Root standards qualification/qualify-root] 🏁  Job succeeded
+
+level=info msg=️📣 A newer version of 'act' is available - consider ugrading to 0.2.89.

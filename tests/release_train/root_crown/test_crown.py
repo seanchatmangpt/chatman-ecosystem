@@ -183,6 +183,33 @@ class CrownTest(unittest.TestCase):
         registry["tag_binding"] = lambda req, ctx: ReqState("BLOCKED", None)
         return self.run_crown(evaluators=registry)
 
+    def m_crashed(self):
+        registry = dict(evidence.EVALUATORS)
+
+        def crashing(req, ctx):
+            raise KeyError("fixture evaluator defect")
+
+        registry["xprod_case"] = crashing
+        return self.run_crown(evaluators=registry)
+
+    def test_evaluator_crash_is_contained_and_other_requirements_still_evaluate(self):
+        """RFC §39: a crashing evaluator yields REFUSED VERIFIER_CRASHED (VERIFICATION_FAILURE,
+        mu_unlawful) for its own requirement; every other requirement is still evaluated."""
+        verdict = self.m_crashed()
+        self.assertEqual(verdict.standing, "REFUSED")
+        states = verdict.receipt["requirements"]
+        xprod_ids = [r.id for r in self.tree.inputs().requirements if r.evidence_kind == "xprod_case"]
+        self.assertTrue(xprod_ids)
+        for rid in xprod_ids:
+            self.assertEqual(states[rid]["code"], "VERIFIER_CRASHED")
+            self.assertEqual(
+                (states[rid]["failure_class"], states[rid]["broken_term"]), ("VERIFICATION_FAILURE", "mu_unlawful")
+            )
+            self.assertIn("KeyError", states[rid]["detail"])
+        others = {rid: st for rid, st in states.items() if rid not in xprod_ids}
+        self.assertEqual(len(states), len(self.tree.inputs().requirements))
+        self.assertTrue(all(st["state"] == "PASS" for rid, st in others.items() if rid != "AC-18"))
+
     def m_unknown_kind(self):
         registry = dict(evidence.EVALUATORS)
         del registry["xprod_case"]
@@ -228,6 +255,7 @@ class CrownTest(unittest.TestCase):
             "PRIVATE_OBSERVATION_DIGEST_MISMATCH": self.m_private_digest,
             "PRIVATE_HEAD_SPLIT": self.m_private_split,
             "REQUIRED_UNKNOWN": self.m_required_unknown,
+            "VERIFIER_CRASHED": self.m_crashed,
         }
         self.assertEqual(set(table), set(CROWN_RULES))
         for rule, mutant in table.items():

@@ -1,0 +1,35 @@
+{
+  "GENERATED": "scripts/release_train/root_crown/hardening.py -- do not edit; run --write",
+  "entries": [
+    {
+      "crown_sha": "8321663d02b849cbb7879b3eaf548d5bdca7a7e9",
+      "genesis": false,
+      "path": "receipts/run-36160116076/crown-receipt.json",
+      "previous_receipt_digest": "sha256:ebd103bacce757499250abe37afd901c6c4887b61cbdd7925561350282b1d08a",
+      "receipt_digest": "sha256:1842e92881f1a576e0e0c00e7b3102ae755f3cc2c187ea7d61b17d5b3aa2594f",
+      "run_id": "36160116076",
+      "standing": "BLOCKED"
+    },
+    {
+      "crown_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "genesis": false,
+      "path": "receipts/run-36161744816/crown-receipt.json",
+      "previous_receipt_digest": "sha256:1842e92881f1a576e0e0c00e7b3102ae755f3cc2c187ea7d61b17d5b3aa2594f",
+      "receipt_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c",
+      "run_id": "36161744816",
+      "standing": "ALIVE"
+    },
+    {
+      "crown_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "genesis": false,
+      "path": "receipts/run-36161856985/crown-receipt.json",
+      "previous_receipt_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c",
+      "receipt_digest": "sha256:7e7e9c80c3cd4649d9e00039d2336c8b5ff477b53227332dd4b445de3c2cc856",
+      "run_id": "36161856985",
+      "standing": "ALIVE"
+    }
+  ],
+  "head": "sha256:7e7e9c80c3cd4649d9e00039d2336c8b5ff477b53227332dd4b445de3c2cc856",
+  "release": "v26.9.25",
+  "schema": "https://chatman.dev/root-crown/hardening/chain/v1"
+}

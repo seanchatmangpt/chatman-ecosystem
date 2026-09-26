@@ -43,7 +43,7 @@ jobs:
       - name: Install West
         run: python -m pip install 'west>=1.4,<2'
       - name: Verify Chateco-West correspondence
-        run: python3 scripts/verify_west_workspace.py --json
+        run: python3 scripts/verify_west_workspace.py --json --release v26.9.1
       - name: Initialize local-manifest workspace
         shell: bash
         run: |

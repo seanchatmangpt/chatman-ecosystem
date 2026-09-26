@@ -1,0 +1,35 @@
+{
+  "schema": "https://chatman.dev/root-crown/hardening/amendment/v1",
+  "release": "v26.9.25",
+  "requirement_id": "AC-02",
+  "path": "release/v26.9.25/requirements.json",
+  "commit": "5fda5028591652635583b0dfa6704cdf443012ad",
+  "parent": "8321663d02b849cbb7879b3eaf548d5bdca7a7e9",
+  "before_locator": "git:seanchatmangpt/chatman-ecosystem@8321663d02b849cbb7879b3eaf548d5bdca7a7e9:release/v26.9.25/requirements.json",
+  "after_locator": "git:seanchatmangpt/chatman-ecosystem@5fda5028591652635583b0dfa6704cdf443012ad:release/v26.9.25/requirements.json",
+  "before_text": "Every required subject in release/v26.9.25/closure.json is terminal and the release closure court evaluates ALIVE (RFC §38 dispositions; omission is never success).",
+  "before_sha256": "59a9d2545143842d002a01b32274cb1436e98c90f17e902f94ce7a22cc33879b",
+  "after_text": "Every required subject in release/v26.9.25/closure.json has a terminal disposition: ALIVE/FINAL, or a typed SUPERSEDED/BLOCKED/UNSUPPORTED/REFUSED row (type + broken_term + RFC §39 class + owner); UNKNOWN or untyped is refused (RFC §5, §38; omission is never success).",
+  "after_sha256": "ab9951b1115d477ba6d4df9d5428073f7f78562533634279c708e55d449977bf",
+  "rfc_import": {
+    "path": "release/v26.9.25/imports/RFC-0004.md",
+    "sha256": "cefb3ab55e4afa25f7b107b5e73400036051b006231a9aea31ab7ea2aa50ed32",
+    "locator": "git:seanchatmangpt/chatman-ecosystem@5fda5028591652635583b0dfa6704cdf443012ad:release/v26.9.25/imports/RFC-0004.md"
+  },
+  "rfc_anchor": "§48",
+  "rfc_phrase": "all required subjects terminal",
+  "premise": "AC-02 all required subjects terminal",
+  "derivation": "before ⊋ premise, after = premise",
+  "derivation_terms": {
+    "before": "terminal AND the release closure court evaluates ALIVE: a strict strengthening of the §48 premise (a typed BLOCKED row is terminal under §38 yet keeps the closure court BLOCKED)",
+    "after": "terminal disposition per RFC §38 (ALIVE/FINAL or typed SUPERSEDED/BLOCKED/UNSUPPORTED/REFUSED), UNKNOWN or untyped refused: the §48 premise itself"
+  },
+  "text_restored": false,
+  "policy": {
+    "path": "scripts/release_train/root_crown/policy/v26.9.25/terminality.json",
+    "id": "AC-02",
+    "acceptance_sha256": "ab9951b1115d477ba6d4df9d5428073f7f78562533634279c708e55d449977bf"
+  },
+  "standing": "FINAL",
+  "authority": "NONE"
+}

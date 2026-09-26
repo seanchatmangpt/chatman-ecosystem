@@ -5,6 +5,13 @@ It owns no solver, runtime actuation, authority grant, or external consequence.
 """
 
 from .evaluator import evaluate
+from .prior_art import (
+    PriorArtCandidate,
+    PriorArtDecision,
+    PriorArtDecisionCase,
+    PriorArtDecisionReceipt,
+    evaluate_prior_art,
+)
 from .model import (
     CrossProductCase,
     CrossProductReceipt,
@@ -24,8 +31,13 @@ __all__ = [
     "EvidenceResult",
     "Formalism",
     "MutantExpectation",
+    "PriorArtCandidate",
+    "PriorArtDecision",
+    "PriorArtDecisionCase",
+    "PriorArtDecisionReceipt",
     "RelationRequirement",
     "Standing",
     "SubjectBinding",
     "evaluate",
+    "evaluate_prior_art",
 ]

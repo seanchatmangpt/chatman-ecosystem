@@ -1,0 +1,57 @@
+{
+ "records": {
+  "test-unjucks-nuxt4": {
+   "bundle": null,
+   "canonical": "/Users/sac/unjucks",
+   "copy_id": "test-unjucks-nuxt4",
+   "durable": "REMOTE",
+   "files": 10,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/test-unjucks-nuxt4/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/test-unjucks-nuxt4",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/test-unjucks-nuxt4/anchor": "800730b34197adf5287d9b51dc0ca2bb708c0da2",
+    "refs/preserve/v26.9.25/test-unjucks-nuxt4/dirty": "7c05230a050e1b8cae1177c12cf37b420ec71d09"
+   },
+   "remote_ref": "backup/v26.9.25/test-unjucks-nuxt4",
+   "remote_verified_sha": "800730b34197adf5287d9b51dc0ca2bb708c0da2",
+   "repo_id": "unjucks",
+   "sha": "800730b34197adf5287d9b51dc0ca2bb708c0da2",
+   "skipped": [],
+   "snapshot_tree": "16c5758296bef5860462f5b88e5967631bf9bfdf"
+  },
+  "test-unjucks-nuxt4_unjucks-source": {
+   "bundle": null,
+   "canonical": "/Users/sac/unjucks",
+   "copy_id": "test-unjucks-nuxt4_unjucks-source",
+   "durable": "REMOTE",
+   "kind": "CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/test-unjucks-nuxt4_unjucks-source/anchor",
+   "ok": true,
+   "path": "/Users/sac/test-unjucks-nuxt4/unjucks-source",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/test-unjucks-nuxt4_unjucks-source/anchor": "69e5c7d62ad7fd8480154a52edbb6ff58f17f5d8",
+    "refs/preserve/v26.9.25/test-unjucks-nuxt4_unjucks-source/dirty": "2a80ea18d45e87aa26b97a5f4e11105797173447",
+    "refs/preserve/v26.9.25/test-unjucks-nuxt4_unjucks-source/index": "e1f549b2ec5bb741f08b66c7c6ac560e60013ca1",
+    "refs/preserve/v26.9.25/test-unjucks-nuxt4_unjucks-source/worktree-head": "8bc7fd47f1dcccbb567846c6899559bf06ecde60"
+   },
+   "remote_ref": "backup/v26.9.25/test-unjucks-nuxt4_unjucks-source",
+   "remote_verified_sha": "69e5c7d62ad7fd8480154a52edbb6ff58f17f5d8",
+   "repo_id": "unjucks",
+   "sha": "69e5c7d62ad7fd8480154a52edbb6ff58f17f5d8",
+   "skipped": [],
+   "snapshot_tree": "cf1d402bb7a634327c35010bdc3efdf3078cb5f2"
+  }
+ }
+}

@@ -15,6 +15,11 @@ from typing import Any
 from scripts.release_train.cross_product_court.model import canonical_digest
 
 SCHEMA_RECEIPT = "https://chatman.dev/root-crown/receipt/v1"
+# v2 (post-tag hardening): mode, subject{tag,tag_object_sha,commit_sha,tree_sha},
+# attestation_head_sha, historical, current. verify_receipt accepts v1 and v2.
+SCHEMA_RECEIPT_V2 = "https://chatman.dev/root-crown/receipt/v2"
+SCHEMA_RECEIPTS = (SCHEMA_RECEIPT, SCHEMA_RECEIPT_V2)
+MODES = ("PRE_TAG", "POST_TAG")
 SCHEMA_OBSERVATIONS = "https://chatman.dev/root-crown/observations/v1"
 
 TERMS = ("C", "A", "R", "X", "F", "M")
@@ -98,7 +103,51 @@ CROWN_RULES = (
     "PRIVATE_OBSERVATION_DIGEST_MISMATCH",
     "PRIVATE_HEAD_SPLIT",
     "REQUIRED_UNKNOWN",
+    "VERIFIER_CRASHED",
 )
+# Post-tag refusals (posttag.py, chain.py): the tag, its recorded subject and the
+# historical receipt are immutable; any recomputation that disagrees is REFUSED.
+POST_TAG_RULES = (
+    "TAG_OBJECT_DIGEST_MISMATCH",
+    "TAG_MUTATED",
+    "TAG_SUBJECT_SPLIT",
+    "TAG_RECEIPT_SPLIT",
+    "SUBJECT_TREE_MISMATCH",
+    "HISTORICAL_OBSERVATION_SPLIT",
+    "PAYLOAD_MUTATED_POST_TAG",
+)
+# Terminality policy refusals (policy.py + evidence.py owner rule): the per-requirement
+# admitted terminal states, their RFC grounding, and the receipt owner.
+TERMINALITY_RULES = (
+    "TERMINALITY_POLICY_MISSING",
+    "POLICY_COVERAGE_GAP",
+    "POLICY_RELAXATION_UNGROUNDED",
+    "ACCEPTANCE_DRIFT",
+    "OWNER_SPLIT",
+)
+# Evidence-binding refusals (binding.py): every PASS names the exact subject it evaluated,
+# the durable container that holds the evidence, the evidence digest and the lineage proof
+# between them (RFC-0004 §36 owner, §39 classes; CE23-9 durable locator grammar).
+BINDING_RULES = (
+    "EVIDENCE_SUBJECT_SPLIT",
+    "EVIDENCE_SUBJECT_MUTABLE",
+    "EVIDENCE_LINEAGE_MISSING",
+    "EVIDENCE_DIGEST_MISMATCH",
+    "EVIDENCE_NOT_DURABLE",
+    "EVIDENCE_CONTAINER_CLAIMS_SUBJECT",
+    "EVIDENCE_DELTA_MISCLAIMED",
+)
+# Evidence-binding typed blocker: the subject->container delta holds non-receipt paths, so
+# the producer subject's standing is not inherited by the container head.
+BINDING_BLOCKERS = ("EVIDENCE_DELTA_UNBOUNDED",)
+BINDING_KINDS = ("IN_TREE_DERIVED", "REMOTE_RECEIPT", "OPERATOR_LOCAL", "LOCAL_RECEIPT")
+SCHEMA_BINDING = "https://chatman.dev/root-crown/evidence-binding/v1"
+# Post-tag typed blockers (lawful, non-ALIVE).
+# CURRENT_HEAD_UNATTESTED: the observed root head is not the attested head, so the current
+# conformance section describes a head nobody observed (never affects historical standing).
+POST_TAG_BLOCKERS = ("TAG_UNRECORDED", "REPLAY_DIVERGED", "SUBJECT_ABSENT", "CURRENT_HEAD_UNATTESTED")
+# RECEIPT_CHAIN_BROKEN detail tokens (chain.py).
+CHAIN_TOKENS = ("PARENT_DIGEST", "PARENT_REFUSED", "PARENT_UNTYPED_BLOCKED", "PARENT_NOT_ANCESTOR")
 # Typed blockers: lawful, terminal, non-ALIVE.
 BLOCKER_CODES = (
     "EVIDENCE_ABSENT",
@@ -161,6 +210,35 @@ FAILURE_CLASS: dict[str, tuple[str, str]] = {
     "PRIVATE_OBSERVATION_DIGEST_MISMATCH": ("EVIDENCE_FAILURE", "R_missing_identity"),
     "PRIVATE_HEAD_SPLIT": ("SUBJECT_FAILURE", "R_missing_identity"),
     "REQUIRED_UNKNOWN": ("EVIDENCE_FAILURE", "R_missing_standing"),
+    "VERIFIER_CRASHED": ("VERIFICATION_FAILURE", "mu_unlawful"),
+    # post-tag refusals
+    "TAG_OBJECT_DIGEST_MISMATCH": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    "TAG_MUTATED": ("AUTHORITY_FAILURE", "R_missing_identity"),
+    "TAG_SUBJECT_SPLIT": ("SUBJECT_FAILURE", "R_missing_identity"),
+    "TAG_RECEIPT_SPLIT": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    "SUBJECT_TREE_MISMATCH": ("SUBJECT_FAILURE", "R_missing_replay"),
+    "HISTORICAL_OBSERVATION_SPLIT": ("EVIDENCE_FAILURE", "mu_on_O"),
+    "PAYLOAD_MUTATED_POST_TAG": ("SUBJECT_FAILURE", "mu_unlawful"),
+    # terminality policy
+    "TERMINALITY_POLICY_MISSING": ("EVIDENCE_FAILURE", "admission_vacuous"),
+    "POLICY_COVERAGE_GAP": ("EVIDENCE_FAILURE", "admission_vacuous"),
+    "POLICY_RELAXATION_UNGROUNDED": ("AUTHORITY_FAILURE", "mu_on_O"),
+    "ACCEPTANCE_DRIFT": ("VERIFICATION_FAILURE", "R_not_fed_back"),
+    "OWNER_SPLIT": ("AUTHORITY_FAILURE", "R_missing_authority"),
+    # evidence binding
+    "EVIDENCE_SUBJECT_SPLIT": ("SUBJECT_FAILURE", "R_missing_identity"),
+    "EVIDENCE_SUBJECT_MUTABLE": ("SUBJECT_FAILURE", "R_missing_identity"),
+    "EVIDENCE_LINEAGE_MISSING": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    "EVIDENCE_DIGEST_MISMATCH": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    "EVIDENCE_NOT_DURABLE": ("EVIDENCE_FAILURE", "R_missing_replay"),
+    "EVIDENCE_CONTAINER_CLAIMS_SUBJECT": ("SUBJECT_FAILURE", "mu_on_O"),
+    "EVIDENCE_DELTA_MISCLAIMED": ("EVIDENCE_FAILURE", "admission_vacuous"),
+    "EVIDENCE_DELTA_UNBOUNDED": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    # post-tag typed blockers
+    "TAG_UNRECORDED": ("EVIDENCE_FAILURE", "R_missing_identity"),
+    "REPLAY_DIVERGED": ("VERIFICATION_FAILURE", "R_missing_replay"),
+    "SUBJECT_ABSENT": ("EVIDENCE_FAILURE", "R_missing_replay"),
+    "CURRENT_HEAD_UNATTESTED": ("SUBJECT_FAILURE", "R_missing_identity"),
     # typed blockers
     "EVIDENCE_ABSENT": ("EVIDENCE_FAILURE", "R_missing_consequence"),
     "OBSERVATION_MISSING": ("TRANSPORT_FAILURE", "R_missing_identity"),
@@ -180,7 +258,19 @@ FAILURE_CLASS: dict[str, tuple[str, str]] = {
     "RECEIPT_UNVERIFIED": ("EVIDENCE_FAILURE", "R_missing_identity"),
 }
 
-ALL_CODES = REQ_RULES + PROJECTOR_RULES + BERTHIER_RULES + CROWN_RULES + BLOCKER_CODES + TAG_RULES
+ALL_CODES = (
+    REQ_RULES
+    + PROJECTOR_RULES
+    + BERTHIER_RULES
+    + CROWN_RULES
+    + POST_TAG_RULES
+    + TERMINALITY_RULES
+    + BINDING_RULES
+    + BINDING_BLOCKERS
+    + POST_TAG_BLOCKERS
+    + BLOCKER_CODES
+    + TAG_RULES
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -220,6 +310,78 @@ class Requirement:
 
 
 @dataclass(frozen=True, slots=True)
+class EvidenceBinding:
+    """What a PASS evaluated, where its evidence durably lives, and why the two are one lineage.
+
+    ``evaluated_subject_sha`` is the commit the evidence speaks about (the producer subject);
+    ``evidence_container_sha`` is the commit that holds the evidence bytes. They coincide only
+    for IN_TREE_DERIVED evidence (derived by the crown from its own tree). Otherwise
+    ``lineage_proof`` carries the observed compare status and the changed paths between them,
+    classified by ``binding.classify_delta``. ``binding_digest`` is the canonical digest of
+    every other field (recomputed by ``binding.admit``).
+    """
+
+    requirement_id: str
+    kind: str
+    evaluated_subject_sha: str | None
+    evaluated_subject_kind: str
+    container_repository: str | None
+    evidence_container_sha: str | None
+    evidence_locator: str | None
+    evidence_digest: str | None
+    producer: str
+    court: str
+    command: str | None
+    exit_code: int | None
+    toolchain: str | None
+    standing: str | None
+    owner: str | None
+    owner_source: str
+    lineage_proof: dict[str, Any]
+    binding_digest: str = ""
+
+    def body(self) -> dict[str, Any]:
+        return {
+            "schema": SCHEMA_BINDING,
+            "requirement_id": self.requirement_id,
+            "kind": self.kind,
+            "evaluated_subject_sha": self.evaluated_subject_sha,
+            "evaluated_subject_kind": self.evaluated_subject_kind,
+            "container_repository": self.container_repository,
+            "evidence_container_sha": self.evidence_container_sha,
+            "evidence_locator": self.evidence_locator,
+            "evidence_digest": self.evidence_digest,
+            "producer": self.producer,
+            "court": self.court,
+            "command": self.command,
+            "exit_code": self.exit_code,
+            "toolchain": self.toolchain,
+            "standing": self.standing,
+            "owner": self.owner,
+            "owner_source": self.owner_source,
+            "lineage_proof": {
+                "status": self.lineage_proof.get("status"),
+                "delta_paths": None
+                if self.lineage_proof.get("delta_paths") is None
+                else sorted(self.lineage_proof["delta_paths"]),
+                "delta_class": self.lineage_proof.get("delta_class"),
+            },
+        }
+
+    def computed_digest(self) -> str:
+        return canonical_digest(self.body())
+
+    def sealed(self) -> "EvidenceBinding":
+        """This binding with ``binding_digest`` set to the digest of its body."""
+        from dataclasses import replace
+
+        return replace(self, binding_digest=self.computed_digest())
+
+    def as_dict(self) -> dict[str, Any]:
+        return self.body() | {"binding_digest": self.binding_digest}
+
+
+@dataclass(frozen=True, slots=True)
 class ReqState:
     state: str
     code: str | None = None
@@ -227,6 +389,7 @@ class ReqState:
     subject_sha: str | None = None
     failure_class: str | None = field(default=None)
     broken_term: str | None = field(default=None)
+    binding: EvidenceBinding | None = field(default=None)
 
     def __post_init__(self) -> None:
         if self.code is not None and self.failure_class is None and self.code in FAILURE_CLASS:
@@ -242,11 +405,13 @@ class ReqState:
             "broken_term": self.broken_term,
             "detail": self.detail,
             "subject_sha": self.subject_sha,
+            # v2 requirement state: the evidence binding (None for non-PASS states).
+            "binding": None if self.binding is None else self.binding.as_dict(),
         }
 
 
-def PASS(detail: str = "", subject_sha: str | None = None) -> ReqState:
-    return ReqState("PASS", None, detail, subject_sha)
+def PASS(detail: str = "", subject_sha: str | None = None, binding: EvidenceBinding | None = None) -> ReqState:
+    return ReqState("PASS", None, detail, subject_sha, binding=binding)
 
 
 def BLOCKED(code: str, detail: str = "", subject_sha: str | None = None) -> ReqState:

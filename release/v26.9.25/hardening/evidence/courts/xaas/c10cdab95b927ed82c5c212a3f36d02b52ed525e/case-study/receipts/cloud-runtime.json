@@ -1,0 +1,102 @@
+{
+  "broken_term": "R_missing_authority",
+  "claim": "cloud-to-ZCode execution is NOT claimed; only the local loopback fabric leg is ALIVE",
+  "execution_receipt": null,
+  "legs": [
+    {
+      "evidence_ceiling": "LOCAL_LOOPBACK",
+      "execution_receipt": {
+        "blob_sha256": "bcf57fe91d9e5a11d51ceaaeed917473fcc02c9f606680d9fb9ab5b6c99ab99a",
+        "merge_sha": "d6727fef06b170bc6c3839bbf2a9456e33111920",
+        "path": "xaas-runtime/receipts/20260925T100606Z-fabric-live-loopback.receipt.json",
+        "pr": 42,
+        "receipt_sha256": "c9956484ce65fd3aae26b06fab2c7f9c37d5645adc485c33777559107126bf98",
+        "repository": "seanchatmangpt/chatgpt-cloud-elixir",
+        "sealed_receipt_replay_verified": true,
+        "sealed_receipt_sha256": "3aaad2ce67fb60f5508bec79dbd59964aa502aff983b278ba68e4db4adefee67",
+        "server_subject": "seanchatmangpt/xaas@99de79bbf3eadefa15f5bbe52be9d4403b52b84d (ancestor of subject_sha)"
+      },
+      "leg": "fabric local loopback (xaas /internal-api/fabric <- ChatGPTCloud.Xaas client)",
+      "standing": "ALIVE",
+      "subject_tests": {
+        "command": "MIX_ENV=test MIX_TEST_PARTITION=_receipts mix test test/xaas/tunnel test/xaas_web/fabric_controller_test.exs",
+        "exit_code": 0,
+        "output_sha256": "48d38643e10ecbec28dad43abd17685c7a570080c8957fa7bf6ac098eb07b7a8",
+        "summary": "43 tests, 0 failures"
+      }
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "class": null,
+      "leg": "head-verified close",
+      "standing": "BLOCKED(CAPABILITY_GAP)"
+    },
+    {
+      "broken_term": "R_missing_authority",
+      "class": "TRANSPORT_FAILURE",
+      "leg": "ChatGPT container -> xaas",
+      "standing": "BLOCKED(IRREDUCIBLE_TRANSPORT_CONFIG)"
+    },
+    {
+      "broken_term": "R_missing_authority",
+      "class": "AUTHORITY_FAILURE",
+      "leg": "fabric scope on Fly",
+      "standing": "BLOCKED(DEPLOY_AUTHORITY)"
+    },
+    {
+      "broken_term": "R_missing_authority",
+      "class": "AUTHORITY_FAILURE",
+      "leg": "production org token",
+      "standing": "BLOCKED(IRREDUCIBLE_AUTHORITY)"
+    },
+    {
+      "broken_term": "R_missing_consequence",
+      "class": "TRANSPORT_FAILURE",
+      "leg": "container egress + long-poll through Fly proxy",
+      "standing": "BLOCKED(NETWORK)"
+    },
+    {
+      "broken_term": "R_missing_authority",
+      "class": "DEPENDENCY_FAILURE",
+      "leg": "real zcode-cli executor",
+      "standing": "BLOCKED(IRREDUCIBLE_PROVIDER_CONFIG)"
+    },
+    {
+      "broken_term": "admission_vacuous",
+      "class": "CAPABILITY_GAP",
+      "leg": "exposure beyond loopback",
+      "standing": "REFUSED(UNBOUND_PRINCIPAL_CAPABILITIES)"
+    },
+    {
+      "broken_term": "R_missing_authority",
+      "class": "AUTHORITY_FAILURE",
+      "leg": "actuate",
+      "standing": "REFUSED(authority_ceiling)"
+    }
+  ],
+  "manufactured_at": "2026-09-25T13:27:50Z",
+  "manufacturer": "release/v26.9.25/receipts/manufacture.py",
+  "name": "cloud-runtime",
+  "non_claims": [
+    "CHATGPT_CONTAINER_EGRESS",
+    "CLOUD_TO_ZCODE_EXECUTION",
+    "CLOUD_TRANSPORT",
+    "FLY_DEPLOYMENT",
+    "ZCODE_CLI_EXECUTION"
+  ],
+  "receipt_sha256": "4f3626101249b5ba2ee4c486f7abcc74b81de938c761cb54e211705d321ded08",
+  "repository": "seanchatmangpt/xaas",
+  "requirement_ids": [
+    "F-09"
+  ],
+  "schema": "xaas.release-receipt/v26.9.25",
+  "standing": "BLOCKED",
+  "subject": {
+    "materialization": "git archive <subject_sha> (plain dir)",
+    "repository": "seanchatmangpt/xaas",
+    "sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+  },
+  "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+  "transport_receipt": null,
+  "type": "TRANSPORT_FAILURE:cloud-to-zcode-leg-unreceipted"
+}

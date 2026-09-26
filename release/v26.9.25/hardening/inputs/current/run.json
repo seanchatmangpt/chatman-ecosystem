@@ -1,0 +1,16 @@
+{
+  "OBSERVED": "operator-local POST_TAG current-conformance run (H4); inputs are the files beside this one",
+  "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current/observations.json --previous release/v26.9.25/hardening/receipts/run-36161856985/crown-receipt.json --crown-sha f230ac8425b96bf896b9315f06ea1948fef4e3ba --head-sha f230ac8425b96bf896b9315f06ea1948fef4e3ba --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --tag-observation release/v26.9.25/hardening/inputs/current/tag-observation.json --ancestry release/v26.9.25/hardening/inputs/current/ancestry.txt --out crown-receipt.json --tag-decision tag-decision.json",
+  "crown_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+  "cwd_tree": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:.",
+  "exit_code": 3,
+  "head_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+  "observers": {
+    "ancestry.txt": "git rev-list f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+    "observations.json": "GITHUB_TOKEN=<operator gh auth token, env only> python3 scripts/observe_release_heads.py --release v26.9.25 --out observations.json",
+    "private-repos.json": "python3 scripts/observe_release_heads.py --release v26.9.25 --private-local seanchatmangpt/zoela --out private-repos.json (copy; the tagged observations/private-repos.json is not modified and is what the crown read)",
+    "tag-observation.json": "git rev-parse v26.9.25 / v26.9.25^{commit} / git cat-file -t v26.9.25 (source local-git)"
+  },
+  "previous_path": "receipts/run-36161856985/crown-receipt.json",
+  "subject_commit": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+}

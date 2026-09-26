@@ -1,0 +1,17 @@
+TRIPLES 2157 GATES 23 NONZERO {} MUTANTS 19 VACUOUS 0
+OBJ True https://zoela.org/ontology/objective-christchella-broadcast-to-actuation sha256:f94aac1479457ab64dc249f31def8816196755b09cfaa00d41d974b92adc9c00
+OBJ True https://zoela.org/ontology/objective-ecosystem-activation-loop sha256:eaa55accdd22e992d313d49ce9e6a73827312dfb881d6907af53b9d077485efb
+OBJ True https://zoela.org/ontology/objective-godslaw-canonical-domain sha256:e856c92c2e20a72973dd0cf146f8a9ec5a85b69eede42f4f6cca020c3e7a6777
+OBJ True https://zoela.org/ontology/objective-planning-center-compatibility sha256:9aa9c7edebff98b399f96426776e177ee042e61620dad2ee99ffdc260b5507b1
+OBJ True https://zoela.org/ontology/objective-provider-substitutability sha256:f3101f9b1b5efdcbf87872f2da9d30ebd15a77984ca01b6b904205da4466fc7c
+TAMPER_REFUSED True PIN True
+STEP 1 SEMANTIC ADMITTED None
+STEP 2 DEPENDENCY_CONSUMER_ANALYSIS UNKNOWN None
+STEP 3 COMPATIBILITY_LAYER UNKNOWN None
+STEP 4 DATA_CONFIGURATION_PRESERVATION UNKNOWN None
+STEP 5 GENERATED_ARTIFACTS UNKNOWN None
+STEP 6 RUNTIME_VERIFICATION UNKNOWN None
+STEP 7 REPOSITORY_RENAME BLOCKED authority:operator-repo-rename
+STEP 8 ROLLBACK_QUALIFICATION UNKNOWN None
+python3 zoela-head/release/v26.9.25/receipts/godslaw-gate-witness.py      0.30s user 0.05s system 95% cpu 0.363 total
+exit=0

@@ -1,0 +1,535 @@
+{
+  "GENERATED": "scripts/release_train/root_crown/hardening.py -- do not edit; run --write",
+  "authority": "NONE",
+  "release": "v26.9.25",
+  "rows": [
+    {
+      "container": {
+        "repository": "seanchatmangpt/affidavit",
+        "sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2:release/v26.9.25/receipts/brce-ledger.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/7/evidence_container",
+        "requirements-matrix.json#/rows/23/evidence_container"
+      ],
+      "sha256": "sha256:ae37069d19cc6d70562a9b9dd4211e73604e778e89465ad2c80f82ee243fbe38"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/autofde-lab",
+        "sha": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/autofde-lab@98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0:release/v26.9.25/receipts/tlc-court.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/6/evidence_container",
+        "requirements-matrix.json#/rows/26/evidence_container"
+      ],
+      "sha256": "sha256:bd59d140d8db9095851556281b164f348a2d3d9708c0afd31543ef93a7ef1017"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/autofde-lab",
+        "sha": "b417eea64ef8e4d841b9cc2f4a898753e4b71d1b"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/autofde-lab@b417eea64ef8e4d841b9cc2f4a898753e4b71d1b:docs/rfcs/aloop/ALOOP-001-chatman-root-crown-v26.9.25.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/23/courts/0/evidence_locator"
+      ],
+      "sha256": "sha256:cb9d19a12dab036fefd533a78867a68c27f91c91914a74c67f08d9ba09be4148"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/5/evidence_container",
+        "requirements-matrix.json#/rows/25/evidence_container"
+      ],
+      "sha256": "sha256:51d3da4bf02df789031cd0c0088bf5ec684b55de6f8fe28b2a2de9568f7a8acc"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/berthier.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/4/evidence_container",
+        "requirements-matrix.json#/rows/24/evidence_container"
+      ],
+      "sha256": "sha256:363650782b4f995727ba9ae056b54c9f914a8240d7bcd0c889ce1b464eba9bea"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/closure.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/1/evidence_container",
+        "requirements-matrix.json#/rows/21/evidence_container"
+      ],
+      "sha256": "sha256:be08fa0654260cb615708144f6cc63a84f5f55f5568ebc60c75d7b206a3bafee"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/0/evidence_container",
+        "requirements-matrix.json#/rows/11/evidence_container",
+        "requirements-matrix.json#/rows/17/evidence_container",
+        "requirements-matrix.json#/rows/18/evidence_container",
+        "requirements-matrix.json#/rows/32/evidence_container"
+      ],
+      "sha256": "sha256:1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/9/evidence_container",
+        "requirements-matrix.json#/rows/29/evidence_container"
+      ],
+      "sha256": "sha256:32bbd585a5c4d1fdebfb232bdec48811b2cf20466fef07f1930e01ac9baf5e52"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/local-worktrees.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/8/evidence_container",
+        "requirements-matrix.json#/rows/28/evidence_container"
+      ],
+      "sha256": "sha256:f566b69a40d49fe26f505325a3fd8e3793d6b9ce3f9445b63fa114ad8f7bb542"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/pins.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/10/evidence_container",
+        "requirements-matrix.json#/rows/16/evidence_container",
+        "requirements-matrix.json#/rows/22/evidence_container"
+      ],
+      "sha256": "sha256:ea07d4d802fab4133ebcf7db2f6c064154011bfff0efdbe32a91341ddb57c0f4"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "6ff74d37c99ed4a4ccabedc53263147b253e65e0"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@6ff74d37c99ed4a4ccabedc53263147b253e65e0:release/v26.9.25/hardening/inputs/mutation-report.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/26/courts/0/evidence_locator",
+        "inputs/scorecard-observations.json#/mutation_harnesses/0"
+      ],
+      "sha256": "sha256:274c8b9d8f8e827a8caac82c125b4213eb6ce252d5e28b66d0c68bd08428112c"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "c599667a84ec79d832bb779bce1730b33b43fdd4"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/court.out",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/9/courts/0/output_locator"
+      ],
+      "sha256": "sha256:cf1e5804588d5a2e6980a1566c635532ab37d1fd4291d67888bb7c2a1415a2c0"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "c599667a84ec79d832bb779bce1730b33b43fdd4"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/affidavit/d70b0e40f9920136510cb0f7f24bf9720feeb4f2/courts.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/9/courts/0/evidence_locator",
+        "closure-final.json#/subjects/9/courts/1/evidence_locator",
+        "closure-final.json#/subjects/9/courts/2/evidence_locator",
+        "closure-final.json#/subjects/9/courts/3/evidence_locator",
+        "closure-final.json#/subjects/9/courts/4/evidence_locator",
+        "inputs/scorecard-observations.json#/mutation_harnesses/2"
+      ],
+      "sha256": "sha256:1b3ab4f82b65c27b54eb7b2a7684b1234d7bded57099b43d5668fcc044db74cd"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "c599667a84ec79d832bb779bce1730b33b43fdd4"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/docs.log",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/2/courts/0/log_locator"
+      ],
+      "sha256": "sha256:dd88bec364313dc9a741a467a0d4c54311ea482d8b01795d9f9359127014f6e5"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "c599667a84ec79d832bb779bce1730b33b43fdd4"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/docs.receipt.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/2/courts/0/evidence_locator"
+      ],
+      "sha256": "sha256:a54744c66632110dd22e7427ed4b2a1a2bbfe36b902b47038bc50f6e7299c4df"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "c599667a84ec79d832bb779bce1730b33b43fdd4"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/zoela/3d16cf3e43e195092161aaba4d481c7654b4035d/godslaw-gate-witness.log",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/12/courts/0/log_locator"
+      ],
+      "sha256": "sha256:d08cce3fe251a5e86cd2a9be977e984e0c7c6e6ebd551940b3060ea852ca2c91"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "c599667a84ec79d832bb779bce1730b33b43fdd4"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/zoela/3d16cf3e43e195092161aaba4d481c7654b4035d/godslaw-gate-witness.out.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/12/courts/0/evidence_locator",
+        "closure-final.json#/subjects/12/courts/0/output_locator"
+      ],
+      "sha256": "sha256:17a3a42965c3610cecd9843aa173422bf127296d389c6b8ac7a0956cea090d55"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "c599667a84ec79d832bb779bce1730b33b43fdd4"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/evidence/courts/zoela/f1313f1c1462b9d2f4dd3cb010dbe5921f53185d/zoela-admission.receipt.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/12/courts/1/evidence_locator"
+      ],
+      "sha256": "sha256:684e0a934523f6b83b9e10892549ca4d6106fe4b603c55a182abbd63be15d278"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "c599667a84ec79d832bb779bce1730b33b43fdd4"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4:release/v26.9.25/hardening/receipts/run-36161744816/crown-receipt.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/0/successor/locator",
+        "closure-final.json#/subjects/1/courts/0/evidence_locator"
+      ],
+      "sha256": "sha256:152900efa367ced50c05605bebcbeb0f3450aef0e09871ae4ba0d13d00406fc0"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "e941fa1d8e6f0b56472866d16cd38f5cfe3055a6"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/evidence/courts/chatman-ecosystem/6ff74d37c99ed4a4ccabedc53263147b253e65e0/root-crown-run-36203921304/crown-receipt.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/28/courts/0/evidence_locator"
+      ],
+      "sha256": "sha256:2b9a0032d1fc1ba9f39d5b6944bd2850b94549938beaa1615360746e1b8f13e1"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "e941fa1d8e6f0b56472866d16cd38f5cfe3055a6"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/evidence/courts/chatman-ecosystem/6ff74d37c99ed4a4ccabedc53263147b253e65e0/xprod-mutate/XPROD-001.mutate.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/27/courts/0/evidence_locator",
+        "inputs/scorecard-observations.json#/mutation_harnesses/1"
+      ],
+      "sha256": "sha256:3d11e5d831d48b304529a21cc89d165cadd5d2ffaea76d37fba940607af003e3"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "e941fa1d8e6f0b56472866d16cd38f5cfe3055a6"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/evidence/courts/engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/github-run-36101146601/artifact-10850572678.zip",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/2/courts/1/artifact_locator"
+      ],
+      "sha256": "sha256:35c385d749c2b6c5c03d3f805c532e3b811d604edcc4c623dcbd383a94a348de"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "e941fa1d8e6f0b56472866d16cd38f5cfe3055a6"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/evidence/courts/engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/github-run-36101146601/root-conformance.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/2/courts/1/evidence_locator"
+      ],
+      "sha256": "sha256:17b2f98864b3315e15c387af66eb546a09128a98473bb99457df7c79557fdcfa"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "e941fa1d8e6f0b56472866d16cd38f5cfe3055a6"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/evidence/courts/engineering-standards/7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629/github-run-36101146601/run.log",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/2/courts/1/log_locator"
+      ],
+      "sha256": "sha256:db5830639c2de45f2c7dd1125314eee1239fcbdd3796dcfb33ddc5061bdd819a"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/chatman-ecosystem",
+        "sha": "e941fa1d8e6f0b56472866d16cd38f5cfe3055a6"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6:release/v26.9.25/hardening/inputs/current-observations.json",
+      "recomputable_offline": true,
+      "roles": [
+        "drift.json#/observations/locator"
+      ],
+      "sha256": "sha256:e7b46af8069b4ef5fc359cd9a3b882e00488c6c85c6498576faf1510e0050469"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/ggen_igniter",
+        "sha": "647db5f208b7ec88c84f0dc7d70925b4dec330f9"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/ggen_igniter@647db5f208b7ec88c84f0dc7d70925b4dec330f9:receipts/v26.9.25/sjira-origin-trust-root.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/19/courts/0/evidence_locator",
+        "inputs/scorecard-observations.json#/mutation_harnesses/4"
+      ],
+      "sha256": "sha256:2062638ea101ad323b9f308c40bfce362f15b8c1b30fdedb999129305de2bb19"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/ggen_igniter",
+        "sha": "9639198b5c3e0e25906acc5b36dd9eb17bd592be"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/prose-inert.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/3/evidence_container",
+        "requirements-matrix.json#/rows/19/evidence_container"
+      ],
+      "sha256": "sha256:3e2bfdd90b5ab2050f173e1e7eecbe95fd497763033285db71323957c904d442"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/ggen_igniter",
+        "sha": "9639198b5c3e0e25906acc5b36dd9eb17bd592be"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/sjira-origin-authority.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/2/evidence_container",
+        "requirements-matrix.json#/rows/20/evidence_container"
+      ],
+      "sha256": "sha256:6369a68761d30dd74b5ca45937a40a8e109b547897ea54d9483afdb84f34e329"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/xaas",
+        "sha": "0249ca416332b101d0e1ed797683dacb1a365715"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/xaas@0249ca416332b101d0e1ed797683dacb1a365715:release/v26.9.25/receipts/case-study-schema.post-tag.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/21/courts/0/evidence_locator"
+      ],
+      "sha256": "sha256:d15f9e074ad2d38b2434cbe9fd856d306fc60477b0100260527bc0da687da297"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/xaas",
+        "sha": "e039967dac9f88961873b6a958f3979a106854f2"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/case-study-schema.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/12/evidence_container"
+      ],
+      "sha256": "sha256:c302ddafb20ae0c1d5150e2d408dac0ce42a0b59b94474c1f96feaea7ccd0c8f"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/xaas",
+        "sha": "e039967dac9f88961873b6a958f3979a106854f2"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/cloud-runtime.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/27/evidence_container"
+      ],
+      "sha256": "sha256:7ed9435de6c1f6713b849f8fc40499a9fe69f45f98cf4244bad85d8301715354"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/xaas",
+        "sha": "e039967dac9f88961873b6a958f3979a106854f2"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/wd-evidence-ceiling.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/13/evidence_container",
+        "requirements-matrix.json#/rows/30/evidence_container"
+      ],
+      "sha256": "sha256:9972ec3ce010f372adc6e1e393ca9e93d892d61618af60e85222c5f908bab73c"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/zoela",
+        "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d:release/v26.9.25/receipts/godslaw-interpretation.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/31/evidence_container"
+      ],
+      "sha256": "sha256:1ca3c2f9d5bb2b720841ed84474d5925cabe8a91da01526037533591070947d7"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/zoela",
+        "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d:release/v26.9.25/receipts/godslaw-migration.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/14/evidence_container"
+      ],
+      "sha256": "sha256:04c6bee0c61d0c8f42d50b9fd3c87320bd509538ff52e4a62552bd2c753e5cd9"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/zoela",
+        "sha": "3d16cf3e43e195092161aaba4d481c7654b4035d"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d:release/v26.9.25/receipts/vision2027-admission.json",
+      "recomputable_offline": true,
+      "roles": [
+        "requirements-matrix.json#/rows/15/evidence_container"
+      ],
+      "sha256": "sha256:d8dfc6510d74f187f07a4d4c2f6158808bb6495d9956c27fdfcde9df3b046683"
+    },
+    {
+      "container": {
+        "repository": "seanchatmangpt/zoela",
+        "sha": "eb18cc73409573366c8fc6544eb41531083ccc1c"
+      },
+      "kind": "git",
+      "locator": "git:seanchatmangpt/zoela@eb18cc73409573366c8fc6544eb41531083ccc1c:release/v26.9.25/receipts/godslaw-gate-witness.post-tag.json",
+      "recomputable_offline": true,
+      "roles": [
+        "closure-final.json#/subjects/22/courts/0/evidence_locator",
+        "inputs/scorecard-observations.json#/mutation_harnesses/3"
+      ],
+      "sha256": "sha256:f7197df1779f175ae487cb0f24a318bb0679b531f62e4336b5b18e1cdd242375"
+    },
+    {
+      "container": null,
+      "kind": "https",
+      "locator": "https://github.com/seanchatmangpt/xaas/actions/runs/36193110697",
+      "recomputable_offline": false,
+      "roles": [
+        "closure-final.json#/subjects/20/courts/0/evidence_locator"
+      ],
+      "sha256": null
+    }
+  ],
+  "schema": "https://chatman.dev/root-crown/hardening/evidence-index/v1",
+  "summary": {
+    "containers": [
+      "seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+      "seanchatmangpt/autofde-lab@98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0",
+      "seanchatmangpt/autofde-lab@b417eea64ef8e4d841b9cc2f4a898753e4b71d1b",
+      "seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "seanchatmangpt/chatman-ecosystem@6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+      "seanchatmangpt/chatman-ecosystem@c599667a84ec79d832bb779bce1730b33b43fdd4",
+      "seanchatmangpt/chatman-ecosystem@e941fa1d8e6f0b56472866d16cd38f5cfe3055a6",
+      "seanchatmangpt/ggen_igniter@647db5f208b7ec88c84f0dc7d70925b4dec330f9",
+      "seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be",
+      "seanchatmangpt/xaas@0249ca416332b101d0e1ed797683dacb1a365715",
+      "seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2",
+      "seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d",
+      "seanchatmangpt/zoela@eb18cc73409573366c8fc6544eb41531083ccc1c"
+    ],
+    "git": 36,
+    "https": 1,
+    "locators": 37,
+    "without_digest": 1
+  },
+  "verify": "python3 scripts/durable_locator/durable_locator.py stage-root release/v26.9.25/hardening/evidence-index.json --dest <root> (resolves every git: row; digests recompute)"
+}

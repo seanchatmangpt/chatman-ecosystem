@@ -1,0 +1,293 @@
+{
+ "records": {
+  "chatmangpt_pictl": {
+   "bundle": null,
+   "canonical": "/Users/sac/wasm4pm",
+   "copy_id": "chatmangpt_pictl",
+   "durable": "REMOTE",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/chatmangpt_pictl-ignored.bundle",
+    "sha256": "e453954c4c90fd152273ed81854fa04ce6726d0a12c26c2b37958c8931549a53",
+    "size": 948287,
+    "verified": true
+   },
+   "kind": "SUBMODULE_ACTIVE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/chatmangpt_pictl/anchor",
+   "ok": true,
+   "path": "/Users/sac/chatmangpt/pictl",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/chatmangpt_pictl/anchor": "090fec59138fa1a5fd93ff187907b046d0c31202",
+    "refs/preserve/v26.9.25/chatmangpt_pictl/dirty": "e31df6a3601f584f135065318b2de81494ad19b6",
+    "refs/preserve/v26.9.25/chatmangpt_pictl/ignored-evidence": "5dabf8ed162f8237751e660fc4034237b094cb7c",
+    "refs/preserve/v26.9.25/chatmangpt_pictl/index": "c9b9581d014080da24222d3820419013645491b7",
+    "refs/preserve/v26.9.25/chatmangpt_pictl/stash/0": "8786aa480261b04c445cd3e478dcfb6de8cfbe83",
+    "refs/preserve/v26.9.25/chatmangpt_pictl/stash/1": "a6a92aa76b963ac0280f7ad67e8e2d532d21be62",
+    "refs/preserve/v26.9.25/chatmangpt_pictl/worktree-head": "62880115d1b521b84fd45bc3a61bff6593ca814c"
+   },
+   "remote_ref": "backup/v26.9.25/chatmangpt_pictl",
+   "remote_verified_sha": "090fec59138fa1a5fd93ff187907b046d0c31202",
+   "repo_id": "wasm4pm",
+   "sha": "090fec59138fa1a5fd93ff187907b046d0c31202",
+   "skipped": [],
+   "snapshot_tree": "6a8af5213f092a4afcd05c6239bfe77a4471fbff",
+   "superseded": []
+  },
+  "chatmangpt_wasm4pm": {
+   "bundle": null,
+   "canonical": "/Users/sac/wasm4pm",
+   "copy_id": "chatmangpt_wasm4pm",
+   "durable": "REMOTE",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/chatmangpt_wasm4pm-ignored.bundle",
+    "sha256": "b85e2771c18b2e6ab69c9bcd79e9ee3bddb51cfbea2f6868b2868488aa72525a",
+    "size": 7100,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/chatmangpt_wasm4pm/anchor",
+   "ok": true,
+   "path": "/Users/sac/chatmangpt/wasm4pm",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/chatmangpt_wasm4pm/anchor": "901e9738822ece45eba7e97d009847120c4f7c13",
+    "refs/preserve/v26.9.25/chatmangpt_wasm4pm/dirty": "7a81b8ef4fc845e80d5a868e03ed108458c90227",
+    "refs/preserve/v26.9.25/chatmangpt_wasm4pm/ignored-evidence": "4a3378fd5feb41b194d735402677e44f28fb6616",
+    "refs/preserve/v26.9.25/chatmangpt_wasm4pm/index": "e262078179afadb6e85b081db13c6dfbf84923d1",
+    "refs/preserve/v26.9.25/chatmangpt_wasm4pm/worktree-head": "01d24454ebe5bc79d14bb368e5c523d5a623b981"
+   },
+   "remote_ref": "backup/v26.9.25/chatmangpt_wasm4pm",
+   "remote_verified_sha": "901e9738822ece45eba7e97d009847120c4f7c13",
+   "repo_id": "wasm4pm",
+   "sha": "901e9738822ece45eba7e97d009847120c4f7c13",
+   "skipped": [],
+   "snapshot_tree": "47f8946ed817b627369d9ff2650f72edf1a49d2a",
+   "superseded": []
+  },
+  "tmp_xaas-w9-sweep-wasm4pm": {
+   "bundle": null,
+   "canonical": "/Users/sac/wasm4pm",
+   "copy_id": "tmp_xaas-w9-sweep-wasm4pm",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w9-sweep-wasm4pm/anchor",
+   "ok": true,
+   "path": "/private/tmp/xaas-w9-sweep-wasm4pm",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sweep-wasm4pm/anchor": "677229abbfb2aac597eb5122ceaae4673b9c2844",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sweep-wasm4pm/dirty": "2e129ec5862267df714955962ac4c18150728d79",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sweep-wasm4pm/index": "457408c621e58f5c9d0ed65bd923507f58ada648",
+    "refs/preserve/v26.9.25/tmp_xaas-w9-sweep-wasm4pm/worktree-head": "9ffdc2fa10858833d4ec4a7de1d2ac51e05b3377"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "wasm4pm",
+   "sha": "677229abbfb2aac597eb5122ceaae4673b9c2844",
+   "skipped": [],
+   "snapshot_tree": "6ac901c50b00736040ea4900c52952c9871a239d",
+   "superseded": []
+  },
+  "unrdf_packages_wasm4pm": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/unrdf_packages_wasm4pm.bundle",
+    "sha256": "e03af477824ace82545e18424c64c0290c4e0f75bf5d9b8ce365f842d6260dbc",
+    "size": 1662626,
+    "verified": true
+   },
+   "canonical": "/Users/sac/wasm4pm",
+   "copy_id": "unrdf_packages_wasm4pm",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/unrdf_packages_wasm4pm-ignored.bundle",
+    "sha256": "1c8a19431679b6ad629ea2ba0f125c0f25392226939abc48e9e265123cdf4402",
+    "size": 6728819,
+    "verified": true
+   },
+   "kind": "CLONE",
+   "local_only_reason": "SECRET_IN_HISTORY",
+   "local_ref": "refs/preserve/v26.9.25/unrdf_packages_wasm4pm/anchor",
+   "ok": true,
+   "path": "/Users/sac/unrdf/packages/wasm4pm",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/unrdf_packages_wasm4pm/anchor": "ad0cfb4ff661996be64d2eeb2fc7372a7b4dc0c8",
+    "refs/preserve/v26.9.25/unrdf_packages_wasm4pm/dirty": "ccb647a1a5b9899baa25ce2ec1451b6f2d7d1ea9",
+    "refs/preserve/v26.9.25/unrdf_packages_wasm4pm/ignored-evidence": "494c14a713179200b6bbf8b3710485d7f99c3acd",
+    "refs/preserve/v26.9.25/unrdf_packages_wasm4pm/index": "8bd97064da3617b2d6d6ca7e45b8cd788498a74e",
+    "refs/preserve/v26.9.25/unrdf_packages_wasm4pm/worktree-head": "d3b2eb462462ad0832e168f1de5ee9b85e0159d0"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "wasm4pm",
+   "scan_hits": [
+    {
+     "blob": "a448addd41903f7b52c8e59bf81eeaf3d91247e5",
+     "path": "packages/testing/src/redaction.ts",
+     "why": "SECRET_CONTENT"
+    }
+   ],
+   "sha": "ad0cfb4ff661996be64d2eeb2fc7372a7b4dc0c8",
+   "skipped": [],
+   "snapshot_tree": "d5e4499aa75e36a9763299fa5dc97ba7a2e71f79",
+   "superseded": []
+  },
+  "wasm4pm-worktrees": {
+   "bundle": null,
+   "canonical": "/Users/sac/wasm4pm",
+   "copy_id": "wasm4pm-worktrees",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wasm4pm-worktrees/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/wasm4pm-worktrees",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wasm4pm-worktrees/anchor": "4660676633ec6c31e32eb20e28ee0def7d693e15",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees/dirty": "6289779830818f83b615f8061c6d3dc97c21f1ae"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "wasm4pm",
+   "sha": "4660676633ec6c31e32eb20e28ee0def7d693e15",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+   "superseded": []
+  },
+  "wasm4pm-worktrees_ex4pm-qual-episode-20260903": {
+   "bundle": null,
+   "canonical": "/Users/sac/wasm4pm",
+   "copy_id": "wasm4pm-worktrees_ex4pm-qual-episode-20260903",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wasm4pm-worktrees_ex4pm-qual-episode-20260903/anchor",
+   "ok": true,
+   "path": "/Users/sac/wasm4pm-worktrees/ex4pm-qual-episode-20260903",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_ex4pm-qual-episode-20260903/anchor": "32ffa6db72168914ae1c28e4b44ec78dfb084e3c",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_ex4pm-qual-episode-20260903/dirty": "223cb6107de8d1ad869d6f780fe346227ccedc32",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_ex4pm-qual-episode-20260903/index": "a499450e94ac874b65151125a0bd9a811fdde3ae",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_ex4pm-qual-episode-20260903/worktree-head": "8762e706067cfe2027237bb96fa6341cc1fafaaf"
+   },
+   "remote_ref": "backup/v26.9.25/wasm4pm-worktrees_ex4pm-qual-episode-20260903",
+   "remote_verified_sha": "32ffa6db72168914ae1c28e4b44ec78dfb084e3c",
+   "repo_id": "wasm4pm",
+   "sha": "32ffa6db72168914ae1c28e4b44ec78dfb084e3c",
+   "skipped": [],
+   "snapshot_tree": "2f025076fb5a3160ec15e8ace7e2f1503a4c90be",
+   "superseded": []
+  },
+  "wasm4pm-worktrees_fix-etconformance-precision-feature-gate": {
+   "bundle": null,
+   "canonical": "/Users/sac/wasm4pm",
+   "copy_id": "wasm4pm-worktrees_fix-etconformance-precision-feature-gate",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wasm4pm-worktrees_fix-etconformance-precision-feature-gate/anchor",
+   "ok": true,
+   "path": "/Users/sac/wasm4pm-worktrees/fix-etconformance-precision-feature-gate",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_fix-etconformance-precision-feature-gate/anchor": "73ed8c62d7f388fa4a9b17870ee1b7b585121dbb",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_fix-etconformance-precision-feature-gate/dirty": "96e4e8a1fee7795cf1e943e74520054248caabba",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_fix-etconformance-precision-feature-gate/index": "7274c4a4f9fa8017f073b1742b01c76459cc21f9",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_fix-etconformance-precision-feature-gate/worktree-head": "9b32c57c442ac6e93d127b3ae26a181906fc8e52"
+   },
+   "remote_ref": "backup/v26.9.25/wasm4pm-worktrees_fix-etconformance-precision-feature-gate",
+   "remote_verified_sha": "73ed8c62d7f388fa4a9b17870ee1b7b585121dbb",
+   "repo_id": "wasm4pm",
+   "sha": "73ed8c62d7f388fa4a9b17870ee1b7b585121dbb",
+   "skipped": [],
+   "snapshot_tree": "39c3c2922bce42cff12250ea702819013dd37128",
+   "superseded": []
+  },
+  "wasm4pm-worktrees_predict-execute-episode-wf10-20260903": {
+   "bundle": null,
+   "canonical": "/Users/sac/wasm4pm",
+   "copy_id": "wasm4pm-worktrees_predict-execute-episode-wf10-20260903",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wasm4pm-worktrees_predict-execute-episode-wf10-20260903/anchor",
+   "ok": true,
+   "path": "/Users/sac/wasm4pm-worktrees/predict-execute-episode-wf10-20260903",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_predict-execute-episode-wf10-20260903/anchor": "c4a996891307a48559f6e9139a3d00a7d68b25ee",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_predict-execute-episode-wf10-20260903/dirty": "ba450164ce82f560196224e48c072b19acfecdd3",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_predict-execute-episode-wf10-20260903/index": "3590ba3e285538274c58ecdff73e07cd6d82cd6f",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_predict-execute-episode-wf10-20260903/worktree-head": "1311f96a37c1b630aef46dbf608347fc233c0f59"
+   },
+   "remote_ref": "backup/v26.9.25/wasm4pm-worktrees_predict-execute-episode-wf10-20260903",
+   "remote_verified_sha": "c4a996891307a48559f6e9139a3d00a7d68b25ee",
+   "repo_id": "wasm4pm",
+   "sha": "c4a996891307a48559f6e9139a3d00a7d68b25ee",
+   "skipped": [],
+   "snapshot_tree": "2f025076fb5a3160ec15e8ace7e2f1503a4c90be",
+   "superseded": []
+  },
+  "wasm4pm-worktrees_register-planner-mcp-json": {
+   "bundle": null,
+   "canonical": "/Users/sac/wasm4pm",
+   "copy_id": "wasm4pm-worktrees_register-planner-mcp-json",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wasm4pm-worktrees_register-planner-mcp-json/anchor",
+   "ok": true,
+   "path": "/Users/sac/wasm4pm-worktrees/register-planner-mcp-json",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_register-planner-mcp-json/anchor": "1e0b390e2dedeb9255ac031e0f5ff88b7f460ecd",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_register-planner-mcp-json/dirty": "ae691d3bc48535a67fdbbb1f2126e43ca563e444",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_register-planner-mcp-json/index": "4e1e5af7e5b93142a9f13518aad36c6122470ad0",
+    "refs/preserve/v26.9.25/wasm4pm-worktrees_register-planner-mcp-json/worktree-head": "078b1f2c0145b55d0fd07dbb6a2b971306ec6795"
+   },
+   "remote_ref": "backup/v26.9.25/wasm4pm-worktrees_register-planner-mcp-json",
+   "remote_verified_sha": "1e0b390e2dedeb9255ac031e0f5ff88b7f460ecd",
+   "repo_id": "wasm4pm",
+   "sha": "1e0b390e2dedeb9255ac031e0f5ff88b7f460ecd",
+   "skipped": [],
+   "snapshot_tree": "0d77f7f299bd707d67657ddf78adeebdc359fbbb",
+   "superseded": []
+  },
+  "wasm4pm_claude_worktrees_wf_99470ccd-c7b-1": {
+   "bundle": null,
+   "canonical": "/Users/sac/wasm4pm",
+   "copy_id": "wasm4pm_claude_worktrees_wf_99470ccd-c7b-1",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wasm4pm_claude_worktrees_wf_99470ccd-c7b-1/anchor",
+   "ok": true,
+   "path": "/Users/sac/wasm4pm/.claude/worktrees/wf_99470ccd-c7b-1",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wasm4pm_claude_worktrees_wf_99470ccd-c7b-1/anchor": "40f8d7535b0b7e0a2717f2ffc2288529d6066e24",
+    "refs/preserve/v26.9.25/wasm4pm_claude_worktrees_wf_99470ccd-c7b-1/dirty": "5305830ae5a60de07b0350568c49b08abbfe8110",
+    "refs/preserve/v26.9.25/wasm4pm_claude_worktrees_wf_99470ccd-c7b-1/index": "f38756e54a580db3b8148caab8f05bb546976fb2",
+    "refs/preserve/v26.9.25/wasm4pm_claude_worktrees_wf_99470ccd-c7b-1/worktree-head": "2b9ba0773461a6e9f163d2dd13f9798d3f22c8a6"
+   },
+   "remote_ref": "backup/v26.9.25/wasm4pm_claude_worktrees_wf_99470ccd-c7b-1",
+   "remote_verified_sha": "40f8d7535b0b7e0a2717f2ffc2288529d6066e24",
+   "repo_id": "wasm4pm",
+   "sha": "40f8d7535b0b7e0a2717f2ffc2288529d6066e24",
+   "skipped": [],
+   "snapshot_tree": "16e52ddf05f0edcfb3c87ccb829da5fe73f4e3c2",
+   "superseded": []
+  }
+ }
+}

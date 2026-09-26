@@ -1,0 +1,66 @@
+{
+ "repos": {
+  "bcinr": {
+   "revoked": {
+    "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf": ".ggen/keys/signing.key",
+    "b440cf8fc6526cb2816fc181b3c8aefb021adcef": ".ggen/keys/verifying.key"
+   },
+   "tracked_now": {
+    "796470e1d9300a3e22317ba2b41ea67c9e4b1081": ".ggen/keys/.gitignore"
+   }
+  },
+  "cargo-cicd": {
+   "revoked": {
+    "b9b4240cad37f19508843c0e2a09ab08d1171d2d": ".ggen/keys/signing.key",
+    "57a9a64dea0bdf1e0c4fa3de929a80bb92ee0efd": ".ggen/keys/verifying.key"
+   },
+   "tracked_now": {
+    "796470e1d9300a3e22317ba2b41ea67c9e4b1081": ".ggen/keys/.gitignore"
+   }
+  },
+  "chicago-tdd-tools": {
+   "revoked": {
+    "8855b47524c5340c6403da11a75c78e2125aaf25": ".ggen/keys/signing.key",
+    "f0eeaa62ad272524de8d7ffc575c3d97deb93d7c": ".ggen/keys/verifying.key"
+   },
+   "tracked_now": {
+    "796470e1d9300a3e22317ba2b41ea67c9e4b1081": ".ggen/keys/.gitignore"
+   }
+  },
+  "praxis": {
+   "revoked": {
+    "2526aea024316351de21e640242799b160583ebf": ".ggen/keys/signing.key",
+    "dafe39933ba100f1c731f5658dce64361f35870a": ".ggen/keys/verifying.key"
+   },
+   "tracked_now": {
+    "796470e1d9300a3e22317ba2b41ea67c9e4b1081": ".ggen/keys/.gitignore"
+   }
+  },
+  "process-intelligence": {
+   "revoked": {
+    "eea6dfa8131f95223f020edf79068ad02e66f1f5": ".ggen/keys/signing.key",
+    "6c20ccb464f9c7128f0cf8b2c4382ebec816bcb5": ".ggen/keys/verifying.key",
+    "3dfe6ceab5e3aea72f3d85db14658889459dfaac": ".ggen/keys/signing.key",
+    "40b0151635c49461e89d1608195dc8f20de3b826": ".ggen/keys/verifying.key"
+   },
+   "tracked_now": {
+    "796470e1d9300a3e22317ba2b41ea67c9e4b1081": ".ggen/keys/.gitignore"
+   }
+  }
+ },
+ "revoked_blobs": [
+  "2526aea024316351de21e640242799b160583ebf",
+  "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+  "40b0151635c49461e89d1608195dc8f20de3b826",
+  "57a9a64dea0bdf1e0c4fa3de929a80bb92ee0efd",
+  "6c20ccb464f9c7128f0cf8b2c4382ebec816bcb5",
+  "8855b47524c5340c6403da11a75c78e2125aaf25",
+  "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+  "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+  "b9b4240cad37f19508843c0e2a09ab08d1171d2d",
+  "dafe39933ba100f1c731f5658dce64361f35870a",
+  "eea6dfa8131f95223f020edf79068ad02e66f1f5",
+  "f0eeaa62ad272524de8d7ffc575c3d97deb93d7c"
+ ],
+ "rule": "history blobs of .ggen/keys/*.key minus blobs tracked at HEAD (rotated keys are untracked/ignored)"
+}

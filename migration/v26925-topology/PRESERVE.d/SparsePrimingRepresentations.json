@@ -1,0 +1,28 @@
+{
+ "records": {
+  "tmp_sprtest": {
+   "bundle": null,
+   "canonical": "/Users/sac/SparsePrimingRepresentations",
+   "copy_id": "tmp_sprtest",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_sprtest/anchor",
+   "ok": true,
+   "path": "/private/tmp/sprtest",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_sprtest/anchor": "e2cea218cbd0b829cc0c788b6206ec6edf31f567",
+    "refs/preserve/v26.9.25/tmp_sprtest/dirty": "9c9da96fe0de67424444ac7fa8fc0bf220a30766",
+    "refs/preserve/v26.9.25/tmp_sprtest/index": "a42fe745ac7788610294afafd1bb5802bbbe9379",
+    "refs/preserve/v26.9.25/tmp_sprtest/worktree-head": "4283aab41dcb4fa671f0634264ebb633b0e86d7c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "SparsePrimingRepresentations",
+   "sha": "e2cea218cbd0b829cc0c788b6206ec6edf31f567",
+   "skipped": [],
+   "snapshot_tree": "2e89a123afef457f2fcdd74050954ad786422f45"
+  }
+ }
+}

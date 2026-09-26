@@ -14,7 +14,7 @@ never actuation: every packet authority ceiling is CONSTRUCT.
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import Any, Iterable
+from typing import Any, Iterable, Mapping
 
 from scripts.release_train.invalidation_promotion.authority import require_authority
 from scripts.release_train.invalidation_promotion.cascade import build_cascade
@@ -78,8 +78,26 @@ class BerthierVerdict:
     required_owners: tuple[str, ...]
 
 
-def premise_key(section: str) -> str:
-    return f"premise:{PREMISE}#{section}"
+def split_ref(ref: str) -> tuple[str, str]:
+    """RFC-0005 §10: ``RFC-0005§7`` -> (``RFC-0005``, ``§7``); an unqualified ``§n`` binds RFC-0004."""
+    head, sep, tail = ref.partition("§")
+    if sep and head:
+        return head, f"§{tail}"
+    return PREMISE, ref
+
+
+def premise_key(section: str, rfc: str = PREMISE) -> str:
+    return f"premise:{rfc}#{section}"
+
+
+def premise_ref_key(ref: str) -> str:
+    rfc, section = split_ref(ref)
+    return premise_key(section, rfc)
+
+
+def premise_set_digest(texts: Mapping[str, str]) -> str:
+    """RFC-0005 §10.3: the premise digest is over the mapping RFC id -> source digest."""
+    return digest({rfc: sha256_bytes(text.encode("utf-8")) for rfc, text in sorted(texts.items())})
 
 
 def req_key(rid: str) -> str:
@@ -94,9 +112,18 @@ def artifact_key(locator: str) -> str:
     return f"artifact:{locator}"
 
 
-def source_digests(rfc_text: str, reqs: Iterable[Requirement]) -> dict[str, str]:
-    """Digests of the strategic sources: premise sections and requirement rows."""
-    out = {premise_key(k): sha256_bytes(v.encode("utf-8")) for k, v in premise_sections(rfc_text).items()}
+def source_digests(rfc_text: str | Mapping[str, str], reqs: Iterable[Requirement]) -> dict[str, str]:
+    """Digests of the strategic sources: premise sections and requirement rows.
+
+    ``rfc_text`` is one premise (RFC-0004) or a premise set ``{rfc id: text}`` (RFC-0005 §10).
+    A single premise yields exactly the keys and digests it yielded before premise sets.
+    """
+    texts = {PREMISE: rfc_text} if isinstance(rfc_text, str) else dict(rfc_text)
+    out = {
+        premise_key(k, rfc): sha256_bytes(v.encode("utf-8"))
+        for rfc, text in sorted(texts.items())
+        for k, v in premise_sections(text).items()
+    }
     for req in reqs:
         out[req_key(req.id)] = digest(req.row())
     return out
@@ -106,7 +133,7 @@ def edge_specs(reqs: Iterable[Requirement]) -> list[tuple[str, str]]:
     specs: list[tuple[str, str]] = []
     for req in reqs:
         for ref in req.premise_refs:
-            specs.append((premise_key(ref), req_key(req.id)))
+            specs.append((premise_ref_key(ref), req_key(req.id)))
         for out in PROJECTED_OUTPUTS:
             specs.append((req_key(req.id), f"proj:{out}"))
         specs.append((req_key(req.id), packet_key(req.owner_repo)))
@@ -207,7 +234,7 @@ def packets(
 
 
 def _premise_nodes(req: Requirement) -> list[str]:
-    return [premise_key(ref) for ref in req.premise_refs]
+    return [premise_ref_key(ref) for ref in req.premise_refs]
 
 
 def judge(

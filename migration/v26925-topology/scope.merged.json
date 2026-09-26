@@ -1,0 +1,528 @@
+{
+ "canonicals": {
+  "bcinr": "/Users/sac/bcinr",
+  "ggen-legacy": "/Users/sac/ggen-legacy",
+  "osx-clnr": "/Users/sac/osx-clnr",
+  "mfact": "/Users/sac/mfact",
+  "dteam": "/Users/sac/dteam",
+  "praxis": "/Users/sac/praxis",
+  "unibit": "/Users/sac/unibit",
+  "clap-noun-verb": "/Users/sac/clap-noun-verb",
+  "lsp-max": "/Users/sac/lsp-max",
+  "knhk": "/Users/sac/knhk",
+  "mfw": "/Users/sac/mfw",
+  "citty-test-utils": "/Users/sac/citty-test-utils",
+  "truex": "/Users/sac/truex",
+  "process-intelligence": "/Users/sac/process-intelligence",
+  "cargo-cicd": "/Users/sac/cargo-cicd",
+  "expo-supabase-ai-template": "/Users/sac/expo-supabase-ai-template",
+  "chicago-tdd-tools": "/Users/sac/chicago-tdd-tools",
+  "ash_ex4pm": "/Users/sac/ash_ex4pm",
+  "zoela": "/Users/sac/zoela",
+  "ex4pm": "/Users/sac/ex4pm",
+  "wasm4pm": "/Users/sac/wasm4pm",
+  "ash_r2rml": "/Users/sac/ash_r2rml",
+  "xaas": "/Users/sac/xaas",
+  "autofde-lab": "/Users/sac/autofde-lab",
+  "ggen_igniter": "/Users/sac/ggen_igniter",
+  "beam4pm": "/Users/sac/beam4pm",
+  "ggen-marketplace": "/Users/sac/ggen-marketplace",
+  "engineering-standards": "/Users/sac/engineering-standards",
+  "chatgpt-cloud-elixir": "/Users/sac/chatgpt-cloud-elixir",
+  "zcode-cli": "/Users/sac/zcode-cli"
+ },
+ "canonical_map": {
+  "ggen": "/Users/sac/ggen",
+  "gymact": "/Users/sac/gymact",
+  "unjucks": "/Users/sac/unjucks",
+  "ferroplan": "/Users/sac/ferroplan",
+  "ash_a2a": "/Users/sac/ash_a2a",
+  "ostar": "/Users/sac/chatmangpt/ostar",
+  "SparsePrimingRepresentations": "/Users/sac/SparsePrimingRepresentations",
+  "aidgen": "/Users/sac/dev/aidgen",
+  "bytestar": "/Users/sac/bytestar",
+  "lsp-types-max": "/Users/sac/lsp-types-max",
+  "ggen-ecosystem": "/Users/sac/ggen-ecosystem"
+ },
+ "extra_copies": [
+  {
+   "path": "/Users/sac/wt-v26918/ign-12-gate-semantics",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/ign-13-manifest",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/ign-14-bindings",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/ign-15-receipt-tera",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/ggen-06-queries-dir",
+   "owner": "ggen"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/ggen-07-tera-renderer",
+   "owner": "ggen"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/ggen-08-packdigest",
+   "owner": "ggen"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/ggen-09-alias",
+   "owner": "ggen"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/ggen-10-receipt-envelope",
+   "owner": "ggen"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/ggen-11-semantic-only",
+   "owner": "ggen"
+  },
+  {
+   "path": "/private/tmp/ggen-w9-errc",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w4-ggen",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w4-shallow-sim",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w6-crown-ggen",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w6-descriptor",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w6-digest",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w6-reconciler",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w6-sole",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w6-vocab",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w7-crown-ggen",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w7-descriptor",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w7-reconciler",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w7-sole",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w7-vocab",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w8-ci",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w8-crown-ggen",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w8-int-ggen",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w8-sole",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w9-g5",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w9-int-ggen",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/xaas-w9-sole",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/scj-ggen-igniter",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/t1-probe-gi",
+   "owner": "ggen_igniter"
+  },
+  {
+   "path": "/private/tmp/t1-probe-afde",
+   "owner": "autofde-lab"
+  },
+  {
+   "path": "/private/tmp/t1-probe-gym",
+   "owner": "gymact"
+  },
+  {
+   "path": "/private/tmp/sprtest",
+   "owner": "SparsePrimingRepresentations"
+  },
+  {
+   "path": "/private/tmp/w5-probe-aidgen",
+   "owner": "aidgen"
+  },
+  {
+   "path": "/private/tmp/w5-probe-bytestar",
+   "owner": "bytestar"
+  },
+  {
+   "path": "/Users/sac/tmp_beam4pm_work",
+   "owner": "beam4pm"
+  },
+  {
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a01ca255695584cea",
+   "owner": "autofde-lab",
+   "foreign": true,
+   "signed_off": true,
+   "notes": [
+    "orphan-of /Users/sac/scikit-decide (third-party upstream); host autofde-lab signed off by operator order v26.9.25 lane topo-1"
+   ]
+  },
+  {
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a66c667e67159e3a6",
+   "owner": "autofde-lab",
+   "foreign": true,
+   "signed_off": true,
+   "notes": [
+    "orphan-of /Users/sac/scikit-decide (third-party upstream); host autofde-lab signed off by operator order v26.9.25 lane topo-1"
+   ]
+  },
+  {
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-a6de8944b0b9564f6",
+   "owner": "autofde-lab",
+   "foreign": true,
+   "signed_off": true,
+   "notes": [
+    "orphan-of /Users/sac/scikit-decide (third-party upstream); host autofde-lab signed off by operator order v26.9.25 lane topo-1"
+   ]
+  },
+  {
+   "path": "/Users/sac/autofde-lab/.claude/worktrees/agent-ac4dc74a8c9b3849c",
+   "owner": "autofde-lab",
+   "foreign": true,
+   "signed_off": true,
+   "notes": [
+    "orphan-of /Users/sac/scikit-decide (third-party upstream); host autofde-lab signed off by operator order v26.9.25 lane topo-1"
+   ]
+  },
+  {
+   "path": "/Users/sac/test-unjucks-nuxt4",
+   "owner": "unjucks"
+  },
+  {
+   "path": "/Users/sac/ash_a2a-wt",
+   "owner": "ash_a2a"
+  },
+  {
+   "path": "/Users/sac/ash_a2a-wt2",
+   "owner": "ash_a2a"
+  },
+  {
+   "path": "/Users/sac/ash_a2a-worktrees",
+   "owner": "ash_a2a",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/ash-surface-wt",
+   "owner": "ash_a2a",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/ferroplan-worktrees",
+   "owner": "ferroplan",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/frozen-duckdb-wt",
+   "owner": "ash_a2a",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/ggen_igniter-worktrees",
+   "owner": "ggen_igniter",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/ggen_igniter-wt",
+   "owner": "ggen_igniter",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/ggen_igniter-wt2",
+   "owner": "ggen_igniter",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/autofde-lab-worktrees",
+   "owner": "autofde-lab",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/autofde-lab-wt",
+   "owner": "autofde-lab",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/beam4pm-worktrees",
+   "owner": "beam4pm",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/worktrees",
+   "owner": "ash_a2a",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/work/zoela",
+   "owner": "zoela"
+  },
+  {
+   "path": "/Users/sac/zoela-verify",
+   "owner": "zoela"
+  },
+  {
+   "path": "/Users/sac/zv_regen",
+   "owner": "zoela"
+  },
+  {
+   "path": "/Users/sac/zoela-wt2/w2-04-jtbd-surface-e2e",
+   "owner": "zoela"
+  },
+  {
+   "path": "/Users/sac/chatmangpt/wasm4pm",
+   "owner": "wasm4pm",
+   "no_retire": true
+  },
+  {
+   "path": "/Users/sac/unrdf/packages/wasm4pm",
+   "owner": "wasm4pm",
+   "no_retire": true
+  },
+  {
+   "path": "/private/tmp/xaas-w6-xaas-read",
+   "owner": "xaas",
+   "notes": [
+    "broken .git (no HEAD) xaas scratch copy"
+   ]
+  },
+  {
+   "path": "/private/tmp/xaas-w7-roundtrip",
+   "owner": "xaas",
+   "notes": [
+    "broken .git (no HEAD) xaas scratch copy"
+   ]
+  },
+  {
+   "path": "/Users/sac/xaas-worktrees/sjira",
+   "owner": "xaas",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/wt-v26918/mkt-01-specpack-scaffold",
+   "owner": "ggen-marketplace"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/mkt-02-valid-corpus",
+   "owner": "ggen-marketplace"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/mkt-03-invalid-corpus",
+   "owner": "ggen-marketplace"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/mkt-04-vectors",
+   "owner": "ggen-marketplace"
+  },
+  {
+   "path": "/Users/sac/wt-v26918/mkt-05-catalog",
+   "owner": "ggen-marketplace"
+  },
+  {
+   "path": "/Users/sac/ggen-marketplace-worktrees",
+   "owner": "ggen-marketplace",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/ggen-marketplace-wt",
+   "owner": "ggen-marketplace",
+   "notes": [
+    "empty worktree root"
+   ]
+  },
+  {
+   "path": "/Users/sac/ex4pm-worktrees",
+   "owner": "ex4pm",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  },
+  {
+   "path": "/Users/sac/wasm4pm-worktrees",
+   "owner": "wasm4pm",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  },
+  {
+   "path": "/Users/sac/xaas-worktrees",
+   "owner": "xaas",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  },
+  {
+   "path": "/Users/sac/wt-v26918",
+   "owner": "ggen-marketplace",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  },
+  {
+   "path": "/Users/sac/zoela-wt",
+   "owner": "zoela",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  },
+  {
+   "path": "/Users/sac/zoela-wt2",
+   "owner": "zoela",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  },
+  {
+   "path": "/Users/sac/work",
+   "owner": "zoela",
+   "notes": [
+    "empty worktree/clone root after stage-2 child retirement"
+   ]
+  }
+ ],
+ "refs_only_repos": [
+  "ggen_igniter",
+  "beam4pm",
+  "autofde-lab"
+ ],
+ "no_push_repos": [
+  "ggen_igniter",
+  "beam4pm",
+  "autofde-lab"
+ ],
+ "owned_remote_patterns": [
+  "github.com/seanchatmangpt/"
+ ],
+ "exclude_paths": [],
+ "blocked": [
+  {
+   "path": "/Users/sac/unibit/ostar_ref",
+   "type": "OWNER_SIGNOFF",
+   "reason": "ostar CANONICAL_MAP (/Users/sac/chatmangpt/ostar) needs operator sign-off; preserved, not retired"
+  },
+  {
+   "path": "/Users/sac/chatmangpt/wasm4pm",
+   "type": "EMBEDDED_IN_FOREIGN_REPO",
+   "reason": "wasm4pm clone whose files are tracked content of /Users/sac/chatmangpt (410 dirty); retiring would mutate chatmangpt's tree; needs chatmangpt owner decision; preserved, not retired"
+  },
+  {
+   "path": "/Users/sac/unrdf/packages/wasm4pm",
+   "type": "EMBEDDED_IN_FOREIGN_REPO",
+   "reason": "wasm4pm clone recorded as a gitlink path in /Users/sac/unrdf (1449 dirty); retiring would mutate unrdf; needs unrdf owner decision; preserved, not retired"
+  },
+  {
+   "path": "/Users/sac/xaas/worktrees/runs/",
+   "type": "OWNER_SIGNOFF",
+   "reason": "xaas runtime run dirs; retired only 'if registered' per lane order; not registered"
+  }
+ ],
+ "revoked_blobs": [
+  "2526aea024316351de21e640242799b160583ebf",
+  "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+  "40b0151635c49461e89d1608195dc8f20de3b826",
+  "57a9a64dea0bdf1e0c4fa3de929a80bb92ee0efd",
+  "6c20ccb464f9c7128f0cf8b2c4382ebec816bcb5",
+  "8855b47524c5340c6403da11a75c78e2125aaf25",
+  "a3d7d5a4f34aeaf6246f9c4e54d98893d02b3eaf",
+  "b440cf8fc6526cb2816fc181b3c8aefb021adcef",
+  "b9b4240cad37f19508843c0e2a09ab08d1171d2d",
+  "dafe39933ba100f1c731f5658dce64361f35870a",
+  "eea6dfa8131f95223f020edf79068ad02e66f1f5",
+  "f0eeaa62ad272524de8d7ffc575c3d97deb93d7c"
+ ],
+ "host_signoff": [
+  {
+   "path": "/Users/sac/lsp-max/.claude/worktrees/",
+   "grant": "operator order v26.9.25 lane topo-1 stage-1 list: 'lsp-max (orphans)'; parent /Users/sac/tower-lsp-max no longer exists; archived into host lsp-max refs/preserve/v26.9.25/* (+ backup branch)"
+  },
+  {
+   "path": "/Users/sac/zoela-wt2/",
+   "grant": "operator order v26.9.25 lane topo-2 stage-2 list: 'zoela (... zoela-wt2 residue)'; its .git names gitdir /Users/sac/zoela/.git/worktrees/w2-04-jtbd-surface-e2e (zoela provenance, admin dir gone); archived into zoela refs/preserve/v26.9.25/* (+ backup branch)"
+  }
+ ],
+ "stage2": {
+  "scopes": [
+   "scope.stage2.json",
+   "scope.stage2b1.json",
+   "scope.stage2b2.json"
+  ],
+  "note": "stage-2 lane repos promoted to canonicals; refs_only/no_push kept for the stage-1 records of ggen_igniter/beam4pm/autofde-lab; stage-2 records used scope.stage2*.json (push allowed)"
+ }
+}

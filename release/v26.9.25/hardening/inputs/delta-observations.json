@@ -1,0 +1,225 @@
+{
+  "OBSERVED": "scripts/observe_release_heads.py --post-tag-bindings -- observation, do not edit; re-observe",
+  "allowlist": {
+    "path": "scripts/release_train/root_crown/policy/v26.9.25/delta-allowlist.json",
+    "sha256": "5145579fae5a150eedd431be27bdecae24ee79bda7a618f83e0e3ffea90f0b81"
+  },
+  "authority": "NONE",
+  "observed_at": "2026-09-25T21:24:52Z",
+  "pairs": [
+    {
+      "ahead_by": 2,
+      "base": "9d158477fc4706f4fdaf30cfc073c547b57e783e",
+      "binding": "ADMITTED",
+      "claim_holds": null,
+      "claims": [
+        {
+          "claimed_class": null,
+          "source": "hardening/receipts/run-36161744816/observations.json#/artifacts/seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json"
+        }
+      ],
+      "delta_class": "RECEIPT_ONLY",
+      "delta_paths": [
+        "release/v26.9.25/receipts/brce-ledger.json"
+      ],
+      "files": [
+        {
+          "filename": "release/v26.9.25/receipts/brce-ledger.json",
+          "status": "modified"
+        }
+      ],
+      "head": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+      "offending_paths": [],
+      "repository": "seanchatmangpt/affidavit",
+      "status": "ahead"
+    },
+    {
+      "ahead_by": 2,
+      "base": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "binding": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED)",
+      "claim_holds": false,
+      "claims": [
+        {
+          "claimed_class": "RECEIPT_ONLY",
+          "source": "closure.json#/subjects/7/courts/0"
+        },
+        {
+          "claimed_class": null,
+          "source": "hardening/receipts/run-36161744816/observations.json#/artifacts/seanchatmangpt/autofde-lab:release/v26.9.25/receipts/tlc-court.json"
+        }
+      ],
+      "delta_class": "UNBOUNDED",
+      "delta_paths": [
+        "release/v26.9.25/receipts/tlc-court.json",
+        "scripts/release_tlc_court_receipt.py"
+      ],
+      "files": [
+        {
+          "filename": "release/v26.9.25/receipts/tlc-court.json",
+          "status": "added"
+        },
+        {
+          "filename": "scripts/release_tlc_court_receipt.py",
+          "status": "added"
+        }
+      ],
+      "head": "98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0",
+      "offending_paths": [
+        "scripts/release_tlc_court_receipt.py"
+      ],
+      "repository": "seanchatmangpt/autofde-lab",
+      "status": "ahead"
+    },
+    {
+      "ahead_by": 2,
+      "base": "780a81d81c6e579084ba3048037419aab7d7386e",
+      "binding": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED)",
+      "claim_holds": false,
+      "claims": [
+        {
+          "claimed_class": "RECEIPT_ONLY",
+          "source": "closure.json#/subjects/3/courts/0"
+        },
+        {
+          "claimed_class": null,
+          "source": "hardening/receipts/run-36161744816/observations.json#/artifacts/seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/prose-inert.json"
+        },
+        {
+          "claimed_class": null,
+          "source": "hardening/receipts/run-36161744816/observations.json#/artifacts/seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/sjira-origin-authority.json"
+        }
+      ],
+      "delta_class": "UNBOUNDED",
+      "delta_paths": [
+        "release/v26.9.25/receipts/prose-inert.json",
+        "release/v26.9.25/receipts/replay/origin-probe.out.json",
+        "release/v26.9.25/receipts/replay/origin_probe.exs",
+        "release/v26.9.25/receipts/sjira-origin-authority.json"
+      ],
+      "files": [
+        {
+          "filename": "release/v26.9.25/receipts/prose-inert.json",
+          "status": "added"
+        },
+        {
+          "filename": "release/v26.9.25/receipts/replay/origin-probe.out.json",
+          "status": "added"
+        },
+        {
+          "filename": "release/v26.9.25/receipts/replay/origin_probe.exs",
+          "status": "added"
+        },
+        {
+          "filename": "release/v26.9.25/receipts/sjira-origin-authority.json",
+          "status": "added"
+        }
+      ],
+      "head": "9639198b5c3e0e25906acc5b36dd9eb17bd592be",
+      "offending_paths": [
+        "release/v26.9.25/receipts/replay/origin_probe.exs"
+      ],
+      "repository": "seanchatmangpt/ggen_igniter",
+      "status": "ahead"
+    },
+    {
+      "ahead_by": 2,
+      "base": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "binding": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED)",
+      "claim_holds": false,
+      "claims": [
+        {
+          "claimed_class": "RECEIPT_ONLY",
+          "source": "closure.json#/subjects/4/courts/0"
+        },
+        {
+          "claimed_class": null,
+          "source": "hardening/receipts/run-36161744816/observations.json#/artifacts/seanchatmangpt/xaas:release/v26.9.25/receipts/case-study-schema.json"
+        },
+        {
+          "claimed_class": null,
+          "source": "hardening/receipts/run-36161744816/observations.json#/artifacts/seanchatmangpt/xaas:release/v26.9.25/receipts/cloud-runtime.json"
+        },
+        {
+          "claimed_class": null,
+          "source": "hardening/receipts/run-36161744816/observations.json#/artifacts/seanchatmangpt/xaas:release/v26.9.25/receipts/wd-evidence-ceiling.json"
+        }
+      ],
+      "delta_class": "UNBOUNDED",
+      "delta_paths": [
+        "release/v26.9.25/receipts/case-study-schema.json",
+        "release/v26.9.25/receipts/cloud-runtime.json",
+        "release/v26.9.25/receipts/manufacture.py",
+        "release/v26.9.25/receipts/wd-evidence-ceiling.json"
+      ],
+      "files": [
+        {
+          "filename": "release/v26.9.25/receipts/case-study-schema.json",
+          "status": "added"
+        },
+        {
+          "filename": "release/v26.9.25/receipts/cloud-runtime.json",
+          "status": "added"
+        },
+        {
+          "filename": "release/v26.9.25/receipts/manufacture.py",
+          "status": "added"
+        },
+        {
+          "filename": "release/v26.9.25/receipts/wd-evidence-ceiling.json",
+          "status": "added"
+        }
+      ],
+      "head": "e039967dac9f88961873b6a958f3979a106854f2",
+      "offending_paths": [
+        "release/v26.9.25/receipts/manufacture.py"
+      ],
+      "repository": "seanchatmangpt/xaas",
+      "status": "ahead"
+    },
+    {
+      "ahead_by": 2,
+      "base": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+      "binding": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED)",
+      "claim_holds": null,
+      "claims": [
+        {
+          "claimed_class": null,
+          "source": "closure.json#/subjects/12/courts/1"
+        }
+      ],
+      "delta_class": "UNBOUNDED",
+      "delta_paths": [
+        "release/v26.9.25/receipts/godslaw-gate-witness.py",
+        "release/v26.9.25/receipts/godslaw-interpretation.json",
+        "release/v26.9.25/receipts/godslaw-migration.json",
+        "release/v26.9.25/receipts/vision2027-admission.json"
+      ],
+      "files": [
+        {
+          "filename": "release/v26.9.25/receipts/godslaw-gate-witness.py",
+          "status": "added"
+        },
+        {
+          "filename": "release/v26.9.25/receipts/godslaw-interpretation.json",
+          "status": "added"
+        },
+        {
+          "filename": "release/v26.9.25/receipts/godslaw-migration.json",
+          "status": "added"
+        },
+        {
+          "filename": "release/v26.9.25/receipts/vision2027-admission.json",
+          "status": "added"
+        }
+      ],
+      "head": "3d16cf3e43e195092161aaba4d481c7654b4035d",
+      "offending_paths": [
+        "release/v26.9.25/receipts/godslaw-gate-witness.py"
+      ],
+      "repository": "seanchatmangpt/zoela",
+      "status": "ahead"
+    }
+  ],
+  "release": "v26.9.25",
+  "schema": "https://chatman.dev/root-crown/hardening/delta-observations/v1"
+}

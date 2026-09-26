@@ -1,0 +1,277 @@
+qualify-root	UNKNOWN STEP	﻿2026-09-25T06:44:56.1260939Z Current runner version: '2.337.0'
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1286192Z ##[group]Runner Image Provisioner
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1287483Z Hosted Compute Agent
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1288446Z Version: 20260828.587
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1289566Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1291021Z Build Date: 2026-08-28T16:44:25Z
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1292150Z Worker ID: {6b870a8e-f81e-40a1-b65c-90ffc982f9d5}
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1293441Z Azure Region: northcentralus
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1294477Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1296593Z ##[group]Operating System
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1297636Z Ubuntu
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1298442Z 24.04.5
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1299343Z LTS
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1300177Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1300833Z ##[group]Runner Image
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1301533Z Image: ubuntu-24.04
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1302164Z Version: 20260920.314.1
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1304147Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260920.314/images/ubuntu/Ubuntu2404-Readme.md
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1305868Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260920.314
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1306985Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1308316Z ##[group]GITHUB_TOKEN Permissions
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1310901Z Contents: read
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1311564Z Metadata: read
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1312287Z Packages: read
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1312902Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1315528Z Secret source: Actions
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1316686Z Cache mode: write
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1317914Z Prepare workflow directory
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1657155Z Prepare all required actions
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.1705547Z Getting action download info
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.4650254Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.5640804Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.7083892Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:56.8298543Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.0487333Z Complete job name: qualify-root
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1240752Z ##[group]Run actions/checkout@v4
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1241658Z with:
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1242198Z   repository: seanchatmangpt/engineering-standards
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1246580Z   token: ***
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1247050Z   ssh-strict: true
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1247529Z   ssh-user: git
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1248008Z   persist-credentials: true
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1248528Z   clean: true
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1249006Z   sparse-checkout-cone-mode: true
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1249556Z   fetch-depth: 1
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1250207Z   fetch-tags: false
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1250693Z   show-progress: true
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1251161Z   lfs: false
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1251611Z   submodules: false
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1252087Z   set-safe-directory: true
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1252617Z   allow-unsafe-pr-checkout: false
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.1253420Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2313363Z Syncing repository: seanchatmangpt/engineering-standards
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2316028Z ##[group]Getting Git version info
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2317429Z Working directory is '/home/runner/work/engineering-standards/engineering-standards'
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2319343Z [command]/usr/bin/git version
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2332853Z git version 2.55.0
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2352632Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2367635Z Temporarily overriding HOME='/home/runner/work/_temp/b2dc799c-bdf4-4d40-8abd-192a7b0c9c35' before making global git config changes
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2370047Z Adding repository directory to the temporary git global config as a safe directory
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2372874Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/engineering-standards/engineering-standards
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2419025Z Deleting the contents of '/home/runner/work/engineering-standards/engineering-standards'
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2425843Z ##[group]Initializing the repository
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2430977Z [command]/usr/bin/git init /home/runner/work/engineering-standards/engineering-standards
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2520911Z hint: Using 'master' as the name for the initial branch. This default branch name
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2522325Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2523725Z hint: to use in all of your new repositories, which will suppress this warning,
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2524766Z hint: call:
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2525519Z hint:
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2526406Z hint: 	git config --global init.defaultBranch <name>
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2527346Z hint:
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2528346Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2529773Z hint: 'development'. The just-created branch can be renamed via this command:
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2530640Z hint:
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2531095Z hint: 	git branch -m <name>
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2531632Z hint:
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2532314Z hint: Disable this message with "git config set advice.defaultBranchName false"
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2543932Z Initialized empty Git repository in /home/runner/work/engineering-standards/engineering-standards/.git/
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2555049Z [command]/usr/bin/git remote add origin https://github.com/seanchatmangpt/engineering-standards
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2603269Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2604478Z ##[group]Disabling automatic garbage collection
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2606620Z [command]/usr/bin/git config --local gc.auto 0
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2641355Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2642678Z ##[group]Setting up auth
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2646585Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.2682432Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.3058645Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.3110864Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.3364291Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.3402479Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.3646271Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.3689449Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.3690950Z ##[group]Fetching the repository
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.3701012Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629:refs/remotes/origin/main
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.7842498Z From https://github.com/seanchatmangpt/engineering-standards
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.7843897Z  * [new ref]         7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629 -> origin/main
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.7846480Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.7847432Z ##[group]Determining the checkout info
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.7849829Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.7857064Z [command]/usr/bin/git sparse-checkout disable
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.7914047Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.7953302Z ##[group]Checking out the ref
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.7957839Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.8100246Z Switched to a new branch 'main'
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.8106684Z branch 'main' set up to track 'origin/main'.
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.8110545Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.8155219Z [command]/usr/bin/git log -1 --format=%H
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.8184394Z 7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.8633688Z ##[group]Run actions/setup-node@v4
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.8634874Z with:
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.8635695Z   node-version: 22
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.8636613Z   always-auth: false
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.8637545Z   check-latest: false
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.8649145Z   token: ***
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:57.8650112Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:58.0443532Z Found in cache @ /opt/hostedtoolcache/node/22.23.2/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:58.0448244Z (node:2432) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:58.0451024Z (Use `node --trace-deprecation ...` to show where the warning was created)
+qualify-root	UNKNOWN STEP	2026-09-25T06:44:58.0457715Z ##[group]Environment details
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:01.8713700Z node: v22.23.2
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:01.8714289Z npm: 10.9.8
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:01.8714823Z yarn: 1.22.22
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:01.8716291Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:01.8860522Z ##[group]Run npm ci --no-audit --no-fund
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:01.8861074Z ^[[36;1mnpm ci --no-audit --no-fund^[[0m
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:01.9095809Z shell: /usr/bin/bash -e {0}
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:01.9096179Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.6004069Z 
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.6013483Z added 151 packages in 6s
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.6537782Z ##[group]Run node scripts/check-docs.mjs
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.6538178Z ^[[36;1mnode scripts/check-docs.mjs^[[0m
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.6614616Z shell: /usr/bin/bash -e {0}
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.6614911Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.7339184Z Checked 51 Markdown files: 0 Mermaid diagram(s) and 232 relative link(s), 30 of them carrying a verified anchor.
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.7340497Z All documentation checks passed.
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.7487044Z ##[group]Run actions/setup-python@v5
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.7487366Z with:
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.7487605Z   python-version: 3.13
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.7487859Z   check-latest: false
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.7490856Z   token: ***
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.7491105Z   update-environment: true
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.7491377Z   allow-prereleases: false
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.7491645Z   freethreaded: false
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.7491880Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.8833256Z ##[group]Installed versions
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9394864Z (node:2495) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9396270Z (Use `node --trace-deprecation ...` to show where the warning was created)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9397138Z Successfully set up CPython (3.13.15)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9398396Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9564924Z ##[group]Run python -m pip install --disable-pip-version-check -r scripts/requirements-semantic.txt
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9566150Z ^[[36;1mpython -m pip install --disable-pip-version-check -r scripts/requirements-semantic.txt^[[0m
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9787867Z shell: /usr/bin/bash -e {0}
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9788222Z env:
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9788541Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.15/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9789035Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.15/x64/lib/pkgconfig
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9789500Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9790163Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9790587Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9791007Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.15/x64/lib
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:07.9791359Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.3085592Z Collecting jsonschema==4.26.0 (from -r scripts/requirements-semantic.txt (line 1))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.3538909Z   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.3727407Z Collecting pyshacl==0.40.1 (from -r scripts/requirements-semantic.txt (line 2))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.3764734Z   Downloading pyshacl-0.40.1-py3-none-any.whl.metadata (38 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.4010086Z Collecting rdflib==7.6.0 (from -r scripts/requirements-semantic.txt (line 3))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.4040484Z   Downloading rdflib-7.6.0-py3-none-any.whl.metadata (12 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.4180009Z Collecting attrs>=22.2.0 (from jsonschema==4.26.0->-r scripts/requirements-semantic.txt (line 1))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.4210403Z   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.4322600Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema==4.26.0->-r scripts/requirements-semantic.txt (line 1))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.4354079Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.4530386Z Collecting referencing>=0.28.4 (from jsonschema==4.26.0->-r scripts/requirements-semantic.txt (line 1))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.4560562Z   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.6843747Z Collecting rpds-py>=0.25.0 (from jsonschema==4.26.0->-r scripts/requirements-semantic.txt (line 1))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.6877988Z   Downloading rpds_py-2026.6.3-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.6992494Z Collecting owlrl<8,>=7.6.2 (from pyshacl==0.40.1->-r scripts/requirements-semantic.txt (line 2))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.7028936Z   Downloading owlrl-7.6.2-py3-none-any.whl.metadata (4.6 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.7160359Z Collecting packaging>=21.3 (from pyshacl==0.40.1->-r scripts/requirements-semantic.txt (line 2))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.7189970Z   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.7318938Z Collecting prettytable>=3.7.0 (from pyshacl==0.40.1->-r scripts/requirements-semantic.txt (line 2))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.7350336Z   Downloading prettytable-3.18.0-py3-none-any.whl.metadata (37 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.7585585Z Collecting pyparsing<4,>=2.1.0 (from rdflib==7.6.0->-r scripts/requirements-semantic.txt (line 3))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.7624184Z   Downloading pyparsing-3.3.3-py3-none-any.whl.metadata (5.9 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.7734935Z Collecting html5rdf<2,>=1.2 (from rdflib[html]<8.0,>=7.3.0->pyshacl==0.40.1->-r scripts/requirements-semantic.txt (line 2))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.7764552Z   Downloading html5rdf-1.2.1-py2.py3-none-any.whl.metadata (7.5 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.7941428Z Collecting wcwidth>=0.3.5 (from prettytable>=3.7.0->pyshacl==0.40.1->-r scripts/requirements-semantic.txt (line 2))
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.7972966Z   Downloading wcwidth-0.9.1-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (23 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8067346Z Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8141970Z Downloading pyshacl-0.40.1-py3-none-any.whl (1.3 MB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8295204Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 120.7 MB/s  0:00:00
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8328277Z Downloading rdflib-7.6.0-py3-none-any.whl (615 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8388248Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 615.4/615.4 kB 100.9 MB/s  0:00:00
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8417911Z Downloading owlrl-7.6.2-py3-none-any.whl (55 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8470838Z Downloading pyparsing-3.3.3-py3-none-any.whl (126 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8548239Z Downloading html5rdf-1.2.1-py2.py3-none-any.whl (109 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8602456Z Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8651939Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8699371Z Downloading packaging-26.3-py3-none-any.whl (129 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8750029Z Downloading prettytable-3.18.0-py3-none-any.whl (37 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8799335Z Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8849193Z Downloading rpds_py-2026.6.3-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (365 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.8914564Z Downloading wcwidth-0.9.1-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (768 kB)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:11.9041097Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 768.4/768.4 kB 50.7 MB/s  0:00:00
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:12.1094887Z Installing collected packages: wcwidth, rpds-py, pyparsing, packaging, html5rdf, attrs, referencing, rdflib, prettytable, owlrl, jsonschema-specifications, pyshacl, jsonschema
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.3922128Z 
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.3941949Z Successfully installed attrs-26.1.0 html5rdf-1.2.1 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 owlrl-7.6.2 packaging-26.3 prettytable-3.18.0 pyparsing-3.3.3 pyshacl-0.40.1 rdflib-7.6.0 referencing-0.37.0 rpds-py-2026.6.3 wcwidth-0.9.1
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.4587668Z ##[group]Run python scripts/check-semantic-standard.py --receipt /tmp/root-conformance.json
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.4588384Z ^[[36;1mpython scripts/check-semantic-standard.py --receipt /tmp/root-conformance.json^[[0m
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.4657237Z shell: /usr/bin/bash -e {0}
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.4657514Z env:
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.4657810Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.15/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.4658277Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.15/x64/lib/pkgconfig
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.4658708Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.4659097Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.4659486Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.4660097Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.15/x64/lib
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:13.4660432Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3275904Z turtle-graphs: 9 parsed
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3276277Z root-direction: PASS
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3276806Z shacl: PASS via pyshacl (positive fixture + 4 negative falsifiers)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3277602Z json-schema: PASS (9 positive examples + 9 negative falsifiers)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3278104Z compatibility: PASS
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3278587Z standing: ALIVE(repository-semantic-conformance)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3279140Z receipt: /tmp/root-conformance.json
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3280301Z non-claims: runtime SA2A, Jira mutation, CommandBus DO, deployment, publication, cross-repository standing
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3812198Z ##[group]Run actions/upload-artifact@v4
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3812506Z with:
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3812824Z   name: root-conformance-7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3813252Z   path: /tmp/root-conformance.json
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3813540Z   if-no-files-found: error
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3813790Z   retention-days: 30
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3814025Z   compression-level: 6
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3814258Z   overwrite: false
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3814497Z   include-hidden-files: false
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3814752Z env:
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3815022Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.15/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3815463Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.15/x64/lib/pkgconfig
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3815894Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3816291Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3816677Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3817105Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.15/x64/lib
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.3817445Z ##[endgroup]
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.5423981Z (node:2533) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.5424922Z (Use `node --trace-deprecation ...` to show where the warning was created)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.5469070Z With the provided path, there will be 1 file uploaded
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.5475507Z Artifact name is valid!
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.5476397Z Root directory input is valid!
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.7967747Z Beginning upload of artifact content to blob storage
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.8137340Z (node:2533) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.8970236Z Uploaded bytes 705
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.9285337Z Finished uploading artifact content to blob storage!
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.9286529Z SHA256 digest of uploaded artifact zip is 35c385d749c2b6c5c03d3f805c532e3b811d604edcc4c623dcbd383a94a348de
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:14.9288124Z Finalizing artifact upload
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.1235232Z Artifact root-conformance-7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629.zip successfully finalized. Artifact ID 10850572678
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.1236773Z Artifact root-conformance-7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629 has been successfully uploaded! Final size is 705 bytes. Artifact ID is 10850572678
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.1242672Z Artifact download URL: https://github.com/seanchatmangpt/engineering-standards/actions/runs/36101146601/artifacts/10850572678
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.1412885Z Post job cleanup.
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.2653533Z (node:2546) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.2655073Z (Use `node --trace-deprecation ...` to show where the warning was created)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.2869157Z Post job cleanup.
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.4086784Z (node:2554) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.4087607Z (Use `node --trace-deprecation ...` to show where the warning was created)
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.4285263Z Post job cleanup.
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.5200495Z [command]/usr/bin/git version
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.5250610Z git version 2.55.0
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.5268058Z Temporarily overriding HOME='/home/runner/work/_temp/6e4b3a66-74cb-49f6-b662-b9129d1ed0cc' before making global git config changes
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.5270084Z Adding repository directory to the temporary git global config as a safe directory
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.5274099Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/engineering-standards/engineering-standards
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.5314572Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.5351413Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.5616308Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.5644790Z http.https://github.com/.extraheader
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.5660833Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.5697903Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.5977831Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.6030249Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.6452436Z Cleaning up orphan processes
+qualify-root	UNKNOWN STEP	2026-09-25T06:45:15.6756157Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
