@@ -158,6 +158,8 @@ jobs:
           done
           python3 -m unittest discover -s tests -p 'test_observe_release_heads.py' -v
           python3 -m unittest discover -s tests -p 'test_observe_scorecard.py' -v
+          python3 -m unittest discover -s tests/release_train/root_crown_attestation -p 'test_*.py' -v
+          python3 -m unittest discover -s tests -p 'test_observe_attestation.py' -v
 
       - name: Mutation harness (--check-report; survivors must be 0)
         env:
@@ -193,6 +195,7 @@ jobs:
             'requests\.(post|put|patch|delete)|httpx|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|socket\.|boto3|azure\.|google\.cloud|kubectl|terraform|git push|gh pr merge' \
             scripts/release_train/root_crown \
             tests/release_train/root_crown \
+            tests/release_train/root_crown_attestation \
             scripts/release_train/scorecard \
             tests/release_train/scorecard
 
@@ -211,6 +214,15 @@ jobs:
           PYTHONDONTWRITEBYTECODE: '1'
         run: >-
           python3 -m scripts.release_train.root_crown.hardening --release "$RELEASE" --check
+          --subject-tree "${{ steps.subject.outputs.subject_tree }}"
+
+      - name: Post-tag attestation (--check; current-conformance.json + ATTESTATION.json)
+        if: steps.subject.outputs.record == 'true'
+        env:
+          PYTHONPATH: .
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: >-
+          python3 -m scripts.release_train.root_crown.attestation --release "$RELEASE" --check
           --subject-tree "${{ steps.subject.outputs.subject_tree }}"
 
       - name: Observe release heads (read-only GitHub API)

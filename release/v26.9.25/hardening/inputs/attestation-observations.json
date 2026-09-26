@@ -1,0 +1,360 @@
+{
+  "OBSERVED": "scripts/observe_attestation.py -- observation, do not edit; re-observe",
+  "authority": "gh-cli:operator:read",
+  "governance": {
+    "bundles_blocked": 104,
+    "bundles_by_standing": {
+      "BLOCKED(AUTHORITY:IGNORED_CONTENT_TO_PUBLIC_REPO)": 14,
+      "BLOCKED(AUTHORITY:NO_PUSH_REPO_POLICY)": 43,
+      "BLOCKED(DURABILITY:FOREIGN_LOCAL_ONLY)": 33,
+      "BLOCKED(DURABILITY:KEY_PATH_LOCAL_ONLY)": 2,
+      "BLOCKED(DURABILITY:SECRET_BEARING_LOCAL_ONLY)": 12,
+      "DURABLE_REMOTE": 2
+    },
+    "main_protected": false,
+    "notes_receipts_remote": false,
+    "notes_remote_refs": [],
+    "release_crown_protected_branches": false,
+    "release_crown_required_reviewers": 0,
+    "zoela_latest_main_run_conclusion": "failure",
+    "zoela_name": "zoela"
+  },
+  "lanes": [
+    {
+      "compare_status": "identical",
+      "default_branch": "main",
+      "default_head": "71a6f607074b0f8d1b23855c11f10557a545b655",
+      "id": "ES-RFC-0005",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 9,
+      "pr_head": "b70ecb931262929b9f24db5b1c853bcb915fd405",
+      "pr_merge_commit": "71a6f607074b0f8d1b23855c11f10557a545b655",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/engineering-standards@71a6f607074b0f8d1b23855c11f10557a545b655:docs/engineering/rfc/0005-v26.9.25-autonomic-closure-amendment.md",
+        "sha256": "f153fcc41e6f3f17b88929c3a7a1c6cb8defdfa7edd940d6dd21e127fabd310d"
+      },
+      "repository": "seanchatmangpt/engineering-standards"
+    },
+    {
+      "compare_status": "identical",
+      "default_branch": "main",
+      "default_head": "316436474aa949fd2f924980160016a58807bd06",
+      "id": "G1-origin-trust-root",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 35,
+      "pr_head": "647db5f208b7ec88c84f0dc7d70925b4dec330f9",
+      "pr_merge_commit": "316436474aa949fd2f924980160016a58807bd06",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:receipts/v26.9.25/sjira-origin-trust-root.json",
+        "sha256": "2062638ea101ad323b9f308c40bfce362f15b8c1b30fdedb999129305de2bb19"
+      },
+      "repository": "seanchatmangpt/ggen_igniter"
+    },
+    {
+      "compare_status": "ahead",
+      "default_branch": "main",
+      "default_head": "4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f",
+      "id": "X1-origin-backfill",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 74,
+      "pr_head": "2ee08326d76db6ddb4d2a194a7f3f001ba7dd2fa",
+      "pr_merge_commit": "26843052808901e9e871c25006504f5dda50ae92",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "https",
+        "locator": "https://github.com/seanchatmangpt/xaas/actions/runs/36193110697"
+      },
+      "repository": "seanchatmangpt/xaas"
+    },
+    {
+      "compare_status": "identical",
+      "default_branch": "main",
+      "default_head": "4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f",
+      "id": "X2-case-study-durable",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 75,
+      "pr_head": "0249ca416332b101d0e1ed797683dacb1a365715",
+      "pr_merge_commit": "4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/case-study-schema.post-tag.json",
+        "sha256": "d15f9e074ad2d38b2434cbe9fd856d306fc60477b0100260527bc0da687da297"
+      },
+      "repository": "seanchatmangpt/xaas"
+    },
+    {
+      "compare_status": "identical",
+      "default_branch": "main",
+      "default_head": "89745f2fa4f7f438749ef61b638d17739ef11630",
+      "id": "Z1-godslaw-gates",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 35,
+      "pr_head": "eb18cc73409573366c8fc6544eb41531083ccc1c",
+      "pr_merge_commit": "89745f2fa4f7f438749ef61b638d17739ef11630",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/godslaw-gate-witness.post-tag.json",
+        "sha256": "f7197df1779f175ae487cb0f24a318bb0679b531f62e4336b5b18e1cdd242375"
+      },
+      "repository": "seanchatmangpt/zoela"
+    },
+    {
+      "default_branch": "main",
+      "default_head": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+      "id": "A1-pr81-disposition",
+      "pr": 81,
+      "pr_head": "0abd0cc351b08c8c19414410e0cd365bfeac0ccb",
+      "pr_merge_commit": null,
+      "pr_state": "CLOSED",
+      "receipt": {
+        "kind": "https",
+        "locator": "https://github.com/seanchatmangpt/affidavit/pull/81#issuecomment-5840329301"
+      },
+      "repository": "seanchatmangpt/affidavit"
+    },
+    {
+      "compare_status": "identical",
+      "default_branch": "master",
+      "default_head": "b417eea64ef8e4d841b9cc2f4a898753e4b71d1b",
+      "id": "ALOOP-r9-sealed-recorder",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 181,
+      "pr_head": "ccec4dd35da7e8abe3a301409c20c7fae8f55201",
+      "pr_merge_commit": "b417eea64ef8e4d841b9cc2f4a898753e4b71d1b",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/autofde-lab@b417eea64ef8e4d841b9cc2f4a898753e4b71d1b:docs/rfcs/aloop/ALOOP-001-r9-k-mutant-witness.json",
+        "sha256": "4967cfca51825f10f2cafb1ffe56dd2313a1a98faa91777f967592b11b94e380"
+      },
+      "repository": "seanchatmangpt/autofde-lab"
+    },
+    {
+      "compare_status": "ahead",
+      "default_branch": "main",
+      "default_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "id": "PR-1-post-tag-crown",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 276,
+      "pr_head": "2ad33ac34b1c6f515f4758b2d0868a0b5d5750e4",
+      "pr_merge_commit": "1a41cd4452cf917d89324e90388b4c28079f1107",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@1a41cd4452cf917d89324e90388b4c28079f1107:release/v26.9.25/hardening/TAG-SUBJECT.json",
+        "sha256": "f87715bdf519b691797f9785ca519dbd945121599f1cd109a4b9480e878fc867"
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem"
+    },
+    {
+      "compare_status": "ahead",
+      "default_branch": "main",
+      "default_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "id": "PR-W-weaver-ash-advisory",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 277,
+      "pr_head": "fa1d9e33df4d679c6bfd20df54c5aff9bc662d57",
+      "pr_merge_commit": "5006fddc21805b07ab75937099fea1b942e4fb46",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@5006fddc21805b07ab75937099fea1b942e4fb46:integrations/weaver_ash/mix.lock",
+        "sha256": "4ddb0dd46d0d3a94868a0a30a4baf7e53fc853683454bd10b92ac8fca08799de"
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem"
+    },
+    {
+      "compare_status": "ahead",
+      "default_branch": "main",
+      "default_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "id": "PR-W-weaver-ref-check-token",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 284,
+      "pr_head": "a10ef5079d1249da657889c5e452285542d0c789",
+      "pr_merge_commit": "81b42dd543a2580c5da92b5a95eeae76a2d9f6a8",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@81b42dd543a2580c5da92b5a95eeae76a2d9f6a8:.github/workflows/weaver-live.yml",
+        "sha256": "99fb0047a4b042966404ff5625a1849af97bfbdc7a1f2ac66de9af969cc8464b"
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem"
+    },
+    {
+      "compare_status": "ahead",
+      "default_branch": "main",
+      "default_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "id": "E2-durable-locators",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 278,
+      "pr_head": "c1a5a609e48edf1bd981931ff32d3ba241001ec0",
+      "pr_merge_commit": "d6d137addbaf6906b12602031aa438991b846d2f",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@d6d137addbaf6906b12602031aa438991b846d2f:release/v26.9.25/hardening/evidence/INDEX.json",
+        "sha256": "fd6f6c7ee257483d831c293d7a28c76bf0606d7b6e41d8437ac5a883befc90d3"
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem"
+    },
+    {
+      "compare_status": "ahead",
+      "default_branch": "main",
+      "default_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "id": "PR-2-mutation-harness",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 279,
+      "pr_head": "e9bf0e3066c505b488d5a4afae07357b46113d62",
+      "pr_merge_commit": "bfc88ba1860dac6293588c13bd8a2de2dca72d17",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@bfc88ba1860dac6293588c13bd8a2de2dca72d17:release/v26.9.25/hardening/inputs/mutation-report.json",
+        "sha256": "b3a418331c496d568dc675ab48de886cab8a63ab4626b43421ac8135be6aba32"
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem"
+    },
+    {
+      "compare_status": "ahead",
+      "default_branch": "main",
+      "default_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "id": "PR-3-terminality-policy",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 280,
+      "pr_head": "7a564ea749d737e1e583855c68014919b0014b44",
+      "pr_merge_commit": "5b5681d1984d19ce0e4fcab89b513e3f8a378a0f",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@5b5681d1984d19ce0e4fcab89b513e3f8a378a0f:release/v26.9.25/hardening/amendments/AC-02-5fda5028.json",
+        "sha256": "975071b23b47f101fe9f76650262f38060ebf48645006d09d507a931ca7d4736"
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem"
+    },
+    {
+      "compare_status": "ahead",
+      "default_branch": "main",
+      "default_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "id": "PR-4-evidence-binding",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 281,
+      "pr_head": "3942aa8ce4f7ccdc5b522fea2436c03ebe3f8f6b",
+      "pr_merge_commit": "500d3850c1da11837bad89b3a406429dbfa9b398",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@500d3850c1da11837bad89b3a406429dbfa9b398:release/v26.9.25/hardening/replay-receipt.json",
+        "sha256": "28911f403e7c1c7523fb62f0261d827c6999b967099b5a0cf7482f2561c0a36f"
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem"
+    },
+    {
+      "compare_status": "ahead",
+      "default_branch": "main",
+      "default_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "id": "PR-M-court-minors",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 287,
+      "pr_head": "6ca45f02934d561e82d6fe867b22ac880f7bd1f6",
+      "pr_merge_commit": "6ff74d37c99ed4a4ccabedc53263147b253e65e0",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@6ff74d37c99ed4a4ccabedc53263147b253e65e0:release/v26.9.25/hardening/inputs/mutation-report.json",
+        "sha256": "274c8b9d8f8e827a8caac82c125b4213eb6ce252d5e28b66d0c68bd08428112c"
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem"
+    },
+    {
+      "compare_status": "ahead",
+      "default_branch": "main",
+      "default_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "id": "PR-5-hardening-outputs",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 288,
+      "pr_head": "8c905836ad68d63dd6a55ad2d61377c55c02ff91",
+      "pr_merge_commit": "ec3b98c51ca9ea5583aa08c68bf3eee146d765ef",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@ec3b98c51ca9ea5583aa08c68bf3eee146d765ef:release/v26.9.25/hardening/closure-final.json",
+        "sha256": "eff3f644c4086ddbe442a354e14fb049c18171429bac7afe0691b4548f25ab8d"
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem"
+    },
+    {
+      "compare_status": "ahead",
+      "default_branch": "main",
+      "default_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "id": "H2-topology-durable",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 289,
+      "pr_head": "040731469e435d501bc5dc3b393c97f4729c2666",
+      "pr_merge_commit": "9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/topology-relocation.json",
+        "sha256": "5118e30dc082f7b19d2aa6c3f2f882026a30124e94d139b533f25b2f19a318b3"
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem"
+    },
+    {
+      "compare_status": "ahead",
+      "default_branch": "main",
+      "default_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "id": "PR-B-autonomic-crown",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 290,
+      "pr_head": "5a113963015d9c1080fec3b36f4ce85007d6e5fe",
+      "pr_merge_commit": "ae6abe0db7fc5ac7b40bcf42f5c65ee47917e4e2",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@ae6abe0db7fc5ac7b40bcf42f5c65ee47917e4e2:release/v26.9.25/autonomy/autonomic-receipt.json",
+        "sha256": "fa7023b74a3c000d3add2b05041536b6ac6f3c2770c4f5b811dca7b120d0c538"
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem"
+    },
+    {
+      "compare_status": "identical",
+      "default_branch": "main",
+      "default_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "id": "H3-pr-dispositions",
+      "merge_on_default": "ON_DEFAULT",
+      "pr": 291,
+      "pr_head": "d06b0d71d2a51b36c1451a5cd35a2a3c6fdbe7df",
+      "pr_merge_commit": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "pr_state": "MERGED",
+      "receipt": {
+        "kind": "git",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/hardening/pr-dispositions.json",
+        "sha256": "2fa8ad6694757f336eac0d01ffe6694175285b9ba523d83509ab83d14e7ecd43"
+      },
+      "repository": "seanchatmangpt/chatman-ecosystem"
+    }
+  ],
+  "lanes_sha256": "16d7d9d87d7c7963d2992b5dccbe14035bfa6d3568a675c8ae032328eb9b1e67",
+  "observed_at": "2026-09-26T02:47:05Z",
+  "observer": "operator-local",
+  "release": "v26.9.25",
+  "schema": "https://chatman.dev/root-crown/hardening/attestation-observations/v1",
+  "weaver": {
+    "head_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+    "runs": [
+      {
+        "conclusion": "success",
+        "event": "push",
+        "id": 36212294072,
+        "status": "completed"
+      }
+    ],
+    "workflow": "Weaver Exact-Subject Capability Crown"
+  }
+}
