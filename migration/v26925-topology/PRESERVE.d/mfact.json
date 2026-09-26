@@ -1,0 +1,148 @@
+{
+ "records": {
+  "mfact_claude_worktrees_wf_24b4eb65-119-10": {
+   "bundle": null,
+   "canonical": "/Users/sac/mfact",
+   "copy_id": "mfact_claude_worktrees_wf_24b4eb65-119-10",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-10/anchor",
+   "ok": true,
+   "path": "/Users/sac/mfact/.claude/worktrees/wf_24b4eb65-119-10",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-10/anchor": "e77a653a780334c67512c6ff177facb2a71199fc",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-10/dirty": "01be4433b3eda1119593cc992234a08044323932",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-10/index": "b3c27d6a2d0f97c29119efd83add5bed7a539637",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-10/worktree-head": "587d307e3cc83c3fd920f2015cde8a29d5596fad"
+   },
+   "remote_ref": "backup/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-10",
+   "remote_verified_sha": "e77a653a780334c67512c6ff177facb2a71199fc",
+   "repo_id": "mfact",
+   "sha": "e77a653a780334c67512c6ff177facb2a71199fc",
+   "skipped": [],
+   "snapshot_tree": "97470e672f766a912f298aea4289d35939d1ca62"
+  },
+  "mfact_claude_worktrees_wf_24b4eb65-119-16": {
+   "bundle": null,
+   "canonical": "/Users/sac/mfact",
+   "copy_id": "mfact_claude_worktrees_wf_24b4eb65-119-16",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-16/anchor",
+   "ok": true,
+   "path": "/Users/sac/mfact/.claude/worktrees/wf_24b4eb65-119-16",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-16/anchor": "bf1823fb4d88bd04796e881d150cec46f8c6fd1b",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-16/dirty": "059be8ecda5b29652a1ce48e21093d0303eede3a",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-16/index": "1d0556ec5d95e582ae687b1eaefc37c389a102aa",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-16/worktree-head": "2f4f0b583ce55705476800922db01ad8d5f49e99"
+   },
+   "remote_ref": "backup/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-16",
+   "remote_verified_sha": "bf1823fb4d88bd04796e881d150cec46f8c6fd1b",
+   "repo_id": "mfact",
+   "sha": "bf1823fb4d88bd04796e881d150cec46f8c6fd1b",
+   "skipped": [],
+   "snapshot_tree": "7806c7df15a00f769a743fcbb3fbc1e3be6bb81b"
+  },
+  "mfact_claude_worktrees_wf_24b4eb65-119-17": {
+   "bundle": null,
+   "canonical": "/Users/sac/mfact",
+   "copy_id": "mfact_claude_worktrees_wf_24b4eb65-119-17",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-17/anchor",
+   "ok": true,
+   "path": "/Users/sac/mfact/.claude/worktrees/wf_24b4eb65-119-17",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-17/anchor": "a7973a6d8fb05a53e6c2b1055519d376aa243007",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-17/dirty": "9568477cbc7ca39f5f0dba68a116b7f5274093df",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-17/index": "c9899635e51eef93809fd70e26909e99a1896384",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-17/worktree-head": "a94ed53336cd0580f6c49337c14c673bc7082969"
+   },
+   "remote_ref": "backup/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-17",
+   "remote_verified_sha": "a7973a6d8fb05a53e6c2b1055519d376aa243007",
+   "repo_id": "mfact",
+   "sha": "a7973a6d8fb05a53e6c2b1055519d376aa243007",
+   "skipped": [],
+   "snapshot_tree": "e9cc042bee55cb20943ea11284fee4d93c23cb2f"
+  },
+  "mfact_claude_worktrees_wf_24b4eb65-119-19": {
+   "bundle": null,
+   "canonical": "/Users/sac/mfact",
+   "copy_id": "mfact_claude_worktrees_wf_24b4eb65-119-19",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-19/anchor",
+   "ok": true,
+   "path": "/Users/sac/mfact/.claude/worktrees/wf_24b4eb65-119-19",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-19/anchor": "fb1379d4b5ea3122b00fee44b8207f35d0142a14",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-19/dirty": "7f71f7daa6ca66eab96597de4d1e7bf5ecacf6e0",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-19/index": "1120f5a15b916b784a7a18071a39d43eebce4fcf",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-19/worktree-head": "e174fa3ac8c07ba9a026892bcc4df92faf74d15e"
+   },
+   "remote_ref": "backup/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-19",
+   "remote_verified_sha": "fb1379d4b5ea3122b00fee44b8207f35d0142a14",
+   "repo_id": "mfact",
+   "sha": "fb1379d4b5ea3122b00fee44b8207f35d0142a14",
+   "skipped": [],
+   "snapshot_tree": "1a182ee08d85e21faada6ded02a11f94633777d0"
+  },
+  "mfact_claude_worktrees_wf_24b4eb65-119-5": {
+   "bundle": null,
+   "canonical": "/Users/sac/mfact",
+   "copy_id": "mfact_claude_worktrees_wf_24b4eb65-119-5",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-5/anchor",
+   "ok": true,
+   "path": "/Users/sac/mfact/.claude/worktrees/wf_24b4eb65-119-5",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-5/anchor": "e017aa68cd1e20c29d72a6ae2fbfcc5fe0e166c4",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-5/dirty": "912ea148dcf2e49c0e9181ee1e8d8c957c656f5a",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-5/index": "9886d1fb2e3c5512624e2aeaf5aacf451247127f",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-5/worktree-head": "118ec78a521be8f9bd7b352d1b7af35752cabe30"
+   },
+   "remote_ref": "backup/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-5",
+   "remote_verified_sha": "e017aa68cd1e20c29d72a6ae2fbfcc5fe0e166c4",
+   "repo_id": "mfact",
+   "sha": "e017aa68cd1e20c29d72a6ae2fbfcc5fe0e166c4",
+   "skipped": [],
+   "snapshot_tree": "a6d6e414e1dc3ddcc73277e69ceb44060f7eff24"
+  },
+  "mfact_claude_worktrees_wf_24b4eb65-119-6": {
+   "bundle": null,
+   "canonical": "/Users/sac/mfact",
+   "copy_id": "mfact_claude_worktrees_wf_24b4eb65-119-6",
+   "durable": "REMOTE",
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-6/anchor",
+   "ok": true,
+   "path": "/Users/sac/mfact/.claude/worktrees/wf_24b4eb65-119-6",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-6/anchor": "d07a8fc857a161ae93babe718c0e181df669c1c4",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-6/dirty": "c76c803135aec598293c3ec7e31517a86976d635",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-6/index": "9a00c13de940e58e2ab3cc52e3f4dc08d1fc8441",
+    "refs/preserve/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-6/worktree-head": "154b62f956a8a134733df289ab857655927b91ae"
+   },
+   "remote_ref": "backup/v26.9.25/mfact_claude_worktrees_wf_24b4eb65-119-6",
+   "remote_verified_sha": "d07a8fc857a161ae93babe718c0e181df669c1c4",
+   "repo_id": "mfact",
+   "sha": "d07a8fc857a161ae93babe718c0e181df669c1c4",
+   "skipped": [],
+   "snapshot_tree": "f83eb0967064cf57d4724763feb62ad195f21cd6"
+  }
+ }
+}

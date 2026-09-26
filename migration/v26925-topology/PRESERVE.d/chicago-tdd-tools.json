@@ -1,0 +1,46 @@
+{
+ "records": {
+  "gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Application-Guide-Writer-self-30036e45": {
+   "bundle": null,
+   "canonical": "/Users/sac/chicago-tdd-tools",
+   "copy_id": "gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Application-Guide-Writer-self-30036e45",
+   "durable": "REMOTE",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Application-Guide-Writer-self-30036e45/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/ddd62c25-4119-43d4-85b8-78388ec3e23e/.system_generated/worktrees/subagent-Application-Guide-Writer-self-30036e45",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Application-Guide-Writer-self-30036e45/admin-index": "6787b58dfad6498dae8d1fe25223a911548e7acc",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Application-Guide-Writer-self-30036e45/anchor": "ab736d0624b0e6e92f49e0efa6924d8405af02ee",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Application-Guide-Writer-self-30036e45/worktree-head": "c84f20ffcc688c42a8a756ca53f1b38b4077a451"
+   },
+   "remote_ref": "backup/v26.9.25/gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Application-Guide-Writer-self-30036e45",
+   "remote_verified_sha": "ab736d0624b0e6e92f49e0efa6924d8405af02ee",
+   "repo_id": "chicago-tdd-tools",
+   "sha": "ab736d0624b0e6e92f49e0efa6924d8405af02ee"
+  },
+  "gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Cookbook-Writer-self-b6b6caf0": {
+   "bundle": null,
+   "canonical": "/Users/sac/chicago-tdd-tools",
+   "copy_id": "gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Cookbook-Writer-self-b6b6caf0",
+   "durable": "REMOTE",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Cookbook-Writer-self-b6b6caf0/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/ddd62c25-4119-43d4-85b8-78388ec3e23e/.system_generated/worktrees/subagent-Cookbook-Writer-self-b6b6caf0",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Cookbook-Writer-self-b6b6caf0/admin-index": "f67d05de996fb1da03f1b33df9a7b901f5aaa366",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Cookbook-Writer-self-b6b6caf0/anchor": "aab60d005df4311927daaac685f996f20f33b314",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Cookbook-Writer-self-b6b6caf0/worktree-head": "22a5d17fcb9dddc8658dc2679300147cddbdfda0"
+   },
+   "remote_ref": "backup/v26.9.25/gemini_antigravity-cli_brain_ddd62c25-4119-43d4-85b8-78388ec3e23e_system_generated_worktrees_subagent-Cookbook-Writer-self-b6b6caf0",
+   "remote_verified_sha": "aab60d005df4311927daaac685f996f20f33b314",
+   "repo_id": "chicago-tdd-tools",
+   "sha": "aab60d005df4311927daaac685f996f20f33b314"
+  }
+ }
+}

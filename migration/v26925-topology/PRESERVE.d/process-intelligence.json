@@ -1,0 +1,579 @@
+{
+ "records": {
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-AI-Intelligence---On-Device-LLM-Specialist-zoeapp-framework-agi-4143c0ee": {
+   "bundle": null,
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-AI-Intelligence---On-Device-LLM-Specialist-zoeapp-framework-agi-4143c0ee",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-AI-Intelligence---On-Device-LLM-Specialist-zoeapp-framework-agi-4143c0ee/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-AI-Intelligence---On-Device-LLM-Specialist-zoeapp-framework-agi-4143c0ee",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-AI-Intelligence---On-Device-LLM-Specialist-zoeapp-framework-agi-4143c0ee/admin-index": "cead46f07e198f6ad3e640d5716cc6c1cedfe6c4",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-AI-Intelligence---On-Device-LLM-Specialist-zoeapp-framework-agi-4143c0ee/anchor": "b1c5678a57876a96306bb96579fb2dc749e5b2d6",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-AI-Intelligence---On-Device-LLM-Specialist-zoeapp-framework-agi-4143c0ee/worktree-head": "9eaf02109af176d5382f9e359f2c36fabf3b0d51"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "sha": "b1c5678a57876a96306bb96579fb2dc749e5b2d6"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Autonomous-QA---Self-Healing-Agent-zoeapp-framework-agi-a453b0ce": {
+   "bundle": null,
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Autonomous-QA---Self-Healing-Agent-zoeapp-framework-agi-a453b0ce",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Autonomous-QA---Self-Healing-Agent-zoeapp-framework-agi-a453b0ce/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-Autonomous-QA---Self-Healing-Agent-zoeapp-framework-agi-a453b0ce",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Autonomous-QA---Self-Healing-Agent-zoeapp-framework-agi-a453b0ce/admin-index": "dca4d44326d03668635ba8d947062d85495512f8",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Autonomous-QA---Self-Healing-Agent-zoeapp-framework-agi-a453b0ce/anchor": "969be87068a95425e32c7bc085a6ad0b83228401",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Autonomous-QA---Self-Healing-Agent-zoeapp-framework-agi-a453b0ce/worktree-head": "9eaf02109af176d5382f9e359f2c36fabf3b0d51"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "sha": "969be87068a95425e32c7bc085a6ad0b83228401"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-BCI-UX-Cognitive-Parity-Enhancer-zoeapp-framework-agi-7c4852a7": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-BCI-UX-Cognitive-Parity-Enhancer-zoeapp-framework-agi-7c4852a7.bundle",
+    "sha256": "f5ee204191dcacfa001842fd86fcac7ec9b2293998887522ad1256aab6715c8e",
+    "size": 301301,
+    "verified": true
+   },
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-BCI-UX-Cognitive-Parity-Enhancer-zoeapp-framework-agi-7c4852a7",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": "REVOKED_KEY_ANCESTRY",
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-BCI-UX-Cognitive-Parity-Enhancer-zoeapp-framework-agi-7c4852a7/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-BCI-UX-Cognitive-Parity-Enhancer-zoeapp-framework-agi-7c4852a7",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-BCI-UX-Cognitive-Parity-Enhancer-zoeapp-framework-agi-7c4852a7/admin-index": "18f9396a4c67a0581925c713ef8c6d713ab28a83",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-BCI-UX-Cognitive-Parity-Enhancer-zoeapp-framework-agi-7c4852a7/anchor": "23665dddfbb317e2bacedbaf5614bbf292f83845",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-BCI-UX-Cognitive-Parity-Enhancer-zoeapp-framework-agi-7c4852a7/worktree-head": "9febc60292d3022b7283bb4a48253417fad7f162"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "scan_hits": [
+    {
+     "blob": "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+     "path": ".ggen/keys/signing.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "40b0151635c49461e89d1608195dc8f20de3b826",
+     "path": ".ggen/keys/verifying.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "7ea571d05ceaaf88233eedf44a3c29baa04e6d6f",
+     "path": "research/pi-program/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    },
+    {
+     "blob": "fa3ae813b438ad9791726cf0a4a6ece2c3d6c566",
+     "path": "research/prompt-manufactory/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    }
+   ],
+   "sha": "23665dddfbb317e2bacedbaf5614bbf292f83845"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-DrizzleSync-Admission-Gate-Enforcer-zoeapp-framework-agi-4e9e47c9": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-DrizzleSync-Admission-Gate-Enforcer-zoeapp-framework-agi-4e9e47c9.bundle",
+    "sha256": "5b3f1bdde3237535a1fcfacd088dfb17829ee8dcb57e53916331ef393b40be60",
+    "size": 171719,
+    "verified": true
+   },
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-DrizzleSync-Admission-Gate-Enforcer-zoeapp-framework-agi-4e9e47c9",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": "REVOKED_KEY_ANCESTRY",
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-DrizzleSync-Admission-Gate-Enforcer-zoeapp-framework-agi-4e9e47c9/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-DrizzleSync-Admission-Gate-Enforcer-zoeapp-framework-agi-4e9e47c9",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-DrizzleSync-Admission-Gate-Enforcer-zoeapp-framework-agi-4e9e47c9/admin-index": "82bbb1c2cec12c29b188446d47e896838c9977ac",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-DrizzleSync-Admission-Gate-Enforcer-zoeapp-framework-agi-4e9e47c9/anchor": "e2557755204a0f9baaeb84abb55f066391ce0857",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-DrizzleSync-Admission-Gate-Enforcer-zoeapp-framework-agi-4e9e47c9/worktree-head": "35c64c9d570ae76b56c2008a1fc48009847891a3"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "scan_hits": [
+    {
+     "blob": "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+     "path": ".ggen/keys/signing.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "40b0151635c49461e89d1608195dc8f20de3b826",
+     "path": ".ggen/keys/verifying.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "7ea571d05ceaaf88233eedf44a3c29baa04e6d6f",
+     "path": "research/pi-program/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    },
+    {
+     "blob": "fa3ae813b438ad9791726cf0a4a6ece2c3d6c566",
+     "path": "research/prompt-manufactory/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    }
+   ],
+   "sha": "e2557755204a0f9baaeb84abb55f066391ce0857"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Full-Test-Suite-Green-Loop-Agent-zoeapp-framework-agi-4fd17871": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Full-Test-Suite-Green-Loop-Agent-zoeapp-framework-agi-4fd17871.bundle",
+    "sha256": "817bea4e5d1fb29bc402f3c80f69c4fed913b6d9f90bfd4fcbb56b4c9451eaed",
+    "size": 171713,
+    "verified": true
+   },
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Full-Test-Suite-Green-Loop-Agent-zoeapp-framework-agi-4fd17871",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": "REVOKED_KEY_ANCESTRY",
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Full-Test-Suite-Green-Loop-Agent-zoeapp-framework-agi-4fd17871/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-Full-Test-Suite-Green-Loop-Agent-zoeapp-framework-agi-4fd17871",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Full-Test-Suite-Green-Loop-Agent-zoeapp-framework-agi-4fd17871/admin-index": "000e6491181b280facf4acce0d33893011ec2261",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Full-Test-Suite-Green-Loop-Agent-zoeapp-framework-agi-4fd17871/anchor": "c673f5e15565260e5b56c002be5bf5a01663d99b",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Full-Test-Suite-Green-Loop-Agent-zoeapp-framework-agi-4fd17871/worktree-head": "35c64c9d570ae76b56c2008a1fc48009847891a3"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "scan_hits": [
+    {
+     "blob": "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+     "path": ".ggen/keys/signing.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "40b0151635c49461e89d1608195dc8f20de3b826",
+     "path": ".ggen/keys/verifying.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "7ea571d05ceaaf88233eedf44a3c29baa04e6d6f",
+     "path": "research/pi-program/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    },
+    {
+     "blob": "fa3ae813b438ad9791726cf0a4a6ece2c3d6c566",
+     "path": "research/prompt-manufactory/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    }
+   ],
+   "sha": "c673f5e15565260e5b56c002be5bf5a01663d99b"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Hyper-Dimensional-Database-Specialist-zoeapp-framework-agi-3207a0ca": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Hyper-Dimensional-Database-Specialist-zoeapp-framework-agi-3207a0ca.bundle",
+    "sha256": "50c4cab3396cc56c8bf7a60db5ecdb57bbd43c98297090639533e1fe6b40296a",
+    "size": 301311,
+    "verified": true
+   },
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Hyper-Dimensional-Database-Specialist-zoeapp-framework-agi-3207a0ca",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": "REVOKED_KEY_ANCESTRY",
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Hyper-Dimensional-Database-Specialist-zoeapp-framework-agi-3207a0ca/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-Hyper-Dimensional-Database-Specialist-zoeapp-framework-agi-3207a0ca",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Hyper-Dimensional-Database-Specialist-zoeapp-framework-agi-3207a0ca/admin-index": "1d477fb807b08b78ed8b1e594315ea9914eed2e3",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Hyper-Dimensional-Database-Specialist-zoeapp-framework-agi-3207a0ca/anchor": "9b76b44a4cdd57853b8478f1f9030bff491e1328",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Hyper-Dimensional-Database-Specialist-zoeapp-framework-agi-3207a0ca/worktree-head": "9febc60292d3022b7283bb4a48253417fad7f162"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "scan_hits": [
+    {
+     "blob": "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+     "path": ".ggen/keys/signing.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "40b0151635c49461e89d1608195dc8f20de3b826",
+     "path": ".ggen/keys/verifying.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "7ea571d05ceaaf88233eedf44a3c29baa04e6d6f",
+     "path": "research/pi-program/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    },
+    {
+     "blob": "fa3ae813b438ad9791726cf0a4a6ece2c3d6c566",
+     "path": "research/prompt-manufactory/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    }
+   ],
+   "sha": "9b76b44a4cdd57853b8478f1f9030bff491e1328"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Membrane---State-Architecture-Specialist-zoeapp-framework-agi-ca98db4d": {
+   "bundle": null,
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Membrane---State-Architecture-Specialist-zoeapp-framework-agi-ca98db4d",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Membrane---State-Architecture-Specialist-zoeapp-framework-agi-ca98db4d/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-Membrane---State-Architecture-Specialist-zoeapp-framework-agi-ca98db4d",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Membrane---State-Architecture-Specialist-zoeapp-framework-agi-ca98db4d/admin-index": "5626f97588673f16cc527de3c87ddaceda5a0f71",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Membrane---State-Architecture-Specialist-zoeapp-framework-agi-ca98db4d/anchor": "1731b38925251e05d64e04573d58fea9b392f745",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Membrane---State-Architecture-Specialist-zoeapp-framework-agi-ca98db4d/worktree-head": "9eaf02109af176d5382f9e359f2c36fabf3b0d51"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "sha": "1731b38925251e05d64e04573d58fea9b392f745"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Quantum-Entangled-Crypto-Specialist-zoeapp-framework-agi-ce814b13": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Quantum-Entangled-Crypto-Specialist-zoeapp-framework-agi-ce814b13.bundle",
+    "sha256": "64522027b89baac8c2ad71eda57c9307e5718849150f9e873ba45fe2c682fa5f",
+    "size": 301307,
+    "verified": true
+   },
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Quantum-Entangled-Crypto-Specialist-zoeapp-framework-agi-ce814b13",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": "REVOKED_KEY_ANCESTRY",
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Quantum-Entangled-Crypto-Specialist-zoeapp-framework-agi-ce814b13/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-Quantum-Entangled-Crypto-Specialist-zoeapp-framework-agi-ce814b13",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Quantum-Entangled-Crypto-Specialist-zoeapp-framework-agi-ce814b13/admin-index": "9b712d4821d13b0ab57e6a632eb54de13251a54a",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Quantum-Entangled-Crypto-Specialist-zoeapp-framework-agi-ce814b13/anchor": "02607d3e5513bfee202a9408f138d674987e6d1f",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Quantum-Entangled-Crypto-Specialist-zoeapp-framework-agi-ce814b13/worktree-head": "9febc60292d3022b7283bb4a48253417fad7f162"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "scan_hits": [
+    {
+     "blob": "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+     "path": ".ggen/keys/signing.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "40b0151635c49461e89d1608195dc8f20de3b826",
+     "path": ".ggen/keys/verifying.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "7ea571d05ceaaf88233eedf44a3c29baa04e6d6f",
+     "path": "research/pi-program/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    },
+    {
+     "blob": "fa3ae813b438ad9791726cf0a4a6ece2c3d6c566",
+     "path": "research/prompt-manufactory/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    }
+   ],
+   "sha": "02607d3e5513bfee202a9408f138d674987e6d1f"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Route-Admission---Auth-Invariant-Enforcer-zoeapp-framework-agi-31a0a789": {
+   "bundle": null,
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Route-Admission---Auth-Invariant-Enforcer-zoeapp-framework-agi-31a0a789",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Route-Admission---Auth-Invariant-Enforcer-zoeapp-framework-agi-31a0a789/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-Route-Admission---Auth-Invariant-Enforcer-zoeapp-framework-agi-31a0a789",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Route-Admission---Auth-Invariant-Enforcer-zoeapp-framework-agi-31a0a789/admin-index": "c1a4dc488147b35571f5c0e790807477a2f22468",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Route-Admission---Auth-Invariant-Enforcer-zoeapp-framework-agi-31a0a789/anchor": "a5fabbe87348fd4b258f1f10e18cdf57669fc39e",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Route-Admission---Auth-Invariant-Enforcer-zoeapp-framework-agi-31a0a789/worktree-head": "9eaf02109af176d5382f9e359f2c36fabf3b0d51"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "sha": "a5fabbe87348fd4b258f1f10e18cdf57669fc39e"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-SHA-256-to-BLAKE3-Migration---SingularityKernel-Receipt-Agent-zoeapp-framework-agi-dd6438f5": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-SHA-256-to-BLAKE3-Migration---SingularityKernel-Receipt-Agent-zoeapp-framework-agi-dd6438f5.bundle",
+    "sha256": "93c43719ce28dceb40772af871bb87a9cab16dd69d1a9accabd75d0820190718",
+    "size": 171771,
+    "verified": true
+   },
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-SHA-256-to-BLAKE3-Migration---SingularityKernel-Receipt-Agent-zoeapp-framework-agi-dd6438f5",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": "REVOKED_KEY_ANCESTRY",
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-SHA-256-to-BLAKE3-Migration---SingularityKernel-Receipt-Agent-zoeapp-framework-agi-dd6438f5/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-SHA-256-to-BLAKE3-Migration---SingularityKernel-Receipt-Agent-zoeapp-framework-agi-dd6438f5",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-SHA-256-to-BLAKE3-Migration---SingularityKernel-Receipt-Agent-zoeapp-framework-agi-dd6438f5/admin-index": "5029749ec632ce109673a8a78ce0764e5ea7a78f",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-SHA-256-to-BLAKE3-Migration---SingularityKernel-Receipt-Agent-zoeapp-framework-agi-dd6438f5/anchor": "ce4a25cfbcabb44c4f1795c9842d8051bf650bc3",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-SHA-256-to-BLAKE3-Migration---SingularityKernel-Receipt-Agent-zoeapp-framework-agi-dd6438f5/worktree-head": "35c64c9d570ae76b56c2008a1fc48009847891a3"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "scan_hits": [
+    {
+     "blob": "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+     "path": ".ggen/keys/signing.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "40b0151635c49461e89d1608195dc8f20de3b826",
+     "path": ".ggen/keys/verifying.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "7ea571d05ceaaf88233eedf44a3c29baa04e6d6f",
+     "path": "research/pi-program/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    },
+    {
+     "blob": "fa3ae813b438ad9791726cf0a4a6ece2c3d6c566",
+     "path": "research/prompt-manufactory/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    }
+   ],
+   "sha": "ce4a25cfbcabb44c4f1795c9842d8051bf650bc3"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync---Replication-Hardening-Specialist-zoeapp-framework-agi-454d5832": {
+   "bundle": null,
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync---Replication-Hardening-Specialist-zoeapp-framework-agi-454d5832",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync---Replication-Hardening-Specialist-zoeapp-framework-agi-454d5832/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-Sync---Replication-Hardening-Specialist-zoeapp-framework-agi-454d5832",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync---Replication-Hardening-Specialist-zoeapp-framework-agi-454d5832/admin-index": "c55ecda322bd0e0f053ec1153c2f24067d8fb526",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync---Replication-Hardening-Specialist-zoeapp-framework-agi-454d5832/anchor": "5ab5d1b9b75dcb237d83f13a1f836be7e51b71a3",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync---Replication-Hardening-Specialist-zoeapp-framework-agi-454d5832/worktree-head": "9eaf02109af176d5382f9e359f2c36fabf3b0d51"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "sha": "5ab5d1b9b75dcb237d83f13a1f836be7e51b71a3"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync-Engine-PATQ-Critical-Violation-Fixer-zoeapp-framework-agi-a7c914ea": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync-Engine-PATQ-Critical-Violation-Fixer-zoeapp-framework-agi-a7c914ea.bundle",
+    "sha256": "e08e256de836a8f209872dc51d7fb595a0ba7e74d67fd336ca1f8db3bbcd26bd",
+    "size": 171731,
+    "verified": true
+   },
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync-Engine-PATQ-Critical-Violation-Fixer-zoeapp-framework-agi-a7c914ea",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": "REVOKED_KEY_ANCESTRY",
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync-Engine-PATQ-Critical-Violation-Fixer-zoeapp-framework-agi-a7c914ea/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-Sync-Engine-PATQ-Critical-Violation-Fixer-zoeapp-framework-agi-a7c914ea",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync-Engine-PATQ-Critical-Violation-Fixer-zoeapp-framework-agi-a7c914ea/admin-index": "088b613362f69b1fec0aca9a0066d97718026be1",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync-Engine-PATQ-Critical-Violation-Fixer-zoeapp-framework-agi-a7c914ea/anchor": "6964fe02eedaa4c20772c27c932faa02192bf71b",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Sync-Engine-PATQ-Critical-Violation-Fixer-zoeapp-framework-agi-a7c914ea/worktree-head": "35c64c9d570ae76b56c2008a1fc48009847891a3"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "scan_hits": [
+    {
+     "blob": "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+     "path": ".ggen/keys/signing.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "40b0151635c49461e89d1608195dc8f20de3b826",
+     "path": ".ggen/keys/verifying.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "7ea571d05ceaaf88233eedf44a3c29baa04e6d6f",
+     "path": "research/pi-program/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    },
+    {
+     "blob": "fa3ae813b438ad9791726cf0a4a6ece2c3d6c566",
+     "path": "research/prompt-manufactory/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    }
+   ],
+   "sha": "6964fe02eedaa4c20772c27c932faa02192bf71b"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Temporal-Routing-Specialist-zoeapp-framework-agi-8de788cb": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Temporal-Routing-Specialist-zoeapp-framework-agi-8de788cb.bundle",
+    "sha256": "ae35112870ba3ed8297f6ea6fff474a0ece73d95a12201b407e848be712f7055",
+    "size": 301291,
+    "verified": true
+   },
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Temporal-Routing-Specialist-zoeapp-framework-agi-8de788cb",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": "REVOKED_KEY_ANCESTRY",
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Temporal-Routing-Specialist-zoeapp-framework-agi-8de788cb/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-Temporal-Routing-Specialist-zoeapp-framework-agi-8de788cb",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Temporal-Routing-Specialist-zoeapp-framework-agi-8de788cb/admin-index": "433cf88aa974717a0c0e96d271fabfd7957ff361",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Temporal-Routing-Specialist-zoeapp-framework-agi-8de788cb/anchor": "5bf2ed088e9d79887e5022ff225174b875d0f6ae",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Temporal-Routing-Specialist-zoeapp-framework-agi-8de788cb/worktree-head": "9febc60292d3022b7283bb4a48253417fad7f162"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "scan_hits": [
+    {
+     "blob": "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+     "path": ".ggen/keys/signing.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "40b0151635c49461e89d1608195dc8f20de3b826",
+     "path": ".ggen/keys/verifying.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "7ea571d05ceaaf88233eedf44a3c29baa04e6d6f",
+     "path": "research/pi-program/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    },
+    {
+     "blob": "fa3ae813b438ad9791726cf0a4a6ece2c3d6c566",
+     "path": "research/prompt-manufactory/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    }
+   ],
+   "sha": "5bf2ed088e9d79887e5022ff225174b875d0f6ae"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-TypeScript-Clean---Final-Compliance-Auditor-zoeapp-framework-agi-073a46ff": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-TypeScript-Clean---Final-Compliance-Auditor-zoeapp-framework-agi-073a46ff.bundle",
+    "sha256": "c94c6d9570d8fadb4e930cb84280ce9c36ac3d4b41381251e4bb90cf15b10fa1",
+    "size": 171735,
+    "verified": true
+   },
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-TypeScript-Clean---Final-Compliance-Auditor-zoeapp-framework-agi-073a46ff",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": "REVOKED_KEY_ANCESTRY",
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-TypeScript-Clean---Final-Compliance-Auditor-zoeapp-framework-agi-073a46ff/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-TypeScript-Clean---Final-Compliance-Auditor-zoeapp-framework-agi-073a46ff",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-TypeScript-Clean---Final-Compliance-Auditor-zoeapp-framework-agi-073a46ff/admin-index": "885c0663c636040d1026ef00fac906d251a16833",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-TypeScript-Clean---Final-Compliance-Auditor-zoeapp-framework-agi-073a46ff/anchor": "11075c000af5058ed4461d1aff5f9f69629e04f4",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-TypeScript-Clean---Final-Compliance-Auditor-zoeapp-framework-agi-073a46ff/worktree-head": "35c64c9d570ae76b56c2008a1fc48009847891a3"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "scan_hits": [
+    {
+     "blob": "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+     "path": ".ggen/keys/signing.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "40b0151635c49461e89d1608195dc8f20de3b826",
+     "path": ".ggen/keys/verifying.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "7ea571d05ceaaf88233eedf44a3c29baa04e6d6f",
+     "path": "research/pi-program/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    },
+    {
+     "blob": "fa3ae813b438ad9791726cf0a4a6ece2c3d6c566",
+     "path": "research/prompt-manufactory/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    }
+   ],
+   "sha": "11075c000af5058ed4461d1aff5f9f69629e04f4"
+  },
+  "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Zero-Energy-Sync-Specialist-zoeapp-framework-agi-93e24a25": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Zero-Energy-Sync-Specialist-zoeapp-framework-agi-93e24a25.bundle",
+    "sha256": "6013ed6ddf1ccbc997de1c1f8dd575154f3e48e0ae53bd26f1ad93a19b3e6acd",
+    "size": 301291,
+    "verified": true
+   },
+   "canonical": "/Users/sac/process-intelligence",
+   "copy_id": "gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Zero-Energy-Sync-Specialist-zoeapp-framework-agi-93e24a25",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": "REVOKED_KEY_ANCESTRY",
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Zero-Energy-Sync-Specialist-zoeapp-framework-agi-93e24a25/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/8f901359-a533-4e3c-8106-f82ff349cc47/.system_generated/worktrees/subagent-Zero-Energy-Sync-Specialist-zoeapp-framework-agi-93e24a25",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Zero-Energy-Sync-Specialist-zoeapp-framework-agi-93e24a25/admin-index": "a2ac93ebf006b9ae8a58ccfd1d8995f622356fb4",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Zero-Energy-Sync-Specialist-zoeapp-framework-agi-93e24a25/anchor": "4e94da7dd665ec3bc4200c8b80e9a86b769b03b1",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_8f901359-a533-4e3c-8106-f82ff349cc47_system_generated_worktrees_subagent-Zero-Energy-Sync-Specialist-zoeapp-framework-agi-93e24a25/worktree-head": "9febc60292d3022b7283bb4a48253417fad7f162"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "process-intelligence",
+   "scan_hits": [
+    {
+     "blob": "3dfe6ceab5e3aea72f3d85db14658889459dfaac",
+     "path": ".ggen/keys/signing.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "40b0151635c49461e89d1608195dc8f20de3b826",
+     "path": ".ggen/keys/verifying.key",
+     "why": "REVOKED_BLOB"
+    },
+    {
+     "blob": "7ea571d05ceaaf88233eedf44a3c29baa04e6d6f",
+     "path": "research/pi-program/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    },
+    {
+     "blob": "fa3ae813b438ad9791726cf0a4a6ece2c3d6c566",
+     "path": "research/prompt-manufactory/.ggen/keys/signing.key",
+     "why": "KEY_PATH"
+    }
+   ],
+   "sha": "4e94da7dd665ec3bc4200c8b80e9a86b769b03b1"
+  }
+ }
+}

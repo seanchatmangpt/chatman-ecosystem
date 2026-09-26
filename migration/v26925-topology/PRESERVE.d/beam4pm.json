@@ -1,0 +1,90 @@
+{
+ "records": {
+  "beam4pm-worktrees": {
+   "bundle": null,
+   "canonical": "/Users/sac/beam4pm",
+   "copy_id": "beam4pm-worktrees",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/beam4pm-worktrees/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/beam4pm-worktrees",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/beam4pm-worktrees/anchor": "79a6956fef661de67e854b1a2c68a11084b44228",
+    "refs/preserve/v26.9.25/beam4pm-worktrees/dirty": "050af41081b99944f1a74dee5cd17c8c8cd1802b"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "beam4pm",
+   "sha": "79a6956fef661de67e854b1a2c68a11084b44228",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+  },
+  "tmp_beam4pm_work": {
+   "bundle": null,
+   "canonical": "/Users/sac/beam4pm",
+   "copy_id": "tmp_beam4pm_work",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_beam4pm_work/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/tmp_beam4pm_work",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_beam4pm_work/anchor": "bf0e4a9e5517cdac6a2901faa262633dabf3c6a8",
+    "refs/preserve/v26.9.25/tmp_beam4pm_work/dirty": "9b324a2dfb933179b49b5ca80e71b323fb5408e6"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "beam4pm",
+   "sha": "bf0e4a9e5517cdac6a2901faa262633dabf3c6a8",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+  },
+  "tmp_beam4pm_work_beam4pm": {
+   "bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/tmp_beam4pm_work_beam4pm.bundle",
+    "sha256": "319e1b5bcfec49df3346fbe9c4657b7c741d990f600f53eb0cb55adce0cead21",
+    "size": 595477,
+    "verified": true
+   },
+   "canonical": "/Users/sac/beam4pm",
+   "copy_id": "tmp_beam4pm_work_beam4pm",
+   "kind": "CLONE",
+   "local_only_reason": "LANE_REFS_ONLY",
+   "local_ref": "refs/preserve/v26.9.25/tmp_beam4pm_work_beam4pm/anchor",
+   "ok": true,
+   "path": "/Users/sac/tmp_beam4pm_work/beam4pm",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_beam4pm_work_beam4pm/anchor": "560a5e44626f76a70afea8864747b102f3c18655",
+    "refs/preserve/v26.9.25/tmp_beam4pm_work_beam4pm/dirty": "34aca3a3cc66e0107786a450819dfbb658ee95fb",
+    "refs/preserve/v26.9.25/tmp_beam4pm_work_beam4pm/index": "7e51eac0393e05ac9c62ef7793a3fabdea7625ab",
+    "refs/preserve/v26.9.25/tmp_beam4pm_work_beam4pm/worktree-head": "8f011d39715bbba17288f0e73d29542733a9946c"
+   },
+   "remote_ref": null,
+   "remote_verified_sha": null,
+   "repo_id": "beam4pm",
+   "sha": "560a5e44626f76a70afea8864747b102f3c18655",
+   "skipped": [],
+   "snapshot_tree": "2aefac0f8aa9c7f31410becbafdcc117f5b5f704"
+  }
+ }
+}

@@ -1,0 +1,35 @@
+{
+ "records": {
+  "citty-test-utils_citty-test-utils": {
+   "bundle": null,
+   "canonical": "/Users/sac/citty-test-utils",
+   "copy_id": "citty-test-utils_citty-test-utils",
+   "durable": "REMOTE",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/citty-test-utils_citty-test-utils-ignored.bundle",
+    "sha256": "0a93631414a470eb969d83044f31868b9435809544c78f4f73c12b3411d36327",
+    "size": 5109493,
+    "verified": true
+   },
+   "kind": "NESTED_SELF_CLONE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/citty-test-utils_citty-test-utils/anchor",
+   "ok": true,
+   "path": "/Users/sac/citty-test-utils/citty-test-utils",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/citty-test-utils_citty-test-utils/anchor": "f37c5d32c19a21804d946896d19c2a08018a77ac",
+    "refs/preserve/v26.9.25/citty-test-utils_citty-test-utils/dirty": "123829bfbb9b02c2dd9f8a0e18709be20b667786",
+    "refs/preserve/v26.9.25/citty-test-utils_citty-test-utils/ignored-evidence": "decc44dc0fd8b36fc1636289f3f5b50472f633bb",
+    "refs/preserve/v26.9.25/citty-test-utils_citty-test-utils/index": "6f3e1015d3a19af075a5aeda20eda8a6c3ceaeda",
+    "refs/preserve/v26.9.25/citty-test-utils_citty-test-utils/worktree-head": "dd2a2c0c7dcdb03a1b66dba5c97c10b6020c5d43"
+   },
+   "remote_ref": "backup/v26.9.25/citty-test-utils_citty-test-utils",
+   "remote_verified_sha": "f37c5d32c19a21804d946896d19c2a08018a77ac",
+   "repo_id": "citty-test-utils",
+   "sha": "f37c5d32c19a21804d946896d19c2a08018a77ac",
+   "skipped": [],
+   "snapshot_tree": "f07bb171847af98d8e78adb84c3bb1e8d87f4a0e"
+  }
+ }
+}

@@ -1,0 +1,724 @@
+{
+ "records": {
+  "tmp_xaas-w6-xaas-read": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "tmp_xaas-w6-xaas-read",
+   "durable": "REMOTE",
+   "files": 1344,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w6-xaas-read/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/private/tmp/xaas-w6-xaas-read",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w6-xaas-read/anchor": "fd00532284e817cbe15d11b107385b9a673bf04c",
+    "refs/preserve/v26.9.25/tmp_xaas-w6-xaas-read/dirty": "0c1b73db2817c19d85030635a3d32e374f2d8ff9"
+   },
+   "remote_ref": "backup/v26.9.25/tmp_xaas-w6-xaas-read",
+   "remote_verified_sha": "fd00532284e817cbe15d11b107385b9a673bf04c",
+   "repo_id": "xaas",
+   "sha": "fd00532284e817cbe15d11b107385b9a673bf04c",
+   "skipped": [],
+   "snapshot_tree": "a839f8401e869c5d782693a0f48a204c49026421",
+   "superseded": []
+  },
+  "tmp_xaas-w7-roundtrip": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "tmp_xaas-w7-roundtrip",
+   "durable": "REMOTE",
+   "files": 816,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_xaas-w7-roundtrip/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/private/tmp/xaas-w7-roundtrip",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_xaas-w7-roundtrip/anchor": "5417f336ed0b99a1cc6d1999e3324215a8b7f7f8",
+    "refs/preserve/v26.9.25/tmp_xaas-w7-roundtrip/dirty": "b998be94450bd82f0b0c62441d049ddef8c34345"
+   },
+   "remote_ref": "backup/v26.9.25/tmp_xaas-w7-roundtrip",
+   "remote_verified_sha": "5417f336ed0b99a1cc6d1999e3324215a8b7f7f8",
+   "repo_id": "xaas",
+   "sha": "5417f336ed0b99a1cc6d1999e3324215a8b7f7f8",
+   "skipped": [],
+   "snapshot_tree": "afaebee8ec1eff3c91b9987eb8fcf6786a1c9c2a",
+   "superseded": []
+  },
+  "xaas-worktrees": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas-worktrees",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas-worktrees/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas-worktrees",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas-worktrees/anchor": "ebaa5809f7fe449eab1366a85ba9665adce7c1e7",
+    "refs/preserve/v26.9.25/xaas-worktrees/dirty": "c2e4309c220fb0a3b6ae58ac72760566a9c57edf"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "xaas",
+   "sha": "ebaa5809f7fe449eab1366a85ba9665adce7c1e7",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+   "superseded": []
+  },
+  "xaas-worktrees_sjira": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas-worktrees_sjira",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas-worktrees_sjira/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas-worktrees/sjira",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas-worktrees_sjira/anchor": "d340b270259f27b2822351cfa7ef90489d9fbe29",
+    "refs/preserve/v26.9.25/xaas-worktrees_sjira/dirty": "da31f9889e43f0f0ecdde49610e0883e0de943b8"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "xaas",
+   "sha": "d340b270259f27b2822351cfa7ef90489d9fbe29",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_eds-7cb2468d8031d93203ef": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_eds-7cb2468d8031d93203ef",
+   "durable": "REMOTE",
+   "files": 150,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_eds-7cb2468d8031d93203ef/anchor",
+   "nearest_base": {
+    "changed_paths": 150,
+    "commit": "5417f336ed0b99a1cc6d1999e3324215a8b7f7f8",
+    "ratio": 1.0,
+    "total_paths": 150
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/eds-7cb2468d8031d93203ef",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_eds-7cb2468d8031d93203ef/anchor": "6a131cc1bd897687737c78992301ef66adc174e9",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_eds-7cb2468d8031d93203ef/dirty": "5309fd1c884ae09f794592f2743168480ec26390"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_eds-7cb2468d8031d93203ef",
+   "remote_verified_sha": "6a131cc1bd897687737c78992301ef66adc174e9",
+   "repo_id": "xaas",
+   "sha": "6a131cc1bd897687737c78992301ef66adc174e9",
+   "skipped": [],
+   "snapshot_tree": "edd860c719158903930f367a532b5036c88a7008",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a",
+   "durable": "REMOTE",
+   "files": 151,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a/anchor",
+   "nearest_base": {
+    "changed_paths": 3,
+    "commit": "5309fd1c884ae09f794592f2743168480ec26390",
+    "ratio": 0.0199,
+    "total_paths": 151
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/gall-eds-20e653c3aab9ab69547a",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a/anchor": "a73af3ef9b627ba76acc3d65ba7244159e070f5e",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a/dirty": "1be7c4ae50ed77fe7385d53072813f66807c7f75"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_gall-eds-20e653c3aab9ab69547a",
+   "remote_verified_sha": "a73af3ef9b627ba76acc3d65ba7244159e070f5e",
+   "repo_id": "xaas",
+   "sha": "a73af3ef9b627ba76acc3d65ba7244159e070f5e",
+   "skipped": [],
+   "snapshot_tree": "e330ca7e71fc1a3f55908185e16a0fc59c1ba37a",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97",
+   "durable": "REMOTE",
+   "files": 150,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": "5309fd1c884ae09f794592f2743168480ec26390",
+    "ratio": 0.0,
+    "total_paths": 150
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/gall-eds-3a15a67c08b948dded97",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97/anchor": "5d793a2c5bf8e60f5b5c9c9489b694b404be2be5",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97/dirty": "9824cabe938c5396172a60aced24559fe8b31feb"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_gall-eds-3a15a67c08b948dded97",
+   "remote_verified_sha": "5d793a2c5bf8e60f5b5c9c9489b694b404be2be5",
+   "repo_id": "xaas",
+   "sha": "5d793a2c5bf8e60f5b5c9c9489b694b404be2be5",
+   "skipped": [],
+   "snapshot_tree": "edd860c719158903930f367a532b5036c88a7008",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7",
+   "durable": "REMOTE",
+   "files": 151,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7/anchor",
+   "nearest_base": {
+    "changed_paths": 3,
+    "commit": "1be7c4ae50ed77fe7385d53072813f66807c7f75",
+    "ratio": 0.0199,
+    "total_paths": 151
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/gall-eds-3a22a4d49164658f3ff7",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7/anchor": "8a11dbdd8490705c66024198e0b1bd39f846588a",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7/dirty": "00efd636f8124b0c65845aca5f20243502156fa9"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_gall-eds-3a22a4d49164658f3ff7",
+   "remote_verified_sha": "8a11dbdd8490705c66024198e0b1bd39f846588a",
+   "repo_id": "xaas",
+   "sha": "8a11dbdd8490705c66024198e0b1bd39f846588a",
+   "skipped": [],
+   "snapshot_tree": "612ecde93fbd492fce641fefeb059a7ba42f991f",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_nounverb-a21561df1e41b17453a8": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_nounverb-a21561df1e41b17453a8",
+   "durable": "REMOTE",
+   "files": 68,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-a21561df1e41b17453a8/anchor",
+   "nearest_base": {
+    "changed_paths": 68,
+    "commit": "6a131cc1bd897687737c78992301ef66adc174e9",
+    "ratio": 1.0,
+    "total_paths": 68
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/nounverb-a21561df1e41b17453a8",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-a21561df1e41b17453a8/anchor": "e7fc3cf0065a8f37ac300be08023c844a944dba8",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-a21561df1e41b17453a8/dirty": "e974416a96b20ff4b3dbcbcff6d5b04bba9b216d"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_nounverb-a21561df1e41b17453a8",
+   "remote_verified_sha": "e7fc3cf0065a8f37ac300be08023c844a944dba8",
+   "repo_id": "xaas",
+   "sha": "e7fc3cf0065a8f37ac300be08023c844a944dba8",
+   "skipped": [],
+   "snapshot_tree": "0be58c9ec13674132fdf959eba9dc663260e9f66",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_nounverb-integration-bc04aa": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_nounverb-integration-bc04aa",
+   "durable": "REMOTE",
+   "files": 68,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-integration-bc04aa/anchor",
+   "nearest_base": {
+    "changed_paths": 2,
+    "commit": "e974416a96b20ff4b3dbcbcff6d5b04bba9b216d",
+    "ratio": 0.0294,
+    "total_paths": 68
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/nounverb-integration-bc04aa",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-integration-bc04aa/anchor": "ffb11078ce9b901043a18665bc30c5db6d049815",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-integration-bc04aa/dirty": "d8e509a298bc7db84c3f7a8e0310cf5711f991ae"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_nounverb-integration-bc04aa",
+   "remote_verified_sha": "ffb11078ce9b901043a18665bc30c5db6d049815",
+   "repo_id": "xaas",
+   "sha": "ffb11078ce9b901043a18665bc30c5db6d049815",
+   "skipped": [],
+   "snapshot_tree": "ef67cc80b4fc026e09e6a66a5c442e0a85d4ce1d",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6",
+   "durable": "REMOTE",
+   "files": 68,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": "e974416a96b20ff4b3dbcbcff6d5b04bba9b216d",
+    "ratio": 0.0,
+    "total_paths": 68
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-0461b6",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6/anchor": "a2436ec47d6bf1da896917a93fd612b5694172d0",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6/dirty": "d440026ebc3b174f28af0573be7c981932e0db4a"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-0461b6",
+   "remote_verified_sha": "a2436ec47d6bf1da896917a93fd612b5694172d0",
+   "repo_id": "xaas",
+   "sha": "a2436ec47d6bf1da896917a93fd612b5694172d0",
+   "skipped": [],
+   "snapshot_tree": "0be58c9ec13674132fdf959eba9dc663260e9f66",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa",
+   "durable": "REMOTE",
+   "files": 68,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa/anchor",
+   "nearest_base": {
+    "changed_paths": 1,
+    "commit": "e974416a96b20ff4b3dbcbcff6d5b04bba9b216d",
+    "ratio": 0.0147,
+    "total_paths": 68
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-alive-bc04aa",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa/anchor": "cbe6afe16b34bf5141a20e4246fa496fa1d152c7",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa/dirty": "8f46cdadc6ff0ca9917c461d7617e8795abbee32"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-alive-bc04aa",
+   "remote_verified_sha": "cbe6afe16b34bf5141a20e4246fa496fa1d152c7",
+   "repo_id": "xaas",
+   "sha": "cbe6afe16b34bf5141a20e4246fa496fa1d152c7",
+   "skipped": [],
+   "snapshot_tree": "e74decef05eec54a1a6e7cc06946c45827a7c872",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6",
+   "durable": "REMOTE",
+   "files": 68,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": "e974416a96b20ff4b3dbcbcff6d5b04bba9b216d",
+    "ratio": 0.0,
+    "total_paths": 68
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-0461b6",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6/anchor": "ff17dfa4935f4b9594ca4e8479fbd40960261d3d",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6/dirty": "991c4d6f5c78d4497432eb98b9129b8594589605"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-0461b6",
+   "remote_verified_sha": "ff17dfa4935f4b9594ca4e8479fbd40960261d3d",
+   "repo_id": "xaas",
+   "sha": "ff17dfa4935f4b9594ca4e8479fbd40960261d3d",
+   "skipped": [],
+   "snapshot_tree": "0be58c9ec13674132fdf959eba9dc663260e9f66",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa",
+   "durable": "REMOTE",
+   "files": 68,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa/anchor",
+   "nearest_base": {
+    "changed_paths": 1,
+    "commit": "8f46cdadc6ff0ca9917c461d7617e8795abbee32",
+    "ratio": 0.0147,
+    "total_paths": 68
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-derive_standing-bc04aa",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa/anchor": "8d8a5a6483355a4b2f5b61df2489515096c2cc64",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa/dirty": "77793d8ad17e7efa66aa5ec4b15d9c83c540e460"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-derive_standing-bc04aa",
+   "remote_verified_sha": "8d8a5a6483355a4b2f5b61df2489515096c2cc64",
+   "repo_id": "xaas",
+   "sha": "8d8a5a6483355a4b2f5b61df2489515096c2cc64",
+   "skipped": [],
+   "snapshot_tree": "18b1a586e98832d0a222c14424bbdebc0223397b",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
+   "durable": "REMOTE",
+   "files": 68,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa/anchor",
+   "nearest_base": {
+    "changed_paths": 1,
+    "commit": "8f46cdadc6ff0ca9917c461d7617e8795abbee32",
+    "ratio": 0.0147,
+    "total_paths": 68
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa/anchor": "5d8106e2319699be261b53f5a9e78b6fb97e9f33",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa/dirty": "3fccee919d39650d02706ff68b02b177891e5a9a"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability-with_default_verb-bc04aa",
+   "remote_verified_sha": "5d8106e2319699be261b53f5a9e78b6fb97e9f33",
+   "repo_id": "xaas",
+   "sha": "5d8106e2319699be261b53f5a9e78b6fb97e9f33",
+   "skipped": [],
+   "snapshot_tree": "095be9e3d635b131b8b4cf9048f7b4633e657707",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa",
+   "durable": "REMOTE",
+   "files": 68,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa/anchor",
+   "nearest_base": {
+    "changed_paths": 1,
+    "commit": "d8e509a298bc7db84c3f7a8e0310cf5711f991ae",
+    "ratio": 0.0147,
+    "total_paths": 68
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-contains-bc04aa",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa/anchor": "3e15f244990ca6af262554dd0e15c40a976ce9e7",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa/dirty": "dcca383832d814617c2c6f6a820f1273a7a1a5d4"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-contains-bc04aa",
+   "remote_verified_sha": "3e15f244990ca6af262554dd0e15c40a976ce9e7",
+   "repo_id": "xaas",
+   "sha": "3e15f244990ca6af262554dd0e15c40a976ce9e7",
+   "skipped": [],
+   "snapshot_tree": "8afb6a6090e7e261cc46be475c4068b21b8dc782",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa",
+   "durable": "REMOTE",
+   "files": 68,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa/anchor",
+   "nearest_base": {
+    "changed_paths": 1,
+    "commit": "dcca383832d814617c2c6f6a820f1273a7a1a5d4",
+    "ratio": 0.0147,
+    "total_paths": 68
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-count-bc04aa",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa/anchor": "4cc2f22d574bb1debfec1377eea556dc56003636",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa/dirty": "67122274066888ef4be050e5795393b6cae0c4dc"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-count-bc04aa",
+   "remote_verified_sha": "4cc2f22d574bb1debfec1377eea556dc56003636",
+   "repo_id": "xaas",
+   "sha": "4cc2f22d574bb1debfec1377eea556dc56003636",
+   "skipped": [],
+   "snapshot_tree": "f50ceaea58daa2a51553d590d0816b3925a349cf",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa",
+   "durable": "REMOTE",
+   "files": 68,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa/anchor",
+   "nearest_base": {
+    "changed_paths": 1,
+    "commit": "dcca383832d814617c2c6f6a820f1273a7a1a5d4",
+    "ratio": 0.0147,
+    "total_paths": 68
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-empty-bc04aa",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa/anchor": "1dff3f8b90e2f55dda5a4bd23274978bf288d1e8",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa/dirty": "beaf2090311bfec36398aefeb31c6c3b362209bc"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-empty-bc04aa",
+   "remote_verified_sha": "1dff3f8b90e2f55dda5a4bd23274978bf288d1e8",
+   "repo_id": "xaas",
+   "sha": "1dff3f8b90e2f55dda5a4bd23274978bf288d1e8",
+   "skipped": [],
+   "snapshot_tree": "5ecb33c8958cf62379cb83a3cb456694c51145d4",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa",
+   "durable": "REMOTE",
+   "files": 68,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa/anchor",
+   "nearest_base": {
+    "changed_paths": 1,
+    "commit": "dcca383832d814617c2c6f6a820f1273a7a1a5d4",
+    "ratio": 0.0147,
+    "total_paths": 68
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-packages-bc04aa",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa/anchor": "a6aadcafe1d61e6b32da122448f50c4e45af1185",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa/dirty": "848a5f7eb8d083e3b2805833cec5fcd09c4f2887"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-packages-bc04aa",
+   "remote_verified_sha": "a6aadcafe1d61e6b32da122448f50c4e45af1185",
+   "repo_id": "xaas",
+   "sha": "a6aadcafe1d61e6b32da122448f50c4e45af1185",
+   "skipped": [],
+   "snapshot_tree": "6069f307dff303cd9481f63a57585813553c2953",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
+   "durable": "REMOTE",
+   "files": 68,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa/anchor",
+   "nearest_base": {
+    "changed_paths": 1,
+    "commit": "dcca383832d814617c2c6f6a820f1273a7a1a5d4",
+    "ratio": 0.0147,
+    "total_paths": 68
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa/anchor": "0a5bb0054739ffaa977fa4b04036ec008976b48f",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa/dirty": "4fcd0aece13c24389513fcbac4ecde8ff0aac6fa"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_nounverb-nounverb-neg-capability_registry-remove_package-bc04aa",
+   "remote_verified_sha": "0a5bb0054739ffaa977fa4b04036ec008976b48f",
+   "repo_id": "xaas",
+   "sha": "0a5bb0054739ffaa977fa4b04036ec008976b48f",
+   "skipped": [],
+   "snapshot_tree": "fea41347eeaf0c0dd32fd3d8cd5b4ee1441714e1",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_spr-integration-dbe115": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_spr-integration-dbe115",
+   "durable": "REMOTE",
+   "files": 13,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_spr-integration-dbe115/anchor",
+   "nearest_base": {
+    "changed_paths": 13,
+    "commit": "1dff3f8b90e2f55dda5a4bd23274978bf288d1e8",
+    "ratio": 1.0,
+    "total_paths": 13
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/spr-integration-dbe115",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_spr-integration-dbe115/anchor": "87af34b900f63d586e1c3fa14f627d1eb812d98b",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_spr-integration-dbe115/dirty": "909dbabf50a45a92f212af7d937cb4c140462aa3"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_spr-integration-dbe115",
+   "remote_verified_sha": "87af34b900f63d586e1c3fa14f627d1eb812d98b",
+   "repo_id": "xaas",
+   "sha": "87af34b900f63d586e1c3fa14f627d1eb812d98b",
+   "skipped": [],
+   "snapshot_tree": "4d95852a178bbc1524c9f1d22484016b17682d3a",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_spr-spr-neg-load-dbe115": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_spr-spr-neg-load-dbe115",
+   "durable": "REMOTE",
+   "files": 13,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_spr-spr-neg-load-dbe115/anchor",
+   "nearest_base": {
+    "changed_paths": 1,
+    "commit": "909dbabf50a45a92f212af7d937cb4c140462aa3",
+    "ratio": 0.0769,
+    "total_paths": 13
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-load-dbe115",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_spr-spr-neg-load-dbe115/anchor": "41e85f96a183fcc7251fd5f24298e6229e5ea1ba",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_spr-spr-neg-load-dbe115/dirty": "c881dc1c2716c21f28fd041302518b9140ab3b06"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_spr-spr-neg-load-dbe115",
+   "remote_verified_sha": "41e85f96a183fcc7251fd5f24298e6229e5ea1ba",
+   "repo_id": "xaas",
+   "sha": "41e85f96a183fcc7251fd5f24298e6229e5ea1ba",
+   "skipped": [],
+   "snapshot_tree": "2e89a123afef457f2fcdd74050954ad786422f45",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_spr-spr-neg-main-dbe115": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_spr-spr-neg-main-dbe115",
+   "durable": "REMOTE",
+   "files": 13,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_spr-spr-neg-main-dbe115/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": "c881dc1c2716c21f28fd041302518b9140ab3b06",
+    "ratio": 0.0,
+    "total_paths": 13
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-main-dbe115",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_spr-spr-neg-main-dbe115/anchor": "f93e091048a87b14c07cd86ebbbc4ff6df099c50",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_spr-spr-neg-main-dbe115/dirty": "18aa136a2692a7a71a4a46696386b71b3ff2a008"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_spr-spr-neg-main-dbe115",
+   "remote_verified_sha": "f93e091048a87b14c07cd86ebbbc4ff6df099c50",
+   "repo_id": "xaas",
+   "sha": "f93e091048a87b14c07cd86ebbbc4ff6df099c50",
+   "skipped": [],
+   "snapshot_tree": "2e89a123afef457f2fcdd74050954ad786422f45",
+   "superseded": []
+  },
+  "xaas_worktrees_runs_spr-spr-neg-render-dbe115": {
+   "bundle": null,
+   "canonical": "/Users/sac/xaas",
+   "copy_id": "xaas_worktrees_runs_spr-spr-neg-render-dbe115",
+   "durable": "REMOTE",
+   "files": 13,
+   "kind": "ORPHAN_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/xaas_worktrees_runs_spr-spr-neg-render-dbe115/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": "909dbabf50a45a92f212af7d937cb4c140462aa3",
+    "ratio": 0.0,
+    "total_paths": 13
+   },
+   "ok": true,
+   "path": "/Users/sac/xaas/worktrees/runs/spr-spr-neg-render-dbe115",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_spr-spr-neg-render-dbe115/anchor": "9046a2fecb1348b2624d7e7c03ae4e2ff79e8638",
+    "refs/preserve/v26.9.25/xaas_worktrees_runs_spr-spr-neg-render-dbe115/dirty": "27be526f82fe3025004128caf6f9733930e89f23"
+   },
+   "remote_ref": "backup/v26.9.25/xaas_worktrees_runs_spr-spr-neg-render-dbe115",
+   "remote_verified_sha": "9046a2fecb1348b2624d7e7c03ae4e2ff79e8638",
+   "repo_id": "xaas",
+   "sha": "9046a2fecb1348b2624d7e7c03ae4e2ff79e8638",
+   "skipped": [],
+   "snapshot_tree": "4d95852a178bbc1524c9f1d22484016b17682d3a",
+   "superseded": []
+  }
+ }
+}

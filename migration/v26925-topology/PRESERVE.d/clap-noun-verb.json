@@ -1,0 +1,80 @@
+{
+ "records": {
+  "clap-noun-verb-wire-ggen-cheat-scanner-guard": {
+   "bundle": null,
+   "canonical": "/Users/sac/clap-noun-verb",
+   "copy_id": "clap-noun-verb-wire-ggen-cheat-scanner-guard",
+   "durable": "REMOTE",
+   "ignored_bundle": {
+    "path": "/Users/sac/.claude/migration/v26925-topology/bundles/clap-noun-verb-wire-ggen-cheat-scanner-guard-ignored.bundle",
+    "sha256": "fc5ac38ad11d17d85f112b57aaebe531f0e7128f979a712d2672d055b3d6de54",
+    "size": 106828,
+    "verified": true
+   },
+   "kind": "LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/clap-noun-verb-wire-ggen-cheat-scanner-guard/anchor",
+   "ok": true,
+   "path": "/Users/sac/clap-noun-verb-wire-ggen-cheat-scanner-guard",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/clap-noun-verb-wire-ggen-cheat-scanner-guard/anchor": "b7bc4530d08f4ad75c3319ba3847c56960c1994b",
+    "refs/preserve/v26.9.25/clap-noun-verb-wire-ggen-cheat-scanner-guard/dirty": "9b010535268e4517e67b135605f19e17032fbf33",
+    "refs/preserve/v26.9.25/clap-noun-verb-wire-ggen-cheat-scanner-guard/ignored-evidence": "3d5ff1096342cd05fef9213fa72830be650f8fa4",
+    "refs/preserve/v26.9.25/clap-noun-verb-wire-ggen-cheat-scanner-guard/index": "4caa469048a84b52d15cbc67933e32bf1b9b4364",
+    "refs/preserve/v26.9.25/clap-noun-verb-wire-ggen-cheat-scanner-guard/worktree-head": "b51607870804c48d849005651a92ac428505ef47"
+   },
+   "remote_ref": "backup/v26.9.25/clap-noun-verb-wire-ggen-cheat-scanner-guard",
+   "remote_verified_sha": "b7bc4530d08f4ad75c3319ba3847c56960c1994b",
+   "repo_id": "clap-noun-verb",
+   "sha": "b7bc4530d08f4ad75c3319ba3847c56960c1994b",
+   "skipped": [],
+   "snapshot_tree": "30063c54c4642631ff53071fb29aba69284b0e26"
+  },
+  "knhk_vendors_clap-noun-verb": {
+   "bundle": null,
+   "canonical": "/Users/sac/clap-noun-verb",
+   "copy_id": "knhk_vendors_clap-noun-verb",
+   "durable": "REMOTE",
+   "kind": "EMBEDDED_UNDECLARED",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/knhk_vendors_clap-noun-verb/anchor",
+   "ok": true,
+   "path": "/Users/sac/knhk/vendors/clap-noun-verb",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/knhk_vendors_clap-noun-verb/anchor": "11db82ce6011ea28d78c92a875115e7261e7ebd3",
+    "refs/preserve/v26.9.25/knhk_vendors_clap-noun-verb/dirty": "62155cc045bd6d454cd76ea4f16e5d120948adb0",
+    "refs/preserve/v26.9.25/knhk_vendors_clap-noun-verb/index": "19026f746e158c2038e775fd0fdf2995b1a4e7df",
+    "refs/preserve/v26.9.25/knhk_vendors_clap-noun-verb/worktree-head": "b56c3a0295d013003ff61a48f264a0db207ca600"
+   },
+   "remote_ref": "backup/v26.9.25/knhk_vendors_clap-noun-verb",
+   "remote_verified_sha": "11db82ce6011ea28d78c92a875115e7261e7ebd3",
+   "repo_id": "clap-noun-verb",
+   "sha": "11db82ce6011ea28d78c92a875115e7261e7ebd3",
+   "skipped": [],
+   "snapshot_tree": "35e89e0582f196d8e3582a9f5bcf7b471f523b35"
+  },
+  "tmp_cnv-integration-attempt": {
+   "bundle": null,
+   "canonical": "/Users/sac/clap-noun-verb",
+   "copy_id": "tmp_cnv-integration-attempt",
+   "durable": "REMOTE",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_cnv-integration-attempt/anchor",
+   "ok": true,
+   "path": "/private/tmp/cnv-integration-attempt",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_cnv-integration-attempt/admin-index": "761e6d3011bbf0fe303d55e424243f2240a9f980",
+    "refs/preserve/v26.9.25/tmp_cnv-integration-attempt/anchor": "2fb3b62c202e0f44aedd38680501715de8cd3e5d",
+    "refs/preserve/v26.9.25/tmp_cnv-integration-attempt/worktree-head": "9127a2c7ae7ec83a8049b9e1abd727e03395f3ae"
+   },
+   "remote_ref": "backup/v26.9.25/tmp_cnv-integration-attempt",
+   "remote_verified_sha": "2fb3b62c202e0f44aedd38680501715de8cd3e5d",
+   "repo_id": "clap-noun-verb",
+   "sha": "2fb3b62c202e0f44aedd38680501715de8cd3e5d"
+  }
+ }
+}

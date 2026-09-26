@@ -1,0 +1,34 @@
+{
+ "records": {
+  "tmp_w5-probe-aidgen": {
+   "bundle": null,
+   "canonical": "/Users/sac/dev/aidgen",
+   "copy_id": "tmp_w5-probe-aidgen",
+   "durable": "ALREADY_ON_ORIGIN",
+   "files": 0,
+   "kind": "NONGIT_RESIDUE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/tmp_w5-probe-aidgen/anchor",
+   "nearest_base": {
+    "changed_paths": 0,
+    "commit": null,
+    "ratio": null,
+    "total_paths": 0
+   },
+   "ok": true,
+   "path": "/private/tmp/w5-probe-aidgen",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/tmp_w5-probe-aidgen/anchor": "85e8381fce1c489fdf2e7391c195b5a5283f3055",
+    "refs/preserve/v26.9.25/tmp_w5-probe-aidgen/dirty": "c08848f5c285a656f7fee39b13790a602663481c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "aidgen",
+   "sha": "85e8381fce1c489fdf2e7391c195b5a5283f3055",
+   "skipped": [],
+   "snapshot_tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+   "superseded": []
+  }
+ }
+}

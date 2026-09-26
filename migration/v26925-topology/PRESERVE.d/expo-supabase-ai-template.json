@@ -1,0 +1,88 @@
+{
+ "records": {
+  "gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Backend---DB-Gap-Closer-GapCloserAgent-3b355db6": {
+   "bundle": null,
+   "canonical": "/Users/sac/expo-supabase-ai-template",
+   "copy_id": "gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Backend---DB-Gap-Closer-GapCloserAgent-3b355db6",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Backend---DB-Gap-Closer-GapCloserAgent-3b355db6/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/f8a81b87-4cd2-4b59-97ea-4df65a01aaf7/.system_generated/worktrees/subagent-Backend---DB-Gap-Closer-GapCloserAgent-3b355db6",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Backend---DB-Gap-Closer-GapCloserAgent-3b355db6/admin-index": "778d3ca351dc1eca885fd075340d06a3ccb6dfdf",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Backend---DB-Gap-Closer-GapCloserAgent-3b355db6/anchor": "70639b80a364b6311c03ca9fdf65760e5bdd148a",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Backend---DB-Gap-Closer-GapCloserAgent-3b355db6/worktree-head": "2fbc1d513a7d577b0cef0c4bef37e85683c84806"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "expo-supabase-ai-template",
+   "sha": "70639b80a364b6311c03ca9fdf65760e5bdd148a"
+  },
+  "gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Compiler---QA-Gap-Closer-GapCloserAgent-6767b4dd": {
+   "bundle": null,
+   "canonical": "/Users/sac/expo-supabase-ai-template",
+   "copy_id": "gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Compiler---QA-Gap-Closer-GapCloserAgent-6767b4dd",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Compiler---QA-Gap-Closer-GapCloserAgent-6767b4dd/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/f8a81b87-4cd2-4b59-97ea-4df65a01aaf7/.system_generated/worktrees/subagent-Compiler---QA-Gap-Closer-GapCloserAgent-6767b4dd",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Compiler---QA-Gap-Closer-GapCloserAgent-6767b4dd/admin-index": "11530025e04e1ff36f770a3140598e95a6d8d089",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Compiler---QA-Gap-Closer-GapCloserAgent-6767b4dd/anchor": "5af83458b7ec8706c1831e7d8cd9d33ac37e481c",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Compiler---QA-Gap-Closer-GapCloserAgent-6767b4dd/worktree-head": "2fbc1d513a7d577b0cef0c4bef37e85683c84806"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "expo-supabase-ai-template",
+   "sha": "5af83458b7ec8706c1831e7d8cd9d33ac37e481c"
+  },
+  "gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Logic---Framework-Gap-Closer-GapCloserAgent-6b367ab4": {
+   "bundle": null,
+   "canonical": "/Users/sac/expo-supabase-ai-template",
+   "copy_id": "gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Logic---Framework-Gap-Closer-GapCloserAgent-6b367ab4",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Logic---Framework-Gap-Closer-GapCloserAgent-6b367ab4/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/f8a81b87-4cd2-4b59-97ea-4df65a01aaf7/.system_generated/worktrees/subagent-Logic---Framework-Gap-Closer-GapCloserAgent-6b367ab4",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Logic---Framework-Gap-Closer-GapCloserAgent-6b367ab4/admin-index": "7e9b90f068d2b69b79b8fc6de1f2c0d99883cabc",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Logic---Framework-Gap-Closer-GapCloserAgent-6b367ab4/anchor": "9ae67602ce60710b30018cc98906f2a5cf711fe6",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-Logic---Framework-Gap-Closer-GapCloserAgent-6b367ab4/worktree-head": "2fbc1d513a7d577b0cef0c4bef37e85683c84806"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "expo-supabase-ai-template",
+   "sha": "9ae67602ce60710b30018cc98906f2a5cf711fe6"
+  },
+  "gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-UI-Gap-Closer-GapCloserAgent-ab6da88f": {
+   "bundle": null,
+   "canonical": "/Users/sac/expo-supabase-ai-template",
+   "copy_id": "gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-UI-Gap-Closer-GapCloserAgent-ab6da88f",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-UI-Gap-Closer-GapCloserAgent-ab6da88f/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/f8a81b87-4cd2-4b59-97ea-4df65a01aaf7/.system_generated/worktrees/subagent-UI-Gap-Closer-GapCloserAgent-ab6da88f",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-UI-Gap-Closer-GapCloserAgent-ab6da88f/admin-index": "b7eee8c2ed6653510c364df5394787ec1142f70f",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-UI-Gap-Closer-GapCloserAgent-ab6da88f/anchor": "2b48259e9fa84dac33ffe7c00564b5743dbfae32",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_f8a81b87-4cd2-4b59-97ea-4df65a01aaf7_system_generated_worktrees_subagent-UI-Gap-Closer-GapCloserAgent-ab6da88f/worktree-head": "2fbc1d513a7d577b0cef0c4bef37e85683c84806"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "expo-supabase-ai-template",
+   "sha": "2b48259e9fa84dac33ffe7c00564b5743dbfae32"
+  }
+ }
+}

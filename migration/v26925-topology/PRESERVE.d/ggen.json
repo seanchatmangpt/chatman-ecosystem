@@ -1,0 +1,238 @@
+{
+ "records": {
+  "wt-v26918_ggen-06-queries-dir": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen",
+   "copy_id": "wt-v26918_ggen-06-queries-dir",
+   "durable": "REMOTE",
+   "kind": "FOREIGN_LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wt-v26918_ggen-06-queries-dir/anchor",
+   "ok": true,
+   "path": "/Users/sac/wt-v26918/ggen-06-queries-dir",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wt-v26918_ggen-06-queries-dir/anchor": "768f06492a576bffda59177b97035240e9a78025",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-06-queries-dir/dirty": "54ebdeb58a8fec24fdc8c402ee7b6cb5330b02e0",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-06-queries-dir/index": "be978c24edbed328d41a87e342e79bc7bc447d8c",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-06-queries-dir/stash/0": "def9eeb522e31e6e44dc857cdb407e40c2aead57",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-06-queries-dir/worktree-head": "f40e8aa7f6ea7fbd90ab8c99e3ee887c741ee504"
+   },
+   "remote_ref": "backup/v26.9.25/wt-v26918_ggen-06-queries-dir-768f06492a",
+   "remote_verified_sha": "768f06492a576bffda59177b97035240e9a78025",
+   "repo_id": "ggen",
+   "sha": "768f06492a576bffda59177b97035240e9a78025",
+   "skipped": [],
+   "snapshot_tree": "87711e7a117bbdb3f5b327473dfdaf200c3b9bf2",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "anchor-host-stash-for-foreign-linked-worktrees",
+     "refs": {
+      "refs/preserve/v26.9.25/wt-v26918_ggen-06-queries-dir/superseded-1/anchor": "ca6eba2d7ccb5c739a1ff90c79fe7ad3f6776de5",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-06-queries-dir/superseded-1/dirty": "54ebdeb58a8fec24fdc8c402ee7b6cb5330b02e0",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-06-queries-dir/superseded-1/index": "be978c24edbed328d41a87e342e79bc7bc447d8c",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-06-queries-dir/superseded-1/worktree-head": "f40e8aa7f6ea7fbd90ab8c99e3ee887c741ee504"
+     },
+     "remote_ref": "backup/v26.9.25/wt-v26918_ggen-06-queries-dir",
+     "remote_verified_sha": "ca6eba2d7ccb5c739a1ff90c79fe7ad3f6776de5"
+    }
+   ]
+  },
+  "wt-v26918_ggen-07-tera-renderer": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen",
+   "copy_id": "wt-v26918_ggen-07-tera-renderer",
+   "durable": "REMOTE",
+   "kind": "FOREIGN_LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wt-v26918_ggen-07-tera-renderer/anchor",
+   "ok": true,
+   "path": "/Users/sac/wt-v26918/ggen-07-tera-renderer",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wt-v26918_ggen-07-tera-renderer/anchor": "da2b4402cd35128ad8b5862b889e61a23f3b57c7",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-07-tera-renderer/dirty": "42c463010c2f1befcac559c3b323d87faaf9ec73",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-07-tera-renderer/index": "ed1869cb947f4168458e1f8936fbd1fe9d18a191",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-07-tera-renderer/stash/0": "def9eeb522e31e6e44dc857cdb407e40c2aead57",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-07-tera-renderer/worktree-head": "ad3a7e661ae876c48bb3813be0f96a30913acd6d"
+   },
+   "remote_ref": "backup/v26.9.25/wt-v26918_ggen-07-tera-renderer-da2b4402cd",
+   "remote_verified_sha": "da2b4402cd35128ad8b5862b889e61a23f3b57c7",
+   "repo_id": "ggen",
+   "sha": "da2b4402cd35128ad8b5862b889e61a23f3b57c7",
+   "skipped": [],
+   "snapshot_tree": "f688b1bb0f6878785a22596a58d8e9280b54023f",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "anchor-host-stash-for-foreign-linked-worktrees",
+     "refs": {
+      "refs/preserve/v26.9.25/wt-v26918_ggen-07-tera-renderer/superseded-1/anchor": "fb550cb4fdebd4175d0c0cbc5c5b3b3be46770b5",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-07-tera-renderer/superseded-1/dirty": "42c463010c2f1befcac559c3b323d87faaf9ec73",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-07-tera-renderer/superseded-1/index": "ed1869cb947f4168458e1f8936fbd1fe9d18a191",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-07-tera-renderer/superseded-1/worktree-head": "ad3a7e661ae876c48bb3813be0f96a30913acd6d"
+     },
+     "remote_ref": "backup/v26.9.25/wt-v26918_ggen-07-tera-renderer",
+     "remote_verified_sha": "fb550cb4fdebd4175d0c0cbc5c5b3b3be46770b5"
+    }
+   ]
+  },
+  "wt-v26918_ggen-08-packdigest": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen",
+   "copy_id": "wt-v26918_ggen-08-packdigest",
+   "durable": "REMOTE",
+   "kind": "FOREIGN_LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wt-v26918_ggen-08-packdigest/anchor",
+   "ok": true,
+   "path": "/Users/sac/wt-v26918/ggen-08-packdigest",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wt-v26918_ggen-08-packdigest/anchor": "f3133363afbfee11a00cb81c48be65d815f9475d",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-08-packdigest/dirty": "0f00355df642941f99f5d6855077d85acc5a30cb",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-08-packdigest/index": "1537a4a76fccb59c6a7ace0be4b84870ab019b12",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-08-packdigest/stash/0": "def9eeb522e31e6e44dc857cdb407e40c2aead57",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-08-packdigest/worktree-head": "ad3a7e661ae876c48bb3813be0f96a30913acd6d"
+   },
+   "remote_ref": "backup/v26.9.25/wt-v26918_ggen-08-packdigest-f3133363af",
+   "remote_verified_sha": "f3133363afbfee11a00cb81c48be65d815f9475d",
+   "repo_id": "ggen",
+   "sha": "f3133363afbfee11a00cb81c48be65d815f9475d",
+   "skipped": [],
+   "snapshot_tree": "f688b1bb0f6878785a22596a58d8e9280b54023f",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "anchor-host-stash-for-foreign-linked-worktrees",
+     "refs": {
+      "refs/preserve/v26.9.25/wt-v26918_ggen-08-packdigest/superseded-1/anchor": "6573a1916495da1c8a63dee8ea7d2b64c29ee1c4",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-08-packdigest/superseded-1/dirty": "0f00355df642941f99f5d6855077d85acc5a30cb",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-08-packdigest/superseded-1/index": "1537a4a76fccb59c6a7ace0be4b84870ab019b12",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-08-packdigest/superseded-1/worktree-head": "ad3a7e661ae876c48bb3813be0f96a30913acd6d"
+     },
+     "remote_ref": "backup/v26.9.25/wt-v26918_ggen-08-packdigest",
+     "remote_verified_sha": "6573a1916495da1c8a63dee8ea7d2b64c29ee1c4"
+    }
+   ]
+  },
+  "wt-v26918_ggen-09-alias": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen",
+   "copy_id": "wt-v26918_ggen-09-alias",
+   "durable": "REMOTE",
+   "kind": "FOREIGN_LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wt-v26918_ggen-09-alias/anchor",
+   "ok": true,
+   "path": "/Users/sac/wt-v26918/ggen-09-alias",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wt-v26918_ggen-09-alias/anchor": "735ce228bd59f36ad807347116d5a9ba6f21d208",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-09-alias/dirty": "81ef7c762b3d9676561cfbbad6c21cfaa9b736ab",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-09-alias/index": "6274023e668d95cfd4f3ebba88b3cd345e0af46c",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-09-alias/stash/0": "def9eeb522e31e6e44dc857cdb407e40c2aead57",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-09-alias/worktree-head": "65ab20a100298305b6e68086acfc95d68b7843ff"
+   },
+   "remote_ref": "backup/v26.9.25/wt-v26918_ggen-09-alias-735ce228bd",
+   "remote_verified_sha": "735ce228bd59f36ad807347116d5a9ba6f21d208",
+   "repo_id": "ggen",
+   "sha": "735ce228bd59f36ad807347116d5a9ba6f21d208",
+   "skipped": [],
+   "snapshot_tree": "83531f7d73baefc3d03c1eccb3ce8493f525d9b0",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "anchor-host-stash-for-foreign-linked-worktrees",
+     "refs": {
+      "refs/preserve/v26.9.25/wt-v26918_ggen-09-alias/superseded-1/anchor": "00048558c1331a93f18cf2f0be117cb18f974d52",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-09-alias/superseded-1/dirty": "81ef7c762b3d9676561cfbbad6c21cfaa9b736ab",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-09-alias/superseded-1/index": "6274023e668d95cfd4f3ebba88b3cd345e0af46c",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-09-alias/superseded-1/worktree-head": "65ab20a100298305b6e68086acfc95d68b7843ff"
+     },
+     "remote_ref": "backup/v26.9.25/wt-v26918_ggen-09-alias",
+     "remote_verified_sha": "00048558c1331a93f18cf2f0be117cb18f974d52"
+    }
+   ]
+  },
+  "wt-v26918_ggen-10-receipt-envelope": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen",
+   "copy_id": "wt-v26918_ggen-10-receipt-envelope",
+   "durable": "REMOTE",
+   "kind": "FOREIGN_LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wt-v26918_ggen-10-receipt-envelope/anchor",
+   "ok": true,
+   "path": "/Users/sac/wt-v26918/ggen-10-receipt-envelope",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wt-v26918_ggen-10-receipt-envelope/anchor": "d5572d994a6ca1334ddb10ca1dcc58242c776741",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-10-receipt-envelope/dirty": "a93684437a1c6c2ec07761b2d494e302fc4a45d3",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-10-receipt-envelope/index": "20d28959ea060b71ff482b6ea0be0f364daa42c4",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-10-receipt-envelope/stash/0": "def9eeb522e31e6e44dc857cdb407e40c2aead57",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-10-receipt-envelope/worktree-head": "16c53a3adedeec89733c7501a2ff4940171dcc29"
+   },
+   "remote_ref": "backup/v26.9.25/wt-v26918_ggen-10-receipt-envelope-d5572d994a",
+   "remote_verified_sha": "d5572d994a6ca1334ddb10ca1dcc58242c776741",
+   "repo_id": "ggen",
+   "sha": "d5572d994a6ca1334ddb10ca1dcc58242c776741",
+   "skipped": [],
+   "snapshot_tree": "67317dd25386471af3f3df0c128a03dd87c2ae65",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "anchor-host-stash-for-foreign-linked-worktrees",
+     "refs": {
+      "refs/preserve/v26.9.25/wt-v26918_ggen-10-receipt-envelope/superseded-1/anchor": "27597d27987af1b7994e0f79bd4e577c206a7e75",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-10-receipt-envelope/superseded-1/dirty": "a93684437a1c6c2ec07761b2d494e302fc4a45d3",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-10-receipt-envelope/superseded-1/index": "20d28959ea060b71ff482b6ea0be0f364daa42c4",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-10-receipt-envelope/superseded-1/worktree-head": "16c53a3adedeec89733c7501a2ff4940171dcc29"
+     },
+     "remote_ref": "backup/v26.9.25/wt-v26918_ggen-10-receipt-envelope",
+     "remote_verified_sha": "27597d27987af1b7994e0f79bd4e577c206a7e75"
+    }
+   ]
+  },
+  "wt-v26918_ggen-11-semantic-only": {
+   "bundle": null,
+   "canonical": "/Users/sac/ggen",
+   "copy_id": "wt-v26918_ggen-11-semantic-only",
+   "durable": "REMOTE",
+   "kind": "FOREIGN_LINKED_WORKTREE",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/wt-v26918_ggen-11-semantic-only/anchor",
+   "ok": true,
+   "path": "/Users/sac/wt-v26918/ggen-11-semantic-only",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/wt-v26918_ggen-11-semantic-only/anchor": "482980bda069d3dfcefe0e3b193ee7a1950e0f2e",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-11-semantic-only/dirty": "e5e069b1203f0233bbad83637572860c005ab5a3",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-11-semantic-only/index": "59613a3d5ba6a085ca14bebdf288e011ac696c61",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-11-semantic-only/stash/0": "def9eeb522e31e6e44dc857cdb407e40c2aead57",
+    "refs/preserve/v26.9.25/wt-v26918_ggen-11-semantic-only/worktree-head": "ad3a7e661ae876c48bb3813be0f96a30913acd6d"
+   },
+   "remote_ref": "backup/v26.9.25/wt-v26918_ggen-11-semantic-only-482980bda0",
+   "remote_verified_sha": "482980bda069d3dfcefe0e3b193ee7a1950e0f2e",
+   "repo_id": "ggen",
+   "sha": "482980bda069d3dfcefe0e3b193ee7a1950e0f2e",
+   "skipped": [],
+   "snapshot_tree": "f688b1bb0f6878785a22596a58d8e9280b54023f",
+   "superseded": [
+    {
+     "n": 1,
+     "reason": "anchor-host-stash-for-foreign-linked-worktrees",
+     "refs": {
+      "refs/preserve/v26.9.25/wt-v26918_ggen-11-semantic-only/superseded-1/anchor": "41368ab5fdc6e469bb607492b769b8aff54a5c69",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-11-semantic-only/superseded-1/dirty": "e5e069b1203f0233bbad83637572860c005ab5a3",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-11-semantic-only/superseded-1/index": "59613a3d5ba6a085ca14bebdf288e011ac696c61",
+      "refs/preserve/v26.9.25/wt-v26918_ggen-11-semantic-only/superseded-1/worktree-head": "ad3a7e661ae876c48bb3813be0f96a30913acd6d"
+     },
+     "remote_ref": "backup/v26.9.25/wt-v26918_ggen-11-semantic-only",
+     "remote_verified_sha": "41368ab5fdc6e469bb607492b769b8aff54a5c69"
+    }
+   ]
+  }
+ }
+}

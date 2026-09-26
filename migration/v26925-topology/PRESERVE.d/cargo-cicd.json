@@ -1,0 +1,214 @@
+{
+ "records": {
+  "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Authority-Loop-Validator-research-a324af08": {
+   "bundle": null,
+   "canonical": "/Users/sac/cargo-cicd",
+   "copy_id": "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Authority-Loop-Validator-research-a324af08",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Authority-Loop-Validator-research-a324af08/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/5b23c339-eb85-4668-8998-d4f3d0c432b5/.system_generated/worktrees/subagent-Authority-Loop-Validator-research-a324af08",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Authority-Loop-Validator-research-a324af08/admin-index": "4fb8a468850e805444aa4a336c65cdb023ae6852",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Authority-Loop-Validator-research-a324af08/anchor": "71a2f3ef190a33f27885febabd19353f935a2398",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Authority-Loop-Validator-research-a324af08/worktree-head": "8748a56a9806c938c1721842c8014cab4fc1f45c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "cargo-cicd",
+   "sha": "71a2f3ef190a33f27885febabd19353f935a2398"
+  },
+  "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Block-Semantics-Tester-research-83663164": {
+   "bundle": null,
+   "canonical": "/Users/sac/cargo-cicd",
+   "copy_id": "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Block-Semantics-Tester-research-83663164",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Block-Semantics-Tester-research-83663164/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/5b23c339-eb85-4668-8998-d4f3d0c432b5/.system_generated/worktrees/subagent-Block-Semantics-Tester-research-83663164",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Block-Semantics-Tester-research-83663164/admin-index": "baef69ee7f38667600bb8291406a10be74f8fa6e",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Block-Semantics-Tester-research-83663164/anchor": "dc15b78f26630433152dfd8b6564877280b81f8b",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Block-Semantics-Tester-research-83663164/worktree-head": "8748a56a9806c938c1721842c8014cab4fc1f45c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "cargo-cicd",
+   "sha": "dc15b78f26630433152dfd8b6564877280b81f8b"
+  },
+  "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Config---Integration-Engineer-research-da674ba7": {
+   "bundle": null,
+   "canonical": "/Users/sac/cargo-cicd",
+   "copy_id": "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Config---Integration-Engineer-research-da674ba7",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Config---Integration-Engineer-research-da674ba7/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/5b23c339-eb85-4668-8998-d4f3d0c432b5/.system_generated/worktrees/subagent-Config---Integration-Engineer-research-da674ba7",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Config---Integration-Engineer-research-da674ba7/admin-index": "c66d89b4e3169aedb8d4e88ccbfa45167b3db6b4",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Config---Integration-Engineer-research-da674ba7/anchor": "e0011a8ea72547510e4090c5c72e11c6a3d5c222",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Config---Integration-Engineer-research-da674ba7/worktree-head": "8748a56a9806c938c1721842c8014cab4fc1f45c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "cargo-cicd",
+   "sha": "e0011a8ea72547510e4090c5c72e11c6a3d5c222"
+  },
+  "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Hooks-Install-Implementer-research-8b445df0": {
+   "bundle": null,
+   "canonical": "/Users/sac/cargo-cicd",
+   "copy_id": "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Hooks-Install-Implementer-research-8b445df0",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Hooks-Install-Implementer-research-8b445df0/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/5b23c339-eb85-4668-8998-d4f3d0c432b5/.system_generated/worktrees/subagent-Hooks-Install-Implementer-research-8b445df0",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Hooks-Install-Implementer-research-8b445df0/admin-index": "f2a21249796cd8c109cfecceefa98987edbb1e9c",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Hooks-Install-Implementer-research-8b445df0/anchor": "f3e4ee7b522b80199f4720f30d34fe7a7dda2b66",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Hooks-Install-Implementer-research-8b445df0/worktree-head": "8748a56a9806c938c1721842c8014cab4fc1f45c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "cargo-cicd",
+   "sha": "f3e4ee7b522b80199f4720f30d34fe7a7dda2b66"
+  },
+  "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Policy-Falsifier-research-08d77d9e": {
+   "bundle": null,
+   "canonical": "/Users/sac/cargo-cicd",
+   "copy_id": "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Policy-Falsifier-research-08d77d9e",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Policy-Falsifier-research-08d77d9e/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/5b23c339-eb85-4668-8998-d4f3d0c432b5/.system_generated/worktrees/subagent-Policy-Falsifier-research-08d77d9e",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Policy-Falsifier-research-08d77d9e/admin-index": "e5799ab4d90c8c02a3d772c9cee6548a9ec7a00d",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Policy-Falsifier-research-08d77d9e/anchor": "bae44a4ba6e2b169264c8b9ce70a8c742ba209ba",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Policy-Falsifier-research-08d77d9e/worktree-head": "8748a56a9806c938c1721842c8014cab4fc1f45c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "cargo-cicd",
+   "sha": "bae44a4ba6e2b169264c8b9ce70a8c742ba209ba"
+  },
+  "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-PreToolUse-Policy-Implementer-research-b19b338b": {
+   "bundle": null,
+   "canonical": "/Users/sac/cargo-cicd",
+   "copy_id": "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-PreToolUse-Policy-Implementer-research-b19b338b",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-PreToolUse-Policy-Implementer-research-b19b338b/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/5b23c339-eb85-4668-8998-d4f3d0c432b5/.system_generated/worktrees/subagent-PreToolUse-Policy-Implementer-research-b19b338b",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-PreToolUse-Policy-Implementer-research-b19b338b/admin-index": "38cb63d08e710df05d7de7548d22d7e3a3e57d27",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-PreToolUse-Policy-Implementer-research-b19b338b/anchor": "f0893f79a32eedbce5097d64fdd5a48c5b0fc134",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-PreToolUse-Policy-Implementer-research-b19b338b/worktree-head": "8748a56a9806c938c1721842c8014cab4fc1f45c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "cargo-cicd",
+   "sha": "f0893f79a32eedbce5097d64fdd5a48c5b0fc134"
+  },
+  "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Shape---Path-Validator-research-7136a6f7": {
+   "bundle": null,
+   "canonical": "/Users/sac/cargo-cicd",
+   "copy_id": "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Shape---Path-Validator-research-7136a6f7",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Shape---Path-Validator-research-7136a6f7/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/5b23c339-eb85-4668-8998-d4f3d0c432b5/.system_generated/worktrees/subagent-Shape---Path-Validator-research-7136a6f7",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Shape---Path-Validator-research-7136a6f7/admin-index": "8b22779a5430cd2654806a9bd883569ef38e0a19",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Shape---Path-Validator-research-7136a6f7/anchor": "6e996bd13c07bd192176037ab3c8cf76519fec12",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Shape---Path-Validator-research-7136a6f7/worktree-head": "8748a56a9806c938c1721842c8014cab4fc1f45c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "cargo-cicd",
+   "sha": "6e996bd13c07bd192176037ab3c8cf76519fec12"
+  },
+  "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Synthesizer-research-4b194c11": {
+   "bundle": null,
+   "canonical": "/Users/sac/cargo-cicd",
+   "copy_id": "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Synthesizer-research-4b194c11",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Synthesizer-research-4b194c11/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/5b23c339-eb85-4668-8998-d4f3d0c432b5/.system_generated/worktrees/subagent-Synthesizer-research-4b194c11",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Synthesizer-research-4b194c11/admin-index": "b0b26093e726973b7503c4e47a8cfa6f7e07701d",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Synthesizer-research-4b194c11/anchor": "1f22654b72ad02e6d04a676c3715b19f28af37cf",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Synthesizer-research-4b194c11/worktree-head": "8748a56a9806c938c1721842c8014cab4fc1f45c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "cargo-cicd",
+   "sha": "1f22654b72ad02e6d04a676c3715b19f28af37cf"
+  },
+  "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Trace-Noun-Implementer-research-03a65cf2": {
+   "bundle": null,
+   "canonical": "/Users/sac/cargo-cicd",
+   "copy_id": "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Trace-Noun-Implementer-research-03a65cf2",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Trace-Noun-Implementer-research-03a65cf2/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/5b23c339-eb85-4668-8998-d4f3d0c432b5/.system_generated/worktrees/subagent-Trace-Noun-Implementer-research-03a65cf2",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Trace-Noun-Implementer-research-03a65cf2/admin-index": "0b7256cf31df77bec4628ad9333beaad2f3b3794",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Trace-Noun-Implementer-research-03a65cf2/anchor": "b4cafe7a3fe56dcfafc79dc2412e347f9c189c30",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Trace-Noun-Implementer-research-03a65cf2/worktree-head": "8748a56a9806c938c1721842c8014cab4fc1f45c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "cargo-cicd",
+   "sha": "b4cafe7a3fe56dcfafc79dc2412e347f9c189c30"
+  },
+  "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Verify-Gate-Doctor-Implementer-research-45eaf9d3": {
+   "bundle": null,
+   "canonical": "/Users/sac/cargo-cicd",
+   "copy_id": "gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Verify-Gate-Doctor-Implementer-research-45eaf9d3",
+   "durable": "ALREADY_ON_ORIGIN",
+   "kind": "PRUNABLE_RECORD",
+   "local_only_reason": null,
+   "local_ref": "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Verify-Gate-Doctor-Implementer-research-45eaf9d3/anchor",
+   "ok": true,
+   "path": "/Users/sac/.gemini/antigravity-cli/brain/5b23c339-eb85-4668-8998-d4f3d0c432b5/.system_generated/worktrees/subagent-Verify-Gate-Doctor-Implementer-research-45eaf9d3",
+   "redacted": [],
+   "refs": {
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Verify-Gate-Doctor-Implementer-research-45eaf9d3/admin-index": "7d51576f92d23ba2f0935148c7134e7a249ace73",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Verify-Gate-Doctor-Implementer-research-45eaf9d3/anchor": "808417d734d90e257e09f403d4234f9479fb4fbd",
+    "refs/preserve/v26.9.25/gemini_antigravity-cli_brain_5b23c339-eb85-4668-8998-d4f3d0c432b5_system_generated_worktrees_subagent-Verify-Gate-Doctor-Implementer-research-45eaf9d3/worktree-head": "8748a56a9806c938c1721842c8014cab4fc1f45c"
+   },
+   "remote_ref": "origin (contains)",
+   "remote_verified_sha": null,
+   "repo_id": "cargo-cicd",
+   "sha": "808417d734d90e257e09f403d4234f9479fb4fbd"
+  }
+ }
+}
