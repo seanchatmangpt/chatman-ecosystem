@@ -11,6 +11,10 @@ Outputs (GENERATED, never hand-edited):
   receipts/chain.json  committed receipts ordered by their hash links
   replay-receipt.json  exact replay of the tag-time crown from the materialized subject
                        (``--subject-tree``), plus the hardened re-evaluation ceiling
+  closure-final.json, evidence-index.json, drift.json, audit.json,
+  requirements-matrix.json, scorecard.json, benchmark.json
+                       the final (PR-5) outputs, projected by ``final.py`` once
+                       ``inputs/final-lanes.json`` is committed (see that module)
 
 ``--check`` re-projects and prints ``REFUSED:PROJECTION_DRIFT:<path>`` on any byte
 difference (exit 2); ``--write`` rewrites the outputs.
@@ -141,12 +145,17 @@ def project_replay(hardening_dir: Path, record: dict[str, Any], subject_dir: Pat
 
 
 def outputs(hardening_dir: Path, release: str, repository: str, subject_dir: Path, root: Path) -> dict[str, bytes]:
+    from . import final
+
     record = project_tag_subject(hardening_dir, release, repository)
-    return {
+    replay = project_replay(hardening_dir, record, subject_dir, root)
+    rendered = {
         TAG_SUBJECT: _dump(record),
         chain.CHAIN_FILE: _dump(chain.project(hardening_dir, release)),
-        REPLAY_RECEIPT: _dump(project_replay(hardening_dir, record, subject_dir, root)),
+        REPLAY_RECEIPT: _dump(replay),
     }
+    rendered.update(final.outputs(root, release, record, replay, subject_dir))
+    return rendered
 
 
 def check(hardening_dir: Path, rendered: dict[str, bytes]) -> list[str]:
@@ -172,7 +181,7 @@ def main(argv: list[str] | None = None) -> int:
     pins = json.loads((release_dir / "pins.json").read_text(encoding="utf-8"))
     try:
         rendered = outputs(hardening_dir, args.release, pins["root_repository"], args.subject_tree, args.root)
-    except (HardeningError, gitobj.GitObjectError, FileNotFoundError, KeyError) as exc:
+    except (HardeningError, gitobj.GitObjectError, FileNotFoundError, KeyError, ValueError) as exc:
         print(f"REFUSED:{exc}", file=sys.stderr)
         return 2
     if args.write:

@@ -30,6 +30,8 @@ on:
       - 'scripts/release_train/root_crown/**'
       - 'scripts/durable_locator/**'
       - 'scripts/observe_release_heads.py'
+      - 'scripts/release_train/scorecard/**'
+      - 'scripts/observe_scorecard.py'
       - '.github/workflows/root-crown.yml'
   pull_request:
     paths:
@@ -40,6 +42,10 @@ on:
       - 'scripts/durable_locator/**'
       - 'tests/durable_locator/**'
       - 'tests/test_observe_release_heads.py'
+      - 'scripts/release_train/scorecard/**'
+      - 'tests/release_train/scorecard/**'
+      - 'scripts/observe_scorecard.py'
+      - 'tests/test_observe_scorecard.py'
       - '.github/workflows/root-crown.yml'
 
 permissions:
@@ -132,7 +138,7 @@ jobs:
           echo "record=true" >> "$GITHUB_OUTPUT"
           echo "subject_tree=$GITHUB_WORKSPACE/.artifacts/subject" >> "$GITHUB_OUTPUT"
 
-      - name: Courts (root_crown, release_closure_court, invalidation_promotion, cross_product_court)
+      - name: Courts (root_crown, release_closure_court, invalidation_promotion, cross_product_court, scorecard)
         env:
           PYTHONPATH: .
           PYTHONDONTWRITEBYTECODE: '1'
@@ -140,12 +146,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for suite in root_crown release_closure_court invalidation_promotion cross_product_court; do
+          for suite in root_crown release_closure_court invalidation_promotion cross_product_court scorecard; do
             echo "::group::$suite"
             python3 -m unittest discover -s "tests/release_train/$suite" -p 'test_*.py' -v
             echo "::endgroup::"
           done
           python3 -m unittest discover -s tests -p 'test_observe_release_heads.py' -v
+          python3 -m unittest discover -s tests -p 'test_observe_scorecard.py' -v
 
       - name: Mutation harness (--check-report; survivors must be 0)
         env:
@@ -180,7 +187,9 @@ jobs:
           ! grep -REn \
             'requests\.(post|put|patch|delete)|httpx|urllib\.request\.(Request|urlopen)|subprocess\.|os\.system|socket\.|boto3|azure\.|google\.cloud|kubectl|terraform|git push|gh pr merge' \
             scripts/release_train/root_crown \
-            tests/release_train/root_crown
+            tests/release_train/root_crown \
+            scripts/release_train/scorecard \
+            tests/release_train/scorecard
 
       - name: Cold reconstruction (projector --check on a clean runner)
         env:

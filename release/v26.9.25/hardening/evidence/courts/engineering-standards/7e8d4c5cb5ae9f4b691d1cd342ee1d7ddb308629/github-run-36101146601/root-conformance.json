@@ -1,0 +1,29 @@
+{
+  "schema": "engineering-standards.root-conformance-receipt.v26.9.21",
+  "repository": "seanchatmangpt/engineering-standards",
+  "candidate_sha": "7e8d4c5cb5ae9f4b691d1cd342ee1d7ddb308629",
+  "court": "scripts/check-semantic-standard.py",
+  "standing": "ALIVE",
+  "subject": "repository-semantic-conformance",
+  "evidence_ceiling": [
+    "all semantic Turtle graphs parse",
+    "root public-profile direction and no APS normative import",
+    "manifest authority surfaces exist",
+    "root SHACL positive fixture",
+    "4 root SHACL negative falsifiers",
+    "9 JSON schemas + positive examples",
+    "9 JSON negative falsifiers",
+    "downstream profiles bind engineering-standards root",
+    "APS compatibility has no OWL equivalence assertion"
+  ],
+  "turtle_graph_count": 9,
+  "observed_at": "2026-09-25T06:45:14.327092+00:00",
+  "non_claims": [
+    "SA2A runtime execution",
+    "Jira/GitHub issue mutation",
+    "CommandBus/BRCE DO",
+    "deployment",
+    "publication",
+    "cross-repository standing"
+  ]
+}

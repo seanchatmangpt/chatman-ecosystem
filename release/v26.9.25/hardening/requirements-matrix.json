@@ -1,0 +1,673 @@
+{
+  "GENERATED": "scripts/release_train/root_crown/hardening.py -- do not edit; run --write",
+  "authority": "NONE",
+  "release": "v26.9.25",
+  "rows": [
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator manifest_valid",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml",
+      "evidence_digest": "sha256:1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+      "exit": 0,
+      "falsifier": "the manifest_valid evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml yields a state outside ['ALIVE'] (manifest.toml parses and verify_release.validate_manifest returns no findings)",
+      "id": "AC-01",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "C"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator closure_terminal",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/closure.json",
+      "evidence_digest": "sha256:be08fa0654260cb615708144f6cc63a84f5f55f5568ebc60c75d7b206a3bafee",
+      "exit": 0,
+      "falsifier": "the closure_terminal evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/closure.json yields a state outside ['ALIVE', 'FINAL', 'SUPERSEDED', 'BLOCKED', 'UNSUPPORTED', 'REFUSED'] (every required closure.json row ALIVE/FINAL or typed (type + broken_term + RFC \u00a739 class + owner = row repository); closure court not REFUSED)",
+      "id": "AC-02",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "TERMINAL",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "C"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator origin_authority",
+      "evidence_container": "git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/sjira-origin-authority.json",
+      "evidence_digest": "sha256:6369a68761d30dd74b5ca45937a40a8e109b547897ea54d9483afdb84f34e329",
+      "exit": 0,
+      "falsifier": "the origin_authority evaluator over git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/sjira-origin-authority.json yields a state outside ['ALIVE'] (unique FINAL_SPEC owner with byte-identical import, and the origin-authority receipt admitted like receipt_artifact)",
+      "id": "AC-03",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/ggen_igniter",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+      "term": "A"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/prose-inert.json",
+      "evidence_digest": "sha256:3e2bfdd90b5ab2050f173e1e7eecbe95fd497763033285db71323957c904d442",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/prose-inert.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "AC-04",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/ggen_igniter",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+      "term": "A"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator berthier_court",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/berthier.json",
+      "evidence_digest": "sha256:363650782b4f995727ba9ae056b54c9f914a8240d7bcd0c889ce1b464eba9bea",
+      "exit": 0,
+      "falsifier": "the berthier_court evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/berthier.json yields a state outside ['ALIVE'] (Berthier court without refusals and the RFC \u00a79 crown test (ManualRestatementCount=0))",
+      "id": "AC-05",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "F"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator xprod_case",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+      "evidence_digest": "sha256:51d3da4bf02df789031cd0c0088bf5ec684b55de6f8fe28b2a2de9568f7a8acc",
+      "exit": 0,
+      "falsifier": "the xprod_case evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:docs/jira/v26.9.25/xprod-cases/XPROD-001.json yields a state outside ['ALIVE'] (XPROD-001 cross-product receipt ALIVE with every producer subject merged)",
+      "id": "AC-06",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "X"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/autofde-lab@98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0:release/v26.9.25/receipts/tlc-court.json",
+      "evidence_digest": "sha256:bd59d140d8db9095851556281b164f348a2d3d9708c0afd31543ef93a7ef1017",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/autofde-lab@98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0:release/v26.9.25/receipts/tlc-court.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "AC-07",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/autofde-lab",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "term": "F"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2:release/v26.9.25/receipts/brce-ledger.json",
+      "evidence_digest": "sha256:ae37069d19cc6d70562a9b9dd4211e73604e778e89465ad2c80f82ee243fbe38",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2:release/v26.9.25/receipts/brce-ledger.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "AC-08",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/affidavit",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "9d158477fc4706f4fdaf30cfc073c547b57e783e",
+      "term": "R"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator worktree_observation",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/local-worktrees.json",
+      "evidence_digest": "sha256:f566b69a40d49fe26f505325a3fd8e3793d6b9ce3f9445b63fa114ad8f7bb542",
+      "exit": 0,
+      "falsifier": "the worktree_observation evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/local-worktrees.json yields a state outside ['ALIVE'] (fresh operator-local observation (<= 12h) with zero unauthorized worktrees)",
+      "id": "AC-09",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "M"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+      "evidence_digest": "sha256:32bbd585a5c4d1fdebfb232bdec48811b2cf20466fef07f1930e01ac9baf5e52",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "AC-10",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "M"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator durable_pins",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/pins.json",
+      "evidence_digest": "sha256:ea07d4d802fab4133ebcf7db2f6c064154011bfff0efdbe32a91341ddb57c0f4",
+      "exit": 0,
+      "falsifier": "the durable_pins evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/pins.json yields a state outside ['ALIVE'] (no pin is a transient head; every pin observed on its default-branch lineage)",
+      "id": "AC-11",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "M"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator cold_reconstruction",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml",
+      "evidence_digest": "sha256:1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+      "exit": 0,
+      "falsifier": "the cold_reconstruction evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml yields a state outside ['ALIVE'] (projector --check current on a declared cold runner)",
+      "id": "AC-12",
+      "observed_state": {
+        "current": "BLOCKED:NOT_COLD",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(NOT_COLD;R_missing_replay;EVIDENCE_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "R"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/case-study-schema.json",
+      "evidence_digest": "sha256:c302ddafb20ae0c1d5150e2d408dac0ce42a0b59b94474c1f96feaea7ccd0c8f",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/case-study-schema.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "AC-13",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/xaas",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "term": "X"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/wd-evidence-ceiling.json",
+      "evidence_digest": "sha256:9972ec3ce010f372adc6e1e393ca9e93d892d61618af60e85222c5f908bab73c",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/wd-evidence-ceiling.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "AC-14",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/xaas",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "term": "A"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d:release/v26.9.25/receipts/godslaw-migration.json",
+      "evidence_digest": "sha256:04c6bee0c61d0c8f42d50b9fd3c87320bd509538ff52e4a62552bd2c753e5cd9",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d:release/v26.9.25/receipts/godslaw-migration.json yields a state outside ['ALIVE', 'FINAL', 'SUPERSEDED', 'BLOCKED', 'UNSUPPORTED', 'REFUSED'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "AC-15",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/zoela",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "TERMINAL",
+      "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+      "term": "C"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d:release/v26.9.25/receipts/vision2027-admission.json",
+      "evidence_digest": "sha256:d8dfc6510d74f187f07a4d4c2f6158808bb6495d9956c27fdfcde9df3b046683",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d:release/v26.9.25/receipts/vision2027-admission.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "AC-16",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/zoela",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+      "term": "A"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator merged_sha",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/pins.json",
+      "evidence_digest": "sha256:ea07d4d802fab4133ebcf7db2f6c064154011bfff0efdbe32a91341ddb57c0f4",
+      "exit": 0,
+      "falsifier": "the merged_sha evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/pins.json yields a state outside ['ALIVE'] (every pin identical to or an ancestor of its observed default-branch head)",
+      "id": "AC-17",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "C"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator crown_self",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml",
+      "evidence_digest": "sha256:1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+      "exit": 0,
+      "falsifier": "the crown_self evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml yields a state outside ['ALIVE'] (every other requirement PASS in the same evaluation)",
+      "id": "AC-18",
+      "observed_state": {
+        "current": "BLOCKED:CROWN_DEPENDENCIES_OPEN",
+        "hardened": "BLOCKED:CROWN_DEPENDENCIES_OPEN",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(CROWN_DEPENDENCIES_OPEN;R_missing_standing;DEPENDENCY_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "C"
+    },
+    {
+      "authority": "release-crown-environment",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator tag_binding",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml",
+      "evidence_digest": "sha256:1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+      "exit": 0,
+      "falsifier": "the tag_binding evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml yields a state outside ['ALIVE'] (PRE_TAG: tag absent or equal to crown_sha; POST_TAG: tag equals its committed record and targets the recorded subject)",
+      "id": "AC-19",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "C"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/prose-inert.json",
+      "evidence_digest": "sha256:3e2bfdd90b5ab2050f173e1e7eecbe95fd497763033285db71323957c904d442",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/prose-inert.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "F-01",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/ggen_igniter",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+      "term": "A"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator origin_authority",
+      "evidence_container": "git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/sjira-origin-authority.json",
+      "evidence_digest": "sha256:6369a68761d30dd74b5ca45937a40a8e109b547897ea54d9483afdb84f34e329",
+      "exit": 0,
+      "falsifier": "the origin_authority evaluator over git:seanchatmangpt/ggen_igniter@9639198b5c3e0e25906acc5b36dd9eb17bd592be:release/v26.9.25/receipts/sjira-origin-authority.json yields a state outside ['ALIVE'] (unique FINAL_SPEC owner with byte-identical import, and the origin-authority receipt admitted like receipt_artifact)",
+      "id": "F-02",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/ggen_igniter",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+      "term": "A"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator closure_terminal",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/closure.json",
+      "evidence_digest": "sha256:be08fa0654260cb615708144f6cc63a84f5f55f5568ebc60c75d7b206a3bafee",
+      "exit": 0,
+      "falsifier": "the closure_terminal evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/closure.json yields a state outside ['ALIVE', 'FINAL', 'SUPERSEDED', 'BLOCKED', 'UNSUPPORTED', 'REFUSED'] (every required closure.json row ALIVE/FINAL or typed (type + broken_term + RFC \u00a739 class + owner = row repository); closure court not REFUSED)",
+      "id": "F-03",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "TERMINAL",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "C"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator durable_pins",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/pins.json",
+      "evidence_digest": "sha256:ea07d4d802fab4133ebcf7db2f6c064154011bfff0efdbe32a91341ddb57c0f4",
+      "exit": 0,
+      "falsifier": "the durable_pins evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/pins.json yields a state outside ['ALIVE'] (no pin is a transient head; every pin observed on its default-branch lineage)",
+      "id": "F-04",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "M"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2:release/v26.9.25/receipts/brce-ledger.json",
+      "evidence_digest": "sha256:ae37069d19cc6d70562a9b9dd4211e73604e778e89465ad2c80f82ee243fbe38",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2:release/v26.9.25/receipts/brce-ledger.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "F-05",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/affidavit",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "9d158477fc4706f4fdaf30cfc073c547b57e783e",
+      "term": "R"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator berthier_court",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/berthier.json",
+      "evidence_digest": "sha256:363650782b4f995727ba9ae056b54c9f914a8240d7bcd0c889ce1b464eba9bea",
+      "exit": 0,
+      "falsifier": "the berthier_court evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/berthier.json yields a state outside ['ALIVE'] (Berthier court without refusals and the RFC \u00a79 crown test (ManualRestatementCount=0))",
+      "id": "F-06",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "F"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator xprod_case",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+      "evidence_digest": "sha256:51d3da4bf02df789031cd0c0088bf5ec684b55de6f8fe28b2a2de9568f7a8acc",
+      "exit": 0,
+      "falsifier": "the xprod_case evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:docs/jira/v26.9.25/xprod-cases/XPROD-001.json yields a state outside ['ALIVE'] (XPROD-001 cross-product receipt ALIVE with every producer subject merged)",
+      "id": "F-07",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "X"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/autofde-lab@98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0:release/v26.9.25/receipts/tlc-court.json",
+      "evidence_digest": "sha256:bd59d140d8db9095851556281b164f348a2d3d9708c0afd31543ef93a7ef1017",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/autofde-lab@98b6cc9bfe3af8a25b3ad53019f5fb71fe2d37d0:release/v26.9.25/receipts/tlc-court.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "F-08",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/autofde-lab",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "term": "F"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator typed_blocker_allowed",
+      "evidence_container": "git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/cloud-runtime.json",
+      "evidence_digest": "sha256:7ed9435de6c1f6713b849f8fc40499a9fe69f45f98cf4244bad85d8301715354",
+      "exit": 0,
+      "falsifier": "the typed_blocker_allowed evaluator over git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/cloud-runtime.json yields a state outside ['ALIVE', 'BLOCKED', 'UNSUPPORTED'] (ALIVE with transport_receipt + execution_receipt bound to a merged subject_sha, or a typed BLOCKED/UNSUPPORTED (type + broken_term + RFC \u00a739 class + owner = container repo) bound to a merged subject_sha)",
+      "id": "F-09",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/xaas",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "TERMINAL",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "term": "R"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator worktree_observation",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/local-worktrees.json",
+      "evidence_digest": "sha256:f566b69a40d49fe26f505325a3fd8e3793d6b9ce3f9445b63fa114ad8f7bb542",
+      "exit": 0,
+      "falsifier": "the worktree_observation evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/local-worktrees.json yields a state outside ['ALIVE'] (fresh operator-local observation (<= 12h) with zero unauthorized worktrees)",
+      "id": "F-10",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "M"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+      "evidence_digest": "sha256:32bbd585a5c4d1fdebfb232bdec48811b2cf20466fef07f1930e01ac9baf5e52",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "F-11",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "M"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/wd-evidence-ceiling.json",
+      "evidence_digest": "sha256:9972ec3ce010f372adc6e1e393ca9e93d892d61618af60e85222c5f908bab73c",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/xaas@e039967dac9f88961873b6a958f3979a106854f2:release/v26.9.25/receipts/wd-evidence-ceiling.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "F-12",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/xaas",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "term": "A"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator receipt_artifact",
+      "evidence_container": "git:seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d:release/v26.9.25/receipts/godslaw-interpretation.json",
+      "evidence_digest": "sha256:1ca3c2f9d5bb2b720841ed84474d5925cabe8a91da01526037533591070947d7",
+      "exit": 0,
+      "falsifier": "the receipt_artifact evaluator over git:seanchatmangpt/zoela@3d16cf3e43e195092161aaba4d481c7654b4035d:release/v26.9.25/receipts/godslaw-interpretation.json yields a state outside ['ALIVE'] (receipt standing ALIVE with a subject_sha on the owner's default-branch lineage (identical|ahead))",
+      "id": "F-13",
+      "observed_state": {
+        "current": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "hardened": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/zoela",
+      "required_state": "ALIVE",
+      "standing": "BLOCKED(EVIDENCE_DELTA_UNBOUNDED;R_missing_identity;EVIDENCE_FAILURE)",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+      "term": "A"
+    },
+    {
+      "authority": "NONE",
+      "command": "python3 -m scripts.release_train.root_crown --release v26.9.25 --mode POST_TAG --observations release/v26.9.25/hardening/inputs/current-observations.json --crown-sha <head> --head-sha <head> --subject-tree <git archive 68bacd8dcc9ae12e4e97727a284c14abdc7520c5> --hardening-dir release/v26.9.25/hardening --out <receipt>  # evaluator tag_binding",
+      "evidence_container": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml",
+      "evidence_digest": "sha256:1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+      "exit": 0,
+      "falsifier": "the tag_binding evaluator over git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:release/v26.9.25/manifest.toml yields a state outside ['ALIVE'] (PRE_TAG: tag absent or equal to crown_sha; POST_TAG: tag equals its committed record and targets the recorded subject)",
+      "id": "F-14",
+      "observed_state": {
+        "current": "PASS",
+        "hardened": "PASS",
+        "historical": "PASS"
+      },
+      "owner_repo": "seanchatmangpt/chatman-ecosystem",
+      "required_state": "ALIVE",
+      "standing": "ALIVE",
+      "standing_ceiling": "ALIVE",
+      "subject_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+      "term": "C"
+    }
+  ],
+  "schema": "https://chatman.dev/root-crown/hardening/requirements-matrix/v1",
+  "sections": {
+    "current": "inputs/current-observations.json through posttag.current_conformance at the observed root head (receipt sha256:c6fab9f62d725909d70b9cc4dcba018335415c40541707a63a72180db362e226)",
+    "hardened": "replay-receipt.json historical.hardened.remaining (current evaluator over tag-time inputs + delta observations)",
+    "historical": "receipts/run-36161744816/crown-receipt.json (tag-named receipt, sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c); exit = its run exit-code"
+  }
+}

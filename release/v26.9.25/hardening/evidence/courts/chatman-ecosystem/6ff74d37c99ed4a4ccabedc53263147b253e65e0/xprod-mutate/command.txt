@@ -1,0 +1,4 @@
+PYTHONPATH=. python3 -m scripts.release_train.xprod_reeval.mutate docs/jira/v26.9.25/xprod-cases/XPROD-001.json
+cwd: git archive seanchatmangpt/chatman-ecosystem@6ff74d37c99ed4a4ccabedc53263147b253e65e0
+exit: 0
+stderr: empty
