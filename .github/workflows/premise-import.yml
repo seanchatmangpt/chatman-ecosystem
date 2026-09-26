@@ -63,8 +63,9 @@ jobs:
         run: |
           set -uo pipefail
           line="${PREMISE_RELEASE_LINE:-v26.9.26}"   # fixed release line; never derived from the clock
-          python3 -m scripts.premise_import --repos-root "$PREMISE_IMPORT_REPOS_ROOT" plan --release "$line" > plan-line.json
-          code=$?
+          # The runner shell is `bash -e`: capture the exit status without aborting the step.
+          code=0
+          python3 -m scripts.premise_import --repos-root "$PREMISE_IMPORT_REPOS_ROOT" plan --release "$line" > plan-line.json || code=$?
           verdict="$(python3 -c 'import json;print(json.load(open("plan-line.json"))["verdict"])' 2>/dev/null || echo UNKNOWN)"
           echo "premise standing of $line: $verdict (exit $code)" | tee -a "$GITHUB_STEP_SUMMARY"
           [ "$code" -eq 0 ] || [ "$code" -eq 3 ]
