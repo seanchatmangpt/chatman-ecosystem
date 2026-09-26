@@ -12,6 +12,7 @@ on:
       - 'release/**/imports/**'
       - 'scripts/premise_import/**'
       - 'tests/premise_import/**'
+      - 'catalog/premise-imports.toml'
       - 'scripts/durable_locator/**'
       - '.github/workflows/premise-import.yml'
   pull_request:
@@ -19,6 +20,7 @@ on:
       - 'release/**/imports/**'
       - 'scripts/premise_import/**'
       - 'tests/premise_import/**'
+      - 'catalog/premise-imports.toml'
       - 'scripts/durable_locator/**'
       - '.github/workflows/premise-import.yml'
   workflow_dispatch:
@@ -54,3 +56,15 @@ jobs:
         run: python3 -m unittest discover -s tests/premise_import -p 'test_*.py' -v
       - name: Source-resolved court (copy == source blob at source_sha)
         run: python3 -m scripts.premise_import --repos-root "$PREMISE_IMPORT_REPOS_ROOT" --no-network check
+      - name: Derived plan (committed imports == FINAL_SPEC premises on each source ref)
+        run: python3 -m scripts.premise_import --repos-root "$PREMISE_IMPORT_REPOS_ROOT" plan
+      - name: Current release line premise standing (BLOCKED on E-ADM-01 is reported, not failed)
+        shell: bash
+        run: |
+          set -uo pipefail
+          line="${PREMISE_RELEASE_LINE:-v26.9.26}"   # fixed release line; never derived from the clock
+          python3 -m scripts.premise_import --repos-root "$PREMISE_IMPORT_REPOS_ROOT" plan --release "$line" > plan-line.json
+          code=$?
+          verdict="$(python3 -c 'import json;print(json.load(open("plan-line.json"))["verdict"])' 2>/dev/null || echo UNKNOWN)"
+          echo "premise standing of $line: $verdict (exit $code)" | tee -a "$GITHUB_STEP_SUMMARY"
+          [ "$code" -eq 0 ] || [ "$code" -eq 3 ]

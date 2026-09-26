@@ -243,3 +243,151 @@ class Committed(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+CATALOG = """schema = "premise-imports.v1"
+
+[[source]]
+repository = "o/standards"
+ref = "main"
+pattern = '^rfc/(?P<number>[0-9]{4})-(?P<release>v[0-9]+\\.[0-9]+\\.[0-9]+)-[a-z0-9-]+\\.md$'
+status_prefix = "**Status:** FINAL_SPEC"
+copy_name = "RFC-{number}.md"
+into = "release/{release}/imports"
+standing = "NOT_A_SPEC"
+since = "v26.9.25"
+
+[[source.override]]
+number = "0007"
+into = "release/{release}/autonomy/imports"
+scope = "POST_TAG"
+"""
+
+
+def rfc(status: str, body: str = "") -> bytes:
+    return f"# RFC\n\n**Status:** {status}\n\n{body}\n".encode()
+
+
+class Plan(unittest.TestCase):
+    """plan/sync over a real owner repository whose premises land by --no-ff merges."""
+
+    def setUp(self) -> None:
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp)
+        self.src = self.tmp / "repos" / "standards"
+        commit(self.src, {"README.md": b"standards\n"})
+        self.root = self.tmp / "root"
+        (self.root / "catalog").mkdir(parents=True)
+        (self.root / "catalog" / "premise-imports.toml").write_text(CATALOG)
+        self.resolver = Resolver(self.tmp / "repos", allow_network=False)
+        self.merges: dict[str, str] = {}
+
+    def merge(self, pr: int, files: dict[str, bytes]) -> str:
+        git(self.src, "checkout", "-q", "-b", f"pr{pr}")
+        commit(self.src, files)
+        git(self.src, "checkout", "-q", "main")
+        git(self.src, "-c", "user.name=t", "-c", "user.email=t@e.invalid", "merge", "-q", "--no-ff", f"pr{pr}", "-m", f"Merge pull request #{pr} from o/pr{pr}")
+        return git(self.src, "rev-parse", "HEAD")
+
+    def plan(self, release: str | None = None) -> dict:
+        return pi.plan(self.root, self.resolver, release)
+
+    def by_number(self, report: dict) -> dict[str, dict]:
+        return {r["number"]: r for r in report["premises"]}
+
+    def test_final_premise_is_missing_until_synced_at_its_admitting_merge(self) -> None:
+        m = self.merge(6, {"rfc/0006-v26.9.26-next.md": rfc("FINAL_SPEC — v26.9.26 premise")})
+        report = self.plan()
+        self.assertEqual(report["verdict"], "REFUSED")
+        row = self.by_number(report)["0006"]
+        self.assertEqual((row["status"], row["locator"]), ("MISSING", f"git:o/standards@{m}:rfc/0006-v26.9.26-next.md"))
+        self.assertEqual(row["owner"], f"o/standards (PR #6, FINAL_SPEC; merge {m[:8]})")
+        after = pi.sync(self.root, self.resolver)
+        self.assertEqual(after["verdict"], "ADMITTED")
+        idx = json.loads((self.root / "release/v26.9.26/imports/IMPORTS.json").read_text())["imports"]
+        self.assertEqual([(r["path"], r["source_sha"]) for r in idx], [("imports/RFC-0006.md", m)])
+        self.assertEqual(pi.check(self.root, self.resolver)["verdict"], "ADMITTED")
+        before = (self.root / "release/v26.9.26/imports/IMPORTS.json").read_bytes()
+        pi.sync(self.root, self.resolver)
+        self.assertEqual((self.root / "release/v26.9.26/imports/IMPORTS.json").read_bytes(), before)
+
+    def test_amendment_after_admission_keeps_the_admitting_merge(self) -> None:
+        m = self.merge(6, {"rfc/0006-v26.9.26-next.md": rfc("FINAL_SPEC")})
+        self.merge(8, {"rfc/0006-v26.9.26-next.md": rfc("FINAL_SPEC", "amended")})
+        row = self.by_number(self.plan())["0006"]
+        self.assertEqual(parse_sha(row["locator"]), m)
+        self.assertEqual(len(row["amended_after_admission"]), 1)
+
+    def test_withdrawn_then_readmitted_premise_binds_the_readmitting_merge(self) -> None:
+        self.merge(6, {"rfc/0006-v26.9.26-next.md": rfc("FINAL_SPEC", "first")})
+        git(self.src, "rm", "-q", "rfc/0006-v26.9.26-next.md")
+        git(self.src, "-c", "user.name=t", "-c", "user.email=t@e.invalid", "commit", "-q", "-m", "withdraw")
+        again = self.merge(9, {"rfc/0006-v26.9.26-next.md": rfc("FINAL_SPEC", "second")})
+        row = self.by_number(self.plan())["0006"]
+        self.assertEqual(parse_sha(row["locator"]), again)
+        self.assertEqual(row["owner"], f"o/standards (PR #9, FINAL_SPEC; merge {again[:8]})")
+
+    def test_non_final_premise_is_never_imported(self) -> None:
+        self.merge(6, {"rfc/0006-v26.9.26-next.md": rfc("Proposed for v26.9.26")})
+        report = pi.sync(self.root, self.resolver)
+        self.assertEqual(self.by_number(report)["0006"]["status"], "NOT_ADMITTED")
+        self.assertFalse((self.root / "release/v26.9.26").exists())
+        self.assertEqual(self.plan("v26.9.26")["verdict"], "BLOCKED(PREMISE_ABSENT:E-ADM-01)")
+
+    def test_import_of_a_non_final_source_is_refused(self) -> None:
+        m = self.merge(6, {"rfc/0006-v26.9.26-next.md": rfc("Proposed")})
+        pi.import_premise(self.resolver, f"git:o/standards@{m}:rfc/0006-v26.9.26-next.md",
+                          self.root / "release/v26.9.26/imports", "RFC-0006.md", "hand", "NOT_A_SPEC")
+        report = self.plan()
+        self.assertEqual(self.by_number(report)["0006"]["status"], "IMPORTED_NOT_FINAL")
+        self.assertEqual(pi.plan_exit(report), 1)
+
+    def test_import_bound_to_another_subject_differs_and_sync_does_not_rebind(self) -> None:
+        self.merge(6, {"rfc/0006-v26.9.26-next.md": rfc("FINAL_SPEC")})
+        side = commit(self.src, {"side.md": rfc("FINAL_SPEC", "not the admitted bytes")})
+        pi.import_premise(self.resolver, f"git:o/standards@{side}:side.md",
+                          self.root / "release/v26.9.26/imports", "RFC-0006.md", "hand", "NOT_A_SPEC")
+        before = (self.root / "release/v26.9.26/imports/IMPORTS.json").read_bytes()
+        report = pi.sync(self.root, self.resolver)
+        self.assertEqual(self.by_number(report)["0006"]["status"], "SUBJECT_DIFFERS")
+        self.assertEqual(report["verdict"], "REFUSED")
+        self.assertEqual((self.root / "release/v26.9.26/imports/IMPORTS.json").read_bytes(), before)
+
+    def test_override_lane_and_scope_and_since_floor(self) -> None:
+        self.merge(7, {"rfc/0007-v26.9.26-amend.md": rfc("FINAL_SPEC"), "rfc/0002-v26.9.24-old.md": rfc("FINAL_SPEC")})
+        report = pi.sync(self.root, self.resolver)
+        self.assertEqual(set(self.by_number(report)), {"0007"})  # v26.9.24 is below since
+        row = json.loads((self.root / "release/v26.9.26/autonomy/imports/IMPORTS.json").read_text())["imports"][0]
+        self.assertEqual((row["path"], row["scope"]), ("imports/RFC-0007.md", "POST_TAG"))
+
+    def test_release_filter_and_absent_line(self) -> None:
+        self.merge(6, {"rfc/0006-v26.9.26-next.md": rfc("FINAL_SPEC")})
+        self.assertEqual([r["release"] for r in self.plan("v26.9.26")["premises"]], ["v26.9.26"])
+        absent = self.plan("v26.9.27")
+        self.assertEqual((absent["verdict"], absent["premises"]), ("BLOCKED(PREMISE_ABSENT:E-ADM-01)", []))
+        self.assertEqual(pi.plan_exit(absent), 3)
+
+    def test_missing_checkout_is_transport_blocked_not_absent(self) -> None:
+        report = pi.plan(self.root, Resolver(self.tmp / "nowhere", allow_network=False), "v26.9.26")
+        self.assertEqual(report["verdict"], "BLOCKED(TRANSPORT_UNAVAILABLE)")
+        self.assertEqual(report["sources"][0]["status"], "TRANSPORT_UNAVAILABLE")
+
+
+def parse_sha(locator: str) -> str:
+    return locator.split("@", 1)[1].split(":", 1)[0]
+
+
+class CommittedPlan(unittest.TestCase):
+    def test_committed_imports_are_exactly_the_derived_plan(self) -> None:
+        repos = os.environ.get("PREMISE_IMPORT_REPOS_ROOT")
+        if not repos:
+            self.skipTest("PREMISE_IMPORT_REPOS_ROOT unset: no engineering-standards checkout")
+        report = pi.plan(REPO, Resolver(Path(repos), allow_network=False))
+        self.assertEqual(report["verdict"], "ADMITTED", json.dumps(report, indent=2))
+        planned = {(r["into"], r["copy_name"]) for r in report["premises"] if r["status"] == "IMPORTED"}
+        committed = {
+            (d.relative_to(REPO).as_posix(), r["path"].split("/", 1)[1])
+            for d in pi.discover(REPO)
+            for r in json.loads((d / "IMPORTS.json").read_text())["imports"]
+        }
+        self.assertEqual(planned, committed)

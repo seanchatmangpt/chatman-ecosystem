@@ -1,0 +1,24 @@
+# Premise import rules (RFC-0005 edge E-ADM-02).
+#
+# Canonical source for `python3 -m scripts.premise_import plan|sync`: which admitted
+# premises (FINAL_SPEC RFCs merged by the operator into an owner repository's default
+# branch) are release inputs, and where their byte copies live. The source commit of a
+# premise is derived, never supplied: the first first-parent commit of `ref` that adds
+# the file (the operator's admitting merge). Imports began with v26.9.25 (`since`).
+
+schema = "premise-imports.v1"
+
+[[source]]
+repository = "seanchatmangpt/engineering-standards"
+ref = "main"
+pattern = '^docs/engineering/rfc/(?P<number>[0-9]{4})-(?P<release>v[0-9]+\.[0-9]+\.[0-9]+)-[a-z0-9-]+\.md$'
+status_prefix = "**Status:** FINAL_SPEC"
+copy_name = "RFC-{number}.md"
+into = "release/{release}/imports"
+standing = "NOT_A_SPEC"
+since = "v26.9.25"
+
+[[source.override]]
+number = "0005"
+into = "release/{release}/autonomy/imports"
+scope = "POST_TAG"

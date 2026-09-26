@@ -17,6 +17,13 @@ E-ADM-02, owner_kinds [human, llm]). This module makes that edge a machine edge:
             the bytes read* -- never from supplied text. Re-importing the same subject is a
             byte-identical no-op; a different subject on an existing path is refused unless
             ``--replace``.
+``plan``    derives, from ``catalog/premise-imports.toml`` and an owner checkout, every
+            premise a release line admits: the FINAL_SPEC RFC files on the source ``ref``
+            and, for each, the admitting commit (the first first-parent commit of ``ref``
+            that adds it). Each planned row is IMPORTED, MISSING or SUBJECT_DIFFERS against
+            the committed imports; ``--release`` with no admitted premise is PREMISE_ABSENT
+            (typed BLOCKED on the operator's admission gate E-ADM-01, exit 3).
+``sync``    imports every MISSING planned row (never rebinds SUBJECT_DIFFERS).
 ``check``   recomputes every IMPORTS.json under ``release/`` offline: row shape, path
             confinement, copy presence, sha256 and git blob id, and unlisted copies. With
             ``--repos-root`` it also re-reads each source and compares bytes; a source that
@@ -35,7 +42,10 @@ Typed refusals (finding codes):
   IMPORT_SOURCE_UNRESOLVED the source locator is refused by the resolver (SHA/path absent)
   TRANSPORT_UNAVAILABLE    the source repository cannot be reached (not a subject failure)
 
-Exit codes: 0 ok, 1 refusal, 2 usage.
+  PREMISE_ABSENT           --release names a line no admitted premise targets (BLOCKED)
+  IMPORTED_NOT_FINAL       a committed import's source is not FINAL_SPEC at its admitting commit
+
+Exit codes: 0 ok, 1 refusal, 2 usage, 3 typed BLOCKED (plan/sync: PREMISE_ABSENT).
 """
 
 from __future__ import annotations
@@ -44,7 +54,9 @@ import argparse
 import hashlib
 import json
 import re
+import subprocess
 import sys
+import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -304,6 +316,168 @@ def check(root: Path, resolver: Resolver | None) -> dict[str, Any]:
     }
 
 
+# ---------------------------------------------------------------- plan
+
+
+CATALOG = Path("catalog/premise-imports.toml")
+SCHEMA_CATALOG = "premise-imports.v1"
+SCHEMA_PLAN = "https://chatman.dev/premise-import/plan/v1"
+RELEASE_RX = re.compile(r"^v(\d+)\.(\d+)\.(\d+)$")
+MERGE_RX = re.compile(r"^Merge (?:pull request|PR) #(\d+)\b")
+
+
+def release_key(release: str) -> tuple[int, int, int]:
+    m = RELEASE_RX.fullmatch(release)
+    if not m:
+        raise ImportRefused("IMPORT_ROW_MALFORMED", f"release {release!r}")
+    return int(m[1]), int(m[2]), int(m[3])
+
+
+def load_catalog(root: Path) -> dict[str, Any]:
+    doc = tomllib.loads((root / CATALOG).read_text(encoding="utf-8"))
+    if doc.get("schema") != SCHEMA_CATALOG or not isinstance(doc.get("source"), list):
+        raise ImportRefused("IMPORT_ROW_MALFORMED", f"{CATALOG.as_posix()}: schema {SCHEMA_CATALOG} with [[source]]")
+    return doc
+
+
+class SourceRepo:
+    """Read-only git over an owner-checked local checkout (``Resolver.local_dir``)."""
+
+    def __init__(self, resolver: Resolver, repository: str) -> None:
+        self.repository = repository
+        self.dir = resolver.local_dir(repository)
+        if self.dir is None:
+            mismatch = resolver.owner_mismatch(repository)
+            raise ImportRefused("TRANSPORT_UNAVAILABLE", mismatch or f"no local checkout of {repository}")
+
+    def git(self, *args: str) -> str:
+        out = subprocess.run(["git", "-C", str(self.dir), *args], capture_output=True, check=False)
+        if out.returncode != 0:
+            raise ImportRefused("IMPORT_SOURCE_UNRESOLVED", f"{self.repository}: git {' '.join(args)}")
+        return out.stdout.decode("utf-8")
+
+    def commit_of(self, ref: str) -> str:
+        for cand in (ref, f"origin/{ref}", f"refs/remotes/origin/{ref}"):
+            out = subprocess.run(
+                ["git", "-C", str(self.dir), "rev-parse", "-q", "--verify", f"{cand}^{{commit}}"],
+                capture_output=True,
+                check=False,
+            )
+            if out.returncode == 0:
+                return out.stdout.decode().strip()
+        raise ImportRefused("IMPORT_SOURCE_UNRESOLVED", f"{self.repository}: ref {ref} not found")
+
+
+def _status_line(text: str) -> str:
+    return next((ln.strip() for ln in text.splitlines() if ln.strip().startswith("**Status:**")), "")
+
+
+def plan(root: Path, resolver: Resolver, release: str | None = None) -> dict[str, Any]:
+    """Every premise the catalog admits, with its standing against the committed imports."""
+    catalog = load_catalog(root)
+    rows: list[dict[str, Any]] = []
+    sources: list[dict[str, Any]] = []
+    for src in catalog["source"]:
+        repo_name = src["repository"]
+        try:
+            repo = SourceRepo(resolver, repo_name)
+            head = repo.commit_of(src["ref"])
+        except ImportRefused as exc:
+            sources.append({"repository": repo_name, "ref": src["ref"], "status": exc.code, "detail": exc.detail})
+            continue
+        sources.append({"repository": repo_name, "ref": src["ref"], "commit": head, "status": "OBSERVED"})
+        pattern = re.compile(src["pattern"])
+        since = release_key(src["since"])
+        overrides = {o["number"]: o for o in src.get("override", [])}
+        for path in sorted(p for p in repo.git("ls-tree", "-r", "--name-only", head).splitlines() if p):
+            m = pattern.fullmatch(path)
+            if not m or release_key(m["release"]) < since:
+                continue
+            number, line = m["number"], m["release"]
+            if release is not None and line != release:
+                continue
+            added = repo.git("log", "--first-parent", "--diff-filter=A", "--format=%H%x00%s", head, "--", path)
+            # newest first: the latest add admits the bytes present now (a delete + re-add is a new admission)
+            admit_sha, subject = added.strip().splitlines()[0].split("\0", 1)
+            changed = repo.git("log", "--first-parent", "--format=%H", head, "--", path).split()
+            data = resolver.blob(repo_name, admit_sha, path)
+            rule = {**src, **overrides.get(number, {})}
+            pr = MERGE_RX.match(subject)
+            row = {
+                "release": line,
+                "number": number,
+                "locator": f"git:{repo_name}@{admit_sha}:{path}",
+                "into": rule["into"].format(release=line, number=number),
+                "copy_name": rule["copy_name"].format(release=line, number=number),
+                "standing": rule["standing"],
+                "scope": rule.get("scope"),
+                "owner": f"{repo_name} (PR #{pr[1]}, FINAL_SPEC; merge {admit_sha[:8]})"
+                if pr
+                else f"{repo_name} (FINAL_SPEC; commit {admit_sha[:8]})",
+                "sha256": sha256_hex(data),
+                "final": _status_line(data.decode("utf-8", "replace")).startswith(rule["status_prefix"]),
+                "amended_after_admission": [c for c in changed if c != admit_sha],
+            }
+            row["status"] = _standing(root, row)
+            rows.append(row)
+    absent = release is not None and not any(r["final"] for r in rows) and all(
+        s["status"] == "OBSERVED" for s in sources
+    )
+    blocking = [r for r in rows if r["status"] in ("MISSING", "SUBJECT_DIFFERS", "IMPORTED_NOT_FINAL")]
+    return {
+        "schema": SCHEMA_PLAN,
+        "release": release,
+        "sources": sources,
+        "premises": rows,
+        "verdict": "REFUSED"
+        if blocking
+        else "BLOCKED(PREMISE_ABSENT:E-ADM-01)"
+        if absent
+        else "BLOCKED(TRANSPORT_UNAVAILABLE)"
+        if any(s["status"] != "OBSERVED" for s in sources)
+        else "ADMITTED",
+    }
+
+
+def _standing(root: Path, row: dict[str, Any]) -> str:
+    imports_dir = root / row["into"]
+    existing = [r for r in load_index(imports_dir).get("imports", []) if r.get("path") == f"imports/{row['copy_name']}"]
+    if not existing:
+        return "MISSING" if row["final"] else "NOT_ADMITTED"
+    loc = parse(row["locator"])
+    old = existing[0]
+    same = (old.get("source_repo"), old.get("source_sha"), old.get("source_path"), old.get("sha256")) == (
+        loc.repository,
+        loc.sha,
+        loc.path,
+        row["sha256"],
+    )
+    if not same:
+        return "SUBJECT_DIFFERS"
+    return "IMPORTED" if row["final"] else "IMPORTED_NOT_FINAL"
+
+
+def sync(root: Path, resolver: Resolver, release: str | None = None) -> dict[str, Any]:
+    """Import every MISSING planned premise; return the re-computed plan."""
+    for row in plan(root, resolver, release)["premises"]:
+        if row["status"] == "MISSING":
+            import_premise(
+                resolver,
+                row["locator"],
+                root / row["into"],
+                row["copy_name"],
+                row["owner"],
+                row["standing"],
+                row["scope"],
+            )
+    return plan(root, resolver, release)
+
+
+def plan_exit(report: dict[str, Any]) -> int:
+    verdict = report["verdict"]
+    return 0 if verdict == "ADMITTED" else 1 if verdict == "REFUSED" else 3
+
+
 # ---------------------------------------------------------------- cli
 
 
@@ -323,7 +497,25 @@ def main(argv: list[str] | None = None) -> int:
     chk = sub.add_parser("check", help="recompute every release imports/IMPORTS.json")
     chk.add_argument("--root", type=Path, default=Path("."))
     chk.add_argument("--json", action="store_true")
+    for name, text in (("plan", "derive admitted premises and their import standing"), ("sync", "import every MISSING premise")):
+        p = sub.add_parser(name, help=text)
+        p.add_argument("--root", type=Path, default=Path("."))
+        p.add_argument("--release", help="restrict to one release line vYY.M.D")
     args = ap.parse_args(argv)
+
+    if args.cmd in ("plan", "sync"):
+        if args.repos_root is None:
+            print("--repos-root is required for plan/sync", file=sys.stderr)
+            return 2
+        # plan/sync read owner checkouts only: never the network.
+        resolver = Resolver(args.repos_root, allow_network=False)
+        try:
+            report = (plan if args.cmd == "plan" else sync)(args.root, resolver, args.release)
+        except ImportRefused as exc:
+            print(f"REFUSED[{exc.code}] {exc.detail}", file=sys.stderr)
+            return 1
+        print(json.dumps(report, indent=2))
+        return plan_exit(report)
 
     if args.cmd == "import":
         if not args.into.as_posix().split("/")[-1] == "imports":
