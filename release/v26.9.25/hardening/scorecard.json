@@ -184,21 +184,21 @@
     },
     {
       "definition": "LLM/coordination edges of autonomy/edges.json whose status is RETIRED",
-      "falsifier": "edges.json lands and this metric stays UNKNOWN",
+      "edges": 13,
+      "falsifier": "an edge counted RETIRED still carries a human or LLM hop in its latest receipt",
       "id": "SC-11",
       "name": "coordination_edges_retired",
       "source": "release/v26.9.25/autonomy/edges.json",
-      "standing": "UNKNOWN(release/v26.9.25/autonomy/edges.json absent)",
+      "standing": "ALIVE",
       "unit": "edges",
-      "value": null
+      "value": 0
     }
   ],
   "predecessor": "v26.9.24",
   "release": "v26.9.25",
   "schema": "https://chatman.dev/release-scorecard/scorecard/v1",
   "standing_summary": {
-    "ALIVE": 9,
-    "PARTIAL_ALIVE": 1,
-    "UNKNOWN(release/v26.9.25/autonomy/edges.json absent)": 1
+    "ALIVE": 10,
+    "PARTIAL_ALIVE": 1
   }
 }

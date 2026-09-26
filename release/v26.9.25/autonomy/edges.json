@@ -1,0 +1,253 @@
+{
+  "schema": "edges.v1",
+  "crown_subject": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+  "authority_boundary": [
+    "seanchatmangpt/chatman-ecosystem"
+  ],
+  "_provenance": "Honest inventory (RFC-0005 §6): owner_kind records who operates each recurring edge today. owner_kinds (additive) lists every operator; owner_kind is its first element. Evidence digests are sha256 of the located bytes and are recomputed by the court.",
+  "edges": [
+    {
+      "id": "E-START-01",
+      "stage": "start",
+      "from": "scheduler",
+      "to": "observer",
+      "owner_kind": "machine",
+      "owner_kinds": [
+        "machine"
+      ],
+      "authority_gate": null,
+      "recurring": true,
+      "evidence": {
+        "kind": "workflow",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@68bacd8dcc9ae12e4e97727a284c14abdc7520c5:.github/workflows/root-crown.yml",
+        "sha256": "3f49b2889abe85556b63716829ac264bc1fd9e4a9c47ec394de805d9673e8b1a"
+      },
+      "note": "cron '7,37 * * * *' starts every cycle"
+    },
+    {
+      "id": "E-OBS-01",
+      "stage": "observe",
+      "from": "observer",
+      "to": "observations",
+      "owner_kind": "machine",
+      "owner_kinds": [
+        "machine"
+      ],
+      "authority_gate": null,
+      "recurring": true,
+      "evidence": {
+        "kind": "run",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/receipts/run-36161856985/observations.json",
+        "sha256": "b122838d415ed44f7f77d7d5c5b64d9d6339b3aad9dc84f2a2eb49eb4d9694f5"
+      },
+      "note": "observe_release_heads.py --cold in the crown job (read-only GitHub API)"
+    },
+    {
+      "id": "E-OBS-02",
+      "stage": "observe",
+      "from": "operator-host",
+      "to": "observations",
+      "owner_kind": "human",
+      "owner_kinds": [
+        "human"
+      ],
+      "authority_gate": null,
+      "recurring": true,
+      "evidence": {
+        "kind": "log",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/observations/private-repos.json",
+        "sha256": "837b0a0dde6462483c7fa50568b42315d99a0a4a8bf92b0f0bbbe71db404a318"
+      },
+      "note": "private repositories are observed on the operator host (observer operator-local) and committed by hand"
+    },
+    {
+      "id": "E-ADM-01",
+      "stage": "admit",
+      "from": "operator",
+      "to": "premise",
+      "owner_kind": "human",
+      "owner_kinds": [
+        "human"
+      ],
+      "authority_gate": {
+        "grantor": "operator",
+        "grant": "merge a FINAL_SPEC RFC into engineering-standards main"
+      },
+      "recurring": true,
+      "evidence": {
+        "kind": "policy",
+        "locator": "git:seanchatmangpt/engineering-standards@71a6f607074b0f8d1b23855c11f10557a545b655:docs/engineering/rfc/0005-v26.9.25-autonomic-closure-amendment.md",
+        "sha256": "f153fcc41e6f3f17b88929c3a7a1c6cb8defdfa7edd940d6dd21e127fabd310d"
+      },
+      "note": "HumanAuthorityGate: the premise is admitted by the operator's merge"
+    },
+    {
+      "id": "E-ADM-02",
+      "stage": "admit",
+      "from": "premise",
+      "to": "release-imports",
+      "owner_kind": "human",
+      "owner_kinds": [
+        "human",
+        "llm"
+      ],
+      "authority_gate": null,
+      "recurring": true,
+      "evidence": {
+        "kind": "log",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/imports/IMPORTS.json",
+        "sha256": "40d98ed53bb1e3d49141e16509555bb896a54330bcb47662af133aec9323937c"
+      },
+      "note": "the RFC byte copy into release/<v>/imports is made by a person or an LLM lane, not by a machine edge"
+    },
+    {
+      "id": "E-DEC-01",
+      "stage": "decompose",
+      "from": "release-imports",
+      "to": "packets",
+      "owner_kind": "machine",
+      "owner_kinds": [
+        "machine"
+      ],
+      "authority_gate": null,
+      "recurring": true,
+      "evidence": {
+        "kind": "receipt",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/berthier.json",
+        "sha256": "363650782b4f995727ba9ae056b54c9f914a8240d7bcd0c889ce1b464eba9bea"
+      },
+      "note": "projector/Berthier compile (root_crown.projector)"
+    },
+    {
+      "id": "E-CON-01",
+      "stage": "construct",
+      "from": "packets",
+      "to": "owner-receipts",
+      "owner_kind": "llm",
+      "owner_kinds": [
+        "llm",
+        "human"
+      ],
+      "authority_gate": null,
+      "recurring": true,
+      "evidence": {
+        "kind": "log",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/evidence-index.json",
+        "sha256": "e330a9c8d0dcfb78dca9656641389c8266709924057fa091194ada3284580624"
+      },
+      "note": "owner-repository code and receipts are manufactured by LLM lanes and people on every cycle"
+    },
+    {
+      "id": "E-ACT-01",
+      "stage": "actuate",
+      "from": "owner-receipts",
+      "to": "main",
+      "owner_kind": "human",
+      "owner_kinds": [
+        "human"
+      ],
+      "authority_gate": {
+        "grantor": "operator",
+        "grant": "merge a pull request into main"
+      },
+      "recurring": true,
+      "evidence": {
+        "kind": "policy",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:CONTRIBUTING.md",
+        "sha256": "38f4641d81c8b9e75a74a14b899bd3c1654a4ba74a1388efd6f04df62de8954f"
+      },
+      "note": "HumanAuthorityGate: PR merge"
+    },
+    {
+      "id": "E-ACT-02",
+      "stage": "actuate",
+      "from": "crown-receipt",
+      "to": "tag",
+      "owner_kind": "machine",
+      "owner_kinds": [
+        "machine"
+      ],
+      "authority_gate": null,
+      "recurring": true,
+      "evidence": {
+        "kind": "receipt",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/receipts/run-36161856985/tag-decision.json",
+        "sha256": "89c337af49a05b48eb8cc0a9eaac246ae938c0e3ca66cd2f0553ce4f173d3fe1"
+      },
+      "note": "tag job behind the release-crown environment; the environment has no required reviewer, so no authority gate is enforced (RFC-0005 §12)"
+    },
+    {
+      "id": "E-VER-01",
+      "stage": "verify",
+      "from": "main",
+      "to": "crown-receipt",
+      "owner_kind": "machine",
+      "owner_kinds": [
+        "machine"
+      ],
+      "authority_gate": null,
+      "recurring": true,
+      "evidence": {
+        "kind": "run",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/receipts/run-36161856985/crown-receipt.json",
+        "sha256": "10d0c98ebb480294a744520ca15e5f983a988e3759e1e434ee2a55bd51d9deea"
+      },
+      "note": "root crown CI (root-crown.yml crown job)"
+    },
+    {
+      "id": "E-REP-01",
+      "stage": "repair",
+      "from": "crown-receipt",
+      "to": "owner-receipts",
+      "owner_kind": "llm",
+      "owner_kinds": [
+        "llm",
+        "human"
+      ],
+      "authority_gate": null,
+      "recurring": true,
+      "evidence": {
+        "kind": "log",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:tests/release_train/root_crown/test_loop.py",
+        "sha256": "392205c07761e5588c1573e00d95feeec554889dfc75eac31f4956e79706752e"
+      },
+      "note": "NEW_HEAD re-evidence is supplied by hand (test_loop builds the re-evidenced observations); no machine producer exists"
+    },
+    {
+      "id": "E-RPL-01",
+      "stage": "replay",
+      "from": "crown-receipt",
+      "to": "replay-receipt",
+      "owner_kind": "machine",
+      "owner_kinds": [
+        "machine"
+      ],
+      "authority_gate": null,
+      "recurring": true,
+      "evidence": {
+        "kind": "receipt",
+        "locator": "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/replay-receipt.json",
+        "sha256": "28911f403e7c1c7523fb62f0261d827c6999b967099b5a0cf7482f2561c0a36f"
+      },
+      "note": "projector --check / hardening --check replay on a clean runner"
+    },
+    {
+      "id": "E-CONT-01",
+      "stage": "continue",
+      "from": "crown-receipt",
+      "to": "scheduler",
+      "owner_kind": "machine",
+      "owner_kinds": [
+        "machine"
+      ],
+      "authority_gate": null,
+      "recurring": true,
+      "evidence": {
+        "kind": "run",
+        "locator": "https://github.com/seanchatmangpt/chatman-ecosystem/actions/runs/36161856985/artifacts",
+        "sha256": "10d0c98ebb480294a744520ca15e5f983a988e3759e1e434ee2a55bd51d9deea"
+      },
+      "note": "receipt hash chain parent read from a 90-day Actions artifact (PRE_TAG); not durable"
+    }
+  ]
+}
