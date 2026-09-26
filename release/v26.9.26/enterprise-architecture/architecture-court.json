@@ -6,7 +6,19 @@
     "version": "26.9.26",
     "exact_subject": "chatman-fuller:v26.9.26",
     "boundary_digest": "sha256:declared-common-boundary",
-    "standing": "CANDIDATE"
+    "standing": "CANDIDATE",
+    "metrics": {
+      "lawful_option_capacity": 1,
+      "reversibility": 1,
+      "semantic_fidelity": 1,
+      "authority_preservation": 1,
+      "evidentiary_strength": 1,
+      "adaptation_capacity": 1,
+      "cost": 1,
+      "latency": 1,
+      "exceptional_human_dependence": 1,
+      "general_llm_dependence": 1
+    }
   },
   "dimensions": {
     "lawful_option_capacity": "MAX",
