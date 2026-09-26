@@ -1,0 +1,2175 @@
+{
+  "attestation_head_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+  "authority": "NONE",
+  "blockers": [],
+  "crown_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+  "current": {
+    "blockers": [],
+    "core": {
+      "authority": "NONE",
+      "berthier_digest": "363650782b4f995727ba9ae056b54c9f914a8240d7bcd0c889ce1b464eba9bea",
+      "crown_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "evaluated_at": "2026-09-26T02:40:41Z",
+      "genesis": false,
+      "global_refusals": [],
+      "heads": {
+        "seanchatmangpt/affidavit": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+        "seanchatmangpt/ash_a2a": "8877c599312150569e42cedf50d4473d84a7be05",
+        "seanchatmangpt/ash_r2rml": "901bfb8a08dac5ea30ad77f0bb6de7a29eb8cd34",
+        "seanchatmangpt/ash_surface": "7d5492795d9b9a0956f51545ed1ad1932768b77e",
+        "seanchatmangpt/autofde-lab": "b417eea64ef8e4d841b9cc2f4a898753e4b71d1b",
+        "seanchatmangpt/beam4pm": "c2d9dbe441b892ba070eac52bfebeb0e3c132d39",
+        "seanchatmangpt/chatgpt-cloud-elixir": "d6727fef06b170bc6c3839bbf2a9456e33111920",
+        "seanchatmangpt/chatman-ecosystem": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "seanchatmangpt/engineering-standards": "71a6f607074b0f8d1b23855c11f10557a545b655",
+        "seanchatmangpt/ex4pm": "c4ca84410c379888305c85201710734afb21f9bf",
+        "seanchatmangpt/ggen-ecosystem": "3c3d3d4569becd19b08fd6a6984aa5c4cc2cd525",
+        "seanchatmangpt/ggen-marketplace": "bf10f7bf0ee8adbcaf9d8399883e53a5e837ff5b",
+        "seanchatmangpt/ggen_igniter": "316436474aa949fd2f924980160016a58807bd06",
+        "seanchatmangpt/gymact": "eeb0c2b97cfa55210f26bb7365989a739b3cb113",
+        "seanchatmangpt/wasm4pm": "9fc4f1ae3cc99cf65a5f014580db8e1ea3d08b55",
+        "seanchatmangpt/xaas": "4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f",
+        "seanchatmangpt/zcode-cli": "d1abfbe56660ade672af1125a3f11d91fc50a09e",
+        "seanchatmangpt/zoela": "89745f2fa4f7f438749ef61b638d17739ef11630"
+      },
+      "input_digests": {
+        "closure.json": "be08fa0654260cb615708144f6cc63a84f5f55f5568ebc60c75d7b206a3bafee",
+        "imports/IMPORTS.json": "40d98ed53bb1e3d49141e16509555bb896a54330bcb47662af133aec9323937c",
+        "imports/RFC-0004.md": "cefb3ab55e4afa25f7b107b5e73400036051b006231a9aea31ab7ea2aa50ed32",
+        "pins.json": "ea07d4d802fab4133ebcf7db2f6c064154011bfff0efdbe32a91341ddb57c0f4",
+        "requirements.json": "f1939b124c54962d58242a0932a016ede15e366b0fdbab185984c76eb1ec1aa3",
+        "worktrees-allow.json": "92611da875cf01fa80afc4582f797e273871e0ceae72e5f3975806ce0d3862df"
+      },
+      "next_observations": {
+        "cascade": [
+          "AC-01",
+          "AC-02",
+          "AC-03",
+          "AC-04",
+          "AC-05",
+          "AC-06",
+          "AC-07",
+          "AC-09",
+          "AC-10",
+          "AC-11",
+          "AC-12",
+          "AC-13",
+          "AC-14",
+          "AC-15",
+          "AC-16",
+          "AC-17",
+          "AC-18",
+          "AC-19",
+          "F-01",
+          "F-02",
+          "F-03",
+          "F-04",
+          "F-06",
+          "F-07",
+          "F-08",
+          "F-09",
+          "F-10",
+          "F-11",
+          "F-12",
+          "F-13",
+          "F-14"
+        ],
+        "locators": [
+          "local:release/v26.9.25/manifest.toml",
+          "seanchatmangpt/autofde-lab:release/v26.9.25/receipts/tlc-court.json",
+          "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/prose-inert.json",
+          "seanchatmangpt/ggen_igniter:release/v26.9.25/receipts/sjira-origin-authority.json",
+          "seanchatmangpt/xaas:release/v26.9.25/receipts/case-study-schema.json",
+          "seanchatmangpt/xaas:release/v26.9.25/receipts/cloud-runtime.json",
+          "seanchatmangpt/xaas:release/v26.9.25/receipts/wd-evidence-ceiling.json",
+          "seanchatmangpt/zoela:release/v26.9.25/receipts/godslaw-interpretation.json",
+          "seanchatmangpt/zoela:release/v26.9.25/receipts/godslaw-migration.json",
+          "seanchatmangpt/zoela:release/v26.9.25/receipts/vision2027-admission.json"
+        ],
+        "repos": [
+          "seanchatmangpt/affidavit",
+          "seanchatmangpt/ash_a2a",
+          "seanchatmangpt/ash_r2rml",
+          "seanchatmangpt/ash_surface",
+          "seanchatmangpt/autofde-lab",
+          "seanchatmangpt/beam4pm",
+          "seanchatmangpt/chatgpt-cloud-elixir",
+          "seanchatmangpt/chatman-ecosystem",
+          "seanchatmangpt/engineering-standards",
+          "seanchatmangpt/ex4pm",
+          "seanchatmangpt/ggen-ecosystem",
+          "seanchatmangpt/ggen-marketplace",
+          "seanchatmangpt/ggen_igniter",
+          "seanchatmangpt/gymact",
+          "seanchatmangpt/wasm4pm",
+          "seanchatmangpt/xaas",
+          "seanchatmangpt/zcode-cli",
+          "seanchatmangpt/zoela"
+        ]
+      },
+      "observation_authority": "github-api:GITHUB_TOKEN:read",
+      "observations_digest": "sha256:b9ec24d0676f10625c6a81f0b3fd22fc490d036d2a380b63bf9961babe4c11bf",
+      "packets_digest": "d9f68134f4ba6742acf341198c2f349ea9ccceb96560d4bcf69a59176c791f82",
+      "previous_receipt_digest": "sha256:7e7e9c80c3cd4649d9e00039d2336c8b5ff477b53227332dd4b445de3c2cc856",
+      "receipt_digest": "sha256:0e51e01d472f528fdaacd4700a27b3546325a3ac3103ec73e9e80d7bee377393",
+      "refusals": [],
+      "release": "v26.9.25",
+      "remaining": [
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-03:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/sjira-origin-authority.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "AC-03",
+          "state": "BLOCKED",
+          "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+          "term": "A"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-04:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/prose-inert.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "AC-04",
+          "state": "BLOCKED",
+          "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+          "term": "A"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-07:git:seanchatmangpt/autofde-lab@b417eea64ef8e4d841b9cc2f4a898753e4b71d1b:release/v26.9.25/receipts/tlc-court.json: 6fbe1807388e8c44ae5d5f75455a082a745055c7..b417eea64ef8e4d841b9cc2f4a898753e4b71d1b changes non-receipt paths .github/workflows/aloop-court.yml,.github/workflows/pr-ci.yml,docs/2026-09-25-llm-retirement-foundry.md,docs/2026-09-25-osiris-companion.md,docs/STATUS.md,docs/rfcs/RFC-ALOOP-v26.9.25.md",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "AC-07",
+          "state": "BLOCKED",
+          "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+          "term": "F"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_replay",
+          "code": "NOT_COLD",
+          "detail": "projection current but evaluation environment not declared cold (clean runner)",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "AC-12",
+          "state": "BLOCKED",
+          "subject_sha": null,
+          "term": "R"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-13:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/case-study-schema.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "AC-13",
+          "state": "BLOCKED",
+          "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+          "term": "X"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-14:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/wd-evidence-ceiling.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "AC-14",
+          "state": "BLOCKED",
+          "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+          "term": "A"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-15:git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/godslaw-migration.json: f1313f1c1462b9d2f4dd3cb010dbe5921f53185d..89745f2fa4f7f438749ef61b638d17739ef11630 changes non-receipt paths ontology/vision-2027.ttl,packs/zoela-ggen-pack/gates/150_provider_substitutability.rq,packs/zoela-ggen-pack/gates/155_activation_outcome_semantics.rq,packs/zoela-ggen-pack/mutants/145.toml,packs/zoela-ggen-pack/mutants/150.toml,packs/zoela-ggen-pack/mutants/155.toml",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "AC-15",
+          "state": "BLOCKED",
+          "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+          "term": "C"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-16:git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/vision2027-admission.json: f1313f1c1462b9d2f4dd3cb010dbe5921f53185d..89745f2fa4f7f438749ef61b638d17739ef11630 changes non-receipt paths ontology/vision-2027.ttl,packs/zoela-ggen-pack/gates/150_provider_substitutability.rq,packs/zoela-ggen-pack/gates/155_activation_outcome_semantics.rq,packs/zoela-ggen-pack/mutants/145.toml,packs/zoela-ggen-pack/mutants/150.toml,packs/zoela-ggen-pack/mutants/155.toml",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "AC-16",
+          "state": "BLOCKED",
+          "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+          "term": "A"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_standing",
+          "code": "CROWN_DEPENDENCIES_OPEN",
+          "detail": "AC-03,AC-04,AC-07,AC-12,AC-13,AC-14,AC-15,AC-16,F-01,F-02,F-08,F-09,F-12,F-13",
+          "failure_class": "DEPENDENCY_FAILURE",
+          "id": "AC-18",
+          "state": "BLOCKED",
+          "subject_sha": null,
+          "term": "C"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "F-01:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/prose-inert.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "F-01",
+          "state": "BLOCKED",
+          "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+          "term": "A"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "F-02:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/sjira-origin-authority.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "F-02",
+          "state": "BLOCKED",
+          "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+          "term": "A"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "F-08:git:seanchatmangpt/autofde-lab@b417eea64ef8e4d841b9cc2f4a898753e4b71d1b:release/v26.9.25/receipts/tlc-court.json: 6fbe1807388e8c44ae5d5f75455a082a745055c7..b417eea64ef8e4d841b9cc2f4a898753e4b71d1b changes non-receipt paths .github/workflows/aloop-court.yml,.github/workflows/pr-ci.yml,docs/2026-09-25-llm-retirement-foundry.md,docs/2026-09-25-osiris-companion.md,docs/STATUS.md,docs/rfcs/RFC-ALOOP-v26.9.25.md",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "F-08",
+          "state": "BLOCKED",
+          "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+          "term": "F"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "F-09:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/cloud-runtime.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "F-09",
+          "state": "BLOCKED",
+          "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+          "term": "R"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "F-12:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/wd-evidence-ceiling.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "F-12",
+          "state": "BLOCKED",
+          "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+          "term": "A"
+        },
+        {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "F-13:git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/godslaw-interpretation.json: f1313f1c1462b9d2f4dd3cb010dbe5921f53185d..89745f2fa4f7f438749ef61b638d17739ef11630 changes non-receipt paths ontology/vision-2027.ttl,packs/zoela-ggen-pack/gates/150_provider_substitutability.rq,packs/zoela-ggen-pack/gates/155_activation_outcome_semantics.rq,packs/zoela-ggen-pack/mutants/145.toml,packs/zoela-ggen-pack/mutants/150.toml,packs/zoela-ggen-pack/mutants/155.toml",
+          "failure_class": "EVIDENCE_FAILURE",
+          "id": "F-13",
+          "state": "BLOCKED",
+          "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+          "term": "A"
+        }
+      ],
+      "requirements": {
+        "AC-01": {
+          "binding": {
+            "binding_digest": "sha256:ae60fe5fc20a142a8c8c3cda05e5fc060e6078efce1b811a64bca6bff88693b0",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "manifest_valid",
+            "evaluated_subject_kind": "crown_commit",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/manifest.toml",
+            "exit_code": null,
+            "kind": "IN_TREE_DERIVED",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "root-crown",
+            "requirement_id": "AC-01",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "manifest sha256=1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "AC-02": {
+          "binding": {
+            "binding_digest": "sha256:af742eaa6980b0da87567d4e6507929f8dcad75155c012f46b70bb6fc887725c",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "release_closure_court",
+            "evaluated_subject_kind": "crown_commit",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:be08fa0654260cb615708144f6cc63a84f5f55f5568ebc60c75d7b206a3bafee",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/closure.json",
+            "exit_code": null,
+            "kind": "IN_TREE_DERIVED",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "root-crown",
+            "requirement_id": "AC-02",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "13 required subjects terminal (11 typed non-ALIVE dispositions); closure court PARTIAL_ALIVE; receipt=sha256:f95b998cd8f7b02ba80612b1d1f87d716360330256e2c4d8743aa105e2326180; policy AC-02 ceiling=TERMINAL",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "AC-03": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-03:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/sjira-origin-authority.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e"
+        },
+        "AC-04": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-04:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/prose-inert.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e"
+        },
+        "AC-05": {
+          "binding": {
+            "binding_digest": "sha256:9dcccae688027e43ac2324f8e58c217d8660caab8b84354e7d474e324c4c44f1",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "berthier_court",
+            "evaluated_subject_kind": "crown_commit",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:363650782b4f995727ba9ae056b54c9f914a8240d7bcd0c889ce1b464eba9bea",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/berthier.json",
+            "exit_code": null,
+            "kind": "IN_TREE_DERIVED",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "root-crown",
+            "requirement_id": "AC-05",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "berthier ALIVE; RFC \u00a79 crown test: section=\u00a73 dependents=58 affected=['AC-01', 'AC-02', 'AC-03', 'AC-04', 'AC-05', 'AC-06', 'AC-07', 'AC-08', 'AC-09', 'AC-10', 'AC-11', 'AC-12', 'AC-13', 'AC-14', 'AC-15', 'AC-16', 'AC-17', 'AC-18', 'AC-19', 'F-01', 'F-02', 'F-03', 'F-04', 'F-05', 'F-06', 'F-07', 'F-08', 'F-09', 'F-10', 'F-11', 'F-12', 'F-13', 'F-14'] owners=['seanchatmangpt/affidavit', 'seanchatmangpt/autofde-lab', 'seanchatmangpt/chatman-ecosystem', 'seanchatmangpt/ggen_igniter', 'seanchatmangpt/xaas', 'seanchatmangpt/zoela'] ManualRestatementCount=0",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "AC-06": {
+          "binding": {
+            "binding_digest": "sha256:c56fbcdfe74fc6d572333b0860e17b7d0b9108c968f92e84f187ef7b25d068df",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "cross_product_court",
+            "evaluated_subject_kind": "crown_commit",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:51d3da4bf02df789031cd0c0088bf5ec684b55de6f8fe28b2a2de9568f7a8acc",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+            "exit_code": null,
+            "kind": "IN_TREE_DERIVED",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "root-crown",
+            "requirement_id": "AC-06",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "XPROD ALIVE receipt=sha256:08ab0156c6410810bbf82635832acaf6371cd125f02fc7ff4f90e5a41ebad769",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "AC-07": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-07:git:seanchatmangpt/autofde-lab@b417eea64ef8e4d841b9cc2f4a898753e4b71d1b:release/v26.9.25/receipts/tlc-court.json: 6fbe1807388e8c44ae5d5f75455a082a745055c7..b417eea64ef8e4d841b9cc2f4a898753e4b71d1b changes non-receipt paths .github/workflows/aloop-court.yml,.github/workflows/pr-ci.yml,docs/2026-09-25-llm-retirement-foundry.md,docs/2026-09-25-osiris-companion.md,docs/STATUS.md,docs/rfcs/RFC-ALOOP-v26.9.25.md",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7"
+        },
+        "AC-08": {
+          "binding": {
+            "binding_digest": "sha256:7361c23b0c3ee8d697c0ac474eaa18f716b0e54ea736bb6101ad7634606e2064",
+            "command": null,
+            "container_repository": "seanchatmangpt/affidavit",
+            "court": "{'consequences_observed': 3, 'ledger_head': 'd3fe6c9278a4839042b25518edb8461b660068189aed4a954edc985fae9bee23', 'receipts': 4, 'records': 36, 'refusals': [], 'rules': ['CHAIN_INTEGRITY', 'ZERO_UNRECEIPTED_ACTUATION', 'DO_REQUIRES_AUTHORITY', 'CONSTRUCT_REQUIRES_ADMISSION', 'RECEIPT_DIGEST_VALID', 'AT_MOST_ONCE_CONSEQUENCE', 'CRASH_WINDOW_RECONCILED', 'UNKNOWN_NOT_PROMOTED'], 'standing': 'ADMITTED', 'zero_unreceipted_actuation': True}",
+            "evaluated_subject_kind": "producer_commit",
+            "evaluated_subject_sha": "9d158477fc4706f4fdaf30cfc073c547b57e783e",
+            "evidence_container_sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+            "evidence_digest": "sha256:ae37069d19cc6d70562a9b9dd4211e73604e778e89465ad2c80f82ee243fbe38",
+            "evidence_locator": "git:seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2:release/v26.9.25/receipts/brce-ledger.json",
+            "exit_code": null,
+            "kind": "REMOTE_RECEIPT",
+            "lineage_proof": {
+              "delta_class": "RECEIPT_ONLY",
+              "delta_paths": [
+                "release/v26.9.25/receipts/brce-ledger.json"
+              ],
+              "status": "ahead"
+            },
+            "owner": "seanchatmangpt/affidavit",
+            "owner_source": "explicit",
+            "producer": "seanchatmangpt/affidavit",
+            "requirement_id": "AC-08",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "ALIVE",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json ALIVE at 9d158477fc4706f4fdaf30cfc073c547b57e783e (ahead)",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "9d158477fc4706f4fdaf30cfc073c547b57e783e"
+        },
+        "AC-09": {
+          "binding": {
+            "binding_digest": "sha256:dce0c72d07a006d04aab1b82d2c49ce139e086fc477d5575915855d69dde7838",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "topology-receipt",
+            "evaluated_subject_kind": "operator_local_state",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:f566b69a40d49fe26f505325a3fd8e3793d6b9ce3f9445b63fa114ad8f7bb542",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/observations/local-worktrees.json",
+            "exit_code": null,
+            "kind": "OPERATOR_LOCAL",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "operator-local:TOPOLOGY-RECEIPT",
+            "requirement_id": "AC-09",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "0 unauthorized worktrees (TOPOLOGY-RECEIPT.json)",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "AC-10": {
+          "binding": {
+            "binding_digest": "sha256:7a7e7810f2fef96629ed0da97b0511422d5348c48db74f6043f2179954c87e3d",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "receipt_artifact",
+            "evaluated_subject_kind": "operator_local_state",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:32bbd585a5c4d1fdebfb232bdec48811b2cf20466fef07f1930e01ac9baf5e52",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+            "exit_code": null,
+            "kind": "LOCAL_RECEIPT",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "operator-local",
+            "requirement_id": "AC-10",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "ALIVE",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "local artifact local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json (ALIVE)",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "AC-11": {
+          "binding": {
+            "binding_digest": "sha256:59cb3e0e523c5d3dcecfa11bd4412c01377b9a61f8442b92d9a2e761dc19b162",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "durable_pins",
+            "evaluated_subject_kind": "crown_commit",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:ea07d4d802fab4133ebcf7db2f6c064154011bfff0efdbe32a91341ddb57c0f4",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/pins.json",
+            "exit_code": null,
+            "kind": "IN_TREE_DERIVED",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "root-crown",
+            "requirement_id": "AC-11",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "18 pins durable",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "AC-12": {
+          "binding": null,
+          "broken_term": "R_missing_replay",
+          "code": "NOT_COLD",
+          "detail": "projection current but evaluation environment not declared cold (clean runner)",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": null
+        },
+        "AC-13": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-13:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/case-study-schema.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+        },
+        "AC-14": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-14:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/wd-evidence-ceiling.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+        },
+        "AC-15": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-15:git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/godslaw-migration.json: f1313f1c1462b9d2f4dd3cb010dbe5921f53185d..89745f2fa4f7f438749ef61b638d17739ef11630 changes non-receipt paths ontology/vision-2027.ttl,packs/zoela-ggen-pack/gates/150_provider_substitutability.rq,packs/zoela-ggen-pack/gates/155_activation_outcome_semantics.rq,packs/zoela-ggen-pack/mutants/145.toml,packs/zoela-ggen-pack/mutants/150.toml,packs/zoela-ggen-pack/mutants/155.toml",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d"
+        },
+        "AC-16": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "AC-16:git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/vision2027-admission.json: f1313f1c1462b9d2f4dd3cb010dbe5921f53185d..89745f2fa4f7f438749ef61b638d17739ef11630 changes non-receipt paths ontology/vision-2027.ttl,packs/zoela-ggen-pack/gates/150_provider_substitutability.rq,packs/zoela-ggen-pack/gates/155_activation_outcome_semantics.rq,packs/zoela-ggen-pack/mutants/145.toml,packs/zoela-ggen-pack/mutants/150.toml,packs/zoela-ggen-pack/mutants/155.toml",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d"
+        },
+        "AC-17": {
+          "binding": {
+            "binding_digest": "sha256:ff90c7eb0f0fc33d9f3f8a9b15178b94905ab50276e13b80e3a5ad2783a8cd18",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "merged_sha",
+            "evaluated_subject_kind": "crown_commit",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:ea07d4d802fab4133ebcf7db2f6c064154011bfff0efdbe32a91341ddb57c0f4",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/pins.json",
+            "exit_code": null,
+            "kind": "IN_TREE_DERIVED",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "root-crown",
+            "requirement_id": "AC-17",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "every pin identical-to or ancestor-of its default-branch head",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "AC-18": {
+          "binding": null,
+          "broken_term": "R_missing_standing",
+          "code": "CROWN_DEPENDENCIES_OPEN",
+          "detail": "AC-03,AC-04,AC-07,AC-12,AC-13,AC-14,AC-15,AC-16,F-01,F-02,F-08,F-09,F-12,F-13",
+          "failure_class": "DEPENDENCY_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": null
+        },
+        "AC-19": {
+          "binding": {
+            "binding_digest": "sha256:1bfd9e7f266ee426eff92a056e577be4a42200c0966faa41b6082acf55edccc2",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "post-tag tag binding",
+            "evaluated_subject_kind": "crown_commit",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/manifest.toml",
+            "exit_code": null,
+            "kind": "IN_TREE_DERIVED",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "root-crown",
+            "requirement_id": "AC-19",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "post-tag: v26.9.25=337e839937c247de4ee58b744c8b8e43950d18e3 -> 68bacd8dcc9ae12e4e97727a284c14abdc7520c5 (recorded, immutable)",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "F-01": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "F-01:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/prose-inert.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e"
+        },
+        "F-02": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "F-02:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/sjira-origin-authority.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e"
+        },
+        "F-03": {
+          "binding": {
+            "binding_digest": "sha256:0af5a9f80770f563acb8a9f115a537210aa72a66f8ff0be2e0be16a2fc33c323",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "release_closure_court",
+            "evaluated_subject_kind": "crown_commit",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:be08fa0654260cb615708144f6cc63a84f5f55f5568ebc60c75d7b206a3bafee",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/closure.json",
+            "exit_code": null,
+            "kind": "IN_TREE_DERIVED",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "root-crown",
+            "requirement_id": "F-03",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "13 required subjects terminal (11 typed non-ALIVE dispositions); closure court PARTIAL_ALIVE; receipt=sha256:f95b998cd8f7b02ba80612b1d1f87d716360330256e2c4d8743aa105e2326180; policy F-03 ceiling=TERMINAL",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "F-04": {
+          "binding": {
+            "binding_digest": "sha256:8fcaec1ec29d0ece6ba001efe4a57a25e17fa995f2dced6f740539dfcf367423",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "durable_pins",
+            "evaluated_subject_kind": "crown_commit",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:ea07d4d802fab4133ebcf7db2f6c064154011bfff0efdbe32a91341ddb57c0f4",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/pins.json",
+            "exit_code": null,
+            "kind": "IN_TREE_DERIVED",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "root-crown",
+            "requirement_id": "F-04",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "18 pins durable",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "F-05": {
+          "binding": {
+            "binding_digest": "sha256:819502539543c4cb5fc3cb4025eec3856e66cff6ad1f5f0e699e3697013d7776",
+            "command": null,
+            "container_repository": "seanchatmangpt/affidavit",
+            "court": "{'consequences_observed': 3, 'ledger_head': 'd3fe6c9278a4839042b25518edb8461b660068189aed4a954edc985fae9bee23', 'receipts': 4, 'records': 36, 'refusals': [], 'rules': ['CHAIN_INTEGRITY', 'ZERO_UNRECEIPTED_ACTUATION', 'DO_REQUIRES_AUTHORITY', 'CONSTRUCT_REQUIRES_ADMISSION', 'RECEIPT_DIGEST_VALID', 'AT_MOST_ONCE_CONSEQUENCE', 'CRASH_WINDOW_RECONCILED', 'UNKNOWN_NOT_PROMOTED'], 'standing': 'ADMITTED', 'zero_unreceipted_actuation': True}",
+            "evaluated_subject_kind": "producer_commit",
+            "evaluated_subject_sha": "9d158477fc4706f4fdaf30cfc073c547b57e783e",
+            "evidence_container_sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+            "evidence_digest": "sha256:ae37069d19cc6d70562a9b9dd4211e73604e778e89465ad2c80f82ee243fbe38",
+            "evidence_locator": "git:seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2:release/v26.9.25/receipts/brce-ledger.json",
+            "exit_code": null,
+            "kind": "REMOTE_RECEIPT",
+            "lineage_proof": {
+              "delta_class": "RECEIPT_ONLY",
+              "delta_paths": [
+                "release/v26.9.25/receipts/brce-ledger.json"
+              ],
+              "status": "ahead"
+            },
+            "owner": "seanchatmangpt/affidavit",
+            "owner_source": "explicit",
+            "producer": "seanchatmangpt/affidavit",
+            "requirement_id": "F-05",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "ALIVE",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json ALIVE at 9d158477fc4706f4fdaf30cfc073c547b57e783e (ahead)",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "9d158477fc4706f4fdaf30cfc073c547b57e783e"
+        },
+        "F-06": {
+          "binding": {
+            "binding_digest": "sha256:e175b462c46685cede48f9d362126efaa828daa86af5cb88c4580870b5be2665",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "berthier_court",
+            "evaluated_subject_kind": "crown_commit",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:363650782b4f995727ba9ae056b54c9f914a8240d7bcd0c889ce1b464eba9bea",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/berthier.json",
+            "exit_code": null,
+            "kind": "IN_TREE_DERIVED",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "root-crown",
+            "requirement_id": "F-06",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "berthier ALIVE; RFC \u00a79 crown test: section=\u00a73 dependents=58 affected=['AC-01', 'AC-02', 'AC-03', 'AC-04', 'AC-05', 'AC-06', 'AC-07', 'AC-08', 'AC-09', 'AC-10', 'AC-11', 'AC-12', 'AC-13', 'AC-14', 'AC-15', 'AC-16', 'AC-17', 'AC-18', 'AC-19', 'F-01', 'F-02', 'F-03', 'F-04', 'F-05', 'F-06', 'F-07', 'F-08', 'F-09', 'F-10', 'F-11', 'F-12', 'F-13', 'F-14'] owners=['seanchatmangpt/affidavit', 'seanchatmangpt/autofde-lab', 'seanchatmangpt/chatman-ecosystem', 'seanchatmangpt/ggen_igniter', 'seanchatmangpt/xaas', 'seanchatmangpt/zoela'] ManualRestatementCount=0",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "F-07": {
+          "binding": {
+            "binding_digest": "sha256:52bf5a3fbf85d197ad287359e3e8dd99e37a96132a0053bb3cc6eca63dc4d00a",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "cross_product_court",
+            "evaluated_subject_kind": "crown_commit",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:51d3da4bf02df789031cd0c0088bf5ec684b55de6f8fe28b2a2de9568f7a8acc",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+            "exit_code": null,
+            "kind": "IN_TREE_DERIVED",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "root-crown",
+            "requirement_id": "F-07",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "XPROD ALIVE receipt=sha256:08ab0156c6410810bbf82635832acaf6371cd125f02fc7ff4f90e5a41ebad769",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "F-08": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "F-08:git:seanchatmangpt/autofde-lab@b417eea64ef8e4d841b9cc2f4a898753e4b71d1b:release/v26.9.25/receipts/tlc-court.json: 6fbe1807388e8c44ae5d5f75455a082a745055c7..b417eea64ef8e4d841b9cc2f4a898753e4b71d1b changes non-receipt paths .github/workflows/aloop-court.yml,.github/workflows/pr-ci.yml,docs/2026-09-25-llm-retirement-foundry.md,docs/2026-09-25-osiris-companion.md,docs/STATUS.md,docs/rfcs/RFC-ALOOP-v26.9.25.md",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7"
+        },
+        "F-09": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "F-09:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/cloud-runtime.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+        },
+        "F-10": {
+          "binding": {
+            "binding_digest": "sha256:aa8266e6d5f742024507f495d13091253febb20b043fd739691a196d110b2f60",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "topology-receipt",
+            "evaluated_subject_kind": "operator_local_state",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:f566b69a40d49fe26f505325a3fd8e3793d6b9ce3f9445b63fa114ad8f7bb542",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/observations/local-worktrees.json",
+            "exit_code": null,
+            "kind": "OPERATOR_LOCAL",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "operator-local:TOPOLOGY-RECEIPT",
+            "requirement_id": "F-10",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "0 unauthorized worktrees (TOPOLOGY-RECEIPT.json)",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "F-11": {
+          "binding": {
+            "binding_digest": "sha256:76b27ae96127004378cf927d165f54739f6fd11d582be476eb5d337a9ca1233d",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "receipt_artifact",
+            "evaluated_subject_kind": "operator_local_state",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:32bbd585a5c4d1fdebfb232bdec48811b2cf20466fef07f1930e01ac9baf5e52",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+            "exit_code": null,
+            "kind": "LOCAL_RECEIPT",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "operator-local",
+            "requirement_id": "F-11",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "ALIVE",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "local artifact local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json (ALIVE)",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        },
+        "F-12": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "F-12:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/wd-evidence-ceiling.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+        },
+        "F-13": {
+          "binding": null,
+          "broken_term": "R_missing_identity",
+          "code": "EVIDENCE_DELTA_UNBOUNDED",
+          "detail": "F-13:git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/godslaw-interpretation.json: f1313f1c1462b9d2f4dd3cb010dbe5921f53185d..89745f2fa4f7f438749ef61b638d17739ef11630 changes non-receipt paths ontology/vision-2027.ttl,packs/zoela-ggen-pack/gates/150_provider_substitutability.rq,packs/zoela-ggen-pack/gates/155_activation_outcome_semantics.rq,packs/zoela-ggen-pack/mutants/145.toml,packs/zoela-ggen-pack/mutants/150.toml,packs/zoela-ggen-pack/mutants/155.toml",
+          "failure_class": "EVIDENCE_FAILURE",
+          "state": "BLOCKED",
+          "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d"
+        },
+        "F-14": {
+          "binding": {
+            "binding_digest": "sha256:fadf38de6808ce8173e9c4ad660cfe06e9c1fd8f1b22ebe2747f794b0320c03f",
+            "command": null,
+            "container_repository": "seanchatmangpt/chatman-ecosystem",
+            "court": "post-tag tag binding",
+            "evaluated_subject_kind": "crown_commit",
+            "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+            "evidence_digest": "sha256:1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+            "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/manifest.toml",
+            "exit_code": null,
+            "kind": "IN_TREE_DERIVED",
+            "lineage_proof": {
+              "delta_class": "EMPTY",
+              "delta_paths": [],
+              "status": "identical"
+            },
+            "owner": "seanchatmangpt/chatman-ecosystem",
+            "owner_source": "container",
+            "producer": "root-crown",
+            "requirement_id": "F-14",
+            "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+            "standing": "PASS",
+            "toolchain": null
+          },
+          "broken_term": null,
+          "code": null,
+          "detail": "post-tag: v26.9.25=337e839937c247de4ee58b744c8b8e43950d18e3 -> 68bacd8dcc9ae12e4e97727a284c14abdc7520c5 (recorded, immutable)",
+          "failure_class": null,
+          "state": "PASS",
+          "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+        }
+      },
+      "root_repository": "seanchatmangpt/chatman-ecosystem",
+      "schema": "https://chatman.dev/root-crown/receipt/v1",
+      "standing": "BLOCKED",
+      "terms": {
+        "A": {
+          "detail": "REFUSED[INCOMPLETE_CURRENT_FRONTIER]:[('AC-03', 'BLOCKED'), ('AC-04', 'BLOCKED'), ('AC-14', 'BLOCKED'), ('AC-16', 'BLOCKED'), ('F-01', 'BLOCKED'), ('F-02', 'BLOCKED'), ('F-12', 'BLOCKED'), ('F-13', 'BLOCKED')]",
+          "requirements": [
+            "AC-03",
+            "AC-04",
+            "AC-14",
+            "AC-16",
+            "F-01",
+            "F-02",
+            "F-12",
+            "F-13"
+          ],
+          "state": "BLOCKED"
+        },
+        "C": {
+          "detail": "REFUSED[INCOMPLETE_CURRENT_FRONTIER]:[('AC-15', 'BLOCKED'), ('AC-18', 'BLOCKED')]",
+          "requirements": [
+            "AC-01",
+            "AC-02",
+            "AC-15",
+            "AC-17",
+            "AC-18",
+            "AC-19",
+            "F-03",
+            "F-14"
+          ],
+          "state": "BLOCKED"
+        },
+        "F": {
+          "detail": "REFUSED[INCOMPLETE_CURRENT_FRONTIER]:[('AC-07', 'BLOCKED'), ('F-08', 'BLOCKED')]",
+          "requirements": [
+            "AC-05",
+            "AC-07",
+            "F-06",
+            "F-08"
+          ],
+          "state": "BLOCKED"
+        },
+        "M": {
+          "detail": "",
+          "requirements": [
+            "AC-09",
+            "AC-10",
+            "AC-11",
+            "F-04",
+            "F-10",
+            "F-11"
+          ],
+          "state": "PASS"
+        },
+        "R": {
+          "detail": "REFUSED[INCOMPLETE_CURRENT_FRONTIER]:[('AC-12', 'BLOCKED'), ('F-09', 'BLOCKED')]",
+          "requirements": [
+            "AC-08",
+            "AC-12",
+            "F-05",
+            "F-09"
+          ],
+          "state": "BLOCKED"
+        },
+        "X": {
+          "detail": "REFUSED[INCOMPLETE_CURRENT_FRONTIER]:[('AC-13', 'BLOCKED')]",
+          "requirements": [
+            "AC-06",
+            "AC-13",
+            "F-07"
+          ],
+          "state": "BLOCKED"
+        }
+      },
+      "theorem": "RELEASE = C AND A AND R AND X AND F AND M"
+    },
+    "core_receipt_digest": "sha256:0e51e01d472f528fdaacd4700a27b3546325a3ac3103ec73e9e80d7bee377393",
+    "drift": {
+      "moved_since_tag": [
+        "seanchatmangpt/ash_a2a",
+        "seanchatmangpt/autofde-lab",
+        "seanchatmangpt/beam4pm",
+        "seanchatmangpt/chatman-ecosystem",
+        "seanchatmangpt/engineering-standards",
+        "seanchatmangpt/ggen-ecosystem",
+        "seanchatmangpt/ggen-marketplace",
+        "seanchatmangpt/ggen_igniter",
+        "seanchatmangpt/gymact",
+        "seanchatmangpt/xaas",
+        "seanchatmangpt/zoela"
+      ],
+      "root_observed_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "root_observed_head_is_attested": true
+    },
+    "refusals": [],
+    "standing": "BLOCKED"
+  },
+  "evaluated_at": "2026-09-26T02:40:41Z",
+  "genesis": false,
+  "global_refusals": [],
+  "heads": {
+    "seanchatmangpt/affidavit": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+    "seanchatmangpt/ash_a2a": "8877c599312150569e42cedf50d4473d84a7be05",
+    "seanchatmangpt/ash_r2rml": "901bfb8a08dac5ea30ad77f0bb6de7a29eb8cd34",
+    "seanchatmangpt/ash_surface": "7d5492795d9b9a0956f51545ed1ad1932768b77e",
+    "seanchatmangpt/autofde-lab": "b417eea64ef8e4d841b9cc2f4a898753e4b71d1b",
+    "seanchatmangpt/beam4pm": "c2d9dbe441b892ba070eac52bfebeb0e3c132d39",
+    "seanchatmangpt/chatgpt-cloud-elixir": "d6727fef06b170bc6c3839bbf2a9456e33111920",
+    "seanchatmangpt/chatman-ecosystem": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+    "seanchatmangpt/engineering-standards": "71a6f607074b0f8d1b23855c11f10557a545b655",
+    "seanchatmangpt/ex4pm": "c4ca84410c379888305c85201710734afb21f9bf",
+    "seanchatmangpt/ggen-ecosystem": "3c3d3d4569becd19b08fd6a6984aa5c4cc2cd525",
+    "seanchatmangpt/ggen-marketplace": "bf10f7bf0ee8adbcaf9d8399883e53a5e837ff5b",
+    "seanchatmangpt/ggen_igniter": "316436474aa949fd2f924980160016a58807bd06",
+    "seanchatmangpt/gymact": "eeb0c2b97cfa55210f26bb7365989a739b3cb113",
+    "seanchatmangpt/wasm4pm": "9fc4f1ae3cc99cf65a5f014580db8e1ea3d08b55",
+    "seanchatmangpt/xaas": "4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f",
+    "seanchatmangpt/zcode-cli": "d1abfbe56660ade672af1125a3f11d91fc50a09e",
+    "seanchatmangpt/zoela": "89745f2fa4f7f438749ef61b638d17739ef11630"
+  },
+  "historical": {
+    "blockers": [],
+    "hardened": {
+      "refusals": [],
+      "remaining": [
+        "AC-03:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-04:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-07:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-13:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-14:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-15:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-16:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "AC-18:BLOCKED:CROWN_DEPENDENCIES_OPEN",
+        "F-01:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "F-02:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "F-08:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "F-09:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "F-12:BLOCKED:EVIDENCE_DELTA_UNBOUNDED",
+        "F-13:BLOCKED:EVIDENCE_DELTA_UNBOUNDED"
+      ],
+      "standing": "BLOCKED"
+    },
+    "observations": {
+      "digest": "sha256:c4a4355e75c70b033dcb682693b9b59b4e95264a9780906a26a094b637fe6757",
+      "path": "receipts/run-36161744816/observations.json"
+    },
+    "previous": {
+      "path": "receipts/run-36160116076/crown-receipt.json",
+      "receipt_digest": "sha256:1842e92881f1a576e0e0c00e7b3102ae755f3cc2c187ea7d61b17d5b3aa2594f"
+    },
+    "refusals": [],
+    "replay": {
+      "detail": "byte-identical receipt digest",
+      "exact": true,
+      "expected_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c",
+      "replayed_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c",
+      "replayed_standing": "ALIVE"
+    },
+    "replay_standing": "HISTORICAL_RELEASE_REPLAY_EXACT",
+    "standing": "ALIVE",
+    "standing_ceiling": "BLOCKED",
+    "tag_receipt": {
+      "path": "receipts/run-36161744816/crown-receipt.json",
+      "receipt_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c"
+    }
+  },
+  "mode": "POST_TAG",
+  "observation_authority": "github-api:GITHUB_TOKEN:read",
+  "observations_digest": "sha256:b9ec24d0676f10625c6a81f0b3fd22fc490d036d2a380b63bf9961babe4c11bf",
+  "previous_receipt_digest": "sha256:7e7e9c80c3cd4649d9e00039d2336c8b5ff477b53227332dd4b445de3c2cc856",
+  "receipt_digest": "sha256:7708c69c5e8217dcb55f7fd0d51369e16d858142c7bf2478535ce30758440b9c",
+  "refusals": [],
+  "release": "v26.9.25",
+  "remaining": [
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-03:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/sjira-origin-authority.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-03",
+      "state": "BLOCKED",
+      "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+      "term": "A"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-04:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/prose-inert.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-04",
+      "state": "BLOCKED",
+      "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+      "term": "A"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-07:git:seanchatmangpt/autofde-lab@b417eea64ef8e4d841b9cc2f4a898753e4b71d1b:release/v26.9.25/receipts/tlc-court.json: 6fbe1807388e8c44ae5d5f75455a082a745055c7..b417eea64ef8e4d841b9cc2f4a898753e4b71d1b changes non-receipt paths .github/workflows/aloop-court.yml,.github/workflows/pr-ci.yml,docs/2026-09-25-llm-retirement-foundry.md,docs/2026-09-25-osiris-companion.md,docs/STATUS.md,docs/rfcs/RFC-ALOOP-v26.9.25.md",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-07",
+      "state": "BLOCKED",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "term": "F"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_replay",
+      "code": "NOT_COLD",
+      "detail": "projection current but evaluation environment not declared cold (clean runner)",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-12",
+      "state": "BLOCKED",
+      "subject_sha": null,
+      "term": "R"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-13:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/case-study-schema.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-13",
+      "state": "BLOCKED",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "term": "X"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-14:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/wd-evidence-ceiling.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-14",
+      "state": "BLOCKED",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "term": "A"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-15:git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/godslaw-migration.json: f1313f1c1462b9d2f4dd3cb010dbe5921f53185d..89745f2fa4f7f438749ef61b638d17739ef11630 changes non-receipt paths ontology/vision-2027.ttl,packs/zoela-ggen-pack/gates/150_provider_substitutability.rq,packs/zoela-ggen-pack/gates/155_activation_outcome_semantics.rq,packs/zoela-ggen-pack/mutants/145.toml,packs/zoela-ggen-pack/mutants/150.toml,packs/zoela-ggen-pack/mutants/155.toml",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-15",
+      "state": "BLOCKED",
+      "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+      "term": "C"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-16:git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/vision2027-admission.json: f1313f1c1462b9d2f4dd3cb010dbe5921f53185d..89745f2fa4f7f438749ef61b638d17739ef11630 changes non-receipt paths ontology/vision-2027.ttl,packs/zoela-ggen-pack/gates/150_provider_substitutability.rq,packs/zoela-ggen-pack/gates/155_activation_outcome_semantics.rq,packs/zoela-ggen-pack/mutants/145.toml,packs/zoela-ggen-pack/mutants/150.toml,packs/zoela-ggen-pack/mutants/155.toml",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-16",
+      "state": "BLOCKED",
+      "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+      "term": "A"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_standing",
+      "code": "CROWN_DEPENDENCIES_OPEN",
+      "detail": "AC-03,AC-04,AC-07,AC-12,AC-13,AC-14,AC-15,AC-16,F-01,F-02,F-08,F-09,F-12,F-13",
+      "failure_class": "DEPENDENCY_FAILURE",
+      "id": "AC-18",
+      "state": "BLOCKED",
+      "subject_sha": null,
+      "term": "C"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "F-01:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/prose-inert.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-01",
+      "state": "BLOCKED",
+      "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+      "term": "A"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "F-02:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/sjira-origin-authority.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-02",
+      "state": "BLOCKED",
+      "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e",
+      "term": "A"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "F-08:git:seanchatmangpt/autofde-lab@b417eea64ef8e4d841b9cc2f4a898753e4b71d1b:release/v26.9.25/receipts/tlc-court.json: 6fbe1807388e8c44ae5d5f75455a082a745055c7..b417eea64ef8e4d841b9cc2f4a898753e4b71d1b changes non-receipt paths .github/workflows/aloop-court.yml,.github/workflows/pr-ci.yml,docs/2026-09-25-llm-retirement-foundry.md,docs/2026-09-25-osiris-companion.md,docs/STATUS.md,docs/rfcs/RFC-ALOOP-v26.9.25.md",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-08",
+      "state": "BLOCKED",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7",
+      "term": "F"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "F-09:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/cloud-runtime.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-09",
+      "state": "BLOCKED",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "term": "R"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "F-12:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/wd-evidence-ceiling.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-12",
+      "state": "BLOCKED",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e",
+      "term": "A"
+    },
+    {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "F-13:git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/godslaw-interpretation.json: f1313f1c1462b9d2f4dd3cb010dbe5921f53185d..89745f2fa4f7f438749ef61b638d17739ef11630 changes non-receipt paths ontology/vision-2027.ttl,packs/zoela-ggen-pack/gates/150_provider_substitutability.rq,packs/zoela-ggen-pack/gates/155_activation_outcome_semantics.rq,packs/zoela-ggen-pack/mutants/145.toml,packs/zoela-ggen-pack/mutants/150.toml,packs/zoela-ggen-pack/mutants/155.toml",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-13",
+      "state": "BLOCKED",
+      "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d",
+      "term": "A"
+    }
+  ],
+  "requirements": {
+    "AC-01": {
+      "binding": {
+        "binding_digest": "sha256:ae60fe5fc20a142a8c8c3cda05e5fc060e6078efce1b811a64bca6bff88693b0",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "manifest_valid",
+        "evaluated_subject_kind": "crown_commit",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/manifest.toml",
+        "exit_code": null,
+        "kind": "IN_TREE_DERIVED",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "root-crown",
+        "requirement_id": "AC-01",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "manifest sha256=1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "AC-02": {
+      "binding": {
+        "binding_digest": "sha256:af742eaa6980b0da87567d4e6507929f8dcad75155c012f46b70bb6fc887725c",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "release_closure_court",
+        "evaluated_subject_kind": "crown_commit",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:be08fa0654260cb615708144f6cc63a84f5f55f5568ebc60c75d7b206a3bafee",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/closure.json",
+        "exit_code": null,
+        "kind": "IN_TREE_DERIVED",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "root-crown",
+        "requirement_id": "AC-02",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "13 required subjects terminal (11 typed non-ALIVE dispositions); closure court PARTIAL_ALIVE; receipt=sha256:f95b998cd8f7b02ba80612b1d1f87d716360330256e2c4d8743aa105e2326180; policy AC-02 ceiling=TERMINAL",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "AC-03": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-03:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/sjira-origin-authority.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e"
+    },
+    "AC-04": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-04:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/prose-inert.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e"
+    },
+    "AC-05": {
+      "binding": {
+        "binding_digest": "sha256:9dcccae688027e43ac2324f8e58c217d8660caab8b84354e7d474e324c4c44f1",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "berthier_court",
+        "evaluated_subject_kind": "crown_commit",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:363650782b4f995727ba9ae056b54c9f914a8240d7bcd0c889ce1b464eba9bea",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/berthier.json",
+        "exit_code": null,
+        "kind": "IN_TREE_DERIVED",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "root-crown",
+        "requirement_id": "AC-05",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "berthier ALIVE; RFC \u00a79 crown test: section=\u00a73 dependents=58 affected=['AC-01', 'AC-02', 'AC-03', 'AC-04', 'AC-05', 'AC-06', 'AC-07', 'AC-08', 'AC-09', 'AC-10', 'AC-11', 'AC-12', 'AC-13', 'AC-14', 'AC-15', 'AC-16', 'AC-17', 'AC-18', 'AC-19', 'F-01', 'F-02', 'F-03', 'F-04', 'F-05', 'F-06', 'F-07', 'F-08', 'F-09', 'F-10', 'F-11', 'F-12', 'F-13', 'F-14'] owners=['seanchatmangpt/affidavit', 'seanchatmangpt/autofde-lab', 'seanchatmangpt/chatman-ecosystem', 'seanchatmangpt/ggen_igniter', 'seanchatmangpt/xaas', 'seanchatmangpt/zoela'] ManualRestatementCount=0",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "AC-06": {
+      "binding": {
+        "binding_digest": "sha256:c56fbcdfe74fc6d572333b0860e17b7d0b9108c968f92e84f187ef7b25d068df",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "cross_product_court",
+        "evaluated_subject_kind": "crown_commit",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:51d3da4bf02df789031cd0c0088bf5ec684b55de6f8fe28b2a2de9568f7a8acc",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+        "exit_code": null,
+        "kind": "IN_TREE_DERIVED",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "root-crown",
+        "requirement_id": "AC-06",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "XPROD ALIVE receipt=sha256:08ab0156c6410810bbf82635832acaf6371cd125f02fc7ff4f90e5a41ebad769",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "AC-07": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-07:git:seanchatmangpt/autofde-lab@b417eea64ef8e4d841b9cc2f4a898753e4b71d1b:release/v26.9.25/receipts/tlc-court.json: 6fbe1807388e8c44ae5d5f75455a082a745055c7..b417eea64ef8e4d841b9cc2f4a898753e4b71d1b changes non-receipt paths .github/workflows/aloop-court.yml,.github/workflows/pr-ci.yml,docs/2026-09-25-llm-retirement-foundry.md,docs/2026-09-25-osiris-companion.md,docs/STATUS.md,docs/rfcs/RFC-ALOOP-v26.9.25.md",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7"
+    },
+    "AC-08": {
+      "binding": {
+        "binding_digest": "sha256:7361c23b0c3ee8d697c0ac474eaa18f716b0e54ea736bb6101ad7634606e2064",
+        "command": null,
+        "container_repository": "seanchatmangpt/affidavit",
+        "court": "{'consequences_observed': 3, 'ledger_head': 'd3fe6c9278a4839042b25518edb8461b660068189aed4a954edc985fae9bee23', 'receipts': 4, 'records': 36, 'refusals': [], 'rules': ['CHAIN_INTEGRITY', 'ZERO_UNRECEIPTED_ACTUATION', 'DO_REQUIRES_AUTHORITY', 'CONSTRUCT_REQUIRES_ADMISSION', 'RECEIPT_DIGEST_VALID', 'AT_MOST_ONCE_CONSEQUENCE', 'CRASH_WINDOW_RECONCILED', 'UNKNOWN_NOT_PROMOTED'], 'standing': 'ADMITTED', 'zero_unreceipted_actuation': True}",
+        "evaluated_subject_kind": "producer_commit",
+        "evaluated_subject_sha": "9d158477fc4706f4fdaf30cfc073c547b57e783e",
+        "evidence_container_sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+        "evidence_digest": "sha256:ae37069d19cc6d70562a9b9dd4211e73604e778e89465ad2c80f82ee243fbe38",
+        "evidence_locator": "git:seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2:release/v26.9.25/receipts/brce-ledger.json",
+        "exit_code": null,
+        "kind": "REMOTE_RECEIPT",
+        "lineage_proof": {
+          "delta_class": "RECEIPT_ONLY",
+          "delta_paths": [
+            "release/v26.9.25/receipts/brce-ledger.json"
+          ],
+          "status": "ahead"
+        },
+        "owner": "seanchatmangpt/affidavit",
+        "owner_source": "explicit",
+        "producer": "seanchatmangpt/affidavit",
+        "requirement_id": "AC-08",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "ALIVE",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json ALIVE at 9d158477fc4706f4fdaf30cfc073c547b57e783e (ahead)",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "9d158477fc4706f4fdaf30cfc073c547b57e783e"
+    },
+    "AC-09": {
+      "binding": {
+        "binding_digest": "sha256:dce0c72d07a006d04aab1b82d2c49ce139e086fc477d5575915855d69dde7838",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "topology-receipt",
+        "evaluated_subject_kind": "operator_local_state",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:f566b69a40d49fe26f505325a3fd8e3793d6b9ce3f9445b63fa114ad8f7bb542",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/observations/local-worktrees.json",
+        "exit_code": null,
+        "kind": "OPERATOR_LOCAL",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "operator-local:TOPOLOGY-RECEIPT",
+        "requirement_id": "AC-09",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "0 unauthorized worktrees (TOPOLOGY-RECEIPT.json)",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "AC-10": {
+      "binding": {
+        "binding_digest": "sha256:7a7e7810f2fef96629ed0da97b0511422d5348c48db74f6043f2179954c87e3d",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "receipt_artifact",
+        "evaluated_subject_kind": "operator_local_state",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:32bbd585a5c4d1fdebfb232bdec48811b2cf20466fef07f1930e01ac9baf5e52",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+        "exit_code": null,
+        "kind": "LOCAL_RECEIPT",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "operator-local",
+        "requirement_id": "AC-10",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "ALIVE",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "local artifact local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json (ALIVE)",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "AC-11": {
+      "binding": {
+        "binding_digest": "sha256:59cb3e0e523c5d3dcecfa11bd4412c01377b9a61f8442b92d9a2e761dc19b162",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "durable_pins",
+        "evaluated_subject_kind": "crown_commit",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:ea07d4d802fab4133ebcf7db2f6c064154011bfff0efdbe32a91341ddb57c0f4",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/pins.json",
+        "exit_code": null,
+        "kind": "IN_TREE_DERIVED",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "root-crown",
+        "requirement_id": "AC-11",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "18 pins durable",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "AC-12": {
+      "binding": null,
+      "broken_term": "R_missing_replay",
+      "code": "NOT_COLD",
+      "detail": "projection current but evaluation environment not declared cold (clean runner)",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": null
+    },
+    "AC-13": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-13:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/case-study-schema.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+    },
+    "AC-14": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-14:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/wd-evidence-ceiling.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+    },
+    "AC-15": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-15:git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/godslaw-migration.json: f1313f1c1462b9d2f4dd3cb010dbe5921f53185d..89745f2fa4f7f438749ef61b638d17739ef11630 changes non-receipt paths ontology/vision-2027.ttl,packs/zoela-ggen-pack/gates/150_provider_substitutability.rq,packs/zoela-ggen-pack/gates/155_activation_outcome_semantics.rq,packs/zoela-ggen-pack/mutants/145.toml,packs/zoela-ggen-pack/mutants/150.toml,packs/zoela-ggen-pack/mutants/155.toml",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d"
+    },
+    "AC-16": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "AC-16:git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/vision2027-admission.json: f1313f1c1462b9d2f4dd3cb010dbe5921f53185d..89745f2fa4f7f438749ef61b638d17739ef11630 changes non-receipt paths ontology/vision-2027.ttl,packs/zoela-ggen-pack/gates/150_provider_substitutability.rq,packs/zoela-ggen-pack/gates/155_activation_outcome_semantics.rq,packs/zoela-ggen-pack/mutants/145.toml,packs/zoela-ggen-pack/mutants/150.toml,packs/zoela-ggen-pack/mutants/155.toml",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d"
+    },
+    "AC-17": {
+      "binding": {
+        "binding_digest": "sha256:ff90c7eb0f0fc33d9f3f8a9b15178b94905ab50276e13b80e3a5ad2783a8cd18",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "merged_sha",
+        "evaluated_subject_kind": "crown_commit",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:ea07d4d802fab4133ebcf7db2f6c064154011bfff0efdbe32a91341ddb57c0f4",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/pins.json",
+        "exit_code": null,
+        "kind": "IN_TREE_DERIVED",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "root-crown",
+        "requirement_id": "AC-17",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "every pin identical-to or ancestor-of its default-branch head",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "AC-18": {
+      "binding": null,
+      "broken_term": "R_missing_standing",
+      "code": "CROWN_DEPENDENCIES_OPEN",
+      "detail": "AC-03,AC-04,AC-07,AC-12,AC-13,AC-14,AC-15,AC-16,F-01,F-02,F-08,F-09,F-12,F-13",
+      "failure_class": "DEPENDENCY_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": null
+    },
+    "AC-19": {
+      "binding": {
+        "binding_digest": "sha256:1bfd9e7f266ee426eff92a056e577be4a42200c0966faa41b6082acf55edccc2",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "post-tag tag binding",
+        "evaluated_subject_kind": "crown_commit",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/manifest.toml",
+        "exit_code": null,
+        "kind": "IN_TREE_DERIVED",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "root-crown",
+        "requirement_id": "AC-19",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "post-tag: v26.9.25=337e839937c247de4ee58b744c8b8e43950d18e3 -> 68bacd8dcc9ae12e4e97727a284c14abdc7520c5 (recorded, immutable)",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "F-01": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "F-01:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/prose-inert.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e"
+    },
+    "F-02": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "F-02:git:seanchatmangpt/ggen_igniter@316436474aa949fd2f924980160016a58807bd06:release/v26.9.25/receipts/sjira-origin-authority.json: 780a81d81c6e579084ba3048037419aab7d7386e..316436474aa949fd2f924980160016a58807bd06 changes non-receipt paths HANDWRITTEN.md,lib/ggen_igniter/semantic_a2a.ex,lib/ggen_igniter/semantic_jira.ex,lib/ggen_igniter/semantic_jira/authority.ex,lib/ggen_igniter/semantic_jira/bootstrap.ex,lib/ggen_igniter/semantic_jira/cli.ex",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "780a81d81c6e579084ba3048037419aab7d7386e"
+    },
+    "F-03": {
+      "binding": {
+        "binding_digest": "sha256:0af5a9f80770f563acb8a9f115a537210aa72a66f8ff0be2e0be16a2fc33c323",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "release_closure_court",
+        "evaluated_subject_kind": "crown_commit",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:be08fa0654260cb615708144f6cc63a84f5f55f5568ebc60c75d7b206a3bafee",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/closure.json",
+        "exit_code": null,
+        "kind": "IN_TREE_DERIVED",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "root-crown",
+        "requirement_id": "F-03",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "13 required subjects terminal (11 typed non-ALIVE dispositions); closure court PARTIAL_ALIVE; receipt=sha256:f95b998cd8f7b02ba80612b1d1f87d716360330256e2c4d8743aa105e2326180; policy F-03 ceiling=TERMINAL",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "F-04": {
+      "binding": {
+        "binding_digest": "sha256:8fcaec1ec29d0ece6ba001efe4a57a25e17fa995f2dced6f740539dfcf367423",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "durable_pins",
+        "evaluated_subject_kind": "crown_commit",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:ea07d4d802fab4133ebcf7db2f6c064154011bfff0efdbe32a91341ddb57c0f4",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/pins.json",
+        "exit_code": null,
+        "kind": "IN_TREE_DERIVED",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "root-crown",
+        "requirement_id": "F-04",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "18 pins durable",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "F-05": {
+      "binding": {
+        "binding_digest": "sha256:819502539543c4cb5fc3cb4025eec3856e66cff6ad1f5f0e699e3697013d7776",
+        "command": null,
+        "container_repository": "seanchatmangpt/affidavit",
+        "court": "{'consequences_observed': 3, 'ledger_head': 'd3fe6c9278a4839042b25518edb8461b660068189aed4a954edc985fae9bee23', 'receipts': 4, 'records': 36, 'refusals': [], 'rules': ['CHAIN_INTEGRITY', 'ZERO_UNRECEIPTED_ACTUATION', 'DO_REQUIRES_AUTHORITY', 'CONSTRUCT_REQUIRES_ADMISSION', 'RECEIPT_DIGEST_VALID', 'AT_MOST_ONCE_CONSEQUENCE', 'CRASH_WINDOW_RECONCILED', 'UNKNOWN_NOT_PROMOTED'], 'standing': 'ADMITTED', 'zero_unreceipted_actuation': True}",
+        "evaluated_subject_kind": "producer_commit",
+        "evaluated_subject_sha": "9d158477fc4706f4fdaf30cfc073c547b57e783e",
+        "evidence_container_sha": "d70b0e40f9920136510cb0f7f24bf9720feeb4f2",
+        "evidence_digest": "sha256:ae37069d19cc6d70562a9b9dd4211e73604e778e89465ad2c80f82ee243fbe38",
+        "evidence_locator": "git:seanchatmangpt/affidavit@d70b0e40f9920136510cb0f7f24bf9720feeb4f2:release/v26.9.25/receipts/brce-ledger.json",
+        "exit_code": null,
+        "kind": "REMOTE_RECEIPT",
+        "lineage_proof": {
+          "delta_class": "RECEIPT_ONLY",
+          "delta_paths": [
+            "release/v26.9.25/receipts/brce-ledger.json"
+          ],
+          "status": "ahead"
+        },
+        "owner": "seanchatmangpt/affidavit",
+        "owner_source": "explicit",
+        "producer": "seanchatmangpt/affidavit",
+        "requirement_id": "F-05",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "ALIVE",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "seanchatmangpt/affidavit:release/v26.9.25/receipts/brce-ledger.json ALIVE at 9d158477fc4706f4fdaf30cfc073c547b57e783e (ahead)",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "9d158477fc4706f4fdaf30cfc073c547b57e783e"
+    },
+    "F-06": {
+      "binding": {
+        "binding_digest": "sha256:e175b462c46685cede48f9d362126efaa828daa86af5cb88c4580870b5be2665",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "berthier_court",
+        "evaluated_subject_kind": "crown_commit",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:363650782b4f995727ba9ae056b54c9f914a8240d7bcd0c889ce1b464eba9bea",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/berthier.json",
+        "exit_code": null,
+        "kind": "IN_TREE_DERIVED",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "root-crown",
+        "requirement_id": "F-06",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "berthier ALIVE; RFC \u00a79 crown test: section=\u00a73 dependents=58 affected=['AC-01', 'AC-02', 'AC-03', 'AC-04', 'AC-05', 'AC-06', 'AC-07', 'AC-08', 'AC-09', 'AC-10', 'AC-11', 'AC-12', 'AC-13', 'AC-14', 'AC-15', 'AC-16', 'AC-17', 'AC-18', 'AC-19', 'F-01', 'F-02', 'F-03', 'F-04', 'F-05', 'F-06', 'F-07', 'F-08', 'F-09', 'F-10', 'F-11', 'F-12', 'F-13', 'F-14'] owners=['seanchatmangpt/affidavit', 'seanchatmangpt/autofde-lab', 'seanchatmangpt/chatman-ecosystem', 'seanchatmangpt/ggen_igniter', 'seanchatmangpt/xaas', 'seanchatmangpt/zoela'] ManualRestatementCount=0",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "F-07": {
+      "binding": {
+        "binding_digest": "sha256:52bf5a3fbf85d197ad287359e3e8dd99e37a96132a0053bb3cc6eca63dc4d00a",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "cross_product_court",
+        "evaluated_subject_kind": "crown_commit",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:51d3da4bf02df789031cd0c0088bf5ec684b55de6f8fe28b2a2de9568f7a8acc",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:docs/jira/v26.9.25/xprod-cases/XPROD-001.json",
+        "exit_code": null,
+        "kind": "IN_TREE_DERIVED",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "root-crown",
+        "requirement_id": "F-07",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "XPROD ALIVE receipt=sha256:08ab0156c6410810bbf82635832acaf6371cd125f02fc7ff4f90e5a41ebad769",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "F-08": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "F-08:git:seanchatmangpt/autofde-lab@b417eea64ef8e4d841b9cc2f4a898753e4b71d1b:release/v26.9.25/receipts/tlc-court.json: 6fbe1807388e8c44ae5d5f75455a082a745055c7..b417eea64ef8e4d841b9cc2f4a898753e4b71d1b changes non-receipt paths .github/workflows/aloop-court.yml,.github/workflows/pr-ci.yml,docs/2026-09-25-llm-retirement-foundry.md,docs/2026-09-25-osiris-companion.md,docs/STATUS.md,docs/rfcs/RFC-ALOOP-v26.9.25.md",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "6fbe1807388e8c44ae5d5f75455a082a745055c7"
+    },
+    "F-09": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "F-09:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/cloud-runtime.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+    },
+    "F-10": {
+      "binding": {
+        "binding_digest": "sha256:aa8266e6d5f742024507f495d13091253febb20b043fd739691a196d110b2f60",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "topology-receipt",
+        "evaluated_subject_kind": "operator_local_state",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:f566b69a40d49fe26f505325a3fd8e3793d6b9ce3f9445b63fa114ad8f7bb542",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/observations/local-worktrees.json",
+        "exit_code": null,
+        "kind": "OPERATOR_LOCAL",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "operator-local:TOPOLOGY-RECEIPT",
+        "requirement_id": "F-10",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "0 unauthorized worktrees (TOPOLOGY-RECEIPT.json)",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "F-11": {
+      "binding": {
+        "binding_digest": "sha256:76b27ae96127004378cf927d165f54739f6fd11d582be476eb5d337a9ca1233d",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "receipt_artifact",
+        "evaluated_subject_kind": "operator_local_state",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:32bbd585a5c4d1fdebfb232bdec48811b2cf20466fef07f1930e01ac9baf5e52",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json",
+        "exit_code": null,
+        "kind": "LOCAL_RECEIPT",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "operator-local",
+        "requirement_id": "F-11",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "ALIVE",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "local artifact local:release/v26.9.25/observations/TOPOLOGY-RECEIPT.json (ALIVE)",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    },
+    "F-12": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "F-12:git:seanchatmangpt/xaas@4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f:release/v26.9.25/receipts/wd-evidence-ceiling.json: c10cdab95b927ed82c5c212a3f36d02b52ed525e..4f176fd4ee0c030720a44aeac7ef60dcc7d10a8f changes non-receipt paths .github/workflows/stogaf-wd-cs2-court.yml,lib/mix/tasks/xaas.successor.ex,lib/xaas/sjira/successor.ex,lib/xaas/ultracode/semantic_crown.ex,lib/xaas/ultracode/semantic_drive/episode.ex,release/v26.9.25/receipts/case-study-schema.requirements.lock",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "c10cdab95b927ed82c5c212a3f36d02b52ed525e"
+    },
+    "F-13": {
+      "binding": null,
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "detail": "F-13:git:seanchatmangpt/zoela@89745f2fa4f7f438749ef61b638d17739ef11630:release/v26.9.25/receipts/godslaw-interpretation.json: f1313f1c1462b9d2f4dd3cb010dbe5921f53185d..89745f2fa4f7f438749ef61b638d17739ef11630 changes non-receipt paths ontology/vision-2027.ttl,packs/zoela-ggen-pack/gates/150_provider_substitutability.rq,packs/zoela-ggen-pack/gates/155_activation_outcome_semantics.rq,packs/zoela-ggen-pack/mutants/145.toml,packs/zoela-ggen-pack/mutants/150.toml,packs/zoela-ggen-pack/mutants/155.toml",
+      "failure_class": "EVIDENCE_FAILURE",
+      "state": "BLOCKED",
+      "subject_sha": "f1313f1c1462b9d2f4dd3cb010dbe5921f53185d"
+    },
+    "F-14": {
+      "binding": {
+        "binding_digest": "sha256:fadf38de6808ce8173e9c4ad660cfe06e9c1fd8f1b22ebe2747f794b0320c03f",
+        "command": null,
+        "container_repository": "seanchatmangpt/chatman-ecosystem",
+        "court": "post-tag tag binding",
+        "evaluated_subject_kind": "crown_commit",
+        "evaluated_subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_container_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+        "evidence_digest": "sha256:1b462b47f0701a5c0f77fd8a83d1f0be35ee93fa88b3bde2b8fc866eb1ca0743",
+        "evidence_locator": "git:seanchatmangpt/chatman-ecosystem@f230ac8425b96bf896b9315f06ea1948fef4e3ba:release/v26.9.25/manifest.toml",
+        "exit_code": null,
+        "kind": "IN_TREE_DERIVED",
+        "lineage_proof": {
+          "delta_class": "EMPTY",
+          "delta_paths": [],
+          "status": "identical"
+        },
+        "owner": "seanchatmangpt/chatman-ecosystem",
+        "owner_source": "container",
+        "producer": "root-crown",
+        "requirement_id": "F-14",
+        "schema": "https://chatman.dev/root-crown/evidence-binding/v1",
+        "standing": "PASS",
+        "toolchain": null
+      },
+      "broken_term": null,
+      "code": null,
+      "detail": "post-tag: v26.9.25=337e839937c247de4ee58b744c8b8e43950d18e3 -> 68bacd8dcc9ae12e4e97727a284c14abdc7520c5 (recorded, immutable)",
+      "failure_class": null,
+      "state": "PASS",
+      "subject_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba"
+    }
+  },
+  "root_repository": "seanchatmangpt/chatman-ecosystem",
+  "schema": "https://chatman.dev/root-crown/receipt/v2",
+  "standing": "BLOCKED",
+  "subject": {
+    "commit_sha": "68bacd8dcc9ae12e4e97727a284c14abdc7520c5",
+    "tag": "v26.9.25",
+    "tag_object_sha": "337e839937c247de4ee58b744c8b8e43950d18e3",
+    "tree_sha": "8553eb9ea7ab45227169eec1f57204f2ff12ad53"
+  },
+  "terms": {
+    "A": {
+      "detail": "REFUSED[INCOMPLETE_CURRENT_FRONTIER]:[('AC-03', 'BLOCKED'), ('AC-04', 'BLOCKED'), ('AC-14', 'BLOCKED'), ('AC-16', 'BLOCKED'), ('F-01', 'BLOCKED'), ('F-02', 'BLOCKED'), ('F-12', 'BLOCKED'), ('F-13', 'BLOCKED')]",
+      "requirements": [
+        "AC-03",
+        "AC-04",
+        "AC-14",
+        "AC-16",
+        "F-01",
+        "F-02",
+        "F-12",
+        "F-13"
+      ],
+      "state": "BLOCKED"
+    },
+    "C": {
+      "detail": "REFUSED[INCOMPLETE_CURRENT_FRONTIER]:[('AC-15', 'BLOCKED'), ('AC-18', 'BLOCKED')]",
+      "requirements": [
+        "AC-01",
+        "AC-02",
+        "AC-15",
+        "AC-17",
+        "AC-18",
+        "AC-19",
+        "F-03",
+        "F-14"
+      ],
+      "state": "BLOCKED"
+    },
+    "F": {
+      "detail": "REFUSED[INCOMPLETE_CURRENT_FRONTIER]:[('AC-07', 'BLOCKED'), ('F-08', 'BLOCKED')]",
+      "requirements": [
+        "AC-05",
+        "AC-07",
+        "F-06",
+        "F-08"
+      ],
+      "state": "BLOCKED"
+    },
+    "M": {
+      "detail": "",
+      "requirements": [
+        "AC-09",
+        "AC-10",
+        "AC-11",
+        "F-04",
+        "F-10",
+        "F-11"
+      ],
+      "state": "PASS"
+    },
+    "R": {
+      "detail": "REFUSED[INCOMPLETE_CURRENT_FRONTIER]:[('AC-12', 'BLOCKED'), ('F-09', 'BLOCKED')]",
+      "requirements": [
+        "AC-08",
+        "AC-12",
+        "F-05",
+        "F-09"
+      ],
+      "state": "BLOCKED"
+    },
+    "X": {
+      "detail": "REFUSED[INCOMPLETE_CURRENT_FRONTIER]:[('AC-13', 'BLOCKED')]",
+      "requirements": [
+        "AC-06",
+        "AC-13",
+        "F-07"
+      ],
+      "state": "BLOCKED"
+    }
+  },
+  "theorem": "RELEASE = C AND A AND R AND X AND F AND M"
+}

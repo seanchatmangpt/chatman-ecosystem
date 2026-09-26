@@ -1,0 +1,175 @@
+{
+  "GENERATED": "scripts/release_train/root_crown/attestation.py -- do not edit; run --write",
+  "authority": "NONE",
+  "crown_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+  "current": {
+    "blockers": [],
+    "drift": {
+      "moved_since_tag": [
+        "seanchatmangpt/ash_a2a",
+        "seanchatmangpt/autofde-lab",
+        "seanchatmangpt/beam4pm",
+        "seanchatmangpt/chatman-ecosystem",
+        "seanchatmangpt/engineering-standards",
+        "seanchatmangpt/ggen-ecosystem",
+        "seanchatmangpt/ggen-marketplace",
+        "seanchatmangpt/ggen_igniter",
+        "seanchatmangpt/gymact",
+        "seanchatmangpt/xaas",
+        "seanchatmangpt/zoela"
+      ],
+      "root_observed_head": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+      "root_observed_head_is_attested": true
+    },
+    "refusals": [],
+    "standing": "BLOCKED"
+  },
+  "exit_code": 3,
+  "head_sha": "f230ac8425b96bf896b9315f06ea1948fef4e3ba",
+  "historical": {
+    "refusals": [],
+    "replay_standing": "HISTORICAL_RELEASE_REPLAY_EXACT",
+    "replayed_digest": "sha256:2323f877bca4d3fdca217ace53e7501f7978ed66e4afbdd39904e1f1cda0fa0c",
+    "standing": "ALIVE",
+    "standing_ceiling": "BLOCKED"
+  },
+  "inputs_sha256": {
+    "inputs/current/ancestry.txt": "8337dfaac4a4c4141b1676686e737b644a65f0e92627b23797aad044b507cd6f",
+    "inputs/current/observations.json": "04b320bde5a251f0597e0c4a1c4d610849ce9a332df7c4290ad2337be2ec5c0e",
+    "inputs/current/private-repos.json": "9e0561b98e9523c1778495e8561e0d804428d054ea21ed88d9a417f01d774181",
+    "inputs/current/run.json": "3b3c1456fe570207a01cd6f0201dd7efe7fcff4d164936ea29c972e47ad96bb8",
+    "inputs/current/tag-decision.json": "0bcd62a8cc851d97e17cdcec84fac07108178fccc444a22a6561262cea6acc57",
+    "inputs/current/tag-observation.json": "8e4cefab330b72ddfdcf5837c5231092b0a26f82b2bcace5c0812362a9c4119d",
+    "receipts/run-36161856985/crown-receipt.json": "10d0c98ebb480294a744520ca15e5f983a988e3759e1e434ee2a55bd51d9deea"
+  },
+  "mode": "POST_TAG",
+  "observation_authority": "github-api:GITHUB_TOKEN:read",
+  "observed_at": "2026-09-26T02:40:41Z",
+  "recorded_exit_code": 3,
+  "refusals": [],
+  "release": "v26.9.25",
+  "remaining": [
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-03",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-04",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-07",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_replay",
+      "code": "NOT_COLD",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-12",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-13",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-14",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-15",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "AC-16",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_standing",
+      "code": "CROWN_DEPENDENCIES_OPEN",
+      "failure_class": "DEPENDENCY_FAILURE",
+      "id": "AC-18",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-01",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-02",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-08",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-09",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-12",
+      "state": "BLOCKED"
+    },
+    {
+      "broken_term": "R_missing_identity",
+      "code": "EVIDENCE_DELTA_UNBOUNDED",
+      "failure_class": "EVIDENCE_FAILURE",
+      "id": "F-13",
+      "state": "BLOCKED"
+    }
+  ],
+  "replay": {
+    "committed_receipt": "inputs/current/crown-receipt.json",
+    "committed_sha256": "f41d89599ae3029488ee16a92d9f74276d82b3857229a44ec5ac603e3c106072",
+    "receipt_digest": "sha256:7708c69c5e8217dcb55f7fd0d51369e16d858142c7bf2478535ce30758440b9c",
+    "recomputed_sha256": "f41d89599ae3029488ee16a92d9f74276d82b3857229a44ec5ac603e3c106072",
+    "result": "EXACT"
+  },
+  "schema": "https://chatman.dev/root-crown/hardening/current-conformance/v1",
+  "standing": "BLOCKED",
+  "terms": {
+    "A": "BLOCKED",
+    "C": "BLOCKED",
+    "F": "BLOCKED",
+    "M": "PASS",
+    "R": "BLOCKED",
+    "X": "BLOCKED"
+  }
+}

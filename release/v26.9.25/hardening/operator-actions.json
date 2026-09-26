@@ -1,0 +1,176 @@
+{
+  "HANDWRITTEN": "operator-only actions (H4): the authority edges no agent holds; see HANDWRITTEN.md. Each row carries the exact operator command and read-only verification commands; attestation.py derives each row's current state from inputs/attestation-observations.json (GET-only) where an observation key is named.",
+  "actions": [
+    {
+      "broken_term": "R_missing_authority",
+      "command": "gh api -X PUT repos/seanchatmangpt/chatman-ecosystem/branches/main/protection -H 'Accept: application/vnd.github+json' --input - <<'JSON'\n{\"required_status_checks\":null,\"enforce_admins\":true,\"required_pull_request_reviews\":{\"required_approving_review_count\":0},\"restrictions\":null,\"allow_force_pushes\":false,\"allow_deletions\":false}\nJSON",
+      "evidence": [
+        "git:seanchatmangpt/chatman-ecosystem@ae6abe0db7fc5ac7b40bcf42f5c65ee47917e4e2:release/v26.9.25/autonomy/operator-actions.json"
+      ],
+      "failure_class": "AUTHORITY_FAILURE",
+      "id": "OPA-01",
+      "note": "Same action as autonomy/operator-actions.json OA-01 (RFC-0005 \u00a713.1).",
+      "observation": "main_protected",
+      "order": 1,
+      "owner": "operator",
+      "performed_when": true,
+      "rfc0004_s39": "authority",
+      "standing": "BLOCKED(AUTHORITY_CONFIGURATION:main-unprotected)",
+      "title": "Protect main on chatman-ecosystem (must precede OPA-02)",
+      "verification": [
+        "gh api repos/seanchatmangpt/chatman-ecosystem/branches/main --jq .protected   # expect: true"
+      ]
+    },
+    {
+      "after": "OPA-01",
+      "broken_term": "R_missing_authority",
+      "command": "uid=$(gh api users/seanchatmangpt --jq .id) && gh api -X PUT repos/seanchatmangpt/chatman-ecosystem/environments/release-crown -H 'Accept: application/vnd.github+json' --input - <<JSON\n{\"reviewers\":[{\"type\":\"User\",\"id\":$uid}],\"deployment_branch_policy\":{\"protected_branches\":true,\"custom_branch_policies\":false}}\nJSON",
+      "evidence": [
+        "git:seanchatmangpt/chatman-ecosystem@ae6abe0db7fc5ac7b40bcf42f5c65ee47917e4e2:release/v26.9.25/autonomy/operator-actions.json",
+        "git:seanchatmangpt/chatman-ecosystem@ec3b98c51ca9ea5583aa08c68bf3eee146d765ef:release/v26.9.25/hardening/audit.json"
+      ],
+      "failure_class": "AUTHORITY_FAILURE",
+      "id": "OPA-02",
+      "note": "protected_branches=true only takes effect once main is protected (OPA-01). Same action as autonomy OA-02 (RFC-0005 \u00a713.2).",
+      "observation": "release_crown_required_reviewers",
+      "order": 2,
+      "owner": "operator",
+      "performed_when": ">=1",
+      "rfc0004_s39": "authority",
+      "standing": "BLOCKED(AUTHORITY_CONFIGURATION:release-crown-reviewer-missing)",
+      "title": "Require a reviewer on the release-crown environment, protected branches only",
+      "verification": [
+        "gh api repos/seanchatmangpt/chatman-ecosystem/environments/release-crown --jq '[.protection_rules[] | select(.type==\"required_reviewers\") | .reviewers | length] | add'   # expect: >= 1",
+        "gh api repos/seanchatmangpt/chatman-ecosystem/environments/release-crown --jq .deployment_branch_policy.protected_branches   # expect: true"
+      ]
+    },
+    {
+      "broken_term": "R_missing_authority",
+      "command": "UI_ONLY: https://github.com/settings/billing (operator account; no API write path)",
+      "evidence": [
+        "https://github.com/seanchatmangpt/zoela/actions/runs/36168632491"
+      ],
+      "failure_class": "AUTHORITY_FAILURE",
+      "id": "OPA-03",
+      "observation": "zoela_latest_main_run_conclusion",
+      "order": 3,
+      "owner": "operator",
+      "performed_when": "success",
+      "rfc0004_s39": "authority",
+      "standing": "BLOCKED(AUTHORITY_FAILURE:github-actions-billing)",
+      "title": "Restore GitHub Actions billing for the zoela private repository",
+      "verification": [
+        "gh run view 36168632491 -R seanchatmangpt/zoela --json conclusion --jq .conclusion   # historical: failure",
+        "gh run list -R seanchatmangpt/zoela --branch main --limit 1 --json conclusion,headSha   # expect: a success on the current main head"
+      ]
+    },
+    {
+      "broken_term": "R_missing_authority",
+      "command": "gh repo rename GodsLaw -R seanchatmangpt/zoela --yes",
+      "evidence": [
+        "https://github.com/seanchatmangpt/zoela"
+      ],
+      "failure_class": "AUTHORITY_FAILURE",
+      "id": "OPA-04",
+      "note": "After the rename, pins.json successors and every git:seanchatmangpt/zoela@... locator resolve through GitHub's redirect; NEXT_CALVER pins name the new repository.",
+      "observation": "zoela_name",
+      "order": 4,
+      "owner": "operator",
+      "performed_when": "GodsLaw",
+      "rfc0004_s39": "authority",
+      "standing": "BLOCKED(AUTHORITY_FAILURE:repository-rename-not-authorized)",
+      "title": "Rename zoela to GodsLaw",
+      "verification": [
+        "gh api repos/seanchatmangpt/zoela --jq .name   # expect: GodsLaw (the API redirects the old name)"
+      ]
+    },
+    {
+      "broken_term": "R_missing_authority",
+      "command": "gh workflow run fly_deploy.yaml -R seanchatmangpt/xaas --ref main   # and: gh workflow run ci_cd.yaml -R seanchatmangpt/xaas --ref main -f expected_head_sha=<main head>",
+      "evidence": [
+        "https://github.com/seanchatmangpt/autofde-lab/actions/runs/36204206684",
+        "https://github.com/seanchatmangpt/chatman-ecosystem/actions/runs/36203921348"
+      ],
+      "failure_class": "AUTHORITY_FAILURE",
+      "id": "OPA-05",
+      "note": "No deploy or publish ran in the hardening lanes; push-triggered deploy runs were cancelled and recorded BLOCKED(AUTHORITY_FAILURE:<what>-not-authorized).",
+      "observation": null,
+      "order": 5,
+      "owner": "operator",
+      "performed_when": null,
+      "rfc0004_s39": "authority",
+      "standing": "BLOCKED(AUTHORITY_FAILURE:deploy-publish-not-authorized)",
+      "title": "Fly deploy / container registry publish authority (xaas, autofde-lab docs, chatman pages)",
+      "verification": [
+        "gh run list -R seanchatmangpt/xaas --workflow fly_deploy.yaml --limit 1 --json conclusion,headSha",
+        "gh run view 36204206684 -R seanchatmangpt/autofde-lab --json conclusion --jq .conclusion   # cancelled deploy-docs (not authorized)",
+        "gh run view 36203921348 -R seanchatmangpt/chatman-ecosystem --json conclusion --jq .conclusion   # cancelled mdBook Pages (not authorized)"
+      ]
+    },
+    {
+      "broken_term": "R_missing_authority",
+      "command": "OPERATOR_ONLY: Finder > Empty Trash (permanent deletion is never performed by an agent)",
+      "evidence": [
+        "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/bundles.json"
+      ],
+      "failure_class": "AUTHORITY_FAILURE",
+      "id": "OPA-06",
+      "observation": null,
+      "order": 6,
+      "owner": "operator",
+      "performed_when": null,
+      "rfc0004_s39": "authority",
+      "standing": "BLOCKED(AUTHORITY_FAILURE:permanent-deletion-operator-only)",
+      "title": "Empty the operator's macOS Trash (topology-migration and cleanup residue)",
+      "verification": [
+        "du -sh ~/.Trash   # operator shell; the agent sandbox is denied read access to ~/.Trash"
+      ]
+    },
+    {
+      "broken_term": "R_missing_authority",
+      "command": "git -C <canonical chatman-ecosystem checkout> push origin refs/notes/receipts",
+      "evidence": [],
+      "failure_class": "AUTHORITY_FAILURE",
+      "id": "OPA-07",
+      "note": "Observed 2026-09-26: no refs/notes/receipts exists locally in the canonical chatman-ecosystem checkout or on origin; the receipt writer must create it before the push is possible.",
+      "observation": "notes_receipts_remote",
+      "order": 7,
+      "owner": "operator",
+      "performed_when": true,
+      "rfc0004_s39": "authority",
+      "standing": "BLOCKED(AUTHORITY_FAILURE:notes-push-not-authorized)",
+      "title": "Push refs/notes/receipts (out-of-subject receipts, composition C21)",
+      "verification": [
+        "git ls-remote https://github.com/seanchatmangpt/chatman-ecosystem.git 'refs/notes/*'   # expect: refs/notes/receipts"
+      ]
+    },
+    {
+      "broken_term": "R_missing_authority",
+      "command": "per-bundle operator_action in release/v26.9.25/hardening/bundles.json (43 NO_PUSH_REPO_POLICY, 33 FOREIGN_LOCAL_ONLY, 14 IGNORED_CONTENT_TO_PUBLIC_REPO, 12 SECRET_BEARING_LOCAL_ONLY, 2 KEY_PATH_LOCAL_ONLY)",
+      "evidence": [
+        "git:seanchatmangpt/chatman-ecosystem@9df2c695e6e5a6d7f427b1ddd8d8c7d206a39b3d:release/v26.9.25/hardening/bundles.json"
+      ],
+      "failure_class": "AUTHORITY_FAILURE",
+      "id": "OPA-08",
+      "observation": "bundles_blocked",
+      "order": 8,
+      "owner": "operator",
+      "performed_when": 0,
+      "rfc0004_s39": "authority",
+      "standing": "BLOCKED(AUTHORITY_CONFIGURATION:bundle-archive-destination-unassigned)",
+      "title": "Choose an archive destination for the local-only topology bundles",
+      "verification": [
+        "python3 -c \"import json,collections;d=json.load(open('release/v26.9.25/hardening/bundles.json'));print(collections.Counter(b['standing'] for b in d['bundles']))\"   # expect: every row DURABLE_* once archived"
+      ]
+    }
+  ],
+  "owner": "operator",
+  "release": "v26.9.25",
+  "schema": "https://chatman.dev/root-crown/hardening/operator-actions/v1",
+  "standing_until_performed": {
+    "broken_term": "R_missing_authority",
+    "failure_class": "AUTHORITY_FAILURE",
+    "rfc0004_s39": "authority",
+    "state": "BLOCKED(AUTHORITY_CONFIGURATION|AUTHORITY_FAILURE)"
+  }
+}
