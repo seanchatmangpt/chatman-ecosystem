@@ -1,4 +1,9 @@
-"""Root crown: RELEASE_26.9.25 = C ∧ A ∧ R ∧ X ∧ F ∧ M (RFC-0004 §3, §44, §55).
+"""Root crown: RELEASE = the conjunction of the terms the release premise declares.
+
+v26.9.25: C ∧ A ∧ R ∧ X ∧ F ∧ M (RFC-0004 §3, §44, §55). From the next calver the premise
+declares ∧ U (RFC-0005 §2.3), composed from the autonomic_crown receipt
+(``evidence.autonomic_receipt``). The term set comes from ``model.release_terms`` over
+``requirements.json``; nothing here iterates a fixed tuple.
 
 Term aggregation reuses ``current_frontier.obligation`` (``Obligation`` +
 ``require_complete``). The receipt is hash-chained (``previous_receipt_digest``) and
@@ -23,14 +28,15 @@ from .model import (
     SCHEMA_RECEIPT,
     SCHEMA_RECEIPT_V2,
     SCHEMA_RECEIPTS,
-    TERMS,
     UNKNOWN,
     REFUSED,
     ReqState,
     Requirement,
     code_of,
     digest,
+    release_terms,
     sha256_bytes,
+    theorem,
 )
 from .requirements import validate_requirements
 
@@ -111,6 +117,7 @@ def evaluate(
     evaluators: dict[str, Evaluator] | None = None,
     mode: str = "PRE_TAG",
     policy_root: Path | None = None,
+    allowlist_root: Path | None = None,
 ) -> Verdict:
     """Evaluate one release tree at ``crown_sha`` (the core receipt, schema v1).
 
@@ -121,7 +128,11 @@ def evaluate(
     The terminality policy (``policy.py``) is admitted as a whole before any requirement is
     evaluated: a missing policy, a coverage gap, an ungrounded relaxation or acceptance drift
     is a global refusal even for requirements whose evaluator never consults the policy.
-    ``policy_root`` overrides the committed policy directory (tests, mutants).
+    ``policy_root`` overrides the committed policy directory (tests, mutants);
+    ``allowlist_root`` likewise overrides the delta-allowlist directory.
+
+    The evaluated terms are ``model.release_terms`` of the premise; a term no requirement
+    binds is BLOCKED (never vacuously PASS) besides the REQ_TERM_UNBOUND refusal.
     """
     if mode not in MODES:
         raise ValueError(f"mode {mode!r} not in {MODES}")
@@ -129,7 +140,17 @@ def evaluate(
     inputs = projector.load_inputs(release_dir)
     reqs = inputs.requirements
     refusals: list[str] = []
-    refusals += validate_requirements(inputs.requirements_doc, inputs.pins, inputs.rfc_text, registry.keys())
+    refusals += validate_requirements(
+        inputs.requirements_doc,
+        inputs.pins,
+        inputs.rfc_text,
+        registry.keys(),
+        inputs.premise_set,
+        release=release_dir.name,
+    )
+    # Same release line as the admission above: the term gate reads the directory, not a
+    # relabelled premise.
+    terms, _ = release_terms(inputs.requirements_doc, release_dir.name)
     drift, crashed = _contained("projector.check", projector.check, release_dir)
     refusals += [f"REFUSED:VERIFIER_CRASHED:{crashed}"] if crashed else drift
 
@@ -151,6 +172,7 @@ def evaluate(
         crown_sha=crown_sha,
         inputs=inputs,
         **({} if policy_root is None else {"policy_root": policy_root}),
+        **({} if allowlist_root is None else {"allowlist_root": allowlist_root}),
     )
     refusals += ctx.policy_refusals()
     # Heads include admitted operator-local private observations (NEW_HEAD cascade covers them too).
@@ -185,10 +207,13 @@ def evaluate(
         states[req.id] = state
 
     term_states: dict[str, dict[str, Any]] = {}
-    for term in TERMS:
+    for term in terms:
         members = [r for r in reqs if r.term == term]
         obligations = tuple(Obligation(r.id, "REPOSITORY", r.required) for r in members)
         coverage = {r.id: states[r.id].state for r in members}
+        if not members:
+            term_states[term] = {"state": "BLOCKED", "requirements": [], "detail": f"no requirement binds term {term}"}
+            continue
         try:
             require_complete(coverage, obligations)
             term_state, detail = "PASS", ""
@@ -237,7 +262,7 @@ def evaluate(
         "previous_receipt_digest": previous_digest,
         "genesis": previous is None,
         "standing": standing,
-        "theorem": "RELEASE = C AND A AND R AND X AND F AND M",
+        "theorem": theorem(terms),
         "terms": term_states,
         "requirements": {rid: s.as_dict() for rid, s in sorted(states.items())},
         "refusals": all_refusals,

@@ -1,0 +1,1335 @@
+{
+  "GENERATED": "scripts/release_train/root_crown/mutate.py -- do not edit; run --write-report",
+  "all_killed": true,
+  "authority": "NONE",
+  "baseline": {
+    "errors": 0,
+    "failures": 0,
+    "ok": true,
+    "skipped": 6,
+    "tests_run": 295
+  },
+  "killed": 136,
+  "mutants": {
+    "acceptance_drift_off": {
+      "detail": "killed by 2 test(s): test_policy.PolicyRefusalTest.test_acceptance_drift,test_policy.PolicyRefusalTest.test_every_terminality_code_is_typed_and_emitted",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "ACCEPTANCE_DRIFT"
+    },
+    "binding_admission_bypassed": {
+      "detail": "killed by 7 test(s): test_binding.ContextAllowlistTest.test_missing_allowlist_fails_closed,test_binding.CrownBindingTest.test_falsifier_delta_blocks_the_requirement,test_binding.CrownBindingTest.test_mutable_subject_is_refused,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_refuse_only_unproven_lineage,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_with_observed_deltas,test_post_tag.PostTagTest.test_post_tag_head_is_attested_not_refused",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_binding",
+        "test_post_tag",
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "admit wired into every PASS"
+    },
+    "binding_container_claims_subject_admitted": {
+      "detail": "killed by 2 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule (code='EVIDENCE_CONTAINER_CLAIMS_SUBJECT'),test_binding.AdmitTest.test_receipt_naming_its_own_container_is_refused",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_CONTAINER_CLAIMS_SUBJECT"
+    },
+    "binding_content_digest_unchecked": {
+      "detail": "killed by 1 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_DIGEST_MISMATCH(bytes)"
+    },
+    "binding_deny_extension_ignored": {
+      "detail": "killed by 2 test(s): test_binding.ClassifyDeltaTest.test_deny_lists_outrank_a_broadened_allow_glob (path='release/v26.9.25/receipts/manufacture.py'),test_binding.ClassifyDeltaTest.test_deny_lists_outrank_a_broadened_allow_glob (path='release/v26.9.25/receipts/replay/origin_probe.exs')",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "classify_delta(deny_extensions)"
+    },
+    "binding_deny_segment_ignored": {
+      "detail": "killed by 1 test(s): test_binding.ClassifyDeltaTest.test_classes (paths=['release/v26.9.25/receipts/schemas/a.json'])",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "classify_delta(deny_segments)"
+    },
+    "binding_dropped_from_receipt": {
+      "detail": "killed by 35 test(s): test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-01'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-02'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-03'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-04'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-05'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-06')",
+      "file": "scripts/release_train/root_crown/model.py",
+      "killed": true,
+      "killers": [
+        "test_binding",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "ReqState.binding in as_dict v2"
+    },
+    "binding_glob_star_crosses_segments": {
+      "detail": "killed by 1 test(s): test_binding.ClassifyDeltaTest.test_classes (paths=['release/v26.9.25/nested/receipts/a.json'])",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "classify_delta(* is one segment)"
+    },
+    "binding_lineage_missing_admitted": {
+      "detail": "killed by 2 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule (code='EVIDENCE_LINEAGE_MISSING'),test_post_tag.PostTagTest.test_without_delta_observations_inheritance_is_refused",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_LINEAGE_MISSING"
+    },
+    "binding_misclaim_admitted": {
+      "detail": "killed by 1 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule (code='EVIDENCE_DELTA_MISCLAIMED')",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_DELTA_MISCLAIMED"
+    },
+    "binding_mutable_subject_admitted": {
+      "detail": "killed by 3 test(s): test_binding.AdmitTest.test_in_tree_binding_must_evaluate_its_container,test_binding.AdmitTest.test_one_refusing_mutant_per_rule (code='EVIDENCE_SUBJECT_MUTABLE'),test_binding.CrownBindingTest.test_mutable_subject_is_refused",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_SUBJECT_MUTABLE"
+    },
+    "binding_new_head_exemption_widened": {
+      "detail": "killed by 1 test(s): test_binding.CrownBindingTest.test_new_head_exemption_is_only_for_in_tree_derived",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "NEW_HEAD exemption only for IN_TREE_DERIVED"
+    },
+    "binding_not_durable_admitted": {
+      "detail": "killed by 1 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule (code='EVIDENCE_NOT_DURABLE')",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_NOT_DURABLE"
+    },
+    "binding_post_tag_deltas_ignored": {
+      "detail": "killed by 3 test(s): test_post_tag.PostTagTest.test_current_head_unattested_is_a_typed_current_blocker,test_post_tag.PostTagTest.test_post_tag_head_is_attested_not_refused,test_post_tag.PostTagTest.test_subject_absent_is_typed_blocked",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "committed delta observations reach the current evaluation"
+    },
+    "binding_remote_delta_dropped": {
+      "detail": "killed by 21 test(s): test_binding.ContextAllowlistTest.test_missing_allowlist_fails_closed,test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-03'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-04'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-07'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-08'),test_binding.CrownBindingTest.test_every_pass_carries_an_admitted_binding (rid='AC-13')",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_binding",
+        "test_post_tag",
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "observed delta reaches the binding"
+    },
+    "binding_self_digest_unchecked": {
+      "detail": "killed by 1 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_DIGEST_MISMATCH(binding)"
+    },
+    "binding_split_admitted": {
+      "detail": "killed by 1 test(s): test_binding.AdmitTest.test_one_refusing_mutant_per_rule (code='EVIDENCE_SUBJECT_SPLIT')",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_SUBJECT_SPLIT"
+    },
+    "binding_traversal_admitted": {
+      "detail": "killed by 1 test(s): test_binding.ClassifyDeltaTest.test_classes (paths=['release/v26.9.25/receipts/../../ci/x.json'])",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "classify_delta(traversal)"
+    },
+    "binding_unbounded_inherited": {
+      "detail": "killed by 5 test(s): test_binding.AdmitTest.test_unbounded_delta_is_a_typed_blocker,test_binding.ContextAllowlistTest.test_missing_allowlist_fails_closed,test_binding.CrownBindingTest.test_falsifier_delta_blocks_the_requirement,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_with_observed_deltas,test_post_tag.PostTagTest.test_post_tag_head_is_attested_not_refused",
+      "file": "scripts/release_train/root_crown/binding.py",
+      "killed": true,
+      "killers": [
+        "test_binding",
+        "test_post_tag",
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_DELTA_UNBOUNDED"
+    },
+    "blocked_without_type_off": {
+      "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='BLOCKED_WITHOUT_TYPE'),test_crown.CrownTest.test_typed_blocked_is_lawful_untyped_is_refused",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_crown"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(crown)"
+    },
+    "bound_detail_says_alive": {
+      "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_bound_detail_names_the_receipt_standing",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment",
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "_bound detail names the receipt standing"
+    },
+    "broken_term_off": {
+      "detail": "killed by 2 test(s): test_terminal_alignment.TerminalAlignmentTest.test_untyped_blocked_closure_row_is_refused,test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='broken_term')",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment",
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(missing=broken_term)"
+    },
+    "chain_digest_unchecked": {
+      "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='RECEIPT_CHAIN_BROKEN'),test_loop.LoopTest.test_broken_chain_refuses",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_crown",
+        "test_loop"
+      ],
+      "kind": "source",
+      "rule": "RECEIPT_CHAIN_BROKEN(previous digest)"
+    },
+    "closure_flat_fallback": {
+      "detail": "killed by 2 test(s): test_binding.DurableClosureTest.test_forged_locator_sha_is_unresolved_even_with_flat_bytes,test_binding.DurableClosureTest.test_repository_tree_is_not_an_evidence_root",
+      "file": "scripts/release_train/release_closure_court/court.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "git: locators resolve only at the (repository, commit)-addressed layout"
+    },
+    "closure_in_tree_self_declared": {
+      "detail": "killed by 1 test(s): test_binding.DurableClosureTest.test_self_declared_in_tree_binding_is_refused",
+      "file": "scripts/release_train/release_closure_court/court.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "EVIDENCE_CONTAINER_CLAIMS_SUBJECT is not exempted by a field of the judged row"
+    },
+    "closure_owner_split_off": {
+      "detail": "killed by 1 test(s): test_policy.OwnerRuleTest.test_closure_row_owner_split_and_container_default",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "OWNER_SPLIT(closure row)"
+    },
+    "closure_policy_ignored": {
+      "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_closure_typed_rows_follow_the_policy_row",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "CLOSURE_PARTIAL(not-admitted-by-policy)"
+    },
+    "closure_unrecomputable_companion_admitted": {
+      "detail": "killed by 1 test(s): test_binding.DurableClosureTest.test_unrecomputable_companion_is_refused",
+      "file": "scripts/release_train/release_closure_court/court.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "a PASS whose log/output digest cannot be recomputed offline is EVIDENCE_NOT_DURABLE"
+    },
+    "closure_unrecomputable_evidence_admitted": {
+      "detail": "killed by 2 test(s): test_binding.DurableClosureTest.test_unrecomputable_evidence_is_refused (locator='git-notes:refs/notes/ci@1111111111111111111111111111111111111111'),test_binding.DurableClosureTest.test_unrecomputable_evidence_is_refused (locator='https://example.invalid/r.json')",
+      "file": "scripts/release_train/release_closure_court/court.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "a PASS whose evidence digest cannot be recomputed offline is EVIDENCE_NOT_DURABLE"
+    },
+    "crown_policy_validation_off": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_coverage_gap_on_a_non_consulting_requirement_still_refuses_the_crown",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_COVERAGE_GAP(crown, non-consulting requirement)"
+    },
+    "crown_sha_split_off": {
+      "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='CROWN_SHA_SPLIT'),test_post_tag.PostTagTest.test_pre_tag_semantics_refuse_every_post_tag_commit",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_crown",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "CROWN_SHA_SPLIT"
+    },
+    "current_blockers_dropped_by_attest": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_current_head_unattested_is_a_typed_current_blocker",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "CURRENT_HEAD_UNATTESTED(attest receipt blockers)"
+    },
+    "current_head_unattested_not_blocking": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_unattested_head_blocks_an_otherwise_alive_current_section",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "CURRENT_HEAD_UNATTESTED(current standing)"
+    },
+    "current_head_unattested_off": {
+      "detail": "killed by 3 test(s): test_post_tag.PostTagTest.test_current_head_unattested_is_a_typed_current_blocker,test_post_tag.PostTagTest.test_post_tag_blockers_are_all_emitted_somewhere,test_post_tag.PostTagTest.test_unattested_head_blocks_an_otherwise_alive_current_section",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "CURRENT_HEAD_UNATTESTED"
+    },
+    "dm_acceptance_drift": {
+      "detail": "court emitted 'REFUSED:ACCEPTANCE_DRIFT:AC-15'; control clean",
+      "expected": "REFUSED:ACCEPTANCE_DRIFT:AC-15",
+      "killed": true,
+      "kind": "data",
+      "rule": "ACCEPTANCE_DRIFT"
+    },
+    "dm_code_renamed_into_receipts": {
+      "detail": "court emitted 'UNBOUNDED:scripts/release_gate.py'; control clean",
+      "expected": "UNBOUNDED:scripts/release_gate.py",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_DELTA_UNBOUNDED"
+    },
+    "dm_companion_unrecomputable": {
+      "detail": "court emitted 'unrecomputable:https://example.invalid/out'; control clean",
+      "expected": "unrecomputable:https://example.invalid/out",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_NOT_DURABLE"
+    },
+    "dm_delta_misclaimed": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_DELTA_MISCLAIMED:AC-07'; control clean",
+      "expected": "REFUSED:EVIDENCE_DELTA_MISCLAIMED:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_DELTA_MISCLAIMED"
+    },
+    "dm_delta_unbounded": {
+      "detail": "court emitted 'BLOCKED:EVIDENCE_DELTA_UNBOUNDED:AC-07'; control clean",
+      "expected": "BLOCKED:EVIDENCE_DELTA_UNBOUNDED:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_DELTA_UNBOUNDED"
+    },
+    "dm_delta_unobserved": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_LINEAGE_MISSING:AC-07'; control clean",
+      "expected": "REFUSED:EVIDENCE_LINEAGE_MISSING:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_LINEAGE_MISSING"
+    },
+    "dm_evidence_digest_mismatch": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_DIGEST_MISMATCH:AFFIDAVIT'; control clean",
+      "expected": "REFUSED:EVIDENCE_DIGEST_MISMATCH:AFFIDAVIT",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_DIGEST_MISMATCH"
+    },
+    "dm_evidence_locator_sha_forged": {
+      "detail": "court emitted 'unresolved:git:seanchatmangpt/chatman-ecosystem@ffffffffffffffffffffffffffffffffffffffff:'; control clean",
+      "expected": "unresolved:git:seanchatmangpt/chatman-ecosystem@ffffffffffffffffffffffffffffffffffffffff:",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_NOT_DURABLE"
+    },
+    "dm_evidence_not_durable": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_NOT_DURABLE:AFFIDAVIT:affidavit:brce_court'; control clean",
+      "expected": "REFUSED:EVIDENCE_NOT_DURABLE:AFFIDAVIT:affidavit:brce_court",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_NOT_DURABLE"
+    },
+    "dm_evidence_self_declared_in_tree": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AFFIDAVIT'; control clean",
+      "expected": "REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AFFIDAVIT",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_CONTAINER_CLAIMS_SUBJECT"
+    },
+    "dm_evidence_unrecomputable": {
+      "detail": "court emitted 'unrecomputable:https://example.invalid/r.json'; control clean",
+      "expected": "unrecomputable:https://example.invalid/r.json",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_NOT_DURABLE"
+    },
+    "dm_expired_current_as_historical": {
+      "detail": "court emitted 'REFUSED:HISTORICAL_OBSERVATION_SPLIT'; control clean",
+      "expected": "REFUSED:HISTORICAL_OBSERVATION_SPLIT",
+      "killed": true,
+      "kind": "data",
+      "rule": "HISTORICAL_OBSERVATION_SPLIT"
+    },
+    "dm_f09_superseded_as_blocker": {
+      "detail": "court emitted 'BLOCKED:ARTIFACT_BLOCKED:F-09'; control clean",
+      "expected": "BLOCKED:ARTIFACT_BLOCKED:F-09",
+      "killed": true,
+      "kind": "data",
+      "rule": "ARTIFACT_BLOCKED"
+    },
+    "dm_mutable_subject": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_SUBJECT_MUTABLE:AC-07'; control clean",
+      "expected": "REFUSED:EVIDENCE_SUBJECT_MUTABLE:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_SUBJECT_MUTABLE"
+    },
+    "dm_mutable_tag": {
+      "detail": "court emitted 'REFUSED:TAG_MUTATED'; control clean",
+      "expected": "REFUSED:TAG_MUTATED",
+      "killed": true,
+      "kind": "data",
+      "rule": "TAG_MUTATED"
+    },
+    "dm_payload_mutated_post_tag": {
+      "detail": "court emitted 'REFUSED:PAYLOAD_MUTATED_POST_TAG'; control clean",
+      "expected": "REFUSED:PAYLOAD_MUTATED_POST_TAG",
+      "killed": true,
+      "kind": "data",
+      "rule": "PAYLOAD_MUTATED_POST_TAG"
+    },
+    "dm_policy_coverage_gap": {
+      "detail": "court emitted 'REFUSED:POLICY_COVERAGE_GAP:F-09'; control clean",
+      "expected": "REFUSED:POLICY_COVERAGE_GAP:F-09",
+      "killed": true,
+      "kind": "data",
+      "rule": "POLICY_COVERAGE_GAP"
+    },
+    "dm_policy_missing": {
+      "detail": "court emitted 'REFUSED:TERMINALITY_POLICY_MISSING'; control clean",
+      "expected": "REFUSED:TERMINALITY_POLICY_MISSING",
+      "killed": true,
+      "kind": "data",
+      "rule": "TERMINALITY_POLICY_MISSING"
+    },
+    "dm_receipt_names_its_container": {
+      "detail": "court emitted 'REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AC-07'; control clean",
+      "expected": "REFUSED:EVIDENCE_CONTAINER_CLAIMS_SUBJECT:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "EVIDENCE_CONTAINER_CLAIMS_SUBJECT"
+    },
+    "dm_relaxation_ungrounded": {
+      "detail": "court emitted 'REFUSED:POLICY_RELAXATION_UNGROUNDED:AC-07'; control clean",
+      "expected": "REFUSED:POLICY_RELAXATION_UNGROUNDED:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "POLICY_RELAXATION_UNGROUNDED"
+    },
+    "dm_replay_mismatch": {
+      "detail": "court emitted 'BLOCKED:REPLAY_DIVERGED'; control clean",
+      "expected": "BLOCKED:REPLAY_DIVERGED",
+      "killed": true,
+      "kind": "data",
+      "rule": "REPLAY_DIVERGED"
+    },
+    "dm_stale_observation": {
+      "detail": "court emitted 'BLOCKED:OBSERVATION_STALE:AC-09'; control clean",
+      "expected": "BLOCKED:OBSERVATION_STALE:AC-09",
+      "killed": true,
+      "kind": "data",
+      "rule": "OBSERVATION_STALE"
+    },
+    "dm_subject_container_conflation": {
+      "detail": "court emitted 'REFUSED:ARTIFACT_SUBJECT_SPLIT:AC-07'; control clean",
+      "expected": "REFUSED:ARTIFACT_SUBJECT_SPLIT:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "ARTIFACT_SUBJECT_SPLIT"
+    },
+    "dm_success_replaced_by_blocker": {
+      "detail": "court emitted 'BLOCKED:ARTIFACT_BLOCKED:AC-07'; control clean",
+      "expected": "BLOCKED:ARTIFACT_BLOCKED:AC-07",
+      "killed": true,
+      "kind": "data",
+      "rule": "ARTIFACT_BLOCKED"
+    },
+    "dm_tag_not_subject": {
+      "detail": "court emitted 'REFUSED:TAG_SUBJECT_SPLIT'; control clean",
+      "expected": "REFUSED:TAG_SUBJECT_SPLIT",
+      "killed": true,
+      "kind": "data",
+      "rule": "TAG_SUBJECT_SPLIT"
+    },
+    "dm_terminal_blocker_foreign_owner": {
+      "detail": "court emitted 'REFUSED:OWNER_SPLIT:AC-15'; control clean",
+      "expected": "REFUSED:OWNER_SPLIT:AC-15",
+      "killed": true,
+      "kind": "data",
+      "rule": "OWNER_SPLIT"
+    },
+    "dm_terminal_blocker_without_owner": {
+      "detail": "court emitted 'missing=owner'; control clean",
+      "expected": "missing=owner",
+      "killed": true,
+      "kind": "data",
+      "rule": "BLOCKED_WITHOUT_TYPE"
+    },
+    "dm_terminal_blocker_without_reason": {
+      "detail": "court emitted 'missing=broken_term+failure_class'; control clean",
+      "expected": "missing=broken_term+failure_class",
+      "killed": true,
+      "kind": "data",
+      "rule": "BLOCKED_WITHOUT_TYPE"
+    },
+    "dm_terminal_blocker_without_type": {
+      "detail": "court emitted 'REFUSED:BLOCKED_WITHOUT_TYPE:AC-15'; control clean",
+      "expected": "REFUSED:BLOCKED_WITHOUT_TYPE:AC-15",
+      "killed": true,
+      "kind": "data",
+      "rule": "BLOCKED_WITHOUT_TYPE"
+    },
+    "duplicate_row_admitted": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_coverage_gap_duplicate_extra_and_malformed_rows",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_COVERAGE_GAP(duplicate row)"
+    },
+    "f09_policy_ignored": {
+      "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_f09_admits_only_blocked_and_unsupported",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "F-09 admits BLOCKED/UNSUPPORTED only (ARTIFACT_BLOCKED)"
+    },
+    "f09_required_unknown_off": {
+      "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_f09_unknown_is_refused",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "REQUIRED_UNKNOWN(F-09)"
+    },
+    "f09_type_off": {
+      "detail": "killed by 3 test(s): test_falsifiers.FalsifierTableTest.test_f09_typed_blocker_is_lawful,test_terminal_alignment.TerminalAlignmentTest.test_f09_typed_blocker_must_be_bound_to_a_merged_subject,test_terminal_alignment.TerminalAlignmentTest.test_unsupported_is_terminal_where_the_policy_admits_it (rid='F-09')",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_falsifiers",
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(F-09)"
+    },
+    "failure_class_off": {
+      "detail": "killed by 2 test(s): test_terminal_alignment.TerminalAlignmentTest.test_untyped_blocked_closure_row_is_refused,test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='failure_class')",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment",
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(missing=failure_class)"
+    },
+    "gitobj_exec_bit_off": {
+      "detail": "killed by 1 test(s): test_gitobj.SyntheticTreeTest.test_matches_real_git_write_tree",
+      "file": "scripts/release_train/root_crown/gitobj.py",
+      "killed": true,
+      "killers": [
+        "test_gitobj"
+      ],
+      "kind": "source",
+      "rule": "git tree mode 100755"
+    },
+    "harness_killer_preflight_off": {
+      "detail": "killed by 2 test(s): test_mutate.CommittedReportTest.test_every_committed_anchor_matches_exactly_once,test_mutate.HarnessTest.test_killer_loading_zero_tests_is_refused",
+      "file": "scripts/release_train/root_crown/mutate.py",
+      "killed": true,
+      "killers": [
+        "test_mutate"
+      ],
+      "kind": "source",
+      "rule": "HARNESS_LOAD_ERROR(pristine killer preflight)"
+    },
+    "harness_load_error_counted_as_kill": {
+      "detail": "killed by 2 test(s): test_mutate.CommittedReportTest.test_every_committed_anchor_matches_exactly_once,test_mutate.HarnessTest.test_mutant_whose_killer_import_raises_importerror_is_refused_not_killed",
+      "file": "scripts/release_train/root_crown/mutate.py",
+      "killed": true,
+      "killers": [
+        "test_mutate"
+      ],
+      "kind": "source",
+      "rule": "HARNESS_LOAD_ERROR(under mutant)"
+    },
+    "historical_observation_split_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_one_refusing_mutant_per_post_tag_rule (rule='HISTORICAL_OBSERVATION_SPLIT')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "HISTORICAL_OBSERVATION_SPLIT"
+    },
+    "historical_receipt_digest_off": {
+      "detail": "killed by 1 test(s): test_typed_terminal.RecordBindingTest.test_historical_replay_refuses_a_record_naming_another_receipt",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_RECEIPT_SPLIT(historical)"
+    },
+    "lineage_bad_accepted": {
+      "detail": "killed by 3 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='ARTIFACT_SUBJECT_SPLIT'),test_terminal_alignment.TerminalAlignmentTest.test_f09_typed_blocker_must_be_bound_to_a_merged_subject,test_terminal_alignment.TerminalAlignmentTest.test_terminal_receipt_still_needs_a_merged_subject",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment",
+        "test_crown"
+      ],
+      "kind": "source",
+      "rule": "ARTIFACT_SUBJECT_SPLIT"
+    },
+    "missing_row_unreported": {
+      "detail": "killed by 3 test(s): test_policy.PolicyRefusalTest.test_coverage_gap_missing_row,test_policy.PolicyRefusalTest.test_coverage_gap_on_a_non_consulting_requirement_still_refuses_the_crown,test_policy.PolicyRefusalTest.test_every_terminality_code_is_typed_and_emitted",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_COVERAGE_GAP(no row)"
+    },
+    "non_terminal_impl_accepted": {
+      "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_partial_alive_row_is_not_terminal",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "CLOSURE_PARTIAL"
+    },
+    "non_terminal_state_admitted": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_non_terminal_state_is_never_admissible",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(non-terminal state)"
+    },
+    "observer_rename_source_dropped": {
+      "detail": "killed by 1 test(s): test_binding.ClassifyDeltaTest.test_code_renamed_into_receipts_is_unbounded",
+      "file": "scripts/observe_release_heads.py",
+      "killed": true,
+      "killers": [
+        "test_binding"
+      ],
+      "kind": "source",
+      "rule": "compare_delta keeps previous_filename of renames/copies"
+    },
+    "own_lines_ignore_evaluator_class": {
+      "detail": "killed by 7 test(s): test_policy.CommittedPolicyTest.test_committed_policy_is_admitted,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_refuse_only_unproven_lineage,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_with_observed_deltas,test_policy.OwnerRuleTest.test_f09_owner_split,test_policy.PolicyRefusalTest.test_committed_copy_is_admitted_and_crown_alive,test_policy.PolicyRefusalTest.test_f09_line_is_bound_through_its_evaluator_class_only",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(evaluator-class line)"
+    },
+    "own_lines_ignore_row_id_token": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_own_lines_cover_every_anchor",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(id-named line)"
+    },
+    "owner_container_default_off": {
+      "detail": "killed by 10 test(s): test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_refuse_only_unproven_lineage,test_policy.HistoricalReplayUnchangedTest.test_tag_time_inputs_with_observed_deltas,test_policy.OwnerRuleTest.test_absent_owner_is_the_container,test_policy.OwnerRuleTest.test_closure_row_owner_split_and_container_default,test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='broken_term'),test_typed_terminal.TypedTerminalReceiptTest.test_each_missing_typing_field_is_named_alone (gap='failure_class')",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_policy",
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "owner_source=container"
+    },
+    "owner_off": {
+      "detail": "killed by 3 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_typing_gaps_names_a_blank_owner (owner='  '),test_typed_terminal.TypedTerminalReceiptTest.test_typing_gaps_names_a_blank_owner (owner=''),test_typed_terminal.TypedTerminalReceiptTest.test_typing_gaps_names_a_blank_owner (owner=None)",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(missing=owner)"
+    },
+    "owner_split_off": {
+      "detail": "killed by 8 test(s): test_policy.OwnerRuleTest.test_closure_row_owner_split_and_container_default,test_policy.OwnerRuleTest.test_explicit_owner_of_another_repository_is_owner_split (key='owner'),test_policy.OwnerRuleTest.test_explicit_owner_of_another_repository_is_owner_split (key='owner_repo'),test_policy.OwnerRuleTest.test_explicit_owner_of_another_repository_is_owner_split (key='repo'),test_policy.OwnerRuleTest.test_explicit_owner_of_another_repository_is_owner_split (key='repository'),test_policy.OwnerRuleTest.test_f09_owner_split",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_policy",
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "OWNER_SPLIT(receipt)"
+    },
+    "parent_digest_off": {
+      "detail": "killed by 1 test(s): test_chain.ChainTest.test_parent_digest",
+      "file": "scripts/release_train/root_crown/chain.py",
+      "killed": true,
+      "killers": [
+        "test_chain"
+      ],
+      "kind": "source",
+      "rule": "RECEIPT_CHAIN_BROKEN:PARENT_DIGEST"
+    },
+    "parent_not_ancestor_off": {
+      "detail": "killed by 1 test(s): test_chain.ChainTest.test_parent_not_ancestor",
+      "file": "scripts/release_train/root_crown/chain.py",
+      "killed": true,
+      "killers": [
+        "test_chain"
+      ],
+      "kind": "source",
+      "rule": "RECEIPT_CHAIN_BROKEN:PARENT_NOT_ANCESTOR"
+    },
+    "parent_refused_off": {
+      "detail": "killed by 1 test(s): test_chain.ChainTest.test_parent_refused",
+      "file": "scripts/release_train/root_crown/chain.py",
+      "killed": true,
+      "killers": [
+        "test_chain"
+      ],
+      "kind": "source",
+      "rule": "RECEIPT_CHAIN_BROKEN:PARENT_REFUSED"
+    },
+    "parent_untyped_blocked_off": {
+      "detail": "killed by 1 test(s): test_chain.ChainTest.test_parent_untyped_blocked",
+      "file": "scripts/release_train/root_crown/chain.py",
+      "killed": true,
+      "killers": [
+        "test_chain"
+      ],
+      "kind": "source",
+      "rule": "RECEIPT_CHAIN_BROKEN:PARENT_UNTYPED_BLOCKED"
+    },
+    "payload_mutated_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_one_refusing_mutant_per_post_tag_rule (rule='PAYLOAD_MUTATED_POST_TAG')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "PAYLOAD_MUTATED_POST_TAG"
+    },
+    "policy_admission_ignored": {
+      "detail": "killed by 9 test(s): test_terminal_alignment.TerminalAlignmentTest.test_capability_ac_crown_is_blocked_not_alive,test_terminal_alignment.TerminalAlignmentTest.test_structured_local_receipt_standing,test_terminal_alignment.TerminalAlignmentTest.test_typed_blocked_on_capability_ac_stays_blocked (rid='AC-07'),test_terminal_alignment.TerminalAlignmentTest.test_typed_blocked_on_capability_ac_stays_blocked (rid='AC-08'),test_terminal_alignment.TerminalAlignmentTest.test_typed_blocked_on_capability_ac_stays_blocked (rid='AC-13'),test_terminal_alignment.TerminalAlignmentTest.test_typed_blocked_on_capability_ac_stays_blocked (rid='AC-14')",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "capability ACs admit ALIVE only (ARTIFACT_BLOCKED)"
+    },
+    "policy_release_unchecked": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_policy_for_another_release_or_unreadable_is_missing",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "TERMINALITY_POLICY_MISSING(other release)"
+    },
+    "receipt_policy_refusal_dropped": {
+      "detail": "killed by 13 test(s): test_policy.PolicyRefusalTest.test_absent_anchor_is_ungrounded,test_policy.PolicyRefusalTest.test_acceptance_drift,test_policy.PolicyRefusalTest.test_borrowing_another_requirements_terminal_phrase_is_ungrounded,test_policy.PolicyRefusalTest.test_coverage_gap_duplicate_extra_and_malformed_rows,test_policy.PolicyRefusalTest.test_missing_policy (rid='AC-07'),test_policy.PolicyRefusalTest.test_missing_policy (rid='AC-15')",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "TERMINALITY_POLICY_MISSING / ACCEPTANCE_DRIFT (receipt_artifact)"
+    },
+    "record_section_unchecked": {
+      "detail": "killed by 8 test(s): test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='payload'),test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='raw_objects'),test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='subject'),test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='tag'),test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='tag_receipt'),test_typed_terminal.RecordBindingTest.test_edited_record_sections_are_refused (code='TAG_MUTATED')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_RECEIPT_SPLIT/TAG_SUBJECT_SPLIT(record vs raw objects)"
+    },
+    "relaxation_ceiling_off": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_relaxation_claiming_an_alive_ceiling_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(ceiling ALIVE)"
+    },
+    "relaxation_marker_off": {
+      "detail": "killed by 2 test(s): test_policy.PolicyRefusalTest.test_every_terminality_code_is_typed_and_emitted,test_policy.PolicyRefusalTest.test_relaxing_a_capability_row_with_its_own_phrase_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(no terminality marker)"
+    },
+    "relaxation_own_line_unchecked": {
+      "detail": "killed by 4 test(s): test_policy.PolicyRefusalTest.test_borrowing_another_requirements_terminal_phrase_is_ungrounded,test_policy.PolicyRefusalTest.test_f09_line_is_bound_through_its_evaluator_class_only,test_policy.PolicyRefusalTest.test_section38_relaxation_not_naming_the_row_is_ungrounded,test_policy.PolicyRefusalTest.test_section55_relaxation_not_naming_the_row_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(borrowed phrase)"
+    },
+    "relaxation_phrase_unchecked": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_phrase_absent_from_the_anchor_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(phrase not in anchor)"
+    },
+    "replay_diverged_off": {
+      "detail": "killed by 1 test(s): test_replay.IsolationTest.test_divergent_digest_is_typed_replay_diverged",
+      "file": "scripts/release_train/root_crown/replay.py",
+      "killed": true,
+      "killers": [
+        "test_replay"
+      ],
+      "kind": "source",
+      "rule": "REPLAY_DIVERGED"
+    },
+    "required_unknown_off": {
+      "detail": "killed by 2 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='REQUIRED_UNKNOWN'),test_terminal_alignment.TerminalAlignmentTest.test_unknown_terminal_receipt_is_refused",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment",
+        "test_crown"
+      ],
+      "kind": "source",
+      "rule": "REQUIRED_UNKNOWN"
+    },
+    "rfc_import_digest_off": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_rfc_import_digest_mismatch_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(rfc import digest)"
+    },
+    "shared_grounding_admitted": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_one_grounding_cited_by_two_relaxations_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(one grounding, several relaxations)"
+    },
+    "subject_tree_off": {
+      "detail": "killed by 2 test(s): test_post_tag.PostTagTest.test_one_refusing_mutant_per_post_tag_rule (rule='SUBJECT_TREE_MISMATCH'),test_typed_terminal.SubjectTreeTest.test_one_changed_byte_is_subject_tree_mismatch",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag",
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "SUBJECT_TREE_MISMATCH"
+    },
+    "success_ceiling_off": {
+      "detail": "killed by 1 test(s): test_policy.PolicyRefusalTest.test_success_row_claiming_a_terminal_ceiling_is_ungrounded",
+      "file": "scripts/release_train/root_crown/policy.py",
+      "killed": true,
+      "killers": [
+        "test_policy"
+      ],
+      "kind": "source",
+      "rule": "POLICY_RELAXATION_UNGROUNDED(success row ceiling)"
+    },
+    "successor_off": {
+      "detail": "killed by 1 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_superseded_without_successor_is_refused",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(missing=successor)"
+    },
+    "tag_binding_mutated_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_post_tag_binding_requirement_refuses_on_its_own (expected='TAG_MUTATED')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_MUTATED(post-tag binding)"
+    },
+    "tag_binding_subject_split_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_post_tag_binding_requirement_refuses_on_its_own (expected='TAG_SUBJECT_SPLIT')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_SUBJECT_SPLIT(post-tag binding)"
+    },
+    "tag_deleted_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_verify_tag_subject_refuses_each_observation_breach_independently",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_MUTATED(deleted)"
+    },
+    "tag_mutated_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_verify_tag_subject_refuses_each_observation_breach_independently",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_MUTATED(object)"
+    },
+    "tag_object_digest_off": {
+      "detail": "killed by 1 test(s): test_gitobj.TagObjectsTest.test_flipped_raw_byte_is_a_recorded_mismatch",
+      "file": "scripts/release_train/root_crown/gitobj.py",
+      "killed": true,
+      "killers": [
+        "test_gitobj",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_OBJECT_DIGEST_MISMATCH"
+    },
+    "tag_receipt_crown_sha_unchecked": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_tag_receipt_must_name_the_tag_target_alive (field='crown_sha')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_RECEIPT_SPLIT(receipt crown_sha)"
+    },
+    "tag_receipt_self_digest_unchecked": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_tag_receipt_self_digest_must_recompute",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_RECEIPT_SPLIT(receipt self digest)"
+    },
+    "tag_receipt_standing_unchecked": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_tag_receipt_must_name_the_tag_target_alive (field='standing')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_RECEIPT_SPLIT(receipt standing)"
+    },
+    "tag_split_off": {
+      "detail": "killed by 3 test(s): test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='TAG_SHA_SPLIT'),test_falsifiers.FalsifierTableTest.test_each_falsifier_passes_alive_and_refuses_its_mutant (falsifier='F-14'),test_post_tag.PostTagTest.test_pre_tag_semantics_refuse_every_post_tag_commit",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_crown",
+        "test_falsifiers",
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_SHA_SPLIT"
+    },
+    "tag_subject_recompute_drops_payload": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='payload')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_SUBJECT_SPLIT(record.payload vs raw objects)"
+    },
+    "tag_subject_recompute_drops_raw_objects": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='raw_objects')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_OBJECT_DIGEST_MISMATCH(record.raw_objects vs raw objects)"
+    },
+    "tag_subject_recompute_drops_subject": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='subject')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_SUBJECT_SPLIT(record.subject vs raw objects)"
+    },
+    "tag_subject_recompute_drops_tag": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='tag')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_MUTATED(record.tag vs raw objects)"
+    },
+    "tag_subject_recompute_drops_tag_receipt": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_each_recomputed_section_refuses_independently (section='tag_receipt')",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_RECEIPT_SPLIT(record.tag_receipt vs raw objects)"
+    },
+    "tag_subject_split_off": {
+      "detail": "killed by 1 test(s): test_post_tag.PostTagTest.test_verify_tag_subject_refuses_each_observation_breach_independently",
+      "file": "scripts/release_train/root_crown/posttag.py",
+      "killed": true,
+      "killers": [
+        "test_post_tag"
+      ],
+      "kind": "source",
+      "rule": "TAG_SUBJECT_SPLIT"
+    },
+    "terminal_accepts_partial": {
+      "detail": "killed by 1 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_partial_alive_receipt_is_not_terminal",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "AC-15 PARTIAL_ALIVE is not terminal (ARTIFACT_BLOCKED)"
+    },
+    "type_off": {
+      "detail": "killed by 1 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_typed_row_without_type_text_is_refused",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "BLOCKED_WITHOUT_TYPE(missing=type)"
+    },
+    "typed_terminal_blocked_as_capability": {
+      "detail": "killed by 2 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_partial_alive_receipt_is_not_terminal,test_typed_terminal.TypedTerminalReceiptTest.test_typed_planned_receipt_is_not_terminal",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal"
+      ],
+      "kind": "source",
+      "rule": "AC-15 typed PLANNED is not a terminal disposition (ARTIFACT_BLOCKED)"
+    },
+    "u_base_term_erosion": {
+      "detail": "killed by 7 test(s): test_term_u_hardening.PremiseErosionTest.test_dropping_a_base_term_is_refused_and_the_term_still_evaluated (dropped='A'),test_term_u_hardening.PremiseErosionTest.test_dropping_a_base_term_is_refused_and_the_term_still_evaluated (dropped='C'),test_term_u_hardening.PremiseErosionTest.test_dropping_a_base_term_is_refused_and_the_term_still_evaluated (dropped='F'),test_term_u_hardening.PremiseErosionTest.test_dropping_a_base_term_is_refused_and_the_term_still_evaluated (dropped='M'),test_term_u_hardening.PremiseErosionTest.test_dropping_a_base_term_is_refused_and_the_term_still_evaluated (dropped='R'),test_term_u_hardening.PremiseErosionTest.test_dropping_a_base_term_is_refused_and_the_term_still_evaluated (dropped='X')",
+      "file": "scripts/release_train/root_crown/model.py",
+      "killed": true,
+      "killers": [
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "REQ_TERM_UNBOUND base-term-omitted"
+    },
+    "u_digest_unchecked": {
+      "detail": "killed by 6 test(s): test_term_u.TermUCrownTest.test_foreign_schema_is_refused,test_term_u.TermUCrownTest.test_tampered_receipt_digest_is_refused,test_term_u_hardening.ForgedReceiptTest.test_unsealed_digest_forms_are_refused (receipt_digest=''),test_term_u_hardening.ForgedReceiptTest.test_unsealed_digest_forms_are_refused (receipt_digest='SHA256:C751A275290CCB31ED94B28CF05B79DD696BB3443D7AAF7B51F5A272570BAFF4'),test_term_u_hardening.ForgedReceiptTest.test_unsealed_digest_forms_are_refused (receipt_digest='c751a275290ccb31ed94b28cf05b79dd696bb3443d7aaf7b51f5a272570baff4'),test_term_u_hardening.ForgedReceiptTest.test_unsealed_digest_forms_are_refused (receipt_digest=None)",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_term_u",
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "AUTONOMIC_RECEIPT_DIGEST_MISMATCH"
+    },
+    "u_exit_loose_equality": {
+      "detail": "killed by 2 test(s): test_term_u_hardening.ForgedReceiptTest.test_exit_that_merely_equals_zero_is_not_a_witness (exit=0.0),test_term_u_hardening.ForgedReceiptTest.test_exit_that_merely_equals_zero_is_not_a_witness (exit=False)",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "exit must be the integer 0 (false/0.0 are forgeries)"
+    },
+    "u_gate_admission_off": {
+      "detail": "killed by 5 test(s): test_term_u_hardening.DerivedStandingTest.test_blocked_gate_without_typed_code_is_underived,test_term_u_hardening.DerivedStandingTest.test_pass_without_evidence_digest_is_underived (evidence=None),test_term_u_hardening.DerivedStandingTest.test_pass_without_evidence_digest_is_underived (evidence={'digest': 'sha256:short'}),test_term_u_hardening.DerivedStandingTest.test_pass_without_evidence_digest_is_underived (evidence={'digest': 7}),test_term_u_hardening.DerivedStandingTest.test_pass_without_evidence_digest_is_underived (evidence={})",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "the gate table is total, typed and PASS evidence-backed (autonomic gates.admit)"
+    },
+    "u_premature_gate_off": {
+      "detail": "killed by 1 test(s): test_term_u.ReleaseTermsTest.test_u_declared_before_its_calver_is_refused",
+      "file": "scripts/release_train/root_crown/model.py",
+      "killed": true,
+      "killers": [
+        "test_term_u"
+      ],
+      "kind": "source",
+      "rule": "REQ_TERM_UNBOUND premature"
+    },
+    "u_premise_sha_unchecked": {
+      "detail": "killed by 1 test(s): test_term_u.PremiseSetAdmissionTest.test_rfc_0005_digest_mismatch_is_refused",
+      "file": "scripts/release_train/root_crown/requirements.py",
+      "killed": true,
+      "killers": [
+        "test_term_u"
+      ],
+      "kind": "source",
+      "rule": "REQ_PREMISE_UNBOUND RFC-0005 sha256 mismatch"
+    },
+    "u_required_from_dropped": {
+      "detail": "killed by 4 test(s): test_term_u.PremiseSetAdmissionTest.test_crown_refuses_a_v26_9_26_premise_that_omits_u,test_term_u.ReleaseTermsTest.test_premise_omitting_u_from_its_calver_is_refused_and_still_evaluates_u,test_term_u_hardening.CrownRelabelTest.test_crown_reads_the_directory_line_not_the_premise_label,test_term_u_hardening.PremiseErosionTest.test_relabelled_premise_cannot_evade_u",
+      "file": "scripts/release_train/root_crown/model.py",
+      "killed": true,
+      "killers": [
+        "test_term_u",
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "REQ_TERM_UNBOUND required-from (U cannot be dropped by omission)"
+    },
+    "u_row_premise_citation_off": {
+      "detail": "killed by 1 test(s): test_term_u.PremiseSetAdmissionTest.test_u_row_citing_only_rfc_0004_is_refused",
+      "file": "scripts/release_train/root_crown/requirements.py",
+      "killed": true,
+      "killers": [
+        "test_term_u"
+      ],
+      "kind": "source",
+      "rule": "REQ_PREMISE_UNBOUND term U cites no RFC-0005 section"
+    },
+    "u_stale_release_accepted": {
+      "detail": "killed by 5 test(s): test_term_u.TermUCrownTest.test_committed_v26_9_25_receipt_is_never_evidence_of_u,test_term_u_hardening.ForgedReceiptTest.test_receipt_with_no_release_or_foreign_release_is_stale (release=''),test_term_u_hardening.ForgedReceiptTest.test_receipt_with_no_release_or_foreign_release_is_stale (release='v26.9.25'),test_term_u_hardening.ForgedReceiptTest.test_receipt_with_no_release_or_foreign_release_is_stale (release='v26.9.27'),test_term_u_hardening.ForgedReceiptTest.test_receipt_with_no_release_or_foreign_release_is_stale (release=None)",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_term_u",
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "AUTONOMIC_RECEIPT_STALE"
+    },
+    "u_standing_underived_admitted": {
+      "detail": "killed by 15 test(s): test_term_u_hardening.DerivedStandingTest.test_a1_empty_passed_gates_with_blocked_table,test_term_u_hardening.DerivedStandingTest.test_a2_every_gate_blocked_under_autonomic_summary,test_term_u_hardening.DerivedStandingTest.test_not_autonomic_summary_over_all_pass_table_is_underived,test_term_u_hardening.DerivedStandingTest.test_one_blocked_gate_hidden_by_the_summary (gate='U-01'),test_term_u_hardening.DerivedStandingTest.test_one_blocked_gate_hidden_by_the_summary (gate='U-18'),test_term_u_hardening.DerivedStandingTest.test_passed_gates_summary_must_match (passed=None)",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "a sealed receipt whose summary contradicts its gate table is AUTONOMIC_STANDING_UNDERIVED"
+    },
+    "u_summary_compare_off": {
+      "detail": "killed by 15 test(s): test_term_u_hardening.DerivedStandingTest.test_a1_empty_passed_gates_with_blocked_table,test_term_u_hardening.DerivedStandingTest.test_a2_every_gate_blocked_under_autonomic_summary,test_term_u_hardening.DerivedStandingTest.test_not_autonomic_summary_over_all_pass_table_is_underived,test_term_u_hardening.DerivedStandingTest.test_one_blocked_gate_hidden_by_the_summary (gate='U-01'),test_term_u_hardening.DerivedStandingTest.test_one_blocked_gate_hidden_by_the_summary (gate='U-18'),test_term_u_hardening.DerivedStandingTest.test_passed_gates_summary_must_match (passed=None)",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_term_u_hardening"
+      ],
+      "kind": "source",
+      "rule": "blocked_gates/passed_gates/autonomy must equal the values derived from the gates"
+    },
+    "u_unbound_term_vacuous": {
+      "detail": "killed by 1 test(s): test_term_u.PremiseSetAdmissionTest.test_crown_refuses_a_v26_9_26_premise_that_omits_u",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_term_u"
+      ],
+      "kind": "source",
+      "rule": "a term no requirement binds is BLOCKED, never vacuously PASS"
+    },
+    "untyped_closure_accepted": {
+      "detail": "killed by 1 test(s): test_terminal_alignment.TerminalAlignmentTest.test_untyped_blocked_closure_row_is_refused",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_terminal_alignment"
+      ],
+      "kind": "source",
+      "rule": "SUBJECT_NOT_TERMINAL(untyped)"
+    },
+    "verifier_crashed_off": {
+      "detail": "killed by 2 test(s): test_crown.CrownTest.test_evaluator_crash_is_contained_and_other_requirements_still_evaluate,test_crown.CrownTest.test_one_refusing_mutant_per_crown_rule (rule='VERIFIER_CRASHED')",
+      "file": "scripts/release_train/root_crown/crown.py",
+      "killed": true,
+      "killers": [
+        "test_crown"
+      ],
+      "kind": "source",
+      "rule": "VERIFIER_CRASHED"
+    },
+    "worktree_stale_off": {
+      "detail": "killed by 1 test(s): test_typed_terminal.TypedTerminalReceiptTest.test_stale_worktree_observation_is_typed_blocked",
+      "file": "scripts/release_train/root_crown/evidence.py",
+      "killed": true,
+      "killers": [
+        "test_typed_terminal",
+        "test_crown"
+      ],
+      "kind": "source",
+      "rule": "OBSERVATION_STALE(AC-09)"
+    }
+  },
+  "release": "v26.9.25",
+  "schema": "https://chatman.dev/root-crown/hardening/mutation-report/v1",
+  "source_digests": {
+    "scripts/observe_release_heads.py": "sha256:22d7008c0ad662bb9378bb7806ee90f155aa58e784ce2ec567cf5b8239e9dcfb",
+    "scripts/release_train/release_closure_court/court.py": "sha256:9c46863eec5a6619f7221206def681ef94fd391a28b2c107ce1ba1bcff5d3698",
+    "scripts/release_train/root_crown/binding.py": "sha256:51dda4ae530be25f952f9b0603c4e81f293a82f64faabb45bbc05dd08a913b72",
+    "scripts/release_train/root_crown/chain.py": "sha256:3039484a9b8f992aa6c5ee72989af86570afe5c1ab4e45f177597e4714009253",
+    "scripts/release_train/root_crown/crown.py": "sha256:775f4eee8478a2e68f579655be707313c3a3fdcda9e09770ab0996b826434b20",
+    "scripts/release_train/root_crown/evidence.py": "sha256:69766261add83a5ae2edd8ed38d73354a537ed8545316c5cd2df85214393f669",
+    "scripts/release_train/root_crown/gitobj.py": "sha256:191690fafbc380bef695eee9beee8563d123cecc6beab89ac99a2898830979a2",
+    "scripts/release_train/root_crown/model.py": "sha256:b24550ed464e0174a3fb3c6a6cfa1142ec666082ed4174be3ce8a29d7d9fe150",
+    "scripts/release_train/root_crown/mutate.py": "sha256:357fedd901d63a2f77b25d7871529c8d419b9ea0648a597f8ec9946c7f0c8de1",
+    "scripts/release_train/root_crown/policy.py": "sha256:056b1d5c58e85ce26d59b8f4b83c23fe941ec3fa45b07ac6975dfd4e33ec05e2",
+    "scripts/release_train/root_crown/posttag.py": "sha256:35ed4c9eb84e25d281f11166cb8b73439aea52e352ac710266e82819ba72e48f",
+    "scripts/release_train/root_crown/replay.py": "sha256:c3610676203a00d48a00a50af3c70f59eaf5d7608a95a7390947bc32332b6a2d",
+    "scripts/release_train/root_crown/requirements.py": "sha256:81eff5bc9704bb66a5e89fe5a38effc0605ca026321008d0d73362bd6390f8e7"
+  },
+  "survivors": [],
+  "total": 136
+}

@@ -28,6 +28,7 @@ from .model import (
     FAILURE_CLASSES,
     PASS,
     REFUSED,
+    TERM_PREMISE,
     EvidenceBinding,
     ReqState,
     Requirement,
@@ -290,10 +291,17 @@ class Context:
         )
 
     def policy_refusals(self) -> list[str]:
+        # Rows of a term bound by another premise (TERM_PREMISE, e.g. U) are success-only by
+        # construction (their evaluator admits no relaxation), so RFC-0004's terminality
+        # policy neither grounds nor covers them.
         return terminality.validate(
             self.policy,
             self.policy_missing,
-            self.inputs.requirements_doc.get("requirements", []),
+            [
+                r
+                for r in self.inputs.requirements_doc.get("requirements", [])
+                if not (isinstance(r, dict) and r.get("term") in TERM_PREMISE)
+            ],
             self.inputs.rfc_text,
             self.import_sha256,
         )
@@ -648,7 +656,7 @@ def judge_committed(ctx: Context, rfc_text: str | None = None) -> berthier.Berth
     graph = inputs.prior_berthier or {"edges": [], "baseline": {}}
     edges = berthier.edges_from_json(graph["edges"])
     text = rfc_text if rfc_text is not None else (ctx.premise_text if ctx.premise_text is not None else inputs.rfc_text)
-    current = berthier.source_digests(text, inputs.requirements)
+    current = berthier.source_digests(projector.premise_input(inputs, text), inputs.requirements)
     for name in berthier.PROJECTED_OUTPUTS:
         path = ctx.release_dir / name
         if path.is_file():
@@ -679,7 +687,11 @@ def crown_test(inputs: projector.Inputs, section: str | None = None) -> tuple[bo
     affected requirements; and no other input changed (ManualRestatementCount = 0).
     """
     sections = premise_sections(inputs.rfc_text)
-    referenced = sorted({ref for r in inputs.requirements for ref in r.premise_refs})
+    # The §9 mutation targets RFC-0004 sections; premise-set references (``RFC-0005§n``) are
+    # recompiled by the autonomic court's U-12 premise-set test (autonomic_crown.premise).
+    referenced = sorted(
+        {ref for r in inputs.requirements for ref in r.premise_refs if berthier.split_ref(ref)[0] == berthier.PREMISE}
+    )
     owners_by_section = {
         ref: len({r.owner_repo for r in inputs.requirements if ref in r.premise_refs}) for ref in referenced
     }
@@ -704,7 +716,7 @@ def crown_test(inputs: projector.Inputs, section: str | None = None) -> tuple[bo
     if graph is None:
         return False, "no committed berthier.json"
     edges = berthier.edges_from_json(graph["edges"])
-    current = berthier.source_digests(mutated_text, inputs.requirements)
+    current = berthier.source_digests(projector.premise_input(inputs, mutated_text), inputs.requirements)
     stale_verdict = berthier.judge(edges, current, [], {}, None)
     if set(stale_verdict.stale) != expected:
         return False, f"stale={sorted(stale_verdict.stale)} expected={sorted(expected)}"
@@ -713,7 +725,7 @@ def crown_test(inputs: projector.Inputs, section: str | None = None) -> tuple[bo
     regenerated = projector.compile_graph(inputs, rfc_text=mutated_text)
     new_graph = json.loads(regenerated["berthier.json"])
     new_packets = json.loads(regenerated["out/packets.json"])["packets"]
-    new_current = berthier.source_digests(mutated_text, inputs.requirements)
+    new_current = berthier.source_digests(projector.premise_input(inputs, mutated_text), inputs.requirements)
     new_current["proj:out/packets.json"] = sha256_bytes(regenerated["out/packets.json"])
     new_current["proj:out/requirements.ttl"] = sha256_bytes(regenerated["out/requirements.ttl"])
     after = berthier.judge(
@@ -891,6 +903,218 @@ def crown_self(req: Requirement, ctx: Context) -> ReqState:
     return in_tree_pass(req, ctx, "every other requirement PASS", "crown_self")
 
 
+def _autonomic_evidence(req: Requirement, ctx: Context) -> tuple[bytes | None, dict[str, Any] | None, ReqState | None]:
+    """(raw bytes or None for an observed receipt, receipt json, blocker)."""
+    if req.evidence_locator.startswith("local:"):
+        path = _local_path(ctx, req)
+        if not path.is_file():
+            return None, None, BLOCKED("EVIDENCE_ABSENT", f"absent:{req.evidence_locator}")
+        raw = path.read_bytes()
+        try:
+            data = json.loads(raw.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            return None, None, BLOCKED("ARTIFACT_NOT_JSON", req.evidence_locator)
+        if not isinstance(data, dict):
+            return None, None, BLOCKED("ARTIFACT_NOT_JSON", req.evidence_locator)
+        return raw, data, None
+    data, blocker, _ = _artifact(req, ctx)
+    return None, data, blocker
+
+
+def _gates_text(gates: Any) -> str:
+    if isinstance(gates, list) and all(isinstance(g, str) for g in gates):
+        return ",".join(gates)
+    return json.dumps(gates, sort_keys=True)
+
+
+def derive_autonomic_standing(data: dict[str, Any]) -> tuple[dict[str, Any] | None, list[str]]:
+    """Re-derive a sealed autonomic receipt's summary standing from its own gate table.
+
+    A seal proves the bytes were not edited after sealing, not that the summary fields
+    (``blocked_gates``, ``passed_gates``, ``standings.autonomy``) agree with the per-gate
+    results they summarize. Stored standing is admitted only when it recomputes here,
+    with the autonomic court's own laws: the gate table is total over U-01..U-18 and
+    typed (``gates.admit``: PASS needs an evidence digest, non-PASS a typed code), and
+    autonomy is ``standing.autonomy_of`` over those gates and the execution state.
+
+    Returns ``(derived, gaps)``: ``derived`` is ``{blocked_gates, passed_gates, autonomy}``
+    (None when the table cannot be read), ``gaps`` every disagreement or malformation.
+    """
+    from scripts.release_train.autonomic_crown import gates as autonomic_gates
+    from scripts.release_train.autonomic_crown import standing as autonomic_standing
+    from scripts.release_train.autonomic_crown.model import GATE_IDS, GateResult
+
+    table = data.get("gates")
+    if not isinstance(table, dict):
+        return None, ["gates:not-an-object"]
+    gaps: list[str] = []
+    results: list[GateResult] = []
+    for gid in sorted(table):
+        row = table[gid]
+        if not isinstance(row, dict) or row.get("id") != gid:
+            gaps.append(f"gates.{gid}:row-malformed")
+            continue
+        evidence_doc = row.get("evidence")
+        results.append(
+            GateResult(
+                id=gid,
+                state=row.get("state") if isinstance(row.get("state"), str) else repr(row.get("state")),
+                measured=row.get("measured"),
+                threshold=str(row.get("threshold")),
+                code=row.get("code") if isinstance(row.get("code"), str) else None,
+                evidence=evidence_doc if isinstance(evidence_doc, dict) else None,
+            )
+        )
+    extra = sorted(set(table) - set(GATE_IDS))
+    if extra:
+        gaps.append(f"gates:not-in-premise:{','.join(map(str, extra))}")
+    gaps.extend(f"gates.{f.subject}:{f.code}" for f in autonomic_gates.admit(results))
+    if gaps:
+        return None, gaps
+    standings = data.get("standings") if isinstance(data.get("standings"), dict) else {}
+    execution_doc = standings.get("execution")
+    execution = execution_doc.get("state") if isinstance(execution_doc, dict) else None
+    autonomy, _ = autonomic_standing.autonomy_of(results, str(execution))
+    derived = {
+        "blocked_gates": sorted(r.id for r in results if r.state != "PASS"),
+        "passed_gates": sorted(r.id for r in results if r.state == "PASS"),
+        "autonomy": autonomy,
+    }
+    stored = {
+        "blocked_gates": data.get("blocked_gates"),
+        "passed_gates": data.get("passed_gates"),
+        "autonomy": standings.get("autonomy"),
+    }
+    for key in ("blocked_gates", "passed_gates", "autonomy"):
+        if stored[key] != derived[key]:
+            gaps.append(f"{key}:stored={_gates_text(stored[key])}:derived={_gates_text(derived[key])}")
+    return derived, gaps
+
+
+def autonomic_receipt(req: Requirement, ctx: Context) -> ReqState:
+    """Term U (RFC-0005 §2.3, §3): compose the autonomic_crown receipt into the root crown.
+
+    The receipt (``release/<line>/autonomy/autonomic-receipt.json``, schema
+    ``autonomic-crown/receipt/v1``) is admitted only when:
+
+    1. its ``receipt_digest`` recomputes over every other field and its schema is the
+       autonomic crown's (else REFUSED AUTONOMIC_RECEIPT_DIGEST_MISMATCH);
+    2. it is a receipt for this release line (else BLOCKED AUTONOMIC_RECEIPT_STALE: an
+       earlier line's receipt is never evidence of U, RFC-0005 §2.2);
+    3. its subject (``crown_subject``, the root crown commit it measured) binds to the crown
+       commit through ``binding.admit``: an exact 40-hex producer commit, never the
+       container itself, on the container's lineage with an observed receipt-only delta
+       (``observations.subjects`` / ``observations.subject_deltas`` for an in-tree receipt,
+       the artifact observation for a remote one). A stale subject is typed by the binding
+       law (EVIDENCE_SUBJECT_SPLIT, EVIDENCE_LINEAGE_MISSING, EVIDENCE_DELTA_UNBOUNDED);
+    4. its summary standing re-derives from its own sealed gate table
+       (``derive_autonomic_standing``: ``blocked_gates``/``passed_gates`` are the non-PASS /
+       PASS gate ids and ``standings.autonomy`` is the autonomic court's ``autonomy_of``
+       over them), else REFUSED AUTONOMIC_STANDING_UNDERIVED -- a well-sealed receipt
+       whose summary contradicts its gates is stored standing, never derived standing;
+    5. it witnesses U: execution ALIVE, derived autonomy AUTONOMIC and exit 0 (else REFUSED
+       ARTIFACT_REFUSED for a refusing court, BLOCKED AUTONOMIC_NOT_AUTONOMIC otherwise).
+
+    Success-only: no typed disposition relaxes U (RFC-0005 §3: UNKNOWN is not admitted).
+    """
+    from scripts.release_train.autonomic_crown import receipt as autonomic
+
+    raw, data, blocker = _autonomic_evidence(req, ctx)
+    if blocker is not None:
+        return blocker
+    assert data is not None
+    if not autonomic.verify(data):
+        return REFUSED(
+            "AUTONOMIC_RECEIPT_DIGEST_MISMATCH",
+            f"{req.evidence_locator}: schema={data.get('schema')} receipt_digest={data.get('receipt_digest')} does not recompute",
+        )
+    release = ctx.release_dir.name
+    if data.get("release") != release:
+        return BLOCKED(
+            "AUTONOMIC_RECEIPT_STALE", f"{req.evidence_locator}: receipt for {data.get('release')}, crown is {release}"
+        )
+    subject = data.get("crown_subject")
+    root_repo = ctx.container_repo
+    # Shape-tolerant reads: a sealed receipt with malformed standings is typed below
+    # (AUTONOMIC_NOT_AUTONOMIC), never a verifier crash.
+    standings = data.get("standings") if isinstance(data.get("standings"), dict) else {}
+    standing = standings.get("autonomy")
+    if req.evidence_locator.startswith("local:"):
+        path = req.evidence_locator[len("local:") :]
+        identity = f"{root_repo}@{subject}"
+        bound = binding.bind_remote(
+            req,
+            repository=root_repo,
+            path=path,
+            subject_sha=subject,
+            container_sha=ctx.crown_sha,
+            evidence_digest=binding.sha256_tag(raw or b""),
+            compare_status=(ctx.observations.get("subjects") or {}).get(identity),
+            delta_paths=(ctx.observations.get("subject_deltas") or {}).get(f"{identity}..{ctx.crown_sha}"),
+            allowlist=ctx.allowlist,
+            data={"producer": "autonomic_crown", "court": "autonomic_crown", "exit_code": data.get("exit")},
+            standing=standing,
+            owner=root_repo,
+            owner_source="container",
+            kind="LOCAL_RECEIPT",
+        )
+    else:
+        repository, _, path = req.evidence_locator.partition(":")
+        seen = ctx.artifacts.get(req.evidence_locator, {})
+        bound = binding.bind_remote(
+            req,
+            repository=repository,
+            path=path,
+            subject_sha=subject,
+            container_sha=seen.get("head_sha"),
+            evidence_digest=seen.get("sha256"),
+            compare_status=seen.get("subject_compare"),
+            delta_paths=seen.get("subject_delta_paths"),
+            allowlist=ctx.allowlist,
+            data={"producer": "autonomic_crown", "court": "autonomic_crown", "exit_code": data.get("exit")},
+            standing=standing,
+            owner=repository,
+            owner_source="container",
+        )
+    refusal = binding.admit(bound, crown_sha=ctx.crown_sha, root_repository=root_repo, allowlist=ctx.allowlist)
+    if refusal is not None:
+        return refusal
+    execution_doc = standings.get("execution")
+    execution = execution_doc.get("state") if isinstance(execution_doc, dict) else None
+    exit_value = data.get("exit")
+    if (type(exit_value) is int and exit_value == 2) or execution == "REFUSED":
+        return REFUSED(
+            "ARTIFACT_REFUSED", f"{req.evidence_locator}: autonomic crown refused (exit {exit_value})", subject
+        )
+    # Standing is derived, not read: the summary must recompute from the gate table.
+    derived, gaps = derive_autonomic_standing(data)
+    if gaps or derived is None:
+        return REFUSED(
+            "AUTONOMIC_STANDING_UNDERIVED",
+            f"{req.evidence_locator}: stored standing does not re-derive from the sealed gates: {'; '.join(gaps)}",
+            subject,
+        )
+    # ``exit`` must be the integer 0: JSON ``false`` or ``0.0`` compare equal to 0 in Python
+    # but are not the autonomic court's exit code (a re-sealed forgery, not a witness).
+    # A witness of U has no blocked gate: the derived blocked set must be empty.
+    gates_clear = derived["blocked_gates"] == [] and data.get("blocked_gates") == []
+    if not (
+        execution == "ALIVE"
+        and derived["autonomy"] == "AUTONOMIC"
+        and standing == "AUTONOMIC"
+        and type(exit_value) is int
+        and exit_value == 0
+        and gates_clear
+    ):
+        return BLOCKED(
+            "AUTONOMIC_NOT_AUTONOMIC",
+            f"{req.evidence_locator}: execution={execution} autonomy={standing} exit={exit_value} "
+            f"blocked_gates={_gates_text(data.get('blocked_gates'))} at {subject}",
+            subject,
+        )
+    return PASS(f"U: autonomic receipt {data.get('receipt_digest')} AUTONOMIC/ALIVE at {subject}", subject, bound)
+
+
 Evaluator = Callable[[Requirement, Context], ReqState]
 
 EVALUATORS: dict[str, Evaluator] = {
@@ -907,5 +1131,6 @@ EVALUATORS: dict[str, Evaluator] = {
     "worktree_observation": worktree_observation,
     "tag_binding": tag_binding,
     "crown_self": crown_self,
+    "autonomic_receipt": autonomic_receipt,
 }
 DEFERRED = {"crown_self"}

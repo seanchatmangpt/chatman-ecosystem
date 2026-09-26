@@ -1,0 +1,35 @@
+{
+  "authority": "NONE",
+  "cases": {
+    "autonomic_receipt": {
+      "iterations": 20,
+      "median_s": 0.000641,
+      "min_s": 0.000421,
+      "p95_s": 0.00127
+    },
+    "crown_evaluate": {
+      "iterations": 4,
+      "median_s": 0.129789,
+      "min_s": 0.10752,
+      "p95_s": 0.146549
+    },
+    "release_terms": {
+      "iterations": 2000,
+      "median_s": 4e-06,
+      "min_s": 4e-06,
+      "p95_s": 5e-06
+    },
+    "validate_requirements": {
+      "iterations": 20,
+      "median_s": 0.002047,
+      "min_s": 0.001811,
+      "p95_s": 0.006734
+    }
+  },
+  "floor_s": 0.005,
+  "machine": "arm64",
+  "python": "3.12.12",
+  "regression_factor": 5.0,
+  "schema": "https://chatman.dev/root-crown/bench/term-u/v1",
+  "subject": "tests/release_train/root_crown/test_term_u.py::UTree (v26.9.26-shaped, ALIVE)"
+}
