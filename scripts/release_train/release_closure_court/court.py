@@ -165,11 +165,29 @@ def _row_refusals(row: dict[str, Any]) -> list[str]:
     return out
 
 
-def _lineage_refusals(row: dict[str, Any], bound: int | None) -> list[str]:
-    """PR lineage of a row: one CANONICAL head at the row sha, no open alternatives.
+def _sid_key(row: Any) -> str | None:
+    """The row's subject_id when it can key a graph (a non-empty string), else None.
 
-    Each entry: {pr, sha, state, draft, mergeable, disposition, additions?}. A row
-    without ``lineage`` is unaffected.
+    Rows with any other subject_id are already ``MALFORMED_ROW``; keeping them out of the
+    dependency graph means an unhashable id is refused, never a crash.
+    """
+    sid = row.get("subject_id") if isinstance(row, dict) else None
+    return sid if isinstance(sid, str) and sid.strip() else None
+
+
+def _lineage_refusals(row: dict[str, Any], bound: int | None) -> list[str]:
+    """PR lineage of a row: exactly one CANONICAL head at the row sha, no open alternatives.
+
+    Each entry: {pr, sha, state, draft?, mergeable?, disposition, additions?}. A row
+    without ``lineage`` is unaffected. Fail-closed rules (hardening):
+
+    * ``pr`` is a positive int, unique within the lineage; ``draft`` (when present) is a
+      bool and a MERGED entry is never a draft; ``additions`` (when present) is a
+      non-negative int; otherwise ``MALFORMED_ROW``;
+    * a non-empty lineage with zero CANONICAL entries is ``SUCCESSOR_AMBIGUOUS`` (no
+      admitted head binds the row sha);
+    * under a declared ``max_canonical_additions`` a CANONICAL entry with no ``additions``
+      is ``SCOPE_EXCEEDS_BOUND`` (unknown scope never satisfies a bound).
     """
     sid = row.get("subject_id", "?")
     lineage = row.get("lineage")
@@ -179,31 +197,46 @@ def _lineage_refusals(row: dict[str, Any], bound: int | None) -> list[str]:
         return [f"REFUSED:MALFORMED_ROW:{sid}:lineage"]
     out: list[str] = []
     canonical = []
+    seen_prs: set[int] = set()
     for pos, pr in enumerate(lineage):
         if (
             not isinstance(pr, dict)
             or not isinstance(pr.get("pr"), int)
             or isinstance(pr.get("pr"), bool)
+            or pr["pr"] <= 0
             or not _SHA40.fullmatch(str(pr.get("sha", "")))
             or pr.get("state") not in LINEAGE_STATES
             or pr.get("disposition") not in LINEAGE_DISPOSITIONS
+            or ("draft" in pr and not isinstance(pr["draft"], bool))
+            or (pr.get("state") == "MERGED" and pr.get("draft") is True)
+            or (
+                "additions" in pr
+                and (not isinstance(pr["additions"], int) or isinstance(pr["additions"], bool) or pr["additions"] < 0)
+            )
         ):
             out.append(f"REFUSED:MALFORMED_ROW:{sid}:lineage[{pos}]")
             continue
         n = pr["pr"]
+        if n in seen_prs:
+            out.append(f"REFUSED:MALFORMED_ROW:{sid}:lineage[{pos}]:duplicate-pr={n}")
+            continue
+        seen_prs.add(n)
         if pr["disposition"] == "CANONICAL":
             canonical.append(pr)
             if pr["sha"] != row.get("sha"):
                 out.append(f"REFUSED:CANONICAL_SUBJECT_SPLIT:{sid}:pr={n}")
-            additions = pr.get("additions", 0)
-            if bound is not None and isinstance(additions, int) and additions > bound:
-                out.append(f"REFUSED:SCOPE_EXCEEDS_BOUND:{sid}:pr={n}:additions={additions}>{bound}")
+            if bound is not None:
+                additions = pr.get("additions")
+                if additions is None:
+                    out.append(f"REFUSED:SCOPE_EXCEEDS_BOUND:{sid}:pr={n}:additions=UNKNOWN>{bound}")
+                elif additions > bound:
+                    out.append(f"REFUSED:SCOPE_EXCEEDS_BOUND:{sid}:pr={n}:additions={additions}>{bound}")
         elif pr["state"] == "OPEN":
             if pr["disposition"] in {"SUPERSEDED", "ZOMBIE"}:
                 out.append(f"REFUSED:SUPERSEDED_LINEAGE_OPEN:{sid}:pr={n}")
             else:
                 out.append(f"REFUSED:SUCCESSOR_AMBIGUOUS:{sid}:pr={n}")
-    if len(canonical) > 1:
+    if len(canonical) > 1 or (lineage and not canonical and not out):
         out.append(f"REFUSED:SUCCESSOR_AMBIGUOUS:{sid}:canonical={len(canonical)}")
     if row.get("impl_standing") == "ALIVE":
         for pr in canonical:
@@ -216,75 +249,174 @@ def _lineage_refusals(row: dict[str, Any], bound: int | None) -> list[str]:
 
 
 def _dependency_refusals(rows: list[dict[str, Any]]) -> list[str]:
-    ids = {r.get("subject_id") for r in rows}
+    ids = {k for k in (_sid_key(r) for r in rows) if k is not None}
     out: list[str] = []
     graph: dict[str, list[str]] = {}
     for row in rows:
-        sid = row.get("subject_id")
+        sid = _sid_key(row)
         deps = row.get("depends_on", [])
         if not isinstance(deps, list) or not all(isinstance(d, str) for d in deps):
-            out.append(f"REFUSED:MALFORMED_ROW:{sid}:depends_on")
+            out.append(f"REFUSED:MALFORMED_ROW:{row.get('subject_id')}:depends_on")
             continue
+        if sid is None:
+            continue  # subject_id already refused as MALFORMED_ROW by _row_refusals
         for dep in deps:
             if dep not in ids or dep == sid:
                 out.append(f"REFUSED:DEPENDENCY_NOT_ADMITTED:{sid}:{dep}")
         graph[sid] = [d for d in deps if d in ids and d != sid]
+    # Iterative depth-first search (same visit order and refusals as the recursive form,
+    # without a recursion-depth ceiling on long dependency chains).
     state: dict[str, int] = {}
-
-    def visit(node: str) -> None:
-        state[node] = 1
-        for dep in graph.get(node, []):
-            if state.get(dep) == 1:
-                out.append(f"REFUSED:DEPENDENCY_CYCLE:{node}->{dep}")
-            elif dep not in state:
-                visit(dep)
-        state[node] = 2
-
-    for node in sorted(graph, key=str):
-        if node not in state:
-            visit(node)
+    for root in sorted(graph):
+        if root in state:
+            continue
+        state[root] = 1
+        stack = [(root, iter(graph.get(root, ())))]
+        while stack:
+            node, it = stack[-1]
+            for dep in it:
+                if state.get(dep) == 1:
+                    out.append(f"REFUSED:DEPENDENCY_CYCLE:{node}->{dep}")
+                elif dep not in state:
+                    state[dep] = 1
+                    stack.append((dep, iter(graph.get(dep, ()))))
+                    break
+            else:
+                state[node] = 2
+                stack.pop()
     return out
+
+
+def _transitive_dependents(graph: dict[str, list[str]]) -> dict[str, int]:
+    """For each node, how many nodes (transitively) depend on it, in O(V+E) SCC passes.
+
+    Equals the size of the set reached by following dependent edges one or more steps
+    from the node (so a node on a cycle counts itself), computed over the strongly
+    connected components of the dependent graph with integer bitsets.
+    """
+    nodes = list(graph)
+    index = {n: i for i, n in enumerate(nodes)}
+    dependents: list[list[int]] = [[] for _ in nodes]
+    self_loop = [False] * len(nodes)
+    for sid, deps in graph.items():
+        for dep in dict.fromkeys(deps):
+            j = index.get(dep)
+            if j is None:
+                continue
+            dependents[j].append(index[sid])
+            if j == index[sid]:
+                self_loop[j] = True
+    # Tarjan (iterative) over dependent edges; SCCs come out successors-first.
+    order = [-1] * len(nodes)
+    low = [0] * len(nodes)
+    on_stack = [False] * len(nodes)
+    comp = [-1] * len(nodes)
+    comps: list[list[int]] = []
+    tstack: list[int] = []
+    counter = 0
+    for start in range(len(nodes)):
+        if order[start] != -1:
+            continue
+        work = [(start, 0)]
+        order[start] = low[start] = counter
+        counter += 1
+        tstack.append(start)
+        on_stack[start] = True
+        while work:
+            v, i = work[-1]
+            if i < len(dependents[v]):
+                work[-1] = (v, i + 1)
+                w = dependents[v][i]
+                if order[w] == -1:
+                    order[w] = low[w] = counter
+                    counter += 1
+                    tstack.append(w)
+                    on_stack[w] = True
+                    work.append((w, 0))
+                elif on_stack[w]:
+                    low[v] = min(low[v], order[w])
+                continue
+            work.pop()
+            if work:
+                u = work[-1][0]
+                low[u] = min(low[u], low[v])
+            if low[v] == order[v]:
+                members = []
+                while True:
+                    w = tstack.pop()
+                    on_stack[w] = False
+                    comp[w] = len(comps)
+                    members.append(w)
+                    if w == v:
+                        break
+                comps.append(members)
+    full: list[int] = []
+    for c, members in enumerate(comps):
+        own = 0
+        for m in members:
+            own |= 1 << m
+        full.append(own)
+    reach: list[int] = [0] * len(comps)
+    for c, members in enumerate(comps):
+        acc = 0
+        for m in members:
+            for w in dependents[m]:
+                d = comp[w]
+                if d != c:
+                    acc |= full[d] | reach[d]
+        nontrivial = len(members) > 1 or self_loop[members[0]]
+        reach[c] = acc | (full[c] if nontrivial else 0)
+    return {n: reach[comp[i]].bit_count() for i, n in enumerate(nodes)}
 
 
 def repair_order(rows: list[dict[str, Any]], remaining_ids: set[str]) -> list[str]:
     """Rows that still carry a typed blocker, dependencies first.
 
     Ties break by criticality: the subject that more rows (transitively) depend on
-    is repaired first, then by subject_id.
+    is repaired first, then by subject_id. On a cycle (refused elsewhere) the
+    highest-priority remaining subject is emitted next, deterministically.
+    Kahn's algorithm over a heap: O((V+E) log V) instead of a rescan per emitted row.
     """
+    import heapq
+
     graph: dict[str, list[str]] = {}
     for r in rows:
+        sid = _sid_key(r)
+        if sid is None:
+            continue
         deps = r.get("depends_on", [])
-        graph[r.get("subject_id")] = [d for d in deps if isinstance(d, str)] if isinstance(deps, list) else []
-    dependents: dict[str, set[str]] = {}
-    for sid, deps in graph.items():
-        for dep in deps:
-            dependents.setdefault(dep, set()).add(sid)
-
-    def reach(sid: str) -> int:
-        seen: set[str] = set()
-        stack = list(dependents.get(sid, ()))
-        while stack:
-            node = stack.pop()
-            if node not in seen:
-                seen.add(node)
-                stack.extend(dependents.get(node, ()))
-        return len(seen)
-
-    weight = {sid: reach(sid) for sid in remaining_ids}
+        graph[sid] = [d for d in deps if isinstance(d, str)] if isinstance(deps, list) else []
+    remaining = {sid for sid in remaining_ids if isinstance(sid, str)}
+    counts = _transitive_dependents(graph)
+    key = {sid: (-counts.get(sid, 0), sid) for sid in remaining}
+    pending: dict[str, int] = {}
+    waiting_on: dict[str, list[str]] = {}
+    for sid in remaining:
+        blockers = {d for d in graph.get(sid, []) if d in remaining}
+        pending[sid] = len(blockers)
+        for d in blockers:
+            waiting_on.setdefault(d, []).append(sid)
+    heap = [key[sid] for sid in remaining if pending[sid] == 0]
+    heapq.heapify(heap)
+    fallback = sorted(key.values())
+    fb = 0
     order: list[str] = []
     done: set[str] = set()
-    while len(done) < len(remaining_ids):
-        ready = [
-            sid
-            for sid in remaining_ids
-            if sid not in done and all(d in done or d not in remaining_ids for d in graph.get(sid, []))
-        ]
-        if not ready:  # a cycle is refused elsewhere; emit the rest deterministically
-            ready = [sid for sid in remaining_ids if sid not in done]
-        nxt = min(ready, key=lambda sid: (-weight[sid], str(sid)))
+    while len(done) < len(remaining):
+        if heap:
+            nxt = heapq.heappop(heap)[1]
+            if nxt in done:
+                continue
+        else:
+            while fallback[fb][1] in done:
+                fb += 1
+            nxt = fallback[fb][1]
         order.append(nxt)
         done.add(nxt)
+        for dependent in waiting_on.get(nxt, ()):
+            pending[dependent] -= 1
+            if pending[dependent] == 0 and dependent not in done:
+                heapq.heappush(heap, key[dependent])
     return order
 
 
@@ -442,8 +574,20 @@ def bind_index(
 
 def evaluate(closure: dict[str, Any], evidence_root: Path | None = None) -> Verdict:
     """Closure verdict. ``evidence_root`` is read only under ``evidence_profile: durable/v1``."""
-    rows = closure.get("subjects", [])
     refusals: list[str] = []
+    if not isinstance(closure, dict):
+        refusals.append("REFUSED:MALFORMED_ROW:closure:not-an-object")
+        closure = {}
+    raw_rows = closure.get("subjects", [])
+    if not isinstance(raw_rows, list):
+        refusals.append("REFUSED:MALFORMED_ROW:closure:subjects-not-a-list")
+        raw_rows = []
+    rows: list[dict[str, Any]] = []
+    for pos, row in enumerate(raw_rows):
+        if isinstance(row, dict):
+            rows.append(row)
+        else:
+            refusals.append(f"REFUSED:MALFORMED_ROW:subjects[{pos}]:row")
     profile = closure.get("evidence_profile")
     durable_remaining: list[str] = []
     if profile is not None:
@@ -460,10 +604,21 @@ def evaluate(closure: dict[str, Any], evidence_root: Path | None = None) -> Verd
                 found, rest = durable_refusals(row, evidence_root, allowlist)
                 refusals.extend(found)
                 durable_remaining.extend(rest)
-    if not rows:
+    if not raw_rows:
         refusals.append("REFUSED:MALFORMED_ROW:closure:subjects-empty")
     ids = [r.get("subject_id") for r in rows]
-    for dup in sorted({i for i in ids if ids.count(i) > 1}, key=str):
+    hashable: dict[Any, int] = {}
+    unhashable: list[Any] = []
+    for i in ids:
+        try:
+            hashable[i] = hashable.get(i, 0) + 1
+        except TypeError:
+            unhashable.append(i)
+    dups = [i for i, n in hashable.items() if n > 1]
+    for i in unhashable:  # e.g. list-valued ids: already MALFORMED_ROW, still reported once
+        if unhashable.count(i) > 1 and i not in dups:
+            dups.append(i)
+    for dup in sorted(dups, key=str):
         refusals.append(f"REFUSED:DUPLICATE_SUBJECT_ID:{dup}")
     bound = closure.get("max_canonical_additions")
     if bound is not None and (not isinstance(bound, int) or isinstance(bound, bool) or bound < 0):

@@ -10,7 +10,13 @@ from contextlib import redirect_stdout
 from pathlib import Path
 
 from scripts.release_train.release_closure_court.__main__ import main
-from scripts.release_train.release_closure_court.court import BASE_RULES, DURABLE_RULES, LINEAGE_RULES, RULES, evaluate
+from scripts.release_train.release_closure_court.court import (
+    BASE_RULES,
+    DURABLE_RULES,
+    LINEAGE_RULES,
+    RULES,
+    evaluate,
+)
 
 ROOT = Path(__file__).resolve().parents[3]
 REAL_CLOSURE = ROOT / "release" / "v26.9.24" / "closure.json"

@@ -1,0 +1,156 @@
+{
+  "after": {
+    "authority": "NONE",
+    "python": "3.14.3",
+    "reps": 5,
+    "results": [
+      {
+        "evaluate_max_ms": 3.051,
+        "evaluate_median_ms": 2.041,
+        "n": 100,
+        "refusals": 0,
+        "repair_order_first": "S000099",
+        "repair_order_last": "S000000",
+        "repair_order_ms": 0.353,
+        "replay_identical": true,
+        "standing": "PARTIAL_ALIVE"
+      },
+      {
+        "evaluate_max_ms": 4.037,
+        "evaluate_median_ms": 3.94,
+        "n": 300,
+        "refusals": 0,
+        "repair_order_first": "S000299",
+        "repair_order_last": "S000000",
+        "repair_order_ms": 1.062,
+        "replay_identical": true,
+        "standing": "PARTIAL_ALIVE"
+      },
+      {
+        "evaluate_max_ms": 7.924,
+        "evaluate_median_ms": 7.376,
+        "n": 600,
+        "refusals": 0,
+        "repair_order_first": "S000599",
+        "repair_order_last": "S000000",
+        "repair_order_ms": 2.213,
+        "replay_identical": true,
+        "standing": "PARTIAL_ALIVE"
+      },
+      {
+        "evaluate_max_ms": 13.425,
+        "evaluate_median_ms": 12.256,
+        "n": 900,
+        "refusals": 0,
+        "repair_order_first": "S000899",
+        "repair_order_last": "S000000",
+        "repair_order_ms": 4.154,
+        "replay_identical": true,
+        "standing": "PARTIAL_ALIVE"
+      },
+      {
+        "evaluate_max_ms": 29.029,
+        "evaluate_median_ms": 27.95,
+        "n": 2000,
+        "refusals": 0,
+        "repair_order_first": "S001999",
+        "repair_order_last": "S000000",
+        "repair_order_ms": 7.112,
+        "replay_identical": true,
+        "standing": "PARTIAL_ALIVE"
+      },
+      {
+        "evaluate_max_ms": 62.368,
+        "evaluate_median_ms": 54.439,
+        "n": 4000,
+        "refusals": 0,
+        "repair_order_first": "S003999",
+        "repair_order_last": "S000000",
+        "repair_order_ms": 16.956,
+        "replay_identical": true,
+        "standing": "PARTIAL_ALIVE"
+      },
+      {
+        "evaluate_max_ms": 148.969,
+        "evaluate_median_ms": 143.657,
+        "n": 10000,
+        "refusals": 0,
+        "repair_order_first": "S009999",
+        "repair_order_last": "S000000",
+        "repair_order_ms": 52.903,
+        "replay_identical": true,
+        "standing": "PARTIAL_ALIVE"
+      }
+    ],
+    "schema": "https://chatman.dev/release-closure-court/bench/v1"
+  },
+  "authority": "NONE",
+  "before": {
+    "authority": "NONE",
+    "python": "3.14.3",
+    "reps": 5,
+    "results": [
+      {
+        "evaluate_max_ms": 4.031,
+        "evaluate_median_ms": 4.016,
+        "n": 100,
+        "refusals": 0,
+        "repair_order_first": "S000099",
+        "repair_order_last": "S000000",
+        "repair_order_ms": 3.061,
+        "replay_identical": true,
+        "standing": "PARTIAL_ALIVE"
+      },
+      {
+        "evaluate_max_ms": 36.798,
+        "evaluate_median_ms": 30.876,
+        "n": 300,
+        "refusals": 0,
+        "repair_order_first": "S000299",
+        "repair_order_last": "S000000",
+        "repair_order_ms": 27.555,
+        "replay_identical": true,
+        "standing": "PARTIAL_ALIVE"
+      },
+      {
+        "evaluate_max_ms": 132.009,
+        "evaluate_median_ms": 129.405,
+        "n": 600,
+        "refusals": 0,
+        "repair_order_first": "S000599",
+        "repair_order_last": "S000000",
+        "repair_order_ms": 119.53,
+        "replay_identical": true,
+        "standing": "PARTIAL_ALIVE"
+      },
+      {
+        "evaluate_max_ms": 289.567,
+        "evaluate_median_ms": 282.195,
+        "n": 900,
+        "refusals": 0,
+        "repair_order_first": "S000899",
+        "repair_order_last": "S000000",
+        "repair_order_ms": 259.822,
+        "replay_identical": true,
+        "standing": "PARTIAL_ALIVE"
+      }
+    ],
+    "schema": "https://chatman.dev/release-closure-court/bench/v1"
+  },
+  "before_failure": {
+    "error": "RecursionError (recursive DFS in _dependency_refusals)",
+    "n": 1200
+  },
+  "command": "PYTHONPATH=. python3 -m scripts.release_train.release_closure_court.bench --sizes <n,...> --reps 5",
+  "machine": "Apple M3 Max, CPython 3.14.3",
+  "regression_bound_ms": {
+    "n4000": 600
+  },
+  "schema": "https://chatman.dev/release-closure-court/bench-receipt/v1",
+  "subject": {
+    "before_sha": "e5b927040737642d6bd766c98b3497dcd48a3173",
+    "pr": 282,
+    "repository": "seanchatmangpt/chatman-ecosystem"
+  },
+  "workload": "synthetic_closure(n): length-n dependency chain, every row typed BLOCKED with a 3-PR lineage"
+}
