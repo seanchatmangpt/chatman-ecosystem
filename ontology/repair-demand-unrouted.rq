@@ -1,0 +1,8 @@
+PREFIX rd: <https://chatman.ai/ontology/repair-demand#>
+SELECT ?finding ?term WHERE {
+  ?finding a rd:CrownFinding ; rd:brokenTerm ?term .
+  FILTER NOT EXISTS {
+    ?finding rd:routesTo ?capability .
+    ?capability a rd:RepairCapability .
+  }
+}
