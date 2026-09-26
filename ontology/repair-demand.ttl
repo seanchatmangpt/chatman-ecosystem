@@ -1,0 +1,44 @@
+@prefix repair: <https://chatman.dev/repair#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+repair:RepairDemandCourt a repair:Court ;
+  repair:authority "NONE" ;
+  repair:ceiling "CONSTRUCT" ;
+  repair:inputClass repair:Finding ;
+  repair:outputClass repair:RepairDemand .
+
+repair:identity a repair:Rule ;
+  repair:code "R_missing_identity" ;
+  repair:owner "provenance" ;
+  repair:capability "exact-subject-repair" ;
+  repair:priority 10 .
+
+repair:replay a repair:Rule ;
+  repair:code "R_missing_replay" ;
+  repair:owner "receipts" ;
+  repair:capability "replay-repair" ;
+  repair:priority 20 .
+
+repair:authority a repair:Rule ;
+  repair:code "R_missing_authority" ;
+  repair:owner "brce" ;
+  repair:capability "authority-repair" ;
+  repair:priority 30 .
+
+repair:consequence a repair:Rule ;
+  repair:code "R_missing_consequence" ;
+  repair:owner "evidence" ;
+  repair:capability "consequence-evidence-repair" ;
+  repair:priority 40 .
+
+repair:observation a repair:Rule ;
+  repair:code "mu_on_O" ;
+  repair:owner "observation" ;
+  repair:capability "observation-machine-repair" ;
+  repair:priority 50 .
+
+repair:feedback a repair:Rule ;
+  repair:code "R_not_fed_back" ;
+  repair:owner "process-control" ;
+  repair:capability "feedback-repair" ;
+  repair:priority 60 .
