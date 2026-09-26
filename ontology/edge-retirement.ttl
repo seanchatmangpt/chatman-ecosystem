@@ -1,0 +1,28 @@
+@prefix ce: <https://seanchatmangpt.github.io/chatman-ecosystem/edge-retirement#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ce:Edge a ce:RecurringIntelligenceEdge .
+ce:ownerKind a ce:Property .
+ce:machineOwner a ce:OwnerKind .
+ce:humanOwner a ce:OwnerKind .
+ce:llmOwner a ce:OwnerKind .
+ce:authority a ce:Property .
+ce:receipt a ce:Property .
+ce:replayDigest a ce:Property .
+ce:consequence a ce:Property .
+ce:exactSubject a ce:Property .
+
+ce:RetiredEdgeShape a sh:NodeShape ;
+  sh:targetClass ce:RetiredEdge ;
+  sh:property [ sh:path ce:exactSubject ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^[0-9a-f]{40}$" ] ;
+  sh:property [ sh:path ce:ownerKind ; sh:hasValue ce:machineOwner ] ;
+  sh:property [ sh:path ce:authority ; sh:hasValue "NONE" ] ;
+  sh:property [ sh:path ce:receipt ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ce:replayDigest ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ce:consequence ; sh:minCount 1 ] .
+
+ce:RetirementCourt a ce:Court ;
+  ce:authority "NONE" ;
+  ce:ceiling "CONSTRUCT" ;
+  ce:principle "candidate != truth != authority != DO != standing" .
