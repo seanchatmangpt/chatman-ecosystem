@@ -1,6 +1,6 @@
 # 4. No Agent Coding
 
-**Executive thesis:** No Agent Coding is the move from programming by repeated interpretation to manufacturing by derivation from admitted semantics.
+**Executive thesis:** No Agent Coding is the move from programming by repeated interpretation to deterministic manufacture by derivation from admitted semantics.
 
 ## The category
 
