@@ -10,6 +10,16 @@
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black,citecolor=blue!55!black}
 \usepackage{titlesec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem{law}{Law}
 \titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
 \setlength{\parskip}{0.45em}
@@ -41,7 +51,7 @@ Software engineering has spent sixty years driving human cost out of the \emph{c
 
 We validate the theory by construction and by falsification attempt. The artifact is a production fabric supervising a fleet worker CLI over a 149-repository fleet: an Oban-cron-driven wave loop that claims work orders, binds them to per-epoch leases behind a fail-closed admission gate, executes real worker turns, seals head-verified receipts, exports process events in OCEL~2.0 form, and settles a machine-readable plan file --- with no human on any execution edge. In the validation window the fabric (a) completed a 14-step burn-in autonomously after a five-defect causal chain was root-caused and each defect converted to a permanent guard, (b) executed an 11-wide concurrent inventory sweep of the entire fleet through a read-only gate profile, producing 158 evidence-bearing rows and a measured provider-throttling profile (43 failed model requests, bursts of 16/min, zero worker deaths), and (c) dogfooded a repair work order onto itself and \emph{honestly failed acceptance} --- the patch was reverted by its own coordinator, and the failure was kept as typed capital. Three of the author-engine's own empirical claims were falsified during the window and are reported here with their corrections, because a fabric that cannot falsify its coordinator cannot falsify anything.
 
-The thesis contributes: (1) a type-theoretic reading of agent accountability in which ``the workflow ran'' is a category error; (2) a failure taxonomy that maps every observed defect to exactly one broken type term; (3) the wedge-and-reclaim invariant as a design pattern for work-conserving autonomy; (4) a measured account of provider throttling as a \emph{width} signal rather than a stop condition; and (5) a retirement metric for human supervision, reported as the count of things the human did not have to write. We conclude that the loop can be closed not by making the generator stronger, but by making refusal cheap, receipts mandatory, and honesty mechanical.
+The thesis contributes: (1) a type-theoretic reading of agent accountability in which ``the workflow ran'' is a category error; (2) a failure taxonomy that maps every observed defect to exactly one broken type term; (3) the wedge-and-reclaim invariant as a design pattern for work-conserving autonomy; (4) a measured account of provider throttling as a \emph{width} signal rather than a stop condition; and (5) a retirement metric for human supervision, reported as the count of things the human did not have to write. We give the loop three complementary formal readings: categorical (admission as a closure operator, manufacture as a faithful functor, closure by Knaster--Tarski), geometric (a provenance metric whose closed anchors define \Ostar{}, and the fabric as a hybrid dynamical system with a Lyapunov attraction theorem for the wedge law), and analytic (the retirement index as a convergent recursion and adaptive concurrency as a supermartingale control law). We conclude that the loop can be closed not by making the generator stronger, but by making refusal cheap, receipts mandatory, and honesty mechanical.
 \end{abstract}
 
 \newpage
@@ -124,6 +134,101 @@ The one \emph{new} theoretical contribution of the validation window, extracted 
 $\forall\,\mathrm{job}:\ \mathrm{no\_progress}(\mathrm{job}, t > \mathrm{bound}) \Rightarrow \mathrm{reclaim}(\mathrm{job}) \wedge \mathrm{receipt}(\mathrm{job}) \wedge \mathrm{continue}(\mathrm{next})$.
 \end{quote}
 In any work-conserving fabric, the worst failure mode is not crash and not wrong output --- both are visible. It is the \emph{typed-unbounded wait}: a work item whose state says \term{executing} while its executor is dead. This state is invisible to every health check that asks ``is it running?'' and visible to every check that asks ``is it progressing?'' The invariant demands three things: a bound per phase, reclamation that releases the resource (the lease, the provider slot), and a receipt for the reclamation itself --- so the fabric's next observation admits the truth. Section~6.5 shows the failure that taught it and the two-layer guard that encodes it.
+
+\subsection{Formal foundations I: algebra --- admission as closure, manufacture as faithful functor}
+\begin{definition}[Admission as a closure operator]\label{def:closure}
+Let $O$ be the set of raw observations and $\mathrm{witness}\colon O \to \mathcal{P}(O)$ assign to a claim its grounding evidence (exact-subject SHA, log artifact, query result). Define
+\[
+\mathrm{ad}\colon \mathcal{P}(O) \to \mathcal{P}(O), \qquad
+\mathrm{ad}(S) \;=\; S \;\cup\; \{\, o \in O : \mathrm{witness}(o) \subseteq S \,\}.
+\]
+Then $\mathrm{ad}$ is a closure operator: extensive ($S \subseteq \mathrm{ad}(S)$), monotone ($S \subseteq T \Rightarrow \mathrm{ad}(S) \subseteq \mathrm{ad}(T)$), idempotent ($\mathrm{ad}^2 = \mathrm{ad}$). Write $O^{*} = \mathrm{ad}(O)$, and let $\mathbb{L}(O^{*})$ be the complete lattice of admitted sets under inclusion.
+\end{definition}
+\begin{law}[Anti-vacuity]\label{law:antivac}
+$\mathrm{ad} \neq \mathrm{id}_{\mathcal{P}(O)}$: there exists $S \subsetneq \mathrm{ad}(S)$. A gate whose extension equals its domain is the identity wearing a uniform (\term{admission\_vacuous}). \emph{Witnessed}: the strict-equality probe that refused \term{Bearer undefined} after a length check had admitted it.
+\end{law}
+
+\begin{definition}[Manufacture as a faithful functor]\label{def:functor}
+Let $\mathbf{Fab}$ be the category whose objects are exact subjects $(\mathrm{tree},\mathrm{env})$ pinned by SHA and whose morphisms $a\colon s \to s'$ are consequential transformations carrying the receipt label $\Pi(a) \in \{\mathrm{identity},\mathrm{authority},\mathrm{consequence},\mathrm{replay},\mathrm{standing}\}^{5}$. Lawful manufacture is a functor $M\colon \mathbb{L}(O^{*}) \to \mathbf{Fab}$ (admitted sets as a thin category) that is \emph{faithful}: $\Pi(M(f)) = \Pi(M(g)) \Rightarrow f = g$, the functorial form of byte-identical replay. The partiality of $\mu$ is exact: $\mu$ is \emph{undefined} on $O \setminus O^{*}$ --- not error-valued, outside the domain (\term{mu\_on\_O}).
+\end{definition}
+
+\begin{theorem}[Loop closure by Knaster--Tarski]\label{thm:closure}
+Define the loop operator
+\[
+T \colon \mathbb{L}(O^{*}) \to \mathbb{L}(O^{*}), \qquad
+T(S) = \mathrm{ad}\big(\mathrm{observe}(w(\mu(S))) \cup \mathrm{receipts}(\mu(S))\big),
+\]
+where $w$ is the world-transition induced by actuation and $\mathrm{receipts}$ the sealed receipts of that actuation. $T$ is monotone; by Knaster--Tarski its fixed points form a non-empty complete lattice. A run is a forward orbit $S_{t+1} = T(S_t)$; \emph{autonomy} is the orbit reaching $\mathrm{gfp}(T)$ with no human edge on any transition.
+\end{theorem}
+\begin{corollary}[Feedback is load-bearing]\label{cor:feedback}
+Cutting the receipt edge (\term{R\_not\_fed\_back}) reduces the orbit to $(\mathrm{observe} \circ w \circ \mu)^{t}(S_0)$, which need not approach $\mathrm{gfp}(T)$. \emph{Witnessed}: burn-in steps 10--14 stalled while receipts existed but the queue history admitting them was unread.
+\end{corollary}
+
+\begin{definition}[Standing semiring]\label{def:semiring}
+Let $\Sigma$ carry the order $\mathrm{UNKNOWN} \sqsubseteq \mathrm{PARTIAL\_ALIVE} \sqsubseteq \mathrm{ALIVE}$ with \term{REFUSED}, \term{UNSUPPORTED}, \term{BUILD\_BROKEN} as distinguished absorbing states. Take $\oplus$ = supremum and $\otimes$ = infimum under $\sqsubseteq$; then $(\Sigma, \oplus, \otimes)$ is a bounded idempotent semiring with $0 = \mathrm{UNKNOWN}$, $1 = \mathrm{ALIVE}$. For a fleet graph $G = (V,E)$ with edge standing $\sigma\colon E \to \Sigma$,
+\[
+A(G) \;=\; \bigotimes_{e \in E} \sigma(e),
+\]
+the doctrine's ``autonomy is an edge product''; in the log domain $-\log A(G) = \sum_{e}(-\log \sigma(e))$ concentrates all mass on the weakest edge. \emph{Witnessed}: the claimed product used $\sigma(e) = \mathrm{ALIVE}$ on the cron edge whose observed standing was $\mathrm{UNKNOWN}$; the observed product is therefore $0$, and two DB rows restored it.
+\end{definition}
+
+\subsection{Formal foundations II: geometry --- provenance metric, hybrid dynamics, invariant sets}
+\begin{definition}[Provenance metric]\label{def:metric}
+Let the provenance DAG $P$ have observations/artifacts as nodes and derivations as edges, with anchor nodes (exact-SHA subjects, sealed receipts) at distance $0$; let $\bar{d}(o) = \min_{a \in \mathrm{anchors}} d(o,a)$ be shortest-path distance to an anchor. Then $O^{*} = \{o : \bar{d}(o) = 0\}$ is a closed set, and lawful manufacture is Lipschitz on $O^{*}$ with constant $1$ (replay is byte-identical), while $\mu$ admits \emph{no continuous extension} to $O \setminus O^{*}$: the type error of \S3.1 is the statement that $\partial O^{*}$ is a genuine boundary of the domain of manufacture.
+\end{definition}
+
+\begin{definition}[The fabric as a hybrid dynamical system]\label{def:hds}
+Let the fabric state be $x_t = (\mathrm{rows}, \mathrm{leases}, \mathrm{queue}, \mathrm{telemetry})$. Between events the loop flows by ticks, $x_{t+1} = F(x_t)$; at anomalies (orphaned \term{executing} rows, expired leases, provider storms) a reset map $\mathcal{R}$ fires: $\mathrm{reclaim} \wedge \mathrm{receipt} \wedge \mathrm{continue}$. The pair $(F, \mathcal{R})$ with guarding predicates is a hybrid system whose invariant set is
+\[
+\mathcal{D} \;=\; \{\, x : \text{every owed row is settled-typed, every lease is live-or-reclaimed} \,\}.
+\]
+\end{definition}
+
+\begin{theorem}[Wedge-and-reclaim as Lyapunov attraction]\label{thm:wedge}
+Let
+\[
+W(x) \;=\; \#\{\text{unsettled rows}\} \;+\; \#\{\text{unmerged candidate refs}\} \;+\; \#\{\text{orphaned jobs}\}.
+\]
+Under $F$, $W(x_{t+1}) \le W(x_t)$ (each settled row is monotone progress); under $\mathcal{R}$ with bounded response time $B$, $W$ strictly decreases. Hence $\mathcal{D}$ is globally attractive and the recovery time from any wedge is at most $B$. \emph{Witnessed}: the 80-minute orphan ran with no $\mathcal{R}$ configured (the property was simply false); after \term{Oban.Lifeline} ($B = 75$ min) and the SIGKILL regression, reclaim is guaranteed within one Lifeline sweep or one tick respectively.
+\end{theorem}
+
+\subsection{Formal foundations III: calculus, measure, and control}
+\begin{definition}[Retirement metric]\label{def:retire}
+Let $H(t)$ be expected human judgments per delivered outcome at cycle $t$. The design objective is
+\[
+\lim_{t \to \infty} H(t) = 0, \qquad \frac{dH}{dt} < 0 \text{ on every admitted cycle},
+\]
+operationalized by the inverse-experience index
+\[
+IEC_{n+1} = IEC_n - \big|\mathrm{Promoted}(C_n)\big|, \qquad IEC_n \in \mathbb{Z}_{\ge 0},
+\]
+monotone non-increasing and lower-bounded, hence convergent; $\mathrm{retirement} \iff IEC_{\infty} = 0$. The promotion law $\mathrm{RepeatedFailureReasoning} > 1 \Rightarrow \mathrm{SystemDefect}$ makes the second occurrence of a failure class a transition from incident to defect-capital.
+\end{definition}
+
+\begin{definition}[Manufacture measure]\label{def:measure}
+On the $\sigma$-algebra $\Sigma_L$ of delivered lines with counting measure $\nu$,
+\[
+\rho \;=\; \frac{\nu(\mathrm{manufactured})}{\nu(\mathrm{manufactured}) + \nu(\mathrm{handwritten})},
+\qquad
+\nu(\mathrm{unattributed}) \subseteq \nu(\mathrm{handwritten}),
+\]
+the last inclusion being the fail-closed attribution law: unattributed mass counts against manufacture, so an unmeasured $99\%$ is a reported $0\%$.
+\end{definition}
+
+\begin{theorem}[Adaptive width is a supermartingale under pressure]\label{thm:width}
+Let $C_t \in [1, C_{\max}]$ be the dispatch width, $\hat{\lambda}_t \ge 0$ the measured provider pressure (structured \term{model\_request\_failed} intensity per minute), $\theta$ a threshold, and
+\[
+C_{t+1} = \Pi_{[1,C_{\max}]}\Big( C_t + \alpha\,\big( \mathbf{1}\{\hat{\lambda}_t \le \theta\}\, r \;-\; \mathbf{1}\{\hat{\lambda}_t > \theta\}\, \min(C_t - 1,\ \hat{\lambda}_t) \big) \Big),
+\]
+with projection $\Pi$ and $\alpha, r > 0$. Then
+\[
+\mathbb{E}\!\left[C_{t+1} \mid \mathcal{F}_t\right] \;\le\; C_t \quad\text{whenever } \hat{\lambda}_t > \theta,
+\]
+so width is a supermartingale under sustained pressure (contracts a.s.; the half-pace retry measured $3/3$ with zero failures) and drifts to $C_{\max}$ on clean windows (absorbing recovery). Measured intensities in the window: $\hat{\lambda} \in \{16, 10\}\,\mathrm{min}^{-1}$ at width $11$; all $43$ events absorbed by bounded retries.
+\end{theorem}
+\begin{remark}[Bounded response]
+The wedge law is the bounded-liveness pair $\mathbf{AG}\big(\mathrm{orphan} \Rightarrow \text{reclaimed within } B\big)$, $B = 75\,\mathrm{min}$. Before configuration the property was false: the system answered ``is it running?'' with \emph{yes} for 80 minutes while its executor was dead.
+\end{remark}
 
 \section{The Artifact: A Fabric That Manufactures Itself}
 
@@ -262,6 +367,30 @@ The thesis set out to close a loop and found that closing it was mostly an exerc
 \item Commits (window, both repos): 20; branches: \term{feat/alooop-lane2-autonomic-loop} (xaas, base \term{f1d42eb}), \term{fix/v26926-preview-publish-typed-skip} (zcode-cli); unpushed --- publication pending authority
 \item Human keystrokes in the window: doctrine citations, four orders (finish all work; upgrade toolchain; search all projects; route through ultracode), one stats demand, one factory prompt, one ``status'', one thesis order
 \end{itemize}
+
+\section{Notation}
+\begin{longtable}{@{}p{2.6cm}p{12.6cm}@{}}
+\toprule
+Symbol & meaning \\
+\midrule
+$O$ / \Ostar{} & raw observation / admitted observation ($O^{*} = \mathrm{ad}(O)$) \\
+$\mathrm{ad}$ & admission closure operator (Def.~\ref{def:closure}) \\
+$\mathbb{L}(O^{*})$ & complete lattice of admitted observation sets \\
+$\mu$, $M$ & lawful manufacture; its faithful functor lift (Def.~\ref{def:functor}) \\
+$R$, $\Pi$ & receipt; the five-field receipt-label projection \\
+$T$, $\mathrm{gfp}(T)$ & loop operator (Thm.~\ref{thm:closure}) and its greatest fixed point \\
+$\Sigma$, $\oplus$, $\otimes$ & standing set; semiring supremum / infimum (Def.~\ref{def:semiring}) \\
+$\sigma(e)$, $A(G)$ & edge standing; fleet autonomy product \\
+$\bar{d}(o)$ & provenance distance to anchors (Def.~\ref{def:metric}) \\
+$F$, $\mathcal{R}$, $\mathcal{D}$ & tick flow; reclaim reset map; invariant set (Def.~\ref{def:hds}) \\
+$W(x)$, $B$ & wedge Lyapunov functional; bounded response time (Thm.~\ref{thm:wedge}) \\
+$H(t)$, $IEC_n$ & retirement metric; inverse-experience index (Def.~\ref{def:retire}) \\
+$\nu$, $\rho$ & line counting measure; manufacture ratio (Def.~\ref{def:measure}) \\
+$C_t$, $C_{\max}$, $\hat{\lambda}_t$, $\theta$ & dispatch width, ceiling, measured pressure intensity, threshold (Thm.~\ref{thm:width}) \\
+$\Pi_{[1,C_{\max}]}$ & projection onto the admissible width interval \\
+$\mathcal{F}_t$ & the loop's filtration (everything admitted up to cycle $t$) \\
+\bottomrule
+\end{longtable}
 
 \begin{thebibliography}{12}
 \bibitem{kephart2003} J.~O. Kephart and D.~M. Chess, ``The Vision of Autonomic Computing,'' \emph{IEEE Computer}, 36(1), 2003.
