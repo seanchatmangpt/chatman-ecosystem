@@ -1,0 +1,2 @@
+PREFIX h: <https://chatman.dev/hilt#>
+ASK { ?x a h:part ; h:replacementOf ?b ; h:consequencePreserved true . FILTER(BOUND(?b)) FILTER NOT EXISTS { ?x h:authority "INFERRED" } }

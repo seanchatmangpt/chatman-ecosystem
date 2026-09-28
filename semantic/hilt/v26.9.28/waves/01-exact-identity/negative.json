@@ -1,0 +1,9 @@
+{
+  "schema": "chatman.hilt.wave.v1",
+  "wave": "01-exact-identity",
+  "case": "negative",
+  "law": "exactSubject",
+  "boundary": null,
+  "authority": "INFERRED",
+  "expected": "REFUSED"
+}

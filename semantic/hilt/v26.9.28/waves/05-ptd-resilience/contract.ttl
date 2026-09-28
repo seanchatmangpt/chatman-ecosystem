@@ -1,0 +1,3 @@
+@prefix h: <https://chatman.dev/hilt#> .
+h:epochBound a h:AdmissionLaw ; h:requires h:semanticSource ; h:authority "NONE" .
+h:semanticSource a h:ExactBoundary ; h:failClosed true .

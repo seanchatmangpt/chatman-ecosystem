@@ -1,0 +1,9 @@
+{
+  "schema": "chatman.hilt.wave.v1",
+  "wave": "03-bounded-intervention",
+  "case": "positive",
+  "law": "oneDoBudget",
+  "boundary": "scope",
+  "authority": "NONE",
+  "expected": "authorized"
+}

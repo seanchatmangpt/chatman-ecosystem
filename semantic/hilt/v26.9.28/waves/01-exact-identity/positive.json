@@ -1,0 +1,9 @@
+{
+  "schema": "chatman.hilt.wave.v1",
+  "wave": "01-exact-identity",
+  "case": "positive",
+  "law": "exactSubject",
+  "boundary": "subjectSha",
+  "authority": "NONE",
+  "expected": "standing"
+}

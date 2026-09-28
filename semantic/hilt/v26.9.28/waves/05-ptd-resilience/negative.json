@@ -1,0 +1,9 @@
+{
+  "schema": "chatman.hilt.wave.v1",
+  "wave": "05-ptd-resilience",
+  "case": "negative",
+  "law": "epochBound",
+  "boundary": null,
+  "authority": "INFERRED",
+  "expected": "REFUSED"
+}

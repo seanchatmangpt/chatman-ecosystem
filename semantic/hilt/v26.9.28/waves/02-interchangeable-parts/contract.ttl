@@ -1,0 +1,3 @@
+@prefix h: <https://chatman.dev/hilt#> .
+h:consequencePreserved a h:AdmissionLaw ; h:requires h:replacementOf ; h:authority "NONE" .
+h:replacementOf a h:ExactBoundary ; h:failClosed true .

@@ -1,0 +1,9 @@
+{
+  "schema": "chatman.hilt.wave.v1",
+  "wave": "02-interchangeable-parts",
+  "case": "negative",
+  "law": "consequencePreserved",
+  "boundary": null,
+  "authority": "INFERRED",
+  "expected": "REFUSED"
+}

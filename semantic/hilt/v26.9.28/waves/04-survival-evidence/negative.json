@@ -1,0 +1,9 @@
+{
+  "schema": "chatman.hilt.wave.v1",
+  "wave": "04-survival-evidence",
+  "case": "negative",
+  "law": "pairedWorldEvidence",
+  "boundary": null,
+  "authority": "INFERRED",
+  "expected": "REFUSED"
+}

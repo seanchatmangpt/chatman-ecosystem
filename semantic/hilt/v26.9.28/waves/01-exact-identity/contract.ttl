@@ -1,0 +1,3 @@
+@prefix h: <https://chatman.dev/hilt#> .
+h:exactSubject a h:AdmissionLaw ; h:requires h:subjectSha ; h:authority "NONE" .
+h:subjectSha a h:ExactBoundary ; h:failClosed true .

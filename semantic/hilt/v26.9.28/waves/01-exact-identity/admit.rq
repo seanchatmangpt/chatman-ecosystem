@@ -1,0 +1,2 @@
+PREFIX h: <https://chatman.dev/hilt#>
+ASK { ?x a h:candidate ; h:subjectSha ?b ; h:exactSubject true . FILTER(BOUND(?b)) FILTER NOT EXISTS { ?x h:authority "INFERRED" } }

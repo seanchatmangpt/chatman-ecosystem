@@ -1,0 +1,3 @@
+@prefix h: <https://chatman.dev/hilt#> .
+h:oneDoBudget a h:AdmissionLaw ; h:requires h:scope ; h:authority "NONE" .
+h:scope a h:ExactBoundary ; h:failClosed true .

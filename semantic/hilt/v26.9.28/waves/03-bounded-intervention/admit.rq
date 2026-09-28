@@ -1,0 +1,2 @@
+PREFIX h: <https://chatman.dev/hilt#>
+ASK { ?x a h:intervention ; h:scope ?b ; h:oneDoBudget true . FILTER(BOUND(?b)) FILTER NOT EXISTS { ?x h:authority "INFERRED" } }
