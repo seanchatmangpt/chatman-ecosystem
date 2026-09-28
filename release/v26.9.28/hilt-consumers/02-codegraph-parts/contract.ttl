@@ -1,0 +1,3 @@
+@prefix hilt: <https://chatman.dev/hilt#> .
+@prefix fr: <https://chatman.dev/frontier#> .
+fr:InterchangeablePart a hilt:ConsumerConstraint ; hilt:law "replacement preserves admitted consequence and authority ceiling" ; hilt:authority "NONE" ; hilt:refusal "REFUSED_CONSEQUENCE_DRIFT" .

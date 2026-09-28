@@ -1,0 +1,3 @@
+@prefix hilt: <https://chatman.dev/hilt#> .
+@prefix fr: <https://chatman.dev/frontier#> .
+fr:SurvivalEvidence a hilt:ConsumerConstraint ; hilt:law "long horizon evidence remains scoped to exact actor and world" ; hilt:authority "NONE" ; hilt:refusal "REFUSED_WORLD_DRIFT" .

@@ -1,0 +1,3 @@
+@prefix hilt: <https://chatman.dev/hilt#> .
+@prefix fr: <https://chatman.dev/frontier#> .
+fr:ExactIdentity a hilt:ConsumerConstraint ; hilt:law "subject SHA and actor capability context must bind exactly" ; hilt:authority "NONE" ; hilt:refusal "REFUSED_SUBJECT_DRIFT" .

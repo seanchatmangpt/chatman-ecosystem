@@ -1,0 +1,3 @@
+@prefix hilt: <https://chatman.dev/hilt#> .
+@prefix fr: <https://chatman.dev/frontier#> .
+fr:BoundedIntervention a hilt:ConsumerConstraint ; hilt:law "procedure identity does not manufacture authority" ; hilt:authority "NONE" ; hilt:refusal "REFUSED_AUTHORITY_WIDENING" .

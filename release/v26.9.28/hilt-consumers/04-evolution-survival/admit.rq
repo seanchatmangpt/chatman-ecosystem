@@ -1,0 +1,2 @@
+PREFIX hilt: <https://chatman.dev/hilt#>
+ASK { ?c a hilt:ConsumerConstraint ; hilt:authority "NONE" ; hilt:refusal "REFUSED_WORLD_DRIFT" ; hilt:law ?law . }
