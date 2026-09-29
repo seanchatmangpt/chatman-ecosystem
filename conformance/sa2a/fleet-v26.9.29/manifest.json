@@ -1,0 +1,14 @@
+{
+  "schema": "sa2a/fleet-conformance-manifest/v1",
+  "work_id": "SJIRA-E-20260929-FLEET-CONFORMANCE-CLOSURE",
+  "work_order_digest": "sha256:6707293bc94d61f5070a6ae3f81beefe04638be006a387a620468a251bb7679c",
+  "vector_count": 60,
+  "contracts": [
+    "exact-subject",
+    "authority-ceiling",
+    "replay-identity",
+    "unknown-outcome",
+    "version-pin"
+  ],
+  "note": "Exact SHA pins are observations, not standing."
+}

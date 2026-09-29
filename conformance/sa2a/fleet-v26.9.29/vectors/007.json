@@ -1,0 +1,10 @@
+{
+  "schema": "sa2a/fleet-conformance/v1",
+  "vector_id": "FLEET-007",
+  "repo": "seanchatmangpt/ash_a2a",
+  "repo_sha": "351df10f1ba566041fefc6603b4858d9cd4f722d",
+  "contract": "replay-identity",
+  "authority_ceiling": "none",
+  "on_violation": "reject",
+  "work_id": "SJIRA-E-20260929-FLEET-CONFORMANCE-CLOSURE"
+}
