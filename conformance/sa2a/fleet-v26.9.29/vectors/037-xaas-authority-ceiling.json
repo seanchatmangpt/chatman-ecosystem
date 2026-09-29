@@ -4,8 +4,10 @@
   "repo": "seanchatmangpt/xaas",
   "repo_sha": "e01656e975b36e9232e985ce7bb09996320e1a0f",
   "contract": "authority-ceiling",
+  "scenario": "dependency-drift",
   "authority_ceiling": "none",
   "on_violation": "reject",
+  "expected_disposition": "refuse_on_violation",
   "work_id": "SJIRA-E-20260929-FLEET-CONFORMANCE-CLOSURE",
   "work_order_digest": "sha256:6707293bc94d61f5070a6ae3f81beefe04638be006a387a620468a251bb7679c"
 }

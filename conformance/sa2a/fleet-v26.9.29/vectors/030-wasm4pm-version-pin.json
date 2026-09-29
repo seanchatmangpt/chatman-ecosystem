@@ -4,8 +4,10 @@
   "repo": "seanchatmangpt/wasm4pm",
   "repo_sha": "6bf11ad0d1240d5b97bdae7ccaeebf087f45fae0",
   "contract": "version-pin",
+  "scenario": "unknown-outcome",
   "authority_ceiling": "none",
   "on_violation": "reject",
+  "expected_disposition": "refuse_on_violation",
   "work_id": "SJIRA-E-20260929-FLEET-CONFORMANCE-CLOSURE",
   "work_order_digest": "sha256:6707293bc94d61f5070a6ae3f81beefe04638be006a387a620468a251bb7679c"
 }

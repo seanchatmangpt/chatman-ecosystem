@@ -4,8 +4,10 @@
   "repo": "seanchatmangpt/ggen-marketplace",
   "repo_sha": "76d698ad996606822c0e4a9237d201ff6cfef8f5",
   "contract": "replay-identity",
+  "scenario": "provider-substitution",
   "authority_ceiling": "none",
   "on_violation": "reject",
+  "expected_disposition": "refuse_on_violation",
   "work_id": "SJIRA-E-20260929-FLEET-CONFORMANCE-CLOSURE",
   "work_order_digest": "sha256:6707293bc94d61f5070a6ae3f81beefe04638be006a387a620468a251bb7679c"
 }
