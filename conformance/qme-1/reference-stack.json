@@ -1,67 +1,144 @@
 {
   "normative": false,
-  "version": "26.9.29",
+  "version": "26.9.30",
   "rule": "Reference implementations do not own QME-1 normative law and must not widen authority.",
+  "source_observation": {
+    "path": "observations/fleet/2026-09-30-seven-day.json",
+    "observation_id": "fleet:recent:2026-09-30:7d",
+    "repository_count": 101,
+    "authority": "NONE",
+    "standing": "OBSERVED"
+  },
   "mappings": [
     {
       "component": "GraphLaw",
       "repository": "seanchatmangpt/graphlaw",
-      "role": "semantic law-state and reasoning",
-      "projection": "semantic authority"
+      "role": "semantic law-state, reasoning and qualification algebra",
+      "projection": "semantic authority",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "79275191a0feb19e6de701dabb95402a9b2b28e7",
+      "projection_authority_effect": "NONE"
     },
     {
       "component": "Ash",
-      "repository": "ecosystem/Ash",
+      "repository": "seanchatmangpt/ash",
       "role": "application projection",
-      "projection": "consumer surface"
+      "projection": "consumer surface",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "733564da755cf9240cb2b6d8b32c6e4fce8ba5d5",
+      "projection_authority_effect": "NONE"
     },
     {
       "component": "ash_graphlaw",
       "repository": "seanchatmangpt/ash_graphlaw",
       "role": "GraphLaw-to-Ash semantic membrane",
-      "projection": "consumer surface"
+      "projection": "consumer surface",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "6aaf71beeb054c0eb16b0c50eefa710f49c18bd0",
+      "projection_authority_effect": "NONE"
     },
     {
       "component": "ash_r2rml",
       "repository": "seanchatmangpt/ash_r2rml",
       "role": "VKG observation and federation",
-      "projection": "observation"
+      "projection": "observation",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "36f25a30f2f60acde7da1a965626451dbc40b6f8",
+      "projection_authority_effect": "NONE"
     },
     {
       "component": "ash_a2a",
       "repository": "seanchatmangpt/ash_a2a",
-      "role": "PreparedEffect receipt and replay consequence protocol",
-      "projection": "consequence boundary"
+      "role": "PreparedEffect receipt, replay and consequence protocol",
+      "projection": "consequence boundary",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "3325032d9dea201e6deb82ef242c534aacb3b420",
+      "projection_authority_effect": "NONE"
     },
     {
       "component": "Affidavit",
       "repository": "seanchatmangpt/affidavit",
       "role": "cryptographic evidence and trust",
-      "projection": "evidence plane"
+      "projection": "evidence plane",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "9888b4084d8d7f4cf9337f572c6bbfb592f94e09",
+      "projection_authority_effect": "NONE"
     },
     {
       "component": "Beam4PM",
       "repository": "seanchatmangpt/beam4pm",
-      "role": "process evidence and accumulated machine experience",
-      "projection": "experience plane"
+      "role": "process evidence, replanning and accumulated machine experience",
+      "projection": "experience plane",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "aa98261db7719f7708ad7990064bbc5f06b754df",
+      "projection_authority_effect": "NONE"
     },
     {
       "component": "XaaS",
       "repository": "seanchatmangpt/xaas",
       "role": "runtime composition",
-      "projection": "runtime"
+      "projection": "runtime",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "9ff91c6fd3e205398d082a6be366f21e9ec7777c",
+      "projection_authority_effect": "NONE"
     },
     {
       "component": "ggen-marketplace",
       "repository": "seanchatmangpt/ggen-marketplace",
-      "role": "semantic manufacture",
-      "projection": "manufacture"
+      "role": "semantic manufacture and qualification packs",
+      "projection": "manufacture",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "cb82395df9d726237f5480bc41fb18e875ce91b9",
+      "projection_authority_effect": "NONE"
     },
     {
       "component": "CASTLE",
       "repository": "seanchatmangpt/castle",
       "role": "product-level consequential constitution",
-      "projection": "product crown"
+      "projection": "product crown",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "c18bf1d89ed5395d5ffb00f875d901a26f16b2fe",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "component": "ggen-ecosystem",
+      "repository": "seanchatmangpt/ggen-ecosystem",
+      "role": "cross-ecosystem qualification crown",
+      "projection": "fleet qualification",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "93d51a9dd9b083acc821376c8462d3c861adde87",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "component": "UNRDF",
+      "repository": "seanchatmangpt/unrdf",
+      "role": "semantic parts and OCEL observation",
+      "projection": "observation substrate",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "0550d9630da94b170c931f17a1580ea90091cbb4",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "component": "WASM4PM",
+      "repository": "seanchatmangpt/wasm4pm",
+      "role": "WASM structural/process evidence boundary",
+      "projection": "runtime evidence",
+      "source_observation": "fleet:recent:2026-09-30:7d",
+      "observed_branch": "main",
+      "observed_head": "09c171b4447257f018e30d721af6701258ebfeff",
+      "projection_authority_effect": "NONE"
     }
   ]
 }
