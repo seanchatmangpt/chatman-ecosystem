@@ -1,0 +1,64 @@
+@prefix ul: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/universal-laws#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ul:Ontology a owl:Ontology ;
+  rdfs:label "Universal Laws formal core" ;
+  rdfs:comment "Framework-neutral architecture qualification vocabulary. Qualification has no DO authority." .
+
+ul:Law a rdfs:Class .
+ul:ConformanceLevel a rdfs:Class .
+ul:ConformanceClaim a rdfs:Class .
+ul:CanonicalSemantic a rdfs:Class .
+ul:DerivedSemantic a rdfs:Class .
+ul:QualifiedEquivalence a rdfs:Class .
+ul:Falsifier a rdfs:Class .
+ul:ExactSubject a rdfs:Class .
+
+ul:identifier a rdf:Property .
+ul:normativeKeyword a rdf:Property .
+ul:canonicalOwner a rdf:Property .
+ul:derivedFrom a rdf:Property .
+ul:hasFalsifier a rdf:Property .
+ul:conformanceLevel a rdf:Property .
+ul:subject a rdf:Property .
+ul:sourceSubject a rdf:Property .
+ul:targetSubject a rdf:Property .
+ul:bounds a rdf:Property .
+ul:qualificationAuthority a rdf:Property .
+ul:attemptObserved a rdf:Property .
+ul:violationObserved a rdf:Property .
+ul:unknownPolicy a rdf:Property .
+ul:requiresLevel a rdf:Property .
+
+ul:L1 a ul:Law ; ul:identifier "L1" ; rdfs:label "No Hidden Semantics" ; ul:normativeKeyword "MUST" .
+ul:L2 a ul:Law ; ul:identifier "L2" ; rdfs:label "Canonical Ownership" ; ul:normativeKeyword "MUST" .
+ul:L3 a ul:Law ; ul:identifier "L3" ; rdfs:label "Consequence Separation" ; ul:normativeKeyword "MUST" .
+ul:L4 a ul:Law ; ul:identifier "L4" ; rdfs:label "Non-Authority of Artifacts" ; ul:normativeKeyword "MUST NOT" .
+ul:L5 a ul:Law ; ul:identifier "L5" ; rdfs:label "Exact Subject" ; ul:normativeKeyword "MUST" .
+ul:L6 a ul:Law ; ul:identifier "L6" ; rdfs:label "Semantic Lineage" ; ul:normativeKeyword "MUST" .
+ul:L7 a ul:Law ; ul:identifier "L7" ; rdfs:label "Bounded Consequence" ; ul:normativeKeyword "MUST" .
+ul:L8 a ul:Law ; ul:identifier "L8" ; rdfs:label "Edge-Local Failure" ; ul:normativeKeyword "MUST NOT" .
+ul:L9 a ul:Law ; ul:identifier "L9" ; rdfs:label "Reverse Chesterton" ; ul:normativeKeyword "MUST" .
+ul:L10 a ul:Law ; ul:identifier "L10" ; rdfs:label "Negative Chesterton" ; ul:normativeKeyword "SHOULD" .
+ul:L11 a ul:Law ; ul:identifier "L11" ; rdfs:label "Adversarial Constraint Distillation" ; ul:normativeKeyword "SHOULD" .
+ul:L12 a ul:Law ; ul:identifier "L12" ; rdfs:label "Qualification Does Not Promote Authority" ; ul:normativeKeyword "MUST NOT" .
+ul:NULL a ul:Law ; ul:identifier "NULL" ; rdfs:label "NULL-relative qualified value" ; ul:normativeKeyword "MUST" .
+
+ul:UQ0 a ul:ConformanceLevel ; ul:identifier "UQ0" ; rdfs:label "EXPLICIT" .
+ul:UQ1 a ul:ConformanceLevel ; ul:identifier "UQ1" ; rdfs:label "OWNED" ; ul:requiresLevel ul:UQ0 .
+ul:UQ2 a ul:ConformanceLevel ; ul:identifier "UQ2" ; rdfs:label "SEPARATED" ; ul:requiresLevel ul:UQ1 .
+ul:UQ3 a ul:ConformanceLevel ; ul:identifier "UQ3" ; rdfs:label "EXACT" ; ul:requiresLevel ul:UQ2 .
+ul:UQ4 a ul:ConformanceLevel ; ul:identifier "UQ4" ; rdfs:label "CONSEQUENCE" ; ul:requiresLevel ul:UQ3 .
+ul:UQ5 a ul:ConformanceLevel ; ul:identifier "UQ5" ; rdfs:label "ADVERSARIAL" ; ul:requiresLevel ul:UQ4 .
+ul:UQ6 a ul:ConformanceLevel ; ul:identifier "UQ6" ; rdfs:label "COMPOUNDING" ; ul:requiresLevel ul:UQ5 .
+ul:UQ7 a ul:ConformanceLevel ; ul:identifier "UQ7" ; rdfs:label "HARDENED" ; ul:requiresLevel ul:UQ6 .
+
+ul:NoAuthorityFromQualification
+  ul:qualificationAuthority "NONE" ;
+  rdfs:comment "No conformance level, court result, proof, receipt, replay, or standing assessment issues DO authority." .
+
+ul:UnknownFailClosed
+  ul:unknownPolicy "UNKNOWN MUST NOT be silently coerced to true, ALIVE, or successful consequence." .

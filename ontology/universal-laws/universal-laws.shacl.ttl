@@ -1,0 +1,32 @@
+@prefix ul: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/universal-laws#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ul:CanonicalSemanticShape a sh:NodeShape ;
+  sh:targetClass ul:CanonicalSemantic ;
+  sh:property [ sh:path ul:canonicalOwner ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ul:hasFalsifier ; sh:minCount 1 ] .
+
+ul:DerivedSemanticShape a sh:NodeShape ;
+  sh:targetClass ul:DerivedSemantic ;
+  sh:property [ sh:path ul:derivedFrom ; sh:minCount 1 ] .
+
+ul:ConformanceClaimShape a sh:NodeShape ;
+  sh:targetClass ul:ConformanceClaim ;
+  sh:property [ sh:path ul:subject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ul:canonicalOwner ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ul:hasFalsifier ; sh:minCount 1 ] ;
+  sh:property [ sh:path ul:conformanceLevel ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ul:ConformanceLevel ] ;
+  sh:property [ sh:path ul:qualificationAuthority ; sh:minCount 1 ; sh:maxCount 1 ; sh:hasValue "NONE" ] .
+
+ul:QualifiedEquivalenceShape a sh:NodeShape ;
+  sh:targetClass ul:QualifiedEquivalence ;
+  sh:property [ sh:path ul:sourceSubject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ul:targetSubject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ul:bounds ; sh:minCount 1 ] ;
+  sh:property [ sh:path ul:hasFalsifier ; sh:minCount 1 ] .
+
+ul:FalsifierShape a sh:NodeShape ;
+  sh:targetClass ul:Falsifier ;
+  sh:property [ sh:path ul:attemptObserved ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+  sh:property [ sh:path ul:violationObserved ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] .

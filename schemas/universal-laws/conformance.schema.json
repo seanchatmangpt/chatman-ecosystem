@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chatman.dev/schemas/universal-laws/conformance.schema.json",
+  "title": "Universal Laws Conformance Claim",
+  "type": "object",
+  "required": [
+    "schema",
+    "subject",
+    "level",
+    "canonical_owner",
+    "falsifiers",
+    "authority"
+  ],
+  "properties": {
+    "schema": {
+      "const": "https://chatman.dev/universal-laws/conformance/v1"
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1
+    },
+    "level": {
+      "enum": ["UQ0", "UQ1", "UQ2", "UQ3", "UQ4", "UQ5", "UQ6", "UQ7"]
+    },
+    "canonical_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lineage": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "falsifiers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["law", "attempt_observed", "violation_observed", "result"],
+        "properties": {
+          "law": {
+            "enum": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "L11", "L12", "NULL"]
+          },
+          "attempt_observed": {"type": "boolean"},
+          "violation_observed": {"type": "boolean"},
+          "result": {
+            "enum": ["ADMISSIBLE", "REFUSED", "NONCONFORMANT", "UNKNOWN"]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "equivalence": {
+      "type": "object",
+      "required": ["source_subject", "target_subject", "bounds", "falsifier"],
+      "properties": {
+        "source_subject": {"type": "string", "minLength": 1},
+        "target_subject": {"type": "string", "minLength": 1},
+        "bounds": {"type": "string", "minLength": 1},
+        "falsifier": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "authority": {
+      "const": "NONE"
+    }
+  },
+  "additionalProperties": false
+}
