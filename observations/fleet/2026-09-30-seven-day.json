@@ -1,0 +1,1035 @@
+{
+  "schema": "https://chatman.dev/fleet/recent-activity/v1",
+  "observation_id": "fleet:recent:2026-09-30:7d",
+  "owner": "seanchatmangpt",
+  "window": {
+    "start": "2026-09-23T00:00:00Z",
+    "end": "2026-09-30T07:20:00Z"
+  },
+  "query": "user:seanchatmangpt pushed:>=2026-09-23",
+  "subject": {
+    "repository": "seanchatmangpt/chatman-ecosystem",
+    "base_sha": "869babb1d0c852e0ceda581a3edfea6d32189d95"
+  },
+  "repository_count": 101,
+  "authority": "NONE",
+  "standing": "OBSERVED",
+  "semantics": [
+    "Observation evidence only; no release standing is promoted.",
+    "Historical release manifests remain immutable admitted facts.",
+    "Rows bind observed repository/default-branch commit evidence at this horizon.",
+    "seanchatmangpt/ggen is observation-only/read-only."
+  ],
+  "repositories": [
+    {
+      "repository": "seanchatmangpt/A2A",
+      "default_branch": "main",
+      "observed_sha": "188f2c7582ada98403a56b85814a8cc87e86d530",
+      "commit_timestamp": "2026-09-29T20:05:42Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/a2a-rs",
+      "default_branch": "master",
+      "observed_sha": "75ba4a6ea3104c0edb0b31f4286faedf1a6964a6",
+      "commit_timestamp": "2026-09-29T22:25:37Z",
+      "latest_message": "Merge pull request #14 from seanchatmangpt/pay/v26.9.29-a2a-payments-audit-fix2",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/affidavit",
+      "default_branch": "main",
+      "observed_sha": "9888b4084d8d7f4cf9337f572c6bbfb592f94e09",
+      "commit_timestamp": "2026-09-30T06:52:49Z",
+      "latest_message": "Merge QME-1 canonical hardening rebind",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/agent-guides",
+      "default_branch": "main",
+      "observed_sha": "a02da0fc73c83dd2efff2699beaa8f0e06e72f72",
+      "commit_timestamp": "2026-09-29T20:05:56Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/agent-zero",
+      "default_branch": "main",
+      "observed_sha": "41b9e0b8d28f5b058b2d91ed30e590f2489b84d9",
+      "commit_timestamp": "2026-09-29T20:05:51Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/agile-protocol-specification",
+      "default_branch": "main",
+      "observed_sha": "1b731a6e963fa249c4e3e8bcbe932025c5e38bb5",
+      "commit_timestamp": "2026-09-26T08:58:52Z",
+      "latest_message": "Merge pull request #10 from seanchatmangpt/adopt/engineering-standards-v26.9.21",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/AgileGen",
+      "default_branch": "main",
+      "observed_sha": "4c080875d20968eaeb47e83b66e471bc57e3cc76",
+      "commit_timestamp": "2026-09-29T20:05:48Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ai",
+      "default_branch": "main",
+      "observed_sha": "19d9869e4885d8c2c7309622a563b96d00a41c75",
+      "commit_timestamp": "2026-09-29T20:06:31Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ai-elements",
+      "default_branch": "main",
+      "observed_sha": "d2a91c986bbf7e70fc5779c6c1b124724ac29d5f",
+      "commit_timestamp": "2026-09-29T20:06:28Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/aider",
+      "default_branch": "main",
+      "observed_sha": "fd326a7cec7126df9ab6acf5856f31450e5f32ee",
+      "commit_timestamp": "2026-09-29T20:05:24Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/algokit-core",
+      "default_branch": "main",
+      "observed_sha": "e31e2896097250d1d02aa589e91a3fb58de054fa",
+      "commit_timestamp": "2026-09-29T20:05:11Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/anti-llm-cheat-lsp",
+      "default_branch": "main",
+      "observed_sha": "c828e4f6d8230e3219112ccd4242414f17577801",
+      "commit_timestamp": "2026-09-26T13:07:28Z",
+      "latest_message": "Merge pull request #5 from seanchatmangpt/dependabot/github_actions/actions/download-artifact-8",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/Arazzo-Specification",
+      "default_branch": "main",
+      "observed_sha": "6935c78908ac839400180da6c045be0c58f3d555",
+      "commit_timestamp": "2026-09-29T20:06:04Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash",
+      "default_branch": "main",
+      "observed_sha": "733564da755cf9240cb2b6d8b32c6e4fce8ba5d5",
+      "commit_timestamp": "2026-09-30T06:51:50Z",
+      "latest_message": "Merge QME-1 canonical hardening rebind",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_a2a",
+      "default_branch": "main",
+      "observed_sha": "3325032d9dea201e6deb82ef242c534aacb3b420",
+      "commit_timestamp": "2026-09-30T06:53:14Z",
+      "latest_message": "Merge QME-1 canonical hardening rebind",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_admin",
+      "default_branch": "main",
+      "observed_sha": "60ffebc6ca25ae90be58fe813201dc9caf2771a1",
+      "commit_timestamp": "2026-09-29T20:07:15Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_ai",
+      "default_branch": "main",
+      "observed_sha": "24020d038e96c3ef2f32476e7972b606d0c8ee03",
+      "commit_timestamp": "2026-09-29T20:07:13Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_archival",
+      "default_branch": "main",
+      "observed_sha": "a66d3a9df5ad5490d62528c80ec00f089d2ae56d",
+      "commit_timestamp": "2026-09-29T20:07:11Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_atlassian",
+      "default_branch": "main",
+      "observed_sha": "43e3d21b7c4e4571493fcf3757392ed16f2dd967",
+      "commit_timestamp": "2026-09-28T19:50:16Z",
+      "latest_message": "Merge pull request #5 from seanchatmangpt/claude/adoring-gauss-wqwp0c",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_blog",
+      "default_branch": "main",
+      "observed_sha": "42b40c35128074ac94323a6288da1359a474d151",
+      "commit_timestamp": "2026-09-29T20:07:08Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_cloak",
+      "default_branch": "main",
+      "observed_sha": "1c52c5955533813aa0649d615b7e3aadcde3a2f1",
+      "commit_timestamp": "2026-09-29T20:07:03Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_commanded",
+      "default_branch": "main",
+      "observed_sha": "4fe33b75388605221631a82d2af5bdeb1bf1bc26",
+      "commit_timestamp": "2026-09-29T20:07:01Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_csv",
+      "default_branch": "main",
+      "observed_sha": "209842cb998b03e49f38d33405298aaac3766158",
+      "commit_timestamp": "2026-09-29T20:06:59Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_double_entry",
+      "default_branch": "main",
+      "observed_sha": "0d419c342ded40b7e8169780a32824dec71751e2",
+      "commit_timestamp": "2026-09-29T20:06:56Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_dspy",
+      "default_branch": "main",
+      "observed_sha": "3b6b527579bcb4ece0a731ea60a283ff3706d8d4",
+      "commit_timestamp": "2026-09-26T01:02:29Z",
+      "latest_message": "test: real composition verification + ledgered hand-written residue",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_events",
+      "default_branch": "main",
+      "observed_sha": "56d42a1fb6f5b39996b7104a3932e10535d46842",
+      "commit_timestamp": "2026-09-29T20:06:47Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_ex4pm",
+      "default_branch": "main",
+      "observed_sha": "64a21504d3aab0165275cb3e1c9e2fc124d83413",
+      "commit_timestamp": "2026-09-26T13:46:08Z",
+      "latest_message": "Merge pull request #1 from seanchatmangpt/feat/economic-isa-adapter",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_expo",
+      "default_branch": "main",
+      "observed_sha": "024852b92330c76e12d0ab26531ef1e511c71041",
+      "commit_timestamp": "2026-09-26T14:36:23Z",
+      "latest_message": "Merge pull request #7 from seanchatmangpt/test/end-to-end-codegen",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_graphlaw",
+      "default_branch": "main",
+      "observed_sha": "6aaf71beeb054c0eb16b0c50eefa710f49c18bd0",
+      "commit_timestamp": "2026-09-30T06:53:48Z",
+      "latest_message": "docs(qme): point to hardened canonical subject",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_json_api",
+      "default_branch": "main",
+      "observed_sha": "d3ce7be67cd95b8a2dd4a5295e790bef1d78fa8d",
+      "commit_timestamp": "2026-09-29T20:06:45Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_json_api_wrapper",
+      "default_branch": "main",
+      "observed_sha": "8e235bda02c36dd7083b6387088200957049cad8",
+      "commit_timestamp": "2026-09-29T20:06:43Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_kudzu",
+      "default_branch": "feat/shacl-admission-gate",
+      "observed_sha": "70429ebdf4c72497f2b59912a5778f7b3f887fa4",
+      "commit_timestamp": "2026-09-29T20:27:49Z",
+      "latest_message": "feat(sa2a): semantic evidence admission boundary (#10)",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_oban",
+      "default_branch": "main",
+      "observed_sha": "ebc76b5298c80222b03e6fcc5e6e538085e9932a",
+      "commit_timestamp": "2026-09-29T20:06:40Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_paper_trail",
+      "default_branch": "main",
+      "observed_sha": "46bc6326662752d2701aefbd049a4c2e9ea220f9",
+      "commit_timestamp": "2026-09-29T20:06:37Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_postgres",
+      "default_branch": "main",
+      "observed_sha": "af3ae3b28b4487aea59cd13c17187f3673bb08d1",
+      "commit_timestamp": "2026-09-29T20:06:35Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_pplan",
+      "default_branch": "main",
+      "observed_sha": "b9da1ad7590d70afac5eace3bd7ba1a644f7249f",
+      "commit_timestamp": "2026-09-29T01:53:44Z",
+      "latest_message": "feat(sa2a): expose owner-side planner provider",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_r2rml",
+      "default_branch": "main",
+      "observed_sha": "36f25a30f2f60acde7da1a965626451dbc40b6f8",
+      "commit_timestamp": "2026-09-30T06:53:28Z",
+      "latest_message": "Merge QME-1 canonical hardening rebind",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_state_machine",
+      "default_branch": "main",
+      "observed_sha": "e6e1ca78834ecacbd5a1f5b6fb52a0433c794e85",
+      "commit_timestamp": "2026-09-29T20:06:33Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ash_surface",
+      "default_branch": "main",
+      "observed_sha": "881a740bad5e16ddfea3d360f837638fd55ef98a",
+      "commit_timestamp": "2026-09-29T20:40:38Z",
+      "latest_message": "Merge PR #12: CASTLE surface capability intake",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/autofde-lab",
+      "default_branch": "master",
+      "observed_sha": "d42a5af94481a3128bf3e35d5f2a0a9a70f22e41",
+      "commit_timestamp": "2026-09-29T00:43:54Z",
+      "latest_message": "Merge pull request #207 from seanchatmangpt/claude/optimistic-davinci-h151w0",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/AutoGPT",
+      "default_branch": "master",
+      "observed_sha": "d99dba7fa82279a127a61d262d6e84090d267085",
+      "commit_timestamp": "2026-09-29T20:05:21Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/autotel",
+      "default_branch": "main",
+      "observed_sha": "52c23c4b960e0d3ecd414b0bce5a35b565c8975d",
+      "commit_timestamp": "2026-09-29T22:44:08Z",
+      "latest_message": "Merge pull request #7 from seanchatmangpt/test/payments-mutant-kill-fix3",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/avmnif-rs",
+      "default_branch": "main",
+      "observed_sha": "ac6225edae14bed9308172fd72dedfae5c7bba5d",
+      "commit_timestamp": "2026-09-29T20:05:16Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ax",
+      "default_branch": "main",
+      "observed_sha": "51fb5354e713e1ab8aaa0d8070fd90417471f12f",
+      "commit_timestamp": "2026-09-29T20:05:19Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/basecampapi",
+      "default_branch": "main",
+      "observed_sha": "719a0b01f1cdbf5f578510c3d656c185b8e17b1e",
+      "commit_timestamp": "2026-09-29T20:05:14Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/bcinr",
+      "default_branch": "main",
+      "observed_sha": "6e2c1069fbaab83ed9700aefd353071ef93073c1",
+      "commit_timestamp": "2026-09-29T22:49:23Z",
+      "latest_message": "Merge pull request #48 from seanchatmangpt/fix/cmca-clippy-sa2a-test-imports",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/beam4pm",
+      "default_branch": "main",
+      "observed_sha": "aa98261db7719f7708ad7990064bbc5f06b754df",
+      "commit_timestamp": "2026-09-30T06:51:03Z",
+      "latest_message": "Merge QME-1 canonical hardening rebind",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/BusinessOS",
+      "default_branch": "main",
+      "observed_sha": "c71e099fe464b5388a1ee825ae7ebc6424ad9837",
+      "commit_timestamp": "2026-09-29T20:06:26Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/cargo-cicd",
+      "default_branch": "main",
+      "observed_sha": "59214d6a1293d794b7a27095276047cdff73a9ec",
+      "commit_timestamp": "2026-09-24T21:46:38Z",
+      "latest_message": "Merge pull request #16 from seanchatmangpt/security/rotate-signing-keys-v26.9.24",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/castle",
+      "default_branch": "main",
+      "observed_sha": "c18bf1d89ed5395d5ffb00f875d901a26f16b2fe",
+      "commit_timestamp": "2026-09-30T07:16:22Z",
+      "latest_message": "release: receipt v26.8.18+dfcm.1 publication",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/chatgpt-cloud-elixir",
+      "default_branch": "main",
+      "observed_sha": "8efaa40b69c8162d22fe2dc5e59657f8dcff529e",
+      "commit_timestamp": "2026-09-26T13:22:39Z",
+      "latest_message": "Merge pull request #44 from seanchatmangpt/v26926/cce-relay-suite-resurrection",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "default_branch": "main",
+      "observed_sha": "869babb1d0c852e0ceda581a3edfea6d32189d95",
+      "commit_timestamp": "2026-09-30T06:49:49Z",
+      "latest_message": "Merge pull request #309 from seanchatmangpt/claude/factory-e-closure-rfc-ac64yy",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/chatman-nano-stack",
+      "default_branch": "master",
+      "observed_sha": "de7eb619310a522e44e9d6cf20e9460806b314ea",
+      "commit_timestamp": "2026-09-26T09:07:09Z",
+      "latest_message": "Merge pull request #32 from seanchatmangpt/dependabot/pip/dev-dependencies-0f9151234f",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/chicago-tdd-tools",
+      "default_branch": "main",
+      "observed_sha": "5edb69355d0b5fc933ae602aee0dfb151864070e",
+      "commit_timestamp": "2026-09-26T07:35:16Z",
+      "latest_message": "Merge pull request #104 from seanchatmangpt/dependabot/cargo/patch-updates-9a2c1f46bc",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/claude-code-config-lsp",
+      "default_branch": "main",
+      "observed_sha": "1edad3b2bbc34723db85bfdbca0b310fcc35160a",
+      "commit_timestamp": "2026-09-24T21:46:46Z",
+      "latest_message": "Merge pull request #3 from seanchatmangpt/security/rotate-signing-keys-v26.9.24",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/clnrm_prototype",
+      "default_branch": "master",
+      "observed_sha": "5a453a5754385b5805993c01f60e620a5035a39f",
+      "commit_timestamp": "2026-09-26T11:39:30Z",
+      "latest_message": "Merge pull request #20 from seanchatmangpt/dependabot/cargo/tempfile-3.27.0",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/cre",
+      "default_branch": "master",
+      "observed_sha": "dc763e7e3a0cf9f7cc7cd735c284f6a13e2ca989",
+      "commit_timestamp": "2026-09-29T22:43:34Z",
+      "latest_message": "Merge pull request #20 from seanchatmangpt/fix/effect-claim-survivors-3",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/deepwiki-rs",
+      "default_branch": "main",
+      "observed_sha": "36ee516018bdb1bf0a536da1d1cafb1454b56e7e",
+      "commit_timestamp": "2026-09-26T13:15:53Z",
+      "latest_message": "Merge pull request #1 from seanchatmangpt/feat/semantic-documentation-26-9-14",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/dspy-wasm",
+      "default_branch": "main",
+      "observed_sha": "336482ce19464a3a752936f9c866ff6fea2780d3",
+      "commit_timestamp": "2026-09-29T00:15:57Z",
+      "latest_message": "Merge pull request #8 from seanchatmangpt/claude/dspy-wasm-prod-readiness-0qb34s",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/dspygen",
+      "default_branch": "main",
+      "observed_sha": "582749520d63100dd8fe19e744016a9dfe7faa05",
+      "commit_timestamp": "2026-09-26T18:27:18Z",
+      "latest_message": "Merge pull request #28 from seanchatmangpt/dependabot/pip/tpot-1.1.0",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/dteam",
+      "default_branch": "main",
+      "observed_sha": "27885a8b42cdee2fb096ab585c8c691c9e6f6969",
+      "commit_timestamp": "2026-09-29T22:20:31Z",
+      "latest_message": "Merge pull request #15 from seanchatmangpt/pay/v26.9.29-payment-conformance",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/engineering-standards",
+      "default_branch": "main",
+      "observed_sha": "7470b12670ea11e3e8f8a86fe23b36f332cfafd8",
+      "commit_timestamp": "2026-09-29T20:50:08Z",
+      "latest_message": "Merge pull request #14 from seanchatmangpt/repair/v26.9.29-sa2a-diataxis",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/erlmcp",
+      "default_branch": "main",
+      "observed_sha": "3cbf5dd8fdc823eade2f42fcfcf3bc4b304afb54",
+      "commit_timestamp": "2026-09-29T22:20:10Z",
+      "latest_message": "Merge pull request #27 from seanchatmangpt/pay/v26.9.29-rail-sim-fix",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ex4pm",
+      "default_branch": "main",
+      "observed_sha": "d1ff769ca7763168ff154b1def980dfaec0cb15c",
+      "commit_timestamp": "2026-09-26T18:41:56Z",
+      "latest_message": "Merge pull request #45 from seanchatmangpt/feat/economic-isa-ocel-v2",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ferroplan",
+      "default_branch": "main",
+      "observed_sha": "2954d5a1045160b31510257d39386d5c36af73c3",
+      "commit_timestamp": "2026-09-29T20:07:41Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/frozen-duckdb",
+      "default_branch": "master",
+      "observed_sha": "77125caf133fb334c45a2c67453f1534f953f05b",
+      "commit_timestamp": "2026-09-26T10:49:15Z",
+      "latest_message": "Merge pull request #6 from seanchatmangpt/feat/duckdb-1.5.5",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ggen",
+      "default_branch": "main",
+      "observed_sha": "ff96f04e8c7b851e5cca53f3faf5ce1d5f43ce6e",
+      "commit_timestamp": "2026-09-29T01:39:36Z",
+      "latest_message": "Merge pull request #780 from seanchatmangpt/fix/pack-toml-schema-and-lint-2026-09-29",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": true
+    },
+    {
+      "repository": "seanchatmangpt/ggen_igniter",
+      "default_branch": "main",
+      "observed_sha": "ae205c3b85c85b5d43738b2f0e3b6833863adbb0",
+      "commit_timestamp": "2026-09-29T21:56:47Z",
+      "latest_message": "Merge pull request #55 from seanchatmangpt/fix/v26.9.29-mix-format",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ggen-ecosystem",
+      "default_branch": "main",
+      "observed_sha": "93d51a9dd9b083acc821376c8462d3c861adde87",
+      "commit_timestamp": "2026-09-30T07:03:44Z",
+      "latest_message": "feat(qme): cross-ecosystem crown for 500M marketplace claim",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ggen-legacy",
+      "default_branch": "main",
+      "observed_sha": "72f5e7a58ed36e8ec6ad19837b6f81d87cc2d8fa",
+      "commit_timestamp": "2026-09-29T21:53:40Z",
+      "latest_message": "Merge pull request #47 from seanchatmangpt/fix/v26.9.29-ci-gates",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "default_branch": "main",
+      "observed_sha": "cb82395df9d726237f5480bc41fb18e875ce91b9",
+      "commit_timestamp": "2026-09-30T07:03:33Z",
+      "latest_message": "feat(chicago): falsifiable 500M person-year marketplace leverage court",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ggen-mcp",
+      "default_branch": "main",
+      "observed_sha": "a9f63b6abbc669dd1d22da1f22f56dfcd8e7e14b",
+      "commit_timestamp": "2026-09-29T20:05:58Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/gitvan",
+      "default_branch": "main",
+      "observed_sha": "9221cf7cb0f2483566e1306426fd857622d5034b",
+      "commit_timestamp": "2026-09-29T20:56:19Z",
+      "latest_message": "docs: update CHANGELOG.md for v4.0.1",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/graphlaw",
+      "default_branch": "main",
+      "observed_sha": "79275191a0feb19e6de701dabb95402a9b2b28e7",
+      "commit_timestamp": "2026-09-30T07:03:20Z",
+      "latest_message": "feat(chicago): restore qualification algebra on hardened QME subject",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/gym-ecosystem",
+      "default_branch": "main",
+      "observed_sha": "e43d524cd4ecc5eb0317b9a82a0fcd34aa287766",
+      "commit_timestamp": "2026-09-30T00:33:09Z",
+      "latest_message": "chore(crown): reconcile gym ecosystem heads",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/gymact",
+      "default_branch": "main",
+      "observed_sha": "d3eb5e848cb86952921d1b0083e0b7e7e1f53609",
+      "commit_timestamp": "2026-09-29T20:22:31Z",
+      "latest_message": "Merge pull request #153: v26.9.28 integration + inherited leaked-event-loop root-cause fix",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/homebrew-tap",
+      "default_branch": "main",
+      "observed_sha": "847fb9730f19ebe046c662f4c9a28d53fc76bf0f",
+      "commit_timestamp": "2026-09-29T08:09:44Z",
+      "latest_message": "chore: update ggen formula to v26.9.28",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/koala-planner",
+      "default_branch": "main",
+      "observed_sha": "db0eb5e498710aadda63123ae0d5543a69667bd6",
+      "commit_timestamp": "2026-09-26T15:44:46Z",
+      "latest_message": "Merge pull request #6 from seanchatmangpt/prep/upstream-submission",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/lsp-max",
+      "default_branch": "master",
+      "observed_sha": "5dec93bef12592b2d7eee7b9a45139595f2bbedb",
+      "commit_timestamp": "2026-09-29T20:05:53Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/mac-artifact-cleaner",
+      "default_branch": "main",
+      "observed_sha": "fc73e706a6b33024038aaecae7e82effec19314f",
+      "commit_timestamp": "2026-09-29T02:44:56Z",
+      "latest_message": "Merge branch 'fix/v26926-redaction-test-fixture' into main",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/mcpp",
+      "default_branch": "master",
+      "observed_sha": "a0ce275a235a4655f6f76259bc3d1e6d47477c9d",
+      "commit_timestamp": "2026-09-29T22:25:57Z",
+      "latest_message": "Merge pull request #7 from seanchatmangpt/payments-identity-fix",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/mfw",
+      "default_branch": "main",
+      "observed_sha": "dfd25a63033505be98673d96d5b25c2ce7e666d5",
+      "commit_timestamp": "2026-09-29T22:48:46Z",
+      "latest_message": "Merge pull request #93 from seanchatmangpt/fix3-payments-chain-survivors",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/mmdio",
+      "default_branch": "main",
+      "observed_sha": "afc1f6e890a6d1c17b84d5931b21d3c74a851ebc",
+      "commit_timestamp": "2026-09-26T09:07:11Z",
+      "latest_message": "Merge pull request #20 from seanchatmangpt/feat/dfcm-slidev-presentation",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/ollama-ai-provider-v2",
+      "default_branch": "master",
+      "observed_sha": "69dcaf24f388a1481dc7f920cfffc2eb44c28632",
+      "commit_timestamp": "2026-09-29T20:07:34Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/open-ontologies",
+      "default_branch": "main",
+      "observed_sha": "8ca43c74a3be53bec8986cb4948e1ece709eb8d1",
+      "commit_timestamp": "2026-09-29T20:05:07Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/POWL",
+      "default_branch": "main",
+      "observed_sha": "a7731383553eb56e9fbd81086e2915bb0cc684ec",
+      "commit_timestamp": "2026-09-29T20:05:26Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/praxis",
+      "default_branch": "main",
+      "observed_sha": "c78783b4ea3124fc9d1179a9e47d43c522b529f2",
+      "commit_timestamp": "2026-09-27T23:35:43Z",
+      "latest_message": "Extract GraphLaw into canonical repository",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/process-intelligence",
+      "default_branch": "main",
+      "observed_sha": "f816a372bc414c378c63f717618935ad574e5fe0",
+      "commit_timestamp": "2026-09-29T20:40:08Z",
+      "latest_message": "Merge PR #15: CASTLE process-intelligence intake",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/qlever",
+      "default_branch": "master",
+      "observed_sha": "f8e7f4683b3e2a629c351d71cbf23aa7ada4eb89",
+      "commit_timestamp": "2026-09-29T20:07:29Z",
+      "latest_message": "chore(sjira): add v26.9.29 fleet work order",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/rocket-craft",
+      "default_branch": "master",
+      "observed_sha": "a87a3c2cd6f594d917eea6313cbdd9f4d40f59fc",
+      "commit_timestamp": "2026-09-24T23:01:21Z",
+      "latest_message": "Merge pull request #12 from seanchatmangpt/security/revoke-branch-exposed-keys-v26.9.24",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/semantic_bit",
+      "default_branch": "main",
+      "observed_sha": "a955c773336cdb18fbbb2ca899f1ca0df1ca87f0",
+      "commit_timestamp": "2026-09-29T22:18:36Z",
+      "latest_message": "Merge pull request #1 from seanchatmangpt/pay/v26.9.29-effect-identity",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/speckit-ralph",
+      "default_branch": "065-semanticos-full-stack",
+      "observed_sha": "890c1bdbab8cb11efac5400b5c29578f0bc46fce",
+      "commit_timestamp": "2026-09-24T21:47:07Z",
+      "latest_message": "Merge pull request #1 from seanchatmangpt/security/rotate-signing-keys-v26.9.24",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/star-toml",
+      "default_branch": "main",
+      "observed_sha": "61864d636147948b62dfaf345980d695fb8eeeff",
+      "commit_timestamp": "2026-09-26T08:58:58Z",
+      "latest_message": "Merge pull request #12 from seanchatmangpt/dependabot/cargo/minor-and-patch-5753cf405a",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/unrdf",
+      "default_branch": "main",
+      "observed_sha": "0550d9630da94b170c931f17a1580ea90091cbb4",
+      "commit_timestamp": "2026-09-29T02:20:18Z",
+      "latest_message": "Merge pull request #115 from seanchatmangpt/claude/keen-thompson-ja7xo2",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/VAL",
+      "default_branch": "master",
+      "observed_sha": "498b3a5cfdd005a95e9f988e895857d41ab12424",
+      "commit_timestamp": "2026-09-26T10:02:06Z",
+      "latest_message": "Merge pull request #3 from seanchatmangpt/v26926/val-pddl-check-cli-subprocess-oracle",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/wasm4pm",
+      "default_branch": "main",
+      "observed_sha": "09c171b4447257f018e30d721af6701258ebfeff",
+      "commit_timestamp": "2026-09-29T20:40:46Z",
+      "latest_message": "Merge PR #650: CASTLE WASM compatibility intake",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/wasm4pm-compat",
+      "default_branch": "main",
+      "observed_sha": "4c523e0d81a5bb52fda21cea992201f608e088b5",
+      "commit_timestamp": "2026-09-29T20:22:16Z",
+      "latest_message": "Merge pull request #36 from seanchatmangpt/claude/beautiful-allen-o9ng71",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/xaas",
+      "default_branch": "main",
+      "observed_sha": "9ff91c6fd3e205398d082a6be366f21e9ec7777c",
+      "commit_timestamp": "2026-09-30T06:52:35Z",
+      "latest_message": "Merge QME-1 canonical hardening rebind",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/yawl",
+      "default_branch": "master",
+      "observed_sha": "db94343f2fb0f1b757d390f54f799924468c1442",
+      "commit_timestamp": "2026-09-29T22:44:49Z",
+      "latest_message": "Merge pull request #242 from seanchatmangpt/fix3-settlement-mutant-tests",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/zcode-cli",
+      "default_branch": "main",
+      "observed_sha": "60dc2602c2e5e898110c9bf3e1cbe18227c63357",
+      "commit_timestamp": "2026-09-29T20:28:57Z",
+      "latest_message": "SA2A C: close portable recovery runtime (#19)",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    },
+    {
+      "repository": "seanchatmangpt/zoela",
+      "default_branch": "main",
+      "observed_sha": "cae4a862744380f6a78b962e3f345ede8bd860dd",
+      "commit_timestamp": "2026-09-26T20:28:04Z",
+      "latest_message": "Merge pull request #22 from seanchatmangpt/case-study/v26.9.15-ash-a2a-digital-twins",
+      "authority": "NONE",
+      "standing": "OBSERVED",
+      "read_only": false
+    }
+  ]
+}

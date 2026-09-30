@@ -1,0 +1,17 @@
+name: Recent fleet observation court
+on:
+  pull_request:
+    paths: ["observations/fleet/**","schemas/fleet-recent-activity.schema.json","scripts/release_train/fleet_recent_activity_court.py","tests/release_train/test_fleet_recent_activity_court.py",".github/workflows/fleet-recent-activity.yml"]
+  push:
+    branches: [main]
+    paths: ["observations/fleet/**","schemas/fleet-recent-activity.schema.json","scripts/release_train/fleet_recent_activity_court.py","tests/release_train/test_fleet_recent_activity_court.py"]
+jobs:
+  court:
+    runs-on: ubuntu-latest
+    permissions: {contents: read}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: python3 scripts/release_train/fleet_recent_activity_court.py observations/fleet/2026-09-30-seven-day.json
+      - run: python3 -m unittest tests.release_train.test_fleet_recent_activity_court -v
