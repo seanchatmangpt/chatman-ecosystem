@@ -1,0 +1,19 @@
+{
+  "schema": "https://chatman.dev/standing-court/cross-runtime-failure-immunity/v1",
+  "release": "v26.9.30",
+  "authority": "NONE",
+  "canonical_owner": "seanchatmangpt/chatman-ecosystem",
+  "extends": "release/v26.9.30/failure-immunity.json",
+  "failure_classes": [
+    {"id":"MUTATED_PROJECTION","canonical_guard":["GENERATED_SOURCE_DRIFT","MUTATION_REPORT_DRIFT"],"inherit":true},
+    {"id":"ABI_INTERFACE_MISMATCH","canonical_guard":["RUNTIME_INTERFACE_MISMATCH","SUBJECT_TREE_MISMATCH"],"inherit":true},
+    {"id":"CROSS_RUNTIME_DIVERGENCE","canonical_guard":["CROSS_RUNTIME_DIVERGED","REPLAY_DIVERGED"],"inherit":true},
+    {"id":"AUTHORITY_SMUGGLING","canonical_guard":["AUTHORITY_ESCALATION","OWNER_SPLIT"],"inherit":true},
+    {"id":"GENERATED_SOURCE_DRIFT","canonical_guard":["GENERATED_SOURCE_DRIFT","EVIDENCE_DELTA_UNBOUNDED"],"inherit":true},
+    {"id":"NONDETERMINISTIC_PROJECTION","canonical_guard":["NONDETERMINISTIC_REPLAY","REPLAY_DIVERGED"],"inherit":true},
+    {"id":"POST_RELEASE_MUTATION","canonical_guard":["STANDING_BINDING_MUTATED","REPLAY_DIVERGED"],"inherit":true},
+    {"id":"PRE_DO_TOCTOU","canonical_guard":["CAPABILITY_RELEASE_REFUSED","STANDING_BINDING_MUTATED"],"inherit":true}
+  ],
+  "inheritance": {"mode":"generated_projection","bespoke_consumer_tests":false},
+  "metric": {"name":"cross_runtime_prevention_ratio","numerator":"failures_prevented_in_other_subjects","denominator":"failures_originally_observed"}
+}
