@@ -1,0 +1,95 @@
+{
+  "version": "v26.9.26",
+  "rfc": "DfCM Industry Closure: Chatman/Fuller Architecture + executable ABB/SBB industry projection",
+  "semantic_root": {
+    "repo": "seanchatmangpt/chatman-ecosystem",
+    "pr": 296,
+    "base": "c8dd167a94bf829c9011b7a6836feca6c180ff15",
+    "role": "canonical EA ontology, SHACL laws, BRCE boundary",
+    "head_before_manifest_refresh": "1fcd129633a583ee21fe899992e4855095f68954",
+    "manifest_binding": "head_before_manifest_refresh (self-reference prevents embedding the commit that contains this manifest)"
+  },
+  "lanes": [
+    {
+      "repo": "seanchatmangpt/ggen-marketplace",
+      "pr": 506,
+      "head": "19b714ce750e9f512e7e115d2d3b7d1853d07bee",
+      "role": "Industry Closure / ABB-SBB qualification packs"
+    },
+    {
+      "repo": "seanchatmangpt/ggen",
+      "pr": 753,
+      "head": "e83b290eef7a875d2f7f484782868b0606da488a",
+      "role": "deterministic SBB manufacture"
+    },
+    {
+      "repo": "seanchatmangpt/ggen_igniter",
+      "pr": 37,
+      "head": "cb9497b4d1408b015d10d2221e4a6734481fdf22",
+      "role": "EA-aware bootstrap and migration"
+    },
+    {
+      "repo": "seanchatmangpt/ash_kudzu",
+      "pr": 6,
+      "head": "e85d90e231f6dabf257b1f863385eec1c0290633",
+      "role": "external technology descriptions -> candidate SBB semantics"
+    },
+    {
+      "repo": "seanchatmangpt/ash_atlassian",
+      "pr": 1,
+      "head": "1419efac8c8aac0cc8d75ead35b1ba364387fe37",
+      "role": "architecture governance and sJira WorkOrders"
+    },
+    {
+      "repo": "seanchatmangpt/xaas",
+      "pr": 80,
+      "head": "53bf20972afd19072171fc5f1632be96ababcc3b",
+      "role": "qualified SBB runtime realization"
+    },
+    {
+      "repo": "seanchatmangpt/ash_a2a",
+      "pr": 46,
+      "head": "eec496eff60721ae547d431193880a7a1d784f8a",
+      "role": "SA2A ABB/SBB semantic interchange"
+    },
+    {
+      "repo": "seanchatmangpt/autofde-lab",
+      "pr": 203,
+      "head": "66fae26057d36d6e74ec72a8d190ca331ca7796d",
+      "role": "independent SBB qualification/falsification court"
+    },
+    {
+      "repo": "seanchatmangpt/gymact",
+      "pr": 150,
+      "head": "fb124de49bc6b688ff11339ef48d60baa9d4e514",
+      "role": "EA selection and transition experiment worlds"
+    },
+    {
+      "repo": "seanchatmangpt/affidavit",
+      "pr": 86,
+      "head": "fb09f991fab7995c1b7564f668065ef379303800",
+      "role": "qualification receipts and standing"
+    }
+  ],
+  "invariants": [
+    "Chatman/Fuller v26.9.26 best-architecture claim is versioned and falsifiable by strict dominance under the same court",
+    "DfCM preserves maximum useful lawful reversible possibility before irreversible selection",
+    "Strategy != OperatingModel != Capability != Requirement != ABB != ArchitectureContract != SBB != Pack != Artifact",
+    "candidate != truth != authority != DO != standing",
+    "UNKNOWN remains first-class",
+    "qualification never grants consequential authority",
+    "reuse -> compose -> extend -> invent",
+    "exact immutable subject required for qualification",
+    "downstream repos consume canonical EA semantics rather than fork them"
+  ],
+  "receipts": {
+    "architecture_court": "release/v26.9.26/enterprise-architecture/architecture-court.json",
+    "architecture_court_runner": "scripts/verify-industry-closure.py",
+    "marketplace_fixture": {
+      "repo": "seanchatmangpt/ggen-marketplace",
+      "pr": 506,
+      "blob": "dce7518e8a1e22f3864a5f957b3fe6809f27df02",
+      "path": "packs/enterprise-architecture-pack/fixtures/ea-graph.json"
+    }
+  }
+}

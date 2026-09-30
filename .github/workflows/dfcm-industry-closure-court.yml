@@ -1,0 +1,46 @@
+name: DfCM Industry Closure Architecture Court
+
+on:
+  pull_request:
+    paths:
+      - 'ontology/enterprise-architecture-v26.9.26*'
+      - 'docs/rfc/v26.9.26/dfcm-industry-closure.md'
+      - 'release/v26.9.26/enterprise-architecture/**'
+      - 'scripts/verify-industry-closure.py'
+      - '.github/workflows/dfcm-industry-closure-court.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'ontology/enterprise-architecture-v26.9.26*'
+      - 'release/v26.9.26/enterprise-architecture/**'
+      - 'scripts/verify-industry-closure.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  architecture-court:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Claim is versioned and explicitly falsifiable
+        run: |
+          python scripts/verify-industry-closure.py \
+            release/v26.9.26/enterprise-architecture/architecture-court.json \
+            --expect CANDIDATE
+      - name: Court can actually kill the claimed architecture version
+        run: |
+          python scripts/verify-industry-closure.py \
+            release/v26.9.26/enterprise-architecture/architecture-court.json \
+            --challenger release/v26.9.26/enterprise-architecture/synthetic-dominator.json \
+            --expect FALSIFIED
+      - name: Court has no DO authority
+        run: |
+          ! grep -RniE '"authority"[[:space:]]*:[[:space:]]*"DO"' \
+            release/v26.9.26/enterprise-architecture/architecture-court.json \
+            release/v26.9.26/enterprise-architecture/synthetic-dominator.json

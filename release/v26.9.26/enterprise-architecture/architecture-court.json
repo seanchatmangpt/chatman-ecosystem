@@ -1,0 +1,44 @@
+{
+  "schema": "chatman-fuller.architecture-court.v1",
+  "claim": {
+    "name": "CHATMAN_FULLER_BEST_ARCHITECTURE",
+    "architecture": "Chatman/Fuller",
+    "version": "26.9.26",
+    "exact_subject": "chatman-fuller:v26.9.26",
+    "boundary_digest": "sha256:declared-common-boundary",
+    "standing": "CANDIDATE",
+    "metrics": {
+      "lawful_option_capacity": 1,
+      "reversibility": 1,
+      "semantic_fidelity": 1,
+      "authority_preservation": 1,
+      "evidentiary_strength": 1,
+      "adaptation_capacity": 1,
+      "cost": 1,
+      "latency": 1,
+      "exceptional_human_dependence": 1,
+      "general_llm_dependence": 1
+    }
+  },
+  "dimensions": {
+    "lawful_option_capacity": "MAX",
+    "reversibility": "MAX",
+    "semantic_fidelity": "MAX",
+    "authority_preservation": "MAX",
+    "evidentiary_strength": "MAX",
+    "adaptation_capacity": "MAX",
+    "cost": "MIN",
+    "latency": "MIN",
+    "exceptional_human_dependence": "MIN",
+    "general_llm_dependence": "MIN"
+  },
+  "falsifier": {
+    "type": "STRICT_PARETO_DOMINANCE",
+    "same_boundary_required": true,
+    "no_worse_every_dimension": true,
+    "strictly_better_at_least_one": true,
+    "historical_version_defeat_is_not_erased_by_assimilation": true
+  },
+  "challengers": [],
+  "authority": "NONE"
+}

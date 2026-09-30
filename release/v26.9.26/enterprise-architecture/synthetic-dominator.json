@@ -1,0 +1,19 @@
+{
+  "schema": "chatman-fuller.architecture-challenger.v1",
+  "name": "synthetic-dominator",
+  "synthetic": true,
+  "boundary_digest": "sha256:declared-common-boundary",
+  "authority": "NONE",
+  "metrics": {
+    "lawful_option_capacity": 1,
+    "reversibility": 1,
+    "semantic_fidelity": 1,
+    "authority_preservation": 1,
+    "evidentiary_strength": 1,
+    "adaptation_capacity": 1,
+    "cost": 0.5,
+    "latency": 1,
+    "exceptional_human_dependence": 1,
+    "general_llm_dependence": 1
+  }
+}
