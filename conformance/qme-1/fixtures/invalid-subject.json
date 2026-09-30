@@ -1,0 +1,36 @@
+{
+  "subject": "repo@sha256:a",
+  "profile": "QME-1",
+  "evidence_horizon": "h",
+  "canonical_owners": {
+    "semantics": "owner"
+  },
+  "authority_ceiling": "none",
+  "consequence": {
+    "bounded": true,
+    "class": "none"
+  },
+  "observation": {
+    "independent": true
+  },
+  "receipt": {
+    "subject": "repo@sha256:b",
+    "id": "r"
+  },
+  "replay": {
+    "actuates": false
+  },
+  "falsifiers": [
+    "x"
+  ],
+  "negative_knowledge": [],
+  "generated": {
+    "is_projection": false,
+    "source": null,
+    "generator": null,
+    "digest": null
+  },
+  "_expected_errors": [
+    "EXACT_SUBJECT"
+  ]
+}
