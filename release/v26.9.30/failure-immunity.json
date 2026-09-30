@@ -1,0 +1,46 @@
+{
+  "schema": "https://chatman.dev/standing-court/failure-immunity/v2",
+  "release": "v26.9.30",
+  "authority": "NONE",
+  "canonical_owner": "seanchatmangpt/chatman-ecosystem",
+  "framework": {
+    "court": "scripts/release_train/release_closure_court/court.py",
+    "mutation_harness": "scripts/release_train/root_crown/mutate.py",
+    "rule": "reuse Chicago/root-crown; no parallel testing framework"
+  },
+  "failure_classes": [
+    {"id":"FAKE_RELEASE_DIGEST","canonical_guard":["TAG_OBJECT_DIGEST_MISMATCH","EVIDENCE_DIGEST_MISMATCH"],"generator":"root_crown.data_mutant","inherit":true},
+    {"id":"MISSING_DURABLE_RECEIPT","canonical_guard":["EVIDENCE_NOT_DURABLE"],"generator":"root_crown.data_mutant","inherit":true},
+    {"id":"SUBJECT_SHA_MISMATCH","canonical_guard":["TAG_SUBJECT_SPLIT","EVIDENCE_SUBJECT_SPLIT","ARTIFACT_SUBJECT_SPLIT"],"generator":"root_crown.data_mutant","inherit":true},
+    {"id":"DIRTY_SUBJECT","canonical_guard":["EVIDENCE_DELTA_UNBOUNDED","EVIDENCE_LINEAGE_MISSING"],"generator":"root_crown.data_mutant","inherit":true},
+    {"id":"FORGED_STANDING_LABEL","canonical_guard":["BLOCKED_WITHOUT_TYPE","ARTIFACT_BLOCKED","POLICY_RELAXATION_UNGROUNDED"],"generator":"root_crown.data_mutant","inherit":true},
+    {"id":"STALE_RECEIPT","canonical_guard":["AUTONOMIC_RECEIPT_STALE","OBSERVATION_STALE"],"generator":"root_crown.source_or_data_mutant","inherit":true},
+    {"id":"WRONG_COURT_PROFILE","canonical_guard":["EVIDENCE_PROFILE_UNKNOWN","TERMINALITY_POLICY_MISSING"],"generator":"root_crown.data_mutant","inherit":true},
+    {"id":"GRAPHLAW_WASM_IDENTITY_MISMATCH","canonical_guard":["SUBJECT_TREE_MISMATCH","EVIDENCE_DIGEST_MISMATCH"],"generator":"root_crown.data_mutant","inherit":true},
+    {"id":"CROSS_SUBJECT_RECEIPT_REUSE","canonical_guard":["EVIDENCE_CONTAINER_CLAIMS_SUBJECT","EVIDENCE_SUBJECT_SPLIT"],"generator":"root_crown.data_mutant","inherit":true},
+    {"id":"CLOSURE_MEMBER_NOT_RELEASED","canonical_guard":["DEPENDENCY_NOT_ADMITTED"],"generator":"release_closure_court","inherit":true},
+    {"id":"RETIRED_MEMBER_REENTRY","canonical_guard":["SUPERSEDED_LINEAGE_OPEN"],"generator":"release_closure_court","inherit":true},
+    {"id":"EXTERNAL_STANDING_RUNTIME_AUTHORITY_CONFLATION","canonical_guard":["AUTHORITY_ESCALATION","OWNER_SPLIT"],"generator":"root_crown.data_mutant","inherit":true},
+    {"id":"REPLAY_MISMATCH","canonical_guard":["REPLAY_DIVERGED"],"generator":"root_crown.dm_replay_mismatch","inherit":true,"observed_killer":"dm_replay_mismatch"},
+    {"id":"STALE_DEPENDENCY_STANDING","canonical_guard":["DEPENDENCY_NOT_ADMITTED","OBSERVATION_STALE"],"generator":"release_closure_court","inherit":true},
+    {"id":"FLEET_CLOSURE_DRIFT","canonical_guard":["EVIDENCE_DELTA_UNBOUNDED","MUTATION_REPORT_DRIFT"],"generator":"root_crown.mutation_report","inherit":true}
+  ],
+  "inheritance": {
+    "source": "release/v26.9.30/failure-immunity.json",
+    "mode": "generated_projection",
+    "bespoke_consumer_tests": false,
+    "consumers": ["seanchatmangpt/xaas","seanchatmangpt/castle"],
+    "first_witness": {
+      "failure_class": "REPLAY_MISMATCH",
+      "canonical_guard": "REPLAY_DIVERGED",
+      "producer_mutant": "dm_replay_mismatch",
+      "required_consumers": 2
+    }
+  },
+  "metric": {
+    "name": "cross_subject_prevention_ratio",
+    "numerator": "failures_prevented_in_other_subjects",
+    "denominator": "failures_originally_observed",
+    "claim_policy": "count only observed consumer rejection; planned projection counts zero"
+  }
+}
