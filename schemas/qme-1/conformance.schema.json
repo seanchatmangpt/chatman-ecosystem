@@ -147,6 +147,13 @@
         }
       },
       "additionalProperties": false
+    },
+    "_expected_errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
     }
   },
   "$defs": {
