@@ -1,0 +1,1678 @@
+{
+  "schema": "chatman.portfolio-activity-7d/1",
+  "subject": "seanchatmangpt/chatman-ecosystem",
+  "window": {
+    "since": "2026-09-23T00:00:00Z",
+    "until": "2026-09-30T00:00:00Z"
+  },
+  "authority": "OBSERVE-only: anonymous git reads; no external mutation; no standing promoted",
+  "evidence_classes": {
+    "OBSERVED": 92,
+    "EXCLUDED": 1
+  },
+  "note": "Git SHAs are identity evidence, not ALIVE evidence. Manifest pins in release/v26.9.1/manifest.toml are unchanged; re-pinning is a separate explicit admission decision. GitHub API counts (mfw) were not used; all counts come from git history.",
+  "manifest_components": {
+    "process-intelligence": {
+      "id": "process-intelligence",
+      "repository": "seanchatmangpt/process-intelligence",
+      "ref": "main",
+      "pin": "4492a9f92cd85d518b76a9cbd9c74418cf3ad44a",
+      "head": "f816a372bc414c378c63f717618935ad574e5fe0",
+      "pin_relation": "ancestor",
+      "ahead_by": 44,
+      "files_changed": 50,
+      "workflow_files_changed": 3,
+      "commits_7d": 8,
+      "head_date": "2026-09-29T13:40:08-07:00"
+    },
+    "bcinr": {
+      "id": "bcinr",
+      "repository": "seanchatmangpt/bcinr",
+      "ref": "main",
+      "pin": "d6fefefdb95df5dbbb520afe7b5a4df53aa6e27f",
+      "head": "6e2c1069fbaab83ed9700aefd353071ef93073c1",
+      "pin_relation": "ancestor",
+      "ahead_by": 14,
+      "files_changed": 108,
+      "workflow_files_changed": 1,
+      "commits_7d": 13,
+      "head_date": "2026-09-29T15:49:23-07:00"
+    },
+    "ggen": {
+      "id": "ggen",
+      "repository": "seanchatmangpt/ggen",
+      "ref": "main",
+      "pin": "162e466d8f07d0a75a468b4441b4bc8b1aad369b",
+      "head": "ff96f04e8c7b851e5cca53f3faf5ce1d5f43ce6e",
+      "pin_relation": "ancestor",
+      "ahead_by": 665,
+      "files_changed": 797,
+      "workflow_files_changed": 89,
+      "commits_7d": 73,
+      "head_date": "2026-09-28T18:39:36-07:00"
+    },
+    "gymact": {
+      "id": "gymact",
+      "repository": "seanchatmangpt/gymact",
+      "ref": "feat/llmless-ggen-agents-fortune5-mna",
+      "pin": "cf9a36fcc5b0738269809b83e3ffcad7dae0a5c4",
+      "head": "d3eb5e848cb86952921d1b0083e0b7e7e1f53609",
+      "head_ref_observed": "default branch (declared ref absent from remote heads)",
+      "pin_relation": "ancestor",
+      "ahead_by": 2341,
+      "files_changed": 2077,
+      "workflow_files_changed": 55,
+      "head_date": "2026-09-29T13:22:31-07:00"
+    },
+    "affidavit": {
+      "id": "affidavit",
+      "repository": "seanchatmangpt/affidavit",
+      "ref": "feat/ecosystem-standing-receipts-20260812",
+      "pin": "5dc78f113e60ba95a4b4594a6da3511334e86024",
+      "head": "5dc78f113e60ba95a4b4594a6da3511334e86024",
+      "pin_relation": "ancestor",
+      "ahead_by": 0,
+      "files_changed": 0,
+      "workflow_files_changed": 0,
+      "commits_7d": 0,
+      "head_date": "2026-08-12T23:39:18-07:00"
+    },
+    "fdegym": {
+      "id": "fdegym",
+      "repository": "seanchatmangpt/fdegym",
+      "ref": "main",
+      "pin": "2d7c5acb3cbb8df1608cf9b81be53a74e39a1946",
+      "head": "c7b51338fd7659540bfb1f559b02f426a61c460f",
+      "pin_relation": "ancestor",
+      "ahead_by": 11,
+      "files_changed": 12,
+      "workflow_files_changed": 3,
+      "commits_7d": 0,
+      "head_date": "2026-08-27T12:38:26-07:00"
+    },
+    "wasm4pm": {
+      "id": "wasm4pm",
+      "repository": "seanchatmangpt/wasm4pm",
+      "ref": "main",
+      "pin": "b7ebccb53b1249d45d2472f7754c997982b2f1b7",
+      "head": "09c171b4447257f018e30d721af6701258ebfeff",
+      "pin_relation": "ancestor",
+      "ahead_by": 654,
+      "files_changed": 587,
+      "workflow_files_changed": 55,
+      "commits_7d": 148,
+      "head_date": "2026-09-29T13:40:46-07:00"
+    },
+    "ggen-marketplace": {
+      "id": "ggen-marketplace",
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "ref": "main",
+      "pin": "ceb2b69ad1dc1bf0906a1979a9e18c53245181f3",
+      "head": "cb82395df9d726237f5480bc41fb18e875ce91b9",
+      "pin_relation": "ancestor",
+      "ahead_by": 13219,
+      "files_changed": 15406,
+      "workflow_files_changed": 121,
+      "commits_7d": 988,
+      "head_date": "2026-09-30T00:03:33-07:00"
+    },
+    "wasm4pm-compat": {
+      "id": "wasm4pm-compat",
+      "repository": "seanchatmangpt/wasm4pm-compat",
+      "ref": "main",
+      "pin": "577e2d1d8bdfe27d96f61c63f3ea120994e8bfda",
+      "head": "4c523e0d81a5bb52fda21cea992201f608e088b5",
+      "pin_relation": "ancestor",
+      "ahead_by": 268,
+      "files_changed": 390,
+      "workflow_files_changed": 10,
+      "commits_7d": 15,
+      "head_date": "2026-09-29T13:22:16-07:00"
+    },
+    "autofde": {
+      "id": "autofde",
+      "repository": "seanchatmangpt/autofde",
+      "ref": "main",
+      "pin": "c3f8abc2e83388b5bdb6cc1bbb8cd19a987c19c7",
+      "head": "f8e2d477dcb3e5084c341779f275505debd49c00",
+      "pin_relation": "ancestor",
+      "ahead_by": 114,
+      "files_changed": 68,
+      "workflow_files_changed": 11,
+      "commits_7d": 0,
+      "head_date": "2026-08-27T22:55:35-07:00"
+    },
+    "mfact": {
+      "id": "mfact",
+      "repository": "seanchatmangpt/mfact",
+      "ref": "main",
+      "pin": "308384002a15b9946acbcd6f560c5819723d79dc",
+      "head": "8a62a7c28e935b9afd05c68f455f475423ec0a7a",
+      "pin_relation": "ancestor",
+      "ahead_by": 7,
+      "files_changed": 9,
+      "workflow_files_changed": 2,
+      "commits_7d": 0,
+      "head_date": "2026-08-26T08:52:36-07:00"
+    },
+    "open-ontologies": {
+      "id": "open-ontologies",
+      "repository": "seanchatmangpt/open-ontologies",
+      "ref": "main",
+      "pin": "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99",
+      "head": "8ca43c74a3be53bec8986cb4948e1ece709eb8d1",
+      "pin_relation": "ancestor",
+      "ahead_by": 10,
+      "files_changed": 32,
+      "workflow_files_changed": 0,
+      "commits_7d": 9,
+      "head_date": "2026-09-29T13:05:07-07:00"
+    },
+    "star-toml": {
+      "id": "star-toml",
+      "repository": "seanchatmangpt/star-toml",
+      "ref": "main",
+      "pin": "8395515cf8e68bfdc9edff49fb358c4f1da7c795",
+      "head": "61864d636147948b62dfaf345980d695fb8eeeff",
+      "pin_relation": "ancestor",
+      "ahead_by": 5,
+      "files_changed": 7,
+      "workflow_files_changed": 0,
+      "commits_7d": 2,
+      "head_date": "2026-09-26T01:58:58-07:00"
+    },
+    "autofde-lab": {
+      "id": "autofde-lab",
+      "repository": "seanchatmangpt/autofde-lab",
+      "ref": "master",
+      "pin": "87d719f441ded3af123a73b95825d5f2847f9c66",
+      "head": "d42a5af94481a3128bf3e35d5f2a0a9a70f22e41",
+      "pin_relation": "ancestor",
+      "ahead_by": 1529,
+      "files_changed": 3877,
+      "workflow_files_changed": 57,
+      "commits_7d": 489,
+      "head_date": "2026-09-28T17:43:54-07:00"
+    },
+    "praxis": {
+      "id": "praxis",
+      "repository": "seanchatmangpt/praxis",
+      "ref": "main",
+      "pin": "bc6b842e0b86e718b098ff3abdc47ef2ad83ee4b",
+      "head": "c78783b4ea3124fc9d1179a9e47d43c522b529f2",
+      "pin_relation": "ancestor",
+      "ahead_by": 170,
+      "files_changed": 1522,
+      "workflow_files_changed": 6,
+      "commits_7d": 5,
+      "head_date": "2026-09-27T16:35:43-07:00"
+    },
+    "mfw": {
+      "id": "mfw",
+      "repository": "seanchatmangpt/mfw",
+      "ref": "agent/finish-cmca-mfw",
+      "pin": "2ecde02f9d7eaea50cfb4ea7876340c6463ac3a1",
+      "head": "7c9eae14b42a638701486cd8a96b1d2df637de0a",
+      "pin_relation": "ancestor",
+      "ahead_by": 14,
+      "files_changed": 4,
+      "workflow_files_changed": 1,
+      "commits_7d": 0,
+      "head_date": "2026-08-19T08:59:19-07:00"
+    }
+  },
+  "repositories": [
+    {
+      "repository": "seanchatmangpt/autofde-lab",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 483,
+      "first_commit": "2026-09-23T00:07:41-07:00",
+      "last_commit": "2026-09-28T22:11:08+00:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #207 from seanchatmangpt/claude/optimistic-davinci-h151w0",
+        "docs(status): record the validation against intended purpose with every measured result",
+        "fix(ray_rllib): name the old-stack DQN failure instead of crashing inside ray",
+        "test: enforce the gym actuation boundary; record sregym_sota as a pending exception",
+        "fix(test,ci): release-fence test matches WO-03 design; Ray workers get tests/ on PYTHONPATH",
+        "test/ci: fix boundary-guard false positive, relocatable praxis path, independent plan verification",
+        "v26.9.28: consolidate PTD experiment and planner-league boundaries",
+        "ci(release): retire historical v26.9.24 tagger"
+      ],
+      "head_sha": "d42a5af94481a3128bf3e35d5f2a0a9a70f22e41"
+    },
+    {
+      "repository": "seanchatmangpt/unrdf",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 271,
+      "first_commit": "2026-09-25T16:08:54-07:00",
+      "last_commit": "2026-09-29T01:54:05+00:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #115 from seanchatmangpt/claude/keen-thompson-ja7xo2",
+        "fix: package-matrix findings - browser install, CI-proof version test, portable fusion path, knowledge-engine ReferenceErrors",
+        "test(zkp): best-of-7 for the sub-millisecond compile-scaling ratio (bound unchanged)",
+        "ci: route test:node scripts through run-node-tests so test:coverage passes on Node 20",
+        "ci: make node --test package scripts survive 'pnpm -r test -- --coverage' on Node 20; best-of-N hook bulk benchmarks",
+        "style: prettier-format nine files this PR added or changed",
+        "merge: kgc-multiverse lint fixes",
+        "fix(kgc-multiverse): resolve 32 eslint errors exposed by @eslint/js"
+      ],
+      "head_sha": "0550d9630da94b170c931f17a1580ea90091cbb4"
+    },
+    {
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 270,
+      "first_commit": "2026-09-23T02:35:53-07:00",
+      "last_commit": "2026-09-30T00:03:33-07:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "feat(chicago): falsifiable 500M person-year marketplace leverage court",
+        "Merge current main into Chicago work-equivalent court",
+        "Merge QME-1 canonical hardening rebind",
+        "docs(qme): point to hardened canonical subject",
+        "chore(qme): rebind canonical hardening subject",
+        "RFC D: package AuthZEN + SPIFFE absorption",
+        "QME-1: add canonical ecosystem projection",
+        "docs(chicago): add court to semantic book navigation"
+      ],
+      "head_sha": "cb82395df9d726237f5480bc41fb18e875ce91b9"
+    },
+    {
+      "repository": "seanchatmangpt/ash_a2a",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 247,
+      "first_commit": "2026-09-27T19:33:19-07:00",
+      "last_commit": "2026-09-29T23:53:14-07:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge QME-1 canonical hardening rebind",
+        "docs(qme): point to hardened canonical subject",
+        "chore(qme): rebind canonical hardening subject",
+        "Merge FIBO high-value Chicago qualification",
+        "test(chicago): enforce inherited powerless finance profile",
+        "test(chicago): enforce FIBO inheritance and powerless standing",
+        "feat(chicago): make FIBO profile inheritance explicit",
+        "feat(chicago): make FIBO profile inheritance explicit"
+      ],
+      "head_sha": "3325032d9dea201e6deb82ef242c534aacb3b420"
+    },
+    {
+      "repository": "seanchatmangpt/graphlaw",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 175,
+      "first_commit": "2026-09-25T22:47:28-07:00",
+      "last_commit": "2026-09-30T01:31:10+00:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman",
+        "graphlaw-extractor[bot]"
+      ],
+      "subjects": [
+        "feat(chicago): restore qualification algebra on hardened QME subject",
+        "feat(chicago): restore qualification algebra on hardened QME subject",
+        "Merge QME-1 canonical hardening rebind",
+        "docs(qme): point to hardened canonical subject",
+        "chore(qme): rebind canonical hardening subject",
+        "RFC C: canonical Knowledge Hook + FIBO reference contract (#22)",
+        "merge latest main into RFC C Knowledge Hook closure",
+        "QME-1: add canonical ecosystem projection"
+      ],
+      "head_sha": "79275191a0feb19e6de701dabb95402a9b2b28e7"
+    },
+    {
+      "repository": "seanchatmangpt/ggen_igniter",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 143,
+      "first_commit": "2026-09-24T03:39:07-07:00",
+      "last_commit": "2026-09-29T14:56:47-07:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #55 from seanchatmangpt/fix/v26.9.29-mix-format",
+        "style: apply mix format to the 7 files; drop stray path entry",
+        "style: mix format 7 files (formatting only)",
+        "Merge PR #51: CASTLE manufacture capability intake",
+        "docs(castle): register capability intake pack on current main",
+        "feat(castle): replay ggen_igniter_castle_capability_intake_pack_test.exs on current main",
+        "feat(castle): replay capability-intake.md.eex on current main",
+        "feat(castle): replay 010_projection.rq on current main"
+      ],
+      "head_sha": "ae205c3b85c85b5d43738b2f0e3b6833863adbb0"
+    },
+    {
+      "repository": "seanchatmangpt/ggen-ecosystem",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 82,
+      "first_commit": "2026-09-23T00:46:59-07:00",
+      "last_commit": "2026-09-30T00:18:42+00:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman",
+        "github-actions[bot]",
+        "seanchatmangpt"
+      ],
+      "subjects": [
+        "feat(qme): cross-ecosystem crown for 500M marketplace claim",
+        "test(qme): rebind hardened exact subjects",
+        "docs(qme): rebind crown reference to hardened canonical",
+        "fix(qme): rebind ecosystem profile to hardened canonical",
+        "fix(qme): rebind verifier to hardened canonical subject",
+        "fix(qme): bind hardened canonical and live ecosystem subjects",
+        "fix(qme): rebind GraphLaw qualification subject after rebase",
+        "chore(certification): make QME crown load-bearing"
+      ],
+      "head_sha": "93d51a9dd9b083acc821376c8462d3c861adde87"
+    },
+    {
+      "repository": "seanchatmangpt/gymact",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 77,
+      "first_commit": "2026-09-24T00:15:06-07:00",
+      "last_commit": "2026-09-29T13:22:31-07:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #153: v26.9.28 integration + inherited leaked-event-loop root-cause fix",
+        "Merge pull request #155 from seanchatmangpt/factory-e/v26.9.28-sa2a-exact-subject-conformance",
+        "fix(sa2a): preserve full producer JSON subject domain",
+        "fix(sa2a): require RFC8785 exact-subject domain",
+        "fix(sa2a): constrain exact subject to canonical JSON domain",
+        "fix(sa2a): preserve canonical exact-subject semantics",
+        "feat(sa2a): consume portable replanning envelope",
+        "feat: merge court script + tests; ERRC doc updated with fix-pass findings"
+      ],
+      "head_sha": "d3eb5e848cb86952921d1b0083e0b7e7e1f53609"
+    },
+    {
+      "repository": "seanchatmangpt/beam4pm",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 75,
+      "first_commit": "2026-09-23T02:32:45-07:00",
+      "last_commit": "2026-09-29T23:51:03-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge QME-1 canonical hardening rebind",
+        "docs(qme): point to hardened canonical subject",
+        "chore(qme): rebind canonical hardening subject",
+        "Merge pull request #109 from seanchatmangpt/factory-e/qme-1-ecosystem-projection",
+        "chore(qme): add machine-readable ecosystem profile",
+        "docs(qme): add canonical ecosystem reference",
+        "Merge PR #106: CASTLE process capability intake",
+        "fix(deps): align Ash lock with pinned ash_a2a requirement"
+      ],
+      "head_sha": "aa98261db7719f7708ad7990064bbc5f06b754df"
+    },
+    {
+      "repository": "seanchatmangpt/castle",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 74,
+      "first_commit": "2026-09-28T21:48:33-07:00",
+      "last_commit": "2026-09-29T23:54:21-07:00",
+      "authors": [
+        "Sean Chatman",
+        "github-actions[bot]"
+      ],
+      "subjects": [
+        "fix(tests): restore sjira_castle compile and Debug on ConstructRequest (#30)",
+        "Merge QME-1 canonical hardening rebind",
+        "docs(qme): point to hardened canonical subject",
+        "chore(qme): rebind canonical hardening subject",
+        "RFC C: consume FIBO through the existing CASTLE consequence stack (#28)",
+        "merge latest main into RFC C FIBO reference closure",
+        "test(reference): court exact upstream source bindings",
+        "feat(reference): expose admitted upstream bindings"
+      ],
+      "head_sha": "5c03ca0f32d9c2cc02d504004b7902b2a8256db5"
+    },
+    {
+      "repository": "seanchatmangpt/chatgpt-cloud-elixir",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 69,
+      "first_commit": "2026-09-23T20:22:10-07:00",
+      "last_commit": "2026-09-26T06:22:39-07:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman",
+        "chatgpt-xaas-runtime[bot]"
+      ],
+      "subjects": [
+        "Merge pull request #44 from seanchatmangpt/v26926/cce-relay-suite-resurrection",
+        "fix(relay): run the hardening court in CI and guard relay test coverage",
+        "harden(relay-court): fix native XaaS step struct preload; bind relay replay and result identity; relay bench",
+        "fix(relay-court): resurrect xaas relay suite; guard TestCase protocol shadowing",
+        "Merge pull request #43 from seanchatmangpt/claude/a2a-capabilities-2sEqrx",
+        "a2a: refuse contested agent ids; RFC 8259 JSON; https-only API base; read retry",
+        "feat(xaas-runtime): direct WSS transport as primary, GitHub Actions as typed fallback (v26.9.25 \u00a77) (#41)",
+        "feat(v26.9.25): add receipted gall-work relay worker (#39)"
+      ],
+      "head_sha": "8efaa40b69c8162d22fe2dc5e59657f8dcff529e"
+    },
+    {
+      "repository": "seanchatmangpt/ggen",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 68,
+      "first_commit": "2026-09-23T00:28:27-07:00",
+      "last_commit": "2026-09-28T18:39:36-07:00",
+      "authors": [
+        "Sean Chatman",
+        "dependabot[bot]",
+        "github-actions[bot]",
+        "zcode-worker-ggen"
+      ],
+      "subjects": [
+        "Merge pull request #780 from seanchatmangpt/fix/pack-toml-schema-and-lint-2026-09-29",
+        "fix: unblock just lint after dependency bump (clippy -D warnings, fmt)",
+        "Merge remote-tracking branch 'origin/main'",
+        "pack: open pack.toml schema to author metadata; compress .claude/rules for budget",
+        "Merge branch 'engine-imports'",
+        "ggen-engine: honor [ontology].imports in the sync path",
+        "chore(release): v26.9.28 release candidate: latest dependencies + CI fixes (#779)",
+        "chore(deps): bump the minor-and-patch group across 1 directory with 21 updates (#756)"
+      ],
+      "head_sha": "ff96f04e8c7b851e5cca53f3faf5ce1d5f43ce6e"
+    },
+    {
+      "repository": "seanchatmangpt/zcode-cli",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 67,
+      "first_commit": "2026-09-23T14:54:49-07:00",
+      "last_commit": "2026-09-29T13:28:57-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "SA2A C: close portable recovery runtime (#19)",
+        "fix(sa2a): tighten portable identity admission",
+        "merge main into Factory C SA2A recovery closure",
+        "feat(sa2a): close portable recovery runtime",
+        "chore(sjira): add v26.9.29 fleet work order",
+        "fix(sa2a): align provider-substitution with portable contract",
+        "fix(sa2a): align replay with portable contract",
+        "feat(sa2a): add provider-health"
+      ],
+      "head_sha": "60dc2602c2e5e898110c9bf3e1cbe18227c63357"
+    },
+    {
+      "repository": "seanchatmangpt/wasm4pm",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 53,
+      "first_commit": "2026-09-24T14:47:29-07:00",
+      "last_commit": "2026-09-29T13:40:46-07:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge PR #650: CASTLE WASM compatibility intake",
+        "feat(castle): export compatibility intake on current main",
+        "feat(castle): replay castle_capability_intake.rs on current main",
+        "feat(castle): replay castle-capability-intake.ttl on current main",
+        "Merge pull request #654 from seanchatmangpt/factory-e/v26.9.29-allocation-claim-ledger-r7",
+        "merge(sa2a): compose trust-domain quorum with allocation-bound claims",
+        "SA2A C3: enforce trust-domain-independent signer quorum",
+        "feat(sa2a): bind allocation identity into durable effect claims"
+      ],
+      "head_sha": "09c171b4447257f018e30d721af6701258ebfeff"
+    },
+    {
+      "repository": "seanchatmangpt/ash_kudzu",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 53,
+      "first_commit": "2026-09-25T20:37:12-07:00",
+      "last_commit": "2026-09-29T13:27:49-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "feat(sa2a): semantic evidence admission boundary (#10)",
+        "test(sa2a): add authority_refusal admission vector",
+        "test(sa2a): add provenance_chain admission vector",
+        "test(sa2a): add receipt_identity admission vector",
+        "test(sa2a): add canonicalization admission vector",
+        "test(sa2a): add mapping_revision admission vector",
+        "test(sa2a): add source_revision admission vector",
+        "test(sa2a): add template_digest admission vector"
+      ],
+      "head_sha": "70429ebdf4c72497f2b59912a5778f7b3f887fa4"
+    },
+    {
+      "repository": "seanchatmangpt/dspy-wasm",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 53,
+      "first_commit": "2026-09-25T15:43:36-07:00",
+      "last_commit": "2026-09-28T23:15:30+00:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #8 from seanchatmangpt/claude/dspy-wasm-prod-readiness-0qb34s",
+        "elixir-host test: keep the budget-abort runaway inside the request limits",
+        "elixir host: declare telemetry and the OTP HTTP/TLS apps ahead of the production host work",
+        "Release 26.9.28: explicit requirements, version single-sourced, verifiable artifact",
+        "Give the Elixir host its own copy of the contract and vectors",
+        "Bound batch/dataset lengths and optimizer count knobs in the component",
+        "Elixir reference host, language-neutral conformance vectors, interpreter step budget",
+        "Host-side meter, single limits table, conformance suite, instance recycling"
+      ],
+      "head_sha": "336482ce19464a3a752936f9c866ff6fea2780d3"
+    },
+    {
+      "repository": "seanchatmangpt/xaas",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 52,
+      "first_commit": "2026-09-25T05:00:00+00:00",
+      "last_commit": "2026-09-29T23:52:35-07:00",
+      "authors": [
+        "Sean Chatman",
+        "topology.py v26.9.25"
+      ],
+      "subjects": [
+        "Merge QME-1 canonical hardening rebind",
+        "docs(qme): point to hardened canonical subject",
+        "chore(qme): rebind canonical hardening subject",
+        "QME-1: add canonical ecosystem projection",
+        "fix(v26.9.29): close merge-audit defects; lock matches mix.exs; ash_a2a dev/test profile",
+        "fix(ultracode): compile SemanticJiraBridge only when ggen_igniter ships the 26.9.20 SemanticJira API",
+        "merge: record origin/backup/v26.9.25/* snapshots as ancestry (tree unchanged)",
+        "Merge sjira/v26.9.22-multirepo-graph into main"
+      ],
+      "head_sha": "9ff91c6fd3e205398d082a6be366f21e9ec7777c"
+    },
+    {
+      "repository": "seanchatmangpt/ash_r2rml",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 43,
+      "first_commit": "2026-09-28T19:50:57-07:00",
+      "last_commit": "2026-09-29T23:53:28-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge QME-1 canonical hardening rebind",
+        "docs(qme): point to hardened canonical subject",
+        "chore(qme): rebind canonical hardening subject",
+        "QME-1: add canonical ecosystem projection",
+        "Merge pull request #53 from seanchatmangpt/fix/main-defects-20260929",
+        "fix: quote-safe geo test sigil, REUSE annotations, dialyzer datetime pattern",
+        "Merge pull request #52 from seanchatmangpt/fix/v26.9.29-from-source-head",
+        "fix(sa2a): add bodiless from_source/2 head for defaults"
+      ],
+      "head_sha": "36f25a30f2f60acde7da1a965626451dbc40b6f8"
+    },
+    {
+      "repository": "seanchatmangpt/ferroplan",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 42,
+      "first_commit": "2026-09-25T20:28:34-07:00",
+      "last_commit": "2026-09-29T13:07:41-07:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "chore(sjira): add v26.9.29 fleet work order",
+        "docs(changelog): 0.29.0 records the DfCM repair/probe surface",
+        "Merge origin/feat/v26.9.26-dfcm-session-repair",
+        "release: publish ferroplan-hddl before the library; mark ferroplan-runtime unpublished",
+        "revert: drop test-regenerated ipc-sweep RESULTS.md from the release prep",
+        "release(0.29.0): prep the v26.9.28 cut",
+        "chore: re-sort ferroplan-runtime in Cargo.lock after merges",
+        "Merge origin/sync/upstream-9d8f16a"
+      ],
+      "head_sha": "2954d5a1045160b31510257d39386d5c36af73c3"
+    },
+    {
+      "repository": "seanchatmangpt/affidavit",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 27,
+      "first_commit": "2026-09-24T17:17:40-07:00",
+      "last_commit": "2026-09-29T23:52:49-07:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge QME-1 canonical hardening rebind",
+        "docs(qme): point to hardened canonical subject",
+        "chore(qme): rebind canonical hardening subject",
+        "QME-1: add canonical ecosystem projection",
+        "feat(crypto): make Affidavit the cryptographic trust plane (#102)",
+        "feat: bind SA2A Di\u00e1taxis evidence to Affidavit (#103)",
+        "Merge pull request #89 from seanchatmangpt/claude/exciting-einstein-grrest",
+        "fix(publish): drop the crates.io edge to wasm4pm so cargo publish resolves"
+      ],
+      "head_sha": "9888b4084d8d7f4cf9337f572c6bbfb592f94e09"
+    },
+    {
+      "repository": "seanchatmangpt/zoela",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 26,
+      "first_commit": "2026-09-24T21:49:05-07:00",
+      "last_commit": "2026-09-26T13:28:04-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #22 from seanchatmangpt/case-study/v26.9.15-ash-a2a-digital-twins",
+        "merge origin/main into case-study/v26.9.15-ash-a2a-digital-twins (W4 lane)",
+        "Merge pull request #36 from seanchatmangpt/v26926/zoela-doctrine-derivation-provenance-gate",
+        "receipt(godslaw): witness v3 over ab3e0b40 (gate 160 repair, 82/82 killed)",
+        "fix(godslaw): gate 160 closes sub-property, qualified-PROV and blank-node escapes",
+        "receipt(godslaw): witness v3 over 2e2fed9b (gate 160, 24 gates, 72/72 killed)",
+        "feat(godslaw): gate 160 doctrine derivation provenance + mutant corpus + witness v3",
+        "Merge pull request #32 from seanchatmangpt/library-conversion"
+      ],
+      "head_sha": "cae4a862744380f6a78b962e3f345ede8bd860dd"
+    },
+    {
+      "repository": "seanchatmangpt/mac-artifact-cleaner",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 26,
+      "first_commit": "2026-09-25T15:16:46-07:00",
+      "last_commit": "2026-09-28T19:44:56-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge branch 'fix/v26926-redaction-test-fixture' into main",
+        "perf(plan,audit): skip git fork for non-repo candidates; size audit candidates in-process",
+        "feat(snapshot): record why the thin loop stopped",
+        "fix(mcp): parse_jsonocel_output accepts the single OCEL document audit run writes",
+        "feat(tools): read-only `tools launchd-orphans` report",
+        "perf(scan): drop redundant per-file metadata call when a scan cache is active",
+        "feat(plan): classify scratch-workspace `.agents` dirs Reversible by path",
+        "chore(doctor): add missing doctests; drop /Users/<name> literals from fixtures"
+      ],
+      "head_sha": "fc73e706a6b33024038aaecae7e82effec19314f"
+    },
+    {
+      "repository": "seanchatmangpt/ash_surface",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 21,
+      "first_commit": "2026-09-26T08:59:55-07:00",
+      "last_commit": "2026-09-29T13:40:38-07:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge PR #12: CASTLE surface capability intake",
+        "test(castle): exercise powerless surface registry",
+        "feat(castle): expose powerless surface intake registry",
+        "test(castle): keep surface projections powerless",
+        "feat(castle): bind mobile and document projection intake",
+        "Merge pull request #9: ERRC wave (idempotency, observability, conformance corpus, one projector contract, ZOE extracted)",
+        "fix(census): drop the 12 suites moved to packages/ash_surface_zoe; true up TESTING.md counts",
+        "feat: idempotency protocol, observability, single-sourced vocabulary, one projector contract, ZOE extracted"
+      ],
+      "head_sha": "881a740bad5e16ddfea3d360f837638fd55ef98a"
+    },
+    {
+      "repository": "seanchatmangpt/ash_graphlaw",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 17,
+      "first_commit": "2026-09-28T23:08:11-07:00",
+      "last_commit": "2026-09-30T05:01:33+00:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman",
+        "dependabot[bot]"
+      ],
+      "subjects": [
+        "docs(qme): point to hardened canonical subject",
+        "chore(qme): rebind canonical hardening subject",
+        "QME-1: add canonical ecosystem projection",
+        "Merge remote-tracking branch 'origin/dependabot/github_actions/actions/upload-artifact-7.0.1' into claude/busy-allen-zapmfe",
+        "Merge remote-tracking branch 'origin/dependabot/github_actions/actions/checkout-7.0.1' into claude/busy-allen-zapmfe",
+        "Merge remote-tracking branch 'origin/dependabot/github_actions/actions/cache/save-6.1.0' into claude/busy-allen-zapmfe",
+        "chore(deps): bump actions/cache/restore from 4.3.0 to 6.1.0",
+        "chore(deps): bump actions/checkout from 6.1.0 to 7.0.1"
+      ],
+      "head_sha": "6aaf71beeb054c0eb16b0c50eefa710f49c18bd0"
+    },
+    {
+      "repository": "seanchatmangpt/homebrew-tap",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 15,
+      "first_commit": "2026-09-23T11:01:51+00:00",
+      "last_commit": "2026-09-29T08:09:44+00:00",
+      "authors": [
+        "ggen-homebrew-releaser"
+      ],
+      "subjects": [
+        "chore: update ggen formula to v26.9.28",
+        "chore: update ggen formula to v26.9.28",
+        "chore: update ggen formula to v26.9.28",
+        "chore: update ggen formula to v26.9.28",
+        "chore: update ggen formula to v26.9.27",
+        "chore: update ggen formula to v26.9.26",
+        "chore: update ggen formula to v26.9.25",
+        "chore: update ggen formula to v26.9.24"
+      ],
+      "head_sha": "847fb9730f19ebe046c662f4c9a28d53fc76bf0f"
+    },
+    {
+      "repository": "seanchatmangpt/ash_pplan",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 15,
+      "first_commit": "2026-09-26T03:58:34-07:00",
+      "last_commit": "2026-09-28T19:34:01+00:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "feat(sa2a): expose owner-side planner provider",
+        "Merge pull request #9 from seanchatmangpt/claude/sweet-dijkstra-10mook",
+        "test: decode fond fixtures with Jason so the declared Elixir 1.17 floor passes",
+        "merge origin/main into release 26.9.8",
+        "chore: remove stray erl_crash.dump and ignore it",
+        "ci: ERRC refactor - parallel jobs, pinned actions, Elixir floor, aggregate gate",
+        "test: cover policy preflight with a real ValidNextState resource; refresh docs and mint",
+        "release: 26.9.8 production hardening"
+      ],
+      "head_sha": "b9da1ad7590d70afac5eace3bd7ba1a644f7249f"
+    },
+    {
+      "repository": "seanchatmangpt/wasm4pm-compat",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 14,
+      "first_commit": "2026-09-24T14:47:11-07:00",
+      "last_commit": "2026-09-29T13:22:16-07:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman",
+        "github-actions[bot]"
+      ],
+      "subjects": [
+        "Merge pull request #36 from seanchatmangpt/claude/beautiful-allen-o9ng71",
+        "docs: correct OCPQ paper year/authors (K\u00fcsters & van der Aalst, 2025)",
+        "process_tree fixture: Loop InvalidArity now means <2 or >3 children",
+        "causal_net: doc alignment with C-net literature (interim)",
+        "Witness citation year/author corrections from DBLP/arXiv verification (interim)",
+        "Research-validated paper alignment fixes (interim, agents still running)",
+        "style: apply pinned nightly rustfmt",
+        "Paper-alignment audit: fix witness citation, token-replay fitness, and related type/docs fixes"
+      ],
+      "head_sha": "4c523e0d81a5bb52fda21cea992201f608e088b5"
+    },
+    {
+      "repository": "seanchatmangpt/bcinr",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 12,
+      "first_commit": "2026-09-24T14:46:33-07:00",
+      "last_commit": "2026-09-29T15:49:23-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #48 from seanchatmangpt/fix/cmca-clippy-sa2a-test-imports",
+        "fix(bcinr-cmca): clippy needless_as_bytes/possible_missing_else and sa2a test imports",
+        "Merge pull request #47 from seanchatmangpt/fix/v26.9.29-workflow-yaml",
+        "Fix invalid YAML in repair-post-integration-verification-v2 workflow (quote run scalar ending in ::)",
+        "Merge pull request #45 from seanchatmangpt/factory-e/v26.9.29-resource-envelope-hardening-r2",
+        "feat(sa2a): add CMCA third-consumer resource envelope",
+        "v26.9.28: hardening release\u2014fix CMCA compilation, unify versions, clean lints (#42)",
+        "Merge PR #41: record public exposure of revoked key (v26.9.25)"
+      ],
+      "head_sha": "6e2c1069fbaab83ed9700aefd353071ef93073c1"
+    },
+    {
+      "repository": "seanchatmangpt/gym-ecosystem",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 10,
+      "first_commit": "2026-09-26T05:54:23-07:00",
+      "last_commit": "2026-09-30T00:33:09+00:00",
+      "authors": [
+        "Sean Chatman",
+        "github-actions[bot]"
+      ],
+      "subjects": [
+        "chore(crown): reconcile gym ecosystem heads",
+        "chore(crown): reconcile gym ecosystem heads",
+        "chore(crown): reconcile gym ecosystem heads",
+        "chore(crown): reconcile gym ecosystem heads",
+        "chore(crown): reconcile gym ecosystem heads",
+        "chore(crown): reconcile gym ecosystem heads",
+        "chore(crown): reconcile gym ecosystem heads",
+        "chore(crown): reconcile gym ecosystem heads"
+      ],
+      "head_sha": "e43d524cd4ecc5eb0317b9a82a0fcd34aa287766"
+    },
+    {
+      "repository": "seanchatmangpt/gitvan",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 9,
+      "first_commit": "2026-09-23T00:11:15-07:00",
+      "last_commit": "2026-09-29T20:56:19+00:00",
+      "authors": [
+        "Sean Chatman",
+        "Test User",
+        "github-actions[bot]",
+        "seanchatmangpt"
+      ],
+      "subjects": [
+        "docs: update CHANGELOG.md for v4.0.1",
+        "feat(swarm): close exact-subject Git Notes gateway (#28)",
+        "docs: update CHANGELOG.md for v4.0.1",
+        "feat(swarm): executable receipt conformance court",
+        "docs: update CHANGELOG.md for v4.0.1",
+        "merge(v26.9.22): integrate upstream CHANGELOG v4.0.1 note with test-gate work (GITVAN-26922-04/08)",
+        "test(gate): parse chunk JSON summary regardless of child exit; add dot+json reporters (GITVAN-26922-04)",
+        "test(gate): pnpm test becomes a gate that can fail; docs verifier requires zero failures (GITVAN-26922-04)"
+      ],
+      "head_sha": "9221cf7cb0f2483566e1306426fd857622d5034b"
+    },
+    {
+      "repository": "seanchatmangpt/open-ontologies",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 8,
+      "first_commit": "2026-09-23T23:23:39-07:00",
+      "last_commit": "2026-09-29T13:05:07-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "chore(sjira): add v26.9.29 fleet work order",
+        "Merge pull request #47 from seanchatmangpt/v26926/open-ontologies-main-buildable-portable-lock",
+        "fix(build): make origin/main build from a clean checkout (portable lock)",
+        "Merge pull request #46 from seanchatmangpt/security/revoke-branch-exposed-keys-v26.9.24",
+        "security(v26.9.24): revoke 1 private key(s) exposed on non-default branches",
+        "Merge pull request #45 from seanchatmangpt/security/rotate-signing-keys-v26.9.24",
+        "security(v26.9.24): rotate the committed signing keys (1 key dir(s))",
+        "Merge pull request #44 from seanchatmangpt/security/rotate-ggen-signing-key"
+      ],
+      "head_sha": "8ca43c74a3be53bec8986cb4948e1ece709eb8d1"
+    },
+    {
+      "repository": "seanchatmangpt/frozen-duckdb",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 7,
+      "first_commit": "2026-09-23T00:21:38-07:00",
+      "last_commit": "2026-09-26T03:49:15-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #6 from seanchatmangpt/feat/duckdb-1.5.5",
+        "\u8bc1: verify evidence for 20259a8 (make verify 6/6 green, ggen receipt signed)",
+        "docs(release): v1.5.5 polish \u2014 per-arch asset corrections, TIME_NS fact, standing-gate docs; render from facts",
+        "Merge pull request #5 from seanchatmangpt/feat/duckdb-1.5.5",
+        "docs(sjira): v26.9.22 as admitted work orders in the xaas shape (FDDB-26922-04)",
+        "feat(verify): bind verify-evidence.ttl to the git subject head/tree (FDDB-26922-02)",
+        "Merge pull request #4 from seanchatmangpt/feat/duckdb-1.5.5"
+      ],
+      "head_sha": "77125caf133fb334c45a2c67453f1534f953f05b"
+    },
+    {
+      "repository": "seanchatmangpt/process-intelligence",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 6,
+      "first_commit": "2026-09-26T05:50:01-07:00",
+      "last_commit": "2026-09-29T13:40:08-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge PR #15: CASTLE process-intelligence intake",
+        "test(castle): exercise process projection intake registry",
+        "feat(castle): expose process projection intake registry",
+        "test(castle): fence process-intelligence projection standing",
+        "feat(castle): bind Ash process projection intake",
+        "Merge pull request #13 from seanchatmangpt/feat/economic-isa-crosswalk"
+      ],
+      "head_sha": "f816a372bc414c378c63f717618935ad574e5fe0"
+    },
+    {
+      "repository": "seanchatmangpt/cre",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 6,
+      "first_commit": "2026-09-29T13:05:45-07:00",
+      "last_commit": "2026-09-29T15:43:34-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #20 from seanchatmangpt/fix/effect-claim-survivors-3",
+        "test(effect-claim): kill surviving mutants; correct ROLE.md scope and paths",
+        "Merge pull request #19 from seanchatmangpt/pay/v26.9.29-effect-claim",
+        "Fix effect-claim gate and audit findings",
+        "Add pure idempotent effect-claim state machine with eunit tests",
+        "chore(sjira): add v26.9.29 fleet work order"
+      ],
+      "head_sha": "dc763e7e3a0cf9f7cc7cd735c284f6a13e2ca989"
+    },
+    {
+      "repository": "seanchatmangpt/ash_atlassian",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 6,
+      "first_commit": "2026-09-26T01:35:53-07:00",
+      "last_commit": "2026-09-28T19:50:04+00:00",
+      "authors": [
+        "Claude",
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #5 from seanchatmangpt/claude/adoring-gauss-wqwp0c",
+        "fix(deps): mint 1.10.1 -> 1.11.0 (EEF-CVE-2026-91043, -92103, -94194)",
+        "Merge pull request #4: sJira governance registry, generated resources, OTP-portable digest",
+        "feat(sjira): generate governance resources; hash-chained standing registry",
+        "fix(ea): OTP-independent canonical digest; bump ash past EEF-CVE-2026-93477",
+        "Merge pull request #1 from seanchatmangpt/feat/v26.9.26-abb-sbb-rfc-seed"
+      ],
+      "head_sha": "43e3d21b7c4e4571493fcf3757392ed16f2dd967"
+    },
+    {
+      "repository": "seanchatmangpt/mfw",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 5,
+      "first_commit": "2026-09-29T15:18:40-07:00",
+      "last_commit": "2026-09-29T15:48:46-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #93 from seanchatmangpt/fix3-payments-chain-survivors",
+        "mfw-payments-chain: kill surviving mutants; F5 checks same settlement",
+        "Merge pull request #92 from seanchatmangpt/payments-chain-audit-fix2",
+        "payments-chain: close audit gaps, mutation gate, CI, correct ROLE.md claims",
+        "Merge pull request #91 from seanchatmangpt/pay/v26.9.29-effect-chain"
+      ],
+      "head_sha": "dfd25a63033505be98673d96d5b25c2ce7e666d5"
+    },
+    {
+      "repository": "seanchatmangpt/autotel",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 5,
+      "first_commit": "2026-09-29T15:18:43-07:00",
+      "last_commit": "2026-09-29T15:44:08-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #7 from seanchatmangpt/test/payments-mutant-kill-fix3",
+        "test(payments): kill surviving mutants in settlement classifier; tighten ROLE.md",
+        "Merge pull request #6 from seanchatmangpt/pay/v26.9.29-f3-retry-consume",
+        "fix(payments): consume retry eligibility on retry submit (F3), flag missing chain keys per span (F4), correct ROLE.md coverage claims",
+        "Merge pull request #5 from seanchatmangpt/pay/v26.9.29-otel-ocel-evidence"
+      ],
+      "head_sha": "52c23c4b960e0d3ecd414b0bce5a35b565c8975d"
+    },
+    {
+      "repository": "seanchatmangpt/a2a-rs",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 5,
+      "first_commit": "2026-09-29T13:05:40-07:00",
+      "last_commit": "2026-09-29T15:25:37-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #14 from seanchatmangpt/pay/v26.9.29-a2a-payments-audit-fix2",
+        "payments: replace tautological tests with real a2a-rs carriage tests + labeled spec vectors",
+        "Merge pull request #13 from seanchatmangpt/pay/v26.9.29-a2a-payments-conformance",
+        "Add payments conformance vectors for PreparedEconomicEffect v1",
+        "chore(sjira): add v26.9.29 fleet work order"
+      ],
+      "head_sha": "75ba4a6ea3104c0edb0b31f4286faedf1a6964a6"
+    },
+    {
+      "repository": "seanchatmangpt/erlmcp",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 5,
+      "first_commit": "2026-09-29T13:05:09-07:00",
+      "last_commit": "2026-09-29T15:20:10-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #27 from seanchatmangpt/pay/v26.9.29-rail-sim-fix",
+        "Fix rail simulator publish: add actual files, remove mis-pathed entry",
+        "Merge pull request #26 from seanchatmangpt/pay/v26.9.29-rail-sim",
+        "Add erlmcp_rail_sim: deterministic payment rail fault simulator and reconciliation state machine",
+        "chore(sjira): add v26.9.29 fleet work order"
+      ],
+      "head_sha": "3cbf5dd8fdc823eade2f42fcfcf3bc4b304afb54"
+    },
+    {
+      "repository": "seanchatmangpt/praxis",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 4,
+      "first_commit": "2026-09-24T14:46:54-07:00",
+      "last_commit": "2026-09-27T16:35:43-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Extract GraphLaw into canonical repository",
+        "Merge PR #20: record public exposure of revoked key (v26.9.25)",
+        "docs(security): record public exposure of revoked key (v26.9.25)",
+        "Merge pull request #19 from seanchatmangpt/security/rotate-signing-keys-v26.9.24"
+      ],
+      "head_sha": "c78783b4ea3124fc9d1179a9e47d43c522b529f2"
+    },
+    {
+      "repository": "seanchatmangpt/chicago-tdd-tools",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 4,
+      "first_commit": "2026-09-24T14:46:42-07:00",
+      "last_commit": "2026-09-26T00:35:16-07:00",
+      "authors": [
+        "Sean Chatman",
+        "dependabot[bot]"
+      ],
+      "subjects": [
+        "Merge pull request #104 from seanchatmangpt/dependabot/cargo/patch-updates-9a2c1f46bc",
+        "test(deps): harden + benchmark the patch-updates lockfile bump (#104)",
+        "chore(deps): bump the patch-updates group across 1 directory with 7 updates",
+        "Merge pull request #105 from seanchatmangpt/security/rotate-signing-keys-v26.9.24"
+      ],
+      "head_sha": "5edb69355d0b5fc933ae602aee0dfb151864070e"
+    },
+    {
+      "repository": "seanchatmangpt/ggen-legacy",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 3,
+      "first_commit": "2026-09-29T13:31:55-07:00",
+      "last_commit": "2026-09-29T14:53:40-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #47 from seanchatmangpt/fix/v26.9.29-ci-gates",
+        "fix(ci): derive workflow gate from declared list; realign generator templates",
+        "feat(v26.9.28): compose verified repository reconstitution fabric (#44)"
+      ],
+      "head_sha": "72f5e7a58ed36e8ec6ad19837b6f81d87cc2d8fa"
+    },
+    {
+      "repository": "seanchatmangpt/mcpp",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 3,
+      "first_commit": "2026-09-29T15:19:13-07:00",
+      "last_commit": "2026-09-29T15:25:57-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #7 from seanchatmangpt/payments-identity-fix",
+        "payments conformance: reconcile effect_id identity set with spec; fix audit findings",
+        "Merge pull request #6 from seanchatmangpt/pay/v26.9.29-mcpp-conformance"
+      ],
+      "head_sha": "a0ce275a235a4655f6f76259bc3d1e6d47477c9d"
+    },
+    {
+      "repository": "seanchatmangpt/yawl",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 3,
+      "first_commit": "2026-09-29T15:29:34-07:00",
+      "last_commit": "2026-09-29T15:44:49-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #242 from seanchatmangpt/fix3-settlement-mutant-tests",
+        "test(settlement): kill blank-finalityRef and history-aliasing mutants; drop dead REPLAY_MUST_NOT_ACTUATE kind; align ROLE.md",
+        "Merge pull request #241 from seanchatmangpt/pay/v26.9.29-settlement-state-machine"
+      ],
+      "head_sha": "db94343f2fb0f1b757d390f54f799924468c1442"
+    },
+    {
+      "repository": "seanchatmangpt/dspygen",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 3,
+      "first_commit": "2026-09-26T06:11:50-07:00",
+      "last_commit": "2026-09-26T11:27:18-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #28 from seanchatmangpt/dependabot/pip/tpot-1.1.0",
+        "Merge branch 'main' into dependabot/pip/tpot-1.1.0",
+        "Merge pull request #50 from seanchatmangpt/dependabot/github_actions/peaceiris/actions-gh-pages-4"
+      ],
+      "head_sha": "582749520d63100dd8fe19e744016a9dfe7faa05"
+    },
+    {
+      "repository": "seanchatmangpt/mmdio",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 3,
+      "first_commit": "2026-09-24T14:46:50-07:00",
+      "last_commit": "2026-09-26T02:07:11-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #20 from seanchatmangpt/feat/dfcm-slidev-presentation",
+        "harden(presentation): inert Slidev subject, fence guard, replay court, bench bound",
+        "Merge pull request #21 from seanchatmangpt/security/rotate-signing-keys-v26.9.24"
+      ],
+      "head_sha": "afc1f6e890a6d1c17b84d5931b21d3c74a851ebc"
+    },
+    {
+      "repository": "seanchatmangpt/ash_dspy",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 3,
+      "first_commit": "2026-09-25T18:01:37-07:00",
+      "last_commit": "2026-09-25T18:02:29-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "test: real composition verification + ledgered hand-written residue",
+        "feat: manufacture AshDspy.Resource Spark DSL extension from ash-extension-pack",
+        "chore: scaffold ash_dspy mix project (calver 26.9.25, ash ~> 3.0, spark ~> 2.2)"
+      ],
+      "head_sha": "3b6b527579bcb4ece0a731ea60a283ff3706d8d4"
+    },
+    {
+      "repository": "seanchatmangpt/star-toml",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-26T01:58:58-07:00",
+      "last_commit": "2026-09-26T01:58:58-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #12 from seanchatmangpt/dependabot/cargo/minor-and-patch-5753cf405a"
+      ],
+      "head_sha": "61864d636147948b62dfaf345980d695fb8eeeff"
+    },
+    {
+      "repository": "seanchatmangpt/dteam",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-29T15:20:31-07:00",
+      "last_commit": "2026-09-29T15:20:31-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #15 from seanchatmangpt/pay/v26.9.29-payment-conformance"
+      ],
+      "head_sha": "27885a8b42cdee2fb096ab585c8c691c9e6f6969"
+    },
+    {
+      "repository": "seanchatmangpt/semantic_bit",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-29T15:18:36-07:00",
+      "last_commit": "2026-09-29T15:18:36-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #1 from seanchatmangpt/pay/v26.9.29-effect-identity"
+      ],
+      "head_sha": "a955c773336cdb18fbbb2ca899f1ca0df1ca87f0"
+    },
+    {
+      "repository": "seanchatmangpt/qlever",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-29T13:07:29-07:00",
+      "last_commit": "2026-09-29T13:07:29-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "chore(sjira): add v26.9.29 fleet work order"
+      ],
+      "head_sha": "f8e7f4683b3e2a629c351d71cbf23aa7ada4eb89"
+    },
+    {
+      "repository": "seanchatmangpt/ggen-mcp",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-29T13:05:58-07:00",
+      "last_commit": "2026-09-29T13:05:58-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "chore(sjira): add v26.9.29 fleet work order"
+      ],
+      "head_sha": "a9f63b6abbc669dd1d22da1f22f56dfcd8e7e14b"
+    },
+    {
+      "repository": "seanchatmangpt/lsp-max",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-29T13:05:53-07:00",
+      "last_commit": "2026-09-29T13:05:53-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "chore(sjira): add v26.9.29 fleet work order"
+      ],
+      "head_sha": "5dec93bef12592b2d7eee7b9a45139595f2bbedb"
+    },
+    {
+      "repository": "seanchatmangpt/ash_expo",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-26T07:36:23-07:00",
+      "last_commit": "2026-09-26T07:36:23-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #7 from seanchatmangpt/test/end-to-end-codegen"
+      ],
+      "head_sha": "024852b92330c76e12d0ab26531ef1e511c71041"
+    },
+    {
+      "repository": "seanchatmangpt/anti-llm-cheat-lsp",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-26T06:07:28-07:00",
+      "last_commit": "2026-09-26T06:07:28-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #5 from seanchatmangpt/dependabot/github_actions/actions/download-artifact-8"
+      ],
+      "head_sha": "c828e4f6d8230e3219112ccd4242414f17577801"
+    },
+    {
+      "repository": "seanchatmangpt/chatman-nano-stack",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-26T02:07:09-07:00",
+      "last_commit": "2026-09-26T02:07:09-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #32 from seanchatmangpt/dependabot/pip/dev-dependencies-0f9151234f"
+      ],
+      "head_sha": "de7eb619310a522e44e9d6cf20e9460806b314ea"
+    },
+    {
+      "repository": "seanchatmangpt/cargo-cicd",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-24T14:46:38-07:00",
+      "last_commit": "2026-09-24T14:46:38-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #16 from seanchatmangpt/security/rotate-signing-keys-v26.9.24"
+      ],
+      "head_sha": "59214d6a1293d794b7a27095276047cdff73a9ec"
+    },
+    {
+      "repository": "seanchatmangpt/agile-protocol-specification",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-26T01:58:52-07:00",
+      "last_commit": "2026-09-26T01:58:52-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #10 from seanchatmangpt/adopt/engineering-standards-v26.9.21"
+      ],
+      "head_sha": "1b731a6e963fa249c4e3e8bcbe932025c5e38bb5"
+    },
+    {
+      "repository": "seanchatmangpt/ash_ex4pm",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-26T06:46:08-07:00",
+      "last_commit": "2026-09-26T06:46:08-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #1 from seanchatmangpt/feat/economic-isa-adapter"
+      ],
+      "head_sha": "64a21504d3aab0165275cb3e1c9e2fc124d83413"
+    },
+    {
+      "repository": "seanchatmangpt/ex4pm",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-26T11:41:56-07:00",
+      "last_commit": "2026-09-26T11:41:56-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #45 from seanchatmangpt/feat/economic-isa-ocel-v2"
+      ],
+      "head_sha": "d1ff769ca7763168ff154b1def980dfaec0cb15c"
+    },
+    {
+      "repository": "seanchatmangpt/clnrm_prototype",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-26T04:39:30-07:00",
+      "last_commit": "2026-09-26T04:39:30-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #20 from seanchatmangpt/dependabot/cargo/tempfile-3.27.0"
+      ],
+      "head_sha": "5a453a5754385b5805993c01f60e620a5035a39f"
+    },
+    {
+      "repository": "seanchatmangpt/claude-code-config-lsp",
+      "evidence": "OBSERVED",
+      "method": "git clone --bare --filter=blob:none --shallow-since=2026-09-23 (anonymous)",
+      "commits_7d": 1,
+      "first_commit": "2026-09-24T14:46:46-07:00",
+      "last_commit": "2026-09-24T14:46:46-07:00",
+      "authors": [
+        "Sean Chatman"
+      ],
+      "subjects": [
+        "Merge pull request #3 from seanchatmangpt/security/rotate-signing-keys-v26.9.24"
+      ],
+      "head_sha": "1edad3b2bbc34723db85bfdbca0b310fcc35160a"
+    },
+    {
+      "repository": "seanchatmangpt/mfact",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "8a62a7c28e935b9afd05c68f455f475423ec0a7a"
+    },
+    {
+      "repository": "seanchatmangpt/autofde",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "f8e2d477dcb3e5084c341779f275505debd49c00"
+    },
+    {
+      "repository": "seanchatmangpt/fdegym",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "c7b51338fd7659540bfb1f559b02f426a61c460f"
+    },
+    {
+      "repository": "seanchatmangpt/dsrust",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "a1ea189d37d829a894f59d33db254d18ec815ae7"
+    },
+    {
+      "repository": "seanchatmangpt/rrgym",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "9f3128ae2b5b752c0f5bb091b433231d226a3585"
+    },
+    {
+      "repository": "seanchatmangpt/lifegym",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "4dffff1f81b83593220c787c08cb6622e3c749ee"
+    },
+    {
+      "repository": "seanchatmangpt/ww3gym",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "0f539e75c772978fe8d1ebd897789649f5785bf2"
+    },
+    {
+      "repository": "seanchatmangpt/biblegym",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "c0a13ea67e6a9e31c2d07f06565ea2b8acfcd8f7"
+    },
+    {
+      "repository": "seanchatmangpt/agent-lightning",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "bd80905120affc576eb383f3b4bcc35cacc0e1d0"
+    },
+    {
+      "repository": "seanchatmangpt/truex",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "9a487fa786d61bd520ad91b15613be3571f1071f"
+    },
+    {
+      "repository": "seanchatmangpt/clap-noun-verb",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "747f1dd4506892c218da4d739c256bcfcf941e50"
+    },
+    {
+      "repository": "seanchatmangpt/astro",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "d6740b5bacfc1292b75fee5cf7663f8136e3cc87"
+    },
+    {
+      "repository": "seanchatmangpt/bytestar",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "ae4ee9ac6babf658ea5cdc2385f469d0d761db9b"
+    },
+    {
+      "repository": "seanchatmangpt/uvmgr_v0",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "6871952e3b0d9ae9e1aeff6791bb49ba99424ac8"
+    },
+    {
+      "repository": "seanchatmangpt/atman",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "87969680dc3db47ab23e287948d3a27f885f1c5e"
+    },
+    {
+      "repository": "seanchatmangpt/ai-self-sustaining-system",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "23c37c15acc7fa8d5e8b4f4520f3a23d366c4dd6"
+    },
+    {
+      "repository": "seanchatmangpt/pm4wasm",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "acdf79d846c1265c552c943cc7f4cd1b9d411c1d"
+    },
+    {
+      "repository": "seanchatmangpt/agent-actor",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "4ead18249545b65db9ccb9c0c84d6bb8c030c223"
+    },
+    {
+      "repository": "seanchatmangpt/ostar",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "a392e009400c83d5e175b508c4e3008e189945d3"
+    },
+    {
+      "repository": "seanchatmangpt/chatmangpt",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "b8deb629bf175d9c144472bed31cfc5a71a96a70"
+    },
+    {
+      "repository": "seanchatmangpt/arazzo-ai",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "b458ae40d22a1de04dc235e0894cd5e0852423a1"
+    },
+    {
+      "repository": "seanchatmangpt/ash_swarm",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "d5e50b9878ab5619a90672e753a344e4c3b162f5"
+    },
+    {
+      "repository": "seanchatmangpt/ash_n8n",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "ab8e47ec7a9b8651aa2ac5fe5bbcb4cfdeb46477"
+    },
+    {
+      "repository": "seanchatmangpt/ash_planning_center",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "5ee26cbdc8fef26c92c7691355c76f5aed2e7b2c"
+    },
+    {
+      "repository": "seanchatmangpt/ggen-create",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "eaa463af138d7aff88db813f0f65307bf5c9b5ba"
+    },
+    {
+      "repository": "seanchatmangpt/mfact-command-center",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "7520ed6bc7b9d64677f087bea05cbee070367f86"
+    },
+    {
+      "repository": "seanchatmangpt/capability-map",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "69584b906ff2b18b416d5c5bb3972d4cc1330a32"
+    },
+    {
+      "repository": "seanchatmangpt/unibit",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "3bb4347f87638d4048189b9be351339fbf459d41"
+    },
+    {
+      "repository": "seanchatmangpt/unjucks",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "5ecffdee7b02a407951db5918b3dafd28184d7b2"
+    },
+    {
+      "repository": "seanchatmangpt/citty-test-utils",
+      "evidence": "OBSERVED",
+      "method": "shallow-since returned no commits; git ls-remote HEAD",
+      "commits_7d": 0,
+      "head_sha": "2bf7c2b74bba85fac51e588b99771486002af061"
+    },
+    {
+      "repository": "seanchatmangpt/speckit-ralph",
+      "evidence": "EXCLUDED",
+      "reason": "not anonymously readable (private); no API scope",
+      "commits_7d": null
+    }
+  ]
+}
