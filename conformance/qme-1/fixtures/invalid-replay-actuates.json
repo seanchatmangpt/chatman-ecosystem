@@ -1,0 +1,20 @@
+{
+  "version": "QME-1",
+  "subject": "s",
+  "evidence_horizon": "h",
+  "canonical_owners": {
+    "x": "y"
+  },
+  "authority_ceiling": "NONE",
+  "consequence_class": "EVIDENCE_ONLY",
+  "falsifiers": [
+    "replay"
+  ],
+  "receipt": {
+    "id": "r",
+    "subject": "s"
+  },
+  "replay": {
+    "actuating": true
+  }
+}
