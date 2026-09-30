@@ -1,0 +1,7 @@
+@prefix ce: <https://seanchatmangpt.github.io/chatman-ecosystem/edge-retirement#> .
+ce:E-REP-01 a ce:RetiredEdge ;
+ ce:exactSubject "0f186e7f03ca776434c9e075f5823d731694bc85" ;
+ ce:ownerKind ce:machineOwner ; ce:authority "NONE" ;
+ ce:consequence "crown finding maps to typed repair demand without recurring human/LLM routing" ;
+ ce:receipt "sha256:0000000000000000000000000000000000000000000000000000000000000000" ;
+ ce:replayDigest "sha256:0000000000000000000000000000000000000000000000000000000000000000" .
