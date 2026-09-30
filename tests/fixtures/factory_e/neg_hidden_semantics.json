@@ -1,0 +1,263 @@
+{
+  "consequences": [
+    {
+      "class": "SELECT",
+      "id": "c1"
+    },
+    {
+      "authority": "authority:exact-scope-1",
+      "class": "DO",
+      "id": "c2",
+      "receipt": "receipt:c2"
+    }
+  ],
+  "evidence_horizon": {
+    "expires_at": "2026-10-30T00:00:00Z",
+    "observed_at": "2026-09-30T00:00:00Z"
+  },
+  "laws": [
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "QMX",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "NHS",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "CANON",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "CSEP",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "IOBS",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "NAREP",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "MXNEG",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "CHEST",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "ACD",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "HARD",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "CHIC",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "SMAN",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "XCAP",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "OBSERVED",
+          "ref": "docs/rfc/v26.9.29-factory-e-closure.md",
+          "subject": {
+            "ref": "factory-e/v26.9.29-rfc-closure-r9",
+            "repo": "seanchatmangpt/chatman-ecosystem",
+            "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+          }
+        }
+      ],
+      "id": "PROF",
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "standing": "PARTIAL_ALIVE"
+    }
+  ],
+  "replay": {
+    "actuating": false
+  },
+  "schema": "factory-e-conformance/1",
+  "subject": {
+    "ref": "factory-e/v26.9.29-rfc-closure-r9",
+    "repo": "seanchatmangpt/chatman-ecosystem",
+    "sha": "92cb17cda899a8d85abdaa04db10a3d2334e116d"
+  },
+  "terms": [
+    {
+      "owner": "seanchatmangpt/chatman-ecosystem",
+      "term": "Qualified Machine Experience"
+    },
+    {
+      "owner": "other/repo",
+      "term": "Qualified Machine Experience"
+    }
+  ]
+}

@@ -69,6 +69,7 @@ Version: `0.1.0`
 | `document:readme` | `README.md` | false |
 | `document:release-process` | `docs/RELEASE-PROCESS.md` | false |
 | `document:reliability-dr` | `docs/RELIABILITY-AND-DR.md` | false |
+| `document:rfc-v26-9-29-factory-e-closure` | `docs/rfc/v26.9.29-factory-e-closure.md` | false |
 | `document:security-model` | `docs/SECURITY-MODEL.md` | false |
 | `document:troubleshooting` | `docs/TROUBLESHOOTING.md` | false |
 | `document:v26-8-18-release` | `docs/v26.8.18-release.md` | false |

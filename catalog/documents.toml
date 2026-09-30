@@ -183,3 +183,9 @@ id = "document:no-agent-coding"
 title = "No Agent Coding: Building the Deterministic Enterprise"
 path = "books/no-agent-coding/src/README.md"
 canonical = false
+
+[[document]]
+id = "document:rfc-v26-9-29-factory-e-closure"
+title = "RFC v26.9.29 Factory E Closure Core"
+path = "docs/rfc/v26.9.29-factory-e-closure.md"
+canonical = false

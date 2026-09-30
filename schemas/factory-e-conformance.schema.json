@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chatman.dev/schemas/factory-e-conformance.schema.json",
+  "title": "Factory E Conformance Claim",
+  "type": "object",
+  "required": ["schema", "subject", "evidence_horizon", "laws", "terms", "consequences", "replay"],
+  "properties": {
+    "schema": {"const": "factory-e-conformance/1"},
+    "subject": {"$ref": "#/$defs/subject"},
+    "evidence_horizon": {
+      "type": "object",
+      "required": ["observed_at"],
+      "properties": {
+        "observed_at": {"type": "string", "minLength": 1},
+        "expires_at": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "laws": {"type": "array", "items": {"$ref": "#/$defs/law"}},
+    "terms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["term", "owner"],
+        "properties": {"term": {"type": "string", "minLength": 1}, "owner": {"type": "string", "minLength": 1}},
+        "additionalProperties": false
+      }
+    },
+    "consequences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "class"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "class": {"enum": ["SELECT", "CONSTRUCT", "DO"]},
+          "authority": {"type": "string", "minLength": 1},
+          "receipt": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "replay": {
+      "type": "object",
+      "required": ["actuating"],
+      "properties": {"actuating": {"type": "boolean"}},
+      "additionalProperties": false
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "overrides": {"type": "array", "items": {"type": "string"}},
+          "profile_terms": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "subject": {
+      "type": "object",
+      "required": ["repo", "ref", "sha"],
+      "properties": {
+        "repo": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"},
+        "ref": {"type": "string", "minLength": 1},
+        "sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      },
+      "additionalProperties": false
+    },
+    "law": {
+      "type": "object",
+      "required": ["id", "owner", "standing", "evidence"],
+      "properties": {
+        "id": {"enum": ["QMX", "NHS", "CANON", "CSEP", "IOBS", "NAREP", "MXNEG", "CHEST", "ACD", "HARD", "CHIC", "SMAN", "XCAP", "PROF"]},
+        "owner": {"type": "string", "minLength": 1},
+        "standing": {"enum": ["UNKNOWN", "PARTIAL_ALIVE", "ALIVE", "BLOCKED", "BUILD_BROKEN", "UNSUPPORTED"]},
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kind", "subject", "ref"],
+            "properties": {
+              "kind": {"enum": ["OBSERVED", "EXECUTED", "CHANGED", "VERIFIED", "EXCLUDED"]},
+              "subject": {"$ref": "#/$defs/subject"},
+              "ref": {"type": "string", "minLength": 1},
+              "observer": {"type": "string", "minLength": 1},
+              "producer": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
