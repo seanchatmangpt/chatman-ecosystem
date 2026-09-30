@@ -1,0 +1,100 @@
+{
+  "schema": "chatman.qme-fleet-projection/1",
+  "version": "26.9.30",
+  "authority": "NONE",
+  "consequence": "EVIDENCE_ONLY",
+  "standing": "PARTIAL_ALIVE",
+  "canonical_equation": "A = mu(O*)",
+  "source": {
+    "path": "observations/fleet/2026-09-30-seven-day.json",
+    "observation_id": "fleet:recent:2026-09-30:7d",
+    "subject_repository": "seanchatmangpt/chatman-ecosystem",
+    "subject_base_sha": "869babb1d0c852e0ceda581a3edfea6d32189d95",
+    "repository_count": 101
+  },
+  "rule": "Fleet observations are candidate evidence O. QME may qualify them for O*; projection never grants authority or DO.",
+  "capability_sets": [
+    {
+      "id": "qme_reference_core",
+      "authority_effect": "NONE",
+      "members": [
+        "seanchatmangpt/chatman-ecosystem",
+        "seanchatmangpt/graphlaw",
+        "seanchatmangpt/ash",
+        "seanchatmangpt/ash_graphlaw",
+        "seanchatmangpt/ash_r2rml",
+        "seanchatmangpt/ash_a2a",
+        "seanchatmangpt/affidavit",
+        "seanchatmangpt/beam4pm",
+        "seanchatmangpt/xaas",
+        "seanchatmangpt/ggen-marketplace",
+        "seanchatmangpt/castle",
+        "seanchatmangpt/ggen-ecosystem"
+      ]
+    },
+    {
+      "id": "economic_effect_chain",
+      "authority_effect": "NONE",
+      "members": [
+        "seanchatmangpt/semantic_bit",
+        "seanchatmangpt/a2a-rs",
+        "seanchatmangpt/mcpp",
+        "seanchatmangpt/cre",
+        "seanchatmangpt/yawl",
+        "seanchatmangpt/mfw",
+        "seanchatmangpt/autotel",
+        "seanchatmangpt/dteam",
+        "seanchatmangpt/ex4pm",
+        "seanchatmangpt/ash_ex4pm"
+      ]
+    },
+    {
+      "id": "semantic_diataxis",
+      "authority_effect": "NONE",
+      "members": [
+        "seanchatmangpt/engineering-standards",
+        "seanchatmangpt/ggen",
+        "seanchatmangpt/ggen-marketplace",
+        "seanchatmangpt/graphlaw",
+        "seanchatmangpt/ash_graphlaw",
+        "seanchatmangpt/xaas",
+        "seanchatmangpt/chatman-ecosystem"
+      ]
+    },
+    {
+      "id": "planning_runtime",
+      "authority_effect": "NONE",
+      "members": [
+        "seanchatmangpt/ferroplan",
+        "seanchatmangpt/koala-planner",
+        "seanchatmangpt/beam4pm",
+        "seanchatmangpt/gymact",
+        "seanchatmangpt/autofde-lab",
+        "seanchatmangpt/VAL",
+        "seanchatmangpt/ash_pplan"
+      ]
+    },
+    {
+      "id": "semantic_manufacture",
+      "authority_effect": "NONE",
+      "members": [
+        "seanchatmangpt/ggen",
+        "seanchatmangpt/ggen_igniter",
+        "seanchatmangpt/ggen-marketplace",
+        "seanchatmangpt/ggen-legacy",
+        "seanchatmangpt/chatman-ecosystem"
+      ]
+    },
+    {
+      "id": "evidence_observation",
+      "authority_effect": "NONE",
+      "members": [
+        "seanchatmangpt/unrdf",
+        "seanchatmangpt/ash_r2rml",
+        "seanchatmangpt/process-intelligence",
+        "seanchatmangpt/autotel",
+        "seanchatmangpt/erlmcp"
+      ]
+    }
+  ]
+}
