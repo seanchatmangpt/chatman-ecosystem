@@ -1,0 +1,118 @@
+{
+  "version": "26.9.29",
+  "semantics": "candidate vectors; expected conformant indicates whether a claimed architecture should pass the universal laws",
+  "cases": [
+    {
+      "id": "hidden-semantics",
+      "law": "L1",
+      "admitted": {
+        "risk": "low"
+      },
+      "hidden": {
+        "risk": "high"
+      },
+      "expected": "REFUSED"
+    },
+    {
+      "id": "duplicate-owner",
+      "law": "L2",
+      "owners": [
+        "A",
+        "B"
+      ],
+      "predicate": "authority",
+      "expected": "REFUSED"
+    },
+    {
+      "id": "select-is-do",
+      "law": "L3",
+      "select": true,
+      "do_without_authority": true,
+      "expected": "REFUSED"
+    },
+    {
+      "id": "receipt-is-authority",
+      "law": "L4",
+      "receipt": true,
+      "authority": false,
+      "expected": "REFUSED"
+    },
+    {
+      "id": "subject-transfer",
+      "law": "L5",
+      "evidence_subject": "sha:a",
+      "claim_subject": "sha:b",
+      "qualified_equivalence": false,
+      "expected": "REFUSED"
+    },
+    {
+      "id": "lineage-missing",
+      "law": "L6",
+      "projection": true,
+      "derived_from": null,
+      "expected": "REFUSED"
+    },
+    {
+      "id": "unknown-success",
+      "law": "L7",
+      "outcome": "UNKNOWN",
+      "standing": "ALIVE",
+      "expected": "REFUSED"
+    },
+    {
+      "id": "edge-global-stop",
+      "law": "L8",
+      "failed_edge": "ci",
+      "reachable_lawful_edges": 3,
+      "decision": "STOP",
+      "expected": "REFUSED"
+    },
+    {
+      "id": "reverse-chesterton",
+      "law": "L9",
+      "replacement": true,
+      "preserved_constraints": false,
+      "same_subject_falsifier": false,
+      "expected": "REFUSED"
+    },
+    {
+      "id": "negative-chesterton",
+      "law": "L10",
+      "guard_removed": true,
+      "origin_recovered": false,
+      "falsifier": false,
+      "expected": "REFUSED"
+    },
+    {
+      "id": "constraint-distillation",
+      "law": "L11",
+      "reproduced_failure": true,
+      "durable_constraint": false,
+      "expected": "NONCONFORMANT"
+    },
+    {
+      "id": "qualification-authority",
+      "law": "L12",
+      "tests_pass": true,
+      "authority_issued_by_test": true,
+      "expected": "REFUSED"
+    },
+    {
+      "id": "negative-vs-null",
+      "law": "NULL",
+      "candidate_value": -1,
+      "null_value": 0,
+      "adopted": true,
+      "expected": "REFUSED"
+    },
+    {
+      "id": "qualified-equivalence",
+      "law": "L5",
+      "evidence_subject": "sha:a",
+      "claim_subject": "sha:b",
+      "qualified_equivalence": true,
+      "bounds": "api-contract-v1",
+      "expected": "ADMISSIBLE"
+    }
+  ]
+}
