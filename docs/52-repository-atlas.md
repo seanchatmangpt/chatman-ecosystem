@@ -138,5 +138,5 @@ A repository can be valuable as source archaeology, a benchmark, an ontology sup
 
 Historical release-instance SHAs remain authoritative for their release lines. Current repository motion is tracked separately as bounded evidence.
 
-The current seven-day observation is `observations/fleet/2026-09-30-seven-day.json`, covering **101** repositories pushed between 2026-09-23T00:00:00Z and 2026-09-30T07:16:00Z. It is bound to pre-update composition-root subject `869babb1d0c852e0ceda581a3edfea6d32189d95`, has `authority=NONE`, and does not promote observed SHAs into a release manifest.
+The current seven-day observation is `observations/fleet/2026-09-30-seven-day.json`, covering **101** repositories pushed between 2026-09-23T00:00:00Z and 2026-09-30T07:20:00Z. It is bound to pre-update composition-root subject `869babb1d0c852e0ceda581a3edfea6d32189d95`, has `authority=NONE`, and does not promote observed SHAs into a release manifest.
 

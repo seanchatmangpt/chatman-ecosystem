@@ -2,7 +2,7 @@
 
 This is an **observation horizon**, not a release promotion.
 
-- Window: `2026-09-23T00:00:00Z` through `2026-09-30T07:16:00Z`
+- Window: `2026-09-23T00:00:00Z` through `2026-09-30T07:20:00Z`
 - Active repositories observed: **101**
 - Pre-update composition-root subject: `seanchatmangpt/chatman-ecosystem@869babb1d0c852e0ceda581a3edfea6d32189d95`
 - Authority: **NONE**
