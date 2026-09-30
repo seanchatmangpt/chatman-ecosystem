@@ -13,6 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
 SCHEMA = ROOT / "schemas" / "factory-e-conformance.schema.json"
+QUAL_TERMS = ["ExactSubject", "Provenance", "CanonicalSemantics", "AuthorityBound", "ConsequenceBound", "IndependentObservation", "Receipt", "ReplaySafe", "Falsifiers", "Migration"]
 CORE = ["QMX", "NHS", "CANON", "CSEP", "IOBS", "NAREP", "MXNEG", "CHEST", "ACD", "HARD", "CHIC", "SMAN", "XCAP", "PROF"]
 
 
@@ -34,8 +35,8 @@ def _validate(inst, sch, root, path="$"):
     if "enum" in sch and inst not in sch["enum"]:
         raise Refusal("SCHEMA_INVALID", f"{path} not in enum")
     t = sch.get("type")
-    checks = {"object": dict, "array": list, "string": str, "boolean": bool}
-    if t and not isinstance(inst, checks[t]):
+    checks = {"object": dict, "array": list, "string": str, "boolean": bool, "number": (int, float)}
+    if t and (not isinstance(inst, checks[t]) or (t == "number" and isinstance(inst, bool))):
         raise Refusal("SCHEMA_INVALID", f"{path} not {t}")
     if isinstance(inst, str):
         if len(inst) < sch.get("minLength", 0):
@@ -118,7 +119,34 @@ def check(claim, now=None):
             for term in p.get("profile_terms", []):
                 if not owners.get(term, "").startswith("fibo:"):
                     raise Refusal("HIDDEN_SEMANTICS", f"fibo term {term} lacks fibo: owner")
+    _semantic_laws(claim, seen)
     return {"conformant": True, "subject": subj, "laws": len(seen)}
+
+
+def _semantic_laws(claim, laws):
+    """Executable checks for MXNEG, CHEST, ACD, HARD, CHIC, XCAP, SMAN (all optional-input, additive)."""
+    for c in claim.get("changes", []):
+        if c["net_value"] <= 0:
+            raise Refusal("NEGATIVE_VALUE_CHANGE", c["id"])
+    for r in claim.get("constraint_removals", []):
+        if not r["origin_observed"] or not r.get("receipt"):
+            raise Refusal("CHESTERTON_VIOLATION", r["id"])
+    for d in claim.get("distilled_constraints", []):
+        if not d["attempt_observed"]:
+            raise Refusal("VACUOUS_COURT", d["id"])
+        if d["violation_observed"]:
+            raise Refusal("VIOLATION_OBSERVED", d["id"])
+    for h in claim.get("hardening", []):
+        fixture = (ROOT / h["fixture"]).resolve()
+        if ROOT not in fixture.parents or not fixture.is_file():
+            raise Refusal("UNHARDENED_FAILURE", h["failure"])
+    if laws["CHIC"]["standing"] == "ALIVE":
+        q = claim.get("qualification", {})
+        if not all(q.get(k) is True for k in QUAL_TERMS):
+            raise Refusal("CHICAGO_NOT_CONJUNCTIVE", ",".join(k for k in QUAL_TERMS if q.get(k) is not True))
+    for x in claim.get("external_capabilities", []):
+        if not x["requalified"]:
+            raise Refusal("EXTERNAL_NOT_REQUALIFIED", x["id"])
 
 
 def main(argv):

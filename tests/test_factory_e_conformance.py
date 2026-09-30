@@ -16,7 +16,7 @@ def load(name):
 
 class PositiveTests(unittest.TestCase):
     def test_positive_fixtures_conform(self):
-        for n in ("positive_partial", "positive_alive_independent", "positive_fibo"):
+        for n in ("positive_partial", "positive_alive_independent", "positive_fibo", "positive_extended"):
             with self.subTest(n):
                 self.assertTrue(fe.check(load(n), now=NOW)["conformant"])
 
@@ -34,6 +34,16 @@ class NegativeTests(unittest.TestCase):
         "neg_actuating_replay": "ACTUATING_REPLAY",
         "neg_profile_override": "PROFILE_WEAKENS_CORE",
         "neg_expired_horizon": "EVIDENCE_HORIZON_EXPIRED",
+        "neg_negative_value": "NEGATIVE_VALUE_CHANGE",
+        "neg_chesterton": "CHESTERTON_VIOLATION",
+        "neg_vacuous_court": "VACUOUS_COURT",
+        "neg_violation_observed": "VIOLATION_OBSERVED",
+        "neg_unhardened": "UNHARDENED_FAILURE",
+        "neg_hardening_escape": "UNHARDENED_FAILURE",
+        "neg_chicago_disjunctive": "CHICAGO_NOT_CONJUNCTIVE",
+        "neg_external_unqualified": "EXTERNAL_NOT_REQUALIFIED",
+        "neg_external_unpinned": "SCHEMA_INVALID",
+        "neg_artifact_unobserved": "SCHEMA_INVALID",
     }
 
     def test_each_negative_gets_its_typed_refusal(self):
@@ -49,6 +59,17 @@ class NegativeTests(unittest.TestCase):
         with self.assertRaises(fe.Refusal) as cm:
             fe.check(d, now=NOW)
         self.assertEqual(cm.exception.code, "HIDDEN_SEMANTICS")
+
+
+class ReferenceMapTests(unittest.TestCase):
+    def test_reference_map_is_evidence_not_dependency(self):
+        ref = json.loads((ROOT / "docs" / "rfc" / "v26.9.29-factory-e-reference-map.json").read_text())
+        src = (ROOT / "scripts" / "factory_e_conformance.py").read_text()
+        for e in ref["references"]:
+            self.assertEqual(e["role"], "reference_evidence")
+            self.assertEqual(e["standing"], "UNKNOWN")
+            self.assertNotIn("sha", e)
+            self.assertNotIn(e["repo"].split("/")[1], src)
 
 
 class RunnerTests(unittest.TestCase):

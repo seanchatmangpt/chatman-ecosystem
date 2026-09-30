@@ -3,26 +3,63 @@
   "$id": "https://chatman.dev/schemas/factory-e-conformance.schema.json",
   "title": "Factory E Conformance Claim",
   "type": "object",
-  "required": ["schema", "subject", "evidence_horizon", "laws", "terms", "consequences", "replay"],
+  "required": [
+    "schema",
+    "subject",
+    "evidence_horizon",
+    "laws",
+    "terms",
+    "consequences",
+    "replay"
+  ],
   "properties": {
-    "schema": {"const": "factory-e-conformance/1"},
-    "subject": {"$ref": "#/$defs/subject"},
+    "schema": {
+      "const": "factory-e-conformance/1"
+    },
+    "subject": {
+      "$ref": "#/$defs/subject"
+    },
     "evidence_horizon": {
       "type": "object",
-      "required": ["observed_at"],
+      "required": [
+        "observed_at"
+      ],
       "properties": {
-        "observed_at": {"type": "string", "minLength": 1},
-        "expires_at": {"type": "string", "minLength": 1}
+        "observed_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expires_at": {
+          "type": "string",
+          "minLength": 1
+        }
       },
       "additionalProperties": false
     },
-    "laws": {"type": "array", "items": {"$ref": "#/$defs/law"}},
+    "laws": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/law"
+      }
+    },
     "terms": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["term", "owner"],
-        "properties": {"term": {"type": "string", "minLength": 1}, "owner": {"type": "string", "minLength": 1}},
+        "required": [
+          "term",
+          "owner"
+        ],
+        "properties": {
+          "term": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
         "additionalProperties": false
       }
     },
@@ -30,31 +67,246 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "class"],
+        "required": [
+          "id",
+          "class"
+        ],
         "properties": {
-          "id": {"type": "string", "minLength": 1},
-          "class": {"enum": ["SELECT", "CONSTRUCT", "DO"]},
-          "authority": {"type": "string", "minLength": 1},
-          "receipt": {"type": "string", "minLength": 1}
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "class": {
+            "enum": [
+              "SELECT",
+              "CONSTRUCT",
+              "DO"
+            ]
+          },
+          "authority": {
+            "type": "string",
+            "minLength": 1
+          },
+          "receipt": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         "additionalProperties": false
       }
     },
     "replay": {
       "type": "object",
-      "required": ["actuating"],
-      "properties": {"actuating": {"type": "boolean"}},
+      "required": [
+        "actuating"
+      ],
+      "properties": {
+        "actuating": {
+          "type": "boolean"
+        }
+      },
       "additionalProperties": false
     },
     "profiles": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id"],
+        "required": [
+          "id"
+        ],
         "properties": {
-          "id": {"type": "string", "minLength": 1},
-          "overrides": {"type": "array", "items": {"type": "string"}},
-          "profile_terms": {"type": "array", "items": {"type": "string"}}
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "overrides": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "profile_terms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "net_value"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "net_value": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "constraint_removals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "origin_observed"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "origin_observed": {
+            "type": "boolean"
+          },
+          "receipt": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "distilled_constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "from_refusal",
+          "attempt_observed",
+          "violation_observed"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "from_refusal": {
+            "type": "string",
+            "minLength": 1
+          },
+          "attempt_observed": {
+            "type": "boolean"
+          },
+          "violation_observed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "hardening": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "failure",
+          "fixture"
+        ],
+        "properties": {
+          "failure": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fixture": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "qualification": {
+      "type": "object",
+      "properties": {
+        "ExactSubject": {
+          "type": "boolean"
+        },
+        "Provenance": {
+          "type": "boolean"
+        },
+        "CanonicalSemantics": {
+          "type": "boolean"
+        },
+        "AuthorityBound": {
+          "type": "boolean"
+        },
+        "ConsequenceBound": {
+          "type": "boolean"
+        },
+        "IndependentObservation": {
+          "type": "boolean"
+        },
+        "Receipt": {
+          "type": "boolean"
+        },
+        "ReplaySafe": {
+          "type": "boolean"
+        },
+        "Falsifiers": {
+          "type": "boolean"
+        },
+        "Migration": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "external_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "pin_sha",
+          "requalified"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pin_sha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "requalified": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "observed_from"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observed_from": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         "additionalProperties": false
       }
@@ -64,32 +316,102 @@
   "$defs": {
     "subject": {
       "type": "object",
-      "required": ["repo", "ref", "sha"],
+      "required": [
+        "repo",
+        "ref",
+        "sha"
+      ],
       "properties": {
-        "repo": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"},
-        "ref": {"type": "string", "minLength": 1},
-        "sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+        "repo": {
+          "type": "string",
+          "pattern": "^[^/\\s]+/[^/\\s]+$"
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
       },
       "additionalProperties": false
     },
     "law": {
       "type": "object",
-      "required": ["id", "owner", "standing", "evidence"],
+      "required": [
+        "id",
+        "owner",
+        "standing",
+        "evidence"
+      ],
       "properties": {
-        "id": {"enum": ["QMX", "NHS", "CANON", "CSEP", "IOBS", "NAREP", "MXNEG", "CHEST", "ACD", "HARD", "CHIC", "SMAN", "XCAP", "PROF"]},
-        "owner": {"type": "string", "minLength": 1},
-        "standing": {"enum": ["UNKNOWN", "PARTIAL_ALIVE", "ALIVE", "BLOCKED", "BUILD_BROKEN", "UNSUPPORTED"]},
+        "id": {
+          "enum": [
+            "QMX",
+            "NHS",
+            "CANON",
+            "CSEP",
+            "IOBS",
+            "NAREP",
+            "MXNEG",
+            "CHEST",
+            "ACD",
+            "HARD",
+            "CHIC",
+            "SMAN",
+            "XCAP",
+            "PROF"
+          ]
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "standing": {
+          "enum": [
+            "UNKNOWN",
+            "PARTIAL_ALIVE",
+            "ALIVE",
+            "BLOCKED",
+            "BUILD_BROKEN",
+            "UNSUPPORTED"
+          ]
+        },
         "evidence": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["kind", "subject", "ref"],
+            "required": [
+              "kind",
+              "subject",
+              "ref"
+            ],
             "properties": {
-              "kind": {"enum": ["OBSERVED", "EXECUTED", "CHANGED", "VERIFIED", "EXCLUDED"]},
-              "subject": {"$ref": "#/$defs/subject"},
-              "ref": {"type": "string", "minLength": 1},
-              "observer": {"type": "string", "minLength": 1},
-              "producer": {"type": "string", "minLength": 1}
+              "kind": {
+                "enum": [
+                  "OBSERVED",
+                  "EXECUTED",
+                  "CHANGED",
+                  "VERIFIED",
+                  "EXCLUDED"
+                ]
+              },
+              "subject": {
+                "$ref": "#/$defs/subject"
+              },
+              "ref": {
+                "type": "string",
+                "minLength": 1
+              },
+              "observer": {
+                "type": "string",
+                "minLength": 1
+              },
+              "producer": {
+                "type": "string",
+                "minLength": 1
+              }
             },
             "additionalProperties": false
           }

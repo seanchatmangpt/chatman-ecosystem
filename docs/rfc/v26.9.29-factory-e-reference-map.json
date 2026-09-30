@@ -1,0 +1,15 @@
+{
+  "schema": "factory-e-reference-map/1",
+  "note": "Reference evidence only. The Factory E core has no dependency on any entry. No SHA is recorded because no exact head was observed by this change; standing is UNKNOWN until an owning verifier observes the exact subject.",
+  "references": [
+    {"repo": "seanchatmangpt/GraphLaw", "owns": "semantic law-state", "role": "reference_evidence", "standing": "UNKNOWN"},
+    {"repo": "seanchatmangpt/ash_graphlaw", "owns": "Ash projection of law-state", "role": "reference_evidence", "standing": "UNKNOWN"},
+    {"repo": "seanchatmangpt/ash_r2rml", "owns": "VKG observation", "role": "reference_evidence", "standing": "UNKNOWN"},
+    {"repo": "seanchatmangpt/ash_a2a", "owns": "consequence protocol: PreparedEffect, receipt, replay", "role": "reference_evidence", "standing": "UNKNOWN"},
+    {"repo": "seanchatmangpt/Affidavit", "owns": "cryptographic trust", "role": "reference_evidence", "standing": "UNKNOWN"},
+    {"repo": "seanchatmangpt/Beam4PM", "owns": "process experience", "role": "reference_evidence", "standing": "UNKNOWN"},
+    {"repo": "seanchatmangpt/XaaS", "owns": "runtime composition", "role": "reference_evidence", "standing": "UNKNOWN"},
+    {"repo": "seanchatmangpt/ggen-marketplace", "owns": "writable manufacture", "role": "reference_evidence", "standing": "UNKNOWN"},
+    {"repo": "seanchatmangpt/CASTLE", "owns": "product-level consequential constitution", "role": "reference_evidence", "standing": "UNKNOWN"}
+  ]
+}
