@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - 'conformance/qme-1/**'
+      - 'observations/fleet/**'
+      - 'scripts/release_train/fleet_recent_activity_court.py'
+      - 'tests/release_train/test_fleet_recent_activity_court.py'
       - 'docs/rfc/qme-1-*.md'
       - 'profiles/qme-1/**'
       - 'schemas/qme-1/**'
@@ -41,12 +44,20 @@ jobs:
               Path("schemas/qme-1/conformance.schema.json"),
               Path("conformance/qme-1/laws.json"),
               Path("conformance/qme-1/reference-stack.json"),
+              Path("conformance/qme-1/fleet-projection-v26.9.30.json"),
               Path("profiles/qme-1/fibo.profile.json"),
           ]:
               json.loads(path.read_text())
               print("PARSED", path)
           PY
+      - name: Verify canonical fleet observation before QME projection
+        run: python3 scripts/release_train/fleet_recent_activity_court.py observations/fleet/2026-09-30-seven-day.json
       - name: Execute QME semantic court corpus
         run: python3 conformance/qme-1/qme_conformance.py conformance/qme-1/fixtures/*.json
       - name: Require killer coverage for every QME refusal
         run: python3 -m unittest tests.qme.test_qme_conformance -v
+      - name: Project fleet evidence through QME
+        run: python3 conformance/qme-1/qme_fleet_projection.py observations/fleet/2026-09-30-seven-day.json conformance/qme-1/fleet-projection-v26.9.30.json
+      - name: Require fleet-projection falsifiers
+        run: python3 -m unittest tests.qme.test_qme_fleet_projection -v
+
