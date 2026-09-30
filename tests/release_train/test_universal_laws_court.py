@@ -1,20 +1,18 @@
 from __future__ import annotations
 
-import importlib.util
 import json
 from pathlib import Path
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-COURT_PATH = ROOT / "scripts" / "release_train" / "universal_laws_court.py"
+sys.path.insert(0, str(ROOT / "scripts" / "release_train"))
+
+import universal_laws_court as court  # noqa: E402
+
 VECTORS_PATH = ROOT / "tests" / "universal-laws" / "vectors.json"
 SCHEMA_PATH = ROOT / "schemas" / "universal-laws" / "conformance.schema.json"
 ONTOLOGY_PATH = ROOT / "ontology" / "universal-laws" / "universal-laws.ttl"
-
-_spec = importlib.util.spec_from_file_location("universal_laws_court", COURT_PATH)
-assert _spec and _spec.loader
-court = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(court)
 
 
 class UniversalLawsCourtTest(unittest.TestCase):
