@@ -14,3 +14,11 @@ Universal adoption does not require adoption of the reference stack. A foreign c
 Before replacing mature prior art, the adopter SHOULD reconstruct the negative knowledge encoded by its constraints. This is the Reverse-Chesterton rule: replacement requires a falsifier showing that the existing constraint no longer serves its originating function for the same subject and boundary.
 
 A successful import should therefore reduce future novel implementation work. If adoption creates private semantics, duplicate authority paths, unverifiable state or repeated model reasoning without durable qualified machinery, its net QME value may be zero or negative.
+
+## Fleet composition
+
+Current repository motion enters QME through the canonical fleet observation, not through a second QME-specific scanner:
+
+`repo@exact-head -> OBSERVED fleet evidence -> QME qualification -> O* -> manufacture -> receipt`.
+
+Moving a branch creates a new observation; it never rewrites an earlier receipt. Capability composition preserves `authority=NONE` until a separately admitted consequential boundary supplies authority. The v26.9.30 projection is `conformance/qme-1/fleet-projection-v26.9.30.json`.

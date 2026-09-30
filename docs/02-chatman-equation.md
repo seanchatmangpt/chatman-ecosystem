@@ -1,7 +1,7 @@
 # 02. The Chatman Equation
 
-> **Status:** Constitutional documentation for Chatman Ecosystem v26.9.1.  
-> **Architecture:** `FROZEN` · **Mathematics:** `FROZEN` · **Release:** `PARTIAL_ALIVE` pending crown receipts.
+> **Status:** Constitutional law frozen at v26.9.1; current fleet evidence composed through v26.9.30.  
+> **Architecture:** `FROZEN` · **Mathematics:** `FROZEN` · **Fleet evidence:** `PARTIAL_ALIVE`.
 
 ## Abstract
 
@@ -285,3 +285,13 @@ Post-AGI CJK:
 \]
 
 The implementation may become faster, larger, more distributed, or more intelligent. The constitutional obligation remains the same: **do not promote candidates without admission, do not reach consequence without mandatory factorization, and do not call a solution class-closed until transfer eliminates rediscovery.**
+
+## 11. v26.9.30 fleet-evidence composition
+
+The canonical seven-day fleet observer now supplies 101 exact repository subjects as `OBSERVED` evidence. QME composes over that prior art rather than creating another fleet scanner or another authority source.
+
+`O_fleet -> QME -> O* -> μ -> A`
+
+This does not replace `A = μ(O*)`. It clarifies one lawful route by which live repository evidence can earn admission. The current fleet also makes several specializations concrete: qualification algebra, machine-facing semantic Diataxis, economic-effect identity/settlement/reconciliation, OCEL evidence, and planning/replanning machinery. Each remains a typed implementation of an existing boundary.
+
+The key fleet-scale conservation law is unchanged: `Observed != Admitted != Authorized != Executed != Standing`. A new repository head is new observation, not retroactive mutation of prior `O*`, artifact, receipt, or standing.
