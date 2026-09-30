@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import unittest
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 COURT_PATH = ROOT / "scripts" / "release_train" / "universal_laws_court.py"
 VECTORS_PATH = ROOT / "tests" / "universal-laws" / "vectors.json"
 SCHEMA_PATH = ROOT / "schemas" / "universal-laws" / "conformance.schema.json"

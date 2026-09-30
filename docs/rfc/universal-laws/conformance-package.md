@@ -13,7 +13,7 @@ Machine-readable projections:
 - `schemas/universal-laws/conformance.schema.json` — portable conformance-claim envelope.
 - `tests/universal-laws/vectors.json` — cross-runtime portable examples/counterexamples.
 - `scripts/release_train/universal_laws_court.py` — dependency-free reference court.
-- `tests/test_universal_laws_court.py` — repository-native focused court.
+- `tests/release_train/test_universal_laws_court.py` — repository-native focused court.
 
 Generated or consumer-specific projections MUST cite this package rather than become parallel semantic owners.
 
@@ -23,7 +23,7 @@ From repository root:
 
 ```bash
 python3 scripts/release_train/universal_laws_court.py tests/universal-laws/vectors.json
-python3 -m unittest tests.test_universal_laws_court -v
+python3 -m unittest tests.release_train.test_universal_laws_court -v
 ```
 
 The portable court returns exit 0 only when every known vector reaches the expected classification. Unknown laws/cases remain typed UNKNOWN. The receipt always carries `authority=NONE`.
