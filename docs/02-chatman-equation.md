@@ -1,7 +1,7 @@
 # 02. The Chatman Equation
 
-> **Status:** Constitutional documentation for Chatman Ecosystem v26.9.1.  
-> **Architecture:** `FROZEN` · **Mathematics:** `FROZEN` · **Release:** `PARTIAL_ALIVE` pending crown receipts.
+> **Status:** Constitutional law frozen at v26.9.1; evidence index reconciled through v26.9.30.  
+> **Architecture:** `FROZEN` · **Mathematics:** `FROZEN` · **Fleet evidence:** `PARTIAL_ALIVE`.
 
 ## Abstract
 
@@ -285,3 +285,24 @@ Post-AGI CJK:
 \]
 
 The implementation may become faster, larger, more distributed, or more intelligent. The constitutional obligation remains the same: **do not promote candidates without admission, do not reach consequence without mandatory factorization, and do not call a solution class-closed until transfer eliminates rediscovery.**
+
+
+## 11. v26.9.30 fleet-evidence amendment
+
+The seven-day fleet reconciliation does not add a primitive or modify \(A=\mu(O^*)\). It makes the admission edge more explicit:
+
+\[
+O_{\text{repo}}
+\xrightarrow{\mathrm{observe}}
+O
+\xrightarrow{\mathrm{QME}}
+O^*
+\xrightarrow{\mu}
+A.
+\]
+
+QME is therefore a qualification regime for earning the star in \(O^*\), not an alternative equation. A useful expansion is \(A=\mu(Q(O))\) only when \(Q(O)\) denotes the admitted observation produced by that regime.
+
+The reconciled fleet now contains concrete specializations of the existing types: GraphLaw qualification courts; semantic Diátaxis manufacture; XaaS/SA2A/CASTLE consequence boundaries; OCEL evidence; planning/replanning machinery; and an economic-effect chain that keeps effect identity, authorization, settlement, receipt and standing distinct.
+
+The exact observed subjects are frozen in \`conformance/qme-1/fleet-window-v26.9.30.json\`. Inclusion grants no authority. A future head is new \(O\), not a mutation of historical \(O^*\), \(A\), or \(R\).
