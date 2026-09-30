@@ -1,0 +1,52 @@
+name: QME-1 Conformance
+
+on:
+  pull_request:
+    paths:
+      - 'conformance/qme-1/**'
+      - 'docs/rfc/qme-1-*.md'
+      - 'profiles/qme-1/**'
+      - 'schemas/qme-1/**'
+      - 'tests/qme/**'
+      - '.github/workflows/qme-1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qme-1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Assert exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected='${{ github.event.pull_request.head.sha || github.sha }}'
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$expected"
+          echo "QME_EXACT_SUBJECT=$actual"
+      - name: Parse machine-readable QME artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          for path in [
+              Path("schemas/qme-1/conformance.schema.json"),
+              Path("conformance/qme-1/laws.json"),
+              Path("conformance/qme-1/reference-stack.json"),
+              Path("profiles/qme-1/fibo.profile.json"),
+          ]:
+              json.loads(path.read_text())
+              print("PARSED", path)
+          PY
+      - name: Execute QME semantic court corpus
+        run: python3 conformance/qme-1/qme_conformance.py conformance/qme-1/fixtures/*.json
+      - name: Require killer coverage for every QME refusal
+        run: python3 -m unittest tests.qme.test_qme_conformance -v

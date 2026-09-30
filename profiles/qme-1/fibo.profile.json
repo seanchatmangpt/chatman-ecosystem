@@ -4,10 +4,20 @@
   "extends": "QME-1",
   "weakens_core": false,
   "canonical_namespace": "https://spec.edmcouncil.org/fibo/",
+  "policy_boundary": {
+    "currency": "USD",
+    "amount_micros": 10000000000000,
+    "note": "Profile qualification threshold; not asserted as a FIBO or regulatory rule."
+  },
   "exact_identity": [
     "party",
+    "counterparty",
     "account",
     "instrument",
+    "amount",
+    "currency",
+    "agreement",
+    "settlement",
     "effect"
   ],
   "evidence_only": [
@@ -16,5 +26,49 @@
     "allocation",
     "policy_decision",
     "receipt"
-  ]
+  ],
+  "required_qme_laws": [
+    "QME-EXACT-SUBJECT",
+    "QME-BOUNDED",
+    "QME-REPLAY",
+    "QME-INDEPENDENT-OBSERVATION",
+    "QME-ANTI-VACUITY",
+    "QME-VIOLATION",
+    "QME-NO-HIDDEN-SEMANTICS",
+    "QME-NO-AUTHORITY-BY-IMPLICATION",
+    "QME-MANUFACTURE",
+    "QME-NEGATIVE-KNOWLEDGE",
+    "QME-REVERSE-CHESTERTON",
+    "QME-ABSORPTION",
+    "QME-NULL-BASELINE",
+    "QME-FALSIFIABLE"
+  ],
+  "domain_falsifiers": [
+    "same transaction semantics with reordered serialization preserve identity",
+    "counterparty mutation changes exact subject",
+    "amount mutation by one micro changes exact subject",
+    "currency mutation changes exact subject",
+    "agreement mutation changes exact subject",
+    "settlement mutation changes exact subject",
+    "25M USD subject with 10M envelope refuses consequence",
+    "10M exact boundary fits and one micro above refuses",
+    "semantic evidence cannot manufacture DO authority",
+    "cross-currency threshold comparison requires an admitted FX observation",
+    "actuator success does not establish independent settlement postcondition"
+  ],
+  "reference_courts": {
+    "graphlaw": [
+      "N3 implication",
+      "Datalog recursive closure",
+      "cross-engine agreement",
+      "order invariance",
+      "malformed input fail-closed"
+    ],
+    "ash_a2a": [
+      "exact PreparedEffect identity",
+      "financial envelope",
+      "authority non-promotion",
+      "full semantic-to-consequence chain"
+    ]
+  }
 }

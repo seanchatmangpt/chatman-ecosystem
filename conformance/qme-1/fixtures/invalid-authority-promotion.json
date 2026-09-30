@@ -14,8 +14,10 @@
       "owner": "urn:qme:owner:semantics"
     }
   ],
-  "authority_ceiling": "none",
-  "authority_basis": [],
+  "authority_ceiling": "do",
+  "authority_basis": [
+    "plan"
+  ],
   "consequence": {
     "bounded": true,
     "class": "none"
@@ -58,5 +60,7 @@
     "generator": null,
     "digest": null
   },
-  "_expected_errors": []
+  "_expected_errors": [
+    "AUTHORITY_PROMOTION"
+  ]
 }

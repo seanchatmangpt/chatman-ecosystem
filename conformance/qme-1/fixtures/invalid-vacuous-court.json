@@ -24,7 +24,7 @@
     "independent": true
   },
   "attempt": {
-    "observed": true,
+    "observed": false,
     "violation_observed": false,
     "boundary": "qme-core"
   },
@@ -58,5 +58,7 @@
     "generator": null,
     "digest": null
   },
-  "_expected_errors": []
+  "_expected_errors": [
+    "VACUOUS_COURT"
+  ]
 }

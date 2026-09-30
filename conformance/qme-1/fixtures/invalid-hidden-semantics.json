@@ -10,7 +10,7 @@
     {
       "id": "semantics",
       "consequential": true,
-      "visible": true,
+      "visible": false,
       "owner": "urn:qme:owner:semantics"
     }
   ],
@@ -58,5 +58,7 @@
     "generator": null,
     "digest": null
   },
-  "_expected_errors": []
+  "_expected_errors": [
+    "HIDDEN_SEMANTICS"
+  ]
 }

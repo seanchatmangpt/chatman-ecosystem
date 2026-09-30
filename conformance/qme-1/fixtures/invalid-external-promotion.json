@@ -42,7 +42,12 @@
   ],
   "negative_knowledge": [],
   "guard_retirements": [],
-  "external_candidates": [],
+  "external_candidates": [
+    {
+      "id": "external-agent-protocol",
+      "promotes_to_local_do": true
+    }
+  ],
   "value": {
     "bounded": true,
     "capability_gain": 1,
@@ -58,5 +63,7 @@
     "generator": null,
     "digest": null
   },
-  "_expected_errors": []
+  "_expected_errors": [
+    "EXTERNAL_AUTHORITY_PROMOTION"
+  ]
 }

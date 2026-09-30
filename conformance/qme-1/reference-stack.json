@@ -1,16 +1,67 @@
 {
   "normative": false,
   "version": "26.9.29",
-  "mappings": {
-    "GraphLaw": "semantic law-state and reasoning",
-    "Ash": "application projection",
-    "ash_graphlaw": "semantic projection",
-    "ash_r2rml": "VKG observation/federation",
-    "ash_a2a": "PreparedEffect/receipt/replay consequence protocol",
-    "Affidavit": "cryptographic evidence/trust",
-    "Beam4PM": "process evidence",
-    "XaaS": "runtime composition",
-    "ggen-marketplace": "semantic manufacture",
-    "CASTLE": "consequential constitution"
-  }
+  "rule": "Reference implementations do not own QME-1 normative law and must not widen authority.",
+  "mappings": [
+    {
+      "component": "GraphLaw",
+      "repository": "seanchatmangpt/graphlaw",
+      "role": "semantic law-state and reasoning",
+      "projection": "semantic authority"
+    },
+    {
+      "component": "Ash",
+      "repository": "ecosystem/Ash",
+      "role": "application projection",
+      "projection": "consumer surface"
+    },
+    {
+      "component": "ash_graphlaw",
+      "repository": "seanchatmangpt/ash_graphlaw",
+      "role": "GraphLaw-to-Ash semantic membrane",
+      "projection": "consumer surface"
+    },
+    {
+      "component": "ash_r2rml",
+      "repository": "seanchatmangpt/ash_r2rml",
+      "role": "VKG observation and federation",
+      "projection": "observation"
+    },
+    {
+      "component": "ash_a2a",
+      "repository": "seanchatmangpt/ash_a2a",
+      "role": "PreparedEffect receipt and replay consequence protocol",
+      "projection": "consequence boundary"
+    },
+    {
+      "component": "Affidavit",
+      "repository": "seanchatmangpt/affidavit",
+      "role": "cryptographic evidence and trust",
+      "projection": "evidence plane"
+    },
+    {
+      "component": "Beam4PM",
+      "repository": "seanchatmangpt/beam4pm",
+      "role": "process evidence and accumulated machine experience",
+      "projection": "experience plane"
+    },
+    {
+      "component": "XaaS",
+      "repository": "seanchatmangpt/xaas",
+      "role": "runtime composition",
+      "projection": "runtime"
+    },
+    {
+      "component": "ggen-marketplace",
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "role": "semantic manufacture",
+      "projection": "manufacture"
+    },
+    {
+      "component": "CASTLE",
+      "repository": "seanchatmangpt/castle",
+      "role": "product-level consequential constitution",
+      "projection": "product crown"
+    }
+  ]
 }
