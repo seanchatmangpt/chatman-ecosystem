@@ -8,14 +8,21 @@
     "subject",
     "profile",
     "evidence_horizon",
+    "standing",
     "canonical_owners",
+    "semantic_claims",
     "authority_ceiling",
+    "authority_basis",
     "consequence",
     "observation",
+    "attempt",
     "receipt",
     "replay",
     "falsifiers",
     "negative_knowledge",
+    "guard_retirements",
+    "external_candidates",
+    "value",
     "generated"
   ],
   "properties": {
@@ -31,12 +38,54 @@
       "type": "string",
       "minLength": 1
     },
+    "standing": {
+      "enum": [
+        "UNKNOWN",
+        "PARTIAL_ALIVE",
+        "ALIVE",
+        "BLOCKED",
+        "BUILD_BROKEN",
+        "UNSUPPORTED",
+        "REFUSED"
+      ]
+    },
     "canonical_owners": {
       "type": "object",
       "minProperties": 1,
       "additionalProperties": {
         "type": "string",
         "minLength": 1
+      }
+    },
+    "semantic_claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "consequential",
+          "visible",
+          "owner"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "consequential": {
+            "type": "boolean"
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "owner": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
       }
     },
     "authority_ceiling": {
@@ -46,6 +95,14 @@
         "construct",
         "do"
       ]
+    },
+    "authority_basis": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     },
     "consequence": {
       "type": "object",
@@ -71,6 +128,27 @@
       "properties": {
         "independent": {
           "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "attempt": {
+      "type": "object",
+      "required": [
+        "observed",
+        "violation_observed",
+        "boundary"
+      ],
+      "properties": {
+        "observed": {
+          "type": "boolean"
+        },
+        "violation_observed": {
+          "type": "boolean"
+        },
+        "boundary": {
+          "type": "string",
+          "minLength": 1
         }
       },
       "additionalProperties": false
@@ -116,6 +194,68 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/negative"
+      }
+    },
+    "guard_retirements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/guard_retirement"
+      }
+    },
+    "external_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "promotes_to_local_do"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "promotes_to_local_do": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "value": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bounded",
+        "capability_gain",
+        "durable_experience",
+        "hardening_gain",
+        "reuse_gain",
+        "cost",
+        "net"
+      ],
+      "properties": {
+        "bounded": {
+          "type": "boolean"
+        },
+        "capability_gain": {
+          "type": "number"
+        },
+        "durable_experience": {
+          "type": "number"
+        },
+        "hardening_gain": {
+          "type": "number"
+        },
+        "reuse_gain": {
+          "type": "number"
+        },
+        "cost": {
+          "type": "number"
+        },
+        "net": {
+          "type": "number"
+        }
       }
     },
     "generated": {
@@ -165,10 +305,14 @@
         "subject",
         "boundary",
         "condition",
+        "evidence_horizon",
         "excluded",
+        "authority_impact",
+        "consequence_impact",
         "falsifier",
         "successor",
-        "receipt"
+        "receipt",
+        "replay_identity"
       ],
       "properties": {
         "id": {
@@ -183,7 +327,16 @@
         "condition": {
           "type": "string"
         },
+        "evidence_horizon": {
+          "type": "string"
+        },
         "excluded": {
+          "type": "string"
+        },
+        "authority_impact": {
+          "type": "string"
+        },
+        "consequence_impact": {
           "type": "string"
         },
         "falsifier": {
@@ -193,6 +346,35 @@
           "type": "string"
         },
         "receipt": {
+          "type": "string"
+        },
+        "replay_identity": {
+          "type": "string"
+        }
+      }
+    },
+    "guard_retirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "guard",
+        "subject",
+        "same_subject_evidence",
+        "falsifier"
+      ],
+      "properties": {
+        "guard": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1
+        },
+        "same_subject_evidence": {
+          "type": "string"
+        },
+        "falsifier": {
           "type": "string"
         }
       }

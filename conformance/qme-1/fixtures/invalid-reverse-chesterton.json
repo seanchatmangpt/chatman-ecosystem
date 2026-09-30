@@ -41,7 +41,14 @@
     "authority-promotion"
   ],
   "negative_knowledge": [],
-  "guard_retirements": [],
+  "guard_retirements": [
+    {
+      "guard": "replay-gate",
+      "subject": "repo@sha256:abc",
+      "same_subject_evidence": "",
+      "falsifier": ""
+    }
+  ],
   "external_candidates": [],
   "value": {
     "bounded": true,
@@ -58,5 +65,7 @@
     "generator": null,
     "digest": null
   },
-  "_expected_errors": []
+  "_expected_errors": [
+    "GUARD_RETIREMENT_UNGROUNDED"
+  ]
 }

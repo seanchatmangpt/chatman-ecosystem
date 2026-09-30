@@ -87,3 +87,29 @@ The executable conformance entrypoint MUST reject at least:
 
 ## Non-normative rationale
 The objective is declining required intelligence over time: mature systems remember what failed, why boundaries exist, how authority is separated, and how outcomes are independently proven. Experience compounds only when it is portable without becoming implicit authority.
+
+
+## QME-1 hardening amendment — 26.9.29
+
+The conformance record now makes the accumulated-hardening model executable rather than implicit.
+
+### Anti-vacuity
+A negative result is qualifying evidence only when the attempted violation reached the declared boundary. `attempt.observed=false` MUST be refused as `VACUOUS_COURT`. Observing the forbidden result MUST be refused as `VIOLATION_OBSERVED`.
+
+### Authority non-promotion
+When the authority ceiling includes DO, the authority basis MUST NOT be capability, evidence, signature, plan, receipt, semantic truth, ontology inference, model output or an external allow decision. These may constrain or support a grant; they do not manufacture it.
+
+### Reverse Chesterton
+A guard or historical constraint MAY be retired only with same-subject evidence of its originating function and an explicit falsifier that would invalidate the retirement. Cleaner-looking replacement code is not sufficient evidence.
+
+### External absorption
+External frameworks, protocols and research enter as capability candidates. Their useful semantics MAY be admitted and projected through local owners, but an external authorization or success result MUST NOT promote directly to local DO.
+
+### Null baseline and negative value
+A capability is compared with the null system, not merely with task failure. A record with negative net qualified value MUST NOT claim ALIVE. Unbounded value or consequence terms are MXinf and fail closed.
+
+### Metallurgical hardening
+Hardening means structural inheritance of negative knowledge. A counterexample SHOULD become the smallest general invariant that blocks its failure class, with a reusable killer fixture. Accumulating special-case checks without generalization is not considered mature hardening.
+
+### Machine-readable law surface
+`conformance/qme-1/laws.json` is the machine-readable law/refusal table. The unit court requires killer coverage for every semantic refusal emitted by the QME court.

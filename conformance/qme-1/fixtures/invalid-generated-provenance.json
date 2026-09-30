@@ -1,11 +1,21 @@
 {
-  "subject": "s",
+  "subject": "repo@sha256:abc",
   "profile": "QME-1",
-  "evidence_horizon": "h",
+  "evidence_horizon": "2026-09-29T23:00:00-07:00",
+  "standing": "PARTIAL_ALIVE",
   "canonical_owners": {
-    "semantics": "owner"
+    "semantics": "urn:qme:owner:semantics"
   },
+  "semantic_claims": [
+    {
+      "id": "semantics",
+      "consequential": true,
+      "visible": true,
+      "owner": "urn:qme:owner:semantics"
+    }
+  ],
   "authority_ceiling": "none",
+  "authority_basis": [],
   "consequence": {
     "bounded": true,
     "class": "none"
@@ -13,20 +23,38 @@
   "observation": {
     "independent": true
   },
+  "attempt": {
+    "observed": true,
+    "violation_observed": false,
+    "boundary": "qme-core"
+  },
   "receipt": {
-    "subject": "s",
-    "id": "r"
+    "subject": "repo@sha256:abc",
+    "id": "r1"
   },
   "replay": {
     "actuates": false
   },
   "falsifiers": [
-    "x"
+    "subject-mismatch",
+    "vacuity",
+    "authority-promotion"
   ],
   "negative_knowledge": [],
+  "guard_retirements": [],
+  "external_candidates": [],
+  "value": {
+    "bounded": true,
+    "capability_gain": 1,
+    "durable_experience": 1,
+    "hardening_gain": 1,
+    "reuse_gain": 1,
+    "cost": 1,
+    "net": 3
+  },
   "generated": {
     "is_projection": true,
-    "source": null,
+    "source": "urn:qme:source",
     "generator": null,
     "digest": null
   },

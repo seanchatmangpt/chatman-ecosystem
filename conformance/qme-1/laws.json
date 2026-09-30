@@ -1,0 +1,81 @@
+{
+  "schema": "qme-1.qualification-laws.v1",
+  "version": "26.9.29",
+  "laws": [
+    {
+      "id": "QME-EXACT-SUBJECT",
+      "rule": "standing and receipts bind the exact subject",
+      "refusal": "EXACT_SUBJECT"
+    },
+    {
+      "id": "QME-BOUNDED",
+      "rule": "consequence and value terms are finite and bounded",
+      "refusal": "MXINF"
+    },
+    {
+      "id": "QME-REPLAY",
+      "rule": "replay is non-actuating without a fresh consequence admission",
+      "refusal": "REPLAY_ACTUATES"
+    },
+    {
+      "id": "QME-INDEPENDENT-OBSERVATION",
+      "rule": "DO completion is independently observed",
+      "refusal": "SELF_OBSERVED_DO"
+    },
+    {
+      "id": "QME-ANTI-VACUITY",
+      "rule": "the adversarial attempt must reach the intended boundary",
+      "refusal": "VACUOUS_COURT"
+    },
+    {
+      "id": "QME-VIOLATION",
+      "rule": "a forbidden consequence may not be observed",
+      "refusal": "VIOLATION_OBSERVED"
+    },
+    {
+      "id": "QME-NO-HIDDEN-SEMANTICS",
+      "rule": "consequential semantics are visible and canonically owned",
+      "refusal": "HIDDEN_SEMANTICS"
+    },
+    {
+      "id": "QME-NO-AUTHORITY-BY-IMPLICATION",
+      "rule": "capability evidence signature plan receipt semantic truth model output and external allow do not manufacture DO authority",
+      "refusal": "AUTHORITY_PROMOTION"
+    },
+    {
+      "id": "QME-MANUFACTURE",
+      "rule": "generated projections bind canonical source generator and digest",
+      "refusal": "HIDDEN_GENERATION"
+    },
+    {
+      "id": "QME-NEGATIVE-KNOWLEDGE",
+      "rule": "inherited negative knowledge remains exact-subject bound",
+      "refusal": "NEGATIVE_SUBJECT"
+    },
+    {
+      "id": "QME-REVERSE-CHESTERTON",
+      "rule": "guard retirement requires same-subject evidence and a falsifier",
+      "refusal": "GUARD_RETIREMENT_UNGROUNDED"
+    },
+    {
+      "id": "QME-ABSORPTION",
+      "rule": "external capability semantics enter as candidates and do not inherit local DO",
+      "refusal": "EXTERNAL_AUTHORITY_PROMOTION"
+    },
+    {
+      "id": "QME-NULL-BASELINE",
+      "rule": "negative net value cannot be promoted to ALIVE",
+      "refusal": "NEGATIVE_VALUE_PROMOTED"
+    },
+    {
+      "id": "QME-CANONICAL-OWNER",
+      "rule": "every declared canonical owner is explicit",
+      "refusal": "CANONICAL_OWNER_MISSING"
+    },
+    {
+      "id": "QME-FALSIFIABLE",
+      "rule": "qualification requires at least one falsifier",
+      "refusal": "FALSIFIERS_MISSING"
+    }
+  ]
+}
