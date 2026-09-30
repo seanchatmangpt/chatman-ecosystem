@@ -1,0 +1,16 @@
+{
+  "normative": false,
+  "version": "26.9.29",
+  "mappings": {
+    "GraphLaw": "semantic law-state and reasoning",
+    "Ash": "application projection",
+    "ash_graphlaw": "semantic projection",
+    "ash_r2rml": "VKG observation/federation",
+    "ash_a2a": "PreparedEffect/receipt/replay consequence protocol",
+    "Affidavit": "cryptographic evidence/trust",
+    "Beam4PM": "process evidence",
+    "XaaS": "runtime composition",
+    "ggen-marketplace": "semantic manufacture",
+    "CASTLE": "consequential constitution"
+  }
+}

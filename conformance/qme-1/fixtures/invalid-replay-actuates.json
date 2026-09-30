@@ -1,0 +1,36 @@
+{
+  "subject": "s",
+  "profile": "QME-1",
+  "evidence_horizon": "h",
+  "canonical_owners": {
+    "semantics": "owner"
+  },
+  "authority_ceiling": "none",
+  "consequence": {
+    "bounded": true,
+    "class": "none"
+  },
+  "observation": {
+    "independent": true
+  },
+  "receipt": {
+    "subject": "s",
+    "id": "r"
+  },
+  "replay": {
+    "actuates": true
+  },
+  "falsifiers": [
+    "replay-must-not-actuate"
+  ],
+  "negative_knowledge": [],
+  "generated": {
+    "is_projection": false,
+    "source": null,
+    "generator": null,
+    "digest": null
+  },
+  "_expected_errors": [
+    "REPLAY_ACTUATES"
+  ]
+}

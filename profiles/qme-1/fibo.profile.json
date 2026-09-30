@@ -1,0 +1,20 @@
+{
+  "id": "QME-1/FIBO",
+  "version": "26.9.29",
+  "extends": "QME-1",
+  "weakens_core": false,
+  "canonical_namespace": "https://spec.edmcouncil.org/fibo/",
+  "exact_identity": [
+    "party",
+    "account",
+    "instrument",
+    "effect"
+  ],
+  "evidence_only": [
+    "ontology_inference",
+    "valuation",
+    "allocation",
+    "policy_decision",
+    "receipt"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "subject": "repo@sha256:abc",
+  "profile": "QME-1",
+  "evidence_horizon": "2026-09-29T23:00:00-07:00",
+  "canonical_owners": {
+    "semantics": "urn:qme:owner:semantics"
+  },
+  "authority_ceiling": "none",
+  "consequence": {
+    "bounded": true,
+    "class": "none"
+  },
+  "observation": {
+    "independent": true
+  },
+  "receipt": {
+    "subject": "repo@sha256:abc",
+    "id": "r1"
+  },
+  "replay": {
+    "actuates": false
+  },
+  "falsifiers": [
+    "subject-mismatch"
+  ],
+  "negative_knowledge": [],
+  "generated": {
+    "is_projection": false,
+    "source": null,
+    "generator": null,
+    "digest": null
+  },
+  "_expected_errors": []
+}
