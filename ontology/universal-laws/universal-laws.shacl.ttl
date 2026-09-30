@@ -1,0 +1,19 @@
+@prefix ul: <https://seanchatmangpt.github.io/chatman-ecosystem/ontology/universal-laws#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+ul:CanonicalSemanticShape a sh:NodeShape ;
+ sh:targetSubjectsOf ul:canonicalOwner ;
+ sh:property [ sh:path ul:canonicalOwner ; sh:minCount 1 ; sh:maxCount 1 ] ;
+ sh:property [ sh:path ul:hasFalsifier ; sh:minCount 1 ] .
+
+ul:DerivedSemanticShape a sh:NodeShape ;
+ sh:targetSubjectsOf ul:derivedFrom ;
+ sh:property [ sh:path ul:derivedFrom ; sh:minCount 1 ] .
+
+ul:ConformanceClaimShape a sh:NodeShape ;
+ sh:targetSubjectsOf ul:conformanceLevel ;
+ sh:property [ sh:path ul:subject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+ sh:property [ sh:path ul:canonicalOwner ; sh:minCount 1 ; sh:maxCount 1 ] ;
+ sh:property [ sh:path ul:hasFalsifier ; sh:minCount 1 ] ;
+ sh:property [ sh:path ul:conformanceLevel ; sh:minCount 1 ; sh:maxCount 1 ] .
