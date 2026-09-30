@@ -1,0 +1,731 @@
+{
+  "schema": "chatman.fleet-reconcile/1",
+  "version": "26.9.30",
+  "authority": "NONE",
+  "consequence": "EVIDENCE_ONLY",
+  "standing": "PARTIAL_ALIVE",
+  "scan": {
+    "owner": "seanchatmangpt",
+    "window_start": "2026-09-23",
+    "window_end": "2026-09-30",
+    "observation_cutoff": "2026-09-30T07:03:44Z",
+    "search_batches": [
+      {
+        "query_window": "2026-09-23..2026-09-24",
+        "result_cap": 100,
+        "returned": 100
+      },
+      {
+        "query_window": "2026-09-25..2026-09-26",
+        "result_cap": 100,
+        "returned": 100
+      },
+      {
+        "query_window": "2026-09-27..2026-09-28",
+        "result_cap": 100,
+        "returned": 100
+      },
+      {
+        "query_window": "2026-09-29..2026-09-30",
+        "result_cap": 100,
+        "returned": 100
+      }
+    ],
+    "coverage": "BOUNDED_LOWER_BOUND",
+    "unique_repositories": 65,
+    "note": "Each search batch reached its result cap; this snapshot proves the surfaced 65-repository set, not exhaustive account-wide PR cardinality."
+  },
+  "canonical_subject": {
+    "repository": "seanchatmangpt/chatman-ecosystem",
+    "base_sha": "869babb1d0c852e0ceda581a3edfea6d32189d95"
+  },
+  "invariants": [
+    "A = mu(O*) remains the canonical equation.",
+    "A repository head is an observed subject O, never admitted O* merely because it exists.",
+    "QME qualification may admit evidence into O* but does not manufacture authority.",
+    "Candidate != Truth != Authority != DO != Standing.",
+    "Fleet drift is re-observed and re-qualified; it does not rewrite historical receipts."
+  ],
+  "repositories": [
+    {
+      "repository": "seanchatmangpt/VAL",
+      "branch": "master",
+      "head_sha": "498b3a5cfdd005a95e9f988e895857d41ab12424",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/a2a-rs",
+      "branch": "master",
+      "head_sha": "75ba4a6ea3104c0edb0b31f4286faedf1a6964a6",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/affidavit",
+      "branch": "main",
+      "head_sha": "9888b4084d8d7f4cf9337f572c6bbfb592f94e09",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/anti-llm-cheat-lsp",
+      "branch": "main",
+      "head_sha": "c828e4f6d8230e3219112ccd4242414f17577801",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ash",
+      "branch": "main",
+      "head_sha": "733564da755cf9240cb2b6d8b32c6e4fce8ba5d5",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ash_a2a",
+      "branch": "main",
+      "head_sha": "3325032d9dea201e6deb82ef242c534aacb3b420",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ash_atlassian",
+      "branch": "main",
+      "head_sha": "43e3d21b7c4e4571493fcf3757392ed16f2dd967",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ash_dspy",
+      "branch": "main",
+      "head_sha": "3b6b527579bcb4ece0a731ea60a283ff3706d8d4",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ash_ex4pm",
+      "branch": "main",
+      "head_sha": "64a21504d3aab0165275cb3e1c9e2fc124d83413",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ash_expo",
+      "branch": "main",
+      "head_sha": "024852b92330c76e12d0ab26531ef1e511c71041",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ash_graphlaw",
+      "branch": "main",
+      "head_sha": "6aaf71beeb054c0eb16b0c50eefa710f49c18bd0",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ash_kudzu",
+      "branch": "feat/shacl-admission-gate",
+      "head_sha": "70429ebdf4c72497f2b59912a5778f7b3f887fa4",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ash_planning_center",
+      "branch": "main",
+      "head_sha": "5ee26cbdc8fef26c92c7691355c76f5aed2e7b2c",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ash_pplan",
+      "branch": "main",
+      "head_sha": "b9da1ad7590d70afac5eace3bd7ba1a644f7249f",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ash_r2rml",
+      "branch": "main",
+      "head_sha": "36f25a30f2f60acde7da1a965626451dbc40b6f8",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ash_surface",
+      "branch": "main",
+      "head_sha": "881a740bad5e16ddfea3d360f837638fd55ef98a",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/autofde-lab",
+      "branch": "master",
+      "head_sha": "d42a5af94481a3128bf3e35d5f2a0a9a70f22e41",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/autotel",
+      "branch": "main",
+      "head_sha": "52c23c4b960e0d3ecd414b0bce5a35b565c8975d",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/bcinr",
+      "branch": "main",
+      "head_sha": "6e2c1069fbaab83ed9700aefd353071ef93073c1",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/beam4pm",
+      "branch": "main",
+      "head_sha": "aa98261db7719f7708ad7990064bbc5f06b754df",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/cargo-cicd",
+      "branch": "main",
+      "head_sha": "59214d6a1293d794b7a27095276047cdff73a9ec",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/castle",
+      "branch": "main",
+      "head_sha": "5c03ca0f32d9c2cc02d504004b7902b2a8256db5",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/chatgpt-cloud-elixir",
+      "branch": "main",
+      "head_sha": "8efaa40b69c8162d22fe2dc5e59657f8dcff529e",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/chatman-ecosystem",
+      "branch": "main",
+      "head_sha": "869babb1d0c852e0ceda581a3edfea6d32189d95",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/chicago-tdd-tools",
+      "branch": "main",
+      "head_sha": "5edb69355d0b5fc933ae602aee0dfb151864070e",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/claude-code-config-lsp",
+      "branch": "main",
+      "head_sha": "1edad3b2bbc34723db85bfdbca0b310fcc35160a",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/clnrm_prototype",
+      "branch": "master",
+      "head_sha": "5a453a5754385b5805993c01f60e620a5035a39f",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/cre",
+      "branch": "master",
+      "head_sha": "dc763e7e3a0cf9f7cc7cd735c284f6a13e2ca989",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/deepwiki-rs",
+      "branch": "main",
+      "head_sha": "36ee516018bdb1bf0a536da1d1cafb1454b56e7e",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/dspy-wasm",
+      "branch": "main",
+      "head_sha": "336482ce19464a3a752936f9c866ff6fea2780d3",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/dspygen",
+      "branch": "main",
+      "head_sha": "582749520d63100dd8fe19e744016a9dfe7faa05",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/dteam",
+      "branch": "main",
+      "head_sha": "27885a8b42cdee2fb096ab585c8c691c9e6f6969",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/engineering-standards",
+      "branch": "main",
+      "head_sha": "7470b12670ea11e3e8f8a86fe23b36f332cfafd8",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/erlmcp",
+      "branch": "main",
+      "head_sha": "3cbf5dd8fdc823eade2f42fcfcf3bc4b304afb54",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ex4pm",
+      "branch": "main",
+      "head_sha": "d1ff769ca7763168ff154b1def980dfaec0cb15c",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ferroplan",
+      "branch": "main",
+      "head_sha": "2954d5a1045160b31510257d39386d5c36af73c3",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/frozen-duckdb",
+      "branch": "master",
+      "head_sha": "77125caf133fb334c45a2c67453f1534f953f05b",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ggen",
+      "branch": "main",
+      "head_sha": "ff96f04e8c7b851e5cca53f3faf5ce1d5f43ce6e",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ggen-ecosystem",
+      "branch": "main",
+      "head_sha": "93d51a9dd9b083acc821376c8462d3c861adde87",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ggen-legacy",
+      "branch": "main",
+      "head_sha": "72f5e7a58ed36e8ec6ad19837b6f81d87cc2d8fa",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "branch": "main",
+      "head_sha": "cb82395df9d726237f5480bc41fb18e875ce91b9",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ggen_igniter",
+      "branch": "main",
+      "head_sha": "ae205c3b85c85b5d43738b2f0e3b6833863adbb0",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/gitvan",
+      "branch": "main",
+      "head_sha": "9221cf7cb0f2483566e1306426fd857622d5034b",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/graphlaw",
+      "branch": "main",
+      "head_sha": "79275191a0feb19e6de701dabb95402a9b2b28e7",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/gym-ecosystem",
+      "branch": "main",
+      "head_sha": "e43d524cd4ecc5eb0317b9a82a0fcd34aa287766",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/gymact",
+      "branch": "main",
+      "head_sha": "d3eb5e848cb86952921d1b0083e0b7e7e1f53609",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/koala-planner",
+      "branch": "main",
+      "head_sha": "db0eb5e498710aadda63123ae0d5543a69667bd6",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/mac-artifact-cleaner",
+      "branch": "main",
+      "head_sha": "fc73e706a6b33024038aaecae7e82effec19314f",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/mcpp",
+      "branch": "master",
+      "head_sha": "a0ce275a235a4655f6f76259bc3d1e6d47477c9d",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/mfw",
+      "branch": "main",
+      "head_sha": "dfd25a63033505be98673d96d5b25c2ce7e666d5",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/mmdio",
+      "branch": "main",
+      "head_sha": "afc1f6e890a6d1c17b84d5931b21d3c74a851ebc",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/open-ontologies",
+      "branch": "main",
+      "head_sha": "8ca43c74a3be53bec8986cb4948e1ece709eb8d1",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/ostar",
+      "branch": "main",
+      "head_sha": "a392e009400c83d5e175b508c4e3008e189945d3",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/praxis",
+      "branch": "main",
+      "head_sha": "c78783b4ea3124fc9d1179a9e47d43c522b529f2",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/process-intelligence",
+      "branch": "main",
+      "head_sha": "f816a372bc414c378c63f717618935ad574e5fe0",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/rocket-craft",
+      "branch": "master",
+      "head_sha": "a87a3c2cd6f594d917eea6313cbdd9f4d40f59fc",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/semantic_bit",
+      "branch": "main",
+      "head_sha": "a955c773336cdb18fbbb2ca899f1ca0df1ca87f0",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/speckit-ralph",
+      "branch": "065-semanticos-full-stack",
+      "head_sha": "890c1bdbab8cb11efac5400b5c29578f0bc46fce",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/unrdf",
+      "branch": "main",
+      "head_sha": "0550d9630da94b170c931f17a1580ea90091cbb4",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/wasm4pm",
+      "branch": "main",
+      "head_sha": "09c171b4447257f018e30d721af6701258ebfeff",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/wasm4pm-compat",
+      "branch": "main",
+      "head_sha": "4c523e0d81a5bb52fda21cea992201f608e088b5",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/xaas",
+      "branch": "main",
+      "head_sha": "9ff91c6fd3e205398d082a6be366f21e9ec7777c",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/yawl",
+      "branch": "master",
+      "head_sha": "db94343f2fb0f1b757d390f54f799924468c1442",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/zcode-cli",
+      "branch": "main",
+      "head_sha": "60dc2602c2e5e898110c9bf3e1cbe18227c63357",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    },
+    {
+      "repository": "seanchatmangpt/zoela",
+      "branch": "main",
+      "head_sha": "cae4a862744380f6a78b962e3f345ede8bd860dd",
+      "evidence_kind": "OBSERVED",
+      "activity_evidence": "pull_request_updated_in_scan_window",
+      "projection_authority_effect": "NONE"
+    }
+  ],
+  "capability_sets": [
+    {
+      "id": "qme_reference_core",
+      "authority_effect": "NONE",
+      "members": [
+        "seanchatmangpt/chatman-ecosystem",
+        "seanchatmangpt/graphlaw",
+        "seanchatmangpt/ash_graphlaw",
+        "seanchatmangpt/ash_r2rml",
+        "seanchatmangpt/ash_a2a",
+        "seanchatmangpt/affidavit",
+        "seanchatmangpt/beam4pm",
+        "seanchatmangpt/xaas",
+        "seanchatmangpt/ggen-marketplace",
+        "seanchatmangpt/castle",
+        "seanchatmangpt/ggen-ecosystem"
+      ]
+    },
+    {
+      "id": "economic_effect_chain",
+      "authority_effect": "NONE",
+      "members": [
+        "seanchatmangpt/semantic_bit",
+        "seanchatmangpt/a2a-rs",
+        "seanchatmangpt/mcpp",
+        "seanchatmangpt/cre",
+        "seanchatmangpt/yawl",
+        "seanchatmangpt/mfw",
+        "seanchatmangpt/autotel",
+        "seanchatmangpt/dteam",
+        "seanchatmangpt/ex4pm",
+        "seanchatmangpt/ash_ex4pm"
+      ]
+    },
+    {
+      "id": "semantic_diataxis",
+      "authority_effect": "NONE",
+      "members": [
+        "seanchatmangpt/engineering-standards",
+        "seanchatmangpt/ggen",
+        "seanchatmangpt/ggen-marketplace",
+        "seanchatmangpt/graphlaw",
+        "seanchatmangpt/ash_graphlaw",
+        "seanchatmangpt/xaas",
+        "seanchatmangpt/chatman-ecosystem"
+      ]
+    },
+    {
+      "id": "planning_runtime",
+      "authority_effect": "NONE",
+      "members": [
+        "seanchatmangpt/ferroplan",
+        "seanchatmangpt/koala-planner",
+        "seanchatmangpt/beam4pm",
+        "seanchatmangpt/gymact",
+        "seanchatmangpt/autofde-lab",
+        "seanchatmangpt/VAL",
+        "seanchatmangpt/ash_pplan"
+      ]
+    },
+    {
+      "id": "semantic_manufacture",
+      "authority_effect": "NONE",
+      "members": [
+        "seanchatmangpt/ggen",
+        "seanchatmangpt/ggen_igniter",
+        "seanchatmangpt/ggen-marketplace",
+        "seanchatmangpt/ggen-legacy",
+        "seanchatmangpt/chatman-ecosystem"
+      ]
+    },
+    {
+      "id": "evidence_observation",
+      "authority_effect": "NONE",
+      "members": [
+        "seanchatmangpt/unrdf",
+        "seanchatmangpt/ash_r2rml",
+        "seanchatmangpt/process-intelligence",
+        "seanchatmangpt/autotel",
+        "seanchatmangpt/erlmcp"
+      ]
+    }
+  ],
+  "high_leverage_observations": [
+    {
+      "repository": "seanchatmangpt/graphlaw",
+      "pr": 26,
+      "claim": "qualification algebra restored on hardened QME subject"
+    },
+    {
+      "repository": "seanchatmangpt/ggen-ecosystem",
+      "pr": 384,
+      "claim": "cross-ecosystem QME crown"
+    },
+    {
+      "repository": "seanchatmangpt/ggen-marketplace",
+      "pr": 535,
+      "claim": "falsifiable Chicago work-equivalent court; numerical claim remains evidence-gated"
+    },
+    {
+      "repository": "seanchatmangpt/ash_a2a",
+      "pr": 85,
+      "claim": "external PDP policy decisions remain evidence, not DO authority"
+    },
+    {
+      "repository": "seanchatmangpt/engineering-standards",
+      "pr": 14,
+      "claim": "machine-native SA2A Diataxis closure"
+    },
+    {
+      "repository": "seanchatmangpt/ggen",
+      "pr": 783,
+      "claim": "Semantic Diataxis contracts for SA2A agents"
+    },
+    {
+      "repository": "seanchatmangpt/semantic_bit",
+      "pr": 1,
+      "claim": "canonical economic-effect identity"
+    },
+    {
+      "repository": "seanchatmangpt/yawl",
+      "pr": 241,
+      "claim": "settlement state machine with UNKNOWN -> RECONCILE"
+    },
+    {
+      "repository": "seanchatmangpt/mfw",
+      "pr": 93,
+      "claim": "payment effect-chain mutant hardening"
+    },
+    {
+      "repository": "seanchatmangpt/autotel",
+      "pr": 7,
+      "claim": "settlement evidence mutant hardening"
+    },
+    {
+      "repository": "seanchatmangpt/unrdf",
+      "pr": 114,
+      "claim": "OCEL 2.0 Git swarm execution receipts"
+    },
+    {
+      "repository": "seanchatmangpt/ferroplan",
+      "pr": 46,
+      "claim": "DfCM repair/probes/FOND admission"
+    },
+    {
+      "repository": "seanchatmangpt/castle",
+      "pr": 25,
+      "claim": "product capability donors remain bounded behind CASTLE consequence crown"
+    },
+    {
+      "repository": "seanchatmangpt/xaas",
+      "pr": 99,
+      "claim": "runtime donors remain CANDIDATE/CONSTRUCT beneath runtime ownership"
+    },
+    {
+      "repository": "seanchatmangpt/wasm4pm",
+      "pr": 650,
+      "claim": "compatibility is structural evidence, not a second runtime engine"
+    }
+  ]
+}
