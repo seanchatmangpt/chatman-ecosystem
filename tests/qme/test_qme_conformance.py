@@ -47,6 +47,16 @@ class QMEConformanceTest(unittest.TestCase):
                     sorted(record.get("_expected_errors", [])),
                 )
 
+    def test_every_fixture_carries_the_required_schema_surface(self):
+        with (ROOT / "schemas" / "qme-1" / "conformance.schema.json").open(
+            encoding="utf-8"
+        ) as handle:
+            schema = json.load(handle)
+        required = set(schema["required"])
+        for path in FIXTURES.glob("*.json"):
+            with self.subTest(path=path.name):
+                self.assertTrue(required.issubset(self.load(path.name)))
+
     def test_every_semantic_refusal_has_a_killer_fixture(self):
         covered = set()
         for path in FIXTURES.glob("*.json"):
