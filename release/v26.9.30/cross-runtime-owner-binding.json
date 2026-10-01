@@ -1,0 +1,83 @@
+{
+  "schema": "https://chatman.dev/standing-court/cross-runtime-owner-binding/v1",
+  "observed_at": "2026-09-30",
+  "authority": "NONE",
+  "qualification_only": true,
+  "subjects": {
+    "graphlaw": {
+      "sha": "0bb0df2a93293af5447bbe22f2a38eb645204f4c",
+      "role": "semantic/native+WASI owner",
+      "evidence": [
+        "workspace member wasm",
+        "tests/wasm_abi.rs real runtime",
+        "ABI_VERSION contract",
+        "receipt_store exact subject chains"
+      ]
+    },
+    "ash_graphlaw": {
+      "sha": "1976449e7b96b98a0555b73706ab95ee7a66fa85",
+      "role": "BEAM/Wasmex membrane",
+      "evidence": [
+        "hosts pinned graphlaw.wasm",
+        "preserves GraphLaw JSON ABI",
+        "does not reimplement semantics"
+      ]
+    },
+    "affidavit": {
+      "sha": "06244026e5f76dc532f447c5bdd5c41f69d89a44",
+      "role": "cryptographic standing owner",
+      "evidence": [
+        "WASI verifier parity",
+        "certify-dont-decide boundary"
+      ]
+    },
+    "ash_a2a": {
+      "sha": "130d6a2168490b9bb02b27fa198ec66b629abcad",
+      "role": "SA2A/BRCE consumer"
+    },
+    "xaas": {
+      "sha": "6e9d67f6031ab7e6d9e9df92688ca1b4b040968f",
+      "role": "generated consumer"
+    },
+    "castle": {
+      "sha": "a6d0b5598133c784e87852ec4b295780e2adcf81",
+      "role": "generated consumer"
+    }
+  },
+  "reusable_edges": [
+    {
+      "failure": "ABI_INTERFACE_MISMATCH",
+      "owner": "graphlaw",
+      "consumer": "ash_graphlaw",
+      "falsifier": "mutate ABI_VERSION/op surface; membrane must refuse rather than reinterpret"
+    },
+    {
+      "failure": "CROSS_RUNTIME_DIVERGENCE",
+      "owner": "graphlaw",
+      "consumer": "ash_graphlaw",
+      "falsifier": "same canonical request native vs real WASI must preserve response/refusal identity"
+    },
+    {
+      "failure": "AUTHORITY_SMUGGLING",
+      "owner": "affidavit",
+      "consumer": "ash_a2a",
+      "falsifier": "valid cryptographic standing must not manufacture runtime DO authority"
+    },
+    {
+      "failure": "PRE_DO_TOCTOU",
+      "owner": "ash_a2a",
+      "consumer": "xaas",
+      "falsifier": "mutate standing after admission and before DO; consequential actuation remains zero"
+    },
+    {
+      "failure": "GENERATED_SOURCE_DRIFT",
+      "owner": "chatman-ecosystem",
+      "consumer": "castle",
+      "falsifier": "regenerate projection from canonical source and reject byte drift"
+    }
+  ],
+  "metric": {
+    "credit_rule": "only observed consumer refusal earns prevention credit",
+    "bespoke_consumer_tests": false
+  }
+}
