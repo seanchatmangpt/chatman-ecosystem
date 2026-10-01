@@ -136,6 +136,7 @@
 - [78. Kaizen and the Self-Improving Factory](78-kaizen-self-improving-factory.md)
 - [79. Measurement System for the Autonomous Software Factory](79-factory-metrics.md)
 - [80. The Post-Operator Factory](80-post-operator-factory.md)
+- [81. Verified Daily Accomplishment Log](81-verified-accomplishment-log.md)
 
 # Part XI — The Post-AGI Platform Engineer's Handbook
 

@@ -1,0 +1,27 @@
+schema = "chatman.accomplishment-log-policy.v1"
+version = "26.9.20"
+timezone = "America/Los_Angeles"
+target_verified_unique_semantic_commits_per_hour = 250
+compiled_review_status = "PENDING_USER_REVIEW"
+compiled_standing = "CANDIDATE"
+
+[counting]
+dedupe_key = "semantic_fingerprint"
+require_exact_subject = true
+require_state = "COMPLETED"
+require_verified_consequence = true
+require_verifier_outcome = "PASS"
+require_receipt_identity = true
+require_receipt_digest = true
+unverified_counts_toward_target = false
+
+[partitions]
+completed = "Only unique semantic units with exact subject, verified consequence, PASS verifier, and receipt identity/digest."
+evidence = "Verifier and receipt bindings for every observed semantic unit."
+open_gaps = "Incomplete, conflicting, or unverified semantic units; never included in target progress."
+blocked = "Typed blockers; never included in target progress."
+
+[evidence_ceiling]
+compiled_report = "CANDIDATE"
+user_review_required_for = "reviewed accomplishment log"
+prohibited_inferences = ["merge", "publication", "deployment", "runtime standing", "cross-repository ALIVE"]

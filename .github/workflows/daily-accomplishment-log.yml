@@ -1,0 +1,69 @@
+name: Daily verified accomplishment log
+
+on:
+  schedule:
+    - cron: '15 8 * * *'
+  workflow_dispatch:
+    inputs:
+      report_date:
+        description: 'America/Los_Angeles date (YYYY-MM-DD); defaults to previous local day'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve report date
+        id: report_date
+        env:
+          REQUESTED_DATE: ${{ inputs.report_date }}
+        run: |
+          if [[ -n "${REQUESTED_DATE}" ]]; then
+            report_date="${REQUESTED_DATE}"
+          else
+            report_date="$(python3 -c 'from datetime import datetime, timedelta; from zoneinfo import ZoneInfo; local=datetime.now(ZoneInfo("America/Los_Angeles")).date(); print((local-timedelta(days=1)).isoformat())')"
+          fi
+          python3 -c 'import sys; from datetime import date; date.fromisoformat(sys.argv[1])' "${report_date}"
+          echo "date=${report_date}" >> "${GITHUB_OUTPUT}"
+
+      - name: Compile candidate log from admitted evidence files
+        env:
+          REPORT_DATE: ${{ steps.report_date.outputs.date }}
+        run: |
+          mkdir -p target/accomplishment-log
+          mapfile -t evidence_files < <(find evidence/accomplishments -type f -name '*.jsonl' -print 2>/dev/null | sort || true)
+          input_args=()
+          for evidence_file in "${evidence_files[@]}"; do
+            input_args+=(--input "${evidence_file}")
+          done
+          python3 scripts/measure_train/accomplishment_log.py \
+            --date "${REPORT_DATE}" \
+            --format markdown \
+            --output "target/accomplishment-log/${REPORT_DATE}.md" \
+            "${input_args[@]}"
+          python3 scripts/measure_train/accomplishment_log.py \
+            --date "${REPORT_DATE}" \
+            --format json \
+            --output "target/accomplishment-log/${REPORT_DATE}.json" \
+            "${input_args[@]}"
+          cat "target/accomplishment-log/${REPORT_DATE}.md" >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Verify generated report is still pending user review
+        env:
+          REPORT_DATE: ${{ steps.report_date.outputs.date }}
+        run: |
+          python3 -c 'import json,sys; from pathlib import Path; report=json.loads(Path(sys.argv[1]).read_text()); assert report["review"]["status"]=="PENDING_USER_REVIEW"; assert report["standing"]=="CANDIDATE"; assert report["target"]["verified_unique_semantic_commits_per_hour"]==250' "target/accomplishment-log/${REPORT_DATE}.json"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: accomplishment-log-${{ steps.report_date.outputs.date }}
+          path: target/accomplishment-log/
+          if-no-files-found: error
