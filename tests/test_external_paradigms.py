@@ -41,6 +41,39 @@ class ExternalParadigmsTest(unittest.TestCase):
             with self.assertRaisesRegex(ParadigmRefusal, "SUPPLIER_SELF_STANDING"):
                 validate_registry(bad, tmp_root)
 
+    def test_novel_gap_requires_discharged_prior_art(self):
+        registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            (tmp_root / "upstream" / "ecc").mkdir(parents=True)
+            bad_registry = tmp_root / "upstream" / "paradigms.json"
+            bad_map = tmp_root / "upstream" / "ecc" / "pattern-map.json"
+
+            registry["suppliers"][0]["pattern_map"] = "upstream/ecc/pattern-map.json"
+            bad_registry.write_text(json.dumps(registry), encoding="utf-8")
+            bad_map.write_text(
+                json.dumps(
+                    {
+                        "schema": "chatman.external-pattern-map.v1",
+                        "supplier": "ecc",
+                        "supplier_sha": registry["suppliers"][0]["pin"]["sha"],
+                        "entries": [
+                            {
+                                "id": "ecc.fake-novelty",
+                                "source_paths": ["skills/fake/"],
+                                "disposition": "NOVEL_GAP",
+                                "authority": "NONE"
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(
+                ParadigmRefusal, "NOVELTY_REQUIRED_SEMANTICS_MISSING"
+            ):
+                validate_registry(bad_registry, tmp_root)
+
 
 class ExternalParadigmDeltaTest(unittest.TestCase):
     def test_added_skill_is_candidate_unit(self):

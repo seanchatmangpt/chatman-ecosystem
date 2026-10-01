@@ -23,7 +23,7 @@ class DfcmCapabilityTests(unittest.TestCase):
 
     def test_repository_capabilities_satisfy_dfcm_profile(self):
         result = module.validate_all_capabilities(self.items, self.profile)
-        self.assertEqual(result["capability_count"], 44)
+        self.assertEqual(result["capability_count"], 48)
         self.assertEqual(result["epr_capability_count"], 5)
         self.assertEqual(result["epr_do_count"], 0)
         self.assertEqual(result["standing"], "NONE")

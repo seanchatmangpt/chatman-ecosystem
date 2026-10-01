@@ -115,6 +115,46 @@ def validate_registry(registry_path: Path, root: Path) -> dict:
             if disposition != "NOVEL_GAP" and not entry.get("chatman_target"):
                 raise ParadigmRefusal(f"REFUSED:NO_TARGET:{sid}:{eid}")
 
+            if disposition == "NOVEL_GAP":
+                required = entry.get("required_semantics")
+                searched = entry.get("searched_prior_art")
+                failures = entry.get("candidate_failures")
+                falsifier = entry.get("falsifier")
+                if not isinstance(required, list) or not required:
+                    raise ParadigmRefusal(
+                        f"REFUSED:NOVELTY_REQUIRED_SEMANTICS_MISSING:{sid}:{eid}"
+                    )
+                if not isinstance(searched, list) or not searched:
+                    raise ParadigmRefusal(
+                        f"REFUSED:NOVELTY_PRIOR_ART_SEARCH_MISSING:{sid}:{eid}"
+                    )
+                if not isinstance(failures, list) or not failures:
+                    raise ParadigmRefusal(
+                        f"REFUSED:NOVELTY_WITHOUT_PRIOR_ART_FAILURES:{sid}:{eid}"
+                    )
+                failed_ids = {
+                    item.get("id")
+                    for item in failures
+                    if isinstance(item, dict)
+                }
+                if not set(searched).issubset(failed_ids):
+                    raise ParadigmRefusal(
+                        f"REFUSED:NOVELTY_SEARCH_NOT_DISCHARGED:{sid}:{eid}"
+                    )
+                for failure in failures:
+                    if (
+                        not isinstance(failure, dict)
+                        or not isinstance(failure.get("missing_semantics"), list)
+                        or not failure.get("missing_semantics")
+                    ):
+                        raise ParadigmRefusal(
+                            f"REFUSED:NOVELTY_FAILURE_UNTYPED:{sid}:{eid}"
+                        )
+                if not isinstance(falsifier, str) or not falsifier.strip():
+                    raise ParadigmRefusal(
+                        f"REFUSED:NOVELTY_WITHOUT_FALSIFIER:{sid}:{eid}"
+                    )
+
     return {
         "schema": SCHEMA,
         "supplier_count": len(suppliers),
