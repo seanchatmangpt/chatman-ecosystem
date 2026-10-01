@@ -3,7 +3,12 @@
   "policy": {
     "invent_only_when": "ExistingQualifiedCapabilities does not satisfy RequiredSemantics",
     "mutable_refs_forbidden": true,
-    "allowed_dispositions": ["VENDOR", "WRAP", "REPLACE", "NOVEL_GAP"]
+    "allowed_dispositions": [
+      "VENDOR",
+      "WRAP",
+      "REPLACE",
+      "NOVEL_GAP"
+    ]
   },
   "suppliers": [
     {
@@ -17,6 +22,19 @@
         "observed_at": "2026-09-24T16:52:47Z"
       },
       "pattern_map": "upstream/ecc/pattern-map.json",
+      "standing": "CANDIDATE"
+    },
+    {
+      "id": "claude-code-from-source",
+      "repository": "alejandrobalderas/claude-code-from-source",
+      "source_url": "https://github.com/alejandrobalderas/claude-code-from-source",
+      "license": "SEE_UPSTREAM",
+      "role": "architectural-prior-art-supplier",
+      "pin": {
+        "sha": "a6d5e452a8e0dd925c22c407c84611b1994562eb",
+        "observed_at": "2026-09-24T22:15:00-07:00"
+      },
+      "pattern_map": "upstream/claude-code-from-source/pattern-map.json",
       "standing": "CANDIDATE"
     }
   ]

@@ -1,0 +1,208 @@
+{
+  "schema": "chatman.external-pattern-map.v1",
+  "supplier": "claude-code-from-source",
+  "supplier_sha": "a6d5e452a8e0dd925c22c407c84611b1994562eb",
+  "entries": [
+    {
+      "id": "ccfs.agent-loop",
+      "source_paths": [
+        "book/ch05-agent-loop.md"
+      ],
+      "disposition": "WRAP",
+      "reason": "Explicit typed loop/terminal-state machinery is reusable while model-driven continuation remains subordinate to admitted planning.",
+      "chatman_target": "SA2A execution loop",
+      "authority": "SELECT_CONSTRUCT_ONLY",
+      "target_capabilities": [
+        "capability:orchestrate-manufacturing-work"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.tool-execution-pipeline",
+      "source_paths": [
+        "book/ch06-tools.md"
+      ],
+      "disposition": "REPLACE",
+      "reason": "Retain staged validation/execution shape; replace permission-finality with BRCE authority/admission/receipt semantics.",
+      "chatman_target": "BRCE execution calculus",
+      "authority": "OBSERVE_SELECT",
+      "target_capabilities": [
+        "capability:broker-consequential-do",
+        "capability:enforce-authority-ceiling"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.input-dependent-concurrency",
+      "source_paths": [
+        "book/ch06-tools.md",
+        "book/ch07-concurrency.md"
+      ],
+      "disposition": "REPLACE",
+      "reason": "Generalize boolean tool safety into effect footprints and pairwise commutativity.",
+      "chatman_target": "AutoFDE effect algebra",
+      "authority": "SELECT",
+      "target_capabilities": [
+        "capability:plan-decision-frontier"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.stale-subject-guard",
+      "source_paths": [
+        "book/ch06-tools.md"
+      ],
+      "disposition": "WRAP",
+      "reason": "Generalize stale-file rejection to exact-subject identity across repositories, documents, artifacts and resources.",
+      "chatman_target": "exact-subject admission",
+      "authority": "OBSERVE",
+      "target_capabilities": [
+        "capability:observe-exact-head-workflows"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.permission-resolution",
+      "source_paths": [
+        "book/ch06-tools.md"
+      ],
+      "disposition": "REPLACE",
+      "reason": "Permission and hook decisions are evidence or claims, never authority by themselves.",
+      "chatman_target": "authority admission",
+      "authority": "OBSERVE_SELECT",
+      "target_capabilities": [
+        "capability:enforce-authority-ceiling",
+        "capability:broker-consequential-do"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.hook-snapshot",
+      "source_paths": [
+        "book/ch12-extensibility.md"
+      ],
+      "disposition": "REPLACE",
+      "reason": "Generalize frozen hook configuration into a content-addressed execution manifest bound into receipts.",
+      "chatman_target": "affidavit execution manifest",
+      "authority": "OBSERVE",
+      "target_capabilities": [
+        "capability:attest-affidavit-standing"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.fork-prefix-identity",
+      "source_paths": [
+        "book/ch09-fork-agents.md"
+      ],
+      "disposition": "WRAP",
+      "reason": "Preserve exact context-prefix identity as an executor/cache optimization without giving cache state semantic standing.",
+      "chatman_target": "SA2A execution snapshot",
+      "authority": "SELECT_CONSTRUCT_ONLY",
+      "target_capabilities": [
+        "capability:orchestrate-manufacturing-work"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.task-recovery",
+      "source_paths": [
+        "book/ch10-coordination.md"
+      ],
+      "disposition": "WRAP",
+      "reason": "Promote durable task/event/checkpoint state over ephemeral worker identity.",
+      "chatman_target": "SA2A durable work",
+      "authority": "OBSERVE_SELECT",
+      "target_capabilities": [
+        "capability:orchestrate-manufacturing-work",
+        "capability:persist-autofde-runtime"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.result-indirection",
+      "source_paths": [
+        "book/ch06-tools.md"
+      ],
+      "disposition": "WRAP",
+      "reason": "Bind oversized evidence by digest and provenance while keeping previews non-authoritative.",
+      "chatman_target": "affidavit evidence reference",
+      "authority": "OBSERVE",
+      "target_capabilities": [
+        "capability:attest-affidavit-standing"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.remote-control",
+      "source_paths": [
+        "book/ch16-remote.md"
+      ],
+      "disposition": "WRAP",
+      "reason": "Reuse outbound-safe remote control transport while preserving XaaS/BRCE as the only consequential kernel.",
+      "chatman_target": "XaaS remote consequence relay",
+      "authority": "OBSERVE_SELECT",
+      "target_capabilities": [
+        "capability:broker-consequential-do",
+        "capability:project-interface-surfaces"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.read-write-channel-separation",
+      "source_paths": [
+        "book/ch16-remote.md"
+      ],
+      "disposition": "WRAP",
+      "reason": "Keep observation and consequence/control channels logically distinct so one cannot counterfeit the other.",
+      "chatman_target": "XaaS relay channels",
+      "authority": "OBSERVE",
+      "target_capabilities": [
+        "capability:project-interface-surfaces"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.bounded-dedup",
+      "source_paths": [
+        "book/ch16-remote.md"
+      ],
+      "disposition": "WRAP",
+      "reason": "Use bounded command-id replay suppression while consequence idempotency remains receipt-backed.",
+      "chatman_target": "XaaS relay dedup",
+      "authority": "OBSERVE",
+      "target_capabilities": [
+        "capability:broker-consequential-do"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.reconnect-classification",
+      "source_paths": [
+        "book/ch16-remote.md"
+      ],
+      "disposition": "WRAP",
+      "reason": "Classify permanent/transient/ambiguous transport failures without promoting them to subject failures.",
+      "chatman_target": "XaaS relay recovery",
+      "authority": "OBSERVE",
+      "target_capabilities": [
+        "capability:project-interface-surfaces"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    },
+    {
+      "id": "ccfs.deferred-tool-loading",
+      "source_paths": [
+        "book/ch06-tools.md"
+      ],
+      "disposition": "WRAP",
+      "reason": "Defer schema payloads as a context optimization while preserving capability identity and admission semantics.",
+      "chatman_target": "capability projection",
+      "authority": "OBSERVE",
+      "target_capabilities": [
+        "capability:project-interface-surfaces"
+      ],
+      "semantic_equivalence": "UNCLAIMED"
+    }
+  ]
+}

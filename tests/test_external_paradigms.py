@@ -15,9 +15,15 @@ REGISTRY = ROOT / "upstream" / "paradigms.json"
 class ExternalParadigmsTest(unittest.TestCase):
     def test_repository_registry_is_well_formed(self):
         result = validate_registry(REGISTRY, ROOT)
-        self.assertEqual(result["supplier_count"], 1)
+        self.assertEqual(result["supplier_count"], 2)
         self.assertGreater(result["pattern_count"], 0)
         self.assertEqual(result["standing"], "NONE")
+        registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
+        by_id = {supplier["id"]: supplier for supplier in registry["suppliers"]}
+        self.assertEqual(
+            by_id["claude-code-from-source"]["pin"]["sha"],
+            "a6d5e452a8e0dd925c22c407c84611b1994562eb",
+        )
 
     def test_mutable_ref_is_refused(self):
         registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
