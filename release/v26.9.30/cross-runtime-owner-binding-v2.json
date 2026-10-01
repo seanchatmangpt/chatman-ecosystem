@@ -1,0 +1,59 @@
+{
+  "schema": "https://chatman.dev/standing-court/cross-runtime-owner-binding/v2",
+  "observed_at": "2026-09-30",
+  "authority": "NONE",
+  "qualification_only": true,
+  "canonical_branch_head": "a8304ddb165d5d824d6e52f27a9dd64e4c618318",
+  "subjects": {
+    "graphlaw": {
+      "sha": "0bb0df2a93293af5447bbe22f2a38eb645204f4c",
+      "role": "semantic/native+WASI owner"
+    },
+    "ash_graphlaw": {
+      "sha": "6173840910c1cafc81dd2e88b16f36a9b0e558ff",
+      "role": "BEAM/Wasmex membrane",
+      "observed": [
+        "ggen --check",
+        "--check-ledger",
+        "--check-versions",
+        "mix format",
+        "mix compile --warnings-as-errors",
+        "mix test seed 0: 973 tests, 0 failures"
+      ]
+    },
+    "affidavit": {
+      "sha": "d176c107279db7b4bb8d39c2fe6c70ec26b3361a",
+      "role": "cryptographic standing owner"
+    },
+    "ash_a2a": {
+      "sha": "fbea18c5d58c5b38776b70b477d9cd24c96963a8",
+      "role": "SA2A/BRCE consumer"
+    },
+    "xaas": {
+      "sha": "6e9d67f6031ab7e6d9e9df92688ca1b4b040968f",
+      "role": "generated consumer"
+    },
+    "castle": {
+      "sha": "a6d0b5598133c784e87852ec4b295780e2adcf81",
+      "role": "generated consumer"
+    }
+  },
+  "newly_observed_failure_immunity": {
+    "failure_class": "GENERATED_SOURCE_DRIFT",
+    "prior_failure": "ash_graphlaw generator/version drift",
+    "repair_subject": "ash_graphlaw@6173840910c1cafc81dd2e88b16f36a9b0e558ff",
+    "repair": "marketplace repinned to 86735f4e2683cace11f92824af0ac3875ec5e3fb; generated installer replaces self-retiring residue",
+    "falsifier": "scripts/ggen_sync.sh --check && scripts/ggen_sync.sh --check-ledger && scripts/ggen_sync.sh --check-versions",
+    "observation": "repair commit reports all generator courts green and mix test seed 0: 973 tests, 0 failures",
+    "credit_policy": "consumer prevention credit requires inherited guard execution; repair observation alone is denominator evidence"
+  },
+  "next_falsifiers": [
+    "mutate graphlaw.wasm digest; ash_graphlaw must refuse before execution",
+    "mutate ABI_VERSION/op surface; BEAM membrane must refuse rather than reinterpret",
+    "same canonical request native vs WASI must preserve response/refusal bytes",
+    "valid Affidavit standing must not manufacture SA2A DO authority",
+    "mutate standing after admission before DO; consequential actuation remains zero",
+    "regenerate XaaS projection at exact subject and reject byte drift",
+    "regenerate CASTLE projection at exact subject and reject byte drift"
+  ]
+}
