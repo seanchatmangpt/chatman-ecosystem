@@ -12,13 +12,20 @@ In a deterministic, cryptographically attested semantic control architecture, sy
 
 1. **The Inner Micro-Actuation Loop (Gate & Execution):**  
    `ash_a2a` $\to$ `ash_r2rml` $\to$ `ash_graphlaw` $\to$ `ash_affidavit` $\to$ `xaas`  
-   Validates pre-conditions, cryptographically bounds authority with Ed25519 leases, admits transitions through branchless WASM kernels, executes provider tasks, and stamps immutable receipt records.
+   * **Latency & Memory Bounds:** High-frequency actuation loops (sub-100ms) avoid full-graph W3C R2RML re-serialization. State transformations operate over a **Differential Graph Projection** ($\Delta G = G_{new} \setminus G_{old}$) anchored to an immutable Blake3/SHA-256 root digest. In-memory payloads are passed into Wasmtime linear memory via zero-copy vector slicing.
+   * **Algebraic Two-Port Gate:** Preconditions, authority boundaries, and capability ceilings are evaluated as a deterministic piecewise function:
+     $$\text{Gate}(\text{Command}, \text{Lease}, S_t) = \begin{cases} \text{Admitted} & \text{if } H(\text{Scope}_{\text{Lease}}) \equiv H(\text{Target}_{\text{Cmd}}) \land H(\text{RDFC10}(S_t)) \equiv \text{Root}_{\text{Lease}} \land \text{Clock}_{\text{mono}} \in [T_{\text{start}}, T_{\text{exp}}] \land \text{Verify}_{\text{Ed25519}}(\sigma_{\text{Lease}}, \text{PK}_{\text{Auth}}) = 1 \\ \text{Refused} & \text{otherwise} \end{cases}$$
+   * **Clock Discipline:** All time horizons evaluate against the BEAM monotonic clock (`System.monotonic_time(:millisecond)`), structurally eliminating NTP time-travel, leap-second jitter, and wall-clock spoofing. Refusals produce a branchless null-mask to ensure constant-time gate evaluation.
+
 2. **The Outer Goal-Convergence Loop (Planning & State Reconciliation):**  
    `ash_pplan` $\to$ `ash_a2a` $\to$ `ash_affidavit` $\to$ `ggen_igniter`  
-   Translates declarative work orders into FOND/HTN action trees, checks post-conditions against relational and RDF state, and reconciles state transitions through append-only event sourcing logs.
+   * **Epistemic Horizon ($K_{\max}$):** Goal regressions in FOND/HTN action trees are bounded by a maximum transition counter $k \le K_{\max}$. If non-deterministic environmental drift prevents convergence after $K_{\max}$ micro-cycles, the loop executes a deadlock breaker: it emits an immutable `FAILED_CONVERGENCE_RECEIPT` and trips the OTP supervisor tree (acting as a digital Andon cord) rather than thrashing.
+   * **Vector Clocks & Monotonic Epochs:** `TransitionLog` maintains deterministic event-ordering and replay defense by annotating every transition record with a vector clock and a monotonically increasing epoch $e \in \mathbb{U}_{64}$.
+
 3. **The Meta Ontological Evolution Loop (Synthesis & Self-Hosting):**  
    `ggen-marketplace` $\to$ `ggen_igniter` $\to$ `ash_*` Artifacts $\to$ Conformance Mining $\to$ `ggen-marketplace`  
-   Compiles W3C RDF/OWL ontologies into executable Spark DSL extensions, Ash resources, and validation shapes, feeding runtime process-mining metrics back into ontology refinement.
+   * **Monotonic Restriction & Sovereign Ceiling:** Mining feedback (e.g. from `wasm4pm` / OCEL 2.0 telemetry) is strictly prohibited from loosening existing constraints or relaxing base W3C axioms. Evolution is restricted to monotonic specialization (adding constraints, tightening bounds).
+   * **Ceiling Lease (0x04):** Any ontological mutation altering core entity shapes requires explicit multi-party cryptographic authorization via a Sovereign Ceiling Lease (`0x04`), preventing catastrophic automated ontology drift.
 
 ---
 
@@ -70,7 +77,7 @@ flowchart LR
 
     subgraph ProtocolLayer["Mesh & Identity Tier"]
         A2A["ash_a2a\n[Elixir / Ash Extension]\nCommandBus & Two-Port Gate"]
-        R2RML["ash_r2rml\n[Elixir / W3C OBDA Engine]\nRelational-to-RDF Mapper"]
+        R2RML["ash_r2rml\n[Elixir / W3C OBDA Engine]\nDifferential Graph & RDFC-1.0"]
     end
 
     subgraph KernelLayer["Deterministic Admission Tier"]
@@ -87,8 +94,8 @@ flowchart LR
     IGN -->|"Synthesizes DSL Extensions"| A2A
 
     PPLAN -->|"Goal Regression & Action Sequence"| A2A
-    A2A -->|"Relational State Query"| R2RML
-    R2RML -->|"RDFC-1.0 Canonical Graph"| GLAW
+    A2A -->|"Differential State Query (ΔG)"| R2RML
+    R2RML -->|"RDFC-1.0 Delta Root Digest"| GLAW
     A2A -->|"Signed Ed25519 Lease"| GLAW
     GLAW -->|"Formal Admission / Refusal"| A2A
 
@@ -102,7 +109,7 @@ flowchart LR
 
 ## 4. C4 Level 3: Component Diagram (Internal Engine Mechanics)
 
-A focused view on the core components inside `ash_a2a`, `ash_graphlaw`, `ash_affidavit`, and `ggen_igniter`.
+A focused view on the core components inside `ash_a2a`, `ash_graphlaw`, `ash_affidavit`, and `ggen_igniter`, highlighting the Monotonic Clock, Lease Manager, and Vector Clock integration.
 
 ```mermaid
 flowchart TB
@@ -111,6 +118,7 @@ flowchart TB
         Dispatcher["A2A.Dispatcher"]
         TwoPortGate["Two-Port Identity Validator"]
         CapabilityIndex["CapabilityIndex Compiler"]
+        LeaseManager["Lease Manager & Clock\n(System.monotonic_time)"]
     end
 
     subgraph ash_graphlaw["ash_graphlaw Internals"]
@@ -128,13 +136,14 @@ flowchart TB
 
     subgraph ggen_igniter["ggen_igniter Internals"]
         Reconciler["SemanticJira.Reconciler"]
-        TransitionLog["TransitionLog (ETS/Postgres)"]
+        TransitionLog["TransitionLog (ETS/Postgres)\n[Epoch u64 & Vector Clocks]"]
         CodeGenerator["Ggen.Igniter Code Generator"]
     end
 
     Dispatcher --> CmdBus
     CmdBus --> TwoPortGate
     TwoPortGate -->|"Verify Digest Parity"| CapabilityIndex
+    TwoPortGate -->|"Monotonic Time Check"| LeaseManager
 
     TwoPortGate --> LeaseVerifier
     LeaseVerifier --> WasmPool
@@ -156,33 +165,33 @@ flowchart TB
 
 ### 5.1 Loop 1: The Inner Actuation & Admission Loop (Micro Cycle)
 
-*Frequency: Milliseconds to seconds*  
-*Invariant: Zero unreceipted actuation. Real collaborators only.*
+* **Frequency:** Sub-100ms  
+* **Invariant:** Zero unreceipted actuation. Differential graph verification $\Delta G$ via zero-copy vector slicing. Refusals return a branchless null-mask.
 
 ```mermaid
 sequenceDiagram
     autonumber
     participant Agent as 🤖 Agent / Command Source
     participant A2A as 🛡️ ash_a2a (CommandBus)
-    participant R2RML as 🗄️ ash_r2rml (OBDA)
-    participant GLAW as ⚖️ ash_graphlaw (WASM)
-    participant XAAS as ⚙️ xaas (Provider)
-    participant AFF as 📜 ash_affidavit (Receipt)
+    participant R2RML as 🗄️ ash_r2rml (OBDA Delta)
+    participant GLAW as ⚖️ ash_graphlaw (WASM Kernel)
+    participant XAAS as ⚙️ xaas (Provider Sandbox)
+    participant AFF as 📜 ash_affidavit (Receipt Store)
 
     Agent->>A2A: Submit Command with Ed25519 Lease
-    A2A->>R2RML: Fetch Relational State as RDF Graph
-    R2RML-->>A2A: Canonical Graph Digest
-    A2A->>A2A: Assert Two-Port Invariant (work_order == state)
-    A2A->>GLAW: Transition Check (data, shapes, lease)
-    alt Invalid State or Ceiling Exceeded
-        GLAW-->>A2A: {:error, %AshGraphLaw.Refusal{code: "LeaseRefused"}}
+    A2A->>A2A: Read System.monotonic_time(:millisecond)
+    A2A->>R2RML: Compute Differential Projection ΔG
+    R2RML-->>A2A: Blake3 Root Digest & Zero-Copy Slice
+    A2A->>GLAW: Evaluate Piecewise Gate(Cmd, Lease, ΔG)
+    alt Gate Evaluation Fails (Expired, Scope Breach, Invalid ΔG)
+        GLAW-->>A2A: {:error, %AshGraphLaw.Refusal{code: "LeaseRefused", mask: 0x0}}
         A2A-->>Agent: Refusal (Closed, Non-Actuated)
-    else State Compliant & Signed
+    else Admitted (Valid Lease & Shape Compliance)
         GLAW-->>A2A: {:ok, %Admitted{subject_sha256: hash}}
-        A2A->>XAAS: Execute Admitted Command
-        XAAS-->>AFF: Emit Telemetry & Transition Delta
-        AFF->>AFF: Append to Hash Chain & Sign Receipt
-        AFF-->>A2A: Receipt Token
+        A2A->>XAAS: Dispatch Execution
+        XAAS-->>AFF: Emit Telemetry & Side Effects
+        AFF->>AFF: Append to Blake3 Hash Chain & Sign
+        AFF-->>A2A: Signed Receipt Token
         A2A-->>Agent: {:ok, Result, Receipt}
     end
 ```
@@ -191,8 +200,8 @@ sequenceDiagram
 
 ### 5.2 Loop 2: The Outer Goal-Convergence Loop (Macro Cycle)
 
-*Frequency: Seconds to minutes*  
-*Invariant: Goals formulated in FOND/HTN must reach deterministic goal states or emit explicit BLOCKED / UNSUPPORTED receipts.*
+* **Frequency:** Seconds to minutes  
+* **Invariant:** Goals formulated in FOND/HTN must converge within Epistemic Horizon $k \le K_{\max}$. If $k > K_{\max}$, emit `FAILED_CONVERGENCE_RECEIPT` and trip supervisor. Event log ordering is enforced by monotonic epoch $e \in \mathbb{U}_{64}$.
 
 ```mermaid
 sequenceDiagram
@@ -203,26 +212,36 @@ sequenceDiagram
     participant A2A as 🛡️ ash_a2a (Mesh)
     participant AFF as 📜 ash_affidavit (Receipts)
 
-    Client->>IGN: Create WorkOrder (Origin Authority, Scope)
-    IGN->>IGN: Validate Origin Authority & Hash WorkOrder
+    Client->>IGN: Create WorkOrder (Epoch e, Horizon K_max)
+    IGN->>IGN: Validate Origin Authority & Stamp Epoch e
     IGN->>PPLAN: Formulate Plan (PDDL Goals / Pre-conditions)
     PPLAN->>PPLAN: FOND Search & HTN Task Decomposition
-    loop For Each Step in Plan
-        PPLAN->>A2A: Dispatch Subtask via Inner Loop
-        A2A-->>PPLAN: Step Receipt or Typed Refusal
-        PPLAN->>AFF: Verify Step Receipt on Disk
+    loop Step k ∈ [1, K_max]
+        PPLAN->>A2A: Dispatch Subtask k via Inner Loop
+        alt Subtask Succeeded
+            A2A-->>PPLAN: Step Receipt
+            PPLAN->>AFF: Verify Step Receipt on Disk
+        else Subtask Refused / Diverged
+            A2A-->>PPLAN: Typed Refusal
+        end
     end
-    PPLAN->>IGN: Complete WorkOrder Transition
-    IGN->>IGN: Reconciler Reconciles TransitionLog
-    IGN-->>Client: Final Verified Receipt Chain (graphlaw-verify compatible)
+    alt Goal Converged (k ≤ K_max)
+        PPLAN->>IGN: Complete WorkOrder Transition
+        IGN->>IGN: Reconciler Reconciles TransitionLog (Vector Clocks)
+        IGN-->>Client: Final Verified Receipt Chain
+    else Horizon Exceeded (k > K_max)
+        PPLAN->>AFF: Record FAILED_CONVERGENCE_RECEIPT
+        PPLAN->>IGN: Trip Digital Andon Cord (OTP Supervisor)
+        IGN-->>Client: {:error, :unconverged, FAILED_CONVERGENCE_RECEIPT}
+    end
 ```
 
 ---
 
 ### 5.3 Loop 3: The Meta Synthesis & Evolution Loop (Meta Cycle)
 
-*Frequency: Hours to days / Release Cadence*  
-*Invariant: No handwritten boilerplate. Ontology is source; generated code is projection.*
+* **Frequency:** Hours to days / Release Cadence  
+* **Invariant:** Strictly Monotonic Restriction. No automated relaxation of axioms. Shape alterations require Sovereign Ceiling Lease `0x04`.
 
 ```mermaid
 sequenceDiagram
@@ -239,23 +258,26 @@ sequenceDiagram
     IGN->>Code: Project Spark DSLs, Schema Modules, Resources
     Code->>Mining: Telemetry Output (OCEL 2.0 Streams)
     Mining->>Mining: Conformance Checking & Fitness Mining
-    Mining-->>MKT: Feedback on Drift, Violations & New Constraints
+    Mining-->>MKT: Feedback on Observed Drift (Restrictive Only)
+    opt Structural Shape Evolution
+        MKT->>MKT: Require Sovereign Ceiling Lease (0x04)
+    end
 ```
 
 ---
 
 ## 6. Matrix of Repository Responsibilities
 
-| Repository | Primary Loop | Input Artifact | Produced Artifact | Falsifier / Kill Criterion |
-|---|---|---|---|---|
-| `ash_a2a` | Inner | Signed Commands & Leases | Admitted Actions / Dispatch | Two-Port digest mismatch or expired lease survives. |
-| `ash_r2rml` | Inner | PostgreSQL / Relational Tables | RDFC-1.0 Canonical Triples | Unmapped relational change alters state without RDF trace. |
-| `ash_graphlaw` | Inner | RDF Data + SHACL Shapes | Typed Refusal or `%Admitted{}` | Invalid state or ceiling breach fails to emit refusal. |
-| `ash_affidavit` | Inner / Outer | Telemetry & Execution Proofs | Append-Only Receipt Chain | Receipt chain verifies with missing intermediate hash. |
-| `ash_pplan` | Outer | FOND Goals & Preconditions | Action Plans (HDDL / PDDL) | Action plan executes out of topological dependency order. |
-| `xaas` | Inner | Admitted Task Execution Request | Isolated Process Output | Provider execution breaches container isolation boundary. |
-| `ggen_igniter` | Outer / Meta | RDF WorkOrders & Manifests | Reconciled Event Logs & Code | Reconciler drops unhandled state transition event. |
-| `ggen-marketplace` | Meta | Ontological Source Graphs | Versioned Packs & Shape Bundles | Pack contains ungrounded or non-canonical RDF terms. |
+| Repository | Primary Loop | Input Artifact | Produced Artifact | Max Execution Budget | State Transition Guarantee | Falsifier / Kill Criterion |
+|---|---|---|---|---|---|---|
+| `ash_a2a` | Inner | Signed Commands & Leases | Admitted Actions / Dispatch | $\le 10\,\text{ms}$ | Atomically gated via Ed25519 lease and BEAM monotonic clock. | Two-Port digest mismatch or expired lease survives. |
+| `ash_r2rml` | Inner | PostgreSQL / Relational State | Differential Triples ($\Delta G$) & Digest | $\le 20\,\text{ms}$ | Graph delta $\Delta G$ maintains 100% equivalence with canonical RDFC-1.0. | Unmapped relational change alters state without RDF trace. |
+| `ash_graphlaw` | Inner | RDF Data + SHACL Shapes | Typed Refusal or `%Admitted{}` | $\le 15\,\text{ms}$ | Branchless, deterministic WASM evaluation; zero fuel leakage. | Invalid state or ceiling breach fails to emit refusal. |
+| `ash_affidavit` | Inner / Outer | Telemetry & Execution Proofs | Append-Only Receipt Chain | $\le 5\,\text{ms}$ | Append-only Blake3 hash chain; tamper-evident offline verification. | Receipt chain verifies with missing intermediate hash. |
+| `ash_pplan` | Outer | FOND Goals & Preconditions | Action Plans (HDDL / PDDL) | $\le 500\,\text{ms}$ | Convergence strictly bounded by Epistemic Horizon $k \le K_{\max}$. | Action plan executes out of topological dependency order. |
+| `xaas` | Inner | Admitted Task Execution Request | Isolated Process Output | $\le 60\,\text{s}$ (configurable) | Zero unleased side effects; process isolation boundary preserved. | Provider execution breaches container isolation boundary. |
+| `ggen_igniter` | Outer / Meta | RDF WorkOrders & Manifests | Reconciled Event Logs & Code | $\le 2\,\text{s}$ | Monotonic epoch ordering $e \in \mathbb{U}_{64}$ via vector clocks. | Reconciler drops unhandled state transition event. |
+| `ggen-marketplace` | Meta | Ontological Source Graphs | Versioned Packs & Shape Bundles | Batch ($\le 10\,\text{m}$) | Strictly monotonic constraint evolution; Sovereign Lease `0x04` enforced. | Pack contains ungrounded or non-canonical RDF terms. |
 
 ---
 
@@ -264,3 +286,4 @@ sequenceDiagram
 1. **Topological Closure:** No state transition can be applied to persistent storage without traversing both `ash_graphlaw` (WASM semantic admission) and `ash_affidavit` (receipt attestation).
 2. **Deterministic Replay:** Any state $S_t$ can be bit-for-bit reconstructed by running `graphlaw-verify` across the receipt logs generated by `ash_affidavit` and `ggen_igniter`.
 3. **Mocks Excluded Structurally:** Because all loops exchange cryptographically signed digests and compiled WASM outputs, synthetic mocks (`Mox`, `:meck`) cannot satisfy downstream mathematical verifiers.
+4. **Time & Memory Invariance:** Actuation timing is verified against monotonic hardware counters (`System.monotonic_time`), while memory utilization during graph admission is bounded by zero-copy differential slices $\Delta G$.
