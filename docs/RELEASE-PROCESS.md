@@ -124,14 +124,14 @@ GitHub Actions is supplementary evidence. Status metadata without logs/owning ac
 
 ## Root crown (v26.9.25)
 
-The Root Crown is the autonomic loop of the v26.9.25 release line (RFC-0004 §44/§45/§55; introduced by `a7aaed0f`): every run re-observes every pinned repository in `release/v26.9.25/pins.json` — the default-branch heads of the 18 pinned repositories — and recomputes `RELEASE = C ∧ A ∧ R ∧ X ∧ F ∧ M` from a cold checkout. Observation, recompute, and receipt carry no authority; the tag is the RELEASE authority.
+The Root Crown is the autonomic loop of the v26.9.25 release line (RFC-0004 §44/§45/§55; introduced by `a7aaed0f`): every run re-observes every pinned repository in `release/v26.9.25/pins.json` — the default-branch heads of the 18 pinned repositories — and recomputes `RELEASE` from a cold checkout. The evaluated term set is premise-driven (RFC-0005 §2, `0ab8aaef`): it is derived from the `terms` table in `requirements.json` — by default the RFC-0004 six, `C ∧ A ∧ R ∧ X ∧ F ∧ M` — and a premise omitting an RFC-0004 term is refused (`REQ_TERM_UNBOUND`) while the term still evaluates; `U` is composed from the autonomic receipt's sealed gate table. Observation, recompute, and receipt carry no authority; the tag is the RELEASE authority.
 
 The CI surface is `.github/workflows/root-crown.yml` with the court package in `scripts/release_train/root_crown/`:
 
-- scheduled every 30 minutes (`cron: '7,37 * * * *'`) plus `workflow_dispatch` with a release-line input (default `v26.9.25`); push and pull_request run the test courts only;
+- scheduled every 30 minutes (`cron: '7,37 * * * *'`) plus `workflow_dispatch` with a release-line input (default `v26.9.25`); push and pull_request (path-scoped) execute the full crown in POST_TAG mode — replaying the tag-named receipt from `git archive`, attesting HEAD, and chaining the parent from `hardening/receipts/chain.json` — and never tag; only schedule/dispatch can tag via the `release-crown` environment (exit 0 `ALIVE`, 3 typed `BLOCKED`, 2 `REFUSED`);
 - cold reconstruction runs the projector with `--check`, which refuses `PROJECTION_DRIFT` (`REFUSED:PROJECTION_DRIFT`) before any court evaluates;
-- the crown runs the Berthier recompile court (reusing `invalidation_promotion` dependency-graph/cascade/binding machinery) and emits a hash-chained receipt — chained to the previous successful run's receipt, genesis when none exists — uploaded as a workflow artifact;
-- typed refusal codes: `STALE_PROJECTION`, `ARTIFACT_DIGEST_MISMATCH`, `OMITTED_SUBJECT`, `UNEVIDENCED_WORK`, `AUTHORITY_INCREASE`, `BREAK_GLASS_AS_NORMAL`, `PREMISE_UNBOUND` (each carries an RFC 39 class and broken term);
+- the crown runs the Berthier recompile court (reusing `invalidation_promotion` dependency-graph/cascade/binding machinery) and emits a hash-chained receipt — chained to the previous successful run's receipt, genesis when none exists — uploaded as a workflow artifact; the live mutation report is regenerated at `receipts/root-crown/mutation-report.json` (currently 136/136 killed, all killed — the total tracks the root-crown court surface and grows with it), with the frozen tag-time report (`mutate.FROZEN_REPORT`, 124/124 at tag time) read at attestation (`9184c855`);
+- typed refusal codes: `STALE_PROJECTION`, `ARTIFACT_DIGEST_MISMATCH`, `OMITTED_SUBJECT`, `UNEVIDENCED_WORK`, `AUTHORITY_INCREASE`, `BREAK_GLASS_AS_NORMAL`, `PREMISE_UNBOUND`, `REQ_TERM_UNBOUND` (each carries an RFC 39 class and broken term);
 - tag authority flows only through the `release-crown` environment: the tag job executes only on an `ALIVE` receipt, only at `crown_sha`, and only on `main`.
 
 ## Release closure court (v26.9.24)
@@ -143,6 +143,12 @@ python3 -m scripts.release_train.release_closure_court
 ```
 
 `SPEC_STANDINGS` now includes `MERGED` (terminal, but not a canonical `FINAL_SPEC` owner). Tag decisions are recorded in the typed tag-illegal ledger: `release/v26.9.24/tag-illegal.json` carries a `PARTIAL_ALIVE` closure standing and the decision `ILLEGAL` (`TAG_ILLEGAL:CROWN_NOT_ALIVE`).
+
+Hardening (`69e4e351`, `359ebd71`) made the lineage laws fail-closed: `SCOPE_EXCEEDS_BOUND` (a `CANONICAL` row exceeding its declared additions bound), `SUCCESSOR_AMBIGUOUS` (zero or multiple canonical successors), duplicate PR delivery within one lineage, non-boolean `draft`, and `MERGED`+`draft` rows are all typed refusals. Corrupt closures (unhashable ids, non-object rows, non-list pins) yield typed `MALFORMED_ROW` refusals with CLI exit 2 and a receipt — previously a crash with exit 1 and no receipt — and the dependency court is linear-time (`_dependency_refusals` by iterative DFS, `repair_order` linear).
+
+## Premise import (v26.9.26)
+
+Release premises are imported by machine, not copied by hand (`114c4ab9`, `76491cbe`; edge `E-ADM-02` of the v26.9.25 autonomy map). `scripts/premise_import/` (import/check/plan/sync) reads each premise from an exact `git:<owner>/<repo>@<sha>:<path>` locator, writes the copy, and upserts the release `IMPORTS.json` row with the sha256; `catalog/premise-imports.toml` declares which owner files are release premises, and `.github/workflows/premise-import.yml` re-runs the court on changes. `plan` derives — never accepts — each premise's admitting commit from the owner ref; `check` recomputes every `IMPORTS.json` offline (shape, path confinement, copy digests, unlisted hand copies, duplicates) and, with `--repos-root`, compares each copy to its source blob. Typed refusals: `IMPORT_PATH_CONFLICT` (a new subject on a bound path without `--replace`), `IMPORT_SOURCE_DRIFT` (copy diverges from its source blob), and `BLOCKED(PREMISE_ABSENT:E-ADM-01)` with exit 3 (a release line no admitted premise targets).
 
 ## Release standing
 
@@ -157,6 +163,8 @@ Use the tagged standing vocabulary literally:
 - typed `REFUSED` where the owning transition lawfully rejects
 
 A release cannot rise above its required dependency/edge closure. One green subsystem does not average away a broken mandatory edge.
+
+Closure-court verdicts carry `verifier_standing` and `subject_standing` independently (`2e1eb70a`); the combined standing is the conservative minimum of the two, with terminal standings (`REFUSED`, `BUILD_BROKEN`, `BLOCKED`) propagating. The anti-vacuity refusal `REFUSED:VERIFIER_EVIDENCE_MISSING` fires in both directions: an alive implementation without an exact-subject verifier PASS, and a declared `VERIFIER_ALIVE` without witnessed exact-subject execution.
 
 ## Publication authority
 

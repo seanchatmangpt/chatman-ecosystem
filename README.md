@@ -474,6 +474,8 @@ The DfCM capability admission court (`scripts/verify_dfcm_capabilities.py`, stdl
 
 The ALOOP qualification crown (`scripts/aloop_crown.py`, ALOOP-CROWN-001 per RFC-0005) derives an ALOOP episode's standing from lane-authored run records (`<root>/lane-*/record.json`) as a typed, refusable verdict: fail-closed on missing or incomplete lane evidence, SELECT/MEASURE only (no actuation, no standing promotion), and it honors repos a lane declares `read_only` rather than expecting write access (RFC-0005 R008).
 
+The autonomic crown (`scripts/release_train/autonomic_crown/`, RFC-0005 term U, `5a113963`) evaluates an autonomic loop's committed receipt against gates `U-01`..`U-18` — every PASS requires an evidence digest — and derives three orthogonal standings (autonomy, edge, gate), with `AUTONOMIC` implying `ALIVE`; the edge court scores the loop's handoff edges from the committed inventory. Standing is re-derived from the receipt's own sealed gate table rather than trusted from its stored summary (`AUTONOMIC_STANDING_UNDERIVED`, `88cea1f7`).
+
 The individual composition-root checks are useful when diagnosing a narrower failure:
 
 ```bash
@@ -573,6 +575,8 @@ Which verifier executed against which exact subject, and where is its receipt?
 
 Local source capsules and exact-head hosted execution are complementary evidence rails.
 
+The same law governs local `act` runs: `scripts/local_ci/act_ci.sh` (`25f2296b`) classifies colima/containerd transport storms (`input/output error`, `unable to determine if image already exists`) as `BLOCKED(TRANSPORT_FAILURE:act-runtime)` rather than FAIL, and refuses a vacuous pass — `rc=0` with zero executed jobs is `FAIL(zero_jobs_ran)`; PASS requires at least one executed job.
+
 ---
 
 ## Security model
@@ -652,6 +656,8 @@ The repository is not merely a case study for the theory. It is the instrument u
 | Inspect the DFCM controller | [`scripts/dfcm_autonomic_finish.py`](scripts/dfcm_autonomic_finish.py) |
 | Inspect executable completion | [`scripts/v2030_definition_of_done.py`](scripts/v2030_definition_of_done.py) |
 | Run the Crown | [`scripts/crown.sh`](scripts/crown.sh) |
+| Import release premises | [`scripts/premise_import/`](scripts/premise_import/) (import/check/plan/sync, E-ADM-02 producer + court) |
+| Inspect the prior-art (anti-reinvention) decision court | [`scripts/release_train/cross_product_court/prior_art.py`](scripts/release_train/cross_product_court/prior_art.py) |
 | Inspect receipts | [`receipts/`](receipts/) |
 | Inspect generated projections | [`views/generated/`](views/generated/) |
 | Inspect platform behavior | [`platform-console/`](platform-console/) |
